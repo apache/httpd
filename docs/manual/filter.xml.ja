@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 421100 -->
@@ -22,14 +22,14 @@
 
 <manualpage metafile="filter.xml.meta">
 
-  <title>$B%U%#%k%?(B</title>
+  <title>フィルタ</title>
 
   <summary>
-    <p>Apache $B$G$N%U%#%k%?$N;H$$J}$K$D$$$F5-=R$7$F$$$^$9!#(B</p>
+    <p>Apache でのフィルタの使い方について記述しています。</p>
   </summary>
 
   <section id="intro">
-    <title>Apache 2 $B$N%U%#%k%?(B</title>
+    <title>Apache 2 のフィルタ</title>
     <related>
       <modulelist>
         <module>mod_filter</module>
@@ -54,100 +54,100 @@
       </directivelist>
     </related>
 
-<p>Apache 2.0 $B0J9_$G$O%U%#%k%?%A%'%$%s5!G=$,;H$(!"%G!<%?$,(B
-$B$I$3$+$iMh$k$+$K4X$o$i$:!"Hs>o$K=@Fp$GD4@0$7$d$9$$J}K!$G(B
-$BF~=PNO%G!<%?$r=hM}$G$-$^$9!#(B
-$BF~NO%G!<%?$r%W%j%W%m%;%9$7$?$j=PNO%G!<%?$r%]%9%H%W%m%;%9$7$?$j$G$-$^$9!#(B
-$B$3$N=hM}$O!"$3$l$^$G$N%j%/%(%9%H=hM}%U%'!<%:$H$O:,K\E*$KFHN)$7$?(B
-$B=hM}$K$J$j$^$9!#(B</p>
+<p>Apache 2.0 以降ではフィルタチェイン機能が使え、データが
+どこから来るかに関わらず、非常に柔軟で調整しやすい方法で
+入出力データを処理できます。
+入力データをプリプロセスしたり出力データをポストプロセスしたりできます。
+この処理は、これまでのリクエスト処理フェーズとは根本的に独立した
+処理になります。</p>
 <p class="figure">
 <img src="images/filter_arch.png" width="569" height="392" alt=
 "Filters can be chained, in a Data Axis orthogonal to request processing"
 />
 </p>
-<p>Apache $B$NI8=`E*$J%G%#%9%H%j%S%e!<%7%g%s$G$N%U%#%k%?Nc$O(B :</p>
+<p>Apache の標準的なディストリビューションでのフィルタ例は :</p>
 <ul>
-<li><module>mod_include</module> $B$G!"%5!<%P%5%$%I%$%s%/%k!<%I(B SSI $B$r<BAu$7$F$$$^$9(B</li>
-<li><module>mod_ssl</module> $B$G!"(BSSL $B0E9f2=(B (https) $B$r<BAu$7$F$$$^$9!#(B</li>
-<li><module>mod_deflate</module> $B$G!"(Bon-the-fly $B$N%G!<%?05=L!&E83+5!G=$r<BAu$7$F$$$^$9!#(B</li>
-<li><module>mod_charset_lite</module> $B$G!"0[$J$kJ8;z%;%C%H4V$NJQ49$r<BAu$7$F$$$^$9!#(B</li>
-<li><module>mod_ext_filter</module> $B$G!"30It%W%m%0%i%`$r%U%#%k%?$H$7$F<B9T$7$^$9!#(B</li>
+<li><module>mod_include</module> で、サーバサイドインクルード SSI を実装しています</li>
+<li><module>mod_ssl</module> で、SSL 暗号化 (https) を実装しています。</li>
+<li><module>mod_deflate</module> で、on-the-fly のデータ圧縮・展開機能を実装しています。</li>
+<li><module>mod_charset_lite</module> で、異なる文字セット間の変換を実装しています。</li>
+<li><module>mod_ext_filter</module> で、外部プログラムをフィルタとして実行します。</li>
 </ul>
-<p>$B%A%c%s%-%s%0$d%P%$%H%l%s%8=hM}$H$$$C$?=hM}$r9T$&$?$a$K(B
-Apache $B$O!"FbItE*$K$$$/$D$+$N%U%#%k%?$r;H$C$F$$$^$9!#(B</p>
+<p>チャンキングやバイトレンジ処理といった処理を行うために
+Apache は、内部的にいくつかのフィルタを使っています。</p>
 
-<p>$BMM!9$J%"%W%j%1!<%7%g%s$,%5!<%I%Q!<%F%#@=$N%U%#%k%?%b%8%e!<%k$H$7$F(B
-$B<BAu$5$l$F$$$F!"(B<a
+<p>様々なアプリケーションがサードパーティ製のフィルタモジュールとして
+実装されていて、<a
 href="http://modules.apache.org/">modules.apache.org</a>
-$B$J$I$+$i<hF@$G$-$^$9!#$?$H$($P(B :</p>
+などから取得できます。たとえば :</p>
 
 <ul>
-<li>HTML $B$d(B XML $B$N=hM}$H=q$-49$((B</li>
-<li>XSLT $BJQ49$H(B XIncludes</li>
-<li>XML $BL>A06u4V$N%5%]!<%H(B</li>
-<li>$B%U%!%$%k%"%C%W%m!<%I=hM}$d(B HTML $B%U%)!<%`$N%G%3!<%I(B</li>
-<li>$B2hA|=hM}(B</li>
-<li>PHP $B%9%/%j%W%H$J$I$N%"%W%j%1!<%7%g%s$KBP$9$kJ]8n5!G=(B</li>
-<li>$B%F%-%9%H$N8!:wCV49!&JT=85!G=(B</li>
+<li>HTML や XML の処理と書き換え</li>
+<li>XSLT 変換と XIncludes</li>
+<li>XML 名前空間のサポート</li>
+<li>ファイルアップロード処理や HTML フォームのデコード</li>
+<li>画像処理</li>
+<li>PHP スクリプトなどのアプリケーションに対する保護機能</li>
+<li>テキストの検索置換・編集機能</li>
 </ul>
 </section>
 
 <section id="smart">
-<title>$B%9%^!<%H%U%#%k%?(B</title>
+<title>スマートフィルタ</title>
 <p class="figure">
 <img src="images/mod_filter_new.png" width="423" height="331"
 alt="Smart filtering applies different filter providers according to the state of request processing"/>
 </p>
-<p>Apache 2.1 $B0\9T$K4^$^$l$k(B <module>mod_filter</module> $B$G$O!"(B
-$B<B9T;~$KF0E*$K%U%#%k%?%A%'%$%s$rM-8z$K$G$-$^$9!#(B
-$B$G$9$+$i$?$H$($P!"(BHTML $B$r(B HTML $B%U%#%k%?$G!"(BJPEG $B2hA|$r$=$l$H$O(B
-$BA4$/JL$N%U%#%k%?$G!"=q$-49$($k$h$&$J%W%m%/%7$r@_Dj$9$k$3$H$b$G$-$^$9!#(B
-$B$=$N>e!"$=$N%W%m%/%7$O$I$N%*%j%8%s%5!<%P$,%3%s%F%s%D$rAw?.$9$k$+(B
-$B;vA0>pJsL5$7$G$$$$$h$&$K9=@.$G$-$^$9!#(B
-$B$3$l$O!"<B9T;~$K<B:]$N%3%s%F%s%D$K1~$8$FJL!9$N%U%#%k%?%W%m%P%$%@$K(B
-$B%G%#%9%Q%C%A$9$k%U%#%k%?%O!<%M%9$r;H$&$3$H$G<B8=$5$l$F$$$^$9!#(B
-$B%A%'%$%s$NCf$KD>@\F~$l$FL5>r7o$KE,MQ$7$?$j!"F0E*$K%W%m%P%$%@$H$7$F(B
-$BE,MQ$9$k$h$&$K$7$?$j$9$k$3$H$O!"$I$s$J%U%#%k%?$G$b$G$-$^$9!#(B
-$B$?$H$($P!"(B</p>
+<p>Apache 2.1 移行に含まれる <module>mod_filter</module> では、
+実行時に動的にフィルタチェインを有効にできます。
+ですからたとえば、HTML を HTML フィルタで、JPEG 画像をそれとは
+全く別のフィルタで、書き換えるようなプロクシを設定することもできます。
+その上、そのプロクシはどのオリジンサーバがコンテンツを送信するか
+事前情報無しでいいように構成できます。
+これは、実行時に実際のコンテンツに応じて別々のフィルタプロバイダに
+ディスパッチするフィルタハーネスを使うことで実現されています。
+チェインの中に直接入れて無条件に適用したり、動的にプロバイダとして
+適用するようにしたりすることは、どんなフィルタでもできます。
+たとえば、</p>
 <ul>
-<li>HTML $B=hM}%U%#%k%?$O%3%s%F%s%H$,(B text/html $B$"$k$$$O(B
-application/xhtml+xml $B$N>l9g$K$N$_<B9T$5$l$^$9(B</li>
-<li>$B05=L%U%#%k%?$O05=L2DG=$JF~NO$G!"Hs05=L>uBV$N$b$N$K(B
-$BBP$7$F$N$_<B9T$5$l$^$9(B</li>
-<li>$BJ8;z%;%C%HJQ49%U%#%k%?$O%F%-%9%HJ8=q$,(B
-$B4uK>$NJ8;z%;%C%H$K$J$C$F$$$J$$>l9g$KA^F~$5$l$^$9(B</li>
+<li>HTML 処理フィルタはコンテントが text/html あるいは
+application/xhtml+xml の場合にのみ実行されます</li>
+<li>圧縮フィルタは圧縮可能な入力で、非圧縮状態のものに
+対してのみ実行されます</li>
+<li>文字セット変換フィルタはテキスト文書が
+希望の文字セットになっていない場合に挿入されます</li>
 </ul>
 </section>
 
 <section id="using">
-<title>$B%U%#%k%?$N;H$$J}(B</title>
-<p>$B%U%#%k%?$N;H$$J}$K$OFs$D$NJ}K!$,$"$j$^$9(B: $B%7%s%W%k$H%@%$%J%_%C%/!#(B
-$B0lHLE*$K$O$I$A$i$+$N$_$r;H$C$?$[$&$,$h$$$G$7$g$&!#(B
-$B$3$l$i$rAH$_9g$o$;$F;HMQ$9$k$H!"M=4|$7$J$$7k2L$K$J$k$+$b$7$l$^$;$s!#(B
-($B$H$O$$$(!"%7%s%W%k$JF~NO%U%#%k%?$H%7%s%W%k$"$k$$$O%@%$%J%_%C%/$J(B
-$B=PNO%U%#%k%?$rAH$_9g$o$;$k$3$H$O<+M3$K=PMh$^$9!#(B)</p>
-<p>$B%7%s%W%k$JJ}K!$O!"F~NO%U%#%k%?$N$_$r@_Dj$7!"I,MW$K1~$8$F(B
-$B@EE*$J%U%#%k%?%A%'%$%s$r=PNO%U%#%k%?$H$7$F@_Dj$9$kJ}K!$G$9!#(B
-$B4XO"$9$k%G%#%l%/%F%#%V$O!"(B
+<title>フィルタの使い方</title>
+<p>フィルタの使い方には二つの方法があります: シンプルとダイナミック。
+一般的にはどちらかのみを使ったほうがよいでしょう。
+これらを組み合わせて使用すると、予期しない結果になるかもしれません。
+(とはいえ、シンプルな入力フィルタとシンプルあるいはダイナミックな
+出力フィルタを組み合わせることは自由に出来ます。)</p>
+<p>シンプルな方法は、入力フィルタのみを設定し、必要に応じて
+静的なフィルタチェインを出力フィルタとして設定する方法です。
+関連するディレクティブは、
     <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>,
     <directive module="core">AddInputFilter</directive>,
     <directive module="core">AddOutputFilter</directive>,
     <directive module="mod_mime">RemoveInputFilter</directive>,
     <directive module="mod_mime">RemoveOutputFilter</directive>
-    $B$K$J$j$^$9!#(B</p>
+    になります。</p>
 
-<p>$B%@%$%J%_%C%/$JJ}K!$O!"@EE*$J$b$N$H%U%l%-%7%V%k$J$b$N$rN>J}M-8z$K$9$k(B
-$BJ}K!$G!"(B<module>mod_filter</module> $B$N%Z!<%8$G=R$Y$i$l$F$$$^$9!#(B
-$B4XO"$9$k%G%#%l%/%F%#%V$O!"(B
+<p>ダイナミックな方法は、静的なものとフレキシブルなものを両方有効にする
+方法で、<module>mod_filter</module> のページで述べられています。
+関連するディレクティブは、
     <directive module="mod_filter">FilterChain</directive>,
     <directive module="mod_filter">FilterDeclare</directive>, 
     <directive module="mod_filter">FilterProvider</directive>
-    $B$K$J$j$^$9!#(B</p>
+    になります。</p>
 
-<p>$B%G%#%l%/%F%#%V(B <directive module="core">AddOutputFilterByType</directive>
-$B$O$^$@%5%]!<%H$5$l$F$$$^$9$,!"<o!9$NLdBj$r$O$i$s$G$*$j!"Hs?d>)$G$9!#(B
-$B%@%$%J%_%C%/$J@_DjJ}K!$rBe$o$j$K;H$C$F$/$@$5$$!#(B</p>
+<p>ディレクティブ <directive module="core">AddOutputFilterByType</directive>
+はまだサポートされていますが、種々の問題をはらんでおり、非推奨です。
+ダイナミックな設定方法を代わりに使ってください。</p>
 
   </section>
 </manualpage>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 413452:421100 (outdated) -->
@@ -22,222 +22,222 @@
 
 <manualpage metafile="stopping.xml.meta">
 
-  <title>$BDd;_$H:F5/F0(B</title>
+  <title>停止と再起動</title>
 
 <summary>
-    <p>$B$3$NJ8=q$G$O(B Unix $B$KN`;w$7$?%7%9%F%`$G$N(B
-    Apache $B$NDd;_$H:F5/F0$K$D$$$F07$C$F$$$^$9!#(B
-    Windows NT, 2000, XP $B%f!<%6$O(B<a
-    href="platform/windows.html#winsvc">$B%5!<%S%9$H$7$F(B
-    Apache $B$r<B9T$9$k(B</a>$B$G!"(BWindows 9x, ME$B%f!<%6$O(B<a
-    href="platform/windows.html#wincons">$B%3%s%=!<%k%"%W%j%1!<%7%g%s$H$7$F(B
-    Apache $B$r<B9T$9$k(B</a>$B$G!"(B
-    $B$3$l$i$N%W%i%C%H%[!<%`$G$N;HMQJ}K!$r$4Mw2<$5$$!#(B</p>
+    <p>この文書では Unix に類似したシステムでの
+    Apache の停止と再起動について扱っています。
+    Windows NT, 2000, XP ユーザは<a
+    href="platform/windows.html#winsvc">サービスとして
+    Apache を実行する</a>で、Windows 9x, MEユーザは<a
+    href="platform/windows.html#wincons">コンソールアプリケーションとして
+    Apache を実行する</a>で、
+    これらのプラットホームでの使用方法をご覧下さい。</p>
 </summary>
 
 <seealso><program>httpd</program></seealso>
 <seealso><program>apachectl</program></seealso>
 
-<section id="introduction"><title>$B%$%s%H%m%@%/%7%g%s(B</title>
+<section id="introduction"><title>イントロダクション</title>
 
-    <p>Apache $B$rDd;_$7$?$j:F5/F0$7$?$j$9$k$?$a$K$O!"<B9T$5$l$F$$$k(B
-    <program>httpd</program> $B%W%m%;%9$K%7%0%J%k$rAw$kI,MW$,$"$j$^$9!#(B
-    $B%7%0%J%k$rAw$k$K$OFs$D$NJ}K!$,$"$j$^$9!#(B
-    $B0l$DL\$O%W%m%;%9$KD>@\%7%0%J%k$rAw$k(B unix $B$N(B <code>kill</code>
-    $B%3%^%s%I$r;HMQ$9$kJ}K!$G$9!#(B
-    $B%7%9%F%`$r8+$l$P$?$/$5$s$N(B <program>httpd</program> $B$,(B
-    $B<B9T$5$l$F$$$k$N$K5$$,IU$/$G$7$g$&$,!"%7%0%J%k$rAw$k$N$O(B
-    $B?F%W%m%;%9$@$1$G!"$=$l0J30$N8D!9$N%W%m%;%9$K$O(B
-    $B%7%0%J%k$rAw$i$J$$$G2<$5$$!#$=$N?F%W%m%;%9$N(B pid $B$O(B
+    <p>Apache を停止したり再起動したりするためには、実行されている
+    <program>httpd</program> プロセスにシグナルを送る必要があります。
+    シグナルを送るには二つの方法があります。
+    一つ目はプロセスに直接シグナルを送る unix の <code>kill</code>
+    コマンドを使用する方法です。
+    システムを見ればたくさんの <program>httpd</program> が
+    実行されているのに気が付くでしょうが、シグナルを送るのは
+    親プロセスだけで、それ以外の個々のプロセスには
+    シグナルを送らないで下さい。その親プロセスの pid は
     <directive module="mpm_common">PidFile</directive>
-    $B$K=q$+$l$F$$$^$9!#$3$l$O$D$^$j!"?F0J30$N%W%m%;%9$K(B
-    $B%7%0%J%k$rAw$kI,MW$9$i$J$$!"$H$$$&$3$H$G$9!#(B
-    $B?F%W%m%;%9$KAw$k$3$H$,$G$-$k(B 3 $B<oN`$N%7%0%J%k$,$"$j$^$9(B:
+    に書かれています。これはつまり、親以外のプロセスに
+    シグナルを送る必要すらない、ということです。
+    親プロセスに送ることができる 3 種類のシグナルがあります:
     <code><a href="#term">TERM</a></code>,
     <code><a href="#hup">HUP</a></code>, 
     <code><a href="#graceful">USR1</a></code>
-    $B$G$9!#$3$l$i$N@bL@$K$D$$$F$OB3$-$r$4Mw2<$5$$!#(B</p>
+    です。これらの説明については続きをご覧下さい。</p>
 
-    <p>$B?F%W%m%;%9$K%7%0%J%k$rAw$k$K$O!"(B
-    $B<!$N$h$&$J%3%^%s%I$rH/9T$7$F2<$5$$(B:</p>
+    <p>親プロセスにシグナルを送るには、
+    次のようなコマンドを発行して下さい:</p>
 
 <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
 
-    <p><program>httpd</program> $B%W%m%;%9$K%7%0%J%k$rAw$k(B 2 $BHVL\$NJ}K!$O(B
-    <code>-k</code> $B$H$$$&%3%^%s%I%i%$%s0z?t$r;HMQ$9$k$3$H$G$9!#(B
-    $B2<$G@bL@$5$l$F$$$k$h$&$K!"(B<code>stop</code>, <code>restart</code>, 
-    <code>graceful</code>, <code>graceful-stop</code> $B$r;XDj$G$-$^$9!#(B
-    $B$3$l$i$O(B <program>httpd</program> $B$N0z?t$G$9$,!"(B
-    $B@)8fMQ$N%9%/%j%W%H(B <program>apachectl</program> $B$O$=$l$i$N0z?t$r$=$N$^$^(B
-    <program>httpd</program> $B$KEO$7$^$9!#(B</p>
+    <p><program>httpd</program> プロセスにシグナルを送る 2 番目の方法は
+    <code>-k</code> というコマンドライン引数を使用することです。
+    下で説明されているように、<code>stop</code>, <code>restart</code>, 
+    <code>graceful</code>, <code>graceful-stop</code> を指定できます。
+    これらは <program>httpd</program> の引数ですが、
+    制御用のスクリプト <program>apachectl</program> はそれらの引数をそのまま
+    <program>httpd</program> に渡します。</p>
 
-    <p><program>httpd</program> $B$K%7%0%J%k$rAw$C$?8e!"(B
-    $B<B9T>u67$r<!$N%3%^%s%I$GFI$`$3$H$,$G$-$^$9(B:</p>
+    <p><program>httpd</program> にシグナルを送った後、
+    実行状況を次のコマンドで読むことができます:</p>
 
 <example>tail -f /usr/local/apache2/logs/error_log</example>
-    <p>$B$3$3$K5s$2$?Nc$O!"3F<+$N(B
+    <p>ここに挙げた例は、各自の
     <directive module="core">ServerRoot</directive>
-    $B$H(B
+    と
     <directive module="mpm_common">PidFile</directive>
-    $B$N@_Dj$KE,9g$9$k$h$&$KE,59=$@5$7$F2<$5$$!#(B</p>
+    の設定に適合するように適宜修正して下さい。</p>
 </section>
 
-<section id="term"><title>$B5^$JDd;_(B</title>
+<section id="term"><title>急な停止</title>
 
-<dl><dt>$B%7%0%J%k(B: TERM</dt>
+<dl><dt>シグナル: TERM</dt>
 <dd><code>apachectl -k stop</code></dd>
 </dl>
 
-    <p><code>TERM</code> $B$"$k$$$O(B <code>stop</code> 
-    $B%7%0%J%k$r?F%W%m%;%9$KAw$k$H!"B(:B$K;R%W%m%;%9A4$F$r(B kill $B$7$h$&$H$7$^$9!#(B
-    $B;R%W%m%;%9$r40A4$K(B kill $B$7=*$o$k$^$G$K?tIC$+$+$k$+$b$7$l$^$;$s!#(B
-    $B$=$N8e!"?F%W%m%;%9<+?H$,=*N;$7$^$9!#(B
-    $B=hM}Cf$N%j%/%(%9%H$OA4$FDd;_$5$l!"$b$O$d%j%/%(%9%H$KBP$9$k(B
-    $B1~Ez$O$5$l$^$;$s!#(B</p>
+    <p><code>TERM</code> あるいは <code>stop</code> 
+    シグナルを親プロセスに送ると、即座に子プロセス全てを kill しようとします。
+    子プロセスを完全に kill し終わるまでに数秒かかるかもしれません。
+    その後、親プロセス自身が終了します。
+    処理中のリクエストは全て停止され、もはやリクエストに対する
+    応答はされません。</p>
 </section>
 
-<section id="graceful"><title>$B4K$d$+$J:F5/F0(B (Graceful Restart)</title>
+<section id="graceful"><title>緩やかな再起動 (Graceful Restart)</title>
 
-<dl><dt>$B%7%0%J%k(B: USR1</dt>
+<dl><dt>シグナル: USR1</dt>
 <dd><code>apachectl -k graceful</code></dd>
 </dl>
 
-    <p>$B?F%W%m%;%9$O(B <code>USR1</code> $B$"$k$$$O(B <code>graceful</code>
-    $B%7%0%J%k$r<u$1<h$k$H!";R%W%m%;%9$K8=:_$N%j%/%(%9%H$N=hM}$N8e$K=*N;$9$k(B
-    ($B$"$k$$$O2?$b$7$F$$$J$1$l$P$9$0$K=*N;$9$k(B)
-    $B$h$&$K(B<em>$B=u8@(B</em>$B$7$^$9!#(B
-    $B?F%W%m%;%9$O@_Dj%U%!%$%k$r:FFI9~$7$F!"%m%0%U%!%$%k$r3+$-D>$7$^$9!#(B
-    $B;R%W%m%;%9$,=y!9$K$J$/$J$k$K=>$C$F!"(B
-    $B?7$7$$(B<em>$B@$Be(B</em>$B$N@_Dj$K$h$k;R%W%m%;%9$KCV$-49$($F$$$-$^$9!#(B
-    $B$=$7$F!"$3$l$i$,?7$?$J%j%/%(%9%H$KB(:B$K1~Ez$7;O$a$^$9!#(B</p>
+    <p>親プロセスは <code>USR1</code> あるいは <code>graceful</code>
+    シグナルを受け取ると、子プロセスに現在のリクエストの処理の後に終了する
+    (あるいは何もしていなければすぐに終了する)
+    ように<em>助言</em>します。
+    親プロセスは設定ファイルを再読込して、ログファイルを開き直します。
+    子プロセスが徐々になくなるに従って、
+    新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
+    そして、これらが新たなリクエストに即座に応答し始めます。</p>
 
-    <p>$B$3$N%3!<%I$O>o$K(B
-    MPM $B$N%W%m%;%9@)8f%G%#%l%/%F%#%V$N@_Dj$r=E;k$7$^$9$N$G!"(B
-    $B%/%i%$%"%s%H$N%j%/%(%9%H$r07$&%W%m%;%9$H%9%l%C%I$N?t$r:F5/F0$N=hM}Cf$b(B
-    $BE,@Z$JCM$K0];}$5$l$^$9!#!#$^$?!"<!$N$h$&$K$7$F(B
+    <p>このコードは常に
+    MPM のプロセス制御ディレクティブの設定を重視しますので、
+    クライアントのリクエストを扱うプロセスとスレッドの数を再起動の処理中も
+    適切な値に維持されます。。また、次のようにして
     <directive module="mpm_common">StartServers</directive>
-    $B$r<i$j$^$9(B:
-    $B>/$J$/$H$b(B 1 $BIC8e$K(B <directive
-    module="mpm_common">StartServers</directive> $B8D$N?7$7$$;R%W%m%;%9$,(B
-    $B@8@.$5$l$F$$$J$1$l$P!"$=$N?t$K$J$k$h$&$KE,59%W%m%;%9$r@8@.$7$^$9!#(B
-    $B$3$N5sF0$O8=:_$NIi2Y$KBP$7$FE,@Z$J;R%W%m%;%9$N?t$H(B
+    を守ります:
+    少なくとも 1 秒後に <directive
+    module="mpm_common">StartServers</directive> 個の新しい子プロセスが
+    生成されていなければ、その数になるように適宜プロセスを生成します。
+    この挙動は現在の負荷に対して適切な子プロセスの数と
     <directive
-    module="mpm_common">StartServers</directive> $B%Q%i%a!<%?$G$N(B
-    $B4uK>$N?t$NN>J}$r0];}$7$h$&$H$7$F$$$^$9!#(B</p>
+    module="mpm_common">StartServers</directive> パラメータでの
+    希望の数の両方を維持しようとしています。</p>
 
-    <p><module>mod_status</module> $B$r(B
-    $B;HMQ$7$F$$$k>l9g$O!"(B<code>USR1</code> $B%7%0%J%k$,Aw$i$l$?:]$K(B
-    $B%5!<%PE}7W$,%<%m$K(B<strong>$B@_Dj$5$l$J$$(B</strong>$B$3$H$K(B
-    $BCm0U$7$F$/$@$5$$!#(B
-    $B%5!<%P$,?7$7$$%j%/%(%9%H$K1~EzITG=$J;~4V$r:G>.$K$9$k$h$&$K(B
-    ($B%j%/%(%9%H$O(B OS $B$K$h$C$F%-%e!<$KDI2C$5$l$k$N$G@dBP$KJ6<:$O$7$^$;$s(B)$B!"(B
-    $B$^$?F1;~$K!"4uK>$N%A%e!<%K%s%0%Q%i%a!<%?$r<i$k$h$&$K(B
-    $B%3!<%I$O=q$+$l$F$$$^$9!#(B
-    $B$3$N$h$&$K$9$k$?$a$K!"@$Be$r$^$?$,$C$?A4;R%W%m%;%9$NDI@W$K;H$o$l$F$$$k(B
-    <em>$B%9%3%"%\!<%I(B</em>$B$r0];}$7$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p><module>mod_status</module> を
+    使用している場合は、<code>USR1</code> シグナルが送られた際に
+    サーバ統計がゼロに<strong>設定されない</strong>ことに
+    注意してください。
+    サーバが新しいリクエストに応答不能な時間を最小にするように
+    (リクエストは OS によってキューに追加されるので絶対に紛失はしません)、
+    また同時に、希望のチューニングパラメータを守るように
+    コードは書かれています。
+    このようにするために、世代をまたがった全子プロセスの追跡に使われている
+    <em>スコアボード</em>を維持しなければなりません。</p>
 
-    <p>status $B%b%8%e!<%k$O!"4K$d$+$J:F5/F00JA0$+$i3+;O$7$F(B
-    $B%j%/%(%9%H$K1~Ez$7B3$1$F$$$k;R%W%m%;%9$rFCDj$9$k$?$a$K!"(B
-    <code>G</code> $B$r;H$&$3$H$b$7$^$9!#(B</p>
+    <p>status モジュールは、緩やかな再起動以前から開始して
+    リクエストに応答し続けている子プロセスを特定するために、
+    <code>G</code> を使うこともします。</p>
 
-    <p>$B8=:_!"(B<code>USR1</code> $B$r;H$&%m%00\F0%9%/%j%W%H$G$O!"(B
-    $B:F5/F0A0$N;R%W%m%;%9$,%m%0$r=q$-=*$o$C$?$3$H$r3N>Z$9$kJ}K!$,(B
-    $B$"$j$^$;$s!#8E$$%m%0$KBP$7$F2?$+$9$kA0$K!"(B
-    <code>USR1</code> $B%7%0%J%k$rAw$C$?8e$$$/$i$+E,Ev$J;~4VBT$D$3$H$r(B
-    $BDs0F$7$^$9!#Nc$($P!"BS0h$N69$$DL?.O)$N%f!<%6$N%j%/%(%9%H$N$[$H$s$I$,(B 10 
-    $BJ,0J2<$G40N;$7$F$$$k$H$$$&$3$H$,J,$+$C$F$$$l$P!"(B
-    $B8E$$%m%0$K2?$+$9$kA0$K(B 15 $BJ,BT$D$H$$$&$3$H$G$9!#(B</p>
+    <p>現在、<code>USR1</code> を使うログ移動スクリプトでは、
+    再起動前の子プロセスがログを書き終わったことを確証する方法が
+    ありません。古いログに対して何かする前に、
+    <code>USR1</code> シグナルを送った後いくらか適当な時間待つことを
+    提案します。例えば、帯域の狭い通信路のユーザのリクエストのほとんどが 10 
+    分以下で完了しているということが分かっていれば、
+    古いログに何かする前に 15 分待つということです。</p>
 
-    <note>$B:F5/F0;~$K@_Dj%U%!%$%k$K8m$j$,$"$k$H!"(B
-    $B?F%W%m%;%9$O:F5/F0$;$:$K%(%i!<$H$H$b$K=*N;$7$^$9!#(B
-    $B4K$d$+$J:F5/F0$N>l9g$O!"?F%W%m%;%9$,=*N;$7$?8e$G$b;R%W%m%;%9$,(B
-    $B<B9T$5$l$?$^$^J|CV$5$l$?$j$b$7$^$9!#(B
-    ($B:G8e$N%j%/%(%9%H$r=hM}$7$?8e!V4K$d$+$K=*N;!W$9$k(B
-    $B;R%W%m%;%9$H$J$j$^$9!#(B)
-    $B%5!<%P$r:F5/F0$9$k:]$K!"$3$l$,LdBj$K$J$k$+$b$7$l$^$;$s(B
-    -- $B%5!<%P$O(B listen $B$9$k%]!<%H$K%P%$%s%I$G$-$J$$$+$b$7$l$^$;$s!#(B
-    $B:F5/F0$9$kA0$K!"@_Dj%U%!%$%k$N9=J8$r(B <code>-t</code>
-    $B%3%^%s%I%i%$%s0z?t(B
-    (<program>httpd</program> $B$r$4Mw2<$5$$(B)
-    $B$r;H$C$F8!>Z$9$k$3$H$,$G$-$^$9!#(B
-    $B@_Dj%U%!%$%k$N0UL#E*$JFbMF$r9=J8$HF1MM$K8!>Z$7$?$$>l9g$O!"(B
-    $BHs(B root $B%f!<%6$G(B <program>httpd</program> $B$r5/F0$7$h$&$H$9$l$P$o$+$j$^$9!#(B
-    $B$b$7%(%i!<$,$J$1$l$P!"%=%1%C%H$d%m%0$r3+$3$&$H$7$F(B
-    root $B$G$J$$$?$a(B
-    ($B$b$7$/$O<B9TCf$N(B <program>httpd</program>
-    $B$,4{$KI,MW$J%]!<%H$K%P%$%s%I$7$F$$$k$?$a(B)
-    $B$K<:GT$9$k$G$7$g$&!#(B
-    $B$3$l0J30$NM}M3$G5/F0$K<:GT$7$?$N$G$"$l$P!"(B
-    $B$=$l$O@_Dj%U%!%$%k$N%(%i!<$G!"(B
-    $B4K$d$+$J:F5/F0$r9T$&A0$K$=$N8m$j$r=$@5$7$J$1$l$P$J$j$^$;$s!#(B</note>
+    <note>再起動時に設定ファイルに誤りがあると、
+    親プロセスは再起動せずにエラーとともに終了します。
+    緩やかな再起動の場合は、親プロセスが終了した後でも子プロセスが
+    実行されたまま放置されたりもします。
+    (最後のリクエストを処理した後「緩やかに終了」する
+    子プロセスとなります。)
+    サーバを再起動する際に、これが問題になるかもしれません
+    -- サーバは listen するポートにバインドできないかもしれません。
+    再起動する前に、設定ファイルの構文を <code>-t</code>
+    コマンドライン引数
+    (<program>httpd</program> をご覧下さい)
+    を使って検証することができます。
+    設定ファイルの意味的な内容を構文と同様に検証したい場合は、
+    非 root ユーザで <program>httpd</program> を起動しようとすればわかります。
+    もしエラーがなければ、ソケットやログを開こうとして
+    root でないため
+    (もしくは実行中の <program>httpd</program>
+    が既に必要なポートにバインドしているため)
+    に失敗するでしょう。
+    これ以外の理由で起動に失敗したのであれば、
+    それは設定ファイルのエラーで、
+    緩やかな再起動を行う前にその誤りを修正しなければなりません。</note>
 </section>
 
-<section id="hup"><title>$B5^$J:F5/F0(B</title>
+<section id="hup"><title>急な再起動</title>
 
-<dl><dt>$B%7%0%J%k(B: HUP</dt>
+<dl><dt>シグナル: HUP</dt>
 <dd><code>apachectl -k restart</code></dd>
 </dl>
 
-    <p><code>HUP</code> $B$"$k$$$O(B <code>restart</code> $B%7%0%J%k$r?F%W%m%;%9$KAw$k$H!"(B
-    <code>TERM</code> $B$HF1MM$K;R%W%m%;%9$r(B kill $B$7$^$9$,!"(B
-    $B?F%W%m%;%9$O=*N;$7$^$;$s!#(B
-    $B@_Dj%U%!%$%k$r:FFI9~$7$F!"%m%0%U%!%$%kA4$F$r3+$-D>$7$^$9!#(B
-    $B$=$N8e!"?7$7$$;R%W%m%;%9$r5/F0$7$F1~Ez$rB3$1$^$9!#(B</p>
+    <p><code>HUP</code> あるいは <code>restart</code> シグナルを親プロセスに送ると、
+    <code>TERM</code> と同様に子プロセスを kill しますが、
+    親プロセスは終了しません。
+    設定ファイルを再読込して、ログファイル全てを開き直します。
+    その後、新しい子プロセスを起動して応答を続けます。</p>
 
     <p><module>mod_status</module>
-    $B$r;H$C$F$$$k>l9g$O!"(B<code>HUP</code> $B$,Aw$i$l$?>l9g$K(B
-    $B%5!<%PE}7W$,%<%m$K@_Dj$5$l$k$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    を使っている場合は、<code>HUP</code> が送られた場合に
+    サーバ統計がゼロに設定されることに注意してください。</p>
 
-    <note>$B:F5/F0;~$K@_Dj%U%!%$%k$K8m$j$,$"$k$H!"(B
-    $B?F%W%m%;%9$O:F5/F0$;$:$K%(%i!<$H$H$b$K=*N;$7$^$9!#(B
-    $B$3$l$rHr$1$k$K$O<!$NJ}K!$r$4Mw2<$5$$!#(B</note>
+    <note>再起動時に設定ファイルに誤りがあると、
+    親プロセスは再起動せずにエラーとともに終了します。
+    これを避けるには次の方法をご覧下さい。</note>
 </section>
 
-<section id="gracefulstop"><title>$B4K$d$+$JDd;_(B (Graceful Stop)</title>
+<section id="gracefulstop"><title>緩やかな停止 (Graceful Stop)</title>
 
 <dl><dt>Signal: WINCH</dt>
 <dd><code>apachectl -k graceful-stop</code></dd>
 </dl>
 
-    <p>$B?F%W%m%;%9$O(B <code>WINCH</code> $B$"$k$$$O(B <code>graceful-stop</code>
-    $B%7%0%J%k$r<u$1<h$k$H!";R%W%m%;%9$K8=:_$N%j%/%(%9%H$N=hM}$N8e$K=*N;$9$k(B
-    ($B$"$k$$$O2?$b$7$F$$$J$1$l$P$9$0$K=*N;$9$k(B)
-    $B$h$&$K(B<em>$B=u8@(B</em>$B$7$^$9!#(B
-    $B$=$N8e$K?F%W%m%;%9$O(B <directive module="mpm_common">PidFile</directive>
-    $B$r:o=|$7!"A4%]!<%H$+$i$N(B Listen $B$r$d$a$^$9!#(B
-    $B?F%W%m%;%9$O$3$N$^$^7QB3$7!";R%W%m%;%9$,%j%/%(%9%H$r=hM}$9$k(B
-    $B$N$r4F;k$7$F$$$^$9!#;R%W%m%;%9$,A4$F=hM}$r=*$($F=*N;$9$k$+!"(B<directive 
+    <p>親プロセスは <code>WINCH</code> あるいは <code>graceful-stop</code>
+    シグナルを受け取ると、子プロセスに現在のリクエストの処理の後に終了する
+    (あるいは何もしていなければすぐに終了する)
+    ように<em>助言</em>します。
+    その後に親プロセスは <directive module="mpm_common">PidFile</directive>
+    を削除し、全ポートからの Listen をやめます。
+    親プロセスはこのまま継続し、子プロセスがリクエストを処理する
+    のを監視しています。子プロセスが全て処理を終えて終了するか、<directive 
     module="mpm_common">GracefulShutdownTimeout</directive>
-    $B$G;XDj$5$l$?%?%$%`%"%&%H$KC#$7$?8e$G!"?F%W%m%;%9$b=*N;$7$^$9!#(B
-    $B%?%$%`%"%&%H$KC#$7$?>l9g$O!";D$j$N;R%W%m%;%9$K$O(B <code>TERM</code>
-    $B%7%0%J%k$,Aw?.$5$l!"6/@)=*N;$5$l$^$9!#(B</p>
+    で指定されたタイムアウトに達した後で、親プロセスも終了します。
+    タイムアウトに達した場合は、残りの子プロセスには <code>TERM</code>
+    シグナルが送信され、強制終了されます。</p>
     
-    <p><code>TERM</code> $B%7%0%J%k$K$h$C$F!"(B"graceful" $B>uBV$K$"$k?F%W%m%;%9$H(B
-    $B;R%W%m%;%9$NA4$F$,D>$A$K=*N;$7$^$9!#$?$@$7!"(B
-    <directive module="mpm_common">PidFile</directive> $B$O4{$K:o=|(B
-    $B$5$l$F$7$^$C$F$$$^$9$N$G!"(B<code>apachectl</code> $B$d(B <code>httpd</code>
-    $B$G$3$l$i$K%7%0%J%k$rAw$k$3$H$O$G$-$^$;$s!#(B</p>
+    <p><code>TERM</code> シグナルによって、"graceful" 状態にある親プロセスと
+    子プロセスの全てが直ちに終了します。ただし、
+    <directive module="mpm_common">PidFile</directive> は既に削除
+    されてしまっていますので、<code>apachectl</code> や <code>httpd</code>
+    でこれらにシグナルを送ることはできません。</p>
 
-    <note><p><code>graceful-stop</code> $B%7%0%J%k$r;H$&$H!"$^$C$?$/F10l$N@_Dj(B
-    $B%U%!%$%k$r;H$C$?(B <program>httpd</program> $B$rF1;~$KJ#?t5/F0$9$k$3$H$,(B
-    $B$G$-$k$h$&$K$J$j$^$9!#(B
-    $B$3$N5!G=$r;H$&$H!"(BApache $B$r%"%C%W%0%l!<%I$9$k:]$K$H$F$bJXMx$G$7$g$&!#(B
-    $B$?$@$7!"@_Dj$K$h$C$F$O%G%C%I%m%C%/$d6%9g>uBV(B ($B%l!<%9%3%s%G%#%7%g%s(B) 
-    $B$r0z$-5/$3$9$+$b$7$l$^$;$s!#(B</p>
+    <note><p><code>graceful-stop</code> シグナルを使うと、まったく同一の設定
+    ファイルを使った <program>httpd</program> を同時に複数起動することが
+    できるようになります。
+    この機能を使うと、Apache をアップグレードする際にとても便利でしょう。
+    ただし、設定によってはデッドロックや競合状態 (レースコンディション) 
+    を引き起こすかもしれません。</p>
 
-    <p><directive module="core">Lockfile</directive> $B$d(B <directive 
-    module="mod_cgid">ScriptSock</directive> $B$J$I$G$N%G%#%9%/>e$N%U%!%$%k$K$D$$$F$O!"(B
-    $B%U%!%$%k$K%5!<%P$N(B PID $B$,4^$^$l$k$h$&$K$J$C$F$$$F!"(Bhttpd $B$,J#?tF1;~$KF0:n$7$F$$$F$b(B
-    $BLdBj$,$*$-$J$$$h$&$KCm0U$,J'$o$l$F$$$^$9!#(B
-    $B$7$+$7!"@_Dj%G%#%l%/%F%#%V$d%5!<%I%Q!<%F%#@=%b%8%e!<%k!"(BCGI $B$G;HMQ$5$l$k1JB3E*$J(B
-    $B%G%#%9%/$r;H$C$?%m%C%/$d>uBV%U%!%$%k$r3hMQ$7$F$$$k>l9g$K$D$$$F$b!"(B
-    $BJ#?t$N(B <program>httpd</program> $B$,F0:n$7$F$$$k>uBV$G$"$C$F$b!"$=$l$>$l$G(B
-    $B%U%!%$%k$r>e=q$-$7$J$$$h$&$KCm0U$7$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p><directive module="core">Lockfile</directive> や <directive 
+    module="mod_cgid">ScriptSock</directive> などでのディスク上のファイルについては、
+    ファイルにサーバの PID が含まれるようになっていて、httpd が複数同時に動作していても
+    問題がおきないように注意が払われています。
+    しかし、設定ディレクティブやサードパーティ製モジュール、CGI で使用される永続的な
+    ディスクを使ったロックや状態ファイルを活用している場合についても、
+    複数の <program>httpd</program> が動作している状態であっても、それぞれで
+    ファイルを上書きしないように注意しなければなりません。</p>
 
-    <p>$B@x:_E*$J6%9g>uBV$K$D$$$F$b?4G[$9$kI,MW$,$"$k$G$7$g$&!#(B
-    $B$?$H$($P(B <program>rotatelogs</program> $B7A<0$N%Q%$%W$K$h$k%m%0$J$I$,3:Ev$7$^$9!#(B
-    $BJ#?t$N(B <program>rotatelogs</program> $B%$%s%9%?%s%9$,F1;~$KF1$8%m%0%U%!%$%k$r(B
-    rotate $B$7$h$&$H$9$k$H!"%m%0%U%!%$%k$,GK2u$5$l$k$+$b$7$l$^$;$s!#(B</p></note>
+    <p>潜在的な競合状態についても心配する必要があるでしょう。
+    たとえば <program>rotatelogs</program> 形式のパイプによるログなどが該当します。
+    複数の <program>rotatelogs</program> インスタンスが同時に同じログファイルを
+    rotate しようとすると、ログファイルが破壊されるかもしれません。</p></note>
 </section>
 
 </manualpage>
