@@ -104,18 +104,6 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 # Begin Source File
 
-SOURCE=.\cache_cache.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cache_hash.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\cache_pqueue.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\cache_storage.c
 # End Source File
 # Begin Source File
@@ -130,18 +118,6 @@ SOURCE=.\mod_cache.c
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=.\cache_cache.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cache_hash.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\cache_pqueue.h
-# End Source File
 # Begin Source File
 
 SOURCE=.\mod_cache.h

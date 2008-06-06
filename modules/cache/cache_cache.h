@@ -57,7 +57,7 @@ typedef void cache_cache_free(void *a);
  * @param key_entry   callback to get the key of a entry
  * @param free_entry  callback to free an entry
  */
-CACHE_DECLARE(cache_cache_t *)cache_init(int max_entries, 
+cache_cache_t* cache_init(int max_entries, 
                                          apr_size_t max_size,
                                          cache_pqueue_get_priority get_pri,
                                          cache_pqueue_set_priority set_pri,
@@ -72,37 +72,37 @@ CACHE_DECLARE(cache_cache_t *)cache_init(int max_entries,
  * free up the cache
  * @param c the cache
  */
-CACHE_DECLARE(void) cache_free(cache_cache_t *c);
+void cache_free(cache_cache_t *c);
 /**
  * find a entry in the cache, incrementing the frequency if found
  * @param c the cache
  * @param key the key
  */
-CACHE_DECLARE(void*) cache_find(cache_cache_t* c, const char *key);
+void* cache_find(cache_cache_t* c, const char *key);
 /** 
  * insert a entry into the cache
  * @param c the cache
  * @param entry the entry
  */
-CACHE_DECLARE(void) cache_update(cache_cache_t* c, void *entry);
+void cache_update(cache_cache_t* c, void *entry);
 /** 
  * insert a entry into the cache
  * @param c the cache
  * @param entry the entry
  */
-CACHE_DECLARE(void) cache_insert(cache_cache_t* c, void *entry);
+void cache_insert(cache_cache_t* c, void *entry);
 /**
  * pop the lowest priority item off
  * @param c the cache
  * @returns the entry or NULL
  */
-CACHE_DECLARE(void *)cache_pop(cache_cache_t* c);
+void* cache_pop(cache_cache_t* c);
 /** 
  * remove an item from the cache 
  * @param c the cache
  * @param entry the actual entry (from a find)
  */
-CACHE_DECLARE(apr_status_t) cache_remove(cache_cache_t* c, void *entry);
+apr_status_t cache_remove(cache_cache_t* c, void *entry);
 #ifdef __cplusplus
 }
 #endif
