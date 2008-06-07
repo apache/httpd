@@ -34,8 +34,8 @@
 #include "mod_request.h"
 
 /* Handles for core filters */
-AP_DECLARE_DATA ap_filter_rec_t *ap_keep_body_input_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_kept_body_input_filter_handle;
+static ap_filter_rec_t *keep_body_input_filter_handle;
+static ap_filter_rec_t *kept_body_input_filter_handle;
 
 static apr_status_t bail_out_on_error(apr_bucket_brigade *bb,
                                       ap_filter_t *f,
@@ -62,9 +62,10 @@ typedef struct keep_body_filter_ctx {
  * This is the KEEP_BODY_INPUT filter for HTTP requests, for times when the
  * body should be set aside for future use by other modules.
  */
-AP_DECLARE(apr_status_t) ap_keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                                             ap_input_mode_t mode, apr_read_type_e block,
-                                             apr_off_t readbytes)
+static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                                     ap_input_mode_t mode,
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes)
 {
     apr_bucket *e;
     keep_body_ctx_t *ctx = f->ctx;
@@ -197,9 +198,11 @@ static int kept_body_filter_init(ap_filter_t *f) {
  * If a body has been previously kept by the request, and if a subrequest wants
  * to re-insert the body into the request, this input filter makes it happen.
  */
-AP_DECLARE(apr_status_t) ap_kept_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                                             ap_input_mode_t mode, apr_read_type_e block,
-                                             apr_off_t readbytes) {
+static apr_status_t kept_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
+                                     ap_input_mode_t mode, 
+                                     apr_read_type_e block,
+                                     apr_off_t readbytes)
+{
     request_rec *r = f->r;
     apr_bucket_brigade *kept_body = r->kept_body;
     kept_body_ctx_t *ctx = f->ctx;
@@ -307,9 +310,9 @@ typedef enum {
  * NOTE: File upload is not yet supported, but can be without change
  * to the function call.
  */
-AP_DECLARE(int) ap_parse_request_form(request_rec * r, ap_filter_t * f, 
-                                      apr_array_header_t ** ptr,
-                                      apr_size_t num, apr_size_t size)
+static int ap_parse_request_form(request_rec * r, ap_filter_t * f, 
+                                 apr_array_header_t ** ptr,
+                                 apr_size_t num, apr_size_t size)
 {
     apr_bucket_brigade *bb = NULL;
     int seen_eos = 0;
@@ -499,20 +502,20 @@ static int request_is_filter_present(request_rec * r, ap_filter_rec_t *fn)
  * 
  * @param r The request
  */
-AP_DECLARE(void) ap_request_insert_filter(request_rec * r)
+static void ap_request_insert_filter(request_rec * r)
 {
     request_dir_conf *conf = ap_get_module_config(r->per_dir_config,
                                                   &request_module);
 
     if (r->kept_body) {
-        if (!request_is_filter_present(r, ap_kept_body_input_filter_handle)) {
-            ap_add_input_filter_handle(ap_kept_body_input_filter_handle,
+        if (!request_is_filter_present(r, kept_body_input_filter_handle)) {
+            ap_add_input_filter_handle(kept_body_input_filter_handle,
                                        NULL, r, r->connection);
         }
     }
     else if (conf->keep_body) {
-        if (!request_is_filter_present(r, ap_kept_body_input_filter_handle)) {
-            ap_add_input_filter_handle(ap_keep_body_input_filter_handle,
+        if (!request_is_filter_present(r, kept_body_input_filter_handle)) {
+            ap_add_input_filter_handle(keep_body_input_filter_handle,
                                        NULL, r, r->connection);
         }
     }
@@ -522,12 +525,12 @@ AP_DECLARE(void) ap_request_insert_filter(request_rec * r)
 /**
  * Remove the kept_body and keep body filters from this specific request.
  */
-AP_DECLARE(void) ap_request_remove_filter(request_rec * r)
+static void ap_request_remove_filter(request_rec * r)
 {
     ap_filter_t * f = r->input_filters;
     while (f) {
-        if (f->frec->filter_func.in_func == ap_kept_body_filter ||
-                f->frec->filter_func.in_func == ap_keep_body_filter) {
+        if (f->frec->filter_func.in_func == kept_body_filter ||
+                f->frec->filter_func.in_func == keep_body_filter) {
             ap_remove_input_filter(f);
         }
         f = f->next;
@@ -579,11 +582,11 @@ static const command_rec request_cmds[] = {
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_keep_body_input_filter_handle =
-        ap_register_input_filter(KEEP_BODY_FILTER, ap_keep_body_filter,
+    keep_body_input_filter_handle =
+        ap_register_input_filter(KEEP_BODY_FILTER, keep_body_filter,
                                  NULL, AP_FTYPE_RESOURCE);
-    ap_kept_body_input_filter_handle =
-        ap_register_input_filter(KEPT_BODY_FILTER, ap_kept_body_filter,
+    kept_body_input_filter_handle =
+        ap_register_input_filter(KEPT_BODY_FILTER, kept_body_filter,
                                  kept_body_filter_init, AP_FTYPE_RESOURCE);
     ap_hook_insert_filter(ap_request_insert_filter, NULL, NULL, APR_HOOK_LAST);
     APR_REGISTER_OPTIONAL_FN(ap_parse_request_form);
