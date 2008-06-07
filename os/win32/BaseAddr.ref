@@ -85,3 +85,15 @@ mod_case_filter_in.so   0x6F970000    0x00010000
 mod_substitute.so       0x6F960000    0x00010000
 mod_filter.so           0x6F950000    0x00010000
 mod_dav_lock.so         0x6F940000    0x00010000
+mod_auth_form.so        0x6F930000    0x00010000
+mod_example_ipc.so      0x6F920000    0x00010000
+mod_request.so          0x6F910000    0x00010000
+mod_lbmethod_rr.so      0x6F900000    0x00010000
+mod_session.so          0x6F8F0000    0x00010000
+mod_session_cookie.so   0x6F8E0000    0x00010000
+mod_session_crypto.so   0x6F8D0000    0x00010000
+mod_session_dbd.so      0x6F8C0000    0x00010000
+mod_socache_dbm.so      0x6F8B0000    0x00010000
+mod_socache_dc.so       0x6F8A0000    0x00010000
+mod_socache_memcache.so 0x6F890000    0x00010000
+mod_socache_shmcb.so    0x6F880000    0x00010000
