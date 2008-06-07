@@ -48,10 +48,6 @@ typedef struct {
     const char *deletelabel;
 } session_dbd_dir_conf;
 
-AP_DECLARE(int) ap_session_dbd_load(request_rec * r, session_rec ** z);
-AP_DECLARE(int) ap_session_dbd_save(request_rec * r, session_rec * z);
-AP_DECLARE(int) ap_session_dbd_monitor(apr_pool_t *p);
-
 /* optional function - look it up once in post_config */
 static ap_dbd_t *(*session_dbd_acquire_fn) (request_rec *) = NULL;
 static void (*session_dbd_prepare_fn) (server_rec *, const char *, const char *) = NULL;
@@ -166,7 +162,7 @@ static apr_status_t dbd_load(request_rec * r, const char *key, const char **val)
  *
  * On success, this returns OK.
  */
-AP_DECLARE(int) ap_session_dbd_load(request_rec * r, session_rec ** z)
+static int session_dbd_load(request_rec * r, session_rec ** z)
 {
 
     session_dbd_dir_conf *conf = ap_get_module_config(r->per_dir_config,
@@ -404,7 +400,7 @@ static apr_status_t dbd_clean(apr_pool_t *p)
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_dbd_save(request_rec * r, session_rec * z)
+static int session_dbd_save(request_rec * r, session_rec * z)
 {
 
     char *buffer;
@@ -475,7 +471,7 @@ AP_DECLARE(int) ap_session_dbd_save(request_rec * r, session_rec * z)
  * This function performs housekeeping on the database, deleting expired
  * sessions.
  */
-AP_DECLARE(int) ap_session_dbd_monitor(apr_pool_t *p)
+static int session_dbd_monitor(apr_pool_t *p)
 {
     /* TODO handle housekeeping */
     dbd_clean(p);
@@ -615,9 +611,9 @@ static const command_rec session_dbd_cmds[] =
 
 static void register_hooks(apr_pool_t * p)
 {
-    ap_hook_session_load(ap_session_dbd_load, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_session_save(ap_session_dbd_save, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_monitor(ap_session_dbd_monitor, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_session_load(session_dbd_load, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_session_save(session_dbd_save, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_monitor(session_dbd_monitor, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA session_dbd_module =
