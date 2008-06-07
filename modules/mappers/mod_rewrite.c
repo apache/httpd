@@ -2493,10 +2493,14 @@ static void add_cookie(request_rec *r, char *s)
                                  expires ? "; expires=" : NULL,
                                  expires ? exp_time : NULL,
                                  (secure && (!strcasecmp(secure, "true")
-                                             || !strcasecmp(secure, "1"))) ?
+                                             || !strcmp(secure, "1")
+                                             || !strcasecmp(secure,
+                                                            "secure"))) ?
                                   "; secure" : NULL,
                                  (httponly && (!strcasecmp(httponly, "true")
-                                               || !strcasecmp(httponly, "1"))) ?
+                                               || !strcmp(httponly, "1")
+                                               || !strcasecmp(httponly,
+                                                              "HttpOnly"))) ?
                                   "; HttpOnly" : NULL,
                                  NULL);
 
