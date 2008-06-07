@@ -2475,23 +2475,30 @@ static void add_cookie(request_rec *r, char *s)
 
             if (expires) {
                 apr_time_exp_t tms;
-                apr_time_exp_gmt(&tms, r->request_time
-                                     + apr_time_from_sec((60 * atol(expires))));
-                exp_time = apr_psprintf(r->pool, "%s, %.2d-%s-%.4d "
-                                                 "%.2d:%.2d:%.2d GMT",
-                                        apr_day_snames[tms.tm_wday],
-                                        tms.tm_mday,
-                                        apr_month_snames[tms.tm_mon],
-                                        tms.tm_year+1900,
-                                        tms.tm_hour, tms.tm_min, tms.tm_sec);
+                long exp_min;
+
+                exp_min = atol(expires);
+                if (exp_min) {
+                    apr_time_exp_gmt(&tms, r->request_time
+                                     + apr_time_from_sec((60 * exp_min)));
+                    exp_time = apr_psprintf(r->pool, "%s, %.2d-%s-%.4d "
+                                                     "%.2d:%.2d:%.2d GMT",
+                                           apr_day_snames[tms.tm_wday],
+                                           tms.tm_mday,
+                                           apr_month_snames[tms.tm_mon],
+                                           tms.tm_year+1900,
+                                           tms.tm_hour, tms.tm_min, tms.tm_sec);
+                }
             }
 
             cookie = apr_pstrcat(rmain->pool,
                                  var, "=", val,
                                  "; path=", path ? path : "/",
                                  "; domain=", domain,
-                                 expires ? "; expires=" : NULL,
-                                 expires ? exp_time : NULL,
+                                 expires ? (exp_time ? "; expires=" : "")
+                                 : NULL,
+                                 expires ? (exp_time ? exp_time : "")
+                                 : NULL,
                                  (secure && (!strcasecmp(secure, "true")
                                              || !strcmp(secure, "1")
                                              || !strcasecmp(secure,
