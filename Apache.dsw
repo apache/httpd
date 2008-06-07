@@ -68,6 +68,15 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name mod_example_hooks
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_example_ipc
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_lbmethod_rr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_socache_dc
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -109,6 +118,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_auth_digest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_form
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authn_anon
@@ -255,10 +267,28 @@ Package=<4>
     Project_Dep_Name mod_proxy_http
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_request
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_rewrite
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_session_cookie
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_session_dbd
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_setenvif
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_socache_dbm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_socache_memcache
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_socache_shmcb
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_speling
@@ -797,6 +827,30 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_auth_form"=.\modules\aaa\mod_auth_form.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_session
     End Project Dependency
 }}}
 
@@ -1576,6 +1630,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_example_ipc"=.\modules\examples\mod_example_ipc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_expires"=.\modules\metadata\mod_expires.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1781,6 +1856,33 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_lbmethod_rr"=.\modules\proxy\examples\mod_lbmethod_rr.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_balancer
     End Project Dependency
 }}}
 
@@ -2123,6 +2225,27 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_request"=.\modules\filters\mod_request.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_rewrite"=.\modules\mappers\mod_rewrite.dsp - Package Owner=<4>
 
 Package=<5>
@@ -2144,7 +2267,187 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_session"=.\modules\session\mod_session.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_session_crypto"=.\modules\session\mod_session_crypto.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_session
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_session_cookie"=.\modules\session\mod_session_cookie.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_session
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_session_dbd"=.\modules\session\mod_session_dbd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dbd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_session
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_setenvif"=.\modules\metadata\mod_setenvif.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_socache_dbm"=.\modules\cache\mod_socache_dbm.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_socache_dc"=.\modules\cache\mod_socache_dc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_socache_memcache"=.\modules\cache\mod_socache_memcache.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_socache_shmcb"=.\modules\cache\mod_socache_shmcb.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
