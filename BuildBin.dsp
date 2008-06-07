@@ -39,7 +39,7 @@ CFG=BuildBin - Win32 Debug
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir ""
 # PROP Intermediate_Dir ""
-# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" LONG=Release _tryssl _tryzlib _dummy"
+# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" LONG=Release _trydbd _tryssl _tryzlib _dummy"
 # PROP Rebuild_Opt ""
 # PROP Target_File "\Apache2\bin\httpd.exe"
 # PROP Bsc_Name ".\Browse\httpd.bsc"
@@ -58,7 +58,7 @@ CFG=BuildBin - Win32 Debug
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir ""
 # PROP Intermediate_Dir ""
-# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" LONG=Debug _tryssl _tryzlib _dummy"
+# PROP Cmd_Line "NMAKE /f makefile.win INSTDIR="\Apache2" LONG=Debug _trydbd _tryssl _tryzlib _dummy"
 # PROP Rebuild_Opt ""
 # PROP Target_File "\Apache2\bin\httpd.exe"
 # PROP Bsc_Name ".\Browse\httpd.bsc"
