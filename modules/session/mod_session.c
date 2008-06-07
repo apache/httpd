@@ -32,13 +32,13 @@ APR_HOOK_STRUCT(
                 APR_HOOK_LINK(session_encode)
                 APR_HOOK_LINK(session_decode)
 )
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(session, SESSION, int, session_load,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap, SESSION, int, session_load,
                       (request_rec * r, session_rec ** z), (r, z), DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(session, SESSION, int, session_save,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap, SESSION, int, session_save,
                        (request_rec * r, session_rec * z), (r, z), DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(session, SESSION, int, session_encode,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap, SESSION, int, session_encode,
                    (request_rec * r, session_rec * z), (r, z), OK, DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(session, SESSION, int, session_decode,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap, SESSION, int, session_decode,
                    (request_rec * r, session_rec * z), (r, z), OK, DECLINED)
 
 static int session_identity_encode(request_rec * r, session_rec * z);
@@ -82,54 +82,6 @@ static int session_included(request_rec * r, session_dir_conf * conf)
 }
 
 /**
- * Get a particular value from the session.
- * @param r The current request.
- * @param z The current session. If this value is NULL, the session will be
- * looked up in the request, created if necessary, and saved to the request
- * notes.
- * @param key The key to get.
- * @param value The buffer to write the value to.
- */
-SESSION_DECLARE(void) ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value)
-{
-    if (!z) {
-        ap_session_load(r, &z);
-    }
-    if (z && z->entries) {
-        *value = apr_table_get(z->entries, key);
-    }
-}
-
-/**
- * Set a particular value to the session.
- *
- * Using this method ensures that the dirty flag is set correctly, so that
- * the session can be saved efficiently.
- * @param r The current request.
- * @param z The current session. If this value is NULL, the session will be
- * looked up in the request, created if necessary, and saved to the request
- * notes.
- * @param key The key to set. The existing key value will be replaced.
- * @param value The value to set.
- */
-SESSION_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
-                                const char *key, const char *value)
-{
-    if (!z) {
-        ap_session_load(r, &z);
-    }
-    if (z) {
-        if (value) {
-            apr_table_set(z->entries, key, value);
-        }
-        else {
-            apr_table_unset(z->entries, key);
-        }
-        z->dirty = 1;
-    }
-}
-
-/**
  * Load the session.
  *
  * If the session doesn't exist, a blank one will be created.
@@ -137,7 +89,7 @@ SESSION_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-SESSION_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z)
+static int ap_session_load(request_rec * r, session_rec ** z)
 {
 
     session_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
@@ -216,7 +168,7 @@ SESSION_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z)
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-SESSION_DECLARE(int) ap_session_save(request_rec * r, session_rec * z)
+static int ap_session_save(request_rec * r, session_rec * z)
 {
     if (z) {
         apr_time_t now = apr_time_now();
@@ -266,6 +218,54 @@ SESSION_DECLARE(int) ap_session_save(request_rec * r, session_rec * z)
 
     return APR_SUCCESS;
 
+}
+
+/**
+ * Get a particular value from the session.
+ * @param r The current request.
+ * @param z The current session. If this value is NULL, the session will be
+ * looked up in the request, created if necessary, and saved to the request
+ * notes.
+ * @param key The key to get.
+ * @param value The buffer to write the value to.
+ */
+static void ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value)
+{
+    if (!z) {
+        ap_session_load(r, &z);
+    }
+    if (z && z->entries) {
+        *value = apr_table_get(z->entries, key);
+    }
+}
+
+/**
+ * Set a particular value to the session.
+ *
+ * Using this method ensures that the dirty flag is set correctly, so that
+ * the session can be saved efficiently.
+ * @param r The current request.
+ * @param z The current session. If this value is NULL, the session will be
+ * looked up in the request, created if necessary, and saved to the request
+ * notes.
+ * @param key The key to set. The existing key value will be replaced.
+ * @param value The value to set.
+ */
+static void ap_session_set(request_rec * r, session_rec * z,
+                                const char *key, const char *value)
+{
+    if (!z) {
+        ap_session_load(r, &z);
+    }
+    if (z) {
+        if (value) {
+            apr_table_set(z->entries, key, value);
+        }
+        else {
+            apr_table_unset(z->entries, key);
+        }
+        z->dirty = 1;
+    }
 }
 
 static int identity_count(int *count, const char *key, const char *val)
@@ -396,7 +396,7 @@ static int session_identity_decode(request_rec * r, session_rec * z)
  * The same session might appear in more than one request. The first
  * attempt to save the session will be called
  */
-static apr_status_t ap_session_output_filter(ap_filter_t * f,
+static apr_status_t session_output_filter(ap_filter_t * f,
                                                     apr_bucket_brigade * in)
 {
 
@@ -446,7 +446,7 @@ static apr_status_t ap_session_output_filter(ap_filter_t * f,
 /**
  * Insert the output filter.
  */
-static void ap_session_insert_output_filter(request_rec * r)
+static void session_insert_output_filter(request_rec * r)
 {
     ap_add_output_filter("MOD_SESSION_OUT", NULL, r, r->connection);
 }
@@ -599,14 +599,17 @@ static const command_rec session_cmds[] =
 
 static void register_hooks(apr_pool_t * p)
 {
-    ap_register_output_filter("MOD_SESSION_OUT", ap_session_output_filter,
+    ap_register_output_filter("MOD_SESSION_OUT", session_output_filter,
                               NULL, AP_FTYPE_CONTENT_SET);
-    ap_hook_insert_filter(ap_session_insert_output_filter, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_insert_error_filter(ap_session_insert_output_filter,
+    ap_hook_insert_filter(session_insert_output_filter, NULL, NULL,
+                          APR_HOOK_MIDDLE);
+    ap_hook_insert_error_filter(session_insert_output_filter,
                                 NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(session_fixups, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_session_encode(session_identity_encode, NULL, NULL, APR_HOOK_REALLY_FIRST);
-    ap_hook_session_decode(session_identity_decode, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_session_encode(session_identity_encode, NULL, NULL,
+                           APR_HOOK_REALLY_FIRST);
+    ap_hook_session_decode(session_identity_decode, NULL, NULL,
+                           APR_HOOK_REALLY_LAST);
     APR_REGISTER_OPTIONAL_FN(ap_session_get);
     APR_REGISTER_OPTIONAL_FN(ap_session_set);
     APR_REGISTER_OPTIONAL_FN(ap_session_load);

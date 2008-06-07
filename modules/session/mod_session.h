@@ -118,42 +118,6 @@ typedef struct {
 } session_dir_conf;
 
 /**
- * Get a particular value from the session.
- * @param r The current request.
- * @param z The current session. If this value is NULL, the session will be
- * looked up in the request, created if necessary, and saved to the request
- * notes.
- * @param key The key to get.
- * @param value The buffer to write the value to.
- */
-SESSION_DECLARE(void) ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value);
-
-/**
- * Set a particular value to the session.
- *
- * Using this method ensures that the dirty flag is set correctly, so that
- * the session can be saved efficiently.
- * @param r The current request.
- * @param z The current session. If this value is NULL, the session will be
- * looked up in the request, created if necessary, and saved to the request
- * notes.
- * @param key The key to set. The existing key value will be replaced.
- * @param value The value to set.
- */
-SESSION_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
-                                const char *key, const char *value);
-
-/**
- * Load the session.
- *
- * If the session doesn't exist, a blank one will be created.
- *
- * @param r The request
- * @param z A pointer to where the session will be written.
- */
-SESSION_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z);
-
-/**
  * Hook to load the session.
  *
  * If the session doesn't exist, a blank one will be created.
@@ -161,19 +125,8 @@ SESSION_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z);
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_load,
+APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_load,
                           (request_rec * r, session_rec ** z))
-
-/**
- * Save the session.
- *
- * In most implementations the session is only saved if the dirty flag is
- * true. This prevents the session being saved unnecessarily.
- *
- * @param r The request
- * @param z A pointer to where the session will be written.
- */
-SESSION_DECLARE(int) ap_session_save(request_rec * r, session_rec * z);
 
 /**
  * Hook to save the session.
@@ -184,7 +137,7 @@ SESSION_DECLARE(int) ap_session_save(request_rec * r, session_rec * z);
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_save,
+APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_save,
                           (request_rec * r, session_rec * z))
 
 /**
@@ -197,7 +150,7 @@ APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_save,
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_encode,
+APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_encode,
                           (request_rec * r, session_rec * z))
 
 /**
@@ -210,7 +163,7 @@ APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_encode,
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_decode,
+APR_DECLARE_EXTERNAL_HOOK(ap, SESSION, int, session_decode,
                           (request_rec * r, session_rec * z))
 
 APR_DECLARE_OPTIONAL_FN(void, ap_session_get, (request_rec * r, session_rec * z,
