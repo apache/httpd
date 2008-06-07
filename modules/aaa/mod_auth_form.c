@@ -63,7 +63,7 @@ typedef struct {
     int username_set;
     const char *password;
     int password_set;
-    apr_off_t form_size;
+    apr_size_t form_size;
     int form_size_set;
     int fakebasicauth;
     int fakebasicauth_set;
@@ -279,11 +279,13 @@ static const char *set_cookie_form_size(cmd_parms * cmd, void *config,
                                              const char *arg)
 {
     auth_form_config_rec *conf = config;
+    apr_off_t size;
 
-    if (APR_SUCCESS != apr_strtoff(&(conf->form_size), arg, NULL, 0)
-        || conf->form_size < 0) {
+    if (APR_SUCCESS != apr_strtoff(&size, arg, NULL, 0)
+        || size < 0 || size > APR_SIZE_MAX) {
         return "AuthCookieFormSize must be a size in bytes, or zero.";
     }
+    conf->form_size = (apr_size_t)size;
     conf->form_size_set = 1;
 
     return NULL;
@@ -602,40 +604,40 @@ static int get_form_auth(request_rec * r,
         ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
         if (username && !strcmp(pair->name, username) && sent_user) {
             apr_brigade_length(pair->value, 1, &len);
-            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
+            buffer = apr_palloc(r->pool, size + 1);
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
             *sent_user = buffer;
         }
         else if (password && !strcmp(pair->name, password) && sent_pw) {
             apr_brigade_length(pair->value, 1, &len);
-            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
+            buffer = apr_palloc(r->pool, size + 1);
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
             *sent_pw = buffer;
         }
         else if (location && !strcmp(pair->name, location) && sent_loc) {
             apr_brigade_length(pair->value, 1, &len);
-            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
+            buffer = apr_palloc(r->pool, size + 1);
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
             *sent_loc = buffer;
         }
         else if (method && !strcmp(pair->name, method) && sent_method) {
             apr_brigade_length(pair->value, 1, &len);
-            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
+            buffer = apr_palloc(r->pool, size + 1);
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
             *sent_method = buffer;
         }
         else if (mimetype && !strcmp(pair->name, mimetype) && sent_mimetype) {
             apr_brigade_length(pair->value, 1, &len);
-            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
+            buffer = apr_palloc(r->pool, size + 1);
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
             *sent_mimetype = buffer;
