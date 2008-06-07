@@ -193,32 +193,7 @@ InputPath=.\modules\generators\mod_cgi.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\http\mod_core.h
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mod_core.h
-InputPath=.\modules\http\mod_core.h
-
-".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\modules\http\mod_core.h > .\include\mod_core.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mod_core.h
-InputPath=.\modules\http\mod_core.h
-
-".\include\mod_core.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\modules\http\mod_core.h > .\include\mod_core.h
-
-# End Custom Build
-
-!ENDIF 
-
+SOURCE=.\include\mod_core.h
 # End Source File
 # Begin Source File
 
