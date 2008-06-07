@@ -39,9 +39,6 @@ typedef struct {
     int remove_set;
 } session_cookie_dir_conf;
 
-AP_DECLARE(int) ap_session_cookie_save(request_rec * r, session_rec * z);
-AP_DECLARE(int) ap_session_cookie_load(request_rec * r, session_rec ** z);
-
 /**
  * Set the cookie and embed the session within it.
  *
@@ -58,7 +55,7 @@ AP_DECLARE(int) ap_session_cookie_load(request_rec * r, session_rec ** z);
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_cookie_save(request_rec * r, session_rec * z)
+static int session_cookie_save(request_rec * r, session_rec * z)
 {
 
     session_cookie_dir_conf *conf = ap_get_module_config(r->per_dir_config,
@@ -107,7 +104,7 @@ AP_DECLARE(int) ap_session_cookie_save(request_rec * r, session_rec * z)
  *
  * On success, this returns APR_SUCCESS.
  */
-AP_DECLARE(int) ap_session_cookie_load(request_rec * r, session_rec ** z)
+static int session_cookie_load(request_rec * r, session_rec ** z)
 {
 
     session_cookie_dir_conf *conf = ap_get_module_config(r->per_dir_config,
@@ -262,8 +259,8 @@ static const command_rec session_cookie_cmds[] =
 
 static void register_hooks(apr_pool_t * p)
 {
-    ap_hook_session_load(ap_session_cookie_load, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_session_save(ap_session_cookie_save, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_session_load(session_cookie_load, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_session_save(session_cookie_save, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA session_cookie_module =
