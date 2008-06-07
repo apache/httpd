@@ -173,7 +173,7 @@ static void mc_session_id2sz(ap_socache_instance_t *ctx,
 {
     apr_size_t maxlen = (buflen - ctx->taglen) / 2;
     char *cp;
-    int n;
+    unsigned int n;
 
     cp = apr_cpystrn(buf, ctx->tag, ctx->taglen);
     for (n = 0; n < idlen && n < maxlen; n++) {
