@@ -1243,10 +1243,11 @@ cannot use <code>$N</code> in the substitution string!
         is specified by <em>NAME</em> and the value is
         <em>VAL</em>. The <em>domain</em> field is the domain of the
         cookie, such as '.apache.org', the optional <em>lifetime</em>
-        is the lifetime of the cookie in minutes, and the optional 
+        is the lifetime of the cookie in minutes (0 means expires at end
+        of session), and the optional
         <em>path</em> is the path of the cookie. If <em>secure</em>
-        is set to 'true' or '1', the cookie is only transmitted via secured
-        connections. If <em>httponly</em> is set to 'true' or '1', the
+        is set to 'secure', 'true' or '1', the cookie is only transmitted via secured
+        connections. If <em>httponly</em> is set to 'HttpOnly', 'true' or '1', the
         <code>HttpOnly</code> flag is used, making the cookie inaccessible
         to JavaScript code on browsers that support this feature.</dd>
 
