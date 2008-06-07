@@ -22,6 +22,12 @@
 #
 #   ALL         (unset)     Includes additional modules for build testing
 #
+# Provide a DBD_LIST argument after configuring LIB and INCLUDE with
+# the SDK paths of the corresponding client support libraries.
+# Note that at this time, none of these are supported on win32, per say.
+#
+#     DBD_LIST="sqlite3 pgsql oracle mysql freetds"
+#
 # For example;
 #
 #   nmake -f Makefile.win PORT=80 INSTDIR="d:\Program Files\Apache" installr
@@ -122,6 +128,36 @@ _tryzlib:
 	@echo built w/ nmake -f win32/Makefile.msc will satisfy this requirement.
 
 !ENDIF
+
+
+!IFDEF DBD_LIST
+
+_trydbd:
+!IF $(USEMAK) == 1
+        cd srclib\apr-util\dbd & \
+	  for %d in ($(DBD_LIST)) do \
+	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak CFG="apr_dbd_%d - $(LONG)" RECURSE=0 $(CTARGET)
+        cd ..
+
+!ELSEIF $(USESLN) == 1
+	for %d in ($(DBD_LIST)) do \
+	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbd_%d
+!ELSE
+	@for %d in ($(DBD_LIST)) do \
+	  msdev Apache.dsw /USEENV /MAKE \
+		"apr_dbd_%d - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     no DBD_LIST
+
+_trydbd:
+	@echo -----
+	@echo apr_dbd drivers will not build unless DBD_LIST is set to the list
+	@echo of all the client modules available in the LIB and INCLUDE path.
+
+!ENDIF
+
 
 !IF "$(INSTDIR)" == ""
 INSTDIR=\Apache22
@@ -229,7 +265,9 @@ _build:
 	cd ..\..\..
 	 $(MAKE) $(MAKEOPT) -f aprutil.mak         CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libaprutil.mak      CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
+        cd ldap
+	 $(MAKE) $(MAKEOPT) -f apr_ldap.mak    CFG="apr_ldap - $(ARCH)" RECURSE=0 $(CTARGET)
+        cd ..\..\..
 	cd srclib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak        CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcre.mak            CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -443,6 +481,12 @@ _copybin:
 	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.$(src_dll) 	"$(inst_dll)" <.y
+	copy srclib\apr-util\ldap\$(LONG)\apr_ldap-1.$(src_dll) "$(inst_dll)" <.y
+!IFDEF DBD_LIST
+	for %d in ($(DBD_LIST)) do ( \
+	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y && \
+	)
+!ENDIF
 !IF EXIST("srclib\zlib\zlib1.$(src_dll)")
 	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
 !ENDIF
