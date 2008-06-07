@@ -52,26 +52,6 @@ typedef struct {
     int keep_body_set;
 } request_dir_conf;
 
-/* Handles for core filters */
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_keep_body_input_filter_handle;
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_kept_body_input_filter_handle;
-
-/* Filter to set aside a kept body on subrequests */
-AP_DECLARE(apr_status_t) ap_keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                                             ap_input_mode_t mode, apr_read_type_e block,
-                                             apr_off_t readbytes);
-
-/* Filter to insert a kept body on subrequests */
-AP_DECLARE(apr_status_t) ap_kept_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                                             ap_input_mode_t mode, apr_read_type_e block,
-                                             apr_off_t readbytes);
-
-/* Optional function to add either the keep body filter or kept body filter as appropriate */
-AP_DECLARE(void) ap_request_insert_filter(request_rec * r);
-
-/* Optional function to remove either the keep body filter or kept body filter as appropriate */
-AP_DECLARE(void) ap_request_remove_filter(request_rec * r);
-
 /**
  * Structure to store the contents of an HTTP form of the type
  * application/x-www-form-urlencoded.
@@ -117,9 +97,6 @@ typedef struct {
  * NOTE: File upload is not yet supported, but can be without change
  * to the function call.
  */
-AP_DECLARE(int) ap_parse_request_form(request_rec * r, ap_filter_t * f, 
-                                      apr_array_header_t ** ptr,
-                                      apr_size_t num, apr_size_t size);
 
 APR_DECLARE_OPTIONAL_FN(int, ap_parse_request_form, (request_rec * r, ap_filter_t * f, 
                                                      apr_array_header_t ** ptr,
