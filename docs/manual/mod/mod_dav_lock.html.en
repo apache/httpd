@@ -36,10 +36,10 @@
     the service of <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>. But without a backend provider
     which makes use of it, it's useless and should not be loaded into the
     server. A sample backend module which actually utilizes
-    <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code>, is <a href="http://subversion.tigris.org/">mod_dav_svn</a>, the subversion provider module.</p>
+    <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> is <a href="http://subversion.tigris.org/">mod_dav_svn</a>, the subversion provider module.</p>
 
     <p>Note that <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> does <em>not</em> need this
-    generic locking module, because it uses it's own more specialized
+    generic locking module, because it uses its own more specialized
     version.</p>
 
     <p>In order to make <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> functional, you just have
@@ -49,7 +49,7 @@
     <div class="note"><h3>Developer's Note</h3>
       <p>In order to retrieve the pointer to the locking provider function, you
       have to use the <code>ap_lookup_provider</code> API with the arguments
-      <code>dav-lock</code>, <code>generic</code> and <code>0</code>.</p>
+      <code>dav-lock</code>, <code>generic</code>, and <code>0</code>.</p>
     </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -72,7 +72,7 @@
 </table>
     <p>Use the <code class="directive">DavGenericLockDB</code> directive to specify
     the full path to the lock database, excluding an extension. If
-    the path is not absolute, it will be taken relative to <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. The implementation of
+    the path is not absolute, it will be interpreted relative to <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>. The implementation of
     <code class="module"><a href="../mod/mod_dav_lock.html">mod_dav_lock</a></code> uses a SDBM database to track user
     locks.</p>
 
@@ -87,7 +87,7 @@
     directory for this purpose rather than changing the permissions on
     an existing directory.  In the above example, Apache will create
     files in the <code>var/</code> directory under the <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> with the base filename
-    <code>DavLock</code> and extension name chosen by the server.</p>
+    <code>DavLock</code> and an extension added by the server.</p>
 
 
 </div>
