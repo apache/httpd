@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: Fix address-in-use startup failure on some platforms caused
+     by creating an IPv4 listener which overlaps with an existing IPv6
+     listener.  [Jeff Trawick]
+
   *) mod_proxy_http: Do not forward requests with 'Expect: 100-continue' to
      known HTTP/1.0 servers. Return 'Expectation failed' (417) instead.
      [Ruediger Pluem]
