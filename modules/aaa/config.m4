@@ -34,7 +34,10 @@ APACHE_MODULE(authz_owner, 'require file-owner' authorization control, , , most)
 
 dnl LDAP authentication module. This module has both the authn and authz
 dnl modules in one, so as to share the LDAP server config directives.
-APACHE_MODULE(authnz_ldap, LDAP based authentication, , , no)
+APACHE_MODULE(authnz_ldap, LDAP based authentication, , , no, [
+  MOD_AUTHNZ_LDAP_LDADD="`$apu_config --ldap-libs`" || MOD_AUTHNZ_LDAP_LDADD=""
+  AC_SUBST(MOD_AUTHNZ_LDAP_LDADD)
+])
 
 dnl - and just in case all of the above punt; a default handler to
 dnl keep the bad guys out.
