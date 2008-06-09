@@ -592,15 +592,15 @@ dnl integer type.
 dnl
 AC_DEFUN([APACHE_CHECK_VOID_PTR_LEN], [
 
-AC_CACHE_CHECK([for void pointer length], [ap_void_ptr_lt_long],
+AC_CACHE_CHECK([for void pointer length], [ap_cv_void_ptr_lt_long],
 [AC_TRY_RUN([
 int main(void)
 {
     return sizeof(void *) < sizeof(long); 
-}], [ap_void_ptr_lt_long=no], [ap_void_ptr_lt_long=yes], 
-    [ap_void_ptr_lt_long=yes])])
+}], [ap_cv_void_ptr_lt_long=no], [ap_cv_void_ptr_lt_long=yes], 
+    [ap_cv_void_ptr_lt_long=yes])])
 
-if test "$ap_void_ptr_lt_long" = "yes"; then
+if test "$ap_cv_void_ptr_lt_long" = "yes"; then
     AC_MSG_ERROR([Size of "void *" is less than size of "long"])
 fi
 ])
