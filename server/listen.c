@@ -377,14 +377,22 @@ static int open_listeners(apr_pool_t *pool)
         }
         else {
 #if APR_HAVE_IPV6
+            ap_listen_rec *cur;
             int v6only_setting;
+            int skip = 0;
 
             /* If we have the unspecified IPv4 address (0.0.0.0) and
              * the unspecified IPv6 address (::) is next, we need to
              * swap the order of these in the list. We always try to
              * bind to IPv6 first, then IPv4, since an IPv6 socket
              * might be able to receive IPv4 packets if V6ONLY is not
-             * enabled, but never the other way around. */
+             * enabled, but never the other way around.
+             * Note: In some configurations, the unspecified IPv6 address
+             * could be even later in the list.  This logic only corrects
+             * the situation where it is next in the list, such as when
+             * apr_sockaddr_info_get() returns an IPv4 and an IPv6 address,
+             * in that order.
+             */
             if (lr->next != NULL
                 && IS_INADDR_ANY(lr->bind_addr)
                 && lr->bind_addr->port == lr->next->bind_addr->port
@@ -402,26 +410,32 @@ static int open_listeners(apr_pool_t *pool)
                 lr = next;
             }
 
-            /* If we are trying to bind to 0.0.0.0 and the previous listener
+            /* If we are trying to bind to 0.0.0.0 and a previous listener
              * was :: on the same port and in turn that socket does not have
              * the IPV6_V6ONLY flag set; we must skip the current attempt to
              * listen (which would generate an error). IPv4 will be handled
              * on the established IPv6 socket.
              */
-            if (previous != NULL
-                && IS_INADDR_ANY(lr->bind_addr)
-                && lr->bind_addr->port == previous->bind_addr->port
-                && IS_IN6ADDR_ANY(previous->bind_addr)
-                && apr_socket_opt_get(previous->sd, APR_IPV6_V6ONLY,
-                                      &v6only_setting) == APR_SUCCESS
-                && v6only_setting == 0) {
+            if (IS_INADDR_ANY(lr->bind_addr)) {
+                for (cur = ap_listeners; cur != lr; cur = cur->next) {
+                    if (lr->bind_addr->port == cur->bind_addr->port
+                        && IS_IN6ADDR_ANY(cur->bind_addr)
+                        && apr_socket_opt_get(cur->sd, APR_IPV6_V6ONLY,
+                                              &v6only_setting) == APR_SUCCESS
+                        && v6only_setting == 0) {
 
-                /* Remove the current listener from the list */
-                previous->next = lr->next;
-                lr = previous; /* maintain current value of previous after
-                                * post-loop expression is evaluated
-                                */
-                continue;
+                        /* Remove the current listener from the list */
+                        previous->next = lr->next;
+                        lr = previous; /* maintain current value of previous after
+                                        * post-loop expression is evaluated
+                                        */
+                        skip = 1;
+                        break;
+                    }
+                }
+                if (skip) {
+                    continue;
+                }
             }
 #endif
             if (make_sock(pool, lr) == APR_SUCCESS) {

@@ -5,6 +5,10 @@ Changes with Apache 2.2.9
      mod_proxy_balancer: Prevent CSRF attacks against the balancer-manager
      interface.  [Joe Orton]
 
+  *) core: Fix address-in-use startup failure on some platforms caused
+     by creating an IPv4 listener which overlaps with an existing IPv6
+     listener.  [Jeff Trawick]
+
   *) mod_proxy: Make all proxy modules nocanon aware and do not add the
      query string again in this case. PR 44803.
      [Jim Jagielski, Ruediger Pluem]
