@@ -84,6 +84,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * core: Fix address-in-use startup failure on some platforms caused
+   by attempting to set up an IPv4 listener which overlaps with an
+   existing IPv6 listener.
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=664535&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: trawick, jim, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -137,15 +145,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
          Trunk version of patch works
    +1: rpluem, jim
-
- * core: Fix address-in-use startup failure on some platforms caused
-   by attempting to set up an IPv4 listener which overlaps with an
-   existing IPv6 listener.
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=664535&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: trawick, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
