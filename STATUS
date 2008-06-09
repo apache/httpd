@@ -136,7 +136,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=663967
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, jim
 
  * core: Fix address-in-use startup failure on some platforms caused
    by attempting to set up an IPv4 listener which overlaps with an
@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=664535&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: trawick
+   +1: trawick, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
