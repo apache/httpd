@@ -2,12 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) SECURITY: CVE-2008-2364 (cve.mitre.org)
-     mod_proxy_http: Better handling of excessive interim responses
-     from origin server to prevent potential denial of service and high
-     memory usage. Reported by Ryujiro Shibuya. [Ruediger Pluem,
-     Joe Orton, Jim Jagielski]
-
   *) mod_proxy_http: Do not forward requests with 'Expect: 100-continue' to
      known HTTP/1.0 servers. Return 'Expectation failed' (417) instead.
      [Ruediger Pluem]
