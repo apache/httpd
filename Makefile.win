@@ -511,7 +511,7 @@ _copybin:
 	copy srclib\apr-util\ldap\$(LONG)\apr_ldap-1.$(src_dll) "$(inst_dll)" <.y
 !IFDEF DBD_LIST
 	for %d in ($(DBD_LIST)) do ( \
-	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y && \
+	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
 !ENDIF
 	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
