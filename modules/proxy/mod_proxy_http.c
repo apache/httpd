@@ -1353,7 +1353,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      */
 
     rp = ap_proxy_make_fake_req(origin, r);
-    ap_proxy_pre_http_request(origin, rp);
     /* In case anyone needs to know, this is a fake request that is really a
      * response.
      */
@@ -1538,6 +1537,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_proxy_clear_connection(p, r->headers_out);
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));
+            }
+            if (!ap_is_HTTP_INFO(r->status)) {
+                ap_proxy_pre_http_request(origin, rp);
             }
 
             /* Clear hop-by-hop headers */
