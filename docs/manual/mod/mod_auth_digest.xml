@@ -25,7 +25,7 @@
 <name>mod_auth_digest</name>
 <description>User authentication using MD5
     Digest Authentication</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_auth_digest.c</sourcefile>
 <identifier>auth_digest_module</identifier>
 
