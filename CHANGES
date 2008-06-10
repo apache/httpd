@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) SECURITY: CVE-2008-2364 (cve.mitre.org)
+     mod_proxy_http: Better handling of excessive interim responses
+     from origin server to prevent potential denial of service and high
+     memory usage. Reported by Ryujiro Shibuya. [Ruediger Pluem,
+     Joe Orton, Jim Jagielski]
+
   *) SECURITY: CVE-2007-6420 (cve.mitre.org)
      mod_proxy_balancer: Prevent CSRF attacks against the balancer-manager
      interface.  [Joe Orton]

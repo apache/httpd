@@ -26,8 +26,7 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.2.9   : In development. Jim would like to do a release early
-              June and offers to RM.
+    2.2.9   : Tagged June 10, 2008.
     2.2.8   : Released January 19, 2008.
     2.2.7   : Tagged January 4, 2008. Not released.
     2.2.6   : Released September 7, 2007.
@@ -129,16 +128,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: rpluem,
    -1: niq - strcasecmp(NULL, ...) when secure is not set
    rpluem: Good catch. Should be fixed by r660461.
-
- * mod_proxy_http: Handle interim responses better to avoid
-   excessive memory usage and potential denial of service
-   CVE-2008-2364
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=666154
-         http://svn.apache.org/viewvc?view=rev&revision=666180
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: jim
 
  * mod_proxy_http: Do not forward an Expect: 100-continue to
    an HTTP/1.0 server
