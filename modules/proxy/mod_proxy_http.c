@@ -1312,6 +1312,16 @@ apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec
     return rv;
 }
 
+/*
+ * Limit the number of interim respones we sent back to the client. Otherwise
+ * we suffer from a memory build up. Besides there is NO sense in sending back
+ * an unlimited number of interim responses to the client. Thus if we cross
+ * this limit send back a 502 (Bad Gateway).
+ */
+#ifndef AP_MAX_INTERIM_RESPONSES
+#define AP_MAX_INTERIM_RESPONSES 10
+#endif
+
 static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_conn_rec *backend,
@@ -1326,8 +1336,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     apr_bucket *e;
     apr_bucket_brigade *bb, *tmp_bb;
     int len, backasswards;
-    int interim_response; /* non-zero whilst interim 1xx responses
-                           * are being read. */
+    int interim_response = 0; /* non-zero whilst interim 1xx responses
+                               * are being read. */
     int pread_len = 0;
     apr_table_t *save_table;
     int backend_broke = 0;
@@ -1343,6 +1353,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      */
 
     rp = ap_proxy_make_fake_req(origin, r);
+    ap_proxy_pre_http_request(origin, rp);
     /* In case anyone needs to know, this is a fake request that is really a
      * response.
      */
@@ -1528,7 +1539,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));
             }
-            ap_proxy_pre_http_request(origin,rp);
 
             /* Clear hop-by-hop headers */
             for (i=0; hop_by_hop_hdrs[i]; ++i) {
@@ -1577,7 +1587,12 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             backend->close += 1;
         }
 
-        interim_response = ap_is_HTTP_INFO(r->status);
+        if (ap_is_HTTP_INFO(r->status)) {
+            interim_response++;
+        }
+        else {
+            interim_response = 0;
+        }
         if (interim_response) {
             /* RFC2616 tells us to forward this.
              *
@@ -1778,7 +1793,15 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             apr_brigade_cleanup(bb);
         }
-    } while (interim_response);
+    } while (interim_response && (interim_response < AP_MAX_INTERIM_RESPONSES));
+
+    /* See define of AP_MAX_INTERIM_RESPONSES for why */
+    if (interim_response >= AP_MAX_INTERIM_RESPONSES) {
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             apr_psprintf(p, 
+                             "Too many (%d) interim responses from origin server",
+                             interim_response));
+    }
 
     /* If our connection with the client is to be aborted, return DONE. */
     if (c->aborted || backend_broke) {
