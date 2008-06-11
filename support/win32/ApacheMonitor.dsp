@@ -58,7 +58,7 @@ LINK32=link.exe
 TargetPath=.\Release\ApacheMonitor.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
-PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "ApacheMonitor - Win32 Debug"
@@ -90,7 +90,7 @@ LINK32=link.exe
 TargetPath=.\Debug\ApacheMonitor.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
-PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
 # End Special Build Tool
 
 !ENDIF 
