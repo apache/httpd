@@ -55,7 +55,7 @@ LINK32=link.exe
 TargetPath=.\Release\logresolve.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
-PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "logresolve - Win32 Debug"
@@ -85,7 +85,7 @@ LINK32=link.exe
 TargetPath=.\Debug\logresolve.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
-PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
 # End Special Build Tool
 
 !ENDIF 
