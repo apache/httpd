@@ -55,7 +55,7 @@ LINK32=link.exe
 TargetPath=.\Release\httxt2dbm.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
-PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "httxt2dbm - Win32 Debug"
@@ -85,7 +85,7 @@ LINK32=link.exe
 TargetPath=.\Debug\httxt2dbm.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
-PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
 # End Special Build Tool
 
 !ENDIF 
