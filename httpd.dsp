@@ -55,7 +55,7 @@ LINK32=link.exe
 TargetPath=.\Release\httpd.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
-PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "httpd - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 TargetPath=.\Debug\httpd.exe
 SOURCE="$(InputPath)"
 PostBuild_Desc=Embed .manifest
-PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);1
 # End Special Build Tool
 
 !ENDIF 
