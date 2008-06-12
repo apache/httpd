@@ -390,8 +390,8 @@ static const char *filter_declare(cmd_parms *cmd, void *CFG, const char *fname,
 }
 
 static const char *filter_provider(cmd_parms *cmd, void *CFG,
-				   const char *fname, const char *pname,
-				   const char *expr)
+                                   const char *fname, const char *pname,
+                                   const char *expr)
 {
     mod_filter_cfg *cfg = CFG;
     ap_filter_provider_t *provider;
