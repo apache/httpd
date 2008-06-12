@@ -1473,7 +1473,7 @@ static void read_connection(struct connection * c)
                 if (!cl) {
                     c->keepalive = 1;
                     c->length = 0; 
-                }	
+                }
             }
             c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
             totalbread += c->bread;
