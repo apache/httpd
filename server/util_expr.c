@@ -236,8 +236,8 @@ static void debug_dump_tree(include_ctx_t *ctx, ap_parse_node_t *root)
 
 #define TYPE_TOKEN(token, ttype) (token)->type = ttype
 
-#define CREATE_NODE(pool,name) do {                       \
-    (name) = apr_pcalloc(pool, sizeof(*(name)));	\
+#define CREATE_NODE(pool,name) do {               \
+    (name) = apr_pcalloc(pool, sizeof(*(name)));  \
 } while(0)
 
 #define DEBUG_INIT(ctx, f, bb)
@@ -671,7 +671,7 @@ AP_DECLARE(ap_parse_node_t*) ap_expr_parse(apr_pool_t* pool, const char *expr,
 
 static ap_parse_node_t *ap_expr_clone_tree(apr_pool_t *pool,
                                            ap_parse_node_t *pnode,
-		                           ap_parse_node_t *parent)
+                                           ap_parse_node_t *parent)
 {
     ap_parse_node_t *ret;
     ret = apr_pmemdup(pool, pnode, sizeof(ap_parse_node_t));
