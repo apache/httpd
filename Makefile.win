@@ -13,7 +13,7 @@
 # The following install defaults may be customized;
 #
 #   Option      Default
-#   INSTDIR     \Apache22
+#   INSTDIR     /Apache22
 #   PORT        80
 #   SSLPORT     443
 #   DOMAINNAME  example.com
@@ -32,7 +32,7 @@
 #
 #   nmake -f Makefile.win PORT=80 INSTDIR="d:\Program Files\Apache" installr
 #
-# Be aware that certain awk's will not accept backslahed names,
+# Be aware that certain awk's will not accept backslashed names,
 # so the server root should be given in forward slashes (quoted),
 # preferably with the drive designation!
 
@@ -134,11 +134,10 @@ _tryzlib:
 
 _trydbd:
 !IF $(USEMAK) == 1
-        cd srclib\apr-util\dbd & \
-	  for %d in ($(DBD_LIST)) do \
-	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak CFG="apr_dbd_%d - $(LONG)" RECURSE=0 $(CTARGET)
-        cd ..
-
+	cd srclib\apr-util\dbd
+	for %d in ($(DBD_LIST)) do \
+	  $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
 !ELSEIF $(USESLN) == 1
 	for %d in ($(DBD_LIST)) do \
 	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbd_%d
@@ -265,9 +264,16 @@ _build:
 	cd ..\..\..
 	 $(MAKE) $(MAKEOPT) -f aprutil.mak         CFG="aprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libaprutil.mak      CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-        cd ldap
+	cd ldap
 	 $(MAKE) $(MAKEOPT) -f apr_ldap.mak        CFG="apr_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-        cd ..\..\..
+	cd ..
+!IFDEF DBD_LIST
+	cd dbd
+	  for %d in ($(DBD_LIST)) do \
+	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak   CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..
+!ENDIF
+	cd ..\..
 	cd srclib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak        CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcre.mak            CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -403,6 +409,7 @@ _build:
 !ENDIF
 	cd support
 	 $(MAKE) $(MAKEOPT) -f ab.mak              CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+#	 $(MAKE) $(MAKEOPT) -f fcgistarter.mak     CFG="fcgistarter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htcacheclean.mak    CFG="htcacheclean - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htdbm.mak           CFG="htdbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htdigest.mak        CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -487,9 +494,6 @@ _copybin:
 	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
 !ENDIF
-!IF EXIST("srclib\zlib\zlib1.$(src_dll)")
-	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
-!ENDIF
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_alias.$(src_so) 	"$(inst_so)" <.y
@@ -527,6 +531,9 @@ _copybin:
 	copy modules\filters\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\zlib\zlib1.$(src_dll)")
+	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
+!ENDIF
 !ENDIF
 	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_filter.$(src_so) 	"$(inst_so)" <.y
@@ -584,6 +591,7 @@ _copybin:
 	copy support\$(LONG)\rotatelogs.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\win32\$(LONG)\ApacheMonitor.$(src_exe) 	"$(inst_exe)" <.y
 	copy support\win32\$(LONG)\wintty.$(src_exe) 		"$(inst_exe)" <.y
+
 
 # First we create the tree and populate the README so that 
 # whatever happens, all licensing has already propagated.  
@@ -692,6 +700,7 @@ BEGIN {
  OpenSSL support page.
 
 --------------------------------------------------------------------------------
+
 <<
 	-copy "$(INSTDIR)\OPENSSL-README.txt" \
 	    + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt"
@@ -711,9 +720,9 @@ BEGIN {
 	    print "For the mod_deflate zlib compression component:";
 	    while ( getline > 0 && $$0 !~ /^[^ ]/ ) {
 		print $$0;
-            }
-            exit 0;
-        }
+	    }
+	    exit 0;
+	}
     }
     exit 1;
 }
@@ -768,7 +777,10 @@ BEGIN {
 		modules\loggers\mod_log_config.h \
 		modules\http\mod_core.h \
 		modules\proxy\mod_proxy.h \
-		modules\ssl\mod_ssl.h ) do \
+		modules\ssl\mod_ssl.h \
+		modules\mappers\mod_so.h \
+		modules\mappers\mod_rewrite.h \
+		modules\cache\mod_cache.h ) do \
 	    @copy %f "$(INSTDIR)\include" < .y > nul
 	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\Lib$(SHORT)\apr-1.pdb		"$(INSTDIR)\lib" <.y
