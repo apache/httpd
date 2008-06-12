@@ -134,11 +134,10 @@ _tryzlib:
 
 _trydbd:
 !IF $(USEMAK) == 1
-        cd srclib\apr-util\dbd & \
-	  for %d in ($(DBD_LIST)) do \
-	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak CFG="apr_dbd_%d - $(LONG)" RECURSE=0 $(CTARGET)
-        cd ..
-
+        cd srclib\apr-util\dbd
+	for %d in ($(DBD_LIST)) do \
+	  $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+        cd ..\..\..
 !ELSEIF $(USESLN) == 1
 	for %d in ($(DBD_LIST)) do \
 	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbd_%d
@@ -267,7 +266,14 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f libaprutil.mak      CFG="libaprutil - Win32 $(LONG)" RECURSE=0 $(CTARGET)
         cd ldap
 	 $(MAKE) $(MAKEOPT) -f apr_ldap.mak        CFG="apr_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-        cd ..\..\..
+        cd ..
+!IFDEF DBD_LIST
+        cd dbd
+	  for %d in ($(DBD_LIST)) do \
+	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak   CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+        cd ..
+!ENDIF
+        cd ..\..
 	cd srclib\pcre
 	 $(MAKE) $(MAKEOPT) -f dftables.mak        CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f pcre.mak            CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
