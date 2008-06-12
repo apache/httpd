@@ -711,6 +711,7 @@ BEGIN {
  support for the patented encryption methods IDEA, MDC-2 or RC5.
 
 --------------------------------------------------------------------------------
+
 <<
 	-copy "$(INSTDIR)\OPENSSL-NEWS.txt" \
 	    + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt"
