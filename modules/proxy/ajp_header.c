@@ -89,7 +89,7 @@ static int sc_for_req_header(const char *header_name)
         case 'C':
             if(strcmp(p, "OOKIE2") == 0)
                 return SC_COOKIE2;
-	    else if (strcmp(p, "OOKIE") == 0)
+            else if (strcmp(p, "OOKIE") == 0)
                 return SC_COOKIE;
             else if(strcmp(p, "ONNECTION") == 0)
                 return SC_CONNECTION;
