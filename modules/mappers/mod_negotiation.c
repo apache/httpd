@@ -1166,9 +1166,9 @@ static int read_types_multi(negotiation_state *neg)
         /* Double check, we still don't multi-resolve non-ordinary files
          */
         if (sub_req->finfo.filetype != APR_REG) {
-	    /* XXX sub req not destroyed -- may be a bug/unintentional ? */
+            /* XXX sub req not destroyed -- may be a bug/unintentional ? */
             continue;
-	}
+        }
 
         /* If it has a handler, we'll pretend it's a CGI script,
          * since that's a good indication of the sort of thing it
