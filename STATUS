@@ -138,6 +138,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~fuankg/diffs/httpd-2.0.x-ap_vhost_iterate_given_conn.diff
     +1: fuankg, wrowe
 
+  * Backport 354118: Fix recursive ErrorDocument handling [when r->status isn't
+    HTTP_OK upon first pass through ap_die()]. PR #36090
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=354118
+    Backport version for 2.0.x of patch:
+       (trunk version works)
+    +1: covener
+      
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
