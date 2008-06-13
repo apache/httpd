@@ -111,13 +111,16 @@ module AP_MODULE_DECLARE_DATA authz_core_module;
 static const char *merge_authz_provider(authz_core_dir_conf *conf, authz_provider_list *newp);
 static void walk_merge_provider_list(apr_pool_t *a, authz_core_dir_conf *conf, authz_provider_list *providers);
 
+#define BASE_REQ_STATE AUTHZ_REQSTATE_ALL
+#define BASE_REQ_LEVEL 0
+
 static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
 {
     authz_core_dir_conf *conf =
             (authz_core_dir_conf *)apr_pcalloc(p, sizeof(authz_core_dir_conf));
 
-    conf->req_state = AUTHZ_REQSTATE_ONE;
-    conf->req_state_level = 0;
+    conf->req_state = BASE_REQ_STATE;
+    conf->req_state_level = BASE_REQ_LEVEL;
     conf->merge_rules = 1;
     return (void *)conf;
 }
@@ -180,11 +183,21 @@ static void walk_merge_provider_list(apr_pool_t *a, authz_core_dir_conf *conf, a
 
     /* Walk all of the elements recursively to allow each existing
         element to be copied and merged into the final configuration.*/
-    if (providers->one_next) {
-        walk_merge_provider_list (a, conf, providers->one_next);
+    if (BASE_REQ_STATE == AUTHZ_REQSTATE_ONE) {
+        if (providers->one_next) {
+            walk_merge_provider_list (a, conf, providers->one_next);
+        }
+        if (providers->all_next) {
+            walk_merge_provider_list (a, conf, providers->all_next);
+        }
     }
-    if (providers->all_next) {
-        walk_merge_provider_list (a, conf, providers->all_next);
+    else {
+        if (providers->all_next) {
+            walk_merge_provider_list (a, conf, providers->all_next);
+        }
+        if (providers->one_next) {
+            walk_merge_provider_list (a, conf, providers->one_next);
+        }
     }
 
     return;
@@ -200,18 +213,30 @@ static const char *merge_authz_provider(authz_core_dir_conf *conf, authz_provide
         authz_provider_list *last = conf->providers;
         int level = conf->req_state_level;
 
-        /* if the level is 0 then take care of the implicit 'or'
+        /* if the level is the base level then take care of the implicit 
          * operation at this level. 
          */
-        if (level == 0) {
-            /* Just run through the Require_one list and add the
-             * node 
-             */
-            while (last->one_next) {
-                last = last->one_next;
+        if (level == BASE_REQ_LEVEL) {
+            if (conf->req_state == AUTHZ_REQSTATE_ONE) {
+                /* Just run through the Require_one list and add the
+                 * node 
+                 */
+                while (last->one_next) {
+                    last = last->one_next;
+                }
+                last->one_next = newp;
             }
-            last->one_next = newp;
+            else {
+                /* Just run through the Require_all list and add the
+                 * node 
+                 */
+                while (last->all_next) {
+                    last = last->all_next;
+                }
+                last->all_next = newp;
+            }
         } 
+
         /* if the last nodes level is greater than the new nodes 
          *  level, then we need to insert the new node at this
          *  point.  The req_state of the new node determine
