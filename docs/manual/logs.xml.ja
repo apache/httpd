@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 165671:659902 (outdated) -->
+<!-- English Revision: 659902 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -66,7 +66,7 @@
     ところです。間違いの詳細や修正方法がそこに書かれていることが
     よくあります。</p>
 
-    <p>エラーログは普通はファイルに書かれます (通常 unix システムでは
+    <p>エラーログは普通はファイルに書かれます (通常 Unix システムでは
     <code>error_log</code>、Windows と OS/2 では <code>error.log</code>)。
     Unix システムではエラーを <code>syslog</code> や
     <a href="#piped">パイプでプログラムに送る</a> ことができます。</p>
@@ -235,7 +235,7 @@
 	環境変数として与えられます。リクエストのステータスコード
 	(以下を参照) が 401 であった場合は、ユーザは認証に失敗しているので、
 	この値は信用できません。ドキュメントがパスワードで保護されていない
-	場合は、このエントリは前のものと同じように "<code>-</code>" に
+	場合は、この部分は前のものと同じように "<code>-</code>" に
 	なります。</dd>
 
 	<dt><code>[10/Oct/2000:13:55:36 -0700]</code>
@@ -279,15 +279,15 @@
 	この情報は、リクエストが成功応答 (2 で始まるコード) であったか、
 	リダイレクション (3 で始まるコード) であったか、クライアントによる
 	エラー (4 で始まるコード) であったか、サーバのエラー (5 で始まるコード)
-	であったか、を現すので、非常に大切です。ステータスコードの
+	であったか、を表すので、非常に大切です。ステータスコードの
 	完全なリストは <a
 	href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
 	規格</a> (RFC2616 第 10 節) にあります。</dd>
 
 	<dt><code>2326</code> (<code>%b</code>)</dt>
 
-	<dd>この最後のエントリはクライアントに送信されたオブジェクトの、
-	応答ヘッダを除いたサイズを現します。コンテントがクライアントに送られなかった
+	<dd>この最後の部分はクライアントに送信されたオブジェクトの、
+	応答ヘッダを除いたサイズを表します。コンテントがクライアントに送られなかった
 	場合は、この値は "<code>-</code>" になります。コンテントが無い場合に
 	"<code>0</code>" をログ収集するには、<code>%b</code> ではなく
 	<code>%B</code> を使ってください。</dd>
@@ -371,7 +371,7 @@
     <p>クライアントのリクエストの特徴に基づいてアクセスログにエントリの
     一部をロギングしない方が便利なことがあります。これは <a
     href="env.html">環境変数</a> の補助により簡単に実現できます。まず、
-    リクエストが何らかの条件に合うということを現すために環境変数が
+    リクエストが何らかの条件に合うということを表すために環境変数が
     設定される必要があります。これは通常は <directive
     module="mod_setenvif">SetEnvIf</directive> により
     行なわれます。そして、<directive
@@ -452,7 +452,7 @@
     と呼ばれている理由です。)</p>
 
     <p>パイプ経由のログ用のプロセスは Apache httpd の親プロセスから起動され、
-    そのプロセスのユーザ ID を継承します。これは、これは、パイプ経由のログ用の
+    そのプロセスのユーザ ID を継承します。これは、パイプ経由のログ用の
     プログラムは普通 root として実行されることを意味します。
     ですから、プログラムを簡単で安全に保つことが非常に重要です。</p>
 
@@ -492,7 +492,7 @@
     すべてのログを同じアクセスログとエラーログにログ収集することができます。
     この手法では個々のバーチャルホストの統計を簡単にとることはできません。</p>
 
-    <p><directive module="mod_log_config">>CustomLog</directive> や
+    <p><directive module="mod_log_config">CustomLog</directive> や
     <directive module="mod_log_config">ErrorLog</directive> ディレクティブが
     <directive module="core" type="section">VirtualHost</directive> の中に
     置かれた場合は、そのバーチャル
@@ -531,10 +531,14 @@
 
     <related>
       <modulelist>
+        <module>mod_logio</module>
+        <module>mod_log_forensic</module>
         <module>mod_cgi</module>
         <module>mod_rewrite</module>
       </modulelist>
       <directivelist>
+        <directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_forensic">ForensicLog</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_rewrite">RewriteLog</directive>
         <directive module="mod_rewrite">RewriteLogLevel</directive>
@@ -543,6 +547,26 @@
         <directive module="mod_cgi">ScriptLogLength</directive>
       </directivelist>
     </related>
+
+    <section>
+      <title>実際に送受信したバイト数のログ</title>
+
+      <p><module>mod_logio</module> は、
+         ネットワーク上で実際に送受信した数をログする
+         二つのフィールド (%I と %O) を
+         <directive module="mod_log_config">LogFormat</directive> 
+         ディレクティブに追加します。</p>
+    </section>
+
+    <section>
+      <title>Forensic ログ</title>
+
+      <p><module>mod_log_forensic</module> はクライアントリクエストの
+         forensic ログを取ります。ログはリクエスト処理前と処理後に
+         行われますので、1 リクエストに対して 2 行のログが出力されます。
+         forensic ロガーはとても厳密でカスタマイズできません。
+         デバッグやセキュリティ用のツールとして有効かもしれません。</p>
+    </section>
 
     <section id="pidfile">
       <title>PID ファイル</title>
