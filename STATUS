@@ -129,6 +129,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: rpluem,
    -1: niq - strcasecmp(NULL, ...) when secure is not set
    rpluem: Good catch. Should be fixed by r660461.
+   rpluem asks: niq are your concers now addressed and can I regard
+   your veto as moot?
 
  * mod_proxy_http: Do not forward an Expect: 100-continue to
    an HTTP/1.0 server
@@ -141,6 +143,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         a 1.0 server, but a proxy mustn't.  But I'm not convinced
         by the use of force-proxy-request-1.0, when RFC2616 suggests
         caching backend response headers.
+   rpluem: It's a first and quick start. The RFC says that we as a
+   proxy must not sent it to a server from which we know that it
+   speaks HTTP/1.0. If we set force-proxy-request-1.0 we *know*
+   that we speak HTTP/1.0 with this server. A perfect solution
+   would be of course to memorize the HTTP version for each
+   (or a reasonable number) server and act accordingly.
 
 PATCHES/ISSUES THAT ARE STALLED
 
