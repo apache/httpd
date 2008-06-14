@@ -108,7 +108,7 @@
         <message id="apachehttpserver">Apache HTTP サーバ
             バージョン &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
-        <message id="search">Google Search</message> <!-- search button -->
+        <message id="search">Google 検索</message> <!-- search button -->
         <message id="index">索引</message> <!-- deprecated -->
         <message id="home">ホーム</message> <!-- deprecated -->
 
@@ -128,10 +128,10 @@
         <!-- footer line -->
         <message id="before-license">Licensed under the</message>
         <message id="after-license"></message>
-        <message id="langavail">Available Languages</message>
+        <message id="langavail">言語</message>
 
         <!-- not up to date -->
-        <message id="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</message>
+        <message id="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</message>
     </messages>
 </language>
