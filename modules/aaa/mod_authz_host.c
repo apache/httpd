@@ -42,6 +42,7 @@
 
 enum allowdeny_type {
     T_ENV,
+    T_NENV,
     T_ALL,
     T_IP,
     T_HOST,
@@ -123,7 +124,12 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     a->x.from = where;
     a->limited = cmd->limited;
 
-    if (!strncasecmp(where, "env=", 4)) {
+    if (!strncasecmp(where, "env=!", 5)) {
+        a->type = T_NENV;
+        a->x.from += 5;
+
+    }
+    else if (!strncasecmp(where, "env=", 4)) {
         a->type = T_ENV;
         a->x.from += 4;
 
@@ -216,6 +222,12 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
         switch (ap[i].type) {
         case T_ENV:
             if (apr_table_get(r->subprocess_env, ap[i].x.from)) {
+                return 1;
+            }
+            break;
+
+        case T_NENV:
+            if (!apr_table_get(r->subprocess_env, ap[i].x.from)) {
                 return 1;
             }
             break;
