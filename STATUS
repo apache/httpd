@@ -110,12 +110,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=611483&view=rev (source)
    http://svn.apache.org/viewvc?rev=639005&view=rev (docs)
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
-   +1: niq
-   rpluem says: I am missing a minor bump and documentation.
-   niq replies: Done.
-   rpluem says: Thanks. Sorry for being picky, but after revisiting the patch
-   again I ask myself how we can be sure that the chroot function is actually
-   present on the platform we compile.
+   +1: niq, rpluem
 
  * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
    PR 44799
