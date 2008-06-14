@@ -26,7 +26,7 @@
 
   <summary>
     <p>This glossary defines some of the common terminology related to Apache in
-      particular, and web serving in general.  More information on each concept
+      particular, and web serving in general. More information on each concept
       is provided in the links.</p>
   </summary>
 
@@ -41,7 +41,6 @@
     </dd>
     
     <dt><a name="algorithm" id="algorithm">Algorithm</a></dt>
-    
     <dd>An unambiguous formula or set of rules for solving a problem in a finite
       number of steps. Algorithms for encryption are usually called
       <dfn>Ciphers</dfn>.
@@ -230,9 +229,9 @@
     </dd>
 
     <dt><a name="hash" id="hash">Hash</a></dt>
-    <dd>A mathematical one-way, irreversable algorithm generating a string with
-       fixed-length from another string of any length. Different input strings
-       will usually produce different hashes (depending on the hash function).
+    <dd>A mathematical one-way, irreversible algorithm generating a string with
+      fixed-length from another string of any length. Different input strings
+      will usually produce different hashes (depending on the hash function).
     </dd>
 
     <dt><a name="header" id="header">Header</a></dt>
@@ -371,7 +370,7 @@
       such keys constitutes a key pair. Also called Asymmetric Cryptography.
       <br />
       See: <a href="ssl/">SSL/TLS Encryption</a>
-    </dd> 
+    </dd>
 
     <dt><a name="regularexpresion" id="regularexpresion">Regular Expression</a>
       <a name="regex" id="regex">(Regex)</a></dt>
@@ -384,91 +383,91 @@
       be written as "<code>/images/.*(jpg|gif)$</code>".  Apache uses Perl
       Compatible Regular Expressions provided by the <a
       href="http://www.pcre.org/">PCRE</a> library.
-  </dd> 
+    </dd>
 
-  <dt><a name="reverseproxy" id="reverseproxy">Reverse Proxy</a></dt>
-  <dd>A <glossary ref="proxy">proxy</glossary> server that appears to the client
-    as if it is an <em>origin server</em>.  This is useful to hide the real
-    origin server from the client for security reasons, or to load balance.
-  </dd>
+    <dt><a name="reverseproxy" id="reverseproxy">Reverse Proxy</a></dt>
+    <dd>A <glossary ref="proxy">proxy</glossary> server that appears to the client
+      as if it is an <em>origin server</em>.  This is useful to hide the real
+      origin server from the client for security reasons, or to load balance.
+    </dd>
   
-  <dt><a name="securesocketslayer" id="securesocketslayer">Secure Sockets
-      Layer</a> <a name="ssl" id="ssl">(SSL)</a></dt>
-  <dd>A protocol created by Netscape Communications Corporation for general
-    communication authentication and encryption over TCP/IP networks.  The most
-    popular usage is <em>HTTPS</em>, i.e. the HyperText Transfer Protocol (HTTP)
-    over SSL.<br />
-    See: <a href="ssl/">SSL/TLS Encryption</a>
-  </dd> 
+    <dt><a name="securesocketslayer" id="securesocketslayer">Secure Sockets
+        Layer</a> <a name="ssl" id="ssl">(SSL)</a></dt>
+    <dd>A protocol created by Netscape Communications Corporation for general
+      communication authentication and encryption over TCP/IP networks.  The most
+      popular usage is <em>HTTPS</em>, i.e. the HyperText Transfer Protocol (HTTP)
+      over SSL.<br />
+      See: <a href="ssl/">SSL/TLS Encryption</a>
+    </dd>
 
-  <dt><a name="serversideincludes" id="serversideincludes">Server Side
-      Includes</a> <a name="ssi" id="ssi">(SSI)</a></dt>
-  <dd>A technique for embedding processing directives inside HTML files.<br />
-    See: <a href="howto/ssi.html">Introduction to Server Side Includes</a>
-  </dd>
-  
-  <dt><a name="session" id="session">Session</a></dt>
-  <dd>The context information of a communication in general.</dd>
+    <dt><a name="serversideincludes" id="serversideincludes">Server Side
+        Includes</a> <a name="ssi" id="ssi">(SSI)</a></dt>
+    <dd>A technique for embedding processing directives inside HTML files.<br />
+      See: <a href="howto/ssi.html">Introduction to Server Side Includes</a>
+    </dd>
 
-  <dt><a name="ssleay" id="ssleay">SSLeay</a></dt>
-  <dd>The original SSL/TLS implementation library developed by Eric A.
-    Young
-  </dd> 
+    <dt><a name="session" id="session">Session</a></dt>
+    <dd>The context information of a communication in general.</dd>
 
-  <dt><a name="symmetriccryptophraphy" id="symmetriccryptophraphy">Symmetric
-      Cryptography</a></dt>
-  <dd>The study and application of <em>Ciphers</em> that use a single secret key
-    for both encryption and decryption operations.<br />
-    See: <a href="ssl/">SSL/TLS Encryption</a>
-  </dd>
+    <dt><a name="ssleay" id="ssleay">SSLeay</a></dt>
+    <dd>The original SSL/TLS implementation library developed by Eric A.
+      Young
+    </dd>
 
-  <dt><a name="tarball" id="tarball">Tarball</a></dt>
-  <dd>A package of files gathered together using the <code>tar</code> utility.
-    Apache distributions are stored in compressed tar archives or using
-    pkzip.
-  </dd> 
+    <dt><a name="symmetriccryptophraphy" id="symmetriccryptophraphy">Symmetric
+        Cryptography</a></dt>
+    <dd>The study and application of <em>Ciphers</em> that use a single secret key
+      for both encryption and decryption operations.<br />
+      See: <a href="ssl/">SSL/TLS Encryption</a>
+    </dd>
 
-  <dt><a name="transportlayersecurity" id="transportlayersecurity">Transport
-      Layer Security</a> <a name="tls" id="tls">(TLS)</a></dt>
-  <dd>The successor protocol to SSL, created by the Internet Engineering Task
-    Force (IETF) for general communication authentication and encryption over
-    TCP/IP networks. TLS version 1 is nearly identical with SSL version 3.<br />
-    See: <a href="ssl/">SSL/TLS Encryption</a>
-  </dd>
+    <dt><a name="tarball" id="tarball">Tarball</a></dt>
+    <dd>A package of files gathered together using the <code>tar</code> utility.
+      Apache distributions are stored in compressed tar archives or using
+      pkzip.
+    </dd>
 
-  <dt><a name="uniformresourcelocator" id="uniformresourcelocator">Uniform
-      Resource Locator</a> <a name="url" id="url">(URL)</a></dt>
-  <dd>The name/address of a resource on the Internet.  This is the common
-    informal term for what is formally called a <glossary
-      ref="uniformresourceidentifier">Uniform Resource Identifier</glossary>.
-    URLs are usually made up of a scheme, like <code>http</code> or
-    <code>https</code>, a hostname, and a path.  A URL for this page might
-    be <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
-  </dd> 
+    <dt><a name="transportlayersecurity" id="transportlayersecurity">Transport
+        Layer Security</a> <a name="tls" id="tls">(TLS)</a></dt>
+    <dd>The successor protocol to SSL, created by the Internet Engineering Task
+      Force (IETF) for general communication authentication and encryption over
+      TCP/IP networks. TLS version 1 is nearly identical with SSL version 3.<br />
+      See: <a href="ssl/">SSL/TLS Encryption</a>
+    </dd>
 
-  <dt><a name="uniformresourceidentifier"
-    id="uniformresourceidentifier">Uniform Resource Identifier</a>
-    <a name="URI" id="URI">(URI)</a></dt>
-  <dd>A compact string of characters for identifying an abstract or physical
-    resource.  It is formally defined by <a
-      href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  URIs used on the
-    world-wide web are commonly referred to as <glossary
-      ref="url">URLs</glossary>.
-  </dd> 
+    <dt><a name="uniformresourcelocator" id="uniformresourcelocator">Uniform
+        Resource Locator</a> <a name="url" id="url">(URL)</a></dt>
+    <dd>The name/address of a resource on the Internet.  This is the common
+      informal term for what is formally called a <glossary
+        ref="uniformresourceidentifier">Uniform Resource Identifier</glossary>.
+      URLs are usually made up of a scheme, like <code>http</code> or
+      <code>https</code>, a hostname, and a path.  A URL for this page might
+      be <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
+    </dd>
 
-  <dt><a name="virtualhosting" id="virtualhosting">Virtual Hosting</a></dt>
-  <dd>Serving multiple websites using a single instance of Apache.  <em>IP
+    <dt><a name="uniformresourceidentifier"
+      id="uniformresourceidentifier">Uniform Resource Identifier</a>
+      <a name="URI" id="URI">(URI)</a></dt>
+    <dd>A compact string of characters for identifying an abstract or physical
+      resource.  It is formally defined by <a
+        href="http://www.ietf.org/rfc/rfc2396.txt">RFC 2396</a>.  URIs used on the
+      world-wide web are commonly referred to as <glossary
+        ref="url">URLs</glossary>.
+    </dd>
+
+    <dt><a name="virtualhosting" id="virtualhosting">Virtual Hosting</a></dt>
+    <dd>Serving multiple websites using a single instance of Apache.  <em>IP
       virtual hosting</em> differentiates between websites based on their IP
-    address, while <em>name-based virtual hosting</em> uses only the name of the
-    host and can therefore host many sites on the same IP address.<br />
-    See: <a href="vhosts/">Apache Virtual Host documentation</a>
-  </dd>
+      address, while <em>name-based virtual hosting</em> uses only the name of the
+      host and can therefore host many sites on the same IP address.<br />
+      See: <a href="vhosts/">Apache Virtual Host documentation</a>
+    </dd>
 
-  <dt><a name="x.509" id="x.509">X.509</a></dt>
-  <dd>An authentication certificate scheme recommended by the International
-    Telecommunication Union (ITU-T) which is used for SSL/TLS authentication.<br
-    /> See: <a href="ssl/">SSL/TLS Encryption</a>
-  </dd>
-</dl>
+    <dt><a name="x.509" id="x.509">X.509</a></dt>
+    <dd>An authentication certificate scheme recommended by the International
+      Telecommunication Union (ITU-T) which is used for SSL/TLS authentication.<br
+      /> See: <a href="ssl/">SSL/TLS Encryption</a>
+    </dd>
+  </dl>
 </section>
 </manualpage>
