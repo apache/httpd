@@ -36,7 +36,7 @@
 
     <p>様々なバージョンの httpd の異なる設定を扱うことになる、
     テストスイートや大規模ネットワークでの使用のために設計されています。
-    このモジュールは新しいコンテナ — <code class="directive"><a href="#ifversion">&lt;IfVersion&gt;</a></code> を
+    このモジュールは新しいコンテナ ― <code class="directive"><a href="#ifversion">&lt;IfVersion&gt;</a></code> を
     提供します。これを使うと、数字の比較や正規表現による柔軟な
     バージョンチェックができるようになります。</p>
 

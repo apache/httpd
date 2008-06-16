@@ -1472,16 +1472,6 @@ yönergeleri sarmalar.</td></tr>
       Include conf/vhosts/*.conf
     </code></p></div>
 
-    <p><code>apachectl configtest</code> ile yapılandırma sınanırken işleme
-      sokulan dosyalar listelenir:</p>
-
-    <div class="example"><p><code>
-      root@host# apachectl configtest<br />
-      Processing config file: /usr/local/apache2/conf/ssl.conf<br />
-      Processing config file: /usr/local/apache2/conf/vhosts/vhost1.conf<br />
-      Processing config file: /usr/local/apache2/conf/vhosts/vhost2.conf<br />
-      Syntax OK
-    </code></p></div>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>

@@ -1467,18 +1467,6 @@ the server configuration files</td></tr>
       Include conf/vhosts/*.conf
     </code></p></div>
 
-    <p>Running <code>apachectl configtest</code> will give you a list
-    of the files that are being processed during the configuration
-    check:</p>
-
-    <div class="example"><p><code>
-      root@host# apachectl configtest<br />
-      Processing config file: /usr/local/apache2/conf/ssl.conf<br />
-      Processing config file: /usr/local/apache2/conf/vhosts/vhost1.conf<br />
-      Processing config file: /usr/local/apache2/conf/vhosts/vhost2.conf<br />
-      Syntax OK
-    </code></p></div>
-
 <h3>See also</h3>
 <ul>
 <li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
