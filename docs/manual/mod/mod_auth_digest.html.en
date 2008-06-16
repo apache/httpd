@@ -26,7 +26,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>User authentication using MD5
     Digest Authentication</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>auth_digest_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_digest.c</td></tr></table>
 <h3>Summary</h3>
@@ -141,7 +141,7 @@ response hashes in digest authentication</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestAlgorithm MD5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestAlgorithm</code> directive
@@ -162,7 +162,7 @@ authentication</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestDomain</code> directive allows
@@ -194,7 +194,7 @@ server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestNcCheck On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestNcCheck Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <div class="note">
@@ -210,7 +210,7 @@ server</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestNonceFormat <var>format</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <div class="note">Not implemented yet.</div>
@@ -225,7 +225,7 @@ server</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestNonceLifetime 300</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestNonceLifetime</code> directive
@@ -248,7 +248,7 @@ server</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestProvider file</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestProvider</code> directive sets 
@@ -270,7 +270,7 @@ authentication</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestQop auth</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestQop</code> directive determines
@@ -297,7 +297,7 @@ of clients</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestShmemSize <var>size</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestShmemSize 1000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestShmemSize</code> directive defines

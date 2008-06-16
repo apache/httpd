@@ -178,7 +178,7 @@
         pose a thread race condition.  If building zlib on win32, be sure
         to adjust the resulting ms\ntdll.mak file to link to the full
         path of srclib\zlib\zdll.lib rather than zlib1.lib (that error in
-        configuration of OpenSSL through 0.9.8d and earlier reflects older 
+        configuration of OpenSSL through 0.9.8h and earlier reflects older 
         zlib 1.1 versions.)</p>
       </li>
 
@@ -208,6 +208,13 @@ nmake /f Makefile.win _apached
     <p>Either command will compile Apache. The latter will disable
     optimization of the resulting files, making it easier to single
     step the code to find bugs and track down problems.</p>
+
+    <p>You can add your apr-util dbd provider choices with the additional
+    make variable DBD_LIST, e.g. DBD_LIST="mysql oracle pgsql sqlite3"
+    to build these four providers.  However it's necessary to have 
+    the include headers in the INCLUDE path list, db client libraries 
+    in the LIB path list, and the db client dll files in the PATH.  The
+    specifics for each provider are an exercise left to the reader.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

@@ -22,11 +22,11 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_proxy</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>言語: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>HTTP/1.1 プロキシ/ゲートウェイサーバ</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>proxy_module</td></tr>
@@ -92,10 +92,10 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">フォワードプロキシとリバースプロキシ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">基本の例</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#access">プロキシへのアクセス制御</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ftp-proxy">FTP プロキシ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#startup">遅い起動</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#intranet">イントラネットプロキシ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#envsettings">プロトコルの調整</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">リクエストボディ</a></li>
 </ul><h3>参照</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
@@ -220,102 +220,6 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="ftp-proxy" id="ftp-proxy">FTP プロキシ</a></h2>
-
-
-    <h3><a name="mimetypes" id="mimetypes">どうしてファイルタイプが <var>xxx</var>
-    のファイルを FTP でダウンロードできないの?</a></h3>
-      <p>おそらく、プロキシの mime.types 設定ファイルでそのファイルタイプが
-      <code>application/octet-stream</code> であると定義されていないのでしょう。
-      以下のようなものが役に立つかもしれません:</p>
-
-      <div class="example"><pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre></div>
-        <p>別の方法として、すべてのデフォルトをバイナリにすることもできます:</p>
-      <div class="example"><pre>DefaultType application/octet-stream</pre></div>
-     
-
-    <h3><a name="type" id="type">ファイル <var>xxx</var> を FTP の ASCII ダウンロード
-    にさせるのはどうすればよいの?</a></h3>
-      <p>まれに、(デフォルトの転送は <code>binary</code> モードで) 特定の
-      ファイルのみ FTP の <code>ASCII</code> 転送方法を使わなければならない
-      場合には、リクエストの最後に <code>;type=a</code> を付けることで
-      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> に ASCII 転送をさせることができます。
-      (ただし、FTP のディレクトリ一覧は常に ASCII モードで行なわれます。)</p>
-     
-
-    <h3><a name="ftpnonget" id="ftpnonget">FTP のアップロードはどうすればよいの?</a></h3>
-      <p>現時点では、mod_proxy の FTP サポートは GET のみです。もちろん
-      Apache の プロキシを使って HTTP のアップロード (POST や PUT) を
-      することはできます。</p>
-    
-
-    <h3><a name="percent2fhck" id="percent2fhck">ホームディレクトリの外の FTP ファイルに
-      アクセスするにはどうすればよいの?</a></h3>
-      <p>FTP URI はログインしているユーザのホームディレクトリからの
-      相対パスとして扱われます。残念なことに、/../ はブラウザにより解釈され、
-      実際に FTP サーバには送られないため、/../ を使って上位のディレクトリに
-      到達することはできません。この問題を解決するために、いわゆる
-      <dfn>Squid %2f ハック</dfn> を Apache の FTP プロキシは実装しています。
-      これは <a href="http://www.squid-cache.org/">Squid Proxy キャッシュ</a> のような
-      他のよく使われているプロキシサーバでも取られている方法です。
-      リクエストのパスの先頭に <code>/%2f</code> を付けることで、プロキシに
-      FTP の開始ディレクトリを (ホームディレクトリの代わりに) <code>/</code>
-      に変えることができます。例えば、<code>/etc/motd</code> を取得するためには
-      次の URL を使います:</p>
-
-      <div class="example"><p><code>
-        ftp://<var>user</var>@<var>host</var>/%2f/etc/motd
-      </code></p></div>
-     
-
-    <h3><a name="ftppass" id="ftppass">ブラウザの URL 表示で FTP の平文パスワードを
-    隠すにはどうすればよいの?</a></h3>
-      <p>FTP サーバにユーザ名とパスワードを使ってログインするために、
-      Apache は異なる方法を使います。URL にユーザ名とパスワードがまったく
-      ない場合は、Apache は FTP サーバに anonymous ログインを送ります。
-      <em>つまり</em>、</p>
-
-      <div class="example"><p><code>
-        user: anonymous<br />
-        password: apache_proxy@
-      </code></p></div>
-
-      <p>これは anonymous アクセスが設定された
-      すべての FTP サーバに対して動作します。</p>
-
-      <p>ユーザ名を使った個人別のログインには、URL にユーザ名を入れることが
-      できます:</p>
-
-      <div class="example"><p><code>
-        ftp://<var>username</var>@<var>host</var>/myfile
-      </code></p></div>
-
-      <p>このユーザ名が与えられたときに、FTP サーバがパスワードを要求すれば
-      (もちろんそうすべきなのですが)、Apache は <code>401</code>
-      (Authorization required) を返します。これにより、ブラウザはユーザ名
-      パスワードの入力ダイアログを表示します。パスワードが入力された後、
-      再び接続を試み、成功すればリクエストしたリソースが表示されます。
-      この方法の利点はブラウザがパスワードを平文で表示しないことです。
-      (もし最初から</p>
-
-      <div class="example"><p><code>
-        ftp://<var>username</var>:<var>password</var>@<var>host</var>/myfile
-      </code></p></div>
-
-      <p>と入力した場合には表示されてしまいます。)</p>
-
-      <div class="note"><h3>注</h3>
-        <p>送信されるパスワードは、暗号化されて送られるわけではありません。
-        ブラウザと Apache プロキシサーバは base64 で符号化された
-        文字列として、Apache プロキシと FTP サーバの間は平文として送られます。
-        ですから、HTTP を使って HTTP をアクセスする前 (もしくは、そもそも
-        個人的なファイルを FTP でアクセスする前) によく考える必要があります。
-        安全でない通信路を使った場合は、盗聴者に途中でパスワードを盗まれる
-        可能性があります。</p>
-      </div>
-     
-   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
 <h2><a name="startup" id="startup">遅い起動</a></h2>
       <p><code class="directive"><a href="#proxyblock">ProxyBlock</a></code> ディレクティブを使っている場合、
       後のテストのために起動時にホストの
@@ -351,8 +255,9 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="envsettings" id="envsettings">プロトコルの調整</a></h2>
-      <p>Keepalive や HTTP/1.1 を適切に実装していないアプリケーションサーバが
-      ある状況で、HTTP/1.0 で keepalive を無しにしてリクエストを送るための
+      <p>Keepalive や HTTP/1.1 を適切に実装していないアプリケーションサーバに対して
+      <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> がリクエストを送信する場合、
+      HTTP/1.0 を使って keepalive を無しにしてリクエストを送るようにする
       環境変数が二つあります。これらは <code class="directive"><a href="../mod/mod_env.html#setenv">SetEnv</a></code> ディレクティブで設定します。</p>
 
       <p><code>force-proxy-request-1.0</code> と <code>proxy-nokeepalive</code>
@@ -367,6 +272,27 @@
         </span>
         &lt;/Location&gt;
       </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="request-bodies" id="request-bodies">リクエストボディ</a></h2>
+
+    <p>POST メソッドなどのリクエストには、リクエストボディがあります。
+    HTTP プロトコル仕様によると、ボディのあるリクエストは chunked 
+    転送を使うか、<code>Content-Length</code>
+    ヘッダを送信しなければなりません。
+    このようなリクエストをオリジンサーバに送信する場合、
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> は常に <code>Content-Length</code>
+    を送ろうと試みます。しかし。ボディが大きく、オリジナルのリクエストで
+    chunked 転送が使われている場合、上流へのリクエストに
+    chunked 転送も使われます。
+    この挙動は <a href="../env.html">環境変数</a>で制御できます。
+    <code>proxy-sendcl</code> を設定すると、可能な限り常に 
+    <code>Content-Length</code> を付与して、
+    上流サーバに送信するようになります。
+    逆に <code>proxy-sendchunked</code> を設定すると、リソース消費を抑え、
+    chnked エンコードを使って送信するようになります。</p>
+
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">ディレクティブ</a></h2>
@@ -699,7 +625,8 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy</td></tr>
 </table>
     <p><code class="directive">&lt;ProxyMatch&gt;</code> は URL のマッチに
-    正規表現を用いることを除いて <code class="directive">&lt;Proxy&gt;</code> ディレクティブと同じです。</p>
+    <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a> を用いることを除いて
+    <code class="directive">&lt;Proxy&gt;</code> ディレクティブと同じです。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -771,7 +698,7 @@
       除外ディレクティブを置く必要があります。</p>
     </div>
 
-    <p>2.1 の新機能で、バックエンドサーバとの接続にプールされたコネクションを
+    <p>2.1 の機能で、バックエンドサーバとの接続にプールされたコネクションを
     使えるようになりました。<code>key=value</code> 形式のパラメータで
     このコネクションプーリングの調整ができます。<code>Hard Maximum</code> 
     のデフォルト値は、有効になっている MPM でのプロセス当たりのスレッド数と
@@ -1111,7 +1038,7 @@ URL を調整する</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_proxy</td></tr>
 </table>
     <p><code class="directive">ProxyRemoteMatch</code> は最初の引数がリクエストされた
-    URL にマッチする正規表現であることを除けば <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> ディレクティブと同じです。</p>
+    URL にマッチする<a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>であることを除けば <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> ディレクティブと同じです。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1197,7 +1124,7 @@ URL を調整する</td></tr>
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>言語: </span><a href="../en/mod/mod_proxy.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_proxy.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

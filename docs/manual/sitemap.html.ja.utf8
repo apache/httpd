@@ -21,15 +21,15 @@
             2.3</a></div>
 <div id="page-content"><div id="preamble"><h1>Site Map</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>言語: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ja/sitemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 
 <p>このページは現時点で利用可能な
 <a href="./">Apache HTTP サーババージョン 2.3 のドキュメンテーション</a>
@@ -267,7 +267,7 @@
 </ul>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<p><span>言語: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ja/sitemap.html" title="Japanese">&nbsp;ja&nbsp;</a> |

@@ -22,11 +22,11 @@
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_proxy_ajp</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_ajp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>言語: </span><a href="../en/mod/mod_proxy_ajp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> で AJP 
 をサポートするためのモジュール</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
@@ -127,14 +127,14 @@
       <dd>可変長の文字列 (2^16 が長さの上限) 。長さ情報のパケット 2 バイトの後に
       文字列 (終端文字 '\0' を含む) が続く形式でエンコードされます。
       エンコードされている長さ情報は最後の '\0' を<strong>カウントしない</strong>
-      ことに注意してください——これは <code>strlen</code> と同様です。
+      ことに注意してください――これは <code>strlen</code> と同様です。
       これらの終端文字をスキップするために、あまり意味の無いインクリメント文
       をたくさん書かないといけないのは、
       Java の側から見ると少し紛らわしく感じられるかもしれません。
       こうなった理由はおそらく、Servlet コンテナから返される文字列を読み出す時に、
-      効率よく C のコードを書けるようにする——サーブレットから返される
+      効率よく C のコードを書けるようにする――サーブレットから返される
       文字列は \0 文字で終端されているので、C のコードではわざわざコピーをせずに、
-      一つのバッファへのリファレンスを取り回すように書くことができる——
+      一つのバッファへのリファレンスを取り回すように書くことができる――
       ためだと思われます。
       '\0' 文字がない場合は、C では文字列の規則に合うようにコピーしなければ
       いけなくなってしまいます。</dd>
@@ -193,7 +193,7 @@
     </table>
     <p>ほとんどのパケットで、ペイロードの最初のバイトがメッセージの型をエンコード
      しています。例外はサーバからコンテナに送られるリクエストボディパケットです
-     ——これらは標準的なパケット形式 (<code>0x1234</code> とパケット長)
+     ――これらは標準的なパケット形式 (<code>0x1234</code> とパケット長)
      ですが、その後に続くプレフィックスコードがありません。</p>
      <p>ウェブサーバは次のメッセージをサーブレットコンテナに送出できます。</p>
     <table>
@@ -444,9 +444,9 @@ attribute_value := (string)
     <p><code>query_string</code>, <code>ssl_cert</code>, 
     <code>ssl_cipher</code>, <code>ssl_session</code> 
     は HTTP と HTTPS の対応する部分を参照します。</p>
-    <p><code>jvm_route</code> はスティッキーセッションのサポート——
+    <p><code>jvm_route</code> はスティッキーセッションのサポート――
     ロードバランスしている複数のサーバ中の特定の Tomcat インスタンスと、
-    ユーザのセッションとを紐付ける機能——に使われます。</p>
+    ユーザのセッションとを紐付ける機能――に使われます。</p>
     <p>この基本属性一覧に無いものについては、<code>req_attribute</code>
     コード <code>0x0A</code> 経由で属性を何個でも送ることができます。
     属性の名前と値の文字列の組を、それぞれこのコードの直後に送ります。
@@ -537,7 +537,7 @@ AJP13_GET_BODY_CHUNK :=
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_ajp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>言語: </span><a href="../en/mod/mod_proxy_ajp.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_proxy_ajp.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
