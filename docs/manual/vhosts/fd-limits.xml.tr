@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="fd-limits.xml.meta">
+<parentdocument href="./">Sanal Konaklar</parentdocument>
+  <title>Dosya Tanıtıcı Sınırları</title>
+
+<summary>
+
+    <p>Çok büyük sayıda sanal konak kullanıyorsanız ve bunların her biri için
+      ayrı günlük kayıtları tutuyorsanız, Apache dosya tanıtıcılarını
+      tüketebilir. Apache tarafından, dahili olarak 10-20 dosya tanıtıcıya ek
+      olarak her hata günlüğü için bir ve her diğer günlük kaydı için bir dosya
+      tanıcı kullanılır. Unix işletim sisteminde dosya tanıtıcıların sayısı
+      süreç başına 64 taneyle sınırlıdır ve gerekirse donanıma bağlı olarak
+      arttırılabilir.</p>
+
+    <p>Apache gerektiğinde bu sınırı kendisi arttırmaya çalışırsa da bu her
+      zaman mümkün olmaz. Şöyle ki:</p>
+
+    <ol>
+      <li>Sisteminiz <code>setrlimit()</code> sistem çağrısını
+        sağlamıyordur.</li>
+
+      <li>Sisteminizde <code>setrlimit(RLIMIT_NOFILE)</code> çağrısı hiçbir işe
+        yaramıyordur (örneğin, Solaris 2.3).</li>
+
+      <li>Dosya tanıtıcılarının sayısı donanıma bağlı olarak daha fazla
+        arttırılamıyordur.</li>
+
+      <li>Sisteminiz dosya tanıtıcı sayısını başka sınırlara bağlı kılmıştır:
+        örneğin stdio akımları ile ilgili sınır, dosya tanıtıcı sayısının
+        256’nın altında ollmasını gerektiriyordur (Solaris 2).</li>
+    </ol>
+
+    <p>Böyle sorunlar karşısında yapabilecekleriniz:</p>
+
+    <ul><li>Ana günlük dosyaları hariç, <directive type="section"
+      module="core">VirtualHost</directive> bölümlerinde günlük dosyası
+      belirtmeyerek günlük dosyası sayısını düşürürsünüz. (Bunun nasıl
+      yapılacağını öğrenmek için <a href="#splitlogs">Günlük kayıtlarının
+      ayrıştırılması</a> bölümüne bakınız.)</li>
+
+      <li>Sisteminizde serbest dosya tanıtıcı sayısı 1-2 civarına düşerse
+        Apache’yi aşağıdaki gibi bir betikle yeniden çalıştırarak dosya
+        tanıtıcı sayısını arttırabilirsiniz:
+
+        <example>
+          <code>#!/bin/sh<br />
+           ulimit -S -n 100<br />
+           exec httpd</code>
+        </example>
+      </li>
+    </ul>
+
+</summary>
+
+<section id="splitlogs"><title>Günlük kayıtlarının ayrıştırılması</title>
+
+    <p>Günlük dosyalarını çok sayıda sanal konak için ortak olarak
+      kullanıyorsanız, sanal konaklar için istatistiksel çözümlemeler yapmak
+      amacıyla sırası geldiğinde bunları ayrıştırabilirsiniz. Bu işlem aşağıda
+      anlatıldığı gibi yapılabilir.</p>
+
+    <p>İlk iş olarak, sanal konak bilgilerini günlük girdilerine eklemeniz
+      gerekir. Bu işlem, <directive
+      module="mod_log_config">LogFormat</directive> yönergesi ve
+      <code>%v</code> biçem değişkeni ile yapılabilir. Günlük girdisi biçem
+      dizgesinin başına bunu ekleyiniz:</p>
+
+    <example>
+    LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost<br />
+    CustomLog logs/multiple_vhost_log vhost
+    </example>
+
+    <p>Bu yapılandırma ile her günlük kaydının başında sanal konağın
+      <directive module="core">ServerName</directive> yönergesine belirtilen
+      ismi eklenir. (Günlük dosyalarınızın kişiselleştirilmesi ile ilgili daha
+      fazla bilgi için <a href="../mod/mod_log_config.html#formats">Günlük
+      Girdilerinin Kişiselleştirilmesi</a> konusuna bakınız.)</p>
+
+    <p>Günlük dosyanızdaki kayıtları bileşenlere göre gruplamak isterseniz
+      <code><a href="../programs/other.html">split-logfile</a></code>
+      programını kullanabilirsiniz. Bu programı Apache dağıtımının
+      <code>support</code> dizininde bulabilirsiniz.</p>
+
+    <p>Programı aşağıdaki gibi çalıştırın:</p>
+
+    <example>
+    split-logfile &lt; /logs/multiple_vhost_log
+    </example>
+
+    <p>Bu programı sanal konaklar için tuttuğunuz günlük dosyasının ismini
+      argüman olarak belirterek çalıştırdığınızda o dosyadaki kayıtlardan her
+      sanal konak için ayrı bir günlük dosyası
+      (<code><em>konakadı</em>.log</code>) üretilir.</p>
+
+</section>
+</manualpage>
+
