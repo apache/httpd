@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 395228:567441 (outdated) -->
+<!-- English Revision: 567441 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -72,7 +72,7 @@
     <program>httpd</program> バイナリの正しい位置を指定したり、<em>常に</em>
     付加させるコマンドライン引数を指定したりすることができます。</p>
 
-    <p><code>httpd</code> が起動されてまず最初にすることは、
+    <p><program>httpd</program> が起動されてまず最初にすることは、
     <a href="configuring.html">設定ファイル</a>
     <code>httpd.conf</code> の位置を特定して読み込むことです。
     このファイルの位置はコンパイル時に設定されますが、実行時に
@@ -87,8 +87,7 @@
     これはサーバが起動している状態を示しています。
     その後はブラウザでサーバに接続して、
     <directive module="core">DocumentRoot</directive>
-    ディレクトリのテストページやそこからリンクされている
-    ローカルのドキュメントを見ることができるでしょう。</p>
+    ディレクトリのテストページを見ることができるでしょう。</p>
 </section>
 
 <section id="errors"><title>起動時のエラー</title>
