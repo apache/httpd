@@ -19,12 +19,10 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="./">バージョン
             2.3</a></div><div id="page-content"><div id="preamble"><h1>ログファイル</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>言語: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./ja/logs.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>ウェブサーバを効果的に管理するためには、サーバの活動やパフォーマンス、
     今発生しているかもしれない問題に関するフィードバックを得ることが必要です。
@@ -72,7 +70,7 @@
     ところです。間違いの詳細や修正方法がそこに書かれていることが
     よくあります。</p>
 
-    <p>エラーログは普通はファイルに書かれます (通常 unix システムでは
+    <p>エラーログは普通はファイルに書かれます (通常 Unix システムでは
     <code>error_log</code>、Windows と OS/2 では <code>error.log</code>)。
     Unix システムではエラーを <code>syslog</code> や
     <a href="#piped">パイプでプログラムに送る</a> ことができます。</p>
@@ -224,7 +222,7 @@
 	環境変数として与えられます。リクエストのステータスコード
 	(以下を参照) が 401 であった場合は、ユーザは認証に失敗しているので、
 	この値は信用できません。ドキュメントがパスワードで保護されていない
-	場合は、このエントリは前のものと同じように "<code>-</code>" に
+	場合は、この部分は前のものと同じように "<code>-</code>" に
 	なります。</dd>
 
 	<dt><code>[10/Oct/2000:13:55:36 -0700]</code>
@@ -268,14 +266,14 @@
 	この情報は、リクエストが成功応答 (2 で始まるコード) であったか、
 	リダイレクション (3 で始まるコード) であったか、クライアントによる
 	エラー (4 で始まるコード) であったか、サーバのエラー (5 で始まるコード)
-	であったか、を現すので、非常に大切です。ステータスコードの
+	であったか、を表すので、非常に大切です。ステータスコードの
 	完全なリストは <a href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
 	規格</a> (RFC2616 第 10 節) にあります。</dd>
 
 	<dt><code>2326</code> (<code>%b</code>)</dt>
 
-	<dd>この最後のエントリはクライアントに送信されたオブジェクトの、
-	応答ヘッダを除いたサイズを現します。コンテントがクライアントに送られなかった
+	<dd>この最後の部分はクライアントに送信されたオブジェクトの、
+	応答ヘッダを除いたサイズを表します。コンテントがクライアントに送られなかった
 	場合は、この値は "<code>-</code>" になります。コンテントが無い場合に
 	"<code>0</code>" をログ収集するには、<code>%b</code> ではなく
 	<code>%B</code> を使ってください。</dd>
@@ -357,7 +355,7 @@
 
     <p>クライアントのリクエストの特徴に基づいてアクセスログにエントリの
     一部をロギングしない方が便利なことがあります。これは <a href="env.html">環境変数</a> の補助により簡単に実現できます。まず、
-    リクエストが何らかの条件に合うということを現すために環境変数が
+    リクエストが何らかの条件に合うということを表すために環境変数が
     設定される必要があります。これは通常は <code class="directive"><a href="./mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> により
     行なわれます。そして、<code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> ディレクティブの
     <code>env=</code> 節を使って環境変数が設定されているリクエストを
@@ -435,7 +433,7 @@
     と呼ばれている理由です。)</p>
 
     <p>パイプ経由のログ用のプロセスは Apache httpd の親プロセスから起動され、
-    そのプロセスのユーザ ID を継承します。これは、これは、パイプ経由のログ用の
+    そのプロセスのユーザ ID を継承します。これは、パイプ経由のログ用の
     プログラムは普通 root として実行されることを意味します。
     ですから、プログラムを簡単で安全に保つことが非常に重要です。</p>
 
@@ -473,7 +471,7 @@
     すべてのログを同じアクセスログとエラーログにログ収集することができます。
     この手法では個々のバーチャルホストの統計を簡単にとることはできません。</p>
 
-    <p><code class="directive"><a href="./mod/mod_log_config.html#&gt;customlog">&gt;CustomLog</a></code> や
+    <p><code class="directive"><a href="./mod/mod_log_config.html#customlog">CustomLog</a></code> や
     <code class="directive"><a href="./mod/mod_log_config.html#errorlog">ErrorLog</a></code> ディレクティブが
     <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> の中に
     置かれた場合は、そのバーチャル
@@ -508,7 +506,27 @@
 <h2><a name="other" id="other">他のログファイル</a></h2>
     
 
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+
+    <h3>実際に送受信したバイト数のログ</h3>
+      
+
+      <p><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code> は、
+         ネットワーク上で実際に送受信した数をログする
+         二つのフィールド (%I と %O) を
+         <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> 
+         ディレクティブに追加します。</p>
+    
+
+    <h3>Forensic ログ</h3>
+      
+
+      <p><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code> はクライアントリクエストの
+         forensic ログを取ります。ログはリクエスト処理前と処理後に
+         行われますので、1 リクエストに対して 2 行のログが出力されます。
+         forensic ロガーはとても厳密でカスタマイズできません。
+         デバッグやセキュリティ用のツールとして有効かもしれません。</p>
+    
 
     <h3><a name="pidfile" id="pidfile">PID ファイル</a></h3>
       
@@ -545,7 +563,7 @@
     
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<p><span>言語: </span><a href="./en/logs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./ja/logs.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
