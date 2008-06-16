@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:574882 (outdated) -->
+<!-- English Revision: 574882 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -43,8 +43,8 @@
     で <code>dbm</code> と指定することで起動されます。</p>
 </summary>
 
-<seealso><directive module="core">AuthName</directive></seealso>
-<seealso><directive module="core">AuthType</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
 <seealso>
   <directive module="mod_auth_basic">AuthBasicProvider</directive>
 </seealso>
