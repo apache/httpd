@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 522942:645883 (outdated) -->
+<!-- English Revision: 645883 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -57,7 +57,7 @@
     <p>ホストによるアクセス制限とパスワードによる認証を、
     同時に組み合わせて使うこともできます。
     この場合、その二つの制限の関係を指定するために
-    <directive module="core">Satisfy</directive>
+    <directive module="mod_access_compat">Satisfy</directive>
     ディレクティブを使用します。</p>
 
     <note type="warning"><title>Note</title>
@@ -285,7 +285,7 @@
 
       <dt><code>Mutual-failure</code></dt>
 
-      <dd>これは <directive>Order Allow,Deny</directive> と全く同じ効果を持ち、 
+      <dd>これは <code>Order Allow,Deny</code> と全く同じ効果を持ち、 
       そのため非推奨となっています。
       </dd>
     </dl>
@@ -403,7 +403,7 @@
 </compatibility>
 
 <usage>
-    <p><directive module="mod_authz_host">Allow</directive> と
+    <p><directive module="mod_access_compat">Allow</directive> と
     <directive module="mod_authz_core">Require</directive> の両方が使われているときの
     アクセスポリシーを設定します。パラメータは <code>All</code> か <code>Any</code>
     です。このディレクティブはある場所へのアクセスがユーザ名/パスワード
