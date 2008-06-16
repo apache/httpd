@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 395228:655869 (outdated) -->
+<!-- English Revision: 655869 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -533,7 +533,8 @@
     通常のネゴシエーション手順が適用されます。</p>
 
     <example><title>Example</title>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1
+      SetEnvIf Cookie "language=(.+)" prefer-language=$1<br />
+      Header append Vary cookie 
     </example>
 </section>
 </section>
