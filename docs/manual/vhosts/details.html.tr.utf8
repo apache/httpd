@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Sanal Konak Eşlemenin Derinliğine İncelenmesi - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Sanal Konaklar</a></div><div id="page-content"><div id="preamble"><h1>Sanal Konak Eşlemenin Derinliğine İncelenmesi</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/vhosts/details.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/vhosts/details.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/vhosts/details.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+
+    <p>Sanal konak kodu <strong>Apache 1.3</strong> sürümünde baştan yeniden
+      yazıldı. Bu belgede, bir istek aldığında Apache’nin hangi sanal konak
+      ile hizmet sunacağına nasıl karar verdiği açıklanmaya çalışılmıştır.
+      <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> yönergesi sayesinde
+      sanal konak yapılandırması 1.3 sürümünün öncesine göre daha kolay ve
+      daha güvenilir hale gelmiştir.</p>
+
+    <p>Sanal konakların nasıl çalıştığını öğrenmeden sadece çalıştırmak
+      isterseniz doğrudan <a href="examples.html">örneklerin bulunduğu
+      sayfaya</a> bakabilirsiniz.</p>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#configparsing">Yapılandırma Dosyasının Çözümlenmesi</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#hostmatching">Sanal Konağın Belirlenmesi</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#tips">İpuçları</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configparsing" id="configparsing">Yapılandırma Dosyasının Çözümlenmesi</a></h2>
+
+    <p>Bu belgede <code>&lt;VirtualHost&gt;</code> bölümleri dışında kalan
+      tanımlardan bahsederken <em>ana_sunucu</em>, <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümlerindeki tanımlamalardan
+      bahsederken <em>sankonlar</em> diyeceğiz.</p>
+
+    <p><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>,
+      <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>,
+      <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> ve
+      <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> yönergeleri bir sunucu
+      yapılandırmasının her yerinde karşımıza çıkabilir. Bununla birlikte,
+      sunucu dahilinde son göründükleri yerlerde önceki eşdeğerlerini geçersiz
+      kılarlar.</p>
+
+    <p><code>Listen</code> yönergesinin ana_sunucu için öntanımlı değeri
+      80’dir. <code>ServerPath</code> ve <code>ServerAlias</code>
+      yönergelerinin ana_sunucu için öntanımlı değerleri yoktur. Öntanımlı
+      <code>ServerName</code> değeri ise sunucunun IP adresinden elde
+      edilir.</p>
+
+    <p>Ana_sunucu <code>Listen</code> yönergesinin iki işlevi vardır. Biri
+      Apache’nin dinleyeceği öntanımlı ağ portunu belirlemek, diğeri ise
+      yönlendirmeler sırasında mutlak URI’lerde kullanılan port numarasını
+      belirlemektir.</p>
+
+    <p>Ana_sunucunun aksine sankonların portları Apache‘nin dinleyeceği
+      portlar üzerinde etkili değildir.</p>
+
+    <p><code>VirtualHost</code> yönergesinde görünen her adresin seçimlik bir
+      portu olabilir. Eğer bir port belirtilmemişse öntanımlı olarak
+      ana_sunucunun son <code>Listen</code> yönergesinin değeri kullanılır.
+      Port olarak <code>*</code> belirtildiği takdirde bütün portlar dinlenir.
+      Adreslerin tamamını (DNS sorgularındaki çoklu A kayıtları dahil) içeren
+      kümeye sankonların <em>adres kümesi</em> denir.</p>
+
+    <p><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> yönergesi ilk
+      sankonun IP adresi için kullanılmadığı takdirde bu IP adresine sahip ilk
+      sankon IP’ye dayalı sankon olarak ele alınır. IP adresi olarak
+      <code>*</code> belirtmek de mümkündür.</p>
+
+    <p>Eğer isme dayalı sankonlar kullanılacaksa <code>NameVirtualHost</code>
+      yönergesinin bu isme dayalı sankonların IP adresi kümesini içermesi
+      <em>gerekir</em>. Başka bir deyişle, yapılandırma dosyanızın
+      <code>NameVirtualHost</code> yönergesine sankonların sunucu isimlerinin
+      karşı düştüğü IP adresini yazmalısınız.</p>
+
+    <p>Çok sayıda <code>NameVirtualHost</code> yönergesi belirtebilirse de her
+      IP:port çifti için birden fazla <code>NameVirtualHost</code> yönergesi
+      belirtilmemelidir.</p>
+
+    <p>Aşağıdaki iki örneğin eşdeğer olması için <code>NameVirtualHost</code>
+      ve <code>VirtualHost</code> yönergelerinin sıralamasının bir önemi
+      yoktur. (Sadece <em>tek</em> adreslik küme içindeki
+      <code>VirtualHost</code> yönergelerinin sırası önemlidir; aşağıya
+      bakınız:)</p>
+
+<table><tr>
+<td><div class="example"><p><code>
+  NameVirtualHost 111.22.33.44<br />
+  &lt;VirtualHost 111.22.33.44&gt;<br />
+  # sunucu A<br />
+  ...<br />
+  &lt;/VirtualHost&gt;<br />
+  &lt;VirtualHost 111.22.33.44&gt;<br />
+  # sunucu B<br />
+  ...<br />
+  &lt;/VirtualHost&gt;<br />
+  <br />
+  NameVirtualHost 111.22.33.55<br />
+  &lt;VirtualHost 111.22.33.55&gt;<br />
+  # sunucu C<br />
+  ...<br />
+  &lt;/VirtualHost&gt;<br />
+  &lt;VirtualHost 111.22.33.55&gt;<br />
+  # sunucu D<br />
+  ...<br />
+  &lt;/VirtualHost&gt;
+</code></p></div></td>
+<td><div class="example"><p><code>
+  &lt;VirtualHost 111.22.33.44&gt;<br />
+  # sunucu A<br />
+  &lt;/VirtualHost&gt;<br />
+  &lt;VirtualHost 111.22.33.55&gt;<br />
+  # sunucu C<br />
+  ...<br />
+  &lt;/VirtualHost&gt;<br />
+  &lt;VirtualHost 111.22.33.44&gt;<br />
+  # sunucu B<br />
+  ...<br />
+  &lt;/VirtualHost&gt;<br />
+  &lt;VirtualHost 111.22.33.55&gt;<br />
+  # sunucu D<br />
+  ...<br />
+  &lt;/VirtualHost&gt;<br />
+  <br />
+  NameVirtualHost 111.22.33.44<br />
+  NameVirtualHost 111.22.33.55<br />
+  <br />
+</code></p></div></td>
+</tr></table>
+
+
+    <p>(Okuma kolaylığı bakımından soldaki sürümü tercih etmenizi öneririz.)
+    </p>
+
+    <p><code>VirtualHost</code> yönergesi çözümlendikten sonra sankon
+      sunucusuna yönergedeki ilk isme atanmış portun öntanımlı olduğu bir
+      <code>Listen</code> verilir.</p>
+
+    <p>Eğer tüm <code>VirtualHost</code> isimlerinin listesi aynı adres
+      kümesine çözümleniyorsa bu isimler birer <code>ServerAlias</code> gibi
+      ele alınırlar (bir <code>ServerAlias</code> yönergesi ile geçersiz
+      kılınmadıkça). Bir sankon tanımından sonra gelen <code>Listen</code>
+      satırlarının o sankonun adres kümesine atanmış portlara bir etkisinin
+      olmayacağına dikkat ediniz.</p>
+
+    <p>İsim listeleri IP adreslerine göre gruplanır ve bir çiftler tablosuna
+      kaydedilir. Eğer IP adresi bir <code>NameVirtualHost</code> yönergesinde
+      kullanılmışsa, liste bu IP adresi için tanımlanmış tüm sankonları
+      içerir. Eğer bu IP adresinin tanımlandığı bir sankon yoksa o
+      <code>NameVirtualHost</code> yönergesi yoksayılır ve günlüğe bir hata
+      kaydı düşülür. IP’ye dayalı sankonlar için çiftler listesinde isim
+      alanları boştur.</p>
+
+    <p>Çiftler listesini işleyen işlevin hızı nedeniyle bir istek sırasında IP
+      adresine göre gruplama yaparken kaynak harcaması en düşük düzeyde olur
+      hatta neredeyse hiç olmaz. Ek olarak, tablo, IP adresinin son
+      sekizlisindeki değişikliklere göre de en iyilenir.</p>
+
+    <p>Her sankon için bazı değerler öntanımlı olarak atanır. Bunların
+      başlıcaları:</p>
+
+    <ol>
+      <li>Sankon bir <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>
+        yönergesi içermiyorsa,
+        <code class="directive"><a href="../mod/core.html#resourceconfig">ResourceConfig</a></code>,
+        <code class="directive"><a href="../mod/core.html#accessconfig">AccessConfig</a></code>,
+        <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code>,
+        <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>,
+        <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>,
+        <code class="directive"><a href="../mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></code>,
+        <code class="directive"><a href="../mod/core.html#receivebuffersize">ReceiveBufferSize</a></code> ve
+        <code class="directive"><a href="../mod/core.html#sendbuffersize">SendBufferSize</a></code> yönergeleri için
+        öntanımlı değerler ana_sunucudaki eşdeğerlerinden miras alınır. (Yani,
+        bu yönergeler için ana_sunucudaki son değerler miras alınır.)</li>
+
+      <li>Sankon için öntanımlı dizin erişim izinlerinin tanımlandığı "arama
+        öntanımlıları" ana_sunucununkilere katılır. Buna her modülün dizinlere
+        özgü yapılandırma bilgileri dahildir.</li>
+
+      <li>Her modülün ana_sunucudaki sunuculara özgü yapılandırmaları sankon
+        sunucusununkilerle katıştırılır.</li>
+    </ol>
+
+    <p>Esasen, ana_sunucu, sankon sunucularını oluştururken bir öntanımlılar
+      listesi veya öntanımlı değerlere dayanak noktası olarak ele alınır.
+      Fakat bu ana_sunucu tanımlarının yapılandırma dosyasındaki yerlerinin
+      saptanmasının konumuzla ilgisi yoktur; ana_sunucu yapılandırmasının
+      tamamı son katıştırma yapılacağı zaman çözümlenir. Bu bakımdan,
+      ana_sunucu tanımlarından bir kısmı sankon tanımlarından sonra yer alsa
+      bile sankon tanımlarında etkili olabilir.</p>
+
+    <p>Eğer, bu noktada ana_sunucu hiçbir <code>ServerName</code> satırı
+      içermiyorsa <code class="program"><a href="../programs/httpd.html">httpd</a></code> programının çalıştığı makinenin
+      konak ismi öntanımlıdır. Ana_sunucunun <code>ServerName</code> için
+      yaptığı DNS sorgusundan dönen IP adreslerine <em>ana_sunucu adres
+      kümesi</em> diyoruz.</p>
+
+    <p>Tanımsız <code>ServerName</code> alanları için bir isme dayalı sankon,
+      sankonu tanımlayan <code>VirtualHost</code> yönergesinde belirtilen ilk
+      adresi öntanımlı değer kabul eder.</p>
+
+    <p>Sihirli <code>_default_</code> sankonları için ana_sunucunun
+      <code>ServerName</code> değeri kullanılır.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="hostmatching" id="hostmatching">Sanal Konağın Belirlenmesi</a></h2>
+
+    <p>Sunucu bir istek durumunda hangi sankonun kullanılacağını şöyle
+      belirler:</p>
+
+    <h3><a name="hashtable" id="hashtable">Değer çiftleri tablosu aranır</a></h3>
+
+    <p>Bir istemci tarafından bağlantı ilk yapıldığında önce IP-isim çiftleri
+      tablosunda istemcinin bağlandığı IP adresi için bir arama yapılır.</p>
+
+    <p>Arama başarısız olursa (IP adresi yoksa) hizmet, istekte belirtilen
+      port için bir <code>_default_</code> sankon varsa, o sankondan, yoksa
+      ana_sunucudan sunulur.</p>
+
+    <p>Eğer çiftler tablosunda IP adresi yoksa port numarası ile eşleştirme
+      çabası ayrıca, diğer isme dayalı sanal konaklardaki gibi ard arda ele
+      alınmayı gerektiren <code>NameVirtualHost *</code> durumundaki bir
+      girdiyle sonuçlanabilir.</p>
+
+    <p>Arama sonucunda tabloda IP adresi bulunursa sonraki adım hizmetin bir
+      IP’ye dayalı sankondan mı yoksa isme dayalı bir sankondan mı
+      sunulacağına karar vermektir.</p>
+
+    
+
+    <h3><a name="ipbased" id="ipbased">IP’ye dayalı sankon</a></h3>
+
+    <p>Eğer tabloda bulduğumuz girdinin isim alanları boşsa bir IP’ye dayalı
+      sanal konak bulmuşuz demektir. Artık karar vermek için başka bir şey
+      yapmaya gerek yoktur ve istek bu sankondan sunulur.</p>
+
+    
+
+    <h3><a name="namebased" id="namebased">İsme dayalı sankon</a></h3>
+
+    <p>Tabloda bulduğumuz girdi için bir isim listesi varsa bir isme dayalı
+      sankon sözkonusudur. Bu isim listesi, sankonları, ilgili
+      <code>VirtualHost</code> bölümlerinin yapılandırma dosyasında yer alış
+      sırasına göre içerir.</p>
+
+    <p>Bu listedeki ilk sankon (yapılandırma dosyasında belirtilen IP adresine
+      sahip ilk sankon) en yüksek önceliğe sahiptir ve sunucu ismi
+      belirtilmeyen veya <code>Host:</code> başlık alanı olmayan istekleri bu
+      sankon karşılar.</p>
+
+    <p>Eğer istemci bir <code>Host:</code> başlık alanı ile istek yapmışsa
+      liste bu sankon için aranır ve hizmet <code>ServerName</code> veya
+      <code>ServerAlias</code> ile ilk eşleşmenin sağlandığı sankondan
+      sunulur. <code>Host:</code> alanında bir port belirtilebilirse de Apache
+      daima istemcinin isteği gönderdiği portu gerçek port kabul eder.</p>
+
+    <p>Eğer istemci <code>Host:</code> başlık alanı bulunmayan bir HTTP/1.0
+      isteği yapmışsa istemcinin hangi sankona bağlanmayı denediğini bilemeyiz
+      ve istekteki URI ile mevcut <code>ServerPath</code> değerini
+      eşleştirmeye çalışırız. Listedekilerden ilk eşleşen yola sahip sankondan
+      hizmeti sunarız.</p>
+
+    <p>İstekle eşleşen bir sankon bulunamazsa IP listesinde istemcinin
+      bağlandığı portla eşleşen ilk sankondan hizmeti sunarız.</p>
+
+    
+
+    <h3><a name="persistent" id="persistent">Kalıcı bağlantılar</a></h3>
+
+    <p>Yukarıda açıklanan IP araması belli bir TCP/IP oturumunda bir defaya
+      mahsus yapıldığı halde bir kalıcı/KeepAlive bağlantı sırasında her istek
+      için ayrı bir arama yapılır. Başka bir deyişle, bir istemci tek bir
+      kalıcı bağlantı üzerinde farklı isme dayalı sankonlardan sayfa talebinde
+      bulunabilir.</p>
+
+    
+
+    <h3><a name="absoluteURI" id="absoluteURI">Mutlak URI</a></h3>
+
+    <p>Eğer istekte belirtilen URI bir mutlak URI ise ve istek yapılan konak
+      ismi ve port ana sunucuyla veya sankonlardan biriyle eşleşiyorsa,
+      şema/konakadı/port öneki ayrılır ve elde edilen göreli URI ilgili
+      sankondan veya ana sunucudan sunulur. Eğer bir eşleşme sağlanamazsa
+      URI’ye dokunulmaz ve istek bir vekil isteği olarak ele alınır.</p>
+
+
+<h3><a name="observations" id="observations">İzlenimler</a></h3>
+
+    <ul>
+      <li>Bir isme dayalı sankon asla bir IP’ye dayalı sankon ile (veya tersi)
+        etkileşime girmez. IP’ye dayalı sankonlara sadece kendi adres
+        kümesindeki bir IP adresi üzerinden erişilebilir, asla başka bir
+        adresten erişilemez. Aynısı isme dayalı sankonlara da uygulanır;
+        onlara sadece bir <code>NameVirtualHost</code> yönergesi ile
+        tanımlanmış adres kümesindeki bir IP adresi üzerinden
+        erişilebilir.</li>
+
+      <li>Bir IP’ye dayalı sankon için asla <code>ServerAlias</code> ve
+        <code>ServerPath</code> değerine bakılmaz.</li>
+
+      <li>Yapılandırma dosyası içinde isme/IP’ye dayalı ve
+        <code>_default_</code> sankonlar ile <code>NameVirtualHost</code>
+        yönergelerinin yer alış sırasının birbirlerine göre bir önemi yoktur.
+        Sıralama sadece aynı IP adresine sahip isme dayalı sankonlar arasında
+        önemlidir. Aynı adres kümesine mensup isme dayalı sankonlardan
+        yapılandırma dosyasında ilk sırada yer alanı en yüksek önceliğe
+        sahiptir.</li>
+
+      <li>Güvenlik saikiyle, eşleştirme işlemi sırasında <code>Host:</code>
+        başlık alanında belirtilen port asla kullanılmaz. Apache daima
+        istemcinin bağlantı kurduğu gerçek portu kullanır.</li>
+
+      <li>Değeri başka bir <code>ServerPath</code> yönergesinin değeri için
+        önek olan bir <code>ServerPath</code> yönergesi yapılandırma
+        dosyasında daha önce yer alıyorsa sonrakiyle eşleşme asla
+        gerçekleşmez. (Bu belirsizliği giderecek bir <code>Host:</code> başlık
+        alanının mümkün olmadığı varsayılır.)</li>
+
+      <li>Eğer tek bir IP adresine sahip IP’ye dayalı iki sankon varsa eşleşme
+        daima yapılandırma dosyasında ilk yer alanla gerçekleşir. Böyle bir
+        şey kasten yapılmaz. Sunucu böyle bir durumu saptadığında hata
+        günlüğünde bir uyarı verecektir.</li>
+
+      <li>Bir <code>_default_</code> sankon sadece istekle eşleşen bir IP
+        adresi bulunamadığında port numarası eşleştiği takdirde isteğe hizmet
+        sunabilir. Port düzeyinde eşleşmenin olabilmesi için isteğin geldiği
+        port ile sankon için belirtilen port eşleşmelidir. Olası tüm portlarla
+        eşleşmeyi sağlamak üzere yıldız imi (<code>_default_:*</code>
+        şeklinde) kullanılabilir. Aynı şey <code>NameVirtualHost *</code>
+        sankonlarına da uygulanır.</li>
+
+      <li>Ana_sunucunun bir isteğe hizmet sunabilmesi için istemcinin
+        bağlandığı IP adresi ve port hiçbir yerde belirtilmemiş ve
+        <code>_default_</code> dahil hiçbir sankon ile eşleşme sağlanamamış
+        olmalıdır. Başka bir deyişle, istemcinin bağlandığı port ile eşleşen
+        bir <code>_default_</code> sankon olmadıkça adres ve port belirtmeyen
+        bir isteğe ana_sunucu yanıt verecektir.</li>
+
+      <li><code>Host:</code> başlık alanı içermeyen veya hedefi bilinmeyen bir
+        istek geldiği takdirde, eğer bu istemcinin bağlandığı adres ve port
+        için (örneğin, <code>NameVirtualHost</code> ile) tanımlanmış bir isme
+        dayalı sankon varsa bu isteğe ne ana_sunucu ne de bir
+        <code>_default_</code> sankon hizmet sunabilir.</li>
+
+      <li><code>VirtualHost</code> yönergelerinde asla DNS isimleri
+        belirtmemelisiniz. Aksi takdirde sunucuyu başlatma sırasında DNS
+        sorgusu yapmaya zorlamış olursunuz. Listelenen tüm alanlar için DNS
+        üzerinde tam denetime sahip değilseniz bu ayrıca bir güvenlik
+        tehdidine yol açar. Bu konuda daha ayrıntılı bilgi edinmek için <a href="../dns-caveats.html">DNS ile ilgili konular ve Apache</a>
+        belgesine bakınız.</li>
+
+      <li><code>ServerName</code> her sankon için ayrı ayrı belirlenmiş
+        olmalıdır. Aksi takdirde her sankon için bir DNS sorgusu gerekir.</li>
+      </ul>
+      
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="tips" id="tips">İpuçları</a></h2>
+
+    <p><a href="../dns-caveats.html#tips">DNS konuları</a> sayfasındaki
+      ipuçlarına ilaveten burada da bazı ipuçları bulacaksınız:</p>
+
+    <ul>
+      <li>Ana_sunucu tanımlarının hepsini <code>VirtualHost</code>
+        tanımlarının öncesinde bitirin. Bu ayrıca yapılandırmanızın
+        okunabilirliğini de arttırır; <code>VirtualHost</code> tanımlarının
+        sonrasına sarkan yapılandırmaların katıştırılması işlemi tüm sanal
+        konakları etkileyebilen tanımlar bakımından bir
+        karışıklığa/belirsizliğe sebep olabilir.)</li>
+
+      <li>Birbirleriyle ilgili <code>NameVirtualHost</code> ve
+        <code>VirtualHost</code> tanımlarını okunabilirliği arttırmak için
+        gruplayın.</li>
+
+      <li>Değeri başka bir <code>ServerPath</code> için önek olan tanımlamalar
+        yapmaktan kaçının. Bundan kaçınamıyorsanız, yolu uzun olanı yolu kısa
+        olanın öncesine yerleştirin. Örneğin, "ServerPath /abc/def" önce
+        "ServerPath /abc" sonra yer alsın.</li>
+    </ul>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/vhosts/details.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/vhosts/details.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/vhosts/details.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
