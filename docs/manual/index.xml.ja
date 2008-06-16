@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 420993:636028 (outdated) -->
+<!-- English Revision: 636028 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -88,6 +88,7 @@
     <page href="sitemap.html">サイトマップ</page>
     <page href="developer/">開発者のためのドキュメント</page>
     <page href="misc/">その他</page>
+    <page href="http://wiki.apache.org/httpd/">ウィキ</page>
 </category>
 
 </indexpage>
