@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:635137 (outdated) -->
+<!-- English Revision: 635137 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -35,32 +35,9 @@
     <module>mod_authz_user</module> は認証されたユーザが
     <code>Require user</code> ディレクティブに書かれていれば
     アクセスを認めます。認証に成功したユーザすべてにアクセスを
-    許可するには、代わりに <code>require valid-user</code> を
+    許可するには、代わりに <code>Require valid-user</code> を
     使うことができます。</p>
 </summary>
-<seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
-
-<directivesynopsis>
-<name>AuthzUserAuthoritative</name>
-<description>承認が下位のモジュールに渡されるかどうかを設定する</description>
-<syntax>AuthzUserAuthoritative On|Off</syntax>
-<default>AuthzUserAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p><directive>AuthzUserAuthoritative</directive> ディレクティブを
-    明示的に <code>Off</code> に設定すると userID に対応する
-    <strong>グループがない場合に</strong>、
-    (<code>module.c</code> で定義されている) 下位のモジュールにグループ承認を
-    渡すことを許可します。</p>
-
-    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
-    Required 応答が返されます。ですから、これを設定しないと
-    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
-</usage>
-</directivesynopsis>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
 
 </modulesynopsis>

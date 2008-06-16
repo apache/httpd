@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:574882 (outdated) -->
+<!-- English Revision: 574882 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -72,8 +72,7 @@
       決して承認しません。</p>
     </note>
 </summary>
-<seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
 
 <section id="examples"><title>設定例</title>
 
@@ -95,7 +94,6 @@
           AuthName MyPrivateFiles<br />
           AuthBasicProvider dbm<br />
           AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Satisfy All<br />
           Require file-owner<br />
         </indent>
         &lt;/Directory&gt;
@@ -132,38 +130,5 @@
       </example>
     </section>
 </section>
-
-<directivesynopsis>
-<name>AuthzOwnerAuthoritative</name>
-<description>承認が下位承認モジュールに渡されるかどうかを設定する</description>
-<syntax>AuthzOwnerAuthoritative On|Off</syntax>
-<default>AuthzOwnerAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p><directive>AuthzOwnerAuthoritative</directive> ディレクティブを
-    明示的に <code>Off</code> に設定すると、以下の場合に認証が
-    (<code>modules.c</code> で定義されている) 下位のモジュールに
-    渡されるようにします:</p>
-
-    <ul>
-    <li><code>file-owner</code> の場合は、提供されたウェブユーザ名に
-    ファイルシステムの所有者が一致しないか、所有者がわからない場合。</li>
-
-    <li><code>file-group</code> の場合は、提供されたウェブユーザ名が
-    ファイルシステムグループに存在しないか、わからない場合。</li>
-    </ul>
-
-    <p>値を <code>Off</code> に設定すると、<code>file-owner</code> と
-    <code>file-group</code> を組み合わせることもできるようになり、
-    その場合はどちらか (両方でも) にマッチした場合にアクセスを許可されます。</p>
-
-    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
-    Required 応答が返されます。ですから、<code>Off</code> に設定しないことで
-    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
-</usage>
-</directivesynopsis>
 
 </modulesynopsis>

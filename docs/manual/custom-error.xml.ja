@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 420990:558686 (outdated) -->
+<!-- English Revision: 558686 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -121,12 +121,10 @@
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
     </example>
 
-        <p>action (動作) は、</p>
+        <p>action (動作) は、下記のいずれかです</p>
 
         <ol>
-          <li>表示されるべきテキスト。テキストには引用符 (") をつけます。
-          引用符の後に続くものが何でも表示されます。
-          <em>注意 : (") は表示されません</em></li>
+          <li>表示するテキスト。テキストは引用符 (") で囲んで指定します。</li>
 
           <li>リダイレクト先の外部 URL </li>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 420990:587444 (outdated) -->
+<!-- English Revision: 587444 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -82,7 +82,7 @@
 
 <section id="usage"><title>使用法の概要</title>
 
-    <p>Apache 2.2 の DSO 機能の概略を知ることができるための、
+    <p>Apache 2.x の DSO 機能の概略を知ることができるための、
     短く簡潔な概要です:</p>
 
     <ol>
