@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:659902 (outdated) -->
+<!-- English Revision: 659902 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -100,9 +100,9 @@
 
             <example>
             NameVirtualHost 172.20.30.40<br />
-						<br />
+            <br />
             &lt;VirtualHost 172.20.30.40&gt;<br />
- 		        # etc ...
+             # etc ...
             </example>
 
           <p>しかし、IP アドレスが予測不可能なシステム
@@ -138,31 +138,31 @@
     <title>サーバの設定</title>
 
     Listen 80<br />
-		<br />
+    <br />
     # This is the "main" server running on 172.20.30.40<br />
     ServerName server.domain.com<br />
     DocumentRoot /www/mainserver<br />
-		<br />
+    <br />
     # This is the other address<br />
     NameVirtualHost 172.20.30.50<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
-   			<br />
+        <br />
         # Other directives here ...<br />
-				<br />
+        <br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
-				<br />
+        <br />
         # Other directives here ...<br />
-				<br />
+        <br />
     </indent>
     &lt;/VirtualHost&gt;
     </example>
@@ -193,7 +193,7 @@
 
     NameVirtualHost 192.168.1.1<br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/server1<br />
@@ -229,31 +229,31 @@
 
     Listen 80<br />
     Listen 8080<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40:80<br />
     NameVirtualHost 172.20.30.40:8080<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
         ServerName www.example.com<br />
         DocumentRoot /www/domain-80<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
         ServerName www.example.com<br />
         DocumentRoot /www/domain-8080<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
         ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-80<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
         ServerName www.example.org<br />
@@ -274,14 +274,14 @@
     <title>サーバの設定</title>
 
     Listen 80<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
@@ -311,28 +311,28 @@
     Listen 172.20.30.40:8080<br />
     Listen 172.20.30.50:80<br />
     Listen 172.20.30.50:8080<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
         DocumentRoot /www/example1-80<br />
         ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
         DocumentRoot /www/example1-8080<br />
         ServerName www.example.com<br />
-		</indent>
+    </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />
     <indent>
         DocumentRoot /www/example2-80<br />
         ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50:8080&gt;<br />
     <indent>
         DocumentRoot /www/example2-8080<br />
@@ -353,30 +353,30 @@
     <title>サーバの設定</title>
 
     Listen 80<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example3<br />
         ServerName www.example3.net<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     # IP-based<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
@@ -384,7 +384,7 @@
         ServerName www.example4.edu<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.60&gt;<br />
     <indent>
         DocumentRoot /www/example5<br />
@@ -408,7 +408,7 @@
     <example>
     &lt;VirtualHost *:*&gt;<br />
         ProxyPreserveHost On<br />
-        ProxyPass / http://192.168.111.2<br />
+        ProxyPass / http://192.168.111.2/<br />
         ProxyPassReverse / http://192.168.111.2/<br />
         ServerName hostname.example.com<br />
     &lt;/VirtualHost&gt;
@@ -467,7 +467,7 @@
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost _default_:*&gt;<br />
     <indent>
         DocumentRoot /www/default<br />
@@ -523,9 +523,9 @@
     Listen 80<br />
     ServerName www.example.com<br />
     DocumentRoot /www/example1<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
@@ -533,7 +533,7 @@
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example3<br />
@@ -567,7 +567,7 @@
     <title>サーバの設定</title>
 
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         # primary vhost<br />
@@ -577,7 +577,7 @@
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     DocumentRoot /www/subdomain/sub1<br />
     <indent>
@@ -588,7 +588,7 @@
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/subdomain/sub2<br />
