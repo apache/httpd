@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_authz_owner.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_owner.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ファイルの所有者に基づいた承認</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authz_owner_module</td></tr>
@@ -76,16 +74,13 @@
     </div>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
-</ul>
+<p>このモジュールにディレクティブはありません。</p>
 <h3>トピック</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">設定例</a></li>
 </ul><h3>参照</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -109,7 +104,6 @@
           AuthName MyPrivateFiles<br />
           AuthBasicProvider dbm<br />
           AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Satisfy All<br />
           Require file-owner<br />
         </span>
         &lt;/Directory&gt;
@@ -145,39 +139,6 @@
         &lt;/Directory&gt;
       </code></p></div>
     
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzOwnerAuthoritative" id="AuthzOwnerAuthoritative">AuthzOwnerAuthoritative</a> <a name="authzownerauthoritative" id="authzownerauthoritative">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>承認が下位承認モジュールに渡されるかどうかを設定する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthzOwnerAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthzOwnerAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_authz_owner</td></tr>
-</table>
-    <p><code class="directive">AuthzOwnerAuthoritative</code> ディレクティブを
-    明示的に <code>Off</code> に設定すると、以下の場合に認証が
-    (<code>modules.c</code> で定義されている) 下位のモジュールに
-    渡されるようにします:</p>
-
-    <ul>
-    <li><code>file-owner</code> の場合は、提供されたウェブユーザ名に
-    ファイルシステムの所有者が一致しないか、所有者がわからない場合。</li>
-
-    <li><code>file-group</code> の場合は、提供されたウェブユーザ名が
-    ファイルシステムグループに存在しないか、わからない場合。</li>
-    </ul>
-
-    <p>値を <code>Off</code> に設定すると、<code>file-owner</code> と
-    <code>file-group</code> を組み合わせることもできるようになり、
-    その場合はどちらか (両方でも) にマッチした場合にアクセスを許可されます。</p>
-
-    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
-    Required 応答が返されます。ですから、<code>Off</code> に設定しないことで
-    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
-
 </div>
 </div>
 <div class="bottomlang">
