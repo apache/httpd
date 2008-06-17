@@ -158,6 +158,23 @@ of a request or the last 63, assuming the request itself is greater than
     behavior and the default) or if the last 63 characters are. This
     is only applicable, of course, if the length of the request is
     64 characters or greater.</p>
+
+    <p>If Apache is handling <code
+    >GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code
+    > mod_status displays as follows:
+    </p>
+
+    <table border="1">
+      <tr>
+        <th>Off (default)</th>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
+      </tr>
+    </table>
+
 </usage>
 
 </directivesynopsis>
