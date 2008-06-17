@@ -147,12 +147,12 @@ of a request or the last 63, assuming the request itself is greater than
 <syntax>SeeRequestTail On|Off</syntax>
 <default>SeeRequestTail Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>SeeRequestTail is only available in Apache 2.2.7 and 
-later.</compatibility>
+<compatibility>Available in Apache 2.2.7 and later.</compatibility>
 
 <usage>
-    <p>mod_status with ExtendedStatus On displays the actual request being
-    handled. For historical purposes, only 63 characters of the request
+    <p>mod_status with <code>ExtendedStatus On</code>
+    displays the actual request being handled. 
+    For historical purposes, only 63 characters of the request
     are actually stored for display purposes. This directive
     controls whether the 1st 63 characters are stored (the previous
     behavior and the default) or if the last 63 characters are. This
