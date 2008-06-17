@@ -276,6 +276,10 @@ static void wakeup_listener(void)
          */
         return;
     }
+
+    /* unblock the listener if it's waiting for a worker */
+    ap_queue_info_term(worker_queue_info); 
+
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
      * platforms and wake up the listener thread since it is the only thread
@@ -314,7 +318,6 @@ static void signal_threads(int mode)
     if (mode == ST_UNGRACEFUL) {
         workers_may_exit = 1;
         ap_queue_interrupt_all(worker_queue);
-        ap_queue_info_term(worker_queue_info);
         close_worker_sockets(); /* forcefully kill all current connections */
     }
 }
