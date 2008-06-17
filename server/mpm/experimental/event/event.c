@@ -654,7 +654,7 @@ read_request:
             return 1;
         }
         else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted ||
-            ap_graceful_stop_signalled()) {
+            listener_may_exit) {
             c->cs->state = CONN_STATE_LINGER;
         }
         else if (c->data_in_input_filters) {
