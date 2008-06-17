@@ -23,8 +23,6 @@
 <a href="./ja/dso.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
     <p>Apache HTTP サーバはモジュール化されたプログラムで、
     管理者がモジュールを選択することでサーバに組み込む機能を選ぶことができます。
@@ -81,7 +79,7 @@
 <div class="section">
 <h2><a name="usage" id="usage">使用法の概要</a></h2>
 
-    <p>Apache 2.2 の DSO 機能の概略を知ることができるための、
+    <p>Apache 2.x の DSO 機能の概略を知ることができるための、
     短く簡潔な概要です:</p>
 
     <ol>

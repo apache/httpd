@@ -24,8 +24,6 @@
 <a href="./ja/custom-error.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
     <p>ウェブマスターが何らかのエラーや問題に対する
     Apache の反応を設定できるようにする追加機能を提供します。</p>
@@ -127,12 +125,10 @@
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
     </code></p></div>
 
-        <p>action (動作) は、</p>
+        <p>action (動作) は、下記のいずれかです</p>
 
         <ol>
-          <li>表示されるべきテキスト。テキストには引用符 (") をつけます。
-          引用符の後に続くものが何でも表示されます。
-          <em>注意 : (") は表示されません</em></li>
+          <li>表示するテキスト。テキストは引用符 (") で囲んで指定します。</li>
 
           <li>リダイレクト先の外部 URL </li>
 

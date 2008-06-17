@@ -23,8 +23,6 @@
 <a href="./ja/content-negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
 
     <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
@@ -545,7 +543,8 @@
     通常のネゴシエーション手順が適用されます。</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1
+      SetEnvIf Cookie "language=(.+)" prefer-language=$1<br />
+      Header append Vary cookie 
     </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

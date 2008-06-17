@@ -25,8 +25,6 @@
 <p><span>言語: </span><a href="../en/mod/mod_access_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_access_compat.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>access_compat_module</td></tr>
@@ -55,7 +53,7 @@
     <p>ホストによるアクセス制限とパスワードによる認証を、
     同時に組み合わせて使うこともできます。
     この場合、その二つの制限の関係を指定するために
-    <code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code>
+    <code class="directive"><a href="#satisfy">Satisfy</a></code>
     ディレクティブを使用します。</p>
 
     <div class="warning"><h3>Note</h3>
@@ -284,7 +282,7 @@
 
       <dt><code>Mutual-failure</code></dt>
 
-      <dd>これは <code class="directive">Order Allow,Deny</code> と全く同じ効果を持ち、 
+      <dd>これは <code>Order Allow,Deny</code> と全く同じ効果を持ち、 
       そのため非推奨となっています。
       </dd>
     </dl>
@@ -397,7 +395,7 @@
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.0.51 以降では <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> ディレクティブと <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> ディレクティブの影響を受ける
 </td></tr>
 </table>
-    <p><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> と
+    <p><code class="directive"><a href="#allow">Allow</a></code> と
     <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> の両方が使われているときの
     アクセスポリシーを設定します。パラメータは <code>All</code> か <code>Any</code>
     です。このディレクティブはある場所へのアクセスがユーザ名/パスワード
