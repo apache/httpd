@@ -26,7 +26,7 @@
 <description>FTP support module for
 <module>mod_proxy</module></description>
 <status>Extension</status>
-<sourcefile>proxy_ftp.c</sourcefile>
+<sourcefile>mod_proxy_ftp.c</sourcefile>
 <identifier>proxy_ftp_module</identifier>
 
 <summary>
