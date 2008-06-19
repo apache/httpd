@@ -25,7 +25,7 @@
 <name>mod_proxy_balancer</name>
 <description><module>mod_proxy</module> extension for load balancing </description>
 <status>Extension</status>
-<sourcefile>proxy_balancer.c</sourcefile>
+<sourcefile>mod_proxy_balancer.c</sourcefile>
 <identifier>proxy_balancer_module</identifier>
 <compatibility>Available in version 2.1 and later</compatibility>
 

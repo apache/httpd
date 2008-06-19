@@ -25,7 +25,7 @@
 <name>mod_proxy_balancer</name>
 <description>負荷分散のための <module>mod_proxy</module> 拡張</description>
 <status>Extension</status>
-<sourcefile>proxy_balancer.c</sourcefile>
+<sourcefile>mod_proxy_balancer.c</sourcefile>
 <identifier>proxy_balancer_module</identifier>
 <compatibility>2.1 以降</compatibility>
 

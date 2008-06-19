@@ -26,7 +26,7 @@
 <description><module>mod_proxy</module> で AJP 
 をサポートするためのモジュール</description>
 <status>Extension</status>
-<sourcefile>proxy_ajp.c</sourcefile>
+<sourcefile>mod_proxy_ajp.c</sourcefile>
 <identifier>proxy_ajp_module</identifier>
 
 <summary>
