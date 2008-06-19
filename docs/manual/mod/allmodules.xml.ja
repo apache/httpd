@@ -65,6 +65,7 @@
   <modulefile>mod_proxy_ajp.xml.ja</modulefile>
   <modulefile>mod_proxy_balancer.xml.ja</modulefile>
   <modulefile>mod_proxy_connect.xml.ja</modulefile>
+  <modulefile>mod_proxy_fcgi.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_request.xml</modulefile>

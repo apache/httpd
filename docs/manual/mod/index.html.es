@@ -164,6 +164,8 @@ by other LDAP modules</dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for load balancing </dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for
 <code>CONNECT</code> request handling</dd>
+<dt><a href="mod_proxy_fcg.html">mod_proxy_fcg</a></dt><dd>FastCGI support module for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>FTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
