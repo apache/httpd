@@ -26,7 +26,7 @@
 <description>HTTP support module for
 <module>mod_proxy</module></description>
 <status>Extension</status>
-<sourcefile>proxy_http.c</sourcefile>
+<sourcefile>mod_proxy_http.c</sourcefile>
 <identifier>proxy_http_module</identifier>
 
 <summary>
