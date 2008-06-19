@@ -22,7 +22,7 @@
 
 <modulesynopsis metafile="mod_proxy_fcgi.xml.meta">
 
-<name>mod_proxy_fcg</name>
+<name>mod_proxy_fcgi</name>
 <description>FastCGI support module for
 <module>mod_proxy</module></description>
 <status>Extension</status>
