@@ -26,7 +26,7 @@
 <description><module>mod_proxy</module> extension for
 <code>CONNECT</code> request handling</description>
 <status>Extension</status>
-<sourcefile>proxy_connect.c</sourcefile>
+<sourcefile>mod_proxy_connect.c</sourcefile>
 <identifier>proxy_connect_module</identifier>
 
 <summary>
