@@ -602,6 +602,7 @@ server cannot determine a type in any other way</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>The argument <code>none</code> is available in Apache 2.2.7 and later</compatibility>
 
 <usage>
     <p>There will be times when the server is asked to provide a
@@ -627,7 +628,7 @@ server cannot determine a type in any other way</description>
     <example>
       DefaultType None
     </example>
-    <p>DefaultType None is only available in httpd-2.2.7 and later.</p>
+    <p><code>DefaultType None</code> is only available in httpd-2.2.7 and later.</p>
 
     <p>Note that unlike <directive
     module="core">ForceType</directive>, this directive only
