@@ -539,6 +539,7 @@ server cannot determine a type in any other way</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility>The argument <code>none</code> is available in Apache 2.2.7 and later</compatibility>
 
 <usage>
     <p>There will be times when the server is asked to provide a
@@ -564,7 +565,7 @@ server cannot determine a type in any other way</description>
     <example>
       DefaultType None
     </example>
-    <p>DefaultType None is only available in httpd-2.2.7 and later.</p>
+    <p><code>DefaultType None</code> is only available in httpd-2.2.7 and later.</p>
 
     <p>Note that unlike <directive
     module="core">ForceType</directive>, this directive only
@@ -581,8 +582,8 @@ server cannot determine a type in any other way</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>Equivalent to passing the <code>-D</code> argument to <a
-    href="../programs/httpd.html">httpd</a>.</p>
+    <p>Equivalent to passing the <code>-D</code> argument to <program
+    >httpd</program>.</p>
     <p>This directive can be used to toggle the use of <directive module="core"
     type="section">IfDefine</directive> sections without needing to alter
     <code>-D</code> arguments in any startup scripts.</p>
