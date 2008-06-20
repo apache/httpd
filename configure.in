@@ -338,8 +338,14 @@ INSTALL="\$(LIBTOOL) --mode=install \$(abs_srcdir)/build/install.sh -c"
 APACHE_SUBST(MKINSTALLDIRS)
 APACHE_SUBST(INSTALL)
 
-dnl various OS checks that apparently set required flags
+dnl Various OS checks that apparently set required flags
+ifdef([AC_USE_SYSTEM_EXTENSIONS], [
 AC_USE_SYSTEM_EXTENSIONS
+], [
+AC_AIX
+AC_MINIX
+])
+
 AC_ISC_POSIX
 
 # Ensure that satisfactory versions of apr and apr-util are 
