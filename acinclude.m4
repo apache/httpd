@@ -340,12 +340,11 @@ AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
 if test "x$ap_ssltk_configured" = "x"; then
   dnl initialise the variables we use
   ap_ssltk_base=""
-  ap_ssltk_inc=""
-  ap_ssltk_lib=""
+  ap_ssltk_libs=""
   ap_ssltk_type=""
 
   dnl Determine the SSL/TLS toolkit's base directory, if any
-  AC_MSG_CHECKING(for SSL/TLS toolkit base)
+  AC_MSG_CHECKING([for SSL/TLS toolkit base])
   AC_ARG_WITH(sslc, APACHE_HELP_STRING(--with-sslc=DIR,RSA SSL-C SSL/TLS toolkit), [
     dnl If --with-sslc specifies a directory, we use that directory or fail
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
@@ -368,17 +367,18 @@ if test "x$ap_ssltk_configured" = "x"; then
   fi
 
   dnl Run header and version checks
-  saved_CPPFLAGS=$CPPFLAGS
+  saved_CPPFLAGS="$CPPFLAGS"
+  saved_LIBS="$LIBS"
   if test "x$ap_ssltk_base" != "x"; then
-    ap_ssltk_inc="-I$ap_ssltk_base/include"
-    CPPFLAGS="$CPPFLAGS $ap_ssltk_inc"
-    # Ensure that the given path is used by pkg-config too, otherwise
-    # the system openssl.pc might be picked up instead.
-    PKG_CONFIG_PATH="${ap_ssltk_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
-    export PKG_CONFIG_PATH
+    APR_ADDTO(CPPFLAGS, [-I$ap_ssltk_base/include])
+    APR_ADDTO(INCLUDES, [-I$ap_ssltk_base/include])
+    APR_ADDTO(LDFLAGS, [-L$ap_ssltk_base/lib])
+    if test "x$ap_platform_runtime_link_flag" != "x"; then
+      APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_ssltk_base/lib])
+    fi
   fi
   if test "x$ap_ssltk_type" = "x"; then
-    AC_MSG_CHECKING(for OpenSSL version)
+    AC_MSG_CHECKING([for OpenSSL version])
     dnl First check for manditory headers
     AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
     if test "$ap_ssltk_type" = "openssl"; then
@@ -397,25 +397,17 @@ if test "x$ap_ssltk_configured" = "x"; then
        echo "WARNING: OpenSSL version may contain security vulnerabilities!"
        echo "         Ensure the latest security patches have been applied!"
       ])
-      dnl Look for additional, possibly missing headers
-      AC_CHECK_HEADERS(openssl/engine.h)
-      if test -n "$PKGCONFIG"; then
-        $PKGCONFIG openssl
-        if test $? -eq 0; then
-          ap_ssltk_inc="$ap_ssltk_inc `$PKGCONFIG --cflags-only-I openssl`"
-          CPPFLAGS="$CPPFLAGS $ap_ssltk_inc"
-        fi
-      fi
     else
       AC_MSG_RESULT([no OpenSSL headers found])
     fi
   fi
   if test "$ap_ssltk_type" != "openssl"; then
     dnl Might be SSL-C - report, then test anything relevant
-    AC_MSG_CHECKING(for SSL-C version)
+    AC_MSG_CHECKING([for SSL-C version])
     AC_CHECK_HEADERS([sslc.h], [ap_ssltk_type="sslc"], [ap_ssltk_type=""])
     if test "$ap_ssltk_type" = "sslc"; then
-      AC_MSG_CHECKING(for SSL-C version)
+      ap_ssltk_libs="-lsslc"
+      AC_MSG_CHECKING([for SSL-C version])
       AC_TRY_COMPILE([#include <sslc.h>],[
 #if !defined(SSLC_VERSION_NUMBER)
 #error "Missing SSL-C version"
@@ -434,40 +426,51 @@ if test "x$ap_ssltk_configured" = "x"; then
       AC_MSG_RESULT([no SSL-C headers found])
     fi
   fi
-  dnl restore
-  CPPFLAGS=$saved_CPPFLAGS
   if test "x$ap_ssltk_type" = "x"; then
     AC_MSG_ERROR([...No recognized SSL/TLS toolkit detected])
   fi
 
-  dnl Run library and function checks
-  saved_LDFLAGS=$LDFLAGS
-  saved_LIBS=$LIBS
-  if test "x$ap_ssltk_base" != "x"; then
-    if test -d "$ap_ssltk_base/lib"; then
-      ap_ssltk_lib="$ap_ssltk_base/lib"
-    else
-      ap_ssltk_lib="$ap_ssltk_base"
+  if test "$ap_ssltk_type" = "openssl"; then
+    if test "x$ap_ssltk_base" != "x" -a \
+            -f "${ap_ssltk_base}/lib/pkgconfig/openssl.pc"; then
+      dnl Ensure that the given path is used by pkg-config too, otherwise
+      dnl the system openssl.pc might be picked up instead.
+      PKG_CONFIG_PATH="${ap_ssltk_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+      export PKG_CONFIG_PATH
     fi
-    LDFLAGS="$LDFLAGS -L$ap_ssltk_lib"
+    if test -n "$PKGCONFIG"; then
+      ap_ssltk_libs="`$PKGCONFIG --libs-only-l openssl`"
+      if test $? -eq 0; then
+        pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
+        APR_ADDTO(CPPFLAGS, [$pkglookup])
+        APR_ADDTO(INCLUDES, [$pkglookup])
+        pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
+        APR_ADDTO(LDFLAGS, [$pkglookup])
+      else
+        ap_ssltk_libs="-lssl -lcrypto"
+      fi
+    else
+      ap_ssltk_libs="-lssl -lcrypto"
+    fi
   fi
-  dnl make sure "other" flags are available so libcrypto and libssl can link
-  LIBS="$LIBS `$apr_config --libs`"
+  APR_SETVAR(SSL_LIBS, [$ap_ssltk_libs])
+  APR_ADDTO(LIBS, [$ap_ssltk_libs])
+  APACHE_SUBST(SSL_LIBS)
+
+  dnl Run library and function checks
   liberrors=""
   if test "$ap_ssltk_type" = "openssl"; then
-    AC_CHECK_LIB(crypto, SSLeay_version, [], [liberrors="yes"])
-    AC_CHECK_LIB(ssl, SSL_CTX_new, [], [liberrors="yes"])
-    AC_CHECK_FUNCS(ENGINE_init)
-    AC_CHECK_FUNCS(ENGINE_load_builtin_engines)
+    AC_CHECK_HEADERS([openssl/engine.h])
+    AC_CHECK_FUNCS([SSLeay_version SSL_CTX_new], [], [liberrors="yes"])
+    AC_CHECK_FUNCS([ENGINE_init ENGINE_load_builtin_engines])
   else
-    AC_CHECK_LIB(sslc, SSLC_library_version, [], [liberrors="yes"])
-    AC_CHECK_LIB(sslc, SSL_CTX_new, [], [liberrors="yes"])
+    AC_CHECK_FUNCS([SSLC_library_version SSL_CTX_new], [], [liberrors="yes"])
     AC_CHECK_FUNCS(SSL_set_state)
   fi
   AC_CHECK_FUNCS(SSL_set_cert_store)
   dnl restore
-  LDFLAGS=$saved_LDFLAGS
-  LIBS=$saved_LIBS
+  CPPFLAGS="$saved_CPPFLAGS"
+  LIBS="$saved_LIBS"
   if test "x$liberrors" != "x"; then
     AC_MSG_ERROR([... Error, SSL/TLS libraries were missing or unusable])
   fi
@@ -479,31 +482,6 @@ if test "x$ap_ssltk_configured" = "x"; then
   else
     AC_DEFINE(HAVE_SSLC, 1, [Define if SSL is supported using SSL-C])
   fi
-  dnl (b) hook up include paths
-  if test "x$ap_ssltk_inc" != "x"; then
-    APR_ADDTO(INCLUDES, [$ap_ssltk_inc])
-  fi
-  dnl (c) hook up linker paths
-  if test "x$ap_ssltk_lib" != "x"; then
-    APR_ADDTO(LDFLAGS, ["-L$ap_ssltk_lib"])
-    if test "x$ap_platform_runtime_link_flag" != "x"; then
-      APR_ADDTO(LDFLAGS, ["$ap_platform_runtime_link_flag$ap_ssltk_lib"])
-    fi
-  fi
-  # Put SSL libraries in SSL_LIBS.
-  if test "$ap_ssltk_type" = "openssl"; then
-    APR_SETVAR(SSL_LIBS, [-lssl -lcrypto])
-    if test -n "$PKGCONFIG"; then
-      $PKGCONFIG openssl
-      if test $? -eq 0; then
-        ap_ssltk_libdep=`$PKGCONFIG --libs openssl`
-        APR_ADDTO(SSL_LIBS, $ap_ssltk_libdep)
-      fi
-    fi
-  else
-    APR_SETVAR(SSL_LIBS, [-lsslc])
-  fi
-  APACHE_SUBST(SSL_LIBS)
 fi
 ])
 
