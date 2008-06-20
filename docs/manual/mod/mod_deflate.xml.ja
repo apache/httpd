@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -59,11 +59,6 @@
         <br />
         # MSIE masquerades as Netscape, but it is fine<br />
         # BrowserMatch \bMSIE             !no-gzip !gzip-only-text/html<br />
-        <br />
-        # NOTE: Due to a bug in mod_setenvif up to Apache 2.0.48<br />
-        # the above regex won't work. You can use the following<br />
-        # workaround to get the desired effect:<br />
-        BrowserMatch \bMSI[E]           !no-gzip !gzip-only-text/html<br />
         <br />
         # Don't compress images<br />
         SetEnvIfNoCase Request_URI \<br />

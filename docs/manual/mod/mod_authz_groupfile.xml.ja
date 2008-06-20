@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:574882 (outdated) -->
+<!-- English Revision: 574882 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -36,8 +36,7 @@
     によっても提供されています。</p>
 </summary>
 
-<seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
 
 <directivesynopsis>
 <name>AuthGroupFile</name>
@@ -76,38 +75,6 @@
       保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
       そうしないとクライアントが <directive>AuthGroupFile</directive> を
       ダウンロードできてしまう可能性があります。</p>
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>AuthzGroupFileAuthoritative</name>
-<description>承認が下位のモジュールに渡されるかどうかを設定する</description>
-<syntax>AuthzGroupFileAuthoritative On|Off</syntax>
-<default>AuthzGroupFileAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p><directive>AuthzGroupFileAuthoritative</directive> ディレクティブを
-    明示的に <code>Off</code> に設定すると userID に対応する
-    <strong>グループがない場合に</strong>、
-    (<code>module.c</code> で定義されている) 下位のモジュールにグループ承認を
-    渡すことを許可します。</p>
-
-
-    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
-    Required 応答が返されます。ですから、これを設定しないと
-    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
-
-    <note type="warning"><title>セキュリティ</title>
-      <p>ユーザの <code>.htaccess</code> ファイルで他の承認手段への
-      委譲ができるようにすることの意味するところは十分に考慮しておいてください。
-      そしてそれが、本当に望む挙動であることを確かめてください。
-      通常は一つの <code>.htpasswd</code> ファイルを安全にする方が
-      より多くのアクセスインタフェースを持つかもしれないデータベースを
-      安全にするよりも簡単です。</p>
     </note>
 </usage>
 </directivesynopsis>

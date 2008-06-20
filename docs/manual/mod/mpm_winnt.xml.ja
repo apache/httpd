@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -50,6 +50,8 @@
 <directivesynopsis location="mpm_common"><name>MaxMemFree</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
