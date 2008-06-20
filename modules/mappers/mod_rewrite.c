@@ -4453,10 +4453,6 @@ static int hook_uri2file(request_rec *r)
                 return HTTP_FORBIDDEN;
             }
 
-            if (rulestatus == ACTION_NOESCAPE) {
-                apr_table_setn(r->notes, "proxy-nocanon", "1");
-            }
-
             /* make sure the QUERY_STRING and
              * PATH_INFO parts get incorporated
              */
@@ -4464,11 +4460,16 @@ static int hook_uri2file(request_rec *r)
                 r->filename = apr_pstrcat(r->pool, r->filename,
                                           r->path_info, NULL);
             }
-            if (r->args != NULL &&
-                r->uri == r->unparsed_uri) {
-                /* see proxy_http:proxy_http_canon() */
-                r->filename = apr_pstrcat(r->pool, r->filename,
-                                          "?", r->args, NULL);
+            if (rulestatus == ACTION_NOESCAPE) {
+                /* make sure that mod_proxy_http doesn't canonicalize the URI,
+                 * and preserve any (possibly qsappend'd) query string in the
+                 * filename for mod_proxy_http:proxy_http_canon()
+                 */
+                apr_table_setn(r->notes, "proxy-nocanon", "1");
+                if (r->args != NULL) {
+                    r->filename = apr_pstrcat(r->pool, r->filename,
+                                              "?", r->args, NULL);
+                }
             }
 
             /* now make sure the request gets handled by the proxy handler */
