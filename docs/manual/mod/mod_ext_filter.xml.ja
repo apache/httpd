@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -244,7 +244,7 @@
 
       <dd>応答を処理するフィルタには <code>mode=output</code> (デフォルト)
       を使います。リクエストを処理するフィルタには <code>mode=input</code>
-      を使います。<code>mode=input</code> は Apache 2.1 からの新しい機能です。</dd>
+      を使います。<code>mode=input</code> は Apache 2.1 以降で利用可能です。</dd>
 
       <dt><code>intype=<var>imt</var></code></dt>
 
