@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 478131:658305 (outdated) -->
+<!-- English Revision: 658305 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -538,15 +538,8 @@ accept しようとしているときに、Apache がそれらの子プロセス
     </note>
 
     <p><directive>MaxRequestsPerChild</directive>
-    を非ゼロに制限することには、二つの利点があります:</p>
-
-    <ul>
-      <li>(偶発的な) メモリーリークが起こった場合に
-      プロセスが消費するメモリの総量を制限できる</li>
-
-      <li>プロセスに有限のライフタイムを設定することで、
-      サーバ負荷が下がった時にプロセス数を少なくすることができる</li>
-    </ul>
+    を非ゼロにすることにより、(偶発的な) メモリーリークが起こった場合に
+    プロセスが消費するメモリの総量を制限できます。</p>
 
     <note><title>注</title>
       <p><directive module="core">KeepAlive</directive> リクエストの場合は、
@@ -1057,6 +1050,27 @@ accept しようとしているときに、Apache がそれらの子プロセス
       <module>beos</module> と <module>mpmt_os2</module> MPM
       にも存在しますが、実質的に無効で、互換性のためだけに存在します。</p>
     </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ChrootDir</name>
+<description>apache が起動後に chroot(8) するディレクトリ
+</description>
+<syntax>ChrootDir <var>/path/to/directory</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module>
+<module>prefork</module><module>worker</module></modulelist>
+
+<usage>
+    <p>このディレクティブは2.2.9(?)以降で利用できます。
+    サーバ起動後、ネットからリクエストを受け付けるより前に、
+    サーバは指定したディレクトリに <var>chroot(8)</var> します。</p>
+    <p>chroot 環境下でサーバを動かすのは単純ではなく、
+    特に CGI や PHP を動かしているなら、さらなるセットアップ
+    が必要であることに注意してください。 この機能を使おうとする前に、
+    chroot の動作を正しく理解しておくようにしてください。</p>
 </usage>
 </directivesynopsis>
 
