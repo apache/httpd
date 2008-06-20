@@ -339,9 +339,8 @@ APACHE_SUBST(MKINSTALLDIRS)
 APACHE_SUBST(INSTALL)
 
 dnl various OS checks that apparently set required flags
-AC_AIX
+AC_USE_SYSTEM_EXTENSIONS
 AC_ISC_POSIX
-AC_MINIX
 
 # Ensure that satisfactory versions of apr and apr-util are 
 # found if external copies are configured.
