@@ -193,8 +193,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <dt>SQLite3</dt>
     <dd>The connection string is passed straight through to <code>sqlite3_open</code></dd>
     <dt>ODBC</dt>
-    <dd>Please see <a href="http://code.google.com/p/odbc-dbd/">the
-        author's project pages</a> for this third-party driver.</dd>
+    <dd>datasource, user, password, connect, ctimeout, stimeout, access, txmode, bufsize</dd>
     </dl>
 </usage>
 </directivesynopsis>
