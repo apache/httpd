@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:420993 (outdated) -->
+<!-- English Revision: 420993 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -26,7 +26,7 @@
 <status>Extension</status>
 <sourcefile>mod_version.c</sourcefile>
 <identifier>version_module</identifier>
-<compatibility>バージョン 2.1 以降</compatibility>
+<compatibility>バージョン 2.0.56 以降</compatibility>
 
 <summary>
     <p>様々なバージョンの httpd の異なる設定を扱うことになる、
@@ -95,7 +95,8 @@
       &lt;/IfVersion&gt;
     </example>
 
-    <p>数値比較に加えて、http のバージョン番号に対して正規表現による
+    <p>数値比較に加えて、http のバージョン番号に対して
+    <glossary ref="regex">正規表現</glossary>による
     マッチングができます。二種類の書き方があります:</p>
 
     <table style="zebra" border="1">
