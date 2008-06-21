@@ -1,0 +1,305 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_vhost_alias.xml.meta">
+
+<name>mod_vhost_alias</name>
+<description>Kitlesel sanal konakların devingen olarak yapılandırılmasını
+sağlar</description>
+<status>Extension</status>
+<sourcefile>mod_vhost_alias.c</sourcefile>
+<identifier>vhost_alias_module</identifier>
+
+<summary>
+    <p>Bu modül, hangi dosyaların sunulacağını saptamak için dosya yolunun
+      parçası olarak HTTP isteğinin <code>Host:</code> başlığının ve/veya IP
+      adresinin kullanılmasını mümkün kılarak devingen yapılandırmalı sanal
+      konaklar oluşturur. Böylece benzer yapılandırmaya sahip çok büyük sayıda
+      sanal konak kullanımı kolaşlaşır.</p>
+
+    <note><title>Bilginize</title>
+      <p>URI’leri dosya isimlerine dönüştürmek için <module>mod_alias</module>
+        veya <module>mod_userdir</module> kullanılmışsa bunlar
+        <module>mod_vhost_alias</module> yönergeleri tarafından aşağıda
+        açıklandığı gibi geçersiz kılınırlar. Örneğin, aşağıdaki yapılandırma
+        her durumda <code>/cgi-bin/script.pl</code> betiğini <code>
+        /usr/local/apache2/cgi-bin/script.pl</code> betiğine eşleyecektir:</p>
+
+      <example>
+        ScriptAlias /cgi-bin/ /usr/local/apache2/cgi-bin/<br />
+        VirtualScriptAlias /nerede/bilinmiyor/%0/cgi-bin/
+      </example>
+    </note>
+</summary>
+
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
+<seealso><a href="../vhosts/mass.html">Devingen olarak Yapılandırılan Kitlesel
+Sanal Barındırma</a></seealso>
+
+<section id="interpol">
+    <title>Dizin İsimlerinin Elde Edilmesi</title>
+
+    <p>Bu modüldeki tüm yönergeler bir dizgeyi bir dosya yoluna dönüştürerek
+      çalışırlar. Dönüşüm dizgesi (bundan sonra “isim” diyeceğiz) ya sunucu
+      ismi olur (bunun nasıl belirlendiğini öğrenmek için <directive
+      module="core" >UseCanonicalName</directive> yönergesine bakınız) ya da
+      sunucu üzerindeki sanal konağın IP adresi olur. Dönüşümü,
+      <code>printf</code>’inkilerin benzeri birkaç biçem belirteci
+      denetler:</p>
+
+<table>
+<columnspec><column width=".2"/><column width=".6"/></columnspec>
+<tr><td><code>%%</code></td>
+<td>Bir <code>%</code> imi yerleştirir.</td></tr>
+
+<tr><td><code>%p</code></td>
+<td>Sanal konağın IP adresini yerleştirir.</td></tr>
+
+<tr><td><code>%N.M</code></td>
+<td>İsmin parçalarını yerleştirir.</td></tr>
+
+</table>
+
+    <p><code>N</code> ve <code>M</code> ismin alt dizgelerini belirtmek için
+      kullanılır. <code>N</code>, ismin noktalarla ayrılmış bileşenlerinden
+      seçim yaparken <code>M</code>, <code>N</code> ile seçilen parçadan
+      karakter seçmekte kullanılır. <code>M</code> isteğe bağlı olup mevcut
+      olmaması halinde öntanımlı olarak sıfırdır. Noktanın varlığı
+      <code>M</code>’nin varlığına bağlıdır. Dönüşüm şöyle uygulanır:</p>
+
+    <table>
+      <columnspec><column width=".1"/><column width=".4"/></columnspec>
+      <tr><td><code>0</code></td>
+      <td>ismin tamamı</td></tr>
+
+      <tr><td><code>1</code></td>
+      <td>ilk parça</td></tr>
+
+      <tr><td><code>2</code></td>
+      <td>ikinci parça</td></tr>
+
+      <tr><td><code>-1</code></td>
+      <td>son parça</td></tr>
+
+      <tr><td><code>-2</code></td>
+      <td>sondan bir önceki parça</td></tr>
+
+      <tr><td><code>2+</code></td>
+      <td>ikinci parça ve sonraki parçaların hepsi</td></tr>
+
+      <tr><td><code>-2+</code></td>
+      <td>sondan bir önceki parça ve daha önceki parçaların hepsi</td></tr>
+
+      <tr><td><code>1+</code> ve <code>-1+</code></td>
+      <td><code>0</code> ile aynı</td></tr>
+    </table>
+
+    <p><code>N</code> veya <code>M</code> parça sayısından büyükse dönüşüm
+      dizgesi sadece alt çizgi karakterini içerir.</p>
+
+</section>
+
+<section id="examples">
+    <title>Örnekler</title>
+
+    <p>Sunucu yapılandırma dosyanızda isme dayalı sanal konaklar için
+      aşağıdaki yönergeler kullanılıyor olsun:</p>
+
+    <example>
+      UseCanonicalName    Off<br />
+      VirtualDocumentRoot /usr/local/apache/sankonlar/%0
+    </example>
+
+    <p><code>http://mesela.dom/dizin/dosya.html</code> için yapılan bir istek
+      <code>/usr/local/apache/sankonlar/mesela.dom/dizin/dosya.html</code>
+      dosyası ile yerine getirilecektir.</p>
+
+    <p>Çok büyük sayıda sanal konak için <code>sankonlar</code> dizininin
+      boyutlarını küçük tutmak amacıyla dosyalar düzenlenebilir. Bunu
+      yapılandırma dosyanızda şöyle yapabilirsiniz:</p>
+
+    <example>
+      UseCanonicalName    Off<br />
+      VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2
+    </example>
+
+    <p><code>http://falan.filan.mesela.dom/dizin/dosya.html</code> için
+      yapılan bir istek
+      <code>/usr/local/apache/sankonlar/mesela.dom/f/i/l/filan/dizin/dosya.html
+      </code> ile yerine getirilecektir.</p>
+
+    <p>Bu sefer de parçaları ismin sonundan toplayalım: </p>
+
+<example>
+    VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.-1/%2.-2/%2.-3/%2
+</example>
+
+    <p>Bu durumda istek
+      <code>/usr/local/apache/sankonlar/mesela.dom/n/a/l/filan/dizin/dosya.html
+      </code> ile karşılanırdı.</p>
+
+    <p>Şöyle bir şey de yapabilirsiniz:</p>
+
+<example>
+    VirtualDocumentRoot /usr/local/apache/sankonlar/%3+/%2.1/%2.2/%2.3/%2.4+
+</example>
+
+    <p>Bu örnek için istek
+      <code>/usr/local/apache/sankonlar/mesela.dom/f/i/l/an/dizin/dosya.html
+      </code> dosyasından karşılanırdı.</p>
+
+    <p>IP’ye dayalı sanal konaklar için yapılandırma dosyanızda şu satırlar
+      olabilirdi:</p>
+
+    <example>
+      UseCanonicalName DNS<br />
+      VirtualDocumentRootIP
+      /usr/local/apache/sankonlar/%1/%2/%3/%4/belgeler<br />
+      VirtualScriptAliasIP  /usr/local/apache/sankonlar/%1/%2/%3/%4/cgi-bin
+    </example>
+
+    <p><code>http://falan.filan.mesela.dom/dizin/dosya.html</code> için
+      yapılan bir istek eğer <code>falan.filan.mesela.dom</code>’un IP adresi
+      10.20.30.40 olsaydı,
+      <code>/usr/local/apache/sankonlar/10/20/30/40/belgeler/dizin/dosya.html
+      </code> dosyası ile karşılanırdı.
+      <code>http://falan.filan.mesela.dom/cgi-bin/betik.pl</code> için yapılan
+      bir istek ise
+      <code>/usr/local/apache/sankonlar/10/20/30/40/cgi-bin/betik.pl</code>
+      betiğinin çalıştırılması ile sağlanırdı.</p>
+
+    <p>Bir <code>VirtualDocumentRoot</code> yönergesinin <code>.</code>
+      karakterini içermesini isterseniz, bir biçem belirteci ile karışıklığa
+      sebep olmaksızın bunu şöyle sağlayabilirsiniz:</p>
+
+<example>
+    VirtualDocumentRoot /usr/local/apache/sankonlar/%2.0.%3.0
+</example>
+
+    <p>Bu durumda <code>http://falan.filan.mesela.dom/dizin/dosya.html</code>
+      için yapılan bir istek
+      <code>/usr/local/apache/sankonlar/filan.mesela/dizin/dosya.html</code>
+      dosyası ile karşılanacaktır.</p>
+
+    <p><directive module="mod_log_config">LogFormat</directive>  yönergesinin
+      <code>%V</code> ve <code>%A</code> <a
+      href="mod_log_config.html#formats">biçem belirteçleri</a> bu modülle
+      birlikte kullanıldığında çok yararlı olurlar.</p>
+</section>
+
+<directivesynopsis>
+<name>VirtualDocumentRoot</name>
+<description>Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.
+</description>
+<syntax>VirtualDocumentRoot <em>hesaplanan-dizin</em>|none</syntax>
+<default>VirtualDocumentRoot none</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p><directive>VirtualDocumentRoot</directive> yönergesi sunucu ismine göre
+      belgelerin bulunacağı yeri Apache’nin saptamasını sağlar.
+      <code><em>hesaplanan-dizin</em></code>’in dönüşüm sonucu <directive
+      module="core" >DocumentRoot</directive> yönergesinin değeriymiş gibi
+      belge ağacının kök dizini olarak kullanılır.
+      <code><em>hesaplanan-dizin</em></code> yerine <code>none</code>
+      belirtilmişse <directive>VirtualDocumentRoot</directive> iptal edilmiş
+      olur. Bu yönerge <directive module="mod_vhost_alias"
+      >VirtualDocumentRootIP</directive> yönergesinin kullanıldığı bağlamda
+      yer alamaz.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VirtualDocumentRootIP</name>
+<description>Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.
+</description>
+<syntax>VirtualDocumentRootIP <em>hesaplanan-dizin</em>|none</syntax>
+<default>VirtualDocumentRootIP none</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+  <p><directive>VirtualDocumentRootIP</directive> yönergesi, dizinin
+    saptanmasında sunucu ismi yerine bağlantının sonlandığı sunucunun IP
+    adresini kullanması dışında <directive
+    module="mod_vhost_alias">VirtualDocumentRoot</directive> gibidir.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VirtualScriptAlias</name>
+<description>Bir sanal konağın CGI dizinini devingen olarak yapılandırır.
+</description>
+<syntax>VirtualScriptAlias <em>hesaplanan-dizin</em>|none</syntax>
+<default>VirtualScriptAlias none</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p><directive>VirtualScriptAlias</directive> yönergesi, CGI betiklerinin
+      bulunacağı yeri Apache’nin saptamasını sağlamak bakımından <directive
+      module="mod_vhost_alias" >VirtualDocumentRoot</directive> yönergesinin
+      yaptığını yapar. <code>/cgi-bin/</code> ile başlayan istekler için ise
+      <directive module="mod_alias">ScriptAlias</directive> yönergesinin
+      yaptığını yapar.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>VirtualScriptAliasIP</name>
+<description>Bir sanal konağın CGI dizinini devingen olarak yapılandırır.
+</description>
+<syntax>VirtualScriptAliasIP <em>hesaplanan-dizin</em>|none</syntax>
+<default>VirtualScriptAliasIP none</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+</contextlist>
+
+<usage>
+
+    <p><directive>VirtualScriptAliasIP</directive> yönergesi, dizinin
+      saptanmasında sunucu ismi yerine bağlantının sonlandığı sunucunun IP
+      adresini kullanması dışında <directive module="mod_vhost_alias"
+      >VirtualScriptAlias</directive> gibidir.</p>
+
+    </usage>
+
+</directivesynopsis>
+</modulesynopsis>
+

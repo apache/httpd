@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 630295 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_logio.xml.meta">
+
+<name>mod_logio</name>
+<description>Her isteğin girdi ve çıktı uzunluklarının günlüklenmesi.
+</description>
+<status>Extension</status>
+<sourcefile>mod_logio.c</sourcefile>
+<identifier>logio_module</identifier>
+
+<summary>
+
+    <p>Bu modül her istekte alınan ve gönderilen bayt sayısının günlüklenmesini
+      sağlar. Sayılar, istekte ve yanıtta yer alan başlıklar ve gövdeleri
+      hesaba dahil ederek ağ üzerinde gerçekte gidip gelen bayt sayısını
+      gösterir. Bayt sayımı, girdide SSL/TLS öncesinde ve çıktıda SSL/TLS
+      sonrasında yapılır, böylece sayıların, şifrelemeyle herhangi bir
+      değişikliği doğru olarak yansıtması sağlanmış olur.</p>
+
+    <p>Bu modül <module>mod_log_config</module> modülünü gerektirir.</p>
+
+    <note>SSL ile <code>KeepAlive</code> bağlantılar kullanıldığında, SSL
+      uzlaşımının ek yükü, bağlantı üzerinden yapılan ilk isteğin bayt sayısını
+      yansıtır. Her dizin için yeniden uzlaşım gerektiği takdirde bayt sayısı
+      yeniden uzlaşımı tetikleyen istekle ilişkilendirilir.</note>
+
+</summary>
+
+<seealso><module>mod_log_config</module></seealso>
+<seealso><a href="../logs.html">Apache Günlük Dosyaları</a></seealso>
+
+<section id="formats">
+<title>Özel Günlük Biçemleri</title>
+
+    <p>İsteğin belirgin özellikleri için, biçem dizgesinde yer alan % imli
+      biçem belirteçlerinin yerine günlük dosyasında değerleri yazılır. Bu
+      modül iki yeni biçem belirteci ekler:</p>
+
+    <table border="1" style="zebra">
+    <tr><th>Biçem&nbsp;Belirteci</th>
+        <th>Açıklama</th></tr>
+
+    <tr><td><code>%...I</code></td>
+        <td>İstek gövdesi ve başlıklar dahil alınan bayt sayısı; sıfır
+          olamaz.</td></tr>
+
+    <tr><td><code>%...O</code></td>
+        <td>Başlıklar dahil gönderilen bayt sayısı; sıfır olamaz.</td></tr>
+    </table>
+
+    <p>Genel olarak, işlevsellik şöyle kullanılır:</p>
+
+    <dl>
+      <dt>Birleşik G/Ç günlükleme biçemi:</dt>
+      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+      \"%{User-agent}i\" %I %O"</code></dd>
+    </dl>
+</section>
+
+</modulesynopsis>
