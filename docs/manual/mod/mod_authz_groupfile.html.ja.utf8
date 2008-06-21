@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_authz_groupfile.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_groupfile.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>プレーンテキストファイルを用いたグループ承認</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authz_groupfile_module</td></tr>
@@ -43,12 +41,10 @@
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
 </ul>
 <h3>参照</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -89,38 +85,6 @@
       保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
       そうしないとクライアントが <code class="directive">AuthGroupFile</code> を
       ダウンロードできてしまう可能性があります。</p>
-    </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzGroupFileAuthoritative" id="AuthzGroupFileAuthoritative">AuthzGroupFileAuthoritative</a> <a name="authzgroupfileauthoritative" id="authzgroupfileauthoritative">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>承認が下位のモジュールに渡されるかどうかを設定する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthzGroupFileAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthzGroupFileAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_authz_groupfile</td></tr>
-</table>
-    <p><code class="directive">AuthzGroupFileAuthoritative</code> ディレクティブを
-    明示的に <code>Off</code> に設定すると userID に対応する
-    <strong>グループがない場合に</strong>、
-    (<code>module.c</code> で定義されている) 下位のモジュールにグループ承認を
-    渡すことを許可します。</p>
-
-
-    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
-    Required 応答が返されます。ですから、これを設定しないと
-    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
-
-    <div class="warning"><h3>セキュリティ</h3>
-      <p>ユーザの <code>.htaccess</code> ファイルで他の承認手段への
-      委譲ができるようにすることの意味するところは十分に考慮しておいてください。
-      そしてそれが、本当に望む挙動であることを確かめてください。
-      通常は一つの <code>.htpasswd</code> ファイルを安全にする方が
-      より多くのアクセスインタフェースを持つかもしれないデータベースを
-      安全にするよりも簡単です。</p>
     </div>
 
 </div>

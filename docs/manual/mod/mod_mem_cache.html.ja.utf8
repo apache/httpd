@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_mem_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_mem_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>URI をキーにしたコンテンツのキャッシュ</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>mem_cache_module</td></tr>
@@ -45,6 +43,10 @@
 
     <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
     アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+
+    <div class="note"><h3>注</h3>ほとんどの場合、<code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>
+    のほうが好ましいでしょう。この件に関する詳細な説明は <a href="../caching.html#inmemory">Caching Guide</a> にあります。特に重要なポイントは、
+    このモジュールのキャッシュは<em>子プロセスごと</em>であることです。</div>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
@@ -154,7 +156,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに保管されるドキュメントの最小サイズ (バイト)</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMinObjectSize <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMinObjectSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMinObjectSize 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>

@@ -27,8 +27,6 @@
 <a href="../ja/mod/mpm_common.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>MPM</td></tr></table>
@@ -36,6 +34,7 @@
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#chrootdir">ChrootDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
@@ -150,6 +149,26 @@ accept しようとしているときに、Apache がそれらの子プロセス
      実装している場合は、<code>pthread</code> オプションを安全に使用できる
      可能性があります。</p>
   </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>apache が起動後に chroot(8) するディレクトリ
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ChrootDir <var>/path/to/directory</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
+    <p>このディレクティブは2.2.9(?)以降で利用できます。
+    サーバ起動後、ネットからリクエストを受け付けるより前に、
+    サーバは指定したディレクトリに <var>chroot(8)</var> します。</p>
+    <p>chroot 環境下でサーバを動かすのは単純ではなく、
+    特に CGI や PHP を動かしているなら、さらなるセットアップ
+    が必要であることに注意してください。 この機能を使おうとする前に、
+    chroot の動作を正しく理解しておくようにしてください。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -504,15 +523,8 @@ accept しようとしているときに、Apache がそれらの子プロセス
     </div>
 
     <p><code class="directive">MaxRequestsPerChild</code>
-    を非ゼロに制限することには、二つの利点があります:</p>
-
-    <ul>
-      <li>(偶発的な) メモリーリークが起こった場合に
-      プロセスが消費するメモリの総量を制限できる</li>
-
-      <li>プロセスに有限のライフタイムを設定することで、
-      サーバ負荷が下がった時にプロセス数を少なくすることができる</li>
-    </ul>
+    を非ゼロにすることにより、(偶発的な) メモリーリークが起こった場合に
+    プロセスが消費するメモリの総量を制限できます。</p>
 
     <div class="note"><h3>注</h3>
       <p><code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> リクエストの場合は、

@@ -26,8 +26,6 @@
 <a href="../en/mod/worker.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/worker.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>マルチスレッドとマルチプロセスのハイブリッド型
 ウェブサーバを実装したマルチプロセッシングモジュール</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
@@ -40,8 +38,9 @@
     実装しています。リクエストの応答にスレッドを使うと、
     プロセスベースのサーバよりも少ないシステム資源で、
     多くのリクエストに応答することができます。
-    さらに、多くのスレッドを持った複数のプロセスを維持することで、
-    プロセスベースのサーバの持つ安定性を保持しています。</p>
+    それにもかかわらず、多くのスレッドを持った複数のプロセスを
+    維持することで、
+    プロセスベースのサーバの持つ安定性も保持しています。</p>
 
     <p>この MPM を制御するのに使われる最も重要なディレクティブは、
     <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> と
@@ -66,6 +65,7 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#receivebuffersize">ReceiveBufferSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
@@ -101,7 +101,7 @@
     待たなくてもよいようになっています。
     起動初期時のプロセス総数は、
     <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>
-    ディレクティブで設定されます。その後の稼働中に、
+    ディレクティブで設定されます。稼働中に、
     Apache は全プロセスのアイドルスレッドの合計数を見積もって、
     <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> と
     <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>
@@ -128,9 +128,7 @@
     ThreadsPerChild</a></code> の値で割った値以上である
     必要があります。<code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> は
     サーバスレッドの越えられない上限で、<code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> ディレクティブの
-    値以上である必要があります。デフォルト以外の値を指定する場合は
-    他の <code class="module"><a href="../mod/worker.html">worker</a></code> ディレクティブよりも前に書かれている
-    必要があります。</p>
+    値以上である必要があります。</p>
 
     <p>活動中の子プロセス群に加えて、少なくとも一つのサーバスレッドが
     既存のクライアントからの接続を扱っている終了しようとしている

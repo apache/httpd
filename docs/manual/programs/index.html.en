@@ -57,7 +57,12 @@
       <dd>Create and update user authentication files in DBM format
       for basic authentication</dd>
 
+      <dt><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></dt>
+
+      <dd>Start a FastCGI program</dd>
+
       <dt><code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code></dt>
+
       <dd>Clean up the disk cache</dd>
 
       <dt><code class="program"><a href="../programs/htdigest.html">htdigest</a></code></dt>

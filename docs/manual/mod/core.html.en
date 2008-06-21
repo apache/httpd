@@ -577,6 +577,7 @@ server cannot determine a type in any other way</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The argument <code>none</code> is available in Apache 2.2.7 and later</td></tr>
 </table>
     <p>There will be times when the server is asked to provide a
     document whose type cannot be determined by its <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME types</a> mappings.</p>
@@ -600,7 +601,7 @@ server cannot determine a type in any other way</td></tr>
     <div class="example"><p><code>
       DefaultType None
     </code></p></div>
-    <p>DefaultType None is only available in httpd-2.2.7 and later.</p>
+    <p><code>DefaultType None</code> is only available in httpd-2.2.7 and later.</p>
 
     <p>Note that unlike <code class="directive"><a href="#forcetype">ForceType</a></code>, this directive only
     provides the default mime-type. All other mime-type definitions,
@@ -617,7 +618,7 @@ server cannot determine a type in any other way</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Equivalent to passing the <code>-D</code> argument to <a href="../programs/httpd.html">httpd</a>.</p>
+    <p>Equivalent to passing the <code>-D</code> argument to <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
     <p>This directive can be used to toggle the use of <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sections without needing to alter
     <code>-D</code> arguments in any startup scripts.</p>
 
