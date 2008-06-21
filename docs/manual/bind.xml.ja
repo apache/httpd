@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 327999:587444 (outdated) -->
+<!-- English Revision: 587444 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -48,26 +48,27 @@
 
     <p>Apache は起動時に、ローカルマシンのあるポートおよびアドレス
     に対して接続し、リクエストが来るのを待ちます。
-    デフォルトではマシンのすべてのアドレスに対して listen します。
-    しかしながら、特定のポートか、特定のアドレスのみか、
-    またはそれらの組み合わせのいずれかを listen するようにする必要があります。
-    これは、異なる IP アドレス、ホスト名、ポートに対する Apache
-    の応答方法を決定するバーチャルホスト機能と組み合わせて使われます。</p>
+    デフォルトではマシンのすべてのアドレスに対して Listen します。
+    特定のポートか、特定のアドレスのみか、
+    またはそれらの組み合わせで Listen するように指定したい場合もあります。
+    異なる IP アドレス、ホスト名、ポートに対して Apache がどのように
+    応答するかを制御するバーチャルホスト機能と組み合わせてよく使われます。</p>
 
     <p><directive module="mpm_common">Listen</directive>
-    ディレクティブで、特定のポートやアドレス・ポートの組からのみ入ってくる
-    リクエストを受け付けるようにできます。
-    もしポート番号のみが <directive module="mpm_common">Listen</directive>
+    ディレクティブで、特定のポートやアドレス・ポートの組から入ってくる
+    リクエストのみを受け付けるようにできます。
+    もしポート番号だけが <directive module="mpm_common">Listen</directive>
     ディレクティブで指定された場合は、
-    すべてのインターフェースの与えられたポート番号を
-    listen します。 IP アドレスがポート番号と同時に与えられた場合は、
-    サーバは与えられたポートとインターフェースを listen します。
-    複数の <directive module="mpm_common">Listen</directive> ディレクティブを用いて
-    いくつかの listen するアドレスとポートを指定できます。
-    サーバはリストされたアドレスやポートからのすべてのリクエストに
+    すべてのインターフェースの与えられたポート番号に対して
+    Listen します。 IP アドレスとポート番号とが同時に与えられた場合は、
+    サーバは与えられたインターフェースのポートを Listen します。
+    <directive module="mpm_common">Listen</directive> ディレクティブを複数使って
+    Listen するアドレスとポートをいくつも指定できます。
+    サーバは指定されたアドレスやポートからのリクエストすべてに
     対して応答します。</p>
 
-    <p>たとえば、ポート 80 と 8000 の両方に対しての接続を受け付けるには</p>
+    <p>たとえば、全てのインターフェースのポート 80 と 8000 の両方において
+    接続を受け付けるには</p>
 
     <example>
       Listen 80<br />
@@ -75,7 +76,8 @@
     </example>
 
     <p>とします。
-    二つの指定されたインタフェースとポート番号に対しての接続を受け付けるには、
+    あるインターフェースでは 80 番で、また、同時に他のインターフェースの
+    8000 番ポートで接続を受け付けるには、
     </p>
 
     <example>
@@ -111,7 +113,7 @@
     設定パラメータで Apache の挙動を変化させることができます。</p>
 
     <p>一方で、Linux や Tru64 といったプラットホームで IPv4 と IPv6
-    の両方を扱うには、マップトアドレスを使用する<strong>以外の方法はありません</strong>。
+    の両方を扱うには、マップドアドレスを使用する<strong>以外の方法はありません</strong>。
     IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
     IPv4 マップの IPv6 アドレスを使用する必要があり、
     <code>--enable-v4-mapped</code> <program>configure</program>
@@ -133,7 +135,7 @@
     </example>
 
     <p>条件を満たすプラットホームで、Apache が
-    IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
+    IPv4 と IPv6 のコネクションを別々のソケットで扱うようにしたい場合
     (つまり IPv4 マップのアドレスを無効にしたい場合)
     は、<code>--disable-v4-mapped</code>
     <program>configure</program>
@@ -147,9 +149,9 @@
   <section id="virtualhost">
     <title>バーチャルホストに対してどう働くのか</title>
 
-    <p><directive module="mpm_common">Listen</directive>
+    <p><directive module="mpm_common">Listen</directive> ディレクティブ
     でバーチャルホストが実装されるわけではありません。
-    Listen は単にメインサーバにどのアドレスとポートを listen すべきかを
+    Listen は単にメインサーバにどのアドレスとポートを Listen すべきかを
     教えるだけです。
     <directive module="core" type="section">VirtualHost</directive>
     ディレクティブが使われない場合は、
@@ -159,14 +161,14 @@
     を使って、
     一つ以上のアドレスやポートに対して異なる挙動をするように
     指定することができます。
-    VirtualHost を実装するには、使用するアドレスとポートを
-    まず初めにサーバに通知しなければなりません。
+    VirtualHost を実装するには、まず初めに使用したいアドレスとポートに対して
+    サーバが Listen していなければなりません。
     そして、その指定したアドレスとポートでの
     このバーチャルホストの挙動を設定するために、
     <directive module="core" type="section">VirtualHost</directive>
     セクションを作ります。もし
     <directive module="core" type="section">VirtualHost</directive>
-    が listen していないアドレスとポートに対して
+    が Listen していないアドレスとポートに対して
     設定されてしまうと、
     それにはアクセスできないということに注意してください。</p>
   </section>
