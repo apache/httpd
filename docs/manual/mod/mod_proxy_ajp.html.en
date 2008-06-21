@@ -28,7 +28,7 @@
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_ajp_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>proxy_ajp.c</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_ajp.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.1 and later</td></tr></table>
 <h3>Summary</h3>
 

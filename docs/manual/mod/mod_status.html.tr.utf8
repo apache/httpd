@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_status - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Modüller</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Modülü mod_status</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_status.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucu etkinliği ve başarımı hakkında bilgi sağlar.</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>status_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_status.c</td></tr></table>
+<h3>Özet</h3>
+
+    <p><code>mod_status</code> modülü, sunucu yöneticisinin, HTTP sunucusunun
+      ne kadar başarılı olduğu hakkında bilgi edinmesini sağlar. Bilgiler,
+      kolayca okunabilen bir HTML sayfası olarak sunulur ve o anki sunucu
+      istatistiklerinden oluşur. Gerekirse sayfa kendiliğinden tazelenebilir
+      (uyumlu bir tarayıcı gerekir). Diğer sayfa o anki sunucu durumunu makine
+      tarafından okunabilen biçimde listeler.</p>
+
+    <p>Sunulan bilgiler şunlardır:</p>
+
+    <ul>
+      <li>İstekleri sunan çocuk süreç sayısı</li>
+
+      <li>Boştaki çocuk süreçlerin sayısı</li>
+
+      <li>Her çocuk sürecin durumu, çocuk sürecin işleme tabi tuttuğu istek
+        sayısı ve sunduğu bayt sayısı (*)</li>
+
+      <li>Toplam erişim sayısı ve sunulan toplam bayt sayısı (*)</li>
+
+      <li>Sunucunun kaç kere başlatıldığı/yeniden başlatıldığı ve ne kadar
+        zamandır çalışmakta olduğu</li>
+
+      <li>Saniyedeki ortalama istek sayısı, saniyedeki bayt sayısı ve istek
+        başına ortalama bayt sayısı (*)</li>
+
+      <li>Apache tarafınan toplamda ve her çocuk süreç tarafından ayrı ayrı
+        kullanılan o anki işlemci zamanı yüzdesi (*)</li>
+
+      <li>O an işlem görmekte olan konakların ve isteklerin sayısı (*)</li>
+    </ul>
+
+    <p>"(*)" imli bilgiler sadece <code class="directive"><a href="#extendedstatus">ExtendedStatus</a></code> yönergesinin değeri <code>On</code> olduğu
+      takdirde mevcuttur.</p>
+</div>
+<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
+</ul>
+<h3>Konular</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#autoupdate">Sayfanın Tazelenmesi</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">Durum Bilgisi Desteğinin Etkinleştirilmesi</a></h2>
+    
+
+    <p>Durum raporları, sadece mesela.dom alanından ve sadece tarayıcılar için
+      etkin kılınmak istenirse <code>httpd.conf</code> dosyasına şu satırlar
+      eklenebilir:</p>
+
+    <div class="example"><p><code>
+      &lt;Location /server-status&gt;<br />
+      <span class="indent">
+        SetHandler server-status<br />
+        <br />
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from .mesela.dom<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+
+    <p>Sunucu istatistiklerine tarayıcınızla erişmek isterseniz,
+      <code>http://sunucunuzun.ismi.buraya/server-status</code>
+      şeklinde bir istek yapabilirsiniz.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="autoupdate" id="autoupdate">Sayfanın Tazelenmesi</a></h2>
+
+    
+    <p>Tarayıcınız “tazeleme” yeteneğine sahipse durum sayfası düzenli
+      aralıklarla güncellenecektir. Sayfanın N saniyede bir güncellenmesini
+      isterseniz isteği şöyle yapabilirsiniz:<br />
+      <code>http://sunucunuzun.ismi.buraya/server-status?refresh=N</code></p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="machinereadable" id="machinereadable">Makine Tarafından Okunabilen Durum Dosyası</a></h2>
+
+    
+    <p>Durum dosyasının makine tarafından okunabilen sürümüne
+      <code>http://sunucunuzun.ismi.buraya/server-status?auto</code>
+      şeklinde bir istek yaparak erişebilirsiniz. Bu, kendiliğinden çalıştığı
+      takdirde yararlıdır; Apache dağıtımının <code>/support</code> dizininde
+      bulunan <code>log_server_status</code> isimli perl betiğine bakınız.</p>
+
+    <div class="note"><h3>Güvenlik</h3>
+      <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> sunucu içinde derlendiği takdirde
+       istatistikleri raporlama yeteneği dizin içi yapılandırma dosyaları
+       (<code>.htaccess</code> gibi) dahil <em>tüm</em> yapılandırma dosyaları
+       için kullanılabilir olacaktır. Bu durum güvenlik ile ilgili olarak
+       siteniz için içinden çıkılması güç durumlara yol açabilir (çapanoğlu
+       durumu).</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Her istekte ek durum bilgisinin toplanmasını sağlar.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ExtendedStatus Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_status</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 1.3.2 ve sonrasında mevcuttur.</td></tr>
+</table>
+    <p>Bu ayarlama sunucunun tamamını etkiler ve sanal konaklar için ayrı ayrı
+      etkin kılınamaz veya iptal edilemez. Ek durum bilgisinin toplanması
+      sunucuyu yavaşlatabilir.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsteğin kendisi 63 karakterden uzun olduğunda, isteğin ilk 63
+karakterinin mi yoksa son 63 karakterinin mi gösterileceğini belirler.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>SeeRequestTail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_status</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.2.7 ve sonrasında mevcuttur.</td></tr>
+</table>
+    <p><code>mod_status</code>, <code>ExtendedStatus On</code> olduğunda
+      isteğin kendisini de gösterir. Tarihsel nedenlerle, göstermek için
+      isteğin sadece 63 karakteri saklanır. Bu yönerge ilk 63 karakterin mi
+      yoksa son 63 karakterin mi saklanacağını belirtmek için kullanılır. Bu,
+      elbette, istek 64 karakterlik veya daha uzunsa uygulanır.</p>
+
+    <p>Apache şöyle bir istek alsaydı:<br /><code>GET&nbsp;
+      /disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;
+      HTTP/1.1</code><br /><code>mod_status</code> bu isteği şöyle gösterirdi:
+    </p>
+
+    <table class="bordered">
+      <tr>
+        <th>Off (öntanımlı)</th>
+        <td>GET&nbsp;
+        /disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;
+        HTTP/1.1</td>
+      </tr>
+    </table>
+
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_status.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>

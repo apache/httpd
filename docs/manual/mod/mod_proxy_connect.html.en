@@ -28,7 +28,7 @@
 <code>CONNECT</code> request handling</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_connect_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>proxy_connect.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_connect.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the <code>CONNECT</code>

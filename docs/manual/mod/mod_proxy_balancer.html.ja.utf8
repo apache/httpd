@@ -29,7 +29,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>負荷分散のための <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 拡張</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>proxy_balancer_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>proxy_balancer.c</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_proxy_balancer.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>2.1 以降</td></tr></table>
 <h3>概要</h3>
 
