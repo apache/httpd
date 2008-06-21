@@ -151,6 +151,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=670061
    Backport version for 2.2.x of updated patch:
         http://people.apache.org/~tdonovan/diffs/mod_rewrite_proxy_esc_2.2.x.diff
+   +1: rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
