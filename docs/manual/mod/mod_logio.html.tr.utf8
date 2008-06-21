@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_logio - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Modüller</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Modülü mod_logio</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_logio.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_logio.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_logio.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Her isteğin girdi ve çıktı uzunluklarının günlüklenmesi.
+</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>logio_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_logio.c</td></tr></table>
+<h3>Özet</h3>
+
+
+    <p>Bu modül her istekte alınan ve gönderilen bayt sayısının günlüklenmesini
+      sağlar. Sayılar, istekte ve yanıtta yer alan başlıklar ve gövdeleri
+      hesaba dahil ederek ağ üzerinde gerçekte gidip gelen bayt sayısını
+      gösterir. Bayt sayımı, girdide SSL/TLS öncesinde ve çıktıda SSL/TLS
+      sonrasında yapılır, böylece sayıların, şifrelemeyle herhangi bir
+      değişikliği doğru olarak yansıtması sağlanmış olur.</p>
+
+    <p>Bu modül <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> modülünü gerektirir.</p>
+
+    <div class="note">SSL ile <code>KeepAlive</code> bağlantılar kullanıldığında, SSL
+      uzlaşımının ek yükü, bağlantı üzerinden yapılan ilk isteğin bayt sayısını
+      yansıtır. Her dizin için yeniden uzlaşım gerektiği takdirde bayt sayısı
+      yeniden uzlaşımı tetikleyen istekle ilişkilendirilir.</div>
+
+</div>
+<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<p>Bu modül yönerge içermez.</p>
+<h3>Konular</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#formats">Özel Günlük Biçemleri</a></li>
+</ul><h3>Ayrıca bakınız:</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
+<li><a href="../logs.html">Apache Günlük Dosyaları</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="formats" id="formats">Özel Günlük Biçemleri</a></h2>
+
+
+    <p>İsteğin belirgin özellikleri için, biçem dizgesinde yer alan % imli
+      biçem belirteçlerinin yerine günlük dosyasında değerleri yazılır. Bu
+      modül iki yeni biçem belirteci ekler:</p>
+
+    <table class="bordered"><tr class="header"><th>Biçem&nbsp;Belirteci</th>
+        <th>Açıklama</th></tr>
+<tr><td><code>%...I</code></td>
+        <td>İstek gövdesi ve başlıklar dahil alınan bayt sayısı; sıfır
+          olamaz.</td></tr>
+<tr class="odd"><td><code>%...O</code></td>
+        <td>Başlıklar dahil gönderilen bayt sayısı; sıfır olamaz.</td></tr>
+</table>
+
+    <p>Genel olarak, işlevsellik şöyle kullanılır:</p>
+
+    <dl>
+      <dt>Birleşik G/Ç günlükleme biçemi:</dt>
+      <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+      \"%{User-agent}i\" %I %O"</code></dd>
+    </dl>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_logio.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_logio.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_logio.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_logio.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>

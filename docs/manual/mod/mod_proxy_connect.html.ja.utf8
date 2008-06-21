@@ -28,7 +28,7 @@
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> 用の拡張</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>proxy_connect_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>proxy_connect.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_proxy_connect.c</td></tr></table>
 <h3>概要</h3>
 
     <p>本モジュールには <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> が<em>必要です</em>。
