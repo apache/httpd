@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 190982:661942 (outdated) -->
+<!-- English Revision: 669847 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -72,7 +72,7 @@
     <p>引数に <code>none</code> を指定すると、プロトコルに対する全ての Accept 
        Filter が無効になります。<code>nntp</code> といった、先にサーバにデータを
        送る必要のあるプロトコルに有効です :</p>
-    <example>AcceptFilter nttp none</example>
+    <example>AcceptFilter nntp none</example>
 
 </usage>
 </directivesynopsis>
@@ -233,11 +233,13 @@
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 2.0.33 以降で使用可能</compatibility>
+<compatibility>Apache 2.0.33 以降で使用可能; Apache 2.1 以降非推奨</compatibility>
 
 <usage>
-    <p>このディレクティブは応答の MIME-type に応じて出力<a
-    href="../filter.html">フィルタ</a>を使用するようにします。</p>
+    <p>このディレクティブは応答の <glossary ref="mime-type">MIME タイプ</glossary> に応じて出力<a
+    href="../filter.html">フィルタ</a>を使用するようにします。
+    しかし後述する問題のため、このディレクティブは非推奨です。
+    同等の機能は <module>mod_filter</module> で実現可能です。</p>
 
     <p>次の例は <module>mod_deflate</module> の <code>DEFLATE</code> フィルタを
     使っています。<code>text/html</code> と <code>text/plain</code> の
@@ -267,7 +269,7 @@
     <note type="warning"><title>注:</title>
       <p><directive>AddOutputFilterByType</directive> ディレクティブにより
       有効にしたフィルタは場合によっては、部分的もしくは完全に適用されないことが
-      あります。例えば、MIME タイプがが決定できないときには
+      あります。例えば、<glossary ref="mime-type">MIME タイプ</glossary> が決定できないときには
       <directive module="core">DefaultType</directive> の設定が同じだったとしても、
       <directive module="core">DefaultType</directive> 設定を使うようになります。</p>
       <p>しかし、確実にフィルタが適用されるようにしたいときは、リソースに
@@ -276,8 +278,6 @@
       <directive module="core">ForceType</directive> ディレクティブを使います。
       (nphでない) CGI スクリプトでコンテントタイプを設定するというものでも
       大丈夫です。</p>
-
-      <p>タイプ毎の出力フィルタはプロキシリクエストには決して適用されません。</p>
     </note>
 </usage>
 
@@ -306,8 +306,6 @@
     <p><directive>AllowEncodedSlashes</directive> <code>On</code> による
     パス分離文字の使用は、<code>PATH_INFO</code> と合わせて
     使うときに一番役に立ちます。</p>
-    <p>Turning <directive>AllowEncodedSlashes</directive> <code>On</code> is
-    mostly useful when used in conjunction with <code>PATH_INFO</code>.</p>
 
     <note><title>注</title>
       <p>符号化されたスラッシュを許可することは、<em>復号</em>をすることを
@@ -331,7 +329,7 @@
 <usage>
     <p>サーバが (<directive
     module="core">AccessFileName</directive> によって指定された)
-    .htaccess ファイルを見つけた時、そのファイルの中で
+    <code>.htaccess</code> ファイルを見つけた時、そのファイルの中で
     宣言されたどのディレクティブがより前に定義された設定ディレクティブを
     上書きできるかを知る必要があります。</p>
 
@@ -345,7 +343,7 @@
     module="core">Files</directive> セクションでは無効です。
     </note>
 
-    <p>このディレクティブを None に設定すると、<a href="#accessfilename">.htaccess</a> ファイルは完全に
+    <p>このディレクティブを <code>None</code> に設定すると、<a href="#accessfilename">.htaccess</a> ファイルは完全に
     無視されます。
     この場合、サーバはファイルシステムの <code>.htaccess</code> ファイルを読むことを
     試みさえしません。</p>
@@ -367,10 +365,10 @@
       module="mod_authn_dbm">AuthDBMGroupFile</directive>,
       <directive module="mod_authn_dbm">AuthDBMUserFile</directive>,
       <directive module="mod_authz_groupfile">AuthGroupFile</directive>,
-      <directive module="core">AuthName</directive>, 
-      <directive module="core">AuthType</directive>, <directive
+      <directive module="mod_authn_core">AuthName</directive>, 
+      <directive module="mod_authn_core">AuthType</directive>, <directive
       module="mod_authn_file">AuthUserFile</directive>, <directive
-      module="core">Require</directive> <em>など</em>)。</dd>
+      module="mod_authz_core">Require</directive> <em>など</em>)。</dd>
 
       <dt>FileInfo</dt>
 
@@ -384,7 +382,28 @@
       module="core">SetInputFilter</directive>, <directive
       module="core">SetOutputFilter</directive>, 
       <module>mod_mime</module> の Add* と Remove*
-      ディレクティブ<em>など</em>)。</dd>
+      ディレクティブ<em>など</em>),
+      ドキュメントのメタデータ (<directive
+      module="mod_headers">Header</directive>, <directive
+      module="mod_headers">RequestHeader</directive>, <directive
+      module="mod_setenvif">SetEnvIf</directive>, <directive
+      module="mod_setenvif">SetEnvIfNoCase</directive>, <directive
+      module="mod_setenvif">BrowserMatch</directive>, <directive
+      module="mod_usertrack">CookieExpires</directive>, <directive
+      module="mod_usertrack">CookieDomain</directive>, <directive
+      module="mod_usertrack">CookieStyle</directive>, <directive
+      module="mod_usertrack">CookieTracking</directive>, <directive
+      module="mod_usertrack">CookieName</directive>),
+      <module>mod_rewrite</module> のディレクティブ <directive
+      module="mod_rewrite">RewriteEngine</directive>, <directive
+      module="mod_rewrite">RewriteOptions</directive>, <directive
+      module="mod_rewrite">RewriteBase</directive>, <directive
+      module="mod_rewrite">RewriteCond</directive>, <directive
+      module="mod_rewrite">RewriteRule</directive>) と
+      <module>mod_actions</module> の
+      <directive module="mod_actions">Action</directive>
+      ディレクティブ。
+      </dd>
 
       <dt>Indexes</dt>
 
@@ -439,69 +458,9 @@
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthName</name>
-<description>HTTP 認証の認可領域 (訳注: realm)</description>
-<syntax>AuthName <var>auth-domain</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>このディレクティブはディレクトリに対する認可領域 (訳注: realm)
-    の名前を指定します。
-    認可領域は、利用者がどのユーザ名とパスワードを送信すればよいのかを
-    クライアントに教えるために利用します。
-    <directive>AuthName</directive> は一つの引数をとり、
-    スペースが含まれる場合には、
-    引用符で括らなければなりません。
-    このディレクティブは
-    <directive module="core">AuthType</directive> ディレクティブや
-    <directive module="core">Require</directive> ディレクティブと、
-    <directive module="mod_authn_file">AuthUserFile</directive> や
-    <directive module="mod_authz_groupfile">AuthGroupFile</directive> などのディレクティブと
-    一緒に利用する必要があります。</p>
-
-   <p>例えば:</p>
-
-   <example>
-     AuthName "Top Secret"
-   </example>
-
-    <p>ここで <code>AuthName</code> に指定した文字列が、
-    大部分のブラウザのパスワードダイアログに表示されます。</p>
-</usage>
-<seealso><a 
-    href="../howto/auth.html">認証、承認、アクセス制御</a></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>AuthType</name>
-<description>ユーザ認証の種類</description>
-<syntax>AuthType Basic|Digest</syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>このディレクティブは対象ディレクトリで利用するユーザー認証の種類を選びます。
-    ただ、現在のところは <code>Basic</code> と <code>Digest</code> しか
-    実装されていません。
-
-    このディレクティブは <directive
-    module="core">AuthName</directive>ディレクティブや
-    <directive module="core">Require</directive> ディレクティブと、
-    <directive module="mod_authn_file">AuthUserFile</directive> や <directive
-    module="mod_authz_groupfile">AuthGroupFile</directive> などのディレクティブと
-    一緒に利用する必要があります。</p>
-</usage>
-<seealso><a href="../howto/auth.html">認証、承認、アクセス制御</a></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>CGIMapExtension</name>
 <description>CGI スクリプトのインタープリタの位置を調べるための手法</description>
 <syntax>CGIMapExtension <var>cgi-path</var> <var>.extension</var></syntax>
-<default>None</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -563,19 +522,19 @@
 <name>DefaultType</name>
 <description>サーバがコンテントタイプを決定できないときに
 送られる MIME コンテントタイプ</description>
-<syntax>DefaultType <var>MIME-type</var></syntax>
+<syntax>DefaultType <var>MIME-type|none</var></syntax>
 <default>DefaultType text/plain</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-
+<compatibility>引数 <code>none</code> は Apache 2.2.7 以降で利用可能</compatibility>
 <usage>
-    <p>サーバは、MIME のタイプマップからは決定できない
-    ドキュメントの送信を要求されることがあります。</p>
+    <p>サーバは、<glossary ref="mime-type">MIME タイプ</glossary>
+    のマップからは決定できないドキュメントの送信を要求されることがあります。</p>
 
-    <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知する必要が
-    ありますので、このようにタイプが未知の場合は
+    <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知するべきです。
+    サーバで通常の方法ではこれが判定できない場合は、
     <code>DefaultType</code> で指定されたタイプを利用します。
     例:</p>
 
@@ -586,11 +545,36 @@
     <p>これは <code>.gif</code> という拡張子がファイル名に含まれていない
     多くの GIF 画像が含まれているディレクトリに適しているでしょう。</p>
 
+    <p>サーバでも管理者でも判定することができない (例えばプロクシの) 場合、
+    誤った情報を与えるよりは MIME タイプの指定がない状態が望ましいことも
+    あります。この場合は次のようにします :</p>
+    <example>
+      DefaultType None
+    </example>
+    <p><code>DefaultType None</code> は httpd-2.2.7 
+    以降でのみ利用できます。</p>
+
     <p><directive module="core">ForceType</directive> ディレクティブと
     違って、このディレクティブはデフォルトの MIME タイプを提供するだけで
     あることに注意してください。ファイル名の拡張子を含め、
     メディアタイプを決定できる他の MIME タイプの定義があれば
     このデフォルトは上書きされます。</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Define</name>
+<description>変数の存在を宣言する</description>
+<syntax>Define <var>parameter-name</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><program>httpd</program> の <code>-D</code>
+    引数と同じものです。</p>
+    <p>このディレクティブを使うと、スタートアップスクリプトに
+    記載されている <code>-D</code> 引数を書き換える必要なく、
+    <directive module="core" type="section">IfDefine</directive>
+    セクションを切り替えることができます。</p>
 </usage>
 </directivesynopsis>
 
@@ -628,21 +612,21 @@
       &lt;/Directory&gt;
     </example>
 
-<note>
-<p><var>directory-path</var> 引数には注意してください: その引数は
-Apache がファイルをアクセスするために使うファイルシステムのパスに
-そのままマッチする必要があります。ある <code>&lt;Directory&gt;</code> に
-適用されるディレクティブは、別のシンボリックリンクをたどったりして
-同じディレクトリを違うパスでアクセスした場合には適用されません。</p>
-</note>
+    <note>
+      <p><var>directory-path</var> 引数には注意してください: その引数は
+      Apache がファイルをアクセスするために使うファイルシステムのパスに
+      そのままマッチする必要があります。ある <code>&lt;Directory&gt;</code> に
+      適用されるディレクティブは、別のシンボリックリンクをたどったりして
+      同じディレクトリを違うパスでアクセスした場合には適用されません。</p>
+    </note>
 
     <p><code>~</code> という文字を
-    付加することで拡張正規表現を利用することもできます。
+    付加することで<glossary ref="regex">正規表現</glossary>を利用することもできます。
     例えば:</p>
 
-<example>
-   &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
-</example>
+    <example>
+      &lt;Directory ~ "^/www/.*/[0-9]{3}"&gt;
+    </example>
 
     <p>といった指定の場合、<code>/www/</code> 以下にある数字
     3 文字のディレクトリにマッチします。</p>
@@ -680,7 +664,7 @@ Apache がファイルをアクセスするために使うファイルシステ�
       (<code>/home</code> ディレクトリに対して)。</li>
 
       <li><code>/home/.htaccess</code>, <code>/home/web/.htaccess</code>,
-      <code>/home/web/.htaccess</code> の順にそれらのファイル中の
+      <code>/home/web/dir/.htaccess</code> の順にそれらのファイル中の
        FileInfo ディレクティブが適用される。</li>
     </ul>
 
@@ -723,7 +707,7 @@ Apache がファイルをアクセスするために使うファイルシステ�
     href="../misc/security_tips.html">セキュリティに関するコツ</a>を
     参照してください。</strong></p>
 
-    <p>ディレクトリセクションは httpd.conf ファイル書きます。
+    <p>ディレクトリセクションは <code>httpd.conf</code> ファイルに書きます。
     <directive type="section">Directory</directive>
     ディレクティブは入れ子にすることができず、
     <directive module="core" type="section">Limit</directive> や <directive
@@ -750,13 +734,14 @@ Apache がファイルをアクセスするために使うファイルシステ�
     ディレクティブと同様に、<directive type="section">DirectoryMatch</directive>
     と <code>&lt;/DirectoryMatch&gt;</code> は指定されたディレクトリと
     そのサブディレクトリにのみ適用されるディレクティブ群を囲います。
-    しかし、このディレクティブは引数として正規表現をとります。例えば:</p>
+    しかし、このディレクティブは引数として<glossary 
+    ref="regex">正規表現</glossary>をとります。例えば:</p>
 
     <example>
       &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
     </example>
 
-    <p>は /www/ 以下にある数字 3 文字のディレクトリにマッチします。</p>
+    <p>は <code>/www/</code> 以下にある数字 3 文字のディレクトリにマッチします。</p>
 
 </usage>
 <seealso>通常の <directive type="section">Directory</directive> と正規表現の指定が
@@ -798,7 +783,7 @@ module="core">Directory</directive></seealso>
     <p><directive>DocumentRoot</directive> は最後のスラッシュ無しで
     指定する必要があります。</p>
 </usage>
-<seealso><a href="../urlmapping.html">URL をファイルシステムの位置に
+<seealso><a href="../urlmapping.html#documentroot">URL をファイルシステムの位置に
 マップする</a></seealso>
 </directivesynopsis>
 
@@ -868,7 +853,7 @@ module="core">Directory</directive></seealso>
 <compatibility>バージョン 2.0.44 以降で使用可能</compatibility>
 
 <usage>
-    <p>このディレクティブはクライアンにファイルの内容を送るときに
+    <p>このディレクティブはクライアントにファイルの内容を送るときに
     <program>httpd</program> がカーネルの
     sendfile サポートを使うかどうかを制御します。デフォルトでは、
     例えば静的なファイルの配送のように、リクエストの処理にファイルの
@@ -888,6 +873,8 @@ module="core">Directory</directive></seealso>
     <li>Linux では、sendfile を用いると、
     IPv6 使用時に存在する特定ネットワークカードの TCP-checksum
     オフロードのバグを踏んでしまいます。</li>
+    <li>Itanium 上の Linux では、sendfile では 2GB 以上の
+    ファイルを扱うことができません。</li>
     <li>ネットワークマウントされた <directive module="core">DocumentRoot</directive>
     (例えば NFS や SMB)
     では、カーネルは自身のキャッシュを使ってネットワークからのファイルを
@@ -993,7 +980,7 @@ module="core">Directory</directive></seealso>
     <p>Microsoft Internet Explorer (MSIE) はデフォルトではサーバが生成したエラーメッセージが
     「小さすぎる」ときには無視をして自分自身の「やさしい」エラーメッセージで
     置換します。サイズのしきい値はエラーの種類によって異なりますが、
-    一般的にはエラーの文書を 512 バイトよりも多きくすると、MSIE は
+    一般的にはエラーの文書を 512 バイトよりも大きくすると、MSIE は
     サーバが生成したエラーを隠さずに表示します。詳しい情報は Microsoft
     Knowledge Base の記事 <a
     href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
@@ -1121,6 +1108,15 @@ module="core">Directory</directive></seealso>
     そのサブディレクトリの設定は (設定が上書きされなければサブディレクトリの
     サブディレクトリにも継承されます) <code>FileETag&nbsp;MTime&nbsp;Size</code>
     と同じになります。</p>
+    <note type="warning"><title>警告</title>
+    WebDAV を使っていて、<module>mod_dav_fs</module> をストレージプロバイダとして
+    使っているような Directory や Location では、デフォルト値を変更しないでください。
+    <module>mod_dav_fs</module> では、条件付リクエストでの比較演算に
+    <code>INode&nbsp;MTime&nbsp;Size</code>
+    の固定フォーマットを使っています。
+    <directive>FileETag</directive> で <code>ETag</code> フォーマットを
+    変更してしまうと、条件付リクエストでうまく動作しなくなります。
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -1156,7 +1152,7 @@ module="core">Directory</directive></seealso>
 
     <p><var>filename</var> 引数は、ファイル名かワイルドカード文字列
     で、ワイルドカードでは <code>?</code> は一つの文字、<code>*</code> は任意の文字列にマッチします。
-    <code>~</code> という文字を付加することで拡張正規表現を使うこともできます。
+    <code>~</code> という文字を付加することで<glossary ref="regex">正規表現</glossary>を使うこともできます。
     例えば、</p>
 
     <example>
@@ -1196,7 +1192,7 @@ module="core">Directory</directive></seealso>
     <p><directive type="section">FilesMatch</directive> ディレクティブは、
     <directive module="core" type="section">Files</directive>
     ディレクティブ同様にその中にあるディレクティブの適用範囲をファイル名で制限します。ただし、
-    このディレクティブには正規表現を指定します。
+    このディレクティブには<glossary ref="regex">正規表現</glossary>を指定します。
     例えば:</p>
 
     <example>
@@ -1278,7 +1274,7 @@ module="core">Directory</directive></seealso>
     <code>Double</code>を指定した場合、2 重の逆引きを行ないます。
     つまり、逆引きの後に、その結果に対して正引きを行ないます。正引きの
     結果の IP アドレスの中にオリジナルのアドレスと一致するものがなければ
-    なりません。("tcpwrappers" の用語では PARANOID と呼ばれています。)</p>
+    なりません。("tcpwrappers" の用語では <code>PARANOID</code> と呼ばれています。)</p>
 
     <p><module>mod_authz_host</module> でホスト名によるアクセス
     制御を行なう場合には、
@@ -1304,6 +1300,38 @@ module="core">Directory</directive></seealso>
     Apache の動作とは別に、ログに残されている IP アドレスからホスト名を
     ルックアップすることが可能です。</p>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>If</name>
+<description>実行時、リクエストが条件を満たした場合にのみ適用される
+ディレクティブを包含する</description>
+<syntax>&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p><directive type="section">If</directive> ディレクティブは
+    実行時に式を評価し、条件式が真になるときにのみ
+    内包するディレクティブを適用します。
+    例えば</p>
+
+    <example>
+        &lt;If "$req{Host} = ''"&gt;
+    </example>
+
+    <p>上記例は <var>Host:</var> ヘッダの存在しない HTTP/1.0 のリクエストに
+    マッチします。</p>
+</usage>
+
+<seealso><a href="../sections.html">どのように &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; セクションが動作するか</a> では、リクエストを受けたときに、
+    これらの異なるセクションがどのように組み合わさるかについて記載されています。
+    <directive type="section">If</directive> は
+    <directive type="section">Files</directive>
+    と同じ処理順と用法になっています。</seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
@@ -1344,20 +1372,37 @@ module="core">Directory</directive></seealso>
 
     <p><var>parameter-name</var> 引数は、サーバを起動する際に
     <program>httpd</program> のコマンドラインに
-    <code>-D<var>parameter-</var></code> という形で指定すると定義されます。 </p>
+    <code>-D<var>parameter</var></code> という形で指定するか
+    あるいは <directive module="core">Define</directive>
+    ディレクティブで指定されると定義されます。 </p>
 
     <p><directive type="section">IfDefine</directive> セクションは
     入れ子にすることができ、複数のパラメータによるテストをするために使用できます。
     例:</p>
 
     <example>
-      httpd -DReverseProxy ...<br />
+      httpd -DReverseProxy -DUseCache -DMemCache ...<br />
       <br />
       # httpd.conf<br />
       &lt;IfDefine ReverseProxy&gt;<br />
       <indent>
-        LoadModule rewrite_module modules/mod_rewrite.so<br />
-        LoadModule proxy_module   modules/libproxy.so<br />
+        LoadModule proxy_module   modules/mod_proxy.so<br />
+        LoadModule proxy_http_module   modules/mod_proxy_http.so<br />
+        &lt;IfDefine UseCache&gt;<br />
+        <indent>
+          LoadModule cache_module   modules/mod_cache.so<br />
+          &lt;IfDefine MemCache&gt;<br />
+          <indent>
+            LoadModule mem_cache_module   modules/mod_mem_cache.so<br />
+      </indent>
+          &lt;/IfDefine&gt;<br />
+          &lt;IfDefine !MemCache&gt;<br />
+          <indent>
+            LoadModule disk_cache_module   modules/mod_disk_cache.so<br />
+          </indent>
+      &lt;/IfDefine&gt;
+        </indent>
+        &lt;/IfDefine&gt;
       </indent>
       &lt;/IfDefine&gt;
     </example>
@@ -1464,17 +1509,6 @@ module="core">Directory</directive></seealso>
       Include conf/ssl.conf<br />
       Include conf/vhosts/*.conf
     </example>
-
-    <p><code>apachectl configtest</code> を実行すると、設定をチェックしている時に
-    読み込まれたファイルのリストが表示されます:</p>
-
-    <example>
-      root@host# apachectl configtest<br />
-      Processing config file: /usr/local/apache2/conf/ssl.conf<br />
-      Processing config file: /usr/local/apache2/conf/vhosts/vhost1.conf<br />
-      Processing config file: /usr/local/apache2/conf/vhosts/vhost2.conf<br />
-      Syntax OK
-    </example>
 </usage>
 
 <seealso><program>apachectl</program></seealso>
@@ -1508,6 +1542,11 @@ module="core">Directory</directive></seealso>
     特に指定されない限りはデフォルトとして持続的な接続が行なわれます。
     クライアントが要求すれば、コンテンツの容量を判別できないものを
     持続的な接続を通して送るために、チャンクエンコーディングが用いられます。</p>
+
+    <p>クライアントが Keep-Alive コネクションを使用している場合、
+    そのコネクションを通してどれだけたくさんのリクエストが処理されても、
+    それは「リクエスト」1 つとして、MaxRequestsPerChild ディレクティブでは
+    数えられます。</p>
 </usage>
 
 <seealso><directive module="core">MaxKeepAliveRequests</directive></seealso>
@@ -1530,7 +1569,13 @@ module="core">Directory</directive></seealso>
     <p><directive>KeepAliveTimeout</directive> を大きな値に設定すると、
     負荷の高いサーバにおいてはパフォーマンスの問題を引き起こす場合があります。
     タイムアウトが長ければ長いほど、より多くのサーバプロセスが
-    活発でないクライアントからの接続の終了を待ち続けることになります。</p>
+    活性でないクライアントからの接続の終了を待ち続けることになります。</p>
+    
+    <p>名前ベースのバーチャルホストコンテキストでは、
+    <directive module="core">NameVirtualHost</directive>
+    のセットの中で最初に定義されたバーチャルホストの値
+    (デフォルトホスト) が使われます。
+    その他の値は無視されます。</p>
 </usage>
 </directivesynopsis>
 
@@ -1577,7 +1622,8 @@ module="core">Directory</directive></seealso>
     <code>LOCK</code>, <code>UNLOCK</code>. <strong>メソッド名は
     大文字小文字を区別します。</strong> <code>GET</code> を指定した場合には
     <code>HEAD</code> リクエストにも制限がかかります。<code>TRACE</code>
-    メソッドに制限をかけることはできません。</p>
+    メソッドに制限をかけることはできません
+    (<directive type="section" module="core">TraceEnable</directive> 参照)。</p>
 
     <note type="warning">アクセス制御が目的の場合は
     <directive type="section" module="core">Limit</directive> 
@@ -1717,17 +1763,17 @@ module="core">Directory</directive></seealso>
     デフォルト値は、定数 <code>DEFAULT_LIMIT_REQUEST_FIELDS</code>
     によりコンパイル時に定義されます (配布時には 100 と指定されています)。</p>
 
-    <p>LimitRequestBody ディレクティブは、
+    <p><directive>LimitRequestBody</directive> ディレクティブは、
     サーバ管理者が HTTP リクエスト中において許可するリクエストヘッダフィールド数を
     指定します。
     サーバはこの値には通常のクライアントからのリクエストに含まれるであろう
     フィールドの数より大きな値が必要とします。
     クライアントにより使われた要求ヘッダーフィールドの数が
     20 を超えることはほとんどありませんが、
-    これは種々のクライアントの実装よって変わり、
+    これは種々のクライアントの実装によって変わり、
     詳細なコンテントネゴシエーションをするためのブラウザの設定までにも
     影響されることがあります。
-    オプションの HTTP 拡張はリクエストヘッダフィールドを使って現される場合が
+    オプションの HTTP 拡張はリクエストヘッダフィールドを使って表される場合が
     多くあります。</p>
 
     <p>このディレクティブは、
@@ -1749,8 +1795,8 @@ module="core">Directory</directive></seealso>
 <name>LimitRequestFieldSize</name>
 <description>クライアントからの HTTP リクエストのヘッダの
 サイズを制限する</description>
-<syntax>LimitRequestFieldsize <var>bytes</var></syntax>
-<default>LimitRequestFieldsize 8190</default>
+<syntax>LimitRequestFieldSize <var>bytes</var></syntax>
+<default>LimitRequestFieldSize 8190</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -1889,9 +1935,10 @@ module="core">Directory</directive></seealso>
     という接頭辞を含む形でマッチし、接頭辞を含めて指定する必要があります。</p>
 
     <p>URL にはワイルドカードを利用することができます。
-    <code>?</code> は任意の一文字、<code>*</code> は任意の文字列にマッチします。 </p>
+    <code>?</code> は任意の一文字、<code>*</code> は任意の文字列にマッチします。
+    どちらのワイルドカードも URL パス中の / にはマッチしません。</p>
 
-    <p><code>~</code> という文字を追加することで、拡張正規表現を
+    <p><code>~</code> という文字を追加することで、<glossary ref="regex">正規表現</glossary>を
     利用することもできます。
     例えば:</p>
 
@@ -1909,7 +1956,7 @@ module="core">Directory</directive></seealso>
     <p><directive type="section">Location</directive> 機能は、<directive
     module="core">SetHandler</directive> ディレクティブと
     組合わせて利用すると特に便利です。
-    例えば、<code>foo.com</code> のブラウザからのみステータスの参照を有効にしたければ、
+    例えば、<code>example.com</code> のブラウザからのみステータスの参照を有効にしたければ、
     次のようにすれば良いでしょう。</p>
 
     <example>
@@ -1918,7 +1965,7 @@ module="core">Directory</directive></seealso>
         SetHandler server-status<br />
         Order Deny,Allow<br />
         Deny from all<br />
-        Allow from .foo.com<br />
+        Allow from .example.com<br />
       </indent>
       &lt;/Location&gt;
     </example>
@@ -1969,7 +2016,8 @@ module="core">Directory</directive></seealso>
     <p><directive type="section">LocationMatch</directive> ディレクティブは、
     <directive type="section" module="core">Location</directive> と同じ様に
     URL により中に書かれたディレクティブの適用範囲を制限します。
-    但し、引数は普通の文字列ではなく、正規表現となります。例えば、</p>
+    但し、引数は普通の文字列ではなく、<glossary ref="regex">正規表現</glossary>となります。
+    例えば、</p>
 
     <example>
       &lt;LocationMatch "/(extra|special)/data"&gt;
@@ -2244,7 +2292,11 @@ module="core">Directory</directive></seealso>
       パス名は<em>変更されません</em>。</p>
       <p><directive type="section" module="core">Location</directive> 内に
       このオプションを指定しても<strong>無視される</strong>ことに
-      注意してください。</p></note></dd>
+      注意してください。</p>
+      <p>このオプションを省略したからといってセキュリティの強化にはなりません。
+      なぜなら symlink の検査はレースコンディションを引き起こす可能性があり、
+      そのため回避可能になるからです。</p>
+      </note></dd>
 
       <dt><code>Includes</code></dt>
 
@@ -2280,9 +2332,13 @@ module="core">Directory</directive></seealso>
       シンボリックリンクの所有ユーザ ID と同じ場合にのみシンボリックリンクを
       たどれるようにします。
 
-      <note><title>注</title> <directive type="section" module="core"
+      <note><title>注</title> <p><directive type="section" module="core"
       >Location</directive> 内にこのオプションを
-      指定しても無視されます。</note>
+      指定しても無視されます。</p>
+      <p>このオプションはセキュリティの強化にはなりません。
+      なぜなら symlink の検査はレースコンディションを引き起こす可能性があり、
+      そのため回避可能になるからです。</p>
+      </note>
       </dd>
     </dl>
 
@@ -2295,6 +2351,13 @@ module="core">Directory</directive></seealso>
     指定された場合はオプションの値はマージされます。
     <code>+</code> を頭につければ現在の設定に加えられ、
     <code>-</code> を付ければ現在の設定から削除されます。</p>
+
+    <note type="warning"><title>警告</title>
+    <p><directive>Options</directive> で <code>+</code> や
+    <code>-</code> のついたものを、つけないものと組み合わせて
+    指定する構文は正しい構文ではありませんので、期待する結果に
+    ならないことがあります。</p>
+    </note>
 
     <p>例えば、<code>+</code> や <code>-</code> を利用しない場合は:</p>
 
@@ -2345,65 +2408,6 @@ module="core">Directory</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>Require</name>
-<description>どの認証済みユーザがリソースをアクセスできるかを選択する</description>
-<syntax>Require <var>entity-name</var> [<var>entity-name</var>] ...</syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>このディレクティブは、どの認証済みのユーザがリソースに
-    アクセスすることができるかを指定します。
-    以下のような構文になります。</p>
-
-    <dl>
-      <dt><code>Require user <var>userid</var> [<var>userid</var>] ...</code></dt>
-
-      <dd>指定されたユーザのみ、ディレクトリへのアクセスを許可します。</dd>
-
-      <dt><code>Require group <var>group-name</var> [<var>group-name</var>] ...</code></dt>
-
-      <dd>指定されたグループに属するユーザのみ、ディレクトリへのアクセスを許可します。</dd>
-
-      <dt><code>Require valid-user</code></dt>
-
-      <dd>全ての認証されたユーザに、ディレクトリへのアクセスを許可します。</dd>
-    </dl>
-
-    <p><directive>Require</directive> は、正しく動作するためには <directive
-    module="core">AuthName</directive> 及び <directive module="core"
-    >AuthType</directive> ディレクティブや、
-    (ユーザとグループを指定するために) <directive module="mod_authn_file"
-    >AuthUserFile</directive> 及び <directive module="mod_authz_groupfile"
-    >AuthGroupFile</directive>
-    といったディレクティブと共に
-    指定する必要があります。
-    例えば:</p>
-
-    <example>
-       AuthType Basic<br />
-       AuthName "Restricted Resource"<br />
-       AuthUserFile /web/users<br />
-       AuthGroupFile /web/groups<br />
-       Require group admin
-    </example>
-
-    <p>このようにして適用されたアクセス制御は、<strong>全ての</strong>メソッドに
-    対して行なわれます。
-    <strong>通常は、これが望ましい動作です。</strong>
-    もし、特定のメソッドに対してのみアクセスの制御を適用し、
-    他のメソッドは制限しない場合には、<directive
-    type="section" module="core">Limit</directive> セクション内に
-    <directive>Require</directive> を
-    指定してください。</p>
-
-</usage>
-<seealso><directive module="core">Satisfy</directive></seealso>
-<seealso><module>mod_authz_host</module></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>RLimitCPU</name>
 <description>Apache の子プロセスから起動されたプロセスの CPU 消費量を
 制限する</description>
@@ -2446,7 +2450,7 @@ module="core">Directory</directive></seealso>
 <override>All</override>
 
 <usage>
-    <p>一つか二つのパラメータををとります。
+    <p>一つか二つのパラメータをとります。
     最初のパラメータは全プロセスに対するリソースのソフトリミットを設定し、
     2 番目のパラメータは最大のリソースリミットを設定します。
     パラメータには数字か、オペレーティングシステムの最大となる
@@ -2504,57 +2508,6 @@ module="core">Directory</directive></seealso>
 </usage>
 <seealso><directive module="core">RLimitMEM</directive></seealso>
 <seealso><directive module="core">RLimitCPU</directive></seealso>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>Satisfy</name>
-<description>ホストレベルのアクセス制御とユーザ認証との相互作用を指定</description>
-<syntax>Satisfy Any|All</syntax>
-<default>Satisfy All</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-<compatibility>バージョン 2.0.51 以降では <directive module="core" type="section"
-	>Limit</directive> ディレクティブと <directive module="core"
-	type="section">LimitExcept</directive> ディレクティブの影響を受ける
-</compatibility>
-
-<usage>
-    <p><directive module="mod_authz_host">Allow</directive> と
-    <directive module="core">Require</directive> の両方が使われているときの
-    アクセスポリシーを設定します。パラメータは <code>All</code> か <code>Any</code>
-    です。このディレクティブはある場所へのアクセスがユーザ名/パスワード
-    <em>と</em>クライアントのホストのアドレスで制限されているときにのみ
-    役立ちます。デフォルトの動作 (<code>All</code>) はクライアントがアドレスによる
-    アクセス制限を満たし、<em>かつ</em>正しいユーザ名とパスワードを入力することを
-    要求します。<code>Any</code> では、クライアントはホストの制限を満たすか、
-    正しいユーザ名とパスワードの入力をするかをすればアクセスを許可されます。
-    これは、ある場所をパスワードで保護するけれど、特定のアドレスからの
-    クライアントにはパスワードの入力を要求せずにアクセスを許可する、
-    というようなときに使用できます。</p>
-
-    <p>例えば、同じネットワーク上にいる人にはウェブサイトのある部分について
-    無制限のアクセスを許したいけれど、外のネットワークの人には
-    パスワードを提供させるようにするためには、次のような設定をすることが
-    できます:</p>
-
-    <example>
-    Require valid-user<br />
-    Allow from 192.168.1<br />
-    Satisfy Any
-    </example>
-   
-    <p>バージョン 2.0.51 からは
-    <directive module="core"
-    type="section">Limit</directive> セクションと
-    <directive module="core" type="section"
-    >LimitExcept</directive> セクションを使用することで
-    <directive>Satisfy</directive> ディレクティブが
-    適用されるメソッドを制限することが
-    できるようになりました。</p>
-</usage>
-   <seealso><directive module="mod_authz_host">Allow</directive></seealso>
-   <seealso><directive module="core">Require</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2663,7 +2616,9 @@ module="core">Directory</directive></seealso>
 <usage>
     <p><directive>ServerAlias</directive> ディレクティブは、<a
     href="../vhosts/name-based.html">ネームベースのバーチャルホスト</a>において
-    使用するホストの別名を指定します。</p>
+    使用するホストの別名を指定します。
+    適切であれば、<directive>ServerAlias</directive> ディレクティブでは
+    ワイルドカードを使うこともできます。</p>
 
     <example>
       &lt;VirtualHost *&gt;<br />
@@ -2679,7 +2634,7 @@ module="core">Directory</directive></seealso>
 <directivesynopsis>
 <name>ServerName</name>
 <description>サーバが自分自身を示すときに使うホスト名とポート</description>
-<syntax>ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</syntax>
+<syntax>ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>このディレクティブはバージョン 2.0 ではバージョン 1.3 の
@@ -2687,7 +2642,7 @@ module="core">Directory</directive></seealso>
 
 <usage>
     <p><directive>ServerName</directive> ディレクティブは、
-    サーバが自分自身を示すホスト名とポートを設定します。
+    サーバが自分自身を示すスキーム名、ホスト名とポート番号を設定します。
     これは、リダイレクトする URL を生成する際に利用されます。
     例えば、ウェブサーバを動かしているマシンは <code>simple.example.com</code>
     で、DNS のエイリアス <code>www.example.com</code> もあるときに、
@@ -2712,15 +2667,25 @@ module="core">Directory</directive></seealso>
     <directive>ServerName</directive> はこのバーチャルホストにマッチするために
     何がリクエストの Host: ヘッダに現れる必要があるのかを指定します。</p>
 
+    <p>SSL を処理するデバイス、例えばリーバスプロクシやロードバランサや
+    SSL 処理軽減アプライアンスの裏側でサーバが稼動する場合もあるでしょう。
+    そういった場合では、クライアントが接続するときに使う
+    <code>https://</code> スキームとポート番号を <directive>ServerName</directive>
+    ディレクティブで指定して、自己参照 URL が正しく生成できるようにします。</p>
+
     <p>自己参照 URL (例えば <module>mod_dir</module> モジュールによるものなど)
     が指定されたポートを使うか、クライアントのリクエストのポート番号を使うかを
     決定する設定は <directive module="core">UseCanonicalName</directive> 
+    ディレクティブと <directive 
+    module="core">UseCanonicalPhysicalPort</directive>
     ディレクティブを参照してください。</p>
+
 </usage>
 
 <seealso><a href="../dns-caveats.html">DNS と Apache に関する話</a></seealso>
 <seealso><a href="../vhosts/">Apache バーチャルホスト説明書</a></seealso>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
+<seealso><directive module="core">UseCanonicalPhysicalPort</directive></seealso>
 <seealso><directive module="core">NameVirtualHost</directive></seealso>
 <seealso><directive module="core">ServerAlias</directive></seealso>
 </directivesynopsis>
@@ -2807,7 +2772,7 @@ module="core">Directory</directive></seealso>
 
 <directivesynopsis>
 <name>ServerTokens</name>
-<description>Server HTTP 応答ヘッダを設定する</description>
+<description><code>Server</code> HTTP 応答ヘッダを設定する</description>
 <syntax>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</syntax>
 <default>ServerTokens Full</default>
 <contextlist><context>server config</context></contextlist>
@@ -2901,6 +2866,11 @@ module="core">Directory</directive></seealso>
     <p><code>None</code> という値を設定することで、
     前の方の <directive>SetHandler</directive> で定義された設定を無効にすることが
     できます。</p>
+    <p><strong>注意:</strong>SetHandler はデフォルトのハンドラをオーバーライド
+    しますので、通常の挙動、たとえば、スラッシュ (/) で終わる URL が
+    リクエストされたときにディレクトリやインデックスファイルを返すよう取り扱う挙動は、
+    行われなくなります。
+    </p>
 
 </usage>
 
@@ -2970,26 +2940,63 @@ module="core">Directory</directive></seealso>
 待つ時間を設定</description>
 <syntax>TimeOut <var>seconds</var></syntax>
 <default>TimeOut 300</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p><directive>TimeOut</directive> ディレクティブは、現在のところ
-    以下の三つの待ち時間についての定義を行います:</p>
+    <p><directive>TimeOut</directive> ディレクティブは、
+    様々な条件下での I/O 待ち時間を定義します:</p>
 
     <ol>
-      <li>GET リクエストを受け取るのにかかる総時間</li>
+      <li>クライアントからのデータを読み込む時。
+      受信バッファが空になっていて、TCP パケットが届くまで
+      待つ時間の長さ</li>
 
-      <li>POST や PUTリクエストにおいて、次の TCP パケットが届くまでの待ち時間</li>
+      <li>クライアントに対してデータを送り出す時。
+      送信バッファがいっぱいで、パケットの受信完了 <transnote>ACK</transnote> 
+      が届くまで待つ時間の長さ</li>
 
-      <li>レスポンスを返す際、TCP の ACK が帰ってくるまでの時間</li>
+      <li><module>mod_cgi</module> 内で、CGI スクリプトが出力を
+      返すまでの待ち時間の長さ</li>
+
+      <li><module>mod_ext_filter</module> 内で、フィルタ処理で出力を
+      待つ時間の長さ</li>
+
+      <li><module>mod_proxy</module> 内で、
+      <directive module="mod_proxy">ProxyTimeout</directive>
+      が設定されていない場合のデフォルトの待ち時間</li>
     </ol>
-    
-    <p>将来には別々の設定をすることが可能にできるよう考慮中です。
-    Apache 1.2 以前はタイマーは 1200 がデフォルトでしたが、
-    300 に下げられました。300 でもほとんどの場合は十分すぎる値です。
-    コード中の変な場所にまだパケットを送る際にタイマをリセットしない
-    場所があるかもしれないので、デフォルトをより小さい値にはしていません。</p>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>TraceEnable</name>
+<description><code>TRACE</code> メソッドのリクエストに対する応答方法を決める
+</description>
+<syntax>TraceEnable <var>[on|off|extended]</var></syntax>
+<default>TraceEnable on</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Apache 1.3.34, 2.0.55 以降</compatibility>
+
+<usage>
+    <p>Apache のコア機能<transnote><module>core</module></transnote>と
+    <module>mod_proxy</module> 両方の <code>TRACE</code>
+    の挙動をオーバーライドします。デフォルトの <code>TraceEnable on</code>
+    は、リクエストボディを受け入れないような、RFC2616 に準拠した
+    <code>TRACE</code> リクエストを受け付けます。
+    <code>TraceEnale off</code> と設定すると、コアサーバと
+    <module>mod_proxy</module> は <code>405</code> (メソッド不許可)
+    エラーをクライアントに返します。</p>
+
+    <p>最後に、テストや調査目的などの限定用途として、仕様に準拠しない
+    <code>TraceEnable extended</code> を使って、リクエストボディを
+    受け付けるように挙動を変更できます。(オリジンサーバとしての)
+    Apache のコアでは、リクエストボディのサイズは 64k (
+    <code>Transfer-Encoding: chunked</code> が使われている場合は 
+    chunk ヘッダ用に +8k) に制限されます。
+    Apache のコアは、ヘッダと全ての chunk ヘッダをレスポンスの
+    ボディとして返却します。
+    proxy サーバとしては、リクエストボディのサイズは 64k に制限されません。</p>
 </usage>
 </directivesynopsis>
 
@@ -3050,6 +3057,50 @@ module="core">Directory</directive></seealso>
     <code>SERVER_NAME</code> を使って自己参照 URL を作成することしかしない
     場合は、どの設定を行なっても大丈夫なはずです。</p></note>
 </usage>
+<seealso><directive module="core">UseCanonicalPhysicalPort</directive></seealso>
+<seealso><directive module="core">ServerName</directive></seealso>
+<seealso><directive module="mpm_common">Listen</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UseCanonicalPhysicalPort</name>
+<description>自分自身の名前とポート番号を解決する方法を設定する
+</description>
+<syntax>UseCanonicalPhysicalPort On|Off</syntax>
+<default>UseCanonicalPhysicalPort Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>さまざまな局面で <em>自己参照</em> URL -- それ自体のサーバを参照する URL
+    を作ることになります。<code>UseCanonicalPhysicalPort On</code> と設定すると、
+    <directive module="core">UseCanonicalName</directive> に従って別名を
+    生成する場合に、実際の物理ポート番号を使って構成するようになります。
+    <code>UseCanonicalPhysicalPort Off</code> の場合は、実際の物理ポート番号は
+    使用せず、設定された情報を元にポート番号を決めます。</p>
+
+    <note><title>注意</title>
+    <p>物理ポートが使われる場合の順番は次のようになっています:<br /><br />
+     <code>UseCanonicalName On</code></p>
+     <ul>
+      <li><code>ServerName</code> で指定されているポート番号</li>
+      <li>物理ポート番号</li>
+      <li>デフォルトのポート番号</li>
+     </ul>
+     <code>UseCanonicalName Off | DNS</code>
+     <ul>
+      <li><code>Host:</code> ヘッダをパースして取得されるポート番号</li>
+      <li>物理ポート番号</li>
+      <li><code>ServerName</code> で指定されているポート番号</li>
+      <li>デフォルトのポート番号</li>
+     </ul>
+    
+    <p><code>UseCanonicalPhysicalPort Off</code> で、
+    物理ポート番号が上記の順序付けから除外されます。</p>
+    </note>
+
+</usage>
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><directive module="core">ServerName</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
@@ -3078,7 +3129,7 @@ module="core">Directory</directive></seealso>
     <ul>
       <li>バーチャルホストの IP アドレス</li>
 
-      <li>バーチャルホストの IP に対応する完全なドメイン名</li>
+      <li>バーチャルホストの IP に対応する完全なドメイン名 (非推奨)</li>
 
       <li><code>NameVirtualHost *</code> と共に使われる、
       すべての IP アドレスにマッチする文字 <code>*</code></li>
@@ -3090,14 +3141,14 @@ module="core">Directory</directive></seealso>
     <example><title>例</title>
       &lt;VirtualHost 10.1.2.3&gt;<br />
       <indent>
-        ServerAdmin webmaster@host.foo.com<br />
-        DocumentRoot /www/docs/host.foo.com<br />
-        ServerName host.foo.com<br />
-        ErrorLog logs/host.foo.com-error_log<br />
-        TransferLog logs/host.foo.com-access_log<br />
+        ServerAdmin webmaster@host.example.com<br />
+        DocumentRoot /www/docs/host.example.com<br />
+        ServerName host.example.com<br />
+        ErrorLog logs/host.example.com-error_log<br />
+        TransferLog logs/host.example.com-access_log<br />
       </indent>
       &lt;/VirtualHost&gt;
-    </example>    
+    </example>
  
     <p>IPv6 アドレスはオプションのポート番号の指定と区別するために、
     角括弧で括って指定する必要があります。次は IPv6 の例です:</p>
@@ -3112,7 +3163,7 @@ module="core">Directory</directive></seealso>
         TransferLog logs/host.example.com-access_log<br />
       </indent>
       &lt;/VirtualHost&gt;
-    </example>  
+    </example>
 
     <p>各々のバーチャルホストにはそれぞれ違う IP アドレス、ポート番号
     もしくはホスト名に対応する必要があり、
@@ -3122,21 +3173,6 @@ module="core">Directory</directive></seealso>
     (OSがサポートしていれば) <code>ifconfig alias</code> コマンドにより
     達成できます)。</p>
 
-    <p><code>:port</code> といった形式で記述することにより、
-    マッチさせるポートを変更可能です。
-    この指定をしない場合には、主サーバ設定における
-    一番最後に <code><a href="#port">Port</a></code> で指定されたポートが
-    デフォルトとなります。
-    <code>:*</code> を指定することにより、
-    アドレス上の全てのポートにマッチします。(<code>_default_</code> のときは
-    これを使うことが推奨されています。)</p>
-
-    <p><strong>セキュリティに関して</strong>: 
-    サーバーを起動した以外のユーザがログファイルが保管されるディレクトリに
-    書き込み可能なときになぜセキュリティが破られる可能性があるかの詳細は
-    <a href="../misc/security_tips.html">セキュリティに関するコツ</a> を
-    参照してください。</p>
-    
     <note><title>注意点</title>
     <p><directive type="section">VirtualHost</directive> は Apache が Listen する
     IP アドレスには影響を与え<strong>ません</strong>。
@@ -3160,20 +3196,17 @@ module="core">Directory</directive></seealso>
     <p><code>:port</code> といった形式で記述することにより、
     マッチさせるポートを変更可能です。
     この指定をしない場合には、主サーバ設定における
-    一番最後に <directive module="mpm_common">Listen</directive> で指定された
-    ポートがデフォルトとなります。
-    <code>:*</code> を指定することにより、
-    アドレス上の全てのポートにマッチします。(<code>_default_</code> のときは
-    これを使うことが推奨されています。)</p>
-
-    <p><code>:port</code> といった形式で記述することにより、
-    マッチさせるポートを変更可能です。
-    この指定をしない場合には、主サーバ設定における
     一番最後に <code><a href="#port">Port</a></code> で指定されたポートが
     デフォルトとなります。
     <code>:*</code> を指定することにより、
     アドレス上の全てのポートにマッチします。(<code>_default_</code> のときは
     これを使うことが推奨されています。)</p>
+
+    <p><directive type="section">VirtualHost</directive> ブロックごとに
+    <directive module="core">ServerName</directive> を指定すべきです。
+    もしなければ、メインサーバ設定の
+    <directive module="core">ServerName</directive>
+    が継承されます</p>
 
     <note type="warning"><title>セキュリティ</title>
     <p>サーバーを起動した以外のユーザがログファイルが保管されるディレクトリに
