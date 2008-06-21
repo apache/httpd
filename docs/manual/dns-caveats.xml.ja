@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:507346 (outdated) -->
+<!-- English Revision: 507346 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -103,13 +103,17 @@
 
     <example>
       &lt;VirtualHost www.abc.dom&gt; <br />
-      &nbsp;&nbsp;ServerAdmin webgirl@abc.dom <br />
-      &nbsp;&nbsp;DocumentRoot /www/abc <br />
+      <indent>
+        ServerAdmin webgirl@abc.dom <br />
+        DocumentRoot /www/abc <br />
+      </indent>
       &lt;/VirtualHost&gt; <br />
       <br />
       &lt;VirtualHost www.def.dom&gt; <br />
-      &nbsp;&nbsp;ServerAdmin webguy@def.dom <br />
-      &nbsp;&nbsp;DocumentRoot /www/def <br />
+      <indent>
+        ServerAdmin webguy@def.dom <br />
+        DocumentRoot /www/def <br />
+      </indent>
       &lt;/VirtualHost&gt;
     </example>
 
@@ -175,18 +179,18 @@
     <ul>
       <li>
         <directive module="core">VirtualHost</directive>
-	で IP アドレスを使用する。
+        で IP アドレスを使用する。
       </li>
 
       <li>
         <directive module="mpm_common">Listen</directive>
-	で IP アドレスを使用する。
+        で IP アドレスを使用する。
       </li>
 
       <li>
-	全てのバーチャルホストが明示的に
+        全てのバーチャルホストが明示的に
         <directive module="core">ServerName</directive>
-	を持つようにする。
+        を持つようにする。
       </li>
 
       <li>何も応答しない

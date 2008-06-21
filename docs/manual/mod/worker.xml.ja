@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:431460 (outdated) -->
+<!-- English Revision: 431460 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -35,8 +35,9 @@
     実装しています。リクエストの応答にスレッドを使うと、
     プロセスベースのサーバよりも少ないシステム資源で、
     多くのリクエストに応答することができます。
-    さらに、多くのスレッドを持った複数のプロセスを維持することで、
-    プロセスベースのサーバの持つ安定性を保持しています。</p>
+    それにもかかわらず、多くのスレッドを持った複数のプロセスを
+    維持することで、
+    プロセスベースのサーバの持つ安定性も保持しています。</p>
 
     <p>この MPM を制御するのに使われる最も重要なディレクティブは、
     <directive module="mpm_common">ThreadsPerChild</directive> と
@@ -65,7 +66,7 @@
     待たなくてもよいようになっています。
     起動初期時のプロセス総数は、
     <directive module="mpm_common">StartServers</directive>
-    ディレクティブで設定されます。その後の稼働中に、
+    ディレクティブで設定されます。稼働中に、
     Apache は全プロセスのアイドルスレッドの合計数を見積もって、
     <directive module="mpm_common">MinSpareThreads</directive> と
     <directive module="mpm_common">MaxSpareThreads</directive>
@@ -93,9 +94,7 @@
     必要があります。<directive module="mpm_common">ThreadLimit</directive> は
     サーバスレッドの越えられない上限で、<directive 
     module="mpm_common">ThreadsPerChild</directive> ディレクティブの
-    値以上である必要があります。デフォルト以外の値を指定する場合は
-    他の <module>worker</module> ディレクティブよりも前に書かれている
-    必要があります。</p>
+    値以上である必要があります。</p>
 
     <p>活動中の子プロセス群に加えて、少なくとも一つのサーバスレッドが
     既存のクライアントからの接続を扱っている終了しようとしている
@@ -173,6 +172,8 @@
 <directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ServerLimit</name>
 </directivesynopsis>
