@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 395228:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -113,6 +113,26 @@
     期待とは違う挙動になるからです。</p>
 </usage>
 
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CheckCaseOnly</name>
+<description>大文字小文字の修正だけ行うようにする</description>
+<syntax>CheckCaseOnly on|off</syntax>
+<default>CheckCaseOnly Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p> このディレクティブがセットされると、
+    綴り訂正機能は大文字小文字の修正のみ働き、他の修正機能は働きません。</p>
+
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>
