@@ -4464,8 +4464,9 @@ static int hook_uri2file(request_rec *r)
                 r->filename = apr_pstrcat(r->pool, r->filename,
                                           r->path_info, NULL);
             }
-            if (r->args != NULL &&
-                ((r->proxyreq == PROXYREQ_PROXY) || (rulestatus == ACTION_NOESCAPE))) {
+            if ((r->args != NULL)
+                && ((r->proxyreq == PROXYREQ_PROXY)
+                    || (rulestatus == ACTION_NOESCAPE))) {
                 /* see proxy_http:proxy_http_canon() */
                 r->filename = apr_pstrcat(r->pool, r->filename,
                                           "?", r->args, NULL);
