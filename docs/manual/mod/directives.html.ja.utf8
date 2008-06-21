@@ -119,10 +119,8 @@
 <li><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
-<li><a href="core.html#authname">AuthName</a></li>
 <li><a href="mod_authn_core.html#authname">AuthName</a></li>
 <li><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
-<li><a href="core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
@@ -130,7 +128,6 @@
 <li><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
 <li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
 <li><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative</a></li>
-<li><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
 <li><a href="mod_authz_core.html#authzmergerules">AuthzMergeRules</a></li>
 <li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
@@ -156,8 +153,10 @@
 <li><a href="mod_charset_lite.html#charsetdefault">CharsetDefault</a></li>
 <li><a href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
 <li><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc</a></li>
+<li><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></li>
 <li><a href="mod_speling.html#checkspelling">CheckSpelling</a></li>
 <li><a href="perchild.html#childperuserid">ChildPerUserID</a></li>
+<li><a href="mpm_common.html#chrootdir">ChrootDir</a></li>
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
 <li><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
@@ -183,6 +182,7 @@
 <li><a href="mod_autoindex.html#defaulticon">DefaultIcon</a></li>
 <li><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></li>
 <li><a href="core.html#defaulttype">DefaultType</a></li>
+<li><a href="core.html#define">Define</a></li>
 <li><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize</a></li>
 <li><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel</a></li>
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
@@ -226,6 +226,7 @@
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
 <li><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
 <li><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout</a></li>
+<li><a href="core.html#if">&lt;If&gt;</a></li>
 <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><a href="core.html#ifmodule">&lt;IfModule&gt;</a></li>
 <li><a href="mod_version.html#ifversion">&lt;IfVersion&gt;</a></li>
@@ -345,7 +346,6 @@
 <li><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></li>
 <li><a href="mod_mime.html#removetype">RemoveType</a></li>
 <li><a href="mod_headers.html#requestheader">RequestHeader</a></li>
-<li><a href="core.html#require">Require</a></li>
 <li><a href="mod_authz_core.html#require">Require</a></li>
 <li><a href="mod_authz_core.html#requirealias">&lt;RequireAlias&gt;</a></li>
 <li><a href="mod_rewrite.html#rewritebase">RewriteBase</a></li>
@@ -360,8 +360,7 @@
 <li><a href="core.html#rlimitcpu">RLimitCPU</a></li>
 <li><a href="core.html#rlimitmem">RLimitMEM</a></li>
 <li><a href="core.html#rlimitnproc">RLimitNPROC</a></li>
-<li><a href="core.html#satisfy" id="S" name="S">Satisfy</a></li>
-<li><a href="mod_access_compat.html#satisfy">Satisfy</a></li>
+<li><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy</a></li>
 <li><a href="mod_authz_core.html#satisfyall">&lt;SatisfyAll&gt;</a></li>
 <li><a href="mod_authz_core.html#satisfyone">&lt;SatisfyOne&gt;</a></li>
 <li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
@@ -374,6 +373,7 @@
 <li><a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
 <li><a href="mod_cgid.html#scriptsock">ScriptSock</a></li>
 <li><a href="mod_nw_ssl.html#securelisten">SecureListen</a></li>
+<li><a href="mod_status.html#seerequesttail">SeeRequestTail</a></li>
 <li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><a href="core.html#serveradmin">ServerAdmin</a></li>
 <li><a href="core.html#serveralias">ServerAlias</a></li>
@@ -464,10 +464,12 @@
 <li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><a href="core.html#timeout">TimeOut</a></li>
+<li><a href="core.html#traceenable">TraceEnable</a></li>
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
 <li><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv</a></li>
 <li><a href="core.html#usecanonicalname">UseCanonicalName</a></li>
+<li><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><a href="mpm_common.html#user">User</a></li>
 <li><a href="mod_userdir.html#userdir">UserDir</a></li>
 <li><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot</a></li>

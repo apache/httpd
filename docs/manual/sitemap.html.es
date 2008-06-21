@@ -230,7 +230,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Módulo Apache mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Módulo Apache mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Módulo Apache mod_proxy_connect</a></li>
-<li><a href="mod/mod_proxy_fcg.html">Módulo Apache mod_proxy_fcg</a></li>
+<li><a href="mod/mod_proxy_fcgi.html">Módulo Apache mod_proxy_fcgi</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Módulo Apache mod_proxy_ftp</a></li>
 <li><a href="mod/mod_proxy_http.html">Módulo Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_request.html">Módulo Apache mod_request</a></li>

@@ -24,10 +24,9 @@
 <div class="toplang">
 <p><span>言語: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバの活動状況と性能に関する情報を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>status_module</td></tr>
@@ -36,11 +35,11 @@
 
     <p>この Status モジュールによりサーバ管理者はサーバがどのくらい
     の性能で動作しているかを知ることができるようになります。
-    現時点でのサーバの統計情報を読みやすい形式で現した HTML ページが
+    現時点でのサーバの統計情報を読みやすい形式で表した HTML ページが
     表示されます。必要であれば、このページは自動的にリフレッシュさせる
     こともできます (互換性のあるブラウザを使用している場合)。
     別に、現時点でのサーバの状態を単純な機械読み取り可能なリストで
-    現すページもあります。</p>
+    表すページもあります。</p>
 
     <p>表示される情報は:</p>
 
@@ -64,13 +63,14 @@
       <li>現時点のホストと処理されているリクエスト (*)</li>
     </ul>
 
-    <p>"(*)" の付いている情報を表示するためにはコンパイル時のオプション
-    を使用する必要があります。これらの統計情報を得るために必要な
-    コードは標準の Apache には含まれていません。</p>
+    <p>"(*)" の付いている情報を表示するには 
+    <code class="directive"><a href="#extendedstatus">ExtendedStatus</a></code> 
+    が <code>On</code> になっている必要があります。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
 </ul>
 <h3>トピック</h3>
 <ul id="topics">
@@ -83,7 +83,7 @@
 <h2><a name="enable" id="enable">Status を使用可能にする</a></h2>
     
 
-    <p>foo.com ドメインからのブラウザのみに対して
+    <p>example.com ドメインからのブラウザのみに対して
     ステータスの報告を使用可能にするには
     以下のコードを <code>httpd.conf</code> 設定ファイルに追加します</p>
 <div class="example"><p><code>
@@ -92,7 +92,7 @@
 <br />
     Order Deny,Allow<br />
     Deny from all<br />
-    Allow from .foo.com<br />
+    Allow from .example.com<br />
     &lt;/Location&gt;
 </code></p></div>
 
@@ -104,7 +104,7 @@
 <h2><a name="autoupdate" id="autoupdate">自動更新</a></h2>
 
     
-    <p>ブラウザが「リフレシュ」機能をサポートしていれば、ステータスページを
+    <p>ブラウザが「リフレッシュ」機能をサポートしていれば、ステータスページを
     自動的に更新するようにできます。N 秒毎に更新させるためには
     <code>http://your.server.name/server-status?refresh=N</code>
     というページをアクセスしてください。</p>
@@ -139,18 +139,54 @@
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>ExtendedStatus は Apache 1.3.2 以降でのみ使用可能</td></tr>
 </table>
     <p>この設定はサーバ全体に対して適用され、バーチャルホスト毎に
     変更することはできません。拡張ステータス情報の収集はサーバの
     動作を遅くすることがあります。</p>
 
 </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストの最初の 63 文字か最後の 63 文字
+のどちらを mod_status が表示するかを決める</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SeeRequestTail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_status</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.2.7 以降</td></tr>
+</table>
+    <p><code>ExtendedStatus On</code> に設定すると mod_status 
+    は処理中のリクエスト<span class="transnote">(<em>訳注:</em> の文字列)</span>を表示します。
+    歴史的な理由で、リクエストのうちの63文字だけが表示用に記録されます。
+    このディレクティブで、最初の63文字を記録する(従来からの動作、
+    そして現在もデフォルト)か、最後の63文字を記録するかを決めます。
+    もちろん、リクエストの長さが64文字以上のときに効果があります
+    <span class="transnote">(<em>訳注:</em> 63文字以下だと結果的に同じ動作)</span>。</p>
+
+    <p>Apache が <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> というリクエストを扱っているとき、 mod_status は以下のように表示します:
+    </p>
+
+    <table class="bordered">
+      <tr>
+        <th>Off (デフォルト)</th>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
+      </tr>
+    </table>
+
+
+</div>
 </div>
 <div class="bottomlang">
 <p><span>言語: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>

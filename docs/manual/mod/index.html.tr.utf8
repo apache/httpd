@@ -139,9 +139,11 @@ configuration</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>ISAPI Extensions within Apache for Windows</dd>
 <dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
-<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
-<dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
-<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
+<dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
+</dd>
+<dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Sunucuya yapılan isteklerin adli günlük kayıtlarının tutulması</dd>
+<dt><a href="mod_logio.html">mod_logio</a></dt><dd>Her isteğin girdi ve çıktı uzunluklarının günlüklenmesi.
+</dd>
 <dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>Content cache keyed to URIs</dd>
 <dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
@@ -157,7 +159,7 @@ by other LDAP modules</dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for load balancing </dd>
 <dt><a href="mod_proxy_connect.html">mod_proxy_connect</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for
 <code>CONNECT</code> request handling</dd>
-<dt><a href="mod_proxy_fcg.html">mod_proxy_fcg</a></dt><dd>FastCGI support module for
+<dt><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></dt><dd>FastCGI support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>FTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
@@ -179,8 +181,7 @@ users might have entered by ignoring capitalization and by
 allowing up to one misspelling</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
-<dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
-performance</dd>
+<dt><a href="mod_status.html">mod_status</a></dt><dd>Sunucu etkinliği ve başarımı hakkında bilgi sağlar.</dd>
 <dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Allows CGI scripts to run as a specified user
 and Group</dd>
@@ -191,8 +192,7 @@ identifier for each request</dd>
 <em>Clickstream</em> logging of user activity on a site
 </dd>
 <dt><a href="mod_version.html" id="V" name="V">mod_version</a></dt><dd>Version dependent configuration</dd>
-<dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Provides for dynamically configured mass virtual
-hosting</dd>
+<dt><a href="mod_vhost_alias.html">mod_vhost_alias</a></dt><dd>Kitlesel sanal konakların devingen olarak yapılandırılmasını sağlar</dd>
 </dl></div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

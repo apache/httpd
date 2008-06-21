@@ -26,13 +26,11 @@
 <a href="../ja/mod/mod_version.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_version.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>バージョン依存の設定</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>version_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_version.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.1 以降</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>バージョン 2.0.56 以降</td></tr></table>
 <h3>概要</h3>
 
     <p>様々なバージョンの httpd の異なる設定を扱うことになる、
@@ -105,7 +103,8 @@
       &lt;/IfVersion&gt;
     </code></p></div>
 
-    <p>数値比較に加えて、http のバージョン番号に対して正規表現による
+    <p>数値比較に加えて、http のバージョン番号に対して
+    <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>による
     マッチングができます。二種類の書き方があります:</p>
 
     <table class="bordered"><tr class="header"><th><var>operator</var></th><th>説明</th></tr>
