@@ -2,7 +2,7 @@
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <modulesynopsis metafile="mod_status.xml.meta">
-<!-- English Revision: 420990:668628 (outdated) -->
+<!-- English Revision: 668628 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -31,11 +31,11 @@
 <summary>
     <p>この Status モジュールによりサーバ管理者はサーバがどのくらい
     の性能で動作しているかを知ることができるようになります。
-    現時点でのサーバの統計情報を読みやすい形式で現した HTML ページが
+    現時点でのサーバの統計情報を読みやすい形式で表した HTML ページが
     表示されます。必要であれば、このページは自動的にリフレッシュさせる
     こともできます (互換性のあるブラウザを使用している場合)。
     別に、現時点でのサーバの状態を単純な機械読み取り可能なリストで
-    現すページもあります。</p>
+    表すページもあります。</p>
 
     <p>表示される情報は:</p>
 
@@ -59,15 +59,15 @@
       <li>現時点のホストと処理されているリクエスト (*)</li>
     </ul>
 
-    <p>"(*)" の付いている情報を表示するためにはコンパイル時のオプション
-    を使用する必要があります。これらの統計情報を得るために必要な
-    コードは標準の Apache には含まれていません。</p>
+    <p>"(*)" の付いている情報を表示するには 
+    <directive module="mod_status">ExtendedStatus</directive> 
+    が <code>On</code> になっている必要があります。</p>
 </summary>
 
 <section id="enable">
     <title>Status を使用可能にする</title>
 
-    <p>foo.com ドメインからのブラウザのみに対して
+    <p>example.com ドメインからのブラウザのみに対して
     ステータスの報告を使用可能にするには
     以下のコードを <code>httpd.conf</code> 設定ファイルに追加します</p>
 <example>
@@ -76,7 +76,7 @@
 <br />
     Order Deny,Allow<br />
     Deny from all<br />
-    Allow from .foo.com<br />
+    Allow from .example.com<br />
     &lt;/Location&gt;
 </example>
 
@@ -88,7 +88,7 @@
 <section id="autoupdate">
 
     <title>自動更新</title>
-    <p>ブラウザが「リフレシュ」機能をサポートしていれば、ステータスページを
+    <p>ブラウザが「リフレッシュ」機能をサポートしていれば、ステータスページを
     自動的に更新するようにできます。N 秒毎に更新させるためには
     <code>http://your.server.name/server-status?refresh=N</code>
     というページをアクセスしてください。</p>
@@ -122,7 +122,6 @@
 <syntax>ExtendedStatus On|Off</syntax>
 <default>ExtendedStatus Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>ExtendedStatus は Apache 1.3.2 以降でのみ使用可能</compatibility>
 
 <usage>
     <p>この設定はサーバ全体に対して適用され、バーチャルホスト毎に
@@ -131,5 +130,44 @@
 </usage>
 
 </directivesynopsis>
+<directivesynopsis>
+
+<name>SeeRequestTail</name>
+<description>リクエストの最初の 63 文字か最後の 63 文字
+のどちらを mod_status が表示するかを決める</description>
+<syntax>SeeRequestTail On|Off</syntax>
+<default>SeeRequestTail Off</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Apache 2.2.7 以降</compatibility>
+
+<usage>
+    <p><code>ExtendedStatus On</code> に設定すると mod_status 
+    は処理中のリクエスト<transnote>の文字列</transnote>を表示します。
+    歴史的な理由で、リクエストのうちの63文字だけが表示用に記録されます。
+    このディレクティブで、最初の63文字を記録する(従来からの動作、
+    そして現在もデフォルト)か、最後の63文字を記録するかを決めます。
+    もちろん、リクエストの長さが64文字以上のときに効果があります
+    <transnote>63文字以下だと結果的に同じ動作</transnote>。</p>
+
+    <p>Apache が <code
+    >GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code
+    > というリクエストを扱っているとき、 mod_status は以下のように表示します:
+    </p>
+
+    <table border="1">
+      <tr>
+        <th>Off (デフォルト)</th>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
+      </tr>
+    </table>
+
+</usage>
+
+</directivesynopsis>
+
 </modulesynopsis>
 
