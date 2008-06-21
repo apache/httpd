@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:656733 (outdated) -->
+<!-- English Revision: 656733 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -42,6 +42,11 @@
 
     <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
     アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+
+    <note><title>注</title>ほとんどの場合、<module>mod_disk_cache</module>
+    のほうが好ましいでしょう。この件に関する詳細な説明は <a 
+    href="../caching.html#inmemory">Caching Guide</a> にあります。特に重要なポイントは、
+    このモジュールのキャッシュは<em>子プロセスごと</em>であることです。</note>
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_disk_cache</module></seealso>
@@ -103,7 +108,7 @@
 <name>MCacheMinObjectSize</name>
 <description>キャッシュに保管されるドキュメントの最小サイズ (バイト)</description>
 <syntax>MCacheMinObjectSize <var>bytes</var></syntax>
-<default>MCacheMinObjectSize 0</default>
+<default>MCacheMinObjectSize 1</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
