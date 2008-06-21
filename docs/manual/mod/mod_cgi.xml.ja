@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:558718 (outdated) -->
+<!-- English Revision: 558718 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -33,20 +33,13 @@
           is the link to howto/cgi not sufficient? -nd
     -->
 
-    <p>Mime タイプが <code>application/x-httpd-cgi</code> 
-    であるか、ハンドラ <code>cgi-script</code> (Apache 1.1 以降)
+    <p>ハンドラ <code>cgi-script</code>
     が指定されているファイルは CGI スクリプトとして扱われ、
     サーバにより実行され、その出力がクライアントに返されます。
-    ファイルは、<directive module="mod_mime">AddType</directive>
+    ファイルは、<directive module="mod_mime">AddHandler</directive>
     ディレクティブに指定された 拡張子を名前に含むか、
     <directive module="mod_alias">ScriptAlias</directive>
-    ディレクトリに存在することによりこのタイプになります。</p>
-
-    <p>サーバが CGI スクリプトを実行するときには、
-    <code>DOCUMENT_ROOT</code>
-    と呼ばれる変数を環境に追加します。この変数は
-    <directive module="core">DocumentRoot</directive>
-    の値を保持します。</p>
+    ディレクトリに存在することによりこのハンドラになります。</p>
 
     <p>Apache で CGI スクリプトを使用するためのイントロダクションは、
     <a href="../howto/cgi.html">CGI による動的コンテンツ</a>
@@ -55,6 +48,10 @@
     <p>Unix でマルチスレッドの MPM を使っている場合は、このモジュールの
     代わりに <module>mod_cgid</module> を使う必要があります。
     ユーザレベルではこの二つのモジュールは本質的には同一です。</p>
+
+    <p>後方互換性のため、 MIME タイプが <code>application/x-httpd-cgi</code> 
+    であるファイルでも cgi-script ハンドラが有効になります。この特殊な MIME タイプを
+    使う方法は非推奨です。</p> 
 </summary>
 
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
