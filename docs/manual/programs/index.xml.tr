@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 420990:669736 (outdated) -->
+<!-- English Revision: 669736 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -55,6 +55,9 @@
       <dt><program>dbmmanage</program></dt>
       <dd>Kullanıcı kimlik doğrulama dosyalarını temel kimlik doğrulaması için
         DBM biçeminde oluşturur ve günceller.</dd>
+
+      <dt><program>fcgistarter</program></dt>
+      <dd>Bir FastCGI programını çalıştırır.</dd>
 
       <dt><program>htcacheclean</program></dt>
       <dd>Disk arabelleğini temizler.</dd>
