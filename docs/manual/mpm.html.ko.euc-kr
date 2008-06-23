@@ -68,7 +68,7 @@
       예를 들어 높은 확장가능성(scalability)이 필요한 사이트는
       <code class="module"><a href="./mod/worker.html">worker</a></code>와 같은 쓰레드 MPM을 사용하고,
       안정성과 오래된 소프트웨어와의 호환성이 필요한 사이트는
-      <code class="module"><a href="./mod/preforking MPM.html">preforking MPM</a></code>을 사용할 수 있다.
+      <code class="module"><a href="./mod/prefork.html">preforking MPM</a></code>을 사용할 수 있다.
       추가로 다른 사용자아이디로 여러 호스트를 서비스하는
       것(<code class="module"><a href="./mod/perchild.html">perchild</a></code>)과 같은 특별한 기능도
       제공된다.</li>
