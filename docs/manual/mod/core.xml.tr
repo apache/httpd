@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 662725:669869 (outdated) -->
+<!-- English Revision: 669869 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -595,6 +595,8 @@ kullanımı önerilmemektedir.</compatibility>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
+<compatibility><code>none</code> değeri Apache 2.2.7 ve sonrasında mevcuttur.
+</compatibility>
 
 <usage>
     <p>Sunucudan zaman zaman kendi <glossary ref="mime-type">MIME
@@ -619,7 +621,7 @@ kullanımı önerilmemektedir.</compatibility>
       DefaultType None
     </example>
     <p><code>DefaultType None</code> sadece httpd-2.2.7 ve sonrasında
-      mevcuttur..</p>
+      mevcuttur.</p>
 
     <p>Bu yönergenin sadece öntanımlı MIME-türünü sağlaması nedeniyle
       <directive module="core">ForceType</directive> yönergesinden farklı
@@ -2944,10 +2946,10 @@ belirler.</description>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>SetInputFilter</directive> yönergesi, istemci isteklerini 
-      ve sunucu tarafından alındığı takdirde POST girdisini işleyecek süzgeç 
-      veya süzgeçleri belirler. Bu, diğer <directive module="mod_mime" 
-      >AddInputFilter</directive> yönergeleri dahil evvelce tanımlanmış 
+    <p><directive>SetInputFilter</directive> yönergesi, istemci isteklerini
+      ve sunucu tarafından alındığı takdirde POST girdisini işleyecek süzgeç
+      veya süzgeçleri belirler. Bu, diğer <directive module="mod_mime"
+      >AddInputFilter</directive> yönergeleri dahil evvelce tanımlanmış
       süzgeçlere eklenir.</p>
 
     <p>Birden fazla süzgeç belirtilmek istenirse birbirlerinden noktalı
