@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:657842 (outdated) -->
+<!-- English Revision: 657842 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -44,7 +44,7 @@
 
 <name>UserDir</name>
 <description>ユーザ専用ディレクトリの位置</description>
-<syntax>UserDir <em>directory-filename</em></syntax>
+<syntax>UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
@@ -81,7 +81,7 @@
     キーワードも <code>UserDir</code> に現われていなければ、
     引数はファイル名パターンとして扱われ、
     名前からディレクトリへの変換の指定を行なう時に使われます。
-    <code>http://www.foo.com/~bob/one/two.html</code>
+    <code>http://www.example.com/~bob/one/two.html</code>
     へのリクエストは次のように変換されます:</p>
 
 <table>
@@ -98,11 +98,11 @@
 <table>
 <tr><th>UserDir ディレクティブ</th>
 <th>変換後のパス</th></tr>
-<tr><td>UserDir http://www.foo.com/users</td><td>http://www.foo.com/users/bob/one/two.html</td></tr>
+<tr><td>UserDir http://www.example.com/users</td><td>http://www.example.com/users/bob/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></tr>
+http://www.example.com/*/usr</td><td>http://www.example.com/bob/usr/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
+http://www.example.com/~*/</td><td>http://www.example.com/~bob/one/two.html</td></tr>
 </table> 
 
 <note>
@@ -141,12 +141,12 @@ UserDir disabled user4 user5 user6
 次のようなコマンドを使うと:</p>
 
 <example>
-Userdir public_html /usr/web http://www.foo.com/
+Userdir public_html /usr/web http://www.example.com/
 </example>
 
-<p>http://www.foo.com/~bob/one/two.html へのリクエストはまず
+<p>http://www.example.com/~bob/one/two.html へのリクエストはまず
 ~bob/public_html/one/two.html のページを調べ、その次に
-/usr/web/bob/one/two.html を調べ、最後に http://www.foo.com/bob/one/two.html
+/usr/web/bob/one/two.html を調べ、最後に http://www.example.com/bob/one/two.html
 へのリダイレクトを送ります。</p>
 
 <p>リダイレクトを加える場合は、リストの最後の選択肢でなければなりません。

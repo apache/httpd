@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 159098:587444 (outdated) -->
+<!-- English Revision: 587444 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -32,7 +32,9 @@
 
 <category id="release">
 <title>リリースのメモ</title>
-<page href="upgrading.html">1.3 から 2.0 へのアップグレード</page>
+<page href="upgrading.html">2.2 から 2.4 へのアップグレード</page>
+<page href="new_features_2_4.html">Apache 2.3/2.4 の新機能</page>
+<page href="new_features_2_2.html">Apache 2.1/2.2 の新機能</page>
 <page href="new_features_2_0.html">Apache 2.0 の新機能</page>
 <page href="license.html">Apache License</page>
 </category>
@@ -44,6 +46,7 @@
 <page href="stopping.html">サーバの停止と再起動</page>
 <page href="configuring.html">設定ファイル</page>
 <page href="sections.html">Directory, Location, Files セクションの動作方法</page>
+<page href="caching.html">Content Caching</page>
 <page href="server-wide.html">サーバ全体の設定</page>
 <page href="logs.html">ログファイル</page>
 <page href="urlmapping.html">URL からファイルシステム上の位置へのマップ</page>
@@ -76,6 +79,7 @@
 <category id="faq">
 <title>Apache サーバのよくある質問</title>
 <page href="faq/">概略</page>
+<page href="faq/background.html">背景の説明</page>
 <page href="faq/support.html">サポート</page>
 <page href="faq/error.html">エラーメッセージ</page>
 </category>
