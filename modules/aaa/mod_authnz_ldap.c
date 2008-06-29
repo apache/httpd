@@ -1553,7 +1553,7 @@ static apr_status_t authn_ldap_has_realm_hash(cmd_parms *cmd, const char *provid
 static const authn_provider authn_ldap_provider =
 {
     &authn_ldap_check_password,
-    authn_ldap_get_realm_hash,
+    &authn_ldap_get_realm_hash,
     &authn_ldap_has_realm_hash
 };
 
