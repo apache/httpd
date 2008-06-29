@@ -1538,9 +1538,23 @@ static int authnz_ldap_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *
     return OK;
 }
 
+static authn_status authn_ldap_get_realm_hash(request_rec *r, const char *user,
+                                              const char *realm, char **rethash)
+{
+    return AUTH_GENERAL_ERROR;
+
+}
+
+static apr_status_t authn_ldap_has_realm_hash(cmd_parms *cmd, const char *provider_name)
+{
+    return APR_ENOTIMPL;
+}
+
 static const authn_provider authn_ldap_provider =
 {
     &authn_ldap_check_password,
+    authn_ldap_get_realm_hash,
+    &authn_ldap_has_realm_hash
 };
 
 static const authz_provider authz_ldapuser_provider =

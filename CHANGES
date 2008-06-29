@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_auth_digest: Detect during startup when AuthDigestProvider
+     is configured to use an incompatible provider via AuthnProviderAlias.
+     PR 45196 [Eric Covener] 
+
   *) mod_rewrite: Preserve the query string with [proxy,noescape]. PR 45247
      [Tom Donovan]
 

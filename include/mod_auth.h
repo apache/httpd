@@ -93,6 +93,10 @@ typedef struct {
      */
     authn_status (*get_realm_hash)(request_rec *r, const char *user,
                                    const char *realm, char **rethash);
+
+    /* OK if provider can satisfy get_realm_hash(), APR_ENOTIMPL otherwise. */
+    apr_status_t (*has_realm_hash)(cmd_parms *cmd, const char *provider_name);
+
 } authn_provider;
 
 /* A linked-list of authn providers. */
