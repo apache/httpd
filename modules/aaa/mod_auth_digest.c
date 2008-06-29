@@ -463,7 +463,9 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
                             newp->provider_name);
     }
 
-    if (!newp->provider->get_realm_hash) {
+    if (!newp->provider->get_realm_hash ||
+       (newp->provider->has_realm_hash && 
+        newp->provider->has_realm_hash(cmd, newp->provider_name) == APR_ENOTIMPL)) { 
         /* if it doesn't provide the appropriate function, reject it */
         return apr_psprintf(cmd->pool,
                             "The '%s' Authn provider doesn't support "

@@ -132,6 +132,27 @@ static authn_status authn_alias_check_password(request_rec *r, const char *user,
     return ret;
 }
 
+static apr_status_t authn_alias_has_realm_hash(cmd_parms *cmd, const char *provider_name) 
+{
+    /* No merge, just a query to be passed on to the provider */
+    authn_alias_srv_conf *authcfg =
+        (authn_alias_srv_conf *)ap_get_module_config(cmd->server->module_config,
+                                                     &authn_core_module);
+    apr_status_t ret = APR_ENOTIMPL;
+
+    provider_alias_rec *prvdraliasrec = apr_hash_get(authcfg->alias_rec,
+                                                     provider_name, 
+                                                     APR_HASH_KEY_STRING);
+    if (prvdraliasrec->provider->has_realm_hash) { 
+        ret = prvdraliasrec->provider->has_realm_hash(cmd, provider_name);
+    }
+    else if (prvdraliasrec->provider->get_realm_hash) { 
+        /* provider didn't register has_realm_hash, but does have get_realm_hash */
+        ret = OK;
+    }
+
+    return ret;
+}
 static authn_status authn_alias_get_realm_hash(request_rec *r, const char *user,
                                                const char *realm, char **rethash)
 {
@@ -179,6 +200,7 @@ static const authn_provider authn_alias_provider =
 {
     &authn_alias_check_password,
     &authn_alias_get_realm_hash,
+    &authn_alias_has_realm_hash,
 };
 
 static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *arg)

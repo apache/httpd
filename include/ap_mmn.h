@@ -161,6 +161,7 @@
  * 20080528.0 (2.3.0-dev)  Switch order of ftp_directory_charset and
  *                         interpolate_env in proxy_dir_conf.
  *                         Rationale: see r661069.
+ * 20080528.1 (2.3.0-dev)  add get_realm_hash() to mod_auth.h
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -168,7 +169,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20080528
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
