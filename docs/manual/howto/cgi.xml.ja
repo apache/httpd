@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:545841 (outdated) -->
+<!-- English Revision: 545841 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -56,6 +56,18 @@
     <p>CGI プログラムを正しく動作させるには、CGI を許可するように
     Apache の設定を行う必要があります。
     これを行なうための方法がいくつかあります。</p>
+
+    <note type="warning">
+    注: Apache が共有モジュール機能着きでビルドされている場合、
+    モジュールがロードされていることを確認してください。
+    つまり <code>httpd.conf</code> で 
+    <directive module="mod_so">LoadModule</directive>
+    がコメントアウトされていないことを確認してください。
+    正常に設定されていれば次のようになるはずです:
+
+    <example>
+      LoadModule cgi_module modules/mod_cgi.so
+    </example></note>
 
     <section id="scriptalias">
       <title>ScriptAlias</title>
@@ -198,7 +210,7 @@
     <p>「通常の」プログラミングと CGI
     プログラミングの間には主に二つの違いがあります。</p>
 
-    <p>一つは、CGI プログラムのすべての出力には MIME-type
+    <p>一つは、CGI プログラムのすべての出力には<glossary ref="mime-type">MIME タイプ</glossary>
     ヘッダを付けなければなりません。
     これはどのような種類のコンテンツを受け取っているかをクライアントに示す
     HTTP ヘッダです。ほとんどの場合では、次のように出力します:</p>

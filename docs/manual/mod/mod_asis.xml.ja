@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -53,10 +53,12 @@
     <example>AddHandler send-as-is asis</example>
 
     <p>拡張子が <code>.asis</code> のすべてのファイルの内容は Apache
-    からクライアントへほとんど変更無く送られます。クライアントには
-    HTTP ヘッダが必要ですので、ファイルに書くことを忘れないでください。
-    Status: ヘッダも必要です。データは 3 桁の HTTP
-    応答コードと、その後にテキストメッセージが続いたものでなければなりません。</p>
+    からクライアントへほとんど変更無く送られます。
+    HTTP ヘッダは特別で、ファイルから <module>mod_cgi</module>
+    のルールに従って取り出されます。ですから asis ファイルには
+    正しいヘッダが記載されていなければなりませし、
+    また CGI での表記法であるところの Status: ヘッダを使って
+    HTTP レスポンスコードを決めることもできます。</p>
 
     <p>これはクライアントにファイルが移動したことを知らせるために
     <em>as is</em> (そのまま) で送られるファイルの内容の例です。

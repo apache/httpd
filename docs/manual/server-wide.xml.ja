@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -40,6 +40,7 @@
         <directive module="core">ServerSignature</directive>
         <directive module="core">ServerTokens</directive>
         <directive module="core">UseCanonicalName</directive>
+        <directive module="core">UseCanonicalPhysicalPort</directive>
       </directivelist>
     </related>
 
@@ -50,8 +51,9 @@
     <directive module="core">ServerTokens</directive> ディレクティブは、Server HTTP
     レスポンスヘッダフィールドの値を設定します。</p>
 
-    <p><directive module="core">ServerName</directive> ディレクティブと
-    <directive module="core">UseCanonicalName</directive>
+    <p><directive module="core">ServerName</directive>,
+    <directive module="core">UseCanonicalName</directive>,
+    <directive module="core">UseCanonicalPhysicalPort</directive>
     ディレクティブは、サーバが自分自身を参照する URL
     を作るときに使われます。
     たとえば、クライアントがディレクトリを要求して、
