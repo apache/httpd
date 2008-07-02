@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -34,7 +34,7 @@ CGI スクリプトを実行する機能を提供</description>
 <summary>
     <p>このモジュールには二つのディレクティブがあります。<directive
     module="mod_actions">Action</directive>
-    ディレクティブは特定の MIME タイプのファイルをリクエストされた場合に
+    ディレクティブは特定の <glossary ref="mime-type">MIME タイプ</glossary>のファイルをリクエストされた場合に
     CGI スクリプトが実行されるようにします。<directive
     module="mod_actions">Script</directive>
     ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
@@ -67,8 +67,8 @@ Apache 2.1 で導入されました</compatibility>
     <directive module="mod_mime">AddHandler</directive> によって
     CGI スクリプトに設定されたリソースへの URL-path です。
     <var>Action-type</var> には
-    <a href="../handler.html">handler</a> か MIME
-    コンテントタイプを指定できます。リクエストされたドキュメントの URL
+    <a href="../handler.html">handler</a> か <glossary ref="mime-type">MIME
+    コンテントタイプ</glossary>を指定できます。リクエストされたドキュメントの URL
     とファイルのパスは標準 CGI 環境変数 <code>PATH_INFO</code> と
     <code>PATH_TRANSLATED</code> を使って伝えられます。
     特定のリクエストに対して使用されるハンドラへは、
