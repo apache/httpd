@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+
+  *) mod_headers: Prevent Header edit from processing only the first header
+     of possibly multiple headers with the same name and deleting the
+     remaining ones. PR 45333.  [Ruediger Pluem]
+
   *) mod_auth_digest: Detect during startup when AuthDigestProvider
      is configured to use an incompatible provider via AuthnProviderAlias.
      PR 45196 [Eric Covener] 
