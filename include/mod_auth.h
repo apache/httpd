@@ -30,6 +30,7 @@
 #include "apr_optional.h"
 
 #include "httpd.h"
+#include "http_config.h"
 
 #ifdef __cplusplus
 extern "C" {
