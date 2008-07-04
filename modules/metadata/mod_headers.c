@@ -133,6 +133,13 @@ typedef struct {
     header_entry *hdr;
 } echo_do;
 
+/* edit_do is used for Header edit to iterate through the request headers */
+typedef struct {
+    apr_pool_t *p;
+    header_entry *hdr;
+    apr_table_t *t;
+} edit_do;
+
 /*
  * headers_conf is our per-module configuration. This is used as both
  * a per-dir and per-server config
@@ -578,6 +585,22 @@ static int echo_header(echo_do *v, const char *key, const char *val)
     return 1;
 }
 
+static int edit_header(void *v, const char *key, const char *val)
+{
+    edit_do *ed = (edit_do *)v;
+
+    apr_table_addn(ed->t, key, process_regexp(ed->hdr, val, ed->p));
+    return 1;
+}
+
+static int add_them_all(void *v, const char *key, const char *val)
+{
+    apr_table_t *headers = (apr_table_t *)v;
+
+    apr_table_addn(headers, key, val);
+    return 1;
+}
+
 static void do_headers_fixup(request_rec *r, apr_table_t *headers,
                              apr_array_header_t *fixup, int early)
 {
@@ -669,10 +692,16 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
                          echo_header, (void *) &v, r->headers_in, NULL);
             break;
         case hdr_edit:
-            val = apr_table_get(headers, hdr->header);
-            if (val != NULL) {
-                apr_table_setn(headers, hdr->header,
-                               process_regexp(hdr, val, r->pool));
+            if (apr_table_get(headers, hdr->header)) {
+                edit_do ed;
+
+                ed.p = r->pool;
+                ed.hdr = hdr;
+                ed.t = apr_table_make(r->pool, 5);
+                apr_table_do(edit_header, (void *) &ed, headers, hdr->header,
+                             NULL);
+                apr_table_unset(headers, hdr->header);
+                apr_table_do(add_them_all, (void *) headers, ed.t, NULL);
             }
             break;
         }
