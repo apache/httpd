@@ -160,8 +160,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=672639&view=rev
         http://svn.apache.org/viewvc?rev=672671&view=rev
         http://svn.apache.org/viewvc?rev=674364&view=rev (MMN comment)
+        http://svn.apache.org/viewvc?rev=673999&view=rev (include http_config.h in mod_auth.h)
    Backport version for 2.2.x of patch:
-        http://people.apache.org/~covener/2.2.x-digest_vs_authnalias.diff
+        http://people.apache.org/~covener/2.2.x-digest_vs_authnalias-2.diff
    +1: covener
    rpluem says: Please add
     http://svn.apache.org/viewvc?rev=673999&view=rev
