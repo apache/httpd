@@ -163,6 +163,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
         http://people.apache.org/~covener/2.2.x-digest_vs_authnalias.diff
    +1: covener
+   rpluem says: Please add
+    http://svn.apache.org/viewvc?rev=673999&view=rev
+   to this because otherwise the perl test framework breaks.
 
 PATCHES/ISSUES THAT ARE STALLED
 
