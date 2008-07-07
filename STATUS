@@ -168,6 +168,44 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     http://svn.apache.org/viewvc?rev=673999&view=rev
    to this because otherwise the perl test framework breaks.
 
+ * core, authn/z: Avoid calling access control hooks for internal requests
+   with configurations which match those of initial request.  Revert to
+   original behaviour (call access control hooks for internal requests
+   with URIs different from initial request) if any access control hooks or
+   providers are not registered as permitting this optimization.
+   Introduce wrappers for access control hook and provider registration
+   which can accept additional mode and flag data.  Convert common
+   provider version strings to macros.
+   The core purpose of this pile of patches is to avoid unnecessary
+   authn/z hooks when a single request spawns large numbers of internal
+   requests to which an identical set of httpd configurations apply.
+   This permits modules such as mod_authn_dbd and mod_dav to work together
+   acceptably.
+   Because certain external modules such as mod_authz_svn rely on the old
+   behaviour, this optimization can be made only when all authn/z hooks and
+   providers are registered with the appropriate flag.
+   It would be excellent if Windows and NetWare people could ensure this
+   builds correctly.
+   In particular, mod_auth.h must be included into request.c and I've left
+   mod_auth.h under modules/aaa rather than try to replicate wrowe's work
+   in trunk moving all the include files around.
+   I'm open to suggestions that this remain in trunk only, but in that case,
+   it would be very helpful to know whether most people expect a 2.4 branch
+   or just a 3.0 branch to be next.  If 3.0, some of the backwards
+   compatibility work could potentially be ditched.
+   Trunk version of patches:
+     http://svn.apache.org/viewvc?view=rev&revision=644525
+     http://svn.apache.org/viewvc?view=rev&revision=644562 (trunk MMN bump)
+     http://svn.apache.org/viewvc?view=rev&revision=645395
+     http://svn.apache.org/viewvc?view=rev&revision=645472
+     http://svn.apache.org/viewvc?view=rev&revision=645540
+     http://svn.apache.org/viewvc?view=rev&revision=646445 (reverted by r659160)
+     http://svn.apache.org/viewvc?view=rev&revision=658046
+     http://svn.apache.org/viewvc?view=rev&revision=659160
+   Backport version for 2.2.x of patch:
+     http://people.apache.org/~chrisd/patches/walk_cache/walk_cache-2.2.x.patch
+   +1: chrisd
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
