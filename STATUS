@@ -153,6 +153,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~tdonovan/diffs/mod_rewrite_proxy_esc_2.2.x.diff
    +1: rpluem
 
+ * mod_auth_digest: Detect during startup when AuthDigestProvider
+   is configured to use an incompatible provider via AuthnProviderAlias.
+   PR 45196 
+   Trunk version of patches:
+        http://svn.apache.org/viewvc?rev=672639&view=rev
+        http://svn.apache.org/viewvc?rev=672671&view=rev
+        http://svn.apache.org/viewvc?rev=674364&view=rev (MMN comment)
+   Backport version for 2.2.x of patch:
+        http://people.apache.org/~covener/2.2.x-digest_vs_authnalias.diff
+   +1: covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
