@@ -30,9 +30,9 @@
 <identifier>auth_digest_module</identifier>
 
 <summary>
-    <p>This module implements HTTP Digest Authentication. However, it
-    has not been extensively tested and is therefore marked
-    experimental.</p>
+    <p>This module implements HTTP Digest Authentication
+    (<a href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), and
+    provides a more secure alternative to <module>mod_auth_basic</module>.</p>
 </summary>
 
 <seealso><directive module="mod_authn_core">AuthName</directive></seealso>
