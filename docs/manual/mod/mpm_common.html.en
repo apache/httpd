@@ -598,7 +598,7 @@ spikes</td></tr>
     75</code> and deal with idle threads on a server-wide basis. If
     there aren't enough idle threads in the server then child
     processes are created until the number of idle threads is greater
-    than number.</p>
+    than <var>number</var>.</p>
 
     <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> uses a default of
     <code>MinSpareThreads 10</code> and, since it is a single-process
