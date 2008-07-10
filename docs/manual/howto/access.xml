@@ -139,6 +139,14 @@ discussed in this document include <module>mod_setenvif</module> and
     this variable is set. This blocks that particular user agent from
     the site.
     </p>
+
+    <p>An environment variable test can be negated using the <code>=!</code>
+    syntax:</p>
+
+    <example><p>
+    Allow from env=!GoAway
+    </p></example>
+
 </section>
 
 <section id="rewrite"><title>Access control with mod_rewrite</title>
