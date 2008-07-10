@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="handler.xml.meta">
+
+  <title>Apache Eylemcilerinin Kullanımı</title>
+
+  <summary>
+    <p>Bu belgede Apache Eylemcilerinin kullanımı açıklanmıştır.</p>
+  </summary>
+
+  <section id="definition">
+    <title>Eylemci Nedir?</title>
+    <related>
+      <modulelist>
+        <module>mod_actions</module>
+        <module>mod_asis</module>
+        <module>mod_cgi</module>
+        <module>mod_imagemap</module>
+        <module>mod_info</module>
+        <module>mod_mime</module>
+        <module>mod_negotiation</module>
+        <module>mod_status</module>
+     </modulelist>
+      <directivelist>
+        <directive module="mod_actions">Action</directive>
+        <directive module="mod_mime">AddHandler</directive>
+        <directive module="mod_mime">RemoveHandler</directive>
+        <directive module="core">SetHandler</directive>
+      </directivelist>
+    </related>
+
+
+    <p>Bir <em>eylemci</em> bir dosya çağrıldığında uygulanacak eylemin Apache
+      dahilindeki gösterimidir. Genellikle dosyaların kendi türüne bağlı
+      olarak örtük eylemcileri vardır. Normalde tüm dosyalar basitçe sunucu
+      tarafından sunulurlar, fakat bazı dosya türleri normalden farklı şekilde
+      ele alınırlar.</p>
+
+    <p>Eylemciler, dosya türünden bağımsız olarak dosyanın bulunduğu yere veya
+      dosya ismi uzantısına göre de yapılandırılabilirler. Gerek, zarif bir
+      çözüm oluşuyla gerekse, hem dosya türünü hem de bir dosya ile ilişkili
+      bir eylemciyi mümkün kılması sebebiyle bunun getirisi daha yüksektir.
+      (Ayrıca, <a href="mod/mod_mime.html#multipleext">çok uzantılı
+      dosyalara</a> da bakınız.)</p>
+
+    <p>Eylemciler sunucu içinde derlenebileceği gibi bir modül olarak ya da
+      <directive module="mod_actions">Action</directive> yönergesi ile de
+      sunucuya dahil edilebilirler. Standart dağıtımda bulunan yerleşik
+      eylemciler şunlardır:</p>
+
+    <ul>
+      <li><strong>default-handler</strong>: Dosyayı, öntanımlı olarak durağan
+        içeriği işlemekte kullanılan <code>default_handler()</code> işlevini
+        kullanarak gönderir. (<module>core</module>)</li>
+
+      <li><strong>send-as-is</strong>: Dosyayı HTTP başlıklarıyla olduğu gibi
+        gönderir. (<module>mod_asis</module>)</li>
+
+      <li><strong>cgi-script</strong>: Dosyayı bir CGI betiği olarak ele alır.
+        (<module>mod_cgi</module>)</li>
+
+      <li><strong>imap-file</strong>: Dosyayı bir resim eşleme kuralları
+        dosyası olarak çözümler. (<module>mod_imagemap</module>)</li>
+
+      <li><strong>server-info</strong>: Sunucunun yapılandırma bilgisini
+        döndürür. (<module>mod_info</module>)</li>
+
+      <li><strong>server-status</strong>: Sunucunun durum raporunu döndürür.
+        (<module>mod_status</module>)</li>
+
+      <li><strong>type-map</strong>: Dosyayı içerik uzlaşımı için bir tür
+        eşlem dosyası olarak çözümler. (<module>mod_negotiation</module>)</li>
+    </ul>
+  </section>
+
+  <section id="examples">
+    <title>Örnekler</title>
+
+    <section id="example1">
+      <title>Bir CGI betiği kullanarak durağan içeriğin değiştirilmesi</title>
+
+      <p>Aşağıdaki yönergeler sayesinde, <code>html</code> uzantılı dosyalar
+        için yapılan istekler <code>footer.pl</code> CGI betiğininin
+        çalıştırılmasına sebep olacaktır.</p>
+
+      <example>
+        Action add-footer /cgi-bin/footer.pl<br/>
+        AddHandler add-footer .html
+      </example>
+
+      <p>Bu yapılandırmayla, istenen belgenin özgün haliyle mi (yeri
+        <code>PATH_TRANSLATED</code> ortam değişkenindedir) yoksa istenen
+        değişiklikler veya eklemeler yapıldıktan sonra mı gönderileceğinden
+        CGI betiği sorumlu olacaktır.</p>
+
+    </section>
+    <section id="example2">
+      <title>HTTP başlıklı dosyalar</title>
+
+      <p>Aşağıdaki yönergeler kendi HTTP başlıklarını içeren dosyalar için
+        kullanılan <code>send-as-is</code> eylemcisini etkinleştirmek amacıyla
+        kullanılmıştır. <code>/siteler/htdocs/asis/</code> dizinindeki tüm
+        dosyalar dosya ismi uzantılarına bakılmaksızın <code>send-as-is</code>
+        eylemcisi tarafından işleme sokulacaktır.</p>
+
+      <example>
+        &lt;Directory /siteler/htdocs/asis&gt;<br/>
+        <indent>SetHandler send-as-is</indent>
+        &lt;/Directory&gt;
+      </example>
+
+    </section>
+  </section>
+  <section id="programmer">
+    <title>Yazılım Geliştirenler İçin</title>
+
+    <p>Eylemci özellikleri gerçeklenirken kullanılmak üzere <a
+      href="developer/API.html">Apache API</a>’ye bir ekleme yapılmıştır.
+      Özellikle de, <code>request_rec</code> yapısına yeni bir kayıt
+      eklenmiştir:</p>
+
+    <example>
+      char *handler
+    </example>
+
+    <p>Modülünüzün bir eylemciyi devreye sokmasını isterseniz, tek yapacağınız
+      isteğin <code>invoke_handler</code> aşamasının hemen öncesinde
+      <code>r-&gt;handler</code> alanına eylemcinin ismini atamak olacaktır.
+      Eylemciler daha önce de bahsedildiği gibi bir içerik türü yerine bir
+      eylemci ismi kullanılarak gerçeklenirler. Çok gerekli olmamakla
+      birlikte, eylemciler için kullanılan adlandırma uzlaşımları gereğince,
+      ismi oluşturan sözcükler, ortam türü isim alanını ihlal etmemek amacıyla
+      bölü imleri ile değil tire imleri ile ayrılırlar.</p>
+  </section>
+</manualpage>
+
