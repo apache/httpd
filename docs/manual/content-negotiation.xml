@@ -665,13 +665,4 @@ factors to 5 decimal places before choosing the best variant.</p>
 
 </section>
 
-<section id="more"><title>More Information</title>
-
-    <p>For more information about content negotiation, see Alan
-    J. Flavell's <a
-    href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
-    Negotiation Notes</a>.  But note that this document may not be
-    updated to include changes in Apache 2.0.</p>
-</section>
-
 </manualpage>
