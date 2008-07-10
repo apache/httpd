@@ -81,8 +81,8 @@ have been deprecated by the new authz refactoring.  Please see
 <name>Allow</name>
 <description>Controls which hosts can access an area of the
 server</description>
-<syntax> Allow from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</syntax>
+<syntax> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
@@ -180,7 +180,10 @@ server</description>
     href="../env.html">environment variable</a>. When <code>Allow from
     env=<var>env-variable</var></code> is specified, then the request is
     allowed access if the environment variable <var>env-variable</var>
-    exists. The server provides the ability to set environment
+    exists. When <code>Allow from env=!<var>env-variable</var></code> is 
+    specified, then the request is allowed access if the environment 
+    variable <var>env-variable</var> doesn't exist.
+    The server provides the ability to set environment
     variables in a flexible way based on characteristics of the client
     request using the directives provided by
     <module>mod_setenvif</module>. Therefore, this directive can be
@@ -209,8 +212,8 @@ server</description>
 <name>Deny</name>
 <description>Controls which hosts are denied access to the
 server</description>
-<syntax> Deny from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</syntax>
+<syntax> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
