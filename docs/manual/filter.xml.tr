@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
+<!-- English Revision: 421174 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="filter.xml.meta">
+
+  <title>Süzgeçler</title>
+
+  <summary>
+    <p>Bu belge, Apache’de süzgeç kullanımı hakkındadır.</p>
+  </summary>
+
+  <section id="filters"> <title>Süzgeçler</title>
+    <related>
+      <modulelist>
+        <module>mod_deflate</module>
+        <module>mod_ext_filter</module>
+        <module>mod_include</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_mime">AddInputFilter</directive>
+        <directive module="mod_mime">AddOutputFilter</directive>
+        <directive module="mod_mime">RemoveInputFilter</directive>
+        <directive module="mod_mime">RemoveOutputFilter</directive>
+        <directive module="mod_ext_filter">ExtFilterDefine</directive>
+        <directive module="mod_ext_filter">ExtFilterOptions</directive>
+        <directive module="core">SetInputFilter</directive>
+        <directive module="core">SetOutputFilter</directive>
+      </directivelist>
+    </related>
+
+    <p>Bir <em>süzgeç</em>, sunucu tarafından alınan ve gönderilen verilere
+      uygulanan bir işlemdir. Sunucuya istemcilerin gönderdiği veriler
+      <em>girdi süzgeçleri</em> tarafından, sunucunun istemciye gönderdiği
+      veriler ise <em>çıktı süzgeçleri</em> tarafından işleme tabi tutulurlar.
+      Verilere çok sayıda süzgeç uygulanabilir ve süzgeçlerin uygulanma sırası
+      belirlenebilir.</p>
+
+    <p>Süzgeçler Apache tarafından dahili olarak bayt dizilerinin elde edilmesi
+      ve içeriğin bölünmesi gibi işlemler için kullanılabilir. Bundan başka,
+      modüller tarafından sağlanan süzgeçler de vardır ve bunlar çalışma anında
+      yapılandırma yönergeleri ile seçilebilir. Veriye uygulanacak süzgeçlerle
+      ilgili işlemler için kullanılabilecek yönergeler:
+      <directive module="core">SetInputFilter</directive>,
+      <directive module="core">SetOutputFilter</directive>,
+      <directive module="mod_mime">AddInputFilter</directive>,
+      <directive module="mod_mime">AddOutputFilter</directive>,
+      <directive module="mod_mime">RemoveInputFilter</directive> ve
+      <directive module="mod_mime">RemoveOutputFilter</directive>.</p>
+
+    <p>Aşağıdaki kullanıcı tarafından seçilebilen süzgeç uygulamaları Apache
+      HTTP Sunucusu dağıtımıyla gelmektedir:</p>
+
+    <dl>
+      <dt><module>mod_include</module></dt>
+      <dd>Sunucu taraflı içerik yerleştirmeyi gerçekler.</dd>
+      <dt><module>mod_deflate</module></dt>
+      <dd>Çıktıyı istemciye göndermeden önce sıkıştırır.
+      </dd>
+    </dl>
+
+    <p>Bunlardan başka <module>mod_ext_filter</module> modülü ile harici
+      uygulamaların süzgeç olarak kullanılması da mümkündür.</p>
+
+  </section>
+</manualpage>
