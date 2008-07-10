@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 658305 -->
+<!-- English Revision: 674934 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -646,7 +646,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
     デフォルトは <code>MinSpareThreads 75</code> で、
     アイドルスレッド数をサーバ全体で監視します。
     もしサーバに十分な数のアイドルスレッドがなければ、
-    アイドルスレッド数がこの数よりも大きくなるまで
+    アイドルスレッド数がこの数 <var>number</var> よりも大きくなるまで
     新しい子プロセスが生成されます。</p>
 
     <p><module>mpm_netware</module> では、
@@ -753,16 +753,18 @@ accept しようとしているときに、Apache がそれらの子プロセス
     Apache プロセス稼働中における
     <directive module="mpm_common">MaxClients</directive>
     に設定可能な上限値を設定することになります
-    (訳注: prefork の場合は同時クライアント数 = サーバプロセス数なので) 。
+    <transnote>prefork の場合は同時クライアント数 = サーバプロセス数なので</transnote>。
     <module>worker</module> MPM の場合には、このディレクティブは
     <directive module="mpm_common">ThreadLimit</directive>
     ディレクティブと組み合わせて、
     Apache プロセス稼働中における
     <directive module="mpm_common">MaxClients</directive>
     に設定可能な上限値を設定することになります。
-    再起動中にこのディレクティブを変更しても無視されますが、
+    このディレクティブを変更して再起動<transnote>apachectl
+    restart</transnote>しても無視されますが、
     <directive module="mpm_common">MaxClients</directive>
-    は再起動中に修正することができます。</p>
+    は再起動で変更することができます。
+    </p>
 
     <p>このディレクティブを使用する際は特に注意してください。
     <directive>ServerLimit</directive> が必要以上に大きな値に
