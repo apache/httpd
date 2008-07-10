@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="filter.xml.meta">
+
+  <title>Süzgeçler</title>
+
+  <summary>
+    <p>Bu belge, Apache’de süzgeç kullanımı hakkındadır.</p>
+  </summary>
+
+  <section id="intro"> <title>Apache 2’de Süzme İşlemi</title>
+    <related>
+      <modulelist>
+        <module>mod_filter</module>
+        <module>mod_deflate</module>
+        <module>mod_ext_filter</module>
+        <module>mod_include</module>
+        <module>mod_charset_lite</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_filter">FilterChain</directive>
+        <directive module="mod_filter">FilterDeclare</directive>
+        <directive module="mod_filter">FilterProtocol</directive>
+        <directive module="mod_filter">FilterProvider</directive>
+        <directive module="mod_mime">AddInputFilter</directive>
+        <directive module="mod_mime">AddOutputFilter</directive>
+        <directive module="mod_mime">RemoveInputFilter</directive>
+        <directive module="mod_mime">RemoveOutputFilter</directive>
+        <directive module="mod_ext_filter">ExtFilterDefine</directive>
+        <directive module="mod_ext_filter">ExtFilterOptions</directive>
+        <directive module="core">SetInputFilter</directive>
+        <directive module="core">SetOutputFilter</directive>
+      </directivelist>
+    </related>
+
+    <p>Apache 2.0 ve sonrasında mevcut olan Süzgeç Zinciri, uygulamaların
+      nereden geldiğine bakmaksızın gelen ve giden verileri oldukça esnek ve
+      yapılandırılabilir tarzda işlemesini mümkün kılar. Böylece, gelen veriyi
+      bir takım ön işlemlerden geçirebilir, giden veriyi de son bir defa bazı
+      işlemlere sokabiliriz. Bu işlem temel olarak geleneksel istek işleme
+      aşamalarından bağımsızdır.</p>
+
+    <p class="figure">
+      <img src="images/filter_arch.tr.png" width="569" height="392"
+      alt="Süzgeçler, İstek işleme eksenine dik bir veri eksenine peş peşe
+ yerleştirilebilir." />
+    </p>
+
+    <p>Standard Apache dağıtımıyla gelen süzgeç uygulamalarından bazıları:</p>
+
+    <ul>
+      <li><module>mod_include</module>, sunucu taraflı içerik yerleştirmeyi
+      gerçekler.</li>
+      <li><module>mod_ssl</module>, SSL şifrelemesini gerçekler (https).</li>
+      <li><module>mod_deflate</module>, veri sıkıştırma/açma işlemlerini
+      çalışma anında gerçekleştirir.</li>
+      <li><module>mod_charset_lite</module>, karakter kümeleri arasında
+      dönüşümü gerçekleştirir.</li>
+      <li><module>mod_ext_filter</module>, harici bir yazılımı bir süzgeç
+      olarak çalıştırır.</li>
+    </ul>
+
+    <p>Apache, bunlardan başka, bayt dizilerinin elde edilmesi ve içeriğin
+      bölünmesi gibi işlemleri gerçekleştirmek için bir takım dahili süzgeçler
+      de  kullanabilir.</p>
+
+    <p>Üçüncü parti süzgeç modülleri tarafından gerçeklenmiş çok geniş bir
+      uygulama alanı mevcuttur; <a href="http://modules.apache.org/"
+      >modules.apache.org</a> ve benzerlerinden temin edilebilecek bu tür
+      modüllerden bazılarının uygulama alanları:</p>
+
+    <ul>
+      <li>HTML ve XML belgelerin işlenmesi ve yazılması</li>
+      <li>XSLT dönüşümleri ve XInclude’lar</li>
+      <li>XML İsim-alanı desteği</li>
+      <li>HTML Formlarının çözümlenmesi ve sunucuya dosya yükleme</li>
+      <li>Resim işleme</li>
+      <li>PHP betikleri gibi zararlı olabilecek uygulamalardan korunma</li>
+      <li>Metin düzenleme ve arama işlemleri</li>
+    </ul>
+  </section>
+
+  <section id="smart"><title>Akıllı Süzme</title>
+    <p class="figure">
+      <img src="images/mod_filter_new.tr.png" width="423" height="331"
+      alt="Farklı süzgeç üreticilerinin uygulamaları istek işlemenin durumuna
+ bağlı olarak akıllıca uygulanabilir."/>
+    </p>
+
+    <p><module>mod_filter</module>, Apache 2.1 ve sonrasında mevcut olup,
+      süzgeç zincirinin çalışma anında devingen olarak yapılandırılabilmesini
+      mümkün kılar. Böylece, örneğin, bir vekili, özgün sunucunun ne
+      göndereceğini bilmeden HTML’yi bir HTML süzgeciyle yazmaya ve JPEG
+      resimleri tamamen farklı bir süzgeçten geçirmeye ayarlayabilirsiniz. Bu,
+      asıl içeriğe bağlı olarak çalışma anında içeriği farklı içerik
+      sağlayıcılara dağıtan bir süzgeç düzeneği kullanılarak çalışır. Bir
+      süzgeç, doğrudan zincire yerleştirilip koşulsuz olarak
+      çalıştırılabileceği gibi bir içerik sağlayıcı gibi kullanılarak zincire
+      devingen olarak yerleştirilebilir. Örneğin:</p>
+
+    <ul>
+      <li>Bir HTML işleme süzgeci sadece içerik text/html veya
+      application/xhtml+xml olduğu takdirde çalışır.</li>
+      <li>Bir sıkıştırma süzgeci sadece girdi sıkıştırılabilir nitelikteyse ve
+      sıkıştırılmamışsa çalışır.</li>
+      <li>Bir karakter kümesi dönüşüm süzgeci, bir metin belgesi istenen
+      karakter kümesine sahip değilse zincire yerleştirilir.</li>
+    </ul>
+  </section>
+
+  <section id="using"><title>Süzgeçlerin Kullanımı</title>
+    <p>Süzgeçler iki şekilde kullanılır: Basit ve Devingen.
+      Genelde ikisinden biri kullanılır; karışık kullanılırsa istenmeyen
+      sonuçlara yol açabilir (ise de, basit girdi süzme ile çıktı süzme işlemi
+      basit olsun olmasın karışık kullanılabilir).</p>
+
+    <p>Basit yol, girdi süzgeçlerini yapılandırmanın tek yoludur ve bir
+      durağan süzgeç zincirinin gerektiği yerlerde çıktı süzgeçleri için
+      yeterlidir. İlgili yönergeler:
+      <directive module="core">SetInputFilter</directive>,
+      <directive module="core">SetOutputFilter</directive>,
+      <directive module="mod_mime">AddInputFilter</directive>,
+      <directive module="mod_mime">AddOutputFilter</directive>,
+      <directive module="mod_mime">RemoveInputFilter</directive> ve
+      <directive module="mod_mime">RemoveOutputFilter</directive>.</p>
+
+    <p>Devingen yol, <module>mod_filter</module> belgesinde açıklandığı gibi,
+      çıktı süzgeçlerinin hem durağan hem de esnek ve devingen olarak
+      yapılandırılabilmesini mümkün kılar. İlgili yönergeler:
+      <directive module="mod_filter">FilterChain</directive>,
+      <directive module="mod_filter">FilterDeclare</directive> ve
+      <directive module="mod_filter">FilterProvider</directive>.</p>
+
+    <p><directive module="core">AddOutputFilterByType</directive> yönergesi
+      hala desteklenmekteyse de sorun çıkarabilmesi sebebiyle kullanımı artık
+      önerilmemektedir. Onun yerine devingen yapılandırma kullanınız.</p>
+
+  </section>
+</manualpage>
