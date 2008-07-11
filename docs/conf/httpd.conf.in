@@ -155,6 +155,16 @@ DocumentRoot "@exp_htdocsdir@"
     #
     Require all granted
 
+    #
+    # <Directory> and <Location> directives inherit their parent's authorization
+    # rules and applies them using AND logic instead of the previous OR logic of
+    # Apache 2.2 and before.  To disable the merging of these rules use
+    # "AuthzMergeRules Off".
+    #
+    # This prevents the "Require all denied" rule in "<Directory />" above
+    # from being included in this directory's configuration.
+    #
+    AuthzMergeRules Off
 </Directory>
 
 #
