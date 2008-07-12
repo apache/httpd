@@ -592,12 +592,4 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
 
 </section>
 
-<section id="more"><title>다른 정보</title>
-
-    <p>내용협상에 대한 다른 정보는 Alan J. Flavell가 쓴 <a
-    href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
-    Negotiation Notes</a>를 참고하라. 그러나 이 문서는 아직
-    아파치 2.0의 변화를 반영하지 않을 수 있다.</p>
-</section>
-
 </manualpage>

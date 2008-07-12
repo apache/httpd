@@ -702,14 +702,4 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 
 </section>
 
-<section id="more"><title>追加情報</title>
-
-    <p>コンテントネゴシエーションに関する追加情報は、
-    Alan J. Flavell さんの<a
-    href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
-    Negotiation Notes</a> をご覧下さい。ですが、
-    Apache 2.0 での変更点を含むためには更新されていないかもしれない
-    ということに注意してください。</p>
-</section>
-
 </manualpage>
