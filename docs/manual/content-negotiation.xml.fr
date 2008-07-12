@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 655872 -->
+<!-- English Revision: 675627 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 <!-- $LastChangedRevision: 2008051401 $ -->
@@ -689,15 +689,6 @@ conventions de nommage</title>
     <a href="env.html#special">variable d'environnement</a>
     <code>force-no-vary</code>.</p>
 
-</section>
-
-<section id="more"><title>Pour plus d'informations</title>
-
-    <p>Pour plus d'informations &agrave; propos de la n&eacute;gociation de contenu, voir le
-    document d'Alan J. Flavell <a
-    href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
-    Negotiation Notes</a>. Mais gardez &agrave; l'esprit que ce document ne tiendra
-    peut-&ecirc;tre pas compte des changements intervenus dans Apache 2.0.</p>
 </section>
 
 </manualpage>
