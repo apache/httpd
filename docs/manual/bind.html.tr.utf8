@@ -25,7 +25,6 @@
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/bind.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Apache’nin belli adresleri ve portları dinlemek üzere
     yapılandırılması.</p>
@@ -60,8 +59,8 @@
       böyle bir durumda belirtilen bütün adres ve portlardan gelen isteklere
       yanıt verecektir.</p>
 
-    <p>Örneğin, sunucunun hem 80 portundan hem de 8000 portundan gelen
-      bağlantıları kabul etmesini sağlamak için,</p>
+    <p>Örneğin, sunucunun tüm arabirimlerin hem 80 portundan hem de 8000
+      portundan gelen bağlantıları kabul etmesini sağlamak için,</p>
 
     <div class="example"><p><code>
       Listen 80<br />
@@ -136,7 +135,7 @@
       konaklar için gerçeklenmemiştir; sadece ana sunucuya hangi adresleri ve
       portları dinleyeceğini söyler. Hiç <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> yönergesi kullanılmamışsa sunucu
       kabul edilen tüm isteklere aynı şekilde davranacaktır. Eğer bir veya
-      daha fazla adres ve port için farklı bir davranış belirtmek
+      daha fazla adres veya port için farklı bir davranış belirtmek
       istiyorsanız <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> kullanabilirsiniz. Bir sanal
       konağı gerçeklemek için önce sunucunun sanal konak için kullanacağı
       adres ve portu dinleyeceğini belirtmek gerekir. Bundan sonra bu sanal

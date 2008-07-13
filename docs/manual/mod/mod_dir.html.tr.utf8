@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_dir - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Modüller</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Modülü mod_dir</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_dir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_dir.c</td></tr></table>
+<h3>Özet</h3>
+
+    <p>Bir dizin içerik dosyası şu iki kaynaktan birinden gelebilir:</p>
+
+    <ul>
+      <li>Kullanıcı tarafından yazılmış ve ismi genellikle
+        <code>index.html</code> olan bir dosya. Dosya ismi <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> yönergesi ile belirlenir.
+        Bu, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> modülü tarafından denetlenir.</li>
+
+      <li>Aksi takdirde içerik listesi sunucu tarafından üretilir. Bu,
+        <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> modülü tarafından sağlanır.</li>
+    </ul>
+    <p>Bu iki işlev tamamen birbirinden ayrıdır, dolayısıyla eğer isterseniz
+      kendiliğinden dizin içerik listesi üretimini tamamen iptal
+      edebilirsiniz.</p>
+
+    <p>Sunucu <code>http://sunucum/filanca/birdizin</code> şeklinde bir istek
+      aldığında <code>birdizin</code> bir dizinin ismiyse ‘bölü çizgisiyle
+      biten’ bir yönlendirme söz konusudur. Dizinler URL sonuna bir bölü
+      çizgisi eklenmesini gerektirir, bu bakımdan <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>
+      modülü isteği <code>http://sunucum/filanca/birdizin/</code> şeklinde
+      yönlendirir.</p>
+</div>
+<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemci bir dizin istediğinde dizin içeriğini listeler.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DirectoryIndex
+    <var>yerel-url</var> [<var>yerel-url</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
+</table>
+    <p><code class="directive">DirectoryIndex</code> yönergesi, istemci, dizinin
+      sonuna bir bölü çizgisi ekleyerek dizin içeriğinin listelenmesini
+      istediğinde bakılmak üzere özkaynakları listeler.
+      <code><em>yerel-url</em></code>, sunucu üstünde istenen dizine göreli
+      bir belgenin URL’sidir; normal olarak dizin içindeki bir dosyanın
+      ismidir. Çeşitli URL’ler verilebilirse de sunucu daima ilk bulduğuyla
+      dönecektir. Eğer özkaynakların hiçbiri yoksa ve <code>Indexes</code>
+      seçeneği atanmışsa sunucu dizin içeriğinden bir liste üretecektir.</p>
+
+    <div class="example"><h3>Örnek:</h3><p><code>
+      DirectoryIndex index.html
+    </code></p></div>
+
+    <p>Bu yapılandırmadan sonra yapılan bir
+      <code>http://sunucum/belgeler/</code> isteğine karşılık, sunucu,
+      mevcutsa <code>http://sunucum/belgeler/index.html</code> dosyasını
+      döndürecek, değilse ürettiği dizin içerik listesini gönderecektir.</p>
+
+    <p>Belgelerin dizine göreli olmasının gerekmediğine dikkat ediniz.</p>
+
+    <div class="example"><p><code>
+      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </code></p></div>
+
+    <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
+      <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
+      CGI betiği çalıştırılacaktır.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DirectorySlash" id="DirectorySlash">DirectorySlash</a> <a name="directoryslash" id="directoryslash">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DirectorySlash On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DirectorySlash On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0.51 ve sonrasında mevcuttur.</td></tr>
+</table>
+    <p><code class="directive">DirectorySlash</code> yönergesi, bir dizin isteğinde
+      bulunan URL’lerin sonuna <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> modülü tarafından bir
+      bölü çizgisi eklenip eklenmeyeceğini belirler.</p>
+
+    <p>Normalde, bir kullanıcı sona bir bölü çizgisi eklemeden bir dizin için
+      istekte bulunursa <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> zaten onu aynı özkaynağa
+      yönlendirir, fakat isteğin sonuna bir bölü çizgisi eklenmesinin bazı iyi
+      sebepleri vardır:</p>
+
+    <ul>
+    <li>Kullanıcı bunun sonucunda meşru bir URL ile istekte bulunmuş olur.</li>
+    <li><code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> gerektiği gibi çalışır. Yoksa
+      bağlantıdaki yolu sunamayacağından yanlış yolu gösterirdi.</li>
+    <li><code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> yönergesi
+      sadece bölü çizgisi ile biten dizin istekleri için değerlendirilir.</li>
+    <li>HTML sayfa içindeki göreli URL başvuruları gerektiği gibi
+      çalışacaktır.</li>
+    </ul>
+
+    <p>Siz yine de bu etkiyi istemezseniz ve yukarıdaki sebepler de size uygun
+      değilse yönlendirmeyi şöyle kapatabilirsiniz:</p>
+
+    <div class="example"><p><code>
+        # Aşağıdaki güvenlik uyarısına bakınız!<br />
+        &lt;Location /bir/yol&gt;<br />
+        <span class="indent">
+            DirectorySlash Off<br />
+            SetHandler bir-eylemci<br />
+        </span>
+        &lt;/Location&gt;
+    </code></p></div>
+
+    <div class="warning"><h3>Güvenlik Uyarı</h3>
+    <p>Bölü çizgisi ile biten yönlendirmelerin kapatılması bir bilginin
+      istemeyek açığa çıkmasına sebep olabilir. <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
+      modülünün etkin olduğunu (<code>Options +Indexes</code>) ve <code class="directive"><a href="#directoryindex">DirectoryIndex</a></code> ile geçerli bir özkaynağın
+      (<code>index.html</code> olsun) atandığını ama bu URL için başka hiçbir
+      özel eylemci tanımlanmadığını varsayalım. Bu durumda bölü çizgisi ile
+      biten bir istek olduğunda <code>index.html</code> dosyası sunulurdu.
+      <strong>Fakat bölü çizgisi ile bitmeyen bir istek dizin içeriğinin
+      listelenmesi ile sonuçlanırdı.</strong></p>
+    </div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_dir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_dir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>

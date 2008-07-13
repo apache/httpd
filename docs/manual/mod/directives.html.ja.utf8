@@ -341,6 +341,7 @@
 <li><a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
 <li><a href="mod_cgid.html#scriptsock">ScriptSock</a></li>
 <li><a href="mod_nw_ssl.html#securelisten">SecureListen</a></li>
+<li><a href="mod_status.html#seerequesttail">SeeRequestTail</a></li>
 <li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><a href="core.html#serveradmin">ServerAdmin</a></li>
 <li><a href="core.html#serveralias">ServerAlias</a></li>

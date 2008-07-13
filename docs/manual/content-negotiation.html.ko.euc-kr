@@ -21,7 +21,8 @@
 <p><span>가능한 언어: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/content-negotiation.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/content-negotiation.html" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -43,7 +44,6 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#extensions">자연스러운(transparent) 내용협상의 확장</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#naming">하이퍼링크와 이름규칙에 대하여</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#caching">캐쉬에 대하여</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#more">다른 정보</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -593,19 +593,13 @@ content-encoding을 가진 변형만을 지칭한다. RVSA/1.0 알고리즘은
     판단할 수 있다. 헙상의 범위와 관계없이 캐쉬된 복사본을
     권한다면 <code>force-no-vary</code> <a href="env.html#special">환경변수</a>를 설정한다.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="more" id="more">다른 정보</a></h2>
-
-    <p>내용협상에 대한 다른 정보는 Alan J. Flavell가 쓴 <a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
-    Negotiation Notes</a>를 참고하라. 그러나 이 문서는 아직
-    아파치 2.0의 변화를 반영하지 않을 수 있다.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Fran&#231;ais">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/content-negotiation.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/content-negotiation.html" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">모듈</a> | <a href="./mod/directives.html">지시어들</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">용어</a> | <a href="./sitemap.html">사이트맵</a></p></div>
