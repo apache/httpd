@@ -628,7 +628,7 @@ accept しようとしているときに、Apache がそれらの子プロセス
     デフォルトは <code>MinSpareThreads 75</code> で、
     アイドルスレッド数をサーバ全体で監視します。
     もしサーバに十分な数のアイドルスレッドがなければ、
-    アイドルスレッド数がこの数よりも大きくなるまで
+    アイドルスレッド数がこの数 <var>number</var> よりも大きくなるまで
     新しい子プロセスが生成されます。</p>
 
     <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> では、
@@ -772,16 +772,18 @@ accept しようとしているときに、Apache がそれらの子プロセス
     Apache プロセス稼働中における
     <code class="directive"><a href="#maxclients">MaxClients</a></code>
     に設定可能な上限値を設定することになります
-    (訳注: prefork の場合は同時クライアント数 = サーバプロセス数なので) 。
+    <span class="transnote">(<em>訳注:</em> prefork の場合は同時クライアント数 = サーバプロセス数なので)</span>。
     <code class="module"><a href="../mod/worker.html">worker</a></code> MPM の場合には、このディレクティブは
     <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>
     ディレクティブと組み合わせて、
     Apache プロセス稼働中における
     <code class="directive"><a href="#maxclients">MaxClients</a></code>
     に設定可能な上限値を設定することになります。
-    再起動中にこのディレクティブを変更しても無視されますが、
+    このディレクティブを変更して再起動<span class="transnote">(<em>訳注:</em> apachectl
+    restart)</span>しても無視されますが、
     <code class="directive"><a href="#maxclients">MaxClients</a></code>
-    は再起動中に修正することができます。</p>
+    は再起動で変更することができます。
+    </p>
 
     <p>このディレクティブを使用する際は特に注意してください。
     <code class="directive">ServerLimit</code> が必要以上に大きな値に

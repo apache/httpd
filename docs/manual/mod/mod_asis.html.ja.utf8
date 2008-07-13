@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_asis.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_asis.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>自分用の HTTP ヘッダの書かれているファイルを送信する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>asis_module</td></tr>
@@ -66,10 +64,12 @@
     <div class="example"><p><code>AddHandler send-as-is asis</code></p></div>
 
     <p>拡張子が <code>.asis</code> のすべてのファイルの内容は Apache
-    からクライアントへほとんど変更無く送られます。クライアントには
-    HTTP ヘッダが必要ですので、ファイルに書くことを忘れないでください。
-    Status: ヘッダも必要です。データは 3 桁の HTTP
-    応答コードと、その後にテキストメッセージが続いたものでなければなりません。</p>
+    からクライアントへほとんど変更無く送られます。
+    HTTP ヘッダは特別で、ファイルから <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>
+    のルールに従って取り出されます。ですから asis ファイルには
+    正しいヘッダが記載されていなければなりませし、
+    また CGI での表記法であるところの Status: ヘッダを使って
+    HTTP レスポンスコードを決めることもできます。</p>
 
     <p>これはクライアントにファイルが移動したことを知らせるために
     <em>as is</em> (そのまま) で送られるファイルの内容の例です。

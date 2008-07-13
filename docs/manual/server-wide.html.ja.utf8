@@ -23,8 +23,6 @@
 <a href="./ja/server-wide.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/server-wide.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
 <p>このドキュメントでは<code class="module"><a href="./mod/core.html">core</a></code>
 サーバのディレクティブの中で、
@@ -39,7 +37,7 @@
 <h2><a name="identification" id="identification">サーバ ID</a></h2>
     
 
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code></li><li><code class="directive"><a href="./mod/core.html#serversignature">ServerSignature</a></code></li><li><code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code></li><li><code class="directive"><a href="./mod/core.html#serversignature">ServerSignature</a></code></li><li><code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code></li></ul></td></tr></table>
 
     <p><code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code> ディレクティブと
     <code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code>
@@ -48,8 +46,9 @@
     <code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code> ディレクティブは、Server HTTP
     レスポンスヘッダフィールドの値を設定します。</p>
 
-    <p><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> ディレクティブと
-    <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code>
+    <p><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>,
+    <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code>,
+    <code class="directive"><a href="./mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>
     ディレクティブは、サーバが自分自身を参照する URL
     を作るときに使われます。
     たとえば、クライアントがディレクトリを要求して、

@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_alias - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.3</a> &gt; <a href="./">Modüller</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Modülü mod_alias</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_alias.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Belge ağacının parçalarının dosya sisteminin parçalarıyla
+eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>alias_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_alias.c</td></tr></table>
+<h3>Özet</h3>
+
+    <p>Bu modülde bulunan yönergeler sunucuya istek olarak gelen URL’lerin
+      denetlenmesini ve değiştirilmesini mümkün kılar. <code class="directive"><a href="#alias">Alias</a></code> ve <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> yönergeleri URL’lerin dosya sisteminin
+      dizinlerine eşlenmesini sağlar. Böylece, kök dizini <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> ile belirtilen site belge ağacı
+      altında bulunmayan içeriğe erişmek mümkün olur. <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> yönergesi buna ek olarak
+      hedef dizini sadece CGI betiklerini içeren dizin olarak imler.</p>
+
+    <p><code class="directive"><a href="#redirect">Redirect</a></code> yönergesi,
+      farklı bir URL ile yeni bir istek yapmaları için istemcileri
+      yönlendirmekte kullanılır. Çoğunlukla özkaynak başka bir yere
+      taşındığında kullanılır.</p>
+
+    <p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> modülü basit URL değiştirme görevlerini
+      yerine getirmek için tasarlanmıştır. Sorgu dizgelerini işleme sokmak
+      gibi daha karmaşık görevler için <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülü ile
+      sağlanan araçlar kullanılır.</p>
+
+  </div>
+<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#alias">Alias</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#aliasmatch">AliasMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirect">Redirect</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectmatch">RedirectMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectpermanent">RedirectPermanent</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirecttemp">RedirectTemp</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#scriptalias">ScriptAlias</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
+</ul>
+<h3>Konular</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#order">İşlem Sırası</a></li>
+</ul><h3>Ayrıca bakınız:</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></li>
+<li><a href="../urlmapping.html">URL’lerin Dosya sistemi ile Eşlenmesi</a>
+  </li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="order" id="order">İşlem Sırası</a></h2>
+
+    <p>Farklı bağlamlarda bulunan <code class="directive"><a href="#alias">Alias</a></code> ve <code class="directive"><a href="#redirect">Redirect</a></code>
+      yönergeleri standart <a href="../sections.html#mergin">katıştırma
+      kuralları</a> ile ilgili diğer yönergeler gibi işleme sokulur. Fakat
+      aynı bağlam dahilinde (örneğin, aynı <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümünde) çok fazla <code class="directive"><a href="#alias">Alias</a></code> ve <code class="directive"><a href="#redirect">Redirect</a></code> varsa bunlar belli bir
+      sıraya göre işleme sokulurlar.</p>
+
+    <p>İlk adımda, <code class="directive"><a href="#alias">Alias</a></code>’lardan önce
+      bütün <code class="directive"><a href="#redirect">Redirect</a></code> yönergeleri
+      işleme sokulur. Bu bakımdan bir <code class="directive"><a href="#redirect">Redirect</a></code> veya <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> ile eşleşen bir istek için
+      hiçbir <code class="directive"><a href="#alias">Alias</a></code>
+      uygulanmayacaktır. İkinci adımda yapılandırma dosyasında yer aldıkları
+      sıraya göre <code class="directive"><a href="#redirect">Redirect</a></code> ve
+      <code class="directive"><a href="#alias">Alias</a></code> yönergeleri işleme
+      sokulurlar, dolayısıyla ilk eşleşme öncelikli olmuş olur.</p>
+
+    <p>İlk eşleşmenin öncelikli olması sebebiyle, bu yönergelerin birden
+      fazlası aynı alt yola uygulandığı takdirde, tüm yönergelerin etkili
+      olabilmesi için en uzun yolu sıralamada en öne almalısınız. Örneğin
+      aşağıdaki yapılandırma beklendiği gibi çalışacaktır:</p>
+
+    <div class="example"><p><code>
+    Alias /foo/bar /baz<br />
+    Alias /foo /gaz
+    </code></p></div>
+
+    <p>Ama yukarıdaki iki satır ters sırada yerleştirilmiş olsaydı,
+      <code>/foo</code> rumuzu  daima <code>/foo/bar</code> rumuzundan önce
+      eşleşecek, dolayısıyla ikinci yönerge yok sayılacaktı.</p>
+
+  </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Alias" id="Alias">Alias</a> <a name="alias" id="alias">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Alias <var>URL-yolu</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+</table>
+
+    <p><code class="directive">Alias</code> yönergesi, belgelerin <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> dizininden farklı bir yerde
+      saklanmasını mümkün kılar. <code><em>URL-yolu</em></code> ile başlayan
+      URL’ler (% imlemesi çözüldükten sonra) <code><em>dizin-yolu</em></code>
+      ile başlayan yerel dosyalarla eşlenir. <code><em>URL-yolu</em></code>,
+      harf büyüklüğüne duyarsız sistemlerde bile harf büyüklüğüne
+      duyarlıdır.</p>
+
+    <div class="example"><h3>Örnek:</h3><p><code>
+      Alias /image /ftp/pub/image
+    </code></p></div>
+
+    <p><code>http://sunucum/image/foo.gif</code> şeklinde bir istek, sunucunun
+      <code>/ftp/pub/image/foo.gif</code> dosyasıyla yanıt vermesine sebep
+      olurdu. Sadece tam yol parçaları eşleştirilir; bu bakımdan yukarıdaki
+      <code class="directive">Alias</code> yapılandırması
+      <code>http://sunucum/imagefoo.gif</code> ile eşleşmez. Düzenli
+      ifadelerin kullanıldığı daha karmaşık eşleşmeler için <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yönergesine bakınız.</p>
+
+    <p><code><em>URL-yolu</em></code>’nu bir <code>/</code> ile
+      sonlandırırsanız <code class="directive">Alias</code> yönergesini yorumlarken
+      sunucunun da sona bir <code>/</code> ekleyeceğine dikkat ediniz. Yani,
+      eğer <div class="example"><p><code>Alias /icons/ /usr/local/apache/icons/</code></p></div> diye bir
+      tanım yaparsanız <code>/icons</code> URL’si için bir
+      <code class="directive">Alias</code> kullanılmayacaktır.</p>
+
+    <p><code class="directive">Alias</code> <em>hedefleri</em> için ek <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümleri
+      belirtmeniz gerekebileceğine dikkat ediniz. <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümlerinden önce yer alan
+      <code class="directive">Alias</code> yönergelerine özellikle bakılır,
+      dolayısıyla sadece <code class="directive">Alias</code> hedefleri etkilenir.
+      (Bununla birlikte, <code class="directive">Alias</code> yönergelerinden önce
+      işleme sokulan <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> bölümlerinin uygulanacağına dikkat
+      ediniz.)</p>
+
+    <p>Özellikle, <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> dışında
+      bir dizine bir <code class="directive">Alias</code> oluşturuyorsanız hedef
+      dizine doğrudan erişim izni vermeniz gerekebilir.</p>
+
+    <div class="example"><h3>Örnek:</h3><p><code>
+        Alias /image /ftp/pub/image<br />
+        &lt;Directory /ftp/pub/image&gt;<br />
+        <span class="indent">
+            Order allow,deny<br />
+            Allow from all<br />
+        </span>
+        &lt;/Directory&gt;
+    </code></p></div>
+  
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AliasMatch" id="AliasMatch">AliasMatch</a> <a name="aliasmatch" id="aliasmatch">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
+eşler.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AliasMatch <var>düzenli-ifade</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+</table>
+    <p>Bu yönerge <code><em>URL-yolu</em></code> ile eşleşmek üzere bir
+      <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a> kabul etmesi dışında
+      <code class="directive"><a href="#alias">Alias</a></code> yönergesine eşdeğerdir.
+      Belirtilen düzenli ifade <code><em>URL-yolu</em></code> ile eşleşiyorsa
+      sunucu parantezli eşleşmeleri belirtilen dizgede kullanarak dosya yolunu
+      elde eder. Örneğin, <code>/icons</code> dizinini etkinleştirmek için şu
+      yazılabilir:</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/icons(.*) /usr/local/apache/icons$1
+    </code></p></div>
+
+    <p>Ayrıca, <code><em>URL-yolu</em></code> ile harf büyüklüğüne duyarsız
+      eşleşmeler sağlayacak düzenli ifadeler de kullanılabilir:</p>
+
+    <div class="example"><p><code>
+      AliasMatch (?i)^/image(.*) /ftp/pub/image$1
+    </code></p></div>
+  
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Redirect" id="Redirect">Redirect</a> <a name="redirect" id="redirect">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
+yönlendirir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Redirect [<var>durum</var>] <var>URL-yolu</var>
+<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+</table>
+    <p><code class="directive">Redirect</code> yönergesi istemciye bir yönlendirme
+      isteği döndürerek eski URL’yi yenisiyle eşler.</p>
+
+    <p>Eski <code><em>URL-yolu</em></code> bir bölü çizgisi ile başlar ve harf
+      büyüklüğüne duyarlıdır (% imlemesi çözüldükten sonra).
+      <code><em>URL-yolu</em></code> olarak göreli yollara izin verilmez.
+      <code><em>URL</em></code> ise ya bir şema ve konak ismi ile başlayan bir
+      mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olmalıdır.
+      İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu
+      ekler.</p>
+
+    <p><code><em>URL-yolu</em></code> ile başlayan istekler istemciye hedef
+      <code><em>URL</em></code> konumuna bir yönlendirme isteği olarak
+      dönecektir. <code><em>URL-yolu</em></code>’nun devamı niteliğindeki ek
+      yol hedef URL’ye eklenir.</p>
+
+    <div class="example"><h3>Örnek:</h3><p><code>
+      Redirect /hizmet http://iki.mesela.dom/hizmet
+    </code></p></div>
+
+    <p>İstemcinin yaptığı <code>http://mesela.dom/hizmet/fesmekan.txt</code>
+      isteğine karşılık istemciye isteği
+      <code>http://iki.mesela.dom/hizmet/fesmekan.txt</code> olarak yapması
+      söylenecektir. Sadece tam yol parçaları eşleştirilir, bu nedenle
+      <code>http://mesela.dom/hizmetfesmekan.txt</code> isteği yukarıdaki
+      yönlendirme ile eşleşmeyecektir. Düzenli ifadelerin kullanıldığı daha
+      karmaşık eşleşmeler için <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> yönergesine bakınız.</p>
+
+
+    <div class="note"><h3>Bilginize</h3>
+      <p>Yapılandırma dosyasında yer alış sırasına bakmaksızın
+        <code class="directive">Redirect</code> yönergeleri
+        <code class="directive">Alias</code> ve <code class="directive">ScriptAlias</code>
+        yönergelerinden önce ele alınır.</p></div>
+
+      <p>Herhangi bir <code><em>durum</em></code> belirtilmemişse "geçici"
+        yönlendirme (HTTP durum kodu: 302) yapılır. Bu, istemciye özkaynağın
+        geçici olarak başka yere taşındığını belirtir. Diğer HTTP durum
+        kodlarını döndürmek için kullanılabilecek <code><em>durum</em></code>
+        değerleri:</p>
+
+    <dl>
+      <dt><code>permanent</code></dt>
+      <dd>İstemciye özkaynağın kalıcı olarak taşındığını belirten kalıcı
+        yönlendirme durumu (301) döndürülür.</dd>
+
+      <dt><code>temp</code></dt>
+      <dd>İstemciye geçici yönlendirme durumu (302) döner. Bu öntanımlıdır.
+      </dd>
+
+      <dt><code>seeother</code></dt>
+      <dd>İstemciye özkaynağın yerine başka bir şey konduğunu belirten
+        "diğerine bak" durumu (303) döndürülür.</dd>
+
+      <dt><code>gone</code></dt>
+      <dd>İstemciye özkaynağın kalıcı olarak kaldırıldığını belirten "ölü
+        bağlantı" durumu (410) döner. Bu durumda <code><em>URL</em></code>
+        belirtilmez.</dd>
+    </dl>
+
+    <p>Diğer durum kodları için <code><em>durum</em></code> olarak sayısal
+      durum kodu belirtilir. Eğer durum 300 ile 399 arasındaysa bir
+      <code><em>URL</em></code> belirtmek gereklidir, yoksa belirtilmez.
+      Belirtilecek durum kodunu Apache’nin bilmesi gerektiğine dikkat ediniz
+      (<code>http_protocol.c</code> dosyasında bulunan
+      <code>send_error_response</code> işlevine bakınız).</p>
+
+    <div class="example"><h3>Örnek:</h3><p><code>
+      Redirect permanent /bir http://mesela.dom/iki<br />
+      Redirect 303 /yedi http://mesela.dom/baskabisey
+    </code></p></div>
+  
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectMatch" id="RedirectMatch">RedirectMatch</a> <a name="redirectmatch" id="redirectmatch">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Geçerli URL ile eşleşen bir düzenli ifadeye dayanarak bir harici
+yönlendirme gönderir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RedirectMatch [<var>durum</var>] <var>düzenli-ifade</var>
+<var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+</table>
+    <p>Bu yönerge <code><em>URL-yolu</em></code> ile eşleşmek üzere bir
+      <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a> kabul etmesi dışında
+      <code class="directive"><a href="#redirect">Redirect</a></code> yönergesine
+      eşdeğerdir. Belirtilen düzenli ifade <code><em>URL-yolu</em></code> ile
+      eşleşiyorsa sunucu parantezli eşleşmeleri belirtilen dizgede kullanarak
+      dosya yolunu elde eder. Örneğin, tüm GIF dosyası isteklerini başka bir
+      sunucudaki aynı isimli JPEG dosyalarına yönlendirmek için şu
+      yazılabilir:</p>
+
+    <div class="example"><p><code>
+      RedirectMatch (.*)\.gif$ http://baska.sunucu.dom$1.jpg
+    </code></p></div>
+  
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectPermanent" id="RedirectPermanent">RedirectPermanent</a> <a name="redirectpermanent" id="redirectpermanent">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciyi, kalıcı bir yönlendirme isteği döndürerek farklı bir
+URL’ye yönlendirir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RedirectPermanent <var>URL-yolu</var> <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+</table>
+    <p>Bu yönerge istemciye daima kalıcı yönlendirme durumu (301) döndürür.
+      Yani, <code>Redirect permanent</code> ile aynı işi yapar.</p>
+  
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RedirectTemp" id="RedirectTemp">RedirectTemp</a> <a name="redirecttemp" id="redirecttemp">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemciyi, geçici bir yönlendirme isteği döndürerek farklı bir
+URL’ye yönlendirir.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>RedirectTemp <var>URL-yolu</var> <var>URL</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+</table>
+    <p>Bu yönerge istemciye daima geçici yönlendirme durumu (302) döndürür.
+      Yani, <code>Redirect temp</code> ile aynı işi yapar.</p>
+  
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptAlias" id="ScriptAlias">ScriptAlias</a> <a name="scriptalias" id="scriptalias">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScriptAlias <var>URL-yolu</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+</table>
+    <p>Hedef dizini, <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> modülünün CGI betiği
+      yorumlayıcısı tarafından çalıştırılacak betikleri içeren dizin olarak
+      imlemesi dışında <code class="directive"><a href="#alias">Alias</a></code>
+      yönergesinin yaptığı işi yapar. <code><em>URL-yolu</em></code> ile
+      başlayan harf büyüklüğüne duyarlı URL’ler (% imlemesi çözüldükten
+      sonra), dosya sistemindeki bir tam yol olarak belirtilmiş
+      <code><em>dizin-yolu</em></code> ile başlayan betiklerle eşlenir.</p>
+
+    <div class="example"><h3>Örnek:</h3><p><code>
+      ScriptAlias /cgi-bin/ /siteler/cgi-bin/
+    </code></p></div>
+
+    <p><code>http://sunucum/cgi-bin/foo</code> şeklindeki bir istek sunucunun
+      <code>/siteler/cgi-bin/foo</code> betiğini çalıştırmasına sebep olur. Bu
+      yapılandırma aslında şuna eşdeğerdir:</p>
+
+    <div class="example"><p><code>
+      Alias /cgi-bin/ /siteler/cgi-bin/<br />
+      &lt;Location /cgi-bin &gt;<br />
+      <span class="indent">
+      SetHandler cgi-script<br />
+      Options +ExecCGI<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+
+    <div class="warning">Yapılandırma değiştiğinde kaynak kodlarının ister
+      istemez açığa çıkmasını istemiyorsanız CGI betiklerinizi <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> altına koymayınız.
+      <code class="directive">ScriptAlias</code> yönergesi URL’yi doğru yere
+      eşlemekten başka orayı bir CGI betikleri dizini olarak imler. CGI
+      betiklerinizi <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> altına
+      koyarsanız çalıştırmak için <code class="directive">ScriptAlias</code> değil,
+      <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
+      <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code> ve <code class="directive"><a href="../mod/core.html#options">Options</a></code> yönergelerini örnekteki gibi kullanın:
+
+    <div class="example"><p><code>
+      &lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;<br />
+      <span class="indent">
+      SetHandler cgi-script<br />
+      Options ExecCGI<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+
+     Aynı dosya sistemi konumu ile çok sayıda <code><em>URL-yolu</em></code>
+     eşleşebileceğinden, bir <code class="directive"><a href="../mod/core.html#directory">Directory</a></code>
+     bölümü ile sınırlanmadığı takdirde CGI betiklerinin kaynak kodları açığa
+     çıkabilir; bu bakımdan <code class="directive">ScriptAlias</code> yönergesini yok
+     sayan URL yollarının belirtilebilme olasılığı gözardı
+     edilmemelidir.</div>
+
+  
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><a href="../howto/cgi.html">CGI Öğreticisi</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ScriptAliasMatch" id="ScriptAliasMatch">ScriptAliasMatch</a> <a name="scriptaliasmatch" id="scriptaliasmatch">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
+eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ScriptAliasMatch <var>düzenli-ifade</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_alias</td></tr>
+</table>
+    <p>Bu yönerge <code><em>URL-yolu</em></code> ile eşleşmek üzere bir
+      <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a> kabul etmesi dışında
+      <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> yönergesine
+      eşdeğerdir. Belirtilen düzenli ifade <code><em>URL-yolu</em></code> ile
+      eşleşiyorsa sunucu parantezli eşleşmeleri belirtilen dizgede kullanarak
+      dosya yolunu elde eder. Örneğin, standart <code>/cgi-bin</code> dizinini
+      etkin kılmak için şu yazılabilir:</p>
+
+    <div class="example"><p><code>
+      ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </code></p></div>
+  
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_alias.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_alias.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>

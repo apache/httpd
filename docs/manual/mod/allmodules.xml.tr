@@ -5,7 +5,7 @@
   <modulefile>core.xml.tr</modulefile>
   <modulefile>mod_access_compat.xml</modulefile>
   <modulefile>mod_actions.xml</modulefile>
-  <modulefile>mod_alias.xml</modulefile>
+  <modulefile>mod_alias.xml.tr</modulefile>
   <modulefile>mod_asis.xml</modulefile>
   <modulefile>mod_auth_basic.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
@@ -36,7 +36,7 @@
   <modulefile>mod_dav_lock.xml</modulefile>
   <modulefile>mod_dbd.xml</modulefile>
   <modulefile>mod_deflate.xml</modulefile>
-  <modulefile>mod_dir.xml</modulefile>
+  <modulefile>mod_dir.xml.tr</modulefile>
   <modulefile>mod_disk_cache.xml</modulefile>
   <modulefile>mod_dumpio.xml</modulefile>
   <modulefile>mod_echo.xml</modulefile>

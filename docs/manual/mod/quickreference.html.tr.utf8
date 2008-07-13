@@ -105,13 +105,13 @@ responses from the server</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
-<tr><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Maps URLs to filesystem locations</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maps URLs to filesystem locations using regular 
-expressions</td></tr>
-<tr><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts can access an area of the
+<tr><td><a href="mod_alias.html#alias">Alias <var>URL-yolu</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla eşler.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>düzenli-ifade</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">URL’leri dosya sistemi konumlarıyla düzenli ifadeleri kullanarak
+eşler.</td></tr>
+<tr><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts can access an area of the
 server</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <var>port</var> [<var>port</var>] ...</a></td><td> 443 563 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
 proxy</td></tr>
@@ -312,19 +312,19 @@ language</td></tr>
 <tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
 <tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Zlib compression window size</td></tr>
-<tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
+<tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
 <tr><td><a href="core.html#directory">&lt;Directory <var>dizin-yolu</var>&gt;
 ... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde uygulanacak bir yönerge grubunu sarmalar.</td></tr>
 <tr class="odd"><td><a href="mod_dir.html#directoryindex">DirectoryIndex
-    <var>local-url</var> [<var>local-url</var>] ...</a></td><td> index.html </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">List of resources to look for when the client requests
-a directory</td></tr>
+    <var>yerel-url</var> [<var>yerel-url</var>] ...</a></td><td> index.html </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İstemci bir dizin istediğinde dizin içeriğini listeler.
+</td></tr>
 <tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>düzifd</var>&gt;
 ... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir düzenli ifade ile eşleşen dosya sistemi dizininde ve bunun
   altdizinlerinde uygulanacak bir yönerge grubunu sarmalar.</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Toggle trailing slash redirects on or off</td></tr>
+<tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</td></tr>
 <tr><td><a href="core.html#documentroot">DocumentRoot <var>dizin-yolu</var></a></td><td> /usr/local/apache/h +</td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
 <tr><td><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel <var>level</var></a></td><td> debug </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the logging level of the DumpIO output</td></tr>
@@ -582,16 +582,16 @@ header for proxied requests</td></tr>
 <tr><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Name of the file that will be inserted at the end
 of the index listing</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP alım tamponu boyu</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
-<var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
-a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
-<var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect based on a regular expression match 
-of the current URL</td></tr>
-<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Sends an external permanent redirect asking the client to fetch
-a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external temporary redirect asking the client to fetch
-a different URL</td></tr>
+<tr><td><a href="mod_alias.html#redirect">Redirect [<var>durum</var>] <var>URL-yolu</var>
+<var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemciyi, bir yönlendirme isteği döndürerek farklı bir URL’ye
+yönlendirir.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>durum</var>] <var>düzenli-ifade</var>
+<var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Geçerli URL ile eşleşen bir düzenli ifadeye dayanarak bir harici
+yönlendirme gönderir.</td></tr>
+<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-yolu</var> <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemciyi, kalıcı bir yönlendirme isteği döndürerek farklı bir
+URL’ye yönlendirir.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-yolu</var> <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciyi, geçici bir yönlendirme isteği döndürerek farklı bir
+URL’ye yönlendirir.</td></tr>
 <tr><td><a href="mod_authz_core.html#reject">Reject <var>entity-name</var> [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>T</td></tr><tr><td class="descr" colspan="4">Rejects authenticated users or host based 
 requests from accessing a resource</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
@@ -662,12 +662,11 @@ providers.</td></tr>
   dosyanın yerini belirler.</td></tr>
 <tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
-<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Maps a URL to a filesystem location and designates the
-target as a CGI script</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maps a URL to a filesystem location using a regular expression
-and designates the target as a CGI script</td></tr>
+<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-yolu</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>düzenli-ifade</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
+eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
 <tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">CGI betikleri için yorumlayıcı belirleme tekniği</td></tr>
 <tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>
 <tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>bytes</var></a></td><td> 1024 </td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Maximum amount of PUT or POST requests that will be recorded

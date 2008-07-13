@@ -71,8 +71,8 @@ NT.</dd>
 address)</dd>
 <dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
 media type or request method.</dd>
-<dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
-    filesystem in the document tree and for URL redirection</dd>
+<dt><a href="mod_alias.html">mod_alias</a></dt><dd>Belge ağacının parçalarının dosya sisteminin parçalarıyla
+eşlenmesini sağlar ve URL yönlendirmesi yapar.</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
@@ -113,8 +113,7 @@ address)</dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before it is delivered to the
 client</dd>
-<dt><a href="mod_dir.html">mod_dir</a></dt><dd>Provides for "trailing slash" redirects and
-    serving directory index files</dd>
+<dt><a href="mod_dir.html">mod_dir</a></dt><dd>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>A simple echo server to illustrate protocol 
