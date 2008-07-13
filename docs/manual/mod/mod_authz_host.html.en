@@ -76,8 +76,8 @@ address)</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls which hosts can access an area of the
 server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> Allow from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -172,7 +172,10 @@ server</td></tr>
     to be controlled based on the existence of an <a href="../env.html">environment variable</a>. When <code>Allow from
     env=<var>env-variable</var></code> is specified, then the request is
     allowed access if the environment variable <var>env-variable</var>
-    exists. The server provides the ability to set environment
+    exists. When <code>Allow from env=!<var>env-variable</var></code> is 
+    specified, then the request is allowed access if the environment 
+    variable <var>env-variable</var> doesn't exist.
+    The server provides the ability to set environment
     variables in a flexible way based on characteristics of the client
     request using the directives provided by
     <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>. Therefore, this directive can be
@@ -201,8 +204,8 @@ server</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls which hosts are denied access to the
 server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> Deny from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>

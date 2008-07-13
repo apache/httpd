@@ -26,8 +26,6 @@
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_status.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバの活動状況と性能に関する情報を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>status_module</td></tr>
@@ -47,7 +45,7 @@
     <ul>
       <li>リクエストを扱っているワーカーの数</li>
 
-      <li>アイドル (訳注: リクエストを扱っていない) ワーカーの数</li>
+      <li>アイドル <span class="transnote">(<em>訳注:</em> リクエストを扱っていない)</span> ワーカーの数</li>
 
       <li>各ワーカーの状態、ワーカーが扱ったリクエストの数、
       ワーカーが送った総バイト数 (*)</li>
@@ -64,13 +62,14 @@
       <li>現時点のホストと処理されているリクエスト (*)</li>
     </ul>
 
-    <p>"(*)" の付いている情報を表示するためにはコンパイル時のオプション
-    を使用する必要があります。これらの統計情報を得るために必要な
-    コードは標準の Apache には含まれていません。</p>
+    <p>"(*)" の付いている情報を表示するには 
+    <code class="directive"><a href="#extendedstatus">ExtendedStatus</a></code> 
+    が <code>On</code> になっている必要があります。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
 </ul>
 <h3>トピック</h3>
 <ul id="topics">
@@ -83,7 +82,7 @@
 <h2><a name="enable" id="enable">Status を使用可能にする</a></h2>
     
 
-    <p>foo.com ドメインからのブラウザのみに対して
+    <p>example.com ドメインからのブラウザのみに対して
     ステータスの報告を使用可能にするには
     以下のコードを <code>httpd.conf</code> 設定ファイルに追加します</p>
 <div class="example"><p><code>
@@ -92,7 +91,7 @@
 <br />
     Order Deny,Allow<br />
     Deny from all<br />
-    Allow from .foo.com<br />
+    Allow from .example.com<br />
     &lt;/Location&gt;
 </code></p></div>
 
@@ -144,6 +143,42 @@
     <p>この設定はサーバ全体に対して適用され、バーチャルホスト毎に
     変更することはできません。拡張ステータス情報の収集はサーバの
     動作を遅くすることがあります。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストの最初の 63 文字か最後の 63 文字
+のどちらを mod_status が表示するかを決める</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SeeRequestTail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_status</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.2.7 以降</td></tr>
+</table>
+    <p><code>ExtendedStatus On</code> に設定すると mod_status 
+    は処理中のリクエスト<span class="transnote">(<em>訳注:</em> の文字列)</span>を表示します。
+    歴史的な理由で、リクエストのうちの63文字だけが表示用に記録されます。
+    このディレクティブで、最初の63文字を記録する(従来からの動作、
+    そして現在もデフォルト)か、最後の63文字を記録するかを決めます。
+    もちろん、リクエストの長さが64文字以上のときに効果があります
+    <span class="transnote">(<em>訳注:</em> 63文字以下だと結果的に同じ動作)</span>。</p>
+
+    <p>Apache が <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> というリクエストを扱っているとき、 mod_status は以下のように表示します:
+    </p>
+
+    <table class="bordered">
+      <tr>
+        <th>Off (デフォルト)</th>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
+      </tr>
+    </table>
+
 
 </div>
 </div>

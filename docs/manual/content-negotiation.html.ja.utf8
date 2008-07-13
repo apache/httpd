@@ -21,7 +21,8 @@
 <p><span>Available Languages: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">This translation may be out of date. Check the
             English version for recent changes.</div>
@@ -47,7 +48,6 @@
 の拡張</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#naming">リンクと名前の変換に関する注意点</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#caching">キャッシュに関する注意事項</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#more">追加情報</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -710,21 +710,13 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
     <code>force-no-vary</code> <a href="env.html#special">環境変数</a>を
     設定します。</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="more" id="more">追加情報</a></h2>
-
-    <p>コンテントネゴシエーションに関する追加情報は、
-    Alan J. Flavell さんの<a href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
-    Negotiation Notes</a> をご覧下さい。ですが、
-    Apache 2.0 での変更点を含むためには更新されていないかもしれない
-    ということに注意してください。</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/content-negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/content-negotiation.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/content-negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
