@@ -26,7 +26,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -607,6 +606,8 @@ kullanımı önerilmemektedir.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td><code>none</code> değeri Apache 2.2.7 ve sonrasında mevcuttur.
+</td></tr>
 </table>
     <p>Sunucudan zaman zaman kendi <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">MIME
       türü</a> ile uyuşmayan bir belge sunması istenir.</p>
@@ -630,7 +631,7 @@ kullanımı önerilmemektedir.</td></tr>
       DefaultType None
     </code></p></div>
     <p><code>DefaultType None</code> sadece httpd-2.2.7 ve sonrasında
-      mevcuttur..</p>
+      mevcuttur.</p>
 
     <p>Bu yönergenin sadece öntanımlı MIME-türünü sağlaması nedeniyle
       <code class="directive"><a href="#forcetype">ForceType</a></code> yönergesinden farklı
@@ -648,7 +649,7 @@ kullanımı önerilmemektedir.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p><a href="../programs/httpd.html">httpd</a>’yi <code>-D</code>
+    <p><code class="program"><a href="../programs/httpd.html">httpd</a></code>’yi <code>-D</code>
       seçeneğiyle çalıştırmaya eşdeğerdir.</p>
 
     <p>Bu yönerge, başlatma betiğinde <code>-D</code> seçeneğinin
@@ -869,6 +870,8 @@ kullanımı önerilmemektedir.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td><code>none</code> değeri Apache 2.2.7 ve sonrasında mevcuttur.
+</td></tr>
 </table>
     <p>Bu yönerge, sunucunun teslimat sırasında gerektiği takdirde bir dosya
       içeriğinin okunması için bellek eşleme kullanıp kullanmayacağını
@@ -2583,14 +2586,14 @@ sınırlama getirir.</td></tr>
 </table>
     <p><code class="directive">ServerAdmin</code> yönergesi, sunucunun bir hata
       durumunda istemciye döndüreceği hata iletilerinde içereceği iletişim
-      adresini belirtmek için kullanılır. Eğer <code>httpd</code> sağlanan
-      değerin bir URL olmadığını saptarsa değerin bir eposta adresi olduğuna
-      hükmeder ve önüne <code>mailto:</code> getirerek onu bir hiper bağ hedefi
-      olarak kullanır. Çoğu CGI betiği bir eposta adresi belirtildiği kabulünü
-      yaptığından değer olarak bir URL değil bir eposta adresi belirtmeniz
-      önerilir. Eğer bir URL belirtecekseniz hedef sizin denetiminizde olan
-      başka bir sunucuda bulunmalıdır, yoksa kullanıcılar hata durumunda bu
-      adrese erişemeyebilirler.</p>
+      adresini belirtmek için kullanılır. Eğer <code class="program"><a href="../programs/httpd.html">httpd</a></code>
+      sağlanan değerin bir URL olmadığını saptarsa değerin bir eposta adresi
+      olduğuna hükmeder ve önüne <code>mailto:</code> getirerek onu bir hiper
+      bağ hedefi olarak kullanır. Çoğu CGI betiği bir eposta adresi
+      belirtildiği kabulünü yaptığından değer olarak bir URL değil bir eposta
+      adresi belirtmeniz önerilir. Eğer bir URL belirtecekseniz hedef sizin
+      denetiminizde olan başka bir sunucuda bulunmalıdır, yoksa kullanıcılar
+      hata durumunda bu adrese erişemeyebilirler.</p>
 
     <p>Kullanıcıların sunucu hakkında konuşurken isminizden bahsetmemeleri için
       burada belirtilecek adresin sırf bu işe adanmış bir adres olması daha
@@ -2889,9 +2892,9 @@ belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p><code class="directive">SetInputFilter</code> yönergesi, istemci isteklerini 
-      ve sunucu tarafından alındığı takdirde POST girdisini işleyecek süzgeç 
-      veya süzgeçleri belirler. Bu, diğer <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code> yönergeleri dahil evvelce tanımlanmış 
+    <p><code class="directive">SetInputFilter</code> yönergesi, istemci isteklerini
+      ve sunucu tarafından alındığı takdirde POST girdisini işleyecek süzgeç
+      veya süzgeçleri belirler. Bu, diğer <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code> yönergeleri dahil evvelce tanımlanmış
       süzgeçlere eklenir.</p>
 
     <p>Birden fazla süzgeç belirtilmek istenirse birbirlerinden noktalı

@@ -23,8 +23,6 @@
 <a href="../ja/howto/" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -33,17 +31,28 @@
     
 
     <dl>
-      <dt>認証</dt>
+      <dt>認証と承認</dt>
       <dd>
         <p>認証とは、誰かが自分は誰であるかを名乗っているものを検証する
         処理のことです。承認とは、誰かが望みの場所に辿り着けたり、
         望みの情報を手に入れたりすることを許可する処理のことです。</p>
 
-        <p>参照: <a href="auth.html">認証、承認、アクセス制御</a></p>
+        <p>参照: <a href="auth.html">認証と承認</a></p>
       </dd>
     </dl>
 
     <dl>
+      <dt>アクセス制御</dt>
+      <dd>
+        <p>アクセス制御は、さまざまな条件でリソースに対するアクセスを
+        許可したり制限したりすることを指します。
+        実現方法には様々な異なる手法があります。</p>
+
+        <p>参照: <a href="access.html">アクセス制御</a></p>
+      </dd>
+    </dl>
+
+   <dl>
       <dt>CGI による動的コンテンツ</dt>
       <dd>
         <p>CGI (Common Gateway Interface) はウェブサーバが外部のコンテンツ

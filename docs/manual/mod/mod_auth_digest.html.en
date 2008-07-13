@@ -31,9 +31,9 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_digest.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p>This module implements HTTP Digest Authentication. However, it
-    has not been extensively tested and is therefore marked
-    experimental.</p>
+    <p>This module implements HTTP Digest Authentication
+    (<a href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), and
+    provides a more secure alternative to <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">

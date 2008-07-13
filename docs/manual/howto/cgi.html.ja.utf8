@@ -23,8 +23,6 @@
 <a href="../ja/howto/cgi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>
@@ -56,6 +54,18 @@
     <p>CGI プログラムを正しく動作させるには、CGI を許可するように
     Apache の設定を行う必要があります。
     これを行なうための方法がいくつかあります。</p>
+
+    <div class="warning">
+    注: Apache が共有モジュール機能着きでビルドされている場合、
+    モジュールがロードされていることを確認してください。
+    つまり <code>httpd.conf</code> で 
+    <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
+    がコメントアウトされていないことを確認してください。
+    正常に設定されていれば次のようになるはずです:
+
+    <div class="example"><p><code>
+      LoadModule cgi_module modules/mod_cgi.so
+    </code></p></div></div>
 
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
       
@@ -196,7 +206,7 @@
     <p>「通常の」プログラミングと CGI
     プログラミングの間には主に二つの違いがあります。</p>
 
-    <p>一つは、CGI プログラムのすべての出力には MIME-type
+    <p>一つは、CGI プログラムのすべての出力には<a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
     ヘッダを付けなければなりません。
     これはどのような種類のコンテンツを受け取っているかをクライアントに示す
     HTTP ヘッダです。ほとんどの場合では、次のように出力します:</p>

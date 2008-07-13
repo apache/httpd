@@ -23,8 +23,6 @@
 <a href="./ja/suexec.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
     <p><strong>suEXEC</strong>
     機能により、Apache ユーザは Web サーバを実行しているユーザ ID とは
@@ -447,7 +445,7 @@
     すべての構成要素が作成されると、それらのインストールには
     <code>make install</code> コマンドが実行できます。バイナリイメージの <code>suexec</code>
     は <code>--sbindir</code> オプションで指定されたディレクトリにインストールされます。
-    デフォルトの場所は "/usr/local/apache/sbin/suexec" です。<br />
+    デフォルトの場所は "/usr/local/apache/bin/suexec" です。<br />
     インストール時には <strong><em>root</em></strong>
     権限が必要なので注意してください。wrapper がユーザ ID
     を設定するために、所有者 <code><em>root</em></code>
@@ -472,7 +470,7 @@
     Group webgroup<br />
 </code></p></div>
 
-    <p><code class="program"><a href="./programs/suexec.html">suexec</a></code> が "/usr/local/apache2/sbin/suexec" 
+    <p><code class="program"><a href="./programs/suexec.html">suexec</a></code> が "/usr/local/apache2/bin/suexec" 
     にインストールされていた場合、次のように設定する必要があります。</p>
 
 <div class="example"><p><code>

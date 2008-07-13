@@ -27,8 +27,6 @@
 <a href="../ja/mod/mod_actions.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_actions.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>メディアタイプやリクエストメソッドに応じて
 CGI スクリプトを実行する機能を提供</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -37,7 +35,7 @@ CGI スクリプトを実行する機能を提供</td></tr>
 <h3>概要</h3>
 
     <p>このモジュールには二つのディレクティブがあります。<code class="directive"><a href="#action">Action</a></code>
-    ディレクティブは特定の MIME タイプのファイルをリクエストされた場合に
+    ディレクティブは特定の <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>のファイルをリクエストされた場合に
     CGI スクリプトが実行されるようにします。<code class="directive"><a href="#script">Script</a></code>
     ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
     スクリプトが実行されるようにします。
@@ -75,8 +73,8 @@ Apache 2.1 で導入されました</td></tr>
     <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> によって
     CGI スクリプトに設定されたリソースへの URL-path です。
     <var>Action-type</var> には
-    <a href="../handler.html">handler</a> か MIME
-    コンテントタイプを指定できます。リクエストされたドキュメントの URL
+    <a href="../handler.html">handler</a> か <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME
+    コンテントタイプ</a>を指定できます。リクエストされたドキュメントの URL
     とファイルのパスは標準 CGI 環境変数 <code>PATH_INFO</code> と
     <code>PATH_TRANSLATED</code> を使って伝えられます。
     特定のリクエストに対して使用されるハンドラへは、
