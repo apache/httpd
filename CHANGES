@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_session: Prevent a segfault when a CGI script sets a cookie with a
+     null value. [David Shane Holden <dpejesh apache.org>]
 
   *) mod_headers: Prevent Header edit from processing only the first header
      of possibly multiple headers with the same name and deleting the
