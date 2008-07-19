@@ -203,6 +203,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://people.apache.org/~chrisd/patches/walk_cache/walk_cache-2.2.x.patch
    +1: chrisd
 
+ * mod_headers: Prevent Header edit from processing only the first header it
+   should edit and deleting the remaining ones by iterating over all headers
+   with the same name. PR: 45333
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=674000&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+    +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
