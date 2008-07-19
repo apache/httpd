@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 554716 -->
+<!-- English Revision: 678097 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -132,8 +132,11 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</description>
     <p><code><em>URL-yolu</em></code>’nu bir <code>/</code> ile
       sonlandırırsanız <directive>Alias</directive> yönergesini yorumlarken
       sunucunun da sona bir <code>/</code> ekleyeceğine dikkat ediniz. Yani,
-      eğer <example>Alias /icons/ /usr/local/apache/icons/</example> diye bir
-      tanım yaparsanız <code>/icons</code> URL’si için bir
+      eğer</p>
+
+    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+
+    <p>diye bir tanım yaparsanız <code>/icons</code> URL’si için bir
       <directive>Alias</directive> kullanılmayacaktır.</p>
 
     <p><directive>Alias</directive> <em>hedefleri</em> için ek <directive
