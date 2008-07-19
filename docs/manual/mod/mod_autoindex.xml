@@ -30,7 +30,7 @@
 <sourcefile>mod_autoindex.c</sourcefile>
 <identifier>autoindex_module</identifier>
 
-<summary> 
+<summary>
       <p>The index of a directory can come from one of two
       sources:</p>
 
@@ -53,10 +53,10 @@
     </ul>
     <p>The two functions are separated so that you can completely
     remove (or replace) automatic index generation should you want
-    to.</p> 
+    to.</p>
 
     <p>Automatic index generation is enabled with using
-    <code>Options +Indexes</code>. See the 
+    <code>Options +Indexes</code>. See the
     <directive module="core">Options</directive> directive for
     more details.</p>
 
@@ -336,7 +336,7 @@ icon selected by MIME content-type</description>
       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
       AddIcon /icons/backup.xbm *~
     </example>
-    
+
     <p><directive module="mod_autoindex">AddIconByType</directive>
     should be used in preference to <directive>AddIcon</directive>,
     when possible.</p>
@@ -345,7 +345,7 @@ icon selected by MIME content-type</description>
 
 <directivesynopsis>
 <name>AddIconByEncoding</name>
-<description>Icon to display next to files selected by MIME 
+<description>Icon to display next to files selected by MIME
 content-encoding</description>
 <syntax>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</syntax>
@@ -362,8 +362,8 @@ content-encoding</description>
     where <var>alttext</var> is the text tag given for an icon for
     non-graphical browsers.</p>
 
-    <p><var>MIME-encoding</var> is a wildcard expression matching
-    required the content-encoding.</p>
+    <p><var>MIME-encoding</var> is a valid content-encoding, such as
+    <code>x-compress</code>.</p>
 
     <example><title>Example</title>
       AddIconByEncoding /icons/compress.xbm x-compress
@@ -373,7 +373,7 @@ content-encoding</description>
 
 <directivesynopsis>
 <name>AddIconByType</name>
-<description>Icon to display next to files selected by MIME 
+<description>Icon to display next to files selected by MIME
 content-type</description>
 <syntax>AddIconByType <var>icon</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</syntax>
@@ -452,7 +452,7 @@ of the index listing</description>
       <example><title>Example</title>
         HeaderName /include/HEADER.html
       </example>
-      
+
       <p><var>Filename</var> must resolve to a document with a major
       content type of <code>text/*</code> (<em>e.g.</em>,
       <code>text/html</code>, <code>text/plain</code>, etc.). This means
@@ -485,7 +485,7 @@ of the index listing</description>
 
 <directivesynopsis>
 <name>IndexIgnore</name>
-<description>Adds to the list of files to hide when listing 
+<description>Adds to the list of files to hide when listing
 a directory</description>
 <syntax>IndexIgnore <var>file</var> [<var>file</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -510,7 +510,7 @@ a directory</description>
 
 <directivesynopsis>
 <name>IndexOptions</name>
-<description>Various configuration settings for directory 
+<description>Various configuration settings for directory
 indexing</description>
 <syntax>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
 ...</syntax>
@@ -540,7 +540,7 @@ indexing</description>
         IndexOptions Charset=UTF-8
       </example>
       </dd>
-      
+
       <dt><a name="indexoptions.type"
                id="indexoptions.type"
       >Type=<var>MIME content-type</var></a> (<em>Apache 2.0.61 and
@@ -554,7 +554,7 @@ indexing</description>
         IndexOptions Type=text/plain
       </example>
       </dd>
-      
+
       <dt><a name="indexoptions.descriptionwidth"
                id="indexoptions.descriptionwidth"
       >DescriptionWidth=[<var>n</var> | *]</a> (<em>Apache 2.0.23 and
@@ -604,8 +604,8 @@ indexing</description>
                id="indexoptions.htmltable">HTMLTable</a> (<em>Experimental,
       Apache 2.0.23 and later</em>)</dt>
 
-      <dd>This experimental option with FancyIndexing constructs a
-      simple table for the fancy directory listing. Note this will
+      <dd>This experimental option with <code>FancyIndexing</code> constructs
+      a simple table for the fancy directory listing. Note this will
       confuse older browsers. It is particularly necessary if file
       names or description text will alternate between
       left-to-right and right-to-left reading order, as can happen
@@ -621,13 +621,13 @@ indexing</description>
                id="indexoptions.iconheight">IconHeight[=<var
                >pixels</var>]</a></dt>
 
-      <dd>Presence of this option, when used with IconWidth, will cause
-      the server to include <code>height</code> and <code>width</code>
-      attributes in the <code>img</code> tag for the file icon. This allows
-      browser to precalculate the page layout without having to wait until
-      all the images have been loaded. If no value is given for the option,
-      it defaults to the standard height of the icons supplied with the Apache
-      software.</dd>
+      <dd>Presence of this option, when used with <code>IconWidth</code>,
+      will cause the server to include <code>height</code> and
+      <code>width</code> attributes in the <code>img</code> tag for the file
+      icon. This allows browser to precalculate the page layout without having
+      to wait until all the images have been loaded. If no value is given for
+      the option, it defaults to the standard height of the icons supplied
+      with the Apache software.</dd>
 
       <dt><a name="indexoptions.iconwidth"
                id="indexoptions.iconwidth">IconWidth[=<var
@@ -645,10 +645,11 @@ indexing</description>
       <dt><a name="indexoptions.ignorecase"
                id="indexoptions.ignorecase">IgnoreCase</a></dt>
 
-      <dd>If this option is enabled, names are sorted in a case-insensitive 
-      manner.  For instance, if the sort order is ascending by name, and 
-      IgnoreCase is enabled, file Zeta  will be listed after file alfa 
-      (Note: file GAMMA will always be listed before file gamma). </dd>
+      <dd>If this option is enabled, names are sorted in a case-insensitive
+      manner.  For instance, if the sort order is ascending by name, and
+      <code>IgnoreCase</code> is enabled, file Zeta  will be listed after
+      file alfa (Note: file GAMMA will always be listed before file gamma).
+      </dd>
 
       <dt><a name="indexoptions.ignoreclient"
                id="indexoptions.ignoreclient">IgnoreClient</a></dt>
@@ -687,7 +688,8 @@ indexing</description>
                id="indexoptions.showforbidden">ShowForbidden</a></dt>
 
       <dd>If specified, Apache will show files normally hidden because
-      the subrequest returned HTTP_UNAUTHORIZED or HTTP_FORBIDDEN</dd>
+      the subrequest returned <code>HTTP_UNAUTHORIZED</code> or
+      <code>HTTP_FORBIDDEN</code></dd>
 
       <dt><a name="indexoptions.suppresscolumnsorting"
                id="indexoptions.suppresscolumnsorting"
@@ -700,8 +702,8 @@ indexing</description>
       in that column. <strong>Prior to Apache 2.0.23, this also
       disabled parsing the Query Arguments for the sort
       string.</strong> That behavior is now controlled by <a
-      href="#indexoptions.ignoreclient">IndexOptions
-      IgnoreClient</a> in Apache 2.0.23.</dd>
+      href="#indexoptions.ignoreclient"><code>IndexOptions
+      IgnoreClient</code></a> in Apache 2.0.23.</dd>
 
       <dt><a name="indexoptions.suppressdescription"
                id="indexoptions.suppressdescription"
@@ -769,9 +771,9 @@ indexing</description>
                id="indexoptions.trackmodified">TrackModified</a> (<em>Apache
       2.0.23 and later</em>)</dt>
 
-      <dd>This returns the Last-Modified and ETag values for the listed
-      directory in the HTTP header. It is only valid if the
-      operating system and file system return appropriate stat()
+      <dd>This returns the <code>Last-Modified</code> and <code>ETag</code>
+      values for the listed directory in the HTTP header. It is only valid
+      if the operating system and file system return appropriate stat()
       results. Some Unix systems do so, as do OS2's JFS and Win32's
       NTFS volumes. OS2 and Win32 FAT volumes, for example, do not.
       Once this feature is enabled, the client or proxy can track
@@ -780,8 +782,8 @@ indexing</description>
       removed files, but do not track changes for sizes or dates of
       the files within the directory. <strong>Changes to the size
       or date stamp of an existing file will not update the
-      Last-Modified header on all Unix platforms.</strong> If this
-      is a concern, leave this option disabled.</dd>
+      <code>Last-Modified</code> header on all Unix platforms.</strong>
+      If this is a concern, leave this option disabled.</dd>
 
       <dt><a name="indexoptions.versionsort"
                id="indexoptions.versionsort">VersionSort</a>
@@ -821,7 +823,7 @@ indexing</description>
     </dl>
 
    <!--
-     XXX: we should consider to allow sections inside <usage> 
+     XXX: we should consider to allow sections inside <usage>
      this would require some xslt changes...
    -->
    <dl><dt>Incremental IndexOptions</dt>
