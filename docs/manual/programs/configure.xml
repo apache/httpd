@@ -34,7 +34,7 @@
     <p>This script, included in the root directory of the source
     distribution, is for compilation on Unix and Unix-like systems
     only. For other platforms, see the <a
-    href="../platform/">platform</a> documentation.</p> 
+    href="../platform/">platform</a> documentation.</p>
 </summary>
 
 <seealso><a href="../install.html">Compiling and Installing</a></seealso>
@@ -107,7 +107,7 @@
     </dl>
   </section>
 
-  <section id="installationdirectories"><title>Installation 
+  <section id="installationdirectories"><title>Installation
     directories</title>
 
     <p>These options define the installation directory. The installation
@@ -148,7 +148,7 @@
 
     <section id="directoryfinetuning"><title>Fine tuning of the installation
       directories</title>
-    
+
       <p>For better control of the installation directories, use the options
         below. Please note that the directory defaults are set by
         <code>autoconf</code> and are overwritten by the corresponding layout
@@ -180,7 +180,7 @@
           By default <code>infodir</code> is set to
           <code><var>PREFIX</var>/info</code>. This option is currently
           unused.</dd>
-        
+
         <dt><code>--libdir=<var>DIR</var></code></dt>
         <dd>Install object code libraries in <var>DIR</var>. By default
           <code>libdir</code> is set to
@@ -198,16 +198,16 @@
           <code>autoconf</code> and currently unused.</dd>
 
         <dt><code>--mandir=<var>DIR</var></code></dt>
-        <dd>Install the man documentation in <var>DIR</var>. By default 
+        <dd>Install the man documentation in <var>DIR</var>. By default
           <code>mandir</code> is set to
           <code><var>EPREFIX</var>/man</code>.</dd>
-      
+
         <dt><code>--oldincludedir=<var>DIR</var></code></dt>
         <dd>Install C header files for non-gcc in <var>DIR</var>.
           By default <code>oldincludedir</code> is set to
           <code>/usr/include</code>. This option is offered by
           <code>autoconf</code> and currently unused.</dd>
-        
+
         <dt><code>--sbindir=<var>DIR</var></code></dt>
         <dd>Install the system administrator executables in <var>DIR</var>.
           Those are server programs like <program>httpd</program>,
@@ -227,10 +227,10 @@
           files <code>httpd.conf</code>, <code>mime.types</code>, etc. in
           <var>DIR</var>. By default <code>sysconfdir</code> is set to
           <code><var>PREFIX</var>/etc</code>.</dd>
-      </dl>        
+      </dl>
     </section>
   </section>
-  
+
   <section id="systemtypes"><title>System types</title>
 
     <p>These options are used to cross-compile the Apache HTTP Server to run on
@@ -270,14 +270,14 @@
           <code>--enable-<var>FEATURE</var>=no</code>.</dd>
 
         <dt><code>--enable-<var>FEATURE</var>[=<var>ARG</var>]</code></dt>
-        <dd>Include <var>FEATURE</var>. The default value for <var>ARG</var> 
+        <dd>Include <var>FEATURE</var>. The default value for <var>ARG</var>
           is <code>yes</code>.</dd>
 
         <dt><code>--enable-<var>MODULE</var>=shared</code></dt>
         <dd>The corresponding module will be build as DSO module.</dd>
 
         <dt><code>--enable-<var>MODULE</var>=static</code></dt>
-        <dd>By default enabled modules are linked statically. You can force 
+        <dd>By default enabled modules are linked statically. You can force
           this explicitly.</dd>
       </dl>
 
@@ -293,7 +293,7 @@
       <p>Some modules are compiled by default and have to be disabled
         explicitly. Use the following options to remove discrete modules from
         the compilation process.</p>
-        
+
       <dl>
         <dt><code>--disable-actions</code></dt>
         <dd>Disable action triggering on requests, which is provided by
@@ -325,7 +325,7 @@
         <dd><module>mod_cgi</module>, which provides support for CGI scripts,
           is enabled by default when using a non-threaded MPM. Use this
           option to disable CGI support.</dd>
-         
+
         <dt><code>--disable-cgid</code></dt>
         <dd>When using the threaded MPMs <module>worker</module> or
           <module>perchild</module> support for CGI scripts is provided by
@@ -354,7 +354,7 @@
             another protocol module instead. <strong>Don't disable this
             module unless you are really sure what you are doing.</strong>
             <br/>
-            Note: This module will always be linked statically.</dd> 
+            Note: This module will always be linked statically.</dd>
 
         <dt><code>--disable-imagemap</code></dt>
         <dd>Disable support for server based imagemaps, which provided by
@@ -418,7 +418,7 @@
         <dt><code>--enable-authnz-ldap</code></dt>
         <dd>Enable LDAP based authentication provided by
           <module>mod_authnz_ldap</module>.</dd>
-          
+
         <dt><code>--enable-cache</code></dt>
         <dd>Enable dynamic file caching provided by
           <module>mod_cache</module>. This experimental module may be
@@ -450,7 +450,7 @@
         <dd>Enable DAV support for filesystem resources, which is provided by
           <module>mod_dav_fs</module>. This module is a provider for the
           <module>mod_dav</module> module, so you should also use
-          <code>--enable-dav</code>.</dd> 
+          <code>--enable-dav</code>.</dd>
 
         <dt><code>--enable-dav-lock</code></dt>
         <dd>Enable <module>mod_dav_lock</module> which provides generic DAV
@@ -467,7 +467,7 @@
           <module>mod_disk_cache</module>.</dd>
 
         <dt><code>--enable-expires</code></dt>
-        <dd>Enable Expires header control provided by
+        <dd>Enable <code>Expires</code> header control provided by
           <module>mod_expires</module>.</dd>
 
         <dt><code>--enable-ext-filter</code></dt>
@@ -498,7 +498,7 @@
         <dd>Enable memory caching provided by
           <module>mod_mem_cache</module>.</dd>
 
-        <dt><code>--enable-mime-magic</code></dt> 
+        <dt><code>--enable-mime-magic</code></dt>
         <dd>Enable
         automatical determining of <glossary ref="mime-type">MIME
         types</glossary>, which is provided by
@@ -615,7 +615,7 @@
         <!-- module doc needed -->
         <dt><code>--enable-optional-fn-export</code></dt>
         <dd>Enable the example for an optional function exporter, which is
-          provided by <code>mod_optional_fn_export</code>.</dd> 
+          provided by <code>mod_optional_fn_export</code>.</dd>
 
         <!-- module doc needed -->
         <dt><code>--enable-optional-fn-import</code></dt>
@@ -708,7 +708,7 @@
         </dd>
 
         <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
-        <dd>This option behaves similar to <code>--enable-mods-shared</code>, 
+        <dd>This option behaves similar to <code>--enable-mods-shared</code>,
           but will link the given modules statically. This mean, these modules
           will always be present while running <program>httpd</program>. They need
           not be loaded with <directive
@@ -739,7 +739,7 @@
       <dl>
         <dt><code>--with-<var>PACKAGE</var>[=<var>ARG</var>]</code></dt>
         <dd>Use the package <var>PACKAGE</var>. The default value for
-          <var>ARG</var> is<code>yes</code>.</dd>
+          <var>ARG</var> is <code>yes</code>.</dd>
 
         <dt><code>--without-<var>PACKAGE</var></code></dt>
         <dd>Do not use the package <var>PACKAGE</var>. This is the same as
@@ -755,7 +755,7 @@
     <section id="packageopt"><title>Specific packages</title>
       <dl>
         <dt><code>--with-apr=<var>DIR</var>|<var>FILE</var></code></dt>
-        <dd>The <glossary ref="apr">Apache Portable Runtime</glossary> (APR) 
+        <dd>The <glossary ref="apr">Apache Portable Runtime</glossary> (APR)
           is part of the httpd
           source distribution and will automatically be build together with the
           HTTP server. If you want to use an already installed APR instead you
@@ -764,7 +764,7 @@
           or the directory to the installed APR. <code>apr-config</code> must
           exist within this directory or the subdirectory
           <code>bin</code>.</dd>
-        
+
         <dt><code>--with-apr-util=<var>DIR</var>|<var>FILE</var></code></dt>
         <dd>The Apache Portable Runtime Utilities (APU) are part of the
           httpd source distribution and will automatically be build
@@ -772,7 +772,7 @@
           APU instead you have to tell <code>configure</code> the path to the
           <code>apu-config</code> script. You may set the absolute path and name
           or the directory to the installed APU. <code>apu-config</code> must
-          exists within this directory or the subdirectory
+          exist within this directory or the subdirectory
           <code>bin</code>.</dd>
 
         <dt><code>--with-ssl=<var>DIR</var></code></dt>
@@ -794,7 +794,7 @@
         in the APU, so this database is always available. If you would like to
         use other database types, use the following options to enable
         them:</p>
-        
+
       <dl>
         <dt><code>--with-gdbm[=<var>path</var>]</code></dt>
         <dd>If no <var>path</var> is specified, <code>configure</code> will
@@ -805,11 +805,11 @@
           <code><var>path</var>/include</code> for the relevant files.
           Finally, the <var>path</var> may specify specific include and
           library paths separated by a colon.</dd>
-          
+
         <dt><code>--with-ndbm[=<var>path</var>]</code></dt>
-        <dd>Like <code>--with-gdbm</code>, bur searches for a New DBM
+        <dd>Like <code>--with-gdbm</code>, but searches for a New DBM
           installation.</dd>
-        
+
         <dt><code>--with-berkeley-db[=<var>path</var>]</code></dt>
         <dd>Like <code>--with-gdbm</code>, but searches for a Berkeley DB
           installation.</dd>
@@ -825,7 +825,7 @@
       </note>
     </section>
   </section>
-  
+
   <section id="supportopt"><title>Options for support programs</title>
     <dl>
       <dt><code>--enable-static-support</code></dt>
@@ -841,7 +841,8 @@
         option unless you understand all the security implications of
         running a suid binary on your server.</strong> Further options
         to configure <program>suexec</program> are described <a
-        href="#suexec">below</a>.</dd> </dl>
+        href="#suexec">below</a>.</dd>
+    </dl>
 
     <p>It is possible to create a statically linked binary of a single
       support program by using the following options:</p>
@@ -862,7 +863,7 @@
       <dt><code>--enable-static-htdigest</code></dt>
       <dd>Build a statically linked version of <program>
         htdigest</program>.</dd>
-        
+
       <dt><code>--enable-static-htpasswd</code></dt>
       <dd>Build a statically linked version of <program>
         htpasswd</program>.</dd>
@@ -876,7 +877,8 @@
         rotatelogs</program>.</dd>
     </dl>
 
-    <section id="suexec"><title>suexec configuration options</title>
+    <section id="suexec">
+      <title><code>suexec</code> configuration options</title>
       <p>The following options are used to fine tune the behavior of <program>
         suexec</program>. See <a
         href="suexec.html#install">Configuring and installing suEXEC</a>
@@ -884,14 +886,14 @@
 
       <dl>
         <dt><code>--with-suexec-bin</code></dt>
-        <dd>This defines the path to suexec binary. Default is
-          <code>--sbindir</code> (see <a href="directoryfinetuning">Fine
-          tuning of installation directories</a>).</dd>
+        <dd>This defines the path to <program>suexec</program> binary.
+        Default is <code>--sbindir</code> (see <a href="#directoryfinetuning"
+        >Fine tuning of installation directories</a>).</dd>
 
         <dt><code>--with-suexec-caller</code></dt>
         <dd>This defines the user allowed to call <program>suexec</program>.
-          It should be the same as the user under which <program>httpd</program>
-          normally runs.</dd>
+          It should be the same as the user under which
+          <program>httpd</program> normally runs.</dd>
 
         <dt><code>--with-suexec-docroot</code></dt>
         <dd>This defines the directory tree under which <program>
@@ -954,7 +956,7 @@
 
     <dt><code>LDFLAGS</code></dt>
     <dd>Set linker flags, e.g. <code>-L<var>libdir</var></code> if you have
-      libraries in a nonstandard directory <var>libdir</var>.</dd> 
+      libraries in a nonstandard directory <var>libdir</var>.</dd>
   </dl>
 </section>
 </manualpage>
