@@ -59,36 +59,36 @@ href="../urlmapping.html">Mapping URLs to the filesystem</a></seealso>
 
 <section id="order"><title>Order of Processing</title>
 
-<p>Aliases and Redirects occuring in different contexts are processed
-like other directives according to standard <a
-href="../sections.html#mergin">merging rules</a>.  But when multiple
-Aliases or Redirects occur in the same context (for example, in the
-same <directive type="section" module="core">VirtualHost</directive>
-section) they are processed in a particular order.</p>
+    <p>Aliases and Redirects occuring in different contexts are processed
+    like other directives according to standard <a
+    href="../sections.html#mergin">merging rules</a>.  But when multiple
+    Aliases or Redirects occur in the same context (for example, in the
+    same <directive type="section" module="core">VirtualHost</directive>
+    section) they are processed in a particular order.</p>
 
-<p>First, all Redirects are processed before Aliases are processed,
-and therefore a request that matches a <directive
-module="mod_alias">Redirect</directive> or <directive
-module="mod_alias">RedirectMatch</directive> will never have Aliases
-applied.  Second, the Aliases and Redirects are processed in the order
-they appear in the configuration files, with the first match taking
-precedence.</p>
+    <p>First, all Redirects are processed before Aliases are processed,
+    and therefore a request that matches a <directive
+    module="mod_alias">Redirect</directive> or <directive
+    module="mod_alias">RedirectMatch</directive> will never have Aliases
+    applied.  Second, the Aliases and Redirects are processed in the order
+    they appear in the configuration files, with the first match taking
+    precedence.</p>
 
-<p>For this reason, when two or more of these directives apply to the
-same sub-path, you must list the most specific path first in order for
-all the directives to have an effect.  For example, the following
-configuration will work as expected:</p>
+    <p>For this reason, when two or more of these directives apply to the
+    same sub-path, you must list the most specific path first in order for
+    all the directives to have an effect.  For example, the following
+    configuration will work as expected:</p>
 
-<example>
-Alias /foo/bar /baz<br />
-Alias /foo /gaq
-</example>
+    <example>
+    Alias /foo/bar /baz<br />
+    Alias /foo /gaq
+    </example>
 
-<p>But if the above two directives were reversed in order, the
-<code>/foo</code> <directive module="mod_alias">Alias</directive>
-would always match before the <code>/foo/bar</code> <directive
-module="mod_alias">Alias</directive>, so the latter directive would be
-ignored.</p>
+    <p>But if the above two directives were reversed in order, the
+    <code>/foo</code> <directive module="mod_alias">Alias</directive>
+    would always match before the <code>/foo/bar</code> <directive
+    module="mod_alias">Alias</directive>, so the latter directive would be
+    ignored.</p>
 
 </section>
 
@@ -103,29 +103,31 @@ ignored.</p>
 <usage>
 
     <p>The <directive>Alias</directive> directive allows documents to
-    be stored in the local filesystem other than under the 
+    be stored in the local filesystem other than under the
     <directive module="core">DocumentRoot</directive>. URLs with a
     (%-decoded) path beginning with <var>url-path</var> will be mapped
-    to local files beginning with <var>directory-path</var>.  The 
-    <var>url-path</var> is case-sensitive, even on case-insensitive 
+    to local files beginning with <var>directory-path</var>.  The
+    <var>url-path</var> is case-sensitive, even on case-insensitive
     file systems.</p>
 
     <example><title>Example:</title>
       Alias /image /ftp/pub/image
     </example>
 
-    <p>A request for http://myserver/image/foo.gif would cause the
-    server to return the file /ftp/pub/image/foo.gif.  Only complete
-    path segments are matched, so the above alias would not match a
-    request for http://myserver/imagefoo.gif.  For more complex
-    matching using regular expressions, see the <directive
-    module="mod_alias">AliasMatch</directive> directive.</p>
+    <p>A request for <code>http://myserver/image/foo.gif</code> would cause
+    the server to return the file <code>/ftp/pub/image/foo.gif</code>.  Only
+    complete path segments are matched, so the above alias would not match a
+    request for <code>http://myserver/imagefoo.gif</code>.  For more complex
+    matching using regular expressions, see the <directive module="mod_alias"
+    >AliasMatch</directive> directive.</p>
 
     <p>Note that if you include a trailing / on the
     <var>url-path</var> then the server will require a trailing / in
-    order to expand the alias. That is, if you use <code>Alias
-    /icons/ /usr/local/apache/icons/</code> then the url
-    <code>/icons</code> will not be aliased.</p>
+    order to expand the alias. That is, if you use</p>
+
+    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+
+    <p>then the url <code>/icons</code> will not be aliased.</p>
 
     <p>Note that you may need to specify additional <directive
     type="section" module="core">Directory</directive> sections which
@@ -156,7 +158,7 @@ ignored.</p>
 
 <directivesynopsis>
 <name>AliasMatch</name>
-<description>Maps URLs to filesystem locations using regular 
+<description>Maps URLs to filesystem locations using regular
 expressions</description>
 <syntax>AliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
@@ -165,8 +167,8 @@ expressions</description>
 
 <usage>
     <p>This directive is equivalent to <directive
-    module="mod_alias">Alias</directive>, but makes use of 
-    <glossary ref="regex">regular expressions</glossary>, 
+    module="mod_alias">Alias</directive>, but makes use of
+    <glossary ref="regex">regular expressions</glossary>,
     instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path, and
     if it matches, the server will substitute any parenthesized
@@ -218,18 +220,20 @@ a different URL</description>
       Redirect /service http://foo2.example.com/service
     </example>
 
-    <p>If the client requests http://example.com/service/foo.txt, it
-    will be told to access http://foo2.example.com/service/foo.txt
+    <p>If the client requests <code>http://example.com/service/foo.txt</code>,
+    it will be told to access
+    <code>http://foo2.example.com/service/foo.txt</code>
     instead.  Only complete path segments are matched, so the above
     example would not match a request for
-    http://example.com/servicefoo.txt.  For more complex matching
+    <code>http://example.com/servicefoo.txt</code>.  For more complex matching
     using regular expressions, see the <directive
     module="mod_alias">RedirectMatch</directive> directive.</p>
 
 
-<note><title>Note</title> <p>Redirect directives take precedence over
-Alias and ScriptAlias directives, irrespective of their ordering in
-the configuration file.</p></note>
+    <note><title>Note</title>
+    <p>Redirect directives take precedence over Alias and ScriptAlias
+    directives, irrespective of their ordering in the configuration
+    file.</p></note>
 
     <p>If no <var>status</var> argument is given, the redirect will
     be "temporary" (HTTP status 302). This indicates to the client
@@ -276,7 +280,7 @@ the configuration file.</p></note>
 
 <directivesynopsis>
 <name>RedirectMatch</name>
-<description>Sends an external redirect based on a regular expression match 
+<description>Sends an external redirect based on a regular expression match
 of the current URL</description>
 <syntax>RedirectMatch [<var>status</var>] <var>regex</var>
 <var>URL</var></syntax>
@@ -286,8 +290,8 @@ of the current URL</description>
 
 <usage>
     <p>This directive is equivalent to <directive
-    module="mod_alias">Redirect</directive>, but makes use of 
-    <glossary ref="regex">regular expressions</glossary>, 
+    module="mod_alias">Redirect</directive>, but makes use of
+    <glossary ref="regex">regular expressions</glossary>,
     instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path, and
     if it matches, the server will substitute any parenthesized
@@ -392,7 +396,7 @@ target as a CGI script</description>
     This is necessary since multiple <var>URL-paths</var> can map
     to the same filesystem location, potentially bypassing the
     <directive>ScriptAlias</directive> and revealing the source code
-    of the CGI scripts if they are not restricted by a 
+    of the CGI scripts if they are not restricted by a
     <directive module="core">Directory</directive> section.</note>
 
 </usage>
@@ -410,8 +414,8 @@ and designates the target as a CGI script</description>
 
 <usage>
     <p>This directive is equivalent to <directive module="mod_alias"
-    >ScriptAlias</directive>, but makes use of 
-    <glossary ref="regex">regular expressions</glossary>, 
+    >ScriptAlias</directive>, but makes use of
+    <glossary ref="regex">regular expressions</glossary>,
     instead of simple prefix matching. The
     supplied regular expression is matched against the URL-path,
     and if it matches, the server will substitute any parenthesized
