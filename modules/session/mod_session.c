@@ -364,7 +364,7 @@ static int session_identity_decode(request_rec * r, session_rec * z)
             if (!val || !*val) {
                 apr_table_unset(z->entries, key);
             }
-            if (!ap_unescape_all(key) && !ap_unescape_all(val)) {
+            else if (!ap_unescape_all(key) && !ap_unescape_all(val)) {
                 if (!strcmp(SESSION_EXPIRY, key)) {
                     z->expiry = (apr_time_t) apr_atoi64(val);
                 }
