@@ -120,7 +120,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=664330&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, niq
 
  * mod_rewrite: Preserve the query string when [proxy,noescape]. PR 45247.
    Caused by r649840/trunk, r663593/2.2.x
