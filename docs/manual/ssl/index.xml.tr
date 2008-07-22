@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache SSL/TLS Şifrelemesi</title>
+
+<summary>
+  <p>Apache HTTP Sunucusunun <module>mod_ssl</module> modülü, Güvenli Soketler
+    Katmanı (SSL) ve Aktarım Katmanı Güvenliği (TLS) protokollerinin
+    kullanıldığı Sağlam Şifreleme desteğini sağlayan <a
+    href="http://www.openssl.org/" >OpenSSL</a> kütüphanesine bir arayüz
+    içerir. Bu modül ve belgeler Ralf S. Engelschall’ın mod_ssl projesine
+    dayanmaktadır.</p>
+</summary>
+
+<section id="documentation"><title>Belgeler</title>
+  <ul>
+    <li><a href="ssl_intro.html">Giriş</a></li>
+    <li><a href="ssl_compat.html">Uyumluluk</a></li>
+    <li><a href="ssl_howto.html">NASIL</a></li>
+    <li><a href="ssl_faq.html">Sıkça Sorulan Sorular</a></li>
+    <li><a href="../glossary.html">Terimler</a></li>
+  </ul>
+</section>
+
+<section id="mod-ssl"><title><code>mod_ssl</code> Modülü</title>
+  <p>Bu modülce sağlanan yönergeler ve ortam değişkenleri
+    <module>mod_ssl</module> başvuru kılavuzunda ayrıntılı olarak
+    açıklanmıştır.</p>
+</section>
+
+</manualpage>
+
+

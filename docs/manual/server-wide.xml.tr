@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="server-wide.xml.meta">
+
+  <title>Sunucu Genelinde Yapılandırma</title>
+
+<summary>
+<p>Bu belgede <module>core</module> modülü ile sağlanan ve  sunucunun temel
+işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanmıştır.</p>
+</summary>
+
+  <section id="identification">
+    <title>Sunucu Kimliği</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">ServerName</directive>
+        <directive module="core">ServerAdmin</directive>
+        <directive module="core">ServerSignature</directive>
+        <directive module="core">ServerTokens</directive>
+        <directive module="core">UseCanonicalName</directive>
+        <directive module="core">UseCanonicalPhysicalPort</directive>
+      </directivelist>
+    </related>
+
+    <p><directive module="core">ServerAdmin</directive> ve <directive
+      module="core">ServerTokens</directive> yönergeleri, hata iletileri gibi
+      sunucu tarafından üretilen belgelerde sunucu ile ilgili hangi bilgilerin
+      sunulacağını belirlerler. <directive module="core"
+      >ServerTokens</directive> yönergesi sunucunun HTTP yanıt başlığı
+      alanının değerini belirler.</p>
+
+    <p><directive module="core">ServerName</directive>,
+      <directive module="core">UseCanonicalName</directive> ve
+      <directive module="core">UseCanonicalPhysicalPort</directive>
+      yönergeleri, sunucu tarafından, özüne yönelik URL’leri nasıl
+      oluşturacağını saptamak için kullanılır. Örneğin bir istemci bir dizin
+      isteğinde bulunurken URL’nin sonuna bölü çizgisi eklemese bile
+      Apache’nin istemciyi bölü çizgisi ile bitirilmiş URL yoluna
+      yönlendirmesi gerekir; böylece istemci belge içindeki göreli
+      bağlantıları doğru şekilde çözümleyebilir.</p>
+  </section>
+
+  <section id="locations">
+    <title>Dosyaların Yerleri</title>
+
+    <related>
+      <directivelist>
+        <directive module="mpm_common">CoreDumpDirectory</directive>
+        <directive module="core">DocumentRoot</directive>
+        <directive module="core">ErrorLog</directive>
+        <directive module="mpm_common">LockFile</directive>
+        <directive module="mpm_common">PidFile</directive>
+        <directive module="mpm_common">ScoreBoardFile</directive>
+        <directive module="core">ServerRoot</directive>
+      </directivelist>
+    </related>
+
+    <p>Bu yönergeler Apache’nin doğru işlem yapması için gereksinim duyduğu
+      çeşitli dosyaların yerlerini belirlerler. Bölü çizgisi (/) ile
+      başlamayan dosya yolları kullanıldığında bu dosyaların yerlerinin
+      <directive module="core">ServerRoot</directive> yönergesinde belirtilen
+      dizine göre belirtildiği varsayılır; root olmayan kullanıcılar
+      tarafından yazılabilen dosya yollarına dosya yerleştirmemeye dikkat
+      ediniz. Bu konuda daha ayrıntılı bilgi edinmek için <a
+      href="misc/security_tips.html#serverroot" >güvenlik ipuçları</a>
+      belgesine bakınız.</p>
+  </section>
+
+  <section id="resource">
+    <title>Özkaynak Kullanımının Sınırlanması</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">LimitRequestBody</directive>
+        <directive module="core">LimitRequestFields</directive>
+        <directive module="core">LimitRequestFieldsize</directive>
+        <directive module="core">LimitRequestLine</directive>
+        <directive module="core">RLimitCPU</directive>
+        <directive module="core">RLimitMEM</directive>
+        <directive module="core">RLimitNPROC</directive>
+        <directive module="mpm_common">ThreadStackSize</directive>
+      </directivelist>
+    </related>
+
+    <p><code>LimitRequest*</code> yönergeleri, Apache’nin istemcilerden gelen
+      istekleri okumak için kullanacağı özkaynakların miktarları ile ilgili
+      sınırlamalar koymak için kullanılırlar. Bu değerleri sınırlamak
+      suretiyle bazı hizmet reddi saldırılarının etkileri azaltılabilir.</p>
+
+    <p><code>RLimit*</code> yönergeleri ise Apache’nin çocuk süreçleri
+      tarafından çatallanabilen özkaynakların miktarlarını sınırlamakta
+      kullanılırlar. Özellikle de CGI betikleri ve SSI çalıştırma komutları
+      tarafından kullanılan özkaynakları denetlemekte kullanılırlar.</p>
+
+    <p><directive module="mpm_common">ThreadStackSize</directive> yönergesi
+      bazı platformlarda yığıt boyutunu denetim altında tutmak için
+      kullanılır.</p>
+  </section>
+</manualpage>
