@@ -1777,6 +1777,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
+    /*
+     * We do not do SSL over the data connection, even if the virtual host we
+     * are in might have SSL enabled
+     */
+    ap_proxy_ssl_disable(data);
     /* set up the connection filters */
     rc = ap_run_pre_connection(data, data_sock);
     if (rc != OK && rc != DONE) {
