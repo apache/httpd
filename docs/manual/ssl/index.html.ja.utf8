@@ -19,7 +19,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a></div><div id="page-content"><div id="preamble"><h1>Apache の SSL/TLS 暗号化</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/ssl/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ja/ssl/" title="Japanese">&nbsp;ja&nbsp;</a></p>
+<a href="../ja/ssl/" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../tr/ssl/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
 <p>Apache HTTP サーバモジュール <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> が
@@ -52,7 +53,8 @@ Secure Sockts Layer と Transport Layer Security
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/ssl/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ja/ssl/" title="Japanese">&nbsp;ja&nbsp;</a></p>
+<a href="../ja/ssl/" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../tr/ssl/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
