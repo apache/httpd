@@ -1,0 +1,1027 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 678127 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="configure.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+  <title>configure - kaynak ağacını yapılandırır</title>
+
+<summary>
+    <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
+      belli bir platform için yapılandırmakta ve derlemekte kullanılır.
+      Sunucuyu kişisel gereksinimlerinize uygun şekilde derlemek için çeşitli
+      seçeneklere sahiptir.</p>
+
+    <p>Bu betik Apache HTTP Sunucusu kaynak paketinin kök dizininde bulunur ve
+      sadece Unix ve benzeri sistemlerde kullanılabilir. Kaynak paketinin
+      diğer platformalarda yapılandırılması ve derlenmesi hakkında bilgi
+      edinmek için <a href="../platform/">platform</a> belgelerine bakınız.</p>
+</summary>
+
+<seealso><a href="../install.html">Derleme ve Kurulum</a></seealso>
+
+<section id="synopsis"><title>Komut Satırı</title>
+    <p><code>configure</code> betiğini kaynak paketinin kök dizininden başka
+      bir yere kopyalayıp çalıştırmamalısınız.</p>
+
+    <p><code><strong>./configure</strong> [<var>seçenek</var>]...
+      [<var>değişken=değer</var>]...</code></p>
+
+    <p><code>CC</code>, <code>CFLAGS</code> gibi ortam değişkenlerini
+      <code><var>değişken</var>=<var>değer</var></code> atamaları biçiminde
+      kullanabilirsiniz. Kullanışlı değişkenlerin bazıları <a href="#env"
+      >aşağıda</a> açıklanmıştır.</p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+  <ul>
+    <li><a href="#configurationoptions">Yapılandırma seçenekleri</a></li>
+    <li><a href="#installationdirectories">Kurulum dizinleri</a></li>
+    <li><a href="#systemtypes">Sistem türleri</a></li>
+    <li><a href="#optionalfeatures">Seçimlik özellikler</a></li>
+    <li><a href="#supportopt">Destek programları için seçenekler</a></li>
+  </ul>
+
+  <section id="configurationoptions"><title>Yapılandırma seçenekleri</title>
+
+    <p>Aşağıdaki seçenekler <code>configure</code> betiğinin kendi davranışını
+      belirlemekte kullanılır.</p>
+
+    <dl>
+      <dt><code>-C</code></dt>
+      <dt><code>--config-cache</code></dt>
+      <dd><code>--cache-file=config.cache</code> için bir kısaltmadır.</dd>
+
+      <dt><code>--cache-file=<var>dosya</var></code></dt>
+      <dd>Sınama sonuçları <code><var>dosya</var></code> dosyasında saklanır.
+        Bu seçenek açıkça belirtilmedikçe işlevsizdir.</dd>
+
+      <dt><code>-h</code></dt>
+      <dt><code>--help [short|recursive]</code></dt>
+      <dd>Yardım metnini basar ve çıkar. <code>short</code> değeriyle sadece
+        bu pakete özgü seçenekler listelenir. <code>recursive</code> değeriyle
+        ise paketin içindeki tüm paketler için kısa bir yardım metni
+        basılır.</dd>
+
+      <dt><code>-n</code></dt>
+      <dt><code>--no-create</code></dt>
+      <dd><code>configure</code> betiği normal olarak çalışır fakat herhangi
+        bir çıktı dosyası üretmez. Derleme için <code>Makefile</code>
+        dosyalarını üretmeksizin sınamaların sonuçlarını görmek için
+        yararlıdır.</dd>
+
+      <dt><code>-q</code></dt>
+      <dt><code>--quiet</code></dt>
+      <dd>Yapılandırma sürecinde <code>checking ...</code> iletilerini basmaz.
+      </dd>
+
+      <dt><code>--srcdir=<var>dizin</var></code></dt>
+      <dd><code><em>dizin</em></code> dizinini kaynak dosyaları dizini olarak
+        tanımlar. <code>configure</code> betiğinin bulunduğu dizin veya bir
+        üst dizin öntanımlıdır.</dd>
+
+      <dt><code>--silent</code></dt>
+      <dd><code>--quiet</code> ile aynı.</dd>
+
+      <dt>-V</dt>
+      <dt>--version</dt>
+      <dd>Telif hakkı bilgilerini gösterir ve çıkar.</dd>
+    </dl>
+  </section>
+
+  <section id="installationdirectories"><title>Kurulum dizinleri</title>
+
+    <p>Bu seçenekler kurulum dizinlerini tanımlar. Kurulum dizinleri seçilmiş
+      yerleşime bağımlıdır.</p>
+
+    <dl>
+      <dt><code>--prefix=<var>PREFIX</var></code></dt>
+      <dd>Mimariden bağımsız dosyalar <code><em>PREFIX</em></code> dizininin
+        altına kurulur. <code>/usr/local/apache2</code> öntanımlı kurulum
+        dizinidir.</dd>
+
+      <dt><code>--exec-prefix=<var>EPREFIX</var></code></dt>
+      <dd>Mimariye bağımlı dosyalar <code><em>EPREFIX</em></code> dizininin
+        altına kurulur. Bunun için <code><em>PREFIX</em></code> dizini
+        öntanımlı kurulum dizinidir.</dd>
+    </dl>
+
+    <p>Öntanımlı olarak, <code>make install</code> tüm dosyaların
+      <code>/usr/local/apache2/bin</code>, <code>/usr/local/apache2/lib</code>
+      gibi dizinlere kurulmasını sağlar. Kurulum dizini önekini örneğin,
+      <code>--prefix=$HOME</code> şeklinde belirterek kurulumun başka bir yere
+      yapılmasını sağlayabilirsiniz.</p>
+
+    <section id="layout"><title>Bir dizin yerleşimi tanımlamak</title>
+      <dl>
+        <dt><code>--enable-layout=<var>LAYOUT</var></code></dt>
+        <dd>Kaynak kodu ve derleme betikleri kurulum ağacının
+          <code><em>LAYOUT</em></code> yerleşimine dayalı olduğu varsayımıyla
+          yapılandırılır. Bu seçenek sayesinde Apache HTTP Sunucusu kurulumu
+          içinde her dosya türü için farklı bir yer belirleyebilirsiniz.
+          <code>config.layout</code> dosyasında böyle yapılandırma örnekleri
+          vardır. Örnekleri izleyerek kendi yapılandırmanızı
+          oluşturabilirsiniz. Bu dosyada örneğin <code>FOO</code> isimli
+          yerleşim <code>&lt;Layout FOO&gt;...&lt;/Layout&gt;</code> bölümü
+          içinde düzenlenmiştir ve her yerleşim için böyle ayrı bir bölüm
+          vardır. Öntanımlı yerleşim <code>Apache</code>’dir.</dd>
+      </dl>
+    </section>
+
+    <section id="directoryfinetuning">
+      <title>Kurulum dizinlerinde ince ayar</title>
+
+      <p>Kurulum dizinlerini daha iyi denetim altında tutmak için aşağıdaki
+        seçenekler kullanılır. Lütfen, dizin öntanımlılarının
+        <code>autoconf</code> tarafından tanımlandığına ve seçilen yerleşim
+        ayarlarının bunları yerini aldığına dikkat ediniz.</p>
+
+      <dl>
+        <!-- only apr-config and apu-config are installed at bindir.
+        everything else is stored at sbindir. ==> clarify/change this -->
+        <dt><code>--bindir=<var>dizin</var></code></dt>
+        <dd>Kullanıcı tarafından çalıştırılabilen dosyalar
+          <code><em>dizin</em></code> dizinine kurulur. Bunlar
+          <program>htpasswd</program>, <program>dbmmanage</program> gibi site
+          yönetimi için yararlı destek programlarıdır. Öntanımlı olarak bu
+          dosyalar <code><var>EPREFIX</var>/bin</code> dizinine kurulur.</dd>
+
+        <dt><code>--datadir=<var>dizin</var></code></dt>
+        <dd>Mimariden bağımsız salt okunur veriler <code><em>dizin</em></code>
+          dizinine kurulur. Bunların öntanımlı kurulum dizini
+          <code><var>PREFIX</var>/share</code> dizinidir. Bu seçenek
+          <code>autoconf</code> tarafından atanır ve şimdilik
+          kullanılmamıştır.</dd>
+
+        <dt><code>--includedir=<var>dizin</var></code></dt>
+        <dd>C başlık dosyaları <code><em>dizin</em></code> dizinine kurulur.
+          Bunların öntanımlı kurulum dizini
+          <code><var>PREFIX</var>/include</code> dizinidir.</dd>
+
+        <dt><code>--infodir=<var>dizin</var></code></dt>
+        <dd>Info belgeleri <code><em>dizin</em></code> dizinine kurulur.
+          Bunların öntanımlı kurulum dizini
+          <code><var>PREFIX</var>/info</code> dizinidir. Bu seçenek şimdilik
+          kullanılmamıştır.</dd>
+
+        <dt><code>--libdir=<var>dizin</var></code></dt>
+        <dd>Nesne kod kütüphaneleri <code><em>dizin</em></code> dizinine
+          kurulur. Bunların öntanımlı kurulum dizini
+          <code><var>PREFIX</var>/lib</code> dizinidir.</dd>
+
+        <dt><code>--libexecdir=<var>dizin</var></code></dt>
+        <dd>Paylaşımlı modüller gibi program dosyaları
+          <code><em>dizin</em></code> dizinine kurulur. Öntanımlı olarak
+          <code>libexecdir</code> bu dizini
+          <code><var>EPREFIX</var>/libexec</code> olarak tanımlar.</dd>
+
+        <dt><code>--localstatedir=<var>dizin</var></code></dt>
+        <dd>Düzenlenebilir tek makinelik veri <code><em>dizin</em></code>
+          dizinine kurulur. Öntanımlı olarak <code>localstatedir</code> bu
+          dizini <code><var>PREFIX</var>/var</code> olarak tanımlar. Bu
+          seçenek <code>autoconf</code> tarafından atanır ve şimdilik
+          kullanılmamıştır.</dd>
+
+        <dt><code>--mandir=<var>dizin</var></code></dt>
+        <dd>Kılavuz sayfaları <code><em>dizin</em></code> dizinine kurulur.
+          Öntanımlı olarak <code>mandir</code> bu dizini
+          <code><var>EPREFIX</var>/man</code> olarak tanımlar.</dd>
+
+        <dt><code>--oldincludedir=<var>dizin</var></code></dt>
+        <dd>GCC harici C başlık dosyaları <code><em>dizin</em></code> dizinine
+          kurulur. Öntanımlı olarak <code>oldincludedir</code> bu dizini
+          <code>/usr/include</code> olarak tanımlar. Bu seçenek
+          <code>autoconf</code> tarafından atanır ve şimdilik
+          kullanılmamıştır.</dd>
+
+        <dt><code>--sbindir=<var>dizin</var></code></dt>
+        <dd>Sistem yöneticisi tarafından kullanılabilen programlar
+          <code><em>dizin</em></code> dizinine kurulur. Bunlar
+          <program>httpd</program>, <program>apachectl</program>,
+          <program>suexec</program> gibi Apache HTTP Sunucusunu çalıştırmak
+          için gereken programlardır. Öntanımlı olarak <code>sbindir</code> bu
+          dizini <code><var>EPREFIX</var>/sbin</code> olarak tanımlar.</dd>
+
+        <dt><code>--sharedstatedir=<var>dizin</var></code></dt>
+        <dd>Mimariye bağımlı düzenlenebilir veriler
+          <code><em>dizin</em></code> dizinine kurulur. Öntanımlı olarak
+          <code>sharedstatedir</code> bu dizini
+          <code><var>PREFIX</var>/com</code> olarak tanımlar. Bu seçenek
+          <code>autoconf</code> tarafından atanır ve şimdilik
+          kullanılmamıştır.</dd>
+
+        <dt><code>--sysconfdir=<var>dizin</var></code></dt>
+        <dd><code>httpd.conf</code>, <code>mime.types</code> gibi tek
+          makinelik salt okunur sunucu yapılandırma dosyaları
+          <code><em>dizin</em></code> dizinine kurulur. Öntanımlı olarak
+          <code>sysconfdir</code> bu dizini <code><var>PREFIX</var>/etc</code>
+          olarak tanımlar.</dd>
+      </dl>
+    </section>
+  </section>
+
+  <section id="systemtypes"><title>Sistem türleri</title>
+
+    <p>Bu seçenekleri Apache HTTP Sunucusunu başka bir platformda çalıştırmak
+      üzere çapraz derleme yaparken kullanılır. Normal durumlarda sunucu
+      derlendiği platformda çalıştırıldığından bu seçenekler kullanılmaz.</p>
+
+    <dl>
+      <dt><code>--build=<var>derleme-ortamı</var></code></dt>
+      <dd>Derleme araçlarının derleneceği sistemin sistem türünü tanımlar.
+        <code>config.guess</code> betiği ile elde edilen sonuç
+        öntanımlıdır.</dd>
+
+      <dt><code>--host=<var>çalışma-ortamı</var></code></dt>
+      <dd>Sunucunun çalışacağı sistemin sistem türünü tanımlar. Öntanımlı
+        sistem türü <code><var>derleme-ortamı</var></code>’dır.</dd>
+
+      <dt><code>--target=<var>hedef-ortam</var></code></dt>
+      <dd>Derleyicileri <code><var>hedef-ortam</var></code> sistem türü için
+        yapılandırır. Öntanımlı sistem türü
+        <code><var>çalışma-ortamı</var></code>’dır. Bu seçenek
+        <code>autoconf</code> tarafından atanır ve Apache HTTP Sunucusu için
+        gerekli değildir.</dd>
+    </dl>
+  </section>
+
+  <section id="optionalfeatures"><title>Seçimlik özellikler</title>
+
+    <p>Bu seçenekler HTTP sunucunuzun sahip olmasını istediğiniz özelliklerin
+      hassas olarak ayarlanmasını sağlar.</p>
+
+    <section id="generaloptfeat"><title>Genel sözdizimi</title>
+      <p>Bir özelliği etkin kılmak veya iptal etmek için genellikle şu
+        sözdizimi kullanılır:</p>
+
+      <dl>
+        <dt><code>--disable-<var>özellik</var></code></dt>
+        <dd>Sunucu <code><em>özellik</em></code> özelliğine sahip olmaz. Bu
+          seçenek<code>--enable-<var>özellik</var>=no</code> seçeneğine
+          eşdeğerdir.</dd>
+
+        <dt><code>--enable-<var>özellik</var>[=<var>değer</var>]</code></dt>
+        <dd>Sunucu <code><var>özellik</var></code> özelliğine sahip olur.
+          <code><var>değer</var></code> belirtilmediği takdirde
+          <code>yes</code> (evet) öntanımlıdır.</dd>
+
+        <dt><code>--enable-<var>modül</var>=shared</code></dt>
+        <dd>Belirtilen modül DSO modülü olarak derlenir.</dd>
+
+        <dt><code>--enable-<var>modül</var>=static</code></dt>
+        <dd>Öntanımlı olarak etkin olan modüller durağan ilintilenir. Bunu bu
+          seçenekle alenen zorlayabilirsiniz.</dd>
+      </dl>
+
+      <note><title>Bilginize</title>
+      <p><code>--enable-<var>filanca</var></code> seçeneğinin varlığı
+        <code>configure</code> betiğinin <code><var>filanca</var></code> diye
+        bir modül var olmasa bile bundan şikayetçi olmasına sebep olmaz. Bu
+        bakımdan dikkatli olunuz.</p>
+      </note>
+    </section>
+
+    <!-- to do: add better enable-module descriptions and recommendations -->
+    <section id="enabledmodules"><title>Öntanımlı olarak etkin modüller</title>
+      <p>Bazı modüller öntanımlı olarak derlendiğinden iptal edilmek istenirse
+        bunun açıkça belirtilmesi gerekir. Aşağıdaki seçenekler bu tür
+        modüllerin diğerlerinden bağımsız olarak derlenmemesini sağlar.</p>
+
+      <dl>
+        <dt><code>--disable-actions</code></dt>
+        <dd><module>mod_actions</module> modülü tarafından sağlanan ve
+          isteklerle tetiklenen eylemleri iptal eder.</dd>
+
+        <dt><code>--disable-alias</code></dt>
+        <dd><module>mod_alias</module> modülü tarafından sağlanan, isteklerin
+          farklı dosya sistemi bölümleriyle eşlenmesi iptal edilir.</dd>
+
+        <dt><code>--disable-asis</code></dt>
+        <dd><module>mod_asis</module> modülü tarafından sağlanan kendinden
+          HTTP başlıklı dosya türü desteğini iptal eder.</dd>
+
+        <dt><code>--disable-auth</code></dt>
+        <dd><module>mod_auth</module> modülü tarafından sağlanan kullanıcıya
+          dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı isminin ve
+          parolasının salt metin dosyalarda saklandığı Temel HTTP Kimlik
+          Doğrulaması için kullanılır.</dd>
+
+        <dt><code>--disable-autoindex</code></dt>
+        <dd><module>mod_autoindex</module> modülü tarafından sağlanan dizin
+          içerik listelemesini iptal eder.</dd>
+
+        <dt><code>--disable-access</code></dt>
+        <dd><module>mod_access</module> modülü tarafından sağlanan konağa
+          dayalı erişim denetimi iptal edilir.</dd>
+
+        <dt><code>--disable-cgi</code></dt>
+        <dd>CGI betiklerine destek sağlayan <module>mod_cgi</module>, çok
+          evreli olmayan MPM kullanıldığında öntanımlı olarak etkin kılınır.
+          CGI desteğini iptal etmek için bu seçeneği kullanın.</dd>
+
+        <dt><code>--disable-cgid</code></dt>
+        <dd><module>worker</module> veya
+          <module>perchild</module> çok evreli MPM’leri kullanılırken CGI
+          betikleri için desteği öntanımlı olarak <module>mod_cgid</module>
+          modülü sağlar. CGI desteğini iptal etmek için bu seçeneği
+          kullanın.</dd>
+
+        <dt><code>--disable-charset-lite</code></dt>
+        <dd><module>mod_charset_lite</module> modülü tarafından sağlanan
+          karakter kümesi dönüşümleri iptal edilir. Bu modül sadece EBCDIC
+          sistemlerinde öntanımlı olarak kurulur.</dd>
+
+        <dt><code>--disable-dir</code></dt>
+        <dd><module>mod_dir</module> modülü tarafından sağlanan dizin
+          isteklerine destek iptal edilir.</dd>
+
+        <dt><code>--disable-env</code></dt>
+        <dd><module>mod_env</module> modülü tarafından sağlanan ortam
+          değişkenlerine destek iptal edilir.</dd>
+
+        <!-- configure mentions enable-http, but disable-http would make much
+        more sense -->
+        <dt><code>--disable-http</code></dt>
+          <dd>HTTP protokolüne destek iptal edilir. <code>http</code> modülü
+          en temel modüldür ve sunucunun bir HTTP sunucusu olarak çalışmasını
+          sağlar. Sadece, HTTP protokolü yerine başka bir protokol kullanmak
+          isterseniz bu seçeneği kullunın. <strong>Ne yaptığınızdan gerçekten
+          emin olamıyorsanız bu desteği asla iptal etmeyin.</strong>
+            <br/>
+          Dikkat: Bu modül ana kodla daima durağan ilintilidir.</dd>
+
+        <dt><code>--disable-imagemap</code></dt>
+        <dd><module>mod_imagemap</module> modülü tarafından sağlanan resim
+          eşlemlerine destek iptal edilir.</dd>
+
+        <dt><code>--disable-include</code></dt>
+        <dd><module>mod_include</module> modülü tarafından sağlanan SSI
+          sayfaları desteği iptal edilir.</dd>
+
+        <dt><code>--disable-log-config</code></dt>
+        <dd><module>mod_log_config</module> modülü tarafından sağlanan günlük
+          kayıtları yapılandırması iptal edilir. Bu modül olmaksızın sunucu
+          yapılan isteklerin günlük kayıtlarını tutamaz.</dd>
+
+        <dt><code>--disable-mime</code></dt>
+        <dd><module>mod_mime</module> modülü istenen dosyanın uzantısına
+          bakarak dosya içeriğinin (<glossary ref="mime-type">MIME
+          türü</glossary>, dil, karakter kümesi ve kodlama) nasıl ele
+          alınacağını belirler. Bu modülün iptal edilmesi önerilmez.</dd>
+
+        <dt><code>--disable-negotiation</code></dt>
+        <dd><module>mod_negotiation</module> modülü tarafından sağlanan içerik
+          dili uzlaşımı iptal edilir.</dd>
+
+        <dt><code>--disable-setenvif</code></dt>
+        <dd><module>mod_setenvif</module> modülü tarafından sağlanan
+          başlıklarla ilgili ortam değişkenlerine dayalı destek iptal
+          edilir.</dd>
+
+        <dt><code>--disable-status</code></dt>
+        <dd><module>mod_status</module> modülü tarafından sağlanan süreç/evre
+          izleme iptal edilir.</dd>
+
+        <dt><code>--disable-userdir</code></dt>
+        <dd><module>mod_userdir</module> modülü tarafından sağlanan,
+          isteklerin kullanıcıya özel dizinlere eşlenmesi iptal edilir.</dd>
+      </dl>
+    </section>
+
+    <section id="disabledmodules">
+      <title>Öntanımlı olarak etkin olmayan modüller</title>
+
+      <p>Bazı modüller öntanımlı olarak derlendiği halde açıkça istenmedikçe
+        veya <code>most</code> ya da <code>all</code> anahtar sözcükleri
+        kullanılmadıkça etkin kılınmazlar (bu konu, <a
+        href="#otheroptfeat">aşağıda</a> <code>--enable-mods-shared</code>
+        seçeneğinde daha ayrıntılı ele alınmıştır). Bu modülleri
+        etkinleştirmek için aşağıdaki seçenekleri kullanabilirsiniz.</p>
+
+      <dl>
+        <dt><code>--enable-auth-anon</code></dt>
+        <dd><module>mod_auth_anon</module> modülünün sağladığı anonim
+          kullanıcı erişimi etkin kılınır.</dd>
+
+        <dt><code>--enable-auth-dbm</code></dt>
+        <dd><module>mod_auth_dbm</module> modülü kullanıcı isimlerinin ve
+          parolalarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
+          Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
+          kılmak için kullanabilirsiniz.</dd>
+
+        <dt><code>--enable-auth-digest</code></dt>
+        <dd><module>mod_auth_digest</module> modülü tarafından sağlanan
+          RFC2617 Özet Kimlik Kanıtlaması etkin kılınır. Bu modül delilleri
+          salt metin dosyalarda saklar.</dd>
+
+        <dt><code>--enable-authnz-ldap</code></dt>
+        <dd><module>mod_authnz_ldap</module> modülü tarafından sağlanan LDAP’a
+          Dayalı Kimlik Kanıtlaması etkin kılınır.</dd>
+
+        <dt><code>--enable-cache</code></dt>
+        <dd><module>mod_cache</module> modülü tarafından sağlanan devingen
+          dosya önbelleklemesi etkin kılınır. Bu deneysel modülün kullanımı,
+          aşırı yüklü sunucularda ya da önbellekli vekillerde ilginç sonuçlar
+          verebilir. Bunun yanında en azından bir saklama alanı yönetim modülü
+          (örn, <module>mod_disk_cache</module> veya
+          <module>mod_mem_cache</module>) gerekebilir.</dd>
+
+        <dt><code>--enable-cern-meta</code></dt>
+        <dd><module>mod_cern_meta</module> modülü tarafından sağlanan CERN
+          türü temel veri dosyalarına destek etkin kılınır.</dd>
+
+        <dt><code>--enable-charset-lite</code></dt>
+        <dd><module>mod_charset_lite</module> modülü tarafından sağlanan
+          karakter kümesi dönüşümleri etkin kılınır. Bu modül sadece EBCDIC
+          sistemlerinde öntanımlı olarak etkindir. Diğer sistemlerde gerekirse
+          alenen etkin kılınması gerekir.</dd>
+
+        <dt><code>--enable-dav</code></dt>
+        <dd><module>mod_dav</module> modülü tarafından sağlanan WebDAV
+          protokolü desteği etkin kılınır. Dosya sistemi özkaynaklarına destek
+          için <module>mod_dav_fs</module> modülü de gerekir ve bu seçenekle o
+          da etkin kılınır.<br/>
+          Dikkat: <module>mod_dav</module> sadece <code>http</code> protokolü
+          modülü ile birlikte kullanılabilir.</dd>
+
+        <dt><code>--enable-dav-fs</code></dt>
+        <dd><module>mod_dav_fs</module> modülü tarafından sağlanan WebDAV
+          protokolünün dosya sistemi özkaynaklarına erişim desteği etkin
+          kılınır. Bu modül <module>mod_dav</module> modülü için destek
+          sağlar. Bu bakımdan, <module>mod_dav</module> modülünü de etkin
+          kılmak için <code>--enable-dav</code> seçeneğini de
+          kullanmalısınız.</dd>
+
+        <dt><code>--enable-dav-lock</code></dt>
+        <dd><module>mod_dav_lock</module> modülü tarafından sağlanan geri
+          destek modüllerine temel DAV kilitleme desteği etkin kılınır. Bu
+          modülün işlevsel olabilmesi için en azından <module>mod_dav</module>
+          modülünün etkin olması gerekir, dolayısıyla bu seçeneği
+          <code>--enable-dav</code> ile birlikte kullanmalısınız.</dd>
+
+        <dt><code>--enable-deflate</code></dt>
+        <dd><module>mod_deflate</module> modülü tarafından sağlanan
+          sıkıştırılmış aktarım kodlaması etkin kılınır.</dd>
+
+        <dt><code>--enable-disk-cache</code></dt>
+        <dd><module>mod_disk_cache</module> modülü tarafından sağlanan diskte
+          önbellekleme etkin kılınır.</dd>
+
+        <dt><code>--enable-expires</code></dt>
+        <dd><module>mod_expires</module> modülü tarafından sağlanan
+          <code>Expires</code> başlığıyla denetim etkin kılınır.</dd>
+
+        <dt><code>--enable-ext-filter</code></dt>
+        <dd><module>mod_ext_filter</module> modülü tarafından sağlanan harici
+          süzgeç desteği etkin kılınır.</dd>
+
+        <dt><code>--enable-file-cache</code></dt>
+        <dd><module>mod_file_cache</module> modülü tarafından sağlanan dosya
+          önbelleklemesi etkin kılınır.</dd>
+
+        <dt><code>--enable-headers</code></dt>
+        <dd><module>mod_headers</module> modülü tarafından sağlanan HTTP
+          başlıkları denetimi etkin kılınır.</dd>
+
+        <dt><code>--enable-info</code></dt>
+        <dd> <module>mod_info</module> modülü tarafından sağlanan sunucu
+          bilgileri etkin kılınır.</dd>
+
+        <dt><code>--enable-ldap</code></dt>
+        <dd><module>mod_ldap</module> modülü tarafından sağlanan LDAP
+          önbelleklemesi ve bağlantı havuzu hizmetleri etkin kılınır.</dd>
+
+        <dt><code>--enable-logio</code></dt>
+        <dd><module>mod_logio</module> modülü tarafından sağlanan başlıklarda
+          bulunan girdi ve çıktı bayt sayılarının günlüklenmesi etkin
+          kılınır.</dd>
+
+        <dt><code>--enable-mem-cache</code></dt>
+        <dd><module>mod_mem_cache</module> modülü tarafından sağlanan bellekte
+          önbellekleme etkin kılınır.</dd>
+
+        <dt><code>--enable-mime-magic</code></dt>
+        <dd><module>mod_mime_magic</module> modülü tarafından sağlanan
+          <glossary ref="mime-type">MIME türleri</glossary>nin kendiliğinden
+          belirlenmesi desteği etkin kılınır.</dd>
+
+        <dt><code>--enable-isapi</code></dt>
+        <dd><module>mod_isapi</module> modülü tarafından sağlanan isapi
+          eklenti desteği etkin kılınır.</dd>
+
+        <dt><code>--enable-proxy</code></dt>
+        <dd><module>mod_proxy</module> modülü tarafından sağlanan
+          vekil/ağ-geçidi işlevselliği etkin kılınır. <code>AJP13</code>,
+          <code>CONNECT</code>, <code>FTP</code>, <code>HTTP</code> ve
+          dengeleyici vekil yetenekleri ayrı olarak
+          <module>mod_proxy_ajp</module>, <module>mod_proxy_connect</module>,
+          <module>mod_proxy_ftp</module>, <module>mod_proxy_http</module> ve
+          <module>mod_proxy_balancer</module> modülleri tarafından sağlanır.
+          Bu beş modül bu seçenekle kendiliğinden etkin olur.</dd>
+
+        <dt><code>--enable-proxy-ajp</code></dt>
+        <dd><module>mod_proxy_ajp</module> modülü tarafından sağlanan
+          <code>AJP13</code> (Apache JServ Protokolü 1.3) için vekil desteği
+          etkin kılınır. Bu modül <module>mod_proxy</module> modülünün bir
+          eklentisidir, dolayısıyla bu seçeneği <code>--enable-proxy</code>
+          seçeneği ile birlikte kullanmalısınız.</dd>
+
+        <dt><code>--enable-proxy-balancer</code></dt>
+        <dd><module>mod_proxy_balancer</module> modülü tarafından sağlanan
+          <code>AJP13</code>, <code>FTP</code> ve <code>HTTP</code>
+          protokollerine yük dengeleme desteği etkin kılınır. Bu modül
+          <module>mod_proxy</module> modülünün bir eklentisidir, dolayısıyla
+          bu seçeneği <code>--enable-proxy</code> seçeneği ile birlikte
+          kullanmalısınız.</dd>
+
+        <dt><code>--enable-proxy-connect</code></dt>
+        <dd><module>mod_proxy_connect</module> modülü tarafından sağlanan
+          <code>CONNECT</code> isteklerine vekil desteği etkin kılınır. Bu
+          modül <module>mod_proxy</module> modülünün bir eklentisidir,
+          dolayısıyla bu seçeneği <code>--enable-proxy</code> seçeneği ile
+          birlikte kullanmalısınız.</dd>
+
+        <dt><code>--enable-proxy-ftp</code></dt>
+        <dd><module>mod_proxy_ftp</module> modülü tarafından sağlanan
+          <code>FTP</code> isteklerine vekil desteği etkin kılınır. Bu modül
+          <module>mod_proxy</module> modülünün bir eklentisidir, dolayısıyla
+          bu seçeneği <code>--enable-proxy</code> seçeneği ile birlikte
+          kullanmalısınız.</dd>
+
+        <dt><code>--enable-proxy-http</code></dt>
+        <dd><module>mod_proxy_http</module> modülü tarafından sağlanan
+          <code>HTTP</code> isteklerine vekil desteği etkin kılınır. Bu modül
+          <module>mod_proxy</module> modülünün bir eklentisidir, dolayısıyla
+          bu seçeneği <code>--enable-proxy</code> seçeneği ile birlikte
+          kullanmalısınız.</dd>
+
+        <dt><code>--enable-rewrite</code></dt>
+        <dd><module>mod_rewrite</module> modülü tarafından sağlanan kurallara
+          dayalı URL kurgulaması etkin kılınır.</dd>
+
+        <dt><code>--enable-so</code></dt>
+        <dd><module>mod_so</module> modülü tarafından sağlanan DSO yeteneği
+          etkin kılınır. <code>--enable-mods-shared</code> seçeneği bu
+          seçeneği de etkin kılar.</dd>
+
+        <dt><code>--enable-speling</code></dt>
+        <dd><module>mod_speling</module> modülü tarafından sağlanan URL
+          yanlışlarını düzeltme desteği etkin kılınır.</dd>
+
+        <dt><code>--enable-ssl</code></dt>
+        <dd><module>mod_ssl</module> modülü tarafından sağlanan SSL/TLS
+          şifreleme desteği etkin kılınır.</dd>
+
+        <dt><code>--enable-unique-id</code></dt>
+        <dd><module>mod_unique_id</module> modülü tarafından sağlanan her
+          isteğe bir eşsiz kimlik atama desteği etkin kılınır.</dd>
+
+        <dt><code>--enable-usertrack</code></dt>
+        <dd><module>mod_usertrack</module> modülü tarafından sağlanan
+          kullanıcı oturumunu izleme desteği etkin kılınır.</dd>
+
+        <dt><code>--enable-vhost-alias</code></dt>
+        <dd><module>mod_vhost_alias</module> modülü tarafından sağlanan
+          kitlesel sanal barındırma desteği etkin kılınır.</dd>
+      </dl>
+    </section>
+
+    <section id="developermodules">
+      <title>Geliştiriciler için modüller</title>
+
+      <p>Aşağıdakiler geliştiricilerin yaptıklarını sınamalar için yararlı
+        modülleri etkinleştiren seçeneklerdir. Bu seçenekler öntanımlı olarak
+        etkin değildir. Bu modüllere ihtiyacınız olup olmadığı konusunda bir
+        fikriniz yoksa bu bölümü atlayabilirsiniz.</p>
+
+      <dl>
+        <!-- module doc needed -->
+        <dt><code>--enable-bucketeer</code></dt>
+        <dd><code>mod_bucketeer</code> modülü tarafından sağlanan veri
+          kümelerine müdahale süzgeci etkin kılınır.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-case-filter</code></dt>
+        <dd><code>mod_case_filter</code> modülünün sağladığı çıktıda büyük
+          harfe dönüşüm süzgeci örneği etkin kılınır.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-case-filter-in</code></dt>
+        <dd><code>mod_case_filter_in</code> modülünün sağladığı girdide büyük
+          harfe dönüşüm süzgeci örneği etkin kılınır.</dd>
+
+        <dt><code>--enable-echo</code></dt>
+        <dd><module>mod_echo</module> modülünün sağladığı ECHO sunucusu etkin
+          kılınır.</dd>
+
+        <dt><code>--enable-example</code></dt>
+        <dd>Örnek ve demo modülü <module>mod_example</module> etkin
+          kılınır.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-optional-fn-export</code></dt>
+        <dd><code>mod_optional_fn_export</code> modülünün sağladığı seçimlik
+          işlev ihraç örneği etkin kılınır.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-optional-fn-import</code></dt>
+        <dd><code>mod_optional_fn_import</code> modülünün sağladığı seçimlik
+          işlev ithal örneği etkin kılınır.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-optional-hook-export</code></dt>
+        <dd><code>mod_optional_hook_export</code> modülünün sağladığı seçimlik
+          kanca işlev ihraç örneği etkin kılınır.</dd>
+
+        <!-- module doc needed -->
+        <dt><code>--enable-optional-hook-import</code></dt>
+        <dd><code>mod_optional_hook_import</code> modülünün sağladığı seçimlik
+          kanca işlev ithal örneği etkin kılınır.</dd>
+      </dl>
+    </section>
+
+    <section id="modules"><title>MPM'ler ve üçüncü parti modüller</title>
+      <p>Gereken çok süreçlilik modüllerini ve üçüncü parti modülleri etkin
+        kılmak için şu seçenekler kullanılır:</p>
+
+      <dl>
+        <dt><code>--with-module=<var>modül-türü</var>:<var
+          >modül-dosyası</var>[,<var>modül-türü</var>:<var
+          >modül-dosyası</var>]</code></dt>
+        <dd><p>Durağan ilintili modüller listesine belirtilen modülleri ekler.
+          Modül kaynak dosyası <code><var>modül-dosyası</var></code>, önce
+          Apache HTTP Sunucusu kaynak ağacı altında
+          <code>modules/<var>modül-türü</var></code> alt dizininde aranır.
+          Modül orada değilse <code>configure</code>  betiği
+          <code><var>modül-dosyası</var></code> ile bir mutlak dosya yolu
+          belirtildiği varsayımıyla kaynak dosyasını
+          <code><var>modül-türü</var></code> alt dizinine kopyalamaya çalışır.
+          Alt dizin mevcut değilse oluşturulur ve içine standart bir
+          <code>Makefile.in</code> yerleştirilir.</p>
+
+        <p>Bu seçenek tek kaynak dosyasından oluşan küçük harici modülleri
+          eklemek için yararlıdır. Daha karmaşık modüller için modül üreticisi
+          tarafından sağlanan belgelere bakınız.</p>
+
+        <note><title>Bilginize</title>
+          <p>Durağan ilintili modüller yerine bir DSO modülü derlemek
+            isterseniz <program>apxs</program> programını kullanınız.</p>
+        </note>
+        </dd>
+
+        <dt><code>--with-mpm=<var>MPM</var></code></dt>
+        <dd>Sunucu süreç modeli seçilir. Bu seçenekte <a
+          href="../mpm.html">çok süreçlilik modüllerinden sadece biri</a>
+          belirtilebilir. Bu seçenek kullanılmadığı takdirde işletim
+          sisteminiz için <a href="../mpm.html#defaults">öntanımlı MPM</a>
+          etkin olur. Bu seçenekte belirtilebilecek MPM isimleri:
+          <module>beos</module>, <module>leader</module>,
+          <module>mpmt_os2</module>, <module>perchild</module>,
+          <module>prefork</module>, <module>threadpool</module> ve
+          <module>worker</module>.</dd>
+      </dl>
+    </section>
+
+    <section id="otheroptfeat"><title>Kümeleme seçenekleri ve diğerleri</title>
+      <dl>
+        <dt><code>--enable-maintainer-mode</code></dt>
+        <dd>Hata ayıklama iletileri ve derleme sırasındaki uyarıların
+          gösterilmesi etkin kılınır.</dd>
+
+        <dt><code>--enable-mods-shared=<var>modül-listesi</var></code></dt>
+        <dd>
+          <p>Etkinleştirilip devingen paylaşımlı modül olarak derlenecek
+            modüllerin listesi belirtilir. Yani, bu modüller <directive
+            module="mod_so" >LoadModule</directive> yönergesi kullanılarak
+            devingen olarak yüklenir.</p>
+
+          <p><code><var>modül-listesi</var></code> tırnak içine alınmış boşluk
+            ayraçlı modül isimleri listesidir. Modül isimleri önlerindeki
+            <code>mod_</code> öneki olmaksızın belirtilirler. Örnek:</p>
+
+          <example>
+            --enable-mods-shared='headers rewrite dav'
+          </example>
+
+          <p><code><var>modül-listesi</var></code> yerine <code>all</code> ve
+            <code>most</code> anahtar sözcükleri de belirtilebilir.
+            Örneğin,</p>
+
+          <example>
+            --enable-mods-shared=most
+          </example>
+
+          <p>seçeneği ile çoğu modül DSO modülü olarak derlenecektir.</p>
+
+          <p><strong>Yetersizlikler:</strong>
+            <code>--enable-mods-shared=all</code> aslında bütün modüllerin
+            derlenmesini sağlamaz. Tüm modülleri derlemek için şunu
+            yapabilirsiniz:</p>
+
+          <example>
+            ./configure \<br />
+            <indent>
+                --with-ldap \<br />
+                --enable-mods-shared="all ssl ldap cache proxy authn_alias mem_cache file_cache authnz_ldap charset_lite dav_lock disk_cache"
+            </indent>
+          </example>
+        </dd>
+
+        <dt><code>--enable-modules=<var>modül-listesi</var></code></dt>
+        <dd>Bu seçenek modülleri devingen değil de durağan ilintilemek dışında
+          <code>--enable-mods-shared</code> seçeneğine benzer. Yani bu
+          modüller <program>httpd</program> çalıştırılır çalıştırılmaz etkin
+          olurlar. Yüklenmeleri için <directive
+          module="mod_so">LoadModule</directive> yönergesine ihtiyaçları
+          yoktur.</dd>
+
+        <dt><code>--enable-v4-mapped</code></dt>
+        <dd>IPv6 soketlierinin IPv4 bağlantılar üzerinde kullanılması mümkün
+          olur.</dd>
+
+        <dt><code>--with-port=<var>port</var></code></dt>
+        <dd>Bu seçenek <program>httpd</program>'nin dinleyeceği portu
+          belirler. Bu port <code>httpd.conf</code> yapılandırma dosyası
+          üretilirken kullanılır. 80. port öntanımlıdır.</dd>
+
+        <dt><code>--with-program-name</code></dt>
+        <dd>Öntanımlı olan <code>httpd</code> yerine başka bir çalıştırabilir
+          ismi tanımlar.</dd>
+      </dl>
+    </section>
+  </section>
+
+  <section id="packages"><title>Seçimlik paketler</title>
+    <p>Buradaki seçenekler seçimlik paketleri tanımlamak için kullanılır.</p>
+
+    <section id="generalpackages"><title>Genel sözdizimi</title>
+      <p>Bir seçimlik paketi tanımlamak için genellikle şöyle bir sözdizimi
+        kullanılır:</p>
+
+      <dl>
+        <dt><code>--with-<var>paket</var>[=<var>değer</var>]</code></dt>
+        <dd><code><var>paket</var></code> paketi kullanılır. Öntanımlı
+          <code><var>değer</var></code> <code>yes</code>’tir.</dd>
+
+        <dt><code>--without-<var>paket</var></code></dt>
+        <dd><code><var>paket</var></code> paketi kullanılmaz. Öntanımlı
+          <code><var>değer</var></code> <code>no</code>’dur. Bu seçenek
+          <code>autoconf</code> tarafından sağlanmıştır ve Apache HTTP
+          Sunucusu için pek yararlı değildir.</dd>
+      </dl>
+    </section>
+
+    <!-- options not known are passed to packages?
+    are there other important options for packages? -->
+
+    <section id="packageopt"><title>Özel paketler</title>
+      <dl>
+        <dt><code>--with-apr=<var>dizin</var>|<var>dosya</var></code></dt>
+        <dd><glossary ref="apr">Apache Taşınabilir Arayüzü</glossary> (APR)
+          httpd kaynak paketinin bir parçası olup HTTP Sunucu ile birlikte
+          derlenir. Eğer kendi kurulu APR’nizi kullanmak isterseniz bunu
+          <code>configure</code> betiğine <code>apr-config</code> betiğinin
+          yolunu belirterek ifade edebilirsiniz. Kurulu APR için bid dizin,
+          dosya ismi veya mutlak dosya yolu belirtebilirsiniz.
+          <code>apr-config</code> ya belirttiğiniz dizinde ya da
+          <code>bin</code> alt dizininde bulunmalıdır.</dd>
+
+        <dt><code>--with-apr-util=<var>dizin</var>|<var>dosya</var></code></dt>
+        <dd>Apache Taşınabilir Arayüzü Araçları (APU) httpd kaynak paketinin
+          bir parçası olup HTTP Sunucu ile birlikte derlenir. Eğer kendi
+          kurulu APU’nuzu kullanmak isterseniz bunu <code>configure</code>
+          betiğine <code>apu-config</code> betiğinin yolunu belirterek ifade
+          edebilirsiniz. Kurulu APR için bir dizin, dosya ismi veya mutlak
+          dosya yolu belirtebilirsiniz. <code>apr-config</code> ya
+          belirttiğiniz dizinde ya da <code>bin</code> alt dizininde
+          bulunmalıdır.</dd>
+
+        <dt><code>--with-ssl=<var>dizin</var></code></dt>
+        <dd><module>mod_ssl</module> modülü etkinse <code>configure</code>
+          betiği kurulu bir OpenSSL arayacaktır. Kendi SSL/TLS kurulumunuzun
+          yolunu bu seçenekle belirtebilirsiniz.</dd>
+
+        <dt><code>--with-z=<var>dizin</var></code></dt>
+        <dd>Yapılandırmanız gerektirdiği takdirde (örneğin,
+          <module>mod_deflate</module> etkinse) <code>configure</code> betiği
+          kurulu <code>zlib</code> kütüphanesinin yerini tespit etmeye
+          çalışacaktır. Kendi sıkıştırma kütüphanenizin yerini bu seçenekle
+          belirtebilirsiniz.</dd>
+      </dl>
+
+      <p>Apache HTTP Sunucusunun çeşitli bölümleri,
+        <module>mod_authn_dbm</module> modülü ve <module>mod_rewrite</module>
+        modülünün <directive module="mod_rewrite">RewriteMap</directive>
+        yönergesi bilgilere erişimi hızlandırmak için basit anahtar/değer
+        veritabanları kullanırlar. SDBM, APU içinde mevcut olduğundan bu
+        veritabanı her zaman kullanılabilir durumdadır. Eğer başka veritabanı
+        türleri kullanmak isterseniz aşağıdaki seçeneklerle bunları etkin
+        kılabilirsiniz:</p>
+
+      <dl>
+        <dt><code>--with-gdbm[=<var>dizin-yolu</var>]</code></dt>
+        <dd>Bir <code><var>dizin-yolu</var></code> belirtilmemişse
+          <code>configure</code> betiği GNU DBM kurulumunun kütüphanelerini ve
+          başlık dosyalarını bulunması olası yerlerde arar.  Bir
+          <code><var>dizin-yolu</var></code> belirtilmişse
+          <code>configure</code> betiği kurulumun kütüphanelerini
+          <code><var>dizin-yolu</var>/lib</code> altında, başlık dosyalarını
+          ise <code><var>dizin-yolu</var>/include</code> altında arayacaktır.
+          Bundan başka, başlık ve kütüphane dosyalarının bulundukları yerler
+          iki nokta imi ile ayrılarak <code><var>dizin-yolu</var></code>
+          olarak belirtilebilir.</dd>
+
+        <dt><code>--with-ndbm[=<var>dizin-yolu</var>]</code></dt>
+        <dd>New DBM kurulumunu araştırması dışında <code>--with-gdbm</code>
+          seçeneği gibidir.</dd>
+
+        <dt><code>--with-berkeley-db[=<var>dizin-yolu</var>]</code></dt>
+        <dd>Berkeley DB kurulumunu araştırması dışında
+          <code>--with-gdbm</code> seçeneği gibidir.</dd>
+      </dl>
+
+      <note><title>Bilginize</title>
+        <p>DBM seçenekleri APU tarafından sağlanmış olup onun yapılandırma
+          betiğine aktarılır. Bu seçenekler <code>--with-apr-util</code>
+          seçeneği ile tanımlanmış bir kurulu APU varsa kullanışlı olur.</p>
+        <p>HTTP sunucunuz ile birlikte birden fazla DBM gerçeklenimi
+          kullanabilirsiniz. Kullanılacak DBM türünü her zaman çalışma anı
+          yapılandırmanızla yapılandırabilirsiniz.</p>
+      </note>
+    </section>
+  </section>
+
+  <section id="supportopt"><title>Destek programları için seçenekler</title>
+    <dl>
+      <dt><code>--enable-static-support</code></dt>
+      <dd>Destek programlarını durağan ilintili olarak derler. Yani
+        çalıştırılabilirin kullandığı bütün kütüphaneler kodla
+        bütünleştirilir. Bu seçenek belirtilmedikçe destek programları daima
+        devingen ilintili olarak derlenir.</dd>
+
+      <dt><code>--enable-suexec</code></dt>
+      <dd>Çatallanan sürecin kullanıcı ve grup kimliklerinin
+        değiştirilebilmesini sağlayan <program>suexec</program> programının
+        kullanımını etkinleştirir. <strong>Sunucunuz üzerinde suid biti
+        etkinleştirilmiş bir program çalıştırmanın sistem güvenliğinde
+        yaratacağı sorunlar hakkında bir fikriniz yoksa bu seçeneği
+        etkinleştirmeyin</strong>. <program>suexec</program> yapılandırma
+        seçenekleri <a href="#suexec">aşağıda</a> açıklanmıştır.</dd>
+    </dl>
+
+    <p>Tek bir destek programını aşağıdaki seçenekleri kullanarak bir durağan
+      ilintili çalıştırılabilir olarak derleyebilirsiniz:</p>
+
+    <dl>
+      <dt><code>--enable-static-ab</code></dt>
+      <dd><program>ab</program> programının durağan ilintili sürümü
+        derlenir.</dd>
+
+      <!-- missing documentation for chechgid -->
+      <dt><code>--enable-static-checkgid</code></dt>
+      <dd><code>checkgid</code> programının durağan ilintili sürümü
+        derlenir.</dd>
+
+      <dt><code>--enable-static-htdbm</code></dt>
+      <dd><program>htdbm</program> programının durağan ilintili sürümü
+        derlenir.</dd>
+
+      <dt><code>--enable-static-htdigest</code></dt>
+      <dd><program>htdigest</program> programının durağan ilintili sürümü
+        derlenir.</dd>
+
+      <dt><code>--enable-static-htpasswd</code></dt>
+      <dd><program>htpasswd</program> programının durağan ilintili sürümü
+        derlenir.</dd>
+
+      <dt><code>--enable-static-logresolve</code></dt>
+      <dd><program>logresolve</program> programının durağan ilintili sürümü
+        derlenir.</dd>
+
+      <dt><code>--enable-static-rotatelogs</code></dt>
+      <dd><program>rotatelogs</program> programının durağan ilintili sürümü
+        derlenir.</dd>
+    </dl>
+
+    <section id="suexec">
+      <title><code>suexec</code> yapılandırma seçenekleri</title>
+
+      <p>Aşağıdaki seçeneklerle <program>suexec</program> programının
+        davranışı hassas bir şekilde ayarlanabilir. Daha ayrıntılı bilgi için
+        <a href="suexec.html#install">suEXEC yapılandırması ve kurulumu</a>na
+        bakınız.</p>
+
+      <dl>
+        <dt><code>--with-suexec-bin</code></dt>
+        <dd>Bu seçenek ile <program>suexec</program> çalıştırılabilirinin yeri
+          belirtilir. Öntanımlı olarak <code>--sbindir</code> ile belirtilen
+          dizine kurulur (<a href="#directoryfinetuning">Kurulum dizinlerinde
+          ince ayar</a> konusuna bakınız).</dd>
+
+        <dt><code>--with-suexec-caller</code></dt>
+        <dd>Bu seçenek ile <program>suexec</program>’i çalıştırabilecek
+          kullanıcı belirtilir. Normalde <program>httpd</program> programını
+          çalıştıran kullanıcı olmalıdır.</dd>
+
+        <dt><code>--with-suexec-docroot</code></dt>
+        <dd>Bu seçenek ile <program>suexec</program>'e erişebilecek
+          çalıştırılabilirlerin altında bulunacağı dizin belirtilir.
+          <code>--datadir/htdocs</code> öntanımlıdır.</dd>
+
+        <dt><code>--with-suexec-gidmin</code></dt>
+        <dd><program>suexec</program> için hedef kullanıcı olmasına izin
+          verilen en küçük grup kimliğini tanımlamak için kullanılır. 100
+          öntanımlıdır.</dd>
+
+        <dt><code>--with-suexec-logfile</code></dt>
+        <dd><program>suexec</program> günlük dosyasının ismi belirtilir.
+          Öntanımlı olarak bu dosyanın ismi <code>suexec_log</code> olup
+          <code>--logfiledir</code> seçeneği ile belirtilen dizin altında
+          bulunur.</dd>
+
+        <dt><code>--with-suexec-safepath</code></dt>
+        <dd><program>suexec</program> tarafından çalıştırılacak süreçlerin
+          çalıştırılabilirlerinin bulunabileceği dizinleri <code>PATH</code>
+          ortam değişkenine tanımlamak için kullanılır.
+          <code>/usr/local/bin:/usr/bin:/bin</code> öntanımlıdır.</dd>
+
+        <dt><code>--with-suexec-userdir</code></dt>
+        <dd>Bu seçenek, kullanıcı dizinleri altında <program>suexec</program>
+          tarafından çalıştırılacak süreçlerin çalıştırılabilirlerinin
+          bulunabileceği alt dizini tanımlar. <program>suexec</program>
+          programını (<module>mod_userdir</module> tarafından sağlanan)
+          kullanıcıya özel dizinlerde  kullanmak istediğinizde bu gereklidir.
+          <code>public_html</code> alt dizini öntanımlıdır.</dd>
+
+        <dt><code>--with-suexec-uidmin</code></dt>
+        <dd><program>suexec</program> için hedef kullanıcı olmasına izin
+          verilen en küçük kullanıcı kimliğini tanımlamak için kullanılır.
+          100 öntanımlıdır.</dd>
+
+        <dt><code>--with-suexec-umask</code></dt>
+        <dd><program>suexec</program> tarafından çalıştırılacak süreçler için
+          <code>umask</code> tanımlar. Sisteminiz için geçerli ayarlar
+          öntanımlıdır.</dd>
+      </dl>
+    </section>
+  </section>
+</section>
+
+<section id="env"><title>Ortam Değişkenleri</title>
+  <p><code>configure</code> betiğinin yerleri ve isimleri standartlara uygun
+    olmayan kütüphaneleri ve programları bulmasını yardımcı olan veya
+    <code>configure</code> betiği tarafından yapılan bazı seçimleri
+    değiştirmenizi sağlayacak bazı ortam değişkenleri vardır.</p>
+
+  <!-- are these all useful variables? -->
+  <dl>
+    <dt><code>CC</code></dt>
+    <dd>Bu değişkenle derleme sırasında kullanılacak C derleyici komutu
+      tanımlanır.</dd>
+
+    <dt><code>CFLAGS</code></dt>
+    <dd>Bu değişkenle derleme sırasında kullanılacak C derleyici seçenekleri
+      tanımlanır.</dd>
+
+    <dt><code>CPP</code></dt>
+    <dd>Bu değişkenle derleme sırasında kullanılacak C önişlemci komutu
+      tanımlanır.</dd>
+
+    <dt><code>CPPFLAGS</code></dt>
+    <dd>C/C++ önişlemci seçenekleri tanımlanır. Örneğin, eğer başlık
+      dosyaları standart yerlerinde değil de
+      <code><var>includedir</var></code> dizinindeyse bunu
+      <code>-I<var>includedir</var></code> seçeneği olarak
+      belirtebilirsiniz.</dd>
+
+    <dt><code>LDFLAGS</code></dt>
+    <dd>İlintileyici seçenekleri tanımlanır. Örneğin, eğer kütüphane
+      dosyalarınız standart yerlerinde değil de
+      <code><var>libdir</var></code> dizinindeyse bunu
+      <code>-L<var>libdir</var></code> seçeneği olarak belirtebilirsiniz.</dd>
+  </dl>
+</section>
+</manualpage>
