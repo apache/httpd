@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Sunucu Genelinde Yapılandırma - Apache HTTP Sunucusu</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="./faq/">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.2</a></div><div id="page-content"><div id="preamble"><h1>Sunucu Genelinde Yapılandırma</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="./en/server-wide.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/server-wide.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/server-wide.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/server-wide.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+<p>Bu belgede <code class="module"><a href="./mod/core.html">core</a></code> modülü ile sağlanan ve  sunucunun temel
+işlemlerini yapılandırmakta kullanılan yönergelerden bazıları açıklanmıştır.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">Sunucu Kimliği</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#locations">Dosyaların Yerleri</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#resource">Özkaynak Kullanımının Sınırlanması</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="identification" id="identification">Sunucu Kimliği</a></h2>
+    
+
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code></li><li><code class="directive"><a href="./mod/core.html#serversignature">ServerSignature</a></code></li><li><code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code></li></ul></td></tr></table>
+
+    <p><code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code> ve <code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code> yönergeleri, hata iletileri gibi
+      sunucu tarafından üretilen belgelerde sunucu ile ilgili hangi bilgilerin
+      sunulacağını belirlerler. <code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code> yönergesi sunucunun HTTP yanıt başlığı
+      alanının değerini belirler.</p>
+
+    <p><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>,
+      <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> ve
+      <code class="directive"><a href="./mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>
+      yönergeleri, sunucu tarafından, özüne yönelik URL’leri nasıl
+      oluşturacağını saptamak için kullanılır. Örneğin bir istemci bir dizin
+      isteğinde bulunurken URL’nin sonuna bölü çizgisi eklemese bile
+      Apache’nin istemciyi bölü çizgisi ile bitirilmiş URL yoluna
+      yönlendirmesi gerekir; böylece istemci belge içindeki göreli
+      bağlantıları doğru şekilde çözümleyebilir.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="locations" id="locations">Dosyaların Yerleri</a></h2>
+    
+
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#lockfile">LockFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
+
+    <p>Bu yönergeler Apache’nin doğru işlem yapması için gereksinim duyduğu
+      çeşitli dosyaların yerlerini belirlerler. Bölü çizgisi (/) ile
+      başlamayan dosya yolları kullanıldığında bu dosyaların yerlerinin
+      <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code> yönergesinde belirtilen
+      dizine göre belirtildiği varsayılır; root olmayan kullanıcılar
+      tarafından yazılabilen dosya yollarına dosya yerleştirmemeye dikkat
+      ediniz. Bu konuda daha ayrıntılı bilgi edinmek için <a href="misc/security_tips.html#serverroot">güvenlik ipuçları</a>
+      belgesine bakınız.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="resource" id="resource">Özkaynak Kullanımının Sınırlanması</a></h2>
+    
+
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#limitrequestbody">LimitRequestBody</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfields">LimitRequestFields</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestline">LimitRequestLine</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitnproc">RLimitNPROC</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code></li></ul></td></tr></table>
+
+    <p><code>LimitRequest*</code> yönergeleri, Apache’nin istemcilerden gelen
+      istekleri okumak için kullanacağı özkaynakların miktarları ile ilgili
+      sınırlamalar koymak için kullanılırlar. Bu değerleri sınırlamak
+      suretiyle bazı hizmet reddi saldırılarının etkileri azaltılabilir.</p>
+
+    <p><code>RLimit*</code> yönergeleri ise Apache’nin çocuk süreçleri
+      tarafından çatallanabilen özkaynakların miktarlarını sınırlamakta
+      kullanılırlar. Özellikle de CGI betikleri ve SSI çalıştırma komutları
+      tarafından kullanılan özkaynakları denetlemekte kullanılırlar.</p>
+
+    <p><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code> yönergesi
+      bazı platformlarda yığıt boyutunu denetim altında tutmak için
+      kullanılır.</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="./en/server-wide.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/server-wide.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/server-wide.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/server-wide.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="./faq/">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div>
+</body></html>

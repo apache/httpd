@@ -136,8 +136,11 @@ eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
     <p><code><em>URL-yolu</em></code>’nu bir <code>/</code> ile
       sonlandırırsanız <code class="directive">Alias</code> yönergesini yorumlarken
       sunucunun da sona bir <code>/</code> ekleyeceğine dikkat ediniz. Yani,
-      eğer <div class="example"><p><code>Alias /icons/ /usr/local/apache/icons/</code></p></div> diye bir
-      tanım yaparsanız <code>/icons</code> URL’si için bir
+      eğer</p>
+
+    <dl><dd><code>Alias /icons/ /usr/local/apache/icons/</code></dd></dl>
+
+    <p>diye bir tanım yaparsanız <code>/icons</code> URL’si için bir
       <code class="directive">Alias</code> kullanılmayacaktır.</p>
 
     <p><code class="directive">Alias</code> <em>hedefleri</em> için ek <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> bölümleri

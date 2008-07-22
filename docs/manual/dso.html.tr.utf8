@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Devingen Paylaşımlı Nesne Desteği - Apache HTTP Sunucusu</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="./faq/">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.2</a></div><div id="page-content"><div id="preamble"><h1>Devingen Paylaşımlı Nesne Desteği</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/dso.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p>Apache HTTP Sunucusu modüler bir program olup, yönetici sadece bir
+      grup modül seçerek sunucuya işlevsellik ekleyebilir. Modüller sunucunun
+      derlenmesi sırasında doğrudan <code class="program"><a href="./programs/httpd.html">httpd</a></code> programının
+      içinde derlenebileceği gibi Devingen Paylaşımlı Nesneler (DSO - Dynamic
+      Shared Object) halinde <code class="program"><a href="./programs/httpd.html">httpd</a></code> programından ayrı
+      olarak da derlenebilir. DSO modülleri sunucunun derlenmesi sırasında
+      derlenebileceği gibi ayrı olarak derlenip daha sonra Apache Eklenti
+      Aracı (Apache Extension Tool) <code class="program"><a href="./programs/apxs.html">apxs</a></code> programı
+      kullanılarak sunucuya eklenebilir.</p>
+
+    <p>Bu belgede DSO modüllerinin kullanımının yanında teorisine de
+      değinilecektir.</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">Gerçeklenim</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#usage">Kullanıcı Özeti</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#background">Artalan Bilgisi</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#advantages">Getiriler ve Götürüler</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="implementation" id="implementation">Gerçeklenim</a></h2>
+
+<table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
+
+    <p>Apache modüllerini yüklemek için DSO desteği, Apache çekirdeğine
+      durağan olarak ilintilenerek derlenmiş olan <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>
+      adında bir modül tarafından sağlanır. <code class="module"><a href="./mod/core.html">core</a></code> modülünden
+      başka, bir DSO modülü olamayan tek modül <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>
+      modülüdür. Hemen hemen tüm diğer Apache modülleri <a href="install.html">kurulum belgesinde</a> de açıklandığı gibi
+      <code class="program"><a href="./programs/configure.html">configure</a></code> betiğinin
+      <code>--enable-<em>modül</em>=shared</code> seçeneği her modül için ayrı
+      ayrı belirtilerek birer DSO modülü olarak derlenebilir. Derlenmiş
+      modüller <code>mod_filanca.so</code> biçeminde birer DSO ismi alırlar ve
+      her biri istenirse <code>httpd.conf</code> dosyasında
+      <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> modülünün <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesiyle belirtilerek sunucu başlatılırken
+      veya yeniden başlatılırken sunucuya yüklenebilir.</p>
+
+    <p>Apache modülleri için (özellikle üçüncü parti modüller için) DSO
+      dosyası üretimini kolaylaştırmak amacıyla <code class="program"><a href="./programs/apxs.html">apxs</a></code>
+      (<dfn>APache eXtenSion</dfn>) adında yeni bir destek programı
+      kullanılmaktadır. Bu program Apache modüllerini Apache kaynak ağacından
+      ayrı olarak derlemek için kullanılabilir. Fikir basittir: Apache
+      derlenirken DSO dosyalarını derlemek için platforma bağımlı
+      derleyici ve ilintileyici seçenekleri <code class="program"><a href="./programs/apxs.html">apxs</a></code>
+      programının içine konur ve Apache’nin <code>make install</code> ile
+      kurulumu sırasında Apache C başlık dosyaları da kurulur. Böylece
+      kullanıcı Apache dağıtımının kaynak ağacına ihtiyaç duymadan ve
+      platforma bağımlı derleyici ve ilintileyici seçeneklerini bilmek zorunda
+      kalmadan istediği Apache modülünü <code class="program"><a href="./programs/apxs.html">apxs</a></code> programını
+      kullanarak derleyebilir.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="usage" id="usage">Kullanıcı Özeti</a></h2>
+
+    <p>Apache 2.x’in DSO özelliklerine bir giriş olarak burada kısaca bir
+      bilgi vermekle yetinilecektir:</p>
+
+    <ol>
+      <li>Kaynak dosyası <code>mod_filanca.c</code> dosyasında dağıtılan bir
+        <em>özgün</em> Apache modülünü <code>mod_filanca.so</code> isminde bir
+        DSO modülü olarak derlemek ve kurmak için şöyle yapılır:
+
+<div class="example"><p><code>
+  $ ./configure --prefix=/kurulum/yeri --enable-filanca=shared<br />
+  $ make install
+</code></p></div>
+      </li>
+
+      <li>Kaynak dosyası <code>mod_filanca.c</code> dosyasında dağıtılan bir
+        <em>üçüncü parti</em> Apache modülünü <code>mod_filanca.so</code>
+        isminde bir DSO modülü olarak derlemek ve kurmak için şöyle yapılır:
+
+<div class="example"><p><code>
+$ ./configure --add-module=<var>modül-türü</var>:/bir/kurulum/yeri/mod_filanca.c \<br />
+<span class="indent">
+  --enable-filanca=shared<br />
+</span>
+$ make install
+</code></p></div>
+      </li>
+
+      <li>Paylaşımlı modülleri <em>sonradan kurmak için</em> Apache şöyle
+        yapılandırılır:
+
+<div class="example"><p><code>
+$ ./configure --enable-so<br />
+$ make install
+</code></p></div>
+      </li>
+
+      <li>Kaynak dosyası <code>mod_filanca.c</code> dosyasında dağıtılan bir
+        <em>üçüncü parti</em> Apache modülü <code>mod_filanca.so</code>
+        isminde bir DSO modülü olarak Apache kaynak ağacının dışında
+        <code class="program"><a href="./programs/apxs.html">apxs</a></code> kullanarak derlemek ve kurmak için şöyle
+        yapılır:
+
+<div class="example"><p><code>
+$ cd /bir/kurulum/yeri<br />
+$ apxs -c mod_filanca.c<br />
+$ apxs -i -a -n filanca mod_filanca.la
+</code></p></div>
+      </li>
+    </ol>
+
+    <p>Tüm durumlarda derlenen paylaşımlı modülü Apache’nin etkin kılabilmesi
+      için <code>httpd.conf</code> dosyasında o modül için bir <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesi bulunmalıdır.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="background" id="background">Artalan Bilgisi</a></h2>
+
+    <p>Günümüzün Unix türevlerinde var olan şık bir mekanizma sayesinde
+      çalıştırılabilir bir programın adres uzayına çalışma anında yüklenmek
+      veya ilintilenmek üzere <em>Devingen Paylaşımlı Nesneler</em> (DSO -
+      Dynamic Shared Object) adı verilen, özel bir biçem kullanarak kodlanmış
+      program parçaları oluşturulabilir.</p>
+
+    <p>Bu yükleme normalde iki yolla yapılabilir: Ya çalıştırılabilir
+      programın başlatılması sırasında yüklenen <code>ld.so</code> adlı bir
+      sistem programınının devingen olarak yüklenmesi ile ya da
+      çalıştırılabilir programın içinden Unix yükleyicisine programsal sistem
+      arayüzü sağlayan <code>dlopen()/dlsym()</code> sistem çağrılarının elle
+      yapılması suretiyle.</p>
+
+    <p>İlk yöntemde kullanılan DSO’lara genelde <em>paylaşımlı
+      kütüphaneler</em> veya <em>DSO kütüphaneleri</em> adı verilir ve
+      bunların dosyaları <code>libfilanca.so</code> veya
+      <code>libfilanca.so.1.2</code> biçiminde isimlendirilir. Belli bir
+      sistem dizininde (normalde <code>/usr/lib</code>) bulunurlar ve derleme
+      sırasında ilintileyici komutuna <code>-lfilanca</code> şeklinde
+      belirtilerek çalıştırılabilir programla ilintilenirler. Doğrudan
+      çalıştırılabilir koda eklenen bu kodlar Unix yükleyicisinin programın
+      başlatılması sırasında kütüphaneyi <code>/usr/lib</code> altında
+      <code>libfilanca.so</code> adıyla bulabilmesini sağlar. Kütüphanelerin
+      aranacağı yerler ya <code>-R</code> gibi bir ilintileyici seçeneği ile
+      koda eklenir ya da arama yolları <code>LD_LIBRARY_PATH</code> ortam
+      değişkeni aracılığıyla yapılandırılır. Böylece çalıştırılabilir
+      programda henüz çözümlenmemiş simgeler DSO içinde bulunarak
+      çözümlenebilir.</p>
+
+    <p>Çalıştırılabilir program içindeki simgelere normalde DSO içinden
+      atıfta bulunulmaz (genel kod kütüphanesinin başka programlarca da
+      kullanılması nedeniyle). Bu bakımdan DSO tarafında böyle bir çözümleme
+      yapılmaz. Çalıştırılabilir program da DSO’daki simgeleri kendisi
+      çözümlemeye uğraşmaz, bu işlemlerden tamamen Unix yükleyicisi
+      (<code>ld.so</code>) sorumludur. (Aslında, <code>ld.so</code>’yu
+      çağıracak kod, her çalıştırılabilir programın içine ilintilenmiş
+      (durağan değil) başlatma kodunun bir parçasıdır.) Programlar tarafından
+      ortaklaşa kullanılan kütüphanelerin devingen olarak yüklenmesinin sebebi
+      basittir: Kütüphane kodu <code>libc.so</code> gibi bir sistem
+      kütüphanesine bir kere kaydedilip disk alanından yer kazanılmış
+      olur.</p>
+
+    <p>İkinci yöntemde kullanılan DSO’lara yine <em>paylaşımlı
+      kütüphaneler</em> veya <em>DSO kütüphaneleri</em> adı verilir fakat
+      bunların dosyaları geçerli kabule göre <code>filanca.so</code> gibi
+      isimlendirilse de genelde keyfi olarak seçilen bir dosya uzantısı
+      kullanılarak isimlendirilirler. Bu dosyalar genellikle programa özel bir
+      dizinde dururlar ve bu dosyaları kullanacak olan çalıştırılabilir
+      programla aralarında özdevimli olarak bağ kurulmamıştır. Bunun yerine,
+      çalıştırılabilir program DSO’yu çalışma anında <code>dlopen()</code>
+      sayesinde kendi adres uzayına ekler. Çalıştırılabilir program için
+      DSO’daki simgeler bu sırada çözümlenmez. Özdevimli olarak devreye
+      giren Unix yükleyicisi, (varsa) artakalan simgeleri, çalıştırılabilir
+      ihraç edilen simge kümelerini (ve özellikle her yerde hazır ve nazır
+      <code>libc.so</code> içindeki tüm simgeleri) kullanarak çözümler. Bu
+      yolla DSO, çalıştırılabilir programın simge kümesi bilgilerini sanki
+      kendisine baştan durağan olarak ilintilenmiş gibi ulaşabilir.</p>
+
+    <p>Son olarak, DSO’nun programlama arayüzünün getirilerinden yararlanmak
+      amacıyla çalıştırılabilir program, daha sonra dağıtım tabloları vb.
+      yerlerde kullanmak üzere <code>dlsym()</code> üzerinden DSO’daki belli
+      simgeleri çözümlemek zorundadır. Başka bir deyişle: Çalıştırılabilir
+      program ihtiyaç duyduğu her simgeyi kullanmak için kendisi çözümleme
+      yapmak zorundadır. Böyle bir mekanizmanın getirisi, programın isteğe
+      bağlı parçalarının gerekli olana kadar yüklenmemesidir (böylece daha az
+      bellek alanı kullanılır). Gerektiği zaman programın işlevselliğini
+      arttırmak amacıyla bu parçalar devingen olarak programa
+      yüklenebilir.</p>
+
+    <p>DSO mekanizmasının bu basit gibi görünen işleyişinde zorluk içeren bir
+      adım şudur (başkaları da olabilir): Bir programın işlevselliğini
+      genişletmek için DSO kullanılırken (ikinci yöntem) çalıştırılabilir
+      programdan DSO için simgelerin çözümlenmesi.  Zorluğun sebebi,
+      "tersine çözümleme" yapılmasıdır; çalıştırılabilir programın simge
+      kümesindeki DSO simgeleri kütüphane tasarımına aykırı bir şekilde
+      çözümlenir ve bu uygulama tüm platformlarda hazır olarak
+      desteklenmediği gibi standartlaşmış da değildir. Geçer uygulamada
+      çalıştırılabilir programın evrensel simgeleri çoğunlukla yeniden dışa
+      verilmez ve bu bakımdan bir DSO içinde kullanılmaları uygun değildir.
+      Esas sorun, çalıştırılabilir bir programın işlevselliğini çalışma
+      anında genişletmek için DSO kullanımı sırasında ilintileyicinin tüm
+      evrensel simgeleri dışa vermesini zorlamanın bir yolunu bulmaktır.</p>
+
+    <p>Paylaşımlı kütüphane yaklaşımı bu bakımdan türünün tek örneğidir,
+      çünkü DSO mekanizması özellikle bunun için tasarlanmıştır, dolayısıyla
+      işletim sisteminin sağladığı hemen hemen tüm kütüphaneler için
+      kullanılabilir. Diğer taraftan, bir programın işlevselliğini
+      genişletmek için paylaşımlı nesne kullanımı çoğu program tarafından
+      kullanılan bir şey değildir.</p>
+
+    <p>1998 itibariyle, DSO nesneleriyle çalışma anında çalıştırılabilir
+      program işlevselliğini genişleten başlıca birkaç yazılım paketi vardır:
+      Perl 5 (XS mekanizması ve DynaLoader modülü üzerinden), Netscape
+      Sunucusu, vd. 1.3 sürümünden itibaren Apache de bu gruba katıldı. Çünkü
+      Apache, modül kavramını zaten program işlevselliğini genişletmek için
+      kullanıyordu ve temel işlevselliğine dış modülleri ilintilemek için
+      dahili olarak dağıtım listesine dayalı bir yaklaşım kullanmaktaydı.
+      Dolayısıyla Apache, modüllerini çalışma anında yüklemek için DSO
+      kullanmaya baştan yazgılıydı.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="advantages" id="advantages">Getiriler ve Götürüler</a></h2>
+
+    <p>Yukarıda bahsedilen DSO’ya dayalı özelliklerin getirileri
+      şunlardır:</p>
+
+    <ul>
+      <li>Sunucu paketi çalışma anında daha esnektir çünkü, asıl sunucuyu
+        oluşturan parçalar derleme sırasında <code class="program"><a href="./programs/configure.html">configure</a></code>
+        seçenekleriyle birleştirilmek yerine <code>httpd.conf</code> içinde
+        <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergeleri
+        sayesinde çalışma anında birleştirilebilmektedir. Bu yolla, örneğin
+        tek bir Apache kurulumuyla birbirinden farklı yapılandırmalara sahip
+        çok sayıda sunucu çalıştırmak mümkündür. (standart veya SSL sürümü;
+        basitleştirilmiş veya güçlendirilmiş sürümü [mod_perl, PHP3],
+        vs.)</li>
+
+      <li>Sunucu paketi kurulumdan sonra bile üçüncü parti modüllerle kolayca
+        genişletilebilir. Bu özellikle, bir Apache temel paketinin yanında
+        PHP3, mod_perl, mod_fastcgi gibi ek paketler oluşturan paket
+        dağıtıcılarına büyük yarar sağlar.</li>
+
+      <li>Yeni Apache modülleri için daha kolay prototip geliştirilebilir:
+        Modül kaynak kodunu DSO/<code class="program"><a href="./programs/apxs.html">apxs</a></code> çifti sayesinde
+        Apache kaynak ağacının dışında derleyip modülün yeni bir sürümünü bir
+        <code>apxs -i</code> komutunun ardından <code>apachectl
+        restart</code> yaparak çalışan bir Apache sunucusunda denemek daha
+        kolay hale getirilmiştir.</li>
+    </ul>
+
+    <p>DSO kullanımının götürüleri ise şunlardır:</p>
+
+    <ul>
+      <li>Her platformda hazır olarak desteklenmeme: Tüm işletim sistemleri
+        bir programa devingen olarak kod yükleme becerisine sahip
+        olmadığından DSO mekanizması her platformda kullanılamaz.</li>
+
+      <li>İlk yüklemede %20 yavaşlama: Unix yükleyicisi simgeleri çözümlemek
+        zorunda olduğundan sunucu ilk başlatılırken yaklaşık %20 daha yavaş
+        faaliyete geçer.</li>
+
+      <li>Çalışma sırasında % 5 yavaşlama: Konumdan bağımsız kodun (PIC -
+        Position Independent Code) göreli adresleme için karmaşık oyunlara
+        girmesi ve bunun mutlak adresleme kadar hızlı olmaması nedeniyle
+        sunucu bazı platformlarda çalışma anında yaklaşık %5 daha yavaş
+        çalışabilir.</li>
+
+      <li>DSO'nun tüm modüller için uygun olmaması: DSO modülleri bazı
+        platformlarda diğer DSO temelli kütüphanelerle ilintilenemediğinden
+        (<code>ld -lfilanca</code>) DSO mekanizmasını tüm modül türleri için
+        kullanamazsınız (örneğin a.out temelli platformlar bu işlevselliği
+        ELF temelli platformlar kadar iyi sağlamaz). Başka bir deyişle, DSO
+        dosyaları olarak derlenmiş modüllerin kullanabileceği simgeler ya
+        Apache temel kodunda vardır ya Apache temel kodunun kullandığı C
+        kütüphanesinde (<code>libc</code>) ve diğer durağan ve devingen
+        kütüphanelerde vardır ya da konumdan bağımsız kodu içeren
+        durağan kütüphane arşivlerinde (<code>libfilanca.a</code>)
+        vardır. Diğer modülleri kullanmak için tek şansınız ya Apache
+        çekirdeğinin modüle bir atıf içermesini sağlamak ya da modül kodunu
+        <code>dlopen()</code> vasıtasıyla yüklemektir.</li>
+    </ul>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="./en/dso.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/dso.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="./faq/">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div>
+</body></html>

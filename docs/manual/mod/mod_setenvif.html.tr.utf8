@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_setenvif - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Modüller</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Modülü mod_setenvif</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_setenvif.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>setenvif_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_setenvif.c</td></tr></table>
+<h3>Özet</h3>
+
+
+    <p><code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> modülü ortam değişkenlerinin isteğin
+      farklı bileşenlerinin belirttiğiniz düzenli ifade ile eşleşmesine bağlı
+      olarak atanmasını mümkün kılar. Bu ortam değişkenleri sunucunun çeşitli
+      kısımlarında yapılacak eylemlere karar verirken kullanılır.</p>
+
+    <p>Yönergeler yapılandırma dosyasında yer aldıkları sıraya göre ele
+      alınırlar. Böylece daha karmaşık dizilimler kullanılabilir, bu örnekteki
+      tarayıcı Mozilla ise <code>netscape</code> ortam değişkeni atanmakta,
+      MSIE ise atanmamaktadır.</p>
+
+    <div class="example"><p><code>
+      BrowserMatch ^Mozilla netscape<br />
+      BrowserMatch MSIE !netscape<br />
+    </code></p></div>
+</div>
+<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#browsermatch">BrowserMatch</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#browsermatchnocase">BrowserMatchNoCase</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvif">SetEnvIf</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvifnocase">SetEnvIfNoCase</a></li>
+</ul>
+<h3>Ayrıca bakınız:</h3>
+<ul class="seealso">
+<li><a href="../env.html">Apache’de Ortam Değişkenleri</a></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BrowserMatch" id="BrowserMatch">BrowserMatch</a> <a name="browsermatch" id="browsermatch">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini HTTP kullanıcı arayüzüne göre belirler.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>BrowserMatch <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
+[[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
+</table>
+  <p><code class="directive">BrowserMatch</code> yönergesi <code class="directive"><a href="#setenvif">SetEnvIf</a></code> yönergesinin özel bir halidir
+    ve ortam değişkenlerine <code>User-Agent</code> HTTP istek başlığının
+    değerine göre atama yapar. Aşağıdaki iki satır aynı etkiye sahiptir:</p>
+
+  <div class="example"><p><code>
+    BrowserMatchNoCase Robot is_a_robot<br />
+    SetEnvIfNoCase User-Agent Robot is_a_robot<br />
+  </code></p></div>
+
+  <p>Başka örnekler:</p>
+
+  <div class="example"><p><code>
+      BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
+      BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
+      BrowserMatch MSIE !javascript<br />
+  </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BrowserMatchNoCase" id="BrowserMatchNoCase">BrowserMatchNoCase</a> <a name="browsermatchnocase" id="browsermatchnocase">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini HTTP kullanıcı arayüzünün harf büyüklüğüne
+duyarsız eşleşmelerine bağlı olarak belirler.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>BrowserMatchNoCase <em>düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
+[[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 1.2 ve sonrasında bulunur (Apache 1.2 sürümünde bu
+yönerge artık atıl olan mod_browser modülüyle sağlanırdı).</td></tr>
+</table>
+
+    <p><code class="directive">BrowserMatchNoCase</code> yönergesi sözdizimsel ve
+      anlamsal olarak <code class="directive"><a href="#browsermatch">BrowserMatch</a></code> yönergesinin eşdeğeridir.
+      Ancak, eşleşmelerde harf büyüklüğüne duyarsızdır. Örnek:</p>
+
+    <div class="example"><p><code>
+        BrowserMatchNoCase mac platform=macintosh<br />
+        BrowserMatchNoCase win platform=windows<br />
+    </code></p></div>
+
+    <p><code class="directive">BrowserMatch</code> ve
+      <code class="directive">BrowserMatchNoCase</code> yönergeleri <code class="directive"><a href="#setenvif">SetEnvIf</a></code> ve <code class="directive"><a href="#setenvifnocase">SetEnvIfNoCase</a></code> yönergelerinin özel
+      halleridir. Bu bakımda aşağıdaki iki satır aynı etkiye sahiptir:</p>
+
+    <div class="example"><p><code>
+      BrowserMatchNoCase Robot is_a_robot<br />
+      SetEnvIfNoCase User-Agent Robot is_a_robot<br />
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SetEnvIf" id="SetEnvIf">SetEnvIf</a> <a name="setenvif" id="setenvif">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini isteğin özniteliklerine göre atar.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetEnvIf <em>öznitelik
+    düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
+    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
+</table>
+    <p><code class="directive">SetEnvIf</code> yönergesi ortam değişkenlerini isteğin
+      özniteliklerine göre tanımlar. İlk bileşen olarak belirtilen
+      <code><em>öznitelik</em></code> şu üç şeyden biri olabilir:</p>
+
+    <ol>
+      <li>Bir HTTP istek başlığı alanı (ayrıntılı bilgi için bak: <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a>);
+        örneğin: <code>Host</code>, <code>User-Agent</code>,
+        <code>Referer</code> ve <code>Accept-Language</code>.  Bir düzenli
+        ifade kullanılarak birden fazla istek başlığı  belirtilebilir.</li>
+
+      <li>İsteğin aşağıdaki bileşenlerinden biri:
+        <ul>
+          <li><code>Remote_Host</code> - isteği yapan istemcinin konak ismi
+            (varsa)</li>
+
+          <li><code>Remote_Addr</code> -isteği yapan istemcinin IP adresi</li>
+
+          <li><code>Server_Addr</code> - isteği alan sunucunun IP adresi
+            (sadece 2.0.43 sonrası sürümler için)</li>
+
+          <li><code>Request_Method</code> - kullanılan yöntemin ismi
+            (<code>GET</code>, <code>POST</code>, vs.)</li>
+
+          <li><code>Request_Protocol</code> - İsteğin yapıldığı protokolün
+            ismi ve numarası ("HTTP/0.9", "HTTP/1.1" gibi)</li>
+
+          <li><code>Request_URI</code> - HTTP istek satırında belirtilen
+            özkaynak; genellikle sorgu dizgesi olmaksızın şema ve konak ismini
+            içeren bir URL parçasıdır. Sorgu dizgeleriyle eşleşmeler hakkında
+            ayrıntılı bilgi edinmek için <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+            modülünün <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+            yönergesinin açıklamasına bakınız.</li>
+        </ul>
+      </li>
+
+      <li>İstek ile evvelce ilişkilendirilmiş bir ortam değişkeninin ismi. Bu
+        sayede önceki bir eşleşmenin sonucuna karşı yeni bir sınama yapma
+        imkanı ortaya çıkar. Böyle bir sınama için sadece evvelce
+        <code>SetEnvIf[NoCase]</code> yönergeleri ile yapılmış atamalardaki
+        ortam değişkenleri kullanılabilir.  ‘Evvelce’ derken, sunucu genelinde
+        veya bölüm içinde bu yönergeden önce yer alan
+        <code>SetEnvIf[NoCase]</code> yönerge satırları kastedilmektedir.
+        Ortam değişkenlerinin dikkate alınabilmesi için istek öznitelikleri
+        arasında hiçbir eşleşme olmaması ve <code><em>öznitelik</em></code>
+        olarak bir düzenli ifade belirtilmemiş olması gerekir.</li>
+    </ol>
+
+    <p>İkinci bileşen (<code><em>düzifd</em></code>) bir <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifade</a>dir.  <code><em>düzifd</em></code>
+      ile <code><em>öznitelik</em></code> eşleştiği takdirde yönergenin kalan
+      bileşenleri değerlendirmeye alınır.</p>
+
+    <p>Kalan bileşenler atanacak ortam değişkenlerinin isimleri ve isteğe
+      bağlı olarak bunlara atanacak değerlerden oluşur. Bunlar şöyle
+      belirtilebilir:</p>
+
+    <ol>
+      <li><code><em>değişken-adı</em></code> veya</li>
+
+      <li><code>!<em>değişken-adı</em></code> ya da </li>
+
+      <li><code><em>değişken-adı</em>=<em>değer</em></code></li>
+    </ol>
+
+    <p>İlk biçemde değişkene "1" değeri atanır. İkincisinde atanmış bir
+      değişken atanmamış yapılır. Üçüncüsünde ise değişkene belirtilen
+      <code><em>değer</em></code> bire bir atanır. 2.0.52 sürümünden itibaren
+      parantezli düzenli ifadelerin sonuçları ile değiştirilmek üzere
+      <code><em>value</em></code> içinde <code>$1</code>..<code>$9</code>
+      gösterimleri tanınmaktadır.</p>
+
+    <div class="example"><h3>Örnek:</h3><p><code>
+      SetEnvIf Request_URI "\.gif$" nesne_bir_resim=gif<br />
+      SetEnvIf Request_URI "\.jpg$" nesne_bir_resim=jpg<br />
+      SetEnvIf Request_URI "\.xbm$" nesne_bir_resim=xbm<br />
+            :<br />
+      SetEnvIf Referer belgeler\.alanismi\.mesela\.dom dahili_site_istendi<br />
+            :<br />
+      SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
+            :<br />
+      SetEnvIf ^TS*  ^[a-z].*  TS_VAR<br />
+    </code></p></div>
+
+    <p>İlk üçünde istek bir resim dosyası için yapılmışsa
+      <code>nesne_bir_resim</code> ortam değişkeni atanmakta, dördüncüsünde
+      istenen sayfa <code>belgeler.alanismi.mesela.dom</code> adlı sitede
+      bulunuyorsa <code>dahili_site_istendi</code> ortam değişkeni
+      atanmaktadır.</p>
+
+    <p>Son örnekte ise istekte "TS" ile başlayıp [a-z] arasındaki
+      karakterlerle devam eden bir başlık alanı varsa <code>TS_VAR</code>
+      ortam değişkeni atanmaktadır.</p>
+
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><a href="../env.html">Apache’de Ortam Değişkenleri</a> belgesinde
+daha fazla örnek bulunabilir.</li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SetEnvIfNoCase" id="SetEnvIfNoCase">SetEnvIfNoCase</a> <a name="setenvifnocase" id="setenvifnocase">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Ortam değişkenlerini isteğin özniteliklerinde harf büyüklüğüne
+bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>SetEnvIfNoCase <em>öznitelik
+    düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
+    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_setenvif</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 1.3 ve sonrasında mevcuttur.</td></tr>
+</table>
+    <p><code class="directive">SetEnvIfNoCase</code> yönergesi sözdizimsel ve anlamsal
+      olarak <code class="directive"><a href="#setenvif">SetEnvIf</a></code>
+      yönergesinin eşdeğeridir. Ancak, eşleşmelerde harf büyüklüğüne
+      duyarsızdır. Örnek:</p>
+
+    <div class="example"><p><code>
+      SetEnvIfNoCase Host Apache\.Org site=apache
+    </code></p></div>
+
+    <p>Burada, <code>Host:</code> HTTP istek başlığında
+      <code>Apache.Org</code>, <code>apache.org</code> veya harf büyüklüğünce
+      farklı benzerleri belirtilmişse <code>site</code> ortam değişkenine
+      "<code>apache</code>" değeri atanmaktadır.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_setenvif.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_setenvif.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_setenvif.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_setenvif.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
