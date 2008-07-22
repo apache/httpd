@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_auth_core: Detect during startup when AuthDigestProvider
+     is configured to use an incompatible provider via AuthnProviderAlias.
+     PR 45196 [Eric Covener]
+
   *) mod_session: Prevent a segfault when a CGI script sets a cookie with a
      null value. [David Shane Holden <dpejesh apache.org>]
 
