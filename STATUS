@@ -130,31 +130,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~tdonovan/diffs/mod_rewrite_proxy_esc_2.2.x.diff
    +1: rpluem, niq
 
- * mod_auth_digest: Detect during startup when AuthDigestProvider
-   is configured to use an incompatible provider via AuthnProviderAlias.
-   PR 45196 
-   Trunk version of patches:
-        http://svn.apache.org/viewvc?rev=672639&view=rev
-        http://svn.apache.org/viewvc?rev=672671&view=rev
-        http://svn.apache.org/viewvc?rev=674364&view=rev (MMN comment)
-        http://svn.apache.org/viewvc?rev=673999&view=rev (include http_config.h in mod_auth.h)
-   Backport version for 2.2.x of patch:
-        http://people.apache.org/~covener/2.2.x-digest_vs_authnalias-2.diff
-   +1: covener
-   -1: niq: looks like a major MMN bump to me, in that it'll
-            break binary compatibility with old compilations
-            of authn modules (has_realm_hash being undefined).
-            Why not just test get_realm_hash - as in the else clause?
-   rpluem says: Good catch. Revisiting the patch I agree that it cannot
-   be backported this way and would require a major bump. I guess a way
-   out of this would be to increase the AUTHN_PROVIDER_VERSION and enable
-   the code to deal with different provider versions which would also
-   require changes at other sections of the code like add_authn_provider
-   in mod_auth_basic. Furthermore I wouldn't be sure if older authn
-   providers would still compile against the next 2.2.x version with
-   them missing one element in the authn_provider struct. This would be
-   a non starter of course.
-
  * core, authn/z: Avoid calling access control hooks for internal requests
    with configurations which match those of initial request.  Revert to
    original behaviour (call access control hooks for internal requests
