@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_so.xml.meta">
+
+<name>mod_so</name>
+<description>Modüllerin ve çalıştırılabilir kodun sunucunun başlatılması veya
+yeniden başlatılması sırasında yüklenmesini sağlar.</description>
+<status>Extension</status>
+<sourcefile>mod_so.c</sourcefile>
+<identifier>so_module</identifier>
+<compatibility>Windows için bu bir temel modüldür (sunucu bunu daima içerir).</compatibility>
+
+<summary>
+
+    <p>Seçilen işletim sistemleri üzerinde bu modül Apache’nin yeniden
+      derlenmesini gerektirmeden modüllerin <a href="../dso.html">Devingen
+      Paylaşımlı Nesne</a> (DSO) mekanizması üzerinden kullanılabilmesini
+      sağlar.</p>
+
+    <p>Unix’te yüklenen kod genellikle paylaşımlı nesne dosyalarından
+      (<code>.so</code> uzantılı dosyalar), Windows’ta ise ya <code>.so</code>
+      ya da <code>.dll</code> uzantılı dosyalardan gelir.</p>
+
+    <note type="warning"><title>Uyarı</title>
+    <p>Apache 1.3 modülleri Apache 2.0’da doğrudan kullanılamazlar - modül ya
+      devingen olarak yüklenecek hale getirilmeli ya da Apache 2.0’ın içinde
+      derlenmelidir.</p>
+    </note>
+</summary>
+
+<section id="windows">
+    <title>Yüklenebilir Modüllerin Windows için Oluşturulması</title>
+
+    <note><title>Bilginize</title>
+    <p>Windows için modül isimlendirme biçemi Apache 1.3.15 ve 2.0
+      sürümlerinde değişmiştir; modüllere artık mod_filanca.so biçeminde isim
+      verilmektedir.</p>
+
+    <p><code>mod_so</code> modülü  ApacheModuleFoo.dll biçeminde
+      isimlendirilmiş modülleri hala yüklemekteyse de yeni adlandırma uzlaşımı
+      tercih edilmelidir. Yüklenebilir modülleri 2.0’a dönüştürüyorsanız,
+      lütfen isimlerini de 2.0 uzlaşımına uygun hale getiriniz.</p></note>
+
+    <p>Apache modül programlama arayüzü Unix ve Windows sürümleri arasında
+      değişiklik göstermez. Unix için kullanılan çoğu modül hiç değişiklik
+      yapmadan ya da çok küçük bir değişiklikle Windows’ta da çalışmaktadır.
+      Çalışmayanlar Unix platformunun sahip olduğu ancak Windows platformunun
+      sahip olmadığı nitelikleri kullanan modüllerdir.</p>
+
+    <p>Bir modül Windows’ta çalıştığı zaman, sunucuya iki şekilde
+      yüklenebilir. Unix’te olduğu gibi, doğrudan sunucunun içinde
+      derlenebilir. Windows için hazırlanan Apache paketi, Unix için geçerli
+      olan  <code>Configure</code> betiğini içermediğinden modülün kaynak
+      dosyası ApacheCore proje dosyasına, sembolleri de
+      <code>os\win32\modules.c</code> dosyasına eklenmelidir.</p>
+
+    <p>İkinci yol ise modülü bir paylaşımlı kütüphane olarak çalışma anında
+      <directive module="mod_so">LoadModule</directive> yönergesi ile yüklemek
+      için bir DLL olarak derlemektir. Bu DLL modüller dağıtılabilir ve
+      sunucuyu yeniden derlemek gerekmeksizin her Windows için Apache
+      kurulumunda çalışabilir.</p>
+
+    <p>Bir modül DLL’i oluşturmak için modülün kaynak dosyasında küçük bir
+      değişiklik yapmak gerekir: Modül kaydının daha sonra oluşturulacak olan
+      DLL’den ihraç edilebilmesi gerekir (aşağıya bakınız). Bunu yapmak için
+      modülün modül kaydı tanımına (Apache başlık dosyalarında tanımlanmış
+      olan) <code>AP_MODULE_DECLARE_DATA</code> eklenmelidir. Örneğin,
+      modülünüz</p>
+
+    <example>
+        module foo_module;
+    </example>
+
+    <p>diye bir satır içeriyorsa bunu,</p>
+
+    <example>
+        module AP_MODULE_DECLARE_DATA foo_module;
+    </example>
+
+    <p>olarak değiştirmelisiniz. Bunun yalnız Windows üzerinde etkili olduğunu
+      ve Unix için modül kodunda bir değişiklik gerekmediğini unutmayınız.
+      Ayrıca, <code>.DEF</code> dosyaları hakkında bilgi sahibi iseniz modül
+      kodunda değişiklik yapmak yerine modül kaydını bu yöntemle de ihraç
+      edebilirsiniz.</p>
+
+    <p>Artık modülü içeren bir DLL oluşturmaya hazırsınız. Bunu, libhttpd.dll
+      paylaşımlı kütüphanesi derlenirken oluşturulan libhttpd.lib ihraç
+      kütüphanesi ile ilintilemeniz gerekecektir. Ayrıca, Apache başlık
+      dosyalarının doğru konumlandığından emin olmak için derleyici
+      seçeneklerinde değişiklik yapmanız gerekebilir. Bu kütüphaneyi
+      sunucunuzun kök dizini altındaki <code>modules</code> dizininde
+      bulabilirsiniz. En iyisi derleme ortamının doğru yapılandırıldığından
+      emin olmak için ya ağaçta mevcut modüllerden birinin <code>.dsp</code>
+      dosyasını gaspedersiniz ya da kendi <code>.dsp</code> dosyanızın
+      ilintileme seçenekleriyle derleyicininkileri karşılaştırırsınız.</p>
+
+    <p>Artık modülünüzün DLL sürümünü oluşturmalısınız. DLL’i sunucunuzun kök
+      dizininin altında bulunan <code>modules</code> dizinine yerleştirdikten
+      sonra <directive>LoadModule</directive> yönergesi ile sunucunuza
+      yükleyebilirsiniz.</p>
+
+</section>
+
+<directivesynopsis>
+<name>LoadFile</name>
+<description>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
+</description>
+<syntax>LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</syntax>
+<contextlist>
+<context>server config</context>
+</contextlist>
+
+<usage>
+
+    <p><directive>LoadFile</directive> yönergesi ismi belirtilen kütüphaneleri
+      veya nesne dosyalarını sunucu başlatılırken veya yeniden başlatılırken
+      sunucu ile ilintiler. Yönerge, bazı modüllerin çalışması sırasında
+      gereken ek kodların yüklenmesi için kullanılır.
+      <code><em>dosya-ismi</em></code> olarak mutlak bir dosya yolu
+      belirtilebileceği gibi <directive module="core">ServerRoot</directive>’a
+      göreli bir dosya yolu da  belirtilebilir.</p>
+
+    <p>Örnek:</p>
+
+    <example>LoadFile libexec/libxmlparse.so</example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LoadModule</name>
+<description>Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
+ve etkin modül listesine ekler.</description>
+<syntax>LoadModule <em>modül dosya-ismi</em></syntax>
+<contextlist>
+<context>server config</context>
+</contextlist>
+
+<usage>
+    <p><directive>LoadModule</directive> yönergesi
+      <code><em>dosya-ismi</em></code> ile belirtilen nesne dosyasını veya
+      kütüphaneyi sunucu ile ilintiler ve etkin modül listesine belirtilen
+      <code><em>modül</em></code> ismiyle ekler. <code><em>modül</em></code>,
+      modülün kaynak dosyasında <code>module</code> türündeki tek harici
+      değişkenin ismi olup modül belgelerinde <a
+      href="module-dict.html#ModuleIdentifier" >Modül Betimleyici</a> olarak
+      geçer. Örneğin,</p>
+
+    <example>
+      LoadModule status_module modules/mod_status.so
+    </example>
+
+    <p>satırı ile ismi belirtilen dosya <directive
+      module="core">ServerRoot</directive> dizini altındaki
+      <code>modules</code> alt dizininden yüklenir.</p>
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+
