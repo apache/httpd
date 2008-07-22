@@ -108,11 +108,6 @@ static authn_status check_password(request_rec *r, const char *user,
     return AUTH_GRANTED;
 }
 
-static apr_status_t has_realm_hash(cmd_parms *cmd, const char *provider_name)
-{
-    return OK;
-}
-
 static authn_status get_realm_hash(request_rec *r, const char *user,
                                    const char *realm, char **rethash)
 {
@@ -164,7 +159,6 @@ static const authn_provider authn_file_provider =
 {
     &check_password,
     &get_realm_hash,
-    &has_realm_hash,
 };
 
 static void register_hooks(apr_pool_t *p)
