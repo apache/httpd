@@ -97,9 +97,8 @@ for HTTP Basic authentication.</dd>
 address)</dd>
 <dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>Authorization based on file ownership</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>User Authorization</dd>
-<dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Generates directory indexes,
-    automatically, similar to the Unix <code>ls</code> command or the
-    Win32 <code>dir</code> shell command</dd>
+<dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
+yaptığı gibi dizin içeriğini listeler.</dd>
 <dt><a href="mod_cache.html" id="C" name="C">mod_cache</a></dt><dd>Content cache keyed to URIs.</dd>
 <dt><a href="mod_cern_meta.html">mod_cern_meta</a></dt><dd>CERN httpd metafile semantics</dd>
 <dt><a href="mod_cgi.html">mod_cgi</a></dt><dd>Execution of CGI scripts</dd>
@@ -118,8 +117,8 @@ client</dd>
 <dt><a href="mod_dumpio.html">mod_dumpio</a></dt><dd>Dumps all I/O to error log as desired.</dd>
 <dt><a href="mod_echo.html" id="E" name="E">mod_echo</a></dt><dd>A simple echo server to illustrate protocol 
 modules</dd>
-<dt><a href="mod_env.html">mod_env</a></dt><dd>Modifies the environment which is passed to CGI scripts and
-SSI pages</dd>
+<dt><a href="mod_env.html">mod_env</a></dt><dd>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere müdahale
+etmek için kullanılır.</dd>
 <dt><a href="mod_example.html">mod_example</a></dt><dd>Illustrates the Apache module API</dd>
 <dt><a href="mod_expires.html">mod_expires</a></dt><dd>Generation of <code>Expires</code> and
 <code>Cache-Control</code> HTTP headers according to user-specified
@@ -171,10 +170,9 @@ URLs on the fly</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
-<dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
-on characteristics of the request</dd>
-<dt><a href="mod_so.html">mod_so</a></dt><dd>Loading of executable code and
-modules into the server at start-up or restart time</dd>
+<dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Ortam değişkenlerinin isteğin özelliklerine uygun olarak atanmasını sağlar</dd>
+<dt><a href="mod_so.html">mod_so</a></dt><dd>Modüllerin ve çalıştırılabilir kodun sunucunun başlatılması veya
+yeniden başlatılması sırasında yüklenmesini sağlar.</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs that
 users might have entered by ignoring capitalization and by
 allowing up to one misspelling</dd>

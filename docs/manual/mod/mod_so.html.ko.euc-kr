@@ -23,7 +23,8 @@
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_so.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/mod_so.html" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>시작할때 혹은 재시작할때 실행가능한 코드와 모듈을
 서버로 읽어들인다</td></tr>
@@ -167,7 +168,8 @@
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/mod/mod_so.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_so.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_so.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/mod_so.html" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_so.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
