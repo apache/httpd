@@ -79,7 +79,7 @@ Documentation</a>.</p>
 <category id="rewrite">
 <title>URL Rewriting Guide</title>
 <page separate="yes" href="rewrite/">Overview</page>
-<page href="../mod/mod_rewrite.html">mod_rewrite reference
+<page href="mod/mod_rewrite.html">mod_rewrite reference
 documentation</page>
 <page href="rewrite/rewrite_intro.html">Introduction</page>
 <page href="rewrite/rewrite_flags.html">Flags</page>
