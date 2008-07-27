@@ -61,7 +61,7 @@ Documentation</a>.</p>
 <page href="filter.html">Filters</page>
 <page href="suexec.html">suEXEC Support</page>
 <page href="misc/perf-tuning.html">Performance Hints</page>
-<page href="misc/rewriteguide.html">URL Rewriting Guide</page>
+<page href="faq/">Frequently Asked Questions</page>
 </category>
 
 <category id="vhosts">
@@ -76,12 +76,17 @@ Documentation</a>.</p>
 <page href="dns-caveats.html">Issues Regarding DNS and Apache</page>
 </category>
 
-<category id="faq">
-<title>Apache Server Frequently Asked Questions</title>
-<page href="faq/">Overview</page>
-<page href="faq/background.html">Background Information</page>
-<page href="faq/support.html">Support</page>
-<page href="faq/error.html">Error Messages</page>
+<category id="rewrite">
+<title>URL Rewriting Guide</title>
+<page separate="yes" href="rewrite/">Overview</page>
+<page href="../mod/mod_rewrite.html">mod_rewrite reference
+documentation</page>
+<page href="rewrite/rewrite_intro.html">Introduction</page>
+<page href="rewrite/rewrite_flags.html">Flags</page>
+<page href="rewrite/rewrite_tech.html">Technical details</page>
+<page href="rewrite/rewrite_guide.html">Rewrite Guide - useful examples</page>
+<page href="rewrite/rewrite_guide_advanced.html">Advanced Rewrite Guide - more
+useful examples</page>
 </category>
 
 <category id="ssl">
