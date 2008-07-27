@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 587444 -->
+<!-- English Revision: 680076 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -51,7 +55,7 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <page href="urlmapping.html">URL’lerin Dosya Sistemi ile Eşlenmesi</page>
 <page href="misc/security_tips.html">Güvenlik İpuçları</page>
 <page href="dso.html">Devingen Paylaşımlı Nesne (DSO) Desteği</page>
-<page href="content-negotiation.html">İçerik Dili Yönetimi</page>
+<page href="content-negotiation.html">İçerik Dili Uzlaşımı</page>
 <page href="custom-error.html">Özel Hata Yanıtları</page>
 <page href="bind.html">Sunucunun Kullandığı Adreslerin ve Portların Ayarlanması</page>
 <page href="mpm.html">Çok Süreçlilik Modülleri (MPM’ler)</page>
@@ -60,7 +64,7 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <page href="filter.html">Süzgeçler</page>
 <page href="suexec.html">CGI için Suexec Desteği</page>
 <page href="misc/perf-tuning.html">Başarım Arttırma İpuçları</page>
-<page href="misc/rewriteguide.html">URL Yeniden Yazma Rehberi</page>
+<page href="faq/">Sıkça Sorulan Sorular</page>
 </category>
 
 <category id="vhosts">
@@ -75,18 +79,16 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <page href="dns-caveats.html">DNS ve Apache ile ilgili Konular</page>
 </category>
 
-<category id="faq">
-<title>Apache Sunucusu ile ilgili Sıkça Sorulan Sorular</title>
-<page href="faq/">Genel Bakış</page>
-<!--
-    Response status code: 404
-    Response message: Not Found
-    What to do: The link is broken. Fix it NOW!
-    Fixed.
-<page href="faq/background.html">Background Information</page>
-<page href="faq/support.html">Support</page>
-<page href="faq/error.html">Error Messages</page>
--->
+<category id="rewrite">
+<title>URL’lerin Yeniden Yazılması</title>
+<page separate="yes" href="rewrite/">Genel Bakış</page>
+<page href="mod/mod_rewrite.html">mod_rewrite Başvuru Belgesi</page>
+<page href="rewrite/rewrite_intro.html">Giriş</page>
+<page href="rewrite/rewrite_flags.html">Seçenekler</page>
+<page href="rewrite/rewrite_tech.html">Teknik Ayrıntılar</page>
+<page href="rewrite/rewrite_guide.html">Yeniden Yazma Rehberi - yararlı örnekler</page>
+<page href="rewrite/rewrite_guide_advanced.html">Gelişkin Yeniden Yazma Rehberi - daha
+yararlı örnekler</page>
 </category>
 
 <category id="ssl">
