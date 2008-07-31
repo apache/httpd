@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 645883:675568 (outdated) -->
+<!-- English Revision: 675568 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -84,8 +84,8 @@
 <directivesynopsis>
 <name>Allow</name>
 <description>サーバのある領域にアクセスできるホストを制御する</description>
-<syntax> Allow from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</syntax>
+<syntax> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
@@ -180,8 +180,11 @@
     の存在によりアクセスの制御を行なえるようにするものです。
     <code>Allow from env=<var>env-variable</var></code>
     が指定されていると、環境変数 <var>env-variable</var>
-    が存在した場合にリクエストはアクセスを許可されます。サーバは
-    <module>mod_setenvif</module>
+    が存在した場合にリクエストはアクセスを許可されます。
+    <code>Allow from env=!<var>env-variable</var></code>
+    が指定されていると、環境変数 <var>env-variable</var>
+    が存在しない場合にアクセス許可されます。
+    サーバは <module>mod_setenvif</module>
     のディレクティブにより、クライアントのリクエスト
     の特徴に基づいて柔軟に環境変数を設定する機能を提供します。
     ですから、このディレクティブはクライアントの
@@ -211,8 +214,8 @@
 <directivesynopsis>
 <name>Deny</name>
 <description>サーバがアクセスを拒否するホストを制御する</description>
-<syntax> Deny from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</syntax>
+<syntax> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Limit</override>
