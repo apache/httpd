@@ -1,0 +1,246 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_0.xml.meta">
+
+<title>Apache 2.0’da Yeni olan Özellikler</title>
+
+<summary>
+  <p>Bu belgede Apache HTTP Sunucusunun 1.3 ve 2.0 sürümleri arasındaki
+    başlıca değişikliklerin bazılarına değinilmiştir.</p>
+</summary>
+
+<seealso><a href="upgrading.html">1.3’ten 2.0’a Yükseltme</a></seealso>
+
+  <section id="core">
+    <title>Çekirdekteki Gelişmeler</title>
+
+    <dl>
+      <dt>Unix Evreleri</dt>
+
+      <dd>POSIX evreleri desteği olan Unix sistemlerinde Apache, çok evreli
+        kipte çok süreçlilik şeklinde melez bir yapıda çalışır. Bu bir çok
+        bakımdan ölçeklenebilirliği arttırsa da bütün yapılandırmalarda
+        sağlanamaz.</dd>
+
+      <dt>Yeni Paket Derleme Sistemi</dt>
+
+      <dd>Yeni kaynak paketi derleme sistemi <code>autoconf</code> ve
+        <code>libtool</code>’a dayalı olarak sıfırdan, yeni baştan yazıldı.
+        Böylece Apache’nin paket yapılandırma sistemi diğer paketlerinkiyle
+        benzerlik kazanmış oldu.</dd>
+
+      <dt>Çok Sayıda Protokol Desteği</dt>
+
+      <dd>Apache artık çok sayıda protokol ile hizmet sunacak bir alt yapıya
+        sahiptir. Örneğin, <module>mod_echo</module> modülü bu amaçla
+        yazılmıştır.</dd>
+
+      <dt>Unix dışı platformalara daha iyi destek</dt>
+
+      <dd>Apache 2.0 sürümleri,  BeOS, OS/2, Windows gibi Unix olmayan
+        platformlarda daha hızlı ve daha kararlı çalışacak duruma
+        getirilmiştir. Genelde iyi geliştirilmemiş olan dolayısıyla istenen
+        başarımı sağlayamayan POSIX taklit katmanlarının kullanımından
+        vazgeçilmiş, platforma özgü <a href="mpm.html">çok süreçlilik
+        modülleri</a> (MPM) ve Apache Taşınabilirlik Arayüzü (APR) sayesinde
+        bu platformlar artık kendi doğal programlama arayüzleriyle
+        gerçeklenir olmuştur.</dd>
+
+      <dt>Yeni Apache Programlama Arayüzü</dt>
+
+      <dd>Modüller için kullanılan programlama arayüzü 2.0 sürümüyle önemli
+        değişikliklere uğramıştır. 1.3 sürümünde görülen modüllerle ilgili
+        sıralama/öncelik sorunlarının çoğu giderilmiştir. 2.0 sürümü bu
+        işlemleri daha bir özdevimli yapar olmuştur; daha fazla esneklik
+        sağlamak için artık kancalı modül sıralaması kullanılabilmektedir.
+        Ayrıca, arayüze, Apache sunucu çekirdeğini yamamaya gerek kalmadan
+        modüllerle sunucu yeteneklerinin arttırılabilmesini sağlayan yeni
+        çağrılar eklenmiştir.</dd>
+
+      <dt>IPv6 Desteği</dt>
+
+      <dd>IPv6’nın Apache Taşınabilirlik Arayüzü kütüphanesi tarafından
+        desteklendiği sistemlerde Apache öntanımlı olarak IPv6 soketlerini
+        dinler. Bundan başka, <directive module="mpm_common"
+        >Listen</directive>, <directive module="core"
+        >NameVirtualHost</directive> ve <directive module="core"
+        >VirtualHost</directive> yönergelerinin IPv6 sayısal adres
+        dizgelerini desteklemesi sağlanmıştır.<br />Örnek: <code>Listen
+        [2001:db8::1]:8080</code></dd>
+
+      <dt>Süzme</dt>
+
+      <dd>Apache modülleri, artık, sunucuya teslim edilen veya sunucudan
+        teslim alınan içerik akımları üzerinde süzgeç gibi davranacak şekilde
+        yazılabilmektedir. Bu sayede, örneğin CGI betiklerinin çıktılarının
+        <module>mod_include</module> modülünün <code>INCLUDES</code> süzgeci
+        kullanılarak SSI yönergeleri için çözümlenmesi mümkündür. CGI
+        programlarının birer eylemci olarak davranması gibi,
+        <module>mod_ext_filter</module> modülü de harici programların birer
+        süzgeç olarak davranabilmesini mümkün kılar.</dd>
+
+      <dt>Çok Dilli Hata Yanıtları</dt>
+
+      <dd>Hata yanıtlarının tarayıcılara yönelik iletileri artık SSI
+        belgeleri kullanılarak çeşitli dillerde sağlanabilmektedir. Bunlar
+        ayrıca yönetici tarafından görünüş ve kullanışlılık tutarlılığı
+        bakımından kişiselleştirilebilmektedir.</dd>
+
+      <dt>Basitleştirilmiş Yapılandırma</dt>
+
+      <dd>Bazı yönergelerle ilgili kafa karışıklıkları giderilmiştir.
+        Bilhassa belli bir IP adresini dinlemek için kullanılan
+        <code>Port</code> ve <code>BindAddress</code> yönergeleri ile ilgili
+        karışıklığın önüne geçmek için sadece <directive module="mpm_common"
+        >Listen</directive> yönergesi yeterli olmaktadır. <directive
+        module="core">ServerName</directive> yönergesi ise sadece yönlendirme
+        ve sanal konak tanıma amacıyla sunucu ismi ve port belirtiminde
+        kullanılmaktadır.</dd>
+
+      <dt>Doğal Windows NT Unicode Desteği</dt>
+
+      <dd>Apache 2.0, Windows NT üzerinde artık tüm dosya sistemi
+        kodlamalarında utf-8 kullanmaktadır. Bu destek, Windows 2000 ve
+        Windows XP dahil tüm Windows NT temelli sistemlere çok dillilik
+        desteğini sağlamak üzere mevcut Unicode dosya sistemine doğrudan
+        uyarlanır. <em>Dosya sisteminde makinenin yerel karakter kodlamasını
+        kullanan kullanan Windows 95, 98 ve ME için bu destek
+        yoktur.</em></dd>
+
+      <dt>Düzenli İfade Kütüphanesi Güncellemesi</dt>
+
+      <dd>Apache 2.0’da <a href="http://www.pcre.org/">Perl uyumlu düzenli
+        ifade kütüphanesi</a> bulunur. Tüm düzenli ifadelerde artık çok daha
+        güçlü olan Perl 5 sözdizimi kullanılmaktadır.</dd>
+
+    </dl>
+  </section>
+
+  <section id="module">
+    <title>Modüllerdeki Gelişmeler</title>
+
+    <dl>
+      <dt><module>mod_ssl</module></dt>
+
+      <dd>Apache 2.0’da yeni olan bu modül,  OpenSSL tarafından sağlanan
+        SSL/TLS şifreleme protokollerine bir arayüzdür.</dd>
+
+      <dt><module>mod_dav</module></dt>
+
+      <dd>Apache 2.0’da yeni olan bu modül, site içeriğinin destek ve bakımı
+        için HTTP dağıtık yazım ve sürüm yönetimi (DAV - Distributed
+        Authoring and Versioning) belirtimini gerçekler.</dd>
+
+      <dt><module>mod_deflate</module></dt>
+
+      <dd>Apache 2.0’da yeni olan bu modül sayesinde ağ band genişliğinden
+        daha verimli yararlanabilmek için içeriğin sıkıştırılarak
+        gönderilmesini talep eden tarayıcıların desteklenmesi mümkün
+        olmuştur.</dd>
+
+      <dt><module>mod_auth_ldap</module></dt>
+
+      <dd>Apache 2.0.41’de yeni olan bu modül, HTTP temel kimlik
+        doğrulamasında kullanılan delillerin saklanması için LDAP
+        veritabanının kullanılabilmesini mümkün kılar. Kardeş modülü olan
+        <module>mod_ldap</module> ise bağlantı havuzlaması ve sonuçların
+        önbelleğe alınması ile ilgilenir.</dd>
+
+      <dt><module>mod_auth_digest</module></dt>
+
+      <dd>Paylaşımlı belleği kullanan süreçlere karşı oturum önbelleklemesi
+        için ek destek içerir.</dd>
+
+      <dt><module>mod_charset_lite</module></dt>
+
+      <dd>Apache 2.0’da yeni olan bu deneysel modül, karakter kümesi
+        dönüşümleri veya kaydı için destek sağlar.</dd>
+
+      <dt><module>mod_file_cache</module></dt>
+
+      <dd>Apache 2.0’da yeni olan bu modül, Apache 1.3’teki
+        <code>mod_mmap_static</code> modülünün işlevselliğini içermenin
+        yanında buna önbellekleme yetenekleri de ekler.</dd>
+
+      <dt><module>mod_headers</module></dt>
+
+      <dd>Bu modül Apache 2.0’da daha esnek hale getirilmiştir. Artık
+        <module>mod_proxy</module> tarafından kullanılan istek başlıkları
+        değiştirilebilmekte ve bunlar yanıt başlıklarına şartlı olarak
+        atanabilmektedir.</dd>
+
+      <dt><module>mod_proxy</module></dt>
+
+      <dd>Bu modül HTTP/1.1 uyumlu vekaleti daha güvenilir kılmak ve yeni
+        süzgeç alt yapısının getirilerinden de yararlanmak amacıyla yeni
+        baştan yazılmıştır. Bunun yanında, <directive module="mod_proxy"
+        type="section">Proxy</directive> bölümünün yeni hali vekil siteleri
+        desteklemek bakımından daha okunabilir (ve kendi içinde daha hızlı)
+        olması sağlanmıştır; <code>&lt;Directory "proxy:..."&gt;</code>
+        yapılandırması artık desteklenmemektedir. Modül,
+        <code>proxy_connect</code>, <code>proxy_ftp</code> ve
+        <code>proxy_http</code> şeklinde her biri belli bir protokolü
+        destekleyen ayrı modüllere bölünmüştür.</dd>
+
+      <dt><module>mod_negotiation</module></dt>
+
+      <dd>Yeni <directive module="mod_negotiation"
+        >ForceLanguagePriority</directive> yönergesi sayesinde istemciye
+        “Kabul edilebilir bir gösterim çeşidi yok” ya da “Çok sayıda seçim
+        belirtilmiş” yanıtını döndürmek yerine tüm durumlara uyan bir
+        sayfanın gönderilebilmesi sağlanmıştır. Bundan başka, uzlaşım ve
+        <code>MultiViews</code> algoritmaları daha tutarlı sonuçlar elde
+        etmek amacıyla elden geçirilmiş ve belge içeriği ile daha iyi eşleşen
+        yeni bir tür eşlem yapısı sağlanmıştır.</dd>
+
+      <dt><module>mod_autoindex</module></dt>
+
+      <dd>Dizin içeriklerinin özdevimli listelenmesi artık HTML tabloları
+        kullanılacak şekilde yapılandırılabilmektedir. Böylece sayfa daha iyi
+        biçemlenebilmekte, içerik daha hassas sıralanabilmekte, sürüm
+        numarasına göre sıralama yapılabilmekte ve dosya ismi kalıpları
+        kullanılarak sadece istenen içerik listelenebilmektedir.</dd>
+
+      <dt><module>mod_include</module></dt>
+
+      <dd>Yeni yönergeler, değiştirilecek SSI elemanları için öntanımlı
+        başlangıç ve bitiş etiketlerine izin vermekte, hataların ve zaman
+        biçemleme yapılandırmalarının SSI belgesinde değil ana yapılandırma
+        dosyasında bulunması mümkün olmaktadır. Düzenli ifadelerin gruplanmış
+        sonuçları (Perl düzenli ifade sözdizimi kullanılmaktadır)
+        <module>mod_include</module> modülünün <code>$0</code> ..
+        <code>$9</code> değişkenleri sayesinde kullanılabilmektedir.</dd>
+
+      <dt><module>mod_auth_dbm</module></dt>
+
+      <dd><directive module="mod_auth_dbm">AuthDBMType</directive> yönergesi
+        sayesinde artık çok sayıda DBM tarzı veritabanı türü
+        desteklenmektedir.</dd>
+    </dl>
+  </section>
+</manualpage>
+
