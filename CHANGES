@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_cgid: Pass along empty command line arguments from an ISINDEX
+     query that has consecutive '+' characters in the QUERY_STRING, 
+     matching the behavior of mod_cgi.
+     [Eric Covener]
+
   *) mod_auth_core: Detect during startup when AuthDigestProvider
      is configured to use an incompatible provider via AuthnProviderAlias.
      PR 45196 [Eric Covener]

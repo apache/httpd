@@ -237,6 +237,9 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
             ap_unescape_url(w);
             av[idx++] = ap_escape_shell_cmd(p, w);
         }
+        else { 
+            av[idx++] = w;
+        }
     }
     av[idx] = NULL;
     return av;
