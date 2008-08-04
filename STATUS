@@ -190,9 +190,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     query that has consecutive '+' characters in the QUERY_STRING,
     matching the behavior of mod_cgi.
     Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=682389&view=rev 
+      http://svn.apache.org/viewvc?rev=682389&view=rev
+      http://svn.apache.org/viewvc?rev=682475&view=rev
     Backport version for 2.2.x of patch:
-       Trunk version of patch works
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_cgid.c?r1=682475&r2=682389
     +1: covener,
 
 PATCHES/ISSUES THAT ARE STALLED
