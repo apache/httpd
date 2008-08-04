@@ -186,6 +186,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
     +1: rpluem,
 
+ * mod_cgid: Pass along empty command line arguments from an ISINDEX
+    query that has consecutive '+' characters in the QUERY_STRING,
+    matching the behavior of mod_cgi.
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=682389&view=rev 
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: covener,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
