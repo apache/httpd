@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=682475&view=rev
     Backport version for 2.2.x of patch:
       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_cgid.c?r1=682475&r2=682389
-    +1: covener,
+    +1: covener, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
