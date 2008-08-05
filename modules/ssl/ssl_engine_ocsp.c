@@ -149,7 +149,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
         if (r != OCSP_RESPONSE_STATUS_SUCCESSFUL) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-			 "OCSP response not successful: %d", rc);
+                         "OCSP response not successful: %d", rc);
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
     }
@@ -167,7 +167,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         if (OCSP_check_nonce(request, basicResponse) != 1) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-			 "Bad OCSP responder answer (bad nonce)");
+                        "Bad OCSP responder answer (bad nonce)");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
     }
@@ -177,7 +177,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         if (OCSP_basic_verify(basicResponse, NULL, ctx->ctx, 0) != 1) {
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-			 "failed to verify the OCSP response");
+                        "failed to verify the OCSP response");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
     }
