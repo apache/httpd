@@ -382,6 +382,7 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
                                                            c->bucket_alloc));
         }
         if (wildcard != NULL) {
+            wildcard = ap_escape_html(p, wildcard);
             APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(wildcard,
                                                            strlen(wildcard), p,
                                                            c->bucket_alloc));

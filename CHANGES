@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.64
 
+  *) SECURITY: CVE-2008-2939 (cve.mitre.org)
+     mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
+     the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
 Changes with Apache 2.0.63
 
