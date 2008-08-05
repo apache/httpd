@@ -3999,7 +3999,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
      * ourself).
      */
     if (p->flags & RULEFLAG_PROXY) {
-	/* PR#39746: Escaping things here gets repeated in mod_proxy */
+        /* PR#39746: Escaping things here gets repeated in mod_proxy */
         fully_qualify_uri(r);
 
         rewritelog((r, 2, ctx->perdir, "forcing proxy-throughput with %s",

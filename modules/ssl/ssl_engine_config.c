@@ -1389,7 +1389,7 @@ const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag)
 
     return NULL;
 }
-	        
+        
 const char *ssl_cmd_SSLOCSPOverrideResponder(cmd_parms *cmd, void *dcfg, int flag)
 {
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
