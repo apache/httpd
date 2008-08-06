@@ -206,6 +206,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
    +1: rpluem,
 
+ * mod_rewrite: After r649840, mod_proxy_http will no longer append a query string 
+   from r->args if "no-canon" is used. PR: 45247
+
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=670061&view=rev
+         http://svn.apache.org/viewvc?rev=670198&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch(es) works
+   +1: tdonovan
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
