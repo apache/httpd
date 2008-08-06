@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 659902 -->
+<!-- English revision : 682362 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -104,7 +104,7 @@
 	  et d'ordonnancement rencontr&eacute;s avec l'architecture 2.0.</dd>
 
       <dt>Support des gros fichiers</dt>
-      <dd>httpd supporte maintenant les fichiers d'une taille sup&eacute;rieure
+      <dd><program>httpd</program> supporte maintenant les fichiers d'une taille sup&eacute;rieure
       &agrave; 2GB sur les syst&egrave;mes 32 bits UNIX modernes.  Le support des
       corps de requ&ecirc;te d'une taille sup&eacute;rieure &agrave; 2GB a aussi &eacute;t&eacute;
       ajout&eacute;.</dd>
@@ -119,7 +119,7 @@
 
       <dt>Support des bases de donn&eacute;es SQL</dt>
       <dd>Le module <module>mod_dbd</module>, associ&eacute; &agrave; l'environnement
-      	apr_dbd, fournit le support SQL direct aux modules
+      	<code>apr_dbd</code>, fournit le support SQL direct aux modules
 	qui en ont besoin.  Supporte la mise en commun des connexions
           dans les modules MPM thread&eacute;s.</dd>
 
@@ -131,10 +131,10 @@
     <dl>
       <dt>Authn/Authz</dt>
       <dd>Les modules du r&eacute;pertoire aaa ont &eacute;t&eacute; renomm&eacute;s et fournissent
-          un support am&eacute;lior&eacute; pour la m&eacute;thode d'authentification <strong>digest</strong>.  Par exemple, mod_auth
+          un support am&eacute;lior&eacute; pour la m&eacute;thode d'authentification <strong>digest</strong>.  Par exemple, <code>mod_auth</code>
           est maintenant scind&eacute; en deux modules : <module>mod_auth_basic</module> et
-          <module>mod_authn_file</module>; mod_auth_dbm s'appelle maintenant
-          <module>mod_authn_dbm</module>; mod_access a &eacute;t&eacute; renomm&eacute; en
+          <module>mod_authn_file</module>; <code>mod_auth_dbm</code> s'appelle maintenant
+          <module>mod_authn_dbm</module>; <code>mod_access</code> a &eacute;t&eacute; renomm&eacute; en
           <module>mod_authz_host</module>.  Est &eacute;galement apparu le nouveau module
           <module>mod_authn_alias</module> qui simplifie
           certaines configurations d'authentification.
@@ -173,7 +173,7 @@
 	connexion en clair au cryptage TLS.</dd>
 
       <dt><module>mod_imagemap</module></dt>
-      <dd>mod_imap a &eacute;t&eacute; renomm&eacute; en <module>mod_imagemap</module> afin
+      <dd><code>mod_imap</code> a &eacute;t&eacute; renomm&eacute; en <module>mod_imagemap</module> afin
       d'&eacute;viter une confusion pour les utilisateurs.</dd>
     </dl>
 
@@ -211,12 +211,12 @@
       <dd>Les modules d'authentification et d'autorisation int&eacute;gr&eacute;s ont
           &eacute;t&eacute; renomm&eacute;s de la mani&egrave;re suivante:
           <ul>
-          <li>mod_auth_*  -> Modules qui impl&eacute;mentent un m&eacute;canisme
+          <li><code>mod_auth_*</code>  -> Modules qui impl&eacute;mentent un m&eacute;canisme
 	  	d'authentification HTTP</li>
-          <li>mod_authn_* -> Modules qui fournissent un dispositif
+          <li><code>mod_authn_*</code> -> Modules qui fournissent un dispositif
 	  	d'authentification en arri&egrave;re-plan</li>
-          <li>mod_authz_* -> Modules qui impl&eacute;mentent l'autorisation (ou l'acc&egrave;s)</li>
-          <li>mod_authnz_*-> Modules qui impl&eacute;mentent &agrave; la fois
+          <li><code>mod_authz_*</code> -> Modules qui impl&eacute;mentent l'autorisation (ou l'acc&egrave;s)</li>
+          <li><code>mod_authnz_*</code> -> Modules qui impl&eacute;mentent &agrave; la fois
 	  l'authentification &amp; l'autorisation</li>
           </ul>
 	  L'organisation des m&eacute;thodes d'authentification a &eacute;galement &eacute;t&eacute; revue, ce qui va simplifier
@@ -237,7 +237,8 @@
 
       <dt>D&eacute;finition de la taille de la pile pour les modules MPM en processus l&eacute;gers</dt>
 
-      <dd>Une nouvelle directive a &eacute;t&eacute; ajout&eacute;e, <code>ThreadStackSize</code>
+      <dd>Une nouvelle directive a &eacute;t&eacute; ajout&eacute;e, <directive module="mpm_common"
+          >ThreadStackSize</directive>
      afin de d&eacute;finir la taille de la pile pour tous les modules MPM en processus l&eacute;gers (modules thread&eacute;s).
      Ceci s'av&egrave;re n&eacute;cessaire pour certains modules tiers sur des plateformes
      dont la taille de la pile des threads par d&eacute;faut est
