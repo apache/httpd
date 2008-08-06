@@ -77,7 +77,7 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
     /* handle expiry */
     buffer = "";
     if (maxage) {
-        buffer = apr_pstrcat(r->pool, "Max-Age=", apr_ltoa(r->pool, maxage), ";");
+        buffer = apr_pstrcat(r->pool, "Max-Age=", apr_ltoa(r->pool, maxage), ";", NULL);
     }
 
     /* create RFC2965 compliant cookie */
