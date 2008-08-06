@@ -714,6 +714,9 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
     return inctx->rc;
 }
 
+/* Read a line of input from the SSL input layer into buffer BUF of
+ * length *LEN; updating *len to reflect the length of the line
+ * including the LF character. */
 static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *inctx,
                                          char *buf,
                                          apr_size_t *len)
@@ -1204,8 +1207,8 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
 {
     apr_status_t status;
     bio_filter_in_ctx_t *inctx = f->ctx;
-
-    apr_size_t len = sizeof(inctx->buffer);
+    const char *start = inctx->buffer; /* start of block to return */
+    apr_size_t len = sizeof(inctx->buffer); /* length of block to return */
     int is_init = (mode == AP_MODE_INIT);
 
     if (f->c->aborted) {
@@ -1257,7 +1260,25 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         status = ssl_io_input_read(inctx, inctx->buffer, &len);
     }
     else if (inctx->mode == AP_MODE_GETLINE) {
-        status = ssl_io_input_getline(inctx, inctx->buffer, &len);
+        const char *pos;
+
+        /* Satisfy the read directly out of the buffer if possible;
+         * invoking ssl_io_input_getline will mean the entire buffer
+         * is copied once (unnecessarily) for each GETLINE call. */
+        if (inctx->cbuf.length 
+            && (pos = memchr(inctx->cbuf.value, APR_ASCII_LF, 
+                             inctx->cbuf.length)) != NULL) {
+            start = inctx->cbuf.value;
+            len = 1 + pos - start; /* +1 to include LF */
+            /* Buffer contents now consumed. */
+            inctx->cbuf.value += len;
+            inctx->cbuf.length -= len;
+            status = APR_SUCCESS;
+        }
+        else {
+            /* Otherwise fall back to the hard way. */
+            status = ssl_io_input_getline(inctx, inctx->buffer, &len);
+        }
     }
     else {
         /* We have no idea what you are talking about, so return an error. */
@@ -1271,7 +1292,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     /* Create a transient bucket out of the decrypted data. */
     if (len > 0) {
         apr_bucket *bucket =
-            apr_bucket_transient_create(inctx->buffer, len, f->c->bucket_alloc);
+            apr_bucket_transient_create(start, len, f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, bucket);
     }
 
