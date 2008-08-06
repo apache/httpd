@@ -40,7 +40,8 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri)
                "Host: %s:%d\r\n"
                "Content-Length: %d\r\n"
                "\r\n", 
-               uri->path, uri->query ? "?" : "", uri->query ? uri->query : "",
+               uri->path ? uri->path : "/",
+               uri->query ? "?" : "", uri->query ? uri->query : "",
                uri->hostname, uri->port, len);
 
     if (i2d_OCSP_REQUEST_bio(bio, req) != 1) {
