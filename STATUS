@@ -83,6 +83,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_proxy_balancer: Move nonce field in the balancer manager page inside the
+   html form where it belongs. PR 45578 [Ruediger Pluem]
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=683373&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, covener, jorton
+
+     
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -205,14 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
    +1: rpluem,
-
- * mod_proxy_balancer: Move nonce field in the balancer manager page inside the
-   html form where it belongs. PR 45578 [Ruediger Pluem]
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=683373&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, covener, jorton
 
  * mod_ssl: Rewrite of shmcb to avoid memory alignment issues.
      PR: 42101 - also now reported with i386/gcc 4.2
