@@ -1475,10 +1475,8 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
         /* append this file onto the path buffer (copy null term) */
         dav_buffer_place_mem(pool, &fsctx->path1, dirent.name, len + 1, 0);
 
-
-        /* ### Optimize me, dirent can give us what we need! */
         status = apr_stat(&fsctx->info1.finfo, fsctx->path1.buf,
-                          APR_FINFO_NORM | APR_FINFO_LINK, pool);
+                          APR_FINFO_TYPE | APR_FINFO_LINK, pool);
         if (status != APR_SUCCESS && status != APR_INCOMPLETE) {
             /* woah! where'd it go? */
             /* ### should have a better error here */
