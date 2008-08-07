@@ -224,6 +224,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jorton/mod_ssl-shmcb-rewrite.patch
     +1: jorton
 
+ * mod_dav_fs: Dont ask for so much info just to find out if a dir
+   entry is a dir.  This caused noticable CPU/delay on Windows when 
+   APR started supporting the retrieval of additional user/group 
+   information on that platform.
+     PR: 45464
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=683626&view=rev
+      Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
