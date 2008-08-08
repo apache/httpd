@@ -83,6 +83,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * Support chroot on unix-family platforms
+   PR 43596
+   http://svn.apache.org/viewvc?rev=611483&view=rev (source)
+   http://svn.apache.org/viewvc?rev=639005&view=rev (docs)
+   http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
+   +1: niq, rpluem, mturk
+
+ * mod_headers: Prevent Header edit from processing only the first header it
+   should edit and deleting the remaining ones by iterating over all headers
+   with the same name. PR: 45333
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=674000&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+    +1: rpluem, niq, mturk
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -103,13 +119,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           third party module authors.
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
-
- * Support chroot on unix-family platforms
-   PR 43596
-   http://svn.apache.org/viewvc?rev=611483&view=rev (source)
-   http://svn.apache.org/viewvc?rev=639005&view=rev (docs)
-   http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
-   +1: niq, rpluem, mturk
 
  * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
    PR 44799
@@ -159,15 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
      http://people.apache.org/~chrisd/patches/walk_cache/walk_cache-2.2.x.patch
    +1: chrisd
-
- * mod_headers: Prevent Header edit from processing only the first header it
-   should edit and deleting the remaining ones by iterating over all headers
-   with the same name. PR: 45333
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=674000&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-    +1: rpluem, niq, mturk
 
  * mod_proxy_ftp: Ensure that the SSL filters are not inserted on FTP data
    connections even if the virtual host that causes the proxy request has SSL
