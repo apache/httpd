@@ -12,6 +12,9 @@ Changes with Apache 2.2.10
      known HTTP/1.0 servers. Return 'Expectation failed' (417) instead.
      [Ruediger Pluem]
 
+  *) mod_rewrite: Preserve the query string when [proxy,noescape]. PR 45247.
+     [Tom Donovan]
+
 Changes with Apache 2.2.9
 
   *) SECURITY: CVE-2008-2364 (cve.mitre.org)
