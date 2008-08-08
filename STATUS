@@ -83,15 +83,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_rewrite: Preserve the query string when [proxy,noescape]. PR 45247.
-   Caused by r649840/trunk, r663593/2.2.x
-   Trunk version of patches:
-        original:    http://svn.apache.org/viewvc?view=rev&revision=670061
-        correction:  http://svn.apache.org/viewvc?view=rev&revision=670198
-   Backport version for 2.2.x of updated patch (r670061 and 670198 combined):
-        http://people.apache.org/~tdonovan/diffs/mod_rewrite_proxy_esc_2.2.x.diff
-   +1: rpluem, niq, tdonovan
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
