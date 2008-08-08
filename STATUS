@@ -90,15 +90,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
- * mod_headers: Prevent Header edit from processing only the first header it
-   should edit and deleting the remaining ones by iterating over all headers
-   with the same name. PR: 45333
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=674000&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-    +1: rpluem, niq, mturk
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
