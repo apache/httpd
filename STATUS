@@ -208,6 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
         Trunk version of patch works
      +1: trawick, rpluem
+     Hmmm: http://www.gossamer-threads.com/lists/apache/dev/355454?page=last
 
 PATCHES/ISSUES THAT ARE STALLED
 
