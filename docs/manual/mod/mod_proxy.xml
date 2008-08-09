@@ -784,11 +784,9 @@ expressions</description>
         clears the in-error flag.
     </td></tr>
     <tr><td>timeout</td>
-        <td><directive>Timeout</directive></td>
+        <td><directive>ProxyTimeout</directive></td>
         <td>Connection timeout in seconds.
         The number of seconds Apache waits for data sent by / to the backend.
-        If not set, it defaults to
-        <directive module="mod_proxy">ProxyTimeout</directive>.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
