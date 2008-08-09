@@ -370,8 +370,28 @@ Options +IncludesNoExec -ExecCGI<br />
     <p>If, on the other hand, you are getting server errors when trying to
     access documents, check your Apache error log. It will likely tell you
     that the directive used in your <code>.htaccess</code> file is not
-    permitted. Alternately, it may tell you that you had a syntax error,
-    which you will then need to fix.</p>
+    permitted.</p>
+
+    <div class="example"><p><code>
+    [Sat Aug 09 16:19:20 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteLog not allowed here
+    </code></p></div>
+
+    <p>This will indicate either that you've used a directive that is
+    never permitted in <code>.htaccess</code> files, or that you simply
+    don't have <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> set to
+    a level sufficient for the directive you've used. Consult the
+    documentation for that particular directive to determine which is
+    the case.</p>
+    
+    <p>Alternately, it may tell you that you had a syntax error in your
+    usage of the directive itself.</p>
+
+    <div class="example"><p><code>
+    [Sat Aug 09 16:22:34 2008] [alert] [client 192.168.200.51] /var/www/html/.htaccess: RewriteCond: bad flag delimiters
+    </code></p></div>
+
+    <p>In this case, the error message should be specific to the
+    particular syntax error that you have committed.</p>
 
 </div></div>
 <div class="bottomlang">
