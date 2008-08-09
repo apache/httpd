@@ -36,7 +36,7 @@ Documentation</a>.</p>
 <li><img alt="" src="./images/down.gif" /> <a href="#release">Release Notes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#using">Using the Apache HTTP Server</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#vhosts">Apache Virtual Host documentation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#faq">Apache Server Frequently Asked Questions</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#rewrite">URL Rewriting Guide</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ssl">Apache SSL/TLS Encryption</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#howto">Guides, Tutorials, and HowTos</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#platform">Platform-specific Notes</a></li>
@@ -76,7 +76,7 @@ Documentation</a>.</p>
 <li><a href="filter.html">Filters</a></li>
 <li><a href="suexec.html">suEXEC Support</a></li>
 <li><a href="misc/perf-tuning.html">Performance Hints</a></li>
-<li><a href="misc/rewriteguide.html">URL Rewriting Guide</a></li>
+<li><a href="faq/">Frequently Asked Questions</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">Apache Virtual Host documentation</a></h2>
@@ -90,11 +90,16 @@ Documentation</a>.</p>
 <li><a href="dns-caveats.html">Issues Regarding DNS and Apache</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section"><h2><a name="faq" id="faq">Apache Server Frequently Asked Questions</a></h2>
-<ul><li><a href="faq/">Overview</a></li>
-<li><a href="faq/background.html">Background Information</a></li>
-<li><a href="faq/support.html">Support</a></li>
-<li><a href="faq/error.html">Error Messages</a></li>
+<div class="section"><h2><a name="rewrite" id="rewrite">URL Rewriting Guide</a></h2>
+<ul><li class="separate"><a href="rewrite/">Overview</a></li>
+<li><a href="mod/mod_rewrite.html">mod_rewrite reference
+documentation</a></li>
+<li><a href="rewrite/rewrite_intro.html">Introduction</a></li>
+<li><a href="rewrite/rewrite_flags.html">Flags</a></li>
+<li><a href="rewrite/rewrite_tech.html">Technical details</a></li>
+<li><a href="rewrite/rewrite_guide.html">Rewrite Guide - useful examples</a></li>
+<li><a href="rewrite/rewrite_guide_advanced.html">Advanced Rewrite Guide - more
+useful examples</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache SSL/TLS Encryption</a></h2>
