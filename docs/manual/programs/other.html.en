@@ -49,6 +49,9 @@
 
     <p>The combined log file is read from stdin. Records read will be appended
     to any existing log files.</p>
+
+    <div class="example"><p><code>split-logfile &lt; access_log</code></p></div>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/other.html" title="English">&nbsp;en&nbsp;</a> |
