@@ -849,6 +849,12 @@ through</td></tr>
     connections in the pool the Apache will return <code>SERVER_BUSY</code>
     status to the client.
     </td></tr>
+    <tr><td>connectiontimeout</td>
+        <td>timeout</td>
+        <td>Connect timeout in seconds.
+        The number of seconds Apache waits for the creation of a connection to
+        the backend to complete.
+    </td></tr>
     <tr><td>disablereuse</td>
         <td>Off</td>
         <td>This parameter should be used when you want to force mod_proxy
@@ -936,12 +942,9 @@ through</td></tr>
         clears the in-error flag.
     </td></tr>
     <tr><td>timeout</td>
-        <td><code class="directive">Timeout</code></td>
+        <td><code class="directive">ProxyTimeout</code></td>
         <td>Connection timeout in seconds.
-        If not set the Apache will wait until the free connection
-        is available. This directive is used for limiting the number
-        of connections to the backend server together with <code>max</code>
-        parameter.
+        The number of seconds Apache waits for data sent by / to the backend.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
