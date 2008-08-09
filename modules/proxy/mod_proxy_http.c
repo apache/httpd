@@ -1927,6 +1927,19 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         ap_proxy_ssl_connection_cleanup(backend, r);
     }
 
+    /*
+     * In the case that we are handling a reverse proxy connection and this
+     * is not a request that is coming over an already kept alive connection
+     * with the client, do NOT reuse the connection to the backend, because
+     * we cannot forward a failure to the client in this case as the client
+     * does NOT expects this in this situation.
+     * Yes, this creates a performance penalty.
+     */
+    if ((r->proxyreq == PROXYREQ_REVERSE) && (!c->keepalives)
+        && (apr_table_get(r->subprocess_env, "proxy-initial-not-pooled"))) {
+        backend->close = 1;
+    }
+
     /* Step One: Determine Who To Connect To */
     if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
                                                 uri, &url, proxyname,

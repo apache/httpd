@@ -2167,6 +2167,11 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     else {
         conn->addr = worker->cp->addr;
     }
+    /* Close a possible existing socket if we are told to do so */
+    if (conn->close) {
+        socket_cleanup(conn);
+        conn->close = 0;
+    }
 
     if (err != APR_SUCCESS) {
         return ap_proxyerror(r, HTTP_BAD_GATEWAY,
