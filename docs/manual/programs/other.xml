@@ -43,14 +43,26 @@
 <section id="split-logfile"><title>split-logfile</title>
     <p>This perl script will take a combined Web server access log file and
     break its contents into separate files. It assumes that the first field of
-    each line is the virtual host identity (put there by "<code>%v</code>"), and
-    that the logfiles should be named that + "<code>.log</code>" in the current
-    directory.</p>
+    each line is the virtual host identity, put there using the "<code>%v</code>"
+    variable in <directive module="mod_log_config">LogFormat</directive>.
+    </p>
+
+    <example>
+        LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
+             combined_plus_vhost<br />
+        CustomLog logs/access_log combined_plus_vhost
+    </example>
+    
+    <p>Log files will be created, in the directory where are running the
+    script, for each virtual host name that appears in the combined log file. 
+    These logfiles will named after the hostname, with a
+    <code>.log</code> file extension.</p>
 
     <p>The combined log file is read from stdin. Records read will be appended
     to any existing log files.</p>
 
     <example>split-logfile &lt; access_log</example>
+
 
 </section>
 
