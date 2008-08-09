@@ -782,12 +782,9 @@ expressions</description>
         clears the in-error flag.
     </td></tr>
     <tr><td>timeout</td>
-        <td><directive>Timeout</directive></td>
+        <td><directive>ProxyTimeout</directive></td>
         <td>Connection timeout in seconds.
-        If not set the Apache will wait until the free connection
-        is available. This directive is used for limiting the number
-        of connections to the backend server together with <code>max</code>
-        parameter.
+        The number of seconds Apache waits for data sent by / to the backend.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
