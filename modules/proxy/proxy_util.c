@@ -2325,8 +2325,11 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                           "Failed to set");
         }
 
-        /* Set a timeout on the socket */
-        if (worker->timeout_set == 1) {
+        /* Set a timeout for connecting to the backend on the socket */
+        if (worker->conn_timeout_set) {
+            apr_socket_timeout_set(newsock, worker->conn_timeout);
+        }
+        else if (worker->timeout_set == 1) {
             apr_socket_timeout_set(newsock, worker->timeout);
         }
         else if (conf->timeout_set == 1) {
@@ -2362,6 +2365,17 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                          worker->hostname);
             backend_addr = backend_addr->next;
             continue;
+        }
+
+        /* Set a timeout on the socket */
+        if (worker->timeout_set == 1) {
+            apr_socket_timeout_set(newsock, worker->timeout);
+        }
+        else if (conf->timeout_set == 1) {
+            apr_socket_timeout_set(newsock, conf->timeout);
+        }
+        else {
+             apr_socket_timeout_set(newsock, s->timeout);
         }
 
         conn->sock   = newsock;

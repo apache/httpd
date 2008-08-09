@@ -697,6 +697,12 @@ expressions</description>
     connections in the pool the Apache will return <code>SERVER_BUSY</code>
     status to the client.
     </td></tr>
+    <tr><td>connectiontimeout</td>
+        <td>timeout</td>
+        <td>Connect timeout in seconds.
+        The number of seconds Apache waits for the creation of a connection to
+        the backend to complete.
+    </td></tr>
     <tr><td>disablereuse</td>
         <td>Off</td>
         <td>This parameter should be used when you want to force mod_proxy

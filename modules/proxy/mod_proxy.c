@@ -281,6 +281,16 @@ static const char *set_worker_param(apr_pool_t *p,
             return "lbset must be between 0 and 99";
         worker->lbset = ival;
     }
+    else if (!strcasecmp(key, "connectiontimeout")) {
+        /* Request timeout in seconds.
+         * Defaults to connection timeout
+         */
+        ival = atoi(val);
+        if (ival < 1)
+            return "Connectiontimeout must be at least one second.";
+        worker->conn_timeout = apr_time_from_sec(ival);
+        worker->conn_timeout_set = 1;
+    }
     else {
         return "unknown Worker parameter";
     }
