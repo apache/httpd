@@ -21,6 +21,8 @@
 <p><span>가능한 언어: </span><a href="../en/programs/other.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/programs/other.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>다음은 간단하여 manpage가 없는, 아파치 웹서버에 포함된
     지원 프로그램들이다. 자동으로 이들을 설치하지 않는다.

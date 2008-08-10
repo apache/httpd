@@ -21,7 +21,8 @@
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_2.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
   <p>Ce document décrit quelques uns des changements principaux entre
@@ -107,7 +108,7 @@
 
       <dt>Support des gros fichiers</dt>
 
-      <dd>httpd supporte maintenant les fichiers d'une taille supérieure
+      <dd><code class="program"><a href="./programs/httpd.html">httpd</a></code> supporte maintenant les fichiers d'une taille supérieure
       à 2GB sur les systèmes 32 bits UNIX modernes.  Le support des
       corps de requête d'une taille supérieure à 2GB a aussi été
       ajouté.</dd>
@@ -122,7 +123,7 @@
 
       <dt>Support des bases de données SQL</dt>
       <dd>Le module <p><code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, associé à l'environnement
-      	apr_dbd, fournit le support SQL direct aux modules
+      	<code>apr_dbd</code>, fournit le support SQL direct aux modules
 	qui en ont besoin.  Supporte la mise en commun des connexions
           dans les modules MPM threadés.</p>
 	  </dd>
@@ -135,10 +136,10 @@
     <dl>
       <dt>Authn/Authz</dt>
       <dd>Les modules du répertoire aaa ont été renommés et fournissent
-          un support amélioré pour la méthode d'authentification <strong>digest</strong>.  Par exemple, mod_auth
+          un support amélioré pour la méthode d'authentification <strong>digest</strong>.  Par exemple, <code>mod_auth</code>
           est maintenant scindé en deux modules : <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> et
-          <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>; mod_auth_dbm s'appelle maintenant
-          <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; mod_access a été renommé en
+          <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>; <code>mod_auth_dbm</code> s'appelle maintenant
+          <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; <code>mod_access</code> a été renommé en
           <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  Est également apparu le nouveau module
           <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> qui simplifie
           certaines configurations d'authentification.
@@ -173,7 +174,7 @@
 	connexion en clair au cryptage TLS.</dd>
 
       <dt><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></dt>
-      <dd>mod_imap a été renommé en <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> afin
+      <dd><code>mod_imap</code> a été renommé en <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> afin
       d'éviter une confusion pour les utilisateurs.</dd>
     </dl>
 
@@ -211,12 +212,12 @@
       <dd>Les modules d'authentification et d'autorisation intégrés ont
           été renommés de la manière suivante:
           <ul>
-          <li>mod_auth_*  -&gt; Modules qui implémentent un mécanisme
+          <li><code>mod_auth_*</code>  -&gt; Modules qui implémentent un mécanisme
 	  	d'authentification HTTP</li>
-          <li>mod_authn_* -&gt; Modules qui fournissent un dispositif
+          <li><code>mod_authn_*</code> -&gt; Modules qui fournissent un dispositif
 	  	d'authentification en arrière-plan</li>
-          <li>mod_authz_* -&gt; Modules qui implémentent l'autorisation (ou l'accès)</li>
-          <li>mod_authnz_*-&gt; Module qui implémentent à la fois
+          <li><code>mod_authz_*</code> -&gt; Modules qui implémentent l'autorisation (ou l'accès)</li>
+          <li><code>mod_authnz_*</code> -&gt; Module qui implémentent à la fois
 	  l'authentification &amp; l'autorisation</li>
           </ul>
 	  L'organisation des méthodes d'authentification a également été revue, ce qui va simplifier
@@ -237,7 +238,7 @@
 
       <dt>Définition de la taille de la pile pour les modules MPM en processus légers</dt>
 
-      <dd>Une nouvelle directive a été ajoutée, <code>ThreadStackSize</code>
+      <dd>Une nouvelle directive a été ajoutée, <code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code>
      afin de définir la taille de la pile pour tous les modules MPM en processus légers (modules threadés).
      Ceci s'avère nécessaire pour certains modules tiers sur des plateformes
      dont la taille de la pile des threads par défaut est
@@ -293,7 +294,8 @@
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_2.html" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
+<a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
+<a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
