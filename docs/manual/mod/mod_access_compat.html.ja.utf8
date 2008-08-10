@@ -25,8 +25,6 @@
 <p><span>言語: </span><a href="../en/mod/mod_access_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_access_compat.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>access_compat_module</td></tr>
@@ -92,8 +90,8 @@
 <div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバのある領域にアクセスできるホストを制御する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Allow from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
@@ -188,8 +186,11 @@
     の存在によりアクセスの制御を行なえるようにするものです。
     <code>Allow from env=<var>env-variable</var></code>
     が指定されていると、環境変数 <var>env-variable</var>
-    が存在した場合にリクエストはアクセスを許可されます。サーバは
-    <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
+    が存在した場合にリクエストはアクセスを許可されます。
+    <code>Allow from env=!<var>env-variable</var></code>
+    が指定されていると、環境変数 <var>env-variable</var>
+    が存在しない場合にアクセス許可されます。
+    サーバは <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>
     のディレクティブにより、クライアントのリクエスト
     の特徴に基づいて柔軟に環境変数を設定する機能を提供します。
     ですから、このディレクティブはクライアントの
@@ -219,8 +220,8 @@
 <div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがアクセスを拒否するホストを制御する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Deny from all|<var>host</var>|env=<var>env-variable</var>
-[<var>host</var>|env=<var>env-variable</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
