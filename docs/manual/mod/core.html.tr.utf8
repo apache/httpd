@@ -527,7 +527,13 @@ kullanımı önerilmemektedir.</td></tr>
     </code></p></div>
 
     <p>Bu örnekte <code>AuthConfig</code> ve <code>Indexes</code> grubundaki
-     yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
+      yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
+
+    <div class="note"><p>Güvenlik ve başarımı arttırmak için <code>&lt;Directory /&gt;</code>
+      bloğu içinde <code>AllowOverride</code> yönergesine <code>None</code>
+      dışında bir değer atamayın. Böyle yapmak yerine bir <code>.htaccess</code>
+      dosyası yerleştirmeyi düşündüğünüz dizine ait bir
+      <code>&lt;Directory&gt;</code> bloğu olması daha iyidir.</p></div>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>
