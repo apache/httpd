@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 669847:684326 (outdated) -->
+<!-- English Revision: 684326 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -473,7 +473,13 @@ kullanımı önerilmemektedir.</compatibility>
     </example>
 
     <p>Bu örnekte <code>AuthConfig</code> ve <code>Indexes</code> grubundaki
-     yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
+      yönergeler bir dahili sunucu hatasına yol açmayacaktır.</p>
+
+    <note><p>Güvenlik ve başarımı arttırmak için <code>&lt;Directory /&gt;</code>
+      bloğu içinde <code>AllowOverride</code> yönergesine <code>None</code>
+      dışında bir değer atamayın. Böyle yapmak yerine bir <code>.htaccess</code>
+      dosyası yerleştirmeyi düşündüğünüz dizine ait bir
+      <code>&lt;Directory&gt;</code> bloğu olması daha iyidir.</p></note>
 </usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
