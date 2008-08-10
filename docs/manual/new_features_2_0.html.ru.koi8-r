@@ -24,7 +24,8 @@
 <a href="./ja/new_features_2_0.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/new_features_2_0.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_0.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./ru/new_features_2_0.html" title="Russian">&nbsp;ru&nbsp;</a></p>
+<a href="./ru/new_features_2_0.html" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
   <p>Этот документ описывает основные различия между версиями 1.3 и 2.0 HTTP сервера Apache</p>
@@ -243,7 +244,8 @@
 <a href="./ja/new_features_2_0.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/new_features_2_0.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_0.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a> |
-<a href="./ru/new_features_2_0.html" title="Russian">&nbsp;ru&nbsp;</a></p>
+<a href="./ru/new_features_2_0.html" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Модули</a> | <a href="./mod/directives.html">Директивы</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Глоссарий</a> | <a href="./sitemap.html">Карта сайта</a></p></div>
