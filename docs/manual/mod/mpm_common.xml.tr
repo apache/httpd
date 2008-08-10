@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 658305:674934 (outdated) -->
+<!-- English Revision: 674934 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -612,7 +612,7 @@
 <name>MinSpareThreads</name>
 <description>İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
   sayısını belirler.</description>
-<syntax>MinSpareThreads <var>number</var></syntax>
+<syntax>MinSpareThreads <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
