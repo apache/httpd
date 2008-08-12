@@ -128,7 +128,7 @@
 
 <div class="example"><pre>
 RewriteRule   ^/<strong>~</strong>([^/]+)/?(.*)    /<strong>u</strong>/$1/$2  [<strong>R</strong>]
-RewriteRule   ^/([uge])/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong>R</strong>]
+RewriteRule   ^/u/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong>R</strong>]
 </pre></div>
         </dd>
       </dl>
