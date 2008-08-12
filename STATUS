@@ -205,10 +205,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR: 45464
      Trunk version of patch:
         http://svn.apache.org/viewvc?rev=683626&view=rev
+        http://svn.apache.org/viewvc?rev=685112&view=rev
       Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: trawick, rpluem
-     Hmmm: http://www.gossamer-threads.com/lists/apache/dev/355454?page=last
+     +1: jorton, trawick
 
  * mod_proxy_ftp: Build a correct Base HRef for directory listings in the
     reverse proxy case.
