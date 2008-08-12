@@ -99,6 +99,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jorton/mod_ssl-shmcb-rewrite.patch
     +1: jorton, mturk, rpluem
 
+ * mod_dav_fs: Dont ask for so much info just to find out if a dir
+   entry is a dir.  This caused noticable CPU/delay on Windows when 
+   APR started supporting the retrieval of additional user/group 
+   information on that platform.
+     PR: 45464
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=683626&view=rev
+        http://svn.apache.org/viewvc?rev=685112&view=rev
+      Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: jorton, trawick, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -197,18 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
    +1: rpluem, mturk
-
- * mod_dav_fs: Dont ask for so much info just to find out if a dir
-   entry is a dir.  This caused noticable CPU/delay on Windows when 
-   APR started supporting the retrieval of additional user/group 
-   information on that platform.
-     PR: 45464
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=683626&view=rev
-        http://svn.apache.org/viewvc?rev=685112&view=rev
-      Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: jorton, trawick
 
  * mod_proxy_ftp: Build a correct Base HRef for directory listings in the
     reverse proxy case.
