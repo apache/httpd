@@ -12,7 +12,7 @@ Changes with Apache 2.3.0
 
   *) mod_dav_fs: Retrieve minimal system information about directory 
      entries when walking a DAV fs, resolving a performance degradation on 
-     Windows.  PR 45464.  [Jeff Trawick]
+     Windows.  PR 45464.  [Joe Orton, Jeff Trawick]
 
   *) mod_cgid: Pass along empty command line arguments from an ISINDEX
      query that has consecutive '+' characters in the QUERY_STRING, 
