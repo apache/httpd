@@ -1932,7 +1932,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
      * is not a request that is coming over an already kept alive connection
      * with the client, do NOT reuse the connection to the backend, because
      * we cannot forward a failure to the client in this case as the client
-     * does NOT expects this in this situation.
+     * does NOT expect this in this situation.
      * Yes, this creates a performance penalty.
      */
     if ((r->proxyreq == PROXYREQ_REVERSE) && (!c->keepalives)
