@@ -127,7 +127,7 @@ RewriteRule ^/(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R]
 <div class="example"><pre>
 RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
 RewriteCond %{HTTP_HOST}   !^$
-RewriteRule ^/(.*)         http://www.exampe.com/$1 [L,R]
+RewriteRule ^/(.*)         http://www.example.com/$1 [L,R]
 </pre></div>
         </dd>
       </dl>
