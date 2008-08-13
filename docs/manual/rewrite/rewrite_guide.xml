@@ -276,7 +276,7 @@ RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
 
     <section id="multipledirs">
 
-      <title>Search pages in more than one directory</title>
+      <title>Search for pages in more than one directory</title>
 
       <dl>
         <dt>Description:</dt>
