@@ -111,15 +111,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: jorton, trawick, rpluem
 
- * mod_proxy_ftp: Ensure that the SSL filters are not inserted on FTP data
-   connections even if the virtual host that causes the proxy request has SSL
-   enabled.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=678761
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, mturk, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
