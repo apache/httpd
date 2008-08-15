@@ -111,6 +111,35 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: jorton, trawick, rpluem
 
+ * mod_proxy_ftp: Ensure that the SSL filters are not inserted on FTP data
+   connections even if the virtual host that causes the proxy request has SSL
+   enabled.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=678761
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem, mturk, jim
+
+ * mod_cgid: Pass along empty command line arguments from an ISINDEX
+    query that has consecutive '+' characters in the QUERY_STRING,
+    matching the behavior of mod_cgi.
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=682389&view=rev
+      http://svn.apache.org/viewvc?rev=682475&view=rev
+    Backport version for 2.2.x of patch:
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_cgid.c?r1=682475&r2=682389
+    +1: covener, rpluem, jim
+
+ * mod_proxy: Remove call to apr_reslist_destroy. With apr-util 1.3.x calling
+   apr_reslist_destroy is not really useful and needed in this case as we are
+   in a cleanup that was registered against the same pool that is used by the
+   reslist.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=682369&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, mturk, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -180,35 +209,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
      http://people.apache.org/~chrisd/patches/walk_cache/walk_cache-2.2.x.patch
    +1: chrisd
-
- * mod_proxy_ftp: Ensure that the SSL filters are not inserted on FTP data
-   connections even if the virtual host that causes the proxy request has SSL
-   enabled.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=678761
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, mturk, jim
-
- * mod_cgid: Pass along empty command line arguments from an ISINDEX
-    query that has consecutive '+' characters in the QUERY_STRING,
-    matching the behavior of mod_cgi.
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=682389&view=rev
-      http://svn.apache.org/viewvc?rev=682475&view=rev
-    Backport version for 2.2.x of patch:
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_cgid.c?r1=682475&r2=682389
-    +1: covener, rpluem, jim
-
- * mod_proxy: Remove call to apr_reslist_destroy. With apr-util 1.3.x calling
-   apr_reslist_destroy is not really useful and needed in this case as we are
-   in a cleanup that was registered against the same pool that is used by the
-   reslist.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=682369&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, mturk, jim
 
  * mod_proxy_ftp: Build a correct Base HRef for directory listings in the
     reverse proxy case.
