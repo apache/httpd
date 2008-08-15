@@ -5,6 +5,15 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_dav_fs: Retrieve minimal system information about directory
+     entries when walking a DAV fs, resolving a performance degradation on
+     Windows.  PR 45464.  [Jeff Trawick]
+
+  *) mod_cgid: Pass along empty command line arguments from an ISINDEX
+     query that has consecutive '+' characters in the QUERY_STRING,
+     matching the behavior of mod_cgi.
+     [Eric Covener]
+
   *) mod_headers: Prevent Header edit from processing only the first header
      of possibly multiple headers with the same name and deleting the
      remaining ones. PR 45333.  [Ruediger Pluem]
