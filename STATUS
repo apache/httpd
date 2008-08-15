@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=678761
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem, mturk
+    +1: rpluem, mturk, jim
 
  * mod_cgid: Pass along empty command line arguments from an ISINDEX
     query that has consecutive '+' characters in the QUERY_STRING,
@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=682475&view=rev
     Backport version for 2.2.x of patch:
       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_cgid.c?r1=682475&r2=682389
-    +1: covener, rpluem
+    +1: covener, rpluem, jim
 
  * mod_proxy: Remove call to apr_reslist_destroy. With apr-util 1.3.x calling
    apr_reslist_destroy is not really useful and needed in this case as we are
@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=682369&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem, mturk
+   +1: rpluem, mturk, jim
 
  * mod_proxy_ftp: Build a correct Base HRef for directory listings in the
     reverse proxy case.
@@ -216,7 +216,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=681190&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
