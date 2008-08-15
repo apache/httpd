@@ -235,10 +235,8 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
 
     for (x = 1; x <= numwords; x++) {
         w = ap_getword_nulls(p, &args, '+');
-        if (strcmp(w, "")) {
-            ap_unescape_url(w);
-            av[idx++] = ap_escape_shell_cmd(p, w);
-        }
+        ap_unescape_url(w);
+        av[idx++] = ap_escape_shell_cmd(p, w);
     }
     av[idx] = NULL;
     return av;
