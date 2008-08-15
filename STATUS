@@ -120,16 +120,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
     +1: rpluem, mturk, jim
 
- * mod_cgid: Pass along empty command line arguments from an ISINDEX
-    query that has consecutive '+' characters in the QUERY_STRING,
-    matching the behavior of mod_cgi.
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=682389&view=rev
-      http://svn.apache.org/viewvc?rev=682475&view=rev
-    Backport version for 2.2.x of patch:
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_cgid.c?r1=682475&r2=682389
-    +1: covener, rpluem, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
