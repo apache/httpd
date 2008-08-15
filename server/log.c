@@ -511,10 +511,12 @@ static void log_error_core(const char *file, int line, int level,
          * above the default server log level unless it is a startup/shutdown
          * notice
          */
+#ifndef DEBUG
         if ((level_and_mask != APLOG_NOTICE)
             && (level_and_mask > ap_default_loglevel)) {
             return;
         }
+#endif
 
         logf = stderr_log;
     }
