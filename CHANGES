@@ -10,15 +10,6 @@ Changes with Apache 2.3.0
      be able to set the timeout for connecting to the backend separately.
      PR 45445. [Ruediger Pluem, rahul <rahul sun.com>]
 
-  *) mod_dav_fs: Retrieve minimal system information about directory 
-     entries when walking a DAV fs, resolving a performance degradation on 
-     Windows.  PR 45464.  [Joe Orton, Jeff Trawick]
-
-  *) mod_cgid: Pass along empty command line arguments from an ISINDEX
-     query that has consecutive '+' characters in the QUERY_STRING, 
-     matching the behavior of mod_cgi.
-     [Eric Covener]
-
   *) mod_auth_core: Detect during startup when AuthDigestProvider
      is configured to use an incompatible provider via AuthnProviderAlias.
      PR 45196 [Eric Covener]
