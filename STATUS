@@ -90,15 +90,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
- * mod_ssl: Rewrite of shmcb to avoid memory alignment issues.
-     PR: 42101 - also now reported with i386/gcc 4.2
-     Trunk version of patch:
-        http://svn.apache.org/viewcvs.cgi?rev=399291&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=630228&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~jorton/mod_ssl-shmcb-rewrite.patch
-    +1: jorton, mturk, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
