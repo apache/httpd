@@ -168,6 +168,41 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
     +1: rpluem, jim
 
+ * mod_proxy_ftp: Construct a site in the reverse proxy case when there is non.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=681190&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
+ * core: Give possible piped loggers a chance to process their input before
+   they get killed by us.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=681204&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
+ * mod_proxy: Add the possibility to set a separate connection timeout for
+   backend workers.
+   PR: 45445
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=684341&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
+ * mod_proxy_http: Introduce environment variable proxy-initial-not-pooled
+   to avoid reusing pooled connections if the client connection is an
+   initial connection. This avoids the "proxy: error reading status line
+   from remote server reverse proxy case.
+   PR: 37770
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=684351&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
