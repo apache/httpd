@@ -159,6 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
      http://people.apache.org/~chrisd/patches/walk_cache/walk_cache-2.2.x.patch
    +1: chrisd
+   -0: jim (would prefer to see in 2.4, and to push 2.4 out)
 
  * mod_proxy_ftp: Build a correct Base HRef for directory listings in the
     reverse proxy case.
@@ -173,7 +174,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=681190&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
  * core: Give possible piped loggers a chance to process their input before
    they get killed by us.
@@ -181,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=681204&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
  * mod_proxy: Add the possibility to set a separate connection timeout for
    backend workers.
