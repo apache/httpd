@@ -67,7 +67,7 @@
         <dt>proxy-nokeepalive</dt>
         <dd>Forces the proxy to close the backend connection after
         each request.</dd>
-        <dt>Proxy-Chain-Auth</dt>
+        <dt>proxy-chain-auth</dt>
         <dd>If the proxy requires authentication, it will read and
         consume the proxy authentication credentials sent by the client.
         With <var>Proxy-Chain-Auth</var> it will <em>also</em> forward
