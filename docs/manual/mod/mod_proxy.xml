@@ -790,7 +790,7 @@ expressions</description>
         clears the in-error flag.
     </td></tr>
     <tr><td>timeout</td>
-        <td><directive>ProxyTimeout</directive></td>
+        <td><directive module="mod_proxy">ProxyTimeout</directive></td>
         <td>Connection timeout in seconds.
         The number of seconds Apache waits for data sent by / to the backend.
     </td></tr>
@@ -1313,7 +1313,7 @@ directly</description>
 <name>ProxyTimeout</name>
 <description>Network timeout for proxied requests</description>
 <syntax>ProxyTimeout <var>seconds</var></syntax>
-<default>ProxyTimeout 300</default>
+<default>Value of <directive module="core">Timeout</directive></default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>Available in Apache 2.0.31 and later</compatibility>
