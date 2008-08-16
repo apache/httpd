@@ -70,7 +70,7 @@
         <dt>proxy-chain-auth</dt>
         <dd>If the proxy requires authentication, it will read and
         consume the proxy authentication credentials sent by the client.
-        With <var>Proxy-Chain-Auth</var> it will <em>also</em> forward
+        With <var>proxy-chain-auth</var> it will <em>also</em> forward
         the credentials to the next proxy in the chain.  This may
         be necessary if you have a chain of proxies that share
         authentication information.  <strong>Security Warning:</strong>
