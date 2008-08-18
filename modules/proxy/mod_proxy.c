@@ -138,7 +138,7 @@ static const char *set_worker_param(apr_pool_t *p,
          */
         ival = atoi(val);
         if (ival < 1)
-            return "Acquire must be at least one mili second";
+            return "Acquire must be at least one millisecond";
         worker->acquire = apr_time_make(0, ival * 1000);
         worker->acquire_set = 1;
     }
