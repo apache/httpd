@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:579425 (outdated) -->
+<!-- English Revision: 579425 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -129,6 +129,14 @@
 
     <tr><td><code>%p</code></td>
         <td>リクエストを扱っているサーバの正式なポート</td></tr>
+
+    <tr><td><code>%{<var>format</var>}p</code></td>
+        <td>サーバがリクエストを処理しているポートの公式
+        <transnote>canonical</transnote> のポート番号か、
+        サーバの実際のポート番号か、クライアント側の実際のポート番号かです。
+        format に使える文字列は <code>canonical</code>, <code>local</code>,
+        <code>remote</code> になります。
+        </td></tr>
 
     <tr><td><code>%P</code></td>
         <td>リクエストを扱った子プロセスのプロセス ID</td></tr>
