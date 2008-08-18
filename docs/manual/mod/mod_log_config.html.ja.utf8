@@ -27,8 +27,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバへのリクエストのロギング</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>log_config_module</td></tr>
@@ -130,43 +128,50 @@
         <td>応答の <code><var>Foobar</var>:</code> ヘッダの内容</td></tr>
 <tr><td><code>%p</code></td>
         <td>リクエストを扱っているサーバの正式なポート</td></tr>
-<tr class="odd"><td><code>%P</code></td>
+<tr class="odd"><td><code>%{<var>format</var>}p</code></td>
+        <td>サーバがリクエストを処理しているポートの公式
+        <span class="transnote">(<em>訳注:</em> canonical)</span> のポート番号か、
+        サーバの実際のポート番号か、クライアント側の実際のポート番号かです。
+        format に使える文字列は <code>canonical</code>, <code>local</code>,
+        <code>remote</code> になります。
+        </td></tr>
+<tr><td><code>%P</code></td>
         <td>リクエストを扱った子プロセスのプロセス ID</td></tr>
-<tr><td><code>%{<var>format</var>}P</code></td>
+<tr class="odd"><td><code>%{<var>format</var>}P</code></td>
         <td>リクエストを扱ったワーカーのプロセス ID かスレッド ID。
         <var>format</var> として有効な値は <code>pid</code>, <code>tid</code>,
         <code>hextid</code> です。<code>hextid</code> を使うには
         APR 1.2.0 以降が必要です。
         </td></tr>
-<tr class="odd"><td><code>%q</code></td>
+<tr><td><code>%q</code></td>
         <td>問い合せ文字列 (存在する場合は前に <code>?</code> が追加される。
         そうでない場合は空文字列)</td></tr>
-<tr><td><code>%r</code></td>
+<tr class="odd"><td><code>%r</code></td>
         <td>リクエストの最初の行</td></tr>
-<tr class="odd"><td><code>%s</code></td>
+<tr><td><code>%s</code></td>
         <td>ステータス。内部でリダイレクトされたリクエストは、元々の
          リクエストのステータス --- 最後のステータスは <code>%&gt;s</code>
     </td></tr>
-<tr><td><code>%t</code></td>
+<tr class="odd"><td><code>%t</code></td>
         <td>リクエストを受付けた時刻。
         CLF の時刻の書式 (標準の英語の書式)</td></tr>
-<tr class="odd"><td><code>%{<var>format</var>}t</code></td>
+<tr><td><code>%{<var>format</var>}t</code></td>
         <td><var>format</var> で与えられた書式による時刻。format は
          <code>strftime (3)</code> の
          書式である必要がある。(地域化されている可能性がある)</td></tr>
-<tr><td><code>%T</code></td>
+<tr class="odd"><td><code>%T</code></td>
         <td>リクエストを扱うのにかかった時間、秒単位</td></tr>
-<tr class="odd"><td><code>%u</code></td>
+<tr><td><code>%u</code></td>
         <td>リモートユーザ (認証によるもの。ステータス (<code>%s</code>) が
         401 のときは意味がないものである可能性がある)
     </td></tr>
-<tr><td><code>%U</code></td>
+<tr class="odd"><td><code>%U</code></td>
         <td>リクエストされた URL パス。クエリ文字列は含まない</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>リクエストを扱っているサーバの正式な <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> の設定によるサーバ名</td></tr>
-<tr class="odd"><td><code>%X</code></td>
+<tr><td><code>%X</code></td>
         <td>応答が完了したときの接続ステータス:
 
         <table>
@@ -184,11 +189,11 @@
         いましたが、これは歴史的に ssl が使用している
         <code>%{<var>var</var>}c</code>
         構文と衝突していました。)</p></td></tr>
-<tr><td><code>%I</code></td>
+<tr class="odd"><td><code>%I</code></td>
         <td>リクエストとヘッダを含む、受け取ったバイト数。
         0 にはならない。
         これを使用するためには <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> が必要</td></tr>
-<tr class="odd"><td><code>%O</code></td>
+<tr><td><code>%O</code></td>
         <td>ヘッダを含む、送信したバイト数。0 にはならない。
         これを使用するためには <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> が必要</td></tr>
 </table>

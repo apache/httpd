@@ -54,6 +54,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Example of a balancer configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requests">Request Counting Algorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traffic">Weighted Traffic Counting Algorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#busyness">Pending Request Counting Algorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#environment">Exported Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Balancer Manager Support</a></li>
 </ul><h3>See also</h3>
@@ -64,11 +65,11 @@
 <div class="section">
 <h2><a name="scheduler" id="scheduler">Load balancer scheduler algorithm</a></h2>
     
-    <p>At present, there are 2 load balancer scheduler algorithms available
-    for use: Request Counting and Weighted Traffic Counting. These are controlled
-    via the <code>lbmethod</code> value of the Balancer definition. See
-    the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive for
-    more information.</p>
+    <p>At present, there are 3 load balancer scheduler algorithms available
+    for use: Request Counting, Weighted Traffic Counting and Pending Request 
+    Counting. These are controlled via the <code>lbmethod</code> value of
+    the Balancer definition. See the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> 
+    directive for more information.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -290,6 +291,25 @@ candidate lbstatus -= total factor</code></pre></div>
     many requests, but it would process twice the I/O. Thus, the
     size of the request and response are applied to the weighting
     and selection algorithm.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="busyness" id="busyness">Pending Request Counting Algorithm</a></h2>
+
+    
+
+    <p>Enabled via <code>lbmethod=bybusyness</code>, this scheduler keeps
+    track of how many requests each worker is assigned at present. A new
+    request is automatically assigned to the worker with the lowest
+    number of active requests. This is useful in the case of workers
+    that queue incoming requests independently of Apache, to ensure that
+    queue length stays even and a request is always given to the worker
+    most likely to service it fastest.</p>
+
+    <p>In the case of multiple least-busy workers, the statistics (and
+    weightings) used by the Request Counting method are used to break the
+    tie. Over time, the distribution of work will come to resemble that
+    characteristic of <code>byrequests</code>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
