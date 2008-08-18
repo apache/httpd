@@ -205,8 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=686549&view=rev (doc)
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
-    -1: jim (needs documentation)
+    +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
