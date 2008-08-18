@@ -942,7 +942,7 @@ through</td></tr>
         clears the in-error flag.
     </td></tr>
     <tr><td>timeout</td>
-        <td><code class="directive">ProxyTimeout</code></td>
+        <td><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></td>
         <td>Connection timeout in seconds.
         The number of seconds Apache waits for data sent by / to the backend.
     </td></tr>
@@ -970,8 +970,9 @@ through</td></tr>
         <td>byrequests</td>
         <td>Balancer load-balance method. Select the load-balancing scheduler
         method to use. Either <code>byrequests</code>, to perform weighted
-        request counting or <code>bytraffic</code>, to perform weighted
-        traffic byte count balancing. Default is <code>byrequests</code>.
+        request counting, <code>bytraffic</code>, to perform weighted
+        traffic byte count balancing, or <code>bybusyness</code>, to perform 
+        pending request balancing. Default is <code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
         <td>1</td>
@@ -1423,7 +1424,7 @@ expressions</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Network timeout for proxied requests</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyTimeout <var>seconds</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyTimeout 300</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Value of <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
