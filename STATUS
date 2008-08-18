@@ -90,6 +90,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
+ * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
+   PR 44799
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=647395&view=rev
+         http://svn.apache.org/viewvc?rev=660461&view=rev
+         http://svn.apache.org/viewvc?rev=660566&view=rev
+         http://svn.apache.org/viewvc?rev=664330&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, niq, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -110,17 +121,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           third party module authors.
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
-
- * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
-   PR 44799
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=647395&view=rev
-         http://svn.apache.org/viewvc?rev=660461&view=rev
-         http://svn.apache.org/viewvc?rev=660566&view=rev
-         http://svn.apache.org/viewvc?rev=664330&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq
 
  * core, authn/z: Avoid calling access control hooks for internal requests
    with configurations which match those of initial request.  Revert to
