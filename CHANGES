@@ -5,6 +5,9 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
+     PR 44799 [Christian Wenz <christian wenz.org>]
+
   *) mod_ssl: Rewrite shmcb to avoid memory alignment issues.  PR 42101.
      [Geoff Thorpe]
 
