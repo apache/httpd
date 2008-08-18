@@ -79,7 +79,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     const char *err, *path;
     apr_port_t port = 8000;
 
-    if (strncasecmp(url, "fcgi://", 7) == 0) {
+    if (strncasecmp(url, "fcgi:", 5) == 0) {
         url += 5;
     }
     else {
@@ -924,7 +924,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                  "proxy: FCGI: url: %s proxyname: %s proxyport: %d",
                  url, proxyname, proxyport);
 
-    if (strncasecmp(url, "fcgi://", 7) == 0) {
+    if (strncasecmp(url, "fcgi:", 5) == 0) {
         url += 5;
     }
     else {
