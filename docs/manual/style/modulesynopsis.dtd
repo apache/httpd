@@ -49,7 +49,7 @@ usage?, seealso*)>
 
 <!ELEMENT syntax %Inline;>
 
-<!ELEMENT default (#PCDATA | br)*>
+<!ELEMENT default (#PCDATA | directive | br)*>
 
 <!ELEMENT contextlist (context+)+>
 
