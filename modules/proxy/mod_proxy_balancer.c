@@ -1038,6 +1038,10 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
 
     if (mycandidate) {
         mycandidate->s->lbstatus -= total_factor;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: byrequests selected worker \"%s\" : busy %" APR_SIZE_T_FMT " : lbstatus %d",
+                     mycandidate->name, mycandidate->s->busy, mycandidate->s->lbstatus);
+
     }
 
     return mycandidate;
@@ -1116,6 +1120,13 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
         cur_lbset++;
     } while (cur_lbset <= max_lbset && !mycandidate);
 
+    if (mycandidate) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: bytraffic selected worker \"%s\" : busy %" APR_SIZE_T_FMT,
+                     mycandidate->name, mycandidate->s->busy);
+
+    }
+
     return mycandidate;
 }
 
@@ -1191,12 +1202,10 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
     } while (cur_lbset <= max_lbset && !mycandidate);
 
     if (mycandidate) {
-
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: selected worker \"%s\" by busy factor %i (request lbstatus %i)",
-                     mycandidate->name, mycandidate->s->busy, mycandidate->s->lbstatus);
-
         mycandidate->s->lbstatus -= total_factor;
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: bybusyness selected worker \"%s\" : busy %" APR_SIZE_T_FMT " : lbstatus %d",
+                     mycandidate->name, mycandidate->s->busy, mycandidate->s->lbstatus);
 
     }
 
