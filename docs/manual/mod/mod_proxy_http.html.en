@@ -75,10 +75,10 @@
         <dt>proxy-nokeepalive</dt>
         <dd>Forces the proxy to close the backend connection after
         each request.</dd>
-        <dt>Proxy-Chain-Auth</dt>
+        <dt>proxy-chain-auth</dt>
         <dd>If the proxy requires authentication, it will read and
         consume the proxy authentication credentials sent by the client.
-        With <var>Proxy-Chain-Auth</var> it will <em>also</em> forward
+        With <var>proxy-chain-auth</var> it will <em>also</em> forward
         the credentials to the next proxy in the chain.  This may
         be necessary if you have a chain of proxies that share
         authentication information.  <strong>Security Warning:</strong>
@@ -109,6 +109,16 @@
         <code>proxy-interim-response RFC</code> to be fully protocol
         compliant, or <code>proxy-interim-response Suppress</code>
         to suppress interim responses.</dd>
+        <dt>proxy-initial-not-pooled</dt>
+        <dd>If this variable is set no pooled connection will be reused
+        if the client connection is an initial connection. This avoids
+        the "proxy: error reading status line from remote server" error message
+        caused by the race condition that the backend server closed the
+        pooled connection after the connection check by the proxy and
+        before data send by the proxy reached the backend. It has to be
+        kept in mind that setting this variable downgrades performance,
+        especially with HTTP/1.0 clients.
+        </dd>
     </dl>
 </div>
 </div>
