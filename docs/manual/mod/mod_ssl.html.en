@@ -358,10 +358,10 @@ authentication. Because although placing a CA certificate of the
 server certificate chain into <code class="directive"><a href="#sslcacertificatepath">SSLCACertificatePath</a></code> has the same effect
 for the certificate chain construction, it has the side-effect that
 client certificates issued by this same CA certificate are also
-accepted on client authentication. That's usually not one expect.</p>
+accepted on client authentication.</p>
 <p>
 But be careful: Providing the certificate chain works only if you are using a
-<em>single</em> (either RSA <em>or</em> DSA) based server certificate. If you are
+<em>single</em> RSA <em>or</em> DSA based server certificate. If you are
 using a coupled RSA+DSA certificate pair, this will work only if actually both
 certificates use the <em>same</em> certificate chain. Else the browsers will be
 confused in this situation.</p>
