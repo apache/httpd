@@ -841,6 +841,13 @@ expressions</description>
         and url encoded id (like servlet containers) use | to to separate them.
         The first part is for the cookie the second for the path.
     </td></tr>
+    <tr><td>scolonpathdelim</td>
+        <td>Off</td>
+        <td>If set to <code>On</code> the semi-colon character ';' will be
+        used as an additional sticky session path deliminator/separator. This
+        is mainly used to emulate mod_jk's behavior when dealing with paths such
+        as <code>JSESSIONID=6736bcf34;foo=aabfa</code>
+    </td></tr>
     <tr><td>timeout</td>
         <td>0</td>
         <td>Balancer timeout in seconds. If set this will be the maximum time
