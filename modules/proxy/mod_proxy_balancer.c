@@ -128,10 +128,14 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
  * Something like 'JSESSIONID=12345...N'
  */
 static char *get_path_param(apr_pool_t *pool, char *url,
-                            const char *name)
+                            const char *name, int scolon_sep)
 {
     char *path = NULL;
+    char *pathdelims = "?&";
 
+    if (scolon_sep) {
+        pathdelims = ";?&";
+    }
     for (path = strstr(url, name); path; path = strstr(path + 1, name)) {
         path += strlen(name);
         if (*path == '=') {
@@ -141,7 +145,7 @@ static char *get_path_param(apr_pool_t *pool, char *url,
             ++path;
             if (strlen(path)) {
                 char *q;
-                path = apr_strtok(apr_pstrdup(pool, path), ";?&", &q);
+                path = apr_strtok(apr_pstrdup(pool, path), pathdelims, &q);
                 return path;
             }
         }
@@ -261,7 +265,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
     if (!balancer->sticky)
         return NULL;
     /* Try to find the sticky route inside url */
-    *route = get_path_param(r->pool, *url, balancer->sticky_path);
+    *route = get_path_param(r->pool, *url, balancer->sticky_path, balancer->scolonsep);
     if (*route) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: BALANCER: Found value %s for "

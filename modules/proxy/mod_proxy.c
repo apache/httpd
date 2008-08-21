@@ -360,6 +360,18 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         }
         return "unknown lbmethod";
     }
+    else if (!strcasecmp(key, "scolonpathdelim")) {
+        /* If set to 'on' then ';' will also be
+         * used as a session path separator/delim (ala
+         * mod_jk)
+         */
+        if (!strcasecmp(val, "on"))
+            balancer->scolonsep = 1;
+        else if (!strcasecmp(val, "off"))
+            balancer->scolonsep = 0;
+        else
+            return "scolonpathdelim must be On|Off";
+    }
     else {
         return "unknown Balancer parameter";
     }

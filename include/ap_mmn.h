@@ -165,6 +165,7 @@
  * 20080722.0 (2.3.0-dev)  remove has_realm_hash() from authn_provider struct
  * 20080722.1 (2.3.0-dev)  Add conn_timeout and conn_timeout_set to
  *                         proxy_worker struct.
+ * 20080722.2 (2.3.0-dev)  Add scolonsep to proxy_balancer
  *
  */
 
@@ -173,7 +174,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20080722
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

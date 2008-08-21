@@ -382,6 +382,7 @@ struct proxy_balancer {
 #endif
     void            *context;   /* general purpose storage */
     const char      *sticky_path;  /* URL sticky session identifier */
+    int             scolonsep;     /* true if ';' seps sticky session paths */
 };
 
 struct proxy_balancer_method {
