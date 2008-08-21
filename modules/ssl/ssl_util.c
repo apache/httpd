@@ -351,6 +351,14 @@ static void ssl_util_thr_lock(int mode, int type,
     }
 }
 
+/* Dynamic lock structure */
+struct CRYPTO_dynlock_value {
+    apr_pool_t *pool;
+    const char* file; 
+    int line;
+    apr_thread_mutex_t *mutex;
+};
+
 /* Global reference to the pool passed into ssl_util_thread_setup() */
 apr_pool_t *dynlockpool = NULL;
 
