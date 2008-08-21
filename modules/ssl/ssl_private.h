@@ -463,6 +463,16 @@ typedef struct {
 } SSLDirConfigRec;
 
 /**
+ * Dynamic lock structure
+ */
+struct CRYPTO_dynlock_value {
+    apr_pool_t *pool;
+    const char* file; 
+    int line;
+    apr_thread_mutex_t *mutex;
+};
+
+/**
  *  function prototypes
  */
 
