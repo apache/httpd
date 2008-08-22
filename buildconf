@@ -23,7 +23,7 @@
 # can be overridden with --with-apr=[dir] and --with-apr-util=[dir]
 
 apr_src_dir="srclib/apr ../apr"
-apu_src_dir="srclib/apr-util ../apr-util"
+apu_src_dir=""
 
 while test $# -gt 0 
 do
@@ -76,6 +76,12 @@ if [ $apr_found -lt 1 ]; then
     echo "   svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr"
     echo ""
     should_exit=1
+fi
+
+if test -z "$apu_src_dir"; then
+    apu_src_dir=`echo $apr_src_dir | sed -e 's#/apr#/apr-util#g;'`
+    apu_src_dir="$apu_src_dir `echo $apr_src_dir | sed -e 's#/apr#/aprutil#;g'`"
+    apu_src_dir="$apu_src_dir srclib/apr-util ../apr-util"
 fi
 
 for dir in $apu_src_dir
