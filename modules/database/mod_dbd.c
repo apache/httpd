@@ -513,7 +513,7 @@ static apr_status_t dbd_construct(void **data_ptr,
         switch (rv) {
         case APR_EGENERAL:
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cfg->server,
-                         "DBD: Can't connect to %s: %s", cfg->name, &err);
+                         "DBD: Can't connect to %s: %s", cfg->name, err);
             break;
         default:
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cfg->server,
