@@ -938,6 +938,26 @@ Name|Date|Size|Description</syntax>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>IndexHeadInsert</name>
+<description>Inserts text in the HEAD section of an index page.</description>
+<syntax>IndexHeadInsert <var>"markup ..."</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>The <directive>IndexHeadInsert</directive> directive specifies a
+    string to insert in the <var>&lt;head&gt;</var> section of the HTML
+    generated for the index page.</p>
+    <example>
+      <title>Example</title>
+      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ReadmeName</name>
 <description>Name of the file that will be inserted at the end
 of the index listing</description>
