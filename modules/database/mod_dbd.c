@@ -464,6 +464,7 @@ static apr_status_t dbd_construct(void **data_ptr,
     apr_pool_t *rec_pool, *prepared_pool;
     ap_dbd_t *rec;
     apr_status_t rv;
+    const char *err = "";
 
     rv = apr_pool_create(&rec_pool, pool);
     if (rv != APR_SUCCESS) {
@@ -507,12 +508,12 @@ static apr_status_t dbd_construct(void **data_ptr,
         return rv;
     }
 
-    rv = apr_dbd_open(rec->driver, rec->pool, cfg->params, &rec->handle);
+    rv = apr_dbd_open_ex(rec->driver, rec->pool, cfg->params, &rec->handle, &err);
     if (rv != APR_SUCCESS) {
         switch (rv) {
         case APR_EGENERAL:
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cfg->server,
-                         "DBD: Can't connect to %s", cfg->name);
+                         "DBD: Can't connect to %s: %s", cfg->name, &err);
             break;
         default:
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cfg->server,
