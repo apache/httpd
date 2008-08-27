@@ -196,6 +196,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
     +1: rpluem, jim
 
+ * mod_proxy_balancer: Allow for treatment of ';' char as a session
+   deliminator/separator, ala mod_jk.
+   PR: 45158
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=686809&view=rev
+       http://svn.apache.org/viewvc?rev=687754&view=rev
+    Backport version for 2.2.x of patch:
+       http://people.apache.org/~jim/patches/scolon-proxy.patch.txt
+    +1: jim
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
