@@ -206,6 +206,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~jim/patches/scolon-proxy.patch.txt
     +1: jim
 
+ * mod_proxy_balancer: Add in new bybusyness LB method.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=686805&view=rev
+       http://svn.apache.org/viewvc?rev=687099&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: 
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
