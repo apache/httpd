@@ -59,16 +59,25 @@ sub findInDir {
 sub scanFile {
     my $file=shift;
 
-#    print "scanning $file\n";
+#   print "scanning $file\n";
 
     open(F,$file) || croak "Can't open $file: $!";
     while(<F>) {
 	next if /\#define/;
 	next if /\@deffunc/;
-	if(/AP_DECLARE_HOOK\((.*)\)/) {
-	    my $def=$1;
-	    my($ret,$name,$args)=$def=~/([^,\s]+)\s*,\s*([^,\s]+)\s*,\s*\((.*)\)/;
-	    croak "Don't understand $def in $file" if !defined $args;
+	if(/AP_DECLARE_HOOK\s*\(/) {
+	    my($ret,$name,$args);
+	    while(!(($ret,$name,$args)=
+		   /AP_DECLARE_HOOK\s*\(\s*([^,]+)\s*,\s*([^,\s]+)\s*,\s*\((.*?)\)\)/s)) {
+		chomp;
+		# swallow subsequent lines if needed to get all the required info
+		my $l=<F>;
+		return unless defined $l;
+		$l=~s/^\s*/ /;
+		$_.=$l;
+	    }
+	    $ret=~s/\s*$//;
+	    $args=~s/^\s*//; $args=~s/\s*$//;
 #	    print "found $ret $name($args) in $file\n";
 
 	    croak "$name declared twice! ($_)"
@@ -76,15 +85,6 @@ sub scanFile {
 	    $::Hooks{$name}->{declared}=$file;
 	    $::Hooks{$name}->{ret}=$ret;
 	    $::Hooks{$name}->{args}=$args;
-	} elsif(/AP_DECLARE_HOOK\((\s*[^,\s]+)\s*,\s*([^,\s]+)/) {
-# really we should swallow subsequent lines to get the arguments...
-	    my $name=$2;
-	    my $ret=$1;
-	    croak "$name declared twice! ($_)"
-		if exists $::Hooks{$name}->{declared};
-	    $::Hooks{$name}->{declared}=$file;
-	    $::Hooks{$name}->{ret}=$ret;
-	    $::Hooks{$name}->{args}='???';
 	}
 	if(/AP_IMPLEMENT_HOOK_()(VOID)\(([^,\s]+)/
 	   || /AP_IMPLEMENT(_OPTIONAL|)_HOOK_(.*?)\([^,]+?\s*,\s*([^,\s]+)/) {
