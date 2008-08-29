@@ -99,12 +99,12 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
  * @param r The request
  * @param name The name of the cookie.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name)
+AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, const char *attrs)
 {
 
     /* create RFC2109 compliant cookie */
     char *rfc2109 = apr_pstrcat(r->pool, name, "=;",
-                                CLEAR_ATTRS, NULL);
+                                attrs ? attrs : CLEAR_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' removed cookie: '%s'", r->user, rfc2109);
     apr_table_addn(r->headers_out, SET_COOKIE, rfc2109);
@@ -119,12 +119,12 @@ AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name)
  * @param r The request
  * @param name2 The name of the cookie.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2)
+AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, const char *attrs2)
 {
 
     /* create RFC2965 compliant cookie */
     char *rfc2965 = apr_pstrcat(r->pool, name2, "=;",
-                                CLEAR_ATTRS, NULL);
+                                attrs2 ? attrs2 : CLEAR_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' removed cookie2: '%s'", r->user, rfc2965);
     apr_table_addn(r->headers_out, SET_COOKIE2, rfc2965);

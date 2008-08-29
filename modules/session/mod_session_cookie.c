@@ -70,7 +70,7 @@ static int session_cookie_save(request_rec * r, session_rec * z)
             ap_cookie_write(r, conf->name, z->encoded, conf->name_attrs, z->maxage);
         }
         else {
-            ap_cookie_remove(r, conf->name);
+            ap_cookie_remove(r, conf->name, conf->name_attrs);
         }
     }
 
@@ -80,7 +80,7 @@ static int session_cookie_save(request_rec * r, session_rec * z)
             ap_cookie_write2(r, conf->name2, z->encoded, conf->name2_attrs, z->maxage);
         }
         else {
-            ap_cookie_remove2(r, conf->name2);
+            ap_cookie_remove2(r, conf->name2, conf->name2_attrs);
         }
     }
 
