@@ -82,16 +82,20 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
  *
  * @param r The request
  * @param name The name of the cookie.
+ * @param attrs The string containing additional cookie attributes. If NULL, the
+ *              CLEAR_ATTRS will be used.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name);
+AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, const char *attrs);
 
 /**
  * Remove an RFC2965 compliant cookie.
  *
  * @param r The request
  * @param name2 The name of the cookie.
+ * @param attrs2 The string containing additional cookie attributes. If NULL, the
+ *               CLEAR_ATTRS will be used.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2);
+AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, const char *attrs2);
 
 /**
  * Read a cookie called name, placing its value in val.
