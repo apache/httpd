@@ -972,6 +972,7 @@ static int authenticate_form_authn(request_rec * r)
         if (OK == rv) {
             rv = check_authn(r, sent_user, sent_pw);
             if (OK == rv) {
+                fake_basic_authentication(r, conf, sent_user, sent_pw);
                 set_session_auth(r, sent_user, sent_pw, conf->site);
                 if (sent_loc) {
                     apr_table_set(r->headers_out, "Location", sent_loc);
