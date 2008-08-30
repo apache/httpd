@@ -46,7 +46,7 @@ static void (*ap_session_get_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char **value) = NULL;
 static void (*ap_session_set_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char *value) = NULL;
-static int (*ap_parse_request_form_fn) (request_rec * r, ap_filter_t *f, 
+static int (*ap_parse_request_form_fn) (request_rec * r, ap_filter_t *f,
                                         apr_array_header_t ** ptr,
                                         apr_size_t num, apr_size_t size) = NULL;
 static void (*ap_request_insert_filter_fn) (request_rec * r) = NULL;
@@ -103,7 +103,7 @@ static void *create_auth_form_dir_config(apr_pool_t * p, char *d)
     conf->method = "httpd_method";
     conf->mimetype = "httpd_mimetype";
     conf->body = "httpd_body";
-    
+
     return conf;
 }
 
@@ -669,13 +669,13 @@ static int get_form_auth(request_rec * r,
 /**
  * Given a username and site passphrase hash from the session, determine
  * whether the site passphrase is valid for this session.
- * 
+ *
  * If the site passphrase is NULL, or if the sent_hash is NULL, this
  * function returns DECLINED.
- * 
+ *
  * If the site passphrase hash does not match the sent hash, this function
  * returns AUTH_USER_NOT_FOUND.
- * 
+ *
  * On success, returns OK.
  */
 static int check_site(request_rec * r, const char *site, const char *sent_user, const char *sent_hash)
@@ -912,15 +912,15 @@ static int authenticate_form_authn(request_rec * r)
      * type and with the given body.
      *
      * Otherwise access is denied.
-     * 
+     *
      * Reading the body requires some song and dance, because the input filters
      * are not yet configured. To work around this problem, we create a
      * subrequest and use that to create a sane filter stack we can read the
      * form from.
-     * 
+     *
      * The main request is then capped with a kept_body input filter, which has
      * the effect of guaranteeing the input stack can be safely read a second time.
-     * 
+     *
      */
     if (HTTP_UNAUTHORIZED == rv && r->method_number == M_POST && ap_is_initial_req(r)) {
         request_rec *rr;
@@ -994,7 +994,7 @@ static int authenticate_form_authn(request_rec * r)
         apr_table_set(r->headers_out, "Location", conf->loginrequired);
         return HTTP_MOVED_PERMANENTLY;
     }
- 
+
     /* did the user ask to be redirected on login success? */
     if (sent_loc) {
         apr_table_set(r->headers_out, "Location", sent_loc);
@@ -1006,7 +1006,7 @@ static int authenticate_form_authn(request_rec * r)
      * potential security issue: if we return a login to the browser, we must
      * send a no-store to make sure a well behaved browser will not try and
      * send the login details a second time if the back button is pressed.
-     * 
+     *
      * if the user has full control over the backend, the
      * AuthCookieDisableNoStore can be used to turn this off.
      */
