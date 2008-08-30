@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_auth_form: Make sure the logged in user is populated correctly
+     after a form login. Fixes a missing REMOTE_USER variable directly
+     following a login. [Graham Leggett]
+
   *) mod_session_cookie: Make sure that cookie attributes are correctly
      included in the blank cookie when cookies are removed. This fixes an
      inability to log out when using mod_auth_form. [Graham Leggett]
