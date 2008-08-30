@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_session_cookie, mod_session_dbd: Make sure cookies are set both
+     within the output headers and error output headers, so that the
+     session is maintained across redirects. [Graham Leggett]
+
   *) mod_auth_form: Make sure the logged in user is populated correctly
      after a form login. Fixes a missing REMOTE_USER variable directly
      following a login. [Graham Leggett]

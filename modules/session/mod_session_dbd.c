@@ -54,7 +54,7 @@ static void (*session_dbd_prepare_fn) (server_rec *, const char *, const char *)
 
 /**
  * Initialise the database.
- * 
+ *
  * If the mod_dbd module is missing, this method will return APR_EGENERAL.
  */
 static apr_status_t dbd_init(request_rec *r, const char *query, ap_dbd_t **dbdp,
@@ -86,7 +86,7 @@ static apr_status_t dbd_init(request_rec *r, const char *query, ap_dbd_t **dbdp,
                       "failed to find the prepared statement called '%s'", query);
         return APR_EGENERAL;
     }
-    
+
     *dbdp = dbd;
     *statementp = statement;
 
@@ -374,7 +374,7 @@ static apr_status_t dbd_remove(request_rec * r, const char *key)
 
 /**
  * Clean out expired sessions.
- * 
+ *
  * TODO: We need to figure out a way to clean out expired sessions from the database.
  * The monitor hook doesn't help us that much, as we have no handle into the
  * server, and so we need to come up with a way to do this safely.
@@ -431,12 +431,12 @@ static int session_dbd_save(request_rec * r, session_rec * z)
 
         /* create RFC2109 compliant cookie */
         if (conf->name_set) {
-            ap_cookie_write(r, conf->name, buffer, conf->name_attrs, z->maxage);
+            ap_cookie_write(r, conf->name, buffer, conf->name_attrs, z->maxage, r->headers_out, r->err_headers_out, NULL);
         }
 
         /* create RFC2965 compliant cookie */
         if (conf->name2_set) {
-            ap_cookie_write2(r, conf->name2, buffer, conf->name2_attrs, z->maxage);
+            ap_cookie_write2(r, conf->name2, buffer, conf->name2_attrs, z->maxage, r->headers_out, r->err_headers_out, NULL);
         }
 
         return OK;
@@ -485,7 +485,7 @@ static void *create_session_dbd_dir_config(apr_pool_t * p, char *dummy)
     (session_dbd_dir_conf *) apr_pcalloc(p, sizeof(session_dbd_dir_conf));
 
     new->remove = 1;
-    
+
     new->selectlabel = "selectsession";
     new->insertlabel = "insertsession";
     new->updatelabel = "updatesession";

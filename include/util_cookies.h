@@ -41,7 +41,7 @@ extern "C" {
 #define SET_COOKIE "Set-Cookie"
 #define SET_COOKIE2 "Set-Cookie2"
 #define DEFAULT_ATTRS "HttpOnly;Secure;Version=1"
-#define CLEAR_ATTRS "Max-Age=0;Version=1"
+#define CLEAR_ATTRS "Version=1"
 
 typedef struct {
     request_rec *r;
@@ -60,9 +60,11 @@ typedef struct {
  * @param attrs The string containing additional cookie attributes. If NULL, the
  *              DEFAULT_ATTRS will be used.
  * @param maxage If non zero, a Max-Age header will be added to the cookie.
+ * @param ... A varargs array of zero or more (apr_table_t *) tables followed by NULL
+ *            to which the cookies should be added.
  */
 AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, const char *val,
-                                         const char *attrs, long maxage);
+                                         const char *attrs, long maxage, ...);
 
 /**
  * Write an RFC2965 compliant cookie.
@@ -73,9 +75,11 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
  * @param attrs2 The string containing additional cookie attributes. If NULL, the
  *               DEFAULT_ATTRS will be used.
  * @param maxage If non zero, a Max-Age header will be added to the cookie.
+ * @param ... A varargs array of zero or more (apr_table_t *) tables followed by NULL
+ *            to which the cookies should be added.
  */
 AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, const char *val,
-                                          const char *attrs2, long maxage);
+                                          const char *attrs2, long maxage, ...);
 
 /**
  * Remove an RFC2109 compliant cookie.
@@ -84,8 +88,10 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
  * @param name The name of the cookie.
  * @param attrs The string containing additional cookie attributes. If NULL, the
  *              CLEAR_ATTRS will be used.
+ * @param ... A varargs array of zero or more (apr_table_t *) tables followed by NULL
+ *            to which the cookies should be added.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, const char *attrs);
+AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, const char *attrs, ...);
 
 /**
  * Remove an RFC2965 compliant cookie.
@@ -94,8 +100,10 @@ AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, con
  * @param name2 The name of the cookie.
  * @param attrs2 The string containing additional cookie attributes. If NULL, the
  *               CLEAR_ATTRS will be used.
+ * @param ... A varargs array of zero or more (apr_table_t *) tables followed by NULL
+ *            to which the cookies should be added.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, const char *attrs2);
+AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, const char *attrs2, ...);
 
 /**
  * Read a cookie called name, placing its value in val.
