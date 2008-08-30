@@ -941,6 +941,11 @@ static int authenticate_form_authn(request_rec * r)
                            &sent_user, &sent_pw, &sent_loc, &sent_method,
                            &sent_mimetype, &sent_body, conf);
 
+        /* make sure any user detected within the subrequest is saved back to
+         * the main request.
+         */
+        r->user = rr->user;
+
         /* insert the kept_body filter on the main request to guarantee the
          * input filter stack cannot be read a second time, optionally inject
          * a saved body if one was specified in the login form.
