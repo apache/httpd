@@ -32,11 +32,13 @@
  * @param maxage If non zero, a Max-Age header will be added to the cookie.
  */
 AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, const char *val,
-                                         const char *attrs, long maxage)
+                                         const char *attrs, long maxage, ...)
 {
 
     char *buffer;
     char *rfc2109;
+    apr_table_t *t;
+    va_list vp;
 
     /* handle expiry */
     buffer = "";
@@ -51,7 +53,13 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
                           attrs : DEFAULT_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' set cookie: '%s'", r->user, rfc2109);
-    apr_table_addn(r->headers_out, SET_COOKIE, rfc2109);
+
+    /* write the cookie to the header table(s) provided */
+    va_start(vp, maxage);
+    while ((t = va_arg(vp, apr_table_t *))) {
+        apr_table_addn(t, SET_COOKIE, rfc2109);
+    }
+    va_end(vp);
 
     return APR_SUCCESS;
 
@@ -68,11 +76,13 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
  * @param maxage If non zero, a Max-Age header will be added to the cookie.
  */
 AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, const char *val,
-                                          const char *attrs2, long maxage)
+                                          const char *attrs2, long maxage, ...)
 {
 
     char *buffer;
     char *rfc2965;
+    apr_table_t *t;
+    va_list vp;
 
     /* handle expiry */
     buffer = "";
@@ -87,7 +97,13 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
                           attrs2 : DEFAULT_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' set cookie2: '%s'", r->user, rfc2965);
-    apr_table_addn(r->headers_out, SET_COOKIE2, rfc2965);
+
+    /* write the cookie to the header table(s) provided */
+    va_start(vp, maxage);
+    while ((t = va_arg(vp, apr_table_t *))) {
+        apr_table_addn(t, SET_COOKIE2, rfc2965);
+    }
+    va_end(vp);
 
     return APR_SUCCESS;
 
@@ -99,15 +115,23 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
  * @param r The request
  * @param name The name of the cookie.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, const char *attrs)
+AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, const char *attrs, ...)
 {
+    apr_table_t *t;
+    va_list vp;
 
     /* create RFC2109 compliant cookie */
-    char *rfc2109 = apr_pstrcat(r->pool, name, "=;",
+    char *rfc2109 = apr_pstrcat(r->pool, name, "=;Max-Age=0;",
                                 attrs ? attrs : CLEAR_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' removed cookie: '%s'", r->user, rfc2109);
-    apr_table_addn(r->headers_out, SET_COOKIE, rfc2109);
+
+    /* write the cookie to the header table(s) provided */
+    va_start(vp, attrs);
+    while ((t = va_arg(vp, apr_table_t *))) {
+        apr_table_addn(t, SET_COOKIE, rfc2109);
+    }
+    va_end(vp);
 
     return APR_SUCCESS;
 
@@ -119,15 +143,23 @@ AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, con
  * @param r The request
  * @param name2 The name of the cookie.
  */
-AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, const char *attrs2)
+AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, const char *attrs2, ...)
 {
+    apr_table_t *t;
+    va_list vp;
 
     /* create RFC2965 compliant cookie */
-    char *rfc2965 = apr_pstrcat(r->pool, name2, "=;",
+    char *rfc2965 = apr_pstrcat(r->pool, name2, "=;Max-Age=0;",
                                 attrs2 ? attrs2 : CLEAR_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' removed cookie2: '%s'", r->user, rfc2965);
-    apr_table_addn(r->headers_out, SET_COOKIE2, rfc2965);
+
+    /* write the cookie to the header table(s) provided */
+    va_start(vp, attrs2);
+    while ((t = va_arg(vp, apr_table_t *))) {
+        apr_table_addn(t, SET_COOKIE2, rfc2965);
+    }
+    va_end(vp);
 
     return APR_SUCCESS;
 

@@ -167,13 +167,14 @@
  *                         proxy_worker struct.
  * 20080722.2 (2.3.0-dev)  Add scolonsep to proxy_balancer
  * 20080829.0 (2.3.0-dev)  Add cookie attributes when removing cookies
+ * 20080830.0 (2.3.0-dev)  Cookies can be set on headers_out and err_headers_out
  *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20080829
+#define MODULE_MAGIC_NUMBER_MAJOR 20080830
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
