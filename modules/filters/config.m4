@@ -10,6 +10,9 @@ APACHE_MODULE(include, Server Side Includes, , , yes)
 APACHE_MODULE(filter, Smart Filtering, , , yes)
 APACHE_MODULE(substitute, response content rewrite-like filtering, , , most)
 
+sed_obj="mod_sed.lo sed0.lo sed1.lo regexp.lo"
+APACHE_MODULE(sed, filter request and/or response bodies through sed, $sed_obj)
+
 if test "$ac_cv_ebcdic" = "yes"; then
 # mod_charset_lite can be very useful on an ebcdic system,
 #   so include it by default
