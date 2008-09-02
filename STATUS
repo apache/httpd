@@ -90,18 +90,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
- * mod_proxy_http: Introduce environment variable proxy-initial-not-pooled
-   to avoid reusing pooled connections if the client connection is an
-   initial connection. This avoids the "proxy: error reading status line
-   from remote server reverse proxy case.
-   PR: 37770
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=684351&view=rev
-       http://svn.apache.org/viewvc?rev=686549&view=rev (doc)
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
