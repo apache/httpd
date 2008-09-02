@@ -5,6 +5,10 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_proxy_http: Introduce environment variable proxy-initial-not-pooled to
+     avoid reusing pooled connections if the client connection is an initial
+     connection. PR 37770. [Ruediger Pluem]
+
   *) mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
      PR 44799 [Christian Wenz <christian wenz.org>]
 
