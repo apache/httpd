@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:658546 (outdated) -->
+<!-- English Revision: 658546 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -135,7 +135,7 @@
 <usage>
     <p><directive>SetEnvIf</directive>
     ディレクティブは、リクエストの属性に基づいて環境変数を定義します。
-    最初の引数で指定できる <em>attribute</em> は以下の三つのどれかです:</p>
+    最初の引数で指定できる <em>attribute</em> は以下の 4 つのどれかです:</p>
 
 <ol>
 <li>HTTP リクエストヘッダフィールド (詳しい情報は <a
@@ -167,7 +167,10 @@
       (<em>例えば</em>、"HTTP/0.9", "HTTP/1.1" <em>など。</em>)</li>
 
       <li><code>Request_URI</code> -
-      URL のスキームとホストの後の部分</li>
+      URL のスキームとホストの後の部分。
+      追加の情報として、クエリーストリングにマッチさせる場合については
+      <directive module="mod_rewrite">RewriteCond</directive>
+      ディレクティブを参照してください。</li>
     </ul>
 </li>
 
@@ -179,10 +182,18 @@
 範囲でより前の部分で定義されているか、ということです。
 環境変数である可能性は、リクエストの特性に対するマッチが存在せず、
 <em>attribute</em> に正規表現が使われなかったときにのみ考慮されます。</li>
+
+<li>
+ SSL クライアント証明書拡張への参照で、<em>oid</em> オブジェクト ID 
+ で指定されるもの。
+ SSL リクエストでない場合や <em>oid</em> が設定されていなかった場合は、
+ 変数はセットされません。<em>oid</em> が複数見つかった場合は
+ それらの文字列はカンマ <code>','</code> 区切りで連結されます。
+ <em>oid</em> は文字列型拡張への参照でなければなりません。
+</li>
 </ol>
 
-<p>二つ目の引数 (<em>regex</em>) は <a
-href="http://www.pcre.org/">Perl 互換の正規表現</a>です。
+<p>二つ目の引数 (<em>regex</em>) は <glossary ref="regex">正規表現</glossary>です。
 これは POSIX.2 の egrep 形式の正規表現と似ています。<em>regex</em> が
 <em>attribute</em> にマッチする場合は、残りの引数が評価されます。</p>
 
@@ -212,17 +223,24 @@ href="http://www.pcre.org/">Perl 互換の正規表現</a>です。
    SetEnvIf Request_URI "\.jpg$" object_is_image=jpg<br />
    SetEnvIf Request_URI "\.xbm$" object_is_image=xbm<br />
         :<br />
-   SetEnvIf Referer www\.mydomain\.com intra_site_referral<br />
+   SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral<br />
         :<br />
    SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
+        :<br />
+   SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" NetscapeComment=$1<br />
         :<br />
    SetEnvIf ^TS*  ^[a-z].*  HAVE_TS<br />
 </example>
 
     <p>初めの三つはリクエストが画像であるときに環境変数
     <code>object_is_image</code> を設定します。四つ目は
-    参照元のページがウェブサイト <code>www.mydomain.com</code> にあるときに
+    参照元のページがウェブサイト <code>www.mydomain.example.com</code> にあるときに
     <code>intra_site_referral</code> を設定します。</p>
+
+    <p>6番目の例では環境変数 <code>NetscapeComment</code> を定義して、
+    その値が SSL クライアント証明書の対応するフィールドの文字列であるようにします。
+    ただし SSL クライアント証明書の対応するフィールドに文字列が存在する
+    ときにのみ、環境変数は設定されます。</p>
 
     <p>最後の例は、リクエストに "TS" で始まり、値が集合 [a-z] のどれかで
     始まるヘッダがあるときに <code>HAVE_TS</code> を設定します。</p>
