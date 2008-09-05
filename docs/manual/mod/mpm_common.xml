@@ -443,8 +443,8 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 
 <directivesynopsis>
 <name>MaxClients</name>
-<description>Maximum number of child processes that will be created
-to serve requests</description>
+<description>Maximum number of simultaneous requests that will
+be served</description>
 <syntax>MaxClients <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
