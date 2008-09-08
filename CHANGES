@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Add new LogFormat parameter, %k, which logs the number of
+     keepalive requests on this connection for this request..
+     [Dan Poirier <poirier pobox.com>]
+
   *) Be tolerant in what you accept - accept slightly broken
      status lines from a backend provide they include a valid status code.
      PR 44995 [Rainer Jung <rainer.jung kippdata.de>
