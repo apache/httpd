@@ -110,8 +110,8 @@ the author's blog</a>.</p>
         &lt;Directory "/var/www/docs/sed"&gt; <br />
            <indent>
            AddInputFilter Sed php <br />
-           OutputSed "s/monday/MON/g" <br />
-           OutputSed "s/sunday/SUN/g" <br />
+           InputSed "s/monday/MON/g" <br />
+           InputSed "s/sunday/SUN/g" <br />
            </indent>
         &lt;/Directory&gt; <br />
         </indent>
