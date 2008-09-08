@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Don't adjust case in pathname components that are not of interest
+     to mod_mime.  Fixes mod_negotiation's use of such components.
+     PR 43250 [Basant Kumar Kukreja <basant.kukreja sun.com>]
+
   *) Add new LogFormat parameter, %k, which logs the number of
      keepalive requests on this connection for this request..
      [Dan Poirier <poirier pobox.com>]
