@@ -237,6 +237,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache Module mod_proxy_http</a></li>
 <li><a href="mod/mod_request.html">Apache Module mod_request</a></li>
 <li><a href="mod/mod_rewrite.html">Apache Module mod_rewrite</a></li>
+<li><a href="mod/mod_sed.html">Apache Module mod_sed</a></li>
 <li><a href="mod/mod_session.html">Apache Module mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Apache Module mod_session_cookie</a></li>
 <li><a href="mod/mod_session_crypto.html">Apache Module mod_session_crypto</a></li>

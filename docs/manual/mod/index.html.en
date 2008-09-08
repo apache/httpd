@@ -170,7 +170,8 @@ by other LDAP modules</dd>
 <dt><a href="mod_request.html" id="R" name="R">mod_request</a></dt><dd>Filters to handle and make available HTTP request bodies</dd>
 <dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
-<dt><a href="mod_session.html" id="S" name="S">mod_session</a></dt><dd>Session support</dd>
+<dt><a href="mod_sed.html" id="S" name="S">mod_sed</a></dt><dd>Filtering Input (request) and Output (response) content using sed commands</dd>
+<dt><a href="mod_session.html">mod_session</a></dt><dd>Session support</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>

@@ -233,6 +233,7 @@
 <li><a href="mod/mod_proxy_http.html">아파치 모듈 mod_proxy_http</a></li>
 <li><a href="mod/mod_request.html">아파치 모듈 mod_request</a></li>
 <li><a href="mod/mod_rewrite.html">아파치 모듈 mod_rewrite</a></li>
+<li><a href="mod/mod_sed.html">아파치 모듈 mod_sed</a></li>
 <li><a href="mod/mod_session.html">아파치 모듈 mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">아파치 모듈 mod_session_cookie</a></li>
 <li><a href="mod/mod_session_crypto.html">아파치 모듈 mod_session_crypto</a></li>

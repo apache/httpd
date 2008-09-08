@@ -408,135 +408,137 @@ an imagemap</td></tr>
 Name|Date|Size|Description</a></td><td> Ascending Name </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Dizin içerik listesinin öntanımlı sıralamasını belirler.
 </td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet <var>url-yolu</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin listesine bir biçembent ekler.</td></tr>
-<tr><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+<tr><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr><td class="descr" colspan="4">Sed command to filter the request data (typically post data)</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the error log</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+<tr><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the query field</td></tr>
-<tr><td><a href="mod_isapi.html#isapicachefile">ISAPICacheFile <var>file-path</var> [<var>file-path</var>]
-...</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">ISAPI .dll files to be loaded at startup</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Fake asynchronous support for ISAPI callbacks</td></tr>
-<tr><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported on|off</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Log unsupported feature requests from ISAPI
+<tr class="odd"><td><a href="mod_isapi.html#isapicachefile">ISAPICacheFile <var>file-path</var> [<var>file-path</var>]
+...</a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">ISAPI .dll files to be loaded at startup</td></tr>
+<tr><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Fake asynchronous support for ISAPI callbacks</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported on|off</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Log unsupported feature requests from ISAPI
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
+<tr><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
-<tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">HTTP kalıcı bağlantılarını etkin kılar</td></tr>
-<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>saniye</var></a></td><td> 5 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
+<tr class="odd"><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP kalıcı bağlantılarını etkin kılar</td></tr>
+<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>saniye</var></a></td><td> 5 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
 </td></tr>
-<tr><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>azami_bayt_sayısı</var></a></td><td> 0 </td><td>d</td><td>T</td></tr><tr><td class="descr" colspan="4">mod_include gibi süzgeçler tarafından kullanılma olasılığına karşı
+<tr class="odd"><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>azami_bayt_sayısı</var></a></td><td> 0 </td><td>d</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">mod_include gibi süzgeçler tarafından kullanılma olasılığına karşı
 istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
 </td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
-...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The precendence of language variants for cases where
+<tr><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
+...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">The precendence of language variants for cases where
 the client does not express a preference</td></tr>
-<tr><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of entries in the primary LDAP cache</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Time that cached items remain valid</td></tr>
-<tr><td><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout <var>seconds</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the socket connection timeout in seconds</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of entries used to cache LDAP compare 
+<tr class="odd"><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of entries in the primary LDAP cache</td></tr>
+<tr><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Time that cached items remain valid</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout <var>seconds</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the socket connection timeout in seconds</td></tr>
+<tr><td><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of entries used to cache LDAP compare 
 operations</td></tr>
-<tr><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Time that entries in the operation cache remain
+<tr class="odd"><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Time that entries in the operation cache remain
 valid</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit <var>number</var></a></td><td> 5 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum number of referral hops to chase before terminating an LDAP query.</td></tr>
-<tr><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals <var>On|Off</var></a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable referral chasing during queries to the LDAP server.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
-<tr><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>bytes</var></a></td><td> 102400 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Size in bytes of the shared-memory cache</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the file containing or nickname referring to a per
+<tr><td><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit <var>number</var></a></td><td> 5 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum number of referral hops to chase before terminating an LDAP query.</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals <var>On|Off</var></a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable referral chasing during queries to the LDAP server.</td></tr>
+<tr><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>bytes</var></a></td><td> 102400 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Size in bytes of the shared-memory cache</td></tr>
+<tr><td><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the file containing or nickname referring to a per
 connection client certificate. Not all LDAP toolkits support per
 connection client certificates.</td></tr>
-<tr><td><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert <var>type</var> <var>directory-path/filename</var> <var>[password]</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the file or database containing global trusted
+<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert <var>type</var> <var>directory-path/filename</var> <var>[password]</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the file or database containing global trusted
 Certificate Authority or global client certificates</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
-<tr><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert <var>On|Off</var></a></td><td> On </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Force server certificate verification</td></tr>
-<tr class="odd"><td><a href="core.html#limit">&lt;Limit <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
-    &lt;/Limit&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Erişimi sınırlanacak HTTP yöntemleri için erişim sınırlayıcıları
+<tr><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert <var>On|Off</var></a></td><td> On </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force server certificate verification</td></tr>
+<tr><td><a href="core.html#limit">&lt;Limit <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
+    &lt;/Limit&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Erişimi sınırlanacak HTTP yöntemleri için erişim sınırlayıcıları
 sarmalar.</td></tr>
-<tr><td><a href="core.html#limitexcept">&lt;LimitExcept <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
-    &lt;/LimitExcept&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İsimleri belirtilenler dışında kalan HTTP yöntemleri için
+<tr class="odd"><td><a href="core.html#limitexcept">&lt;LimitExcept <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
+    &lt;/LimitExcept&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İsimleri belirtilenler dışında kalan HTTP yöntemleri için
 kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
-<tr class="odd"><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>sayı</var> [<var>sayı</var>]</a></td><td> 10 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dahili yönlendirmelerin ve istek içi isteklerin azami sayısını
+<tr><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>sayı</var> [<var>sayı</var>]</a></td><td> 10 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dahili yönlendirmelerin ve istek içi isteklerin azami sayısını
 belirler.</td></tr>
-<tr><td><a href="core.html#limitrequestbody">LimitRequestBody <var>bayt-sayısı</var></a></td><td> 0 </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemci tarafından gönderilen HTTP istek gövdesinin toplam
+<tr class="odd"><td><a href="core.html#limitrequestbody">LimitRequestBody <var>bayt-sayısı</var></a></td><td> 0 </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemci tarafından gönderilen HTTP istek gövdesinin toplam
 uzunluğunu sınırlar.</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestfields">LimitRequestFields <var>sayı</var></a></td><td> 100 </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
+<tr><td><a href="core.html#limitrequestfields">LimitRequestFields <var>sayı</var></a></td><td> 100 </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık alanlarının sayısını
 sınırlar.</td></tr>
-<tr><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bayt-sayısı</var></a></td><td> 8190 </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
+<tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bayt-sayısı</var></a></td><td> 8190 </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP isteği başlık uzunluğunu sınırlar.
 </td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestline">LimitRequestLine <var>bayt-sayısı</var></a></td><td> 8190 </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
+<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>bayt-sayısı</var></a></td><td> 8190 </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciden kabul edilecek HTTP istek satırının uzunluğunu sınırlar.
 </td></tr>
-<tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bayt-sayısı</var></a></td><td> 1000000 </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listen">Listen [<var>IP-adresi</var>:]<var>port-numarası</var>
-  [<var>protokol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun dinleyeceği IP adresini ve portu belirler.</td></tr>
-<tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>kuyruk-uzunluğu</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Bekleyen bağlantılar kuyruğunun azami uzunluğunu
+<tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bayt-sayısı</var></a></td><td> 1000000 </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir XML temelli istek gövdesinin uzunluğunu sınırlar.</td></tr>
+<tr><td><a href="mpm_common.html#listen">Listen [<var>IP-adresi</var>:]<var>port-numarası</var>
+  [<var>protokol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun dinleyeceği IP adresini ve portu belirler.</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>kuyruk-uzunluğu</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bekleyen bağlantılar kuyruğunun azami uzunluğunu
   belirler</td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
+<tr><td><a href="mod_so.html#loadfile">LoadFile <em>dosya-ismi</em> [<em>dosya-ismi</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler.
 </td></tr>
-<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
+<tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>modül dosya-ismi</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Belirtilen nesne dosyasını veya kütüphaneyi sunucu ile ilintiler
 ve etkin modül listesine ekler.</td></tr>
-<tr class="odd"><td><a href="core.html#location">&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
-&lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
+<tr><td><a href="core.html#location">&lt;Location <var>URL-yolu</var>|<var>URL</var>&gt; ...
+&lt;/Location&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği yönergeler sadece eşleşen URL’lere uygulanır.
 </td></tr>
-<tr><td><a href="core.html#locationmatch">&lt;LocationMatch
-    <var>düzifade</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
+<tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch
+    <var>düzifade</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İçerdiği yönergeler sadece düzenli ifadelerle eşleşen URL’lere
 uygulanır.</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#lockfile">LockFile <var>dosya</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Apache HTTPd Sunucusunun ağ soketlerinden istekleri kabul eden
+<tr><td><a href="mpm_common.html#lockfile">LockFile <var>dosya</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Apache HTTPd Sunucusunun ağ soketlerinden istekleri kabul eden
   çok sayıda çocuk süreci sıraya sokarken kullandığı kilit dosyasının yerini
   belirler. <em>(kullanımı önerilmemektedir)</em></td></tr>
-<tr><td><a href="mod_log_config.html#logformat">LogFormat <var>biçem</var>|<var>takma-ad</var>
-[<var>takma-ad</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
+<tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>biçem</var>|<var>takma-ad</var>
+[<var>takma-ad</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
 </td></tr>
-<tr class="odd"><td><a href="core.html#loglevel">LogLevel <var>seviye</var></a></td><td> warn </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Hata günlüklerinin ayrıntı seviyesini belirler.</td></tr>
-<tr><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">İstekleri sunarken oluşturulacak çocuk süreçlerin azami sayısını
+<tr><td><a href="core.html#loglevel">LogLevel <var>seviye</var></a></td><td> warn </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Hata günlüklerinin ayrıntı seviyesini belirler.</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İstekleri sunarken oluşturulacak çocuk süreçlerin azami sayısını
   belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>sayı</var></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
-<tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>kB-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4"><code>free()</code> çağrılmaksızın ana bellek ayırıcının
+<tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>sayı</var></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>kB-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4"><code>free()</code> çağrılmaksızın ana bellek ayırıcının
   ayırmasına izin verilen azami bellek miktarını belirler.</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>sayı</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Tek bir çocuk sürecin ömrü boyunca işleme sokabileceği istek
+<tr><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>sayı</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Tek bir çocuk sürecin ömrü boyunca işleme sokabileceği istek
   sayısını sınırlamakta kullanılır.</td></tr>
-<tr><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit on the number of requests that an individual thread
+<tr class="odd"><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on the number of requests that an individual thread
 will handle during its life</td></tr>
-<tr class="odd"><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>number</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of idle child server processes</td></tr>
-<tr><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Boştaki azami evre sayısını belirler</td></tr>
-<tr class="odd"><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
-<tr><td><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild <var>number</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
-<tr class="odd"><td><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount <var>value</var></a></td><td> 1009 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum number of objects allowed to be placed in the
+<tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>number</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of idle child server processes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Boştaki azami evre sayısını belirler</td></tr>
+<tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
+<tr class="odd"><td><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild <var>number</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
+<tr><td><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount <var>value</var></a></td><td> 1009 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum number of objects allowed to be placed in the
 cache</td></tr>
-<tr><td><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize <var>bytes</var></a></td><td> 10000 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of a document allowed in the
+<tr class="odd"><td><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize <var>bytes</var></a></td><td> 10000 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum size (in bytes) of a document allowed in the
 cache</td></tr>
-<tr class="odd"><td><a href="mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer <var>size_in_bytes</var></a></td><td> the smaller of 1000 +</td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of a streamed response to buffer in memory
+<tr><td><a href="mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer <var>size_in_bytes</var></a></td><td> the smaller of 1000 +</td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of a streamed response to buffer in memory
 before declaring the response uncacheable</td></tr>
-<tr><td><a href="mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize <var>bytes</var></a></td><td> 1 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of a document to be allowed in the
+<tr class="odd"><td><a href="mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize <var>bytes</var></a></td><td> 1 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of a document to be allowed in the
 cache</td></tr>
-<tr class="odd"><td><a href="mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm LRU|GDSF</a></td><td> GDSF </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The algorithm used to select documents for removal from the
+<tr><td><a href="mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm LRU|GDSF</a></td><td> GDSF </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The algorithm used to select documents for removal from the
 cache</td></tr>
-<tr><td><a href="mod_mem_cache.html#mcachesize">MCacheSize <var>KBytes</var></a></td><td> 100 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum amount of memory used by the cache in
+<tr class="odd"><td><a href="mod_mem_cache.html#mcachesize">MCacheSize <var>KBytes</var></a></td><td> 100 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum amount of memory used by the cache in
 KBytes</td></tr>
-<tr class="odd"><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
+<tr><td><a href="mod_cern_meta.html#metadir">MetaDir <var>directory</var></a></td><td> .web </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the directory to find CERN-style meta information
 files</td></tr>
-<tr><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
-<tr class="odd"><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffix</var></a></td><td> .meta </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File name suffix for the file containg CERN-style
+<tr class="odd"><td><a href="mod_cern_meta.html#metafiles">MetaFiles on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Activates CERN meta-file processing</td></tr>
+<tr><td><a href="mod_cern_meta.html#metasuffix">MetaSuffix <var>suffix</var></a></td><td> .meta </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">File name suffix for the file containg CERN-style
 meta information</td></tr>
-<tr><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable MIME-type determination based on file contents
+<tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
-<tr class="odd"><td><a href="prefork.html#minspareservers">MinSpareServers <var>number</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
-<tr><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
+<tr><td><a href="prefork.html#minspareservers">MinSpareServers <var>number</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
   sayısını belirler.</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
-<tr><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>T</td></tr><tr><td class="descr" colspan="4">Tells <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> to treat <code>path_info</code>
+<tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Tells <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> to treat <code>path_info</code>
 components as part of the filename</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
-[Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The types of files that will be included when searching for
+<tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
+[Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when searching for
 a matching file with MultiViews</td></tr>
-<tr><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>adres</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İsme dayalı sanal konaklar için IP adresi belirtir</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Hosts, domains, or networks that will be connected to
+<tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>adres</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İsme dayalı sanal konaklar için IP adresi belirtir</td></tr>
+<tr><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected to
 directly</td></tr>
-<tr><td><a href="perchild.html#numservers">NumServers <var>number</var></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Total number of children alive at the same time</td></tr>
-<tr class="odd"><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">List of additional client certificates</td></tr>
-<tr><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></a></td><td></td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">Allows a connection to be upgraded to an SSL connection upon request</td></tr>
-<tr class="odd"><td><a href="core.html#options" id="O" name="O">Options
-    [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</a></td><td> All </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Belli bir dizinde geçerli olacak özellikleri yapılandırır.
+<tr class="odd"><td><a href="perchild.html#numservers">NumServers <var>number</var></a></td><td> 2 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Total number of children alive at the same time</td></tr>
+<tr><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</a></td><td></td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">List of additional client certificates</td></tr>
+<tr class="odd"><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Allows a connection to be upgraded to an SSL connection upon request</td></tr>
+<tr><td><a href="core.html#options" id="O" name="O">Options
+    [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>] ...</a></td><td> All </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Belli bir dizinde geçerli olacak özellikleri yapılandırır.
 </td></tr>
-<tr><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the default access state and the order in which
+<tr class="odd"><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
+<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr><td class="descr" colspan="4">Sed command for filter the response content</td></tr>
 <tr class="odd"><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini kabuktan aktarır.</td></tr>
 <tr><td><a href="mpm_common.html#pidfile">PidFile <var>dosya</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ana sürecin süreç kimliğinin (PID) kaydedileceği dosyayı belirler.</td></tr>
