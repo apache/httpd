@@ -233,6 +233,7 @@
 <li><a href="mod/mod_proxy_http.html">Apache モジュール mod_proxy_http</a></li>
 <li><a href="mod/mod_request.html">Apache モジュール mod_request</a></li>
 <li><a href="mod/mod_rewrite.html">Apache モジュール mod_rewrite</a></li>
+<li><a href="mod/mod_sed.html">Apache モジュール mod_sed</a></li>
 <li><a href="mod/mod_session.html">Apache モジュール mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Apache モジュール mod_session_cookie</a></li>
 <li><a href="mod/mod_session_crypto.html">Apache モジュール mod_session_crypto</a></li>

@@ -70,6 +70,7 @@
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_request.xml.tr</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
+  <modulefile>mod_sed.xml</modulefile>
   <modulefile>mod_session.xml</modulefile>
   <modulefile>mod_session_cookie.xml</modulefile>
   <modulefile>mod_session_crypto.xml</modulefile>

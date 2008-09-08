@@ -239,6 +239,7 @@
 <li><a href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
 <li><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></li>
 <li><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet</a></li>
+<li><a href="mod_sed.html#inputsed">InputSed</a></li>
 <li><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></li>
 <li><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></li>
 <li><a href="mod_isapi.html#isapicachefile">ISAPICacheFile</a></li>
@@ -310,6 +311,7 @@
 <li><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
 <li><a href="mod_access_compat.html#order">Order</a></li>
+<li><a href="mod_sed.html#outputsed">OutputSed</a></li>
 <li><a href="mod_env.html#passenv" id="P" name="P">PassEnv</a></li>
 <li><a href="mpm_common.html#pidfile">PidFile</a></li>
 <li><a href="mod_echo.html#protocolecho">ProtocolEcho</a></li>
