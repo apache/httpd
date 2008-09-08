@@ -1232,16 +1232,28 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
         const char *h1;
 
         /* Accept a status_line set by a module, but only if it begins
-         * with the 3 digit status code
+         * with the correct 3 digit status code
          */
-        if (r->status_line != NULL
-            && strlen(r->status_line) > 4       /* long enough */
-            && apr_isdigit(r->status_line[0])
-            && apr_isdigit(r->status_line[1])
-            && apr_isdigit(r->status_line[2])
-            && apr_isspace(r->status_line[3])
-            && apr_isalnum(r->status_line[4])) {
-            title = r->status_line;
+        if (r->status_line) {
+            char *end;
+            int len = strlen(r->status_line);
+            if (len >= 3
+                && apr_strtoi64(r->status_line, &end, 10) == r->status
+                && (end - 3) == r->status_line
+                && (len < 4 || apr_isspace(r->status_line[3]))
+                && (len < 5 || apr_isalnum(r->status_line[4]))) {
+                /* Since we passed the above check, we know that length three
+                 * is equivalent to only a 3 digit numeric http status.
+                 * RFC2616 mandates a trailing space, let's add it.
+                 * If we have an empty reason phrase, we also add "Unknown Reason".
+                 */
+                if (len == 3) {
+                    r->status_line = apr_pstrcat(r->pool, r->status_line, " Unknown Reason");
+                } else if (len == 4) {
+                    r->status_line = apr_pstrcat(r->pool, r->status_line, "Unknown Reason");
+                }
+                title = r->status_line;
+            }
         }
 
         /* folks decided they didn't want the error code in the H1 text */
