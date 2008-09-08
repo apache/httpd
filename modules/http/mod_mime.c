@@ -785,6 +785,7 @@ static int find_ct(request_rec *r)
     while (*fn && (ext = ap_getword(r->pool, &fn, '.'))) {
         const extension_info *exinfo = NULL;
         int found;
+        char *extcase;
 
         if (*ext == '\0') {  /* ignore empty extensions "bad..html" */
             continue;
@@ -792,6 +793,9 @@ static int find_ct(request_rec *r)
 
         found = 0;
 
+        /* Save the ext in extcase before converting it to lower case.
+         */
+        extcase = apr_pstrdup(r->pool, ext);
         ap_str_tolower(ext);
 
         if (conf->extension_mappings != NULL) {
@@ -885,7 +889,7 @@ static int find_ct(request_rec *r)
             found_metadata = 1;
         }
         else {
-            *((const char **) apr_array_push(exception_list)) = ext;
+            *((const char **) apr_array_push(exception_list)) = extcase;
         }
     }
 
