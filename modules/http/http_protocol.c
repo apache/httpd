@@ -1248,9 +1248,9 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
                  * If we have an empty reason phrase, we also add "Unknown Reason".
                  */
                 if (len == 3) {
-                    r->status_line = apr_pstrcat(r->pool, r->status_line, " Unknown Reason");
+                    r->status_line = apr_pstrcat(r->pool, r->status_line, " Unknown Reason", NULL);
                 } else if (len == 4) {
-                    r->status_line = apr_pstrcat(r->pool, r->status_line, "Unknown Reason");
+                    r->status_line = apr_pstrcat(r->pool, r->status_line, "Unknown Reason", NULL);
                 }
                 title = r->status_line;
             }
