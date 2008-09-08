@@ -8,7 +8,7 @@ Changes with Apache 2.3.0
 
   *) Be tolerant in what you accept - accept slightly broken
      status lines from a backend provide they include a valid status code.
-     PR 44995 [Rainer Jung <rainer.jung kippdata.de>
+     PR 44995 [Rainer Jung <rainer.jung kippdata.de>]
 
   *) New module mod_sed: filter Request/Response bodies through sed
      [Basant Kumar Kukreja <basant.kukreja sun.com>]
