@@ -815,7 +815,7 @@ static void validate_status_line(request_rec *r)
          * RFC2616 mandates a trailing space, let's add it.
          */
         else if (len == 3) {
-            r->status_line = apr_pstrcat(r->pool, r->status_line, " ");
+            r->status_line = apr_pstrcat(r->pool, r->status_line, " ", NULL);
         }
     }
 }
