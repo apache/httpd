@@ -446,7 +446,7 @@ start_over:
                 str[j] = apr_toupper(str[j]);
                 j++;
             }
-            apr_table_setn(e, str, vals[i]);
+            apr_table_setn(e, str, vals[i] ? vals[i] : "");
 
             /* handle remote_user_attribute, if set */
             if (sec->remote_user_attribute && 

@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_authnz_ldap: don't return NULL-valued environment variables to
+     other modules.  PR 39045 [Francois Pesce <francois.pesce gmail.com>]
+
   *) Don't adjust case in pathname components that are not of interest
      to mod_mime.  Fixes mod_negotiation's use of such components.
      PR 43250 [Basant Kumar Kukreja <basant.kukreja sun.com>]
