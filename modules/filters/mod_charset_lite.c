@@ -376,6 +376,20 @@ static void xlate_insert_filter(request_rec *r)
  *   will be generated
  */
 
+static apr_status_t send_bucket_downstream(ap_filter_t *f, apr_bucket *b)
+{
+    charset_filter_ctx_t *ctx = f->ctx;
+    apr_status_t rv;
+
+    APR_BRIGADE_INSERT_TAIL(ctx->tmpbb, b);
+    rv = ap_pass_brigade(f->next, ctx->tmpbb);
+    if (rv != APR_SUCCESS) {
+        ctx->ees = EES_DOWNSTREAM;
+    }
+    apr_brigade_cleanup(ctx->tmpbb);
+    return rv;
+}
+
 /* send_downstream() is passed the translated data; it puts it in a single-
  * bucket brigade and passes the brigade to the next filter
  */
@@ -383,19 +397,10 @@ static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t 
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
-    apr_bucket_brigade *bb;
     apr_bucket *b;
-    charset_filter_ctx_t *ctx = f->ctx;
-    apr_status_t rv;
 
-    bb = apr_brigade_create(r->pool, c->bucket_alloc);
     b = apr_bucket_transient_create(tmp, len, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    rv = ap_pass_brigade(f->next, bb);
-    if (rv != APR_SUCCESS) {
-        ctx->ees = EES_DOWNSTREAM;
-    }
-    return rv;
+    return send_bucket_downstream(f, b);
 }
 
 static apr_status_t send_eos(ap_filter_t *f)
@@ -414,20 +419,6 @@ static apr_status_t send_eos(ap_filter_t *f)
     if (rv != APR_SUCCESS) {
         ctx->ees = EES_DOWNSTREAM;
     }
-    return rv;
-}
-
-static apr_status_t send_bucket_downstream(ap_filter_t *f, apr_bucket *b)
-{
-    charset_filter_ctx_t *ctx = f->ctx;
-    apr_status_t rv;
-
-    APR_BRIGADE_INSERT_TAIL(ctx->tmpbb, b);
-    rv = ap_pass_brigade(f->next, ctx->tmpbb);
-    if (rv != APR_SUCCESS) {
-        ctx->ees = EES_DOWNSTREAM;
-    }
-    apr_brigade_cleanup(ctx->tmpbb);
     return rv;
 }
 
