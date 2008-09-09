@@ -96,6 +96,7 @@ typedef struct charset_filter_ctx_t {
     int noop;               /* should we pass brigades through unchanged? */
     char *tmp;              /* buffer for input filtering */
     apr_bucket_brigade *bb; /* input buckets we couldn't finish translating */
+    apr_bucket_brigade *tmpbb; /* used for passing downstream */
 } charset_filter_ctx_t;
 
 /* charset_req_t is available via r->request_config if any translation is
@@ -266,6 +267,8 @@ static int find_code_page(request_rec *r)
 
     reqinfo->dc = dc;
     output_ctx->dc = dc;
+    output_ctx->tmpbb = apr_brigade_create(r->pool, 
+                                           r->connection->bucket_alloc);
     ap_set_module_config(r->request_config, &charset_lite_module, reqinfo);
 
     reqinfo->output_ctx = output_ctx;
@@ -416,18 +419,15 @@ static apr_status_t send_eos(ap_filter_t *f)
 
 static apr_status_t send_bucket_downstream(ap_filter_t *f, apr_bucket *b)
 {
-    request_rec *r = f->r;
-    conn_rec *c = r->connection;
-    apr_bucket_brigade *bb;
     charset_filter_ctx_t *ctx = f->ctx;
     apr_status_t rv;
 
-    bb = apr_brigade_create(r->pool, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    rv = ap_pass_brigade(f->next, bb);
+    APR_BRIGADE_INSERT_TAIL(ctx->tmpbb, b);
+    rv = ap_pass_brigade(f->next, ctx->tmpbb);
     if (rv != APR_SUCCESS) {
         ctx->ees = EES_DOWNSTREAM;
     }
+    apr_brigade_cleanup(ctx->tmpbb);
     return rv;
 }
 
