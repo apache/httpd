@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=681204&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem, jim
+    +1: rpluem, jim, gregames
 
  * mod_proxy: Add the possibility to set a separate connection timeout for
    backend workers.
@@ -225,6 +225,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Single patch against branches/2.2.x: 
    http://people.apache.org/~sctemme/httpd-2.2.x-ssl-upcalls.diff
    +1: 
+
+ * mod_charset_lite: detect and pass along error buckets.
+   PR: 45687
+   Trunk version of patches:
+      http://svn.apache.org/viewvc?rev=692567&view=rev
+      http://svn.apache.org/viewvc?rev=693564&view=rev
+      http://svn.apache.org/viewvc?rev=693577&view=rev
+   Backport version for 2.2.x of patch:
+       Trunk version of patches works
+   +1: gregames
 
 PATCHES/ISSUES THAT ARE STALLED
 
