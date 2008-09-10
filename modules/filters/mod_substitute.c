@@ -507,21 +507,25 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     if (delim)
         from = ++ourline;
     if (from) {
-        while (*++ourline && *ourline != delim);
+        if (*ourline != delim) {
+            while (*++ourline && *ourline != delim);
+        }
         if (*ourline) {
             *ourline = '\0';
             to = ++ourline;
         }
     }
     if (to) {
-        while (*++ourline && *ourline != delim);
+        if (*ourline != delim) {
+            while (*++ourline && *ourline != delim);
+        }
         if (*ourline) {
             *ourline = '\0';
             flags = ++ourline;
         }
     }
 
-    if (!delim || !from || !to) {
+    if (!delim || !from || !*from || !to) {
         return "Bad Substitute format, must be a complete s/// pattern";
     }
 
