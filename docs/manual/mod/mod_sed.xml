@@ -58,34 +58,6 @@ the author's blog</a>.</p>
 
 </summary>
 
-<directivesynopsis>
-<name>OutputSed</name>
-<description>Sed command for filter the response content</description>
-<syntax>OutputSed <var>sed-command</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-
-<usage>
-    <p>The <directive>OutputSed</directive> directive specify the sed
-    command which will be executed on the response.
-    </p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>InputSed</name>
-<description>Sed command to filter the request data (typically post data)</description>
-<syntax>InputSed <var>sed-command</var></syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-
-<usage>
-    <p>The <directive>InputSed</directive> directive specify the sed command
-    which will be executed on the request data e.g POST data.
-    </p>
-</usage>
-</directivesynopsis>
-
 <section id="sampleconf"><title>Sample Configuration</title>
     <example><title>Adding a output filter </title>
          # In following example, sed filter will replace the string <br />
@@ -138,4 +110,33 @@ page</a>.
         <dd>Swap the content of hold buffer and current line</dd>
     </dl>
 </section>
+
+<directivesynopsis>
+<name>OutputSed</name>
+<description>Sed command for filter the response content</description>
+<syntax>OutputSed <var>sed-command</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>OutputSed</directive> directive specify the sed
+    command which will be executed on the response.
+    </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>InputSed</name>
+<description>Sed command to filter the request data (typically post data)</description>
+<syntax>InputSed <var>sed-command</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>InputSed</directive> directive specify the sed command
+    which will be executed on the request data e.g POST data.
+    </p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
