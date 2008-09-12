@@ -368,8 +368,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstekleri sunarken oluşturulacak çocuk süreçlerin azami sayısını
-  belirler.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Aynı anda sunulacak azami istek sayısı</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxClients <var>sayı</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Ayrıntılar için aşağıdaki açıklamaya bakınız.</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
