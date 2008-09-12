@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 678113:689261 (outdated) -->
+<!-- English Revision: 689261 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -939,6 +939,26 @@ Name|Date|Size|Description</syntax>
 
     <example><title>Örnek</title>
       IndexStyleSheet "/css/style.css"
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>IndexHeadInsert</name>
+<description>Bir dizin sayfasının HEAD bölümüne metin yerleştirir.</description>
+<syntax>IndexHeadInsert <var>"imlenim ..."</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p><directive>IndexHeadInsert</directive> yönergesi, dizin listesi için
+    üretilen HTML’nin <var>&lt;head&gt;</var> bölümüne yerleştirilecek bir
+    dizge tanımlar.</p>
+    <example>
+      <title>Example</title>
+      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
     </example>
 </usage>
 </directivesynopsis>

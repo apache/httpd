@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 674934:692325 (outdated) -->
+<!-- English Revision: 692325 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -452,8 +452,7 @@
 
 <directivesynopsis>
 <name>MaxClients</name>
-<description>İstekleri sunarken oluşturulacak çocuk süreçlerin azami sayısını
-  belirler.</description>
+<description>Aynı anda sunulacak azami istek sayısı</description>
 <syntax>MaxClients <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>

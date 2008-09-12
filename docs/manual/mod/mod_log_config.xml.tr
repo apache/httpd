@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 579425:693120 (outdated) -->
+<!-- English Revision: 693120 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -111,6 +111,11 @@
         <td>İstekle birlikte sunucuya gönderilen
           <code><var>Filanca</var>:</code> başlık satır(lar)ının
           içeriği.</td></tr>
+
+    <tr><td><code>%k</code></td>
+        <td>Bu bağlantıda işlenen isteklerin sayısı.
+          <directive module="core">KeepAlive</directive> kullanılmışsa
+          anlamlıdır; aksi takdirde değeri daima 0’dır.</td></tr>
 
     <tr><td><code>%l</code></td>
         <td>Uzak kullanıcı kimliği (sağlanmışsa, identd üzerinden).
