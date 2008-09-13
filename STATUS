@@ -92,14 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
- * core: Give possible piped loggers a chance to process their input before
-   they get killed by us.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=681204&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, gregames
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
