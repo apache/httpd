@@ -228,6 +228,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patches works
    +1: gregames, rpluem
 
+ * mod_substitute: Allow empty substitute patterns (to remove data from the
+   stream), but disallow empty search patterns.
+   Trunk version of patches:
+      http://svn.apache.org/viewvc?rev=693727&view=rev
+      http://svn.apache.org/viewvc?rev=693728&view=rev
+   Backport version for 2.2.x of patch:
+       Trunk version of patches works
+   +1: rpluem
+
+ * mod_proxy_ajp: If CPING fails retry once more with a fresh TCP connection.
+   If this fails as well give up.
+   Trunk version of patches:
+      http://svn.apache.org/viewvc?rev=693392&view=rev
+   Backport version for 2.2.x of patch:
+       Trunk version of patches works
+   +1: rpluem
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
