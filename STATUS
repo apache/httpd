@@ -92,6 +92,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
+ * core: Give possible piped loggers a chance to process their input before
+   they get killed by us.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=681204&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem, jim, gregames
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -167,14 +175,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
     +1: rpluem, jim
 
- * core: Give possible piped loggers a chance to process their input before
-   they get killed by us.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=681204&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, gregames
-
  * mod_proxy: Add the possibility to set a separate connection timeout for
    backend workers.
    PR: 45445
@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=687754&view=rev
     Backport version for 2.2.x of patch:
        http://people.apache.org/~jim/patches/scolon-proxy.patch.txt
-    +1: jim
+    +1: jim, rpluem
 
  * mod_proxy_balancer: Add in new bybusyness LB method.
     Trunk version of patch:
@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=687099&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: 
+    +1: rpluem
 
  * mod_authn_alias: Propogate a NULL get_realm_hash() implementation 
    from AuthnProviderAlias back to mod_auth_digest. This moves detection
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=678949&view=rev
     Backport version for 2.2.x of patch:
        http://people.apache.org/~covener/2.2.x-auth_alias_digest.diff 
-   +1: covener
+   +1: covener, rpluem
 
  * mod_ssl: implement dynamic mutex callbacks for OpenSSL.  This
    locking infrastructure is currently only used by the chil plugin,
@@ -224,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=687819&view=rev
    Single patch against branches/2.2.x: 
    http://people.apache.org/~sctemme/httpd-2.2.x-ssl-upcalls.diff
-   +1: 
+   +1: rpluem
 
  * mod_charset_lite: detect and pass along error buckets.
    PR: 45687
@@ -234,7 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=693577&view=rev
    Backport version for 2.2.x of patch:
        Trunk version of patches works
-   +1: gregames
+   +1: gregames, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
