@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) mod_charset_lite: Avoid dropping error responses by handling meta buckets
-     correctly. PR 45687 [Dan Poirier <poirier pobox.com>]
-
   *) mod_authnz_ldap: don't return NULL-valued environment variables to
      other modules.  PR 39045 [Francois Pesce <francois.pesce gmail.com>]
 
