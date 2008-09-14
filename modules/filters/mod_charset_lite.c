@@ -96,6 +96,7 @@ typedef struct charset_filter_ctx_t {
     int noop;               /* should we pass brigades through unchanged? */
     char *tmp;              /* buffer for input filtering */
     apr_bucket_brigade *bb; /* input buckets we couldn't finish translating */
+    apr_bucket_brigade *tmpbb; /* used for passing downstream */
 } charset_filter_ctx_t;
 
 /* charset_req_t is available via r->request_config if any translation is
@@ -266,6 +267,8 @@ static int find_code_page(request_rec *r)
 
     reqinfo->dc = dc;
     output_ctx->dc = dc;
+    output_ctx->tmpbb = apr_brigade_create(r->pool, 
+                                           r->connection->bucket_alloc);
     ap_set_module_config(r->request_config, &charset_lite_module, reqinfo);
 
     reqinfo->output_ctx = output_ctx;
@@ -373,6 +376,20 @@ static void xlate_insert_filter(request_rec *r)
  *   will be generated
  */
 
+static apr_status_t send_bucket_downstream(ap_filter_t *f, apr_bucket *b)
+{
+    charset_filter_ctx_t *ctx = f->ctx;
+    apr_status_t rv;
+
+    APR_BRIGADE_INSERT_TAIL(ctx->tmpbb, b);
+    rv = ap_pass_brigade(f->next, ctx->tmpbb);
+    if (rv != APR_SUCCESS) {
+        ctx->ees = EES_DOWNSTREAM;
+    }
+    apr_brigade_cleanup(ctx->tmpbb);
+    return rv;
+}
+
 /* send_downstream() is passed the translated data; it puts it in a single-
  * bucket brigade and passes the brigade to the next filter
  */
@@ -380,19 +397,10 @@ static apr_status_t send_downstream(ap_filter_t *f, const char *tmp, apr_size_t 
 {
     request_rec *r = f->r;
     conn_rec *c = r->connection;
-    apr_bucket_brigade *bb;
     apr_bucket *b;
-    charset_filter_ctx_t *ctx = f->ctx;
-    apr_status_t rv;
 
-    bb = apr_brigade_create(r->pool, c->bucket_alloc);
     b = apr_bucket_transient_create(tmp, len, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    rv = ap_pass_brigade(f->next, bb);
-    if (rv != APR_SUCCESS) {
-        ctx->ees = EES_DOWNSTREAM;
-    }
-    return rv;
+    return send_bucket_downstream(f, b);
 }
 
 static apr_status_t send_eos(ap_filter_t *f)
@@ -632,12 +640,12 @@ static void chk_filter_chain(ap_filter_t *f)
  * we'll stop when one of the following occurs:
  * . we run out of buckets
  * . we run out of space in the output buffer
- * . we hit an error
+ * . we hit an error or metadata
  *
  * inputs:
  *   bb:               brigade to process
  *   buffer:           storage to hold the translated characters
- *   buffer_size:      size of buffer
+ *   buffer_avail:     size of buffer
  *   (and a few more uninteresting parms)
  *
  * outputs:
@@ -646,7 +654,7 @@ static void chk_filter_chain(ap_filter_t *f)
  *                     translated characters; the eos bucket, if
  *                     present, will be left in the brigade
  *   buffer:           filled in with translated characters
- *   buffer_size:      updated with the bytes remaining
+ *   buffer_avail:     updated with the bytes remaining
  *   hit_eos:          did we hit an EOS bucket?
  */
 static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
@@ -673,7 +681,7 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
             }
             b = APR_BRIGADE_FIRST(bb);
             if (b == APR_BRIGADE_SENTINEL(bb) ||
-                APR_BUCKET_IS_EOS(b)) {
+                APR_BUCKET_IS_METADATA(b)) {
                 break;
             }
             rv = apr_bucket_read(b, &bucket, &bytes_in_bucket, APR_BLOCK_READ);
@@ -892,6 +900,17 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 }
                 break;
             }
+            if (APR_BUCKET_IS_METADATA(dptr)) {
+                apr_bucket *metadata_bucket;
+                metadata_bucket = dptr;
+                dptr = APR_BUCKET_NEXT(dptr);
+                APR_BUCKET_REMOVE(metadata_bucket);
+                rv = send_bucket_downstream(f, metadata_bucket);
+                if (rv != APR_SUCCESS) {
+                    done = 1;
+                }
+                continue;
+            }
             rv = apr_bucket_read(dptr, &cur_str, &cur_len, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 done = 1;
@@ -1077,6 +1096,18 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
              * to grab more data from the network instead of returning an
              * empty brigade
              */
+        }
+        /* If we have any metadata at the head of ctx->bb, go ahead and move it
+         * onto the end of bb to be returned to our caller.
+         */
+        if (!APR_BRIGADE_EMPTY(ctx->bb)) {
+            apr_bucket *b = APR_BRIGADE_FIRST(ctx->bb);
+            while (b != APR_BRIGADE_SENTINEL(ctx->bb)
+                   && APR_BUCKET_IS_METADATA(b)) {
+                APR_BUCKET_REMOVE(b);
+                APR_BRIGADE_INSERT_TAIL(bb, b);
+                b = APR_BRIGADE_FIRST(ctx->bb);
+            }
         }
     }
     else {

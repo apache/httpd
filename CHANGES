@@ -5,6 +5,9 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_charset_lite: Avoid dropping error responses by handling meta buckets
+     correctly. PR 45687 [Dan Poirier <poirier pobox.com>]
+
   *) mod_proxy_http: Introduce environment variable proxy-initial-not-pooled to
      avoid reusing pooled connections if the client connection is an initial
      connection. PR 37770. [Ruediger Pluem]
