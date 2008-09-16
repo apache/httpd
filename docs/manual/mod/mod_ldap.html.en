@@ -104,6 +104,10 @@ by other LDAP modules</td></tr>
         Order deny,allow<br />
         Deny from all<br />
         Allow from yourdomain.example.com<br />
+        Satisfy any<br />
+        AuthType Basic<br />
+        AuthName "LDAP Protected"<br />
+        AuthBasicProvider ldap<br />
         AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
         Require valid-user<br />
       </span>
@@ -243,6 +247,10 @@ by other LDAP modules</td></tr>
         Order deny,allow<br />
         Deny from all<br />
         Allow from yourdomain.example.com<br />
+        Satisfy any<br />
+        AuthType Basic<br />
+        AuthName "LDAP Protected"<br />
+        AuthBasicProvider ldap<br />
         AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
         Require valid-user<br />
       </span>
@@ -262,6 +270,10 @@ by other LDAP modules</td></tr>
         Order deny,allow<br />
         Deny from all<br />
         Allow from yourdomain.example.com<br />
+        Satisfy any<br />
+        AuthType Basic<br />
+        AuthName "LDAP Protected"<br />
+        AuthBasicProvider ldap<br />
         AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS<br />
         Require valid-user<br />
       </span>
@@ -312,6 +324,10 @@ by other LDAP modules</td></tr>
                 Order deny,allow<br />
                 Deny from all<br />
                 Allow from yourdomain.example.com<br />
+                Satisfy any<br />
+                AuthType Basic<br />
+                AuthName "LDAP Protected"<br />
+                AuthBasicProvider ldap<br />
                 LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]<br />
                 AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
                 Require valid-user<br />
@@ -379,6 +395,10 @@ by other LDAP modules</td></tr>
                 Allow from yourdomain.example.com<br />
                 LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
                 LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
+                Satisfy any<br />
+                AuthType Basic<br />
+                AuthName "LDAP Protected"<br />
+                AuthBasicProvider ldap<br />
                 AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
                 Require valid-user<br />
             </span>
