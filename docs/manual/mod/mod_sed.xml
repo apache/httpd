@@ -29,38 +29,38 @@
 
 <summary>
 <p>
-mod_sed is a in-process content filter. mod_sed filter implement the sed edit
-commands implemented by Solaris 10 sed
-program as described in <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">man
-page</a>. However unlike sed, mod_sed doesn't take data from
+mod_sed is an in-process content filter. The mod_sed filter implements the sed edit
+commands implemented by the Solaris 10 sed
+program as described in the <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">man
+page</a>. However, unlike sed, mod_sed doesn't take data from
 standard
-input. Instead filter act on the entity data sent between client and
-server. mod_sed can be used as a input or output filter. mod_sed is a
-content filter which means that it can not be used to modify client or
+input. Instead, the filter acts on the entity data sent between client and
+server. mod_sed can be used as an input or output filter. mod_sed is a
+content filter, which means that it cannot be used to modify client or
 server http headers.
 </p>
 <p>
-mod_sed output filter accept a chunk of data and execute the sed scripts on data and generates the output which is passed to next filter in the filter chain.
+The mod_sed output filter accepts a chunk of data, executes the sed scripts on the data, and generates the output which is passed to next filter in the filter chain.
 </p>
 
 <p>
-mod_sed input filter reads the data from next filter in filter chain and executes the sed scripts and returns the generated data to caller filter in the filter chain.
+The mod_sed input filter reads the data from the next filter in filter chain, executes the sed scripts, and returns the generated data to the caller filter in the filter chain.
 </p>
 
 <p>
-Both input and output filter only process the data if new line character is seen in the content. At the end of the data, rest of the data is treated as last line.
+Both the input and output filter only process the data if new line characters are seen in the content. At the end of the data, the rest of the data is treated as the last line.
 </p>
 
 <p>A tutorial article on mod_sed, and why it is more powerful than simple
-string or regular expression search and replace, is available in <a
+string or regular expression search and replace, is available <a
 href="http://blogs.sun.com/basant/entry/using_mod_sed_to_filter">on
 the author's blog</a>.</p>
 
 </summary>
 
 <section id="sampleconf"><title>Sample Configuration</title>
-    <example><title>Adding a output filter </title>
-         # In following example, sed filter will replace the string <br />
+    <example><title>Adding an output filter </title>
+         # In following example, the sed filter will change the string <br />
          # "monday" to "MON" and the string "sunday" to SUN in html document <br />
          # before sending to client. <br />
         <indent>
@@ -74,8 +74,8 @@ the author's blog</a>.</p>
         </indent>
     </example>
 
-    <example><title>Adding a input filter </title>
-         # In following example, sed filter will replace the string <br />
+    <example><title>Adding an input filter </title>
+         # In following example, the sed filter will change the string <br />
          # "monday" to "MON" and the string "sunday" to SUN in the POST data <br />
          # sent to php <br />
         <indent>
@@ -91,7 +91,7 @@ the author's blog</a>.</p>
 </section>
 <section id="sed_commands"><title>Sed Commands</title>
     <p>
-    Complete details of the sed command can be found from
+    Complete details of the sed command can be found from the
    <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">sed man
 page</a>.
     </p>
@@ -99,27 +99,27 @@ page</a>.
         <dt><code>b</code></dt>
         <dd>branch to the label specified (Similar to goto)</dd>
         <dt><code>h</code></dt>
-        <dd>Copy the current line to hold buffer.</dd>
+        <dd>Copy the current line to the hold buffer.</dd>
         <dt><code>H</code></dt>
-        <dd>Append the current line to hold buffer.</dd>
+        <dd>Append the current line to the hold buffer.</dd>
         <dt><code>g</code></dt>
         <dd>Copy the hold buffer into the current line</dd>
         <dt><code>G</code></dt>
-        <dd>Append the hold buffer into the current line</dd>
+        <dd>Append the hold buffer to the current line</dd>
         <dt><code>x</code></dt>
-        <dd>Swap the content of hold buffer and current line</dd>
+        <dd>Swap the content of the hold buffer and the current line</dd>
     </dl>
 </section>
 
 <directivesynopsis>
 <name>OutputSed</name>
-<description>Sed command for filter the response content</description>
+<description>Sed command for filtering the response content</description>
 <syntax>OutputSed <var>sed-command</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 
 <usage>
-    <p>The <directive>OutputSed</directive> directive specify the sed
+    <p>The <directive>OutputSed</directive> directive specifies the sed
     command which will be executed on the response.
     </p>
 </usage>
@@ -133,7 +133,7 @@ page</a>.
 </contextlist>
 
 <usage>
-    <p>The <directive>InputSed</directive> directive specify the sed command
+    <p>The <directive>InputSed</directive> directive specifies the sed command
     which will be executed on the request data e.g POST data.
     </p>
 </usage>

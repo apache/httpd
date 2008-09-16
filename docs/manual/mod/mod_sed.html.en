@@ -31,30 +31,30 @@
 <h3>Summary</h3>
 
 <p>
-mod_sed is a in-process content filter. mod_sed filter implement the sed edit
-commands implemented by Solaris 10 sed
-program as described in <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">man
-page</a>. However unlike sed, mod_sed doesn't take data from
+mod_sed is an in-process content filter. The mod_sed filter implements the sed edit
+commands implemented by the Solaris 10 sed
+program as described in the <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">man
+page</a>. However, unlike sed, mod_sed doesn't take data from
 standard
-input. Instead filter act on the entity data sent between client and
-server. mod_sed can be used as a input or output filter. mod_sed is a
-content filter which means that it can not be used to modify client or
+input. Instead, the filter acts on the entity data sent between client and
+server. mod_sed can be used as an input or output filter. mod_sed is a
+content filter, which means that it cannot be used to modify client or
 server http headers.
 </p>
 <p>
-mod_sed output filter accept a chunk of data and execute the sed scripts on data and generates the output which is passed to next filter in the filter chain.
+The mod_sed output filter accepts a chunk of data, executes the sed scripts on the data, and generates the output which is passed to next filter in the filter chain.
 </p>
 
 <p>
-mod_sed input filter reads the data from next filter in filter chain and executes the sed scripts and returns the generated data to caller filter in the filter chain.
+The mod_sed input filter reads the data from the next filter in filter chain, executes the sed scripts, and returns the generated data to the caller filter in the filter chain.
 </p>
 
 <p>
-Both input and output filter only process the data if new line character is seen in the content. At the end of the data, rest of the data is treated as last line.
+Both the input and output filter only process the data if new line characters are seen in the content. At the end of the data, the rest of the data is treated as the last line.
 </p>
 
 <p>A tutorial article on mod_sed, and why it is more powerful than simple
-string or regular expression search and replace, is available in <a href="http://blogs.sun.com/basant/entry/using_mod_sed_to_filter">on
+string or regular expression search and replace, is available <a href="http://blogs.sun.com/basant/entry/using_mod_sed_to_filter">on
 the author's blog</a>.</p>
 
 </div>
@@ -71,8 +71,8 @@ the author's blog</a>.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
-    <div class="example"><h3>Adding a output filter </h3><p><code>
-         # In following example, sed filter will replace the string <br />
+    <div class="example"><h3>Adding an output filter </h3><p><code>
+         # In following example, the sed filter will change the string <br />
          # "monday" to "MON" and the string "sunday" to SUN in html document <br />
          # before sending to client. <br />
         <span class="indent">
@@ -86,8 +86,8 @@ the author's blog</a>.</p>
         </span>
     </code></p></div>
 
-    <div class="example"><h3>Adding a input filter </h3><p><code>
-         # In following example, sed filter will replace the string <br />
+    <div class="example"><h3>Adding an input filter </h3><p><code>
+         # In following example, the sed filter will change the string <br />
          # "monday" to "MON" and the string "sunday" to SUN in the POST data <br />
          # sent to php <br />
         <span class="indent">
@@ -104,7 +104,7 @@ the author's blog</a>.</p>
 <div class="section">
 <h2><a name="sed_commands" id="sed_commands">Sed Commands</a></h2>
     <p>
-    Complete details of the sed command can be found from
+    Complete details of the sed command can be found from the
    <a href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">sed man
 page</a>.
     </p>
@@ -112,15 +112,15 @@ page</a>.
         <dt><code>b</code></dt>
         <dd>branch to the label specified (Similar to goto)</dd>
         <dt><code>h</code></dt>
-        <dd>Copy the current line to hold buffer.</dd>
+        <dd>Copy the current line to the hold buffer.</dd>
         <dt><code>H</code></dt>
-        <dd>Append the current line to hold buffer.</dd>
+        <dd>Append the current line to the hold buffer.</dd>
         <dt><code>g</code></dt>
         <dd>Copy the hold buffer into the current line</dd>
         <dt><code>G</code></dt>
-        <dd>Append the hold buffer into the current line</dd>
+        <dd>Append the hold buffer to the current line</dd>
         <dt><code>x</code></dt>
-        <dd>Swap the content of hold buffer and current line</dd>
+        <dd>Swap the content of the hold buffer and the current line</dd>
     </dl>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -132,7 +132,7 @@ page</a>.
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>
-    <p>The <code class="directive">InputSed</code> directive specify the sed command
+    <p>The <code class="directive">InputSed</code> directive specifies the sed command
     which will be executed on the request data e.g POST data.
     </p>
 
@@ -140,13 +140,13 @@ page</a>.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="OutputSed" id="OutputSed">OutputSed</a> <a name="outputsed" id="outputsed">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sed command for filter the response content</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sed command for filtering the response content</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>OutputSed <var>sed-command</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_sed</td></tr>
 </table>
-    <p>The <code class="directive">OutputSed</code> directive specify the sed
+    <p>The <code class="directive">OutputSed</code> directive specifies the sed
     command which will be executed on the response.
     </p>
 
