@@ -158,14 +158,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=681190&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem, jim
+    +1: rpluem, jim, jerenkrantz
 
  * mod_proxy_ftp: Construct a site in the reverse proxy case when there is non.
     Trunk version of patch:
        http://svn.apache.org/viewvc?rev=681190&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem, jim
+    +1: rpluem, jim, jerenkrantz
+    jerenkrantz says: Uh, r681190 getting voted on twice?  =)
 
  * mod_proxy: Add the possibility to set a separate connection timeout for
    backend workers.
@@ -176,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works, but 
        http://people.apache.org/~rpluem/patches/37770_2.2.x.diff
        fixes a conflict regarding the needed minor bump.
-    +1: rpluem, jim
+    +1: rpluem, jim, jerenkrantz
 
  * mod_proxy_balancer: Allow for treatment of ';' char as a session
    deliminator/separator, ala mod_jk.
@@ -186,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=687754&view=rev
     Backport version for 2.2.x of patch:
        http://people.apache.org/~jim/patches/scolon-proxy.patch.txt
-    +1: jim, rpluem
+    +1: jim, rpluem, jerenkrantz
 
  * mod_proxy_balancer: Add in new bybusyness LB method.
     Trunk version of patch:
@@ -194,7 +195,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=687099&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem
+    +1: rpluem, jerenkrantz
 
  * mod_authn_alias: Propogate a NULL get_realm_hash() implementation 
    from AuthnProviderAlias back to mod_auth_digest. This moves detection
@@ -204,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=678949&view=rev
     Backport version for 2.2.x of patch:
        http://people.apache.org/~covener/2.2.x-auth_alias_digest.diff 
-   +1: covener, rpluem
+   +1: covener, rpluem, jerenkrantz
 
  * mod_ssl: implement dynamic mutex callbacks for OpenSSL.  This
    locking infrastructure is currently only used by the chil plugin,
@@ -216,7 +217,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=687819&view=rev
    Single patch against branches/2.2.x: 
    http://people.apache.org/~sctemme/httpd-2.2.x-ssl-upcalls.diff
-   +1: rpluem
+   +1: rpluem, jerenkrantz
 
  * mod_substitute: Allow empty substitute patterns (to remove data from the
    stream), but disallow empty search patterns.
@@ -225,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=693728&view=rev
    Backport version for 2.2.x of patch:
        Trunk version of patches works
-   +1: rpluem, covener
+   +1: rpluem, covener, jerenkrantz
 
  * mod_proxy_ajp: If CPING fails retry once more with a fresh TCP connection.
    If this fails as well give up.
@@ -233,7 +234,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=693392&view=rev
    Backport version for 2.2.x of patch:
        Trunk version of patches works
-   +1: rpluem, covener
+   +1: rpluem, covener, jerenkrantz
 
 PATCHES/ISSUES THAT ARE STALLED
 
