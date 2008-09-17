@@ -318,6 +318,13 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
 
         /* Save "scheme://site" prefix without password */
         site = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITPASSWORD | APR_URI_UNP_OMITPATHINFO);
+        /*
+         * In the reverse proxy case we usually have no site. So contruct
+         * one.
+         */
+        if ((*site == '\0') && (r->proxyreq == PROXYREQ_REVERSE)) {
+            site = ap_construct_url(p, "", r);
+        }
         /* ... and path without query args */
         path = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITSITEPART | APR_URI_UNP_OMITQUERY);
 
