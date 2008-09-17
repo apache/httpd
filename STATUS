@@ -92,27 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
- * mod_proxy: Add the possibility to set a separate connection timeout for
-   backend workers.
-   PR: 45445
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=684341&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works, but 
-       http://people.apache.org/~rpluem/patches/37770_2.2.x.diff
-       fixes a conflict regarding the needed minor bump.
-    +1: rpluem, jim, jerenkrantz
-
- * mod_proxy_balancer: Allow for treatment of ';' char as a session
-   deliminator/separator, ala mod_jk.
-   PR: 45158
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=686809&view=rev
-       http://svn.apache.org/viewvc?rev=687754&view=rev
-    Backport version for 2.2.x of patch:
-       http://people.apache.org/~jim/patches/scolon-proxy.patch.txt
-    +1: jim, rpluem, jerenkrantz
-
  * mod_authn_alias: Propogate a NULL get_realm_hash() implementation 
    from AuthnProviderAlias back to mod_auth_digest. This moves detection
    of an incompatible-with-digest provider to a startup error.
@@ -122,15 +101,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of patch:
        http://people.apache.org/~covener/2.2.x-auth_alias_digest.diff 
    +1: covener, rpluem, jerenkrantz
-
- * mod_substitute: Allow empty substitute patterns (to remove data from the
-   stream), but disallow empty search patterns.
-   Trunk version of patches:
-      http://svn.apache.org/viewvc?rev=693727&view=rev
-      http://svn.apache.org/viewvc?rev=693728&view=rev
-   Backport version for 2.2.x of patch:
-       Trunk version of patches works
-   +1: rpluem, covener, jerenkrantz
 
  * mod_proxy_ajp: If CPING fails retry once more with a fresh TCP connection.
    If this fails as well give up.
