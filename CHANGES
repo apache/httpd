@@ -41,10 +41,6 @@ Changes with Apache 2.3.0
   *) mod_ssl: implement dynamic mutex callbacks for the benefit of
      OpenSSL.  [Sander Temme]
 
-  *) mod_proxy_http: Introduce environment variable proxy-initial-not-pooled to
-     avoid reusing pooled connections if the client connection is an initial
-     connection. PR 37770. [Ruediger Pluem]
-
   *) mod_session: Prevent a segfault when a CGI script sets a cookie with a
      null value. [David Shane Holden <dpejesh apache.org>]
 
