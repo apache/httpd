@@ -92,16 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
- * mod_authn_alias: Propogate a NULL get_realm_hash() implementation 
-   from AuthnProviderAlias back to mod_auth_digest. This moves detection
-   of an incompatible-with-digest provider to a startup error.
-   PR 45196
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=678949&view=rev
-    Backport version for 2.2.x of patch:
-       http://people.apache.org/~covener/2.2.x-auth_alias_digest.diff 
-   +1: covener, rpluem, jerenkrantz
-
  * mod_proxy_balancer: Add in new bybusyness LB method.
     Trunk version of patch:
        http://svn.apache.org/viewvc?rev=686805&view=rev
