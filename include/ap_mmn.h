@@ -128,6 +128,8 @@
  *                     structure
  * 20051115.15(2.2.9)  Add interpolate_env to proxy_dir_conf and
  *                     introduce proxy_req_conf.
+ * 20051115.16(2.2.9)  Add conn_timeout and conn_timeout_set to
+ *                     proxy_worker struct.
  *
  */
 
@@ -136,7 +138,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 15                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 16                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
