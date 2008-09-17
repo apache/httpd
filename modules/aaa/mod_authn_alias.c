@@ -122,6 +122,12 @@ static const authn_provider authn_alias_provider =
     &authn_alias_get_realm_hash,
 };
 
+static const authn_provider authn_alias_provider_nodigest =
+{
+    &authn_alias_check_password,
+    NULL,
+};
+
 static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *arg)
 {
     int old_overrides = cmd->override;
@@ -194,7 +200,9 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
 
         /* Register the fake provider so that we get called first */
         ap_register_provider(cmd->pool, AUTHN_PROVIDER_GROUP, provider_alias, "0",
-                             &authn_alias_provider);
+                             provider->get_realm_hash ?
+                                 &authn_alias_provider : 
+                                 &authn_alias_provider_nodigest);
     }
 
     cmd->override = old_overrides;

@@ -5,6 +5,10 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_authn_alias: Detect during startup when AuthDigestProvider
+     is configured to use an incompatible provider via AuthnProviderAlias.
+     PR 45196 [Eric Covener]
+
   *) mod_proxy: Add 'scolonpathdelim' parameter to allow for ';' to also be
      used as a session path separator/delim  PR 45158. [Jim Jagielski]
 
