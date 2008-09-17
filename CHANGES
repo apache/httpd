@@ -15,9 +15,9 @@ Changes with Apache 2.2.10
   *) mod_charset_lite: Avoid dropping error responses by handling meta buckets
      correctly. PR 45687 [Dan Poirier <poirier pobox.com>]
 
-  *) mod_proxy: Add connectiontimeout parameter for proxy workers in order to
-     be able to set the timeout for connecting to the backend separately.
-     PR 45445. [Ruediger Pluem, rahul <rahul sun.com>]
+  *) mod_proxy_http: Introduce environment variable proxy-initial-not-pooled to
+     avoid reusing pooled connections if the client connection is an initial
+     connection. PR 37770. [Ruediger Pluem]
 
   *) mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
      PR 44799 [Christian Wenz <christian wenz.org>]
