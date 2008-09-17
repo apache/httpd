@@ -5,6 +5,9 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_proxy: Add 'scolonpathdelim' parameter to allow for ';' to also be
+     used as a session path separator/delim  PR 45158. [Jim Jagielski]
+
   *) mod_charset_lite: Avoid dropping error responses by handling meta buckets
      correctly. PR 45687 [Dan Poirier <poirier pobox.com>]
 
