@@ -275,6 +275,16 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->ping_timeout = apr_time_from_sec(ival);
         worker->ping_timeout_set = 1;
     }
+    else if (!strcasecmp(key, "connectiontimeout")) {
+        /* Request timeout in seconds.
+         * Defaults to connection timeout
+         */
+        ival = atoi(val);
+        if (ival < 1)
+            return "Connectiontimeout must be at least one second.";
+        worker->conn_timeout = apr_time_from_sec(ival);
+        worker->conn_timeout_set = 1;
+    }
     else {
         return "unknown Worker parameter";
     }

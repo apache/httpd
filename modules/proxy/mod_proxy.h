@@ -355,6 +355,8 @@ struct proxy_worker {
     char            retry_set;
     char            disablereuse;
     char            disablereuse_set;
+    apr_interval_time_t conn_timeout;
+    char            conn_timeout_set;
 };
 
 /*
