@@ -365,10 +365,10 @@ ruleset. In the following example, we only want to run the <code class="directiv
 doesn't correspond with an actual file.</p>
 
 <div class="example"><p><code>
-# Is the request for a non-existent file?
+# Is the request for a non-existent file?<br />
 RewriteCond %{REQUEST_FILENAME} !-f<br />
 RewriteCond %{REQUEST_FILENAME} !-d<br />
-# If so, skip these two RewriteRules
+# If so, skip these two RewriteRules<br />
 RewriteRule .? - [S=2]<br />
 <br />
 RewriteRule (.*\.gif) images.php?$1<br />
@@ -391,7 +391,7 @@ sent. This has the same effect as the <code class="directive"><a href="../mod/mo
 source code as plain text, if requested in a particular way:</p>
 
 <div class="example"><p><code>
-# Serve .pl files as plain text
+# Serve .pl files as plain text<br />
 RewriteRule \.pl$ - [T=text/plain]
 </code></p></div>
 
