@@ -102,13 +102,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~covener/2.2.x-auth_alias_digest.diff 
    +1: covener, rpluem, jerenkrantz
 
- * mod_proxy_ajp: If CPING fails retry once more with a fresh TCP connection.
-   If this fails as well give up.
-   Trunk version of patches:
-      http://svn.apache.org/viewvc?rev=693392&view=rev
-   Backport version for 2.2.x of patch:
-       Trunk version of patches works
-   +1: rpluem, covener, jerenkrantz
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
