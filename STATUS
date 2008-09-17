@@ -102,6 +102,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~covener/2.2.x-auth_alias_digest.diff 
    +1: covener, rpluem, jerenkrantz
 
+ * mod_proxy_balancer: Add in new bybusyness LB method.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=686805&view=rev
+       http://svn.apache.org/viewvc?rev=687099&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem, jerenkrantz, jfclere
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -162,14 +170,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://people.apache.org/~chrisd/patches/walk_cache/walk_cache-2.2.x.patch
    +1: chrisd
    -0: jim (would prefer to see in 2.4, and to push 2.4 out)
-
- * mod_proxy_balancer: Add in new bybusyness LB method.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=686805&view=rev
-       http://svn.apache.org/viewvc?rev=687099&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jerenkrantz, jfclere
 
  * mod_ssl: implement dynamic mutex callbacks for OpenSSL.  This
    locking infrastructure is currently only used by the chil plugin,
