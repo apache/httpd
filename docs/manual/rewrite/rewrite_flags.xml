@@ -384,10 +384,10 @@ module="mod_rewrite">RewriteRule</directive> if the requested URI
 doesn't correspond with an actual file.</p>
 
 <example>
-# Is the request for a non-existent file?
+# Is the request for a non-existent file?<br />
 RewriteCond %{REQUEST_FILENAME} !-f<br />
 RewriteCond %{REQUEST_FILENAME} !-d<br />
-# If so, skip these two RewriteRules
+# If so, skip these two RewriteRules<br />
 RewriteRule .? - [S=2]<br />
 <br />
 RewriteRule (.*\.gif) images.php?$1<br />
@@ -412,7 +412,7 @@ module="mod_mime">AddType</directive> directive.</p>
 source code as plain text, if requested in a particular way:</p>
 
 <example>
-# Serve .pl files as plain text
+# Serve .pl files as plain text<br />
 RewriteRule \.pl$ - [T=text/plain]
 </example>
 
