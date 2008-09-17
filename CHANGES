@@ -45,14 +45,6 @@ Changes with Apache 2.3.0
      avoid reusing pooled connections if the client connection is an initial
      connection. PR 37770. [Ruediger Pluem]
 
-  *) mod_proxy: Add connectiontimeout parameter for proxy workers in order to
-     be able to set the timeout for connecting to the backend separately.
-     PR 45445. [Ruediger Pluem, rahul <rahul sun.com>]
-
-  *) mod_auth_core: Detect during startup when AuthDigestProvider
-     is configured to use an incompatible provider via AuthnProviderAlias.
-     PR 45196 [Eric Covener]
-
   *) mod_session: Prevent a segfault when a CGI script sets a cookie with a
      null value. [David Shane Holden <dpejesh apache.org>]
 
