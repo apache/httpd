@@ -507,37 +507,43 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     if (delim)
         from = ++ourline;
     if (from) {
-        while (*++ourline && *ourline != delim);
+        if (*ourline != delim) {
+            while (*++ourline && *ourline != delim);
+        }
         if (*ourline) {
             *ourline = '\0';
             to = ++ourline;
         }
     }
     if (to) {
-        while (*++ourline && *ourline != delim);
+        if (*ourline != delim) {
+            while (*++ourline && *ourline != delim);
+        }
         if (*ourline) {
             *ourline = '\0';
             flags = ++ourline;
         }
     }
 
-    if (!delim || !from || !to) {
+    if (!delim || !from || !*from || !to) {
         return "Bad Substitute format, must be a complete s/// pattern";
     }
 
-    while (*flags) {
-        delim = apr_tolower(*flags);    /* re-use */
-        if (delim == 'i')
-            ignore_case = 1;
-        else if (delim == 'n')
-            is_pattern = 1;
-        else if (delim == 'f')
-            flatten = 1;
-        else if (delim == 'q')
-            flatten = 0;
-        else
-            return "Bad Substitute flag, only s///[infq] are supported";
-        flags++;
+    if (flags) {
+        while (*flags) {
+            delim = apr_tolower(*flags);    /* re-use */
+            if (delim == 'i')
+                ignore_case = 1;
+            else if (delim == 'n')
+                is_pattern = 1;
+            else if (delim == 'f')
+                flatten = 1;
+            else if (delim == 'q')
+                flatten = 0;
+            else
+                return "Bad Substitute flag, only s///[infq] are supported";
+            flags++;
+        }
     }
 
     /* first see if we can compile the regex */
