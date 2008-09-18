@@ -1,12 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.10
 
-  *) mod_ssl: implement dynamic mutex callbacks for the benefit of
-     OpenSSL.  [Sander Temme]
-
   *) SECURITY: CVE-2008-2939 (cve.mitre.org)
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
+
+  *) mod_ssl: implement dynamic mutex callbacks for the benefit of
+     OpenSSL.  [Sander Temme]
 
   *) mod_proxy_balancer: Add 'bybusyness' load balance method.
      [Joel Gluth <joelgluth yahoo.com.au>, Jim Jagielski]
