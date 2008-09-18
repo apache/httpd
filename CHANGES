@@ -8,6 +8,9 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_proxy_balancer: Add 'bybusyness' load balance method.
+     [Joel Gluth <joelgluth yahoo.com.au>, Jim Jagielski]
+
   *) mod_authn_alias: Detect during startup when AuthDigestProvider
      is configured to use an incompatible provider via AuthnProviderAlias.
      PR 45196 [Eric Covener]

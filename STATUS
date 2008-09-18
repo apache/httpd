@@ -92,14 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq, rpluem, mturk
 
- * mod_proxy_balancer: Add in new bybusyness LB method.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=686805&view=rev
-       http://svn.apache.org/viewvc?rev=687099&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jerenkrantz, jfclere
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
