@@ -161,18 +161,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: chrisd
    -0: jim (would prefer to see in 2.4, and to push 2.4 out)
 
- * mod_ssl: implement dynamic mutex callbacks for OpenSSL.  This
-   locking infrastructure is currently only used by the chil plugin,
-   and this plugin won't load into OpenSSL 0.9.8 if these upcalls
-   aren't set.  OpenSSL may start using dynamic locks in more places
-   in the future and with this patch, Apache 2.2.x is ready for that.
-   Trunk version of patch: 
-   http://svn.apache.org/viewvc?rev=687550&view=rev
-   http://svn.apache.org/viewvc?rev=687819&view=rev
-   Single patch against branches/2.2.x: 
-   http://people.apache.org/~sctemme/httpd-2.2.x-ssl-upcalls.diff
-   +1: sctemme, rpluem, jerenkrantz
-
  * INSTALL: Provide a breadcrumb as to why you would use --with-included-apr
    Trunk version of patch:
      http://svn.apache.org/viewvc?rev=696006&view=rev
