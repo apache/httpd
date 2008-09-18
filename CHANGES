@@ -202,9 +202,6 @@ Changes with Apache 2.3.0
      using referrals without the use of the global catalog.
      PRs 26538, 40268, and 42557 [Paul J. Reder]
 
-  *) Support chroot on Unix-family platforms
-     PR 43596 [Dimitar Pashev <mitko banksoft-bg.com>]
-
   *) mod_ssl: Added server name indication support (SNI, RFC 4366).
      PR 34607. [Kaspar Brand <asfbugz velox.ch>]. A test configuration
      can be created with test/make_sni.sh [Dirk-Willem van Gulik].
