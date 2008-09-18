@@ -2,6 +2,14 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_ajp: Fix wrongly formatted requests where client
+     sets Content-Length header, but doesn't provide a body.
+     Servlet container always expects that next packet is
+     body whenever C-L is present in the headers. This can lead
+     to wrong interpretation of the packets. In this case
+     send the empty body packet, so container can deal with
+     that. [Mladen Turk]
+
   *) mod_authnz_ldap: don't return NULL-valued environment variables to
      other modules.  PR 39045 [Francois Pesce <francois.pesce gmail.com>]
 
