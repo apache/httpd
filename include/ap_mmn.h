@@ -118,21 +118,21 @@
  * 20051115.7 (2.2.7)  Added conn_rec::clogging_input_filters (minor)
  * 20051115.8 (2.2.7)  Added flags to proxy_alias (minor)
  * 20051115.9 (2.2.7)  Add ap_send_interim_response API
- * 20051115.10(2.2.7)  Added ap_mod_status_reqtail (minor)
- * 20051115.11(2.2.7)  Add *ftp_directory_charset to proxy_dir_conf
- * 20051115.12(2.2.8)  Add optional function ap_logio_add_bytes_in() to mog_logio
- * 20051115.13(2.2.9)  Add disablereuse and disablereuse_set
- *                     to proxy_worker struct (minor)
- * 20051115.14(2.2.9)  Add ap_proxy_ssl_connection_cleanup and
- *                     add *scpool, *r and need_flush to proxy_conn_rec
- *                     structure
- * 20051115.15(2.2.9)  Add interpolate_env to proxy_dir_conf and
- *                     introduce proxy_req_conf.
- * 20051115.16(2.2.9)  Add conn_timeout and conn_timeout_set to
- *                     proxy_worker struct.
- * 20051115.17(2.2.10) Add scolonsep to proxy_balancer
+ * 20051115.10 (2.2.7)  Added ap_mod_status_reqtail (minor)
+ * 20051115.11 (2.2.7)  Add *ftp_directory_charset to proxy_dir_conf
+ * 20051115.12 (2.2.8)  Add optional function ap_logio_add_bytes_in() to mog_logio
+ * 20051115.13 (2.2.9)  Add disablereuse and disablereuse_set
+ *                      to proxy_worker struct (minor)
+ * 20051115.14 (2.2.9)  Add ap_proxy_ssl_connection_cleanup and
+ *                      add *scpool, *r and need_flush to proxy_conn_rec
+ *                      structure
+ * 20051115.15 (2.2.9)  Add interpolate_env to proxy_dir_conf and
+ *                      introduce proxy_req_conf.
+ * 20051115.16 (2.2.9)  Add conn_timeout and conn_timeout_set to
+ *                      proxy_worker struct.
+ * 20051115.17 (2.2.10) Add scolonsep to proxy_balancer
  *
- * 20051115.18(2.2.10)  Add chroot support to unixd_config
+ * 20051115.18 (2.2.10) Add chroot support to unixd_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
