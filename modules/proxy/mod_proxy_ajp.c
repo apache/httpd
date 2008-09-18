@@ -116,6 +116,27 @@ static int is_idempotent(request_rec *r)
     }
 }
 
+static apr_off_t get_content_length(request_rec * r)
+{
+    apr_off_t len = 0;
+
+    if (r->clength > 0) {
+        return r->clength;
+    }
+    else if (r->main == NULL || r->main == r) {
+        const char *clp = apr_table_get(r->headers_in, "Content-Length");
+
+        if (clp) {
+            char *errp;
+            if (apr_strtoff(&len, clp, &errp, 10) || *errp || len < 0) {
+                len = 0; /* parse error */
+            }
+        }
+    }
+
+    return len;
+}
+
 /*
  * XXX: AJP Auto Flushing
  *
@@ -166,6 +187,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     ap_get_module_config(r->server->module_config, &proxy_module);
     apr_size_t maxsize = AJP_MSG_BUFFER_SZ;
     int send_body = 0;
+    apr_off_t content_length = 0;
 
     if (psf->io_buffer_size_set)
        maxsize = psf->io_buffer_size;
@@ -221,6 +243,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: request is chunked");
     } else {
+        /* Get client provided Content-Length header */
+        content_length = get_content_length(r);
         status = ap_get_brigade(r->input_filters, input_brigade,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
                                 maxsize - AJP_HEADER_SZ);
@@ -276,6 +300,27 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             }
             conn->worker->s->transferred += bufsiz;
             send_body = 1;
+        }
+        else if (content_length > 0) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                         "proxy: read zero bytes, expecting"
+                         " %" APR_OFF_T_FMT " bytes",
+                         content_length);
+            status = ajp_send_data_msg(conn->sock, msg, 0);
+            if (status != APR_SUCCESS) {
+                /* We had a failure: Close connection to backend */
+                conn->close++;
+                ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                            "proxy: send failed to %pI (%s)",
+                            conn->worker->cp->addr,
+                            conn->worker->hostname);
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
+            else {
+                /* Client send zero bytes with C-L > 0
+                 */
+                return HTTP_BAD_REQUEST;
+            }
         }
     }
 
