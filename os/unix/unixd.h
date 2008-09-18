@@ -72,6 +72,7 @@ typedef struct {
     uid_t user_id;
     gid_t group_id;
     int suexec_enabled;
+    const char *chroot_dir;
 } unixd_config_rec;
 AP_DECLARE_DATA extern unixd_config_rec unixd_config;
 
@@ -81,6 +82,9 @@ AP_DECLARE(const char *) unixd_set_user(cmd_parms *cmd, void *dummy,
                                         const char *arg);
 AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy, 
                                          const char *arg);
+AP_DECLARE(const char *) unixd_set_chroot_dir(cmd_parms *cmd, void *dummy, 
+                                              const char *arg);
+					 
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
 AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type);
@@ -111,7 +115,9 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr, apr_po
 AP_INIT_TAKE1("User", unixd_set_user, NULL, RSRC_CONF, \
   "Effective user id for this server"), \
 AP_INIT_TAKE1("Group", unixd_set_group, NULL, RSRC_CONF, \
-  "Effective group id for this server")
+  "Effective group id for this server"), \
+AP_INIT_TAKE1("ChrootDir", unixd_set_chroot_dir, NULL, RSRC_CONF, \
+    "The directory to chroot(2) into")
 
 #endif
 /** @} */

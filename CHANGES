@@ -5,6 +5,9 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) Support chroot on Unix-family platforms
+     PR 43596 [Dimitar Pashev <mitko banksoft-bg.com>]
+
   *) mod_ssl: implement dynamic mutex callbacks for the benefit of
      OpenSSL.  [Sander Temme]
 
