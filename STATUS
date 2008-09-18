@@ -161,12 +161,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: chrisd
    -0: jim (would prefer to see in 2.4, and to push 2.4 out)
 
- * INSTALL: Provide a breadcrumb as to why you would use --with-included-apr
-   Trunk version of patch:
-     http://svn.apache.org/viewvc?rev=696006&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: jerenkrantz, sctemme, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
