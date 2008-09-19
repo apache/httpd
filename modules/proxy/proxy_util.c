@@ -1435,6 +1435,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     (*worker)->id   = proxy_lb_workers;
     (*worker)->flush_packets = flush_off;
     (*worker)->flush_wait = PROXY_FLUSH_WAIT;
+    (*worker)->smax = -1;
     /* Increase the total worker count */
     proxy_lb_workers++;
     init_conn_pool(p, *worker);
@@ -1455,6 +1456,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
     proxy_worker *worker;
     worker = (proxy_worker *)apr_pcalloc(p, sizeof(proxy_worker));
     worker->id = proxy_lb_workers;
+    worker->smax = -1;
     /* Increase the total worker count */
     proxy_lb_workers++;
     init_conn_pool(p, worker);
@@ -1920,7 +1922,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         if (worker->hmax == 0 || worker->hmax > mpm_threads) {
             worker->hmax = mpm_threads;
         }
-        if (worker->smax == 0 || worker->smax > worker->hmax) {
+        if (worker->smax == -1 || worker->smax > worker->hmax) {
             worker->smax = worker->hmax;
         }
         /* Set min to be lower then smax */

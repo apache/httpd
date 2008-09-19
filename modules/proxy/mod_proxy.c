@@ -98,7 +98,7 @@ static const char *set_worker_param(apr_pool_t *p,
     }
     else if (!strcasecmp(key, "ttl")) {
         /* Time in seconds that will destroy all the connections
-         * that exced the smax
+         * that exceed the smax
          */
         ival = atoi(val);
         if (ival < 1)

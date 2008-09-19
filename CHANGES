@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Allow for smax to be 0 for balancer members so that all idle
+     connections are able to be dropped should they exceed ttl.
+     PR 43371 [Phil Endecott <spam_from_apache_bugzilla chezphil.org>,
+     Jim Jagielski]
+
   *) mod_proxy_ajp: Fix wrongly formatted requests where client
      sets Content-Length header, but doesn't provide a body.
      Servlet container always expects that next packet is
