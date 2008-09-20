@@ -1288,3 +1288,15 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
 }
 
 #endif /* AP_MPM_WANT_FATAL_SIGNAL_HANDLER */
+
+#ifndef AP_MPM_HAS_USER_CALLBACKS
+
+AP_DECLARE(void) ap_mpm_register_timed_callback(apr_time_t t,
+                                                ap_mpm_callback_fn_t *cbfn,
+                                                void *baton)
+{
+    abort();
+}
+
+#endif /* AP_MPM_HAS_USER_CALLBACKS */
+
