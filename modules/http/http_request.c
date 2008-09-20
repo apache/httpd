@@ -213,12 +213,38 @@ static void check_pipeline(conn_rec *c)
 }
 
 
-void ap_process_async_request(request_rec *r)
+void ap_process_request_after_handler(request_rec *r)
 {
-    int access_status;
     apr_bucket_brigade *bb;
     apr_bucket *b;
     conn_rec *c = r->connection;
+
+    /* Send an EOR bucket through the output filter chain.  When
+     * this bucket is destroyed, the request will be logged and
+     * its pool will be freed
+     */
+    bb = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
+    b = ap_bucket_eor_create(r->connection->bucket_alloc, r);
+    APR_BRIGADE_INSERT_HEAD(bb, b);
+    
+    ap_pass_brigade(r->connection->output_filters, bb);
+    
+    /* From here onward, it is no longer safe to reference r
+     * or r->pool, because r->pool may have been destroyed
+     * already by the EOR bucket's cleanup function.
+     */
+    
+    c->cs->state = CONN_STATE_WRITE_COMPLETION;
+    check_pipeline(c);
+    if (ap_extended_status) {
+        ap_time_process_request(c->sbh, STOP_PREQUEST);
+    }
+}
+
+void ap_process_async_request(request_rec *r)
+{
+    conn_rec *c = r->connection;
+    int access_status;
 
     /* Give quick handlers a shot at serving the request on the fast
      * path, bypassing all of the other Apache hooks.
@@ -234,8 +260,12 @@ void ap_process_async_request(request_rec *r)
      * Use this hook with extreme care and only if you know what you are
      * doing.
      */
-    if (ap_extended_status)
+    if (ap_extended_status) {
         ap_time_process_request(r->connection->sbh, START_PREQUEST);
+    }
+
+    apr_thread_mutex_create(&r->invoke_mtx, APR_THREAD_MUTEX_DEFAULT, r->pool);
+    apr_thread_mutex_lock(r->invoke_mtx);
     access_status = ap_run_quick_handler(r, 0);  /* Not a look-up request */
     if (access_status == DECLINED) {
         access_status = ap_process_request_internal(r);
@@ -243,6 +273,16 @@ void ap_process_async_request(request_rec *r)
             access_status = ap_invoke_handler(r);
         }
     }
+
+    if (access_status == SUSPENDED) {
+        if (ap_extended_status) {
+            ap_time_process_request(c->sbh, STOP_PREQUEST);
+        }
+        c->cs->state = CONN_STATE_SUSPENDED;
+        apr_thread_mutex_unlock(r->invoke_mtx);
+        return;
+    }
+    apr_thread_mutex_unlock(r->invoke_mtx);
 
     if (access_status == DONE) {
         /* e.g., something not in storage like TRACE */
@@ -257,24 +297,7 @@ void ap_process_async_request(request_rec *r)
         ap_die(access_status, r);
     }
 
-    /* Send an EOR bucket through the output filter chain.  When
-     * this bucket is destroyed, the request will be logged and
-     * its pool will be freed
-     */
-    bb = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
-    b = ap_bucket_eor_create(r->connection->bucket_alloc, r);
-    APR_BRIGADE_INSERT_HEAD(bb, b);
-    ap_pass_brigade(r->connection->output_filters, bb);
-
-    /* From here onward, it is no longer safe to reference r
-     * or r->pool, because r->pool may have been destroyed
-     * already by the EOR bucket's cleanup function.
-     */
-
-    c->cs->state = CONN_STATE_WRITE_COMPLETION;
-    check_pipeline(c);
-    if (ap_extended_status)
-        ap_time_process_request(c->sbh, STOP_PREQUEST);
+    return ap_process_request_after_handler(r);
 }
 
 void ap_process_request(request_rec *r)

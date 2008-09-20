@@ -152,6 +152,14 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
  */
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 
+
+typedef void (ap_mpm_callback_fn_t)(void *baton);
+
+/* XXXXXXX: only added support in the Event MPM.... */
+AP_DECLARE(void) ap_mpm_register_timed_callback(apr_time_t t,
+                                                ap_mpm_callback_fn_t *cbfn,
+                                                void *baton);
+    
 /* Defining GPROF when compiling uses the moncontrol() function to
  * disable gprof profiling in the parent, and enable it only for
  * request processing in children (or in one_process mode).  It's

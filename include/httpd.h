@@ -457,6 +457,8 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define DONE -2			/**< Module has served the response completely 
 				 *  - it's safe to die() with no more output
 				 */
+#define SUSPENDED -3 /**< Module will handle the remainder of the request. 
+                      * The core will never invoke the request again, */
 #define OK 0			/**< Module has handled this stage. */
 
 
@@ -989,6 +991,8 @@ struct request_rec {
     /** The optional kept body of the request. */
     apr_bucket_brigade *kept_body;
 
+    apr_thread_mutex_t *invoke_mtx;
+
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
  * record to improve 64bit alignment the next time we need to break
@@ -1105,6 +1109,7 @@ typedef enum  {
     CONN_STATE_READ_REQUEST_LINE,
     CONN_STATE_HANDLER,
     CONN_STATE_WRITE_COMPLETION,
+    CONN_STATE_SUSPENDED,
     CONN_STATE_LINGER
 } conn_state_e;
 

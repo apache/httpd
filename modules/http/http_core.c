@@ -154,7 +154,8 @@ static int ap_process_http_async_connection(conn_rec *c)
                 r = NULL;
             }
 
-            if (cs->state != CONN_STATE_WRITE_COMPLETION) {
+            if (cs->state != CONN_STATE_WRITE_COMPLETION && 
+                cs->state != CONN_STATE_SUSPENDED) {
                 /* Something went wrong; close the connection */
                 cs->state = CONN_STATE_LINGER;
             }

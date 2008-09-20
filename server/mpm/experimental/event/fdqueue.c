@@ -268,7 +268,7 @@ apr_status_t ap_queue_info_term(fd_queue_info_t * queue_info)
  * Detects when the fd_queue_t is empty. This utility function is expected
  * to be called from within critical sections, and is not threadsafe.
  */
-#define ap_queue_empty(queue) ((queue)->nelts == 0)
+#define ap_queue_empty(queue) ((queue)->nelts == 0 && APR_RING_EMPTY(&queue->timers ,timer_event_t, link))
 
 /**
  * Callback routine that is called to destroy this
@@ -304,6 +304,8 @@ apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
     if ((rv = apr_thread_cond_create(&queue->not_empty, a)) != APR_SUCCESS) {
         return rv;
     }
+
+    APR_RING_INIT(&queue->timers, timer_event_t, link);
 
     queue->data = apr_palloc(a, queue_capacity * sizeof(fd_queue_elem_t));
     queue->bounds = queue_capacity;
@@ -353,14 +355,36 @@ apr_status_t ap_queue_push(fd_queue_t * queue, apr_socket_t * sd,
     return APR_SUCCESS;
 }
 
+apr_status_t ap_queue_push_timer(fd_queue_t * queue, timer_event_t *te)
+{
+    apr_status_t rv;
+    
+    if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
+    }
+    
+    AP_DEBUG_ASSERT(!queue->terminated);
+
+    APR_RING_INSERT_TAIL(&queue->timers, te, timer_event_t, link);
+
+    apr_thread_cond_signal(queue->not_empty);
+    
+    if ((rv = apr_thread_mutex_unlock(queue->one_big_mutex)) != APR_SUCCESS) {
+        return rv;
+    }
+    
+    return APR_SUCCESS;
+}
+
 /**
  * Retrieves the next available socket from the queue. If there are no
  * sockets available, it will block until one becomes available.
  * Once retrieved, the socket is placed into the address specified by
  * 'sd'.
  */
-apr_status_t ap_queue_pop(fd_queue_t * queue, apr_socket_t ** sd,
-                          conn_state_t ** cs, apr_pool_t ** p)
+apr_status_t ap_queue_pop_something(fd_queue_t * queue, apr_socket_t ** sd,
+                                    conn_state_t ** cs, apr_pool_t ** p,
+                                    timer_event_t ** te_out)
 {
     fd_queue_elem_t *elem;
     apr_status_t rv;
@@ -389,15 +413,23 @@ apr_status_t ap_queue_pop(fd_queue_t * queue, apr_socket_t ** sd,
         }
     }
 
-    elem = &queue->data[--queue->nelts];
-    *sd = elem->sd;
-    *cs = elem->cs;
-    *p = elem->p;
-#ifdef AP_DEBUG
-    elem->sd = NULL;
-    elem->p = NULL;
-#endif /* AP_DEBUG */
+    *te_out = NULL;
 
+    if (!APR_RING_EMPTY(&queue->timers, timer_event_t, link)) {
+        *te_out = APR_RING_FIRST(&queue->timers);
+        APR_RING_REMOVE(*te_out, link);
+    }
+    else {
+        elem = &queue->data[--queue->nelts];
+        *sd = elem->sd;
+        *cs = elem->cs;
+        *p = elem->p;
+#ifdef AP_DEBUG
+        elem->sd = NULL;
+        elem->p = NULL;
+#endif /* AP_DEBUG */
+    }
+    
     rv = apr_thread_mutex_unlock(queue->one_big_mutex);
     return rv;
 }
