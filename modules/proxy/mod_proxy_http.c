@@ -1372,6 +1372,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                           "proxy: error reading status line from remote "
                           "server %s", backend->hostname);
+            if (rc == APR_TIMEUP) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "proxy: read timeout");
+            }
             /*
              * If we are a reverse proxy request shutdown the connection
              * WITHOUT ANY response to trigger a retry by the client
@@ -1379,9 +1383,12 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * BUT currently we should not do this if the request is the
              * first request on a keepalive connection as browsers like
              * seamonkey only display an empty page in this case and do
-             * not do a retry.
+             * not do a retry. We should also not do this on a
+             * connection which times out; instead handle as
+             * we normally would handle timeouts
              */
-            if (r->proxyreq == PROXYREQ_REVERSE && c->keepalives) {
+            if (r->proxyreq == PROXYREQ_REVERSE && c->keepalives &&
+                rc != APR_TIMEUP) {
                 apr_bucket *eos;
 
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
