@@ -381,7 +381,7 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
             "handler \"%s\" not found for: %s", r->handler, r->filename);
     }
-    if ((result != OK) && (result != DONE) && (result != DECLINED)
+    if ((result != OK) && (result != DONE) && (result != DECLINED) && (result != SUSPENDED)
         && !ap_is_HTTP_VALID_RESPONSE(result)) {
         /* If a module is deliberately returning something else
          * (request_rec in non-HTTP or proprietary extension?)

@@ -612,7 +612,9 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
          * like the Worker MPM does.
          */
         ap_run_process_connection(c);
-        cs->state = CONN_STATE_LINGER;
+        if (cs->state != CONN_STATE_SUSPENDED) {
+            cs->state = CONN_STATE_LINGER;
+        }
     }
 
 read_request:
@@ -796,6 +798,11 @@ static apr_status_t init_pollset(apr_pool_t *p)
     return APR_SUCCESS;
 }
 
+static apr_status_t push_timer2worker(timer_event_t* te)
+{
+    return ap_queue_push_timer(worker_queue, te);
+}
+
 static apr_status_t push2worker(const apr_pollfd_t * pfd,
                                 apr_pollset_t * pollset)
 {
@@ -871,8 +878,70 @@ static int get_worker(int *have_idle_worker_p)
     }
 }
 
+/* XXXXXX: Convert to skiplist or other better data structure 
+ * (yes, this is VERY VERY VERY VERY BAD)
+ */
+
+/* Structures to reuse */
+static APR_RING_HEAD(timer_free_ring_t, timer_event_t) timer_free_ring;
+/* Active timers */
+static APR_RING_HEAD(timer_ring_t, timer_event_t) timer_ring;
+
+static apr_thread_mutex_t *g_timer_ring_mtx;
+
+AP_DECLARE(void) ap_mpm_register_timed_callback(apr_time_t t,
+                                                ap_mpm_callback_fn_t *cbfn,
+                                                void *baton)
+{
+    timer_event_t *ep;
+    timer_event_t *te;
+    /* oh yeah, and make locking smarter/fine grained. */
+    apr_thread_mutex_lock(g_timer_ring_mtx);
+
+    if (!APR_RING_EMPTY(&timer_free_ring, timer_event_t, link)) {
+        te = APR_RING_FIRST(&timer_free_ring);
+        APR_RING_REMOVE(te, link);
+    }
+    else {
+        /* XXXXX: lol, pool allocation without a context from any thread.Yeah. Right. MPMs Suck. */
+        te = malloc(sizeof(timer_event_t));
+        APR_RING_ELEM_INIT(te, link);
+    }
+
+    te->cbfunc = cbfn;
+    te->baton = baton;
+    /* XXXXX: optimize */
+    te->when = t + apr_time_now();
+
+    /* Okay, insert sorted by when.. */
+    int inserted = 0;
+    for (ep = APR_RING_FIRST(&timer_ring);
+         ep != APR_RING_SENTINEL(&timer_ring,
+                                 timer_event_t, link);
+         ep = APR_RING_NEXT(ep, link))
+    {
+        if (ep->when > te->when) {
+            inserted = 1;
+            APR_RING_INSERT_BEFORE(ep, te, link);
+            break;
+        }
+    }
+    
+    if (!inserted) {
+        APR_RING_INSERT_TAIL(&timer_ring, te, timer_event_t, link);
+    }
+
+    apr_thread_mutex_unlock(g_timer_ring_mtx);
+}
+
+#ifndef apr_time_from_msec
+#define apr_time_from_msec(x) (x * 1000)
+#endif
+
 static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 {
+    timer_event_t *ep;
+    timer_event_t *te;
     apr_status_t rc;
     proc_info *ti = dummy;
     int process_slot = ti->pid;
@@ -891,20 +960,13 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
     free(ti);
 
-    /* We set this to force apr_pollset to wakeup if there hasn't been any IO
-     * on any of its sockets.  This allows sockets to have been added
-     * when no other keepalive operations where going on.
-     *
-     * current value is 1 second
-     */
-    timeout_interval = 1000000;
-
     /* the following times out events that are really close in the future
      *   to prevent extra poll calls
      *
      * current value is .1 second
      */
 #define TIMEOUT_FUDGE_FACTOR 100000
+#define EVENT_FUDGE_FACTOR 10000
 
     rc = init_pollset(tpool);
     if (rc != APR_SUCCESS) {
@@ -927,6 +989,26 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             check_infinite_requests();
         }
 
+
+        {
+            apr_time_t now = apr_time_now();
+            apr_thread_mutex_lock(g_timer_ring_mtx);
+
+            if (!APR_RING_EMPTY(&timer_ring, timer_event_t, link)) {
+                te = APR_RING_FIRST(&timer_ring);
+                if (te->when > now) {
+                    timeout_interval = te->when - now;
+                }
+                else {
+                    timeout_interval = 1;
+                }
+            }
+            else {
+                timeout_interval = apr_time_from_msec(100);
+            }
+            apr_thread_mutex_unlock(g_timer_ring_mtx);
+        }
+
         rc = apr_pollset_poll(event_pollset, timeout_interval, &num,
                               &out_pfd);
 
@@ -944,6 +1026,25 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
         if (listener_may_exit)
             break;
+
+        {
+            apr_time_t now = apr_time_now();
+            apr_thread_mutex_lock(g_timer_ring_mtx);
+            for (ep = APR_RING_FIRST(&timer_ring);
+                 ep != APR_RING_SENTINEL(&timer_ring,
+                                         timer_event_t, link);
+                 ep = APR_RING_FIRST(&timer_ring))
+            {
+                if (ep->when < now + EVENT_FUDGE_FACTOR) {
+                    APR_RING_REMOVE(ep, link);
+                    push_timer2worker(ep);
+                }
+                else {
+                    break;
+                }
+            }
+            apr_thread_mutex_unlock(g_timer_ring_mtx);
+        }
 
         while (num && get_worker(&have_idle_worker)) {
             pt = (listener_poll_type *) out_pfd->client_data;
@@ -1143,7 +1244,8 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     apr_pool_t *ptrans;         /* Pool for per-transaction stuff */
     apr_status_t rv;
     int is_idle = 0;
-
+    timer_event_t *te = NULL;
+    
     free(ti);
 
     ap_scoreboard_image->servers[process_slot][thread_slot].pid = ap_my_pid;
@@ -1171,7 +1273,10 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         if (workers_may_exit) {
             break;
         }
-        rv = ap_queue_pop(worker_queue, &csd, &cs, &ptrans);
+
+        te = NULL;
+        
+        rv = ap_queue_pop_something(worker_queue, &csd, &cs, &ptrans, &te);
 
         if (rv != APR_SUCCESS) {
             /* We get APR_EOF during a graceful shutdown once all the
@@ -1201,13 +1306,25 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
             }
             continue;
         }
-        is_idle = 0;
-        worker_sockets[thread_slot] = csd;
-        rv = process_socket(ptrans, csd, cs, process_slot, thread_slot);
-        if (!rv) {
-            requests_this_child--;
+        if (te != NULL) {
+            
+            te->cbfunc(te->baton);
+
+            {
+                apr_thread_mutex_lock(g_timer_ring_mtx);
+                APR_RING_INSERT_TAIL(&timer_free_ring, te, timer_event_t, link);
+                apr_thread_mutex_unlock(g_timer_ring_mtx);
+            }
         }
-        worker_sockets[thread_slot] = NULL;
+        else {
+            is_idle = 0;
+            worker_sockets[thread_slot] = csd;
+            rv = process_socket(ptrans, csd, cs, process_slot, thread_slot);
+            if (!rv) {
+                requests_this_child--;
+            }
+            worker_sockets[thread_slot] = NULL;
+        }
     }
 
     ap_update_child_status_from_indexes(process_slot, thread_slot,
@@ -1462,6 +1579,10 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
+    apr_thread_mutex_create(&g_timer_ring_mtx, APR_THREAD_MUTEX_DEFAULT, pchild);
+    APR_RING_INIT(&timer_free_ring, timer_event_t, link);
+    APR_RING_INIT(&timer_ring, timer_event_t, link);
+    
     ap_run_child_init(pchild, ap_server_conf);
 
     /* done with init critical section */
