@@ -49,6 +49,8 @@
 #define AP_MPM_WANT_FATAL_SIGNAL_HANDLER
 #define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
 
+#define AP_MPM_HAS_USER_CALLBACKS
+
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
 #define MPM_ACCEPT_FUNC unixd_accept
