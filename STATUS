@@ -146,15 +146,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: chrisd
    -0: jim (would prefer to see in 2.4, and to push 2.4 out)
 
- * mod_proxy_http:
-  *) mod_proxy_http: Do not close the connection to the client if the reading
+   * mod_proxy_http: Do not close the connection to the client if the reading
      of a response from the backend failed due to a timeout.
      [Adam Woodworth <mirkperl gmail.com>]
     Trunk version of patch:
        http://svn.apache.org/viewvc?rev=697362&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
