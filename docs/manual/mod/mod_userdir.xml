@@ -84,27 +84,31 @@ host</context></contextlist>
     <code>http://www.example.com/~bob/one/two.html</code> will be
     translated to:</p>
 
-<table>
-<tr><th>UserDir directive used</th>
-<th>Translated path</th></tr>
-<tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
-<tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
-<tr><td>UserDir /home/*/www</td><td>/home/bob/www/one/two.html</td></tr>
-</table>
+    <table>
+      <tr><th>UserDir directive used</th>
+          <th>Translated path</th></tr>
+      <tr><td>UserDir public_html</td>
+          <td>~bob/public_html/one/two.html</td></tr>
+      <tr><td>UserDir /usr/web</td>
+          <td>/usr/web/bob/one/two.html</td></tr>
+      <tr><td>UserDir /home/*/www</td>
+          <td>/home/bob/www/one/two.html</td></tr>
+    </table>
 
-    <p>The following directives will send redirects to the client:</p> 
+    <p>The following directives will send redirects to the client:</p>
 
-<table>
-<tr><th>UserDir directive used</th>
-<th>Translated path</th></tr>
-<tr><td>UserDir http://www.example.com/users</td><td>http://www.example.com/users/bob/one/two.html</td></tr>
-<tr><td>UserDir
-http://www.example.com/*/usr</td><td>http://www.example.com/bob/usr/one/two.html</td></tr>
-<tr><td>UserDir
-http://www.example.com/~*/</td><td>http://www.example.com/~bob/one/two.html</td></tr>
-</table> 
+    <table>
+      <tr><th>UserDir directive used</th>
+          <th>Translated path</th></tr>
+      <tr><td>UserDir http://www.example.com/users</td>
+          <td>http://www.example.com/users/bob/one/two.html</td></tr>
+      <tr><td>UserDir http://www.example.com/*/usr</td>
+          <td>http://www.example.com/bob/usr/one/two.html</td></tr>
+      <tr><td>UserDir http://www.example.com/~*/</td>
+          <td>http://www.example.com/~bob/one/two.html</td></tr>
+    </table>
 
-<note>
+    <note>
       <strong>Be careful when using this directive; for instance,
       <code>"UserDir ./"</code> would map <code>"/~root"</code> to
       <code>"/"</code> - which is probably undesirable. It is strongly
@@ -113,49 +117,54 @@ http://www.example.com/~*/</td><td>http://www.example.com/~bob/one/two.html</td>
       module="core">Directory</directive> directive and the <a
       href="../misc/security_tips.html">Security Tips</a> page for
       more information.</strong>
-</note>
+    </note>
 
-<p>Additional examples:</p>
+    <p>Additional examples:</p>
 
-<p>To allow a few users to have <code>UserDir</code> directories, but
-not anyone else, use the following:</p>
+    <p>To allow a few users to have <code>UserDir</code> directories, but
+    not anyone else, use the following:</p>
 
-<example>
-UserDir disabled<br />
-UserDir enabled user1 user2 user3
-</example>
+    <example>
+      UserDir disabled<br />
+      UserDir enabled user1 user2 user3
+    </example>
 
-<p>To allow most users to have <code>UserDir</code> directories, but
-deny this to a few, use the following:</p>
+    <p>To allow most users to have <code>UserDir</code> directories, but
+    deny this to a few, use the following:</p>
 
-<example>
-UserDir enabled<br />
-UserDir disabled user4 user5 user6
-</example>
+    <example>
+      UserDir enabled<br />
+      UserDir disabled user4 user5 user6
+    </example>
 
-<p>It is also possible to specify alternative user directories.
-If you use a command like:</p>
-<example>
-Userdir public_html /usr/web http://www.example.com/
-</example>
-<p>With a request for http://www.example.com/~bob/one/two.html, will try to 
-find the page at ~bob/public_html/one/two.html first, then
-/usr/web/bob/one/two.html, and finally it will send a redirect
-to http://www.example.com/bob/one/two.html.</p>
-<p>If you add a redirect, it must be the last alternative in the list.
-Apache cannot determine if the redirect succeeded or not, so if you have
-the redirect earlier in the list, that will always be the alternative
-that is used.</p>
+    <p>It is also possible to specify alternative user directories.
+    If you use a command like:</p>
 
-<p>User directory substitution is not active by default in versions
-2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
-was assumed if no <directive module="mod_userdir">UserDir</directive>
-directive was present.</p>
+    <example>
+      Userdir public_html /usr/web http://www.example.com/
+    </example>
+
+    <p>With a request for
+    <code>http://www.example.com/~bob/one/two.html</code>, will try to
+    find the page at <code>~bob/public_html/one/two.html</code> first, then
+    <code>/usr/web/bob/one/two.html</code>, and finally it will send a
+    redirect to <code>http://www.example.com/bob/one/two.html</code>.</p>
+
+    <p>If you add a redirect, it must be the last alternative in the list.
+    Apache cannot determine if the redirect succeeded or not, so if you have
+    the redirect earlier in the list, that will always be the alternative
+    that is used.</p>
+
+    <p>User directory substitution is not active by default in versions
+    2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
+    was assumed if no <directive module="mod_userdir">UserDir</directive>
+    directive was present.</p>
 
 </usage>
 
-<seealso><a href="../howto/public_html.html">public_html
-tutorial</a></seealso>
+<seealso>
+  <a href="../howto/public_html.html">public_html tutorial</a>
+</seealso>
 
 </directivesynopsis>
 </modulesynopsis>
