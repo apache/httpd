@@ -42,7 +42,7 @@ and Group</description>
 <directivesynopsis>
 
 <name>SuexecUserGroup</name>
-<description>User and group permissions for CGI programs</description>
+<description>User and group for CGI programs to run as</description>
 <syntax>SuexecUserGroup <em>User Group</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -52,9 +52,10 @@ later.</compatibility>
 <usage>
     <p>The <directive>SuexecUserGroup</directive> directive allows you
     to specify a user and group for CGI programs to run as. Non-CGI
-    requests are still processes with the user specified in the User
-    directive. This directive replaces the Apache 1.3 configuration of
-    using the User and Group directives inside of VirtualHosts.</p>
+    requests are still processes with the user specified in the <directive
+    module="mpm_common">User</directive> directive. This directive replaces
+    the Apache 1.3 configuration of using the <code>User</code> and
+    <code>Group</code> directives inside of VirtualHosts.</p>
 
     <example>
     <title>Example</title>
