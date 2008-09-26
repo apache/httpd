@@ -984,13 +984,14 @@ void child_main(apr_pool_t *pconf)
                 continue;
             }
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
-            child_handles[i] = (HANDLE) _beginthreadex(
-                                            NULL, (unsigned)ap_thread_stacksize,
-                                            worker_main, (void *) i, 0, &tid);
+        
+            child_handles[i] = CreateThread(NULL, ap_thread_stacksize,
+                                            worker_main, (void *) i,
+                                            stack_res_flag, &tid);
             if (child_handles[i] == 0) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
                              ap_server_conf,
-                             "Child %d: _beginthreadex failed. Unable to "
+                             "Child %d: CreateThread failed. Unable to "
                              "create all worker threads. Created %d of the %d "
                              "threads requested with the ThreadsPerChild "
                              "configuration directive.",
