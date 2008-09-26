@@ -728,8 +728,10 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
              return APR_EGENERAL;
         }
 
-        globdat.service_thread = CreateThread(NULL, 0, service_nt_dispatch_thread,
-                                              NULL, 0, &globdat.service_thread_id);
+        globdat.service_thread = CreateThread(NULL, 65536,
+                                              service_nt_dispatch_thread,
+                                              NULL, stack_res_flag,
+                                              &globdat.service_thread_id);
     }
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
     {
@@ -741,7 +743,8 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
             return APR_EGENERAL;
         }
 
-        globdat.service_thread = CreateThread(NULL, 0, monitor_service_9x_thread,
+        globdat.service_thread = CreateThread(NULL, 0,
+                                              monitor_service_9x_thread,
                                               (LPVOID) mpm_service_name, 0,
                                               &globdat.service_thread_id);
     }
