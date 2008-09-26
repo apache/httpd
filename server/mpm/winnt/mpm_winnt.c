@@ -56,6 +56,9 @@ static char const* signal_arg = NULL;
 
 OSVERSIONINFO osver; /* VER_PLATFORM_WIN32_NT */
 
+/* set by child_main to STACK_SIZE_PARAM_IS_A_RESERVATION for NT >= 5.1 (XP/2003) */
+DWORD stack_res_flag;
+
 static DWORD parent_pid;
 DWORD my_pid;
 
@@ -1016,6 +1019,12 @@ void winnt_rewrite_args(process_rec *process)
 
     osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osver);
+
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT 
+        && ((osver.dwMajorVersion > 5)
+         || ((osver.dwMajorVersion == 5) && (osver.dwMinorVersion > 0)))) {
+        stack_res_flag = STACK_SIZE_PARAM_IS_A_RESERVATION;
+    }
 
     /* AP_PARENT_PID is only valid in the child */
     pid = getenv("AP_PARENT_PID");
