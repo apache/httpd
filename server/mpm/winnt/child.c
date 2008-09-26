@@ -857,8 +857,12 @@ static void create_listener_thread()
     int tid;
     int num_listeners = 0;
     if (!use_acceptex) {
-        _beginthreadex(NULL, 0, win9x_accept,
-                       NULL, 0, &tid);
+        /* A smaller stack is sufficient.
+         * To convert to CreateThread, the returned handle cannot be 
+         * ignored, it must be closed/joined.
+         */
+        _beginthreadex(NULL, 65536, win9x_accept,
+                       NULL, stack_res_flag, &tid);
     } else {
         /* Start an accept thread per listener
          * XXX: Why would we have a NULL sd in our listeners?
@@ -880,8 +884,12 @@ static void create_listener_thread()
         /* Now start a thread per listener */
         for (lr = ap_listeners; lr; lr = lr->next) {
             if (lr->sd != NULL) {
-                _beginthreadex(NULL, 1000, winnt_accept,
-                               (void *) lr, 0, &tid);
+                /* A smaller stack is sufficient.
+                 * To convert to CreateThread, the returned handle cannot be 
+                 * ignored, it must be closed/joined.
+                 */
+                _beginthreadex(NULL, 65536, winnt_accept,
+                               (void *) lr, stack_res_flag, &tid);
             }
         }
     }
