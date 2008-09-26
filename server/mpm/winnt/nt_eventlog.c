@@ -153,8 +153,8 @@ void mpm_nt_eventlog_stderr_open(char *argv0, apr_pool_t *p)
     ap_assert(hPipeRead && hPipeWrite);
 
     stderr_ready = CreateEvent(NULL, FALSE, FALSE, NULL);
-    stderr_thread = CreateThread(NULL, 0, service_stderr_thread,
-                                 (LPVOID) hPipeRead, 0, &threadid);
+    stderr_thread = CreateThread(NULL, 65536, service_stderr_thread,
+                                 (LPVOID)hPipeRead, stack_res_flag, &threadid);
     ap_assert(stderr_ready && stderr_thread);
 
     WaitForSingleObject(stderr_ready, INFINITE);
