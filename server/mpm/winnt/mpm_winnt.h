@@ -65,11 +65,13 @@ void mpm_start_child_console_handler(void);
 void mpm_nt_eventlog_stderr_open(char *display_name, apr_pool_t *p);
 void mpm_nt_eventlog_stderr_flush(void);
 
-/* From winnt.c: */
+/* From mpm_winnt.c: */
 
 extern int use_acceptex;
 extern int winnt_mpm_state;
 extern OSVERSIONINFO osver;
+extern DWORD stack_res_flag;
+
 extern void clean_child_exit(int);
 
 void setup_signal_names(char *prefix);
