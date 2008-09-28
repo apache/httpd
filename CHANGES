@@ -5,6 +5,10 @@ Changes with Apache 2.2.10
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) mod_proxy_http: Don't trigger a retry by the client if a failure to
+     read the response line was the result of a timeout.
+     [Adam Woodworth <mirkperl gmail.com>]
+
   *) Support chroot on Unix-family platforms
      PR 43596 [Dimitar Pashev <mitko banksoft-bg.com>]
 

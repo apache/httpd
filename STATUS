@@ -85,15 +85,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_http: Do not close the connection to the client if the reading
-     of a response from the backend failed due to a timeout.
-     [Adam Woodworth <mirkperl gmail.com>]
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=697362&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-   +1: rpluem, jim, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
