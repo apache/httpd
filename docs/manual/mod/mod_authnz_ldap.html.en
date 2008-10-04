@@ -953,6 +953,14 @@ environment variable</td></tr>
 
     <p>See above for examples of <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> URLs.</p>
 
+    <p> When <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>
+    is enabled in a particular context, but some other module has performed
+    authentication for the request, the server will try to map the username to a DN
+    during authorization regardless of whether or not LDAP-specific requirements
+    are present. To ignore the failures to map a username to a DN during
+    authorization, set <code class="directive"><a href="#&#10;    authzldapautoritative">
+    AuthzLDAPAutoritative</a></code> to "off".</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthzLDAPAuthoritative" id="AuthzLDAPAuthoritative">AuthzLDAPAuthoritative</a> <a name="authzldapauthoritative" id="authzldapauthoritative">Directive</a></h2>
