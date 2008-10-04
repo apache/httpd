@@ -229,13 +229,7 @@ for HTTP Basic authentication.</description>
     </ul>
 
     <p>Other <directive module="mod_authz_core">Require</directive> values may also
-    be used which may require loading additional authorization modules.
-    Note that if you use a <directive module="mod_authz_core">Require</directive>
-    value from another authorization module, you will need to ensure that
-    <directive module="mod_authnz_ldap">AuthzLDAPAuthoritative</directive>
-    is set to <code>off</code> to allow the authorization phase to fall
-    back to the module providing the alternate
-    <directive module="mod_authz_core">Require</directive> value.</p>
+    be used which may require loading additional authorization modules.</p>
 
     <ul>
         <li>Grant access if there is a <a href="#requser"><code>Require
