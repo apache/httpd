@@ -974,6 +974,14 @@ environment variable</description>
 
     <p>See above for examples of <directive
     module="mod_authnz_ldap">AuthLDAPURL</directive> URLs.</p>
+
+    <p> When <directive module="mod_authnz_ldap">AuthLDAPURL</directive>
+    is enabled in a particular context, but some other module has performed
+    authentication for the request, the server will try to map the username to a DN
+    during authorization regardless of whether or not LDAP-specific requirements
+    are present. To ignore the failures to map a username to a DN during
+    authorization, set <directive module="mod_authnz_ldap">
+    AuthzLDAPAutoritative</directive> to "off".</p>
 </usage>
 </directivesynopsis>
 
