@@ -233,7 +233,11 @@ for HTTP Basic authentication.</description>
     <directive module="mod_authnz_ldap">AuthzLDAPAuthoritative</directive>
     is set to <code>off</code> to allow the authorization phase to fall
     back to the module providing the alternate
-    <directive module="core">Require</directive> value.</p>
+    <directive module="core">Require</directive> value. When no 
+    LDAP-specific <directive module="core">Require</directive>  directives
+    are used, authorization is allowed to fall back to other modules
+    as if <directive module="mod_authnz_ldap">AuthzLDAPAuthoritative</directive>
+    was set to <code>off</code>. </p>
 
     <ul>
         <li>Grant access if there is a <a href="#requser"><code>Require
@@ -307,9 +311,7 @@ for HTTP Basic authentication.</description>
     <p>If this directive exists, <module>mod_authnz_ldap</module> grants
     access to any user that has successfully authenticated during the
     search/bind phase.  Requires that <module>mod_authz_user</module> be 
-    loaded and that the 
-    <directive module="mod_authnz_ldap">AuthzLDAPAuthoritative</directive>
-    directive be set to off.</p>
+    loaded.</p>
 </section>
 
 <section id="requser"><title>Require ldap-user</title>
@@ -595,16 +597,9 @@ Require valid-user
     that gets created in the web</p>
 <example><pre>
 AuthLDAPURL            "the url"
-AuthzLDAPAuthoritative off
 AuthGroupFile <em>mygroupfile</em>
 Require group <em>mygroupfile</em>
 </pre></example>
-
-    <p><directive module="mod_authnz_ldap">AuthzLDAPAuthoritative</directive> 
-    must be off to allow <module>mod_authnz_ldap</module> to decline group
-    authentication so that Apache will fall back to file
-    authentication for checking group membership. This allows the
-    FrontPage-managed group file to be used.</p>
 
 <section id="howitworks"><title>How It Works</title>
 
@@ -677,10 +672,14 @@ authenticating the user if this one fails</description>
 
 <usage>
     <p>Set to <code>off</code> if this module should let other
-    authentication modules attempt to authenticate the user, should
-    authentication with this module fail. Control is only passed on
+    authorization modules attempt to authorize the user, should
+    authorization with this module fail. Control is only passed on
     to lower modules if there is no DN or rule that matches the
     supplied user name (as passed by the client).</p>
+    <p> When no LDAP-specific <directive module="core">Require</directive>  directives
+    are used, authorization is allowed to fall back to other modules
+    as if <directive module="mod_authnz_ldap">AuthzLDAPAuthoritative</directive>
+    was set to <code>off</code>. </p>
 </usage>
 </directivesynopsis>
 

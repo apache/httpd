@@ -254,7 +254,11 @@ for HTTP Basic authentication.</td></tr>
     <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
     is set to <code>off</code> to allow the authorization phase to fall
     back to the module providing the alternate
-    <code class="directive"><a href="../mod/core.html#require">Require</a></code> value.</p>
+    <code class="directive"><a href="../mod/core.html#require">Require</a></code> value. When no 
+    LDAP-specific <code class="directive"><a href="../mod/core.html#require">Require</a></code>  directives
+    are used, authorization is allowed to fall back to other modules
+    as if <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
+    was set to <code>off</code>. </p>
 
     <ul>
         <li>Grant access if there is a <a href="#requser"><code>Require
@@ -324,9 +328,7 @@ for HTTP Basic authentication.</td></tr>
     <p>If this directive exists, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> grants
     access to any user that has successfully authenticated during the
     search/bind phase.  Requires that <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> be 
-    loaded and that the 
-    <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
-    directive be set to off.</p>
+    loaded.</p>
 
 
 <h3><a name="requser" id="requser">Require ldap-user</a></h3>
@@ -602,16 +604,9 @@ Require valid-user
     that gets created in the web</p>
 <div class="example"><pre>
 AuthLDAPURL            "the url"
-AuthzLDAPAuthoritative off
 AuthGroupFile <em>mygroupfile</em>
 Require group <em>mygroupfile</em>
 </pre></div>
-
-    <p><code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code> 
-    must be off to allow <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> to decline group
-    authentication so that Apache will fall back to file
-    authentication for checking group membership. This allows the
-    FrontPage-managed group file to be used.</p>
 
 <h3><a name="howitworks" id="howitworks">How It Works</a></h3>
 
@@ -972,10 +967,14 @@ authenticating the user if this one fails</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
 </table>
     <p>Set to <code>off</code> if this module should let other
-    authentication modules attempt to authenticate the user, should
-    authentication with this module fail. Control is only passed on
+    authorization modules attempt to authorize the user, should
+    authorization with this module fail. Control is only passed on
     to lower modules if there is no DN or rule that matches the
     supplied user name (as passed by the client).</p>
+    <p> When no LDAP-specific <code class="directive"><a href="../mod/core.html#require">Require</a></code>  directives
+    are used, authorization is allowed to fall back to other modules
+    as if <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
+    was set to <code>off</code>. </p>
 
 </div>
 </div>
