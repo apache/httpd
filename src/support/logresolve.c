@@ -165,7 +165,7 @@ static void cgethost (struct in_addr ipnum, char *string, int check)
 
 	hostdata = gethostbyaddr((const char *) &ipnum, sizeof(struct in_addr),
 				 AF_INET);
-	if (hostdata == NULL) {
+	if (hostdata == NULL || !hostdata->h_name || !*hostdata->h_name) {
 	    if (h_errno > MAX_ERR)
 		errors[UNKNOWN_ERR]++;
 	    else
