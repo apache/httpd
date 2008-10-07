@@ -834,6 +834,12 @@ through</td></tr>
     connections in the pool the Apache will return <code>SERVER_BUSY</code>
     status to the client.
     </td></tr>
+    <tr><td>connectiontimeout</td>
+        <td>timeout</td>
+        <td>Connect timeout in seconds.
+        The number of seconds Apache waits for the creation of a connection to
+        the backend to complete.
+    </td></tr>
     <tr><td>disablereuse</td>
         <td>Off</td>
         <td>This parameter should be used when you want to force mod_proxy
@@ -955,8 +961,9 @@ through</td></tr>
         <td>byrequests</td>
         <td>Balancer load-balance method. Select the load-balancing scheduler
         method to use. Either <code>byrequests</code>, to perform weighted
-        request counting or <code>bytraffic</code>, to perform weighted
-        traffic byte count balancing. Default is <code>byrequests</code>.
+        request counting, <code>bytraffic</code>, to perform weighted
+        traffic byte count balancing, or <code>bybusyness</code>, to perform 
+        pending request balancing. Default is <code>byrequests</code>.
     </td></tr>
     <tr><td>maxattempts</td>
         <td>1</td>
@@ -976,6 +983,13 @@ through</td></tr>
         If the backend application server uses different name for cookies
         and url encoded id (like servlet containers) use | to to separate them.
         The first part is for the cookie the second for the path.
+    </td></tr>
+    <tr><td>scolonpathdelim</td>
+        <td>Off</td>
+        <td>If set to <code>On</code> the semi-colon character ';' will be
+        used as an additional sticky session path deliminator/separator. This
+        is mainly used to emulate mod_jk's behavior when dealing with paths such
+        as <code>JSESSIONID=6736bcf34;foo=aabfa</code>
     </td></tr>
     <tr><td>timeout</td>
         <td>0</td>
