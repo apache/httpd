@@ -85,14 +85,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Allow for the smax param to be 0, so that all connections
-     are available to be dropped, should they be idle long enough.
-     PR 43371
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=697093&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-   +1: jim, rpluem, gregames
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
