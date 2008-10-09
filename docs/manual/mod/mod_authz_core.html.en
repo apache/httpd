@@ -115,8 +115,8 @@
 authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
 Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
 the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthMergeRules on | off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthMergeRules on</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzMergeRules on | off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzMergeRules on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -128,7 +128,7 @@ the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</td></tr>
     only the authorization rules that are contained with the current 
     &lt;Directory&gt; or &lt;Location&gt; block are considered. This
     allows the configuration to determine exactly how authorization will
-    be determine without having to take into consideration the 
+    be determined without having to take into consideration the 
     authorization rules that may exist above it.</p>
 
 </div>

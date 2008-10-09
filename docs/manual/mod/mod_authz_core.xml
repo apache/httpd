@@ -283,8 +283,8 @@ providers.</description>
 authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
 Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
 the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</description>
-<syntax>AuthMergeRules on | off</syntax>
-<default>AuthMergeRules on</default>
+<syntax>AuthzMergeRules on | off</syntax>
+<default>AuthzMergeRules on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -296,7 +296,7 @@ the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</description
     only the authorization rules that are contained with the current 
     &lt;Directory&gt; or &lt;Location&gt; block are considered. This
     allows the configuration to determine exactly how authorization will
-    be determine without having to take into consideration the 
+    be determined without having to take into consideration the 
     authorization rules that may exist above it.</p>
 </usage>
 
