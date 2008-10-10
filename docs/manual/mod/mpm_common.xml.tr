@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 692459:696758 (outdated) -->
+<!-- English Revision: 696758 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -966,6 +966,31 @@
         <module>mpmt_os2</module> MPM’lerinde mevcut olsa da, aslında
         işlevsiz olup sadece uyumluluk adına mevcuttur.</p>
     </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ChrootDir</name>
+<description>Başlatıldıktan sonra Apache’nin chroot(8) yapacağı dizin
+</description>
+<syntax>ChrootDir <var>/dizin/yolu/</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module>
+<module>prefork</module><module>worker</module></modulelist>
+<compatibility>Apache 2.2.10 ve sonrasında mevcuttur.
+</compatibility>
+
+<usage>
+    <p>Bu yönerge sunucu başlatıldıktan sonra istekleri kabul etmeye
+      başlamadan önce sunucunun belirtilen dizine <code>chroot</code>(8)
+      yapmasını söyler.</p>
+
+    <p>Sunucuyu chroot altında çalıştırmanın basit bir işlem olmadığını ve
+      özellikle CGI veya PHP gibi betikler çalıştırıyorsanız bazı ek
+      ayarlamaların yapılması gerektiğini unutmayınız. Bu özelliği kullanmaya
+      çalışmadan önce chroot işlemi hakkında yeterli bilgiye sahip
+      olduğunuzdan emin olmalısınız.</p>
 </usage>
 </directivesynopsis>
 
