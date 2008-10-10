@@ -20,7 +20,8 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/suexec.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./ja/suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>The <strong>suEXEC</strong> feature provides
@@ -125,7 +126,7 @@
     <ol>
       <li>
         <strong>Is the user executing this wrapper a valid user of
-        this system?</strong> 
+        this system?</strong>
 
         <p class="indent">
           This is to ensure that the user executing the wrapper is
@@ -135,7 +136,7 @@
 
      <li>
         <strong>Was the wrapper called with the proper number of
-        arguments?</strong> 
+        arguments?</strong>
 
         <p class="indent">
           The wrapper will only execute if it is given the proper
@@ -149,7 +150,7 @@
 
       <li>
         <strong>Is this valid user allowed to run the
-        wrapper?</strong> 
+        wrapper?</strong>
 
         <p class="indent">
           Is this user the user allowed to run this wrapper? Only
@@ -160,7 +161,7 @@
 
       <li>
         <strong>Does the target CGI or SSI program have an unsafe
-        hierarchical reference?</strong> 
+        hierarchical reference?</strong>
 
         <p class="indent">
           Does the target CGI or SSI program's path contain a leading
@@ -172,7 +173,7 @@
       </li>
 
       <li>
-        <strong>Is the target user name valid?</strong> 
+        <strong>Is the target user name valid?</strong>
 
         <p class="indent">
           Does the target user exist?
@@ -180,7 +181,7 @@
       </li>
 
       <li>
-        <strong>Is the target group name valid?</strong> 
+        <strong>Is the target group name valid?</strong>
 
         <p class="indent">
           Does the target group exist?
@@ -199,7 +200,7 @@
 
       <li>
         <strong>Is the target userid <em>ABOVE</em> the minimum ID
-        number?</strong> 
+        number?</strong>
 
         <p class="indent">
           The minimum user ID number is specified during
@@ -211,7 +212,7 @@
 
       <li>
         <strong>Is the target group <em>NOT</em> the superuser
-        group?</strong> 
+        group?</strong>
 
         <p class="indent">
           Presently, suEXEC does not allow the <code><em>root</em></code>
@@ -221,7 +222,7 @@
 
       <li>
         <strong>Is the target groupid <em>ABOVE</em> the minimum ID
-        number?</strong> 
+        number?</strong>
 
         <p class="indent">
           The minimum group ID number is specified during
@@ -233,7 +234,7 @@
 
       <li>
         <strong>Can the wrapper successfully become the target user
-        and group?</strong> 
+        and group?</strong>
 
         <p class="indent">
           Here is where the program becomes the target user and
@@ -255,12 +256,12 @@
 
       <li>
         <strong>Is the directory within the Apache
-        webspace?</strong> 
+        webspace?</strong>
 
         <p class="indent">
           If the request is for a regular portion of the server, is
           the requested directory within suEXEC's document root? If
-          the request is for a UserDir, is the requested directory
+          the request is for a <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>, is the requested directory
           within the directory configured as suEXEC's userdir (see
           <a href="#install">suEXEC's configuration options</a>)?
         </p>
@@ -268,7 +269,7 @@
 
       <li>
         <strong>Is the directory <em>NOT</em> writable by anyone
-        else?</strong> 
+        else?</strong>
 
         <p class="indent">
           We don't want to open up the directory to others; only
@@ -278,7 +279,7 @@
       </li>
 
       <li>
-        <strong>Does the target CGI/SSI program exist?</strong> 
+        <strong>Does the target CGI/SSI program exist?</strong>
 
         <p class="indent">
           If it doesn't exists, it can't very well be executed.
@@ -287,7 +288,7 @@
 
       <li>
         <strong>Is the target CGI/SSI program <em>NOT</em> writable
-        by anyone else?</strong> 
+        by anyone else?</strong>
 
         <p class="indent">
           We don't want to give anyone other than the owner the
@@ -297,7 +298,7 @@
 
       <li>
         <strong>Is the target CGI/SSI program <em>NOT</em> setuid or
-        setgid?</strong> 
+        setgid?</strong>
 
         <p class="indent">
           We do not want to execute programs that will then change
@@ -307,7 +308,7 @@
 
       <li>
         <strong>Is the target user/group the same as the program's
-        user/group?</strong> 
+        user/group?</strong>
 
         <p class="indent">
           Is the user the owner of the file?
@@ -316,7 +317,7 @@
 
       <li>
         <strong>Can we successfully clean the process environment
-        to ensure safe operations?</strong> 
+        to ensure safe operations?</strong>
 
         <p class="indent">
           suEXEC cleans the process' environment by establishing a
@@ -329,7 +330,7 @@
 
       <li>
         <strong>Can we successfully become the target CGI/SSI program
-        and execute?</strong> 
+        and execute?</strong>
 
         <p class="indent">
           Here is where suEXEC ends and the target CGI/SSI program begins.
@@ -387,13 +388,13 @@
       directories where suEXEC access should be allowed. All
       executables under this directory will be executable by suEXEC
       as the user so they should be "safe" programs. If you are
-      using a "simple" UserDir directive (ie. one without a "*" in
-      it) this should be set to the same value. suEXEC will not
-      work properly in cases where the UserDir directive points to
+      using a "simple" <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>
+      directive (ie. one without a "*" in it) this should be set to the same
+      value. suEXEC will not work properly in cases where the <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> directive points to
       a location that is not the same as the user's home directory
-      as referenced in the passwd file. Default value is
-      "public_html".<br />
-       If you have virtual hosts with a different UserDir for each,
+      as referenced in the <code>passwd</code> file. Default value is
+      "<code>public_html</code>".<br />
+      If you have virtual hosts with a different <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code> for each,
       you will need to define them to all reside in one parent
       directory; then name that parent directory here. <strong>If
       this is not defined properly, "~userdir" cgi requests will
@@ -402,12 +403,12 @@
       <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
 
       <dd>Define as the DocumentRoot set for Apache. This will be
-      the only hierarchy (aside from UserDirs) that can be used for
-      suEXEC behavior. The default directory is the <code>--datadir</code>
-      value with the suffix "/htdocs", <em>e.g.</em> if you configure
-      with "<code>--datadir=/home/apache</code>" the directory
-      "/home/apache/htdocs" is used as document root for the suEXEC
-      wrapper.</dd>
+      the only hierarchy (aside from <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>s) that can be used for suEXEC behavior. The
+      default directory is the <code>--datadir</code> value with the suffix
+      "<code>/htdocs</code>", <em>e.g.</em> if you configure with
+      "<code>--datadir=/home/apache</code>" the directory
+      "<code>/home/apache/htdocs</code>" is used as document root for the
+      suEXEC wrapper.</dd>
 
       <dt><code>--with-suexec-uidmin=<em>UID</em></code></dt>
 
@@ -426,61 +427,68 @@
       <dd>This defines the filename to which all suEXEC
       transactions and errors are logged (useful for auditing and
       debugging purposes). By default the logfile is named
-      "suexec_log" and located in your standard logfile directory
-      (<code>--logfiledir</code>).</dd>
+      "<code>suexec_log</code>" and located in your standard logfile
+      directory (<code>--logfiledir</code>).</dd>
 
       <dt><code>--with-suexec-safepath=<em>PATH</em></code></dt>
 
       <dd>Define a safe PATH environment to pass to CGI
       executables. Default value is
-      "/usr/local/bin:/usr/bin:/bin".</dd>
+      "<code>/usr/local/bin:/usr/bin:/bin</code>".</dd>
     </dl>
 
-    <p><strong>Compiling and installing the suEXEC
-    wrapper</strong><br />
-     If you have enabled the suEXEC feature with the
-    <code>--enable-suexec</code> option the <code>suexec</code> binary
-    (together with Apache itself) is automatically built if you execute
-    the <code>make</code> command.<br />
-     After all components have been built you can execute the
-    command <code>make install</code> to install them. The binary image
-    <code>suexec</code> is installed in the directory defined by the
-    <code>--sbindir</code> option. The default location is
-    "/usr/local/apache2/bin/suexec".<br />
-     Please note that you need <strong><em>root
-    privileges</em></strong> for the installation step. In order
-    for the wrapper to set the user ID, it must be installed as
-    owner <code><em>root</em></code> and must have the setuserid
-    execution bit set for file modes.</p>
+    <h3>Compiling and installing the suEXEC wrapper</h3>
+      
 
-    <p><strong>Setting paranoid permissions</strong><br />
-    Although the suEXEC wrapper will check to ensure that its
-    caller is the correct user as specified with the
-    <code>--with-suexec-caller</code> <code class="program"><a href="./programs/configure.html">configure</a></code>
-    option, there is
-    always the possibility that a system or library call suEXEC uses
-    before this check may be exploitable on your system. To counter
-    this, and because it is best-practise in general, you should use 
-    filesystem permissions to ensure that only the group Apache 
-    runs as may execute suEXEC.</p>
+      <p>If you have enabled the suEXEC feature with the
+      <code>--enable-suexec</code> option the <code>suexec</code> binary
+      (together with Apache itself) is automatically built if you execute
+      the <code>make</code> command.</p>
 
-    <p>If for example, your web server is configured to run as:</p>
+      <p>After all components have been built you can execute the
+      command <code>make install</code> to install them. The binary image
+      <code>suexec</code> is installed in the directory defined by the
+      <code>--sbindir</code> option. The default location is
+      "/usr/local/apache2/bin/suexec".</p>
 
-<div class="example"><p><code>
-    User www<br />
-    Group webgroup<br />
-</code></p></div>
+      <p>Please note that you need <strong><em>root
+      privileges</em></strong> for the installation step. In order
+      for the wrapper to set the user ID, it must be installed as
+      owner <code><em>root</em></code> and must have the setuserid
+      execution bit set for file modes.</p>
+    
 
-    <p>and <code class="program"><a href="./programs/suexec.html">suexec</a></code> is installed at
-    "/usr/local/apache2/bin/suexec", you should run:</p>
+    <h3>Setting paranoid permissions</h3>
+      
 
-<div class="example"><p><code>
-    chgrp webgroup /usr/local/apache2/bin/suexec<br />
-    chmod 4750 /usr/local/apache2/bin/suexec<br />
-</code></p></div>
+      <p>Although the suEXEC wrapper will check to ensure that its
+      caller is the correct user as specified with the
+      <code>--with-suexec-caller</code> <code class="program"><a href="./programs/configure.html">configure</a></code>
+      option, there is
+      always the possibility that a system or library call suEXEC uses
+      before this check may be exploitable on your system. To counter
+      this, and because it is best-practise in general, you should use
+      filesystem permissions to ensure that only the group Apache
+      runs as may execute suEXEC.</p>
 
-    <p>This will ensure that only the group Apache runs as can even
-    execute the suEXEC wrapper.</p>
+      <p>If for example, your web server is configured to run as:</p>
+
+      <div class="example"><p><code>
+          User www<br />
+          Group webgroup<br />
+      </code></p></div>
+
+      <p>and <code class="program"><a href="./programs/suexec.html">suexec</a></code> is installed at
+      "/usr/local/apache2/bin/suexec", you should run:</p>
+
+      <div class="example"><p><code>
+          chgrp webgroup /usr/local/apache2/bin/suexec<br />
+          chmod 4750 /usr/local/apache2/bin/suexec<br />
+      </code></p></div>
+
+      <p>This will ensure that only the group Apache runs as can even
+      execute the suEXEC wrapper.</p>
+    
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Enabling &amp; Disabling
@@ -560,7 +568,7 @@
       <li><strong>suEXEC Points Of Interest</strong></li>
 
       <li>
-        Hierarchy limitations 
+        Hierarchy limitations
 
         <p class="indent">
           For security and efficiency reasons, all suEXEC requests
@@ -575,7 +583,7 @@
       </li>
 
       <li>
-        suEXEC's PATH environment variable 
+        suEXEC's PATH environment variable
 
         <p class="indent">
           This can be a dangerous thing to change. Make certain
@@ -587,7 +595,7 @@
       </li>
 
       <li>
-        Altering the suEXEC code 
+        Altering the suEXEC code
 
         <p class="indent">
           Again, this can cause <strong>Big Trouble</strong> if you
@@ -601,7 +609,8 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/suexec.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./ja/suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
