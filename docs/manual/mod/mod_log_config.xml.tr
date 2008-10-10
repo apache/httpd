@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 693120 -->
+<!-- English Revision: 697129 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -113,9 +113,11 @@
           içeriği.</td></tr>
 
     <tr><td><code>%k</code></td>
-        <td>Bu bağlantıda işlenen isteklerin sayısı.
+        <td>Bu bağlantıda işlenen isteklerin sayısı; yani örneğin,
+    	  '1' değeri bağlantı kurulduktan sonraki ilk kalıcı bağlantıyı,
+    	  '2', ikinci bağlantıyı, ..., vb. gösterir;
           <directive module="core">KeepAlive</directive> kullanılmışsa
-          anlamlıdır; aksi takdirde değeri daima 0’dır.</td></tr>
+          değer anlamlıdır; aksi takdirde değer daima 0’dır.</td></tr>
 
     <tr><td><code>%l</code></td>
         <td>Uzak kullanıcı kimliği (sağlanmışsa, identd üzerinden).
