@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="worker.xml.meta">
+<name>worker</name>
+<description>Çok evreli ve çok süreçli melez bir HTTP sunucusu oluşturan çok
+süreçlilik modülü.</description>
+<status>MPM</status>
+<sourcefile>worker.c</sourcefile>
+<identifier>mpm_worker_module</identifier>
+
+<summary>
+    <p>Bu çok süreçlilik modülü (MPM) hem çok süreçli hem de çok evreli
+      olabilen melez bir sunucu oluşturur. İstekleri sunmak için evreleri
+      kullanması sebebiyle çok süreçli bir sunucudan daha az sistem kaynağı
+      harcayarak daha çok isteğe hizmet sunabilir. Bununla birlikte, herbiri
+      çok sayıda evreye sahip çok sayıda süreci canlı tutarak bir çok süreçli
+      sunucu kadar kararlı olur.</p>
+
+    <p>Bu MPM’i denetim altında tutmakta kullanılan en önemli yönergeler, her
+      çocuk süreç için konuşlandırılacak evre sayısını belirleyen <directive
+      module="mpm_common">ThreadsPerChild</directive> yönergesi ile devreye
+      sokulacak toplam evre sayısının azamisini belirleyen <directive
+      module="mpm_common">MaxClients</directive> yönergesidir.</p>
+</summary>
+<seealso><a href="../bind.html">Apache’nin kullandığı adres ve portların
+ayarlanması</a></seealso>
+
+<section id="how-it-works"><title>Nasıl çalışır?</title>
+    <p>Çocuk süreçleri devreye almaktan tek bir süreç (ana süreç) sorumludur.
+      Her çocuk süreç <directive module="mpm_common"
+      >ThreadsPerChild</directive> yönergesinde belirtilen sayıda evre
+      konuşlandırır. Bunlardan ayrı olarak, bir dinleyici evre bağlantıları
+      dinleyip gelenleri işlenmek üzere bu sunucu evrelerinden birine
+      aktarır.</p>
+
+    <p>Apache daima, gelen isteklere hizmet sunmaya hazır <dfn>yedek</dfn>
+      veya boştaki sunucu evrelerinden oluşan bir havuzu canlı tutmaya
+      çalışır. Bu suretle, istemcilere isteklerinin sunulması için yeni çocuk
+      süreçlerin çatallanmasını, dolayısıyla yeni evrelerin
+      konuşlandırılmasını beklemek gerekmez. Başlangıçta çalıştırılacak çocuk
+      süreçlerin sayısı <directive
+      module="mpm_common">StartServers</directive> yönergesinde belirtilir.
+      Apache, çalışma süresi boyunca <directive module="mpm_common"
+      >MinSpareThreads</directive> ve <directive module="mpm_common"
+      >MaxSpareThreads</directive> yönergeleri ile belirtilen sınırlar
+      dahilinde kalmak üzere gerektiğinde süreçleri öldürerek gerektiğinde
+      yenilerini devreye alarak tüm süreçlerdeki toplam evre sayısını sabit
+      tutmaya çalışır. Bu işlem kendiliğinden çok iyi yürüdüğünden bu
+      yönergelere öntanımlı değerlerinden farklı değerlerin atanması nadiren
+      gerekli olur. Aynı anda hizmet sunulabilecek istemcilerin sayısı (yani,
+      tüm süreçlerin toplam evre sayısı) <directive module="mpm_common"
+      >MaxClients</directive> yönergesi ile belirlenir. Etkin çocuk
+      süreçlerin sayısı ise <directive module="mpm_common"
+      >MaxClients</directive> yönergesindeki değerin <directive
+      module="mpm_common" >ThreadsPerChild</directive> yönergesindeki değere
+      bölünmesi ile elde edilir.</p>
+
+    <p>Bu iki yönerge aynı anda etkin olabilecek çocuk süreçlerin ve her
+      çocuk süreçteki sunucu evreleri sayısının üst sınırını belirler ve bu
+      sınır sadece ana sunucu tamamen durdurulup yeniden başlatılarak
+      değiştirilebilir. <directive module="mpm_common"
+      >ServerLimit</directive> yönergesinin değeri etkin çocuk süreç
+      sayısının üst sınırı olup <directive module="mpm_common"
+      >MaxClients</directive> yönergesindeki değerin <directive
+      module="mpm_common" >ThreadsPerChild</directive> yönergesindeki değere
+      bölünmesi ile elde değere eşit veya bundan küçük olması gerekir.
+      <directive module="mpm_common">ThreadLimit</directive> yönergesinin
+      değeri ise sunucu evreleri sayısının üst sınırını belirler ve <directive
+      module="mpm_common">ThreadsPerChild</directive> yönergesindeki değerden
+      büyük veya ona eşit olması gerekir. Eğer bu yönergelere öntanımlı
+      değerlerinden farklı bir değer atanacaksa bu atamaların diğer
+      <module>worker</module> yönergelerinden önce yapılması gerekir.</p>
+
+    <p>Sonlandırma sırasında etkin çocuk süreçlere ek olarak mevcut istemci
+      bağlantılarını işleme sokmaya çalışan tek bir sunucu evresinden başka
+      fazladan bir çocuk süreç etkin kalabileceği gibi sonlandırılacak süreç
+      sayısının en fazla <directive module="mpm_common"
+      >MaxClients</directive> olması gerekirse de gerçekte sayı bundan küçük
+      olabilir.  Şöyle bir işlemle tek bir çocuk sürecin sonlandırılması
+      iptal edilerek bu gibi durumlara karşı önlem alınabilir:</p>
+
+    <ul>
+      <li><directive module="mpm_common"> MaxRequestsPerChild</directive>
+        yönergesinin değeri sıfır yapılır.</li>
+
+      <li><directive module="mpm_common">MaxSpareThreads</directive> ve
+        <directive module="mpm_common">MaxClients</directive> yönergelerinin
+        değerleri birbirine eşitlenir.</li>
+    </ul>
+
+    <p><module>worker</module> modülünün öntanımlı süreç-evre yapılandırması
+      genelde şöyledir:</p>
+
+    <example>
+      ServerLimit         16<br />
+      StartServers         2<br />
+      MaxClients         150<br />
+      MinSpareThreads     25<br />
+      MaxSpareThreads     75<br />
+      ThreadsPerChild     25
+    </example>
+
+    <p>Unix altında 80. portu dinleyebilmek için ana sürecin root tarafından
+      çalıştırılmış olması gerekirse de çocuk süreçler ve evreler Apache
+      tarafından daha az yetkili bir kullanıcının aidiyetinde
+      çalıştırılırlar. Apache’nin çocuk süreçlerinin kullanıcı ve gruplarını
+      ayarlamak için User ve Group yönergeleri kullanılır. Çocuk süreçlerin
+      sunacakları içeriği okumaya yetkili olmaları gerekir, fakat bu yetkinin
+      mümkün olduğunca kısıtlı tutulmasına çalışılmalıdır. Bundan başka,
+      <program>suexec</program> kullanılmadığı takdirde, bu yönergeler CGI
+      betikleri tarafından miras alınacak yetkili kullanıcı ve grubu da
+      ayarlarlar.</p>
+
+    <p><directive module="mpm_common">MaxRequestsPerChild</directive>
+      yönergesi ana sunucunun eski süreçleri öldürüp yenilerini oluşturmayı
+      ne kadar sıklıkla yapacağını denetler.</p>
+</section>
+
+<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Group</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>PidFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>Listen</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>LockFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxClients</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxMemFree</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxRequestsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MaxSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>MinSpareThreads</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>SendBufferSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ServerLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>StartServers</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadLimit</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadsPerChild</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>User</name>
+</directivesynopsis>
+
+</modulesynopsis>
