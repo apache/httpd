@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>prefork - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Modüller</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache MPM prefork</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../tr/mod/prefork.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Evresiz ön çatallamalı HTTP sunucusu oluşturur</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>mpm_prefork_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>prefork.c</td></tr></table>
+<h3>Özet</h3>
+
+    <p>Bu çok süreçlilik modülü (MPM) Apache 1.3’ün yaptığı gibi evresiz ve
+      çocuk süreçlerin önceden çatallandığı bir HTTP sunucusu oluşturur.
+      Evresiz kütüphanelerle uyumluluk için evrelemeden kaçınma ihtiyacında
+      olan siteler için uygundur. Ayrıca istekleri birbirlerinden yalıtmak
+      için en iyi MPM’dir, dolayısıyla herhangi bir istekle ilgili bir sorun
+      diğerlerini etkilemez.</p>
+
+    <p>Bu MPM kendi kendine her duruma çok iyi uyum sağladığından
+      yapılandırma yönergeleri ile yapılandırılmaya nadiren ihtiyaç gösterir.
+      Yönergelerin en önemlisi <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> olup, değeri aynı anda almayı umduğunuz istek
+      sayısını işleyebilecek kadar büyük, fiziksel belleğin tüm süreçlerin
+      ihtiyaçlarını karşılamasına yetecek kadar da küçük olması gerekir.</p>
+</div>
+<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<ul id="toc">
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#maxspareservers">MaxSpareServers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#minspareservers">MinSpareServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#receivebuffersize">ReceiveBufferSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+</ul>
+<h3>Konular</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Nasıl çalışır?</a></li>
+</ul><h3>Ayrıca bakınız:</h3>
+<ul class="seealso">
+<li><a href="../bind.html">Apache’nin kullandığı adres ve portların
+ayarlanması</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="how-it-works" id="how-it-works">Nasıl çalışır?</a></h2>
+    <p>Bağlantıları dinleyip gerektiğinde onlara hizmet sunan çocuk süreçleri
+      devreye almak tek bir denetim sürecinin sorumluluğundadır. Apache
+      daima, gelen isteklere hizmet vermeye hazır bekleyen en fazla sayıda
+      sunucu sürecini <dfn>yedekte tutmaya</dfn> veya boşta bekletmeye
+      çalışır. Bu suretle, istemcilere isteklerinin sunulması için yeni çocuk
+      süreçlerin çatallanmasını beklemek gerekmez.</p>
+
+    <p>Ana sürecin istekleri sunacak çocuk süreçleri oluşturma işlemini nasıl
+      gerçekleştireceği <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>, <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code> ve <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> yönergeleri ile düzenlenir. Apache
+      kendiliğinden her duruma çok iyi uyum sağladığından, genelde, çoğu
+      sitenin bu yönergelerin öntanımlı değerlerini değiştirmesi gerekmez.
+      Aynı anda 256’dan fazla isteğe hizmet sunacak sitelerin <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> değerini arttırmaları
+      gerekebilir. Ancak, fiziksel belleği yeterli olmayan sitelerin de
+      sunucunun belleği diske takaslamasını önlemek için bu değeri
+      azaltmaları gerekebilir. Süreç oluşturmanın ayarlanması ile ilgili daha
+      fazla bilgi edinmek için <a href="../misc/perf-tuning.html">başarım
+      arttırma ipuçları</a> belgesine bakınız.</p>
+
+    <p>Unix altında 80. portu dinleyebilmek için ana sürecin
+      <code>root</code> tarafından çalıştırılmış olması gerekirse de çocuk
+      süreçler Apache tarafından daha az yetkili bir kullanıcının aidiyetinde
+      çalıştırılırlar. Apache’nin çocuk süreçlerinin kullanıcı ve gruplarını
+      ayarlamak için <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> ve
+      <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> yönergeleri
+      kullanılır. Çocuk süreçlerin sunacakları içeriği okumaya yetkili
+      olmaları gerekir, fakat bu yetkinin mümkün olduğunca kısıtlı
+      tutulmasına çalışılmalıdır.</p>
+
+    <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
+      yönergesi ana sunucunun eski süreçleri öldürüp yenilerini oluşturmayı
+      ne kadar sıklıkla yapacağını denetler.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Boştaki çocuk süreçlerin azami sayısı</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxSpareServers <var>sayı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MaxSpareServers 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>prefork</td></tr>
+</table>
+    <p><code class="directive">MaxSpareServers</code> yönergesi <em>boştaki</em>
+      çocuk sunucu süreçlerinin azami sayısını belirler. Boştaki süreç, o an
+      bir isteğe hizmet sunmayan süreçtir. Eğer
+      <code class="directive">MaxSpareServers</code> sayıda süreçten daha fazla boşta
+      süreç varsa ana süreç bu fazlalıkları öldürecektir.</p>
+
+    <p>Bu parametrenin ayarlanması sadece çok meşgul siteler için gerekli
+      olabilir. Bu parametreye çok büyük bir değerin atanması oldukça kötü
+      bir fikirdir. Eğer bu değeri <code class="directive"><a href="#minspareservers">MinSpareServers</a></code> değerine eşit veya daha küçük bir değere
+      ayarlarsanız, Apache bu değeri kendiliğinden <code class="directive">MinSpareServers</code><code> + 1</code> olarak
+      değiştirecektir.</p>
+
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><code class="directive"><a href="#minspareservers">MinSpareServers</a></code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MinSpareServers" id="MinSpareServers">MinSpareServers</a> <a name="minspareservers" id="minspareservers">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Boştaki çocuk süreçlerin asgari sayısı</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MinSpareServers <var>sayı</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>MinSpareServers 5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>prefork</td></tr>
+</table>
+    <p><code class="directive">MinSpareServers</code> yönergesi <em>boştaki</em>
+      çocuk sunucu süreçlerinin asgari sayısını belirler. Boştaki süreç, o an
+      bir isteğe hizmet sunmayan süreçtir. Eğer
+      <code class="directive">MinSpareServers</code> sayıda süreçten daha az boşta
+      süreç varsa ana süreç sayıyı tamamlamak için saniyede en fazla 1 süreç
+      olmak üzere yeni çocuk süreçler oluşturacaktır.</p>
+
+    <p>Bu parametrenin ayarlanması sadece çok meşgul siteler için gerekli
+      olabilir. Bu parametreye çok büyük bir değerin atanması oldukça kötü
+      bir fikirdir.</p>
+
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li><code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code></li>
+<li><code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code></li>
+</ul>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../tr/mod/prefork.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>

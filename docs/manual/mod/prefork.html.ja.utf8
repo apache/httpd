@@ -23,7 +23,8 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ja/mod/prefork.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+<a href="../ja/mod/prefork.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>スレッドを使わず、先行して fork を行なうウェブサーバを実装
 </td></tr>
@@ -181,7 +182,8 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/mod/prefork.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/prefork.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ja/mod/prefork.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
+<a href="../ja/mod/prefork.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../tr/mod/prefork.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
