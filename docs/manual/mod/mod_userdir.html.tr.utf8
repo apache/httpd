@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_userdir - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Modüller</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Modülü mod_userdir</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_userdir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Kullanıcılara özel dizinler</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>userdir_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Kaynak Dosyası:</a></th><td>mod_userdir.c</td></tr></table>
+<h3>Özet</h3>
+
+<p>Bu modül kullanıcılara özel dizinlere
+  <code>http://mesela.dom/~kullanıcı/</code> sözdizimi kullanılarak
+  erişilebilmesini mümkün kılar.</p>
+</div>
+<div id="quickview"><h3 class="directives">Yönergeler</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir</a></li>
+</ul>
+<h3>Ayrıca bakınız:</h3>
+<ul class="seealso">
+<li>
+  <a href="../urlmapping.html">URL’lerin Dosya Sistemi ile Eşleştirilmesi</a>
+</li>
+<li>
+  <a href="../howto/public_html.html">public_html eğitmeni</a>
+</li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Kullanıcıya özel dizinlerin yeri</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>UserDir <em>dizin</em> [<em>dizin</em>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_userdir</td></tr>
+</table>
+
+    <p><code class="directive">UserDir</code> yönergesi, bir kullanıcıya ait bir
+      belge için bir istek yapıldığında, isteğin kullanıcının ev dizininde
+      bulunan belli bir dizinden karşılanmasını sağlar.
+      <code><em>dizin</em></code> olarak şunlar belirtilebilir:</p>
+
+    <ul>
+      <li>Dizinin ismi veya aşağıdakiler gibi bir kalıp.</li>
+
+      <li><code>disabled</code> anahtar sözcüğü. <code>enabled</code> anahtar
+        sözcüğü ile sonradan etkin kılınmadıkça <em>tüm</em> kullanıcı-dizin
+        dönüşümlerini iptal eder (aşağıya bakınız).</li>
+
+      <li><code>disabled</code> anahtar sözcüğünü takibeden boşluk ayraçlı
+        kullanıcı isimleri listesi. Bu listede yer alan kullanıcı isimlerine,
+        sonradan bir <code>enabled</code> listesinde görünse bile, dizin
+        dönüşümleri <em>asla</em> uygulanmaz.</li>
+
+      <li><code>enabled</code> anahtar sözcüğünü takibeden boşluk ayraçlı
+        kullanıcı isimleri listesi. Genel bir iptal sözkonusu olsa bile,
+        kullanıcı ismi bir <code>disabled</code> listesinde yer almadıkça, bu
+        listede yer alan dizinlere dönüşüm uygulanır.</li>
+    </ul>
+
+    <p><code>Userdir</code> yönergesinde ne <code>enabled</code> ne de
+      <code>disabled</code> varsa, argüman bir dosya ismi kalıbı olarak ele
+      alınır ve kullanıcı belge kök dizininin yolunu oluşturmakta kullanılır.
+      <code>http://mesela.dom/~ali/bir/iki.html</code> şöyle dönüştürülür:</p>
+
+    <table>
+      <tr><th>Kullanılan UserDir yönergesi&nbsp;&nbsp;&nbsp;&nbsp;</th>
+          <th>Elde edilen yol</th></tr>
+      <tr><td>UserDir public_html</td>
+          <td>~ali/public_html/bir/iki.html</td></tr>
+      <tr><td>UserDir /usr/siteler</td>
+          <td>/usr/siteler/ali/bir/iki.html</td></tr>
+      <tr><td>UserDir /home/*/htdocs</td>
+          <td>/home/ali/htdocs/bir/iki.html</td></tr>
+    </table>
+
+    <p>Aşağıdaki yönergelerle istemciye gönderilecek yönlendirmeler:</p>
+
+    <table>
+      <tr><th>Kullanılan UserDir yönergesi&nbsp;&nbsp;&nbsp;&nbsp;</th>
+          <th>Elde edilen yönlendirme</th></tr>
+      <tr><td>UserDir http://mesela.dom/users</td>
+          <td>http://mesela.dom/users/ali/bir/iki.html</td></tr>
+      <tr><td>UserDir http://mesela.dom/*/usr</td>
+          <td>http://mesela.dom/ali/usr/bir/iki.html</td></tr>
+      <tr><td>UserDir http://mesela.dom/~*/</td>
+          <td>http://mesela.dom/~ali/bir/iki.html</td></tr>
+    </table>
+
+    <div class="note">
+      <strong>Bu yönergeyi kullanırken dikkatli olun; örneğin, <code>"UserDir
+        ./"</code> şeklinde bir atama <code>"/~root"</code> isteklerini
+        <code>"/"</code> dizinine yönlendirir ki bu elbette istenmez. Bu
+        bakımdan yapılandırmanızda mutlaka bir "<code>UserDir disabled
+        root</code>" satırının yer almasını tavsiye ederiz. Daha fazla bilgi
+        için <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> yönergesine ve <a href="../misc/security_tips.html">Güvenlik İpuçları</a> sayfasına
+        bakınız.</strong>
+    </div>
+
+    <p>Diğer örnekler:</p>
+
+    <p>Bir kaç kullanıcı hariç kalan herkesin <code>UserDir</code>
+      dizinlerini iptal etmek için şunu yapabilirsiniz:</p>
+
+    <div class="example"><p><code>
+      UserDir disabled<br />
+      UserDir enabled birey1 birey2 birey3
+    </code></p></div>
+
+    <p>Bir kaç kullanıcı hariç kalan herkesin <code>UserDir</code>
+      dizinlerini etkin kılmak için şunu yapabilirsiniz:</p>
+
+    <div class="example"><p><code>
+      UserDir enabled<br />
+      UserDir disabled birey4 birey5 birey6
+    </code></p></div>
+
+    <p>Birden fazla dizin belirtmek de mümkündür:</p>
+
+    <div class="example"><p><code>
+      Userdir public_html /usr/siteler http://mesela.dom/
+    </code></p></div>
+
+    <p>Bu örneğe göre, <code>http://mesela.dom/~ali/bir/iki.html</code>
+      şeklinde bir istek alındığında sunucu önce
+      <code>http://mesela.dom/~ali/bir/iki.html</code> yönlendirmesini
+      deneyecektir. Onu bulamazsa isteği
+      <code>/usr/siteler/ali/bir/iki.html</code> dosyasını arayacak onu da
+      bulamazsa istemciyi <code>http://mesela.dom/ali/bir/iki.html</code>
+      adresine yönlendirecektir.</p>
+
+    <p>Argüman listesine bir yönlendirme ekleyecekseniz, bu, listenin son
+      elemanı olmalıdır. Apache yönlendirmenin başarılı sonuç verip
+      vermediğini bilemeyecektir. Bu bakımdan, listede bu yönlendirmeden
+      sonra bir yönlendirme daha bulunması daha iyi olacaktır.</p>
+
+    <p>Kullanıcı dizini dönüşümü Apache 2.1.4 sürümü ve sonrasında öntanımlı
+      olarak etkin değildir. Daha önceki sürümlerde bir <code class="directive"><a href="#userdir">UserDir</a></code> yönergesinin yokluğunda
+      <code>UserDir public_html</code> öntanımlıydı.</p>
+
+
+<h3>Ayrıca bakınız:</h3>
+<ul>
+<li>
+  <a href="../howto/public_html.html">public_html eğitmeni</a>
+</li>
+</ul>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/mod_userdir.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_userdir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
