@@ -23,7 +23,8 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_suexec.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Allows CGI scripts to run as a specified user
 and Group</td></tr>
@@ -48,7 +49,7 @@ and Group</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SuexecUserGroup" id="SuexecUserGroup">SuexecUserGroup</a> <a name="suexecusergroup" id="suexecusergroup">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>User and group permissions for CGI programs</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>User and group for CGI programs to run as</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SuexecUserGroup <em>User Group</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -58,9 +59,9 @@ later.</td></tr>
 </table>
     <p>The <code class="directive">SuexecUserGroup</code> directive allows you
     to specify a user and group for CGI programs to run as. Non-CGI
-    requests are still processes with the user specified in the User
-    directive. This directive replaces the Apache 1.3 configuration of
-    using the User and Group directives inside of VirtualHosts.</p>
+    requests are still processes with the user specified in the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> directive. This directive replaces
+    the Apache 1.3 configuration of using the <code>User</code> and
+    <code>Group</code> directives inside of VirtualHosts.</p>
 
     <div class="example"><h3>Example</h3><p><code>
     
@@ -73,7 +74,8 @@ later.</td></tr>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_suexec.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

@@ -226,7 +226,7 @@ header is present</td></tr>
 store list of user groups</td></tr>
 <tr class="odd"><td><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization is passed to lower level
 modules</td></tr>
-<tr><td><a href="mod_authz_core.html#authzmergerules">AuthMergeRules on | off</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
+<tr><td><a href="mod_authz_core.html#authzmergerules">AuthzMergeRules on | off</a></td><td> on </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
 authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
 Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
 the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</td></tr>
@@ -541,7 +541,7 @@ directory</td></tr>
 <tr><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
-<tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filter the response content</td></tr>
+<tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filtering the response content</td></tr>
 <tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">File where the server records the process ID
@@ -814,7 +814,7 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Number of child server processes created at startup</td></tr>
 <tr><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of threads created on startup</td></tr>
 <tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
-<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group permissions for CGI programs</td></tr>
+<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group for CGI programs to run as</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the upper limit on the configurable number of threads
 per child process</td></tr>
 <tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of threads created by each child process</td></tr>

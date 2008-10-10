@@ -215,7 +215,7 @@ header is present</td></tr>
 <tr><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
 store list of user groups</td></tr>
 <tr class="odd"><td><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">承認が低位のモジュールに渡されるかどうかを設定する</td></tr>
-<tr><td><a href="mod_authz_core.html#authzmergerules">AuthMergeRules on | off</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
+<tr><td><a href="mod_authz_core.html#authzmergerules">AuthzMergeRules on | off</a></td><td> on </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
 authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
 Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
 the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</td></tr>
@@ -495,7 +495,7 @@ using the specified magic file</td></tr>
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">ディレクトリに対して使用可能な機能を設定する</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">デフォルトのアクセス可能な状態と、<code class="directive">Allow</code> と
 <code class="directive">Deny</code> が評価される順番を制御する</td></tr>
-<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sed command for filter the response content</td></tr>
+<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sed command for filtering the response content</td></tr>
 <tr class="odd"><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">シェルからの環境変数を渡す</td></tr>
 <tr><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">デーモンのプロセス ID

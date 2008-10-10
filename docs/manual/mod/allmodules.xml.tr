@@ -81,9 +81,9 @@
   <modulefile>mod_ssl.xml</modulefile>
   <modulefile>mod_status.xml.tr</modulefile>
   <modulefile>mod_substitute.xml</modulefile>
-  <modulefile>mod_suexec.xml</modulefile>
+  <modulefile>mod_suexec.xml.tr</modulefile>
   <modulefile>mod_unique_id.xml</modulefile>
-  <modulefile>mod_userdir.xml</modulefile>
+  <modulefile>mod_userdir.xml.tr</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_version.xml</modulefile>
   <modulefile>mod_vhost_alias.xml.tr</modulefile>
@@ -94,8 +94,8 @@
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>perchild.xml</modulefile>
-  <modulefile>prefork.xml</modulefile>
+  <modulefile>prefork.xml.tr</modulefile>
   <modulefile>threadpool.xml</modulefile>
   <modulefile>mpm_winnt.xml</modulefile>
-  <modulefile>worker.xml</modulefile>
+  <modulefile>worker.xml.tr</modulefile>
 </modulefilelist>

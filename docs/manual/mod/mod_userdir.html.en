@@ -23,7 +23,8 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_userdir.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_userdir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>User-specific directories</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
@@ -92,84 +93,94 @@ tutorial</a></li>
     <code>http://www.example.com/~bob/one/two.html</code> will be
     translated to:</p>
 
-<table>
-<tr><th>UserDir directive used</th>
-<th>Translated path</th></tr>
-<tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
-<tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
-<tr><td>UserDir /home/*/www</td><td>/home/bob/www/one/two.html</td></tr>
-</table>
+    <table>
+      <tr><th>UserDir directive used</th>
+          <th>Translated path</th></tr>
+      <tr><td>UserDir public_html</td>
+          <td>~bob/public_html/one/two.html</td></tr>
+      <tr><td>UserDir /usr/web</td>
+          <td>/usr/web/bob/one/two.html</td></tr>
+      <tr><td>UserDir /home/*/www</td>
+          <td>/home/bob/www/one/two.html</td></tr>
+    </table>
 
-    <p>The following directives will send redirects to the client:</p> 
+    <p>The following directives will send redirects to the client:</p>
 
-<table>
-<tr><th>UserDir directive used</th>
-<th>Translated path</th></tr>
-<tr><td>UserDir http://www.example.com/users</td><td>http://www.example.com/users/bob/one/two.html</td></tr>
-<tr><td>UserDir
-http://www.example.com/*/usr</td><td>http://www.example.com/bob/usr/one/two.html</td></tr>
-<tr><td>UserDir
-http://www.example.com/~*/</td><td>http://www.example.com/~bob/one/two.html</td></tr>
-</table> 
+    <table>
+      <tr><th>UserDir directive used</th>
+          <th>Translated path</th></tr>
+      <tr><td>UserDir http://www.example.com/users</td>
+          <td>http://www.example.com/users/bob/one/two.html</td></tr>
+      <tr><td>UserDir http://www.example.com/*/usr</td>
+          <td>http://www.example.com/bob/usr/one/two.html</td></tr>
+      <tr><td>UserDir http://www.example.com/~*/</td>
+          <td>http://www.example.com/~bob/one/two.html</td></tr>
+    </table>
 
-<div class="note">
+    <div class="note">
       <strong>Be careful when using this directive; for instance,
       <code>"UserDir ./"</code> would map <code>"/~root"</code> to
       <code>"/"</code> - which is probably undesirable. It is strongly
       recommended that your configuration include a "<code>UserDir
       disabled root</code>" declaration.  See also the <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> directive and the <a href="../misc/security_tips.html">Security Tips</a> page for
       more information.</strong>
-</div>
+    </div>
 
-<p>Additional examples:</p>
+    <p>Additional examples:</p>
 
-<p>To allow a few users to have <code>UserDir</code> directories, but
-not anyone else, use the following:</p>
+    <p>To allow a few users to have <code>UserDir</code> directories, but
+    not anyone else, use the following:</p>
 
-<div class="example"><p><code>
-UserDir disabled<br />
-UserDir enabled user1 user2 user3
-</code></p></div>
+    <div class="example"><p><code>
+      UserDir disabled<br />
+      UserDir enabled user1 user2 user3
+    </code></p></div>
 
-<p>To allow most users to have <code>UserDir</code> directories, but
-deny this to a few, use the following:</p>
+    <p>To allow most users to have <code>UserDir</code> directories, but
+    deny this to a few, use the following:</p>
 
-<div class="example"><p><code>
-UserDir enabled<br />
-UserDir disabled user4 user5 user6
-</code></p></div>
+    <div class="example"><p><code>
+      UserDir enabled<br />
+      UserDir disabled user4 user5 user6
+    </code></p></div>
 
-<p>It is also possible to specify alternative user directories.
-If you use a command like:</p>
-<div class="example"><p><code>
-Userdir public_html /usr/web http://www.example.com/
-</code></p></div>
-<p>With a request for http://www.example.com/~bob/one/two.html, will try to 
-find the page at ~bob/public_html/one/two.html first, then
-/usr/web/bob/one/two.html, and finally it will send a redirect
-to http://www.example.com/bob/one/two.html.</p>
-<p>If you add a redirect, it must be the last alternative in the list.
-Apache cannot determine if the redirect succeeded or not, so if you have
-the redirect earlier in the list, that will always be the alternative
-that is used.</p>
+    <p>It is also possible to specify alternative user directories.
+    If you use a command like:</p>
 
-<p>User directory substitution is not active by default in versions
-2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
-was assumed if no <code class="directive"><a href="#userdir">UserDir</a></code>
-directive was present.</p>
+    <div class="example"><p><code>
+      Userdir public_html /usr/web http://www.example.com/
+    </code></p></div>
+
+    <p>With a request for
+    <code>http://www.example.com/~bob/one/two.html</code>, will try to
+    find the page at <code>~bob/public_html/one/two.html</code> first, then
+    <code>/usr/web/bob/one/two.html</code>, and finally it will send a
+    redirect to <code>http://www.example.com/bob/one/two.html</code>.</p>
+
+    <p>If you add a redirect, it must be the last alternative in the list.
+    Apache cannot determine if the redirect succeeded or not, so if you have
+    the redirect earlier in the list, that will always be the alternative
+    that is used.</p>
+
+    <p>User directory substitution is not active by default in versions
+    2.1.4 and later.  In earlier versions, <code>UserDir public_html</code>
+    was assumed if no <code class="directive"><a href="#userdir">UserDir</a></code>
+    directive was present.</p>
 
 
 <h3>See also</h3>
 <ul>
-<li><a href="../howto/public_html.html">public_html
-tutorial</a></li>
+<li>
+  <a href="../howto/public_html.html">public_html tutorial</a>
+</li>
 </ul>
 </div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_userdir.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_userdir.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/mod/mod_userdir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/mod_userdir.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>

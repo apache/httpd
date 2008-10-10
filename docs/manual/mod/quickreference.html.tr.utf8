@@ -217,7 +217,7 @@ header is present</td></tr>
 store list of user groups</td></tr>
 <tr class="odd"><td><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization is passed to lower level
 modules</td></tr>
-<tr><td><a href="mod_authz_core.html#authzmergerules">AuthMergeRules on | off</a></td><td></td><td>dh</td><td>T</td></tr><tr><td class="descr" colspan="4">Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
+<tr><td><a href="mod_authz_core.html#authzmergerules">AuthzMergeRules on | off</a></td><td> on </td><td>dh</td><td>T</td></tr><tr><td class="descr" colspan="4">Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
 authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
 Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
 the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</td></tr>
@@ -494,7 +494,7 @@ uygulanır.</td></tr>
   sayısını sınırlamakta kullanılır.</td></tr>
 <tr><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit on the number of requests that an individual thread
 will handle during its life</td></tr>
-<tr class="odd"><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>number</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of idle child server processes</td></tr>
+<tr class="odd"><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>sayı</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Boştaki çocuk süreçlerin azami sayısı</td></tr>
 <tr><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Boştaki azami evre sayısını belirler</td></tr>
 <tr class="odd"><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
 <tr><td><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild <var>number</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
@@ -517,7 +517,7 @@ files</td></tr>
 meta information</td></tr>
 <tr><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
-<tr class="odd"><td><a href="prefork.html#minspareservers">MinSpareServers <var>number</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
+<tr class="odd"><td><a href="prefork.html#minspareservers">MinSpareServers <var>sayı</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Boştaki çocuk süreçlerin asgari sayısı</td></tr>
 <tr><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
   sayısını belirler.</td></tr>
 <tr class="odd"><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
@@ -538,7 +538,7 @@ directly</td></tr>
 <tr><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
-<tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filter the response content</td></tr>
+<tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filtering the response content</td></tr>
 <tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortam değişkenlerini kabuktan aktarır.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>dosya</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ana sürecin süreç kimliğinin (PID) kaydedileceği dosyayı belirler.</td></tr>
@@ -811,7 +811,8 @@ Certificate verification</td></tr>
 <tr><td><a href="mpm_common.html#startthreads">StartThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan evrelerin sayısını
   belirler.</td></tr>
 <tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
-<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group permissions for CGI programs</td></tr>
+<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Kullanıcı Grup</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">CGI betiklerini çalıştıracak kullanıcı ve grup belirtilir.
+</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Çocuk süreç başına ayarlanabilir evre sayısının üst sınırını
   belirler.</td></tr>
 <tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Her çocuk süreç tarafından oluşturulan evrelerin sayısını
@@ -833,8 +834,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 </td></tr>
 <tr class="odd"><td><a href="mpm_common.html#user">User <var>unix-kullanıcısı</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
   belirler.</td></tr>
-<tr><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
-</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Location of the user-specific directories</td></tr>
+<tr><td><a href="mod_userdir.html#userdir">UserDir <em>dizin</em> [<em>dizin</em>] ...</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Kullanıcıya özel dizinlerin yeri</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.
 </td></tr>
 <tr><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.

@@ -114,11 +114,11 @@
 
    <h3><a name="type-map" id="type-map">Bir türeşlem dosyası kullanmak</a></h3>
 
-    <p>Bir türeşlem, <code>type-map</code> eylemcisi ile ilişkili bir belgedir
-      (ya da eski Apache yapılandırmaları ile geriye uyumluluk için,
+    <p>Bir türeşlem dosyası, <code>type-map</code> eylemcisi ile ilişkili bir
+      belgedir (ya da eski Apache yapılandırmaları ile geriye uyumluluk için,
       <code>application/x-type-map</code> <a class="glossarylink" href="./glossary.html#mime türü" title="sözlüğe bakınız">MIME türü</a>nde
       bir belgedir). Bu özelliği kullanmak için, yapılandırmada bir tür
-      eşleyici olarak bir dosya ismi uzantısı için bir <code>type-map</code>
+      eşleyici olarak her dosya ismi uzantısı için bir <code>type-map</code>
       eylemcisi tanımlamalısınız. Bu, sunucu yapılandırma dosyasında en iyi
       şöyle yapılabilir:</p>
 
@@ -147,11 +147,11 @@
       Content-language: fr, de<br />
     </code></p></div>
 
-    <p>Ayrıca, bir türeşlem dosyasının <code>MultiViews</code> etkin olsa bile
-      dosya ismi uzantısına göre öncelik alacağına dikkat ediniz. Eğer
-      gösterimler bu örnekteki resim dosyasında olduğu gibi farklı kaynak
-      üstünlüklerine sahipseler, ortam türünün <code>qs</code> parametresi
-      kullanılarak kaynak üstünlükleri belirtilebilir: </p>
+    <p>Ayrıca, <code>MultiViews</code> etkin olsa bile bir türeşlem dosyasının
+      dosya ismi uzantılarının taranmasına göre öncelik alacağına dikkat
+      ediniz. Eğer gösterimler bu örnekteki resim dosyasında olduğu gibi
+      farklı kaynak üstünlüklerine sahipseler, ortam türünün <code>qs</code>
+      parametresi kullanılarak kaynak üstünlükleri belirtilebilir: </p>
 
     <div class="example"><p><code>
       URI: misal<br />
