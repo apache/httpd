@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420993:662627 (outdated) -->
+<!-- English Revision: 662627 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -87,7 +87,7 @@
     Apache は <directive
     module="core">ServerRoot</directive> の下の <code>var/</code>
     ディレクトリに、ファイル名の本体が <code>DavLock</code> で
-    サーバが選択した拡張子を持つファイルを作成します。</p>
+    サーバが追加する拡張子を持つファイルを作成します。</p>
 
 </usage>
 </directivesynopsis>
