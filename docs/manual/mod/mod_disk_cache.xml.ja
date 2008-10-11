@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990:515267 (outdated) -->
+<!-- English Revision: 515267 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -74,7 +74,7 @@
 <name>CacheDirLevels</name>
 <description>キャッシュのサブディレクトリの深さの数</description>
 <syntax>CacheDirLevels <var>levels</var></syntax>
-<default>CacheDirLevels 3</default>
+<default>CacheDirLevels 2</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -83,6 +83,10 @@
     サブディレクトリの深さを設定します。キャッシュデータは <directive
     module="mod_disk_cache">CacheRoot</directive> ディレクトリから
     このディレクトリの深さ分下のディレクトリに保存されます。</p>
+    <p><directive>CacheDirLevels</directive> が大きくて
+    <directive>CacheDirLength</directive> が小さい場合、
+    比較的深い階層になりますが、
+    各階層のサブディレクトリの数は少なくなります。</p>
 
     <note>
       <p><directive>CacheDirLevels</directive>*
@@ -90,9 +94,6 @@
       結果は 20 以内でなければなりません。</p>
     </note>
 
-    <example>
-      CacheDirLevels  5
-    </example>
 </usage>
 </directivesynopsis>
 
@@ -106,7 +107,13 @@
 
 <usage>
     <p><directive>CacheDirLength</directive> ディレクティブはキャッシュ
-    階層の各サブディレクトリの文字数を設定します。</p>
+    階層の各サブディレクトリの文字数を設定します。
+    <directive>CacheDirLevels</directive> と組み合わせて設定することで、
+    キャッシュ階層のおおよその構造を決めることができます。</p>
+    <p><directive>CacheDirLength</directive> が大きくて
+    <directive>CacheDirLevels</directive> が小さい場合、
+    比較的浅い階層になりますが、
+    各階層のサブディレクトリの数は多くなります。</p>
 
     <note>
       <p><directive>CacheDirLevels</directive>*
@@ -114,9 +121,6 @@
       結果は 20 以内でなければなりません。</p>
     </note>
 
-    <example>
-      CacheDirLength  4
-    </example>
 </usage>
 </directivesynopsis>
 

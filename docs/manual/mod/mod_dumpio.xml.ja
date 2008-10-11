@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420993:559006 (outdated) -->
+<!-- English Revision: 559006 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -83,6 +83,30 @@
     <example><title>例</title>
       DumpIOOutput On
     </example>
+</usage>
+
+</directivesynopsis>
+
+<directivesynopsis>
+
+<name>DumpIOLogLevel</name>
+<description>DumpIO の出力のログレベルを制御します</description>
+<syntax>DumpIOLogLevel <var>level</var></syntax>
+<default>DumpIOLogLevel debug</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>DumpIOLogLevel は Apache 2.2.4 以降で利用可能</compatibility>
+
+<usage>
+    <p>指定した <directive module="core">LogLevel</directive>
+    において、全出力のダンプ機能を有効にします。</p>
+
+    <example><title>Example</title>
+      DumpIOLogLevel notice
+    </example>
+    
+    <note><title>互換性</title>2.2.4 以前の <module>mod_dumpio</module>
+    では <directive module="core">LogLevel</directive> が <code>debug</code>
+    の時にのみ dump を行っていました。</note>
 </usage>
 
 </directivesynopsis>
