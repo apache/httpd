@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_disk_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>URI をキーにしたコンテンツキャッシュストレージ管理</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>disk_cache_module</td></tr>
@@ -70,7 +68,13 @@
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p><code class="directive">CacheDirLength</code> ディレクティブはキャッシュ
-    階層の各サブディレクトリの文字数を設定します。</p>
+    階層の各サブディレクトリの文字数を設定します。
+    <code class="directive">CacheDirLevels</code> と組み合わせて設定することで、
+    キャッシュ階層のおおよその構造を決めることができます。</p>
+    <p><code class="directive">CacheDirLength</code> が大きくて
+    <code class="directive">CacheDirLevels</code> が小さい場合、
+    比較的浅い階層になりますが、
+    各階層のサブディレクトリの数は多くなります。</p>
 
     <div class="note">
       <p><code class="directive">CacheDirLevels</code>*
@@ -78,9 +82,6 @@
       結果は 20 以内でなければなりません。</p>
     </div>
 
-    <div class="example"><p><code>
-      CacheDirLength  4
-    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -88,7 +89,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュのサブディレクトリの深さの数</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDirLevels <var>levels</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDirLevels 3</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDirLevels 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
@@ -96,6 +97,10 @@
     <p><code class="directive">CacheDirLevels</code> ディレクティブはキャッシュの
     サブディレクトリの深さを設定します。キャッシュデータは <code class="directive"><a href="#cacheroot">CacheRoot</a></code> ディレクトリから
     このディレクトリの深さ分下のディレクトリに保存されます。</p>
+    <p><code class="directive">CacheDirLevels</code> が大きくて
+    <code class="directive">CacheDirLength</code> が小さい場合、
+    比較的深い階層になりますが、
+    各階層のサブディレクトリの数は少なくなります。</p>
 
     <div class="note">
       <p><code class="directive">CacheDirLevels</code>*
@@ -103,9 +108,6 @@
       結果は 20 以内でなければなりません。</p>
     </div>
 
-    <div class="example"><p><code>
-      CacheDirLevels  5
-    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

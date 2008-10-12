@@ -25,8 +25,6 @@
 <p><span>言語: </span><a href="../en/mod/mod_dumpio.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_dumpio.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>望むようにすべての I/O をエラーログにダンプする</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>dumpio_module</td></tr>
@@ -46,6 +44,7 @@
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dumpioinput">DumpIOInput</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dumpiologlevel">DumpIOLogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dumpiooutput">DumpIOOutput</a></li>
 </ul>
 <h3>トピック</h3>
@@ -78,6 +77,29 @@
     <div class="example"><h3>例</h3><p><code>
       DumpIOInput On
     </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DumpIOLogLevel" id="DumpIOLogLevel">DumpIOLogLevel</a> <a name="dumpiologlevel" id="dumpiologlevel">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>DumpIO の出力のログレベルを制御します</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DumpIOLogLevel <var>level</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DumpIOLogLevel debug</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dumpio</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>DumpIOLogLevel は Apache 2.2.4 以降で利用可能</td></tr>
+</table>
+    <p>指定した <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code>
+    において、全出力のダンプ機能を有効にします。</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      DumpIOLogLevel notice
+    </code></p></div>
+    
+    <div class="note"><h3>互換性</h3>2.2.4 以前の <code class="module"><a href="../mod/mod_dumpio.html">mod_dumpio</a></code>
+    では <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> が <code>debug</code>
+    の時にのみ dump を行っていました。</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
