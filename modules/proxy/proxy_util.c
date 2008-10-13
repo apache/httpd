@@ -2358,6 +2358,17 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                      "proxy: %s: fam %d socket created to connect to %s",
                      proxy_function, backend_addr->family, worker->hostname);
 
+        /*
+         * Temporarily set the socket to non blocking to make connection
+         * timeouts (set via connectiontimeout) work.
+         */
+        if ((rv = apr_socket_opt_set(newsock, APR_SO_NONBLOCK, 1))
+            != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "apr_socket_opt_set(SO_NONBLOCK): Failed to set"
+                         " the socket to non blocking mode");
+        }
+
         /* make the connection out of the socket */
         rv = apr_socket_connect(newsock, backend_addr);
 
@@ -2372,6 +2383,13 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                          worker->hostname);
             backend_addr = backend_addr->next;
             continue;
+        }
+
+        if ((rv = apr_socket_opt_set(newsock, APR_SO_NONBLOCK, 0))
+            != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "apr_socket_opt_set(SO_NONBLOCK): Failed to set"
+                         " the socket to blocking mode");
         }
 
         /* Set a timeout on the socket */
