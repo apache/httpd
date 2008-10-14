@@ -125,6 +125,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: jim
 
+   * mod_rewrite: Export and install the mod_rewrite.h header to ensure the
+     optional rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
+     available to third party modules.
+     Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=704726&view=rev
+     +1: minfrin
+
 PATCHES/ISSUES THAT ARE STALLED
 
  * core, authn/z: Avoid calling access control hooks for internal requests
