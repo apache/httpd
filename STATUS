@@ -139,6 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      available to third party modules.
      Trunk version of patch:
          http://svn.apache.org/viewvc?rev=704726&view=rev
+         http://svn.apache.org/viewvc?rev=704845&view=rev
      +1: minfrin
 
    * Windows: Always build the odbc dbd driver on winodws, to be consistent 
