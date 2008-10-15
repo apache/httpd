@@ -124,6 +124,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=704726&view=rev
          http://svn.apache.org/viewvc?rev=704845&view=rev
      +1: minfrin
+     rpluem says: These revisions cause conflicts for every single file they patch
+     please provide a patch that works with 2.2.x.
 
    * Windows: Always build the odbc dbd driver on windows, to be consistent 
      with the apr-util default.
