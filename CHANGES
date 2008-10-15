@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_ssl: Send Content-Type application/ocsp-request for POST requests to
+     OSCP responders. PR 46014 [Dr Stephen Henson <steve openssl.org>]
+
   *) Export and install the mod_rewrite.h header to ensure the optional
      rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
      available to third party modules. [Graham Leggett]
