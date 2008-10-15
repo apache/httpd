@@ -117,23 +117,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: rpluem, jim
 
-   * proxy_util: Make the connection timeout to backends work by temporarily
-     setting the socket to non blocking mode.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=703998&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     -1: rpluem: apr_socket_timeout_set already sets the socket to non-blocking
-         mode because the timeout of the socket is -1 after creation. A further
-         call to apr_socket_timeout_set (after the connect call does not do
-         this, because the old and the new timeout are >=0).
-         The further code expects the socket to be in non-blocking mode, otherwise
-         we have regressions with ssl. This can be notified by running t/ssl/proxy
-         which runs much much slower with the patch applied. This does not happen
-         on trunk because the socket is set back to non blocking by the core
-         output filter (async write completion).
-         So r703998 should be also reverted on trunk.
-
    * mod_rewrite: Export and install the mod_rewrite.h header to ensure the
      optional rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
      available to third party modules.
