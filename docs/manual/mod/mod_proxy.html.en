@@ -853,7 +853,8 @@ through</td></tr>
         <td>timeout</td>
         <td>Connect timeout in seconds.
         The number of seconds Apache waits for the creation of a connection to
-        the backend to complete.
+        the backend to complete. By adding a postfix of ms the timeout can be
+        also set in milliseconds.
     </td></tr>
     <tr><td>disablereuse</td>
         <td>Off</td>
@@ -908,6 +909,8 @@ through</td></tr>
         which could be an issue, but it will lower the
         traffic in case some of the cluster nodes are down or busy.
         Currently this has an effect only for AJP.
+        By adding a postfix of ms the delay can be also set in
+        milliseconds.
     </td></tr>
     <tr><td>redirect</td>
         <td>-</td>
