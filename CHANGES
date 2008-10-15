@@ -64,9 +64,6 @@ Changes with Apache 2.3.0
   *) mod_autoindex: add configuration option to insert string
      in HTML HEAD. [Nick Kew]
 
-  *) mod_ssl: implement dynamic mutex callbacks for the benefit of
-     OpenSSL.  [Sander Temme]
-
   *) mod_session: Prevent a segfault when a CGI script sets a cookie with a
      null value. [David Shane Holden <dpejesh apache.org>]
 
