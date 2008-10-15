@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy: Add the possibility to set the worker parameters
+     connectiontimeout and ping in milliseconds. [Ruediger Pluem]
+
   *) mod_ssl: Send Content-Type application/ocsp-request for POST requests to
      OSCP responders. PR 46014 [Dr Stephen Henson <steve openssl.org>]
 

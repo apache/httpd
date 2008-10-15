@@ -41,7 +41,75 @@ static int ap_proxy_lb_worker_size(void)
     return sizeof(proxy_worker_stat);
 }
 
+/**
+ * Parse a given timeout parameter string into an apr_interval_time_t value.
+ * The unit of the time interval is given as postfix string to the numeric
+ * string. Currently the following units are understood:
+ *
+ * ms    : milliseconds
+ * s     : seconds
+ * mi[n] : minutes
+ * h     : hours
+ *
+ * If no unit is contained in the given timeout parameter the default_time_unit
+ * will be used instead.
+ * @param timeout_parameter The string containing the timeout parameter.
+ * @param timeout The timeout value to be returned.
+ * @param default_time_unit The default time unit to use if none is specified
+ * in timeout_parameter.
+ * @return Status value indicating whether the parsing was successful or not.
+ */
+/*
+ * XXX: Once this function has its final status parameter wise it makes sense
+ * to move it to some of the util??? files under server/ as public API.
+ */
+static apr_status_t ap_timeout_parameter_parse(const char *timeout_parameter,
+                                               apr_interval_time_t *timeout,
+                                               const char *default_time_unit)
+{
+    char *endp;
+    const char *time_str;
+    apr_int64_t tout;
 
+    tout = apr_strtoi64(timeout_parameter, &endp, 10);
+    if (errno) {
+        return errno;
+    }
+    if (!endp || !*endp) {
+        time_str = default_time_unit;
+    }
+    else {
+        time_str = endp;
+    }
+
+    switch (*time_str) {
+        /* Time is in seconds */
+    case 's':
+        *timeout = (apr_interval_time_t) apr_time_from_sec(tout);
+        break;
+    case 'h':
+        /* Time is in hours */
+        *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 3600);
+        break;
+    case 'm':
+        switch (*(++time_str)) {
+        /* Time is in miliseconds */
+        case 's':
+            *timeout = (apr_interval_time_t) tout * 1000;
+            break;
+        /* Time is in minutes */
+        case 'i':
+            *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 60);
+            break;
+        default:
+            return APR_EGENERAL;
+        }
+        break;
+    default:
+        return APR_EGENERAL;
+    }
+    return APR_SUCCESS;
+}
 
 /*
  * A Web proxy module. Stages:
@@ -77,6 +145,8 @@ static const char *set_worker_param(apr_pool_t *p,
 {
 
     int ival;
+    apr_interval_time_t timeout;
+
     if (!strcasecmp(key, "loadfactor")) {
         /* Normalized load factor. Used with BalancerMamber,
          * it is a number between 1 and 100.
@@ -132,14 +202,15 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->smax = ival;
     }
     else if (!strcasecmp(key, "acquire")) {
-        /* Acquire timeout in milliseconds.
+        /* Acquire timeout in given unit (default is milliseconds).
          * If set this will be the maximum time to
          * wait for a free connection.
          */
-        ival = atoi(val);
-        if (ival < 1)
+        if (ap_timeout_parameter_parse(val, &timeout, "ms") != APR_SUCCESS)
+            return "Acquire timeout has wrong format";
+        if (timeout < 1000)
             return "Acquire must be at least one millisecond";
-        worker->acquire = apr_time_make(0, ival * 1000);
+        worker->acquire = timeout;
         worker->acquire_set = 1;
     }
     else if (!strcasecmp(key, "timeout")) {
@@ -267,12 +338,13 @@ static const char *set_worker_param(apr_pool_t *p,
             worker->flush_wait = ival * 1000;    /* change to microseconds */
     }
     else if (!strcasecmp(key, "ping")) {
-        /* Ping/Pong timeout in seconds.
+        /* Ping/Pong timeout in given unit (default is second).
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "Ping/Pong timeout must be at least one second";
-        worker->ping_timeout = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Ping/Pong timeout has wrong format";
+        if (timeout < 1000)
+            return "Ping/Pong timeout must be at least one millisecond";
+        worker->ping_timeout = timeout;
         worker->ping_timeout_set = 1;
     }
     else if (!strcasecmp(key, "lbset")) {
@@ -282,13 +354,14 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->lbset = ival;
     }
     else if (!strcasecmp(key, "connectiontimeout")) {
-        /* Request timeout in seconds.
+        /* Request timeout in given unit (default is second).
          * Defaults to connection timeout
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "Connectiontimeout must be at least one second.";
-        worker->conn_timeout = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Connectiontimeout has wrong format";
+        if (timeout < 1000)
+            return "Connectiontimeout must be at least one millisecond.";
+        worker->conn_timeout = timeout;
         worker->conn_timeout_set = 1;
     }
     else {
