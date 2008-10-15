@@ -123,9 +123,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
          http://svn.apache.org/viewvc?rev=704726&view=rev
          http://svn.apache.org/viewvc?rev=704845&view=rev
+     Backport version to 2.2:
+         http://people.apache.org/~minfrin/httpd-mod-rewrite.diff
      +1: minfrin
-     rpluem says: These revisions cause conflicts for every single file they patch
-     please provide a patch that works with 2.2.x.
 
    * Windows: Always build the odbc dbd driver on windows, to be consistent 
      with the apr-util default.
