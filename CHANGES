@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Build the odbc dbd driver by default on Windows.
+     DBD_LIST is still used to build additional dbd drivers.
+     [Tom Donovan]
+
   *) Worker MPM: Crosscheck that idle workers are still available before using
      them and thus preventing an overflow of the worker queue which causes
      a SegFault. PR 45605 [Denis Ustimenko <denusk gmail.com>]
