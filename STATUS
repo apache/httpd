@@ -142,12 +142,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=704845&view=rev
      +1: minfrin
 
-   * Windows: Always build the odbc dbd driver on winodws, to be consistent 
+   * Windows: Always build the odbc dbd driver on windows, to be consistent 
      with the apr-util default.
      Trunk version of patch:
         http://svn.apache.org/viewvc?rev=704771&view=rev
+        http://svn.apache.org/viewvc?rev=704883&view=rev
      Backport version for 2.2.x of patch:
         http://people.apache.org/~tdonovan/diffs/windows_odbc_22x.patch
+        http://people.apache.org/~tdonovan/diffs/windows_odbc_22x_dsw.patch
      +1: tdonovan, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
