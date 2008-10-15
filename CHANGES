@@ -2,10 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) mod_proxy: Make the connection timeout to backends work by temporarily
-     setting the socket to non blocking mode.
-     [Matt Stevenson <mavricknzwork yahoo.com>]
-
   *) Worker MPM: Crosscheck that idle workers are still available before using
      them and thus preventing an overflow of the worker queue which causes
      a SegFault. PR 45605 [Denis Ustimenko <denusk gmail.com>]
