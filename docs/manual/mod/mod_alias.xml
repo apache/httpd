@@ -373,6 +373,18 @@ target as a CGI script</description>
       &lt;/Location&gt;
     </example>
 
+	<p><directive>ScriptAlias</directive> can also be used in conjunction with
+	a script or handler you have. For example:</p>
+	
+	<example>
+	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl
+    </example>
+    
+    <p>In this scenario all files requested in <code>/cgi-bin/</code> will be
+    handled by the file you have configured, this allows you to use your own custom 
+    handler.  You may want to use this as a wrapper for CGI so that you can add 
+    content, or some other bespoke action.</p>
+
     <note type="warning">It is safer to avoid placing CGI scripts under the
     <directive module="core">DocumentRoot</directive> in order to
     avoid accidentally revealing their source code if the

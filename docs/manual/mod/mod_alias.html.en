@@ -379,6 +379,18 @@ target as a CGI script</td></tr>
       &lt;/Location&gt;
     </code></p></div>
 
+	<p><code class="directive">ScriptAlias</code> can also be used in conjunction with
+	a script or handler you have. For example:</p>
+	
+	<div class="example"><p><code>
+	  ScriptAlias /cgi-bin/ /web/cgi-handler.pl
+    </code></p></div>
+    
+    <p>In this scenario all files requested in <code>/cgi-bin/</code> will be
+    handled by the file you have configured, this allows you to use your own custom 
+    handler.  You may want to use this as a wrapper for CGI so that you can add 
+    content, or some other bespoke action.</p>
+
     <div class="warning">It is safer to avoid placing CGI scripts under the
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> in order to
     avoid accidentally revealing their source code if the
