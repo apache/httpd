@@ -253,6 +253,12 @@ static authz_status dbdgroup_check_authorization(request_rec *r,
     authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
                                               &authz_dbd_module);
 
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
+
     if (groups == NULL) {
         groups = apr_array_make(r->pool, 4, sizeof(const char*));
         rv = authz_dbd_group_query(r, cfg, groups);
@@ -280,6 +286,12 @@ static authz_status dbdlogin_check_authorization(request_rec *r,
     authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
                                               &authz_dbd_module);
 
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
+
     return (authz_dbd_login(r, cfg, "login") == OK ? AUTHZ_GRANTED : AUTHZ_DENIED);
 }
 
@@ -288,6 +300,12 @@ static authz_status dbdlogout_check_authorization(request_rec *r,
 {
     authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
                                               &authz_dbd_module);
+
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
 
     return (authz_dbd_login(r, cfg, "logout") == OK ? AUTHZ_GRANTED : AUTHZ_DENIED);
 }
