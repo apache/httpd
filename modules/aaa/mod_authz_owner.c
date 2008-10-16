@@ -54,6 +54,12 @@ static authz_status fileowner_check_authorization(request_rec *r,
     char *owner = NULL;
     apr_finfo_t finfo;
 
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
+
     if (!r->filename) {
         reason = "no filename available";
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
