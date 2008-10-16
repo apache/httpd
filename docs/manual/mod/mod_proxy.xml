@@ -939,7 +939,7 @@ expressions</description>
     </example>
 
     <p>will cause a local request for
-    <code>http://example.com/mirror/foo/bar.gif</code> to be internally converted
+    <code>http://example.com/foo/bar.gif</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
 
     <p>The <code>!</code> directive is useful in situations where you don't want
