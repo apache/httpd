@@ -540,9 +540,9 @@
     <p>And, of course, you should probably read the CGI
     specification, which has all the details on the operation of
     CGI programs. You can find the original version at the 
-    <a href="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html">NCSA</a> and there is an updated draft at the 
-    <a href="http://web.golux.com/coar/cgi/">Common Gateway
-    Interface RFC project</a>.</p>
+    <a href="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html">NCSA</a> and the current IETF RFC 
+    <a href="http://www.ietf.org/rfc/rfc3875">Common Gateway
+    Interface RFC</a>.</p>
 
     <p>When you post a question about a CGI problem that you're
     having, whether to a mailing list, or to a newsgroup, make sure
