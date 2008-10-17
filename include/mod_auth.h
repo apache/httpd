@@ -78,8 +78,8 @@ typedef enum {
 } authz_status;
 
 typedef enum {
-	AUTHZ_REQSTATE_ONE,
-	AUTHZ_REQSTATE_ALL
+    AUTHZ_REQSTATE_ONE,
+    AUTHZ_REQSTATE_ALL
 } authz_request_state;
 
 typedef struct {
@@ -119,11 +119,11 @@ typedef struct authz_provider_list authz_provider_list;
 struct authz_provider_list {
     const char *provider_name;
     const authz_provider *provider;
-	authz_provider_list *one_next;
-	authz_provider_list *all_next;
+    authz_provider_list *one_next;
+    authz_provider_list *all_next;
     /** If a Limit method is in effect, this field will be set */
     apr_int64_t method_mask;
-	authz_request_state req_state;
+    authz_request_state req_state;
     int req_state_level;
     /** String following 'require <provider>' from config file */
     char *requirement;
