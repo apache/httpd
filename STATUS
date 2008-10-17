@@ -85,6 +85,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * Worker MPM: Crosscheck that idle workers are still available before using
+     them and thus preventing an overflow of the worker queue which causes
+     a SegFault.
+     PR: 45605
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=702867&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem, jim, gregames
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -106,16 +116,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           third party module authors.
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
-
-   * Worker MPM: Crosscheck that idle workers are still available before using
-     them and thus preventing an overflow of the worker queue which causes
-     a SegFault.
-     PR: 45605
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=702867&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: rpluem, jim
 
    * mod_rewrite: Export and install the mod_rewrite.h header to ensure the
      optional rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
