@@ -155,7 +155,15 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
          * region, one of two things may have happened:
          *   - If the idle worker count is still zero, the
          *     workers are all still busy, so it's safe to
-         *     block on a condition variable.
+         *     block on a condition variable, BUT
+         *     we need to check for idle worker count again
+         *     when we are signaled since it can happen that
+         *     we are signaled by a worker thread that went idle
+         *     but received a context switch before it could
+         *     tell us. If it does signal us later once it is on
+         *     CPU again there might be no idle worker left.
+         *     See
+         *     https://issues.apache.org/bugzilla/show_bug.cgi?id=45605#c4
          *   - If the idle worker count is nonzero, then a
          *     worker has become idle since the first check
          *     of queue_info->idlers above.  It's possible
@@ -166,7 +174,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
          *     now nonzero, it's safe for this function to
          *     return immediately.
          */
-        if (queue_info->idlers == 0) {
+        while (queue_info->idlers == 0) {
             rv = apr_thread_cond_wait(queue_info->wait_for_idler,
                                   queue_info->idlers_mutex);
             if (rv != APR_SUCCESS) {
