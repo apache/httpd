@@ -68,7 +68,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>List of resources to look for when the client requests
 a directory</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DirectoryIndex
-    <var>local-url</var> [<var>local-url</var>] ...</code></td></tr>
+    None | <var>local-url</var> [<var>local-url</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
@@ -104,6 +104,10 @@ a directory</td></tr>
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
     executed if neither <code>index.html</code> or <code>index.txt</code>
     existed in a directory.</p>
+
+    <p>A value of "None" prevents <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> from 
+    searching for an index.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

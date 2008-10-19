@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+
+  *) mod_dir: Support "DirectoryIndex None" 
+     Suggested By André Warnier <aw ice-sa.com> [Eric Covener]
+
   *) mod_proxy: Add the possibility to set the worker parameters
      connectiontimeout and ping in milliseconds. [Ruediger Pluem]
 

@@ -58,7 +58,7 @@
 <description>List of resources to look for when the client requests
 a directory</description>
 <syntax>DirectoryIndex
-    <var>local-url</var> [<var>local-url</var>] ...</syntax>
+    None | <var>local-url</var> [<var>local-url</var>] ...</syntax>
 <default>DirectoryIndex index.html</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -94,6 +94,10 @@ a directory</description>
     <p>would cause the CGI script <code>/cgi-bin/index.pl</code> to be
     executed if neither <code>index.html</code> or <code>index.txt</code>
     existed in a directory.</p>
+
+    <p>A value of "None" prevents <module>mod_dir</module> from 
+    searching for an index.</p>
+
 </usage>
 </directivesynopsis>
 
