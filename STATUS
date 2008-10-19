@@ -129,6 +129,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~tdonovan/diffs/windows_odbc_22x_dsw.patch
      +1: tdonovan, wrowe
 
+   * mod_dir: Support "DirectoryIndex none"
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=706001&view=rev
+     Backport version for 2.2.x of patch:
+        trunk version works
+     +1: covener: any issue with backporting and hypothetical risk of
+     Someone already serving an index of "none"?
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
  * core, authn/z: Avoid calling access control hooks for internal requests
