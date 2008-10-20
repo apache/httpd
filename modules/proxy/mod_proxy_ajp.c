@@ -645,9 +645,10 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
 
     retry = 0;
     while (retry < 2) {
+        char *locurl = url;
         /* Step One: Determine Who To Connect To */
         status = ap_proxy_determine_connection(p, r, conf, worker, backend,
-                                               uri, &url, proxyname, proxyport,
+                                               uri, &locurl, proxyname, proxyport,
                                                server_portstr,
                                                sizeof(server_portstr));
 
@@ -685,7 +686,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
             }
         }
         /* Step Three: Process the Request */
-        status = ap_proxy_ajp_request(p, r, backend, origin, dconf, uri, url,
+        status = ap_proxy_ajp_request(p, r, backend, origin, dconf, uri, locurl,
                                       server_portstr);
         break;
     }
