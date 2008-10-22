@@ -26,7 +26,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -440,21 +439,19 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Aynı anda sunulacak azami istek sayısı</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Aynı anda işleme sokulacak azami bağlantı sayısı</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>MaxClients <var>sayı</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Ayrıntılar için aşağıdaki açıklamaya bakınız.</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p><code class="directive">MaxClients</code> yönergesi aynı anda sunulacak istek
-      sayısını sınırlamak için kullanılır. <code class="directive">MaxClients</code>
-      istekten fazlası geldiği takdirde bu istekler normal olarak kuyruğa
-      alınıp bekletilir. Kuyrukta bekletilecek isteklerin azami sayısı ise
-      <code class="directive"><a href="#listenbacklog">ListenBacklog</a></code> yönergesi ile
-      belirlenir. İstek sunmakta olan çocuk süreçlerden biri serbest
-      kaldığında bekletilen bağlantılardan birine hizmet sunulmaya
-      başlanır.</p>
+    <p><code class="directive">MaxClients</code> yönergesi aynı anda işleme sokulacak
+      bağlantı sayısını sınırlamak için kullanılır. <code class="directive">MaxClients</code> bağlantı isteğinden fazlası geldiği takdirde bu
+      istekler normal olarak kuyruğa alınıp bekletilir. Kuyrukta bekletilecek
+      isteklerin azami sayısı ise <code class="directive"><a href="#listenbacklog">ListenBacklog</a></code> yönergesi ile belirlenir. İstek sunmakta olan
+      çocuk süreçlerden biri serbest kaldığında bekletilen bağlantılardan
+      birine hizmet sunulmaya başlanır.</p>
 
     <p>Evreli olmayan sunucularda (<code class="module"><a href="../mod/prefork.html">prefork</a></code> gibi)
       <code class="directive">MaxClients</code> yönergesi istekleri sunmak için

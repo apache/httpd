@@ -486,7 +486,7 @@ uygulanır.</td></tr>
 [<var>takma-ad</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir günlük dosyasında kullanılmak üzere girdi biçemi tanımlar.
 </td></tr>
 <tr class="odd"><td><a href="core.html#loglevel">LogLevel <var>seviye</var></a></td><td> warn </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Hata günlüklerinin ayrıntı seviyesini belirler.</td></tr>
-<tr><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Aynı anda sunulacak azami istek sayısı</td></tr>
+<tr><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Aynı anda işleme sokulacak azami bağlantı sayısı</td></tr>
 <tr class="odd"><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>sayı</var></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir kalıcı bağlantıda izin verilen istek sayısı</td></tr>
 <tr><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>kB-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4"><code>free()</code> çağrılmaksızın ana bellek ayırıcının
   ayırmasına izin verilen azami bellek miktarını belirler.</td></tr>
