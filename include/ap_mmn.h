@@ -170,6 +170,7 @@
  * 20080830.0 (2.3.0-dev)  Cookies can be set on headers_out and err_headers_out
  * 20080920.0 (2.3.0-dev)  Add ap_mpm_register_timed_callback. 
  * 20080920.1 (2.3.0-dev)  Export mod_rewrite.h in the public API.
+ * 20080920.2 (2.3.0-dev)  Added ap_timeout_parameter_parse to util.c / httpd.h
  *
  */
 
@@ -178,7 +179,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20080920
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
