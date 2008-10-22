@@ -518,7 +518,13 @@ static authz_status ldapuser_check_authorization(request_rec *r,
      */
 
     /* Check that we have a userid to start with */
-    if ((!r->user) || (strlen(r->user) == 0)) {
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
+
+    if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -686,7 +692,13 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
      */
 
     /* Check that we have a userid to start with */
-    if ((!r->user) || (strlen(r->user) == 0)) {
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
+
+    if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -843,7 +855,13 @@ static authz_status ldapdn_check_authorization(request_rec *r,
      */
 
     /* Check that we have a userid to start with */
-    if ((!r->user) || (strlen(r->user) == 0)) {
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
+
+    if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -951,7 +969,13 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
      */
 
     /* Check that we have a userid to start with */
-    if ((!r->user) || (strlen(r->user) == 0)) {
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
+
+    if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
@@ -1064,7 +1088,13 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
      */
 
     /* Check that we have a userid to start with */
-    if ((!r->user) || (strlen(r->user) == 0)) {
+    if (!r->user) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            "access to %s failed, reason: no authenticated user", r->uri);
+        return AUTHZ_DENIED;
+    }
+
+    if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
             "ldap authorize: Userid is blank, AuthType=%s",
             r->ap_auth_type);
