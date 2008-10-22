@@ -134,6 +134,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=706318&view=rev
      +1: jfclere, rpluem
 
+   * mod_proxy_ajp: Always send body (zero size at least) whenever C-L is
+     present in the request.
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=696614&view=rev
+        http://svn.apache.org/viewvc?rev=707027&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
  * core, authn/z: Avoid calling access control hooks for internal requests
