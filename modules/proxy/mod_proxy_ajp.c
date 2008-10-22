@@ -123,7 +123,7 @@ static apr_off_t get_content_length(request_rec * r)
     if (r->clength > 0) {
         return r->clength;
     }
-    else if (r->main == NULL || r->main == r) {
+    else if (r->main == NULL) {
         const char *clp = apr_table_get(r->headers_in, "Content-Length");
 
         if (clp) {
