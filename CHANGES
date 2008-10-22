@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy: Prevent segmentation faults by correctly flushing all buckets
+     from the proxy backend. PR 45792 [Ruediger Pluem]
 
   *) mod_dir: Support "DirectoryIndex None" 
      Suggested By André Warnier <aw ice-sa.com> [Eric Covener]

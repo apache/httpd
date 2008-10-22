@@ -1652,54 +1652,109 @@ static apr_status_t connection_cleanup(void *theconn)
 #endif
 
     r = conn->r;
-    if (conn->need_flush && r && (r->bytes_sent || r->eos_sent)) {
+    if (conn->need_flush && r) {
+        request_rec *main_request;
+
         /*
-         * We need to ensure that buckets that may have been buffered in the
-         * network filters get flushed to the network. This is needed since
-         * these buckets have been created with the bucket allocator of the
-         * backend connection. This allocator either gets destroyed if
-         * conn->close is set or the worker address is not reusable which
-         * causes the connection to the backend to be closed or it will be used
-         * again by another frontend connection that wants to recycle the
-         * backend connection.
-         * In this case we could run into nasty race conditions (e.g. if the
-         * next user of the backend connection destroys the allocator before we
-         * sent the buckets to the network).
-         *
-         * Remark 1: Only do this if buckets where sent down the chain before
-         * that could still be buffered in the network filter. This is the case
-         * if we have sent an EOS bucket or if we actually sent buckets with
-         * data down the chain. In all other cases we either have not sent any
-         * buckets at all down the chain or we only sent meta buckets that are
-         * not EOS buckets down the chain. The only meta bucket that remains in
-         * this case is the flush bucket which would have removed all possibly
-         * buffered buckets in the network filter.
-         * If we sent a flush bucket in the case where not ANY buckets were
-         * sent down the chain, we break error handling which happens AFTER us.
-         *
-         * Remark 2: Doing a setaside does not help here as the buckets remain
-         * created by the wrong allocator in this case.
-         *
-         * Remark 3: Yes, this creates a possible performance penalty in the case
-         * of pipelined requests as we may send only a small amount of data over
-         * the wire.
+         * We need to get to the main request as subrequests do not count any
+         * sent bytes.
          */
-        c = r->connection;
-        bb = apr_brigade_create(r->pool, c->bucket_alloc);
-        if (r->eos_sent) {
+        main_request = r;
+        while (main_request->main) {
+            main_request = main_request->main;
+        }
+        if (main_request->bytes_sent || r->eos_sent) {
+            ap_filter_t *flush_filter;
+
             /*
-             * If we have already sent an EOS bucket send directly to the
-             * connection based filters. We just want to flush the buckets
-             * if something hasn't been sent to the network yet.
+             * We need to ensure that buckets that may have been buffered in the
+             * network filters get flushed to the network. This is needed since
+             * these buckets have been created with the bucket allocator of the
+             * backend connection. This allocator either gets destroyed if
+             * conn->close is set or the worker address is not reusable which
+             * causes the connection to the backend to be closed or it will be
+             * used again by another frontend connection that wants to recycle
+             * the backend connection.
+             * In this case we could run into nasty race conditions (e.g. if the
+             * next user of the backend connection destroys the allocator before
+             * we sent the buckets to the network).
+             *
+             * Remark 1: Only do this if buckets were sent down the chain before
+             * that could still be buffered in the network filter. This is the
+             * case if we have sent an EOS bucket or if we actually sent buckets
+             * with data down the chain. In all other cases we either have not
+             * sent any buckets at all down the chain or we only sent meta
+             * buckets that are not EOS buckets down the chain. The only meta
+             * bucket that remains in this case is the flush bucket which would
+             * have removed all possibly buffered buckets in the network filter.
+             * If we sent a flush bucket in the case where not ANY buckets were
+             * sent down the chain, we break error handling which happens AFTER
+             * us.
+             *
+             * Remark 2: Doing a setaside does not help here as the bucketsi
+             * remain created by the wrong allocator in this case.
+             *
+             * Remark 3: Yes, this creates a possible performance penalty in the
+             * case of pipelined requests as we may send only a small amount of
+             * data over the wire.
+             *
+             * XXX: There remains a nasty edge case with detecting whether data
+             * was sent down the chain: If the data sent down the chain was
+             * set aside by some filter in the chain r->bytes_sent will still
+             * be zero albeit there are buckets in the chain that we would
+             * need to flush. Adding our own filter at the begining of the
+             * chain for detecting the passage of data buckets does not help
+             * as well because calling ap_set_content_type can cause such
+             * filters to be added *before* our filter in the chain and thus
+             * have it cut off from this information.
              */
-            ap_fflush(c->output_filters, bb);
+            c = r->connection;
+            bb = apr_brigade_create(r->pool, c->bucket_alloc);
+            if (r->eos_sent) {
+                if (r->main) {
+                    /*
+                     * If we are a subrequest the EOS bucket went up the filter
+                     * chain up to the SUBREQ_CORE filter which drops it
+                     * silently. So we need to sent our flush bucket through
+                     * all the filters which haven't seen the EOS bucket. These
+                     * are the filters after the SUBREQ_CORE filter.
+                     * All filters after the SUBREQ_CORE filter are
+                     *
+                     * Either not connection oriented, so filter->r == NULL or
+                     *
+                     * filter->r != r since they belong to a different request
+                     * (our parent request).
+                     */
+                    flush_filter = r->output_filters;
+                    /*
+                     * We do not need to check if flush_filter->next != NULL
+                     * because there is at least the core output filter which
+                     * is a network filter and thus flush_filter->r == NULL
+                     * which is != r.
+                     */
+                    while (flush_filter->r == r) {
+                        flush_filter = flush_filter->next;
+                    }
+                }
+                else {
+                    /*
+                     * If we are a main request and if we have already sent an
+                     * EOS bucket send directly to the connection based
+                     * filters. We just want to flush the buckets
+                     * if something hasn't been sent to the network yet and
+                     * the request based filters in the chain may not work
+                     * any longer once they have seen an EOS bucket.
+                     */
+                    flush_filter = c->output_filters;
+                }
+            }
+            else {
+                flush_filter = r->output_filters;
+            }
+            ap_fflush(flush_filter, bb);
+            apr_brigade_destroy(bb);
+            conn->r = NULL;
         }
-        else {
-            ap_fflush(r->output_filters, bb);
-        }
-        apr_brigade_destroy(bb);
-        conn->r = NULL;
-        conn->need_flush = 0;
     }
 
     /* determine if the connection need to be closed */
