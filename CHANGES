@@ -24,10 +24,6 @@ Changes with Apache 2.3.0
      DBD_LIST is still used to build additional dbd drivers.
      [Tom Donovan]
 
-  *) Worker MPM: Crosscheck that idle workers are still available before using
-     them and thus preventing an overflow of the worker queue which causes
-     a SegFault. PR 45605 [Denis Ustimenko <denusk gmail.com>]
-
   *) mod_proxy_ajp: Fix wrongly formatted requests where client
      sets Content-Length header, but doesn't provide a body.
      Servlet container always expects that next packet is
