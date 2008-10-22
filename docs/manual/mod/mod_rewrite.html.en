@@ -965,7 +965,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
           program which will implement a 1:1 map (<em>i.e.</em>,
           key == value) could be:</p>
 
-          <p>External rewriting programs are not started they're defined in a
+          <p>External rewriting programs are not started if they're defined in a
           context that does not have <code class="directive">RewriteEngine</code> set to
           <code>on</code></p>.
 
