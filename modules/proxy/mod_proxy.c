@@ -155,7 +155,10 @@ static const char *set_worker_param(apr_pool_t *p,
     }
     else if (!strcasecmp(key, "iobuffersize")) {
         long s = atol(val);
-        worker->io_buffer_size = ((s > AP_IOBUFSIZE) ? s : AP_IOBUFSIZE);
+        if (s < 512 && s) {
+            return "IOBufferSize must be >= 512 bytes, or 0 for system default.";
+        }
+        worker->io_buffer_size = (s ? s : AP_IOBUFSIZE);
         worker->io_buffer_size_set = 1;
     }
     else if (!strcasecmp(key, "receivebuffersize")) {
@@ -1632,8 +1635,10 @@ static const char *
     proxy_server_conf *psf =
     ap_get_module_config(parms->server->module_config, &proxy_module);
     long s = atol(arg);
-
-    psf->io_buffer_size = ((s > AP_IOBUFSIZE) ? s : AP_IOBUFSIZE);
+    if (s < 512 && s) {
+        return "ProxyIOBufferSize must be >= 512 bytes, or 0 for system default.";
+    }
+    psf->io_buffer_size = (s ? s : AP_IOBUFSIZE);
     psf->io_buffer_size_set = 1;
     return NULL;
 }
