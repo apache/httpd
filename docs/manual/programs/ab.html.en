@@ -19,7 +19,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>ab - Apache HTTP server benchmarking tool</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/programs/ab.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/ab.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p><code>ab</code> is a tool for benchmarking your Apache Hypertext
@@ -37,10 +38,12 @@
 <h2><a name="synopsis" id="synopsis">Synopsis</a></h2>
     <p><code><strong>ab</strong>
     [ -<strong>A</strong> <var>auth-username</var>:<var>password</var> ]
+    [ -<strong>b</strong> <var>windowsize</var> ]
     [ -<strong>c</strong> <var>concurrency</var> ]
     [ -<strong>C</strong> <var>cookie-name</var>=<var>value</var> ]
     [ -<strong>d</strong> ]
     [ -<strong>e</strong> <var>csv-file</var> ]
+    [ -<strong>f</strong> <var>protocol</var> ]
     [ -<strong>g</strong> <var>gnuplot-file</var> ]
     [ -<strong>h</strong> ]
     [ -<strong>H</strong> <var>custom-header</var> ]
@@ -50,6 +53,7 @@
     [ -<strong>p</strong> <var>POST-file</var> ]
     [ -<strong>P</strong> <var>proxy-auth-username</var>:<var>password</var> ]
     [ -<strong>q</strong> ]
+    [ -<strong>r</strong> ]
     [ -<strong>s</strong> ]
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>timelimit</var> ]
@@ -61,7 +65,8 @@
     [ -<strong>X</strong> <var>proxy</var>[:<var>port</var>] ]
     [ -<strong>y</strong> <var>&lt;tr&gt;-attributes</var> ]
     [ -<strong>z</strong> <var>&lt;td&gt;-attributes</var> ]
-    [http://]<var>hostname</var>[:<var>port</var>]/<var>path</var></code></p>
+    [ -<strong>Z</strong> <var>ciphersuite</var> ]
+    [http[s]://]<var>hostname</var>[:<var>port</var>]/<var>path</var></code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="options" id="options">Options</a></h2>
@@ -71,6 +76,9 @@
     password are separated by a single <code>:</code> and sent on the wire
     base64 encoded. The string is sent regardless of whether the server needs
     it (<em>i.e.</em>, has sent an 401  authentication needed).</dd>
+
+    <dt><code>-b <var>windowsize</var></code></dt>
+    <dd>Size of TCP send/receive buffer, in bytes.</dd>
 
     <dt><code>-c <var>concurrency</var></code></dt>
     <dd>Number of multiple requests to perform at a time. Default is one
@@ -90,6 +98,9 @@
     percentage (from 1% to 100%) the time (in milliseconds) it took to serve
     that percentage of the requests. This is usually more useful than the
     'gnuplot' file; as the results are already 'binned'.</dd>
+
+    <dt><code>-f <var>protocol</var></code></dt>
+    <dd>Specify SSL/TLS protocol (SSL2, SSL3, TLS1, or ALL).</dd>
 
     <dt><code>-g <var>gnuplot-file</var></code></dt>
     <dd>Write all measured values out as a 'gnuplot' or TSV (Tab separate
@@ -118,21 +129,24 @@
     non-representative benchmarking results.</dd>
 
     <dt><code>-p <var>POST-file</var></code></dt>
-    <dd>File containing data to POST.</dd>
+    <dd>File containing data to POST.  Remember to also set <code>-T</code>.</dd>
 
     <dt><code>-P <var>proxy-auth-username</var>:<var>password</var></code></dt>
     <dd>Supply BASIC Authentication credentials to a proxy en-route. The
-    username and password are separated by a single <code>:</code> and sent on 
+    username and password are separated by a single <code>:</code> and sent on
     the  wire base64 encoded. The string is sent regardless of whether the
     proxy needs it (<em>i.e.</em>, has  sent an 407 proxy authentication
     needed).</dd>
 
     <dt><code>-q</code></dt>
     <dd>When processing more than 150 requests, <code>ab</code> outputs a
-    progress count on <code>stderr</code> every 10% or 100 requests or so. The 
+    progress count on <code>stderr</code> every 10% or 100 requests or so. The
     <code>-q</code> flag will suppress these messages.</dd>
 
-    <dt><code>-s</code></dt>
+    <dt><code>-r</code></dt>
+    <dd>Don't exit on socket receive errors.</dd>
+
+   <dt><code>-s</code></dt>
     <dd>When compiled in (<code>ab -h</code> will show you) use the SSL
     protected <code>https</code> rather than the <code>http</code> protocol.
     This feature is experimental and <em>very</em> rudimentary. You probably
@@ -141,7 +155,7 @@
     <dt><code>-S</code></dt>
     <dd>Do not display the median and standard deviation values, nor display
     the warning/error messages when the average and median are more than
-    one or two times the standard deviation apart. And default to the 
+    one or two times the standard deviation apart. And default to the
     min/avg/max values. (legacy support).</dd>
 
     <dt><code>-t <var>timelimit</var></code></dt>
@@ -150,7 +164,9 @@
     fixed total amount of time. Per default there is no timelimit.</dd>
 
     <dt><code>-T <var>content-type</var></code></dt>
-    <dd>Content-type header to use for POST data.</dd>
+    <dd>Content-type header to use for POST data, eg.
+    <code>application/x-www-form-urlencoded</code>.
+    Default: <code>text/plain</code>.</dd>
 
     <dt><code>-v <var>verbosity</var></code></dt>
     <dd>Set verbosity level - <code>4</code> and above prints information on
@@ -176,6 +192,9 @@
 
     <dt><code>-z <var>&lt;td&gt;-attributes</var></code></dt>
     <dd>String to use as attributes for <code>&lt;td&gt;</code>.</dd>
+
+    <dt><code>-Z <var>ciphersuite</var></code></dt>
+    <dd>Specify SSL/TLS cipher suite (See openssl ciphers).</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -191,7 +210,8 @@
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/programs/ab.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/ab.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
