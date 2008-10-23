@@ -1,0 +1,168 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="apachectl.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+  <title>apachectl - Apache HTTP Sunucusu Denetim Arayüzü</title>
+
+<summary>
+    <p><code><strong>apachectl</strong></code> Apache Hiper Metin Aktarım
+      Protokolü (HTTP) sunucusu için bir denetim aracıdır. Sistem
+      yöneticisinin Apache <strong><program>httpd</program></strong> artalan
+      sürecini denetimi altında tutabilmesine yardımcı olmak amacıyla
+      tasarlanmıştır.</p>
+
+    <p><code><strong>apachectl</strong></code> iki kipte işleyebilir.
+      İlkinde, <strong><program>httpd</program></strong> komutu için basit
+      bir önyüz gibi davranarak, gerekli ortam değişkenlerini atar ve
+      belirtilen komut satırı seçenekleriyle
+      <strong><program>httpd</program></strong> sürecini başlatır. İkinci
+      kipte ise, <code><strong>apachectl</strong></code> bir SysV başlatma
+      betiği olarak <code><strong>start</strong></code>,
+      <code><strong>restart</strong></code>,
+      <code><strong>stop</strong></code> gibi tek sözcüklük basit argümanlar
+      alır ve bunları uygun sinyallere dönüştürerek
+      <strong><program>httpd</program></strong>'ye gönderir.</p>
+
+    <p>Eğer Apache kurulumunuzda standart dışı dosya yolları kullanmışsanız,
+      <strong><program>httpd</program></strong> programına uygun yolları
+      atamak için <code><strong>apachectl</strong></code> betiğini elden
+      geçirmelisiniz. Bu arada gerek gördüğünüz
+      <strong><program>httpd</program></strong> komut satırı argümanlarını da
+      belirtebilirsiniz. Ayrıntılar için betik içindeki açıklamalara
+      bakınız.</p>
+
+    <p><code><strong>apachectl</strong></code> betiği başarı durumunda 0
+      çıkış değeri ile döner. Bir hata durumunda ise sıfırdan farklı bir
+      değerle döner. Daha fazla bilgi için betik içindeki açıklamalara
+      bakınız.</p>
+</summary>
+<seealso><a href="../invoking.html">Apache'nin Başlatılması</a></seealso>
+<seealso><a href="../stopping.html">Apache'nin Durdurulması</a></seealso>
+<seealso><a href="../configuring.html">Yapılandırma Dosyaları</a></seealso>
+<seealso><a href="../platform/">Platform Belgeleri</a></seealso>
+<seealso><program>httpd</program></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+
+    <p><code><strong>apachectl</strong></code> önyüz kipinde çalıştığında
+      <strong><program>httpd</program></strong> programının bütün komut
+      satırı argümanlarını kabul edebilir.</p>
+
+    <p><code><strong>apachectl</strong> [ <var>httpd-argümanları</var> ]
+    </code></p>
+
+    <p>SysV başlatma betiği kipinde ise,
+      <code><strong>apachectl</strong></code> aşağıda tanımlanan basit, tek
+      sözcüklük komutları kabul eder.</p>
+
+    <p><code><strong>apachectl</strong> <var>komut</var></code></p>
+
+</section>
+
+<section id="options"><title>Seçenekler</title>
+
+    <p>Burada sadece SysV başlatma betiğine özgü seçeneklere yer verilmiştir.
+      Diğer argümanlar için <strong><program>httpd</program></strong> kılavuz
+      sayfasına bakınız.</p>
+
+    <dl>
+      <dt><code><strong>start</strong></code></dt>
+      <dd>Apache <strong><program>httpd</program></strong> artalan sürecini
+        başlatır. Zaten çalışmaktaysa bir hata verir. <code><strong>apachectl
+        -k start</strong></code> komutuna eşdeğerdir.</dd>
+
+      <dt><code><strong>stop</strong></code></dt>
+      <dd>Apache <strong><program>httpd</program></strong> artalan sürecini
+        durdurur. <code><strong>apachectl -k stop</strong></code> komutuna
+        eşdeğerdir.</dd>
+
+      <dt><code><strong>restart</strong></code></dt>
+      <dd>Apache <strong><program>httpd</program></strong> artalan sürecini
+        yeniden başlatır; çalışmıyorsa çalıştırılır. Artalan sürecinin ölü
+        olmadığından emin olmak için yeniden başlatmadan önce
+        <code><strong>configtest</strong></code> seçeneği verilmiş gibi
+        yapılandırma dosyaları sınanır. <code><strong>apachectl -k
+        restart</strong></code> komutuna eşdeğerdir.</dd>
+
+      <dt><code><strong>fullstatus</strong></code></dt>
+      <dd><strong><module>mod_status</module></strong> üzerinden tam bir
+        durum raporu gösterir. Bunun çalışması için sunucuda
+        <strong><module>mod_status</module></strong> etkinleştirilmiş olmalı
+        ve sisteminizde <code><strong>lynx</strong></code> gibi bir metin
+        kipi HTTP tarayıcı kurulu olmalıdır. Durum raporuna erişmek için
+        kullanılacak adres betik içinde <code>STATUSURL</code> değişkenine
+        atanabilir.</dd>
+
+      <dt><code><strong>status</strong></code></dt>
+      <dd>Özet halinde bir durum raporu gösterir. O an sunulmakta olan
+        isteklerin gösterilmemesi dışında
+        <code><strong>fullstatus</strong></code> seçeneği gibidir.</dd>
+
+      <dt><code><strong>graceful</strong></code></dt>
+      <dd>Apache <strong><program>httpd</program></strong> artalan sürecini
+        <em>nazikçe</em> yeniden başlatır; çalışmıyorsa çalıştırılır. O an
+        hizmet sunmakta olan çocuk süreçleri hemen durdurmaması dışında
+        normal yeniden başlatma gibidir. Bir yan etki olarak eski günlük
+        dosyaları hemen kapatılmaz. Yani, günlük dosyalarını döndüren bir
+        betik kullanıyorsanız yenilerini başlatmadan önce eski dosyaların
+        tamamen kapandığından emin olmak için belli bir süre beklemeniz
+        gerekecektir. Artalan sürecinin ölü olmadığından emin olmak için
+        yeniden başlatmadan önce  <code><strong>configtest</strong></code>
+        seçeneği verilmiş gibi yapılandırma dosyaları sınanır.
+        <code><strong>apachectl -k graceful</strong></code> komutuna
+        eşdeğerdir.</dd>
+
+      <dt><code><strong>graceful-stop</strong></code></dt>
+      <dd>Apache <strong><program>httpd</program></strong> artalan sürecini
+        <em>nazikçe</em> durdurur. O an hizmet sunmakta olan çocuk süreçleri
+        hemen durdurmaması dışında normal durdurma gibidir. Bir yan etki
+        olarak eski günlük dosyaları hemen kapatılmaz.
+        <code><strong>apachectl -k graceful-stop</strong></code> komutuna
+        eşdeğerdir.</dd>
+
+      <dt><code><strong>configtest</strong></code></dt>
+      <dd>Yapılandırma dosyasında sözdizimi denetimi yapılmasını sağlar.
+        Yapılandırma dosyaları çözümlenir ve bir sorun yoksa bir <code>Syntax
+        Ok</code> raporu verilir fakat, bir hata varsa o hataya ilişkin
+        ayrıntılı bilgi verilir. <code><strong>apachectl -t</strong></code>
+        komutuna eşdeğerdir.</dd>
+
+    </dl>
+
+    <p>Aşağıdaki seçenek eski sürümlerde kullanılmaktaydı, fakat artık
+      kullanılmamaktadır.</p>
+
+    <dl>
+      <dt><code>startssl</code></dt>
+      <dd><strong><program>httpd</program></strong> programını SSL destekli
+        başlatmak için, yapılandırma dosyanızı ilgili yönergeleri içermesi
+        için elden geçirmeli ve normal <code><strong>apachectl
+        start</strong></code> komutunu kullanmalısınız.</dd>
+    </dl>
+</section>
+</manualpage>
