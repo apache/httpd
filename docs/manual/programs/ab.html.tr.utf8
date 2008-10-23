@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>ab - Apache HTTP sunucusu başarım ölçme aracı - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>ab - Apache HTTP sunucusu başarım ölçme aracı</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/programs/ab.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p><code><strong>ab</strong></code> Apache Hiper Metin Aktarım Protokolü
+      (HTTP) sunucunuzun başarımını ölçmek amacıyla kullanabileceğiniz bir
+      kıyaslama aracıdır. Mevcut Apache kurulumunuzun görevini nasıl yerine
+      getirdiği hakkında bir izlenim edinmeniz için tasarlanmıştır.
+      Özellikle, Apache kurulumunuzun saniyede kaç isteği sunma yeteneğinde
+      olduğunu gösterir.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#bugs">Börtü böcek</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
+    <p><code><strong>ab</strong>
+    [ -<strong>A</strong> <var>yetkili-kullanıcı:parola</var> ]
+    [ -<strong>b</strong> <var>tampon-boyu</var> ]
+    [ -<strong>c</strong> <var>bağlantı-sayısı</var> ]
+    [ -<strong>C</strong> <var>çerez-ismi=değer</var> ]
+    [ -<strong>d</strong> ]
+    [ -<strong>e</strong> <var>csv-dosyası</var> ]
+    [ -<strong>f</strong> <var>protokol</var> ]
+    [ -<strong>g</strong> <var>gnuplot-dosyası</var> ]
+    [ -<strong>h</strong> ]
+    [ -<strong>H</strong> <var>özel-başlık</var> ]
+    [ -<strong>i</strong> ]
+    [ -<strong>k</strong> ]
+    [ -<strong>n</strong> <var>istek-sayısı</var> ]
+    [ -<strong>p</strong> <var>POST-dosyası</var> ]
+    [ -<strong>P</strong> <var>vekil-yetkilisi:parola</var> ]
+    [ -<strong>q</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>s</strong> ]
+    [ -<strong>S</strong> ]
+    [ -<strong>t</strong> <var>saniye</var> ]
+    [ -<strong>T</strong> <var>içerik-türü</var> ]
+    [ -<strong>v</strong> <var>ayrıntı-düzeyi</var>]
+    [ -<strong>V</strong> ]
+    [ -<strong>w</strong> ]
+    [ -<strong>x</strong> <var>&lt;table&gt;-öznitelikleri</var> ]
+    [ -<strong>X</strong> <var>vekil</var>[:<var>port</var>] ]
+    [ -<strong>y</strong> <var>&lt;tr&gt;-öznitelikleri</var> ]
+    [ -<strong>z</strong> <var>&lt;td&gt;-öznitelikleri</var> ]
+    [ -<strong>Z</strong> <var>şifre-kümesi</var> ]
+    [http[s]://]<var>konakadı</var>[:<var>port</var>]/<var>dizin</var></code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="options" id="options">Seçenekler</a></h2>
+    <dl>
+    <dt><code><strong>-A</strong>
+      <var>yetkili-kullanıcı</var>:<var>parola</var></code></dt>
+    <dd>Sunucuya TEMEL Kimlik Doğrulamada kullanılmak üzere kanıt sağlar.
+      Kullanıcı adı ile parola arasına sadece <code>:</code> konur ve
+      sunucunun buna ihtiyacı olup olmadığına bakılmaksızın (yani, bir "401
+      kimlik doğrulaması gerekli" yanıtı beklenmeden) bağlantı üzerinden
+      base64 kodlu olarak sunucuya gönderilir.</dd>
+
+    <dt><code><strong>-b</strong> <var>tampon-boyu</var></code></dt>
+    <dd>TCP gönderme/alma tamponlarının bayt cinsinden uzunluğu.</dd>
+
+    <dt><code><strong>-c</strong> <var>bağlantı-sayısı</var></code></dt>
+    <dd>Aynı anda işleme sokulacak bağlantı sayısı. Aynı anda bir bağlantı
+      öntanımlı değerdir.</dd>
+
+    <dt><code><strong>-C</strong>
+      <var>çerez-ismi</var>=<var>değer</var></code></dt>
+    <dd>İsteğe bir <code>Cookie:</code> satırı ekler. Argüman olarak
+      genellikle bir <code><var>isim=değer</var></code> çifti kullanılır. Bu
+      çiftler birden fazla olabilir.</dd>
+
+    <dt><code><strong>-d</strong></code></dt>
+    <dd>"percentage served within XX [ms] table" iletisi gösterilmez. (Geriye
+      uyumluluk için vardır).</dd>
+
+    <dt><code><strong>-e</strong> <var>csv-dosyası</var></code></dt>
+    <dd>Sunulan isteğin birim zamanda (milisaniye) ne kadarının (yüzde
+      cinsinden) sunulduğunu gösteren virgül ayraçlı değerler (CSV) dosyası.
+      Sonuçlar 'bobin haline' getirilmiş olduğundan doğal olarak 'gnuplot'
+      dosyasından daha yararlıdır.</dd>
+
+    <dt><code><strong>-f</strong> <var>protokol</var></code></dt>
+    <dd>SSL/TLS protokolü belirtilir (SSL2, SSL3, TLS1 veya ALL).</dd>
+
+    <dt><code><strong>-g</strong> <var>gnuplot-dosyası</var></code></dt>
+    <dd>Ölçülen değerler bir 'gnuplot' veya TSV (sekme ayraçlı değerler)
+      dosyasına yazılır. Bu dosya, Gnuplot, IDL, Mathematica, Igor hatta
+      Excel tarafından veri dosyası olarak kabul edilir. Veri sütunlarının
+      başlıkları dosyanın ilk satırında bulunur. </dd>
+
+    <dt><code><strong>-h</strong></code></dt>
+    <dd>Kullanım bilgisi gösterir.</dd>
+
+    <dt><code><strong>-H</strong> <var>özel-başlık</var></code></dt>
+    <dd>İsteğe fazladan başlık ekler. <var>özel-başlık</var>, aralarında iki
+      nokta imi bulunan bir isim-değer çifti olarak belirtilir. Örnek:
+      <code>"Accept-Encoding: zip/zop;8bit"</code></dd>
+
+    <dt><code><strong>-i</strong></code></dt>
+    <dd><code>GET</code> istekleri yerine <code>HEAD</code> istekleri
+      yapılır.</dd>
+
+    <dt><code><strong>-k</strong></code></dt>
+    <dd>HTTP KeepAlive (kalıcı bağlantı) özelliğini etkinleştirir, yani tek
+      bir oturum içinde çok sayıda isteğe hizmet sunulabilir. Özellik
+      öntanımlı olarak kapalıdır.</dd>
+
+    <dt><code><strong>-n</strong> <var>istek-sayısı</var></code></dt>
+    <dd>Kıyaslama oturumu sırasında sunucuya uygulanacak istek sayısı.
+      Öntanımlı olarak hiçbir başarım ölçütü sağlamayan tek bir istek
+      yapılır.</dd>
+
+    <dt><code><strong>-p</strong> <var>POST-dosyası</var></code></dt>
+    <dd>POST isteği ile ilgili verileri içeren dosya. Ayrıca
+      <code><strong>-T</strong></code> seçeneğini de belirtmeyi
+      unutmayın..</dd>
+
+    <dt><code><strong>-P</strong>
+      <var>vekil-yetkilisi</var>:<var>parola</var></code></dt>
+    <dd>Vekil sunucuya TEMEL Kimlik Doğrulamasında kullanılacak kanıtları
+      sağlar. Kullanıcı adı ile parola arasına sadece <code>:</code> konur ve
+      vekilin buna ihtiyacı olup olmadığına bakılmaksızın (yani, bir "407
+      vekilde kimlik doğrulaması gerekiyor" yanıtı beklenmeden) bağlantı
+      üzerinden base64 kodlu olarak sunucuya gönderilir.</dd>
+
+    <dt><code><strong>-q</strong></code></dt>
+    <dd>İstek sayısı 150'den fazla olduğunda,
+      <code><strong>ab</strong></code> her 100 veya %10 istekte bir, standart
+      hataya bir işlenen istek sayacı çıktılar.
+      <code><strong>-q</strong></code> seçeneği bu çıktının üretilmemesini
+      sağlar.</dd>
+
+    <dt><code><strong>-r</strong></code></dt>
+    <dd>Soket hata alsa bile program çıkmaz.</dd>
+
+    <dt><code><strong>-s</strong></code></dt>
+    <dd>Derlendiği takdirde (<code><strong>ab -h</strong></code> bunu
+      gösterir) <code>http</code> protokolü yerine SSL korumalı
+      <code>https</code> protokolü kullanılır. Bu özellik henüz
+      <em>emekleme</em> aşamasında olup geliştirilmeye devam edilmektedir. Bu
+      bakımdan kullanımı önerilmez.</dd>
+
+    <dt><code><strong>-S</strong></code></dt>
+    <dd>Ortalama ve ortanca değerler arasında bir veya iki standart sapmadan
+      fazlası varsa ne ortalama değer ne standart sapma değeri ne de
+      uyarı/hata iletileri gösterilir. Öntanımlı olarak,
+      asgari/ortalama/azami değerler gösterilir. (Geriye uyumluluk).</dd>
+
+    <dt><code><strong>-t</strong> <var>saniye</var></code></dt>
+    <dd>Ölçümleme işleminin ne kadar süreyle uygulanacağı belirtilir. Dahili
+      olarak <code><strong>-n 50000</strong></code> seçeneği uygulanır. Bunu
+      belli bir süreye göre kıyaslama yapmak amacıyla kullanabilirsiniz.
+      Öntanımlı olarak bir süre kısıtlaması yoktur.</dd>
+
+    <dt><code><strong>-T</strong> <var>içerik-türü</var></code></dt>
+    <dd>POST verisi için kullanılacak içerik türü belirtilir. Örnek:
+      <code>application/x-www-form-urlencoded</code>.
+      Öntanımlı değer: <code>text/plain</code>.</dd>
+
+    <dt><code><strong>-v</strong> <var>ayrıntı-düzeyi</var></code></dt>
+    <dd>Çıktının ayrıntı düzeyi belirtilir.  <code>4</code> ve üstü ile
+      başlıklar hakkında bilgi, <code>3</code> ve üstü ile yanıt kodları
+      (404, 200, vb.), <code>2</code> ve üstü ile ise uyarı ve bilgi
+      iletileri gösterilir.</dd>
+
+    <dt><code><strong>-V</strong></code></dt>
+    <dd>Sürüm bilgilerini gösterir ve çıkar.</dd>
+
+    <dt><code><strong>-w</strong></code></dt>
+    <dd>Sonuçları HTML tabloları olarak basar. Öntanımlı tablo, beyaz
+      artalanlı ve iki sütunludur.</dd>
+
+    <dt><code><strong>-x</strong>
+      <var>&lt;table&gt;-öznitelikleri</var></code></dt>
+    <dd><code>&lt;table&gt;</code> etiketinde kullanılacak öznitelikler
+      belirtilir. Belirtilen öznitelikler etiket içine <code>&lt;table
+      <var>buraya</var> &gt;</code> biçeminde yerleştirilir.</dd>
+
+    <dt><code><strong>-X</strong>
+      <var>vekil</var>[:<var>port</var>]</code></dt>
+    <dd>İstekler için bir vekil sunucu kullanılır.</dd>
+
+    <dt><code><strong>-y</strong>
+      <var>&lt;tr&gt;-öznitelikleri</var></code></dt>
+    <dd><code>&lt;tr&gt;</code> etiketinde kullanılacak öznitelikler
+      belirtilir.</dd>
+
+    <dt><code><strong>-z</strong>
+      <var>&lt;td&gt;-öznitelikleri</var></code></dt>
+    <dd><code>&lt;td&gt;</code> etiketinde kullanılacak öznitelikler
+      belirtilir.</dd>
+
+    <dt><code>-Z <var>şifre-kümesi</var></code></dt>
+    <dd>SSL/TLS şifre kümesi belirtilir (<code><strong>openssl</strong></code>(1) şifrelerine bakınız).</dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="bugs" id="bugs">Börtü böcek</a></h2>
+    <p>Duruk bildirimli sabit uzunlukta çeşitli tamponlar vardır.
+      Sunucudan gelen yanıt başlıkları ve diğer harici girdiler, komut satırı
+      argümanları ile birlikte basitçe çözümlenir, bu size can sıkıcı
+      gelebilir.</p>
+
+    <p>HTTP/1.x protokolünü tamamen gerçeklemez; sadece yanıtların 'belli
+      başlı' bazı biçimlerini kabul eder. Aksi takdirde,
+      <code><strong>strstr</strong></code>(3) işlevinin yoğun kullanımı
+      nedeniyle sunucu yerine <code><strong>ab</strong></code>'nin başarımını
+      ölçerdiniz.</p>
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/programs/ab.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
