@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Belge ağacının parçalarının dosya sisteminin parçalarıyla
 eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -374,6 +373,19 @@ URL’ye yönlendirir.</td></tr>
       </span>
       &lt;/Location&gt;
     </code></p></div>
+
+    <p><code class="directive">ScriptAlias</code> yönergesini bir betik veya eylemci
+      ile birlikte de kullanabilirsiniz. Örnek:</p>
+
+    <div class="example"><p><code>
+         ScriptAlias /cgi-bin/ /siteler/cgi-handler.pl
+    </code></p></div>
+
+    <p>Bu senaryoda <code>/cgi-bin/</code>’den istenen tüm dosyalar sizin
+      belirttiğiniz dosya tarafından işleme sokulacaktır. Bu yöntemle kendi
+      özel eylemcinizi kullanabilirsiniz. İsterseniz, bunu içerik eklemek
+      ya da ısmarlama bir eylem için bir CGI sarmalayıcısı olarak da
+      kullanabilirsiniz.</p>
 
     <div class="warning">Yapılandırma değiştiğinde kaynak kodlarının ister
       istemez açığa çıkmasını istemiyorsanız CGI betiklerinizi <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> altına koymayınız.
