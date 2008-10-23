@@ -682,7 +682,7 @@ proxied</td></tr>
 </table>
     <p>The <code class="directive">ProxyIOBufferSize</code> directive adjusts the size
     of the internal buffer, which is used as a scratchpad for the data between
-    input and output. The size must be less or equal <code>65536</code>.</p>
+    input and output. The size must be at least <code>512</code>.</p>
 
     <p>In almost every case there's no reason to change that value.</p>
     <p>If used with AJP this directive sets the maximum AJP packet size in
@@ -881,6 +881,12 @@ through</td></tr>
         <td>The time to wait for additional input, in milliseconds, before
         flushing the output brigade if 'flushpackets' is 'auto'.
     </td></tr>
+    <tr><td>iobuffersize</td>
+        <td>8192</td>
+        <td>Adjusts the size of the internal scratchpad IO buffer. This allows you
+        to override the <code class="directive">ProxyIOBufferSize</code> for a specific worker.
+        This must be at least 512 or set to 0 for the system default of 8192.
+    </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
         <td>This parameter should be used when you have a firewall between your
@@ -911,6 +917,13 @@ through</td></tr>
         Currently this has an effect only for AJP.
         By adding a postfix of ms the delay can be also set in
         milliseconds.
+    </td></tr>
+    <tr><td>receivebuffersize</td>
+        <td>0</td>
+        <td>Adjusts the size of the explicit (TCP/IP) network buffer size for
+        proxied connections. This allows you to override the
+        <code class="directive">ProxyReceiveBufferSize</code> for a specific worker.
+        This must be at least 512 or set to 0 for the system default.
     </td></tr>
     <tr><td>redirect</td>
         <td>-</td>
