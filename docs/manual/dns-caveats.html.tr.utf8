@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Apache ve DNS ile ilgili Konular - Apache HTTP Sunucusu</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="./faq/">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="./">Sürüm 2.2</a></div><div id="page-content"><div id="preamble"><h1>Apache ve DNS ile ilgili Konular</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/dns-caveats.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p>Bu sayfanın konusu şöyle özetlenebilirdi: Yapılandırma dosyalarınızda
+      DNS sorguları yapılmasını gerektirecek ayarlamalardan kaçınınız. Eğer
+      yapılandırma dosyalarınızda DNS sorgusu yapılarak çözümlenebilecek
+      adresler bulunursa sunucunuz beklenmedik davranışlar (hiç
+      başlamayabilir) gösterebileceği gibi hizmet reddi veya hizmet
+      hırsızlığı (bazı kullanıcıların diğerlerine giden sayfaları çalma
+      olasılığı dahil) saldırılarına açık hale gelebilir.</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">Basit Bir Örnek</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#denial">Hizmet Reddi</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#main">"Ana Sunucu" Adresi</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#tips">Bu Sorunlardan Kaçınmak için İpuçları</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#appendix">Ek: Ufuk Turu</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">Basit Bir Örnek</a></h2>
+    
+
+    <div class="example"><p><code>
+      &lt;VirtualHost falan.fesmekan.dom&gt;
+      <span class="indent">
+        ServerAdmin filanca@fesmekan.dom <br />
+        DocumentRoot /siteler/fesmekan
+      </span>
+      &lt;/VirtualHost&gt;
+    </code></p></div>
+
+    <p>Apache’nin beklendiği gibi işlemesi için her sanal konak için iki
+      veriye mutlaka ihtiyacı vardır: <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> ve sunucunun bağlantı kabul edip hizmet
+      sunacağı en az bir IP adresi. Yukarıdaki örnekte IP adresi
+      bulunmamaktadır, dolayısıyla Apache, <code>falan.fesmekan.dom</code>
+      adresi için bir DNS sorgusu yapmak zorundadır. Eğer sunucu,
+      yapılandırma dosyasını çözümlediği sırada bir sebeple DNS sunucusuna
+      erişemezse bu sanal konak <em>yapılandırılmayacak</em> (hApache 1.2
+      öncesinde sunucu hiç başlatılmazdı) ve bu sanal konağa yapılan
+      isteklere yanıt verilemeyecektir.</p>
+
+    <p><code>falan.fesmekan.dom</code>’un 192.168.2.1 IP adresine sahip
+      olduğunu varsayarsak yapılandırma şöyle olurdu:</p>
+
+    <div class="example"><p><code>
+      &lt;VirtualHost 192.168.2.1&gt; <br />
+      <span class="indent">
+        ServerAdmin filanca@fesmekan.dom <br />
+        DocumentRoot /siteler/fesmekan
+      </span>
+      &lt;/VirtualHost&gt;
+    </code></p></div>
+
+    <p>Ancak, bu sefer de bu sanal konağın sunucu ismini öğrenmek için
+      Apache’nin bir ters DNS sorgusu yapması gerekecektir. Eğer bu sorgu
+      başarısız olursa kısmi bir yapılandırmaya gidilir (Apache 1.2 öncesinde
+      sunucu hiç başlatılmazdı). Eğer sanal konak isme dayalı ise sanal konak
+      kısmen bile yapılandırılmaz. IP’ye dayalı sanal konaklar büyük oranda
+      çalışır, fakat sunucu ismini içeren tam bir adres üretilmesini
+      gerektiren bir durumda, sunucu geçerli bir adres üretemez.</p>
+
+    <p>Her iki sorunu da çözen yapılandırma şöyle olurdu:</p>
+
+    <div class="example"><p><code>
+      &lt;VirtualHost 192.168.2.1&gt; <br />
+      <span class="indent">
+        ServerName falan.fesmekan.dom <br />
+        ServerAdmin filanca@fesmekan.dom <br />
+        DocumentRoot /siteler/fesmekan
+      </span>
+      &lt;/VirtualHost&gt;
+    </code></p></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="denial" id="denial">Hizmet Reddi</a></h2>
+    
+
+    <p>Hizmet reddinin meydana gelebilecek (en az) iki türü vardır.
+      Apache’nin 1.2 öncesi bir sürümünü kullanıyorsanız sanal
+      konaklarınızdan herhangi biri için yukarıdaki iki sorgudan biri
+      başarısız olursa sunucunuzu asla başlatamazsınız. Bazı durumlarda, DNS
+      sorgularından alınacak yanıtlar sizin denetiminizde olmayabilir;
+      örneğin <code>fesmekan.dom</code> müşterilerinizden birine aitse ve
+      kendi DNS sunucuları varsa <code>falan.fesmekan.dom</code> kaydını
+      silerek sunucunuzun hiç başlatılamamasına (1.2 öncesi) sebep
+      olabilirler.</p>
+
+    <p>Diğer türü biraz daha sinsidir. Şöyle bir yapılandırmanız olsun:</p>
+
+    <div class="example"><p><code>
+      &lt;VirtualHost falan.fesmekan.dom&gt;<br />
+      <span class="indent">
+        ServerAdmin filanca@fesmekan.dom <br />
+        DocumentRoot /siteler/fesmekan
+      </span>
+      &lt;/VirtualHost&gt;<br />
+      <br />
+      &lt;VirtualHost misal.mesela.dom&gt;<br />
+      <span class="indent">
+        ServerAdmin falanca@mesela.dom<br />
+        DocumentRoot /siteler/mesela<br />
+      </span>
+      &lt;/VirtualHost&gt;
+    </code></p></div>
+
+    <p><code>falan.fesmekan.dom</code>’a 192.168.2.1,
+      <code>misal.mesela.dom</code>’a 192.168.2.2 atadığınızı fakat,
+      <code>mesela.dom</code>’un DNS kaydının sizin denetiminizde olmadığını
+      varsayalım. Bu yapılandırmayla, <code>mesela.dom</code>’u
+      <code>fesmekan.dom</code>’a giden tüm trafiği çalabilecek duruma
+      getirirsiniz. Bunu gerçekleştirmek için DNS kaydında
+      <code>misal.mesela.dom</code>’a 192.168.2.1 adresinin atanması
+      yeterlidir. Kendi DNS’lerine sahip olduklarından dolayı
+      <code>misal.mesela.dom</code>’a istedikleri IP adresini atamaktan
+      onları alıkoyamazsınız.</p>
+
+    <p>192.168.2.1’e gelen isteklerin hepsine
+      (<code>http://falan.fesmekan.dom/biryer</code> şeklinde yazılan
+      adresler dahil) <code>mesela.dom</code> sanal konağınca hizmet
+      sunulacaktır. Apache’nin gelen istekleri sunduğu sanal konaklarla nasıl
+      eşleştirdiğini bilirseniz bunun sebebini kolayca anlarsınız. Bunu
+      kabataslak açıklayan  <a href="vhosts/details.html">bir belgemiz
+      mevcuttur</a>.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="main" id="main">"Ana Sunucu" Adresi</a></h2>
+    
+
+    <p>Apache 1.1’de <a href="vhosts/name-based.html">isme dayalı sanal konak
+      desteği</a>ne ek olarak, Apache’nin, <code class="program"><a href="./programs/httpd.html">httpd</a></code>’nin
+      çalıştığı makinenin IP adres(ler)ini de bilmeye ihtiyacı vardır. Bu
+      adresi elde etmek için sunucu, ya sunucu genelinde geçerli <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> yönergesine bakar ya da bir C
+      işlevi olan <code>gethostname</code>’i kullanır (işlev, komut
+      isteminden <code>hostname</code> komutuna dönen yanıtın aynısını
+      döndürür) ve ardından bu adresle ilgili olarak bir DNS sorgusu yapar.
+      Bu sorgudan kaçınmanın henüz bir yolu yoktur.</p>
+
+    <p>Eğer bu sorgunun (DNS sunucusunun çökmüş olması gibi bir nedenle)
+      başarısız olabileceğinden korkuyorsanız, makine ismini ve IP adresini
+      <code>/etc/hosts</code> dosyanıza yazabilirsiniz (Makinenizin düzgün
+      olarak açılabilmesi için zaten bu kaydı yapmış olmanız gerekir).
+      Kullandığınız işletim sistemine bağlı olarak bu kaydın
+      <code>/etc/resolv.conf</code> veya <code>/etc/nsswitch.conf</code>
+      dosyasında bulunması gerekebilir.</p>
+
+    <p>Herhangi bir nedenle sunucunuz bir DNS sorgusu yapmıyorsa veya
+      yapmamalıysa, Apache’yi <code>HOSTRESORDER</code> ortam değişkenine
+      "<code>local</code>" değerini atadıktan sonra çalıştırabilirsiniz. Bu
+      tamamen işletim sistemine ve kullandığınız çözümleyici kütüphanelere
+      bağlıdır. Ayrıca, ortamı denetlemek için <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>
+      kullanmıyorsanız, CGI’ler de bundan etkilenir. En iyisi işletim
+      sisteminizin SSS belgelerini ve kılavuz sayfalarını okumaktır.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="tips" id="tips">Bu Sorunlardan Kaçınmak için İpuçları</a></h2>
+    
+
+    <ul>
+      <li><code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> yönergelerinizde
+        IP adresleri kullanınız.</li>
+
+      <li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> yönergelerinizde
+        IP adresleri kullanınız.</li>
+
+      <li>Tüm sanal konakların ayrı birer <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> yönergesi olsun.</li>
+
+      <li>Hiçbir sayfa sunulmayan bir <code>&lt;VirtualHost
+        _default_:*&gt;</code> sanal konağınız olsun.</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="appendix" id="appendix">Ek: Ufuk Turu</a></h2>
+    
+
+    <p>DNS ile ilgili durum hiç de arzu edildiği gibi değildir. Apache 1.2
+      için, DNS sorguları başarısız olsa bile sunucunun başlatılabilmesini
+      sağlamaya çalıştık, fakat belki yapabildiğimizden daha da iyisi
+      mümkündür. Günümüz Genel Ağ’ında IP adresleri sık sık değiştiğinden
+      yapılandırma dosyasına doğrudan IP adresini yazma gerekliliği asla arzu
+      edilen davranış değildir.</p>
+
+    <p>Yukarıda nasıl yapıldığı açıklanan hizmet hırsızlığı saldırısına karşı
+      önlem olarak, normal sorgudan dönen IP adresine bir ters DNS sorgusu
+      yapıp bu iki sonucu karşılaştırmak ve eşleşmeme durumunda sanal konağı
+      iptal etmek bir çözüm olabilir. Fakat bunun mümkün olabilmesi için
+      uygun bir ters DNS kaydına ihtiyaç vardır. (FTP sunucuları ve TCP
+      sarmalayıcılar tarafından yapılan çifte ters DNS sorgusu kullanımından
+      dolayı çoğu ağ yöneticisi bu konuda zaten bilgi sahibidir.)</p>
+
+    <p>Her halükarda, IP adreslerinin kullanılmaması nedeniyle yapılan DNS
+      sorgularının başarısız olması durumunda sanal konaklı bir sunucuyu
+      düzgün bir şekilde başlatmak olası görünmektedir. Yapılandırmayı kısmen
+      iptal etmek gibi kısmi çözümler, sunucudan beklentinizin ne olduğuna
+      bağlı olarak sunucuyu hiç başlatmamaktan daha iyi olabilir.</p>
+
+    <p>HTTP/1.1’de belirtildiği gibi <code>Host</code> başlığını göndererek
+      işlem yapabilen tarayıcılar ve vekiller IP’ye dayalı sanal konak
+      kullanımını tamamen ortadan kaldırmanın mümkün olabileceğini
+      göstermektedir. Bu durumda yapılandırmanın çözümlenmesi aşamasında DNS
+      sorgusu yapma gereği kalmayacaktır. Fakat 1997 Mart’ından beri önemli
+      sunucular üzerinde bunların yeterince geniş bir uygulama alanı
+      bulmadığı görülmektedir.</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/dns-caveats.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="./mod/">Modüller</a> | <a href="./mod/directives.html">Yönergeler</a> | <a href="./faq/">SSS</a> | <a href="./glossary.html">Terimler</a> | <a href="./sitemap.html">Site Haritası</a></p></div>
+</body></html>
