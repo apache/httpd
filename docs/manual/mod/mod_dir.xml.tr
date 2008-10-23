@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 420990:706001 (outdated) -->
+<!-- English Revision: 706001 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -60,7 +60,7 @@
 <description>İstemci bir dizin istediğinde dizin içeriğini listeler.
 </description>
 <syntax>DirectoryIndex
-    <var>yerel-url</var> [<var>yerel-url</var>] ...</syntax>
+    None | <var>yerel-url</var> [<var>yerel-url</var>] ...</syntax>
 <default>DirectoryIndex index.html</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -94,6 +94,10 @@
     <p>Bu örnekte ise dizin içinde ne <code>index.html</code> ne de
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
       CGI betiği çalıştırılacaktır.</p>
+
+    <p><code>None</code> değeri <module>mod_dir</module>’in bir dizin listesi
+      aramasını engeller.</p>
+
 </usage>
 </directivesynopsis>
 

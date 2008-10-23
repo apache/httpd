@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 678097:705117 (outdated) -->
+<!-- English Revision: 705117 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -373,6 +373,19 @@ URL’ye yönlendirir.</description>
       </indent>
       &lt;/Location&gt;
     </example>
+
+    <p><directive>ScriptAlias</directive> yönergesini bir betik veya eylemci
+      ile birlikte de kullanabilirsiniz. Örnek:</p>
+
+    <example>
+         ScriptAlias /cgi-bin/ /siteler/cgi-handler.pl
+    </example>
+
+    <p>Bu senaryoda <code>/cgi-bin/</code>’den istenen tüm dosyalar sizin
+      belirttiğiniz dosya tarafından işleme sokulacaktır. Bu yöntemle kendi
+      özel eylemcinizi kullanabilirsiniz. İsterseniz, bunu içerik eklemek
+      ya da ısmarlama bir eylem için bir CGI sarmalayıcısı olarak da
+      kullanabilirsiniz.</p>
 
     <note type="warning">Yapılandırma değiştiğinde kaynak kodlarının ister
       istemez açığa çıkmasını istemiyorsanız CGI betiklerinizi <directive
