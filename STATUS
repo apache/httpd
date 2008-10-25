@@ -152,6 +152,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem,
 
+   * mod_proxy: Prevent segmentation faults by correctly flushing all buckets
+     from the proxy backend.
+     PR 45792
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=706921&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem,
+
+   * mod_proxy: Add the possibility to set the worker parameters
+     connectiontimeout and ping in milliseconds. 
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=705005&view=rev
+        http://svn.apache.org/viewvc?rev=707022&view=rev
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~rpluem/patches/milli_seconds.diff
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
  * core, authn/z: Avoid calling access control hooks for internal requests
