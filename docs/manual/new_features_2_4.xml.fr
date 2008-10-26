@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision : 642717 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_features_2_4.xml.meta">
+
+<title>Vue d'ensemble des nouvelles fonctionnalit&eacute;s d'Apache 2.4</title>
+
+<summary>
+  <p>Ce document d&eacute;crit certaines modifications majeures entre les versions
+  2.2 et 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalit&eacute;s
+  ajout&eacute;es depuis la version 2.0, se r&eacute;f&eacute;rer au document
+  <a href="new_features_2_2.html">nouvelles fonctionnalit&eacute;s
+  de la version 2.2</a>.</p>
+</summary>
+
+  <section id="core">
+    <title>Am&eacute;liorations du noyau</title>
+    <!-- <dl>
+    </dl> -->
+  </section>
+
+  <section id="module">
+    <title>Am&eacute;liorations des modules</title>
+    <!-- <dl>
+    </dl> -->
+  </section>
+
+  <section id="programs">
+    <title>Am&eacute;liorations des programmes</title>
+    <!-- <dl>
+    </dl> -->
+  </section>
+
+  <section id="developer">
+    <title>Modifications pour le d&eacute;veloppeur de modules</title>
+    <dl>
+      <dt>Ajout de code pour la v&eacute;rification de la configuration</dt>
+
+      <dd>Une nouvelle fonction, <code>check_config</code>, a &eacute;t&eacute; ajout&eacute;e et
+      s'ex&eacute;cute entre les fonctions <code>pre_config</code> et
+      <code>open_logs</code>. Elle s'ex&eacute;cute aussi avant la fonction
+      <code>test_config</code> si l'option <code>-t</code> est pass&eacute;e au
+      d&eacute;mon <program>httpd</program>. La fonction <code>check_config</code>
+      permet aux modules de v&eacute;rifier l'interd&eacute;pendance des valeurs des
+      directives de configuration et d'ajuster ces valeurs, alors que les
+      messages du serveur peuvent encore &ecirc;tre affich&eacute;s sur la console.
+      L'utilisateur est ainsi averti des erreurs de configuration avant que la
+      fonction du noyau <code>open_logs</code> ne redirige les sorties de la
+      console vers le journal des erreurs.</dd>
+      <dt>Ajout d'un analyseur syntaxique d'expressions</dt>
+      <dd>Nous disposons &agrave; pr&eacute;sent d'un analyseur g&eacute;n&eacute;rique d'expressions, dont l'API
+      est d&eacute;crite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
+      l'analyseur qu'on trouvait auparavant dans <module>mod_include</module>.</dd>
+    </dl>
+  </section>
+</manualpage>

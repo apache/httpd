@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- English Revision: 420990 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="upgrading.xml.meta">
+
+<title>Mise &agrave; jour vers 2.4 depuis 2.2</title>
+
+<summary>
+  <p>Afin d'assister les utilisateurs lors de leurs op&eacute;rations de mise &agrave;
+  jour, nous maintenons un document
+  qui comporte des informations critiques &agrave; l'attention des personnes qui
+  utilisent d&eacute;j&agrave; Apache. Ces informations ne sont que de br&egrave;ves notes, et vous
+  devriez trouver plus d'informations dans le document <a
+  href="new_features_2_4.html">Nouvelles fonctionnalit&eacute;s</a>, ou dans
+  le fichier <code>src/CHANGES</code>.</p>
+
+  <p>Ce document ne d&eacute;crit que les modifications intervenues entre les versions
+  2.2 et 2.4. Si vous effectuez une mise &agrave; jour depuis la version 2.0, vous
+  devez aussi consulter le
+  <a href="http://httpd.apache.org/docs/2.2/upgrading.html">document de mise
+  &agrave; jour de 2.0 vers 2.2.</a></p>
+
+</summary>
+<seealso><a href="new_features_2_4.html">Vue d'ensemble des nouvelles
+fonctionnalit&eacute;s de Apache 2.4</a></seealso>
+
+  <section id="compile-time">
+    <title>Modifications de la configuration au moment de la compilation</title>
+     <!-- <ul>
+     </ul> -->
+
+  </section>
+
+  <section id="run-time">
+    <title>Modifications de la configuration &agrave; l'ex&eacute;cution</title>
+
+    <!-- <ul>
+     </ul> -->
+    </ul>
+  </section>
+
+  <section id="misc">
+    <title>Changements divers</title>
+
+    </section>
+
+  <section id="third-party">
+    <title>Modules tiers</title>
+
+
+
+  </section>
+</manualpage>
