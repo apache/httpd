@@ -85,6 +85,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * proxy_ajp: ap_proxy_determine_connection modifies the url if we are
+       retrying the result we should retry using the orginal url.
+        http://svn.apache.org/viewvc?rev=706318&view=rev
+     +1: jfclere, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -128,11 +132,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~tdonovan/diffs/windows_odbc_22x.patch
         http://people.apache.org/~tdonovan/diffs/windows_odbc_22x_dsw.patch
      +1: tdonovan, wrowe
-
-   * proxy_ajp: ap_proxy_determine_connection modifies the url if we are
-       retrying the result we should retry using the orginal url.
-        http://svn.apache.org/viewvc?rev=706318&view=rev
-     +1: jfclere, rpluem, jim
 
    * mod_proxy_ajp: Always send body (zero size at least) whenever C-L is
      present in the request.
