@@ -121,7 +121,7 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
     ctx->expiry_interval = (hints && hints->expiry_interval 
                             ? hints->expiry_interval : 30);
 
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
+#if AP_NEED_SET_MUTEX_PERMS
     /*
      * We have to make sure the Apache child processes have access to
      * the DBM file. But because there are brain-dead platforms where we
