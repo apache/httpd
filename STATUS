@@ -27,7 +27,7 @@ Release history:
           while x.{even}.z versions are Stable/GA releases.]
 
     2.2.11  : In development.
-    2.2.10  : Tagged October 7, 2008.
+    2.2.10  : Released October 14, 2008.
     2.2.9   : Released June 14, 2008.
     2.2.8   : Released January 19, 2008.
     2.2.7   : Tagged January 4, 2008. Not released.
@@ -132,7 +132,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * proxy_ajp: ap_proxy_determine_connection modifies the url if we are
        retrying the result we should retry using the orginal url.
         http://svn.apache.org/viewvc?rev=706318&view=rev
-     +1: jfclere, rpluem
+     +1: jfclere, rpluem, jim
 
    * mod_proxy_ajp: Always send body (zero size at least) whenever C-L is
      present in the request.
@@ -150,7 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=707665&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, jim
 
    * mod_proxy: Prevent segmentation faults by correctly flushing all buckets
      from the proxy backend.
@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=706921&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, jim
 
    * mod_proxy: Add the possibility to set the worker parameters
      connectiontimeout and ping in milliseconds. 
@@ -176,7 +176,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=707163&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
