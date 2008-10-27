@@ -34,6 +34,10 @@
 
 #include "ap_socache.h"
 
+#if AP_NEED_SET_MUTEX_PERMS
+#include "unixd.h"
+#endif
+
 /* Use of the context structure must be thread-safe after the initial
  * create/init; callers must hold the mutex. */
 struct ap_socache_instance_t {
