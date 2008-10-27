@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:656287 (outdated) -->
+<!-- English Revision: 656287 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -98,15 +98,15 @@
       <var>attribute</var>=<var>value</var> ... --&gt;
     </example>
 
-    <p>値 (訳注: value) は二重引用符で囲むのが一般的ですが、
+    <p>値 <transnote>value</transnote> は二重引用符で囲むのが一般的ですが、
     シングルクオート (') とバッククオート (`) も使用できます。
-    多くのコマンドは属性-値 (訳注: attribute-value) の組を一つだけ指定できます。
+    多くのコマンドは属性-値 <transnote>attribute-value</transnote> の組を一つだけ指定できます。
     コメントの終わり (<code>--&gt;</code>)
     の前には、SSI の句の一部だと解釈されないようにするために空白を
     入れてください。最初の <code>&lt;!--#</code> はまとめて<em>一つ</em>の
     句で、空白をふくんではいけないこと注意してください。</p>
 
-    <p>要素 (訳注: element) を以下の表に示します。</p>
+    <p>要素 <transnote>element</transnote> を以下の表に示します。</p>
 
     <table border="1">
     <tr><th>要素</th><th>説明</th></tr>
@@ -231,7 +231,7 @@
       </example>
 
       <p>スクリプトが、出力の代わりに <code>Location:</code> ヘッダを返すと、
-      HTML のアンカー (訳注：リンク) に変換されます。</p>
+      HTML のアンカー <transnote>リンク</transnote> に変換されます。</p>
 
       <p><code>exec cgi</code> よりも、
       <code><a href="#includevirtual">include virtual</a></code>
@@ -299,8 +299,9 @@
       挿入します。挿入されるファイルはアクセス制御の管理下にあります。
       解析しているファイルの存在するディレクトリに
       <a href="core.html#options">Option</a> <code>IncludesNOEXEC</code>
-      が設定されている場合、text MIME タイプ (<code>text/plain</code>,
-      <code>text/html</code> 等) のドキュメントのみインクルードが行なわれます。
+      が設定されている場合、text <glossary ref="mime-type">MIME タイプ</glossary>
+      (<code>text/plain</code>, <code>text/html</code> 等) 
+      のドキュメントのみインクルードが行なわれます。
       その他の場合は、クエリー文字列も含め、コマンドで指定された
       完全な URL を使って普通に CGI スクリプトが呼び出されます。</p>
 
@@ -340,6 +341,15 @@
       <p>HTML ドキュメントに CGI プログラムの出力を含める方法としては、
       <code>include virtual</code> の方が <code>exec cgi</code> よりも
       好ましい方法です。</p>
+
+      <p><directive module="mod_request">KeptBodySize</directive>
+      ディレクティブが設定されていて、かつ、この対象ファイルが
+      <transnote>POST リクエストを</transnote>受け入れできるなら、
+      POST リクエストを受け取ってサブリクエストを発行する際にも
+      POST リクエストが渡されます。
+      このディレクティブが設定されていない場合は、
+      サブリクエストは GET リクエストとして処理されます。</p>
+
       </dd>
       </dl>
     </section> <!-- /include -->
@@ -482,6 +492,27 @@
       <dt><code><var>string</var></code></dt>
       <dd><var>string</var> が空でない場合に真です</dd>
 
+      <dt><code><var>-A string</var></code></dt>
+      <dd><p><transnote>httpd の</transnote>設定を検査して、
+      文字列で指定した URL にアクセスできる場合 true で、
+      そうでなければ false になります。
+      <directive>SSIAccessEnable</directive> が有効のときにのみ
+      この検査は行われます。
+      承認されていないユーザからは隠しておきたい URL についての情報、
+      たとえば URL へのリンクなどがある場合に、便利です。
+      検査では URL へアクセスできるかの権限のみが行われ、URL
+      が存在するかどうかについては検査されないことに注意してください。</p>
+
+      <example><title>Example</title>
+        &lt;!--#if expr="-A /private" --&gt;<br />
+        <indent>
+          Click &lt;a href="/private"&gt;here&lt;/a&gt; to access private
+          information.<br />
+        </indent>
+        &lt;!--#endif --&gt;
+      </example>
+      </dd>
+
       <dt><code><var>string1</var> = <var>string2</var><br />
       <var>string1</var> == <var>string2</var><br />
       <var>string1</var> != <var>string2</var></code></dt>
@@ -590,6 +621,12 @@
       パースツリーと、
       それがどのようにクライアントに送られた出力まで評価されたかを
       挿入します。</p>
+    </note>
+ 
+    <note><title>正規表現内での / のエスケープ</title>
+    <p>正規表現内でデリミタとして扱いたくない / があれば、それらは全て
+    エスケープしなければなりません。
+    正規表現の意味がどうであろうとエスケープは必要です。</p>
     </note>
 </section>
 
@@ -725,6 +762,33 @@ directive]&quot;</default>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSIAccessEnable</name>
+<description>条件分岐フローの制御で -A フラグが使えるようにする</description>
+<syntax>SSIAccessEnable on|off</syntax>
+<default>SSIAccessEnable off</default>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+
+<usage>
+    <p><directive>SSIAccessEnable</directive> ディレクティブを使って、
+    条件分岐フローの制御で -A 検査が使えるようにします。
+    <directive>SSIAccessEnable</directive> は次の値を引数にとります:</p>
+
+    <dl>
+
+      <dt><code>off</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; では文字列や正規表現として
+      解釈され、-A は特別な意味は持ちません。</dd>
+
+      <dt><code>on</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; では、設定上 URL /foo
+      にアクセスできない場合 false で、アクセスできる場合は true</dd>
+
+    </dl>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>XBitHack</name>
 <description>実行ビットが設定されたファイルの SSI ディレクティブを
 解析する</description>
@@ -736,7 +800,7 @@ directive]&quot;</default>
 
 <usage>
     <p><directive>XBitHack</directive> ディレクティブは通常の HTML
-    ドキュメントの解析を制御します。このディレクティブは MIME タイプ
+    ドキュメントの解析を制御します。このディレクティブは <glossary ref="mime-type">MIME タイプ</glossary>
     <code>text/html</code> と関連付けられているファイルにのみ影響します。
     <directive>XBitHack</directive> は以下の値をとることができます。</p>
 
