@@ -170,6 +170,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~rpluem/patches/milli_seconds.diff
      +1: rpluem,
 
+   * mod_proxy: Remove potential for memory leak. Allocate from request
+     pool which is now viable due to connection pooling
+     Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=707163&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
  * core, authn/z: Avoid calling access control hooks for internal requests
