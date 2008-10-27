@@ -267,6 +267,37 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
             return APR_SUCCESS;
         }
 
+        /* Have we read as much data as we wanted (be greedy)? */
+        if (len < readbytes) {
+            apr_size_t bucket_len;
+
+            rv = APR_SUCCESS;
+            /* We already registered the data in e in len */
+            e = APR_BUCKET_NEXT(e);
+            while ((len < readbytes) && (rv == APR_SUCCESS)
+                   && (e != APR_BRIGADE_SENTINEL(ctx->b))) {
+                /* Check for the availability of buckets with known length */
+                if (e->length != -1) {
+                    len += e->length;
+                    e = APR_BUCKET_NEXT(e);
+                }
+                else {
+                    /*
+                     * Read from bucket, but non blocking. If there isn't any
+                     * more data, well than this is fine as well, we will
+                     * not wait for more since we already got some and we are
+                     * only checking if there isn't more.
+                     */
+                    rv = apr_bucket_read(e, &str, &bucket_len,
+                                         APR_NONBLOCK_READ);
+                    if (rv == APR_SUCCESS) {
+                        len += bucket_len;
+                        e = APR_BUCKET_NEXT(e);
+                    }
+                }
+            }
+        }
+
         /* We can only return at most what we read. */
         if (len < readbytes) {
             readbytes = len;
