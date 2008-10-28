@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#define APR_RING_DEBUG 1
+//#define APR_RING_DEBUG 1
 
 #include "httpd.h"
 #include "http_log.h"
