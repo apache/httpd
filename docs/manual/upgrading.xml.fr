@@ -57,7 +57,6 @@ fonctionnalit&eacute;s de Apache 2.4</a></seealso>
 
     <!-- <ul>
      </ul> -->
-    </ul>
   </section>
 
   <section id="misc">
