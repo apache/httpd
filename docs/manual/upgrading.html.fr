@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Mise à jour vers 2.4 depuis 2.2 - Serveur Apache HTTP</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Mise à jour vers 2.4 depuis 2.2</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+
+  <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
+  jour, nous maintenons un document
+  qui comporte des informations critiques à l'attention des personnes qui
+  utilisent déjà Apache. Ces informations ne sont que de brèves notes, et vous
+  devriez trouver plus d'informations dans le document <a href="new_features_2_4.html">Nouvelles fonctionnalités</a>, ou dans
+  le fichier <code>src/CHANGES</code>.</p>
+
+  <p>Ce document ne décrit que les modifications intervenues entre les versions
+  2.2 et 2.4. Si vous effectuez une mise à jour depuis la version 2.0, vous
+  devez aussi consulter le
+  <a href="http://httpd.apache.org/docs/2.2/upgrading.html">document de mise
+  à jour de 2.0 vers 2.2.</a></p>
+
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Modifications de la configuration au moment de la compilation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#run-time">Modifications de la configuration à l'exécution</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#misc">Changements divers</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#third-party">Modules tiers</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="new_features_2_4.html">Vue d'ensemble des nouvelles
+fonctionnalités de Apache 2.4</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="compile-time" id="compile-time">Modifications de la configuration au moment de la compilation</a></h2>
+    
+     
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="run-time" id="run-time">Modifications de la configuration à l'exécution</a></h2>
+    
+
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="misc" id="misc">Changements divers</a></h2>
+    
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="third-party" id="third-party">Modules tiers</a></h2>
+    
+
+
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/upgrading.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
+</body></html>

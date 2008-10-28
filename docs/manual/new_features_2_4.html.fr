@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Vue d'ensemble des nouvelles fonctionnalités d'Apache 2.4 - Serveur Apache HTTP</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Vue d'ensemble des nouvelles fonctionnalités d'Apache 2.4</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./en/new_features_2_4.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+
+  <p>Ce document décrit certaines modifications majeures entre les versions
+  2.2 et 2.4 du serveur HTTP Apache. Pour les nouvelles fonctionnalités
+  ajoutées depuis la version 2.0, se référer au document
+  <a href="new_features_2_2.html">nouvelles fonctionnalités
+  de la version 2.2</a>.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Améliorations du noyau</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#module">Améliorations des modules</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#programs">Améliorations des programmes</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#developer">Modifications pour le développeur de modules</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="core" id="core">Améliorations du noyau</a></h2>
+    
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="module" id="module">Améliorations des modules</a></h2>
+    
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="programs" id="programs">Améliorations des programmes</a></h2>
+    
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="developer" id="developer">Modifications pour le développeur de modules</a></h2>
+    
+    <dl>
+      <dt>Ajout de code pour la vérification de la configuration</dt>
+
+      <dd>Une nouvelle fonction, <code>check_config</code>, a été ajoutée et
+      s'exécute entre les fonctions <code>pre_config</code> et
+      <code>open_logs</code>. Elle s'exécute aussi avant la fonction
+      <code>test_config</code> si l'option <code>-t</code> est passée au
+      démon <code class="program"><a href="./programs/httpd.html">httpd</a></code>. La fonction <code>check_config</code>
+      permet aux modules de vérifier l'interdépendance des valeurs des
+      directives de configuration et d'ajuster ces valeurs, alors que les
+      messages du serveur peuvent encore être affichés sur la console.
+      L'utilisateur est ainsi averti des erreurs de configuration avant que la
+      fonction du noyau <code>open_logs</code> ne redirige les sorties de la
+      console vers le journal des erreurs.</dd>
+      <dt>Ajout d'un analyseur syntaxique d'expressions</dt>
+      <dd>Nous disposons à présent d'un analyseur générique d'expressions, dont l'API
+      est décrite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
+      l'analyseur qu'on trouvait auparavant dans <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</dd>
+    </dl>
+  </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./en/new_features_2_4.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/new_features_2_4.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
+</body></html>
