@@ -29,7 +29,7 @@
 #include "http_vhost.h"
 
 static void
-simple_io_timeot_cb(simple_core_t *sc,
+simple_io_timeout_cb(simple_core_t *sc,
                            void *baton)
 {
   simple_conn_t *scon = (simple_conn_t *)baton;
@@ -97,7 +97,7 @@ simple_io_process(simple_conn_t *scon)
          */
 
         simple_register_timer(scon->sc,
-                              simple_io_timeot_cb,
+                              simple_io_timeout_cb,
                               scon,
                               scon->c->base_server != NULL ? scon->c->base_server->timeout : ap_server_conf->timeout);
 
@@ -131,7 +131,7 @@ simple_io_process(simple_conn_t *scon)
 
     if (cs->state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
       simple_register_timer(scon->sc,
-                            simple_io_timeot_cb,
+                            simple_io_timeout_cb,
                             scon,
                             scon->c->base_server != NULL ? scon->c->base_server->timeout : ap_server_conf->timeout);
 
