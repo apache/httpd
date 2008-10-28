@@ -1,6 +1,9 @@
 
 The following MPMs currently exist:
 
+  simple ........ Single or Multi Process, with Preforking or Threading,
+                  depending on configuration and operating systems.  Should
+                  be able to run on all modern operating systems.
   prefork ....... Multi  Process Model with Preforking (Apache 1.3)
   perchild ...... Multi  Process Model with Threading.
                   Constant number of processes, variable number of threads

@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
 APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
-                          MPM={beos|event|worker|prefork|mpmt_os2|perchild|leader|threadpool|winnt}),[
+                          MPM={simple|beos|event|worker|prefork|mpmt_os2|perchild|leader|threadpool|winnt}),[
   APACHE_MPM=$withval
 ],[
   if test "x$APACHE_MPM" = "x"; then
@@ -14,7 +14,7 @@ apache_cv_mpm=$APACHE_MPM
 	
 ap_mpm_is_threaded ()
 {
-    if test "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "event" -o "$apache_cv_mpm" = "perchild" -o "$apache_cv_mpm" = "leader" -o "$apache_cv_mpm" = "winnt" -o "$apache_cv_mpm" = "threadpool" ; then
+    if test "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "event" -o "$apache_cv_mpm" = "simple" -o "$apache_cv_mpm" = "perchild" -o "$apache_cv_mpm" = "leader" -o "$apache_cv_mpm" = "winnt" -o "$apache_cv_mpm" = "threadpool" ; then
         return 0
     else
         return 1
