@@ -20,6 +20,7 @@
             2.3</a></div><div id="page-content"><div id="preamble"><h1>URL からファイルシステム上の位置へのマップ</h1>
 <div class="toplang">
 <p><span>言語: </span><a href="./en/urlmapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/urlmapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/urlmapping.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
@@ -280,6 +281,7 @@ ProxyPassReverseCookiePath /foo/ /bar/
 </div></div>
 <div class="bottomlang">
 <p><span>言語: </span><a href="./en/urlmapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/urlmapping.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/urlmapping.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>

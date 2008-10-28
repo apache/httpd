@@ -25,8 +25,6 @@
 <p><span>言語: </span><a href="../en/mod/mod_include.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_include.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバがパースする html ドキュメント (Server Side Includes)</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>include_module</td></tr>
@@ -42,6 +40,7 @@
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#ssiaccessenable">SSIAccessEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssierrormsg">SSIErrorMsg</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssistarttag">SSIStartTag</a></li>
@@ -120,15 +119,15 @@
       <var>attribute</var>=<var>value</var> ... --&gt;
     </code></p></div>
 
-    <p>値 (訳注: value) は二重引用符で囲むのが一般的ですが、
+    <p>値 <span class="transnote">(<em>訳注:</em> value)</span> は二重引用符で囲むのが一般的ですが、
     シングルクオート (') とバッククオート (`) も使用できます。
-    多くのコマンドは属性-値 (訳注: attribute-value) の組を一つだけ指定できます。
+    多くのコマンドは属性-値 <span class="transnote">(<em>訳注:</em> attribute-value)</span> の組を一つだけ指定できます。
     コメントの終わり (<code>--&gt;</code>)
     の前には、SSI の句の一部だと解釈されないようにするために空白を
     入れてください。最初の <code>&lt;!--#</code> はまとめて<em>一つ</em>の
     句で、空白をふくんではいけないこと注意してください。</p>
 
-    <p>要素 (訳注: element) を以下の表に示します。</p>
+    <p>要素 <span class="transnote">(<em>訳注:</em> element)</span> を以下の表に示します。</p>
 
     <table class="bordered">
     <tr><th>要素</th><th>説明</th></tr>
@@ -252,7 +251,7 @@
       </code></p></div>
 
       <p>スクリプトが、出力の代わりに <code>Location:</code> ヘッダを返すと、
-      HTML のアンカー (訳注：リンク) に変換されます。</p>
+      HTML のアンカー <span class="transnote">(<em>訳注:</em> リンク)</span> に変換されます。</p>
 
       <p><code>exec cgi</code> よりも、
       <code><a href="#includevirtual">include virtual</a></code>
@@ -318,8 +317,9 @@
       挿入します。挿入されるファイルはアクセス制御の管理下にあります。
       解析しているファイルの存在するディレクトリに
       <a href="core.html#options">Option</a> <code>IncludesNOEXEC</code>
-      が設定されている場合、text MIME タイプ (<code>text/plain</code>,
-      <code>text/html</code> 等) のドキュメントのみインクルードが行なわれます。
+      が設定されている場合、text <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
+      (<code>text/plain</code>, <code>text/html</code> 等) 
+      のドキュメントのみインクルードが行なわれます。
       その他の場合は、クエリー文字列も含め、コマンドで指定された
       完全な URL を使って普通に CGI スクリプトが呼び出されます。</p>
 
@@ -358,6 +358,15 @@
       <p>HTML ドキュメントに CGI プログラムの出力を含める方法としては、
       <code>include virtual</code> の方が <code>exec cgi</code> よりも
       好ましい方法です。</p>
+
+      <p><code class="directive"><a href="../mod/mod_request.html#keptbodysize">KeptBodySize</a></code>
+      ディレクティブが設定されていて、かつ、この対象ファイルが
+      <span class="transnote">(<em>訳注:</em> POST リクエストを)</span>受け入れできるなら、
+      POST リクエストを受け取ってサブリクエストを発行する際にも
+      POST リクエストが渡されます。
+      このディレクティブが設定されていない場合は、
+      サブリクエストは GET リクエストとして処理されます。</p>
+
       </dd>
       </dl>
      
@@ -499,6 +508,27 @@
       <dt><code><var>string</var></code></dt>
       <dd><var>string</var> が空でない場合に真です</dd>
 
+      <dt><code><var>-A string</var></code></dt>
+      <dd><p><span class="transnote">(<em>訳注:</em> httpd の)</span>設定を検査して、
+      文字列で指定した URL にアクセスできる場合 true で、
+      そうでなければ false になります。
+      <code class="directive">SSIAccessEnable</code> が有効のときにのみ
+      この検査は行われます。
+      承認されていないユーザからは隠しておきたい URL についての情報、
+      たとえば URL へのリンクなどがある場合に、便利です。
+      検査では URL へアクセスできるかの権限のみが行われ、URL
+      が存在するかどうかについては検査されないことに注意してください。</p>
+
+      <div class="example"><h3>Example</h3><p><code>
+        &lt;!--#if expr="-A /private" --&gt;<br />
+        <span class="indent">
+          Click &lt;a href="/private"&gt;here&lt;/a&gt; to access private
+          information.<br />
+        </span>
+        &lt;!--#endif --&gt;
+      </code></p></div>
+      </dd>
+
       <dt><code><var>string1</var> = <var>string2</var><br />
       <var>string1</var> == <var>string2</var><br />
       <var>string1</var> != <var>string2</var></code></dt>
@@ -602,6 +632,40 @@
       それがどのようにクライアントに送られた出力まで評価されたかを
       挿入します。</p>
     </div>
+ 
+    <div class="note"><h3>正規表現内での / のエスケープ</h3>
+    <p>正規表現内でデリミタとして扱いたくない / があれば、それらは全て
+    エスケープしなければなりません。
+    正規表現の意味がどうであろうとエスケープは必要です。</p>
+    </div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSIAccessEnable" id="SSIAccessEnable">SSIAccessEnable</a> <a name="ssiaccessenable" id="ssiaccessenable">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>条件分岐フローの制御で -A フラグが使えるようにする</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSIAccessEnable on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSIAccessEnable off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
+</table>
+    <p><code class="directive">SSIAccessEnable</code> ディレクティブを使って、
+    条件分岐フローの制御で -A 検査が使えるようにします。
+    <code class="directive">SSIAccessEnable</code> は次の値を引数にとります:</p>
+
+    <dl>
+
+      <dt><code>off</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; では文字列や正規表現として
+      解釈され、-A は特別な意味は持ちません。</dd>
+
+      <dt><code>on</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; では、設定上 URL /foo
+      にアクセスできない場合 false で、アクセスできる場合は true</dd>
+
+    </dl>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">ディレクティブ</a></h2>
@@ -752,7 +816,7 @@ directive]"</code></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
 </table>
     <p><code class="directive">XBitHack</code> ディレクティブは通常の HTML
-    ドキュメントの解析を制御します。このディレクティブは MIME タイプ
+    ドキュメントの解析を制御します。このディレクティブは <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
     <code>text/html</code> と関連付けられているファイルにのみ影響します。
     <code class="directive">XBitHack</code> は以下の値をとることができます。</p>
 
