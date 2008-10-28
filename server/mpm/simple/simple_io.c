@@ -28,7 +28,7 @@
 #include "scoreboard.h"
 #include "http_vhost.h"
 
-void
+static void
 simple_io_timeot_cb(simple_core_t *sc,
                            void *baton)
 {
@@ -108,7 +108,7 @@ simple_io_process(simple_conn_t *scon)
         if (rv != APR_SUCCESS) {
           ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                        "apr_pollcb_add: failed in write completion");
-          AP_DEBUG_ASSERT(rc == APR_SUCCESS);
+          AP_DEBUG_ASSERT(rv == APR_SUCCESS);
         }
         return APR_SUCCESS;
       }
@@ -142,7 +142,7 @@ simple_io_process(simple_conn_t *scon)
       if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                      "process_socket: apr_pollset_add failure in read request line");
-        AP_DEBUG_ASSERT(rc == APR_SUCCESS);
+        AP_DEBUG_ASSERT(rv == APR_SUCCESS);
       }
 
       return APR_SUCCESS;

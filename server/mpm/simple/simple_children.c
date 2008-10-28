@@ -19,6 +19,7 @@
 #include "simple_types.h"
 #include "simple_event.h"
 #include "simple_run.h"
+#include "simple_children.h"
 #include "apr_hash.h"
 
 #define SPAWN_CHILDREN_INTERVAL (apr_time_from_sec(5))
