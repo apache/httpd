@@ -474,6 +474,10 @@ static int open_rewritelog(server_rec *s, apr_pool_t *p)
 
 static void do_rewritelog(request_rec *r, int level, char *perdir,
                           const char *fmt, ...)
+        __attribute__((format(printf,4,5)));
+
+static void do_rewritelog(request_rec *r, int level, char *perdir,
+                          const char *fmt, ...)
 {
     rewrite_server_conf *conf;
     char *logline, *text;
