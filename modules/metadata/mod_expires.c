@@ -430,6 +430,9 @@ static int set_expiration_fields(request_rec *r, const char *code,
     }
 
     expires = base + additional;
+    if (expires < r->request_time) {
+        expires = r->request_time;
+    }
     apr_table_mergen(t, "Cache-Control",
                      apr_psprintf(r->pool, "max-age=%" APR_TIME_T_FMT,
                                   apr_time_sec(expires - r->request_time)));
