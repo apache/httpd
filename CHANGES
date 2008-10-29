@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) unixd: turn existing code into a module, and turn the set user/group
+     and chroot into a child_init function. [Nick Kew]
+
   *) core: Add ap_timeout_parameter_parse to public API. [Ruediger Pluem]
 
   *) mod_proxy: Prevent segmentation faults by correctly flushing all buckets
