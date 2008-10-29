@@ -28,6 +28,8 @@
 
 #include "ap_listen.h"
 
+#include "mpm.h"
+
 /**
  * Create Timers.
  */
@@ -263,6 +265,11 @@ simple_setup_privs(simple_core_t *sc)
   /* TODO: These should be a series of hooks, chroot, drop user, SELinux support, etc. */
   /* TODO: chroot support */
   /* TODO: drop to configured user */
+
+  /* TODO: none of the above.  Just a child_init hook, which can be
+   * instantianted in a module
+   */
+  ap_run_child_init(sc->pool, ap_server_conf);
   return 0;
 }
 
