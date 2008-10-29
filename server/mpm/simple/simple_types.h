@@ -53,7 +53,7 @@ typedef enum
   SIMPLE_PT_CORE_ACCEPT,
   SIMPLE_PT_CORE_IO,
   /* pqXXXXXX: User IO not defined yet. */
-  SIMPLE_PT_USER,
+  SIMPLE_PT_USER
 } simple_poll_type_e;
 
 struct simple_sb_t {

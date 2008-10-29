@@ -121,9 +121,11 @@ simple_open_logs(apr_pool_t *p,
                  apr_pool_t *ptemp,
                  server_rec *s)
 {
-  ap_server_conf = s;
+  int nsock;
 
-  int nsock = ap_setup_listeners(s);
+  ap_server_conf = s;
+  
+  nsock = ap_setup_listeners(s);
 
   if (nsock < 1) {
     ap_log_error(APLOG_MARK, APLOG_ALERT, 0,
@@ -139,12 +141,13 @@ static int
 simple_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                   apr_pool_t *ptemp)
 {
+  int run_debug;
   apr_status_t rv;
   simple_core_t* sc = simple_core_get();
 
   sc->restart_num++;
 
-  int run_debug = ap_exists_config_define("DEBUG");
+  run_debug = ap_exists_config_define("DEBUG");
 
   if (run_debug) {
     sc->run_foreground = 1;
@@ -262,12 +265,14 @@ set_proccount(cmd_parms *cmd, void *baton, const char *arg)
 static const char*
 set_threadcount(cmd_parms *cmd, void *baton, const char *arg)
 {
+  simple_core_t *sc = simple_core_get();
   const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
   if (err != NULL) {
     return err;
   }
 
-  simple_core_get()->procmgr.thread_count = atoi(arg);
+  sc->procmgr.thread_count = atoi(arg);
 
   return NULL;
 }
@@ -275,13 +280,14 @@ set_threadcount(cmd_parms *cmd, void *baton, const char *arg)
 static const char*
 set_user(cmd_parms *cmd, void *baton, const char *arg)
 {
+  simple_core_t *sc = simple_core_get();
   const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
   if (err != NULL) {
     return err;
   }
   
-  simple_core_get()->procmgr.user_name = arg;
-  simple_core_get()->procmgr.user_id = ap_uname2id(arg);
+  sc->procmgr.user_name = arg;
+  sc->procmgr.user_id = ap_uname2id(arg);
 
   return NULL;
 }

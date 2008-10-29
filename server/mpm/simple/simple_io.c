@@ -47,6 +47,9 @@ static apr_status_t
 simple_io_process(simple_conn_t *scon)
 {
   apr_status_t rv;
+  simple_core_t *sc;
+  conn_rec *c;
+  conn_state_t *cs;
 
   if (scon->c->clogging_input_filters && !scon->c->aborted) {
     /* Since we have an input filter which 'cloggs' the input stream,
@@ -59,9 +62,9 @@ simple_io_process(simple_conn_t *scon)
     }
   }
 
-  simple_core_t *sc = scon->sc;
-  conn_rec *c = scon->c;
-  conn_state_t *cs = c->cs;
+  sc = scon->sc;
+  c = scon->c;
+  cs = c->cs;
 
   while (!c->aborted) {
     if (cs->state == CONN_STATE_READ_REQUEST_LINE) {
@@ -175,12 +178,14 @@ static void *
 simple_io_setup_conn(apr_thread_t* thread, void *baton)
 {
   apr_status_t rv;
+  ap_sb_handle_t *sbh;
+  conn_state_t *cs;
+  long conn_id = 0;
+  simple_sb_t *sb;
   simple_conn_t *scon = (simple_conn_t *)baton;
 
   /* pqXXXXX: remove this. */
-  ap_sb_handle_t *sbh;
   ap_create_sb_handle(&sbh, scon->pool, 0, 0);
-  long conn_id = 0;
 
   scon->ba = apr_bucket_alloc_create(scon->pool);
 
@@ -188,8 +193,8 @@ simple_io_setup_conn(apr_thread_t* thread, void *baton)
                                conn_id, sbh, scon->ba);
 
   scon->c->cs = apr_pcalloc(scon->pool, sizeof(conn_state_t));
-  conn_state_t *cs = scon->c->cs;
-  simple_sb_t *sb = apr_pcalloc(scon->pool, sizeof(simple_sb_t));
+  cs = scon->c->cs;
+  sb = apr_pcalloc(scon->pool, sizeof(simple_sb_t));
 
   cs->pfd.p = scon->pool;
   cs->pfd.desc_type = APR_POLL_SOCKET;
@@ -225,12 +230,12 @@ apr_status_t
 simple_io_accept(simple_core_t *sc, simple_sb_t *sb)
 {
   apr_status_t rv;
-  ap_listen_rec *lr = (ap_listen_rec *)sb->baton;
   apr_pool_t *ptrans;
+  apr_socket_t *socket;
+  ap_listen_rec *lr = (ap_listen_rec *)sb->baton;
 
   /* pqXXXXXX: Consider doing pool recycling like the event/worker MPMs do. */
   apr_pool_create(&ptrans, NULL);
-  apr_socket_t *socket;
 
   apr_pool_tag(ptrans, "transaction");
 
