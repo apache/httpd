@@ -297,7 +297,7 @@ void ap_process_async_request(request_rec *r)
         ap_die(access_status, r);
     }
 
-    return ap_process_request_after_handler(r);
+    ap_process_request_after_handler(r);
 }
 
 void ap_process_request(request_rec *r)
