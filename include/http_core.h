@@ -461,7 +461,7 @@ typedef struct {
 #define HOSTNAME_LOOKUP_UNSET	3
     unsigned int hostname_lookups : 4;
 
-    signed int content_md5 : 2;  /* calculate Content-MD5? */
+    unsigned int content_md5 : 2;  /* calculate Content-MD5? */
 
 #define USE_CANONICAL_NAME_OFF   (0)
 #define USE_CANONICAL_NAME_ON    (1)
