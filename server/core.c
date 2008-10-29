@@ -51,6 +51,10 @@
 
 #include "mod_so.h" /* for ap_find_loaded_module_symbol */
 
+#if defined(RLIMIT_CPU) || defined (RLIMIT_DATA) || defined (RLIMIT_VMEM) || defined(RLIMIT_AS) || defined (RLIMIT_NPROC)
+#include "unixd.h"
+#endif
+
 /* LimitRequestBody handling */
 #define AP_LIMIT_REQ_BODY_UNSET         ((apr_off_t) -1)
 #define AP_DEFAULT_LIMIT_REQ_BODY       ((apr_off_t) 0)
