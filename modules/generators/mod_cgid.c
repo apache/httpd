@@ -634,8 +634,8 @@ static int cgid_server(void *data)
 
     while (!daemon_should_exit) {
         int errfileno = STDERR_FILENO;
-        char *argv0;
-        char **env;
+        char *argv0 = NULL;
+        char **env = NULL;
         const char * const *argv;
         apr_int32_t in_pipe;
         apr_int32_t out_pipe;
