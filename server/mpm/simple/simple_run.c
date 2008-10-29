@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-//#define APR_RING_DEBUG 1
+/* #define APR_RING_DEBUG 1 */
 
 #include "httpd.h"
 #include "http_log.h"
@@ -158,19 +158,25 @@ simple_run_loop(simple_core_t *sc)
   simple_timer_t *ep = NULL;
   
   while (sc->mpm_state == AP_MPMQ_RUNNING) {
-    apr_time_t now = apr_time_now();
+    apr_time_t tnow = apr_time_now();
+    simple_timer_t *head;
     apr_interval_time_t timeout = apr_time_from_msec(500);
-    
+    APR_RING_HEAD(simple_temp_timer_ring_t, simple_timer_t) tmp_ring;
+
     apr_thread_mutex_lock(sc->mtx);
-    simple_timer_t *head = APR_RING_FIRST(&sc->timer_ring);
+    head = APR_RING_FIRST(&sc->timer_ring);
     
     if (head != APR_RING_SENTINEL(&sc->timer_ring, simple_timer_t, link)) {
-      if (now < head->expires) {
-        timeout = (head->expires - now);
+      if (tnow < head->expires) {
+        timeout = (head->expires - tnow);
         if (timeout > apr_time_from_msec(500)) {
           /* pqXXXXX: I'm 95% sure that the Linux Powertop guys will slap me for this. */
           timeout = apr_time_from_msec(500);
         }
+      }
+      else {
+        /* We have already expired timers in the queue. */
+        timeout = 0;
       }
     }
     apr_thread_mutex_unlock(sc->mtx);
@@ -180,7 +186,7 @@ simple_run_loop(simple_core_t *sc)
                          simple_io_callback,
                          sc);
 
-    now = apr_time_now();
+    tnow = apr_time_now();
 
     if (rv) {
       if (!APR_STATUS_IS_EINTR(rv) && !APR_STATUS_IS_TIMEUP(rv)) {
@@ -190,7 +196,6 @@ simple_run_loop(simple_core_t *sc)
       }
     }
     
-    APR_RING_HEAD(simple_temp_timer_ring_t, simple_timer_t) tmp_ring;
     APR_RING_INIT(&tmp_ring, simple_timer_t, link);
 
     apr_thread_mutex_lock(sc->mtx);
@@ -204,7 +209,7 @@ simple_run_loop(simple_core_t *sc)
                                    simple_timer_t, link);
            ep = APR_RING_NEXT(ep, link))
       {
-        if (ep->expires < now) {
+        if (ep->expires < tnow) {
           simple_timer_t *next = APR_RING_PREV(ep, link);
           /* push this task */
           APR_RING_REMOVE(ep, link);
