@@ -17,15 +17,19 @@
 
 
 #include "httpd.h"
-#include "util_filter.h"
-#include "http_log.h"
-#include "http_config.h"
-#include "http_request.h"
-
 /* to detect sendfile enabled, we need CORE_PRIVATE. Someone should fix this. */
 #define CORE_PRIVATE
 #include "http_core.h"
 
+#include "util_filter.h"
+#include "http_log.h"
+#include "http_config.h"
+#include "http_request.h"
+#include "http_protocol.h"
+
+
+
+#include "ap_mpm.h"
 
 module AP_MODULE_DECLARE_DATA dialup_module;
 
@@ -137,6 +141,12 @@ dialup_handler(request_rec *r)
 {
     int status;
     apr_status_t rv;
+    dialup_dcfg_t *dcfg;
+    core_dir_config *ccfg;
+    apr_file_t *fd;
+    dialup_baton_t *db;
+    apr_bucket *e;
+
 
     /* See core.c, default handler for all of the cases we just decline. */
     if (r->method_number != M_GET || 
@@ -145,15 +155,16 @@ dialup_handler(request_rec *r)
         return DECLINED;
     }
 
-    dialup_dcfg_t *dcfg = ap_get_module_config(r->per_dir_config,
-                                               &dialup_module);
+    dcfg = ap_get_module_config(r->per_dir_config,
+                                &dialup_module);
+
     if (dcfg->bytes_per_second == 0) {
         return DECLINED;
     }
-    core_dir_config *ccfg = ap_get_module_config(r->per_dir_config,
-                                                     &core_module);
-    
-    apr_file_t *fd;
+
+    ccfg = ap_get_module_config(r->per_dir_config,
+                                &core_module);
+
 
     rv = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY
 #if APR_HAS_SENDFILE
@@ -180,14 +191,10 @@ dialup_handler(request_rec *r)
         return DECLINED;
     }
 
-    apr_bucket_brigade *bb;
-
-    dialup_baton_t *db = apr_palloc(r->pool, sizeof(dialup_baton_t));
+    db = apr_palloc(r->pool, sizeof(dialup_baton_t));
     
     db->bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     db->tmpbb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-
-    apr_bucket *e;
 
     e = apr_brigade_insert_file(db->bb, fd, 0, r->finfo.size, r->pool);
 
@@ -293,7 +300,7 @@ static const command_rec dialup_cmds[] =
     AP_INIT_TAKE1("ModemStandard", cmd_modem_standard, NULL, ACCESS_CONF,
                   "Modem Standard to.. simulate. "
                   "Must be one of: 'V.21', 'V.26bis', 'V.32', 'V.34', or 'V.92'"),
-    NULL
+    {NULL}
 };
 
 module AP_MODULE_DECLARE_DATA dialup_module =
