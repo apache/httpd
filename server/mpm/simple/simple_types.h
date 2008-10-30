@@ -126,7 +126,7 @@ struct simple_conn_t
     conn_rec *c;
 };
 
-simple_core_t *simple_core_get();
+simple_core_t *simple_core_get(void);
 
 /* Resets all variables to 0 for a simple_core_t */
 apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool);
