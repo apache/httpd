@@ -277,28 +277,11 @@ set_threadcount(cmd_parms *cmd, void *baton, const char *arg)
   return NULL;
 }
 
-static const char*
-set_user(cmd_parms *cmd, void *baton, const char *arg)
-{
-  simple_core_t *sc = simple_core_get();
-  const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-  if (err != NULL) {
-    return err;
-  }
-  
-  sc->procmgr.user_name = arg;
-  sc->procmgr.user_id = ap_uname2id(arg);
-
-  return NULL;
-}
-
 static const command_rec simple_cmds[] = {
   AP_INIT_TAKE1("SimpleProcCount", set_proccount, NULL, RSRC_CONF,
                 "Number of child processes launched at server startup"),
   AP_INIT_TAKE1("SimpleThreadCount", set_threadcount, NULL, RSRC_CONF,
                 "Set the number of Worker Threads Per-Process"),
-  AP_INIT_TAKE1("SimpleUser", set_user, NULL, RSRC_CONF,
-                "Sets the user to run child processes as"),
   /* pqXXXXXXXXX: These do NOT belong in the MPM configuration commands. */
   LISTEN_COMMANDS,
   { NULL }
