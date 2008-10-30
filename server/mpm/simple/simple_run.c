@@ -249,13 +249,6 @@ void simple_single_process_hack(simple_core_t * sc)
 
 static int simple_setup_privs(simple_core_t * sc)
 {
-    /* TODO: These should be a series of hooks, chroot, drop user, SELinux support, etc. */
-    /* TODO: chroot support */
-    /* TODO: drop to configured user */
-
-    /* TODO: none of the above.  Just a child_init hook, which can be
-     * instantianted in a module
-     */
     int rv = ap_run_simple_drop_privileges(sc->pool, ap_server_conf);
 
     if (rv) {
