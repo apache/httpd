@@ -49,6 +49,7 @@
 #include <sys/prctl.h>
 #endif
 
+#include "simple_api.h"
 
 #ifndef DEFAULT_USER
 #define DEFAULT_USER "#-1"
@@ -126,33 +127,42 @@ static int set_group_privs(void)
 }
 
 
-static void 
-unixd_setup_child(apr_pool_t *pool, server_rec *s)
+static int 
+unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
 {
-    if (set_group_privs()) {
-        return;
+    int rv = set_group_privs();
+
+    if (rv) {
+        return rv;
     }
 
     if (NULL != unixd_config.chroot_dir) {
         if (geteuid()) {
+            rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                          "Cannot chroot when not started as root");
-            return;
+            return rv;
         }
+
         if (chdir(unixd_config.chroot_dir) != 0) {
+            rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                          "Can't chdir to %s", unixd_config.chroot_dir);
-            return;
+            return rv;
         }
+
         if (chroot(unixd_config.chroot_dir) != 0) {
+            rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                          "Can't chroot to %s", unixd_config.chroot_dir);
-            return;
+            return rv;
         }
+
         if (chdir("/") != 0) {
+            rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                          "Can't chdir to new root");
-            return;
+            return rv;
         }
     }
 
@@ -162,10 +172,11 @@ unixd_setup_child(apr_pool_t *pool, server_rec *s)
         GETPRIVMODE();
         if (setuid(unixd_config.user_id) == -1) {
             GETUSERMODE();
+            rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                         "setuid: unable to change to uid: %ld",
                         (long) unixd_config.user_id);
-            exit(1);
+            return rv;
         }
         GETUSERMODE();
     }
@@ -176,24 +187,29 @@ unixd_setup_child(apr_pool_t *pool, server_rec *s)
         os_init_job_environment(NULL, unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
 #endif
         setuid(unixd_config.user_id) == -1)) {
+        rv = errno;
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                     "setuid: unable to change to uid: %ld",
                     (long) unixd_config.user_id);
-        return;
+        return rv;
     }
 #if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
     /* this applies to Linux 2.4+ */
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
     if (ap_coredumpdir_configured) {
         if (prctl(PR_SET_DUMPABLE, 1)) {
+            rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                          "set dumpable failed - this child will not coredump"
                          " after software errors");
+            return rv;
         }
     }
 #endif
 #endif
 #endif
+
+    return OK;
 }
 
 
@@ -272,7 +288,8 @@ static void unixd_hooks(apr_pool_t *pool)
     ap_hook_pre_config(unixd_pre_config,
                        NULL, NULL, APR_HOOK_FIRST);
 
-    ap_hook_child_init(unixd_setup_child, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_simple_drop_privileges(unixd_drop_privileges,
+                                   NULL, NULL, APR_HOOK_FIRST);
 }
 
 static const command_rec unixd_cmds[] = {
