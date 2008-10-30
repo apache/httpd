@@ -28,88 +28,98 @@
 
 typedef struct simple_core_t simple_core_t;
 
-typedef struct {
-  int proc_count;
-  int thread_count;
-  int max_requests_per_child;
+typedef struct
+{
+    int proc_count;
+    int thread_count;
+    int max_requests_per_child;
 } simple_proc_mgr_t;
 
-typedef struct {
-  int pid;
+typedef struct
+{
+    int pid;
 } simple_child_t;
 
-typedef void(*simple_timer_cb)(simple_core_t *sc, void *baton);
-typedef void(*simple_io_sock_cb)(simple_core_t *sc, apr_socket_t *sock,
-                                 int flags, void *baton);
-typedef void(*simple_io_file_cb)(simple_core_t *sc, apr_socket_t *sock,
-                                 int flags, void *baton);
+typedef void (*simple_timer_cb) (simple_core_t * sc, void *baton);
+typedef void (*simple_io_sock_cb) (simple_core_t * sc, apr_socket_t * sock,
+                                   int flags, void *baton);
+typedef void (*simple_io_file_cb) (simple_core_t * sc, apr_socket_t * sock,
+                                   int flags, void *baton);
 
 typedef struct simple_sb_t simple_sb_t;
 
 typedef enum
 {
-  SIMPLE_PT_CORE_ACCEPT,
-  SIMPLE_PT_CORE_IO,
-  /* pqXXXXXX: User IO not defined yet. */
-  SIMPLE_PT_USER
+    SIMPLE_PT_CORE_ACCEPT,
+    SIMPLE_PT_CORE_IO,
+    /* pqXXXXXX: User IO not defined yet. */
+    SIMPLE_PT_USER
 } simple_poll_type_e;
 
-struct simple_sb_t {
-  simple_poll_type_e type;
-  void *baton;
+struct simple_sb_t
+{
+    simple_poll_type_e type;
+    void *baton;
 };
 
 typedef struct simple_timer_t simple_timer_t;
-struct simple_timer_t {
-  APR_RING_ENTRY(simple_timer_t) link;
-  apr_time_t expires;
-  simple_timer_cb cb;
-  void *baton;
+struct simple_timer_t
+{
+    APR_RING_ENTRY(simple_timer_t) link;
+    apr_time_t expires;
+    simple_timer_cb cb;
+    void *baton;
 };
 
-struct simple_core_t {
-  apr_pool_t *pool;
-  apr_thread_mutex_t *mtx;
+struct simple_core_t
+{
+    apr_pool_t *pool;
+    apr_thread_mutex_t *mtx;
 
-  int mpm_state;
-  int restart_num;
+    int mpm_state;
+    int restart_num;
 
-  int run_single_process;
-  int run_foreground;
+    int run_single_process;
+    int run_foreground;
 
-  simple_proc_mgr_t procmgr;
+    simple_proc_mgr_t procmgr;
 
-  /* PID -> simple_child_t map */
-  apr_hash_t *children;
+    /* PID -> simple_child_t map */
+    apr_hash_t *children;
 
-  apr_pollcb_t *pollcb;
+    apr_pollcb_t *pollcb;
 
-  /* List of upcoming timers, sorted by nearest first.
-   */
-  APR_RING_HEAD(simple_timer_ring_t, simple_timer_t) timer_ring;
-  
-  /* used to recycle simple_timer_t structs, since we allocate them out of 
-   * the global pool.
-   */
-  APR_RING_HEAD(simple_dead_timer_ring_t, simple_timer_t) dead_timer_ring;
-  
-  apr_thread_pool_t *workers;
+    /* List of upcoming timers, sorted by nearest first.
+     */
+         
+               APR_RING_HEAD(simple_timer_ring_t, simple_timer_t) timer_ring;
+
+    /* used to recycle simple_timer_t structs, since we allocate them out of 
+     * the global pool.
+     */
+         
+         
+         
+         
+         APR_RING_HEAD(simple_dead_timer_ring_t,
+                       simple_timer_t) dead_timer_ring;
+
+    apr_thread_pool_t *workers;
 };
 
 typedef struct simple_conn_t simple_conn_t;
-struct simple_conn_t {
-  apr_pool_t *pool;
-  simple_core_t *sc;
-  apr_socket_t *sock;
-  apr_bucket_alloc_t *ba;
-  conn_rec *c;
+struct simple_conn_t
+{
+    apr_pool_t *pool;
+    simple_core_t *sc;
+    apr_socket_t *sock;
+    apr_bucket_alloc_t *ba;
+    conn_rec *c;
 };
 
-simple_core_t* simple_core_get();
+simple_core_t *simple_core_get();
 
 /* Resets all variables to 0 for a simple_core_t */
-apr_status_t simple_core_init(simple_core_t* sc,
-                              apr_pool_t* pool);
+apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool);
 
 #endif /* APACHE_MPM_SIMPLE_TYPES_H */
-

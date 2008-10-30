@@ -20,13 +20,9 @@
 #ifndef APACHE_MPM_SIMPLE_CHILDREN_H
 #define APACHE_MPM_SIMPLE_CHILDREN_H
 
-void
-simple_check_children_size(simple_core_t *sc,
-                           void *baton);
+void simple_check_children_size(simple_core_t * sc, void *baton);
 
-void
-simple_check_children_status(simple_core_t *sc,
-                             void *baton);
+void simple_check_children_status(simple_core_t * sc, void *baton);
 
 
 #endif /* APACHE_MPM_SIMPLE_CHILDREN_H */

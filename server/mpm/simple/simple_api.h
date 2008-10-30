@@ -27,17 +27,17 @@
 #define APACHE_MPM_SIMPLE_API_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /* Called after child as forked, before child_init, to be used by modules that 
  * wish to chroot or change the processes running UserID before we begin serving requests.
  */
-AP_DECLARE_HOOK(int,simple_drop_privileges,(apr_pool_t *pchild, server_rec *s))
-
+    AP_DECLARE_HOOK(int, simple_drop_privileges,
+                    (apr_pool_t * pchild, server_rec * s))
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* APACHE_MPM_SIMPLE_API_H */
-
+#endif                          /* APACHE_MPM_SIMPLE_API_H */
