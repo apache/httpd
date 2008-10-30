@@ -32,8 +32,6 @@ typedef struct {
   int proc_count;
   int thread_count;
   int max_requests_per_child;
-  int user_id;
-  const char *user_name;
 } simple_proc_mgr_t;
 
 typedef struct {
