@@ -19,15 +19,11 @@
 #ifndef APACHE_MPM_SIMPLE_RUN_H
 #define APACHE_MPM_SIMPLE_RUN_H
 
-void 
-simple_single_process_hack(simple_core_t *sc);
+void simple_single_process_hack(simple_core_t * sc);
 
-int 
-simple_child_loop(simple_core_t* sc);
+int simple_child_loop(simple_core_t * sc);
 
-int 
-simple_main_loop(simple_core_t* sc);
+int simple_main_loop(simple_core_t * sc);
 
 
 #endif
-

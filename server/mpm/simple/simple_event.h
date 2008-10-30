@@ -24,34 +24,30 @@
 /* pqXXXXXX: Pool based cleanups
  */
 
-void 
-simple_register_timer(simple_core_t *sc,
-                      simple_timer_cb cb, 
-                      void *baton,
-                      apr_time_t relative_time);
+void
+simple_register_timer(simple_core_t * sc,
+                      simple_timer_cb cb,
+                      void *baton, apr_time_t relative_time);
 
 /**
  * @see apr_poll.h for watch_for values
  */
 void
-simple_register_sock_io(simple_core_t *sc,
-                        simple_io_sock_cb cb, 
+simple_register_sock_io(simple_core_t * sc,
+                        simple_io_sock_cb cb,
                         void *baton,
-                        apr_socket_t *sock,
-                        int watch_for,
-                        apr_time_t relative_timeout);
+                        apr_socket_t * sock,
+                        int watch_for, apr_time_t relative_timeout);
 
 /**
  * @see apr_poll.h for watch_for values
  */
 void
-simple_register_file_io(simple_core_t *sc,
-                        simple_io_file_cb cb, 
+simple_register_file_io(simple_core_t * sc,
+                        simple_io_file_cb cb,
                         void *baton,
-                        apr_file_t *file,
-                        int watch_for,
-                        apr_time_t relative_timeout);
+                        apr_file_t * file,
+                        int watch_for, apr_time_t relative_timeout);
 
 
 #endif /* APACHE_MPM_SIMPLE_EVENT_H */
-

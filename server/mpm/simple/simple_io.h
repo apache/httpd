@@ -19,10 +19,8 @@
 #ifndef APACHE_MPM_SIMPLE_IO_H
 #define APACHE_MPM_SIMPLE_IO_H
 
-apr_status_t
-simple_io_accept(simple_core_t *sc, simple_sb_t *sb);
+apr_status_t simple_io_accept(simple_core_t * sc, simple_sb_t * sb);
 
-apr_status_t
-simple_io_event_process(simple_core_t *sc, simple_sb_t *sb);
+apr_status_t simple_io_event_process(simple_core_t * sc, simple_sb_t * sb);
 
 #endif

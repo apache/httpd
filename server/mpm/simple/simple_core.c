@@ -16,7 +16,7 @@
 
 /* Simple Core utility methods.
  */
- 
+
 #include "simple_types.h"
 #include "mpm.h"
 #include "ap_mpm.h"
@@ -30,53 +30,45 @@ static simple_core_t g_simple_core;
 #endif
 
 
-simple_core_t*
-simple_core_get()
+simple_core_t *simple_core_get()
 {
-  return &g_simple_core;
+    return &g_simple_core;
 }
 
-apr_status_t
-simple_core_init(simple_core_t* sc, apr_pool_t* pool)
+apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool)
 {
-  apr_status_t rv;
+    apr_status_t rv;
 
-  memset(sc, 0, sizeof(simple_core_t));
-  
-  apr_pool_create(&sc->pool, pool);
+    memset(sc, 0, sizeof(simple_core_t));
 
-  apr_pool_tag(sc->pool, "simple-mpm-core");
+    apr_pool_create(&sc->pool, pool);
 
-  sc->mpm_state = AP_MPMQ_STARTING;
-  sc->procmgr.max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-  
-  sc->children = apr_hash_make(sc->pool);
+    apr_pool_tag(sc->pool, "simple-mpm-core");
 
-  APR_RING_INIT(&sc->timer_ring, simple_timer_t, link);
-  APR_RING_INIT(&sc->dead_timer_ring, simple_timer_t, link);
+    sc->mpm_state = AP_MPMQ_STARTING;
+    sc->procmgr.max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
-  rv = apr_thread_mutex_create(&sc->mtx,
-                               0,
-                               sc->pool);
+    sc->children = apr_hash_make(sc->pool);
 
-  if (rv) {
-    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                "simple_core_init: apr_thread_mutex_create failed.");
-    return rv;
-  }
+    APR_RING_INIT(&sc->timer_ring, simple_timer_t, link);
+    APR_RING_INIT(&sc->dead_timer_ring, simple_timer_t, link);
 
-  rv = apr_pollcb_create(&sc->pollcb,
-                         512 /* pqXXXXX: make configrable */,
-                         sc->pool,
-                         0);
-  
-  if (rv) {
-    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                 "simple_core_init: apr_pollcb_create failed.");
-    return rv;
-  }
+    rv = apr_thread_mutex_create(&sc->mtx, 0, sc->pool);
 
-  return APR_SUCCESS;
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                     "simple_core_init: apr_thread_mutex_create failed.");
+        return rv;
+    }
+
+    rv = apr_pollcb_create(&sc->pollcb, 512 /* pqXXXXX: make configrable */ ,
+                           sc->pool, 0);
+
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                     "simple_core_init: apr_pollcb_create failed.");
+        return rv;
+    }
+
+    return APR_SUCCESS;
 }
-
-
