@@ -49,6 +49,8 @@ apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool)
     sc->procmgr.max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     sc->children = apr_hash_make(sc->pool);
+    /* TODO: configurable spawning mech */
+    sc->spawn_via = SIMPLE_SPAWN_FORK;
 
     APR_RING_INIT(&sc->timer_ring, simple_timer_t, link);
     APR_RING_INIT(&sc->dead_timer_ring, simple_timer_t, link);
