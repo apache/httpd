@@ -213,8 +213,9 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
 }
 
 
-AP_DECLARE(const char *) unixd_set_user(cmd_parms *cmd, void *dummy,
-                                        const char *arg)
+static const char *
+unixd_set_user(cmd_parms *cmd, void *dummy,
+               const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
