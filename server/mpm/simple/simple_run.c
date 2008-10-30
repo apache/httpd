@@ -27,7 +27,7 @@
 #include "scoreboard.h"
 
 #include "ap_listen.h"
-
+#include "simple_api.h"
 #include "mpm.h"
 
 /**
@@ -269,7 +269,14 @@ simple_setup_privs(simple_core_t *sc)
   /* TODO: none of the above.  Just a child_init hook, which can be
    * instantianted in a module
    */
-  ap_run_child_init(sc->pool, ap_server_conf);
+  int rv = ap_run_simple_drop_privileges(sc->pool, ap_server_conf);
+
+  if (rv) {
+    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                 "simple_setup_privs: ap_run_simple_drop_privileges failed");
+    return rv;
+  }
+
   return 0;
 }
 
@@ -298,6 +305,8 @@ simple_child_loop(simple_core_t *sc)
                  "simple_child_loop: simple_drop_privs failed");
     return !OK;
   }
+
+  ap_run_child_init(sc->pool, ap_server_conf);
 
   return simple_run_loop(sc);
 }

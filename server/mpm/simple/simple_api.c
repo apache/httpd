@@ -25,6 +25,7 @@
 #include "simple_types.h"
 #include "simple_run.h"
 #include "http_core.h"
+#include "simple_api.h"
 
 /* Thie file contains the absolute minimal MPM API, to interface with httpd. */
 
@@ -32,6 +33,13 @@ ap_generation_t volatile ap_my_generation = 0;
 server_rec *ap_server_conf = NULL;
 
 
+APR_HOOK_STRUCT(
+  APR_HOOK_LINK(simple_drop_privileges)
+)
+
+AP_IMPLEMENT_HOOK_RUN_ALL(int, simple_drop_privileges,
+                          (apr_pool_t *pchild, server_rec *s),
+                          (pchild, s), OK, DECLINED)
 
 int
 ap_mpm_run(apr_pool_t *pconf,
