@@ -35,11 +35,6 @@ typedef struct
     int max_requests_per_child;
 } simple_proc_mgr_t;
 
-typedef struct
-{
-    int pid;
-} simple_child_t;
-
 typedef void (*simple_timer_cb) (simple_core_t * sc, void *baton);
 typedef void (*simple_io_sock_cb) (simple_core_t * sc, apr_socket_t * sock,
                                    int flags, void *baton);
@@ -56,6 +51,12 @@ typedef enum
     SIMPLE_PT_USER
 } simple_poll_type_e;
 
+typedef enum
+{
+    SIMPLE_SPAWN_FORK,
+    SIMPLE_SPAWN_EXEC,
+} simple_spawn_type_e;
+
 struct simple_sb_t
 {
     simple_poll_type_e type;
@@ -71,6 +72,13 @@ struct simple_timer_t
     void *baton;
 };
 
+typedef struct simple_child_t simple_child_t;
+struct simple_child_t
+{
+    /* TODO: More is needed here. */
+    pid_t pid;
+};
+
 struct simple_core_t
 {
     apr_pool_t *pool;
@@ -81,6 +89,7 @@ struct simple_core_t
 
     int run_single_process;
     int run_foreground;
+    simple_spawn_type_e spawn_via;
 
     simple_proc_mgr_t procmgr;
 

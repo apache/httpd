@@ -138,6 +138,7 @@ static void *simple_timer_invoke(apr_thread_t * thread, void *baton)
     ep->cb(sc, ep->baton);
 
     apr_thread_mutex_lock(sc->mtx);
+    APR_RING_ELEM_INIT(ep, link);
     APR_RING_INSERT_TAIL(&sc->dead_timer_ring, ep, simple_timer_t, link);
     apr_thread_mutex_unlock(sc->mtx);
 
