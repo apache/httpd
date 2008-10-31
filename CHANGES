@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: Allow <Limit> and <LimitExcept> directives to nest, and
+     constrain their use to conform with that of other access control
+     and authorization directives.  [Chris Darroch]
+
   *) unixd: turn existing code into a module, and turn the set user/group
      and chroot into a child_init function. [Nick Kew]
 
