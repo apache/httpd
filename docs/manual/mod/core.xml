@@ -1586,10 +1586,9 @@ requests on a persistent connection</description>
 methods</description>
 <syntax>&lt;Limit <var>method</var> [<var>method</var>] ... &gt; ...
     &lt;/Limit&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<override>All</override>
+<override>AuthConfig, Limit</override>
 
 <usage>
     <p>Access controls are normally effective for
@@ -1623,17 +1622,48 @@ methods</description>
     <code>LOCK</code>, and <code>UNLOCK</code>. <strong>The method name is
     case-sensitive.</strong> If <code>GET</code> is used it will also
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
-    cannot be limited (see <directive type="section" module="core"
+    cannot be limited (see <directive module="core"
     >TraceEnable</directive>).</p>
 
     <note type="warning">A <directive type="section"
     module="core">LimitExcept</directive> section should always be
-    used in preference to a <directive type="section"
-    module="core">Limit</directive> section when restricting access,
-    since a <directive type="section"
+    used in preference to a <directive type="section">Limit</directive>
+    section when restricting access, since a <directive type="section"
     module="core">LimitExcept</directive> section provides protection
     against arbitrary methods.</note>
 
+    <p>The <directive type="section">Limit</directive> and
+    <directive type="section" module="core">LimitExcept</directive>
+    directives may be nested.  In this case, each successive level of
+    <directive type="section">Limit</directive> or <directive
+    type="section" module="core">LimitExcept</directive> directives must
+    further restrict the set of methods to which access controls apply.</p>
+
+    <note type="warning">When using
+    <directive type="section">Limit</directive> or
+    <directive type="section">LimitExcept</directive> directives with
+    the <directive module="mod_authz_core">Require</directive> directive,
+    note that the first <directive module="mod_authz_core">Require</directive>
+    to succeed authorizes the request, regardless of the presence of other
+    <directive module="mod_authz_core">Require</directive> directives.</note>
+
+    <p>For example, given the following configuration, all users will
+    be authorized for <code>POST</code> requests, and the
+    <code>Require group editors</code> directive will be ignored
+    in all cases:</p>
+
+    <example>
+      &lt;LimitExcept GET&gt;
+      <indent>
+        Require valid-user
+      </indent> 
+      &lt;/LimitExcept&gt;<br />
+      &lt;Limit POST&gt;
+      <indent>
+        Require group editors
+      </indent> 
+      &lt;/Limit&gt;
+    </example>
 </usage>
 </directivesynopsis>
 
@@ -1643,10 +1673,9 @@ methods</description>
 except the named ones</description>
 <syntax>&lt;LimitExcept <var>method</var> [<var>method</var>] ... &gt; ...
     &lt;/LimitExcept&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<override>All</override>
+<override>AuthConfig, Limit</override>
 
 <usage>
     <p><directive type="section">LimitExcept</directive> and

@@ -646,7 +646,7 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r)
 }
 
 /*
- * Optional function coming from mod_authn_core, used for 
+ * Optional function coming from mod_authn_core, used for
  * retrieving the type of autorization
  */
 static APR_OPTIONAL_FN_TYPE(authn_ap_auth_type) *authn_ap_auth_type;
@@ -660,7 +660,7 @@ AP_DECLARE(const char *) ap_auth_type(request_rec *r)
 }
 
 /*
- * Optional function coming from mod_authn_core, used for 
+ * Optional function coming from mod_authn_core, used for
  * retrieving the authorization realm
  */
 static APR_OPTIONAL_FN_TYPE(authn_ap_auth_name) *authn_ap_auth_name;
@@ -1042,9 +1042,11 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
                            " cannot occur within <VirtualHost> section", NULL);
     }
 
-    if ((forbidden & NOT_IN_LIMIT) && cmd->limited != -1) {
+    if ((forbidden & (NOT_IN_LIMIT | NOT_IN_DIR_LOC_FILE))
+        && cmd->limited != -1) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, gt,
-                           " cannot occur within <Limit> section", NULL);
+                           " cannot occur within <Limit> or <LimitExcept> "
+                           "section", NULL);
     }
 
     if ((forbidden & NOT_IN_DIR_LOC_FILE) == NOT_IN_DIR_LOC_FILE) {
@@ -1656,12 +1658,8 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
     const char *limited_methods;
     void *tog = cmd->cmd->cmd_data;
     apr_int64_t limited = 0;
+    apr_int64_t old_limited = cmd->limited;
     const char *errmsg;
-
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-    if (err != NULL) {
-        return err;
-    }
 
     if (endp == NULL) {
         return unclosed_directive(cmd);
@@ -1696,11 +1694,23 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
     /* Killing two features with one function,
      * if (tog == NULL) <Limit>, else <LimitExcept>
      */
-    cmd->limited = tog ? ~limited : limited;
+    limited = tog ? ~limited : limited;
+
+    if (!(old_limited & limited)) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive excludes all methods", NULL);
+    }
+    else if ((old_limited & limited) == old_limited) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive specifies methods already excluded",
+                           NULL);
+    }
+
+    cmd->limited &= limited;
 
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
 
-    cmd->limited = -1;
+    cmd->limited = old_limited;
 
     return errmsg;
 }
@@ -1899,7 +1909,8 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     const command_rec *thiscmd = cmd->cmd;
     core_dir_config *c = mconfig;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LOCATION);
+    const char *err = ap_check_cmd_context(cmd,
+                                           NOT_IN_LOCATION | NOT_IN_LIMIT);
 
     if (err != NULL) {
         return err;
@@ -1979,7 +1990,8 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     const command_rec *thiscmd = cmd->cmd;
     core_dir_config *c = mconfig;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LOCATION);
+    const char *err = ap_check_cmd_context(cmd,
+                                           NOT_IN_LOCATION | NOT_IN_LIMIT);
     const char *condition;
     int expr_err = 0;
 
@@ -3174,10 +3186,11 @@ AP_INIT_RAW_ARGS("<VirtualHost", virtualhost_section, NULL, RSRC_CONF,
   "more host addresses"),
 AP_INIT_RAW_ARGS("<Files", filesection, NULL, OR_ALL,
   "Container for directives affecting files matching specified patterns"),
-AP_INIT_RAW_ARGS("<Limit", ap_limit_section, NULL, OR_ALL,
+AP_INIT_RAW_ARGS("<Limit", ap_limit_section, NULL, OR_LIMIT | OR_AUTHCFG,
   "Container for authentication directives when accessed using specified HTTP "
   "methods"),
-AP_INIT_RAW_ARGS("<LimitExcept", ap_limit_section, (void*)1, OR_ALL,
+AP_INIT_RAW_ARGS("<LimitExcept", ap_limit_section, (void*)1,
+                 OR_LIMIT | OR_AUTHCFG,
   "Container for authentication directives to be applied when any HTTP "
   "method other than those specified is used to access the resource"),
 AP_INIT_TAKE1("<IfModule", start_ifmod, NULL, EXEC_ON_READ | OR_ALL,
