@@ -41,7 +41,7 @@
 
     <p>The <module>threadpool</module> MPM can't match the performance of
     the <module>worker</module> MPM in benchmark testing. As of 2.0.39,
-    some of the key load-throtting concepts from the <module
+    some of the key load-throttling concepts from the <module
     >threadpool</module> MPM have been incorporated into the <module
     >worker</module> MPM. The <module>threadpool</module> code is useful
     primarily as a research platform. For general-purpose use and for any
