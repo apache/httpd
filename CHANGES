@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_authn_core: Prevent crash when provider alias created to
+     provider which is not yet registered.  [Chris Darroch]
+
   *) mod_authn_core: Add AuthType of None to support disabling
      authentication.  [Chris Darroch]
 
