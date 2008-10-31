@@ -84,13 +84,13 @@ static int set_group_privs(void)
 
         if (unixd_config.user_name[0] == '#') {
             struct passwd *ent;
-            uid_t uid = atoi(&unixd_config.user_name[1]);
+            uid_t uid = atol(&unixd_config.user_name[1]);
 
             if ((ent = getpwuid(uid)) == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-                         "getpwuid: couldn't determine user name from uid %u, "
+                         "getpwuid: couldn't determine user name from uid %ld, "
                          "you probably need to modify the User directive",
-                         (unsigned)uid);
+                         (long)uid);
                 return -1;
             }
 
