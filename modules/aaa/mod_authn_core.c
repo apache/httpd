@@ -46,14 +46,15 @@
 
 - Track down all of the references to r->ap_auth_type
    and change them to ap_auth_type()
-- Remove ap_auth_type and ap_auth_name from the 
-   request_rec   
+- Remove ap_auth_type and ap_auth_name from the
+   request_rec
 
 */
 
 typedef struct {
-    char *ap_auth_type;
-    char *ap_auth_name;
+    const char *ap_auth_type;
+    int auth_type_set;
+    const char *ap_auth_name;
 } authn_core_dir_conf;
 
 typedef struct provider_alias_rec {
@@ -82,19 +83,22 @@ static void *merge_authn_core_dir_config(apr_pool_t *a, void *basev, void *newv)
 {
     authn_core_dir_conf *base = (authn_core_dir_conf *)basev;
     authn_core_dir_conf *new = (authn_core_dir_conf *)newv;
-    authn_core_dir_conf *conf;
+    authn_core_dir_conf *conf =
+        (authn_core_dir_conf *)apr_pcalloc(a, sizeof(authn_core_dir_conf));
 
-    /* Create this conf by duplicating the base, replacing elements
-    * (or creating copies for merging) where new-> values exist.
-    */
-    conf = (authn_core_dir_conf *)apr_pmemdup(a, base, sizeof(authn_core_dir_conf));
-
-    if (new->ap_auth_type) {
+    if (new->auth_type_set) {
         conf->ap_auth_type = new->ap_auth_type;
+        conf->auth_type_set = 1;
+    }
+    else {
+        conf->ap_auth_type = base->ap_auth_type;
+        conf->auth_type_set = base->auth_type_set;
     }
 
     if (new->ap_auth_name) {
         conf->ap_auth_name = new->ap_auth_name;
+    } else {
+        conf->ap_auth_name = base->ap_auth_name;
     }
 
     return (void*)conf;
@@ -189,11 +193,11 @@ static const authn_provider authn_alias_provider_nodigest =
 
 static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *arg)
 {
-    int old_overrides = cmd->override;
     const char *endp = ap_strrchr_c(arg, '>');
     const char *args;
     char *provider_alias;
     char *provider_name;
+    int old_overrides = cmd->override;
     const char *errmsg;
     const authn_provider *provider = NULL;
     ap_conf_vector_t *new_auth_config = ap_create_per_dir_config(cmd->pool);
@@ -228,7 +232,7 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
     }
 
     if (strcasecmp(provider_name, provider_alias) == 0) {
-        return apr_pstrcat(cmd->pool, 
+        return apr_pstrcat(cmd->pool,
                            "The alias provider name must be different from the base provider name.", NULL);
     }
 
@@ -237,19 +241,28 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
                                   AUTHN_PROVIDER_VERSION);
     if (provider) {
         return apr_pstrcat(cmd->pool, "The alias provider ", provider_alias,
-                           " has already be registered previously as either a base provider or an alias provider.", 
+                           " has already be registered previously as either a base provider or an alias provider.",
                            NULL);
     }
 
     /* walk the subsection configuration to get the per_dir config that we will
        merge just before the real provider is called. */
-    cmd->override = OR_ALL|ACCESS_CONF;
+    cmd->override = OR_AUTHCFG | ACCESS_CONF;
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_auth_config);
+    cmd->override = old_overrides;
 
     if (!errmsg) {
         provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool, sizeof(provider_alias_rec));
         provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP, provider_name,
                                       AUTHN_PROVIDER_VERSION);
+
+        if (!provider) {
+            /* by the time they use it, the provider should be loaded and
+               registered with us. */
+            return apr_psprintf(cmd->pool,
+                                "Unknown Authn provider: %s",
+                                provider_name);
+        }
 
         /* Save off the new directory config along with the original provider name
            and function pointer data */
@@ -268,8 +281,6 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
                                   AP_AUTH_INTERNAL_PER_CONF);
     }
 
-    cmd->override = old_overrides;
-
     return errmsg;
 }
 
@@ -286,6 +297,16 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig,
     return NULL;
 }
 
+static const char *set_authtype(cmd_parms *cmd, void *mconfig,
+                                const char *word1)
+{
+    authn_core_dir_conf *aconfig = (authn_core_dir_conf *)mconfig;
+
+    aconfig->auth_type_set = 1;
+    aconfig->ap_auth_type = strcasecmp(word1, "None") ? word1 : NULL;
+
+    return NULL;
+}
 
 static const char *authn_ap_auth_type(request_rec *r)
 {
@@ -309,21 +330,41 @@ static const char *authn_ap_auth_name(request_rec *r)
 
 static const command_rec authn_cmds[] =
 {
-    AP_INIT_TAKE1("AuthType", ap_set_string_slot,
-                  (void*)APR_OFFSETOF(authn_core_dir_conf, ap_auth_type), OR_AUTHCFG,
-                  "An HTTP authorization type (e.g., \"Basic\")"),
+    AP_INIT_TAKE1("AuthType", set_authtype, NULL, OR_AUTHCFG,
+                  "an HTTP authorization type (e.g., \"Basic\")"),
     AP_INIT_TAKE1("AuthName", set_authname, NULL, OR_AUTHCFG,
-                  "The authentication realm (e.g. \"Members Only\")"),
+                  "the authentication realm (e.g. \"Members Only\")"),
     AP_INIT_RAW_ARGS("<AuthnProviderAlias", authaliassection, NULL, RSRC_CONF,
-                     "Container for authentication directives grouped under "
-                     "a provider alias"),
+                     "container for grouping an authentication provider's "
+                     "directives under a provider alias"),
     {NULL}
 };
+
+static int authenticate_no_user(request_rec *r)
+{
+    /* if there isn't an AuthType, then assume that no authentication
+        is required so return OK */
+    if (!ap_auth_type(r)) {
+        return OK;
+    }
+
+    /* there's an AuthType configured, but no authentication module
+     * loaded to support it
+     */
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
+                  "AuthType %s configured without corresponding module",
+                  ap_auth_type(r));
+
+    return HTTP_INTERNAL_SERVER_ERROR;
+}
 
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authn_ap_auth_type);
     APR_REGISTER_OPTIONAL_FN(authn_ap_auth_name);
+
+    ap_hook_check_authn(authenticate_no_user, NULL, NULL, APR_HOOK_LAST,
+                        AP_AUTH_INTERNAL_PER_CONF);
 }
 
 module AP_MODULE_DECLARE_DATA authn_core_module =
@@ -336,3 +377,4 @@ module AP_MODULE_DECLARE_DATA authn_core_module =
     authn_cmds,
     register_hooks                  /* register hooks */
 };
+

@@ -123,22 +123,24 @@ authentication</description>
 <seealso><a
     href="../howto/auth.html">Authentication, Authorization, and
     Access Control</a></seealso>
+<seealso><module>mod_authz_core</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthType</name>
 <description>Type of user authentication</description>
-<syntax>AuthType Basic|Digest</syntax>
+<syntax>AuthType None|Basic|Digest|Form</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
     <p>This directive selects the type of user authentication for a
-    directory. The authentication types available are
+    directory. The authentication types available are <code>None</code>,
     <code>Basic</code> (implemented by
-    <module>mod_auth_basic</module>) and <code>Digest</code>
-    (implemented by <module>mod_auth_digest</module>).</p>
+    <module>mod_auth_basic</module>), <code>Digest</code>
+    (implemented by <module>mod_auth_digest</module>), and
+    <code>Form</code> (implemented by <module>mod_auth_form</module>).</p>
 
     <p>To implement authentication, you must also use the <directive
     module="mod_authn_core">AuthName</directive> and <directive
@@ -146,6 +148,40 @@ authentication</description>
     server must have an authentication-provider module such as
     <module>mod_authn_file</module> and an authorization module such
     as <module>mod_authz_user</module>.</p>
+
+    <p>The authentication type <code>None</code> disables authentication.
+    When authentication is enabled, it is normally inherited by each
+    subsequent <a href="../sections.html#mergin">configuration section</a>,
+    unless a different authentication type is specified.  If no
+    authentication is desired for a subsection of an authenticated
+    section, the authentication type <code>None</code> may be used;
+    in the following example, clients may access the
+    <code>/www/docs/public</code> directory without authenticating:</p>
+
+    <example>
+        &lt;Directory /www/docs&gt;
+        <indent>
+            AuthType Basic<br />
+            AuthName Documents<br />
+            AuthBasicProvider file<br />
+            AuthUserFile /usr/local/apache/passwd/passwords<br />
+            Require valid-user
+        </indent>
+        &lt;/Directory&gt;<br />
+        <br />
+        &lt;Directory /www/docs/public&gt;
+        <indent>
+            AuthType None<br />
+            Require all granted
+        </indent>
+        &lt;/Directory&gt;
+    </example>
+
+    <note>When disabling authentication, note that clients which have
+    already authenticated against another portion of the server's document
+    tree will typically continue to send authentication HTTP headers
+    or cookies with each request, regardless of whether the server
+    actually requires authentication for every resource.</note>
 </usage> 
 
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
