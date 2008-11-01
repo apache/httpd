@@ -172,9 +172,6 @@ static authz_status authz_alias_check_authorization(request_rec *r,
 {
     const char *provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
     authz_status ret = AUTHZ_DENIED;
-    authz_core_srv_conf *authcfg =
-        (authz_core_srv_conf *)ap_get_module_config(r->server->module_config,
-                                                     &authz_core_module);
 
     /* Look up the provider alias in the alias list.
      * Get the the dir_config and call ap_Merge_per_dir_configs()
@@ -183,14 +180,20 @@ static authz_status authz_alias_check_authorization(request_rec *r,
      */
 
     if (provider_name) {
-        provider_alias_rec *prvdraliasrec = apr_hash_get(authcfg->alias_rec,
-                                                         provider_name,
-                                                         APR_HASH_KEY_STRING);
-        ap_conf_vector_t *orig_dir_config = r->per_dir_config;
+        authz_core_srv_conf *authcfg;
+        provider_alias_rec *prvdraliasrec;
+
+        authcfg = ap_get_module_config(r->server->module_config,
+                                       &authz_core_module);
+
+        prvdraliasrec = apr_hash_get(authcfg->alias_rec, provider_name,
+                                     APR_HASH_KEY_STRING);
 
         /* If we found the alias provider in the list, then merge the directory
            configurations and call the real provider */
         if (prvdraliasrec) {
+            ap_conf_vector_t *orig_dir_config = r->per_dir_config;
+
             r->per_dir_config = ap_merge_per_dir_configs(r->pool, orig_dir_config,
                                                          prvdraliasrec->sec_auth);
             ret = prvdraliasrec->provider->check_authorization(r,
@@ -218,9 +221,6 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
     char *provider_args;
     const char *errmsg;
     ap_conf_vector_t *new_authz_config = ap_create_per_dir_config(cmd->pool);
-    authz_core_srv_conf *authcfg =
-        (authz_core_srv_conf *)ap_get_module_config(cmd->server->module_config,
-                                                     &authz_core_module);
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -258,9 +258,7 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
     if (!errmsg) {
         provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool,
                                                         sizeof(provider_alias_rec));
-        const authz_provider *provider =
-            ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,
-                               AUTHZ_PROVIDER_VERSION);
+        authz_core_srv_conf *authcfg;
 
         /* Save off the new directory config along with the original
          * provider name and function pointer data
@@ -269,7 +267,13 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
         prvdraliasrec->provider_name = provider_name;
         prvdraliasrec->provider_alias = provider_alias;
         prvdraliasrec->provider_args = provider_args;
-        prvdraliasrec->provider = provider;
+        prvdraliasrec->provider =
+            ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,
+                               AUTHZ_PROVIDER_VERSION);
+
+
+        authcfg = ap_get_module_config(cmd->server->module_config,
+                                       &authz_core_module);
 
         apr_hash_set(authcfg->alias_rec, provider_alias,
                      APR_HASH_KEY_STRING, prvdraliasrec);
