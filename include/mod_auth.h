@@ -106,7 +106,7 @@ struct authn_provider_list {
 };
 
 typedef struct {
-    /* Given a request_rec, expected to return AUTH_GRANTED
+    /* Given a request_rec, expected to return AUTHZ_GRANTED
      * if we can authorize user access.
      */
     authz_status (*check_authorization)(request_rec *r,
