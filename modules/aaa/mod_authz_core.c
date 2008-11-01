@@ -116,8 +116,7 @@ static void walk_merge_provider_list(apr_pool_t *a, authz_core_dir_conf *conf, a
 
 static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
 {
-    authz_core_dir_conf *conf =
-            (authz_core_dir_conf *)apr_pcalloc(p, sizeof(authz_core_dir_conf));
+    authz_core_dir_conf *conf = apr_pcalloc(p, sizeof(*conf));
 
     conf->req_state = BASE_REQ_STATE;
     conf->req_state_level = BASE_REQ_LEVEL;
@@ -125,7 +124,7 @@ static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
     return (void *)conf;
 }
 
-static void *merge_authz_core_dir_config(apr_pool_t *a,
+static void *merge_authz_core_dir_config(apr_pool_t *p,
                                          void *basev, void *newv)
 {
     authz_core_dir_conf *base = (authz_core_dir_conf *)basev;
@@ -135,7 +134,7 @@ static void *merge_authz_core_dir_config(apr_pool_t *a,
     /* Create this conf by duplicating the base, replacing elements
     * (or creating copies for merging) where new-> values exist.
     */
-    conf = (authz_core_dir_conf *)apr_pmemdup(a, base, sizeof(authz_core_dir_conf));
+    conf = (authz_core_dir_conf *)apr_pmemdup(p, base, sizeof(authz_core_dir_conf));
 
     /* Wipe out the providers and rejects lists so that
         they can be recreated by the merge process. */
@@ -144,10 +143,10 @@ static void *merge_authz_core_dir_config(apr_pool_t *a,
     /* Only merge the base providers in if the merge_rules
         directive has been set. */
     if (base->providers && new->merge_rules) {
-        walk_merge_provider_list (a, conf, base->providers);
+        walk_merge_provider_list (p, conf, base->providers);
     }
     if (new->providers) {
-        walk_merge_provider_list (a, conf, new->providers);
+        walk_merge_provider_list (p, conf, new->providers);
     }
 
     return (void*)conf;
@@ -158,7 +157,7 @@ static void *create_authz_core_svr_config(apr_pool_t *p, server_rec *s)
 
     authz_core_srv_conf *authcfg;
 
-    authcfg = (authz_core_srv_conf *) apr_pcalloc(p, sizeof(authz_core_srv_conf));
+    authcfg = apr_pcalloc(p, sizeof(*authcfg));
     authcfg->alias_rec = apr_hash_make(p);
 
     return (void *)authcfg;
@@ -170,7 +169,7 @@ static void *create_authz_core_svr_config(apr_pool_t *p, server_rec *s)
 static authz_status authz_alias_check_authorization(request_rec *r,
                                                     const char *require_args)
 {
-    const char *provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
+    const char *provider_name;
     authz_status ret = AUTHZ_DENIED;
 
     /* Look up the provider alias in the alias list.
@@ -178,6 +177,8 @@ static authz_status authz_alias_check_authorization(request_rec *r,
      * Call the real provider->check_authorization() function
      * return the result of the above function call
      */
+
+    provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
 
     if (provider_name) {
         authz_core_srv_conf *authcfg;
@@ -214,14 +215,13 @@ static const authz_provider authz_alias_provider =
 };
 
 static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
-                                               const char *arg)
+                                               const char *args)
 {
-    const char *endp = ap_strrchr_c(arg, '>');
-    const char *args;
+    const char *endp = ap_strrchr_c(args, '>');
     char *provider_name;
     char *provider_alias;
     char *provider_args;
-    ap_conf_vector_t *new_authz_config = ap_create_per_dir_config(cmd->pool);
+    ap_conf_vector_t *new_authz_config;
     int old_overrides = cmd->override;
     const char *errmsg;
 
@@ -235,7 +235,7 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
                            "> directive missing closing '>'", NULL);
     }
 
-    args = apr_pstrndup(cmd->pool, arg, endp - arg);
+    args = apr_pstrndup(cmd->pool, args, endp - args);
 
     if (!args[0]) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
@@ -252,24 +252,28 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
                            "> directive requires additional arguments", NULL);
     }
 
+    new_authz_config = ap_create_per_dir_config(cmd->pool);
+
     /* Walk the subsection configuration to get the per_dir config that we will
      * merge just before the real provider is called.
      */
     cmd->override = OR_ALL|ACCESS_CONF;
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_authz_config);
+    cmd->override = old_overrides;
 
     if (!errmsg) {
-        provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool,
-                                                        sizeof(provider_alias_rec));
+        provider_alias_rec *prvdraliasrec;
         authz_core_srv_conf *authcfg;
+
+        prvdraliasrec = apr_pcalloc(cmd->pool, sizeof(*prvdraliasrec));
 
         /* Save off the new directory config along with the original
          * provider name and function pointer data
          */
-        prvdraliasrec->sec_auth = new_authz_config;
         prvdraliasrec->provider_name = provider_name;
         prvdraliasrec->provider_alias = provider_alias;
         prvdraliasrec->provider_args = provider_args;
+        prvdraliasrec->sec_auth = new_authz_config;
         prvdraliasrec->provider =
             ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,
                                AUTHZ_PROVIDER_VERSION);
@@ -295,8 +299,6 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
                                   &authz_alias_provider,
                                   AP_AUTH_INTERNAL_PER_CONF);
     }
-
-    cmd->override = old_overrides;
 
     return errmsg;
 }
@@ -490,7 +492,7 @@ static const char *merge_authz_provider(authz_core_dir_conf *conf, authz_provide
 }
 
 static const char *add_authz_provider(cmd_parms *cmd, void *config,
-                                      const char *arg)
+                                      const char *args)
 {
     authz_core_dir_conf *conf = (authz_core_dir_conf*)config;
     authz_provider_list *newp;
@@ -498,7 +500,7 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
 
     newp = apr_pcalloc(cmd->pool, sizeof(authz_provider_list));
 
-    t = arg;
+    t = args;
     w = ap_getword_white(cmd->pool, &t);
 
     if (w)
@@ -536,12 +538,11 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     return merge_authz_provider(conf, newp);
 }
 
-static const char *authz_require_section(cmd_parms *cmd,
-                                         void *mconfig, const char *arg)
+static const char *add_authz_section(cmd_parms *cmd, void *mconfig,
+                                     const char *args)
 {
-    authz_core_dir_conf *conf = (authz_core_dir_conf*)mconfig;
-    const char *endp = ap_strrchr_c(arg, '>');
-    const char *args;
+    authz_core_dir_conf *conf = mconfig;
+    const char *endp = ap_strrchr_c(args, '>');
     authz_request_state old_reqstate;
     int old_overrides = cmd->override;
     const char *errmsg;
@@ -551,7 +552,7 @@ static const char *authz_require_section(cmd_parms *cmd,
                            "> directive missing closing '>'", NULL);
     }
 
-    args = apr_pstrndup(cmd->pool, arg, endp - arg);
+    args = apr_pstrndup(cmd->pool, args, endp - args);
 
     if (args[0]) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
@@ -598,10 +599,10 @@ static const command_rec authz_cmds[] =
     AP_INIT_RAW_ARGS("<RequireAlias", authz_require_alias_section, NULL, RSRC_CONF,
                      "Container for authorization directives grouped under "
                      "an authz provider alias"),
-    AP_INIT_RAW_ARGS("<SatisfyAll", authz_require_section, NULL, OR_AUTHCFG,
+    AP_INIT_RAW_ARGS("<SatisfyAll", add_authz_section, NULL, OR_AUTHCFG,
                      "Container for grouping require statements that must all "
                      "succeed for authorization to be granted"),
-    AP_INIT_RAW_ARGS("<SatisfyOne", authz_require_section, NULL, OR_AUTHCFG,
+    AP_INIT_RAW_ARGS("<SatisfyOne", add_authz_section, NULL, OR_AUTHCFG,
                      "Container for grouping require statements of which one "
                      "must succeed for authorization to be granted"),
     AP_INIT_FLAG("AuthzMergeRules", ap_set_flag_slot,
@@ -828,7 +829,6 @@ static int authz_some_auth_required(request_rec *r)
 {
     authz_core_dir_conf *conf;
     authz_provider_list *current_provider;
-    int req_authz = 0;
 
     conf = ap_get_module_config(r->per_dir_config, &authz_core_module);
 
@@ -839,14 +839,13 @@ static int authz_some_auth_required(request_rec *r)
         /* Does this provider config apply for this method */
         if (current_provider->method_mask &
                 (AP_METHOD_BIT << r->method_number)) {
-            req_authz = 1;
-            break;
+            return 1;
         }
 
         current_provider = current_provider->one_next;
     }
 
-    return req_authz;
+    return 0;
 }
 
 static void register_hooks(apr_pool_t *p)
