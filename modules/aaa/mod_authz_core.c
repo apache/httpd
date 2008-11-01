@@ -164,6 +164,128 @@ static void *create_authz_core_svr_config(apr_pool_t *p, server_rec *s)
     return (void *)authcfg;
 }
 
+/* This is a fake authz provider that really merges various authz alias
+ * configurations and then invokes them.
+ */
+static authz_status authz_alias_check_authorization(request_rec *r,
+                                                    const char *require_args)
+{
+    const char *provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
+    authz_status ret = AUTHZ_DENIED;
+    authz_core_srv_conf *authcfg =
+        (authz_core_srv_conf *)ap_get_module_config(r->server->module_config,
+                                                     &authz_core_module);
+
+    /* Look up the provider alias in the alias list.
+     * Get the the dir_config and call ap_Merge_per_dir_configs()
+     * Call the real provider->check_authorization() function
+     * return the result of the above function call
+     */
+
+    if (provider_name) {
+        provider_alias_rec *prvdraliasrec = apr_hash_get(authcfg->alias_rec,
+                                                         provider_name,
+                                                         APR_HASH_KEY_STRING);
+        ap_conf_vector_t *orig_dir_config = r->per_dir_config;
+
+        /* If we found the alias provider in the list, then merge the directory
+           configurations and call the real provider */
+        if (prvdraliasrec) {
+            r->per_dir_config = ap_merge_per_dir_configs(r->pool, orig_dir_config,
+                                                         prvdraliasrec->sec_auth);
+            ret = prvdraliasrec->provider->check_authorization(r,
+                                                    prvdraliasrec->provider_args);
+            r->per_dir_config = orig_dir_config;
+        }
+    }
+
+    return ret;
+}
+
+static const authz_provider authz_alias_provider =
+{
+    &authz_alias_check_authorization
+};
+
+static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
+                                               const char *arg)
+{
+    int old_overrides = cmd->override;
+    const char *endp = ap_strrchr_c(arg, '>');
+    const char *args;
+    char *provider_alias;
+    char *provider_name;
+    char *provider_args;
+    const char *errmsg;
+    ap_conf_vector_t *new_authz_config = ap_create_per_dir_config(cmd->pool);
+    authz_core_srv_conf *authcfg =
+        (authz_core_srv_conf *)ap_get_module_config(cmd->server->module_config,
+                                                     &authz_core_module);
+
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (endp == NULL) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive missing closing '>'", NULL);
+    }
+
+    args = apr_pstrndup(cmd->pool, arg, endp - arg);
+
+    if (!args[0]) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive requires additional arguments", NULL);
+    }
+
+    /* Pull the real provider name and the alias name from the block header */
+    provider_name = ap_getword_conf(cmd->pool, &args);
+    provider_alias = ap_getword_conf(cmd->pool, &args);
+    provider_args = ap_getword_conf(cmd->pool, &args);
+
+    if (!provider_name[0] || !provider_alias[0]) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive requires additional arguments", NULL);
+    }
+
+    /* Walk the subsection configuration to get the per_dir config that we will
+     * merge just before the real provider is called.
+     */
+    cmd->override = OR_ALL|ACCESS_CONF;
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_authz_config);
+
+    if (!errmsg) {
+        provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool,
+                                                        sizeof(provider_alias_rec));
+        const authz_provider *provider =
+            ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,
+                               AUTHZ_PROVIDER_VERSION);
+
+        /* Save off the new directory config along with the original
+         * provider name and function pointer data
+         */
+        prvdraliasrec->sec_auth = new_authz_config;
+        prvdraliasrec->provider_name = provider_name;
+        prvdraliasrec->provider_alias = provider_alias;
+        prvdraliasrec->provider_args = provider_args;
+        prvdraliasrec->provider = provider;
+
+        apr_hash_set(authcfg->alias_rec, provider_alias,
+                     APR_HASH_KEY_STRING, prvdraliasrec);
+
+        /* Register the fake provider so that we get called first */
+        ap_register_auth_provider(cmd->pool, AUTHZ_PROVIDER_GROUP,
+                                  provider_alias, AUTHZ_PROVIDER_VERSION,
+                                  &authz_alias_provider,
+                                  AP_AUTH_INTERNAL_PER_CONF);
+    }
+
+    cmd->override = old_overrides;
+
+    return errmsg;
+}
+
 static void walk_merge_provider_list(apr_pool_t *a, authz_core_dir_conf *conf, authz_provider_list *providers)
 {
     authz_provider_list *newp = (authz_provider_list *)apr_palloc(a, sizeof(authz_provider_list));
@@ -397,128 +519,6 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
 
     /* Add the element to the list. */
     return merge_authz_provider(conf, newp);
-}
-
-/* This is a fake authz provider that really merges various authz alias
- * configurations and then invokes them.
- */
-static authz_status authz_alias_check_authorization(request_rec *r,
-                                                    const char *require_args)
-{
-    const char *provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
-    authz_status ret = AUTHZ_DENIED;
-    authz_core_srv_conf *authcfg =
-        (authz_core_srv_conf *)ap_get_module_config(r->server->module_config,
-                                                     &authz_core_module);
-
-    /* Look up the provider alias in the alias list.
-     * Get the the dir_config and call ap_Merge_per_dir_configs()
-     * Call the real provider->check_authorization() function
-     * return the result of the above function call
-     */
-
-    if (provider_name) {
-        provider_alias_rec *prvdraliasrec = apr_hash_get(authcfg->alias_rec,
-                                                         provider_name,
-                                                         APR_HASH_KEY_STRING);
-        ap_conf_vector_t *orig_dir_config = r->per_dir_config;
-
-        /* If we found the alias provider in the list, then merge the directory
-           configurations and call the real provider */
-        if (prvdraliasrec) {
-            r->per_dir_config = ap_merge_per_dir_configs(r->pool, orig_dir_config,
-                                                         prvdraliasrec->sec_auth);
-            ret = prvdraliasrec->provider->check_authorization(r,
-                                                    prvdraliasrec->provider_args);
-            r->per_dir_config = orig_dir_config;
-        }
-    }
-
-    return ret;
-}
-
-static const authz_provider authz_alias_provider =
-{
-    &authz_alias_check_authorization
-};
-
-static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
-                                               const char *arg)
-{
-    int old_overrides = cmd->override;
-    const char *endp = ap_strrchr_c(arg, '>');
-    const char *args;
-    char *provider_alias;
-    char *provider_name;
-    char *provider_args;
-    const char *errmsg;
-    ap_conf_vector_t *new_authz_config = ap_create_per_dir_config(cmd->pool);
-    authz_core_srv_conf *authcfg =
-        (authz_core_srv_conf *)ap_get_module_config(cmd->server->module_config,
-                                                     &authz_core_module);
-
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    if (endp == NULL) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                           "> directive missing closing '>'", NULL);
-    }
-
-    args = apr_pstrndup(cmd->pool, arg, endp - arg);
-
-    if (!args[0]) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                           "> directive requires additional arguments", NULL);
-    }
-
-    /* Pull the real provider name and the alias name from the block header */
-    provider_name = ap_getword_conf(cmd->pool, &args);
-    provider_alias = ap_getword_conf(cmd->pool, &args);
-    provider_args = ap_getword_conf(cmd->pool, &args);
-
-    if (!provider_name[0] || !provider_alias[0]) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                           "> directive requires additional arguments", NULL);
-    }
-
-    /* Walk the subsection configuration to get the per_dir config that we will
-     * merge just before the real provider is called.
-     */
-    cmd->override = OR_ALL|ACCESS_CONF;
-    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_authz_config);
-
-    if (!errmsg) {
-        provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool,
-                                                        sizeof(provider_alias_rec));
-        const authz_provider *provider =
-            ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,
-                               AUTHZ_PROVIDER_VERSION);
-
-        /* Save off the new directory config along with the original
-         * provider name and function pointer data
-         */
-        prvdraliasrec->sec_auth = new_authz_config;
-        prvdraliasrec->provider_name = provider_name;
-        prvdraliasrec->provider_alias = provider_alias;
-        prvdraliasrec->provider_args = provider_args;
-        prvdraliasrec->provider = provider;
-
-        apr_hash_set(authcfg->alias_rec, provider_alias,
-                     APR_HASH_KEY_STRING, prvdraliasrec);
-
-        /* Register the fake provider so that we get called first */
-        ap_register_auth_provider(cmd->pool, AUTHZ_PROVIDER_GROUP,
-                                  provider_alias, AUTHZ_PROVIDER_VERSION,
-                                  &authz_alias_provider,
-                                  AP_AUTH_INTERNAL_PER_CONF);
-    }
-
-    cmd->override = old_overrides;
-
-    return errmsg;
 }
 
 static const char *authz_require_section(cmd_parms *cmd, void *mconfig, const char *arg)
