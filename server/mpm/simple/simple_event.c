@@ -19,10 +19,25 @@
 #include "simple_types.h"
 #include "simple_event.h"
 
+static apr_status_t
+simple_timer_pool_cleanup(void *baton)
+{
+    simple_timer_t *elem = (simple_timer_t *)baton;
+    simple_core_t *sc = elem->sc;
+
+    apr_thread_mutex_lock(sc->mtx);
+    APR_RING_REMOVE(elem, link);
+    apr_thread_mutex_unlock(sc->mtx);
+
+    return APR_SUCCESS;
+}
+
+
 void
 simple_register_timer(simple_core_t * sc,
                       simple_timer_cb cb,
-                      void *baton, apr_time_t relative_time)
+                      void *baton, apr_time_t relative_time,
+                      apr_pool_t *shutdown_pool)
 {
     simple_timer_t *elem = NULL;
     simple_timer_t *ep = NULL;
@@ -32,23 +47,16 @@ simple_register_timer(simple_core_t * sc,
     apr_thread_mutex_lock(sc->mtx);
 
     APR_RING_CHECK_CONSISTENCY(&sc->timer_ring, simple_timer_t, link);
-    APR_RING_CHECK_CONSISTENCY(&sc->dead_timer_ring, simple_timer_t, link);
 
-    if (!APR_RING_EMPTY(&sc->dead_timer_ring, simple_timer_t, link)) {
-        elem = APR_RING_FIRST(&sc->dead_timer_ring);
-        APR_RING_REMOVE(elem, link);
-        APR_RING_CHECK_CONSISTENCY(&sc->dead_timer_ring, simple_timer_t,
-                                   link);
-    }
-    else {
-        elem =
-            (simple_timer_t *) apr_pcalloc(sc->pool, sizeof(simple_timer_t));
-    }
+    elem = (simple_timer_t *) apr_pcalloc(shutdown_pool, sizeof(simple_timer_t));
 
     APR_RING_ELEM_INIT(elem, link);
     elem->expires = t;
     elem->cb = cb;
     elem->baton = baton;
+    elem->pool = shutdown_pool;
+    elem->sc = sc;
+    apr_pool_cleanup_register(elem->pool, elem, simple_timer_pool_cleanup, apr_pool_cleanup_null);
 
     APR_RING_CHECK_CONSISTENCY(&sc->timer_ring, simple_timer_t, link);
 
@@ -80,3 +88,14 @@ simple_register_timer(simple_core_t * sc,
 
     apr_thread_mutex_unlock(sc->mtx);
 }
+
+
+void
+simple_timer_run(simple_timer_t *ep)
+{
+    apr_pool_cleanup_kill(ep->pool, ep, simple_timer_pool_cleanup);
+
+    ep->cb(ep->sc, ep->baton);
+}
+
+

@@ -70,6 +70,8 @@ struct simple_timer_t
     apr_time_t expires;
     simple_timer_cb cb;
     void *baton;
+    apr_pool_t *pool;
+    simple_core_t *sc;
 };
 
 typedef struct simple_child_t simple_child_t;
@@ -100,18 +102,7 @@ struct simple_core_t
 
     /* List of upcoming timers, sorted by nearest first.
      */
-         
-               APR_RING_HEAD(simple_timer_ring_t, simple_timer_t) timer_ring;
-
-    /* used to recycle simple_timer_t structs, since we allocate them out of 
-     * the global pool.
-     */
-         
-         
-         
-         
-         APR_RING_HEAD(simple_dead_timer_ring_t,
-                       simple_timer_t) dead_timer_ring;
+    APR_RING_HEAD(simple_timer_ring_t, simple_timer_t) timer_ring;
 
     apr_thread_pool_t *workers;
 };

@@ -102,7 +102,8 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                                       scon,
                                       scon->c->base_server !=
                                       NULL ? scon->c->base_server->
-                                      timeout : ap_server_conf->timeout);
+                                      timeout : ap_server_conf->timeout,
+                                      scon->pool);
 
                 cs->pfd.reqevents = APR_POLLOUT | APR_POLLHUP | APR_POLLERR;
 
@@ -139,7 +140,8 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
                                   scon,
                                   scon->c->base_server !=
                                   NULL ? scon->c->base_server->
-                                  timeout : ap_server_conf->timeout);
+                                  timeout : ap_server_conf->timeout,
+                                  scon->pool);
 
             cs->pfd.reqevents = APR_POLLIN;
 

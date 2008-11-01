@@ -118,7 +118,8 @@ void simple_check_children_size(simple_core_t * sc, void *baton)
 
     simple_register_timer(sc,
                           simple_check_children_size,
-                          NULL, SPAWN_CHILDREN_INTERVAL);
+                          NULL, SPAWN_CHILDREN_INTERVAL,
+                          sc->pool);
 
     if (sc->run_single_process && sc->restart_num == 2) {
         static int run = 0;

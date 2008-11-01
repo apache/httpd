@@ -27,8 +27,14 @@
 void
 simple_register_timer(simple_core_t * sc,
                       simple_timer_cb cb,
-                      void *baton, apr_time_t relative_time);
+                      void *baton,
+                      apr_time_t relative_time, 
+                      apr_pool_t *shutdown_pool);
 
+void
+simple_timer_run(simple_timer_t *ep);
+
+#if THESE_ARE_JUST_IDEAS_PATCHES_WELCOME
 /**
  * @see apr_poll.h for watch_for values
  */
@@ -49,5 +55,6 @@ simple_register_file_io(simple_core_t * sc,
                         apr_file_t * file,
                         int watch_for, apr_time_t relative_timeout);
 
+#endif
 
 #endif /* APACHE_MPM_SIMPLE_EVENT_H */

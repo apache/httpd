@@ -53,7 +53,6 @@ apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool)
     sc->spawn_via = SIMPLE_SPAWN_FORK;
 
     APR_RING_INIT(&sc->timer_ring, simple_timer_t, link);
-    APR_RING_INIT(&sc->dead_timer_ring, simple_timer_t, link);
 
     rv = apr_thread_mutex_create(&sc->mtx, 0, sc->pool);
 
