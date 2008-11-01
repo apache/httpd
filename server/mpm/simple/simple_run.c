@@ -261,9 +261,29 @@ static int simple_setup_privs(simple_core_t * sc)
     return 0;
 }
 
+static int simple_setup_pollcb(simple_core_t * sc)
+{
+    apr_status_t rv;
+
+    rv = apr_pollcb_create(&sc->pollcb, 512 /* pqXXXXX: make configrable */ ,
+                           sc->pool, 0);
+    
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                     "simple_core_init: apr_pollcb_create failed.");
+        return rv;
+    }
+    return rv;
+}
+
 int simple_child_loop(simple_core_t * sc)
 {
     apr_status_t rv;
+
+    rv = simple_setup_pollcb(sc);
+    if (rv) {
+        return rv;
+    }
 
     rv = simple_setup_workers(sc);
     if (rv) {
@@ -295,6 +315,11 @@ int simple_main_loop(simple_core_t * sc)
 {
     apr_status_t rv;
 
+    rv = simple_setup_pollcb(sc);
+    if (rv) {
+        return rv;
+    }
+    
     rv = simple_setup_workers(sc);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
