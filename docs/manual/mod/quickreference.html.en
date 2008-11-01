@@ -207,7 +207,7 @@ authentication</td></tr>
 ... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that represent an
 extension of a base authentication provider and referenced by
 the specified alias</td></tr>
-<tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType Basic|Digest</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Type of user authentication</td></tr>
+<tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType None|Basic|Digest|Form</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Type of user authentication</td></tr>
 <tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the name of a text file containing the list of users and
 passwords for authentication</td></tr>
 <tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer On|Off</a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether to redirect the Client to the Referring
@@ -447,10 +447,10 @@ Certificate Authority or global client certificates</td></tr>
 <tr class="odd"><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
 <tr><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert <var>On|Off</var></a></td><td> On </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Force server certificate verification</td></tr>
 <tr class="odd"><td><a href="core.html#limit">&lt;Limit <var>method</var> [<var>method</var>] ... &gt; ...
-    &lt;/Limit&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict enclosed access controls to only certain HTTP
+    &lt;/Limit&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict enclosed access controls to only certain HTTP
 methods</td></tr>
 <tr><td><a href="core.html#limitexcept">&lt;LimitExcept <var>method</var> [<var>method</var>] ... &gt; ...
-    &lt;/LimitExcept&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Restrict access controls to all HTTP methods
+    &lt;/LimitExcept&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Restrict access controls to all HTTP methods
 except the named ones</td></tr>
 <tr class="odd"><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>number</var> [<var>number</var>]</a></td><td> 10 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determine maximum number of internal redirects and nested
 subrequests</td></tr>

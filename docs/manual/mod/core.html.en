@@ -1608,8 +1608,8 @@ requests on a persistent connection</td></tr>
 methods</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;Limit <var>method</var> [<var>method</var>] ... &gt; ...
     &lt;/Limit&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig, Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
@@ -1643,13 +1643,44 @@ methods</td></tr>
     <code>LOCK</code>, and <code>UNLOCK</code>. <strong>The method name is
     case-sensitive.</strong> If <code>GET</code> is used it will also
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
-    cannot be limited (see <code class="directive"><a href="#traceenable">&lt;TraceEnable&gt;</a></code>).</p>
+    cannot be limited (see <code class="directive"><a href="#traceenable">TraceEnable</a></code>).</p>
 
     <div class="warning">A <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section should always be
-    used in preference to a <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> section when restricting access,
-    since a <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section provides protection
+    used in preference to a <code class="directive">&lt;Limit&gt;</code>
+    section when restricting access, since a <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section provides protection
     against arbitrary methods.</div>
 
+    <p>The <code class="directive">&lt;Limit&gt;</code> and
+    <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
+    directives may be nested.  In this case, each successive level of
+    <code class="directive">&lt;Limit&gt;</code> or <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> directives must
+    further restrict the set of methods to which access controls apply.</p>
+
+    <div class="warning">When using
+    <code class="directive">&lt;Limit&gt;</code> or
+    <code class="directive">&lt;LimitExcept&gt;</code> directives with
+    the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive,
+    note that the first <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
+    to succeed authorizes the request, regardless of the presence of other
+    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directives.</div>
+
+    <p>For example, given the following configuration, all users will
+    be authorized for <code>POST</code> requests, and the
+    <code>Require group editors</code> directive will be ignored
+    in all cases:</p>
+
+    <div class="example"><p><code>
+      &lt;LimitExcept GET&gt;
+      <span class="indent">
+        Require valid-user
+      </span> 
+      &lt;/LimitExcept&gt;<br />
+      &lt;Limit POST&gt;
+      <span class="indent">
+        Require group editors
+      </span> 
+      &lt;/Limit&gt;
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1659,8 +1690,8 @@ methods</td></tr>
 except the named ones</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;LimitExcept <var>method</var> [<var>method</var>] ... &gt; ...
     &lt;/LimitExcept&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig, Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>

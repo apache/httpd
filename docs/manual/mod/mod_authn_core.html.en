@@ -132,6 +132,7 @@ authentication</td></tr>
 <ul>
 <li><a href="../howto/auth.html">Authentication, Authorization, and
     Access Control</a></li>
+<li><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -159,22 +160,57 @@ the specified alias</td></tr>
 <div class="directive-section"><h2><a name="AuthType" id="AuthType">AuthType</a> <a name="authtype" id="authtype">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Type of user authentication</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthType Basic|Digest</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthType None|Basic|Digest|Form</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_core</td></tr>
 </table>
     <p>This directive selects the type of user authentication for a
-    directory. The authentication types available are
+    directory. The authentication types available are <code>None</code>,
     <code>Basic</code> (implemented by
-    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>) and <code>Digest</code>
-    (implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>).</p>
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>), <code>Digest</code>
+    (implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>), and
+    <code>Form</code> (implemented by <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code>).</p>
 
     <p>To implement authentication, you must also use the <code class="directive"><a href="#authname">AuthName</a></code> and <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directives.  In addition, the
     server must have an authentication-provider module such as
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> and an authorization module such
     as <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>.</p>
+
+    <p>The authentication type <code>None</code> disables authentication.
+    When authentication is enabled, it is normally inherited by each
+    subsequent <a href="../sections.html#mergin">configuration section</a>,
+    unless a different authentication type is specified.  If no
+    authentication is desired for a subsection of an authenticated
+    section, the authentication type <code>None</code> may be used;
+    in the following example, clients may access the
+    <code>/www/docs/public</code> directory without authenticating:</p>
+
+    <div class="example"><p><code>
+        &lt;Directory /www/docs&gt;
+        <span class="indent">
+            AuthType Basic<br />
+            AuthName Documents<br />
+            AuthBasicProvider file<br />
+            AuthUserFile /usr/local/apache/passwd/passwords<br />
+            Require valid-user
+        </span>
+        &lt;/Directory&gt;<br />
+        <br />
+        &lt;Directory /www/docs/public&gt;
+        <span class="indent">
+            AuthType None<br />
+            Require all granted
+        </span>
+        &lt;/Directory&gt;
+    </code></p></div>
+
+    <div class="note">When disabling authentication, note that clients which have
+    already authenticated against another portion of the server's document
+    tree will typically continue to send authentication HTTP headers
+    or cookies with each request, regardless of whether the server
+    actually requires authentication for every resource.</div>
 
 <h3>See also</h3>
 <ul>
