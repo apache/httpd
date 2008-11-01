@@ -274,6 +274,14 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
             ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,
                                AUTHZ_PROVIDER_VERSION);
 
+        /* by the time the config file is used, the provider should be loaded
+         * and registered with us.
+         */
+        if (!prvdraliasrec->provider) {
+            return apr_psprintf(cmd->pool,
+                                "Unknown Authz provider: %s",
+                                provider_name);
+        }
 
         authcfg = ap_get_module_config(cmd->server->module_config,
                                        &authz_core_module);
