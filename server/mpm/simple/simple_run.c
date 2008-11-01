@@ -281,6 +281,12 @@ int simple_child_loop(simple_core_t * sc)
         return rv;
     }
 
+    /* XXXXX: Hack. Reseting parts of the simple core needs to be more
+     * thought out than this. 
+     */
+    APR_RING_INIT(&sc->timer_ring, simple_timer_t, link);
+    APR_RING_INIT(&sc->dead_timer_ring, simple_timer_t, link);
+
     rv = simple_setup_workers(sc);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
