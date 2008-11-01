@@ -194,10 +194,13 @@ static authz_status authz_alias_check_authorization(request_rec *r,
         if (prvdraliasrec) {
             ap_conf_vector_t *orig_dir_config = r->per_dir_config;
 
-            r->per_dir_config = ap_merge_per_dir_configs(r->pool, orig_dir_config,
-                                                         prvdraliasrec->sec_auth);
-            ret = prvdraliasrec->provider->check_authorization(r,
-                                                    prvdraliasrec->provider_args);
+            r->per_dir_config =
+                ap_merge_per_dir_configs(r->pool, orig_dir_config,
+                                         prvdraliasrec->sec_auth);
+
+            ret = prvdraliasrec->provider->
+                check_authorization(r, prvdraliasrec->provider_args);
+
             r->per_dir_config = orig_dir_config;
         }
     }
@@ -213,14 +216,14 @@ static const authz_provider authz_alias_provider =
 static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
                                                const char *arg)
 {
-    int old_overrides = cmd->override;
     const char *endp = ap_strrchr_c(arg, '>');
     const char *args;
-    char *provider_alias;
     char *provider_name;
+    char *provider_alias;
     char *provider_args;
-    const char *errmsg;
     ap_conf_vector_t *new_authz_config = ap_create_per_dir_config(cmd->pool);
+    int old_overrides = cmd->override;
+    const char *errmsg;
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -525,14 +528,15 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     return merge_authz_provider(conf, newp);
 }
 
-static const char *authz_require_section(cmd_parms *cmd, void *mconfig, const char *arg)
+static const char *authz_require_section(cmd_parms *cmd,
+                                         void *mconfig, const char *arg)
 {
-    int old_overrides = cmd->override;
+    authz_core_dir_conf *conf = (authz_core_dir_conf*)mconfig;
     const char *endp = ap_strrchr_c(arg, '>');
     const char *args;
-    const char *errmsg;
     authz_request_state old_reqstate;
-    authz_core_dir_conf *conf = (authz_core_dir_conf*)mconfig;
+    int old_overrides = cmd->override;
+    const char *errmsg;
 
     if (endp == NULL) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
@@ -745,11 +749,12 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
 
 static int authorize_user(request_rec *r)
 {
-    authz_core_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-            &authz_core_module);
+    authz_core_dir_conf *conf;
     authz_status auth_result;
     authz_provider_list *current_provider;
     const char *note = apr_table_get(r->notes, AUTHZ_ACCESS_PASSED_NOTE);
+
+    conf = ap_get_module_config(r->per_dir_config, &authz_core_module);
 
     /* If we're not really configured for providers, stop now. */
     if (!conf->providers) {
@@ -813,10 +818,11 @@ static int authorize_user(request_rec *r)
 
 static int authz_some_auth_required(request_rec *r)
 {
-    authz_core_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-            &authz_core_module);
+    authz_core_dir_conf *conf;
     authz_provider_list *current_provider;
     int req_authz = 0;
+
+    conf = ap_get_module_config(r->per_dir_config, &authz_core_module);
 
     current_provider = conf->providers;
 
