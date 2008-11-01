@@ -35,7 +35,7 @@
  */
 static apr_status_t simple_main_setup_timers(simple_core_t * sc)
 {
-    simple_register_timer(sc, simple_check_children_size, NULL, 0);
+    simple_register_timer(sc, simple_check_children_size, NULL, 0, sc->pool);
 
     return APR_SUCCESS;
 }
@@ -129,14 +129,8 @@ static apr_status_t simple_io_callback(void *baton, apr_pollfd_t * pfd)
 static void *simple_timer_invoke(apr_thread_t * thread, void *baton)
 {
     simple_timer_t *ep = (simple_timer_t *) baton;
-    simple_core_t *sc = simple_core_get();
 
-    ep->cb(sc, ep->baton);
-
-    apr_thread_mutex_lock(sc->mtx);
-    APR_RING_ELEM_INIT(ep, link);
-    APR_RING_INSERT_TAIL(&sc->dead_timer_ring, ep, simple_timer_t, link);
-    apr_thread_mutex_unlock(sc->mtx);
+    simple_timer_run(ep);
 
     return NULL;
 }
@@ -285,7 +279,6 @@ int simple_child_loop(simple_core_t * sc)
      * thought out than this. 
      */
     APR_RING_INIT(&sc->timer_ring, simple_timer_t, link);
-    APR_RING_INIT(&sc->dead_timer_ring, simple_timer_t, link);
 
     rv = simple_setup_workers(sc);
     if (rv) {
