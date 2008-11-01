@@ -121,6 +121,7 @@ static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
     conf->req_state = BASE_REQ_STATE;
     conf->req_state_level = BASE_REQ_LEVEL;
     conf->merge_rules = 1;
+
     return (void *)conf;
 }
 
@@ -154,7 +155,6 @@ static void *merge_authz_core_dir_config(apr_pool_t *p,
 
 static void *create_authz_core_svr_config(apr_pool_t *p, server_rec *s)
 {
-
     authz_core_srv_conf *authcfg;
 
     authcfg = apr_pcalloc(p, sizeof(*authcfg));
@@ -258,7 +258,8 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
      * merge just before the real provider is called.
      */
     cmd->override = OR_ALL|ACCESS_CONF;
-    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_authz_config);
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd,
+                            new_authz_config);
     cmd->override = old_overrides;
 
     if (!errmsg) {
