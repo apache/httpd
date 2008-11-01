@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_ajp: Do not fail if response data is sent before all request
+     data is read. PR 45911 [Ruediger Pluem]
+
   *) mod_authn_core: Prevent crash when provider alias created to
      provider which is not yet registered.  [Chris Darroch]
 

@@ -172,6 +172,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     ajp_msg_t *msg;
     apr_size_t bufsiz = 0;
     char *buff;
+    char *send_body_chunk_buff;
     apr_uint16_t size;
     const char *tenc;
     int havebody = 1;
@@ -427,7 +428,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 break;
             case CMD_AJP13_SEND_BODY_CHUNK:
                 /* AJP13_SEND_BODY_CHUNK: piece of data */
-                status = ajp_parse_data(r, conn->data, &size, &buff);
+                status = ajp_parse_data(r, conn->data, &size, &send_body_chunk_buff);
                 if (status == APR_SUCCESS) {
                     /* AJP13_SEND_BODY_CHUNK with zero length
                      * is explicit flush message
@@ -443,7 +444,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         }
                     }
                     else {
-                        e = apr_bucket_transient_create(buff, size,
+                        e = apr_bucket_transient_create(send_body_chunk_buff, size,
                                                     r->connection->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(output_brigade, e);
 
