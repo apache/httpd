@@ -63,14 +63,5 @@ apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool)
         return rv;
     }
 
-    rv = apr_pollcb_create(&sc->pollcb, 512 /* pqXXXXX: make configrable */ ,
-                           sc->pool, 0);
-
-    if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "simple_core_init: apr_pollcb_create failed.");
-        return rv;
-    }
-
     return APR_SUCCESS;
 }
