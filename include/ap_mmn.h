@@ -168,7 +168,7 @@
  * 20080722.2 (2.3.0-dev)  Add scolonsep to proxy_balancer
  * 20080829.0 (2.3.0-dev)  Add cookie attributes when removing cookies
  * 20080830.0 (2.3.0-dev)  Cookies can be set on headers_out and err_headers_out
- * 20080920.0 (2.3.0-dev)  Add ap_mpm_register_timed_callback. 
+ * 20080920.0 (2.3.0-dev)  Add ap_mpm_register_timed_callback.
  * 20080920.1 (2.3.0-dev)  Export mod_rewrite.h in the public API.
  * 20080920.2 (2.3.0-dev)  Added ap_timeout_parameter_parse to util.c / httpd.h
  *
@@ -188,7 +188,7 @@
  * Useful for testing for features.
  * For example, suppose you wish to use the apr_table_overlap
  *    function.  You can do this:
- * 
+ *
  * #if AP_MODULE_MAGIC_AT_LEAST(19980812,2)
  *     ... use apr_table_overlap()
  * #else
@@ -199,10 +199,10 @@
  * @param minor The minor module magic number
  * @fn AP_MODULE_MAGIC_AT_LEAST(int major, int minor)
  */
-#define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\
-    ((major) < MODULE_MAGIC_NUMBER_MAJOR 		\
-	|| ((major) == MODULE_MAGIC_NUMBER_MAJOR 	\
-	    && (minor) <= MODULE_MAGIC_NUMBER_MINOR))
+#define AP_MODULE_MAGIC_AT_LEAST(major,minor)           \
+    ((major) < MODULE_MAGIC_NUMBER_MAJOR                \
+     || ((major) == MODULE_MAGIC_NUMBER_MAJOR           \
+         && (minor) <= MODULE_MAGIC_NUMBER_MINOR))
 
 /** @deprecated present for backwards compatibility */
 #define MODULE_MAGIC_NUMBER MODULE_MAGIC_NUMBER_MAJOR
