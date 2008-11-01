@@ -42,7 +42,7 @@
 
     <p>The <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> MPM can't match the performance of
     the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM in benchmark testing. As of 2.0.39,
-    some of the key load-throtting concepts from the <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> MPM have been incorporated into the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM. The <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> code is useful
+    some of the key load-throttling concepts from the <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> MPM have been incorporated into the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM. The <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> code is useful
     primarily as a research platform. For general-purpose use and for any
     production environments, use <code class="module"><a href="../mod/worker.html">worker</a></code> instead.</p>
 </div>
