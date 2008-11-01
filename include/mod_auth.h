@@ -42,7 +42,6 @@ extern "C" {
 #define AUTHZ_PROVIDER_VERSION "0"
 #define AUTHN_DEFAULT_PROVIDER "file"
 
-#define AUTHZ_GROUP_NOTE "authz_group_note"
 #define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
 #define AUTHZ_PROVIDER_NAME_NOTE "authz_provider_name"
 #define AUTHZ_ACCESS_PASSED_NOTE "authz_access_passed"
