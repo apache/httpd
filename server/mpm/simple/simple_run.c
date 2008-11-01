@@ -47,10 +47,6 @@ static apr_status_t simple_setup_workers(simple_core_t * sc)
 {
     apr_status_t rv;
 
-    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL,
-                 "simple_setup_workers: spawning %d threads",
-                 sc->procmgr.thread_count);
-
     rv = apr_thread_pool_create(&sc->workers,
                                 sc->procmgr.thread_count,
                                 sc->procmgr.thread_count, sc->pool);
