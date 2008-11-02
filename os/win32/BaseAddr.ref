@@ -52,10 +52,8 @@ mod_ext_filter.so       0x6FB90000    0x00010000
 mod_charset_lite.so     0x6FB80000    0x00010000
 mod_authn_anon.so       0x6FB70000    0x00010000
 mod_authn_dbm.so        0x6FB60000    0x00010000
-mod_authn_default.so    0x6FB50000    0x00010000
 mod_authn_file.so       0x6FB40000    0x00010000
 mod_authz_dbm.so        0x6FB30000    0x00010000
-mod_authz_default.so    0x6FB20000    0x00010000
 mod_authz_groupfile.so  0x6FB10000    0x00010000
 mod_authz_host.so       0x6FB00000    0x00010000
 mod_authz_user.so       0x6FAF0000    0x00010000

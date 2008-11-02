@@ -14,10 +14,6 @@ APACHE_MODULE(authn_dbm, DBM-based authentication control, , , most)
 APACHE_MODULE(authn_anon, anonymous user authentication control, , , most)
 APACHE_MODULE(authn_dbd, SQL-based authentication control, , , most)
 
-dnl - and just in case all of the above punt; a default handler to
-dnl keep the bad guys out.
-APACHE_MODULE(authn_default, authentication backstopper, , , yes)
-
 dnl General Authentication modules; module which implements the 
 dnl non-authn module specific directives.
 dnl
@@ -46,10 +42,6 @@ APACHE_MODULE(authnz_ldap, LDAP based authentication, , , no, [
   MOD_AUTHNZ_LDAP_LDADD="`$apu_config --ldap-libs`"
   AC_SUBST(MOD_AUTHNZ_LDAP_LDADD)
 ])
-
-dnl - and just in case all of the above punt; a default handler to
-dnl keep the bad guys out.
-APACHE_MODULE(authz_default, authorization control backstopper, , , yes)
 
 dnl - host access control compatibility modules. Implements Order, Allow,
 dnl Deny, Satisfy for backward compatibility.  These directives have been

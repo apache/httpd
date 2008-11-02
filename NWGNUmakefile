@@ -211,9 +211,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/log.o \
 	$(OBJDIR)/main.o \
 	$(OBJDIR)/mod_authn_core.o \
-	$(OBJDIR)/mod_authn_default.o \
 	$(OBJDIR)/mod_authz_core.o \
-	$(OBJDIR)/mod_authz_default.o \
 	$(OBJDIR)/mod_authz_host.o \
 	$(OBJDIR)/mod_alias.o \
 	$(OBJDIR)/mod_dir.o \

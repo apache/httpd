@@ -138,9 +138,6 @@ Package=<4>
     Project_Dep_Name mod_authn_dbm
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_authn_default
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mod_authn_file
     End Project Dependency
     Begin Project Dependency
@@ -154,9 +151,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authz_dbm
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_authz_default
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authz_groupfile
@@ -1102,30 +1096,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authn_default"=.\modules\aaa\mod_authn_default.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_basic
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "mod_authn_file"=.\modules\aaa\mod_authn_file.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1226,30 +1196,6 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_authz_dbm"=.\modules\aaa\mod_authz_dbm.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_auth_basic
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "mod_authz_default"=.\modules\aaa\mod_authz_default.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

@@ -286,13 +286,11 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_authn_core.mak  CFG="mod_authn_core - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_dbd.mak   CFG="mod_authn_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_dbm.mak   CFG="mod_authn_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_authn_default.mak CFG="mod_authn_default - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_file.mak  CFG="mod_authn_file - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authnz_ldap.mak CFG="mod_authnz_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_core.mak  CFG="mod_authz_core - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_dbd.mak   CFG="mod_authz_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_dbm.mak   CFG="mod_authz_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_authz_default.mak CFG="mod_authz_default - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_groupfile.mak CFG="mod_authz_groupfile - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_host.mak  CFG="mod_authz_host - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_owner.mak CFG="mod_authz_owner - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -513,14 +511,12 @@ _copybin:
 	copy modules\aaa\$(LONG)\mod_authn_core.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_dbd.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_dbm.$(src_so) 	"$(inst_so)" <.y
-	copy modules\aaa\$(LONG)\mod_authn_default.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_file.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authnz_ldap.$(src_so)	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_core.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_dbd.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_dbm.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_core.$(src_so) 	"$(inst_so)" <.y
-	copy modules\aaa\$(LONG)\mod_authz_default.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_groupfile.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_host.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_owner.$(src_so) 	"$(inst_so)" <.y
