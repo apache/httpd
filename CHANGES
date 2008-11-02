@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_expires: Do not sets negative max-age / Expires header in the past.
+     PR 39774 [Jim Jagielski]
+
   *) authn/z: Remove mod_authn_default and mod_authz_default.
      [Chris Darroch]
 
