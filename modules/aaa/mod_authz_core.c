@@ -154,7 +154,7 @@ static void *merge_authz_core_dir_config(apr_pool_t *p,
             section = apr_pmemdup(p, new->section, sizeof(*new->section));
         }
 
-        conf = apr_palloc(p, sizeof(*conf));
+        conf = apr_pcalloc(p, sizeof(*conf));
 
         conf->section = section;
         conf->op = new->op;
