@@ -60,9 +60,7 @@ have been deprecated by the new authz refactoring.  Please see
     <note type="warning"><title>Note</title>
       <p>The directives provided by <module>mod_access_compat</module> have
       been deprecated by the new authz refactoring. Please see 
-      <module>mod_authz_host</module>.  The module 
-      <module>mod_authz_default</module> must also be loaded to provide for
-      default authorization handling.</p>
+      <module>mod_authz_host</module>.</p>
     </note>
 
     <p>In general, access restriction directives apply to all

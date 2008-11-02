@@ -64,11 +64,22 @@
           console.  The user can thus be alerted to misconfiguration problems
           before the core <code>open_logs</code> hook function redirects
           console output to the error log.</dd>
-    <dt>Expression Parser Added</dt>
-    <dd>We now have a general-purpose expression parser, whose API is
-        exposed in <var>ap_expr.h</var>.  This is adapted from the
-        expression parser previously implemented in
-        <module>mod_include</module>.</dd>
+
+      <dt>Expression Parser Added</dt>
+
+      <dd>We now have a general-purpose expression parser, whose API is
+          exposed in <var>ap_expr.h</var>.  This is adapted from the
+          expression parser previously implemented in
+          <module>mod_include</module>.</dd>
+
+      <dt>Authorization Logic Containers</dt>
+
+      <dd>Advanced authorization logic may now be specified using the
+          <directive module="mod_authz_core">Match</directive> directive
+          and the related container directives, such as
+          <directive module="mod_authz_core"
+          type="section">MatchAll</directive>, all
+          provided by the <module>mod_authz_core</module> module.</dd>
     </dl>
   </section>
 </manualpage>

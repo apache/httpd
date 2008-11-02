@@ -47,9 +47,6 @@
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
 <seealso>
-  <directive module="mod_authz_core">AuthzMergeRules</directive>
-</seealso>
-<seealso>
   <directive module="mod_authn_dbd">AuthDBDUserPWQuery</directive>
 </seealso>
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
@@ -106,7 +103,6 @@ DBDExptime 300
     "SELECT password FROM authn WHERE user = %s AND login = 'true'"
 
   # mod_authz_core configuration for mod_authz_dbd
-  AuthzMergeRules Off
   Require dbd-group team
 
   # mod_authz_dbd configuration
@@ -123,7 +119,6 @@ DBDExptime 300
       "SELECT password FROM authn WHERE user = %s"
 
     # dbd-login action executes a statement to log user in
-    AuthzMergeRules Off
     Require dbd-login
     AuthzDBDQuery \
       "UPDATE authn SET login = 'true' WHERE user = %s"
@@ -135,7 +130,6 @@ DBDExptime 300
 
   &lt;Files logout.html&gt;
     # dbd-logout action executes a statement to log user out
-    AuthzMergeRules Off
     Require dbd-logout
     AuthzDBDQuery \
       "UPDATE authn SET login = 'false' WHERE user = %s"

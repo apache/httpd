@@ -37,7 +37,7 @@
     usually used in conjunction with an authentication
     provider module such as <module>mod_authn_file</module> and an 
     authorization module such as <module>mod_authz_user</module>. It
-    also allows for "AND" and "OR" logic to be applied to the 
+    also allows for advanced logic to be applied to the 
     authorization processing.</p>
 </summary>
 
@@ -45,7 +45,8 @@
 
     <p>Extended authorization providers can be created within the configuration
     file and assigned an alias name.  The alias providers can then be referenced
-    through the <directive module="mod_authz_core">Require</directive> directive
+    through the <directive module="mod_authz_core">Require</directive> and
+    <directive module="mod_authz_core">Match</directive> directives
     in the same way as a base authorization provider.  Besides the ability to
     create and alias an extended provider, it also allows the same extended
     authorization provider to be reference by multiple locations.
@@ -59,13 +60,13 @@
         </p>
     
         <example><title>Example</title>
-          &lt;RequireAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;<br />
+          &lt;AuthzProviderAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;<br />
           <indent>
              AuthLDAPBindDN cn=youruser,o=ctx<br />
              AuthLDAPBindPassword yourpassword<br />
              AuthLDAPURL ldap://ldap.host/o=ctx<br />
           </indent> 
-          &lt;/RequireAlias&gt;<br /><br /> 
+          &lt;/AuthzProviderAlias&gt;<br /><br /> 
           &lt;AuthnProviderAlias ldap-group ldap-group-alias2
            cn=my-other-group,o=dev&gt;<br />
           <indent>
@@ -73,7 +74,7 @@
              AuthLDAPBindPassword yourotherpassword<br />
              AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
           </indent> 
-          &lt;/RequireAlias&gt;<br /><br />
+          &lt;/AuthzProviderAlias&gt;<br /><br />
     
           Alias /secure /webpages/secure<br />
           &lt;Directory /webpages/secure&gt;<br />
@@ -95,19 +96,72 @@
 
 </section>
 
+<section id="logic"><title>Authorization Containers</title>
+
+    <p>The authorization container directives
+    <directive module="mod_authz_core" type="section">MatchAll</directive>,
+    <directive module="mod_authz_core" type="section">MatchAny</directive>,
+    <directive module="mod_authz_core" type="section">MatchNotAll</directive>
+    and
+    <directive module="mod_authz_core" type="section">MatchNotAny</directive>
+    may be combined with each other and with the
+    <directive module="mod_authz_core">Match</directive>
+    directive to express complex authorization logic.</p>
+
+    <p>The example below expresses the following authorization logic.
+    In order to access the resource, the user must either be the
+    <code>superadmin</code> user, or belong to both the
+    <code>admins</code> group and the <code>Administrators</code> LDAP
+    group and either belong to the <code>sales</code> group or
+    have the LDAP <code>dept</code> attribute <code>sales</code>.
+    Furthermore, in order to access the resource, the user must
+    not belong to either the <code>temps</code> group or the
+    LDAP group <code>Temporary Employees</code>.</p>
+
+    <example>
+        &lt;Directory /www/mydocs&gt;
+        <indent>
+            &lt;MatchAny&gt;
+            <indent>
+                Match user superadmin<br />
+                &lt;MatchAll&gt;
+                <indent>
+                    Match group admins<br />
+                    Match ldap-group cn=Administrators,o=Airius<br />
+                    &lt;MatchAny&gt;
+                    <indent>
+                        Match group sales<br />
+                        Match ldap-attribute dept="sales"
+                    </indent>
+                    &lt;/MatchAny&gt;
+                </indent>
+                &lt;/MatchAll&gt;
+            </indent>
+            &lt;/MatchAny&gt;<br />
+            &lt;MatchNotAny&gt;
+            <indent>
+                Match group temps<br />
+                Match ldap-group cn=Temporary Employees,o=Airius
+            </indent>
+            &lt;/MatchNotAny&gt;
+        </indent>      
+        &lt;/Directory&gt;
+    </example>
+</section>
+
 <directivesynopsis>
 <name>Require</name>
-<description>Selects which authenticated users can access
-a resource</description>
+<description>Tests whether an authenticated user is authorized by
+an authorization provider.</description>
 <syntax>Require <var>entity-name</var> [<var>entity-name</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p>This directive selects which authenticated users can access a
-    resource.  The restrictions are processed by authorization
-    modules.  Some of the allowed syntaxes provided by
+    <p>This directive tests whether an authenticated user is authorized
+    according to a particular authorization provider and the specified
+    restrictions.  Some of the allowed syntaxes provided by
     <module>mod_authz_user</module> and
     <module>mod_authz_groupfile</module> are:</p>
 
@@ -156,168 +210,331 @@ a resource</description>
     place the <directive>Require</directive> statement into a
     <directive module="core" type="section">Limit</directive>
     section.</p>
- 
+
+    <p>When multiple <directive>Require</directive> directives are
+    used in a single
+    <a href="../sections.html#mergin">configuration section</a>,
+    the first one to authorize a user authorizes the entire request,
+    and subsequent <directive>Require</directive> directives are
+    ignored.  In other words, all <directive>Require</directive> directives
+    are enclosed in an implied <directive module="mod_authz_core"
+    type="section">MatchAny</directive> directive.</p>
+
+    <note><directive>Require</directive> directives may not be combined
+    with the <directive module="mod_authz_core">Match</directive> directive
+    or any authorization container directives, such as
+    <directive module="mod_authz_core"
+    type="section">MatchAll</directive>.</note>
 </usage>
 
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></seealso> 
+<seealso><module>mod_authn_core</module></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>Reject</name>
-<description>Rejects authenticated users or host based 
-requests from accessing a resource</description>
-<syntax>Reject <var>entity-name</var> [<var>entity-name</var>] ...</syntax>
+<name>Match</name>
+<description>Tests whether an authenticated user is authorized by
+an authorization provider.</description>
+<syntax>Match [not] <var>entity-name</var>
+[<var>entity-name</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p>This directive is similar to the 
-    <directive module="mod_authz_core">Require</directive> directive however
-    it rejects which authenticated users or host based requests from accessing a resource.  The 
-    restrictions are processed by authorization modules.  See the 
-    <directive module="mod_authz_core">Require</directive> directive for details 
-    about usage.</p>
+    <p>This directive is similar to the
+    <directive module="mod_authz_core">Require</directive> directive;
+    it tests whether an authenticated user is authorized according to
+    a particular authorization provider and the specified restrictions.</p>
+
+    <p>Unlike the <directive module="mod_authz_core">Require</directive>
+    directive, it may be used with and inside authorization container
+    directives such as
+    <directive module="mod_authz_core" type="section">MatchAll</directive>.</p>
+
+    <p>Furthermore, its result may be negated through the use of the
+    <code>not</code> option.  As with other negated authorization directives,
+    in this case the <directive>Match</directive> directive may only
+    either fail or return a neutral result, and can therefore never
+    independently authorize a request.</p>
+
+    <p>In the following example, all users in the <code>alpha</code>
+    and <code>beta</code> groups are authorized, except for those who
+    are also in the <code>reject</code> group.</p>
+
+    <example>
+        &lt;Directory /www/docs&gt;
+        <indent>
+            Match group alpha beta<br />
+            Match not group reject
+        </indent>
+        &lt;/Directory&gt;
+    </example>
+
+    <p>When multiple <directive>Match</directive> directives are
+    used in a single
+    <a href="../sections.html#mergin">configuration section</a>
+    and are not contained in another authorization directive like
+    <directive module="mod_authz_core" type="section">MatchAny</directive>,
+    they are implicitly contained within a
+    <directive module="mod_authz_core" type="section">MatchAll</directive>
+    directive.  Thus for the user to be authorized, all such
+    <directive>Match</directive> directives must not fail, and
+    at least one must be successful.</p>
+
+    <note><directive>Match</directive> directives may not be combined
+    with the <directive module="mod_authz_core">Require</directive>
+    directive.</note>
 </usage>
 
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><a href="#logic">Authorization Containers</a></seealso>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></seealso> 
-<seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
-<name>SatisfyAll</name>
-<description>Enclose a group of authorization directives that must all
-be satisfied in order to grant access to a resource.  This block allows
-for 'AND' logic to be applied to various authorization providers.</description>
-<syntax>&lt;SatisfyAll&gt;
-... &lt;/SatisfyAll&gt;</syntax>
+<name>MatchAll</name>
+<description>Enclose a group of authorization directives of which none
+must fail and at least one must succeed for the enclosing directive to
+succeed.</description>
+<syntax>&lt;MatchAll&gt;
+... &lt;/MatchAll&gt;</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive type="section">SatisfyAll</directive> and
-    <code>&lt;/SatisfyAll&gt;</code> are used to enclose a group of
-    authorization directives that must all be satisfied in order to 
-    grant access to a resource.</p>
+    <p><directive type="section">MatchAll</directive> and
+    <code>&lt;/MatchAll&gt;</code> are used to enclose a group of
+    authorization directives of which none must fail and at least one
+    must succeed in order for
+    the <directive type="section">MatchAll</directive> directive to
+    succeed.</p>
 
-    <p>The <directive module="mod_authz_core">
-    &lt;SatisfyAll&gt;</directive> block as well as the 
-    <directive module="mod_authz_core">&lt;SatisfyOne&gt;</directive> block 
-    allow you to apply "AND" and "OR" logic to the authorization processing. 
-    For example the following authorization block would apply the logic:</p>
+    <p>If none of the directives contained within the
+    <directive type="section">MatchAll</directive> directive fails,
+    and at least one succeeds, then the
+    <directive type="section">MatchAll</directive> directive
+    succeeds.  If none succeed and none fail, then it returns a
+    neutral result.  In all other cases, it fails.</p>
+</usage>
+
+<seealso><a href="#logic">Authorization Containers</a></seealso>
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
+
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>MatchAny</name>
+<description>Enclose a group of authorization directives of which one
+must succeed for the enclosing directive to succeed.</description>
+<syntax>&lt;MatchAny&gt;
+... &lt;/MatchAny&gt;</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive type="section">MatchAny</directive> and
+    <code>&lt;/MatchAny&gt;</code> are used to enclose a group of
+    authorization directives of which one must succeed in order for
+    the <directive type="section">MatchAny</directive> directive to
+    succeed.</p>
+
+    <p>If one or more of the directives contained within the
+    <directive type="section">MatchAny</directive> directive succeed,
+    then the <directive type="section">MatchAny</directive> directive
+    succeeds.  If none succeed and none fail, then it returns a
+    neutral result.  In all other cases, it fails.</p>
+
+    <note>Because negated authorization directives are unable to
+    return a successful result, they can not significantly influence
+    the result of a <directive type="section">MatchAny</directive>
+    directive.  (At most they could cause the directive to fail in
+    the case where they failed and all other directives returned a
+    neutral value.)  Therefore negated authorization directives
+    are not permitted within a <directive type="section">MatchAny</directive>
+    directive.</note>
+</usage>
+
+<seealso><a href="#logic">Authorization Containers</a></seealso>
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
+
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>MatchNotAll</name>
+<description>Enclose a group of authorization directives of which some
+must fail or none must succeed for the enclosing directive to
+not fail.</description>
+<syntax>&lt;MatchNotAll&gt;
+... &lt;/MatchNotAll&gt;</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive type="section">MatchNotAll</directive> and
+    <code>&lt;/MatchNotAll&gt;</code> are used to enclose a group of
+    authorization directives of which some must fail or none must succeed
+    in order for the
+    <directive type="section">MatchNotAll</directive> directive to
+    not fail.</p>
+
+    <p>If none of the directives contained within the
+    <directive type="section">MatchNotAll</directive> directive
+    fail, and one or more succeed, then the
+    <directive type="section">MatchNotAll</directive> directive fails.
+    In all other cases, it returns a neutral result.  Thus as with
+    the other negated authorization directives, it can never independently
+    authorize a request because it can never return a successful result.
+    It can be used, however, to restrict the set of users who are
+    authorized to access a resource.</p>
+</usage>
+
+<seealso><a href="#logic">Authorization Containers</a></seealso>
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
+
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>MatchNotAny</name>
+<description>Enclose a group of authorization directives of which none
+none must succeed for the enclosing directive to not fail.</description>
+<syntax>&lt;MatchNotAny&gt;
+... &lt;/MatchNotAny&gt;</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive type="section">MatchNotAny</directive> and
+    <code>&lt;/MatchNotAny&gt;</code> are used to enclose a group of
+    authorization directives of which none must succeed
+    in order for the
+    <directive type="section">MatchNotAny</directive> directive to
+    not fail.</p>
+
+    <p>If one or more of the directives contained within the
+    <directive type="section">MatchNotAny</directive> directive succeed,
+    then the <directive type="section">MatchNotAny</directive> directive
+    fails.  In all other cases, it returns a neutral result.  Thus as with
+    the other negated authorization directives, it can never independently
+    authorize a request because it can never return a successful result.
+    It can be used, however, to restrict the set of users who are
+    authorized to access a resource.</p>
+
+    <note>Because negated authorization directives are unable to
+    return a successful result, they can not significantly influence
+    the result of a <directive type="section">MatchNotAny</directive>
+    directive.  Therefore negated authorization directives
+    are not permitted within a
+    <directive type="section">MatchNotAny</directive> directive.</note>
+</usage>
+
+<seealso><a href="#logic">Authorization Containers</a></seealso>
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
+
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MergeAuthz</name>
+<description>Controls the manner in which each configuration section's
+authorization logic is combined with that of preceding configuration
+sections.</description>
+<syntax>MergeAuthz Off | MatchAll | MatchAny</syntax>
+<default>MergeAuthz Off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>When authorization is enabled, it is normally inherited by each
+    subsequent <a href="../sections.html#mergin">configuration section</a>,
+    unless a different set of authorization directives are specified.
+    This is the default action, which corresponds to an explicit setting
+    of <code>MergeAuthz Off</code>.</p>
+
+    <p>However, there may be circumstances in which is it desirable
+    for a configuration section's authorization to be combined with
+    that of its predecessor while configuration sections are being
+    merged.  Two options are available for this case, <code>MatchAll</code>
+    and <code>MatchAny</code>.</p>
+
+    <p>When a configuration section contains <code>AuthzMerge MatchAll</code>
+    or <code>AuthzMerge MatchAny</code>,
+    its authorization logic is combined with that of the nearest
+    predecessor (according to the overall order of configuration sections)
+    which also contains authorization logic as if the two sections
+    were jointly contained within a
+    <directive module="mod_authz_core" type="section">MatchAll</directive> or
+    <directive module="mod_authz_core" type="section">MatchAny</directive>
+    directive, respectively.</p>
+
+    <note>The setting of <directive>AuthzMerge</directive> is not
+    inherited outside of the configuration section in which it appears.
+    In the following example, only users belonging to group <code>alpha</code>
+    may access <code>/www/docs</code>.  Users belonging to either
+    groups <code>alpha</code> or <code>beta</code> may access
+    <code>/www/docs/ab</code>.  However, the default <code>Off</code>
+    setting of <directive>AuthzMerge</directive> applies to the
+    <directive type="section" module="core">Directory</directive>
+    configuration section for <code>/www/docs/ab/gamma</code>, so
+    that section's authorization directives override those of the
+    preceding sections.  Thus only users belong to the group
+    <code>gamma</code> may access <code>/www/docs/ab/gamma</code>.</note>
 
     <example>
-      # if ((user == "John") ||<br />
-      # &nbsp;&nbsp; ((Group == "admin")<br />
-      # &nbsp; &nbsp; &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user)<br />
-      # &nbsp; &nbsp; &amp;&amp; ((ldap-attribute dept == "sales")<br />
-      # &nbsp; &nbsp; &nbsp; &nbsp; || (file-group contains auth'ed_user))))<br />
-      # then<br />
-      # &nbsp; auth_granted<br />
-      # else<br />
-      # &nbsp; auth_denied<br />
-      #<br />
-      &lt;Directory /www/mydocs&gt;<br />
-      <indent>
-        Authname ...<br />
-        AuthBasicProvider ...<br />
-        ...<br />
-        Require user John<br />
-        &lt;SatisfyAll&gt;<br />
+        &lt;Directory /www/docs&gt;
         <indent>
-          Require Group admins<br />
-          Require ldap-group cn=mygroup,o=foo<br />
-          &lt;SatisfyOne&gt;<br />
-          <indent>
-            Require ldap-attribute dept="sales"<br />
-            Require file-group<br />
-          </indent>
-          &lt;/SatisfyOne&gt;<br />
+            AuthType Basic<br />
+            AuthName Documents<br />
+            AuthBasicProvider file<br />
+            AuthUserFile /usr/local/apache/passwd/passwords<br />
+            Match group alpha
         </indent>
-        &lt;/SatisfyAll&gt;<br />
-      </indent>
-      &lt;/Directory&gt;
+        &lt;/Directory&gt;<br />
+        <br />
+        &lt;Directory /www/docs/ab&gt;
+        <indent>
+            AuthzMerge MatchAny<br />
+            Match group beta
+        </indent>
+        &lt;/Directory&gt;<br />
+        <br />
+        &lt;Directory /www/docs/ab/gamma&gt;
+        <indent>
+            Match group gamma
+        </indent>
+        &lt;/Directory&gt;
     </example>
 </usage>
 
-<seealso><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></seealso> 
-
 </directivesynopsis>
 
 <directivesynopsis type="section">
-<name>SatisfyOne</name>
-<description>Enclose a group of authorization directives that must 
-satisfy at least one in order to grant access to a resource.  This 
-block allows for 'OR' logic to be applied to various authorization 
-providers.</description>
-<syntax>&lt;SatisfyOne&gt;
-... &lt;/SatisfyOne&gt;</syntax>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p><directive type="section">SatisfyOne</directive> and
-    <code>&lt;/SatisfyOne&gt;</code> are used to enclose a group of
-    authorization directives that must satisfy at least one in order to 
-    grant access to a resource.</p>
-
-    <p>See the <directive module="mod_authz_core">
-    &lt;SatisfyAll&gt;</directive> directive for a usage example.</p>
-
-</usage>
-
-<seealso><a href="../howto/auth.html">Authentication, Authorization,
-    and Access Control</a></seealso> 
-
-</directivesynopsis>
-
-<directivesynopsis>
-<name>AuthzMergeRules</name>
-<description>Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
-authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
-Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
-the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</description>
-<syntax>AuthzMergeRules on | off</syntax>
-<default>AuthzMergeRules on</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>By default all of the authorization rules within a &lt;Directory&gt;
-    &lt;Location&gt; hierarchy are merged together to form a single 
-    logical authorization operation.  If AuthzMergeRules is set to 'off', then
-    only the authorization rules that are contained with the current 
-    &lt;Directory&gt; or &lt;Location&gt; block are considered. This
-    allows the configuration to determine exactly how authorization will
-    be determined without having to take into consideration the 
-    authorization rules that may exist above it.</p>
-</usage>
-
-</directivesynopsis>
-
-<directivesynopsis type="section">
-<name>RequireAlias</name>
+<name>AuthzProviderAlias</name>
 <description>Enclose a group of directives that represent an
 extension of a base authorization provider and referenced by the specified
 alias</description>
-<syntax>&lt;RequireAlias <var>baseProvider Alias Require-Parameters</var>&gt; 
-... &lt;/RequireAlias&gt;
+<syntax>&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt; 
+... &lt;/AuthzProviderAlias&gt;
 </syntax>
 <contextlist><context>server config</context>
 </contextlist>
 
 <usage>
-    <p><directive type="section">RequireAlias</directive> and
-    <code>&lt;/RequireAlias&gt;</code> are used to enclose a group of
+    <p><directive type="section">AuthzProviderAlias</directive> and
+    <code>&lt;/AuthzProviderAlias&gt;</code> are used to enclose a group of
     authorization directives that can be referenced by the alias name using the
-    directive <directive module="mod_authz_core"> Require</directive>.</p>
+    directive <directive module="mod_authz_core">Require</directive>.</p>
 
 </usage>
 </directivesynopsis>

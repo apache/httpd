@@ -54,7 +54,6 @@ module from each group.</p>
       <li><module>mod_authn_anon</module></li>
       <li><module>mod_authn_dbd</module></li>
       <li><module>mod_authn_dbm</module></li>
-      <li><module>mod_authn_default</module></li>
       <li><module>mod_authn_file</module></li>
       <li><module>mod_authnz_ldap</module></li>
     </ul>
@@ -65,7 +64,6 @@ module from each group.</p>
       <li><module>mod_authnz_ldap</module></li>
       <li><module>mod_authz_dbd</module></li>
       <li><module>mod_authz_dbm</module></li>
-      <li><module>mod_authz_default</module></li>
       <li><module>mod_authz_groupfile</module></li>
       <li><module>mod_authz_host</module></li>
       <li><module>mod_authz_owner</module></li>
@@ -430,12 +428,14 @@ person in</title>
     &lt;/Directory&gt;
     </example>
 
-    <p>To take authorization a little further, the directives
-    <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive> and
-    <directive module="mod_authz_core">&lt;SatisfyOne&gt;</directive> allow
-    AND/OR logic to be applied so that the order in which authorization
-    is handled can be completely controled through the configuration. See
-    these directives for a complete example on they can be applied.</p>
+    <p>To take authorization a little further, authorization container
+    directives such as
+    <directive module="mod_authz_core" type="section">MatchAll</directive> and
+    <directive module="mod_authz_core" type="section">MatchAny</directive>
+    allow logic to be applied so that the order in which authorization
+    is handled can be completely controled through the configuration.
+    See <a href="../mod/mod_authz_core.html#logic">Authorization
+    Containers</a> for an example of they may be applied.</p>
 
 </section>
 
@@ -445,75 +445,61 @@ person in</title>
     than just a single check against a single data store. Ordering, logic
     and choosing how authorization will be done is now possible.</p>
 
-    <section id="authandororder"><title>Applying AND/OR logic and ordering</title>
+    <section id="authandororder"><title>Applying logic and ordering</title>
         <p>Controling how and in what order authorization will be applied
-        has been a bit of a mystery in the past. In Apache 2.2 a provider based
+        has been a bit of a mystery in the past. In Apache 2.2 a provider-based
         authentication mechanism was introduced to decouple the actual 
         authentication process from authorization and supporting functionality.
         One of the side benefits was that authentication providers could be
         configured and called in a specific order which didn't depend on the 
         load order of the auth module itself. This same provider based mechanism 
         has been brought forward into authorization as well. What this means is 
-        that the <directive module="mod_authz_core">Require</directive> directive 
-        not only specifies which authorization methods should be used, it also 
+        that the <directive module="mod_authz_core">Require</directive> and
+        <directive module="mod_authz_core">Match</directive> directives
+        not only specify which authorization methods should be used, they also 
         specifies the order in which they are called. Multiple authorization 
         methods are called in the same order in which the 
-        <directive module="mod_authz_core">Require</directive> directives appear 
-        in the configuration.</p>
+        <directive module="mod_authz_core">Require</directive>
+        or <directive module="mod_authz_core">Match</directive> directives
+        appear in the configuration.</p>
 
-        <p>With the introduction of the directives 
-        <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive> and 
-        <directive module="mod_authz_core">&lt;SatisfyOne&gt;</directive>, the 
-        configuration also has control over when the
+        <p>With the introduction of authorization container directives
+        such as
+        <directive module="mod_authz_core" type="section">MatchAll</directive>
+        and 
+        <directive module="mod_authz_core" type="section">MatchAny</directive>,
+        the configuration also has control over when the
         authorization methods are called and what criteria determines when 
-        access is granted. For example the following authorization block would 
-        apply the logic:</p>
+        access is granted.  See
+        <a href="../mod/mod_authz_core.html#logic">Authorization Containers</a>
+        for an example of how they may be used to express complex
+        authorization logic.</p>
 
-        <example>
-          # if ((user == "John") ||<br />
-          # &nbsp;&nbsp; ((Group == "admins")<br />
-          # &nbsp; &nbsp; &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user)<br />
-          # &nbsp; &nbsp; &amp;&amp; ((ldap-attribute dept == "sales")<br />
-          # &nbsp; &nbsp; &nbsp; &nbsp; || (file-group contains auth'ed_user))))<br />
-          # then<br />
-          # &nbsp; auth_granted<br />
-          # else<br />
-          # &nbsp; auth_denied<br />
-          #<br />
-          &lt;Directory /www/mydocs&gt;<br />
-          <indent>
-            Authname ...<br />
-            AuthBasicProvider ...<br />
-            ...<br />
-            Require user John<br />
-            &lt;SatisfyAll&gt;<br />
-            <indent>
-              Require Group admins<br />
-              Require ldap-group cn=mygroup,o=foo<br />
-              &lt;SatisfyOne&gt;<br />
-              <indent>
-                Require ldap-attribute dept="sales"<br />
-                Require file-group<br />
-              </indent>
-              &lt;/SatisfyOne&gt;<br />
-            </indent>
-            &lt;/SatisfyAll&gt;<br />
-          </indent>
-          &lt;/Directory&gt;
-        </example>
-
-        <p>By default all <directive module="mod_authz_core">Require</directive> 
-        directives are handled through an OR operation. In other words, if 
+        <p>By default all
+        <directive module="mod_authz_core">Require</directive> 
+        directives are handled as though contained within a
+        <directive module="mod_authz_core" type="section">MatchAny</directive>
+        container directive.  In other words, if 
         any of the specified authorization methods succeed, then authorization 
-        is granted. By enclosing a set of 
-        <directive module="mod_authz_core">Require</directive> directives within
-        a <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive> block,
-        the processing switches to an AND operation which requires all authorization 
-        methods to succeed before authorization is granted.</p>
+        is granted.</p>
+
+        <p>In contrast, by default all
+        <directive module="mod_authz_core">Match</directive> directives
+        are handled as though contained within a
+        <directive module="mod_authz_core" type="section">MatchAll</directive>
+        container directive (unless they are explicitly contained within
+        a different authorization container directive).
+        This permits
+        <directive module="mod_authz_core">Match</directive> directives
+        to be usefully mixed with negated
+        <code>Match not</code> directives.  To authorize the request,
+        none of the negated directives can match their parameters,
+        while all of the positive directives must match their
+        parameters (or else return a neutral result).</p>
 
     </section>
 
-    <section id="reqaccessctrl"><title>Using 'Require' or 'Reject' for access control</title>
+    <section id="reqaccessctrl"><title>Using authorization providers for access control</title>
         <p>Authentication by username and password is only part of the
         story. Frequently you want to let people in based on something
         other than who they are. Something such as where they are
@@ -526,10 +512,10 @@ person in</title>
         ip</directive> let you allow or deny access based other host based
         criteria such as host name or ip address of the machine requesting 
         a document.</p> 
-    
+
         <p>The usage of these providers is specified through the 
         <directive module="mod_authz_core">Require</directive> and 
-        <directive module="mod_authz_core">Reject</directive> directives.
+        <directive module="mod_authz_core">Match</directive> directives.
         These directives register the authorization providers
         that will be called during the authorization stage of the request
         processing. For example:</p>
@@ -554,7 +540,7 @@ person in</title>
         following:</p>
     
         <example>
-          Reject ip 10.252.46.165
+          Match not ip 10.252.46.165
         </example>
     
         <p>Visitors coming from that address will not be able to see
@@ -562,30 +548,33 @@ person in</title>
         machine name, rather than an IP address, you can use that.</p>
     
         <example>
-          Reject host <var>host.example.com</var>
+          Match not host <var>host.example.com</var>
         </example>
     
         <p>And, if you'd like to block access from an entire domain,
         you can specify just part of an address or domain name:</p>
     
         <example>
-          &lt;SatisfyAll&gt;<br />
+          Match all granted<br />
+          &lt;MatchNotAny&gt;
           <indent>
-            Reject ip <var>192.168.205</var><br />
-            Reject host <var>phishers.example.com</var> <var>moreidiots.example</var><br />           Reject host ke<br />
+            Match ip 192.168.205<br />
+            Match host phishers.example.com moreidiots.example<br />
+            Match host ke
           </indent>
-          &lt;/SatisfyAll&gt;
+          &lt;/MatchNotAny&gt;
         </example>
     
-        <p>Using the <directive module="mod_authz_host">Reject</directive> directive
-        inside of a <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive>
-        block, will let you be sure that you are actually restricting things to 
-        only the group that you want to let in.</p>
-    
-        <p>The above example uses the <directive module="mod_authz_core">
-        &lt;SatisfyAll&gt;</directive> block to make sure that all of the 
-        <directive module="mod_authz_host">Reject</directive> directives are 
-        satisfied before granting access. </p>
+        <p>The above example uses the <directive module="mod_authz_core"
+        type="section">MatchNotAny</directive> container directive
+        to make sure that none of the 
+        <directive module="mod_authz_host">Match</directive> directives
+        match their parameters before granting access.  Note that
+        the <code>Match all granted</code> directive and the
+        <directive module="mod_authz_core"
+        type="section">MatchNotAny</directive> are implicitly contained
+        within a <directive module="mod_authz_core"
+        type="section">MatchAll</directive> directive.</p>
     
     </section>
 
@@ -598,23 +587,6 @@ person in</title>
         <directive module="mod_access_compat">Satisfy</directive> are no longer needed. 
         However to provide backwards compatibility for older configurations, these 
         directives have been moved to the <module>mod_access_compat</module> module.</p>
-
-        <p>One of the problems with these directives was that the line between
-        authorization and access control was very fuzzy. The 
-        <directive module="mod_access_compat">Satisfy</directive> directive
-        tried to tie these two stages together by hooking itself into the 
-        request processing itself. Now that these directive have been moved to the
-        <module>mod_access_compat</module>, mixing the new authorization directives
-        with the older access control directives becomes difficult. To address this
-        issue, the <module>mod_authz_default</module> module becomes very important and must
-        be loaded. The main purpose of the <module>mod_authz_default</module> module is 
-        to handle any authorization requests that could not be handled by the 
-        authorization providers. But when the older access control directives are used, 
-        it also links access control with authorization and determines if access 
-        should be granted based on the outcome of each stage. Therefore if the 
-        older directives do not seem to be working properly, it might be because the
-        <module>mod_authz_default</module> module has not been loaded.</p>
-
     </section>
 
 </section>
