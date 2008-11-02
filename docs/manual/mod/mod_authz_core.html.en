@@ -84,7 +84,7 @@
              AuthLDAPURL ldap://ldap.host/o=ctx<br />
           </span> 
           &lt;/AuthzProviderAlias&gt;<br /><br /> 
-          &lt;AuthnProviderAlias ldap-group ldap-group-alias2
+          &lt;AuthzProviderAlias ldap-group ldap-group-alias2
            cn=my-other-group,o=dev&gt;<br />
           <span class="indent">
              AuthLDAPBindDN cn=yourotheruser,o=dev<br />
@@ -515,7 +515,8 @@ an authorization provider.</td></tr>
     <p>For a complete authentication and authorization configuration, 
     <code class="directive">Require</code> must be accompanied by
     <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>, <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> and 
-    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> 
+    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> or
+    <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> 
     directives, and directives such as 
     <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
     and <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> (to
