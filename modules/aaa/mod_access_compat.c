@@ -349,18 +349,6 @@ static int check_dir_access(request_rec *r)
         }
     }
 
-    if (ret == OK) {
-        apr_table_setn(r->notes, AUTHZ_ACCESS_PASSED_NOTE, "Y");
-    }
-    else {
-        apr_table_setn(r->notes, AUTHZ_ACCESS_PASSED_NOTE, "N");
-        /* If Satisfy is not Any and authorization is required, then 
-           defer to the authorization stage */
-        if ((access_compat_ap_satisfies(r) != SATISFY_ANY) && ap_some_auth_required(r)) {
-            ret = OK;
-        }
-    }
-
     if (ret == HTTP_FORBIDDEN) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "client denied by server configuration: %s%s",

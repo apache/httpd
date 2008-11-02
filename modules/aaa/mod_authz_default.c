@@ -56,12 +56,6 @@ static int check_user_access(request_rec *r)
 {
     authz_default_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                  &authz_default_module);
-    const char *note = apr_table_get(r->notes, AUTHZ_ACCESS_PASSED_NOTE);
-
-    /* If we got here and access checker passed, assume access is OK */
-    if (note && (note[0] == 'Y') && (ap_satisfies(r) == SATISFY_ANY)) {
-        return OK;
-    }
 
     /* If we got here and there isn't any authz required, assume access is OK */
     if (!ap_some_auth_required(r)) {
