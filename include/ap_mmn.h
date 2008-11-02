@@ -172,13 +172,15 @@
  * 20080920.1 (2.3.0-dev)  Export mod_rewrite.h in the public API.
  * 20080920.2 (2.3.0-dev)  Added ap_timeout_parameter_parse to util.c / httpd.h
  * 20081101.0 (2.3.0-dev)  Remove unused AUTHZ_GROUP_NOTE define.
+ * 20081102.0 (2.3.0-dev)  Remove authz_provider_list, authz_request_state,
+ *                         and AUTHZ_ACCESS_PASSED_NOTE.
  *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20081101
+#define MODULE_MAGIC_NUMBER_MAJOR 20081102
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
