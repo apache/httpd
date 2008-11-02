@@ -188,7 +188,8 @@ an authorization provider.</description>
     <directive>Require</directive> must be accompanied by
     <directive module="mod_authn_core">AuthName</directive>, <directive
     module="mod_authn_core">AuthType</directive> and 
-    <directive module="mod_auth_basic">AuthBasicProvider</directive> 
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> or
+    <directive module="mod_auth_digest">AuthDigestProvider</directive> 
     directives, and directives such as 
     <directive module="mod_authn_file">AuthUserFile</directive>
     and <directive module="mod_authz_groupfile">AuthGroupFile</directive> (to
