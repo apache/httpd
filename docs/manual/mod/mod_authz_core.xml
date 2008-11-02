@@ -67,7 +67,7 @@
              AuthLDAPURL ldap://ldap.host/o=ctx<br />
           </indent> 
           &lt;/AuthzProviderAlias&gt;<br /><br /> 
-          &lt;AuthnProviderAlias ldap-group ldap-group-alias2
+          &lt;AuthzProviderAlias ldap-group ldap-group-alias2
            cn=my-other-group,o=dev&gt;<br />
           <indent>
              AuthLDAPBindDN cn=yourotheruser,o=dev<br />
