@@ -57,9 +57,7 @@ have been deprecated by the new authz refactoring.  Please see
     <div class="warning"><h3>Note</h3>
       <p>The directives provided by <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> have
       been deprecated by the new authz refactoring. Please see 
-      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.  The module 
-      <code class="module"><a href="../mod/mod_authz_default.html">mod_authz_default</a></code> must also be loaded to provide for
-      default authorization handling.</p>
+      <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
     </div>
 
     <p>In general, access restriction directives apply to all
