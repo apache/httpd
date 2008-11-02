@@ -101,13 +101,11 @@ BEGIN {
 	  print "LoadModule authn_core_module modules/mod_authn_core.so" > dstfl;
 	  print "#LoadModule authn_dbd_module modules/mod_authn_dbd.so" > dstfl;
 	  print "#LoadModule authn_dbm_module modules/mod_authn_dbm.so" > dstfl;
-	  print "LoadModule authn_default_module modules/mod_authn_default.so" > dstfl;
 	  print "LoadModule authn_file_module modules/mod_authn_file.so" > dstfl;
 	  print "#LoadModule authnz_ldap_module modules/mod_authnz_ldap.so" > dstfl;
 	  print "LoadModule authz_core_module modules/mod_authz_core.so" > dstfl;
 	  print "#LoadModule authz_dbd_module modules/mod_authz_dbd.so" > dstfl;
 	  print "#LoadModule authz_dbm_module modules/mod_authz_dbm.so" > dstfl;
-	  print "LoadModule authz_default_module modules/mod_authz_default.so" > dstfl;
 	  print "LoadModule authz_groupfile_module modules/mod_authz_groupfile.so" > dstfl;
 	  print "LoadModule authz_host_module modules/mod_authz_host.so" > dstfl;
 	  print "#LoadModule authz_owner_module modules/mod_authz_owner.so" > dstfl;

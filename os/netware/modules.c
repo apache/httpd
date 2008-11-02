@@ -29,9 +29,7 @@ extern module http_module;
 extern module so_module;
 extern module mime_module;
 extern module authn_core_module;
-extern module authn_default_module;
 extern module authz_core_module;
-extern module authz_default_module;
 extern module authz_host_module;
 extern module negotiation_module;
 extern module include_module;
@@ -52,9 +50,7 @@ module *ap_prelinked_modules[] = {
   &so_module,
   &mime_module,
   &authn_core_module,
-  &authn_default_module,
   &authz_core_module,
-  &authz_default_module,
   &authz_host_module,
   &negotiation_module,
   &include_module,
@@ -77,9 +73,7 @@ ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"so_module", &so_module},
   {"mime_module", &mime_module},
   {"authn_core_module", &authn_core_module},
-  {"authn_default_module", &authn_default_module},
   {"authz_core_module", &authz_core_module},
-  {"authz_default_module", &authz_default_module},
   {"authz_host_module", &authz_host_module},
   {"negotiation_module", &negotiation_module},
   {"include_module", &include_module},
@@ -102,9 +96,7 @@ module *ap_preloaded_modules[] = {
   &so_module,
   &mime_module,
   &authn_core_module,
-  &authn_default_module,
   &authz_core_module,
-  &authz_default_module,
   &authz_host_module,
   &negotiation_module,
   &include_module,

@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) authn/z: Remove mod_authn_default and mod_authz_default.
+     [Chris Darroch]
+
   *) authz: Fix handling of authz configurations, make default authz
      logic replicate 2.2.x authz logic, and replace <Satisfy*>, Reject,
      and AuthzMergeRules directives with Match, <Match*>, and AuthzMerge
