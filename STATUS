@@ -181,6 +181,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jim/patches/proxy-force-recovery.patch.txt
      +1: 
 
+   * mod_expires: Do not sets negative max-age / Expires header in the past.
+     PR 39774 [Jim Jagielski]
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=708902&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
  * core, authn/z: Avoid calling access control hooks for internal requests
