@@ -167,9 +167,19 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     return APR_SUCCESS;
 }
 
+static int 
+netware_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                 apr_pool_t *ptemp)
+{
+    sys_privileges_handlers(1);
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(ap_cgi_build_command);
+    ap_hook_pre_config(netware_pre_config,
+                       NULL, NULL, APR_HOOK_FIRST);
 }
 
 static const command_rec netware_cmds[] = {
