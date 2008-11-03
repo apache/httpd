@@ -208,8 +208,6 @@ FILES_nlm_Ximports = \
 	@$(APR)/aprlib.imp \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
-	ap_session_get \
-	ap_session_set \
 	$(EOLIST)
 
 #

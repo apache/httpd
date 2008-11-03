@@ -220,8 +220,6 @@ FILES_nlm_exports = \
 	ap_hook_session_encode \
 	ap_hook_session_load \
 	ap_hook_session_save \
-	ap_session_get \
-	ap_session_set \
 	$(EOLIST)
 
 #
