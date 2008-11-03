@@ -64,6 +64,15 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
     cs = c->cs;
 
     while (!c->aborted) {
+
+        cs->pfd.reqevents = APR_POLLOUT | APR_POLLHUP | APR_POLLERR | APR_POLLIN;
+        rv = apr_pollcb_remove(sc->pollcb, &cs->pfd);
+        if (rv) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                         "process_socket: apr_pollset_remove failure");
+            /*AP_DEBUG_ASSERT(rv == APR_SUCCESS);*/
+        }
+        
         if (cs->state == CONN_STATE_READ_REQUEST_LINE) {
             if (!c->aborted) {
                 ap_run_process_connection(c);
