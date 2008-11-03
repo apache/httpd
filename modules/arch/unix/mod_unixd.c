@@ -279,7 +279,7 @@ unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     unixd_config.chroot_dir = NULL; /* none */
 
-    ++sys_privileges;
+    sys_privileges_handlers(1);
     return OK;
 }
 
