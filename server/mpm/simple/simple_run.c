@@ -27,7 +27,6 @@
 #include "scoreboard.h"
 
 #include "ap_listen.h"
-#include "simple_api.h"
 #include "mpm.h"
 
 /**
@@ -240,11 +239,11 @@ void simple_single_process_hack(simple_core_t * sc)
 
 static int simple_setup_privs(simple_core_t * sc)
 {
-    int rv = ap_run_simple_drop_privileges(sc->pool, ap_server_conf);
+    int rv = ap_run_drop_privileges(sc->pool, ap_server_conf);
 
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "simple_setup_privs: ap_run_simple_drop_privileges failed");
+                     "simple_setup_privs: ap_run_drop_privileges failed");
         return rv;
     }
 
@@ -296,8 +295,7 @@ int simple_child_loop(simple_core_t * sc)
 
     rv = simple_setup_privs(sc);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "simple_child_loop: simple_drop_privs failed");
+        /* simple_setup_privs already logged error */
         return !OK;
     }
 

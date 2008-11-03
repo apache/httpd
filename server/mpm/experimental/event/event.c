@@ -1575,7 +1575,7 @@ static void child_main(int child_num_arg)
     /*stuff to do before we switch id's, so we have permissions. */
     ap_reopen_scoreboard(pchild, NULL, 0);
 
-    if (unixd_setup_child()) {
+    if (ap_run_drop_privileges(pchild, ap_server_conf)) {
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 

@@ -364,6 +364,10 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
 
 AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p))
 
+/* register modules that undertake to manage system security */
+extern int sys_privileges;
+AP_DECLARE_HOOK(int, drop_privileges, (apr_pool_t * pchild, server_rec * s))
+
 #ifdef __cplusplus
 }
 #endif
