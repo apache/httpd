@@ -3887,7 +3887,12 @@ static int core_pre_connection(conn_rec *c, void *csd)
 /* Insist that at least one module will undertake to provide system
  * security by dropping startup privileges.
  */
-AP_DECLARE(int) sys_privileges = 0;
+static int sys_privileges = 0;
+AP_DECLARE(int) sys_privileges_handlers(int inc)
+{
+    sys_privileges += inc;
+    return sys_privileges;
+}
 static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     if (!sys_privileges) {
