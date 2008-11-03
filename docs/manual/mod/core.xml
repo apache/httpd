@@ -2720,7 +2720,7 @@ itself</description>
 
     <p>See the description of the
     <directive module="core">UseCanonicalName</directive> and
-    <directive module="core">UseCanonicalPhysicalPort</directive>directives for
+    <directive module="core">UseCanonicalPhysicalPort</directive> directives for
     settings which determine whether self-referential URLs (e.g., by the
     <module>mod_dir</module> module) will refer to the
     specified port, or to the port number given in the client's request.

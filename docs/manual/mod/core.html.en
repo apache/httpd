@@ -2733,7 +2733,7 @@ itself</td></tr>
 
     <p>See the description of the
     <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> and
-    <code class="directive"><a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>directives for
+    <code class="directive"><a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code> directives for
     settings which determine whether self-referential URLs (e.g., by the
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> module) will refer to the
     specified port, or to the port number given in the client's request.
