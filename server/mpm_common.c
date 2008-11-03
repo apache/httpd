@@ -64,16 +64,21 @@
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(fatal_exception)
     APR_HOOK_LINK(monitor)
+    APR_HOOK_LINK(drop_privileges)
 )
 AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
                           (ap_exception_info_t *ei), (ei), OK, DECLINED)
 #else
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(monitor)
+    APR_HOOK_LINK(drop_privileges)
 )
 #endif
 AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
                           (apr_pool_t *p), (p), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_ALL(int, drop_privileges,
+                          (apr_pool_t * pchild, server_rec * s),
+                          (pchild, s), OK, DECLINED)
 
 
 #ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
@@ -1299,4 +1304,3 @@ AP_DECLARE(void) ap_mpm_register_timed_callback(apr_time_t t,
 }
 
 #endif /* AP_MPM_HAS_USER_CALLBACKS */
-

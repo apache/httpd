@@ -49,8 +49,6 @@
 #include <sys/prctl.h>
 #endif
 
-#include "simple_api.h"
-
 #ifndef DEFAULT_USER
 #define DEFAULT_USER "#-1"
 #endif
@@ -281,6 +279,7 @@ unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     unixd_config.chroot_dir = NULL; /* none */
 
+    ++sys_privileges;
     return OK;
 }
 
@@ -289,8 +288,8 @@ static void unixd_hooks(apr_pool_t *pool)
     ap_hook_pre_config(unixd_pre_config,
                        NULL, NULL, APR_HOOK_FIRST);
 
-    ap_hook_simple_drop_privileges(unixd_drop_privileges,
-                                   NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_drop_privileges(unixd_drop_privileges,
+                            NULL, NULL, APR_HOOK_FIRST);
 }
 
 static const command_rec unixd_cmds[] = {
