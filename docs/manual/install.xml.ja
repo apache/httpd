@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 395228:527129 (outdated) -->
+<!-- English Revision: 527129 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -252,7 +252,8 @@ $ tar xvf httpd-<em>NN</em>.tar
     必要がある場合があります。このような場合には、環境変数あるいは
     コマンドラインオプションで <program>configure</program> に渡します。
     詳細に関しては <program>configure</program> マニュアルページ
-    をご覧ください。</p>
+    をご覧ください。あるいは <code>--help</code> オプションつきで
+    <program>configure</program> を呼び出してください。</p>
 
     <p>ちょっとどんなことができるかを見せましょう。
     ここで典型的な例として、<code>/sw/pkg/apache</code> 
@@ -299,6 +300,10 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <example>$ make install</example>
 
+    <p>通常 <em>PREFIX</em> は書き込みパーミッションが制限されている
+    ディレクトリになっているので、このステップは通常は
+    ルート権限が必要です。</p>
+
     <p>アップグレードする場合は、インストールでは設定ファイルや
     ドキュメントファイルの上書きは行いません。</p>
 </section>
@@ -311,7 +316,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
-    <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
+    <p><code><em>PREFIX</em>/docs/manual/</code> や
+    <a href="./">docs/manual/</a> にある Apache マニュアルをざっと見てください。
     または、<a
     href="http://httpd.apache.org/docs/&httpd.docs;/"
     >http://httpd.apache.org/docs/&httpd.docs;/</a>
@@ -381,5 +387,12 @@ $ tar xvf httpd-<em>NN</em>.tar
     module="mpm_common">Listen</directive> ディレクティブで設定します) 
     を使用することで、古いバージョンに影響を与えずに新しいバージョンを
     インストールし、実行できます。</note>
+
+    <p>もとの <program>configure</program> に追加する形で、
+    追加の引数を <code>config.nice</code> に渡すこともできます:</p>
+
+    <example>
+    $ ./config.nice --prefix=/home/test/apache --with-port=90
+    </example>
 </section>
 </manualpage>
