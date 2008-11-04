@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:655319 (outdated) -->
+<!-- English Revision: 655319 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -37,6 +37,7 @@
 
 <seealso><program>httpd</program></seealso>
 <seealso><program>apachectl</program></seealso>
+<seealso><a href="invoking.html">Starting</a></seealso>
 
 <section id="introduction"><title>イントロダクション</title>
 
@@ -52,10 +53,11 @@
     <directive module="mpm_common">PidFile</directive>
     に書かれています。これはつまり、親以外のプロセスに
     シグナルを送る必要すらない、ということです。
-    親プロセスに送ることができる 3 種類のシグナルがあります:
+    親プロセスに送ることができる 4 種類のシグナルがあります:
     <code><a href="#term">TERM</a></code>,
     <code><a href="#hup">HUP</a></code>, 
-    <code><a href="#graceful">USR1</a></code>
+    <code><a href="#graceful">USR1</a></code>,
+    <code><a href="#gracefulstop">WINCH</a></code>
     です。これらの説明については続きをご覧下さい。</p>
 
     <p>親プロセスにシグナルを送るには、
@@ -66,7 +68,7 @@
     <p><program>httpd</program> プロセスにシグナルを送る 2 番目の方法は
     <code>-k</code> というコマンドライン引数を使用することです。
     下で説明されているように、<code>stop</code>, <code>restart</code>, 
-    <code>graceful</code> を指定できます。
+    <code>graceful</code>, <code>graceful-stop</code> を指定できます。
     これらは <program>httpd</program> の引数ですが、
     制御用のスクリプト <program>apachectl</program> はそれらの引数をそのまま
     <program>httpd</program> に渡します。</p>
@@ -111,12 +113,6 @@
     新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
     そして、これらが新たなリクエストに即座に応答し始めます。</p>
 
-    <note>特定のプラットホームでは <code>USR1</code>
-    を緩やかな再起動のために使うことができませんが、代わりのシグナル
-    (例えば WINCH) が使用できるでしょう。
-    <code>apachectl graceful</code>
-    というコマンドはプラットホームに合ったシグナルを送ります。</note>
-
     <p>このコードは常に
     MPM のプロセス制御ディレクティブの設定を重視しますので、
     クライアントのリクエストを扱うプロセスとスレッドの数を再起動の処理中も
@@ -154,18 +150,13 @@
     分以下で完了しているということが分かっていれば、
     古いログに何かする前に 15 分待つということです。</p>
 
-    <note>再起動時に設定ファイルに誤りがあると、
-    親プロセスは再起動せずにエラーとともに終了します。
-    緩やかな再起動の場合は、親プロセスが終了した後でも子プロセスが
-    実行されたまま放置されたりもします。
-    (最後のリクエストを処理した後「緩やかに終了」する
-    子プロセスとなります。)
-    サーバを再起動する際に、これが問題になるかもしれません
-    -- サーバは listen するポートにバインドできないかもしれません。
-    再起動する前に、設定ファイルの構文を <code>-t</code>
-    コマンドライン引数
-    (<program>httpd</program> をご覧下さい)
-    を使って検証することができます。
+    <note><p>再起動が発行されると設定ファイルの構文チェックがまず走り、
+    設定ファイルに (構文上の) 誤りがないかチェックされます。
+    誤りがあった場合エラーメッセージでその旨が示され、サーバは再起動されません。
+    こうすることでサーバが終了しているけれども再起動できないという状況を
+    防ぎ、サーバが機能不全な状態になるのを防いでいます。</p>
+
+    <p>ただしこれでもサーバが正しく再起動することは保証されません。
     設定ファイルの意味的な内容を構文と同様に検証したい場合は、
     非 root ユーザで <program>httpd</program> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
@@ -175,7 +166,8 @@
     に失敗するでしょう。
     これ以外の理由で起動に失敗したのであれば、
     それは設定ファイルのエラーで、
-    緩やかな再起動を行う前にその誤りを修正しなければなりません。</note>
+    緩やかな再起動を行う前にその誤りを修正しなければなりません。</p>
+    </note>
 </section>
 
 <section id="hup"><title>急な再起動</title>
@@ -194,53 +186,57 @@
     を使っている場合は、<code>HUP</code> が送られた場合に
     サーバ統計がゼロに設定されることに注意してください。</p>
 
-    <note>再起動時に設定ファイルに誤りがあると、
-    親プロセスは再起動せずにエラーとともに終了します。
-    これを避けるには次の方法をご覧下さい。</note>
+    <note>graceful 再起動時は、再起動前に構文チェックが行われます。
+    もし構文エラーがあればその旨が示され、再起動は行われません。</note>
 </section>
 
-<section id="race"><title>付録: シグナルと競合状態</title>
+<section id="gracefulstop"><title>緩やかな停止</title>
 
-    <p>Apache 1.2b9 以前は、再起動や停止のシグナルを含む<em>競合状態</em>
-    (競合状態を簡単に説明すると: タイミンにグよる問題で、
-    具合の悪い時間帯にちょうど何かが起こると予想外の動作をする
-    ようなことを指します) がありました。
-    「正しい」機能を持っているアーキテクチャでは、できるだけ
-    このようなことが起こらないようにしています。
-    しかし、ある種のアーキテクチャでは競合状態は未だ確実に起こりえる
-    ということに注意してください。</p>
+<dl><dt>Signal: WINCH</dt>
+<dd><code>apachectl -k graceful-stop</code></dd>
+</dl>
 
-    <p>ディスク上で
-    <directive module="mpm_common">ScoreBoardFile</directive>
-    を使用しているアーキテクチャでは、
-    潜在的にスコアボードが壊れる可能性があります。
-    スコアボードが壊れた場合は、
-    "bind: Address already in use" (<code>HUP</code> 後) や
-    "long lost child came home!" (<code>USR1</code> 後)
-    といった結果になります。
-    前者は致命的なエラーですが、
-    後者はスコアボードスロットを失うだけです。
-    ですから緩やかな再起動は、たまに確実な再起動 (HUP)
-    も併用して使った方が良いでしょう。
-    これらの問題を克服するのは非常に難しいのですが、
-    幸いなことに大部分のアーキテクチャではスコアボードのファイルは必要ありません。
-    これを使用するアーキテクチャは、
-    <directive module="mpm_common">ScoreBoardFile</directive>
-    をご覧下さい。</p>
+    <p><code>WINCH</code> や <code>graceful-stop</code> シグナルを受け取ると、
+    親プロセスは子プロセスに現在処理中のリクエストの後に終了する
+    (あるいは処理中のものが何もなければ直ちに終了する)
+    ように<em>アドバイス</em>します。
+    その後親プロセスは <directive module="mpm_common">PidFile</directive>
+    を削除し、ポートでの Listen を全て停止します。
+    親プロセスはどの子プロセスがリクエスト処理中かを監視し続けています。
+    全ての子プロセスが終了するか
+    <directive module="mpm_common">GracefulShutdownTimeout</directive>
+    で設定した時間が過ぎると、親プロセスも終了します。
+    タイムアウトに達した場合、残りの子プロセスには <code>TERM</code>
+    シグナルが送信され強制的に終了されます。</p>
+    
+    <p>"graceful" 状態の場合 <code>TERM</code> シグナルを受け取ると、
+    親プロセスも子プロセスもすぐに終了します。しかしながら
+    <directive module="mpm_common">PidFile</directive>
+    が削除されてしまっているので、<code>apachectl</code>
+    や <code>httpd</code> にこのシグナルを送ることはできません。</p>
 
-    <p>全てのアーキテクチャにおいて、個々の子プロセスで
-    継続的な HTTP コネクション (KeepAlive)
-    に関する小さな競合状態が起こりえます。
-    リクエスト行を読んだ後、そしてリクエストヘッダを読む前に
-    子プロセスは終了するかも知れません。
-    これに対する修正がありますが 1.2 で修正するには発見が遅すぎました。
-    理論的には、これは問題ではありません。
-    なぜなら KeepAlive のクライアントは、ネットワーク遅延や
-    サーバのタイムアウトなどに備えていなければならないからです。
-    実際にも何か影響があるようには見えません
-    -- テストケースでサーバを 1 秒間に 20 回再起動しても
-    クライアントは壊れた画像や空のドキュメントを受け取ることなく
-    正常に閲覧できています。</p>
+    <note><p><code>graceful-stop</code> を使うとまったく同一に設定された
+    複数の <program>httpd</program> を同時に実行することができます。
+    Apache を緩やかにアップグレードするのにはとても便利ですが、
+    設定ファイルによってはデッドロックやレースコンディションを
+    引き起こすこともあります。</p>
+
+    <p>ディスク上のファイルを使うもの、たとえば
+    <directive module="core">Lockfile</directive> や 
+    <directive module="mod_cgid">ScriptSock</directive> 
+    のファイルなどはサーバの PID を含めて管理されていて、
+    共存できるよう注意が払われています。
+    しかしその他設定ディレクティブやサードパーティ製のモジュール、
+    CGI ユーティリティのパーシステント層などで
+    ディスク上にロックファイルや状態管理ファイルを
+    使っている場合は、実行されている複数の <program>httpd</program>
+    が互いに衝突しないように気をつけなければなりません。</p>
+
+    <p><program>rotatelogs</program> 形式のパイプを使ったログといった、
+    その他潜在的なレースコンディションについても注意しなければなりません。
+    複数の <program>rotatelogs</program> が同じファイルを同時に
+    rotate しようとすると、互いにログファイルを破壊してしまいます。</p>
+    </note>
 </section>
 
 </manualpage>
