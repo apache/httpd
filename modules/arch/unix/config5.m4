@@ -2,7 +2,8 @@
 APACHE_MODPATH_INIT(arch/unix)
 
 
-if test "$APACHE_MPM" = "simple" ; then
+if test "$APACHE_MPM" = "simple" -o "$APACHE_MPM" = "worker" \
+   -o i"$APACHE_MPM" = "event" -o "$APACHE_MPM" = "prefork" ; then
   unixd_mods_enable=yes
 else
   unixd_mods_enable=no
