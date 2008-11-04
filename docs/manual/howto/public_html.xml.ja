@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:659902 (outdated) -->
+<!-- English Revision: 659902 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -33,6 +33,22 @@
     "<code>username</code>" というユーザの <directive
     module="mod_userdir">UserDir</directive> ディレクティブで指定された
     サブディレクトリからコンテンツを得ることになります。</p>
+
+    <p>in the default config file, and adapting the <code
+    >httpd-userdir.conf</code>
+    file as necessary, or by including the appropriate directives in a
+    <code>Directory</code> block within the main config file.</p>
+    <p>デフォルトではこれらのディレクトリへのアクセスは<strong>許可されていません</strong>。
+    <directive module="mod_userdir">UserDir</directive> を使って有効にできます。
+    有効にするには、デフォルトの設定ファイルで付随する
+    <code>httpd-userdir.conf</code> ファイルが必要で、
+    その中の次の行のコメントアウトを外して有効にするか、
+    </p>
+    <example>
+      #Include conf/extra/httpd-userdir.conf
+    </example>
+    <p>あるいは、メインの設定ファイル中の <code>Directory</code> 
+    ブロックの中に適切にディレクティブを記述しておきます。</p>
 </summary>
 
 <seealso><a href="../urlmapping.html">URL からファイルシステムへのマッピング</a></seealso>
@@ -89,6 +105,32 @@
     <p>URL <code>http://example.com/~rbowen/file.html</code> は
     パス <code>/var/www/rbowen/docs/file.html</code> へ変換されます。</p>
 
+    <p>ディレクトリやディレクトリパスを複数設定することもできます。</p>
+
+    <example>
+      UserDir public_html /var/html
+    </example>
+
+    <p><code>http://example.com/~rbowen/file.html</code> という
+    URL に対しては <code>~rbowen</code> を探します。見つからなければ、
+    <code>/var/html</code> の下にある <code>rbowen</code> を探します。
+    もし見つかれば上記の URL は <code>/var/html/rbowen/file.html</code>
+    というファイルパスに変換されます。</p>
+
+  </section>
+  
+  <section id="redirect">
+    <title>外部 URL にリダイレクトする</title>
+    <p><directive module="mod_userdir">UserDir</directive>
+    ディレクティブを使って外部 URL にリダイレクトすることもできます。</p>
+    
+    <example>
+      UserDir http://example.org/users/*/
+    </example>
+    
+    <p>上記例では <code>http://example.com/~bob/abc.html</code>
+    へのリクエストは <code>http://example.org/users/bob/abc.html</code>
+    にリダイレクトされます。</p>
   </section>
 
   <section id="enable">
