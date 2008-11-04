@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_info: Display the *real* keepalive time value.
      Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=r711421&view=rev
+        http://svn.apache.org/viewvc?rev=711421&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
      +1: jim
