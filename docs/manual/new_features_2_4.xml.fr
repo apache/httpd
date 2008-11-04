@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 642717 -->
+<!-- English Revision : 709841 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -72,6 +72,13 @@
       <dd>Nous disposons &agrave; pr&eacute;sent d'un analyseur g&eacute;n&eacute;rique d'expressions, dont l'API
       est d&eacute;crite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
       l'analyseur qu'on trouvait auparavant dans <module>mod_include</module>.</dd>
+      <dt>Conteneurs de logique d'autorisation</dt>
+      <dd>On peut maintenant sp&eacute;cifier une logique d'autorisation
+      avanc&eacute;e &agrave; l'aide de la directive <directive
+      module="mod_authz_core">Match</directive> et des directives de
+      conteneur associ&eacute;es, comme <directive module="mod_authz_core"
+      type="section">MatchAll</directive>, toutes fournies par le module
+      <module>mod_authz_core</module>.</dd>
     </dl>
   </section>
 </manualpage>
