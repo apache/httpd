@@ -59,7 +59,7 @@
 #include "http_log.h"
 #include "util_script.h"
 #include "ap_mpm.h"
-#include "unixd.h"
+#include "mpm_common.h"
 #include "mod_suexec.h"
 #include "../filters/mod_include.h"
 
@@ -630,7 +630,10 @@ static int cgid_server(void *data)
         }
     }
 
-    unixd_setup_child(); /* if running as root, switch to configured user/group */
+    /* if running as root, switch to configured user/group */
+    if ((rc = ap_run_drop_privileges(pcgi, ap_server_conf)) != 0) {
+        return rc;
+    }
 
     while (!daemon_should_exit) {
         int errfileno = STDERR_FILENO;
