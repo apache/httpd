@@ -80,15 +80,8 @@ typedef struct {
 } unixd_config_rec;
 AP_DECLARE_DATA extern unixd_config_rec unixd_config;
 
-AP_DECLARE(int) unixd_setup_child(void);
-AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp);
-AP_DECLARE(const char *) unixd_set_user(cmd_parms *cmd, void *dummy, 
-                                        const char *arg);
-AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy, 
-                                         const char *arg);
-AP_DECLARE(const char *) unixd_set_chroot_dir(cmd_parms *cmd, void *dummy, 
-                                              const char *arg);
-					 
+AP_DECLARE(int) unixd_setup_child(void);  /* mod_cgid needs this */
+
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
 AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type);

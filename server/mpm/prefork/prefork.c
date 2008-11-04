@@ -1279,7 +1279,6 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
         parent_pid = ap_my_pid = getpid();
     }
 
-    unixd_pre_config(ptemp);
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
@@ -1498,7 +1497,6 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
 }
 
 static const command_rec prefork_cmds[] = {
-UNIX_DAEMON_COMMANDS,
 LISTEN_COMMANDS,
 AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
               "Number of child processes launched at server startup"),
