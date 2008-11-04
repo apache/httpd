@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 193037:659902 (outdated) -->
+<!-- English Revision: 659902 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -26,7 +26,7 @@
 <description>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</description>
-<status>Base</status>
+<status>ベース</status>
 <sourcefile>mod_mime.c</sourcefile>
 <identifier>mime_module</identifier>
 
@@ -46,8 +46,8 @@
     <directive module="mod_mime">AddLanguage</directive> ディレクティブ、
     <directive module="mod_mime">AddType</directive> ディレクティブはすべて、
     ファイルの拡張子をメタ情報にマップするために使用されます。
-    それぞれ、ドキュメントの文字セット (訳注: charset)、content-encoding,
-    content-language, MIME タイプ (content-type) を設定します。
+    それぞれ、ドキュメントの文字セット <transnote>charset</transnote>、content-encoding,
+    content-language, <glossary ref="mime-type">MIME タイプ</glossary> (content-type) を設定します。
     <directive module="mod_mime">TypesConfig</directive> ディレクティブは拡張子を
     MIME タイプにマップするファイルを指定するために使用されます。</p>
 
@@ -105,8 +105,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     もまったく同じ情報にマップされます。
     同じメタ情報にマップされる拡張子が複数あるときには、言語と
     コンテントエンコーディングを除いて、
-    右側にあるものが使用されます。たとえば、<code>.gif</code> が MIME
-    タイプ <code>image/gif</code> にマップされ、<code>.html</code>
+    右側にあるものが使用されます。たとえば、<code>.gif</code> が <glossary
+    ref="mime-type">MIME タイプ</glossary> <code>image/gif</code> にマップされ、<code>.html</code>
     が MIME タイプ <code>text/html</code>
     にマップされる場合は、ファイル <code>welcome.gif.html</code> は
     MIME タイプ <code>text/html</code> に関連付けられます。</p>
@@ -119,8 +119,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     <code>Content-Language: en, de</code> と <code>Content-Type:
     text/html</code> として送信されます。</p>
 
-    <p>複数の拡張子のあるファイルが MIME
-    タイプとハンドラの両方に関連付けられているときは注意する必要があります。
+    <p>複数の拡張子のあるファイルが <glossary ref="mime-type">MIME
+    タイプ</glossary>とハンドラの両方に関連付けられているときは注意する必要があります。
     その場合、普通はリクエストがハンドラに関連付けられた
     モジュールによって扱われることになります。たとえば、拡張子
     <code>.imap</code> が (<module>mod_imagemap</module> の) <code>imap-file</code>
@@ -130,10 +130,28 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     タイプに関連付けられます。ファイルが処理されるときは <code>imap-file</code>
     ハンドラが使用されますので、そのファイルは <module>mod_imagemap</module>
     のイメージマップファイルとして扱われることになります。</p>
+
+    <p>ファイル名のドット区切りでの最後の部分を使って、
+    特定の部分のメタデータにマッピングしたい場合は、
+    <code>Add*</code> ディレクティブは使わないでください。
+    たとえば <code>foo.html.cgi</code> を CGI スクリプトとして処理したいけれども、
+    <code>bar.cgi.html</code> は CGI スクリプトとしては処理したくない場合、
+    <code>AddHandler cgi-script .cgi</code> とする代わりに
+    次のようにしてください</p>
+
+    <example><title>Configure handler based on final extension only</title>
+    &lt;FilesMatch \.cgi$&gt;
+    <indent>
+      SetHandler cgi-script
+    </indent>
+    &lt;/FilesMatch&gt;
+    </example>
+
 </section>
 
 <section id="contentencoding"><title>コンテントエンコーディング</title>
-    <p>特定の MIME タイプのファイルはインターネットでの転送を簡単にするために、
+    <p>特定の <glossary ref="mime-type">MIME タイプ</glossary>
+    のファイルはインターネットでの転送を簡単にするために、
     さらに符号化することができます。これは通常は <code>gzip</code> の
     ような圧縮のことを指しますが、<code>pgp</code> のような暗号化や、
     バイナリファイルを ASCII (テキスト) 形式で送るために考案された
@@ -206,7 +224,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
       <example>
         Content-Language: en, fr<br />
-	Content-Type: text/plain; charset=ISO-8859-1
+        Content-Type: text/plain; charset=ISO-8859-1
       </example>
 
       <p>言語の指定は二文字の短縮形で行なわれます。<code>charset</code> が
@@ -249,7 +267,9 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     >コンテントネゴシエーション</a>のためにも役に立ちます。</p>
 
     <p>引数 <var>extension</var>は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
@@ -299,7 +319,9 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     </p>
 
     <p>引数 <var>extension</var> は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 </usage>
 </directivesynopsis>
 
@@ -330,7 +352,9 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     </p>
 
     <p>引数 <var>extension</var> は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
 </directivesynopsis>
@@ -355,10 +379,14 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     このマッピングはすでにあるものより優先されてマージされ、
     同じ <var>extension</var> に対する既存のマッピングを上書きします。</p>
 
-    <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
-    繋いで書く必要があります。フィルタと <var>extension</var> との
-    両方の引数は大文字小文字を区別せず、拡張子の最初のドットは
-    あってもなくても構いません。</p>
+    <p>複数の<var>filter</var>を指定するときは、データを処理する順番にセミコロンで
+    繋いで書く必要があります。<var>filter</var> は大文字小文字を区別しません。</p>
+
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
+
 </usage>
 <seealso><directive module="mod_mime">RemoveInputFilter</directive></seealso>
 <seealso><directive module="core">SetInputFilter</directive></seealso>
@@ -409,7 +437,9 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     <code>en-us</code> として扱われます。</p>
 
     <p>引数 <var>extension</var> は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
@@ -444,9 +474,12 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     </example>
 
     <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
-    繋いで書く必要があります。<var>filter</var> と <var>extension</var> の
-    両引数は大文字小文字を区別せず、拡張子の最初のドットは
-    あってもなくても構いません。</p>
+    繋いで書く必要があります。<var>filter</var> は大文字小文字を区別しません。</p>
+
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 </usage>
 <seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
@@ -465,7 +498,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     <p><directive>AddType</directive> ディレクティブは、
     与えられた拡張子を指定されたコンテントタイプにマップします。
     <var>MIME-type</var> は拡張子 <var>extension</var>
-    を含んだドキュメントに使用する MIME タイプです。
+    を含んだドキュメントに使用する <glossary ref="mime-type">MIME タイプ</glossary>です。
     この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
     <var>extension</var> のためのマッピングを上書きします。
     このディレクティブは MIME タイプファイル (<directive
@@ -476,6 +509,12 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
       AddType image/gif .gif
     </example>
 
+    <p>あるいは、ひとつのディレクティブで複数のファイル拡張子を指定する場合:</p>
+
+    <example><title>Example</title>
+      AddType image/jpeg jpeg jpg jpe
+    </example>
+
     <note>
       新しい MIME タイプは、<directive module="mod_mime">TypesConfig</directive>
       ファイルを変更するのではなく、<directive>AddType</directive>
@@ -483,7 +522,9 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     </note>
 
     <p>引数 <var>extension</var> は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 </usage>
 <seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
@@ -738,7 +779,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <usage>
     <p><directive>RemoveInputFilter</directive> ディレクティブは
-    指定されたファイル拡張子に関連付けられた入力フィルタを解除します。
+    指定されたファイル拡張子に関連付けられた入力<a
+    href="../filter.html">フィルタ</a>を解除します。
     これを利用することで、親ディレクトリやサーバ設定ファイルから
     継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
@@ -784,7 +826,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <usage>
     <p><directive>RemoveOutputFilter</directive> ディレクティブは
-    指定されたファイル拡張子に関連付けられた出力フィルタを解除します。
+    指定されたファイル拡張子に関連付けられた出力<a
+    href="../filter.html">フィルタ</a>を解除します。
     これを利用することで、親ディレクトリやサーバ設定ファイルから
     継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
@@ -811,7 +854,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <usage>
     <p><directive>RemoveType</directive> ディレクティブは与えられた拡張子の
-    MIME タイプの関連付けを取り消します。これにより、
+    <glossary ref="mime-type">MIME タイプ</glossary>
+    の関連付けを取り消します。これにより、
     サブディレクトリにある <code>.htaccess</code>
     ファイルが親ディレクトリやサーバの設定ファイルから継承した
     関連付けを取り消すことができます。たとえば:</p>
@@ -845,8 +889,9 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>TypesConfig</directive> ディレクティブは、MIME
-    タイプ設定ファイルの位置を設定します。<var>filename</var> は
+    <p><directive>TypesConfig</directive> ディレクティブは、
+    <glossary ref="mime-type">MIME タイプ</glossary>
+    設定ファイルの位置を設定します。<var>file-path</var> は
     <directive module="core">ServerRoot</directive> からの相対パスです。
     このファイルはファイルの拡張子からコンテントタイプへの
     デフォルトのマッピングを設定します。
