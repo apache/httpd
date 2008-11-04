@@ -56,15 +56,19 @@
 #define DEFAULT_GROUP "#-1"
 #endif
 
+#if 0
 typedef struct {
   const char *user_name;
   uid_t user_id;
   gid_t group_id;
   const char *chroot_dir;
 } unixd_config_t;
+#else
+#include "unixd.h"
+#endif
 
 
-unixd_config_t unixd_config;
+//unixd_config_t unixd_config;
 
 /* Set group privileges.
  *
@@ -273,11 +277,21 @@ static int
 unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                  apr_pool_t *ptemp)
 {
+    apr_finfo_t wrapper;
     unixd_config.user_name = DEFAULT_USER;
     unixd_config.user_id = ap_uname2id(DEFAULT_USER);
     unixd_config.group_id = ap_gname2id(DEFAULT_GROUP);
 
     unixd_config.chroot_dir = NULL; /* none */
+
+    /* Check for suexec */
+    unixd_config.suexec_enabled = 0;
+    if ((apr_stat(&wrapper, SUEXEC_BIN, APR_FINFO_NORM, ptemp))
+         == APR_SUCCESS) {
+        if ((wrapper.protection & APR_USETID) && wrapper.user == 0) {
+            unixd_config.suexec_enabled = 1;
+        }
+    }
 
     sys_privileges_handlers(1);
     return OK;
@@ -311,3 +325,74 @@ module AP_MODULE_DECLARE_DATA unixd_module = {
     unixd_cmds,
     unixd_hooks
 };
+
+AP_DECLARE(int) unixd_setup_child(void)
+{
+    if (set_group_privs()) {
+        return -1;
+    }
+
+    if (NULL != unixd_config.chroot_dir) {
+        if (geteuid()) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "Cannot chroot when not started as root");
+            return -1;
+        }
+        if (chdir(unixd_config.chroot_dir) != 0) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "Can't chdir to %s", unixd_config.chroot_dir);
+            return -1;
+        }
+        if (chroot(unixd_config.chroot_dir) != 0) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "Can't chroot to %s", unixd_config.chroot_dir);
+            return -1;
+        }
+        if (chdir("/") != 0) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "Can't chdir to new root");
+            return -1;
+        }
+    }
+
+#ifdef MPE
+    /* Only try to switch if we're running as MANAGER.SYS */
+    if (geteuid() == 1 && unixd_config.user_id > 1) {
+        GETPRIVMODE();
+        if (setuid(unixd_config.user_id) == -1) {
+            GETUSERMODE();
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                        "setuid: unable to change to uid: %ld",
+                        (long) unixd_config.user_id);
+            exit(1);
+        }
+        GETUSERMODE();
+    }
+#else
+    /* Only try to switch if we're running as root */
+    if (!geteuid() && (
+#ifdef _OSD_POSIX
+        os_init_job_environment(NULL, unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
+#endif
+        setuid(unixd_config.user_id) == -1)) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                    "setuid: unable to change to uid: %ld",
+                    (long) unixd_config.user_id);
+        return -1;
+    }
+#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
+    /* this applies to Linux 2.4+ */
+#ifdef AP_MPM_WANT_SET_COREDUMPDIR
+    if (ap_coredumpdir_configured) {
+        if (prctl(PR_SET_DUMPABLE, 1)) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "set dumpable failed - this child will not coredump"
+                         " after software errors");
+        }
+    }
+#endif
+#endif
+#endif
+    return 0;
+}
+

@@ -2358,7 +2358,6 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
         parent_pid = ap_my_pid = getpid();
     }
 
-    unixd_pre_config(ptemp);
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
@@ -2718,7 +2717,6 @@ static const char *set_thread_limit(cmd_parms * cmd, void *dummy,
 }
 
 static const command_rec event_cmds[] = {
-    UNIX_DAEMON_COMMANDS,
     LISTEN_COMMANDS,
     AP_INIT_TAKE1("StartServers", set_daemons_to_start, NULL, RSRC_CONF,
                   "Number of child processes launched at server startup"),
