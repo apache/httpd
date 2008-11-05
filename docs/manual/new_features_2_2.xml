@@ -46,7 +46,7 @@
 
       <dt>Caching</dt>
       <dd><module>mod_cache</module>, <module>mod_disk_cache</module>, and
-          <module>mod_mem_cache</module> have undergone a lot of changes, and
+          mod_mem_cache(already removed from 2.3/2.4) have undergone a lot of changes, and
           are now considered production-quality. <program>htcacheclean</program>
           has been introduced to clean up <module>mod_disk_cache</module>
           setups.</dd>

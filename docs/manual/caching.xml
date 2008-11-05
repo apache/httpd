@@ -26,8 +26,7 @@
 
   <summary>
     <p>This document supplements the <module>mod_cache</module>,
-    <module>mod_disk_cache</module>, <module>mod_mem_cache</module>,
-    <module>mod_file_cache</module> and <a 
+    <module>mod_disk_cache</module>, <module>mod_file_cache</module> and <a 
     href="programs/htcacheclean.html">htcacheclean</a> reference documentation.
     It describes how to use Apache's caching features to accelerate web and 
     proxy serving, while avoiding common problems and misconfigurations.</p>
@@ -43,7 +42,7 @@
     handling, both as an origin webserver and as a proxy.</p>
 
     <p><module>mod_cache</module> and its provider modules 
-    <module>mod_mem_cache</module> and <module>mod_disk_cache</module> 
+    <module>mod_disk_cache</module> 
     provide intelligent, HTTP-aware caching. The content itself is stored
     in the cache, and mod_cache aims to honour all of the various HTTP
     headers and options that control the cachability of content. It can
@@ -83,7 +82,6 @@
     <related>
       <modulelist>
         <module>mod_cache</module>
-        <module>mod_mem_cache</module>
         <module>mod_disk_cache</module>
         <module>mod_file_cache</module>
       </modulelist>
@@ -215,7 +213,8 @@
       changed in size or modification time. As such, even if Apache is
       caching local content, even expired content may still be served faster
       from the cache if it has not changed. As long as reading from the cache
-      store is faster than reading from the backend (e.g. an in-memory cache 
+      store is faster than reading from the backend (e.g. <module
+      >mod_disk_cache</module> with memory disk
       compared to reading from disk).</p> 
     </section>
 
@@ -396,19 +395,16 @@ Vary: negotiate,accept-language,accept-charset
     <related>
       <modulelist>
         <module>mod_file_cache</module>
-        <module>mod_mem_cache</module>
       </modulelist>
       <directivelist>
         <directive module="mod_file_cache">CacheFile</directive>
-        <directive module="mod_cache">CacheEnable</directive>
-        <directive module="mod_cache">CacheDisable</directive>
       </directivelist>
     </related>
 
     <p>The act of opening a file can itself be a source of delay, particularly 
     on network filesystems. By maintaining a cache of open file descriptors
     for commonly served files, Apache can avoid this delay. Currently Apache
-    provides two different implementations of File-Handle Caching.</p> 
+    provides one implementation of File-Handle Caching.</p> 
 
     <section>
       <title>CacheFile</title>
@@ -447,21 +443,6 @@ Vary: negotiate,accept-language,accept-charset
       descriptor closed.</p>
     </section>
 
-    <section>
-      <title>CacheEnable fd</title>
-
-      <p><module>mod_mem_cache</module> also provides its own file-handle 
-      caching scheme, which can be enabled via the 
-      <directive module="mod_cache">CacheEnable</directive> directive.</p>
-
-      <example>
-      <pre>CacheEnable fd /</pre>
-      </example>
-
-      <p>As with all of <module>mod_cache</module> this type of file-handle
-      caching is intelligent, and handles will not be maintained beyond
-      the expiry time of the cached content.</p>
-    </section>
   </section>
   
   <section id="inmemory">
@@ -469,7 +450,6 @@ Vary: negotiate,accept-language,accept-charset
 
      <related>
       <modulelist>
-        <module>mod_mem_cache</module>
         <module>mod_file_cache</module>
       </modulelist>
       <directivelist>
@@ -535,11 +515,6 @@ sys     0m0.000s</pre>
     caching there are some circumstances in which in-memory caching may be 
     better performed by Apache.</p>
 
-    <p>Firstly, an operating system can only cache files it knows about. If 
-    you are running Apache as a proxy server, the files you are caching are
-    not locally stored but remotely served. If you still want the unbeatable
-    speed of in-memory caching, Apache's own memory caching is needed.</p>
-
     <section>
       <title>MMapStatic Caching</title>
 
@@ -565,25 +540,6 @@ sys     0m0.000s</pre>
       to ensure that the files mapped are not so large as to cause the
       system to swap memory.</p>
     </section>
-
-    <section>
-      <title>mod_mem_cache Caching</title>
-
-      <p><module>mod_mem_cache</module> provides a HTTP-aware intelligent
-      in-memory cache. It also uses heap memory directly, which means that
-      even if <var>MMap</var> is not supported on your system, 
-      <module>mod_mem_cache</module> may still be able to perform caching.</p>
-
-      <p>Caching of this type is enabled via;</p>
-
-      <example><pre>
-# Enable memory caching
-CacheEnable mem /
-
-# Limit the size of the cache to 1 Megabyte
-MCacheSize 1024</pre>
-      </example>
-    </section>
   </section>
              
   <section id="disk">
@@ -600,9 +556,8 @@ MCacheSize 1024</pre>
     </related>
        
     <p><module>mod_disk_cache</module> provides a disk-based caching mechanism 
-    for <module>mod_cache</module>. As with <module>mod_mem_cache</module>
-    this cache is intelligent and content will be served from the cache only
-    as long as it is considered valid.</p>
+    for <module>mod_cache</module>. This cache is intelligent and content will
+    be served from the cache only as long as it is considered valid.</p>
 
     <p>Typically the module will be configured as so;</p>
 
