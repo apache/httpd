@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 572617 -->
+<!-- English Revision : 711521 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,8 +28,7 @@
 
   <summary>
     <p>Ce document compl&egrave;te la documentation de r&eacute;f&eacute;rence des modules
-    <module>mod_cache</module>,
-    <module>mod_disk_cache</module>, <module>mod_mem_cache</module>,
+    <module>mod_cache</module>, <module>mod_disk_cache</module>,
     <module>mod_file_cache</module> et du programme <a
     href="programs/htcacheclean.html">htcacheclean</a>.
     Il d&eacute;crit l'utilisation des fonctionnalit&eacute;s de mise en cache d'Apache
@@ -48,8 +47,8 @@
     d'acc&eacute;l&eacute;ration de la gestion HTTP, tant comme serveur web originel
     que comme mandataire.</p>
 
-    <p>Le module <module>mod_cache</module> et ses modules de soutien
-    <module>mod_mem_cache</module> et <module>mod_disk_cache</module>
+    <p>Le module <module>mod_cache</module> et son module de soutien
+    <module>mod_disk_cache</module>
     permettent une mise en cache intelligente du point de vue HTTP.
     Le contenu proprement dit est stock&eacute; dans le cache,
     et mod_cache tente d'honorer tous les en-t&ecirc;tes HTTP et les options
@@ -96,7 +95,6 @@
     <related>
       <modulelist>
         <module>mod_cache</module>
-        <module>mod_mem_cache</module>
         <module>mod_disk_cache</module>
         <module>mod_file_cache</module>
       </modulelist>
@@ -244,7 +242,7 @@
       depuis le cache s'il n'a pas &eacute;t&eacute; modifi&eacute;, parce que la lecture depuis le
       cache est plus rapide que la lecture depuis le processus en arri&egrave;re-plan
       (&agrave; comparer &agrave; la diff&eacute;rence de vitesse entre la lecture depuis un cache en
-      m&eacute;moire et la lecture depuis un disque).</p>
+      m&eacute;moire avec <module>mod_disk_cache</module> et la lecture depuis un disque).</p>
     </section>
 
     <section>
@@ -408,7 +406,7 @@ Vary: negotiate,accept-language,accept-charset
       &agrave; l'esprit : effectuez toujours les mises &agrave; jour d'Apache quand des
       correctifs de s&eacute;curit&eacute; sont annonc&eacute;s et ex&eacute;cutez les processus CGI sous
       un utilisateur autre qu'apache en utilisant
-      <a href="suexec.html">suEXEC</a> dans la mesure du possible.</p>
+      <ahref="suexec.html">suEXEC</a> dans la mesure du possible.</p>
 
     </section>
 
@@ -445,12 +443,9 @@ Vary: negotiate,accept-language,accept-charset
     <related>
       <modulelist>
         <module>mod_file_cache</module>
-        <module>mod_mem_cache</module>
       </modulelist>
       <directivelist>
         <directive module="mod_file_cache">CacheFile</directive>
-        <directive module="mod_cache">CacheEnable</directive>
-        <directive module="mod_cache">CacheDisable</directive>
       </directivelist>
     </related>
 
@@ -459,7 +454,7 @@ Vary: negotiate,accept-language,accept-charset
     peut s'affranchir de ce d&eacute;lai en maintenant
     un cache des descripteurs de fichiers
     ouverts pour ce qui concerne les fichiers souvent acc&eacute;d&eacute;s. Apache propose
-    actuellement deux impl&eacute;mentations diff&eacute;rentes de mise en cache de la
+    actuellement une impl&eacute;mentation de mise en cache de la
     gestion de fichier.</p>
 
     <section>
@@ -505,23 +500,7 @@ Vary: negotiate,accept-language,accept-charset
       descripteur de fichier sera ferm&eacute;.</p>
     </section>
 
-    <section>
-      <title>Directive CacheEnable</title>
-
-      <p>Le module <module>mod_mem_cache</module> propose aussi son propre
-      sch&eacute;ma de mise en cache de la gestion de fichier, qui peut &ecirc;tre activ&eacute;
-      &agrave; l'aide de la directive
-      <directive module="mod_cache">CacheEnable</directive>.</p>
-
-      <example>
-      <pre>CacheEnable fd /</pre>
-      </example>
-
-      <p>A l'instar de tout ce qui concerne le module
-      <module>mod_cache</module>, ce mode de mise en cache de la gestion de
-      fichier est intelligent, et les descripteurs ne seront plus maintenus
-      lorsque le contenu mis en cache sera arriv&eacute; &agrave; expiration.</p>
-    </section>
+    
   </section>
 
   <section id="inmemory">
@@ -529,7 +508,6 @@ Vary: negotiate,accept-language,accept-charset
 
      <related>
       <modulelist>
-        <module>mod_mem_cache</module>
         <module>mod_file_cache</module>
       </modulelist>
       <directivelist>
@@ -603,13 +581,6 @@ sys     0m0.000s</pre>
     peut &ecirc;tre effectu&eacute;e plus efficacement par Apache dans certaines
     circonstances.</p>
 
-    <p>En premier lieu, un syst&egrave;me d'exploitation ne peut mettre en cache que
-    les fichiers dont il a connaissance. Si vous ex&eacute;cutez Apache en tant que
-    serveur mandataire, les fichiers que vous mettez en cache ne sont pas
-    stock&eacute;s en local mais sur un serveur distant. Si vous voulez tout de m&ecirc;me
-    b&eacute;n&eacute;ficier de la vitesse incomparable procur&eacute;e par la mise en cache en
-    m&eacute;moire, la mise en cache propre &agrave; Apache sera n&eacute;cessaire.</p>
-
     <section>
       <title>Mise en cache &agrave; l'aide de la directive MMapStatic</title>
 
@@ -638,26 +609,7 @@ sys     0m0.000s</pre>
       trop importante afin d'&eacute;pargner au syst&egrave;me l'utilisation du swap.</p>
     </section>
 
-    <section>
-      <title>Mise en cache &agrave; l'aide du module mod_mem_cache</title>
-
-      <p>Le module <module>mod_mem_cache</module> propose une mise en cache en
-      m&eacute;moire intelligente du point de vue du protocole HTTP. Il utilise aussi
-      directement le "tas" de la m&eacute;moire, ce qui signifie que m&ecirc;me si
-      <var>MMap</var> n'est pas support&eacute; par votre syst&egrave;me,
-      <module>mod_mem_cache</module> pourra quand-m&ecirc;me effectuer
-      la mise en cache.</p>
-
-      <p>La mise en cache selon cette m&eacute;thode est activ&eacute;e comme suit :</p>
-
-      <example><pre>
-# Activation de la mise en cache en m&eacute;moire
-CacheEnable mem /
-
-# Limite la taille du cache &agrave; 1 M&eacute;gaoctet
-MCacheSize 1024</pre>
-      </example>
-    </section>
+    
   </section>
 
   <section id="disk">
@@ -674,8 +626,7 @@ MCacheSize 1024</pre>
     </related>
 
     <p>Le module <module>mod_disk_cache</module> fournit un m&eacute;canisme de mise
-    en cache sur disque au module <module>mod_cache</module>. Comme dans le cas
-    du module <module>mod_mem_cache</module>, cette mise en cache est
+    en cache sur disque au module <module>mod_cache</module>. Cette mise en cache est
     intelligente et le contenu ne sera servi qu'&agrave; partir du cache tant qu'il
     sera consid&eacute;r&eacute; comme valide.</p>
 
