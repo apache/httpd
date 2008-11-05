@@ -1027,12 +1027,9 @@ Name|Date|Size|Description</syntax>
 <override>Indexes</override>
 
 <usage>
-    <p>The <directive>IndexHeadInsert</directive> directive specifies a
-    string to insert in the <var>&lt;head&gt;</var> section of the HTML
-    generated for the index page.</p>
     <p><directive>IndexHeadInsert</directive> ディレクティブを使って
     インデックスとして生成されたHTMLの <var>&lt;head&gt;</var> セクションに
-    挿入する文字列を指定します。
+    挿入する文字列を指定します。</p>
     <example>
       <title>Example</title>
       IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
