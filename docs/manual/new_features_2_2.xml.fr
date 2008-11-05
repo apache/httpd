@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English revision : 682362 -->
+<!-- English revision : 711521 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -52,7 +52,7 @@
 
       <dt>Mise en cache</dt>
       <dd><module>mod_cache</module>, <module>mod_disk_cache</module>, et
-          <module>mod_mem_cache</module> ont subi de nombreuses
+          mod_mem_cache (supprim&egrave;s dans la version 2.3/2.4) ont subi de nombreuses
 	  modifications, et l'on consid&egrave;re qu'ils ont maintenant atteint
 	  un degr&eacute; de qualit&eacute; suffisant pour leur mise en production. Le programme
 	  <program>htcacheclean</program> a &eacute;t&eacute; ajout&eacute; afin de rendre
