@@ -424,8 +424,7 @@
           <module>mod_cache</module>. This experimental module may be
           interesting for servers with high load or caching proxy servers. At
           least one storage management module (e.g.
-          <module>mod_disk_cache</module> or <module>mod_mem_cache</module>)
-          is also necessary.</dd>
+          <module>mod_disk_cache</module>) is also necessary.</dd>
 
         <dt><code>--enable-cern-meta</code></dt>
         <dd>Enable the CERN-type meta files support provided by
@@ -493,10 +492,6 @@
         <dt><code>--enable-logio</code></dt>
         <dd>Enable logging of input and output bytes including headers provided
           by <module>mod_logio</module>.</dd>
-
-        <dt><code>--enable-mem-cache</code></dt>
-        <dd>Enable memory caching provided by
-          <module>mod_mem_cache</module>.</dd>
 
         <dt><code>--enable-mime-magic</code></dt>
         <dd>Enable
@@ -702,7 +697,7 @@
             ./configure \<br />
             <indent>
                 --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias mem_cache file_cache authnz_ldap charset_lite dav_lock disk_cache"
+                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock disk_cache"
             </indent>
           </example>
         </dd>
