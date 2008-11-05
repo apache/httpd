@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 684326:709551 (outdated) -->
+<!-- English Revision: 709551 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -1587,7 +1587,9 @@ yönergeleri sarmalar.</description>
       fazla sunucu sürecini meşgul edecektir.</p>
 
     <p>İsme dayalı sanal konak bağlamında, <directive
-    module="core">NameVirtualHost</directive> bölümleri içinde tanımlanmış ilk sanal konağın (öntanımlı konak) değeri kullanılır. Diğer değerler görmezden gelinir.</p>
+    module="core">NameVirtualHost</directive> bölümleri içinde tanımlanmış
+    ilk sanal konağın (öntanımlı konak) değeri kullanılır. Diğer değerler
+    görmezden gelinir.</p>
 </usage>
 </directivesynopsis>
 
@@ -1597,10 +1599,9 @@ yönergeleri sarmalar.</description>
 sarmalar.</description>
 <syntax>&lt;Limit <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
     &lt;/Limit&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<override>All</override>
+<override>AuthConfig, Limit</override>
 
 <usage>
     <p>Erişim denetleyicileri normalde <strong>tüm</strong> erişim yöntemleri
@@ -1633,7 +1634,7 @@ sarmalar.</description>
       <code>LOCK</code> ve <code>UNLOCK</code>. <strong>Yöntem isimleri harf
       büyüklüğüne duyarlıdır.</strong> <code>GET</code> yöntemi sınırlanırsa
       <code>HEAD</code> istekleri de sınırlanmış olur. <code>TRACE</code>
-      yöntemi sınırlanamaz (bkz, <directive type="section" module="core"
+      yöntemi sınırlanamaz (bkz, <directive module="core"
       >TraceEnable</directive>).</p>
 
     <note type="warning">Erişimi sınarlarken bir <directive
@@ -1642,6 +1643,38 @@ sarmalar.</description>
       etmelisiniz, çünkü <directive type="section" module="core"
       >LimitExcept</directive> bölümü belirtilen yöntemler dışında kalanlara
       erişim koruması sağlar.</note>
+
+    <p><directive type="section">Limit</directive> ve
+    <directive type="section" module="core">LimitExcept</directive>
+    yönergeleri iç içe olabilirler. Bu durumda, başarılı her
+    <directive type="section">Limit</directive> veya <directive
+    type="section" module="core">LimitExcept</directive> seviyesi, erişim
+    denetimlerinin uygulanacağı yöntemlerle sınırlı kalmalıdır.</p>
+
+    <note type="warning"><directive type="section">Limit</directive> veya
+    <directive type="section">LimitExcept</directive> yönergelerini
+    <directive module="mod_authz_core">Require</directive> yönergesi ile
+    birlikte kullanılırken, ilk <directive module="mod_authz_core"
+    >Require</directive> yönergesinin bir başka <directive
+    module="mod_authz_core">Require</directive> yönergesinin varlığından
+    bağımsız olarak isteği başarıyla yetkilendirdiğine dikkat ediniz.</note>
+
+    <p>Örneğin, aşağıdaki yapılandırmayı ele alalım; tüm kullanıcılar
+    <code>POST</code> istekleri için yetkilendirilecek ve tüm durumlarda
+    <code>Require group editors</code> yönergesi yoksayılacaktır:</p>
+
+    <example>
+      &lt;LimitExcept GET&gt;
+      <indent>
+        Require valid-user
+      </indent>
+      &lt;/LimitExcept&gt;<br />
+      &lt;Limit POST&gt;
+      <indent>
+        Require group editors
+      </indent>
+      &lt;/Limit&gt;
+    </example>
 
 </usage>
 </directivesynopsis>
@@ -1652,10 +1685,9 @@ sarmalar.</description>
 kullanılacak erişim sınırlayıcıları sarmalar.</description>
 <syntax>&lt;LimitExcept <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
     &lt;/LimitExcept&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context>
+<contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<override>All</override>
+<override>AuthConfig, Limit</override>
 
 <usage>
     <p><directive type="section">LimitExcept</directive> ve
