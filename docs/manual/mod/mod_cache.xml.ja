@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:504183 (outdated) -->
+<!-- English Revision: 504183 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -29,8 +29,11 @@
 <identifier>cache_module</identifier>
 
 <summary>
-    <note type="warning">
-      これは実験的なモジュールです。文書もまだ開発中です...
+    <note type="warning">このモジュールは <directive 
+    module="mod_authz_host">Allow</directive> や <directive 
+    module="mod_authz_host">Deny</directive> ディレクティブを無視しますので、
+    注意して使って下さい。クライアントのホスト名、アドレスや環境変数を使って
+    アクセスを制限したいコンテンツに対してはキャッシュ機能を有効にするべきではありません。
     </note>
 
     <p><module>mod_cache</module> はローカルのコンテンツやプロキシされた
@@ -58,7 +61,10 @@
 
     <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
     アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+    <p>より詳細な解説や例については<a href="../caching.html">キャッシュ機能</a>
+    を参照してください。</p>
 </summary>
+<seealso><a href="../caching.html">キャッシュ機能</a></seealso>
 
 <section id="related"><title>関連モジュールとディレクティブ</title>
     <related>
@@ -68,7 +74,6 @@
       </modulelist>
       <directivelist>
         <directive module="mod_disk_cache">CacheRoot</directive>
-        <directive module="mod_disk_cache">CacheSize</directive>
         <directive module="mod_disk_cache">CacheDirLevels</directive>
         <directive module="mod_disk_cache">CacheDirLength</directive>
         <directive module="mod_disk_cache">CacheMinFileSize</directive>
@@ -93,8 +98,8 @@
       &lt;IfModule mod_cache.c&gt;<br />
       <indent>
         #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        # If you want to use mod_disk_cache instead of mod_mem_cache,
-        # uncomment the line above and comment out the LoadModule line below.
+        # If you want to use mod_disk_cache instead of mod_mem_cache,<br />
+        # uncomment the line above and comment out the LoadModule line below.<br />
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <indent>
           CacheRoot c:/cacheroot<br />
@@ -114,6 +119,9 @@
           MCacheMaxObjectSize 2048<br />
         </indent>
         &lt;/IfModule&gt;<br />
+        <br />
+        # When acting as a proxy, don't cache the list of security updates<br />
+        CacheDisable http://security.update.server/update-list/<br />
       </indent>
       &lt;/IfModule&gt;
     </example>
@@ -151,6 +159,20 @@
       CacheEnable  fd    /images<br />
       CacheEnable  disk  /<br />
     </example>
+
+    <p>フォワードプロクシサーバとして動作する場合、
+    <var>url-string</var> を使って、キャッシュを有効にするリモートサイトや
+    プロクシプロトコルを指定することもできます。</p>
+
+    <example>
+      # Cache proxied url's<br />
+      CacheEnable  disk  /<br /><br />
+      # Cache FTP-proxied url's<br />
+      CacheEnable  disk  ftp://<br /><br />
+      # Cache content from www.apache.org<br />
+      CacheEnable  disk  http://www.apache.org/<br />
+    </example>
+
 </usage>
 </directivesynopsis>
 
@@ -174,7 +196,7 @@
 </directivesynopsis>
 <directivesynopsis>
 <name>CacheMaxExpire</name>
-<description>ドキュメントをキャッシュする最大時間を秒数で現したもの</description>
+<description>ドキュメントをキャッシュする最大時間を秒数で表したもの</description>
 <syntax>CacheMaxExpire <var>seconds</var></syntax>
 <default>CacheMaxExpire 86400 (一日)</default>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -184,11 +206,31 @@
     <p><directive>CacheMaxExpire</directive> ディレクティブは、
     キャッシュする HTTP ドキュメントを、元のサーバに問い合わせないまま最大何秒
     保持してもよいかを指定します。つまり、ドキュメントは最大でこの秒数間ぶん古く
-    なることになります。この最大値は、(訳注:レスポンス中で)ドキュメントと共に
+    なることになります。この最大値は、<transnote>レスポンス中で</transnote>ドキュメントと共に
     ドキュメントの期日が提供されている場合でも適用されます。</p>
 
     <example>
       CacheMaxExpire 604800
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinExpire</name>
+<description>ドキュメントをキャッシュする最小秒数</description>
+<syntax>CacheMinExpire <var>seconds</var></syntax>
+<default>CacheMinExpire 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>キャッシュ可能な HTTP ドキュメントがあったときに、オリジンサーバに問い合わせることなく
+    保持する秒数の最小値は <directive>CacheMinExpire</directive> ディレクティブを使って設定します。
+    この値は、ドキュメントに妥当な有効期限が指定されていなかった場合にのみ使われます。</p>
+
+
+    <example>
+      CacheMinExpire 3600
     </example>
 </usage>
 </directivesynopsis>
@@ -268,6 +310,32 @@
 </usage>
 <seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
 <seealso><directive module="mod_cache">CacheStoreNoStore</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheIgnoreQueryString</name>
+<description>キャッシュ時にクエリーストリングを無視する</description>
+<syntax>CacheIgnoreQueryString On|Off</syntax>
+<default>CacheIgnoreQueryString Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>クエリーストリング付のリクエストについては通常、クエリーストリングごとに
+    個別にキャッシュされます。
+    キャッシュされるのは有効期限が指定されている場合のみで、これは
+    RFC 2616/13.9 に従ったものです。
+    <directive>CacheIgnoreQueryString</directive> ディレクティブを使うと
+    有効期限が指定されていなくてもキャッシュしますし、
+    クエリーストリングが異なっていてもキャッシュを返します。
+    このディレクティブが有効になっている場合、キャッシュ機能の側面からみると、
+    あたかもリクエストにクエリーストリングがついていなかったかのように扱います。</p>
+
+    <example>
+      CacheIgnoreQueryString On
+    </example>
+
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
