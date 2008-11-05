@@ -12,16 +12,8 @@ mod_cache.lo dnl
 cache_storage.lo dnl
 cache_util.lo dnl
 "
-dnl #  list of object files for mod_mem_cache
-mem_cache_objs="dnl
-mod_mem_cache.lo dnl
-cache_cache.lo dnl
-cache_pqueue.lo dnl
-cache_hash.lo dnl
-"
 APACHE_MODULE(cache, dynamic file caching, $cache_objs, , most)
 APACHE_MODULE(disk_cache, disk caching module, , , most)
-APACHE_MODULE(mem_cache, memory caching module, $mem_cache_objs, , )
 
 AC_DEFUN([CHECK_DISTCACHE], [
   AC_MSG_CHECKING(whether Distcache is required)
