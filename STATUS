@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=706921&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: jim
+     +1: 
      rpluem: This code still has bad edge cases that lead to segfaults. I have
      a better version in the pipe that currently undergoes testing and will
      be in trunk soon.
