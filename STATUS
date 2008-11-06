@@ -127,7 +127,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.2.x of patch:
         http://people.apache.org/~tdonovan/diffs/windows_odbc_22x.patch
         http://people.apache.org/~tdonovan/diffs/windows_odbc_22x_dsw.patch
-     +1: tdonovan, wrowe
+     +1: tdonovan, wrowe, mturk
 
    * mod_proxy_ajp: Always send body (zero size at least) whenever C-L is
      present in the request.
@@ -136,7 +136,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=707027&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem, jim
+     +1: rpluem, jim, mturk
 
    * mod_proxy_ajp: Don't discard previously set cookies from the output
      headers.
@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=707665&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, jim
+      +1: rpluem, jim, mturk
 
    * mod_proxy: Prevent segmentation faults by correctly flushing all buckets
      from the proxy backend.
