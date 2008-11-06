@@ -85,6 +85,24 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * Windows: Always build the odbc dbd driver on windows, to be consistent 
+     with the apr-util default.
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=704771&view=rev
+        http://svn.apache.org/viewvc?rev=704883&view=rev
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~tdonovan/diffs/windows_odbc_22x.patch
+        http://people.apache.org/~tdonovan/diffs/windows_odbc_22x_dsw.patch
+     +1: tdonovan, wrowe, mturk
+
+   * mod_proxy_ajp: Don't discard previously set cookies from the output
+     headers.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=707649&view=rev
+         http://svn.apache.org/viewvc?rev=707665&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, mturk
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -118,25 +136,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin
      rpluem says: The patch to ap_mmn.h does only contain the comment, but does
      not change the #define. Once this is fixed I am +1.
-
-   * Windows: Always build the odbc dbd driver on windows, to be consistent 
-     with the apr-util default.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=704771&view=rev
-        http://svn.apache.org/viewvc?rev=704883&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~tdonovan/diffs/windows_odbc_22x.patch
-        http://people.apache.org/~tdonovan/diffs/windows_odbc_22x_dsw.patch
-     +1: tdonovan, wrowe, mturk
-
-   * mod_proxy_ajp: Don't discard previously set cookies from the output
-     headers.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=707649&view=rev
-         http://svn.apache.org/viewvc?rev=707665&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, mturk
 
    * mod_proxy: Prevent segmentation faults by correctly flushing all buckets
      from the proxy backend.
