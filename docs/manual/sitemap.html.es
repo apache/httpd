@@ -179,13 +179,11 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_authn_core.html">Módulo Apache mod_authn_core</a></li>
 <li><a href="mod/mod_authn_dbd.html">Módulo Apache mod_authn_dbd</a></li>
 <li><a href="mod/mod_authn_dbm.html">Módulo Apache mod_authn_dbm</a></li>
-<li><a href="mod/mod_authn_default.html">Módulo Apache mod_authn_default</a></li>
 <li><a href="mod/mod_authn_file.html">Módulo Apache mod_authn_file</a></li>
 <li><a href="mod/mod_authnz_ldap.html">Módulo Apache mod_authnz_ldap</a></li>
 <li><a href="mod/mod_authz_core.html">Módulo Apache mod_authz_core</a></li>
 <li><a href="mod/mod_authz_dbd.html">Módulo Apache mod_authz_dbd</a></li>
 <li><a href="mod/mod_authz_dbm.html">Módulo Apache mod_authz_dbm</a></li>
-<li><a href="mod/mod_authz_default.html">Módulo Apache mod_authz_default</a></li>
 <li><a href="mod/mod_authz_groupfile.html">Módulo Apache mod_authz_groupfile</a></li>
 <li><a href="mod/mod_authz_host.html">Módulo Apache mod_authz_host</a></li>
 <li><a href="mod/mod_authz_owner.html">Módulo Apache mod_authz_owner</a></li>
@@ -221,7 +219,6 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_log_config.html">Módulo Apache mod_log_config</a></li>
 <li><a href="mod/mod_log_forensic.html">Módulo Apache mod_log_forensic</a></li>
 <li><a href="mod/mod_logio.html">Módulo Apache mod_logio</a></li>
-<li><a href="mod/mod_mem_cache.html">Módulo Apache mod_mem_cache</a></li>
 <li><a href="mod/mod_mime.html">Módulo Apache mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Módulo Apache mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Módulo Apache mod_negotiation</a></li>

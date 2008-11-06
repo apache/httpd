@@ -70,6 +70,11 @@
       <dd>Nous disposons à présent d'un analyseur générique d'expressions, dont l'API
       est décrite dans <var>ap_expr.h</var>. Il s'agit d'une adaptation de
       l'analyseur qu'on trouvait auparavant dans <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</dd>
+      <dt>Conteneurs de logique d'autorisation</dt>
+      <dd>On peut maintenant spécifier une logique d'autorisation
+      avancée à l'aide de la directive <code class="directive"><a href="./mod/mod_authz_core.html#match">Match</a></code> et des directives de
+      conteneur associées, comme <code class="directive"><a href="./mod/mod_authz_core.html#matchall">&lt;MatchAll&gt;</a></code>, toutes fournies par le module
+      <code class="module"><a href="./mod/mod_authz_core.html">mod_authz_core</a></code>.</dd>
     </dl>
   </div></div>
 <div class="bottomlang">

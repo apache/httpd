@@ -40,20 +40,11 @@
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant HTTP
     content cache that can be used to cache either local or proxied content.
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> requires the services of one or more storage
-    management modules. Two storage management modules are included in
+    management modules. One storage management module is included in
     the base Apache distribution:</p>
     <dl>
     <dt><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></dt>
     <dd>implements a disk based storage manager.</dd>
-
-    <dt><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></dt>
-    <dd>implements a memory based storage manager. 
-    <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> can be configured to operate in two
-    modes: caching open file descriptors or caching objects in heap storage.
-    <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> can be used to cache locally generated content
-    or to cache backend server content for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> when
-    configured using <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>
-    (aka <dfn>reverse proxy</dfn>)</dd>
     </dl>
 
     <p>Content is stored in and retrieved from the cache using URI based keys. Content with
@@ -87,7 +78,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">Related Modules and Directives</a></h2>
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">Sample Configuration</a></h2>
@@ -99,9 +90,7 @@
       <br />
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
-        #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        # If you want to use mod_disk_cache instead of mod_mem_cache,<br />
-        # uncomment the line above and comment out the LoadModule line below.<br />
+        LoadModule disk_cache_module modules/mod_disk_cache.so<br />
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
@@ -110,17 +99,6 @@
           CacheDirLength 3<br />
         </span>
         &lt;/IfModule&gt; <br />
-        <br />
-        LoadModule mem_cache_module modules/mod_mem_cache.so<br />
-        &lt;IfModule mod_mem_cache.c&gt;<br />
-        <span class="indent">
-          CacheEnable mem  /<br />
-          MCacheSize 4096<br />
-          MCacheMaxObjectCount 100<br />
-          MCacheMinObjectSize 1<br />
-          MCacheMaxObjectSize 2048<br />
-        </span>
-        &lt;/IfModule&gt;<br />
         <br />
         # When acting as a proxy, don't cache the list of security updates<br />
         CacheDisable http://security.update.server/update-list/<br />
@@ -179,27 +157,16 @@ manager</td></tr>
     <p>The <code class="directive">CacheEnable</code> directive instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to cache urls at or below
     <var>url-string</var>. The cache storage manager is specified with the
-    <var>cache_type</var> argument. <var>cache_type</var> <code> mem</code>
-    instructs <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to use the memory based storage
-    manager implemented by <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>. 
+    <var>cache_type</var> argument. 
     <var>cache_type</var> <code>disk</code> instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to use the disk based storage manager
-    implemented by <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>.
-    <var>cache_type</var> <code>fd</code> instructs
-    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to use the file descriptor cache implemented
-    by <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>.</p>
+    implemented by <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>.</p>
     <p>In the event that the URL space overlaps between different
     <code class="directive">CacheEnable</code> directives (as in the example below),
     each possible storage manager will be run until the first one that
     actually processes the request. The order in which the storage managers are
     run is determined by the order of the <code class="directive">CacheEnable</code>
     directives in the configuration file.</p>
-
-    <div class="example"><p><code>
-      CacheEnable  mem   /manual<br />
-      CacheEnable  fd    /images<br />
-      CacheEnable  disk  /<br />
-    </code></p></div>
 
     <p>When acting as a forward proxy server, <var>url-string</var> can
     also be used to specify remote sites and proxy protocols which 

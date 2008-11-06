@@ -23,17 +23,31 @@
 <a href="../ja/howto/public_html.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
 <p>複数のユーザのいるシステムでは、<code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブを使って
     各ユーザがホームディレクトリにウェブサイトを構築できるように設定することが
     可能です。URL <code>http://example.com/~username/</code> を訪れた人は
     "<code>username</code>" というユーザの <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブで指定された
     サブディレクトリからコンテンツを得ることになります。</p>
+
+    <p>in the default config file, and adapting the <code>httpd-userdir.conf</code>
+    file as necessary, or by including the appropriate directives in a
+    <code>Directory</code> block within the main config file.</p>
+    <p>デフォルトではこれらのディレクトリへのアクセスは<strong>許可されていません</strong>。
+    <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> を使って有効にできます。
+    有効にするには、デフォルトの設定ファイルで付随する
+    <code>httpd-userdir.conf</code> ファイルが必要で、
+    その中の次の行のコメントアウトを外して有効にするか、
+    </p>
+    <div class="example"><p><code>
+      #Include conf/extra/httpd-userdir.conf
+    </code></p></div>
+    <p>あるいは、メインの設定ファイル中の <code>Directory</code> 
+    ブロックの中に適切にディレクティブを記述しておきます。</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">ユーザ毎のウェブディレクトリ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir">UserDir を使ってファイルのパスを設定する</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirect">外部 URL にリダイレクトする</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">この機能を使用できるユーザを制限する</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">ユーザ毎の CGI ディレクトリ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">ユーザによる設定変更を許可</a></li>
@@ -83,6 +97,32 @@
     <p>URL <code>http://example.com/~rbowen/file.html</code> は
     パス <code>/var/www/rbowen/docs/file.html</code> へ変換されます。</p>
 
+    <p>ディレクトリやディレクトリパスを複数設定することもできます。</p>
+
+    <div class="example"><p><code>
+      UserDir public_html /var/html
+    </code></p></div>
+
+    <p><code>http://example.com/~rbowen/file.html</code> という
+    URL に対しては <code>~rbowen</code> を探します。見つからなければ、
+    <code>/var/html</code> の下にある <code>rbowen</code> を探します。
+    もし見つかれば上記の URL は <code>/var/html/rbowen/file.html</code>
+    というファイルパスに変換されます。</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirect" id="redirect">外部 URL にリダイレクトする</a></h2>
+    
+    <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>
+    ディレクティブを使って外部 URL にリダイレクトすることもできます。</p>
+    
+    <div class="example"><p><code>
+      UserDir http://example.org/users/*/
+    </code></p></div>
+    
+    <p>上記例では <code>http://example.com/~bob/abc.html</code>
+    へのリクエストは <code>http://example.org/users/bob/abc.html</code>
+    にリダイレクトされます。</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">この機能を使用できるユーザを制限する</a></h2>

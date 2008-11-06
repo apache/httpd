@@ -25,12 +25,10 @@
 <p><span>言語: </span><a href="../en/mod/mod_mime.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_mime.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</td></tr>
-<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>mime_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_mime.c</td></tr></table>
 <h3>概要</h3>
@@ -50,8 +48,8 @@
     <code class="directive"><a href="#addlanguage">AddLanguage</a></code> ディレクティブ、
     <code class="directive"><a href="#addtype">AddType</a></code> ディレクティブはすべて、
     ファイルの拡張子をメタ情報にマップするために使用されます。
-    それぞれ、ドキュメントの文字セット (訳注: charset)、content-encoding,
-    content-language, MIME タイプ (content-type) を設定します。
+    それぞれ、ドキュメントの文字セット <span class="transnote">(<em>訳注:</em> charset)</span>、content-encoding,
+    content-language, <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a> (content-type) を設定します。
     <code class="directive"><a href="#typesconfig">TypesConfig</a></code> ディレクティブは拡張子を
     MIME タイプにマップするファイルを指定するために使用されます。</p>
 
@@ -126,8 +124,7 @@
     もまったく同じ情報にマップされます。
     同じメタ情報にマップされる拡張子が複数あるときには、言語と
     コンテントエンコーディングを除いて、
-    右側にあるものが使用されます。たとえば、<code>.gif</code> が MIME
-    タイプ <code>image/gif</code> にマップされ、<code>.html</code>
+    右側にあるものが使用されます。たとえば、<code>.gif</code> が <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a> <code>image/gif</code> にマップされ、<code>.html</code>
     が MIME タイプ <code>text/html</code>
     にマップされる場合は、ファイル <code>welcome.gif.html</code> は
     MIME タイプ <code>text/html</code> に関連付けられます。</p>
@@ -139,8 +136,8 @@
     <code>Content-Language: en, de</code> と <code>Content-Type:
     text/html</code> として送信されます。</p>
 
-    <p>複数の拡張子のあるファイルが MIME
-    タイプとハンドラの両方に関連付けられているときは注意する必要があります。
+    <p>複数の拡張子のあるファイルが <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME
+    タイプ</a>とハンドラの両方に関連付けられているときは注意する必要があります。
     その場合、普通はリクエストがハンドラに関連付けられた
     モジュールによって扱われることになります。たとえば、拡張子
     <code>.imap</code> が (<code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code> の) <code>imap-file</code>
@@ -150,10 +147,28 @@
     タイプに関連付けられます。ファイルが処理されるときは <code>imap-file</code>
     ハンドラが使用されますので、そのファイルは <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>
     のイメージマップファイルとして扱われることになります。</p>
+
+    <p>ファイル名のドット区切りでの最後の部分を使って、
+    特定の部分のメタデータにマッピングしたい場合は、
+    <code>Add*</code> ディレクティブは使わないでください。
+    たとえば <code>foo.html.cgi</code> を CGI スクリプトとして処理したいけれども、
+    <code>bar.cgi.html</code> は CGI スクリプトとしては処理したくない場合、
+    <code>AddHandler cgi-script .cgi</code> とする代わりに
+    次のようにしてください</p>
+
+    <div class="example"><h3>Configure handler based on final extension only</h3><p><code>
+    &lt;FilesMatch \.cgi$&gt;
+    <span class="indent">
+      SetHandler cgi-script
+    </span>
+    &lt;/FilesMatch&gt;
+    </code></p></div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="contentencoding" id="contentencoding">コンテントエンコーディング</a></h2>
-    <p>特定の MIME タイプのファイルはインターネットでの転送を簡単にするために、
+    <p>特定の <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
+    のファイルはインターネットでの転送を簡単にするために、
     さらに符号化することができます。これは通常は <code>gzip</code> の
     ような圧縮のことを指しますが、<code>pgp</code> のような暗号化や、
     バイナリファイルを ASCII (テキスト) 形式で送るために考案された
@@ -222,7 +237,7 @@
 
       <div class="example"><p><code>
         Content-Language: en, fr<br />
-	Content-Type: text/plain; charset=ISO-8859-1
+        Content-Type: text/plain; charset=ISO-8859-1
       </code></p></div>
 
       <p>言語の指定は二文字の短縮形で行なわれます。<code>charset</code> が
@@ -237,7 +252,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddCharset</code> ディレクティブは、
@@ -263,7 +278,9 @@
     の優先度に基づいて複数のドキュメントの中からドキュメントを選ぶ<a href="../content-negotiation.html">コンテントネゴシエーション</a>のためにも役に立ちます。</p>
 
     <p>引数 <var>extension</var>は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 
 <h3>参照</h3>
 <ul>
@@ -280,7 +297,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddEncoding</code> ディレクティブは、
@@ -316,7 +333,9 @@
     </p>
 
     <p>引数 <var>extension</var> は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -327,7 +346,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p>拡張子 <var>extension</var> が名前にあるファイルは指定された <a href="../handler.html">handler-name</a> に扱われます。
@@ -346,7 +365,9 @@
     </p>
 
     <p>引数 <var>extension</var> は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 
 <h3>参照</h3>
 <ul>
@@ -362,7 +383,7 @@
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -374,10 +395,14 @@
     このマッピングはすでにあるものより優先されてマージされ、
     同じ <var>extension</var> に対する既存のマッピングを上書きします。</p>
 
-    <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
-    繋いで書く必要があります。フィルタと <var>extension</var> との
-    両方の引数は大文字小文字を区別せず、拡張子の最初のドットは
-    あってもなくても構いません。</p>
+    <p>複数の<var>filter</var>を指定するときは、データを処理する順番にセミコロンで
+    繋いで書く必要があります。<var>filter</var> は大文字小文字を区別しません。</p>
+
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
+
 
 <h3>参照</h3>
 <ul>
@@ -393,7 +418,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddLanguage</code> ディレクティブは、与えられた拡張子を指定された
@@ -429,7 +454,9 @@
     <code>en-us</code> として扱われます。</p>
 
     <p>引数 <var>extension</var> は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 
 <h3>参照</h3>
 <ul>
@@ -445,7 +472,7 @@
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -466,9 +493,12 @@
     </code></p></div>
 
     <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
-    繋いで書く必要があります。<var>filter</var> と <var>extension</var> の
-    両引数は大文字小文字を区別せず、拡張子の最初のドットは
-    あってもなくても構いません。</p>
+    繋いで書く必要があります。<var>filter</var> は大文字小文字を区別しません。</p>
+
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 
 <h3>参照</h3>
 <ul>
@@ -484,13 +514,13 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddType</code> ディレクティブは、
     与えられた拡張子を指定されたコンテントタイプにマップします。
     <var>MIME-type</var> は拡張子 <var>extension</var>
-    を含んだドキュメントに使用する MIME タイプです。
+    を含んだドキュメントに使用する <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>です。
     この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
     <var>extension</var> のためのマッピングを上書きします。
     このディレクティブは MIME タイプファイル (<code class="directive"><a href="#typesconfig">TypesConfig</a></code> ディレクティブを参照)
@@ -500,6 +530,12 @@
       AddType image/gif .gif
     </code></p></div>
 
+    <p>あるいは、ひとつのディレクティブで複数のファイル拡張子を指定する場合:</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      AddType image/jpeg jpeg jpg jpe
+    </code></p></div>
+
     <div class="note">
       新しい MIME タイプは、<code class="directive"><a href="#typesconfig">TypesConfig</a></code>
       ファイルを変更するのではなく、<code class="directive">AddType</code>
@@ -507,7 +543,9 @@
     </div>
 
     <p>引数 <var>extension</var> は大文字小文字を区別せず、
-    最初のドットはあってもなくても構いません。</p>
+    最初のドットはあってもなくても構いません。
+    ファイル名は<a href="#multipleext">複数の拡張子</a>を持つことができ、
+    <var>extension</var>はそれぞれと比較されます。</p>
 
 <h3>参照</h3>
 <ul>
@@ -523,7 +561,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DefaultLanguage <var>MIME-lang</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">DefaultLanguage</code> ディレクティブは、Apache
@@ -563,7 +601,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ModMimeUsePathInfo Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0.41 以降</td></tr>
 </table>
@@ -606,7 +644,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MultiviewsMatch NegotiatedOnly</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -664,7 +702,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.24 以降で使用可能</td></tr>
 </table>
@@ -691,7 +729,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveEncoding</code> ディレクティブは、
@@ -736,7 +774,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveHandler</code> ディレクティブ
@@ -770,12 +808,12 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
     <p><code class="directive">RemoveInputFilter</code> ディレクティブは
-    指定されたファイル拡張子に関連付けられた入力フィルタを解除します。
+    指定されたファイル拡張子に関連付けられた入力<a href="../filter.html">フィルタ</a>を解除します。
     これを利用することで、親ディレクトリやサーバ設定ファイルから
     継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
@@ -797,7 +835,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.24 以降で使用可能</td></tr>
 </table>
@@ -819,12 +857,12 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降でのみ使用可能</td></tr>
 </table>
     <p><code class="directive">RemoveOutputFilter</code> ディレクティブは
-    指定されたファイル拡張子に関連付けられた出力フィルタを解除します。
+    指定されたファイル拡張子に関連付けられた出力<a href="../filter.html">フィルタ</a>を解除します。
     これを利用することで、親ディレクトリやサーバ設定ファイルから
     継承した関連付けを サブディレクトリ内において
     <code>.htaccess</code> ファイルで取り消すことができます。</p>
@@ -850,11 +888,12 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveType</code> ディレクティブは与えられた拡張子の
-    MIME タイプの関連付けを取り消します。これにより、
+    <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
+    の関連付けを取り消します。これにより、
     サブディレクトリにある <code>.htaccess</code>
     ファイルが親ディレクトリやサーバの設定ファイルから継承した
     関連付けを取り消すことができます。たとえば:</p>
@@ -885,11 +924,12 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TypesConfig <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>TypesConfig conf/mime.types</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
-    <p><code class="directive">TypesConfig</code> ディレクティブは、MIME
-    タイプ設定ファイルの位置を設定します。<var>filename</var> は
+    <p><code class="directive">TypesConfig</code> ディレクティブは、
+    <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
+    設定ファイルの位置を設定します。<var>file-path</var> は
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> からの相対パスです。
     このファイルはファイルの拡張子からコンテントタイプへの
     デフォルトのマッピングを設定します。

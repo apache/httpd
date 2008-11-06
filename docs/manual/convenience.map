@@ -47,7 +47,6 @@ authdbduserrealmquery	mod/mod_authn_dbd.html#authdbduserrealmquery
 authdbmgroupfile	mod/mod_authz_dbm.html#authdbmgroupfile
 authdbmtype	mod/mod_authn_dbm.html#authdbmtype
 authdbmuserfile	mod/mod_authn_dbm.html#authdbmuserfile
-authdefaultauthoritative	mod/mod_authn_default.html#authdefaultauthoritative
 authdigestalgorithm	mod/mod_auth_digest.html#authdigestalgorithm
 authdigestdomain	mod/mod_auth_digest.html#authdigestdomain
 authdigestnccheck	mod/mod_auth_digest.html#authdigestnccheck
@@ -93,8 +92,7 @@ authzdbdlogintoreferer	mod/mod_authz_dbd.html#authzdbdlogintoreferer
 authzdbdquery	mod/mod_authz_dbd.html#authzdbdquery
 authzdbdredirectquery	mod/mod_authz_dbd.html#authzdbdredirectquery
 authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
-authzdefaultauthoritative	mod/mod_authz_default.html#authzdefaultauthoritative
-authzmergerules	mod/mod_authz_core.html#authzmergerules
+authzprovideralias	mod/mod_authz_core.html#authzprovideralias
 balancermember	mod/mod_proxy.html#balancermember
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
@@ -250,6 +248,11 @@ locationmatch	mod/core.html#locationmatch
 lockfile	mod/mpm_common.html#lockfile
 logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
+match	mod/mod_authz_core.html#match
+matchall	mod/mod_authz_core.html#matchall
+matchany	mod/mod_authz_core.html#matchany
+matchnotall	mod/mod_authz_core.html#matchnotall
+matchnotany	mod/mod_authz_core.html#matchnotany
 maxclients	mod/mpm_common.html#maxclients
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
@@ -259,12 +262,7 @@ maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads
 maxthreadsperchild	mod/perchild.html#maxthreadsperchild
-mcachemaxobjectcount	mod/mod_mem_cache.html#mcachemaxobjectcount
-mcachemaxobjectsize	mod/mod_mem_cache.html#mcachemaxobjectsize
-mcachemaxstreamingbuffer	mod/mod_mem_cache.html#mcachemaxstreamingbuffer
-mcacheminobjectsize	mod/mod_mem_cache.html#mcacheminobjectsize
-mcacheremovalalgorithm	mod/mod_mem_cache.html#mcacheremovalalgorithm
-mcachesize	mod/mod_mem_cache.html#mcachesize
+mergeauthz	mod/mod_authz_core.html#mergeauthz
 metadir	mod/mod_cern_meta.html#metadir
 metafiles	mod/mod_cern_meta.html#metafiles
 metasuffix	mod/mod_cern_meta.html#metasuffix
@@ -315,7 +313,6 @@ redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
-reject	mod/mod_authz_core.html#reject
 removecharset	mod/mod_mime.html#removecharset
 removeencoding	mod/mod_mime.html#removeencoding
 removehandler	mod/mod_mime.html#removehandler
@@ -325,7 +322,6 @@ removeoutputfilter	mod/mod_mime.html#removeoutputfilter
 removetype	mod/mod_mime.html#removetype
 requestheader	mod/mod_headers.html#requestheader
 require	mod/mod_authz_core.html#require
-requirealias	mod/mod_authz_core.html#requirealias
 rewritebase	mod/mod_rewrite.html#rewritebase
 rewritecond	mod/mod_rewrite.html#rewritecond
 rewriteengine	mod/mod_rewrite.html#rewriteengine
@@ -339,8 +335,6 @@ rlimitcpu	mod/core.html#rlimitcpu
 rlimitmem	mod/core.html#rlimitmem
 rlimitnproc	mod/core.html#rlimitnproc
 satisfy	mod/mod_access_compat.html#satisfy
-satisfyall	mod/mod_authz_core.html#satisfyall
-satisfyone	mod/mod_authz_core.html#satisfyone
 scoreboardfile	mod/mpm_common.html#scoreboardfile
 script	mod/mod_actions.html#script
 scriptalias	mod/mod_alias.html#scriptalias

@@ -27,8 +27,6 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
     <p>この文書では Unix に類似したシステムでの
     Apache の停止と再起動について扱っています。
@@ -41,8 +39,8 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#term">急な停止</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">緩やかな再起動</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">急な再起動</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#race">付録: シグナルと競合状態</a></li>
-</ul><h3>参照</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
+<li><img alt="" src="./images/down.gif" /> <a href="#gracefulstop">緩やかな停止</a></li>
+</ul><h3>参照</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html">Starting</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">イントロダクション</a></h2>
@@ -59,10 +57,11 @@
     <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>
     に書かれています。これはつまり、親以外のプロセスに
     シグナルを送る必要すらない、ということです。
-    親プロセスに送ることができる 3 種類のシグナルがあります:
+    親プロセスに送ることができる 4 種類のシグナルがあります:
     <code><a href="#term">TERM</a></code>,
     <code><a href="#hup">HUP</a></code>, 
-    <code><a href="#graceful">USR1</a></code>
+    <code><a href="#graceful">USR1</a></code>,
+    <code><a href="#gracefulstop">WINCH</a></code>
     です。これらの説明については続きをご覧下さい。</p>
 
     <p>親プロセスにシグナルを送るには、
@@ -73,7 +72,7 @@
     <p><code class="program"><a href="./programs/httpd.html">httpd</a></code> プロセスにシグナルを送る 2 番目の方法は
     <code>-k</code> というコマンドライン引数を使用することです。
     下で説明されているように、<code>stop</code>, <code>restart</code>, 
-    <code>graceful</code> を指定できます。
+    <code>graceful</code>, <code>graceful-stop</code> を指定できます。
     これらは <code class="program"><a href="./programs/httpd.html">httpd</a></code> の引数ですが、
     制御用のスクリプト <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> はそれらの引数をそのまま
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> に渡します。</p>
@@ -118,12 +117,6 @@
     新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
     そして、これらが新たなリクエストに即座に応答し始めます。</p>
 
-    <div class="note">特定のプラットホームでは <code>USR1</code>
-    を緩やかな再起動のために使うことができませんが、代わりのシグナル
-    (例えば WINCH) が使用できるでしょう。
-    <code>apachectl graceful</code>
-    というコマンドはプラットホームに合ったシグナルを送ります。</div>
-
     <p>このコードは常に
     MPM のプロセス制御ディレクティブの設定を重視しますので、
     クライアントのリクエストを扱うプロセスとスレッドの数を再起動の処理中も
@@ -159,18 +152,13 @@
     分以下で完了しているということが分かっていれば、
     古いログに何かする前に 15 分待つということです。</p>
 
-    <div class="note">再起動時に設定ファイルに誤りがあると、
-    親プロセスは再起動せずにエラーとともに終了します。
-    緩やかな再起動の場合は、親プロセスが終了した後でも子プロセスが
-    実行されたまま放置されたりもします。
-    (最後のリクエストを処理した後「緩やかに終了」する
-    子プロセスとなります。)
-    サーバを再起動する際に、これが問題になるかもしれません
-    -- サーバは listen するポートにバインドできないかもしれません。
-    再起動する前に、設定ファイルの構文を <code>-t</code>
-    コマンドライン引数
-    (<code class="program"><a href="./programs/httpd.html">httpd</a></code> をご覧下さい)
-    を使って検証することができます。
+    <div class="note"><p>再起動が発行されると設定ファイルの構文チェックがまず走り、
+    設定ファイルに (構文上の) 誤りがないかチェックされます。
+    誤りがあった場合エラーメッセージでその旨が示され、サーバは再起動されません。
+    こうすることでサーバが終了しているけれども再起動できないという状況を
+    防ぎ、サーバが機能不全な状態になるのを防いでいます。</p>
+
+    <p>ただしこれでもサーバが正しく再起動することは保証されません。
     設定ファイルの意味的な内容を構文と同様に検証したい場合は、
     非 root ユーザで <code class="program"><a href="./programs/httpd.html">httpd</a></code> を起動しようとすればわかります。
     もしエラーがなければ、ソケットやログを開こうとして
@@ -180,7 +168,8 @@
     に失敗するでしょう。
     これ以外の理由で起動に失敗したのであれば、
     それは設定ファイルのエラーで、
-    緩やかな再起動を行う前にその誤りを修正しなければなりません。</div>
+    緩やかな再起動を行う前にその誤りを修正しなければなりません。</p>
+    </div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="hup" id="hup">急な再起動</a></h2>
@@ -199,53 +188,57 @@
     を使っている場合は、<code>HUP</code> が送られた場合に
     サーバ統計がゼロに設定されることに注意してください。</p>
 
-    <div class="note">再起動時に設定ファイルに誤りがあると、
-    親プロセスは再起動せずにエラーとともに終了します。
-    これを避けるには次の方法をご覧下さい。</div>
+    <div class="note">graceful 再起動時は、再起動前に構文チェックが行われます。
+    もし構文エラーがあればその旨が示され、再起動は行われません。</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="race" id="race">付録: シグナルと競合状態</a></h2>
+<h2><a name="gracefulstop" id="gracefulstop">緩やかな停止</a></h2>
 
-    <p>Apache 1.2b9 以前は、再起動や停止のシグナルを含む<em>競合状態</em>
-    (競合状態を簡単に説明すると: タイミンにグよる問題で、
-    具合の悪い時間帯にちょうど何かが起こると予想外の動作をする
-    ようなことを指します) がありました。
-    「正しい」機能を持っているアーキテクチャでは、できるだけ
-    このようなことが起こらないようにしています。
-    しかし、ある種のアーキテクチャでは競合状態は未だ確実に起こりえる
-    ということに注意してください。</p>
+<dl><dt>Signal: WINCH</dt>
+<dd><code>apachectl -k graceful-stop</code></dd>
+</dl>
 
-    <p>ディスク上で
-    <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code>
-    を使用しているアーキテクチャでは、
-    潜在的にスコアボードが壊れる可能性があります。
-    スコアボードが壊れた場合は、
-    "bind: Address already in use" (<code>HUP</code> 後) や
-    "long lost child came home!" (<code>USR1</code> 後)
-    といった結果になります。
-    前者は致命的なエラーですが、
-    後者はスコアボードスロットを失うだけです。
-    ですから緩やかな再起動は、たまに確実な再起動 (HUP)
-    も併用して使った方が良いでしょう。
-    これらの問題を克服するのは非常に難しいのですが、
-    幸いなことに大部分のアーキテクチャではスコアボードのファイルは必要ありません。
-    これを使用するアーキテクチャは、
-    <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code>
-    をご覧下さい。</p>
+    <p><code>WINCH</code> や <code>graceful-stop</code> シグナルを受け取ると、
+    親プロセスは子プロセスに現在処理中のリクエストの後に終了する
+    (あるいは処理中のものが何もなければ直ちに終了する)
+    ように<em>アドバイス</em>します。
+    その後親プロセスは <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>
+    を削除し、ポートでの Listen を全て停止します。
+    親プロセスはどの子プロセスがリクエスト処理中かを監視し続けています。
+    全ての子プロセスが終了するか
+    <code class="directive"><a href="./mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code>
+    で設定した時間が過ぎると、親プロセスも終了します。
+    タイムアウトに達した場合、残りの子プロセスには <code>TERM</code>
+    シグナルが送信され強制的に終了されます。</p>
+    
+    <p>"graceful" 状態の場合 <code>TERM</code> シグナルを受け取ると、
+    親プロセスも子プロセスもすぐに終了します。しかしながら
+    <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>
+    が削除されてしまっているので、<code>apachectl</code>
+    や <code>httpd</code> にこのシグナルを送ることはできません。</p>
 
-    <p>全てのアーキテクチャにおいて、個々の子プロセスで
-    継続的な HTTP コネクション (KeepAlive)
-    に関する小さな競合状態が起こりえます。
-    リクエスト行を読んだ後、そしてリクエストヘッダを読む前に
-    子プロセスは終了するかも知れません。
-    これに対する修正がありますが 1.2 で修正するには発見が遅すぎました。
-    理論的には、これは問題ではありません。
-    なぜなら KeepAlive のクライアントは、ネットワーク遅延や
-    サーバのタイムアウトなどに備えていなければならないからです。
-    実際にも何か影響があるようには見えません
-    -- テストケースでサーバを 1 秒間に 20 回再起動しても
-    クライアントは壊れた画像や空のドキュメントを受け取ることなく
-    正常に閲覧できています。</p>
+    <div class="note"><p><code>graceful-stop</code> を使うとまったく同一に設定された
+    複数の <code class="program"><a href="./programs/httpd.html">httpd</a></code> を同時に実行することができます。
+    Apache を緩やかにアップグレードするのにはとても便利ですが、
+    設定ファイルによってはデッドロックやレースコンディションを
+    引き起こすこともあります。</p>
+
+    <p>ディスク上のファイルを使うもの、たとえば
+    <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> や 
+    <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> 
+    のファイルなどはサーバの PID を含めて管理されていて、
+    共存できるよう注意が払われています。
+    しかしその他設定ディレクティブやサードパーティ製のモジュール、
+    CGI ユーティリティのパーシステント層などで
+    ディスク上にロックファイルや状態管理ファイルを
+    使っている場合は、実行されている複数の <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+    が互いに衝突しないように気をつけなければなりません。</p>
+
+    <p><code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> 形式のパイプを使ったログといった、
+    その他潜在的なレースコンディションについても注意しなければなりません。
+    複数の <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> が同じファイルを同時に
+    rotate しようとすると、互いにログファイルを破壊してしまいます。</p>
+    </div>
 </div></div>
 <div class="bottomlang">
 <p><span>言語: </span><a href="./de/stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

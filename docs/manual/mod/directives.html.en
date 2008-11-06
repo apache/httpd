@@ -298,12 +298,6 @@
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
 <li><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
-<li><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
-<li><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
-<li><a href="mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></li>
-<li><a href="mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></li>
-<li><a href="mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
-<li><a href="mod_mem_cache.html#mcachesize">MCacheSize</a></li>
 <li><a href="mod_authz_core.html#mergeauthz">MergeAuthz</a></li>
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>

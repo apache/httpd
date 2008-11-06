@@ -81,14 +81,12 @@ address)</dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Core Authentication</dd>
 <dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>User authentication using an SQL database</dd>
 <dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM 파일을 사용한 사용자 인증</dd>
-<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>최후 인증모듈</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>문자파일을 이용한 사용자 인증</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Group Authorization and Login using SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>DBM 파일을 사용한 그룹 인증</dd>
-<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>최후 권한부여모듈</dd>
 <dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>일반 문자파일을 이용한 그룹 권한부여</dd>
 <dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
@@ -132,8 +130,7 @@ by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>서버로의 요청을 로그에 기록한다</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>요청당 입출력 바이트수를 기록</dd>
-<dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>URI를 키로 사용하여 내용을 캐쉬한다.</dd>
-<dt><a href="mod_mime.html">mod_mime</a></dt><dd>Associates the requested filename's extensions
+<dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
     encoding)</dd>
