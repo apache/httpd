@@ -81,7 +81,6 @@
 <li><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
 <li><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType</a></li>
 <li><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>
-<li><a href="mod_authn_default.html#authdefaultauthoritative">AuthDefaultAuthoritative</a></li>
 <li><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm</a></li>
 <li><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain</a></li>
 <li><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck</a></li>
@@ -127,8 +126,7 @@
 <li><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
 <li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
-<li><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative</a></li>
-<li><a href="mod_authz_core.html#authzmergerules">AuthzMergeRules</a></li>
+<li><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias&gt;</a></li>
 <li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
@@ -141,9 +139,11 @@
 <li><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
+<li><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString</a></li>
 <li><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire</a></li>
 <li><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></li>
+<li><a href="mod_cache.html#cacheminexpire">CacheMinExpire</a></li>
 <li><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></li>
 <li><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
 <li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
@@ -235,6 +235,7 @@
 <li><a href="mod_imagemap.html#imapdefault">ImapDefault</a></li>
 <li><a href="mod_imagemap.html#imapmenu">ImapMenu</a></li>
 <li><a href="core.html#include">Include</a></li>
+<li><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert</a></li>
 <li><a href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
 <li><a href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
 <li><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></li>
@@ -280,7 +281,12 @@
 <li><a href="mpm_common.html#lockfile">LockFile</a></li>
 <li><a href="mod_log_config.html#logformat">LogFormat</a></li>
 <li><a href="core.html#loglevel">LogLevel</a></li>
-<li><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients</a></li>
+<li><a href="mod_authz_core.html#match" id="M" name="M">Match</a></li>
+<li><a href="mod_authz_core.html#matchall">&lt;MatchAll&gt;</a></li>
+<li><a href="mod_authz_core.html#matchany">&lt;MatchAny&gt;</a></li>
+<li><a href="mod_authz_core.html#matchnotall">&lt;MatchNotAll&gt;</a></li>
+<li><a href="mod_authz_core.html#matchnotany">&lt;MatchNotAny&gt;</a></li>
+<li><a href="mpm_common.html#maxclients">MaxClients</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
 <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
@@ -289,12 +295,7 @@
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
 <li><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
-<li><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
-<li><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
-<li><a href="mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></li>
-<li><a href="mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></li>
-<li><a href="mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
-<li><a href="mod_mem_cache.html#mcachesize">MCacheSize</a></li>
+<li><a href="mod_authz_core.html#mergeauthz">MergeAuthz</a></li>
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
 <li><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
@@ -340,7 +341,6 @@
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
 <li><a href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
-<li><a href="mod_authz_core.html#reject">Reject</a></li>
 <li><a href="mod_mime.html#removecharset">RemoveCharset</a></li>
 <li><a href="mod_mime.html#removeencoding">RemoveEncoding</a></li>
 <li><a href="mod_mime.html#removehandler">RemoveHandler</a></li>
@@ -350,7 +350,6 @@
 <li><a href="mod_mime.html#removetype">RemoveType</a></li>
 <li><a href="mod_headers.html#requestheader">RequestHeader</a></li>
 <li><a href="mod_authz_core.html#require">Require</a></li>
-<li><a href="mod_authz_core.html#requirealias">&lt;RequireAlias&gt;</a></li>
 <li><a href="mod_rewrite.html#rewritebase">RewriteBase</a></li>
 <li><a href="mod_rewrite.html#rewritecond">RewriteCond</a></li>
 <li><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></li>
@@ -364,8 +363,6 @@
 <li><a href="core.html#rlimitmem">RLimitMEM</a></li>
 <li><a href="core.html#rlimitnproc">RLimitNPROC</a></li>
 <li><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy</a></li>
-<li><a href="mod_authz_core.html#satisfyall">&lt;SatisfyAll&gt;</a></li>
-<li><a href="mod_authz_core.html#satisfyone">&lt;SatisfyOne&gt;</a></li>
 <li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
 <li><a href="mod_actions.html#script">Script</a></li>
 <li><a href="mod_alias.html#scriptalias">ScriptAlias</a></li>

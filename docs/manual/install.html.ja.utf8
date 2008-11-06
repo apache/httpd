@@ -27,8 +27,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 
 
     <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
@@ -255,7 +253,8 @@ $ tar xvf httpd-<em>NN</em>.tar
     必要がある場合があります。このような場合には、環境変数あるいは
     コマンドラインオプションで <code class="program"><a href="./programs/configure.html">configure</a></code> に渡します。
     詳細に関しては <code class="program"><a href="./programs/configure.html">configure</a></code> マニュアルページ
-    をご覧ください。</p>
+    をご覧ください。あるいは <code>--help</code> オプションつきで
+    <code class="program"><a href="./programs/configure.html">configure</a></code> を呼び出してください。</p>
 
     <p>ちょっとどんなことができるかを見せましょう。
     ここで典型的な例として、<code>/sw/pkg/apache</code> 
@@ -302,6 +301,10 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ make install</code></p></div>
 
+    <p>通常 <em>PREFIX</em> は書き込みパーミッションが制限されている
+    ディレクトリになっているので、このステップは通常は
+    ルート権限が必要です。</p>
+
     <p>アップグレードする場合は、インストールでは設定ファイルや
     ドキュメントファイルの上書きは行いません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -313,7 +316,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
+    <p><code><em>PREFIX</em>/docs/manual/</code> や
+    <a href="./">docs/manual/</a> にある Apache マニュアルをざっと見てください。
     または、<a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a>
     にあるマニュアル最新版、<a href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -379,6 +383,13 @@ $ tar xvf httpd-<em>NN</em>.tar
     例えば、異なる <code>--prefix</code> と異なるポート (<code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> ディレクティブで設定します) 
     を使用することで、古いバージョンに影響を与えずに新しいバージョンを
     インストールし、実行できます。</div>
+
+    <p>もとの <code class="program"><a href="./programs/configure.html">configure</a></code> に追加する形で、
+    追加の引数を <code>config.nice</code> に渡すこともできます:</p>
+
+    <div class="example"><p><code>
+    $ ./config.nice --prefix=/home/test/apache --with-port=90
+    </code></p></div>
 </div></div>
 <div class="bottomlang">
 <p><span>言語: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

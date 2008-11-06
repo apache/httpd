@@ -27,8 +27,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>Unix の <code>ls</code> コマンドや
     Win32 の <code>dir</code> シェルコマンドに似た
     ディレクトリインデックスを生成する</td></tr>
@@ -36,7 +34,7 @@
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>autoindex_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_autoindex.c</td></tr></table>
 <h3>概要</h3>
- 
+
       <p>ディレクトリのインデックスは二つの情報源のうちの
       一つから生成できます:</p>
 
@@ -95,6 +93,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#addiconbytype">AddIconByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulticon">DefaultIcon</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#headername">HeaderName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#indexheadinsert">IndexHeadInsert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexoptions">IndexOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexorderdefault">IndexOrderDefault</a></li>
@@ -379,7 +378,7 @@
       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
       AddIcon /icons/backup.xbm *~
     </code></p></div>
-    
+
     <p>もし可能なら、
     <code class="directive">AddIcon</code>
     より
@@ -390,7 +389,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddIconByEncoding" id="AddIconByEncoding">AddIconByEncoding</a> <a name="addiconbyencoding" id="addiconbyencoding">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルに表示するアイコンを MIME 
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ファイルに表示するアイコンを MIME
 符号化方法で選択</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</code></td></tr>
@@ -407,8 +406,8 @@
     は、非グラフィカルブラウザ向けにアイコンに付けられたテキストタグです。
     </p>
 
-    <p><var>MIME-encoding</var> は、要求されたエンコードに該当する
-    ワイルドカード表現です。</p>
+    <p><var>MIME-encoding</var> は、有効なコンテントエンコーディング、
+    例えば <code>x-compress</code>です。</p>
 
     <div class="example"><h3>例</h3><p><code>
       AddIconByEncoding /icons/compress.xbm x-compress
@@ -497,7 +496,7 @@ MIME タイプによって選択</td></tr>
       <div class="example"><h3>例</h3><p><code>
         HeaderName /include/HEADER.html
       </code></p></div>
-      
+
       <p><var>filename</var> は
       メジャーコンテントタイプが "<code>text/*</code>" 
        (<em>例えば</em>、<code>text/html</code>, 
@@ -534,6 +533,25 @@ MIME タイプによって選択</td></tr>
     <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>
     を設定して、これらのタグが繰り返されないようにしたいと思うでしょう。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>インデックスページの HEAD セクションにテキストを挿入する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>IndexHeadInsert <var>"markup ..."</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_autoindex</td></tr>
+</table>
+    <p><code class="directive">IndexHeadInsert</code> ディレクティブを使って
+    インデックスとして生成されたHTMLの <var>&lt;head&gt;</var> セクションに
+    挿入する文字列を指定します。</p>
+    <div class="example"><h3>Example</h3><p><code>
+      
+      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -576,6 +594,32 @@ MIME タイプによって選択</td></tr>
     <var>option</var> は次のどれかです:</p>
 
     <dl>
+      <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>character-set</var></a> (<em>Apache 2.0.61
+      以降</em>)</dt>
+
+      <dd><code>Charset</code> キーワードで、
+      生成されるページの文字セットを指定できます。
+      下位のファイルシステムが Unicode ベースかどうかに依存しますが、
+      デフォルト値は <var>ISO-8859-1</var> か <var>UTF-8</var>
+      になります。
+
+      <div class="example"><h3>Example:</h3><p><code>
+        IndexOptions Charset=UTF-8
+      </code></p></div>
+      </dd>
+
+      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>MIME content-type</var></a> (<em>Apache 2.0.61
+      以降</em>)</dt>
+
+      <dd><code>Type</code> キーワードで、
+      生成されるページの MIME コンテントタイプを指定できます。
+      デフォルト値は <var>text/html</var> になります。
+
+      <div class="example"><h3>Example:</h3><p><code>
+        IndexOptions Type=text/plain
+      </code></p></div>
+      </dd>
+
       <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a>
       (<em>2.0.23 以降</em>)</dt>
 
@@ -603,8 +647,7 @@ MIME タイプによって選択</td></tr>
       (<em>2.0.23 以降</em>)</dt>
 
       <dd>このオプションが有効になった場合、サブディレクトリの一覧は
-      <em>必ず</em>最初に現われて、そのディレクトリの通常のファイルは
-      その後に続きます。
+      <em>必ず</em>最初に現われて、通常のファイルはその後に続きます。
       一覧は基本的には、ファイルとディレクトリの二つの部分に分けられて、
       それぞれは別々にソートされ、その後サブディレクトリを先にして
       表示が行なわれます。例えばソート順が名前の降順になっていて、
@@ -614,12 +657,12 @@ MIME タイプによって選択</td></tr>
       <code>Gamma</code> や <code>Alpha</code>
       よりも前にリストされます。<strong>このオプションは
       <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
-      も有効になっているときにのみ、効果があります。</strong></dd>
+      も有効になっているときにのみ有効です。</strong></dd>
 
       <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a> <em>(実験的、
       Apache 2.0.23 以降)</em></dt>
 
-      <dd>この実験的なオプションは FancyIndexing とともに指定することで、
+      <dd>この実験的なオプションは <code>FancyIndexing</code> とともに指定することで、
       飾りの付いたディレクトリ一覧のためにテーブルを使った単純な表を作ります。
       これは古いブラウザを混乱させるかもしれないことに注意してください。
       WinNT やその他 utf-8 
@@ -633,9 +676,9 @@ MIME タイプによって選択</td></tr>
 
       <dt><a name="indexoptions.iconheight" id="indexoptions.iconheight">IconHeight[=<var>pixels</var>]</a></dt>
 
-      <dd>このオプションが、IconWidth とともに使われている場合は、
-      サーバはファイルアイコンのための <code>img</code>
-      タグに <code>height</code> と <code>width</code>
+      <dd>このオプションが、<code>IconWidth</code> とともに
+      使われている場合は、サーバはファイルアイコンのための
+      <code>img</code> タグに <code>height</code> と <code>width</code>
       属性を取り込むようになります。
       これによって、イメージ全てをロードし終わるまで待たなくても、
       ブラウザはページレイアウトをあらかじめ計算することができます。
@@ -658,7 +701,7 @@ MIME タイプによって選択</td></tr>
       <dt><a name="indexoptions.ignorecase" id="indexoptions.ignorecase">IgnoreCase</a></dt>
 
       <dd>このオプションが有効であると、ファイル名は大文字小文字を区別せずにソートされます。
-      例えばファイル名が昇順でソートされ、IgnoreCase が有効であれば、
+      例えばファイル名が昇順でソートされ、<code>IgnoreCase</code> が有効であれば、
       Zeta は alfa の後にリストされます
       (注意: GAMMA は常に gamma の前になります)。</dd>
 
@@ -668,7 +711,7 @@ MIME タイプによって選択</td></tr>
       クライアントからの全てのクエリー変数を無視するようになります。
       これはソート順も含みます。
       (つまり <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
-      を暗に意味します。)</dd>
+      も有効になります。)</dd>
 
       <dt><a name="indexoptions.namewidth" id="indexoptions.namewidth">NameWidth=[<var>n</var> 
 	       | *]</a></dt>
@@ -697,9 +740,9 @@ MIME タイプによって選択</td></tr>
 
       <dt><a name="indexoptions.showforbidden" id="indexoptions.showforbidden">ShowForbidden</a></dt>
 
-      <dd>指定した場合であっても、サブリクエストの結果が HTTP_UNAUTHORIZED や
-      HTTP_FORBIDDEN のファイルは通常通り隠された状態のまま、
-      ファイル一覧が生成されます。</dd>
+      <dd>通常 Apache はサブリクエストの結果が<code>HTTP_UNAUTHORIZED</code> や
+      <code>HTTP_FORBIDDEN</code> のファイルは一覧に表示しません。
+      このオプションを指定すると、そのようなファイルも一覧に表示します。</dd>
 
       <dt><a name="indexoptions.suppresscolumnsorting" id="indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></dt>
 
@@ -713,8 +756,8 @@ MIME タイプによって選択</td></tr>
       ソート文字列のためのクエリー引数の解析も無効にします。
       </strong>
       この挙動は Apache 2.0.23 では
-      <a href="#indexoptions.ignoreclient">IndexOptions
-      IgnoreClient</a> で制御されるようになっています。</dd>
+      <a href="#indexoptions.ignoreclient"><code>IndexOptions
+      IgnoreClient</code></a> で制御されるようになっています。</dd>
 
       <dt><a name="indexoptions.suppressdescription" id="indexoptions.suppressdescription">SuppressDescription</a></dt>
 
@@ -750,7 +793,7 @@ MIME タイプによって選択</td></tr>
       これは FancyIndexing の一覧からアイコンを消去します。
       <code>SuppressIcon</code> と <code>SuppressRules</code>
       と組合わせることによって正しい HTML 3.2 の出力が得られます。
-      正しい HTML 3.2 出力は、最終規格において <code>img</code> と <code>hr</code>
+      HTML 3.2 の最終規格は、 <code>img</code> と <code>hr</code>
       が <code>pre</code> ブロックに入る (FancyIndexing 一覧で書式に使われています) 
       ことを禁止しています。</dd>
 
@@ -764,7 +807,7 @@ MIME タイプによって選択</td></tr>
       <dd>ディレクトリ一覧において水平区切り線 (<code>hr</code> タグ) を消去します。
       <code>SuppressIcon</code> と <code>SuppressRules</code>
       と組合わせることによって正しい HTML 3.2 の出力が得られます。
-      正しい HTML 3.2 出力は、最終規格において <code>img</code> と <code>hr</code>
+      HTML 3.2 の最終規格は、 <code>img</code> と <code>hr</code>
       が <code>pre</code> ブロックに入る (FancyIndexing 一覧で書式に使われています) 
       ことを禁止しています。</dd>
 
@@ -776,7 +819,8 @@ MIME タイプによって選択</td></tr>
 	       (<em>Apache 2.0.23 以降</em>)</dt>
 
       <dd>これは HTTP ヘッダ中に、
-      リストされたディレクトリの最終更新日や ETag 値を含めます。
+      ディレクトリの <code>Last-Modified</code> や 
+      <code>ETag</code> を含めます。
       これは、オペレーティングシステムやファイルシステムが
       適切な stat() の返り値を返す場合にのみ有効です。
       いくつかの UNIX システム、OS2 の JFS や Win32 の NTFS
@@ -785,13 +829,13 @@ MIME タイプによって選択</td></tr>
       この機能が有効になると、クライアントやプロキシは
       <code>HEAD</code> リクエストを行うことによって、
       ファイル一覧の変化を追跡することができるようになります。
-      いくつかのオペレーティングシステムは、新規ファイルや
+      オペレーティングシステムによっては、新規ファイルや
       移動ファイルは正しく追跡するけれども、
-      ディレクトリ中のファイルのサイズや日付は追跡ないということに
+      ディレクトリ中のファイルのサイズや日付は追跡しないということに
       注意してください。
       <strong>既に存在するファイルのサイズや日付のスタンプが変化しても、
       全ての Unix プラットホームでは、
-      最終更新日ヘッダーを更新しません。</strong>
+      <code>Last-Modified</code> ヘッダーを更新しません。</strong>
       もしこれが重要であれば、
       このオプションを無効のままにしてください。</dd>
 
@@ -842,7 +886,6 @@ MIME タイプによって選択</td></tr>
      <li>一つのディレクトリに対する複数の
      <code class="directive">IndexOptions</code> 
      ディレクティブは、現在では一つにマージされます。
-     上の例の結果は、
 
      <div class="example"><p><code>
        &lt;Directory /foo&gt;
@@ -853,7 +896,7 @@ MIME タイプによって選択</td></tr>
        &lt;/Directory&gt;
      </code></p></div>
 
-     <p>と同一になります。</p>
+     <p>の結果は、次の指定と同一の結果になります。</p>
 
      <div class="example"><p><code>
        IndexOptions HTMLTable SuppressColumnsorting
@@ -878,16 +921,16 @@ MIME タイプによって選択</td></tr>
        IndexOptions +SuppressSize
      </code></p></div>
 
-     <p>中身の効果は
+     <p>最終的な効果は
      <code>IndexOptions&nbsp;FancyIndexing&nbsp;+SuppressSize</code>
      と同一です。
      接頭辞の付かない <code>FancyIndexing</code>
-     でそれ以前の増減キーワードを無効にされて、
+     でそれ以前の増減キーワードは無効になり、
      その後の累積が始まるからです。</p>
 
-     <p>無条件に <code class="directive">IndexOptions</code>
-     をあるディレクトリで設定することによって
-     継承した設定を消去して、<code>+</code> や <code>-</code>
+     <p>あるディレクトリにおいて上位のディレクトリに指定された設定に影響されることなく
+     <code class="directive">IndexOptions</code> を設定したい場合、
+     <code>+</code> や <code>-</code>
      接頭辞の付かないキーワードで設定してください。</p>
    </dd>
    </dl>
@@ -908,7 +951,7 @@ Name|Date|Size|Description</code></td></tr>
 </table>
     <p><code class="directive">IndexOrderDefault</code> ディレクティブは
     <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    インデックスオプションと併せて用いれれます。
+    インデックスオプションと併せて用いられます。
     デフォルトでは、FancyIndexing 
     のディレクトリ一覧はファイル名の昇順で表示されます。
     <code class="directive">IndexOrderDefault</code>
@@ -919,8 +962,8 @@ Name|Date|Size|Description</code></td></tr>
     <code>Ascending</code> か <code>Descending</code> のいずれかです。
     二つ目の引数は <code>Name</code>, <code>Date</code>,
     <code>Size</code> か <code>Description</code> 
-    のいずれか一つのキーワードであって、プライマリキーを指定します。
-    二つ目のキーは<em>常に</em>ファイル名の昇順になります。</p>
+    のいずれか一つのキーワードであって、1つ目のソートキーを指定します。
+    2つ目のソートキーは<em>常に</em>ファイル名の昇順になります。</p>
 
     <p>このディレクティブと <code><a href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
     インデックスオプションとを組み合わせることで、

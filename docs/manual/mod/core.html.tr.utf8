@@ -26,6 +26,7 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -1633,7 +1634,9 @@ yönergeleri sarmalar.</td></tr>
       zaman aşımı, boştaki istemcilerin bulunduğu bağlantıları bekleyen daha
       fazla sunucu sürecini meşgul edecektir.</p>
 
-    <p>İsme dayalı sanal konak bağlamında, <code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code> bölümleri içinde tanımlanmış ilk sanal konağın (öntanımlı konak) değeri kullanılır. Diğer değerler görmezden gelinir.</p>
+    <p>İsme dayalı sanal konak bağlamında, <code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code> bölümleri içinde tanımlanmış
+    ilk sanal konağın (öntanımlı konak) değeri kullanılır. Diğer değerler
+    görmezden gelinir.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1643,8 +1646,8 @@ yönergeleri sarmalar.</td></tr>
 sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;Limit <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
     &lt;/Limit&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>AuthConfig, Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
@@ -1677,11 +1680,40 @@ sarmalar.</td></tr>
       <code>LOCK</code> ve <code>UNLOCK</code>. <strong>Yöntem isimleri harf
       büyüklüğüne duyarlıdır.</strong> <code>GET</code> yöntemi sınırlanırsa
       <code>HEAD</code> istekleri de sınırlanmış olur. <code>TRACE</code>
-      yöntemi sınırlanamaz (bkz, <code class="directive"><a href="#traceenable">&lt;TraceEnable&gt;</a></code>).</p>
+      yöntemi sınırlanamaz (bkz, <code class="directive"><a href="#traceenable">TraceEnable</a></code>).</p>
 
     <div class="warning">Erişimi sınarlarken bir <code class="directive">&lt;Limit&gt;</code> bölümü yerine daima bir <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> bölümünü tercih
       etmelisiniz, çünkü <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> bölümü belirtilen yöntemler dışında kalanlara
       erişim koruması sağlar.</div>
+
+    <p><code class="directive">&lt;Limit&gt;</code> ve
+    <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code>
+    yönergeleri iç içe olabilirler. Bu durumda, başarılı her
+    <code class="directive">&lt;Limit&gt;</code> veya <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> seviyesi, erişim
+    denetimlerinin uygulanacağı yöntemlerle sınırlı kalmalıdır.</p>
+
+    <div class="warning"><code class="directive">&lt;Limit&gt;</code> veya
+    <code class="directive">&lt;LimitExcept&gt;</code> yönergelerini
+    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> yönergesi ile
+    birlikte kullanılırken, ilk <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> yönergesinin bir başka <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> yönergesinin varlığından
+    bağımsız olarak isteği başarıyla yetkilendirdiğine dikkat ediniz.</div>
+
+    <p>Örneğin, aşağıdaki yapılandırmayı ele alalım; tüm kullanıcılar
+    <code>POST</code> istekleri için yetkilendirilecek ve tüm durumlarda
+    <code>Require group editors</code> yönergesi yoksayılacaktır:</p>
+
+    <div class="example"><p><code>
+      &lt;LimitExcept GET&gt;
+      <span class="indent">
+        Require valid-user
+      </span>
+      &lt;/LimitExcept&gt;<br />
+      &lt;Limit POST&gt;
+      <span class="indent">
+        Require group editors
+      </span>
+      &lt;/Limit&gt;
+    </code></p></div>
 
 
 </div>
@@ -1692,8 +1724,8 @@ sarmalar.</td></tr>
 kullanılacak erişim sınırlayıcıları sarmalar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>&lt;LimitExcept <var>yöntem</var> [<var>yöntem</var>] ... &gt; ...
     &lt;/LimitExcept&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>AuthConfig, Limit</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>

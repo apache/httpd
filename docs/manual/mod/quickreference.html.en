@@ -507,18 +507,6 @@ will handle during its life</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of idle threads</td></tr>
 <tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
 <tr class="odd"><td><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild <var>number</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
-<tr><td><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount <var>value</var></a></td><td> 1009 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum number of objects allowed to be placed in the
-cache</td></tr>
-<tr class="odd"><td><a href="mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize <var>bytes</var></a></td><td> 10000 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum size (in bytes) of a document allowed in the
-cache</td></tr>
-<tr><td><a href="mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer <var>size_in_bytes</var></a></td><td> the smaller of 1000 +</td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum amount of a streamed response to buffer in memory
-before declaring the response uncacheable</td></tr>
-<tr class="odd"><td><a href="mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize <var>bytes</var></a></td><td> 1 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of a document to be allowed in the
-cache</td></tr>
-<tr><td><a href="mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm LRU|GDSF</a></td><td> GDSF </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The algorithm used to select documents for removal from the
-cache</td></tr>
-<tr class="odd"><td><a href="mod_mem_cache.html#mcachesize">MCacheSize <var>KBytes</var></a></td><td> 100 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum amount of memory used by the cache in
-KBytes</td></tr>
 <tr><td><a href="mod_authz_core.html#mergeauthz">MergeAuthz Off | MatchAll | MatchAny</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Controls the manner in which each configuration section's
 authorization logic is combined with that of preceding configuration
 sections.</td></tr>

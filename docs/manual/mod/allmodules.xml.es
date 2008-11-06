@@ -54,7 +54,6 @@
   <modulefile>mod_log_config.xml</modulefile>
   <modulefile>mod_log_forensic.xml</modulefile>
   <modulefile>mod_logio.xml</modulefile>
-  <modulefile>mod_mem_cache.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>

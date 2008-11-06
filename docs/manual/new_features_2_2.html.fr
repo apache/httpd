@@ -56,7 +56,7 @@
 
       <dt>Mise en cache</dt>
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, et
-          <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> ont subi de nombreuses
+          mod_mem_cache (supprimès dans la version 2.3/2.4) ont subi de nombreuses
 	  modifications, et l'on considère qu'ils ont maintenant atteint
 	  un degré de qualité suffisant pour leur mise en production. Le programme
 	  <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> a été ajouté afin de rendre

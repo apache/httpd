@@ -85,14 +85,12 @@ CGI スクリプトを実行する機能を提供</dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Core Authentication</dd>
 <dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>User authentication using an SQL database</dd>
 <dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM ファイルを用いたユーザ認証</dd>
-<dt><a href="mod_authn_default.html">mod_authn_default</a></dt><dd>認証フォールバックモジュール</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>テキストファイルを用いたユーザ認証</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>
 <dt><a href="mod_authz_dbd.html">mod_authz_dbd</a></dt><dd>Group Authorization and Login using SQL</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
-<dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>承認フォールバックモジュール</dd>
 <dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>プレーンテキストファイルを用いたグループ承認</dd>
 <dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
 address)</dd>
@@ -137,8 +135,7 @@ by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>サーバへのリクエストのロギング</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>サーバに送られたリクエストの forensic ロギング</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>リクエスト毎に入力バイト数と出力バイト数とをロギング</dd>
-<dt><a href="mod_mem_cache.html" id="M" name="M">mod_mem_cache</a></dt><dd>URI をキーにしたコンテンツのキャッシュ</dd>
-<dt><a href="mod_mime.html">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
+<dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</dd>
 <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt><dd>Determines the MIME type of a file

@@ -34,8 +34,9 @@
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_cache.c</td></tr></table>
 <h3>概要</h3>
 
-    <div class="warning">
-      これは実験的なモジュールです。文書もまだ開発中です...
+    <div class="warning">このモジュールは <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> や <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> ディレクティブを無視しますので、
+    注意して使って下さい。クライアントのホスト名、アドレスや環境変数を使って
+    アクセスを制限したいコンテンツに対してはキャッシュ機能を有効にするべきではありません。
     </div>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> はローカルのコンテンツやプロキシされた
@@ -62,6 +63,8 @@
 
     <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
     アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+    <p>より詳細な解説や例については<a href="../caching.html">キャッシュ機能</a>
+    を参照してください。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
@@ -71,8 +74,10 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheignorequerystring">CacheIgnoreQueryString</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheminexpire">CacheMinExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestorenostore">CacheStoreNoStore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestoreprivate">CacheStorePrivate</a></li>
 </ul>
@@ -80,11 +85,14 @@
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#related">関連モジュールとディレクティブ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">サンプル設定</a></li>
+</ul><h3>参照</h3>
+<ul class="seealso">
+<li><a href="../caching.html">キャッシュ機能</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">関連モジュールとディレクティブ</a></h2>
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">サンプル設定</a></h2>
@@ -97,8 +105,8 @@
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
         #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        # If you want to use mod_disk_cache instead of mod_mem_cache,
-        # uncomment the line above and comment out the LoadModule line below.
+        # If you want to use mod_disk_cache instead of mod_mem_cache,<br />
+        # uncomment the line above and comment out the LoadModule line below.<br />
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
@@ -118,6 +126,9 @@
           MCacheMaxObjectSize 2048<br />
         </span>
         &lt;/IfModule&gt;<br />
+        <br />
+        # When acting as a proxy, don't cache the list of security updates<br />
+        CacheDisable http://security.update.server/update-list/<br />
       </span>
       &lt;/IfModule&gt;
     </code></p></div>
@@ -193,6 +204,20 @@
       CacheEnable  fd    /images<br />
       CacheEnable  disk  /<br />
     </code></p></div>
+
+    <p>フォワードプロクシサーバとして動作する場合、
+    <var>url-string</var> を使って、キャッシュを有効にするリモートサイトや
+    プロクシプロトコルを指定することもできます。</p>
+
+    <div class="example"><p><code>
+      # Cache proxied url's<br />
+      CacheEnable  disk  /<br /><br />
+      # Cache FTP-proxied url's<br />
+      CacheEnable  disk  ftp://<br /><br />
+      # Cache content from www.apache.org<br />
+      CacheEnable  disk  http://www.apache.org/<br />
+    </code></p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -309,6 +334,32 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheIgnoreQueryString" id="CacheIgnoreQueryString">CacheIgnoreQueryString</a> <a name="cacheignorequerystring" id="cacheignorequerystring">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュ時にクエリーストリングを無視する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheIgnoreQueryString On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheIgnoreQueryString Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>クエリーストリング付のリクエストについては通常、クエリーストリングごとに
+    個別にキャッシュされます。
+    キャッシュされるのは有効期限が指定されている場合のみで、これは
+    RFC 2616/13.9 に従ったものです。
+    <code class="directive">CacheIgnoreQueryString</code> ディレクティブを使うと
+    有効期限が指定されていなくてもキャッシュしますし、
+    クエリーストリングが異なっていてもキャッシュを返します。
+    このディレクティブが有効になっている場合、キャッシュ機能の側面からみると、
+    あたかもリクエストにクエリーストリングがついていなかったかのように扱います。</p>
+
+    <div class="example"><p><code>
+      CacheIgnoreQueryString On
+    </code></p></div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheLastModifiedFactor" id="CacheLastModifiedFactor">CacheLastModifiedFactor</a> <a name="cachelastmodifiedfactor" id="cachelastmodifiedfactor">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>LastModified の日付に基づいて有効期限 (expiry) 
@@ -347,7 +398,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a name="cachemaxexpire" id="cachemaxexpire">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ドキュメントをキャッシュする最大時間を秒数で現したもの</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ドキュメントをキャッシュする最大時間を秒数で表したもの</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMaxExpire 86400 (一日)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
@@ -357,11 +408,31 @@
     <p><code class="directive">CacheMaxExpire</code> ディレクティブは、
     キャッシュする HTTP ドキュメントを、元のサーバに問い合わせないまま最大何秒
     保持してもよいかを指定します。つまり、ドキュメントは最大でこの秒数間ぶん古く
-    なることになります。この最大値は、(訳注:レスポンス中で)ドキュメントと共に
+    なることになります。この最大値は、<span class="transnote">(<em>訳注:</em> レスポンス中で)</span>ドキュメントと共に
     ドキュメントの期日が提供されている場合でも適用されます。</p>
 
     <div class="example"><p><code>
       CacheMaxExpire 604800
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheMinExpire" id="CacheMinExpire">CacheMinExpire</a> <a name="cacheminexpire" id="cacheminexpire">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ドキュメントをキャッシュする最小秒数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMinExpire <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMinExpire 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>キャッシュ可能な HTTP ドキュメントがあったときに、オリジンサーバに問い合わせることなく
+    保持する秒数の最小値は <code class="directive">CacheMinExpire</code> ディレクティブを使って設定します。
+    この値は、ドキュメントに妥当な有効期限が指定されていなかった場合にのみ使われます。</p>
+
+
+    <div class="example"><p><code>
+      CacheMinExpire 3600
     </code></p></div>
 
 </div>

@@ -421,8 +421,7 @@
           <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>. This experimental module may be
           interesting for servers with high load or caching proxy servers. At
           least one storage management module (e.g.
-          <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> or <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>)
-          is also necessary.</dd>
+          <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>) is also necessary.</dd>
 
         <dt><code>--enable-cern-meta</code></dt>
         <dd>Enable the CERN-type meta files support provided by
@@ -490,10 +489,6 @@
         <dt><code>--enable-logio</code></dt>
         <dd>Enable logging of input and output bytes including headers provided
           by <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code>.</dd>
-
-        <dt><code>--enable-mem-cache</code></dt>
-        <dd>Enable memory caching provided by
-          <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>.</dd>
 
         <dt><code>--enable-mime-magic</code></dt>
         <dd>Enable
@@ -697,7 +692,7 @@
             ./configure \<br />
             <span class="indent">
                 --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias mem_cache file_cache authnz_ldap charset_lite dav_lock disk_cache"
+                --enable-mods-shared="all ssl ldap cache proxy authn_alias file_cache authnz_ldap charset_lite dav_lock disk_cache"
             </span>
           </code></p></div>
         </dd>
