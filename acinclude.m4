@@ -447,10 +447,10 @@ if test "x$ap_ssltk_configured" = "x"; then
         pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
         APR_ADDTO(LDFLAGS, [$pkglookup])
       else
-        ap_ssltk_libs="-lssl -lcrypto"
+        ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
       fi
     else
-      ap_ssltk_libs="-lssl -lcrypto"
+      ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
     fi
   fi
   APR_SETVAR(SSL_LIBS, [$ap_ssltk_libs])

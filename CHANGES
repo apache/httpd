@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Build: Correctly set SSL_LIBS during openssl detection if pkgconfig is
+     not available. PR 46018 [Ruediger Pluem]
+
   *) mod_expires: Do not sets negative max-age / Expires header in the past.
      PR 39774 [Jim Jagielski]
 
