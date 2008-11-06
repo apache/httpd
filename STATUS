@@ -95,15 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~tdonovan/diffs/windows_odbc_22x_dsw.patch
      +1: tdonovan, wrowe, mturk
 
-   * mod_proxy_ajp: Don't discard previously set cookies from the output
-     headers.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=707649&view=rev
-         http://svn.apache.org/viewvc?rev=707665&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, mturk
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
