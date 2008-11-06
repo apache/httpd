@@ -406,7 +406,7 @@ Vary: negotiate,accept-language,accept-charset
       &agrave; l'esprit : effectuez toujours les mises &agrave; jour d'Apache quand des
       correctifs de s&eacute;curit&eacute; sont annonc&eacute;s et ex&eacute;cutez les processus CGI sous
       un utilisateur autre qu'apache en utilisant
-      <ahref="suexec.html">suEXEC</a> dans la mesure du possible.</p>
+      <a href="suexec.html">suEXEC</a> dans la mesure du possible.</p>
 
     </section>
 
