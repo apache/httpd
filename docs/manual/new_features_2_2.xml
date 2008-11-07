@@ -37,8 +37,8 @@
 
       <dt>Authn/Authz</dt>
       <dd>The bundled authentication and authorization modules have
-          been refactored.  The new <module>mod_authn_alias</module> module
-          can greatly simplify certain authentication configurations.
+          been refactored.  The new mod_authn_alias(already removed from 2.3/2.4)
+          module can greatly simplify certain authentication configurations.
           See <a href="#module">module name changes</a>, and
           <a href="#developer">the developer changes</a> for more
           information about how these changes affects users and module
@@ -120,7 +120,7 @@
           <module>mod_authn_file</module>; <code>mod_auth_dbm</code> is now
           called <module>mod_authn_dbm</module>; <code>mod_access</code> has
           been renamed <module>mod_authz_host</module>.  There is also a new
-          <module>mod_authn_alias</module> module for simplifying
+          mod_authn_alias(already removed from 2.3/2.4) module for simplifying
           certain authentication configurations.
       </dd>
 
