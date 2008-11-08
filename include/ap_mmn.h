@@ -174,13 +174,16 @@
  * 20081101.0 (2.3.0-dev)  Remove unused AUTHZ_GROUP_NOTE define.
  * 20081102.0 (2.3.0-dev)  Remove authz_provider_list, authz_request_state,
  *                         and AUTHZ_ACCESS_PASSED_NOTE.
+ * 20081104.0 (2.3.0-dev)  Remove r and need_flush fields from proxy_conn_rec
+ *                         as they are no longer used and add
+ *                         ap_proxy_buckets_lifetime_transform to mod_proxy.h
  *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20081102
+#define MODULE_MAGIC_NUMBER_MAJOR 20081104
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
