@@ -50,10 +50,6 @@ Changes with Apache 2.3.0
      rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
      available to third party modules. [Graham Leggett]
 
-  *) Build the odbc dbd driver by default on Windows.
-     DBD_LIST is still used to build additional dbd drivers.
-     [Tom Donovan]
-
   *) mod_proxy_ajp: Fix wrongly formatted requests where client
      sets Content-Length header, but doesn't provide a body.
      Servlet container always expects that next packet is
