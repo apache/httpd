@@ -21,6 +21,15 @@ LockFile "@rel_logfiledir@/accept.lock"
 </IfModule>
 </IfModule>
 
+
+# Simple MPM
+# SimpleProcCount: Number of child processes launched at server startup
+# SimpleThreadCount: Set the number of Worker Threads Per-Process
+<IfModule mpm_simple_module>
+    SimpleProcCount 5
+    SimpleThreadCount 5
+</IfModule>
+
 #
 # Only one of the below sections will be relevant on your
 # installed httpd.  Use "apachectl -l" to find out the
