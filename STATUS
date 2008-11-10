@@ -65,6 +65,7 @@ RELEASE SHOWSTOPPERS:
           implementation (you have suggested that) and once 2.2 is
           released you can't do that anymore. 
 
+    pgollucci: this affects mod_perl I'm pretty sure.
 
 CURRENT VOTES:
 
@@ -80,12 +81,12 @@ CURRENT VOTES:
 
     /* The below was a concept on *how* to handle the problem */
     Have 2 parents: +1: jim
-                    -1: Justin, wrowe, rederpj, nd
+                    -1: Justin, wrowe, rederpj, nd, pgollucci
                     +0: Lars, Martin (while standing by, could it do
                                       something useful?)
 
   * Make the worker MPM the default MPM for threaded Unix boxes.
-    +1:   Justin, Ian, Cliff, BillS, striker, wrowe, nd
+    +1:   Justin, Ian, Cliff, BillS, striker, wrowe, nd, pgollucci
     +0:   BrianP, Aaron (mutex contention is looking better with the
           latest code, let's continue tuning and testing), rederpj, jim
     -0:   Lars
@@ -232,15 +233,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       sequence causes the request to fail!  This happens notably in
       the ja-jis encoding.
 
-  * FreeBSD, threads, and worker MPM.  All seems to work fine 
-    if you only have one worker process with many threads.  Add 
-    a second worker process and the accept lock seems to be
-    lost.  This might be an APR issue with how it deals with
-    the child_init hook (i.e. the fcntl lock needs to be resynced).
-    More examination and analysis is required.
-      Status: Works with FreeBSD 5.3. Does not work in previous versions.
-              This has also been reported on Cygwin.
-
   * There is increasing demand from module writers for an API
     that will allow them to control the server à la apachectl.
     Reasons include sole-function servers that need to die if
@@ -351,10 +343,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
                  tree apr/apr-util, but it's a good start. There's still the 
                  query cases; but I'm beginning to think that in these cases 
                  the app should be querying ap{r,u}-config directly
-        gstein: agreed. apxs should deprecate the -q flag
-        pquerna: I vote for a httpd-config, and to deprecate the -q flag.
-        minfrin: +1 for httpd-config, and to deprecate -q.
-
+        deprecate -q:  add htpd-config: gstein, pquerna, minfrin, pgollucci
+        other: 
 
 TODO ISSUES REMAINING IN MOD_SSL:
 
@@ -383,6 +373,8 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
   * ssl_engine_pphrase.c needs to be reworked so it is generic enough
     to also decrypt proxy keys
+
+  * output warning when allowing SSL v2.0 ? its so old
 
 WISH LIST
   * mod_proxy: Ability to run SSL over proxy gateway connections,
