@@ -119,17 +119,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: The patch to ap_mmn.h does only contain the comment, but does
      not change the #define. Once this is fixed I am +1.
 
-   * mod_proxy: Prevent segmentation faults by correctly flushing all buckets
-     from the proxy backend.
+   * mod_proxy: Prevent segmentation faults by correctly adjusting the lifetime
+     of the buckets read from the proxy backend.
      PR 45792
      Trunk version of patch:
         http://svn.apache.org/viewvc?rev=706921&view=rev
+        http://svn.apache.org/viewvc?rev=712375&view=rev
      Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: 
-     rpluem: This code still has bad edge cases that lead to segfaults. I have
-     a better version in the pipe that currently undergoes testing and will
-     be in trunk soon.
+        http://people.apache.org/~rpluem/patches/proxy_alloc_lifetime_rework_2.2.x.diff
+     +1: rpluem,
 
    * mod_proxy: Add the possibility to set the worker parameters
      connectiontimeout and ping in milliseconds. 
