@@ -122,6 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy: Prevent segmentation faults by correctly adjusting the lifetime
      of the buckets read from the proxy backend.
      PR 45792
+     This fixes a regression against 2.2.8.
      Trunk version of patch:
         http://svn.apache.org/viewvc?rev=706921&view=rev
         http://svn.apache.org/viewvc?rev=712375&view=rev
