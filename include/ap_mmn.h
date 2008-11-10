@@ -131,7 +131,6 @@
  * 20051115.16 (2.2.9)  Add conn_timeout and conn_timeout_set to
  *                      proxy_worker struct.
  * 20051115.17 (2.2.10) Add scolonsep to proxy_balancer
- *
  * 20051115.18 (2.2.10) Add chroot support to unixd_config
  */
 

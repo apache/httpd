@@ -12,7 +12,7 @@ Changes with Apache 2.2.11
   *) Worker MPM: Crosscheck that idle workers are still available before using
      them and thus preventing an overflow of the worker queue which causes
      a SegFault. PR 45605 [Denis Ustimenko <denusk gmail.com>]
-     
+
   *) Windows: Always build the odbc dbd driver on windows, to be consistent 
      with the apr-util default.
 
