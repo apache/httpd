@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=712375&view=rev
      Backport version for 2.2.x of patch:
         http://people.apache.org/~rpluem/patches/proxy_alloc_lifetime_rework_2.2.x.diff
-     +1: rpluem, pgollucci,
+     +1: rpluem, pgollucci, jim
 
    * mod_proxy: Add the possibility to set the worker parameters
      connectiontimeout and ping in milliseconds. 
@@ -137,7 +137,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=707022&view=rev
      Backport version for 2.2.x of patch:
         http://people.apache.org/~rpluem/patches/milli_seconds.diff
-     +1: rpluem, pgollucci,
+     +1: rpluem, pgollucci, jim
 
    * mod_proxy: Remove potential for memory leak. Allocate from request
      pool which is now viable due to connection pooling
@@ -153,7 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=451572&view=rev
      Backport version for 2.2.x of patch:
         http://people.apache.org/~jim/patches/proxy-force-recovery.patch.txt
-     +1: 
+     +1: jim
 
    * mod_expires: Do not sets negative max-age / Expires header in the past.
      PR 39774 [Jim Jagielski]
@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=709666&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, jim
 
     * mod_cache: Convert age of cached object to seconds before comparing it to
       age supplied by the request when checking whether to send a Warning
@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=411464&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
