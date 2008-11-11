@@ -1,8 +1,15 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.11
 
-  *) mod_proxy: Prevent segmentation faults by correctly adjusting the lifetime
-     of the buckets read from the proxy backend. PR 45792 [Ruediger Pluem]
+  *) mod_proxy: Prevent segmentation faults by correctly adjusting the
+     lifetime of the buckets read from the proxy backend. PR 45792
+     [Ruediger Pluem]
+
+  *) mod_expires: Do not sets negative max-age / Expires header in the past.
+     PR 39774 [Jim Jagielski]
+
+  *) mod_info: Was displaying the wrong value for the KeepAliveTimeout
+     value. [Jim Jagielski]
 
   *) mod_proxy_ajp: Fix wrongly formatted requests where client
      sets Content-Length header, but doesn't provide a body.
