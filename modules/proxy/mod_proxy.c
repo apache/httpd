@@ -71,6 +71,8 @@ static const char *set_worker_param(apr_pool_t *p,
 {
 
     int ival;
+    apr_interval_time_t timeout;
+
     if (!strcasecmp(key, "loadfactor")) {
         /* Normalized load factor. Used with BalancerMamber,
          * it is a number between 1 and 100.
@@ -126,14 +128,15 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->smax = ival;
     }
     else if (!strcasecmp(key, "acquire")) {
-        /* Acquire timeout in milliseconds.
+        /* Acquire in given unit (default is milliseconds).
          * If set this will be the maximum time to
          * wait for a free connection.
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "Acquire must be at least one mili second";
-        worker->acquire = apr_time_make(0, ival * 1000);
+        if (ap_timeout_parameter_parse(val, &timeout, "ms") != APR_SUCCESS)
+            return "Acquire timeout has wrong format";
+        if (timeout < 1000)
+            return "Acquire must be at least one millisecond";
+        worker->acquire = timeout;
         worker->acquire_set = 1;
     }
     else if (!strcasecmp(key, "timeout")) {
@@ -267,22 +270,24 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->lbset = ival;
     }
     else if (!strcasecmp(key, "ping")) {
-        /* Ping/Pong timeout in seconds.
+        /* Ping/Pong timeout in given unit (default is second).
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "Ping/Pong timeout must be at least one second";
-        worker->ping_timeout = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Ping/Pong timeout has wrong format";
+        if (timeout < 1000)
+            return "Ping/Pong timeout must be at least one millisecond";
+        worker->ping_timeout = timeout;
         worker->ping_timeout_set = 1;
     }
     else if (!strcasecmp(key, "connectiontimeout")) {
-        /* Request timeout in seconds.
+        /* Request timeout in given unit (default is second).
          * Defaults to connection timeout
          */
-        ival = atoi(val);
-        if (ival < 1)
-            return "Connectiontimeout must be at least one second.";
-        worker->conn_timeout = apr_time_from_sec(ival);
+        if (ap_timeout_parameter_parse(val, &timeout, "s") != APR_SUCCESS)
+            return "Connectiontimeout has wrong format";
+        if (timeout < 1000)
+            return "Connectiontimeout must be at least one millisecond.";
+        worker->conn_timeout = timeout;
         worker->conn_timeout_set = 1;
     }
     else {

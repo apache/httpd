@@ -96,15 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~rpluem/patches/proxy_alloc_lifetime_rework_2.2.x.diff
      +1: rpluem, pgollucci, jim
 
-   * mod_proxy: Add the possibility to set the worker parameters
-     connectiontimeout and ping in milliseconds. 
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=705005&view=rev
-        http://svn.apache.org/viewvc?rev=707022&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~rpluem/patches/milli_seconds.diff
-     +1: rpluem, pgollucci, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

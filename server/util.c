@@ -2146,3 +2146,71 @@ AP_DECLARE(char *) ap_append_pid(apr_pool_t *p, const char *string,
                         delim, getpid());
 
 }
+
+/**
+ * Parse a given timeout parameter string into an apr_interval_time_t value.
+ * The unit of the time interval is given as postfix string to the numeric
+ * string. Currently the following units are understood:
+ *
+ * ms    : milliseconds
+ * s     : seconds
+ * mi[n] : minutes
+ * h     : hours
+ *
+ * If no unit is contained in the given timeout parameter the default_time_unit
+ * will be used instead.
+ * @param timeout_parameter The string containing the timeout parameter.
+ * @param timeout The timeout value to be returned.
+ * @param default_time_unit The default time unit to use if none is specified
+ * in timeout_parameter.
+ * @return Status value indicating whether the parsing was successful or not.
+ */
+AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
+                                               const char *timeout_parameter,
+                                               apr_interval_time_t *timeout,
+                                               const char *default_time_unit)
+{
+    char *endp;
+    const char *time_str;
+    apr_int64_t tout;
+
+    tout = apr_strtoi64(timeout_parameter, &endp, 10);
+    if (errno) {
+        return errno;
+    }
+    if (!endp || !*endp) {
+        time_str = default_time_unit;
+    }
+    else {
+        time_str = endp;
+    }
+
+    switch (*time_str) {
+        /* Time is in seconds */
+    case 's':
+        *timeout = (apr_interval_time_t) apr_time_from_sec(tout);
+        break;
+    case 'h':
+        /* Time is in hours */
+        *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 3600);
+        break;
+    case 'm':
+        switch (*(++time_str)) {
+        /* Time is in miliseconds */
+        case 's':
+            *timeout = (apr_interval_time_t) tout * 1000;
+            break;
+        /* Time is in minutes */
+        case 'i':
+            *timeout = (apr_interval_time_t) apr_time_from_sec(tout * 60);
+            break;
+        default:
+            return APR_EGENERAL;
+        }
+        break;
+    default:
+        return APR_EGENERAL;
+    }
+    return APR_SUCCESS;
+}
+
