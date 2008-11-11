@@ -85,6 +85,49 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy: Prevent segmentation faults by correctly adjusting the lifetime
+     of the buckets read from the proxy backend.
+     PR 45792
+     This fixes a regression against 2.2.8.
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=706921&view=rev
+        http://svn.apache.org/viewvc?rev=712375&view=rev
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~rpluem/patches/proxy_alloc_lifetime_rework_2.2.x.diff
+     +1: rpluem, pgollucci, jim
+
+   * mod_proxy: Add the possibility to set the worker parameters
+     connectiontimeout and ping in milliseconds. 
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=705005&view=rev
+        http://svn.apache.org/viewvc?rev=707022&view=rev
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~rpluem/patches/milli_seconds.diff
+     +1: rpluem, pgollucci, jim
+
+   * mod_proxy: Remove potential for memory leak. Allocate from request
+     pool which is now viable due to connection pooling
+     Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=707163&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem, jim, pgollucci
+
+   * mod_expires: Do not sets negative max-age / Expires header in the past.
+     PR 39774 [Jim Jagielski]
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=708902&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem, jim, pgollucci
+
+   * mod_info: Display the *real* keepalive time value.
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=711421&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: jim, rpluem, pgollucci
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -119,34 +162,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: The patch to ap_mmn.h does only contain the comment, but does
      not change the #define. Once this is fixed I am +1.
 
-   * mod_proxy: Prevent segmentation faults by correctly adjusting the lifetime
-     of the buckets read from the proxy backend.
-     PR 45792
-     This fixes a regression against 2.2.8.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=706921&view=rev
-        http://svn.apache.org/viewvc?rev=712375&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~rpluem/patches/proxy_alloc_lifetime_rework_2.2.x.diff
-     +1: rpluem, pgollucci, jim
-
-   * mod_proxy: Add the possibility to set the worker parameters
-     connectiontimeout and ping in milliseconds. 
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=705005&view=rev
-        http://svn.apache.org/viewvc?rev=707022&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~rpluem/patches/milli_seconds.diff
-     +1: rpluem, pgollucci, jim
-
-   * mod_proxy: Remove potential for memory leak. Allocate from request
-     pool which is now viable due to connection pooling
-     Trunk version of patch:
-        http://svn.apache.org/viewcvs.cgi?rev=707163&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: rpluem, jim, pgollucci
-
    * mod_proxy_balancer: Add in forced recovery for balancer
      members if all are in error state.
      Trunk version of patch:
@@ -154,21 +169,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.2.x of patch:
         http://people.apache.org/~jim/patches/proxy-force-recovery.patch.txt
      +1: jim
-
-   * mod_expires: Do not sets negative max-age / Expires header in the past.
-     PR 39774 [Jim Jagielski]
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=708902&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: rpluem, jim, pgollucci
-
-   * mod_info: Display the *real* keepalive time value.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=711421&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: jim, rpluem, pgollucci
 
    * Build: Correctly set SSL_LIBS during openssl detection if pkgconfig
      is not available. This fixes a regression against 2.2.9.
