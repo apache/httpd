@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=712375&view=rev
      Backport version for 2.2.x of patch:
         http://people.apache.org/~rpluem/patches/proxy_alloc_lifetime_rework_2.2.x.diff
-     +1: rpluem,
+     +1: rpluem, pgollucci,
 
    * mod_proxy: Add the possibility to set the worker parameters
      connectiontimeout and ping in milliseconds. 
@@ -137,7 +137,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=707022&view=rev
      Backport version for 2.2.x of patch:
         http://people.apache.org/~rpluem/patches/milli_seconds.diff
-     +1: rpluem,
+     +1: rpluem, pgollucci,
 
    * mod_proxy: Remove potential for memory leak. Allocate from request
      pool which is now viable due to connection pooling
@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=707163&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem, jim
+     +1: rpluem, jim, pgollucci
 
    * mod_proxy_balancer: Add in forced recovery for balancer
      members if all are in error state.
@@ -161,14 +161,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=708902&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem, jim
+     +1: rpluem, jim, pgollucci
 
    * mod_info: Display the *real* keepalive time value.
      Trunk version of patch:
         http://svn.apache.org/viewvc?rev=711421&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: jim, rpluem
+     +1: jim, rpluem, pgollucci
 
    * Build: Correctly set SSL_LIBS during openssl detection if pkgconfig
      is not available. This fixes a regression against 2.2.9.
