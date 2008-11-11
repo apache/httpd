@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.11
 
+  *) mod_proxy: Prevent segmentation faults by correctly adjusting the lifetime
+     of the buckets read from the proxy backend. PR 45792 [Ruediger Pluem]
+
   *) mod_proxy_ajp: Fix wrongly formatted requests where client
      sets Content-Length header, but doesn't provide a body.
      Servlet container always expects that next packet is
