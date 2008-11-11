@@ -162,7 +162,7 @@ résident pour des serveurs virtuels</title>
     en remplacement depuis la version 2.0.</p>
  -->
     <p><directive module="mod_suexec">SuexecUserGroup</directive> peut être
-    utilisées à l'intérieur d'une directive VirtualHost si l'exécution se fait
+    utilisée à l'intérieur d'une directive VirtualHost si l'exécution se fait
     sous suEXEC. (Voir <a href="../suexec.html">suEXEC</a>).</p>
 
     <p><em>SÉCURITÉ&nbsp;:</em> lorsque vous spécifiez où écrire les 
