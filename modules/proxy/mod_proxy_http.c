@@ -1338,6 +1338,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     request_rec *rp;
     apr_bucket *e;
     apr_bucket_brigade *bb, *tmp_bb;
+    apr_bucket_brigade *pass_bb;
     int len, backasswards;
     int interim_response = 0; /* non-zero whilst interim 1xx responses
                                * are being read. */
@@ -1350,6 +1351,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     const char *te = NULL;
 
     bb = apr_brigade_create(p, c->bucket_alloc);
+    pass_bb = apr_brigade_create(p, c->bucket_alloc);
 
     /* Get response from the remote server, and pass it up the
      * filter chain
@@ -1768,6 +1770,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         break;
                     }
 
+                    /* Switch the allocator lifetime of the buckets */
+                    ap_proxy_buckets_lifetime_transform(r, bb, pass_bb);
+
                     /* found the last brigade? */
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
                         /* signal that we must leave */
@@ -1775,7 +1780,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
 
                     /* try send what we read */
-                    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS
+                    if (ap_pass_brigade(r->output_filters, pass_bb) != APR_SUCCESS
                         || c->aborted) {
                         /* Ack! Phbtt! Die! User aborted! */
                         backend->close = 1;  /* this causes socket close below */
@@ -1784,6 +1789,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                     /* make sure we always clean up after ourselves */
                     apr_brigade_cleanup(bb);
+                    apr_brigade_cleanup(pass_bb);
 
                 } while (!finish);
             }
