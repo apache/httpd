@@ -5,9 +5,6 @@ Changes with Apache 2.3.0
   *) Build: Correctly set SSL_LIBS during openssl detection if pkgconfig is
      not available. PR 46018 [Ruediger Pluem]
 
-  *) mod_expires: Do not sets negative max-age / Expires header in the past.
-     PR 39774 [Jim Jagielski]
-
   *) authn/z: Remove mod_authn_default and mod_authz_default.
      [Chris Darroch]
 
@@ -34,14 +31,8 @@ Changes with Apache 2.3.0
 
   *) core: Add ap_timeout_parameter_parse to public API. [Ruediger Pluem]
 
-  *) mod_proxy: Prevent segmentation faults by correctly adjusting the lifetime
-     of the buckets read from the proxy backend. PR 45792 [Ruediger Pluem]
-
   *) mod_dir: Support "DirectoryIndex None" 
      Suggested By André Warnier <aw ice-sa.com> [Eric Covener]
-
-  *) mod_proxy: Add the possibility to set the worker parameters
-     connectiontimeout and ping in milliseconds. [Ruediger Pluem]
 
   *) mod_ssl: Send Content-Type application/ocsp-request for POST requests to
      OSCP responders. PR 46014 [Dr Stephen Henson <steve openssl.org>]
@@ -49,14 +40,6 @@ Changes with Apache 2.3.0
   *) Export and install the mod_rewrite.h header to ensure the optional
      rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
      available to third party modules. [Graham Leggett]
-
-  *) mod_proxy_ajp: Fix wrongly formatted requests where client
-     sets Content-Length header, but doesn't provide a body.
-     Servlet container always expects that next packet is
-     body whenever C-L is present in the headers. This can lead
-     to wrong interpretation of the packets. In this case
-     send the empty body packet, so container can deal with
-     that. [Mladen Turk]
 
   *) mod_authnz_ldap: don't return NULL-valued environment variables to
      other modules.  PR 39045 [Francois Pesce <francois.pesce gmail.com>]
