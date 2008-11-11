@@ -119,7 +119,7 @@
 
     <p>See the <directive module="mod_setenvif">BrowserMatch</directive>
     directive for more details on conditionally setting environment
-    variables</p>
+    variables.</p>
 </section>
 
 
@@ -199,7 +199,7 @@ authentication</description>
     one-time-nonces are being used, this may lead to browsers trying
     to pipeline requests and receiving 401 responses for all but the
     first request, requiring the browser to resend the requests. Note
-    also that the protection against reply attacks only makes sense
+    also that the protection against replay attacks only makes sense
     for dynamically generated content and things like POST requests;
     for static content the attacker may already have the complete
     response, so one-time-nonces do not make sense here.  -->
