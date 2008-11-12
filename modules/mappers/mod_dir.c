@@ -59,12 +59,10 @@ static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
         if (count == 0 && !strcasecmp(w, "disabled")) { 
             /* peek to see if "disabled" is first in a series of arguments */
             const char *tt = t;
-            fprintf(stderr, "t:'%s'\n", t);
             const char *ww = ap_getword_conf(cmd->pool, &tt);
             if (ww == NULL || !ww[0]) { 
                /* "disabled" is first, and alone */
-                
-               continue;
+               break;
             }
         }
         *(const char **)apr_array_push(d->index_names) = w;
