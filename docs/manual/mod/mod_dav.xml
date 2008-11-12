@@ -62,8 +62,8 @@
     </example>
 
     <p>The directory containing the lock database file must be
-    writable by the <directive module="mpm_common">User</directive>
-    and <directive module="mpm_common" >Group</directive> under which
+    writable by the <directive module="mod_unixd">User</directive>
+    and <directive module="mod_unixd" >Group</directive> under which
     Apache is running.</p>
 
     <p>You may wish to add a <directive module="core" type="section"
@@ -120,11 +120,11 @@
 
     <p>In order for <module>mod_dav</module> to manage files, it must
     be able to write to the directories and files under its control
-    using the <directive module="mpm_common">User</directive> and
-    <directive module="mpm_common">Group</directive> under which
+    using the <directive module="mod_unixd">User</directive> and
+    <directive module="mod_unixd">Group</directive> under which
     Apache is running.  New files created will also be owned by this
-    <directive module="mpm_common">User</directive> and <directive
-    module="mpm_common">Group</directive>.  For this reason, it is
+    <directive module="mod_unixd">User</directive> and <directive
+    module="mod_unixd">Group</directive>.  For this reason, it is
     important to control access to this account.  The DAV repository
     is considered private to Apache; modifying files outside of Apache
     (for example using FTP or filesystem-level tools) should not be
