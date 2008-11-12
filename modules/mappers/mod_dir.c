@@ -47,13 +47,30 @@ typedef struct dir_config_struct {
 static const char *add_index(cmd_parms *cmd, void *dummy, const char *arg)
 {
     dir_config_rec *d = dummy;
-
+    const char *t, *w;
+    int count = 0;
+   
     if (!d->index_names) {
         d->index_names = apr_array_make(cmd->pool, 2, sizeof(char *));
     }
-    if (strcasecmp(arg, "none")) { 
-        *(const char **)apr_array_push(d->index_names) = arg;
+
+    t = arg;
+    while ((w = ap_getword_conf(cmd->pool, &t)) && w[0]) { 
+        if (count == 0 && !strcasecmp(w, "disabled")) { 
+            /* peek to see if "disabled" is first in a series of arguments */
+            const char *tt = t;
+            fprintf(stderr, "t:'%s'\n", t);
+            const char *ww = ap_getword_conf(cmd->pool, &tt);
+            if (ww == NULL || !ww[0]) { 
+               /* "disabled" is first, and alone */
+                
+               continue;
+            }
+        }
+        *(const char **)apr_array_push(d->index_names) = w;
+        count++;
     }
+
     return NULL;
 }
 
@@ -67,7 +84,7 @@ static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
 
 static const command_rec dir_cmds[] =
 {
-    AP_INIT_ITERATE("DirectoryIndex", add_index, NULL, DIR_CMD_PERMS,
+    AP_INIT_RAW_ARGS("DirectoryIndex", add_index, NULL, DIR_CMD_PERMS,
                     "a list of file names"),
     AP_INIT_FLAG("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
                  "On or Off"),

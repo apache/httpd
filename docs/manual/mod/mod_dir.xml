@@ -58,7 +58,7 @@
 <description>List of resources to look for when the client requests
 a directory</description>
 <syntax>DirectoryIndex
-    None | <var>local-url</var> [<var>local-url</var>] ...</syntax>
+    disabled | <var>local-url</var> [<var>local-url</var>] ...</syntax>
 <default>DirectoryIndex index.html</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -95,8 +95,10 @@ a directory</description>
     executed if neither <code>index.html</code> or <code>index.txt</code>
     existed in a directory.</p>
 
-    <p>A value of "None" prevents <module>mod_dir</module> from 
-    searching for an index.</p>
+    <p>A single argument of "disabled" prevents <module>mod_dir</module> from 
+    searching for an index.  An argument of "disabled" will be interpeted
+    literally if it has any arguments before or after it, even if they are "disabled"
+    as well.</p>
 
 </usage>
 </directivesynopsis>
