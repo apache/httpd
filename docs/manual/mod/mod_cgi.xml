@@ -177,7 +177,7 @@
 
     <p>This log will be opened as the user the child processes run
     as, <em>i.e.</em> the user specified in the main <directive
-    module="mpm_common">User</directive> directive. This means that
+    module="mod_unixd">User</directive> directive. This means that
     either the directory the script log is in needs to be writable
     by that user or the file needs to be manually created and set
     to be writable by that user. If you place the script log in

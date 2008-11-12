@@ -74,8 +74,8 @@ uses</a></seealso>
     <p>While the parent process is usually started as <code>root</code>
     under Unix in order to bind to port 80, the child processes are
     launched by Apache as a less-privileged user. The <directive
-    module="mpm_common">User</directive> and <directive
-    module="mpm_common">Group</directive> directives are used to set
+    module="mod_unixd">User</directive> and <directive
+    module="mod_unixd">Group</directive> directives are used to set
     the privileges of the Apache child processes. The child processes
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible.</p>
@@ -113,9 +113,9 @@ uses</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>StartServers</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>User</name>
+<directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>Group</name>
+<directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
