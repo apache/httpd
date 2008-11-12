@@ -29,7 +29,7 @@ Changes with Apache 2.2.11
      a SegFault. PR 45605 [Denis Ustimenko <denusk gmail.com>]
 
   *) Windows: Always build the odbc dbd driver on windows, to be consistent 
-     with the apr-util default.
+     with the apr-util default. [Tom Donovan]
 
 Changes with Apache 2.2.10
 
