@@ -85,18 +85,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Prevent segmentation faults by correctly adjusting the lifetime
-     of the buckets read from the proxy backend.
-     PR 45792
-     This fixes a regression against 2.2.8.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=706921&view=rev
-        http://svn.apache.org/viewvc?rev=712375&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~rpluem/patches/proxy_alloc_lifetime_rework_2.2.x.diff
-     +1: rpluem, pgollucci, jim
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
