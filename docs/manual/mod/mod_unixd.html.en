@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_unixd - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Core Features</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_unixd.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Basic (required) security for Unix-family platforms.</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#chrootdir">ChrootDir</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory for apache to run chroot(8) after startup.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ChrootDir <var>/path/to/directory</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
+    <p>This directive, available in httpd 2.2.9(?) and later, tells the
+    server to <var>chroot(8)</var> to the specified directory after
+    startup, but before accepting requests over the 'net.</p>
+    <p>Note that running the server under chroot is not simple,
+    and requires additional setup, particularly if you are running
+    scripts such as CGI or PHP.  Please make sure you are properly
+    familiar with the operation of chroot before attempting to use
+    this feature.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Group under which the server will answer
+requests</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Group <var>unix-group</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Group #-1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Only valid in global server config since Apache
+2.0</td></tr>
+</table>
+    <p>The <code class="directive">Group</code> directive sets the group under
+    which the server will answer requests. In order to use this
+    directive, the server must be run initially as <code>root</code>. If
+    you start the server as a non-root user, it will fail to change to the
+    specified group, and will instead continue to run as the group of the
+    original user. <var>Unix-group</var> is one of:</p>
+
+    <dl>
+      <dt>A group name</dt>
+      <dd>Refers to the given group by name.</dd>
+
+      <dt><code>#</code> followed by a group number.</dt>
+      <dd>Refers to a group by its number.</dd>
+    </dl>
+
+    <div class="example"><h3>Example</h3><p><code>
+      Group www-group
+    </code></p></div>
+
+    <p>It is recommended that you set up a new group specifically for
+    running the server. Some admins use user <code>nobody</code>,
+    but this is not always possible or desirable.</p>
+
+    <div class="warning"><h3>Security</h3>
+      <p>Don't set <code class="directive">Group</code> (or <code class="directive"><a href="#user">User</a></code>) to <code>root</code> unless
+      you know exactly what you are doing, and what the dangers are.</p>
+    </div>
+
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_privileges.html#vhostgroup">VHostGroup</a></code></li>
+<li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The userid under which the server will answer
+requests</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>User <var>unix-userid</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>User #-1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_unixd</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Only valid in global server config since Apache
+2.0</td></tr>
+</table>
+    <p>The <code class="directive">User</code> directive sets the user ID as
+    which the server will answer requests. In order to use this
+    directive, the server must be run initially as <code>root</code>.
+    If you start the server as a non-root user, it will fail to change
+    to the lesser privileged user, and will instead continue to run as
+    that original user. If you do start the server as <code>root</code>,
+    then it is normal for the parent process to remain running as root.
+    <var>Unix-userid</var> is one of:</p>
+
+    <dl>
+      <dt>A username</dt>
+      <dd>Refers to the given user by name.</dd>
+
+      <dt># followed by a user number.</dt>
+      <dd>Refers to a user by its number.</dd>
+    </dl>
+
+    <p>The user should have no privileges that result in it being
+    able to access files that are not intended to be visible to the
+    outside world, and similarly, the user should not be able to
+    execute code that is not meant for HTTP requests. It is
+    recommended that you set up a new user and group specifically for
+    running the server. Some admins use user <code>nobody</code>, but
+    this is not always desirable, since the <code>nobody</code> user
+    can have other uses on the system.</p>
+
+    <div class="warning"><h3>Security</h3>
+      <p>Don't set <code class="directive">User</code> (or <code class="directive"><a href="#group">Group</a></code>) to <code>root</code> unless
+      you know exactly what you are doing, and what the dangers are.</p>
+    </div>
+
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_privileges.html#vhostuser">VHostUser</a></code></li>
+<li><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code></li>
+</ul>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_unixd.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
