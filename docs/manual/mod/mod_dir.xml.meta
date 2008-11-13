@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
 
 <metafile>
   <basename>mod_dir</basename>
@@ -9,6 +10,6 @@
     <variant>en</variant>
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
-    <variant>tr</variant>
+    <variant outdated="yes">tr</variant>
   </variants>
 </metafile>

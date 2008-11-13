@@ -64,7 +64,7 @@
 
     <p>To use MD5 Digest authentication, simply 
     change the normal <code>AuthType Basic</code> and
-    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>.
+    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
     to <code>AuthType Digest</code> and
     <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code>,
     when setting up authentication, then add a 
@@ -131,7 +131,7 @@
 
     <p>See the <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
     directive for more details on conditionally setting environment
-    variables</p>
+    variables.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a></h2>

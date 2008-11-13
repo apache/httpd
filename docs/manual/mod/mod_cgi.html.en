@@ -181,7 +181,7 @@
     </code></p></div>
 
     <p>This log will be opened as the user the child processes run
-    as, <em>i.e.</em> the user specified in the main <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> directive. This means that
+    as, <em>i.e.</em> the user specified in the main <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> directive. This means that
     either the directory the script log is in needs to be writable
     by that user or the file needs to be manually created and set
     to be writable by that user. If you place the script log in
