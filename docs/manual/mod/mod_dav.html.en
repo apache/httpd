@@ -78,8 +78,8 @@
     </code></p></div>
 
     <p>The directory containing the lock database file must be
-    writable by the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>
-    and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> under which
+    writable by the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code>
+    and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> under which
     Apache is running.</p>
 
     <p>You may wish to add a <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> clause inside the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> directive to limit access to
@@ -132,10 +132,10 @@
 
     <p>In order for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> to manage files, it must
     be able to write to the directories and files under its control
-    using the <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and
-    <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> under which
+    using the <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> and
+    <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> under which
     Apache is running.  New files created will also be owned by this
-    <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> and <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>.  For this reason, it is
+    <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code>.  For this reason, it is
     important to control access to this account.  The DAV repository
     is considered private to Apache; modifying files outside of Apache
     (for example using FTP or filesystem-level tools) should not be
