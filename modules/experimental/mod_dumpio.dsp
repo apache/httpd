@@ -106,7 +106,7 @@ SOURCE=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_dumpio.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_dumpio.so "bucketeer_module for Apache" ../../include/ap_release.h > .\mod_dumpio.rc
+	awk -f ../../build/win32/win32ver.awk mod_dumpio.so "dumpio_module for Apache" ../../include/ap_release.h > .\mod_dumpio.rc
 
 # End Custom Build
 
@@ -117,7 +117,7 @@ InputPath=..\..\build\win32\win32ver.awk
 InputPath=..\..\build\win32\win32ver.awk
 
 ".\mod_dumpio.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_dumpio.so "bucketeer_module for Apache" ../../include/ap_release.h > .\mod_dumpio.rc
+	awk -f ../../build/win32/win32ver.awk mod_dumpio.so "dumpio_module for Apache" ../../include/ap_release.h > .\mod_dumpio.rc
 
 # End Custom Build
 

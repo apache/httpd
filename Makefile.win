@@ -237,9 +237,10 @@ _build:
 	cd ..\..\..
 	cd modules\experimental
 	 $(MAKE) $(MAKEOPT) -f mod_cache.mak       CFG="mod_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_dumpio.mak      CFG="mod_dumpio - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f util_ldap.mak       CFG="util_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_ldap.mak   CFG="mod_auth_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -306,6 +307,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f htdbm.mak           CFG="htdbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htdigest.mak        CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htpasswd.mak        CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f httxt2dbm.mak       CFG="httxt2dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f logresolve.mak      CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f rotatelogs.mak      CFG="rotatelogs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
@@ -380,9 +382,10 @@ _copybin:
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.$(src_so) 	"$(inst_so)" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.$(src_so)		"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_cache.$(src_so)		"$(inst_so)" <.y
-	copy modules\experimental\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
-	copy modules\experimental\$(LONG)\mod_mem_cache.$(src_so)	"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_mem_cache.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_dumpio.$(src_so)		"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\util_ldap.$(src_so)		"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_auth_ldap.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
@@ -433,6 +436,7 @@ _copybin:
 	copy support\$(LONG)\htdbm.$(src_exe) 			"$(inst_exe)" <.y
 	copy support\$(LONG)\htdigest.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\$(LONG)\htpasswd.$(src_exe) 		"$(inst_exe)" <.y
+	copy support\$(LONG)\httxt2dbm.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\$(LONG)\logresolve.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\$(LONG)\rotatelogs.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\win32\$(LONG)\ApacheMonitor.$(src_exe) 	"$(inst_exe)" <.y
