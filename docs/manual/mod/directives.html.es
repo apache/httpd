@@ -161,7 +161,7 @@
 <li><a href="mod_speling.html#checkcaseonly">CheckCaseOnly</a></li>
 <li><a href="mod_speling.html#checkspelling">CheckSpelling</a></li>
 <li><a href="perchild.html#childperuserid">ChildPerUserID</a></li>
-<li><a href="mpm_common.html#chrootdir">ChrootDir</a></li>
+<li><a href="mod_unixd.html#chrootdir">ChrootDir</a></li>
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
 <li><a href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
@@ -226,7 +226,7 @@
 <li><a href="core.html#forcetype">ForceType</a></li>
 <li><a href="mod_log_forensic.html#forensiclog">ForensicLog</a></li>
 <li><a href="mpm_common.html#gracefulshutdowntimeout" id="G" name="G">GracefulShutdownTimeout</a></li>
-<li><a href="mpm_common.html#group">Group</a></li>
+<li><a href="mod_unixd.html#group">Group</a></li>
 <li><a href="mod_headers.html#header" id="H" name="H">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
@@ -481,7 +481,7 @@
 <li><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv</a></li>
 <li><a href="core.html#usecanonicalname">UseCanonicalName</a></li>
 <li><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
-<li><a href="mpm_common.html#user">User</a></li>
+<li><a href="mod_unixd.html#user">User</a></li>
 <li><a href="mod_userdir.html#userdir">UserDir</a></li>
 <li><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot</a></li>
 <li><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP</a></li>

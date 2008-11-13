@@ -45,7 +45,7 @@
       <dt>Authn/Authz</dt>
       <dd>Les modules d'authentification et d'autorisation intégrés
 	ont été refondus. Le nouveau module
-	<code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> permet de
+	mod_authn_alias (supprimé dans la version 2.3/2.4) permet de
 	simplifier considérablement certaines configurations d'authentification.
           Voir <a href="#module">modification des noms de modules</a>,
 	  et
@@ -139,7 +139,7 @@
           <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>; <code>mod_auth_dbm</code> s'appelle maintenant
           <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; <code>mod_access</code> a été renommé en
           <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  Est également apparu le nouveau module
-          <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> qui simplifie
+          mod_authn_alias (supprimé dans la version 2.3/2.4) qui simplifie
           certaines configurations d'authentification.
       </dd>
 
