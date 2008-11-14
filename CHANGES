@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_privileges: new module to make httpd on Solaris privileges-aware
+     and to enable different virtualhosts to run with different
+     privileges and Unix user/group IDs [Nick Kew]
+
   *) Build: Correctly set SSL_LIBS during openssl detection if pkgconfig is
      not available. PR 46018 [Ruediger Pluem]
 
