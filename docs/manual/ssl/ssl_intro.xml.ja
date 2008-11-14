@@ -59,10 +59,10 @@ href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> 氏
  (元記事の著者) へ全ての苦情は <a
 href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> (
 <module>mod_ssl</module> の作者) へお願いします。
-[訳注: 訳については <a
+<transnote>訳については <a
 href="mailto:apache-docs@ml.apache.or.jp">
 Apache ドキュメント翻訳プロジェクト</a>
-へお願いします。]</p>
+へお願いします。</transnote></p>
 </summary>
 
 <section id="cryptographictech">
