@@ -194,6 +194,7 @@
 <li><a href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
 <li><a href="mod_dir.html#directoryslash">DirectorySlash</a></li>
 <li><a href="core.html#documentroot">DocumentRoot</a></li>
+<li><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges</a></li>
 <li><a href="mod_dumpio.html#dumpioinput">DumpIOInput</a></li>
 <li><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel</a></li>
 <li><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput</a></li>
@@ -480,7 +481,13 @@
 <li><a href="mod_unixd.html#user">User</a></li>
 <li><a href="mpm_common.html#user">User</a></li>
 <li><a href="mod_userdir.html#userdir">UserDir</a></li>
-<li><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot</a></li>
+<li><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode</a></li>
+<li><a href="mod_privileges.html#vhostcgiprivs">VHostCGIPrivs</a></li>
+<li><a href="mod_privileges.html#vhostgroup">VHostGroup</a></li>
+<li><a href="mod_privileges.html#vhostprivs">VHostPrivs</a></li>
+<li><a href="mod_privileges.html#vhostsecure">VHostSecure</a></li>
+<li><a href="mod_privileges.html#vhostuser">VHostUser</a></li>
+<li><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot</a></li>
 <li><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP</a></li>
 <li><a href="core.html#virtualhost">&lt;VirtualHost&gt;</a></li>
 <li><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</a></li>

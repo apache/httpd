@@ -123,7 +123,7 @@ charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
 checkcaseonly	mod/mod_speling.html#checkcaseonly
 checkspelling	mod/mod_speling.html#checkspelling
 childperuserid	mod/perchild.html#childperuserid
-chrootdir	mod/mpm_common.html#chrootdir
+chrootdir	mod/mod_unixd.html#chrootdir
 contentdigest	mod/core.html#contentdigest
 cookiedomain	mod/mod_usertrack.html#cookiedomain
 cookieexpires	mod/mod_usertrack.html#cookieexpires
@@ -161,6 +161,7 @@ directoryindex	mod/mod_dir.html#directoryindex
 directorymatch	mod/core.html#directorymatch
 directoryslash	mod/mod_dir.html#directoryslash
 documentroot	mod/core.html#documentroot
+dtraceprivileges	mod/mod_privileges.html#dtraceprivileges
 dumpioinput	mod/mod_dumpio.html#dumpioinput
 dumpiologlevel	mod/mod_dumpio.html#dumpiologlevel
 dumpiooutput	mod/mod_dumpio.html#dumpiooutput
@@ -188,7 +189,7 @@ forcelanguagepriority	mod/mod_negotiation.html#forcelanguagepriority
 forcetype	mod/core.html#forcetype
 forensiclog	mod/mod_log_forensic.html#forensiclog
 gracefulshutdowntimeout	mod/mpm_common.html#gracefulshutdowntimeout
-group	mod/mpm_common.html#group
+group	mod/mod_unixd.html#group
 header	mod/mod_headers.html#header
 headername	mod/mod_autoindex.html#headername
 hostnamelookups	mod/core.html#hostnamelookups
@@ -443,8 +444,14 @@ typesconfig	mod/mod_mime.html#typesconfig
 unsetenv	mod/mod_env.html#unsetenv
 usecanonicalname	mod/core.html#usecanonicalname
 usecanonicalphysicalport	mod/core.html#usecanonicalphysicalport
-user	mod/mpm_common.html#user
+user	mod/mod_unixd.html#user
 userdir	mod/mod_userdir.html#userdir
+vhostcgimode	mod/mod_privileges.html#vhostcgimode
+vhostcgiprivs	mod/mod_privileges.html#vhostcgiprivs
+vhostgroup	mod/mod_privileges.html#vhostgroup
+vhostprivs	mod/mod_privileges.html#vhostprivs
+vhostsecure	mod/mod_privileges.html#vhostsecure
+vhostuser	mod/mod_privileges.html#vhostuser
 virtualdocumentroot	mod/mod_vhost_alias.html#virtualdocumentroot
 virtualdocumentrootip	mod/mod_vhost_alias.html#virtualdocumentrootip
 virtualhost	mod/core.html#virtualhost

@@ -155,7 +155,9 @@ by other LDAP modules</dd>
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Provides for <a href="../content-negotiation.html">content negotiation</a></dd>
 <dt><a href="mod_nw_ssl.html">mod_nw_ssl</a></dt><dd>Enable SSL encryption for NetWare</dd>
-<dt><a href="mod_proxy.html" id="P" name="P">mod_proxy</a></dt><dd>HTTP/1.1 proxy/gateway server</dd>
+<dt><a href="mod_privileges.html" id="P" name="P">mod_privileges</a></dt><dd>Support for Solaris privileges and for running virtual hosts
+under different user IDs.</dd>
+<dt><a href="mod_proxy.html">mod_proxy</a></dt><dd>HTTP/1.1 proxy/gateway server</dd>
 <dt><a href="mod_proxy_ajp.html">mod_proxy_ajp</a></dt><dd>AJP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_balancer.html">mod_proxy_balancer</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> extension for load balancing </dd>
