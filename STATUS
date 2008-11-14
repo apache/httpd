@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=451572&view=rev
      Backport version for 2.2.x of patch:
         http://people.apache.org/~jim/patches/proxy-force-recovery.patch.txt
-     +1: jim, rpluem
+     +1: jim, rpluem, jfclere
 
    * Build: Correctly set SSL_LIBS during openssl detection if pkgconfig
      is not available. This fixes a regression against 2.2.9.
@@ -141,7 +141,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=709666&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, jim
+      +1: rpluem, jim, jfclere
 
     * mod_cache: Convert age of cached object to seconds before comparing it to
       age supplied by the request when checking whether to send a Warning
