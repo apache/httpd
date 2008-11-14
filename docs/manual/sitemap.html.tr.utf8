@@ -221,6 +221,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache Modülü mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache Modülü mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Apache Modülü mod_nw_ssl</a></li>
+<li><a href="mod/mod_privileges.html">Apache Modülü mod_privileges</a></li>
 <li><a href="mod/mod_proxy.html">Apache Modülü mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache Modülü mod_proxy_ajp</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Apache Modülü mod_proxy_balancer</a></li>
