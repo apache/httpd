@@ -568,7 +568,7 @@ person in</title>
         <p>The above example uses the <directive module="mod_authz_core"
         type="section">MatchNotAny</directive> container directive
         to make sure that none of the 
-        <directive module="mod_authz_host">Match</directive> directives
+        <directive module="mod_authz_core">Match</directive> directives
         match their parameters before granting access.  Note that
         the <code>Match all granted</code> directive and the
         <directive module="mod_authz_core"
