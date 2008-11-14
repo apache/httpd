@@ -10,6 +10,7 @@ else
 fi
 
 APACHE_MODULE(unixd, unix specific support, , , $unixd_mods_enable)
+APACHE_MODULE(privileges, Per-virtualhost Unix UserIDs and enhanced security for Solaris)
 
 APACHE_MODPATH_FINISH
 
