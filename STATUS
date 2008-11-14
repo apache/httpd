@@ -85,6 +85,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy_balancer: Add in forced recovery for balancer
+     members if all are in error state.
+     Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=451572&view=rev
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~jim/patches/proxy-force-recovery.patch.txt
+     +1: jim, rpluem, jfclere
+
+    * mod_proxy_ajp: Do not fail if response data is sent before all request
+      data is read.  PR 45911
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=709666&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, jfclere
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -118,14 +134,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: The patch to ap_mmn.h does only contain the comment, but does
      not change the #define. Once this is fixed I am +1.
 
-   * mod_proxy_balancer: Add in forced recovery for balancer
-     members if all are in error state.
-     Trunk version of patch:
-        http://svn.apache.org/viewcvs.cgi?rev=451572&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~jim/patches/proxy-force-recovery.patch.txt
-     +1: jim, rpluem, jfclere
-
    * Build: Correctly set SSL_LIBS during openssl detection if pkgconfig
      is not available. This fixes a regression against 2.2.9.
      PR 46018
@@ -134,14 +142,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.2.x of patch:
         Trunk version of patch works
      +1: rpluem,
-
-    * mod_proxy_ajp: Do not fail if response data is sent before all request
-      data is read.  PR 45911
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=709666&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, jfclere
 
     * mod_cache: Convert age of cached object to seconds before comparing it to
       age supplied by the request when checking whether to send a Warning
