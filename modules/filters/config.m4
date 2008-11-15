@@ -4,6 +4,7 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(filters)
 
+APACHE_MODULE(buffer, Filter Buffering, , , yes)
 APACHE_MODULE(ext_filter, external filter module, , , most)
 APACHE_MODULE(request, Request Body Filtering, , , yes)
 APACHE_MODULE(include, Server Side Includes, , , yes)

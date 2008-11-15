@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_buffer: Optional support for buffering of the input and output
+     filter stacks. Can collapse many small buckets into fewer larger
+     buckets, and prevents excessively small chunks being sent over
+     the wire. [Graham Leggett]
+
   *) mod_privileges: new module to make httpd on Solaris privileges-aware
      and to enable different virtualhosts to run with different
      privileges and Unix user/group IDs [Nick Kew]
