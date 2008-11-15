@@ -568,7 +568,7 @@ person in</a></h2>
     
         <p>The above example uses the <code class="directive"><a href="../mod/mod_authz_core.html#matchnotany">&lt;MatchNotAny&gt;</a></code> container directive
         to make sure that none of the 
-        <code class="directive"><a href="../mod/mod_authz_host.html#match">Match</a></code> directives
+        <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code> directives
         match their parameters before granting access.  Note that
         the <code>Match all granted</code> directive and the
         <code class="directive"><a href="../mod/mod_authz_core.html#matchnotany">&lt;MatchNotAny&gt;</a></code> are implicitly contained

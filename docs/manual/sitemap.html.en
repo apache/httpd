@@ -191,6 +191,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_authz_owner.html">Apache Module mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">Apache Module mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Apache Module mod_autoindex</a></li>
+<li><a href="mod/mod_buffer.html">Apache Module mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Apache Module mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">Apache Module mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Apache Module mod_cgi</a></li>
