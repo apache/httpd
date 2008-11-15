@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.11
 
+  *) mod_proxy_ajp: Do not fail if response data is sent before all request
+     data is read. PR 45911 [Ruediger Pluem]
+
   *) mod_proxy_balancer: Add in forced recovery for balancer members if
      all are in error state. [Mladen Turk]
 
