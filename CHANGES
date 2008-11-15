@@ -17,9 +17,6 @@ Changes with Apache 2.3.0
      and AuthzMergeRules directives with Match, <Match*>, and AuthzMerge
      directives.  [Chris Darroch]
 
-  *) mod_proxy_ajp: Do not fail if response data is sent before all request
-     data is read. PR 45911 [Ruediger Pluem]
-
   *) mod_authn_core: Prevent crash when provider alias created to
      provider which is not yet registered.  [Chris Darroch]
 
