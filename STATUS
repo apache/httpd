@@ -85,14 +85,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_balancer: Add in forced recovery for balancer
-     members if all are in error state.
-     Trunk version of patch:
-        http://svn.apache.org/viewcvs.cgi?rev=451572&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~jim/patches/proxy-force-recovery.patch.txt
-     +1: jim, rpluem, jfclere
-
     * mod_proxy_ajp: Do not fail if response data is sent before all request
       data is read.  PR 45911
       Trunk version of patch:
