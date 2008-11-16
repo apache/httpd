@@ -57,6 +57,7 @@ static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb) {
     request_rec *r = f->r;
     buffer_ctx *ctx = f->ctx;
     apr_status_t rv = APR_SUCCESS;
+    int move = 0;
 
     /* first time in? create a context */
     if (!ctx) {
@@ -79,6 +80,11 @@ static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb) {
     /* Do nothing if asked to filter nothing. */
     if (APR_BRIGADE_EMPTY(bb)) {
         return ap_pass_brigade(f->next, bb);
+    }
+
+    /* Empty buffer means we can potentially optimise below */
+    if (APR_BRIGADE_EMPTY(ctx->bb)) {
+        move = 1;
     }
 
     while (APR_SUCCESS == rv && !APR_BRIGADE_EMPTY(bb)) {
@@ -146,10 +152,26 @@ static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb) {
          */
         if (APR_SUCCESS == (rv = apr_bucket_read(e, &data, &size,
                 APR_BLOCK_READ))) {
-            apr_brigade_write(ctx->bb, NULL, NULL, data, size);
+
+            /* further optimisation: if the buckets are already heap
+             * buckets, and the buckets stay exactly APR_BUCKET_BUFF_SIZE
+             * long (as they would be if we were reading bits of a
+             * large bucket), then move the buckets instead of copying
+             * them.
+             */
+            if (move && APR_BUCKET_IS_HEAP(e)) {
+                APR_BUCKET_REMOVE(e);
+                APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
+                if (APR_BUCKET_BUFF_SIZE != size) {
+                    move = 0;
+                }
+            } else {
+                apr_brigade_write(ctx->bb, NULL, NULL, data, size);
+                apr_bucket_delete(e);
+            }
+
         }
 
-        apr_bucket_delete(e);
     }
 
     return rv;

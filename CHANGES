@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_buffer: Optimise the buffering of heap buckets when the heap
+     buckets stay exactly APR_BUCKET_BUFF_SIZE long. [Graham Leggett,
+     Ruediger Pluem]
+
   *) mod_buffer: Optional support for buffering of the input and output
      filter stacks. Can collapse many small buckets into fewer larger
      buckets, and prevents excessively small chunks being sent over
