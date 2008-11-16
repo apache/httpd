@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_buffer: Honour the flush bucket and flush the buffer in the
+     input filter. Make sure that metadata buckets are written to
+     the buffer, not to the final brigade. [Graham Leggett]
+
   *) mod_buffer: Optimise the buffering of heap buckets when the heap
      buckets stay exactly APR_BUCKET_BUFF_SIZE long. [Graham Leggett,
      Ruediger Pluem]

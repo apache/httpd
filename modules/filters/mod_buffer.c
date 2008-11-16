@@ -239,10 +239,17 @@ static apr_status_t buffer_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
                     break;
                 }
 
-                /* pass flush and metadata buckets through */
-                if (APR_BUCKET_IS_FLUSH(e) || APR_BUCKET_IS_METADATA(e)) {
+                /* flush buckets clear the buffer */
+                if (APR_BUCKET_IS_FLUSH(e)) {
                     APR_BUCKET_REMOVE(e);
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
+                    APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
+                    break;
+                }
+
+                /* pass metadata buckets through */
+                if (APR_BUCKET_IS_METADATA(e)) {
+                    APR_BUCKET_REMOVE(e);
+                    APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
                     continue;
                 }
 
