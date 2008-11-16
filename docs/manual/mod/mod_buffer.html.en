@@ -58,6 +58,14 @@
         AddOutputFilterByType INCLUDES;BUFFER text/html<br />
       </code></p></div>
 
+    <div class="warning">The buffer filters read the request/response into
+        RAM and then repack the request/response into the fewest memory
+        buckets possible, at the cost of CPU time. When the request/response
+        is already efficiently packed, buffering the request/response could
+        cause the request/response to be slower than not using a buffer at
+        all. These filters should be used with care, and only where
+        necessary.</div>
+    
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
