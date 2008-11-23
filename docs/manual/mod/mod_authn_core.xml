@@ -199,7 +199,7 @@ the specified alias</description>
 </contextlist>
 
 <usage>
-    <p><directive type="section">AuthnProviderAlias</directive> and
+    <p><code>&lt;AuthnProviderAlias&gt;</code> and
     <code>&lt;/AuthnProviderAlias&gt;</code> are used to enclose a group of
     authentication directives that can be referenced by the alias name 
     using one of the directives <directive module="mod_auth_basic">
