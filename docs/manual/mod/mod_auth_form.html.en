@@ -262,7 +262,8 @@
 <h2><a name="inlinepreservebody" id="inlinepreservebody">Inline Login with Body Preservation</a></h2>
 
       <p>A limitation of the inline login technique described above is that should an
-      HTML form POST have resulted in the request to authenticate or reauthentiate, the
+      HTML form POST have resulted in the request to authenticate or
+      reauthenticate, the
       contents of the original form posted by the browser will be lost. Depending on
       the function of the website, this could present significant inconvenience for the
       end user.</p>
@@ -564,8 +565,8 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code> directive specifies
-    the name of an HTML field which, if present, will contain the method of the request to
-    to submit should login be successful.</p>
+    the name of an HTML field which, if present, will contain the
+    mimetype of the request to to submit should login be successful.</p>
 
     <p>By populating the form with fields described by
     <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code>, 

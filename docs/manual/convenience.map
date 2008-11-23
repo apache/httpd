@@ -97,6 +97,7 @@ balancermember	mod/mod_proxy.html#balancermember
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
 bufferedlogs	mod/mod_log_config.html#bufferedlogs
+buffersize	mod/mod_buffer.html#buffersize
 cachedefaultexpire	mod/mod_cache.html#cachedefaultexpire
 cachedirlength	mod/mod_disk_cache.html#cachedirlength
 cachedirlevels	mod/mod_disk_cache.html#cachedirlevels

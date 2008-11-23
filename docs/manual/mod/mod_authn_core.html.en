@@ -147,7 +147,7 @@ the specified alias</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_core</td></tr>
 </table>
-    <p><code class="directive">&lt;AuthnProviderAlias&gt;</code> and
+    <p><code>&lt;AuthnProviderAlias&gt;</code> and
     <code>&lt;/AuthnProviderAlias&gt;</code> are used to enclose a group of
     authentication directives that can be referenced by the alias name 
     using one of the directives <code class="directive"><a href="../mod/mod_auth_basic.html#&#10;    authbasicprovider">
