@@ -101,7 +101,31 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 # Name "mod_sed - Win32 Debug"
 # Begin Source File
 
+SOURCE=.\libsed.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\mod_sed.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\regexp.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\regexp.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\sed.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\sed0.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\sed1.c
 # End Source File
 # Begin Source File
 
