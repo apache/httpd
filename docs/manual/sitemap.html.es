@@ -189,6 +189,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_authz_owner.html">Módulo Apache mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">Módulo Apache mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">Módulo Apache mod_autoindex</a></li>
+<li><a href="mod/mod_buffer.html">Módulo Apache mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">Módulo Apache mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">Módulo Apache mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">Módulo Apache mod_cgi</a></li>

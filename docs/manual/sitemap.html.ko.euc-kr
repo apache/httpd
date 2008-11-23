@@ -187,6 +187,7 @@
 <li><a href="mod/mod_authz_owner.html">아파치 모듈 mod_authz_owner</a></li>
 <li><a href="mod/mod_authz_user.html">아파치 모듈 mod_authz_user</a></li>
 <li><a href="mod/mod_autoindex.html">아파치 모듈 mod_autoindex</a></li>
+<li><a href="mod/mod_buffer.html">아파치 모듈 mod_buffer</a></li>
 <li><a href="mod/mod_cache.html">아파치 모듈 mod_cache</a></li>
 <li><a href="mod/mod_cern_meta.html">아파치 모듈 mod_cern_meta</a></li>
 <li><a href="mod/mod_cgi.html">아파치 모듈 mod_cgi</a></li>

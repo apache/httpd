@@ -133,6 +133,7 @@
 <li><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember</a></li>
 <li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
+<li><a href="mod_buffer.html#buffersize">BufferSize</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
 <li><a href="mod_disk_cache.html#cachedirlength">CacheDirLength</a></li>
 <li><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></li>
