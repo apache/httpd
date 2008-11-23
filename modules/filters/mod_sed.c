@@ -26,7 +26,7 @@
 #include "libsed.h"
 
 static const char *sed_filter_name = "Sed";
-#define MODSED_OUTBUF_SIZE 4000
+#define MODSED_OUTBUF_SIZE 8000
 
 typedef struct sed_expr_config
 {
