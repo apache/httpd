@@ -64,6 +64,13 @@ typedef struct {
   const char *chroot_dir;
 } unixd_config_t;
 #else
+/*
+ * TODO: clean up the separation between this code
+ *       and its data structures and unixd.c, as shown
+ *       by the fact that we include unixd.h. Create
+ *       mod_unixd.h which does what we need and
+ *       clean up unixd.h for what it no longer needs
+ */
 #include "unixd.h"
 #endif
 
