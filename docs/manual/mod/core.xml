@@ -1546,7 +1546,8 @@ the server configuration files</description>
     length over persistent connections.</p>
 
     <p>When a client uses a Keep-Alive connection it will be counted
-    as a single "request" for the MaxRequestsPerChild directive, regardless
+    as a single "request" for the <directive module="mpm_common"
+    >MaxRequestsPerChild</directive> directive, regardless
     of how many requests are sent using the connection.</p>
 </usage>
 
