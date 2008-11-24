@@ -127,6 +127,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works (minus CHANGES conflict)
       +1: jim
+      rpluem says: There was a discussion after r693120 about a better approach
+      (http://mail-archives.apache.org/mod_mbox/httpd-dev/200809.mbox/%3cA90E03FB-E728-480A-A05B-31CAAF5FE803@jaguNET.com%3e).
+      Shouldn't we commit the result of this discussion to trunk and backport it?
 
 PATCHES/ISSUES THAT ARE STALLED
 
