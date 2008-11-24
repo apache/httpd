@@ -176,6 +176,7 @@ static int is_mpm_running(void)
 AP_DECLARE(int) ap_set_keepalive(request_rec *r)
 {
     int ka_sent = 0;
+    int left = r->server->keep_alive_max - r->connection->keepalives;
     int wimpy = ap_find_token(r->pool,
                               apr_table_get(r->headers_out, "Connection"),
                               "close");
@@ -221,7 +222,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         && r->server->keep_alive
         && (r->server->keep_alive_timeout > 0)
         && ((r->server->keep_alive_max == 0)
-            || (r->server->keep_alive_max > r->connection->keepalives))
+            || (left > 0))
         && !ap_status_drops_connection(r->status)
         && !wimpy
         && !ap_find_token(r->pool, conn, "close")
@@ -230,7 +231,6 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         && ((ka_sent = ap_find_token(r->pool, conn, "keep-alive"))
             || (r->proto_num >= HTTP_VERSION(1,1)))
         && is_mpm_running()) {
-        int left = r->server->keep_alive_max - r->connection->keepalives;
 
         r->connection->keepalive = AP_CONN_KEEPALIVE;
         r->connection->keepalives++;
@@ -266,6 +266,16 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         apr_table_mergen(r->headers_out, "Connection", "close");
     }
 
+    /*
+     * If we had previously been a keepalive connection and this
+     * is the last one, then bump up the number of keepalives
+     * we've had
+     */
+    if ((r->connection->keepalive != AP_CONN_CLOSE)
+        && r->server->keep_alive_max
+        && !left) {
+        r->connection->keepalives++;
+    }
     r->connection->keepalive = AP_CONN_CLOSE;
 
     return 0;
