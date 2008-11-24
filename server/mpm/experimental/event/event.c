@@ -650,7 +650,7 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         ap_lingering_close(c);
         apr_pool_clear(p);
         ap_push_pool(worker_queue_info, p);
-        return 1;
+        return 0;
     }
     else if (cs->state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
         apr_status_t rc;
@@ -680,7 +680,7 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
             AP_DEBUG_ASSERT(rc == APR_SUCCESS);
         }
     }
-    return 0;
+    return 1;
 }
 
 /* requests_this_child has gone to zero or below.  See if the admin coded
