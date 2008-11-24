@@ -86,6 +86,23 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * Build: Correctly set SSL_LIBS during openssl detection if pkgconfig
+     is not available. This fixes a regression against 2.2.9.
+     PR 46018
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=711993&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem, jim, jfclere
+
+    * mod_cache: Convert age of cached object to seconds before comparing it to
+      age supplied by the request when checking whether to send a Warning
+      header for a stale response. PR 39713.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=411464&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, jfclere
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -119,24 +136,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin
      rpluem says: The patch to ap_mmn.h does only contain the comment, but does
      not change the #define. Once this is fixed I am +1.
-
-   * Build: Correctly set SSL_LIBS during openssl detection if pkgconfig
-     is not available. This fixes a regression against 2.2.9.
-     PR 46018
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=711993&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: rpluem, jim, jfclere
-
-    * mod_cache: Convert age of cached object to seconds before comparing it to
-      age supplied by the request when checking whether to send a Warning
-      header for a stale response. PR 39713.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=411464&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, jfclere
 
     * Event MPM: Fix MaxRequestsPerChild
       Trunk version of patch:
