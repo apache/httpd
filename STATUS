@@ -86,6 +86,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * Event MPM: Fix MaxRequestsPerChild
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=719357
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: pquerna, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -119,13 +125,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: minfrin
      rpluem says: The patch to ap_mmn.h does only contain the comment, but does
      not change the #define. Once this is fixed I am +1.
-
-    * Event MPM: Fix MaxRequestsPerChild
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=719357
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: pquerna, rpluem, jim
 
    * mod_log_config: Add in useful feature, %k which logs the keepalives
      value. PR: 45762
