@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.11
 
+  *) mod_cache: Convert age of cached object to seconds before comparing it to
+     age supplied by the request when checking whether to send a Warning
+     header for a stale response. PR 39713. [Owen Taylor <otaylor redhat.com>]
+
   *) Build: Correctly set SSL_LIBS during openssl detection if pkgconfig is
      not available. PR 46018 [Ruediger Pluem]
 

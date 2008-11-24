@@ -351,7 +351,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
         if (!(((smaxage != -1) && age < smaxage) ||
               ((maxage != -1) && age < maxage) ||
               (info->expire != APR_DATE_BAD &&
-               (info->expire - info->date) > age))) {
+               (apr_time_sec(info->expire - info->date)) > age))) {
             /* make sure we don't stomp on a previous warning */
             if ((warn_head == NULL) ||
                 ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
