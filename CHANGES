@@ -19,9 +19,6 @@ Changes with Apache 2.3.0
      and to enable different virtualhosts to run with different
      privileges and Unix user/group IDs [Nick Kew]
 
-  *) Build: Correctly set SSL_LIBS during openssl detection if pkgconfig is
-     not available. PR 46018 [Ruediger Pluem]
-
   *) authn/z: Remove mod_authn_default and mod_authz_default.
      [Chris Darroch]
 
@@ -368,10 +365,6 @@ Changes with Apache 2.3.0
   *) mod_disk_cache: If possible, check if the size of an object to cache is
      within the configured boundaries before actually saving data.
      [Niklas Edmundsson <nikke acc.umu.se>]
-
-  *) mod_cache: Convert all values to seconds before comparing them when
-     checking whether to send a Warning header for a stale response.
-     PR 39713. [Owen Taylor <otaylor redhat.com>]
 
   *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
      final name. [Davi Arnaut <davi haxent.com.br>]
