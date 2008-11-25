@@ -86,19 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_rewrite: Export and install the mod_rewrite.h header to ensure the
-     optional rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
-     available to third party modules.
-     Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=704726&view=rev
-         http://svn.apache.org/viewvc?rev=704845&view=rev
-     Backport version to 2.2:
-         http://people.apache.org/~minfrin/httpd-mod-rewrite.diff
-     +1: minfrin, niq
-     rpluem says: The patch to ap_mmn.h does only contain the comment, but does
-     not change the #define. Once this is fixed I am +1.
-     niq notes: the patch appears to have been updated to secure rpluem +1;
-     promoting on that basis.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

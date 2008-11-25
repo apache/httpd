@@ -134,6 +134,7 @@
  * 20051115.18 (2.2.10) Add chroot support to unixd_config
  * 20051115.19 (2.2.11) Added ap_timeout_parameter_parse to util.c / httpd.h
  * 20051115.20 (2.2.11) Add ap_proxy_buckets_lifetime_transform to mod_proxy.h
+ * 20051115.21 (2.2.11) Export mod_rewrite.h in the public API
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -141,7 +142,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 20                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 21                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
