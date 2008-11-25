@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 698483:713242 (outdated) -->
+<!-- English Revision: 713242 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -56,7 +56,7 @@
 <usage>
     <p><directive>SuexecUserGroup</directive> yönergesi CGI programlarını
       çalıştıracak kullanıcı ve grubu belirtmeye yarar. CGI harici istekler
-      hala <directive module="mpm_common">User</directive> yönergesinde
+      hala <directive module="mod_unixd">User</directive> yönergesinde
       belirtilen kullanıcı tarafından yerine getirilir. Bu yönerge,  Apache
       1.3 yapılandırmasında sanal konak bölümlerindeki <code>User</code> ve
       <code>Group</code> yönergelerinin yerini almak üzere tasarlanmıştır.</p>

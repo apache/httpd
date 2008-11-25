@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 709551:710153 (outdated) -->
+<!-- English Revision: 720186  -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -1559,8 +1559,8 @@ yönergeleri sarmalar.</description>
 
     <p>Bir istemci kalıcı bağlantı kullandığı takdirde, bağlantı üzerinden kaç
       istek gönderilirse gönderilsin,
-      <directive>MaxRequestsPerChild</directive> yönergesi bakımından tek bir
-      istek olarak değerlendirilir.</p>
+      <directive module="mpm_common">MaxRequestsPerChild</directive> yönergesi
+      bakımından tek bir istek olarak değerlendirilir.</p>
 </usage>
 
 <seealso><directive module="core">MaxKeepAliveRequests</directive></seealso>

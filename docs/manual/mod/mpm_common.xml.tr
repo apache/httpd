@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 703441:713242 (outdated) -->
+<!-- English Revision: 713242 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -197,63 +197,6 @@
     <p>Bu değerin <code>0</code> olarak belirtilmesi, sunucunun bekleyen bütün
       isteklere hizmet sunumu tamamlanıncaya kadar (gerekirse sonsuza kadar)
       bekleyebileceği anlamına gelir.</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>Group</name>
-<description>İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</description>
-<syntax>Group <var>unix-grubu</var></syntax>
-<default>Group #-1</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
-<compatibility>Apache 2.0’dan itibaren sadece sunucu geneli için geçerlidir.</compatibility>
-
-<usage>
-    <p><directive>Group</directive> yönergesi, sunucunun hangi grup altında
-      isteklere yanıt vereceğini belirler. Bu yönergenin uygulanabilmesi için
-      sunucunun <code>root</code> olarak çalıştırılmış olması gerekir.
-      Sunucuyu <code>root</code> dışında bir kullanıcı başlattığı takdirde,
-      sunucu belirtilen gruba geçemez ve kullanıcının kendi grubunda
-      çalışmaya devam eder. <var>unix-grubu</var> şunlardan biri olabilir:</p>
-
-    <dl>
-      <dt>Bir grup adı</dt>
-      <dd>Gruba ismiyle başvurulur.</dd>
-
-      <dt><code>#</code> ardından grup numarası</dt>
-      <dd>Gruba numarası ile başvurulur.</dd>
-    </dl>
-
-    <example><title>Örnek</title>
-      Group www-group
-    </example>
-
-    <p>Çalışan sunucu için özellikle yeni bir grup atamanız önerilir. Bazı
-      sistem yöneticileri <code>nobody</code> grubunu kullanırlar fakat
-      bu her zaman mümkün olmadığı gibi arzulanan da değildir.</p>
-
-    <note type="warning"><title>Güvenlik</title>
-      <p>Ne yaptığınızı ve ne tehlikelere yol açacağınızı bilmiyorsanız
-      <directive>Group</directive> (veya <directive
-      module="mpm_common">User</directive>) yönergesine değer olarak
-      <code>root</code> atamayınız.</p>
-    </note>
-
-    <p>Özel bilgi: Bu yönergenin <directive module="core"
-      type="section">VirtualHost</directive> taşıyıcısı içinde kullanımı
-      artık desteklenmemektedir. Sunucunuzu <program>suexec</program> için
-      yapılandırırken <directive
-      module="mod_suexec">SuexecUserGroup</directive> yönergesini
-      kullanınız.</p>
-
-    <note><title>Ek Bilgi</title>
-      <p><directive>Group</directive> yönergesi <module>beos</module> ve
-        <module>mpmt_os2</module> MPM’lerinde mevcut olsa da, aslında
-        işlevsiz olup sadece uyumluluk adına mevcuttur.</p>
-    </note>
 </usage>
 </directivesynopsis>
 
@@ -959,99 +902,6 @@
         yapılan bir değişiklik mevcut <directive>ThreadStackSize</directive>
         ayarını geçersiz hale getirebilir.</li>
     </ul>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>User</name>
-<description>İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
-  belirler.</description>
-<syntax>User <var>unix-kullanıcısı</var></syntax>
-<default>User #-1</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
-</modulelist>
-<compatibility>Apache 2.0’dan itibaren sadece sunucu geneli için
-  geçerlidir.</compatibility>
-
-<usage>
-    <p><directive>User</directive> yönergesi, sunucunun hangi kullanıcı olarak
-      isteklere yanıt vereceğini belirler. Bu yönergenin uygulanabilmesi için
-      sunucunun <code>root</code> olarak çalıştırılmış olması gerekir.
-      Sunucuyu <code>root</code> dışında bir kullanıcı başlattığı takdirde,
-      sunucu belirtilen kullanıcıya geçemez ve mevcut kullanıcıyla çalışmaya
-      devam eder. Eğer sunucuyu <code>root</code> olarak başlatmışsanız ana
-      süreç root olarak çalışmaya devam edecektir. <var>unix-kullanıcısı</var>
-      şunlardan biri olabilir:</p>
-
-    <dl>
-      <dt>Bir kullanıcı adı</dt>
-      <dd>Gruba ismiyle başvurulur.</dd>
-
-      <dt><code>#</code> ardından kullanıcı numarası</dt>
-      <dd>Kullanıcıya numarası ile başvurulur.</dd>
-    </dl>
-
-    <p>Bu yönergede belirtilecek kullanıcının, başkaları tarafından üzerinde
-      değişiklik yapılabilecek dosyalardan başkasına erişemeyen bir kullanıcı
-      olmaması gerektiği gibi, HTTP isteklerini işlemek dışında işlemler de
-      yapabilen bir kullanıcı olmamalıdır.
-      Çalışan sunucu için özellikle yeni bir grup atamanız önerilir. Bazı
-      sistem yöneticileri <code>nobody</code> kullanıcısını kullanırlar fakat
-      <code>nobody</code> kullanıcısı sistemde başka amaçlarla
-      kullanılabildiğinden bu her zaman mümkün olmadığı gibi arzulanan da
-      değildir.</p>
-
-    <note type="warning"><title>Güvenlik</title>
-      <p>Ne yaptığınızı ve ne tehlikelere yol açacağınızı bilmiyorsanız
-      <directive>User</directive> (veya <directive
-      module="mpm_common">Group</directive>) yönergesine değer olarak
-      <code>root</code> atamayınız.</p>
-    </note>
-
-    <p>Sanal konakları farklı kullanıcı kimliklerle çalıştırmak üzere
-      tasarlanan <module>perchild</module> modülü kullanıldığında <directive
-      type="section" module="core">VirtualHost</directive> bölümlerinde
-      <directive module="perchild">AssignUserID</directive> yönergesi ile
-      farklı bir kullanıcı kimlik tanımlanmadığı takdirde
-      <directive>User</directive> yönergesi ile ana sunucu için tanımlanan
-      kullanıcı kimlik sanal konak için de geçerli olur.</p>
-
-    <p>Özel bilgi: Bu yönergenin <directive module="core"
-      type="section">VirtualHost</directive> taşıyıcısı içinde kullanımı
-      artık desteklenmemektedir. Sunucunuzu <program>suexec</program> için
-      yapılandırırken <directive
-      module="mod_suexec">SuexecUserGroup</directive> yönergesini
-      kullanınız.</p>
-
-    <note><title>Ek Bilgi</title>
-      <p><directive>User</directive>yönergesi <module>beos</module> ve
-        <module>mpmt_os2</module> MPM’lerinde mevcut olsa da, aslında
-        işlevsiz olup sadece uyumluluk adına mevcuttur.</p>
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>ChrootDir</name>
-<description>Sunucunun başlatıldıktan sonra chroot(8) yapacağı dizini
-  belirler.</description>
-<syntax>ChrootDir <var>/dizin/yolu</var></syntax>
-<default>none</default>
-<contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module>
-<module>prefork</module><module>worker</module></modulelist>
-
-<usage>
-    <p>Bu yönerge httpd 2.2.9(?) ve sonrasında mevcuttur ve sunucuya
-      başlatıldıktan sonra ağdan gelen istekleri kabul etmeden önce
-      belirtilen dizine <var>chroot(8)</var> yapmasını söyler.</p>
-    <p>Sunucuyu chroot altında çalıştırmanın basit bir işlem olmadığına ve
-      özellikle CGI veya PHP gibi betikler çalıştırıyorsanız ek ayarlamalar
-      yapmanız gerektiğine dikkat ediniz. Lütfen, bu özelliği kullanmaya
-      çalışmadan önce chroot işlemleri hakkında gerektiği kadar bilgi sahibi
-      olduğunuzdan emin olunuz.</p>
 </usage>
 </directivesynopsis>
 

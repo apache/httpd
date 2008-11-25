@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="style/manual.tr.xsl"?>
-<!-- English Revision: 572617:711521 (outdated) -->
+<!-- English Revision: 711521 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -30,13 +30,12 @@
 
   <summary>
     <p>Bu belge <module>mod_cache</module>,
-      <module>mod_disk_cache</module>, <module>mod_mem_cache</module>,
-      <module>mod_file_cache</module> modülleri ve <a
-      href="programs/htcacheclean.html">htcacheclean</a> için bir başvuru
-      kılavuzu niteliğindedir. HTTP sunucusu ve vekil olarak çalışmada
-      işlemleri hızlandırmak için bilinen sorunlar ve yanlış
-      yapılandırmalardan kaçınarak Apache’nin önbellekleme özelliklerinin
-      nasıl kullanılacağı açıklanmıştır.</p>
+      <module>mod_disk_cache</module>, <module>mod_file_cache</module>
+      modülleri ve <a href="programs/htcacheclean.html">htcacheclean</a>
+      için bir başvuru kılavuzu niteliğindedir. HTTP sunucusu ve vekil
+      olarak çalışmada işlemleri hızlandırmak için bilinen sorunlar ve
+      yanlış yapılandırmalardan kaçınarak Apache’nin önbellekleme
+      özelliklerinin nasıl kullanılacağı açıklanmıştır.</p>
   </summary>
 
   <section id="introduction">
@@ -49,16 +48,16 @@
       vekili olarak çalışmada HTTP işlemlerini hızlandırmak anlamında sunucuya
       güç katarlar.</p>
 
-    <p><module>mod_cache</module>, ortam sağlayıcı modülleri olan
-      <module>mod_mem_cache</module> ve <module>mod_disk_cache</module> ile
-      birlikte HTTP önbelleklemesini akıllıca yerine getirir. İçeriğin kendisi
-      önbellekte saklanırken <module>mod_cache</module> içeriğin
-      önbelleklenebilmesini denetim altında tutan HTTP başlıkları ve
-      seçenekleri ile ilgilenir. Yerel ve vekalet edilen içeriğin her ikisinin
-      de aynı anda işlem görmesi sağlanabilir. <module>mod_cache</module>,
-      vekalet edilen içeriğe, devingen yerel içeriğe veya zamanla değişen
-      yerel dosyalara erişimi hızlandırma ihtiyacına yönelik olarak hem basit
-      hem de karmaşık önbellekleme yapılandırmalarını mümkün kılar.</p>
+    <p><module>mod_cache</module>, ortam sağlayıcı modülü olan
+      <module>mod_disk_cache</module> ile birlikte HTTP önbelleklemesini
+      akıllıca yerine getirir. İçeriğin kendisi önbellekte saklanırken
+      <module>mod_cache</module> içeriğin önbelleklenebilmesini denetim
+      altında tutan HTTP başlıkları ve seçenekleri ile ilgilenir. Yerel ve
+      vekalet edilen içeriğin her ikisinin de aynı anda işlem görmesi
+      sağlanabilir. <module>mod_cache</module>, vekalet edilen içeriğe,
+      devingen yerel içeriğe veya zamanla değişen yerel dosyalara erişimi
+      hızlandırma ihtiyacına yönelik olarak hem basit hem de karmaşık
+      önbellekleme yapılandırmalarını mümkün kılar.</p>
 
     <p><module>mod_file_cache</module> ise biraz daha temel ancak bazen daha
       kullanışlı olabilen bir önbellekleme şekli ile ilgilenir. URL’lerin
@@ -89,7 +88,6 @@
     <related>
       <modulelist>
         <module>mod_cache</module>
-        <module>mod_mem_cache</module>
         <module>mod_disk_cache</module>
         <module>mod_file_cache</module>
       </modulelist>
@@ -403,7 +401,6 @@
     <related>
       <modulelist>
         <module>mod_file_cache</module>
-        <module>mod_mem_cache</module>
       </modulelist>
       <directivelist>
         <directive module="mod_file_cache">CacheFile</directive>
@@ -415,7 +412,7 @@
     <p>Bir dosyanın açılması işlemi, özellikle de ağ dosya sistemlerinde
       bulunan dosyalar için önemli bir gecikme kaynağı olabilir. Önbellekte,
       çok sunulan dosyaların kendilerinin değil, açık dosya tanıtıcılarının
-      saklanması Apache’yi bu tür gecikmelerden koruyabilir. Apache’de iki tür
+      saklanması Apache’yi bu tür gecikmelerden koruyabilir. Apache’de tek türde
       dosya tanıtıcı önbelleklemesi yapılabilmektedir.</p>
 
     <section>
@@ -454,24 +451,6 @@
         kapanmadıkça dosyaların silinmesiyle açılan yer serbest
         kalmayacaktır.</p>
     </section>
-
-    <section>
-      <title><code>CacheEnable</code> yönergesi ile</title>
-
-      <p><module>mod_mem_cache</module> modülünün ayrıca, <directive
-        module="mod_cache" >CacheEnable</directive> yönergesi üzerinden etkin
-        kılınabilen kendine özgü bir dosya tanıtıcı önbellekleme şeması
-        vardır.</p>
-
-      <example>
-        CacheEnable fd /
-      </example>
-
-      <p><module>mod_cache</module>’nin devreye girdiği her işlemde olduğu
-        gibi bu tür dosya tanıtıcı önbelleklemesi de akıllıca yapılır ve
-        önbellekteki içerik zaman aşımına uğradığı halde sunulmaya devam
-        edilmez.</p>
-    </section>
   </section>
 
   <section id="inmemory">
@@ -479,7 +458,6 @@
 
      <related>
       <modulelist>
-        <module>mod_mem_cache</module>
         <module>mod_file_cache</module>
       </modulelist>
       <directivelist>
@@ -548,13 +526,6 @@
       Apache tarafından yerine getirilmesinin daha iyi olacağı bazı durumlar
       vardır.</p>
 
-    <p>Öncelikle, işletim sistemi sadece bildiği dosyaları önbellekler (veya
-      önbelleklediği dosyaları bilir). Eğer Apache’yi bir vekil sunucu olarak
-      çalıştırıyorsanız, önbelleklediğiniz dosyalar yerel olarak saklanmadan
-      uzaktan sunulabilir. Ancak bellekiçi önbelleklemenin sağladığı hız
-      artışının dayanılmaz çekiciliğine karşı koyamıyorsanız, Apache’nin kendi
-      bellekiçi önbelleklemesine ihtiyacınız var demektir.</p>
-
     <section>
       <title><code>MMapStatic</code> yönergesi ile</title>
 
@@ -581,25 +552,6 @@
         taşımaktadır; aksi takdirde işletim sistemi belleği diske
         takaslayacağından beklenen fayda sağlanamayacaktır.</p>
     </section>
-
-    <section>
-      <title><code>mod_mem_cache</code> modülü ile</title>
-
-      <p><module>mod_mem_cache</module> modülü HTTP belirtimine uygun olarak
-        bellekiçi önbelleklemeyi akıllıca uygular. Ayrıca yüksek belleği
-        doğrudan kullanabildiğinden <var>MMap</var> desteği olmayan
-        sistemlerde bile bellekiçi önbellekleme yapabilir.</p>
-
-      <p>Bu tür önbellekleme şöyle etkin kılınabilir:</p>
-
-      <example>
-        # Bellekiçi önbelleklemeyi etkin kılalım<br />
-        CacheEnable mem /<br />
-        <br />
-        # Önbellek 1 Megabayttan büyük olmasın<br />
-        MCacheSize 1024
-      </example>
-    </section>
   </section>
 
   <section id="disk">
@@ -616,10 +568,9 @@
     </related>
 
     <p><module>mod_disk_cache</module> modülü önbelleklemenin
-      <module>mod_cache</module> için disk üzerinde yapılmasını mümkün kılar.
-      <module>mod_mem_cache</module> modülünde olduğu gibi bu önbellekleme de
-      akıllıca yapılır ve önbellekteki içerik sadece geçerli kabul edildiği
-      sürece sunulabilir.</p>
+      <module>mod_cache</module> için disk üzerinde yapılmasını mümkün
+      kılar. Bbu önbellekleme akıllıca yapılır ve önbellekteki içerik
+      sadece geçerli kabul edildiği sürece sunulabilir.</p>
 
     <p>Modül bu amaçla genelde şöyle kullanılır:</p>
 
