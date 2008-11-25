@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 431460:713242 (outdated) -->
+<!-- English Revision: 713242 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -126,12 +126,13 @@ ayarlanması</a></seealso>
       çalıştırılmış olması gerekirse de çocuk süreçler ve evreler Apache
       tarafından daha az yetkili bir kullanıcının aidiyetinde
       çalıştırılırlar. Apache’nin çocuk süreçlerinin kullanıcı ve gruplarını
-      ayarlamak için User ve Group yönergeleri kullanılır. Çocuk süreçlerin
-      sunacakları içeriği okumaya yetkili olmaları gerekir, fakat bu yetkinin
-      mümkün olduğunca kısıtlı tutulmasına çalışılmalıdır. Bundan başka,
-      <program>suexec</program> kullanılmadığı takdirde, bu yönergeler CGI
-      betikleri tarafından miras alınacak yetkili kullanıcı ve grubu da
-      ayarlarlar.</p>
+      ayarlamak için <directive module="mod_unixd">User</directive> ve
+      <directive module="mod_unixd">Group</directive> yönergeleri kullanılır.
+      Çocuk süreçlerin sunacakları içeriği okumaya yetkili olmaları gerekir,
+      fakat bu yetkinin mümkün olduğunca kısıtlı tutulmasına çalışılmalıdır.
+      Bundan başka, <program>suexec</program> kullanılmadığı takdirde, bu
+      yönergeler CGI betikleri tarafından miras alınacak yetkili kullanıcı
+      ve grubu da ayarlarlar.</p>
 
     <p><directive module="mpm_common">MaxRequestsPerChild</directive>
       yönergesi ana sunucunun eski süreçleri öldürüp yenilerini oluşturmayı
@@ -144,7 +145,7 @@ ayarlanması</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>Group</name>
+<directivesynopsis location="mod_unixd"><name>Group</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>PidFile</name>
 </directivesynopsis>
@@ -180,7 +181,7 @@ ayarlanması</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
-<directivesynopsis location="mpm_common"><name>User</name>
+<directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
 
 </modulesynopsis>

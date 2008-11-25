@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 706001:713462 (outdated) -->
+<!-- English Revision: 713462 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -60,7 +60,7 @@
 <description>İstemci bir dizin istediğinde dizin içeriğini listeler.
 </description>
 <syntax>DirectoryIndex
-    None | <var>yerel-url</var> [<var>yerel-url</var>] ...</syntax>
+    disabled | <var>yerel-url</var> [<var>yerel-url</var>] ...</syntax>
 <default>DirectoryIndex index.html</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -95,8 +95,11 @@
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
       CGI betiği çalıştırılacaktır.</p>
 
-    <p><code>None</code> değeri <module>mod_dir</module>’in bir dizin listesi
-      aramasını engeller.</p>
+    <p><code>disabled</code> değeri tek başına <module>mod_dir</module>’in bir
+      dizin listesi aramasını engeller. <code>disabled</code> değiştirgesi
+      öncesinde ve sonrasında başka bir değiştirge hatta bir <code>disabled</code>
+      daha olsa bile tek başına <code>disabled</code> verilmiş gibi
+      yorumlanır.</p>
 
 </usage>
 </directivesynopsis>

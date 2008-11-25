@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 678127:711521 (outdated) -->
+<!-- English Revision: 711521 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -446,8 +446,7 @@
           dosya önbelleklemesi etkin kılınır. Bu deneysel modülün kullanımı,
           aşırı yüklü sunucularda ya da önbellekli vekillerde ilginç sonuçlar
           verebilir. Bunun yanında en azından bir saklama alanı yönetim modülü
-          (örn, <module>mod_disk_cache</module> veya
-          <module>mod_mem_cache</module>) gerekebilir.</dd>
+          (örn, <module>mod_disk_cache</module>) gerekebilir.</dd>
 
         <dt><code>--enable-cern-meta</code></dt>
         <dd><module>mod_cern_meta</module> modülü tarafından sağlanan CERN
@@ -518,10 +517,6 @@
         <dd><module>mod_logio</module> modülü tarafından sağlanan başlıklarda
           bulunan girdi ve çıktı bayt sayılarının günlüklenmesi etkin
           kılınır.</dd>
-
-        <dt><code>--enable-mem-cache</code></dt>
-        <dd><module>mod_mem_cache</module> modülü tarafından sağlanan bellekte
-          önbellekleme etkin kılınır.</dd>
 
         <dt><code>--enable-mime-magic</code></dt>
         <dd><module>mod_mime_magic</module> modülü tarafından sağlanan
@@ -745,7 +740,8 @@
             ./configure \<br />
             <indent>
                 --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias mem_cache file_cache authnz_ldap charset_lite dav_lock disk_cache"
+                --enable-mods-shared="all ssl ldap cache proxy authn_alias
+                file_cache authnz_ldap charset_lite dav_lock disk_cache"
             </indent>
           </example>
         </dd>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 682362:712041 (outdated) -->
+<!-- English Revision: 712041 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -41,19 +41,20 @@
 
       <dt>Authn/Authz</dt>
       <dd>Mevcut kimlik doğrulama ve yetkilendirme modüllerinin iç işleyişi
-        yeniden düzenlendi. Yeni <module>mod_authn_alias</module> modülü
-        belli kimlik doğrulama yapılandırmalarını büyük oranda
-        basitleştirebilir. Bu değişikliklerin kullanıcıları ve modül
-        yazarlarını nasıl etkilediğini öğrenmek için <a href="#module">modül
-        değişikliklerine</a> ve <a href="#developer">geliştirici
-        değişikliklerine</a> bakabilirsiniz.</dd>
+        yeniden düzenlendi. Yeni <code>mod_authn_alias</code> modülü
+        (2.3/2.4 sürümlerinde kaldırılmıştır) belli kimlik doğrulama
+        yapılandırmalarını büyük oranda basitleştirebilir. Bu değişikliklerin
+        kullanıcıları ve modül yazarlarını nasıl etkilediğini öğrenmek için
+        <a href="#module">modül değişikliklerine</a> ve <a href="#developer"
+        >geliştirici değişikliklerine</a> bakabilirsiniz.</dd>
 
       <dt>Önbellekleme</dt>
       <dd><module>mod_cache</module>, <module>mod_disk_cache</module> ve
-        <module>mod_mem_cache</module> modüllerinde büyük oranda değişikliğe
-        gidilerek bunlar deneysel olmaktan çıkarılıp üretim amaçlı modüller
-        haline getirildiler. <module>mod_disk_cache</module> tarafından
-        kullanılan disk alanının  <program>htcacheclean</program> tarafından
+        <code>mod_mem_cache</code> (2.3/2.4 sürümlerinde kaldırılmıştır)
+        modüllerinde büyük oranda değişikliğe gidilerek bunlar deneysel
+        olmaktan çıkarılıp üretim amaçlı modüller haline getirildiler.
+        <module>mod_disk_cache</module> tarafından kullanılan disk
+        alanının  <program>htcacheclean</program> tarafından
         düzenli aralıklarla temizlenebilmesi sağlandı.</dd>
 
       <dt>Yapılandırma</dt>
@@ -132,7 +133,8 @@
         <module>mod_authn_dbm</module> ve <code>mod_access</code>  modülünün
         ismi de <module>mod_authz_host</module> olarak değiştirilmiştir.
         Ayrıca, belli kimlik doğrulama yapılandırmalarını basitleştirmek
-        üzere <module>mod_authn_alias</module> diye yeni bir modül vardır.
+        üzere <code>mod_authn_alias</code> diye yeni bir modül vardır
+        (2.3/2.4 sürümlerinde kaldırılmıştır).
       </dd>
 
       <dt><module>mod_authnz_ldap</module></dt>
