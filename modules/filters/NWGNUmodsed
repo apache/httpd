@@ -101,19 +101,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= sed
+NLM_NAME	= modsed
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache $(VERSION_STR) sed Module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) SED Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= sed Module
+NLM_THREAD_NAME	= modsed Module
 
 #
 # If this is specified, it will override VERSION value in
@@ -158,7 +158,7 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/sed.nlm \
+	$(OBJDIR)/modsed.nlm \
 	$(EOLIST)
 
 #
@@ -173,6 +173,9 @@ TARGET_lib = \
 #
 FILES_nlm_objs = \
 	$(OBJDIR)/mod_sed.o \
+	$(OBJDIR)/regexp.o \
+	$(OBJDIR)/sed0.o \
+	$(OBJDIR)/sed1.o \
 	$(EOLIST)
 
 #
