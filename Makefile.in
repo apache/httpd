@@ -190,6 +190,7 @@ INSTALL_HEADERS = \
 	$(srcdir)/modules/generators/mod_status.h \
 	$(srcdir)/modules/loggers/mod_log_config.h \
 	$(srcdir)/modules/http/mod_core.h \
+	$(srcdir)/modules/mappers/mod_rewrite.h \
 	$(srcdir)/modules/proxy/mod_proxy.h \
 	$(srcdir)/modules/ssl/mod_ssl.h \
 	$(srcdir)/os/$(OS_DIR)/*.h
