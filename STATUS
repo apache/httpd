@@ -98,12 +98,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     http://www.vuxml.org/freebsd/pkg-pcre.html
 
     update to pcre-7.8
-    +1: pgollucci
+    +1: pgollucci, pquerna
     -0: covener: Don't We get a pass on some of these issues for building 
                  without UTF-8 support and/or not having ever moved past 5.x?
                  It's not always crisp from the advisories. I'd hate to jump 
                  up to 7.8 and pick up unknown exposures from an expanding
                  codebase.
+        pquerna says: We can't protect ourselves from our dependencies by _not_ 
+            upgrading -- the best policy IMO is to follow them, 5.x is not going
+            to be maintained.
     +0
     -1
 
