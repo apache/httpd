@@ -99,7 +99,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
     update to pcre-7.8
     +1: pgollucci
-    -0
+    -0: covener: Don't We get a pass on some of these issues for building 
+                 without UTF-8 support and/or not having ever moved past 5.x?
+                 It's not always crisp from the advisories. I'd hate to jump 
+                 up to 7.8 and pick up unknown exposures from an expanding
+                 codebase.
     +0
     -1
 
