@@ -111,8 +111,10 @@
 
     <tr><td><code>%k</code></td>
         <td>Number of keepalive requests handled on this connection.  Interesting if
-          <directive module="core">KeepAlive</directive> is being used;
-          otherwise this is always 0.</td></tr>
+          <directive module="core">KeepAlive</directive> is being used, so that,
+          for example, a '1' means the first keepalive request after the initial
+          one, '2' the second, etc...;
+          otherwise this is always 0 (indicating the initial request).</td></tr>
 
     <tr><td><code>%l</code></td>
         <td>Remote logname (from identd, if supplied). This will return a
