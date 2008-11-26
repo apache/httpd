@@ -161,7 +161,7 @@ résident pour des serveurs virtuels</a></h2>
 
 
     <p><code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> peut être
-    utilisées à l'intérieur d'une directive VirtualHost si l'exécution se fait
+    utilisée à l'intérieur d'une directive VirtualHost si l'exécution se fait
     sous suEXEC. (Voir <a href="../suexec.html">suEXEC</a>).</p>
 
     <p><em>SÉCURITÉ&nbsp;:</em> lorsque vous spécifiez où écrire les 
