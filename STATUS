@@ -108,6 +108,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     -1
 
     pgollucci volunteers
+
+    pgollucci replies: known to work on freebsd see the WITH_PCRE_FROM_PORTS
+                       option in www/apache22.
+
  
     backport/merge 5.0v7.8 into vendor/pcre/current
     +1 
