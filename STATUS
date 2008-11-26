@@ -85,14 +85,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-   * mod_log_config: Add in useful feature, %k which logs the keepalives
-     value. PR: 45762
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=693120
-        http://svn.apache.org/viewvc?view=rev&revision=720250
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works (minus CHANGES conflict)
-      +1: jim, rpluem, pgolluci
 
   * srclib/pcre and vendor/pcre
     http://www.vuxml.org/freebsd/pkg-pcre.html

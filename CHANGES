@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.11
 
+  *) Add new LogFormat parameter, %k, which logs the number of
+     keepalive requests on this connection for this request.
+     PR 45762 [Dan Poirier <poirier pobox.com>, Jim Jagielski]
+
   *) Export and install the mod_rewrite.h header to ensure the optional
      rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
      available to third party modules. [Graham Leggett]
