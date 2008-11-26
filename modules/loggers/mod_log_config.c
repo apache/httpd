@@ -87,7 +87,7 @@
  * %...A:  local IP-address
  * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
  *                 sent to the client.
- * %...k:  number of requests served over this connection
+ * %...k:  number of keepalive requests served over this connection
  * %...l:  remote logname (from identd, if supplied)
  * %...{Foobar}n:  The contents of note "Foobar" from another module.
  * %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
