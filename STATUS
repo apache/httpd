@@ -115,11 +115,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=720250
       Backport version for 2.2.x of patch:
          Trunk version of patch works (minus CHANGES conflict)
-      +1: jim
-      rpluem says: There was a discussion after r693120 about a better approach
-      (http://mail-archives.apache.org/mod_mbox/httpd-dev/200809.mbox/%3cA90E03FB-E728-480A-A05B-31CAAF5FE803@jaguNET.com%3e).
-      Shouldn't we commit the result of this discussion to trunk and backport it?
-      jim says: r720250 resolves the discussion, it also backports cleanly.
+      +1: jim, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
