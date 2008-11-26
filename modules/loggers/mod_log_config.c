@@ -87,6 +87,7 @@
  * %...A:  local IP-address
  * %...{Foobar}i:  The contents of Foobar: header line(s) in the request
  *                 sent to the client.
+ * %...k:  number of keepalive requests served over this connection
  * %...l:  remote logname (from identd, if supplied)
  * %...{Foobar}n:  The contents of note "Foobar" from another module.
  * %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
@@ -697,6 +698,12 @@ static const char *log_connection_status(request_rec *r, char *a)
         return "+";
     }
     return "-";
+}
+
+static const char *log_requests_on_connection(request_rec *r, char *a)
+{
+    int num = r->connection->keepalives ? r->connection->keepalives - 1 : 0;
+    return apr_itoa(r->pool, num);
 }
 
 /*****************************************************************
@@ -1503,6 +1510,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "q", log_request_query, 0);
         log_pfn_register(p, "X", log_connection_status, 0);
         log_pfn_register(p, "C", log_cookie, 0);
+        log_pfn_register(p, "k", log_requests_on_connection, 0);
         log_pfn_register(p, "r", log_request_line, 1);
         log_pfn_register(p, "D", log_request_duration_microseconds, 1);
         log_pfn_register(p, "T", log_request_duration, 1);
