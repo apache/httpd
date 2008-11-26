@@ -86,7 +86,23 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * srclib/pcre and vendor/pcre
+    http://www.vuxml.org/freebsd/pkg-pcre.html
 
+    update to pcre-7.8
+    +1: pgollucci
+    -0
+    +0
+    -1
+
+    pgollucci volunteers
+ 
+    backport/merge 5.0v7.8 into vendor/pcre/current
+    +1 
+    -0
+    +0
+    -1: pgollucci
+    
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
