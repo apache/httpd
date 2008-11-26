@@ -160,37 +160,22 @@ abs_builddir=`pwd`
 AC_ARG_WITH(pcre,
 APACHE_HELP_STRING(--with-pcre=PATH,Use external PCRE library))
 
-case $with_pcre in
-yes) AC_PATH_PROG(PCRE_CONFIG, pcre-config, false) ;;
- /*) if test -d "$with_pcre" && test -x "$with_pcre/bin/pcre-config"; then
-       PCRE_CONFIG=$with_pcre/bin/pcre-config
-     elif test -x "$with_pcre"; then
-       PCRE_CONFIG=$with_pcre
-     fi
-
-     if $PCRE_CONFIG --version >/dev/null 2>&1; then :; else
-       AC_MSG_ERROR([Did not find pcre-config script at $PCRE_CONFIG])
-     fi
-     ;;
-*) PCRE_CONFIG=false ;;
-esac
+AC_PATH_PROG(PCRE_CONFIG, pcre-config, false)
+if test -d "$with_pcre" && test -x "$with_pcre/bin/pcre-config"; then
+   PCRE_CONFIG=$with_pcre/bin/pcre-config
+elif test -x "$with_pcre"; then
+   PCRE_CONFIG=$with_pcre
+fi
 
 if test "$PCRE_CONFIG" != "false"; then
+  if $PCRE_CONFIG --version >/dev/null 2>&1; then :; else
+    AC_MSG_ERROR([Did not find pcre-config script at $PCRE_CONFIG])
+  fi
   AC_MSG_NOTICE([Using external PCRE library from $PCRE_CONFIG])
   APR_ADDTO(CFLAGS, [`$PCRE_CONFIG --cflags`])
   APR_ADDTO(LIBS, [`$PCRE_CONFIG --libs`])
 else
-  # Build the bundled PCRE
-  AC_MSG_NOTICE([Configuring PCRE regular expression library])
-
-  APR_SUBDIR_CONFIG(srclib/pcre,
-                  [--prefix=$prefix --exec-prefix=$exec_prefix --libdir=$libdir --includedir=$includedir --bindir=$bindir])
-
-  APR_ADDTO(AP_LIBS, [$abs_builddir/srclib/pcre/libpcre.la])
-  APR_ADDTO(INCLUDES, [-I\$(top_builddir)/srclib/pcre])
-
-  AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS pcre"
-  AP_CLEAN_SRCLIB_DIRS="$AP_CLEAN_SRCLIB_DIRS pcre" 
+  AC_MSG_ERROR([pcre-config for libpcre not found. PCRE is required and available from http://pcre.org/])
 fi
 
 echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
