@@ -631,7 +631,10 @@ Result:
               correct Apache internal processing. Because the
               per-directory rewriting comes late in the
               process, the rewritten request
-              has to be re-injected into the Apache kernel. 
+              has to be re-injected into the Apache kernel, as if it
+              were a new request. (See <a
+              href="../rewrite/rewrite_tech.html">mod_rewrite technical
+              details</a>.)
               This is not the serious overhead it may seem to be - 
               this re-injection is completely internal to the 
               Apache server (and the same procedure is used by 
