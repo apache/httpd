@@ -119,19 +119,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              their major versions, when we promise binary-compatibility!
              If we're in the business of untested changes, then make
              the sane one and just stop bundling it altogether.
+    -1: rpluem: Agree with niq on binary compatibility argument. But IMHO
+                unbundling it is also not possible with 2.2.x for the
+                same reason. IMHO this has to wait until 2.4.
 
     pgollucci volunteers
 
     pgollucci replies: known to work on freebsd see the WITH_PCRE_FROM_PORTS
                        option in www/apache22.
 
- 
     backport/merge 5.0v7.8 into vendor/pcre/current
     +1 
     -0
     +0
     -1: pgollucci
-    
+
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
       Trunk version of patches:
          http://svn.apache.org/viewvc?view=rev&revision=606190
