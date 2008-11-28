@@ -151,6 +151,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           third party module authors.
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
+          pquerna: Until issues for this feature are fixed in trunk, we can not
+                   backport it.
 
 
 PATCHES/ISSUES THAT ARE STALLED
