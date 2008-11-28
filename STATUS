@@ -122,6 +122,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     -1: rpluem: Agree with niq on binary compatibility argument. But IMHO
                 unbundling it is also not possible with 2.2.x for the
                 same reason. IMHO this has to wait until 2.4.
+    -1: sctemme: This is one of the perils of bundling, but IMHO for 2.2.x
+                 we're stuck with it.  And if that starts inheriting us 
+                 security issues that we can't fix, all the more reason 
+                 to retire the branch.
 
     pgollucci volunteers
 
