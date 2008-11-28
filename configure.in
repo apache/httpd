@@ -611,7 +611,7 @@ fi
 
 APACHE_FAST_OUTPUT(Makefile modules/Makefile srclib/Makefile) 
 APACHE_FAST_OUTPUT(os/Makefile server/Makefile)
-APACHE_FAST_OUTPUT(support/Makefile srclib/pcre/Makefile)
+APACHE_FAST_OUTPUT(support/Makefile)
 
 if test -d ./test; then
     APACHE_FAST_OUTPUT(test/Makefile)
