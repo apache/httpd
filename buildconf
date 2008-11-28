@@ -115,10 +115,9 @@ fi
 touch .deps
 rm -f aclocal.m4
 rm -f generated_lists
-rm -f srclib/pcre/aclocal.m4
 
 # Remove autoconf 2.5x cache directories
-rm -rf autom4te*.cache srclib/pcre/autom4te*.cache
+rm -rf autom4te*.cache
 
 case "`uname`" in
 *BSD/OS*)
@@ -129,7 +128,6 @@ esac
 
 apr_configure="$apr_src_dir/configure"
 aprutil_configure="$apu_src_dir/configure"
-pcre_configure="srclib/pcre/configure"
 config_h_in="include/ap_config_auto.h.in"
 
 cross_compile_warning="warning: AC_TRY_RUN called without default to allow cross compiling"
@@ -173,9 +171,6 @@ if [ -f $apr_src_dir/build/ltmain.sh ]; then
     cp $apr_src_dir/build/ltmain.sh build
 fi
 
-echo rebuilding $pcre_configure
-(cd srclib/pcre && ${AUTOCONF:-autoconf})
-
 echo rebuilding $config_h_in
 rm -f $config_h_in
 ${AUTOHEADER:-autoheader} 2>&1 | grep -v "$cross_compile_warning"
@@ -185,7 +180,7 @@ rm -f config.cache
 ${AUTOCONF:-autoconf} 2>&1 | grep -v "$cross_compile_warning"
 
 # Remove autoconf 2.5x cache directories
-rm -rf autom4te*.cache srclib/pcre/autom4te*.cache
+rm -rf autom4te*.cache
 
 if [ -f `which cut` ]; then
   echo rebuilding rpm spec file
