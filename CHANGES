@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.11
 
+  *) mod_autoindex: add configuration option to insert string
+     in HTML HEAD (IndexHeadInsert). [Nick Kew]
+
   *) Add new LogFormat parameter, %k, which logs the number of
      keepalive requests on this connection for this request.
      PR 45762 [Dan Poirier <poirier pobox.com>, Jim Jagielski]
