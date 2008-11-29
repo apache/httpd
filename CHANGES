@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: Error responses set by filters were being coerced into 500 errors,
+     sometimes appended to the original error response. Log entry of:
+     'Handler for (null) returned invalid result code -3' 
+     [Eric Covener]
+
   *) mod_buffer: Honour the flush bucket and flush the buffer in the
      input filter. Make sure that metadata buckets are written to
      the buffer, not to the final brigade. [Graham Leggett]
