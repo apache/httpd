@@ -169,7 +169,6 @@ PATCHES/ISSUES THAT ARE STALLED
     +0
     -1: pgollucci
 
-   * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
  * core, authn/z: Avoid calling access control hooks for internal requests
    with configurations which match those of initial request.  Revert to
    original behaviour (call access control hooks for internal requests
