@@ -42,7 +42,7 @@ Changes with Apache 2.3.0
 
   *) core: Add ap_timeout_parameter_parse to public API. [Ruediger Pluem]
 
-  *) mod_dir: Support "DirectoryIndex None" 
+  *) mod_dir: Support "DirectoryIndex disabled" 
      Suggested By André Warnier <aw ice-sa.com> [Eric Covener]
 
   *) mod_ssl: Send Content-Type application/ocsp-request for POST requests to
