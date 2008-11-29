@@ -158,6 +158,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           pquerna: Until issues for this feature are fixed in trunk, we can not
                    backport it.
 
+   * core: Allow ap_invoke_handler to pass AP_FILTER_ERROR through as if it
+     were a reserved return code (OK/DECLINED) instead of converting it to 
+     internal server error.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=721679&view=rev
+      Backport version for 2.2.x of updated patch:
+        http://people.apache.org/~covener/2.2.x-ap_filter_error.diff
+      +1: covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
