@@ -35,15 +35,6 @@
 extern "C" {
 #endif
 
-/** Returned by the bottom-most filter if no data was written.
- *  @see ap_pass_brigade(). */
-#define AP_NOBODY_WROTE         -1
-/** Returned by the bottom-most filter if no data was read.
- *  @see ap_get_brigade(). */
-#define AP_NOBODY_READ          -2
-/** Returned when?? @bug find out when! */
-#define AP_FILTER_ERROR         -3
-
 /**
  * @brief input filtering modes
  */

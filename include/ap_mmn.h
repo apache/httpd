@@ -177,13 +177,16 @@
  * 20081104.0 (2.3.0-dev)  Remove r and need_flush fields from proxy_conn_rec
  *                         as they are no longer used and add
  *                         ap_proxy_buckets_lifetime_transform to mod_proxy.h
- *
+ * 20081129.0 (2.3.0-dev)  Move AP_FILTER_ERROR and AP_NOBODY_READ|WROTE
+ *                         from util_filter.h to httpd.h and change their
+ *                         numeric values so they do not overlap with other
+ *                         potential status codes
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20081104
+#define MODULE_MAGIC_NUMBER_MAJOR 20081129
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

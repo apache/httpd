@@ -453,14 +453,26 @@ AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *compone
  */
 AP_DECLARE(const char *) ap_get_server_built(void);
 
+/* non-HTTP status codes retuned by hooks */
+
+#define OK 0			/**< Module has handled this stage. */
 #define DECLINED -1		/**< Module declines to handle */
 #define DONE -2			/**< Module has served the response completely 
 				 *  - it's safe to die() with no more output
 				 */
 #define SUSPENDED -3 /**< Module will handle the remainder of the request. 
                       * The core will never invoke the request again, */
-#define OK 0			/**< Module has handled this stage. */
 
+/** Returned by the bottom-most filter if no data was written.
+ *  @see ap_pass_brigade(). */
+#define AP_NOBODY_WROTE         -100
+/** Returned by the bottom-most filter if no data was read.
+ *  @see ap_get_brigade(). */
+#define AP_NOBODY_READ          -101
+/** Returned by any filter if the filter chain encounters an error
+ *  and has already dealt with the error response.
+ */
+#define AP_FILTER_ERROR         -102
 
 /**
  * @defgroup HTTP_Status HTTP Status Codes
