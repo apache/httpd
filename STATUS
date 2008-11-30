@@ -93,27 +93,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 44817
     http://svn.apache.org/viewvc?view=rev&revision=657354
     http://svn.apache.org/viewvc?view=rev&revision=657459
-    +1: niq, rpluem
-
-   * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
-      Trunk version of patches:
-         http://svn.apache.org/viewvc?view=rev&revision=606190
-         http://svn.apache.org/viewvc?view=rev&revision=607420
-         http://svn.apache.org/viewvc?view=rev&revision=607425
-         http://svn.apache.org/viewvc?view=rev&revision=611216
-         http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_kernel.c?r1=611216&r2=630436
-         http://svn.apache.org/viewvc?view=rev&revision=662815
-
-      Backport version for 2.2.x of updated patch:
-         http://people.apache.org/~fuankg/diffs/httpd-2.2.x-sni.diff
-      +1: fuankg
-      +0: like ssl upgrade of 2.2, perhaps this is a good reason to bring
-          httpd-2.4 to completion?  vhost changes could be disruptive to
-          third party module authors.
-      -1: rpluem: jorton found some problems with the trunk version and they
-                  should be fixed / discussed in trunk before we backport.
-          pquerna: Until issues for this feature are fixed in trunk, we can not
-                   backport it.
+    +1: niq, rpluem, jim
 
    * core: Allow ap_invoke_handler to pass AP_FILTER_ERROR through as if it
      were a reserved return code (OK/DECLINED) instead of converting it to 
@@ -141,6 +121,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 clearer this evening.  Meanwhile, vote is +-0.
 
 PATCHES/ISSUES THAT ARE STALLED
+
+   * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
+      Trunk version of patches:
+         http://svn.apache.org/viewvc?view=rev&revision=606190
+         http://svn.apache.org/viewvc?view=rev&revision=607420
+         http://svn.apache.org/viewvc?view=rev&revision=607425
+         http://svn.apache.org/viewvc?view=rev&revision=611216
+         http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_kernel.c?r1=611216&r2=630436
+         http://svn.apache.org/viewvc?view=rev&revision=662815
+
+      Backport version for 2.2.x of updated patch:
+         http://people.apache.org/~fuankg/diffs/httpd-2.2.x-sni.diff
+      +1: fuankg
+      +0: like ssl upgrade of 2.2, perhaps this is a good reason to bring
+          httpd-2.4 to completion?  vhost changes could be disruptive to
+          third party module authors.
+      -1: rpluem: jorton found some problems with the trunk version and they
+                  should be fixed / discussed in trunk before we backport.
+          pquerna: Until issues for this feature are fixed in trunk, we can not
+                   backport it.
+
 
   * srclib/pcre and vendor/pcre
     http://www.vuxml.org/freebsd/pkg-pcre.html
