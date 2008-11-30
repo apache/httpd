@@ -115,6 +115,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 Gotta go out now; will take this to the list if I'm not
                 clearer this evening.  Meanwhile, vote is +-0.
 
+   * Build: Enable the use of autoconf >= 2.62 without causing APR / APR-UTIL
+     options passed to the configure script issue warnings about unknown options.
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=721796&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
