@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.11
 
+  *) configure: Don't reject libtool 2.x
+     PR 44817 [Arfrever Frehtes Taifersar Arahesis <Arfrever.FTA gmail.com>]
+
   *) mod_autoindex: add configuration option to insert string
      in HTML HEAD (IndexHeadInsert). [Nick Kew]
 

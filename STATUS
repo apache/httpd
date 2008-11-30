@@ -86,12 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * configure.in: Don't reject libtool 2.x
-    PR 44817
-    http://svn.apache.org/viewvc?view=rev&revision=657354
-    http://svn.apache.org/viewvc?view=rev&revision=657459
-    +1: niq, rpluem, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
