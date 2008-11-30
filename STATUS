@@ -133,6 +133,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    to leave a status of AP_FILTER_ERROR as is and not to convert it
                    to HTTP_INTERNAL_SERVER_ERROR. So AP_FILTER_ERROR is passed on
                    to the code processing the status of ap_invoke_handler.
+      niq says: was confused when I wrote that; more confused now.
+                Is there a risk of running into an infinite loop
+                if ap_http_header_filter gets passed an AP_FILTER_ERROR,
+                then gets re-invoked?
+                Gotta go out now; will take this to the list if I'm not
+                clearer this evening.  Meanwhile, vote is +-0.
 
 PATCHES/ISSUES THAT ARE STALLED
 
