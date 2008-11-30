@@ -18,6 +18,15 @@ sinclude(build/find_apr.m4)
 sinclude(build/find_apu.m4)
 sinclude(acinclude.m4)
 
+dnl Later versions of autoconf (>= 2.62) by default cause the produced
+dnl configure script to emit at least warnings when it comes across unknown
+dnl command line options. These versions also have the macro
+dnl AC_DISABLE_OPTION_CHECKING defined which turns this off by default.
+dnl We want to have this turned off here since our configure calls can
+dnl contain options for APR / APR-UTIL configure that are unknown to us.
+dnl So avoid confusing the user by turning this off. See also PR 45221.
+ifdef([AC_DISABLE_OPTION_CHECKING], [AC_DISABLE_OPTION_CHECKING])
+
 dnl XXX we can't just use AC_PREFIX_DEFAULT because that isn't subbed in
 dnl by configure until it is too late.  Is that how it should be or not?
 dnl Something seems broken here.                                               
