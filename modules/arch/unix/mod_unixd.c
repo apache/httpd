@@ -75,8 +75,6 @@ typedef struct {
 #endif
 
 
-//unixd_config_t unixd_config;
-
 /* Set group privileges.
  *
  * Note that we use the username as set in the config files, rather than
