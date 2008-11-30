@@ -123,6 +123,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of updated patch:
         http://people.apache.org/~covener/2.2.x-ap_filter_error.diff
       +1: covener, rpluem
+      niq says: +1 to this because it fixes a bogus error message.
+                But I don't see how this change passes AP_FILTER_ERROR
+                anywhere as advertised above.
 
 PATCHES/ISSUES THAT ARE STALLED
 
