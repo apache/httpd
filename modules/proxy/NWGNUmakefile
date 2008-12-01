@@ -160,6 +160,9 @@ TARGET_nlm = \
 	$(OBJDIR)/proxyajp.nlm \
 	$(EOLIST)
 
+#This needs to be added to the above list once it builds for netware.
+#	$(OBJDIR)/proxyfcgi.nlm \
+
 #
 # If there is an LIB target, put it here
 #
