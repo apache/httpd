@@ -99,7 +99,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=722081&view=rev
       Backport version for 2.2.x of updated patch:
         http://people.apache.org/~covener/2.2.x-ap_filter_error+clear_brigade.txt
-      +1: covener
+      +1: covener, niq
 
    * Build: Enable the use of autoconf >= 2.62 without causing APR / APR-UTIL
      options passed to the configure script issue warnings about unknown options.
