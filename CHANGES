@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_heartmonitor: New module to collect heartbeats, and write out a file
+     so that other modules can load balance traffic as needed. [Paul Querna]
+
+  *) mod_heartbeat: New module to genarate multicast heartbeats to konw if a 
+     server is online. [Paul Querna]
+
   *) core: Error responses set by filters were being coerced into 500 errors,
      sometimes appended to the original error response. Log entry of:
      'Handler for (null) returned invalid result code -3' 
