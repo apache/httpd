@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_lbmethod_heartbeat: New module to load balance mod_proxy workers
+     based on heartbeats. [Paul Querna]
+
   *) mod_heartmonitor: New module to collect heartbeats, and write out a file
      so that other modules can load balance traffic as needed. [Paul Querna]
 
