@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: When the ap_http_header_filter processes an error bucket, cleanup
+     the passed brigade before returning AP_FILTER_ERROR down the filter 
+     chain. This unambiguously ensures the same error bucket isn't revisited
+     [Ruediger Pluem]
+
   *) mod_lbmethod_heartbeat: New module to load balance mod_proxy workers
      based on heartbeats. [Paul Querna]
 
