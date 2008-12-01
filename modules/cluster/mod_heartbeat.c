@@ -61,11 +61,13 @@ static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
         ps = ap_get_scoreboard_process(i);
 
         for (j = 0; j < ctx->thread_limit; j++) {
+            int res;
+
             worker_score *ws = NULL;
 
             ws = &ap_scoreboard_image->servers[i][j];
 
-            int res = ws->status;
+            res = ws->status;
 
             if (res == SERVER_READY && ps->generation == ap_my_generation) {
                 ready++;
