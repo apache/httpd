@@ -145,6 +145,8 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
 {
     apr_status_t rv;
     apr_file_t *fp;
+    apr_hash_index_t *hi;
+    apr_time_t now;
     char *path = apr_pstrcat(p, ctx->storage_path, ".tmp.XXXXXX", NULL);
     /* TODO: Update stats file (!) */
     rv = apr_file_mktemp(&fp, path, APR_CREATE | APR_WRITE, p);
@@ -155,13 +157,13 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
         return rv;
     }
 
-    apr_hash_index_t *hi;
-    apr_time_t now = apr_time_now();
+    now = apr_time_now();
     for (hi = apr_hash_first(p, ctx->servers);
          hi != NULL; hi = apr_hash_next(hi)) {
         hm_server_t *s = NULL;
+        apr_uint32_t seen;
         apr_hash_this(hi, NULL, NULL, (void **) &s);
-        apr_uint32_t seen = apr_time_sec(now - s->seen);
+        seen = apr_time_sec(now - s->seen);
         if (seen > SEEN_TIMEOUT) {
             /*
              * Skip this entry from the heartbeat file -- when it comes back,
@@ -221,9 +223,11 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
 {
     char buf[MAX_MSG_LEN + 1];
     apr_sockaddr_t from;
-    from.pool = p;
     apr_size_t len = MAX_MSG_LEN;
     apr_status_t rv;
+    apr_table_t *tbl;
+
+    from.pool = p;
 
     rv = apr_socket_recvfrom(&from, ctx->sock, 0, buf, &len);
 
@@ -240,8 +244,6 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
 
     buf[len] = '\0';
 
-    apr_table_t *tbl;
-
     tbl = apr_table_make(p, 10);
 
     qs_to_table(buf, tbl, p);
@@ -250,6 +252,7 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
         apr_table_get(tbl, "busy") != NULL &&
         apr_table_get(tbl, "ready") != NULL) {
         char *ip;
+        hm_server_t *s;
         /* TODO: REMOVE ME BEFORE PRODUCTION (????) */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL,
                      "Heartmonitor: %pI busy=%s ready=%s", &from,
@@ -257,7 +260,7 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
 
         apr_sockaddr_ip_get(&ip, &from);
 
-        hm_server_t *s = hm_get_server(ctx, ip);
+        s = hm_get_server(ctx, ip);
 
         s->busy = atoi(apr_table_get(tbl, "busy"));
         s->ready = atoi(apr_table_get(tbl, "ready"));

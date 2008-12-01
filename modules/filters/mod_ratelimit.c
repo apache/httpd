@@ -71,13 +71,15 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
 
     if (ctx == NULL) {
 
+        const char *rl = NULL;
+
         /* no subrequests. */
         if (f->r->main != NULL) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
-        const char *rl = apr_table_get(f->r->subprocess_env, "rate-limit");
+        rl = apr_table_get(f->r->subprocess_env, "rate-limit");
 
         if (rl == NULL) {
             ap_remove_output_filter(f);
