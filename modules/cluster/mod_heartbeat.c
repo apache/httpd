@@ -49,6 +49,9 @@ static const char *msg_format = "v=%u&ready=%u&busy=%u";
 
 static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
 {
+    apr_size_t len;
+    apr_socket_t *sock = NULL;
+    char buf[256];
     int i, j;
     apr_uint32_t ready = 0;
     apr_uint32_t busy = 0;
@@ -74,11 +77,8 @@ static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
         }
     }
 
-    char buf[256];
-    apr_size_t len =
-        apr_snprintf(buf, sizeof(buf), msg_format, MSG_VERSION, ready, busy);
+    len = apr_snprintf(buf, sizeof(buf), msg_format, MSG_VERSION, ready, busy);
 
-    apr_socket_t *sock = NULL;
     do {
         apr_status_t rv;
         rv = apr_socket_create(&sock, ctx->mcast_addr->family,
@@ -136,6 +136,8 @@ static void *hb_worker(apr_thread_t *thd, void *data)
 
     while (ctx->keep_running) {
         int mpm_state = 0;
+        apr_pool_t *tpool;
+
         rv = ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state);
 
         if (rv != APR_SUCCESS) {
@@ -147,7 +149,6 @@ static void *hb_worker(apr_thread_t *thd, void *data)
             break;
         }
 
-        apr_pool_t *tpool;
         apr_pool_create(&tpool, pool);
         apr_pool_tag(tpool, "heartbeat_worker_temp");
         hb_monitor(ctx, tpool);
@@ -276,6 +277,8 @@ static const char *cmd_hb_address(cmd_parms *cmd,
                                   void *dconf, const char *addr)
 {
     apr_status_t rv;
+    const char *tmpdir = NULL;
+    char *path;
     char *host_str;
     char *scope_id;
     apr_port_t port = 0;
@@ -312,13 +315,12 @@ static const char *cmd_hb_address(cmd_parms *cmd,
         return "HeartbeatAddress: apr_sockaddr_info_get failed.";
     }
 
-    const char *tmpdir = NULL;
     rv = apr_temp_dir_get(&tmpdir, p);
     if (rv) {
         return "HeartbeatAddress: unable to find temp directory.";
     }
 
-    char *path = apr_pstrcat(p, tmpdir, "/hb-tmp.XXXXXX", NULL);
+    path = apr_pstrcat(p, tmpdir, "/hb-tmp.XXXXXX", NULL);
 
     rv = apr_file_mktemp(&ctx->lockf, path, 0, p);
 
