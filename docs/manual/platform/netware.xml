@@ -498,6 +498,11 @@
         <example>Set ZLIBSDK=D:\NOVELL\zlib</example>
         </li>
         
+        <li>Set the environment variable <code>PCRESDK</code> to the location
+        where you installed the source code for the PCRE Library, for example:
+        <example>Set PCRESDK=D:\NOVELL\pcre</example>
+        </li>
+
         <li>Set the environment variable <code>AP_WORK</code> to the full path of
         the <code>httpd</code> source code directory.
         <example>Set AP_WORK=D:\httpd-2.0.x</example>

@@ -49,6 +49,11 @@ endif
 # ZLIBSDK = C:/novell/ndk/zlibsdk
 # endif
 
+# This is a placeholder
+# ifndef PCRESDK
+# PCRESDK = C:/novell/ndk/pcresdk
+# endif
+
 ifndef METROWERKS
 METROWERKS = C:\Program Files\Metrowerks\CodeWarrior
 endif
@@ -136,6 +141,9 @@ INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
 endif
 ifneq "$(ZLIBSDK)" ""
 INCDIRS := $(INCDIRS);$(ZLIBSDK)
+endif
+ifneq "$(PCRESDK)" ""
+INCDIRS := $(INCDIRS);$(PCRESDK)
 endif
 
 DEFINES	= -DNETWARE 
@@ -309,7 +317,7 @@ APR		= $(APR_WORK)
 APRUTIL		= $(APU_WORK)
 APULDAP		= $(APU_WORK)/ldap
 SUPMOD		= $(AP_WORK)/support
-PCRE		= $(AP_WORK)/srclib/pcre
+PCRE		= $(PCRESDK)
 APRTEST		= $(APR_WORK)/test
 HTTPD		= $(AP_WORK)/modules/http
 XML		= $(APU_WORK)/xml
