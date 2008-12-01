@@ -92,28 +92,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * core: Allow ap_invoke_handler to pass AP_FILTER_ERROR through as if it
      were a reserved return code (OK/DECLINED) instead of converting it to 
-     internal server error.
+     internal server error. Additionally, clear the brigade in 
+     ap_http_header_filter when handling an error bucket.
       Trunk version of patch:
         http://svn.apache.org/viewvc?rev=721679&view=rev
+        http://svn.apache.org/viewvc?rev=722081&view=rev
       Backport version for 2.2.x of updated patch:
-        http://people.apache.org/~covener/2.2.x-ap_filter_error.diff
-      +1: covener, rpluem
-      niq says: +1 to this because it fixes a bogus error message.
-                But I don't see how this change passes AP_FILTER_ERROR
-                anywhere as advertised above.
-      rpluem says: Sorry for being confused by your commit message. Is this
-                   a full +1 that would enable us to backport or is this a
-                   conditional one?
-                   To answer your question: The patch causes ap_invoke_handler
-                   to leave a status of AP_FILTER_ERROR as is and not to convert it
-                   to HTTP_INTERNAL_SERVER_ERROR. So AP_FILTER_ERROR is passed on
-                   to the code processing the status of ap_invoke_handler.
-      niq says: was confused when I wrote that; more confused now.
-                Is there a risk of running into an infinite loop
-                if ap_http_header_filter gets passed an AP_FILTER_ERROR,
-                then gets re-invoked?
-                Gotta go out now; will take this to the list if I'm not
-                clearer this evening.  Meanwhile, vote is +-0.
+        http://people.apache.org/~covener/2.2.x-ap_filter_error+clear_brigade.txt
+      +1: covener
 
    * Build: Enable the use of autoconf >= 2.62 without causing APR / APR-UTIL
      options passed to the configure script issue warnings about unknown options.
