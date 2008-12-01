@@ -279,6 +279,7 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
 
 static void *hm_worker(apr_thread_t *thd, void *data)
 {
+    apr_time_t last;
     hm_ctx_t *ctx = (hm_ctx_t *) data;
     apr_status_t rv;
 
@@ -307,15 +308,16 @@ static void *hm_worker(apr_thread_t *thd, void *data)
     }
 
 
-    apr_time_t last = apr_time_now();
+    last = apr_time_now();
     while (ctx->keep_running) {
         int n;
         apr_pool_t *p;
         apr_pollfd_t pfd;
         apr_interval_time_t timeout;
+        apr_time_t now;
         apr_pool_create(&p, ctx->p);
 
-        apr_time_t now = apr_time_now();
+        now = apr_time_now();
 
         if (apr_time_sec((now - last)) > 5) {
             hm_update_stats(ctx, p);
