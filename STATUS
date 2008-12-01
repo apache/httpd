@@ -107,6 +107,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of updated patch:
         http://people.apache.org/~covener/2.2.x-ap_filter_error+clear_brigade.txt
       +1: covener, niq
+      rpluem says: 1. There is a bogus entry in your patch to CHANGES
+                   2. I guess we should also consider r722213, because
+                      with the current state of the patch we IMHO create
+                      a regression in the case that a custom error page
+                      results in AP_FILTER_ERROR before sending the page.
 
 PATCHES/ISSUES THAT ARE STALLED
 
