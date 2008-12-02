@@ -160,7 +160,7 @@ static fd_queue_info_t *worker_queue_info;
 static int mpm_state = AP_MPMQ_STARTING;
 static int sick_child_detected;
 
-apr_thread_mutex_t *timeout_mutex;
+static apr_thread_mutex_t *timeout_mutex;
 APR_RING_HEAD(timeout_head_t, conn_state_t);
 static struct timeout_head_t timeout_head, keepalive_timeout_head;
 
@@ -2025,7 +2025,7 @@ static void server_main_loop(int remaining_children_to_start)
                 sick_child_detected = 1;
             }
             /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = find_child_by_pid(&pid);
+            child_slot = ap_find_child_by_pid(&pid);
             if (child_slot >= 0) {
                 for (i = 0; i < ap_threads_per_child; i++)
                     ap_update_child_status_from_indexes(child_slot, i,

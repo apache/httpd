@@ -371,7 +371,7 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
 /* Optional function coming from mod_logio, used for logging of output
  * traffic
  */
-extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
+extern APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *ap__logio_add_bytes_out;
 
 apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
 {
@@ -751,8 +751,8 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
             break;
         }
     }
-    if ((logio_add_bytes_out != NULL) && (bytes_written > 0)) {
-        logio_add_bytes_out(c, bytes_written);
+    if ((ap__logio_add_bytes_out != NULL) && (bytes_written > 0)) {
+        ap__logio_add_bytes_out(c, bytes_written);
     }
     *cumulative_bytes_written += bytes_written;
 
@@ -813,8 +813,8 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
             rv = arv;
         }
     }
-    if ((logio_add_bytes_out != NULL) && (bytes_written > 0)) {
-        logio_add_bytes_out(c, bytes_written);
+    if ((ap__logio_add_bytes_out != NULL) && (bytes_written > 0)) {
+        ap__logio_add_bytes_out(c, bytes_written);
     }
     *cumulative_bytes_written += bytes_written;
     if ((bytes_written < file_length) && (bytes_written > 0)) {

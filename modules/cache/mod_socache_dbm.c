@@ -128,20 +128,20 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
      * cannot exactly determine the suffixes we try all possibilities.
      */
     if (geteuid() == 0 /* is superuser */) {
-        chown(ctx->data_file, unixd_config.user_id, -1 /* no gid change */);
+        chown(ctx->data_file, ap_unixd_config.user_id, -1 /* no gid change */);
         if (chown(apr_pstrcat(p, ctx->data_file, SSL_DBM_FILE_SUFFIX_DIR, NULL),
-                  unixd_config.user_id, -1) == -1) {
+                  ap_unixd_config.user_id, -1) == -1) {
             if (chown(apr_pstrcat(p, ctx->data_file, ".db", NULL),
-                      unixd_config.user_id, -1) == -1)
+                      ap_unixd_config.user_id, -1) == -1)
                 chown(apr_pstrcat(p, ctx->data_file, ".dir", NULL),
-                      unixd_config.user_id, -1);
+                      ap_unixd_config.user_id, -1);
         }
         if (chown(apr_pstrcat(p, ctx->data_file, SSL_DBM_FILE_SUFFIX_PAG, NULL),
-                  unixd_config.user_id, -1) == -1) {
+                  ap_unixd_config.user_id, -1) == -1) {
             if (chown(apr_pstrcat(p, ctx->data_file, ".db", NULL),
-                      unixd_config.user_id, -1) == -1)
+                      ap_unixd_config.user_id, -1) == -1)
                 chown(apr_pstrcat(p, ctx->data_file, ".pag", NULL),
-                      unixd_config.user_id, -1);
+                      ap_unixd_config.user_id, -1);
         }
     }
 #endif

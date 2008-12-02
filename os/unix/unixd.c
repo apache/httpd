@@ -50,11 +50,12 @@
 #include <sys/prctl.h>
 #endif
 
-unixd_config_rec unixd_config;
+unixd_config_rec ap_unixd_config;
 
 
-AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
-                           const char *arg, const char * arg2, int type)
+AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
+                                     const char *arg,
+                                     const char * arg2, int type)
 {
 #if (defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)) && APR_HAVE_STRUCT_RLIMIT && APR_HAVE_GETRLIMIT
     char *str;
@@ -133,7 +134,7 @@ static apr_status_t ap_unix_create_privileged_process(
     char *execuser, *execgroup;
     const char *argv0;
 
-    if (!unixd_config.suexec_enabled) {
+    if (!ap_unixd_config.suexec_enabled) {
         return apr_proc_create(newproc, progname, args, env, attr, p);
     }
 
@@ -221,7 +222,7 @@ static apr_lockmech_e proc_mutex_mech(apr_proc_mutex_t *pmutex)
     return APR_LOCK_DEFAULT;
 }
 
-AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
+AP_DECLARE(apr_status_t) ap_unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
 {
     if (!geteuid()) {
         apr_lockmech_e mech = proc_mutex_mech(pmutex);
@@ -242,8 +243,8 @@ AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
             struct semid_ds buf;
 
             apr_os_proc_mutex_get(&ospmutex, pmutex);
-            buf.sem_perm.uid = unixd_config.user_id;
-            buf.sem_perm.gid = unixd_config.group_id;
+            buf.sem_perm.uid = ap_unixd_config.user_id;
+            buf.sem_perm.gid = ap_unixd_config.group_id;
             buf.sem_perm.mode = 0600;
             ick.buf = &buf;
             if (semctl(ospmutex.crossproc, 0, IPC_SET, ick) < 0) {
@@ -258,7 +259,7 @@ AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
             const char *lockfile = apr_proc_mutex_lockfile(pmutex);
 
             if (lockfile) {
-                if (chown(lockfile, unixd_config.user_id,
+                if (chown(lockfile, ap_unixd_config.user_id,
                           -1 /* no gid change */) < 0) {
                     return errno;
                 }
@@ -274,20 +275,20 @@ AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(apr_status_t) unixd_set_global_mutex_perms(apr_global_mutex_t *gmutex)
+AP_DECLARE(apr_status_t) ap_unixd_set_global_mutex_perms(apr_global_mutex_t *gmutex)
 {
 #if !APR_PROC_MUTEX_IS_GLOBAL
     apr_os_global_mutex_t osgmutex;
     apr_os_global_mutex_get(&osgmutex, gmutex);
-    return unixd_set_proc_mutex_perms(osgmutex.proc_mutex);
+    return ap_unixd_set_proc_mutex_perms(osgmutex.proc_mutex);
 #else  /* APR_PROC_MUTEX_IS_GLOBAL */
     /* In this case, apr_proc_mutex_t and apr_global_mutex_t are the same. */
-    return unixd_set_proc_mutex_perms(gmutex);
+    return ap_unixd_set_proc_mutex_perms(gmutex);
 #endif /* APR_PROC_MUTEX_IS_GLOBAL */
 }
 
-AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
-                                        apr_pool_t *ptrans)
+AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
+                                         apr_pool_t *ptrans)
 {
     apr_socket_t *csd;
     apr_status_t status;

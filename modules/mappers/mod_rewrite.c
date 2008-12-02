@@ -2607,7 +2607,7 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
     }
 
 #ifdef AP_NEED_SET_MUTEX_PERMS
-    rc = unixd_set_global_mutex_perms(rewrite_mapr_lock_acquire);
+    rc = ap_unixd_set_global_mutex_perms(rewrite_mapr_lock_acquire);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s,
                      "mod_rewrite: Parent could not set permissions "
@@ -4245,7 +4245,7 @@ static int post_config(apr_pool_t *p,
     }
 
 #ifdef AP_NEED_SET_MUTEX_PERMS
-    rv = unixd_set_global_mutex_perms(rewrite_log_lock);
+    rv = ap_unixd_set_global_mutex_perms(rewrite_log_lock);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "mod_rewrite: Could not set permissions on "

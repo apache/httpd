@@ -2,6 +2,18 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Rename APIs to include ap_ prefix:
+        find_child_by_pid -> ap_find_child_by_pid
+        suck_in_APR -> ap_suck_in_APR
+        sys_privileges_handlers -> ap_sys_privileges_handlers
+        unixd_accept -> ap_unixd_accept
+        unixd_config -> ap_unixd_config
+        unixd_killpg -> ap_unixd_killpg
+        unixd_set_global_mutex_perms -> ap_unixd_set_global_mutex_perms
+        unixd_set_proc_mutex_perms -> ap_unixd_set_proc_mutex_perms
+        unixd_set_rlimit -> ap_unixd_set_rlimit
+     [Paul Querna]
+
   *) core: When the ap_http_header_filter processes an error bucket, cleanup
      the passed brigade before returning AP_FILTER_ERROR down the filter 
      chain. This unambiguously ensures the same error bucket isn't revisited
