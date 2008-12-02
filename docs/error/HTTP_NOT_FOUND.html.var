@@ -407,21 +407,20 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Object not found!"
+--><!--#set var="TITLE" value="Nesne mevcut değil!"
 --><!--#include virtual="include/top.html" -->
 
-    Talep etti&#287;iniz URL, sunucu üzerinde bulunmuyor.
+    Talep ettiğiniz URL, sunucu üzerinde bulunmuyor.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">Referans sayfa</a>
-    üzerindeki ba&#287;lant&#305; güncel de&#287;il.
-    Lütfen <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referans sayfa</a>'n&#305;n
-    yazar&#305;n&#305; konuyla ilgili bilgilendirin.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">İstek yapılan sayfa</a>
+    üzerindeki bağlantı güncel değil. Lütfen <a href="<!--#echo encoding="url" 
+    var="HTTP_REFERER" -->">sayfa</a> yazarını hata hakkında bilgilendirin.
 
   <!--#else -->
 
-    URL'i kendiniz elle girdiyseniz, yaz&#305;m&#305;n&#305;z&#305; denetleyip tekrar deneyin.
+    URL'yi elle girdiyseniz, yazdıklarınızı gözden geçirip yeniden deneyin.
 
   <!--#endif -->
 

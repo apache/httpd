@@ -186,10 +186,10 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Unsupported media type!"
+--><!--#set var="TITLE" value="Desteklenmeyen ortam türü!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu, talep içinde iletilen ortam türünü desteklemiyor.
+    Sunucu, istekte belirtilen ortam türünü desteklemiyor.
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

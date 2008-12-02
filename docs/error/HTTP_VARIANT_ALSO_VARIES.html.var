@@ -207,11 +207,11 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Variant also varies!"
+--><!--#set var="TITLE" value="Gösterim çeşitleri de çeşitli!"
 --><!--#include virtual="include/top.html" -->
 
-    Talep edilen eleman&#305;n bir de&#287;i&#351;keninin kendisi zaten payla&#351;&#305;l&#305;r bir kaynak.
-    Eri&#351;im mümkün de&#287;il.
+    İstenen gösterim çeşidinin kendisi zaten kendi içinde uzlaşımlı.
+    Erişim mümkün değil.
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

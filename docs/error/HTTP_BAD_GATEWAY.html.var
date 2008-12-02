@@ -269,11 +269,11 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Bad Gateway!"
+--><!--#set var="TITLE" value="Hatalı Ağ Geçidi!"
 --><!--#include virtual="include/top.html" -->
 
-    Vekil (proxy) sunucu üstbirim (upstream) sunucusundan
-    anlams&#305;z bir cevap ald&#305;.
+    Vekil sunucu üstbirim sunucudan
+    anlamsız bir yanıt aldı.
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     <!--#include virtual="include/spacer.html" -->

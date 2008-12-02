@@ -186,10 +186,10 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Cannot process request!"
+--><!--#set var="TITLE" value="İstek yerine getirilemiyor!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu, gezgin taraf&#305;ndan talep edilen yöntemi desteklemiyor.
+    Sunucu, tarayıcı tarafından istenen eylemi desteklemiyor.
    
 <!--#include virtual="include/bottom.html" -->
 ----------tr--
