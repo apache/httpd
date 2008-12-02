@@ -86,9 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
    * core: Allow ap_invoke_handler to pass AP_FILTER_ERROR through as if it
      were a reserved return code (OK/DECLINED) instead of converting it to 
      internal server error. 
@@ -102,13 +99,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=722213&view=rev
       Backport version for 2.2.x of updated patch:
         http://people.apache.org/~covener/2.2.x-ap_filter_error+722081+722213.diff
-      +1: covener, rpluem
+      +1: covener, rpluem, niq
       rpluem says: 1. There is a bogus entry in your patch to CHANGES
                    2. I guess we should also consider r722213, because
                       with the current state of the patch we IMHO create
                       a regression in the case that a custom error page
                       results in AP_FILTER_ERROR before sending the page.
       covener says: r722213 added and extra CHANGES entry removed (reset niq's +1)
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
 PATCHES/ISSUES THAT ARE STALLED
 
