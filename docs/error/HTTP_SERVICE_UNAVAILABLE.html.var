@@ -1,20 +1,19 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
---><!--#set var="TITLE" value="Slu¾ba není dostupná!"
+--><!--#set var="TITLE" value="SluÅ¾ba nenÃ­ dostupnÃ¡!"
 --><!--#include virtual="include/top.html" -->
 
-    Server doèasnì nemù¾e zpracovat Vá¹ po¾adavek
-    kvùli údr¾bì nebo kapacitním problémùm.
-    Zkuste to, prosím, pozdìji.
+    Server doÄasnÄ› nemÅ¯Å¾e zpracovat VÃ¡Å¡ poÅ¾adavek
+    kvÅ¯li ÃºdrÅ¾bÄ› nebo kapacitnÃ­m problÃ©mÅ¯m.
+    Zkuste to, prosÃ­m, pozdÄ›ji.
 
 <!--#include virtual="include/bottom.html" -->
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="Zugriff nicht m&ouml;glich!"
@@ -29,7 +28,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Service unavailable!"
 --><!--#include virtual="include/top.html" -->
@@ -42,7 +41,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;Servicio no disponible!"
@@ -59,7 +58,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="Service inaccessible!"
@@ -74,7 +73,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="Seirbh&iacute;s do&uacute;s&aacute;idte!"
 --><!--#include virtual="include/top.html" -->
@@ -87,7 +86,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="Servizio non disponibile!"
@@ -102,36 +101,34 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Service unavailable!"
 --><!--#include virtual="include/top.html" -->
 
-    $B%a%s%F%J%s%9$GDd;_Cf$+!"%5!<%P$N=hM}G=NO$NLdBj$N$?$a!"(B
-    $B8=:_%j%/%(%9%H$K1~$8$k$3$H$,$G$-$^$;$s!#(B
-    $B8e$[$I:FEY$*;n$72<$5$$!#(B
+    ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã§åœæ­¢ä¸­ã‹ã€ã‚µãƒ¼ãƒã®å‡¦ç†èƒ½åŠ›ã®å•é¡Œã®ãŸã‚ã€
+    ç¾åœ¨ãƒªã‚¯ã‚¨ã‚¹ãƒˆã«å¿œã˜ã‚‹ã“ã¨ãŒã§ãã¾ã›ã‚“ã€‚
+    å¾Œã»ã©å†åº¦ãŠè©¦ã—ä¸‹ã•ã„ã€‚
 
 <!--#include virtual="include/bottom.html" -->
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="¼­ºñ½º ÀÏ½ÃÁßÁö!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ì„œë¹„ìŠ¤ ì¼ì‹œì¤‘ì§€!"
 --><!--#include virtual="include/top.html" -->
 
-    °ü¸® ÀÛ¾÷ÀÌ³ª ¿ë·® ¹®Á¦·Î ¼­¹ö°¡ Àá½Ãµ¿¾È ¿äÃ»À» Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù.
-    ³ªÁß¿¡ ´Ù½Ã ½ÃµµÇØÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.
+    ê´€ë¦¬ ì‘ì—…ì´ë‚˜ ìš©ëŸ‰ ë¬¸ì œë¡œ ì„œë²„ê°€ ì ì‹œë™ì•ˆ ìš”ì²­ì„ ì²˜ë¦¬í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
+    ë‚˜ì¤‘ì— ë‹¤ì‹œ ì‹œë„í•´ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Dienst niet beschikbaar!"
@@ -145,22 +142,21 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Serwis niedostêpny!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Serwis niedostÄ™pny!"
 --><!--#include virtual="include/top.html" -->
 
-    Serwer nie mo¿e zrealizowaæ twojego ¿±dania
-    ze wzglêdu na konserwacjê lub zbyt du¿e obci±¿enie.
-    Prosimy spróbowaæ pó¼niej.
+    Serwer nie moÅ¼e zrealizowaÄ‡ twojego Å¼Ä…dania
+    ze wzglÄ™du na konserwacjÄ™ lub zbyt duÅ¼e obciÄ…Å¼enie.
+    Prosimy sprÃ³bowaÄ‡ pÃ³Åºniej.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="Servi&ccedil;o indispon&iacute;vel!"
@@ -174,7 +170,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="Serviciu indisponibil!"
@@ -188,22 +184,21 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
---><!--#set var="TITLE" value="ÃáÛãÓĞ øÕ İÕÔŞáâãßİĞ!"
+--><!--#set var="TITLE" value="Ğ£ÑĞ»ÑƒĞ³Ğ° Ñ˜Ğµ Ğ½ĞµĞ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ½Ğ°!"
 --><!--#include virtual="include/top.html" -->
 
-    ÁÕàÒÕà âàÕİãâİŞ İØøÕ ã ÜŞÓãûİŞáâØ ÔĞ ãáÛãÖØ ÒĞè
-    ×ĞåâÕÒ ßŞèâŞ øÕ ×ĞâÒŞàÕİ ×ÑŞÓ ŞÔàÖĞÒĞúĞ ØÛØ ØÜĞ İÕÔŞÒŞùĞİ
-    ÚĞßĞæØâÕâ. ¼ŞÛØÜŞ ßŞÚãèĞøâÕ ßŞİŞÒŞ ÚĞáİØøÕ.
+    Ğ¡ĞµÑ€Ğ²ĞµÑ€ Ñ‚Ñ€ĞµĞ½ÑƒÑ‚Ğ½Ğ¾ Ğ½Ğ¸Ñ˜Ğµ Ñƒ Ğ¼Ğ¾Ğ³ÑƒÑ›Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ´Ğ° ÑƒÑĞ»ÑƒĞ¶Ğ¸ Ğ²Ğ°Ñˆ
+    Ğ·Ğ°Ñ…Ñ‚ĞµĞ² Ğ¿Ğ¾ÑˆÑ‚Ğ¾ Ñ˜Ğµ Ğ·Ğ°Ñ‚Ğ²Ğ¾Ñ€ĞµĞ½ Ğ·Ğ±Ğ¾Ğ³ Ğ¾Ğ´Ñ€Ğ¶Ğ°Ğ²Ğ°ÑšĞ° Ğ¸Ğ»Ğ¸ Ğ¸Ğ¼Ğ° Ğ½ĞµĞ´Ğ¾Ğ²Ğ¾Ñ™Ğ°Ğ½
+    ĞºĞ°Ğ¿Ğ°Ñ†Ğ¸Ñ‚ĞµÑ‚. ĞœĞ¾Ğ»Ğ¸Ğ¼Ğ¾ Ğ¿Ğ¾ĞºÑƒÑˆĞ°Ñ˜Ñ‚Ğµ Ğ¿Ğ¾Ğ½Ğ¾Ğ²Ğ¾ ĞºĞ°ÑĞ½Ğ¸Ñ˜Ğµ.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="Tj&auml;nsten ej tillg&auml;nglig!"
@@ -218,16 +213,15 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Service unavailable!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu, kendi içindeki çe&#351;itli sorunlardan ötürü,
-    bir süreli&#287;ine taleplerinize cevap veremeyecek.
-    Lütfen daha sonra tekrar deneyin.
+    Sunucu, kendi iÃ§indeki Ã§e&#351;itli sorunlardan Ã¶tÃ¼rÃ¼,
+    bir sÃ¼reli&#287;ine taleplerinize cevap veremeyecek.
+    LÃ¼tfen daha sonra tekrar deneyin.
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

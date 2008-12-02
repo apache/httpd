@@ -1,18 +1,17 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
---><!--#set var="TITLE" value="Nelze zpracovat po¾adavek!"
+--><!--#set var="TITLE" value="Nelze zpracovat poÅ¾adavek!"
 --><!--#include virtual="include/top.html" -->
 
-    Server nepodporuje akci po¾adovanou prohlí¾eèem.
+    Server nepodporuje akci poÅ¾adovanou prohlÃ­Å¾eÄem.
    
 <!--#include virtual="include/bottom.html" -->
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="Anfrage nicht ausf&uuml;hrbar!"
@@ -25,7 +24,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Cannot process request!"
 --><!--#include virtual="include/top.html" -->
@@ -36,7 +35,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;Solicitud no procesada!"
@@ -49,7 +48,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="La requ&ecirc;te ne peut &ecirc;tre effectu&eacute;e!"
@@ -62,7 +61,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="Iarratais dophr&oacute;ise&aacute;ilte!"
 --><!--#include virtual="include/top.html" -->
@@ -74,7 +73,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="La richiesta non pu&ograve; essere soddisfatta!"
@@ -86,33 +85,31 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Cannot process request!"
 --><!--#include virtual="include/top.html" -->
 
-    $B%V%i%&%6$NMW5a$7$?%"%/%7%g%s$O!"%5%]!<%H$7$F$$$^$;$s!#(B
+    ãƒ–ãƒ©ã‚¦ã‚¶ã®è¦æ±‚ã—ãŸã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã¯ã€ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ã¾ã›ã‚“ã€‚
    
 <!--#include virtual="include/bottom.html" -->
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="¿äÃ» Ã³¸® ½ÇÆĞ!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ìš”ì²­ ì²˜ë¦¬ ì‹¤íŒ¨!"
 --><!--#include virtual="include/top.html" -->
 
-    ºê¶ó¿ìÀú°¡ º¸³½ ¿äÃ»À» ÀÌ ¼­¹ö°¡ Áö¿øÇÏÁö ¾Ê½À´Ï´Ù.
+    ë¸Œë¼ìš°ì €ê°€ ë³´ë‚¸ ìš”ì²­ì„ ì´ ì„œë²„ê°€ ì§€ì›í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Kan vraag niet verwerken!"
@@ -124,20 +121,19 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="¯±danie nieobs³ugiwane!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Å»Ä…danie nieobsÅ‚ugiwane!"
 --><!--#include virtual="include/top.html" -->
 
-    Ten serwer nie obs³uguje ¿±dania przes³anego przez przegl±darkê.
+    Ten serwer nie obsÅ‚uguje Å¼Ä…dania przesÅ‚anego przez przeglÄ…darkÄ™.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="A requisi&ccedil;&atilde;o n&atilde;o pode ser processada!"
@@ -150,7 +146,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="Cererea nu poate fi procesata!"
@@ -162,20 +158,19 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
---><!--#set var="TITLE" value="½Õ ÜŞÓã ÔĞ ŞÑàĞÔØÜ ×ĞåâÕÒ!"
+--><!--#set var="TITLE" value="ĞĞµ Ğ¼Ğ¾Ğ³Ñƒ Ğ´Ğ° Ğ¾Ğ±Ñ€Ğ°Ğ´Ğ¸Ğ¼ Ğ·Ğ°Ñ…Ñ‚ĞµĞ²!"
 --><!--#include virtual="include/top.html" -->
 
-    ÁÕàÒÕà İÕ ßŞÔàÖĞÒĞ ĞÚæØøã ÚŞøã øÕ çØâĞç ×ĞåâÕÒĞŞ.
+    Ğ¡ĞµÑ€Ğ²ĞµÑ€ Ğ½Ğµ Ğ¿Ğ¾Ğ´Ñ€Ğ¶Ğ°Ğ²Ğ° Ğ°ĞºÑ†Ğ¸Ñ˜Ñƒ ĞºĞ¾Ñ˜Ñƒ Ñ˜Ğµ Ñ‡Ğ¸Ñ‚Ğ°Ñ‡ Ğ·Ğ°Ñ…Ñ‚ĞµĞ²Ğ°Ğ¾.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="Kan ej utf&ouml;ra f&ouml;rfr&aring;gan!"
@@ -188,14 +183,13 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Cannot process request!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu, gezgin taraf&#305;ndan talep edilen yöntemi desteklemiyor.
+    Sunucu, gezgin taraf&#305;ndan talep edilen yÃ¶ntemi desteklemiyor.
    
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

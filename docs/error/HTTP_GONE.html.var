@@ -1,24 +1,23 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
---><!--#set var="TITLE" value="Zdroj ji¾ není dále dostupnı!"
+--><!--#set var="TITLE" value="Zdroj jiÅ¾ nenÃ­ dÃ¡le dostupnÃ½!"
 --><!--#include virtual="include/top.html" -->
 
-    Po¾adované URL ji¾ není na tomto serveru k dispozici, ani není k dispozici
-    ¾ádná adresa k pøesmìrování.
+    PoÅ¾adovanÃ© URL jiÅ¾ nenÃ­ na tomto serveru k dispozici, ani nenÃ­ k dispozici
+    Å¾Ã¡dnÃ¡ adresa k pÅ™esmÄ›rovÃ¡nÃ­.
 
   <!--#if expr="$HTTP_REFERER" -->
   
-    Informujte, prosím, autora
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazující
-    stránky</a>, ¾e odkaz je zastaralı.
+    Informujte, prosÃ­m, autora
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazujÃ­cÃ­
+    strÃ¡nky</a>, Å¾e odkaz je zastaralÃ½.
    
   <!--#else -->
   
-    Pokud jste následovali odkaz z&nbsp;cizí stránky, kontaktujte, prosím,
-    jejího autora.
+    Pokud jste nÃ¡sledovali odkaz z&nbsp;cizÃ­ strÃ¡nky, kontaktujte, prosÃ­m,
+    jejÃ­ho autora.
 
   <!--#endif -->
   
@@ -26,7 +25,7 @@ Body:----------cs--
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="Objekt nicht mehr verf&uuml;gbar!"
@@ -53,7 +52,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Resource is no longer available!"
 --><!--#include virtual="include/top.html" -->
@@ -78,7 +77,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;Recurso no disponible!"
@@ -104,7 +103,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="Cette ressource n'existe plus!"
@@ -130,7 +129,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="Acmhainn imithe!"
 --><!--#include virtual="include/top.html" -->
@@ -155,7 +154,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="La risorsa non &egrave; pi&ugrave; disponibile!"
@@ -182,26 +181,25 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Resource is no longer available!"
 --><!--#include virtual="include/top.html" -->
 
-    $BMW5a$5$l$?(B URL $B$O4{$KK\%5!<%P$G$OMxMQ$G$-$^$;$s$7!"(B
-    $B0\F0@h$b$o$+$j$^$;$s!#(B
+    è¦æ±‚ã•ã‚ŒãŸ URL ã¯æ—¢ã«æœ¬ã‚µãƒ¼ãƒã§ã¯åˆ©ç”¨ã§ãã¾ã›ã‚“ã—ã€
+    ç§»å‹•å…ˆã‚‚ã‚ã‹ã‚Šã¾ã›ã‚“ã€‚
   
   <!--#if expr="$HTTP_REFERER" -->
   
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->"
-    >$B;2>H85%Z!<%8(B</a>$B$NCx<T$K!"(B
-    $B%j%s%/$,8E$/$J$C$F$$$k$3$H$r$4O"Mm$/$@$5$$!#(B
+    >å‚ç…§å…ƒãƒšãƒ¼ã‚¸</a>ã®è‘—è€…ã«ã€
+    ãƒªãƒ³ã‚¯ãŒå¤ããªã£ã¦ã„ã‚‹ã“ã¨ã‚’ã”é€£çµ¡ãã ã•ã„ã€‚
    
   <!--#else -->
   
-    $BB>$N%Z!<%8$+$i$N%j%s%/$rC)$C$F$-$?>l9g$O!"(B
-    $B$=$N%Z!<%8$NCx<T$K$4O"Mm$/$@$5$$!#(B
+    ä»–ã®ãƒšãƒ¼ã‚¸ã‹ã‚‰ã®ãƒªãƒ³ã‚¯ã‚’è¾¿ã£ã¦ããŸå ´åˆã¯ã€
+    ãã®ãƒšãƒ¼ã‚¸ã®è‘—è€…ã«ã”é€£çµ¡ãã ã•ã„ã€‚
    
   <!--#endif -->
   
@@ -209,25 +207,24 @@ Body:----------ja--
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="°´Ã¼°¡ ¾ø¾îÁ³À½!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ê°ì²´ê°€ ì—†ì–´ì¡ŒìŒ!"
 --><!--#include virtual="include/top.html" -->
 
-   ¿äÃ»ÇÑ URLÀº ´õ ÀÌ»ó ÀÌ ¼­¹ö¿¡ ³²¾ÆÀÖÁö ¾ÊÀ¸¸ç,
-   ±× °´Ã¼°¡ ¿Å°ÜÁø ´Ù¸¥ URL ¿ª½Ã ³²¾ÆÀÖÁö ¾Ê½À´Ï´Ù.
+   ìš”ì²­í•œ URLì€ ë” ì´ìƒ ì´ ì„œë²„ì— ë‚¨ì•„ìˆì§€ ì•Šìœ¼ë©°,
+   ê·¸ ê°ì²´ê°€ ì˜®ê²¨ì§„ ë‹¤ë¥¸ URL ì—­ì‹œ ë‚¨ì•„ìˆì§€ ì•ŠìŠµë‹ˆë‹¤.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">ÀÌÀü
-    ÆäÀÌÁö</a>ÀÇ ¸¸µçÀÌ¿¡°Ô ÁÖ¼Ò°¡ Àß¸øµÇ¾ú´Ù°í ¾Ë·ÁÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">ì´ì „
+    í˜ì´ì§€</a>ì˜ ë§Œë“ ì´ì—ê²Œ ì£¼ì†Œê°€ ì˜ëª»ë˜ì—ˆë‹¤ê³  ì•Œë ¤ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.
 
   <!--#else -->
 
-    ´Ù¸¥ ÆäÀÌÁöÀÇ ¸µÅ©¸¦ µû¶ó¿À¼Ì´Ù¸é, ±× ÆäÀÌÁöÀÇ ¸¸µçÀÌ¿¡°Ô ¿¬¶ôÀ» ÇÏ½Ã±â
-    ¹Ù¶ø´Ï´Ù.
+    ë‹¤ë¥¸ í˜ì´ì§€ì˜ ë§í¬ë¥¼ ë”°ë¼ì˜¤ì…¨ë‹¤ë©´, ê·¸ í˜ì´ì§€ì˜ ë§Œë“ ì´ì—ê²Œ ì—°ë½ì„ í•˜ì‹œê¸°
+    ë°”ëë‹ˆë‹¤.
 
   <!--#endif -->
 
@@ -235,7 +232,7 @@ Body:----------ko--
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Dit object is niet langer beschikbaar!"
@@ -261,25 +258,24 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Zasób usuniêty!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="ZasÃ³b usuniÄ™ty!"
 --><!--#include virtual="include/top.html" -->
 
-    Poszukiwany zasób nie jest ju¿ dostêpny na tym serwerze i nie
+    Poszukiwany zasÃ³b nie jest juÅ¼ dostÄ™pny na tym serwerze i nie
     podano nowego adresu zasobu.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    Prosimy poinformowaæ autora
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referuj±cej
+    Prosimy poinformowaÄ‡ autora
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referujÄ…cej
     strony</a> o nieaktualnym linku.
 
   <!--#else -->
 
-    Je¶li pod±¿y³e¶ za linkiem z innej strony skontaktuj siê z jej
+    JeÅ›li podÄ…Å¼yÅ‚eÅ› za linkiem z innej strony skontaktuj siÄ™ z jej
     autorem.
 
   <!--#endif -->
@@ -288,7 +284,7 @@ Body:----------pl--
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="Recurso n&atilde;o dispon&iacute;vel!"
@@ -315,7 +311,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="Resursa nu mai este disponibila!"
@@ -341,26 +337,25 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
---><!--#set var="TITLE" value="ÀÕáãàá İØøÕ ÒØèÕ ÔŞáâãßĞİ!"
+--><!--#set var="TITLE" value="Ğ ĞµÑÑƒÑ€Ñ Ğ½Ğ¸Ñ˜Ğµ Ğ²Ğ¸ÑˆĞµ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ°Ğ½!"
 --><!--#include virtual="include/top.html" -->
 
-    ·ĞåâÕÒĞİØ ÃÀ» İØøÕ ÒØèÕ ÔŞáâãßĞİ İĞ ŞÒŞÜ áÕàÒÕàã Ø İÕÜĞ
-    ĞÔàÕáÕ İĞ ÚŞøã ÑØáâÕ ÜŞÓÛØ ÑØâØ ßàŞáÛÕòÕİØ.
+    Ğ—Ğ°Ñ…Ñ‚ĞµĞ²Ğ°Ğ½Ğ¸ Ğ£Ğ Ğ› Ğ½Ğ¸Ñ˜Ğµ Ğ²Ğ¸ÑˆĞµ Ğ´Ğ¾ÑÑ‚ÑƒĞ¿Ğ°Ğ½ Ğ½Ğ° Ğ¾Ğ²Ğ¾Ğ¼ ÑĞµÑ€Ğ²ĞµÑ€Ñƒ Ğ¸ Ğ½ĞµĞ¼Ğ°
+    Ğ°Ğ´Ñ€ĞµÑĞµ Ğ½Ğ° ĞºĞ¾Ñ˜Ñƒ Ğ±Ğ¸ÑÑ‚Ğµ Ğ¼Ğ¾Ğ³Ğ»Ğ¸ Ğ±Ğ¸Ñ‚Ğ¸ Ğ¿Ñ€Ğ¾ÑĞ»ĞµÑ’ĞµĞ½Ğ¸.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    ¼ŞÛØÜŞ ŞÑĞÒÕáâØâÕ ĞãâŞàĞ
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">ØáåŞÔØèİÕ
-    áâàĞİØæÕ</a> ÔĞ øÕ ÒÕ×Ğ ×ĞáâĞàÕÛĞ.
+    ĞœĞ¾Ğ»Ğ¸Ğ¼Ğ¾ Ğ¾Ğ±Ğ°Ğ²ĞµÑÑ‚Ğ¸Ñ‚Ğµ Ğ°ÑƒÑ‚Ğ¾Ñ€Ğ°
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">Ğ¸ÑÑ…Ğ¾Ğ´Ğ¸ÑˆĞ½Ğµ
+    ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğµ</a> Ğ´Ğ° Ñ˜Ğµ Ğ²ĞµĞ·Ğ° Ğ·Ğ°ÑÑ‚Ğ°Ñ€ĞµĞ»Ğ°.
 
   <!--#else -->
 
-    °ÚŞ áâÕ ßàĞâØÛØ ÒÕ×ã áĞ áßŞùİÕ áâàĞİØæÕ, ÜŞÛØÜŞ ŞÑĞÒÕáâØâÕ
-    ĞãâŞàĞ âÕ áâàĞİØæÕ.
+    ĞĞºĞ¾ ÑÑ‚Ğµ Ğ¿Ñ€Ğ°Ñ‚Ğ¸Ğ»Ğ¸ Ğ²ĞµĞ·Ñƒ ÑĞ° ÑĞ¿Ğ¾Ñ™Ğ½Ğµ ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğµ, Ğ¼Ğ¾Ğ»Ğ¸Ğ¼Ğ¾ Ğ¾Ğ±Ğ°Ğ²ĞµÑÑ‚Ğ¸Ñ‚Ğµ
+    Ğ°ÑƒÑ‚Ğ¾Ñ€Ğ° Ñ‚Ğµ ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğµ.
 
   <!--#endif -->
 
@@ -368,7 +363,7 @@ Body:----------sr--
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="Resursen inte l&auml;ngre tillg&auml;nglig!"
@@ -394,27 +389,26 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Resource is no longer available!"
 --><!--#include virtual="include/top.html" -->
 
-    Talep etti&#287;iniz URL bu sunucu üzerinde bar&#305;nd&#305;r&#305;lm&#305;yor
-    ve herhangi bir yöneltme de mevcut de&#287;il.  
+    Talep etti&#287;iniz URL bu sunucu Ã¼zerinde bar&#305;nd&#305;r&#305;lm&#305;yor
+    ve herhangi bir yÃ¶neltme de mevcut de&#287;il.  
 
   <!--#if expr="$HTTP_REFERER" -->
   
-    Lütfen
+    LÃ¼tfen
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referans sayfan&#305;n</a>
-    yazar&#305;na, bu ba&#287;lant&#305;n&#305;n güncel
+    yazar&#305;na, bu ba&#287;lant&#305;n&#305;n gÃ¼ncel
     olmad&#305;&#287;&#305;n&#305; bildirin.
    
   <!--#else -->
   
     Yabanc&#305; bir sayfadan bu ba&#287;lant&#305;y&#305; izlediyseniz,
-    lütfen sözkonusu sayfan&#305;n yazar&#305; ile ileti&#351;ime geçin.
+    lÃ¼tfen sÃ¶zkonusu sayfan&#305;n yazar&#305; ile ileti&#351;ime geÃ§in.
    
   <!--#endif -->
   
