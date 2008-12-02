@@ -196,12 +196,11 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Bad request!"
+--><!--#set var="TITLE" value="Hatalı istek!"
 --><!--#include virtual="include/top.html" -->
 
-    Gezgininiz (veya vekil sunucunuz) bu sunucunun
-    tan&#305;mad&#305;&#287;&#305;
-    bir istemde bulundu.
+    Tarayıcınız (veya vekil sunucunuz) bu sunucunun
+    anlayamadığı bir istekte bulundu.
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

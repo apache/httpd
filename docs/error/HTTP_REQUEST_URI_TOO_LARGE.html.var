@@ -201,11 +201,11 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Submitted URI too large!"
+--><!--#set var="TITLE" value="Gönderilen URI çok büyük!"
 --><!--#include virtual="include/top.html" -->
 
-    Talep edilen URL'nin uzunlu&#287;u, sunucunun kapasite limitlerini a&#351;&#305;yor.
-    Talep i&#351;lenemiyor.
+    Talep edilen URI'nin uzunluğu, sunucunun sınırlarını
+    aştığından istek yerine getirilemiyor.
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

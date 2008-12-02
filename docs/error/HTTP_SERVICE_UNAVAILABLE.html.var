@@ -216,11 +216,11 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Service unavailable!"
+--><!--#set var="TITLE" value="Hizmet sunulamıyor!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu, kendi içindeki çe&#351;itli sorunlardan ötürü,
-    bir süreli&#287;ine taleplerinize cevap veremeyecek.
+    Sunucu, bakım gerektiren çeşitli sorunlardan ötürü,
+    bir süreliğine taleplerinize yanıt veremiyor.
     Lütfen daha sonra tekrar deneyin.
 
 <!--#include virtual="include/bottom.html" -->

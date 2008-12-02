@@ -424,22 +424,22 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Server error!"
+--><!--#set var="TITLE" value="Sunucu hatası!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    Sunucu içine bir hata olu&#351;tu ve sunucu talebinize hizmet vermekte ba&#351;ar&#305;l&#305; olamad&#305;.
+    Sunucuda içsel bir hata oluştuğundan sunucu isteğinizi yerine getiremiyor.
 
     <!--#include virtual="include/spacer.html" -->
 
-    Hata mesaj&#305;:
+    Hata iletisi:
     <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    Sunucu içine bir hata olu&#351;tu ve sunucu talebinize hizmet vermekte ba&#351;ar&#305;l&#305; olamad&#305;.
-    Ya sunucuya çok yüklenildi, ya da CGI betiklerinde hata belirdi.
+    Sunucuda içsel bir hata oluştuğundan sunucu isteğinizi yerine getiremiyor.
+    Ya sunucu aşırı yüklü ya da CGI betiğinde bir hata oluştu.
 
   <!--#endif -->
 

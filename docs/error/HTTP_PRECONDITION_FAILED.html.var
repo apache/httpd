@@ -189,11 +189,10 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Precondition failed!"
+--><!--#set var="TITLE" value="Önkoşul sağlanamadı!"
 --><!--#include virtual="include/top.html" -->
 
-    URL talebinin ön&#351;art&#305;, olumlu süreci
-    ba&#351;ar&#305;s&#305;zl&#305;kla sonland&#305;rd&#305;.
+    URL talebinin önkoşulu olumlanamadı.
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

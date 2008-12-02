@@ -206,11 +206,11 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Bad Content-Length!"
+--><!--#set var="TITLE" value="Hatalı Content-Length başlığı!"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo var="REDIRECT_REQUEST_METHOD" --> metodunu kullanan bir talep
-    geçerli bir <code>Content-Length</code> (içerik uzunlu&#287;u) ba&#351;l&#305;&#287;&#305; gerektirir.
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> yöntemini kullanan bir istek
+    geçerli bir <code>Content-Length</code> (içerik uzunluğu) başlığı gerektirir.
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

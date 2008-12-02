@@ -315,17 +315,17 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Authentication required!"
+--><!--#set var="TITLE" value="Kimlik doğrulama gerekli!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu bu dokümana eri&#351;im izninizi do&#287;rulayamad&#305;.
-    Ya kimli&#287;iniz do&#287;rulanamad&#305; (örne&#287;in hatal&#305; parola girdiniz),
-    ya da gezgininiz bu i&#351;lemi yerine getiremiyor.
+    Sunucu "<!--#echo encoding="url" var="REDIRECT_URL" -->" adresine erişim
+    izninizi doğrulayamadı. Ya sağladığınız kanıtlar yanlış (yanlış parola gibi)
+    ya da tarayıcınız bu kanıtların nasıl sağlanacağını bilmiyor.
 
   <!--#include virtual="include/spacer.html" -->
 
-    E&#287;er bu dokümana eri&#351;me izniniz varsa, lütfen kimli&#287;inizi
-    ve parolan&#305;z&#305; kontrol edip, tekrar deneyin.
+    Eğer erişim izniniz olduğuna eminseniz, lütfen kullanıcı adınızı
+    ve parolanızı gözden geçirip yeniden deneyin.
 
 <!--#include virtual="include/bottom.html" -->
 ----------tr--

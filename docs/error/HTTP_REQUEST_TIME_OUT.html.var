@@ -201,11 +201,10 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Request time-out!"
+--><!--#set var="TITLE" value="İstekte zaman aşımı!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu a&#287; ba&#287;lant&#305;s&#305;n&#305; kapatt&#305; çünkü gezgin
-    talebini belirlenmi&#351; süre içinde tamamlayamad&#305;.
+    Tarayıcı isteği zamanında tamamlayamadığından sunucu ağ bağlantısını kapattı.
 
 <!--#include virtual="include/bottom.html" --> 
 ----------tr--

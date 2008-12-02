@@ -392,23 +392,22 @@ Content-language: tr
 Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="TITLE" value="Resource is no longer available!"
+--><!--#set var="TITLE" value="Özkaynak artık mevcut değil!"
 --><!--#include virtual="include/top.html" -->
 
-    Talep etti&#287;iniz URL bu sunucu üzerinde bar&#305;nd&#305;r&#305;lm&#305;yor
-    ve herhangi bir yöneltme de mevcut de&#287;il.  
+    Talep ettiğiniz URL artık kullanılabilir değil
+    ve herhangi bir yönlendirme de mevcut değil.
 
   <!--#if expr="$HTTP_REFERER" -->
   
     Lütfen
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referans sayfan&#305;n</a>
-    yazar&#305;na, bu ba&#287;lant&#305;n&#305;n güncel
-    olmad&#305;&#287;&#305;n&#305; bildirin.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">istenen sayfanın</a>
+    yazarına, bu bağlantının güncel olmadığını bildirin.
    
   <!--#else -->
   
-    Yabanc&#305; bir sayfadan bu ba&#287;lant&#305;y&#305; izlediyseniz,
-    lütfen sözkonusu sayfan&#305;n yazar&#305; ile ileti&#351;ime geçin.
+    Başka bir sunucudaki bir bağlantıyı izleyerek buraya geldiyseniz,
+    lütfen sözkonusu sayfanın yazarına bağlantının güncel olmadığını bildirin.
    
   <!--#endif -->
   
