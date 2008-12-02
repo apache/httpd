@@ -1,25 +1,24 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
 --><!--#set var="TITLE" value="Objekt nenalezen!"
 --><!--#include virtual="include/top.html" -->
 
-    Po¾adované URL nebylo na tomto serveru nalezeno.
+    PoÅ¾adovanÃ© URL nebylo na tomto serveru nalezeno.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    Zdá se, ¾e odkaz na
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazující
-    stránce</a> je chybnı nebo zastaralı. Informujte, prosím, autora
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">této stránky</a>
-    o&nbsp;chybì.
+    ZdÃ¡ se, Å¾e odkaz na
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">odkazujÃ­cÃ­
+    strÃ¡nce</a> je chybnÃ½ nebo zastaralÃ½. Informujte, prosÃ­m, autora
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">tÃ©to strÃ¡nky</a>
+    o&nbsp;chybÄ›.
 
   <!--#else -->
 
-    Pokud jste zadal(a) URL ruènì, zkontrolujte, prosím,
-    zda jste zadal(a) URL správnì, a zkuste to znovu.
+    Pokud jste zadal(a) URL ruÄnÄ›, zkontrolujte, prosÃ­m,
+    zda jste zadal(a) URL sprÃ¡vnÄ›, a zkuste to znovu.
 
   <!--#endif -->
 
@@ -27,7 +26,7 @@ Body:----------cs--
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="Objekt nicht gefunden!"
@@ -55,7 +54,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Object not found!"
 --><!--#include virtual="include/top.html" -->
@@ -81,7 +80,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;Objeto no encontrado!"
@@ -110,7 +109,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="Objet non trouv&eacute;!"
@@ -139,7 +138,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga 
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="Aidhm ar iarraidh!"
 --><!--#include virtual="include/top.html" -->
@@ -167,7 +166,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="Oggetto non trovato!"
@@ -194,25 +193,24 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Object not found!"
 --><!--#include virtual="include/top.html" -->
 
-    $BMW5a$5$l$?(B URL $B$OK\%5!<%P$G$O8+$D$+$j$^$;$s$G$7$?!#(B
+    è¦æ±‚ã•ã‚ŒãŸ URL ã¯æœ¬ã‚µãƒ¼ãƒã§ã¯è¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸã€‚
 
   <!--#if expr="$HTTP_REFERER" -->
 
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">
-    $B;2>H85%Z!<%8(B</a>$B$N%j%s%/$,4V0c$C$F$$$k$+!"8E$/$J$C$F$7$^$C$F$$$k$h$&$G$9!#(B
+    å‚ç…§å…ƒãƒšãƒ¼ã‚¸</a>ã®ãƒªãƒ³ã‚¯ãŒé–“é•ã£ã¦ã„ã‚‹ã‹ã€å¤ããªã£ã¦ã—ã¾ã£ã¦ã„ã‚‹ã‚ˆã†ã§ã™ã€‚
     <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->"
-    >$B%Z!<%8(B</a>$B$NCx<T$K$3$N%(%i!<$r$*CN$i$;2<$5$$!#(B
+    >ãƒšãƒ¼ã‚¸</a>ã®è‘—è€…ã«ã“ã®ã‚¨ãƒ©ãƒ¼ã‚’ãŠçŸ¥ã‚‰ã›ä¸‹ã•ã„ã€‚
 
   <!--#else -->
 
-    $B$b$7<jF~NO$G(B URL $B$rF~NO$7$?>l9g$O!"DV$j$r3NG'$7$F:FEY$*;n$72<$5$$!#(B
+    ã‚‚ã—æ‰‹å…¥åŠ›ã§ URL ã‚’å…¥åŠ›ã—ãŸå ´åˆã¯ã€ç¶´ã‚Šã‚’ç¢ºèªã—ã¦å†åº¦ãŠè©¦ã—ä¸‹ã•ã„ã€‚
 
   <!--#endif -->
 
@@ -220,26 +218,25 @@ Body:----------ja--
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="°´Ã¼ ¾øÀ½!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ê°ì²´ ì—†ìŒ!"
 --><!--#include virtual="include/top.html" -->
 
-    ¿äÃ»ÇÑ URLÀ» ÀÌ ¼­¹ö¿¡¼­ Ã£À» ¼ö ¾ø½À´Ï´Ù.
+    ìš”ì²­í•œ URLì„ ì´ ì„œë²„ì—ì„œ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">ÀÌÀü
-    ÆäÀÌÁö</a>¿¡ ÀÖ´Â ¸µÅ©°¡ Àß¸øµÇ¾ú°Å³ª ¿À·¡µÇ¾î ¾ø¾îÁø °Í °°½À´Ï´Ù.
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">±× ÆäÀÌÁö</a>¸¦
-    ¸¸µçÀÌ¿¡°Ô ÀÌ »ç½ÇÀ» ¾Ë·ÁÁÖ½Ã±â ¹Ù¶ø´Ï´Ù.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">ì´ì „
+    í˜ì´ì§€</a>ì— ìˆëŠ” ë§í¬ê°€ ì˜ëª»ë˜ì—ˆê±°ë‚˜ ì˜¤ë˜ë˜ì–´ ì—†ì–´ì§„ ê²ƒ ê°™ìŠµë‹ˆë‹¤.
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER"-->">ê·¸ í˜ì´ì§€</a>ë¥¼
+    ë§Œë“ ì´ì—ê²Œ ì´ ì‚¬ì‹¤ì„ ì•Œë ¤ì£¼ì‹œê¸° ë°”ëë‹ˆë‹¤.
 
   <!--#else -->
 
-    URLÀ» Á÷Á¢ ÀÔ·ÂÇÏ¼Ì´Ù¸é ¹Ù¸£°Ô ÀÔ·ÂÇÏ¼Ì´ÂÁö È®ÀÎÇÏ½Ã°í ´Ù½Ã ½ÃµµÇÏ½Ã±â
-    ¹Ù¶ø´Ï´Ù.
+    URLì„ ì§ì ‘ ì…ë ¥í•˜ì…¨ë‹¤ë©´ ë°”ë¥´ê²Œ ì…ë ¥í•˜ì…¨ëŠ”ì§€ í™•ì¸í•˜ì‹œê³  ë‹¤ì‹œ ì‹œë„í•˜ì‹œê¸°
+    ë°”ëë‹ˆë‹¤.
 
   <!--#endif -->
 
@@ -247,7 +244,7 @@ Body:----------ko--
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Object niet gevonden!"
@@ -274,25 +271,24 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
 --><!--#set var="TITLE" value="Nie znaleziono obiektu!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
 --><!--#include virtual="include/top.html" -->
 
-    Nie znaleziono ¿±danego URLa na tym serwerze.
+    Nie znaleziono Å¼Ä…danego URLa na tym serwerze.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    Odno¶nik na
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referuj±cej stronie
-    </a> wydaje siê byæ nieprawid³owy lub nieaktualny. Poinformuj autora
+    OdnoÅ›nik na
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referujÄ…cej stronie
+    </a> wydaje siÄ™ byÄ‡ nieprawidÅ‚owy lub nieaktualny. Poinformuj autora
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">tej strony</a>
     o problemie.
 
   <!--#else -->
-    Je¶li wpisa³e¶ URLa rêcznie, sprawd¼, czy nie siê nie pomyli³e¶.
+    JeÅ›li wpisaÅ‚eÅ› URLa rÄ™cznie, sprawdÅº, czy nie siÄ™ nie pomyliÅ‚eÅ›.
 
   <!--#endif -->
 
@@ -300,7 +296,7 @@ Body:----------pl--
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="Objeto n&atilde;o encontrado!"
@@ -327,7 +323,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="Obiectul nu a fost gasit!"
@@ -354,27 +350,26 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
---><!--#set var="TITLE" value="¾ÑøÕÚĞâ İØøÕ ßàŞİĞòÕİ!"
+--><!--#set var="TITLE" value="ĞĞ±Ñ˜ĞµĞºĞ°Ñ‚ Ğ½Ğ¸Ñ˜Ğµ Ğ¿Ñ€Ğ¾Ğ½Ğ°Ñ’ĞµĞ½!"
 --><!--#include virtual="include/top.html" -->
 
-    ·ĞåâÕÒĞİØ ÃÀ» İØøÕ ßàŞİĞòÕİ İĞ ŞÒŞÜ áÕàÒÕàã.
+    Ğ—Ğ°Ñ…Ñ‚ĞµĞ²Ğ°Ğ½Ğ¸ Ğ£Ğ Ğ› Ğ½Ğ¸Ñ˜Ğµ Ğ¿Ñ€Ğ¾Ğ½Ğ°Ñ’ĞµĞ½ Ğ½Ğ° Ğ¾Ğ²Ğ¾Ğ¼ ÑĞµÑ€Ğ²ĞµÑ€Ñƒ.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    ¸×ÓÛÕÔĞ ÔĞ øÕ ÒÕ×Ğ İĞ
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">ØáåŞÔØèİŞø
-    áâàĞİØæØ</a> ßŞÓàÕèİĞ ØÛØ ×ĞáâĞàÕÛĞ. ¼ŞÛØÜŞ ŞÑĞÒÕáâØâÕ ĞãâŞàĞ
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">âÕ áâàĞİØæÕ</a>
-    Ş ÓàÕèæØ.
+    Ğ˜Ğ·Ğ³Ğ»ĞµĞ´Ğ° Ğ´Ğ° Ñ˜Ğµ Ğ²ĞµĞ·Ğ° Ğ½Ğ°
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">Ğ¸ÑÑ…Ğ¾Ğ´Ğ¸ÑˆĞ½Ğ¾Ñ˜
+    ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğ¸</a> Ğ¿Ğ¾Ğ³Ñ€ĞµÑˆĞ½Ğ° Ğ¸Ğ»Ğ¸ Ğ·Ğ°ÑÑ‚Ğ°Ñ€ĞµĞ»Ğ°. ĞœĞ¾Ğ»Ğ¸Ğ¼Ğ¾ Ğ¾Ğ±Ğ°Ğ²ĞµÑÑ‚Ğ¸Ñ‚Ğµ Ğ°ÑƒÑ‚Ğ¾Ñ€Ğ°
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">Ñ‚Ğµ ÑÑ‚Ñ€Ğ°Ğ½Ğ¸Ñ†Ğµ</a>
+    Ğ¾ Ğ³Ñ€ĞµÑˆÑ†Ğ¸.
 
   <!--#else -->
 
-    ÃÚŞÛØÚŞ áâÕ ÃÀ» ãİÕÛØ àãçİŞ, ÜŞÛØÜŞ ßàŞÒÕàØâÕ ÜŞÓãûÕ
-    ÓàÕèÚÕ Ø ßàŞÑĞøâÕ ßŞİŞÒŞ.
+    Ğ£ĞºĞ¾Ğ»Ğ¸ĞºĞ¾ ÑÑ‚Ğµ Ğ£Ğ Ğ› ÑƒĞ½ĞµĞ»Ğ¸ Ñ€ÑƒÑ‡Ğ½Ğ¾, Ğ¼Ğ¾Ğ»Ğ¸Ğ¼Ğ¾ Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€Ğ¸Ñ‚Ğµ Ğ¼Ğ¾Ğ³ÑƒÑ›Ğµ
+    Ğ³Ñ€ĞµÑˆĞºĞµ Ğ¸ Ğ¿Ñ€Ğ¾Ğ±Ğ°Ñ˜Ñ‚Ğµ Ğ¿Ğ¾Ğ½Ğ¾Ğ²Ğ¾.
 
   <!--#endif -->
 
@@ -382,7 +377,7 @@ Body:----------sr--
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="Objektet hittas ej!"
@@ -409,20 +404,19 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Object not found!"
 --><!--#include virtual="include/top.html" -->
 
-    Talep etti&#287;iniz URL, sunucu üzerinde bulunmuyor.
+    Talep etti&#287;iniz URL, sunucu Ã¼zerinde bulunmuyor.
 
   <!--#if expr="$HTTP_REFERER" -->
 
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">Referans sayfa</a>
-    üzerindeki ba&#287;lant&#305; güncel de&#287;il.
-    Lütfen <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referans sayfa</a>'n&#305;n
+    Ã¼zerindeki ba&#287;lant&#305; gÃ¼ncel de&#287;il.
+    LÃ¼tfen <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referans sayfa</a>'n&#305;n
     yazar&#305;n&#305; konuyla ilgili bilgilendirin.
 
   <!--#else -->

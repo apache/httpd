@@ -1,26 +1,25 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
 --><!--#set var="TITLE" value="Chyba serveru!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    Nastala vnitøní chyba a server nebyl schopen
-    dokonèit Vá¹ po¾adavek.
+    Nastala vnitÅ™nÃ­ chyba a server nebyl schopen
+    dokonÄit VÃ¡Å¡ poÅ¾adavek.
 
     <!--#include virtual="include/spacer.html" -->
 
-    Chybová zpráva
+    ChybovÃ¡ zprÃ¡va
     <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    Nastala vnitøní chyba a server nebyl schopen
-    dokonèit Vá¹ po¾adavek. Buï je server
-    pøetí¾en, nebo do¹lo k&nbsp;chybì v&nbsp;CGI skriptu.
+    Nastala vnitÅ™nÃ­ chyba a server nebyl schopen
+    dokonÄit VÃ¡Å¡ poÅ¾adavek. BuÄ je server
+    pÅ™etÃ­Å¾en, nebo doÅ¡lo k&nbsp;chybÄ› v&nbsp;CGI skriptu.
 
   <!--#endif -->
 
@@ -28,7 +27,7 @@ Body:----------cs--
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="Serverfehler!"
@@ -57,7 +56,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Server error!"
 --><!--#include virtual="include/top.html" -->
@@ -84,7 +83,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;Error en el servidor!"
@@ -114,7 +113,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="Erreur du serveur!"
@@ -143,7 +142,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="Earr&aacute;id fhreastala&iacute;!"
 --><!--#include virtual="include/top.html" -->
@@ -172,7 +171,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="Errore del server!"
@@ -201,17 +200,16 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Server error!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    $B%5!<%PFbIt$G>c32$,H/@8$7!"(B
-    $B%j%/%(%9%H$K1~$($k$3$H$,$G$-$^$;$s$G$7$?!#(B
+    ã‚µãƒ¼ãƒå†…éƒ¨ã§éšœå®³ãŒç™ºç”Ÿã—ã€
+    ãƒªã‚¯ã‚¨ã‚¹ãƒˆã«å¿œãˆã‚‹ã“ã¨ãŒã§ãã¾ã›ã‚“ã§ã—ãŸã€‚
 
     <!--#include virtual="include/spacer.html" -->
 
@@ -220,10 +218,10 @@ Body:----------ja--
 
   <!--#else -->
 
-    $B%5!<%PFbIt$G>c32$,H/@8$7!"(B
-    $B%j%/%(%9%H$K1~$($k$3$H$,$G$-$^$;$s$G$7$?!#(B
-    $B%5!<%P$,2aIi2Y$G$"$k$+!"(B
-    CGI $B%9%/%j%W%H$K%(%i!<$,$"$j$^$9!#(B
+    ã‚µãƒ¼ãƒå†…éƒ¨ã§éšœå®³ãŒç™ºç”Ÿã—ã€
+    ãƒªã‚¯ã‚¨ã‚¹ãƒˆã«å¿œãˆã‚‹ã“ã¨ãŒã§ãã¾ã›ã‚“ã§ã—ãŸã€‚
+    ã‚µãƒ¼ãƒãŒéè² è·ã§ã‚ã‚‹ã‹ã€
+    CGI ã‚¹ã‚¯ãƒªãƒ—ãƒˆã«ã‚¨ãƒ©ãƒ¼ãŒã‚ã‚Šã¾ã™ã€‚
 
   <!--#endif -->
 
@@ -231,26 +229,25 @@ Body:----------ja--
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="¼­¹ö ¿À·ù!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ì„œë²„ ì˜¤ë¥˜!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
     
-    ¼­¹ö¿¡ ³»ºÎ ¿À·ù°¡ ¹ß»ıÇÏ¿© ¿äÃ»À» ³¡±îÁö Ã³¸®ÇÏÁö ¸øÇß½À´Ï´Ù.
+    ì„œë²„ì— ë‚´ë¶€ ì˜¤ë¥˜ê°€ ë°œìƒí•˜ì—¬ ìš”ì²­ì„ ëê¹Œì§€ ì²˜ë¦¬í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.
 
     <!--#include virtual="include/spacer.html" -->
 
-    ¿À·ù ³»¿ë:
+    ì˜¤ë¥˜ ë‚´ìš©:
     <br /><!--#echo var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    ¼­¹ö¿¡ ³»ºÎ ¿À·ù°¡ »ı°Ü ¿äÃ»À» ³¡±îÁö Ã³¸®ÇÏÁö ¸øÇß½À´Ï´Ù.
-    ¼­¹ö¿¡ °úºÎÇÏ°¡ °É·È°Å³ª ¾Æ´Ï¸é CGI ÇÁ·Î±×·¥¿¡ ¿À·ù°¡ ÀÖ¾ú½À´Ï´Ù.
+    ì„œë²„ì— ë‚´ë¶€ ì˜¤ë¥˜ê°€ ìƒê²¨ ìš”ì²­ì„ ëê¹Œì§€ ì²˜ë¦¬í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.
+    ì„œë²„ì— ê³¼ë¶€í•˜ê°€ ê±¸ë ¸ê±°ë‚˜ ì•„ë‹ˆë©´ CGI í”„ë¡œê·¸ë¨ì— ì˜¤ë¥˜ê°€ ìˆì—ˆìŠµë‹ˆë‹¤.
 
   <!--#endif -->
 
@@ -258,7 +255,7 @@ Body:----------ko--
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Server fout!"
@@ -283,28 +280,27 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="B³±d serwera!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="BÅ‚Ä…d serwera!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    Serwer napotka³ b³±d wewnêtrzny i nie jest w stanie
-    zrealizowaæ twojego ¿±dania.
+    Serwer napotkaÅ‚ bÅ‚Ä…d wewnÄ™trzny i nie jest w stanie
+    zrealizowaÄ‡ twojego Å¼Ä…dania.
 
     <!--#include virtual="include/spacer.html" -->
 
-    Informacja o b³êdzie:
+    Informacja o bÅ‚Ä™dzie:
     <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    Serwer napotka³ b³±d wewnêtrzny i nie jest w stanie
-    zrealizowaæ twojego ¿±dania. Serwer jest przeci±¿ony lub
-    napotka³ na b³±d w skrypcie CGI.
+    Serwer napotkaÅ‚ bÅ‚Ä…d wewnÄ™trzny i nie jest w stanie
+    zrealizowaÄ‡ twojego Å¼Ä…dania. Serwer jest przeciÄ…Å¼ony lub
+    napotkaÅ‚ na bÅ‚Ä…d w skrypcie CGI.
 
   <!--#endif -->
 
@@ -312,7 +308,7 @@ Body:----------pl--
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="Erro interno do Servidor!"
@@ -341,7 +337,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="Eroare server!"
@@ -369,28 +365,27 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
---><!--#set var="TITLE" value="³àÕèÚĞ áÕàÒÕàĞ!"
+--><!--#set var="TITLE" value="Ğ“Ñ€ĞµÑˆĞºĞ° ÑĞµÑ€Ğ²ĞµÑ€Ğ°!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    ÁÕàÒÕà øÕ ØÜĞŞ ãİãâàĞèúã ÓàÕèÚã Ø İØøÕ ÑØŞ
-    ã ÜŞÓãûİŞáâØ ÔĞ ØáßãİØ ÒĞè ×ĞåâÕÒ.
+    Ğ¡ĞµÑ€Ğ²ĞµÑ€ Ñ˜Ğµ Ğ¸Ğ¼Ğ°Ğ¾ ÑƒĞ½ÑƒÑ‚Ñ€Ğ°ÑˆÑšÑƒ Ğ³Ñ€ĞµÑˆĞºÑƒ Ğ¸ Ğ½Ğ¸Ñ˜Ğµ Ğ±Ğ¸Ğ¾
+    Ñƒ Ğ¼Ğ¾Ğ³ÑƒÑ›Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ´Ğ° Ğ¸ÑĞ¿ÑƒĞ½Ğ¸ Ğ²Ğ°Ñˆ Ğ·Ğ°Ñ…Ñ‚ĞµĞ².
 
     <!--#include virtual="include/spacer.html" -->
 
-    ¿ŞàãÚĞ Ş ÓàÕèæØ:
+    ĞŸĞ¾Ñ€ÑƒĞºĞ° Ğ¾ Ğ³Ñ€ĞµÑˆÑ†Ğ¸:
     <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    ÁÕàÒÕà øÕ ØÜĞŞ ãİãâàĞèúã ÓàÕèÚã Ø İØøÕ ÑØŞ
-    ã ÜŞÓãûİŞáâØ ÔĞ ØáßãİØ ÒĞè ×ĞåâÕÒ. ¼ŞÓãûÕ øÕ ÔĞ øÕ áÕàÒÕà
-    ßàÕŞßâÕàÕûÕİ, ØÛØ ÔĞ áÕ ÔÕáØÛĞ ÓàÕèÚĞ ã CGI áÚàØßâØ.
+    Ğ¡ĞµÑ€Ğ²ĞµÑ€ Ñ˜Ğµ Ğ¸Ğ¼Ğ°Ğ¾ ÑƒĞ½ÑƒÑ‚Ñ€Ğ°ÑˆÑšÑƒ Ğ³Ñ€ĞµÑˆĞºÑƒ Ğ¸ Ğ½Ğ¸Ñ˜Ğµ Ğ±Ğ¸Ğ¾
+    Ñƒ Ğ¼Ğ¾Ğ³ÑƒÑ›Ğ½Ğ¾ÑÑ‚Ğ¸ Ğ´Ğ° Ğ¸ÑĞ¿ÑƒĞ½Ğ¸ Ğ²Ğ°Ñˆ Ğ·Ğ°Ñ…Ñ‚ĞµĞ². ĞœĞ¾Ğ³ÑƒÑ›Ğµ Ñ˜Ğµ Ğ´Ğ° Ñ˜Ğµ ÑĞµÑ€Ğ²ĞµÑ€
+    Ğ¿Ñ€ĞµĞ¾Ğ¿Ñ‚ĞµÑ€ĞµÑ›ĞµĞ½, Ğ¸Ğ»Ğ¸ Ğ´Ğ° ÑĞµ Ğ´ĞµÑĞ¸Ğ»Ğ° Ğ³Ñ€ĞµÑˆĞºĞ° Ñƒ CGI ÑĞºÑ€Ğ¸Ğ¿Ñ‚Ğ¸.
 
   <!--#endif -->
 
@@ -398,7 +393,7 @@ Body:----------sr--
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="Serverfel!"
@@ -426,16 +421,15 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Server error!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    Sunucu içine bir hata olu&#351;tu ve sunucu talebinize hizmet vermekte ba&#351;ar&#305;l&#305; olamad&#305;.
+    Sunucu iÃ§ine bir hata olu&#351;tu ve sunucu talebinize hizmet vermekte ba&#351;ar&#305;l&#305; olamad&#305;.
 
     <!--#include virtual="include/spacer.html" -->
 
@@ -444,8 +438,8 @@ Body:----------tr--
 
   <!--#else -->
 
-    Sunucu içine bir hata olu&#351;tu ve sunucu talebinize hizmet vermekte ba&#351;ar&#305;l&#305; olamad&#305;.
-    Ya sunucuya çok yüklenildi, ya da CGI betiklerinde hata belirdi.
+    Sunucu iÃ§ine bir hata olu&#351;tu ve sunucu talebinize hizmet vermekte ba&#351;ar&#305;l&#305; olamad&#305;.
+    Ya sunucuya Ã§ok yÃ¼klenildi, ya da CGI betiklerinde hata belirdi.
 
   <!--#endif -->
 

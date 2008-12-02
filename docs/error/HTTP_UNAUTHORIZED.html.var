@@ -1,26 +1,25 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
---><!--#set var="TITLE" value="Po¾adována autentizace!"
+--><!--#set var="TITLE" value="PoÅ¾adovÃ¡na autentizace!"
 --><!--#include virtual="include/top.html" -->
 
-    Server nemohl ovìøit, ¾e jste autorizován(a) k&nbsp;pøístupu
+    Server nemohl ovÄ›Å™it, Å¾e jste autorizovÃ¡n(a) k&nbsp;pÅ™Ã­stupu
     k&nbsp;URL "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Buï jste dodal(a) neplatné povìøení (napø. chybné heslo) nebo Vá¹
-    prohlí¾eè neumí dodat po¾adované ovìøení.
+    BuÄ jste dodal(a) neplatnÃ© povÄ›Å™enÃ­ (napÅ™. chybnÃ© heslo) nebo VÃ¡Å¡
+    prohlÃ­Å¾eÄ neumÃ­ dodat poÅ¾adovanÃ© ovÄ›Å™enÃ­.
 
   <!--#include virtual="include/spacer.html" -->
 
-    V&nbsp;pøípadì, ¾e smíte po¾adovat tento dokument, zkontrolujte, prosím,
-    Va¹i u¾ivatelskou identifikaci a heslo a zkuste to znovu.
+    V&nbsp;pÅ™Ã­padÄ›, Å¾e smÃ­te poÅ¾adovat tento dokument, zkontrolujte, prosÃ­m,
+    VaÅ¡i uÅ¾ivatelskou identifikaci a heslo a zkuste to znovu.
 
 <!--#include virtual="include/bottom.html" -->
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="Authentisierung fehlgeschlagen!"
@@ -42,7 +41,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Authentication required!"
 --><!--#include virtual="include/top.html" -->
@@ -61,7 +60,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;Autentificaci&oacute;n requerida!"
@@ -84,7 +83,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="Autorisation requise!"
@@ -108,7 +107,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="Is g&aacute; f&iacute;ordheimhni&uacute;!"
 --><!--#include virtual="include/top.html" -->
@@ -132,7 +131,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="Autorizzazione necessaria!"
@@ -153,49 +152,47 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Authentication required!"
 --><!--#include virtual="include/top.html" -->
 
     URL "<!--#echo encoding="url" var="REDIRECT_URL" -->"
-    $B$X$N%"%/%;%98"8B$,$"$k$3$H$r3NG'$G$-$^$;$s$G$7$?!#(B
-    $B4V0c$C$?;q3J>pJs(B ($BNc$($P!"8m$C$?%Q%9%o!<%I(B) $B$rF~NO$7$?$+!"(B
-    $B%V%i%&%6$,I,MW$J;q3J>pJs$rAw?.$9$kJ}K!$rM}2r$7$F$$$J$$$+$G$9!#(B
+    ã¸ã®ã‚¢ã‚¯ã‚»ã‚¹æ¨©é™ãŒã‚ã‚‹ã“ã¨ã‚’ç¢ºèªã§ãã¾ã›ã‚“ã§ã—ãŸã€‚
+    é–“é•ã£ãŸè³‡æ ¼æƒ…å ± (ä¾‹ãˆã°ã€èª¤ã£ãŸãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰) ã‚’å…¥åŠ›ã—ãŸã‹ã€
+    ãƒ–ãƒ©ã‚¦ã‚¶ãŒå¿…è¦ãªè³‡æ ¼æƒ…å ±ã‚’é€ä¿¡ã™ã‚‹æ–¹æ³•ã‚’ç†è§£ã—ã¦ã„ãªã„ã‹ã§ã™ã€‚
 
   <!--#include virtual="include/spacer.html" -->
 
-    $B%I%-%e%a%s%H$rMW5a$G$-$kH&$G$"$k>l9g$O!"(B
-    $B%f!<%6(B ID $B$H%Q%9%o!<%I$r:F3NG'$7$F2<$5$$!#(B
+    ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‚’è¦æ±‚ã§ãã‚‹ç­ˆã§ã‚ã‚‹å ´åˆã¯ã€
+    ãƒ¦ãƒ¼ã‚¶ ID ã¨ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã‚’å†ç¢ºèªã—ã¦ä¸‹ã•ã„ã€‚
 
 <!--#include virtual="include/bottom.html" -->
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="ÀÎÁõ ÇÊ¿ä!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ì¸ì¦ í•„ìš”!"
 --><!--#include virtual="include/top.html" -->
 
-    ÀÌ ¼­¹ö°¡ "<!--#echo encoding="url" var="REDIRECT_URL" -->" URLÀ»
-    Á¢±ÙÇÒ ¼ö ÀÖ´Â ±ÇÇÑÀÌ ÀÖ´ÂÁö È®ÀÎÇÏÁö ¸øÇß½À´Ï´Ù.
-    Àß¸øµÈ ÀÎÁõ Á¤º¸(°¡·É, Àß¸øµÈ ¾ÏÈ£)¸¦ º¸³Â°Å³ª ¾Æ´Ï¸é
-    »ç¿ëÇÏ½Ã´Â ºê¶ó¿ìÀú°¡ ÇÊ¿äÇÑ ÀÎÁõ Á¤º¸¸¦ ¾î¶»°Ô º¸³»´ÂÁö ¸ğ¸£´Â °ÍÀÔ´Ï´Ù.
+    ì´ ì„œë²„ê°€ "<!--#echo encoding="url" var="REDIRECT_URL" -->" URLì„
+    ì ‘ê·¼í•  ìˆ˜ ìˆëŠ” ê¶Œí•œì´ ìˆëŠ”ì§€ í™•ì¸í•˜ì§€ ëª»í–ˆìŠµë‹ˆë‹¤.
+    ì˜ëª»ëœ ì¸ì¦ ì •ë³´(ê°€ë ¹, ì˜ëª»ëœ ì•”í˜¸)ë¥¼ ë³´ëƒˆê±°ë‚˜ ì•„ë‹ˆë©´
+    ì‚¬ìš©í•˜ì‹œëŠ” ë¸Œë¼ìš°ì €ê°€ í•„ìš”í•œ ì¸ì¦ ì •ë³´ë¥¼ ì–´ë–»ê²Œ ë³´ë‚´ëŠ”ì§€ ëª¨ë¥´ëŠ” ê²ƒì…ë‹ˆë‹¤.
 
   <!--#include virtual="include/spacer.html" -->
 
-    ÀÌ ¹®¼­¸¦ »ç¿ëÇÒ ¼ö ÀÖµµ·Ï Çã°¡¸¦ ¹Ş¾Ò´Âµ¥µµ ÀÌ·±´Ù¸é,
-    »ç¿ëÀÚ ID¿Í ¾ÏÈ£¸¦ È®ÀÎÇÏ½Ã°í ´Ù½Ã ½ÃµµÇÏ½Ã±â ¹Ù¶ø´Ï´Ù.
+    ì´ ë¬¸ì„œë¥¼ ì‚¬ìš©í•  ìˆ˜ ìˆë„ë¡ í—ˆê°€ë¥¼ ë°›ì•˜ëŠ”ë°ë„ ì´ëŸ°ë‹¤ë©´,
+    ì‚¬ìš©ì IDì™€ ì•”í˜¸ë¥¼ í™•ì¸í•˜ì‹œê³  ë‹¤ì‹œ ì‹œë„í•˜ì‹œê¸° ë°”ëë‹ˆë‹¤.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Authenticatie nodig!"
@@ -215,28 +212,27 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
 --><!--#set var="TITLE" value="Wymagana autoryzacja!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
 --><!--#include virtual="include/top.html" -->
 
-    Serwer nie mo¿e zweryfikowaæ, ¿e masz uprawnienia dostêpu do
+    Serwer nie moÅ¼e zweryfikowaÄ‡, Å¼e masz uprawnienia dostÄ™pu do
     URLa "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Nie poda³e¶ prawid³owych danych autoryzacyjnych (np. has³a),
-    lub twoja przegl±darka nie potrafi ich przes³aæ.
+    Nie podaÅ‚eÅ› prawidÅ‚owych danych autoryzacyjnych (np. hasÅ‚a),
+    lub twoja przeglÄ…darka nie potrafi ich przesÅ‚aÄ‡.
 
   <!--#include virtual="include/spacer.html" -->
 
-    Je¶li masz prawo dostêpu do ¿±danego dokumentu, sprad¼
-    podan± nazwê u¿ytkownika i has³o.
+    JeÅ›li masz prawo dostÄ™pu do Å¼Ä…danego dokumentu, spradÅº
+    podanÄ… nazwÄ™ uÅ¼ytkownika i hasÅ‚o.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="Autentica&ccedil;&atilde;o Requerida!"
@@ -256,7 +252,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="Autentificare necesara!"
@@ -276,28 +272,27 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
---><!--#set var="TITLE" value="¾ÑĞÒÕ×İĞ ĞãâÕİâØäØÚĞæØøĞ!"
+--><!--#set var="TITLE" value="ĞĞ±Ğ°Ğ²ĞµĞ·Ğ½Ğ° Ğ°ÑƒÑ‚ĞµĞ½Ñ‚Ğ¸Ñ„Ğ¸ĞºĞ°Ñ†Ğ¸Ñ˜Ğ°!"
 --><!--#include virtual="include/top.html" -->
 
-    ¾ÒĞø áÕàÒÕà İØøÕ ÜŞÓĞŞ ÔĞ ßŞâÒàÔØ ÔĞ áâÕ ŞÒÛĞèûÕİØ ÔĞ ßàØáâãßØâÕ
-    ÃÀ»-ã "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    ¼ŞÓãûÕ øÕ ØÛØ ÔĞ áâÕ İĞÒÕÛØ ßŞÓàÕèİÕ ÛØçİÕ ßŞÔĞâÚÕ (İßà. İÕâĞçİã ÛŞ×ØİÚã), ØÛØ ÔĞ
-    ÒĞè çØâĞç İÕ àĞ×ãÜÕ ÚĞÚŞ ÔĞ ßŞèĞùÕ ×ĞåâÕÒĞİÕ ÛØçİÕ ßŞÔĞâÚÕ.
+    ĞĞ²Ğ°Ñ˜ ÑĞµÑ€Ğ²ĞµÑ€ Ğ½Ğ¸Ñ˜Ğµ Ğ¼Ğ¾Ğ³Ğ°Ğ¾ Ğ´Ğ° Ğ¿Ğ¾Ñ‚Ğ²Ñ€Ğ´Ğ¸ Ğ´Ğ° ÑÑ‚Ğµ Ğ¾Ğ²Ğ»Ğ°ÑˆÑ›ĞµĞ½Ğ¸ Ğ´Ğ° Ğ¿Ñ€Ğ¸ÑÑ‚ÑƒĞ¿Ğ¸Ñ‚Ğµ
+    Ğ£Ğ Ğ›-Ñƒ "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    ĞœĞ¾Ğ³ÑƒÑ›Ğµ Ñ˜Ğµ Ğ¸Ğ»Ğ¸ Ğ´Ğ° ÑÑ‚Ğµ Ğ½Ğ°Ğ²ĞµĞ»Ğ¸ Ğ¿Ğ¾Ğ³Ñ€ĞµÑˆĞ½Ğµ Ğ»Ğ¸Ñ‡Ğ½Ğµ Ğ¿Ğ¾Ğ´Ğ°Ñ‚ĞºĞµ (Ğ½Ğ¿Ñ€. Ğ½ĞµÑ‚Ğ°Ñ‡Ğ½Ñƒ Ğ»Ğ¾Ğ·Ğ¸Ğ½ĞºÑƒ), Ğ¸Ğ»Ğ¸ Ğ´Ğ°
+    Ğ²Ğ°Ñˆ Ñ‡Ğ¸Ñ‚Ğ°Ñ‡ Ğ½Ğµ Ñ€Ğ°Ğ·ÑƒĞ¼Ğµ ĞºĞ°ĞºĞ¾ Ğ´Ğ° Ğ¿Ğ¾ÑˆĞ°Ñ™Ğµ Ğ·Ğ°Ñ…Ñ‚ĞµĞ²Ğ°Ğ½Ğµ Ğ»Ğ¸Ñ‡Ğ½Ğµ Ğ¿Ğ¾Ğ´Ğ°Ñ‚ĞºĞµ.
 
   <!--#include virtual="include/spacer.html" -->
 
-    ÃÚŞÛØÚŞ ÒĞÜ øÕ ÔŞ×ÒŞùÕİŞ ÔĞ ßàÕã×ØÜĞâÕ ÔŞÚãÜÕİâ, ÜŞÛØÜŞ ÔĞ
-    ßàŞÒÕàØâÕ áÒŞøÕ ÚŞàØáİØçÚŞ ØÜÕ Ø ÛŞ×ØİÚã Ø ßàŞÑĞâÕ ßŞİŞÒŞ.
+    Ğ£ĞºĞ¾Ğ»Ğ¸ĞºĞ¾ Ğ²Ğ°Ğ¼ Ñ˜Ğµ Ğ´Ğ¾Ğ·Ğ²Ğ¾Ñ™ĞµĞ½Ğ¾ Ğ´Ğ° Ğ¿Ñ€ĞµÑƒĞ·Ğ¸Ğ¼Ğ°Ñ‚Ğµ Ğ´Ğ¾ĞºÑƒĞ¼ĞµĞ½Ñ‚, Ğ¼Ğ¾Ğ»Ğ¸Ğ¼Ğ¾ Ğ´Ğ°
+    Ğ¿Ñ€Ğ¾Ğ²ĞµÑ€Ğ¸Ñ‚Ğµ ÑĞ²Ğ¾Ñ˜Ğµ ĞºĞ¾Ñ€Ğ¸ÑĞ½Ğ¸Ñ‡ĞºĞ¾ Ğ¸Ğ¼Ğµ Ğ¸ Ğ»Ğ¾Ğ·Ğ¸Ğ½ĞºÑƒ Ğ¸ Ğ¿Ñ€Ğ¾Ğ±Ğ°Ñ‚Ğµ Ğ¿Ğ¾Ğ½Ğ¾Ğ²Ğ¾.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="Autentisering kr&auml;vs!"
@@ -317,20 +312,19 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Authentication required!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu bu dokümana eri&#351;im izninizi do&#287;rulayamad&#305;.
-    Ya kimli&#287;iniz do&#287;rulanamad&#305; (örne&#287;in hatal&#305; parola girdiniz),
+    Sunucu bu dokÃ¼mana eri&#351;im izninizi do&#287;rulayamad&#305;.
+    Ya kimli&#287;iniz do&#287;rulanamad&#305; (Ã¶rne&#287;in hatal&#305; parola girdiniz),
     ya da gezgininiz bu i&#351;lemi yerine getiremiyor.
 
   <!--#include virtual="include/spacer.html" -->
 
-    E&#287;er bu dokümana eri&#351;me izniniz varsa, lütfen kimli&#287;inizi
+    E&#287;er bu dokÃ¼mana eri&#351;me izniniz varsa, lÃ¼tfen kimli&#287;inizi
     ve parolan&#305;z&#305; kontrol edip, tekrar deneyin.
 
 <!--#include virtual="include/bottom.html" -->

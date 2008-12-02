@@ -1,19 +1,18 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
---><!--#set var="TITLE" value="Po¾adované URI je pøíli¹ velké!"
+--><!--#set var="TITLE" value="PoÅ¾adovanÃ© URI je pÅ™Ã­liÅ¡ velkÃ©!"
 --><!--#include virtual="include/top.html" -->
 
-    Délka po¾adovaného URL pøesahuje kapacitní limit tohoto
-    serveru. Po¾adavek nemù¾e bıt zpracován.
+    DÃ©lka poÅ¾adovanÃ©ho URL pÅ™esahuje kapacitnÃ­ limit tohoto
+    serveru. PoÅ¾adavek nemÅ¯Å¾e bÃ½t zpracovÃ¡n.
    
 <!--#include virtual="include/bottom.html" -->
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="&Uuml;bergebener URI zu gro&szlig;!"
@@ -27,7 +26,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Submitted URI too large!"
 --><!--#include virtual="include/top.html" -->
@@ -39,7 +38,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;Direcci&oacute;n suministrada demasiado larga!"
@@ -53,7 +52,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="L'URI demandee est trop longue!"
@@ -67,7 +66,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="URI r&oacute;mh&oacute;r cuirthe isteach!"
 --><!--#include virtual="include/top.html" -->
@@ -80,7 +79,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="URI troppo lungo!"
@@ -94,34 +93,32 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Submitted URI too large!"
 --><!--#include virtual="include/top.html" -->
 
-    $B%j%/%(%9%H$N(B URL $B$ND9$5$,!"07$($kD9$5$rD6$($F$$$^$9!#(B
-    $B%j%/%(%9%H$N=hM}$rB3$1$i$l$^$;$s!#(B
+    ãƒªã‚¯ã‚¨ã‚¹ãƒˆã® URL ã®é•·ã•ãŒã€æ‰±ãˆã‚‹é•·ã•ã‚’è¶…ãˆã¦ã„ã¾ã™ã€‚
+    ãƒªã‚¯ã‚¨ã‚¹ãƒˆã®å‡¦ç†ã‚’ç¶šã‘ã‚‰ã‚Œã¾ã›ã‚“ã€‚
    
 <!--#include virtual="include/bottom.html" -->
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="³Ê¹« ±ä URI!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ë„ˆë¬´ ê¸´ URI!"
 --><!--#include virtual="include/top.html" -->
 
-    ¿äÃ»ÇÑ URLÀÌ ³Ê¹« ±æ¾î¼­ ÀÌ ¼­¹ö°¡ Ã³¸®ÇÒ ¼ö ¾ø½À´Ï´Ù.
+    ìš”ì²­í•œ URLì´ ë„ˆë¬´ ê¸¸ì–´ì„œ ì´ ì„œë²„ê°€ ì²˜ë¦¬í•  ìˆ˜ ì—†ìŠµë‹ˆë‹¤.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Aangeboden URI te groot!"
@@ -134,21 +131,20 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Zbyt d³ugie URI!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Zbyt dÅ‚ugie URI!"
 --><!--#include virtual="include/top.html" -->
 
-    D³ugo¶æ ¿±danego URLa przekracza limit ustanowiony dla tego
-    serwera. ¯±danie nie mo¿e zostaæ zrealizowane.
+    DÅ‚ugoÅ›Ä‡ Å¼Ä…danego URLa przekracza limit ustanowiony dla tego
+    serwera. Å»Ä…danie nie moÅ¼e zostaÄ‡ zrealizowane.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="URL excede limite!"
@@ -162,7 +158,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="URL-ul submis este prea mare!"
@@ -175,21 +171,20 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
---><!--#set var="TITLE" value="¿ŞáÛĞâØ ÃÀ¸ øÕ ßàÕÒÕÛØÚ!"
+--><!--#set var="TITLE" value="ĞŸĞ¾ÑĞ»Ğ°Ñ‚Ğ¸ Ğ£Ğ Ğ˜ Ñ˜Ğµ Ğ¿Ñ€ĞµĞ²ĞµĞ»Ğ¸Ğº!"
 --><!--#include virtual="include/top.html" -->
 
-    ´ãÖØİĞ ×ĞåâÕÒĞİŞÓ ÃÀ»-Ğ ßàÕÜĞèãøÕ ŞÓàĞİØçÕúĞ ÜŞÓãûİŞáâØ
-    ŞÒŞÓ áÕàÒÕàĞ. ·ĞåâÕÒ İÕ ÜŞÖÕ ÑØâØ ŞÑàĞòÕİ.
+    Ğ”ÑƒĞ¶Ğ¸Ğ½Ğ° Ğ·Ğ°Ñ…Ñ‚ĞµĞ²Ğ°Ğ½Ğ¾Ğ³ Ğ£Ğ Ğ›-Ğ° Ğ¿Ñ€ĞµĞ¼Ğ°ÑˆÑƒÑ˜Ğµ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµÑšĞ° Ğ¼Ğ¾Ğ³ÑƒÑ›Ğ½Ğ¾ÑÑ‚Ğ¸
+    Ğ¾Ğ²Ğ¾Ğ³ ÑĞµÑ€Ğ²ĞµÑ€Ğ°. Ğ—Ğ°Ñ…Ñ‚ĞµĞ² Ğ½Ğµ Ğ¼Ğ¾Ğ¶Ğµ Ğ±Ğ¸Ñ‚Ğ¸ Ğ¾Ğ±Ñ€Ğ°Ñ’ĞµĞ½.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="Efterfr&aring;gad URI f&ouml;r stor!"
@@ -203,10 +198,9 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Submitted URI too large!"
 --><!--#include virtual="include/top.html" -->
 

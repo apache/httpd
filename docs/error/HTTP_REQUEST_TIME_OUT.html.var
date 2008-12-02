@@ -1,19 +1,18 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
---><!--#set var="TITLE" value="Vypr¹el èasovı limit po¾adavku!"
+--><!--#set var="TITLE" value="VyprÅ¡el ÄasovÃ½ limit poÅ¾adavku!"
 --><!--#include virtual="include/top.html" -->
 
-    Server uzavøel sí»ové spojení, proto¾e prohlí¾eè
-    nedokonèil po¾adavek ve stanoveném èase.
+    Server uzavÅ™el sÃ­Å¥ovÃ© spojenÃ­, protoÅ¾e prohlÃ­Å¾eÄ
+    nedokonÄil poÅ¾adavek ve stanovenÃ©m Äase.
    
 <!--#include virtual="include/bottom.html" --> 
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="Zeitlimit &uuml;berschritten!"
@@ -27,7 +26,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Request time-out!"
 --><!--#include virtual="include/top.html" -->
@@ -39,7 +38,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;La solicitud ha excedido el tiempo de espera permitido!"
@@ -53,7 +52,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="Requ&ecirc;te trop longue !"
@@ -66,7 +65,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="Am don iarratais istigh!"
 --><!--#include virtual="include/top.html" -->
@@ -79,7 +78,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="Time-out della richiesta!"
@@ -93,35 +92,33 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Request time-out!"
 --><!--#include virtual="include/top.html" -->
 
-    $B%V%i%&%6$,;XDj;~4V0JFb$K%j%/%(%9%H$r40N;$7$J$+$C$?$N$G!"(B
-    $B%5!<%P$O@\B3$r@Z$j$^$7$?!#(B
+    ãƒ–ãƒ©ã‚¦ã‚¶ãŒæŒ‡å®šæ™‚é–“ä»¥å†…ã«ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’å®Œäº†ã—ãªã‹ã£ãŸã®ã§ã€
+    ã‚µãƒ¼ãƒã¯æ¥ç¶šã‚’åˆ‡ã‚Šã¾ã—ãŸã€‚
    
 <!--#include virtual="include/bottom.html" --> 
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="¿äÃ» ½Ã°£ ÃÊ°ú!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ìš”ì²­ ì‹œê°„ ì´ˆê³¼!"
 --><!--#include virtual="include/top.html" -->
 
-    ºê¶ó¿ìÀú°¡ ³Ê¹« ¿À·§µ¿¾È ¿äÃ»À» ³¡³»Áö ¾Ê¾Æ¼­ ¼­¹ö°¡ ³×Æ®¿öÅ© ¿¬°áÀ»
-    °­Á¦·Î ²÷¾ú½À´Ï´Ù.
+    ë¸Œë¼ìš°ì €ê°€ ë„ˆë¬´ ì˜¤ë«ë™ì•ˆ ìš”ì²­ì„ ëë‚´ì§€ ì•Šì•„ì„œ ì„œë²„ê°€ ë„¤íŠ¸ì›Œí¬ ì—°ê²°ì„
+    ê°•ì œë¡œ ëŠì—ˆìŠµë‹ˆë‹¤.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Tijdlimiet overschreden!"
@@ -134,21 +131,20 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Przedawnione ¿±danie!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Przedawnione Å¼Ä…danie!"
 --><!--#include virtual="include/top.html" -->
 
-    Serwer zamkn±³ po³±czenie sieciowe poniewa¿ przegl±darka
-    nie zakoñczy³a operacji w przewidywanym czasie.
+    Serwer zamknÄ…Å‚ poÅ‚Ä…czenie sieciowe poniewaÅ¼ przeglÄ…darka
+    nie zakoÅ„czyÅ‚a operacji w przewidywanym czasie.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="Tempo excedido!"
@@ -162,7 +158,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="Time-out al cererii!"
@@ -175,21 +171,20 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
---><!--#set var="TITLE" value="·ĞåâÕÒã øÕ ØáâÕÚÛŞ ÒàÕÜÕ!"
+--><!--#set var="TITLE" value="Ğ—Ğ°Ñ…Ñ‚ĞµĞ²Ñƒ Ñ˜Ğµ Ğ¸ÑÑ‚ĞµĞºĞ»Ğ¾ Ğ²Ñ€ĞµĞ¼Ğµ!"
 --><!--#include virtual="include/top.html" -->
 
-    ÁÕàÒÕà øÕ ßàÕÚØİãŞ ÒÕ×ã áĞ ÜàÕÖŞÜ øÕà çØâĞç
-    İØøÕ ×ĞÒàèØŞ ×ĞåâÕÒ ×Ğ ÔŞ×ÒŞùÕİŞ ÒàÕÜÕ.
+    Ğ¡ĞµÑ€Ğ²ĞµÑ€ Ñ˜Ğµ Ğ¿Ñ€ĞµĞºĞ¸Ğ½ÑƒĞ¾ Ğ²ĞµĞ·Ñƒ ÑĞ° Ğ¼Ñ€ĞµĞ¶Ğ¾Ğ¼ Ñ˜ĞµÑ€ Ñ‡Ğ¸Ñ‚Ğ°Ñ‡
+    Ğ½Ğ¸Ñ˜Ğµ Ğ·Ğ°Ğ²Ñ€ÑˆĞ¸Ğ¾ Ğ·Ğ°Ñ…Ñ‚ĞµĞ² Ğ·Ğ° Ğ´Ğ¾Ğ·Ğ²Ğ¾Ñ™ĞµĞ½Ğ¾ Ğ²Ñ€ĞµĞ¼Ğµ.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="Request time-out!"
@@ -203,15 +198,14 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Request time-out!"
 --><!--#include virtual="include/top.html" -->
 
-    Sunucu a&#287; ba&#287;lant&#305;s&#305;n&#305; kapatt&#305; çünkü gezgin
-    talebini belirlenmi&#351; süre içinde tamamlayamad&#305;.
+    Sunucu a&#287; ba&#287;lant&#305;s&#305;n&#305; kapatt&#305; Ã§Ã¼nkÃ¼ gezgin
+    talebini belirlenmi&#351; sÃ¼re iÃ§inde tamamlayamad&#305;.
 
 <!--#include virtual="include/bottom.html" --> 
 ----------tr--

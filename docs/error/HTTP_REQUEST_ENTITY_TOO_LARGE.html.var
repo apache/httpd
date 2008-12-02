@@ -1,20 +1,19 @@
 Content-language: cs
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------cs--
 <!--#set var="CONTENT_LANGUAGE" value="cs"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
---><!--#set var="TITLE" value="Po¾adovaná entita je pøíli¹ velká!"
+--><!--#set var="TITLE" value="PoÅ¾adovanÃ¡ entita je pÅ™Ã­liÅ¡ velkÃ¡!"
 --><!--#include virtual="include/top.html" -->
 
     Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    nedovoluje pøenos dat nebo objem dat
-    pøesahuje kapacitní limit.
+    nedovoluje pÅ™enos dat nebo objem dat
+    pÅ™esahuje kapacitnÃ­ limit.
 
 <!--#include virtual="include/bottom.html" -->
 ----------cs--
 
 Content-language: de
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------de--
 <!--#set var="CONTENT_LANGUAGE" value="de"
 --><!--#set var="TITLE" value="&Uuml;bergebene Daten zu gro&szlig;!"
@@ -28,7 +27,7 @@ Body:----------de--
 ----------de--
 
 Content-language: en
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------en--
 <!--#set var="TITLE" value="Request entity too large!"
 --><!--#include virtual="include/top.html" -->
@@ -41,7 +40,7 @@ Body:----------en--
 ----------en--
 
 Content-language: es
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------es--
 <!--#set var="CONTENT_LANGUAGE" value="es"
 --><!--#set var="TITLE" value="&iexcl;Entidad solicitada demasiado larga!"
@@ -56,7 +55,7 @@ Body:----------es--
 ----------es--
 
 Content-language: fr
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------fr--
 <!--#set var="CONTENT_LANGUAGE" value="fr"
 --><!--#set var="TITLE" value="Volume de la demande trop grand!"
@@ -70,7 +69,7 @@ Body:----------fr--
 ----------fr--
 
 Content-language: ga
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ga--
 <!--#set var="TITLE" value="Iarratais ar aon&aacute;n r&oacute;mh&oacute;r!"
 --><!--#include virtual="include/top.html" -->
@@ -83,7 +82,7 @@ Body:----------ga--
 ----------ga--
 
 Content-language: it
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------it--
 <!--#set var="CONTENT_LANGUAGE" value="it"
 --><!--#set var="TITLE" value="Richiesta troppo grande!"
@@ -97,37 +96,35 @@ Body:----------it--
 ----------it--
 
 Content-language: ja
-Content-type: text/html; charset=ISO-2022-JP
+Content-type: text/html; charset=UTF-8
 Body:----------ja--
 <!--#set var="CONTENT_LANGUAGE" value="ja"
---><!--#set var="CHARACTER_ENCODING" value="iso-2022-jp"
 --><!--#set var="TITLE" value="Request entity too large!"
 --><!--#include virtual="include/top.html" -->
 
     <!--#echo var="REDIRECT_REQUEST_METHOD"-->
-    $B%a%=%C%I$,%G!<%?$NAw?.$r5v2D$7$F$$$J$$$+!"(B
-    $B%G!<%?NL$,5vMFNL$rD6$($F$$$^$9!#(B
+    ãƒ¡ã‚½ãƒƒãƒ‰ãŒãƒ‡ãƒ¼ã‚¿ã®é€ä¿¡ã‚’è¨±å¯ã—ã¦ã„ãªã„ã‹ã€
+    ãƒ‡ãƒ¼ã‚¿é‡ãŒè¨±å®¹é‡ã‚’è¶…ãˆã¦ã„ã¾ã™ã€‚
 
 <!--#include virtual="include/bottom.html" -->
 ----------ja--
 
 Content-language: ko
-Content-type: text/html; charset=EUC-KR
+Content-type: text/html; charset=UTF-8
 Body:----------ko--
 <!--#set var="CONTENT_LANGUAGE" value="ko"
---><!--#set var="TITLE" value="³Ê¹« ±ä ¿äÃ»!"
---><!--#set var="CHARACTER_ENCODING" value="EUC-KR"
+--><!--#set var="TITLE" value="ë„ˆë¬´ ê¸´ ìš”ì²­!"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> ¹æ½ÄÀÇ
-    ¿äÃ»À¸·Î´Â ³»¿ëÀ» º¸³¾ ¼ö ¾ø°Å³ª, ¶Ç´Â º¸³»¿Â ³»¿ëÀÌ ±× ¹æ½Ä¿¡¼­ Çã¿ëÇÏ´Â
-    ÃÖ´ë ±æÀÌ¸¦ ³Ñ¾ú½À´Ï´Ù.
+    <!--#echo encoding="none" var="REDIRECT_REQUEST_METHOD"--> ë°©ì‹ì˜
+    ìš”ì²­ìœ¼ë¡œëŠ” ë‚´ìš©ì„ ë³´ë‚¼ ìˆ˜ ì—†ê±°ë‚˜, ë˜ëŠ” ë³´ë‚´ì˜¨ ë‚´ìš©ì´ ê·¸ ë°©ì‹ì—ì„œ í—ˆìš©í•˜ëŠ”
+    ìµœëŒ€ ê¸¸ì´ë¥¼ ë„˜ì—ˆìŠµë‹ˆë‹¤.
 
 <!--#include virtual="include/bottom.html" -->
 ----------ko--
 
 Content-language: nl
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------nl--
 <!--#set var="CONTENT_LANGUAGE" value="nl"
 --><!--#set var="TITLE" value="Volume van gevraagde entiteit te groot!"
@@ -140,22 +137,21 @@ Body:----------nl--
 ----------nl--
 
 Content-language: pl
-Content-type: text/html; charset=ISO-8859-2
+Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="¯±dany obiekt zbyt du¿y!"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-2"
+--><!--#set var="TITLE" value="Å»Ä…dany obiekt zbyt duÅ¼y!"
 --><!--#include virtual="include/top.html" -->
 
     Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    nie zezwala na typ przesy³anych danych lub rozmiar danych przekracza
+    nie zezwala na typ przesyÅ‚anych danych lub rozmiar danych przekracza
     ustalony limit.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
 
 Content-language: pt-br
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:-------pt-br--
 <!--#set var="CONTENT_LANGUAGE" value="pt-br"
 --><!--#set var="TITLE" value="Volume da dados muito grande!"
@@ -169,7 +165,7 @@ Body:-------pt-br--
 -------pt-br--
 
 Content-language: ro
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------ro--
 <!--#set var="CONTENT_LANGUAGE" value="ro"
 --><!--#set var="TITLE" value="Entitate ceruta prea mare!"
@@ -183,22 +179,21 @@ Body:----------ro--
 ----------ro--
 
 Content-language: sr
-Content-type: text/html; charset=ISO-8859-5
+Content-type: text/html; charset=UTF-8
 Body:----------sr--
 <!--#set var="CONTENT_LANGUAGE" value="sr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-5"
 --><!--#set var="TITLE" value="Request entity too large!"
 --><!--#include virtual="include/top.html" -->
 
     <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    ÜÕâŞÔ İÕ ÔŞ×ÒŞùĞÒĞ ßàÕİŞá ŞÒØå ßŞÔĞâĞÚĞ, ØÛØ ÚŞÛØçØİĞ ßŞÔĞâĞÚĞ
-    ßàÕÜĞèãøÕ ŞÓàĞİØçÕúĞ ÜŞÓãûİŞáâØ.
+    Ğ¼ĞµÑ‚Ğ¾Ğ´ Ğ½Ğµ Ğ´Ğ¾Ğ·Ğ²Ğ¾Ñ™Ğ°Ğ²Ğ° Ğ¿Ñ€ĞµĞ½Ğ¾Ñ Ğ¾Ğ²Ğ¸Ñ… Ğ¿Ğ¾Ğ´Ğ°Ñ‚Ğ°ĞºĞ°, Ğ¸Ğ»Ğ¸ ĞºĞ¾Ğ»Ğ¸Ñ‡Ğ¸Ğ½Ğ° Ğ¿Ğ¾Ğ´Ğ°Ñ‚Ğ°ĞºĞ°
+    Ğ¿Ñ€ĞµĞ¼Ğ°ÑˆÑƒÑ˜Ğµ Ğ¾Ğ³Ñ€Ğ°Ğ½Ğ¸Ñ‡ĞµÑšĞ° Ğ¼Ğ¾Ğ³ÑƒÑ›Ğ½Ğ¾ÑÑ‚Ğ¸.
 
 <!--#include virtual="include/bottom.html" -->
 ----------sr--
 
 Content-language: sv
-Content-type: text/html; charset=ISO-8859-1
+Content-type: text/html; charset=UTF-8
 Body:----------sv--
 <!--#set var="CONTENT_LANGUAGE" value="sv"
 --><!--#set var="TITLE" value="F&ouml;r stor enhet vid f&ouml;rfr&aring;gan!"
@@ -212,14 +207,13 @@ Body:----------sv--
 ----------sv--
 
 Content-language: tr
-Content-type: text/html; charset=ISO-8859-9
+Content-type: text/html; charset=UTF-8
 Body:----------tr--
 <!--#set var="CONTENT_LANGUAGE" value="tr"
---><!--#set var="CHARACTER_ENCODING" value="ISO-8859-9"
 --><!--#set var="TITLE" value="Request entity too large!"
 --><!--#include virtual="include/top.html" -->
 
-    <!--#echo var="REDIRECT_REQUEST_METHOD" --> yöntemi iletilen
+    <!--#echo var="REDIRECT_REQUEST_METHOD" --> yÃ¶ntemi iletilen
     veri tipini desteklemez, ya da veri hacmi kapasite limitlerini a&#351;&#305;yor. 
 
 <!--#include virtual="include/bottom.html" -->
