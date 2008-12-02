@@ -89,9 +89,9 @@ static int set_group_privs(void)
 
         /* Get username if passed as a uid */
 
-        if (unixd_config.user_name[0] == '#') {
+        if (ap_unixd_config.user_name[0] == '#') {
             struct passwd *ent;
-            uid_t uid = atol(&unixd_config.user_name[1]);
+            uid_t uid = atol(&ap_unixd_config.user_name[1]);
 
             if ((ent = getpwuid(uid)) == NULL) {
                 ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
@@ -104,7 +104,7 @@ static int set_group_privs(void)
             name = ent->pw_name;
         }
         else
-            name = unixd_config.user_name;
+            name = ap_unixd_config.user_name;
 
 #if !defined(OS2) && !defined(TPF)
         /* OS/2 and TPF don't support groups. */
@@ -113,19 +113,19 @@ static int set_group_privs(void)
          * Set the GID before initgroups(), since on some platforms
          * setgid() is known to zap the group list.
          */
-        if (setgid(unixd_config.group_id) == -1) {
+        if (setgid(ap_unixd_config.group_id) == -1) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                         "setgid: unable to set group id to Group %u",
-                        (unsigned)unixd_config.group_id);
+                        (unsigned)ap_unixd_config.group_id);
             return -1;
         }
 
         /* Reset `groups' attributes. */
 
-        if (initgroups(name, unixd_config.group_id) == -1) {
+        if (initgroups(name, ap_unixd_config.group_id) == -1) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                         "initgroups: unable to set groups for User %s "
-                        "and Group %u", name, (unsigned)unixd_config.group_id);
+                        "and Group %u", name, (unsigned)ap_unixd_config.group_id);
             return -1;
         }
 #endif /* !defined(OS2) && !defined(TPF) */
@@ -143,7 +143,7 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
         return rv;
     }
 
-    if (NULL != unixd_config.chroot_dir) {
+    if (NULL != ap_unixd_config.chroot_dir) {
         if (geteuid()) {
             rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
@@ -151,17 +151,17 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
             return rv;
         }
 
-        if (chdir(unixd_config.chroot_dir) != 0) {
+        if (chdir(ap_unixd_config.chroot_dir) != 0) {
             rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-                         "Can't chdir to %s", unixd_config.chroot_dir);
+                         "Can't chdir to %s", ap_unixd_config.chroot_dir);
             return rv;
         }
 
-        if (chroot(unixd_config.chroot_dir) != 0) {
+        if (chroot(ap_unixd_config.chroot_dir) != 0) {
             rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-                         "Can't chroot to %s", unixd_config.chroot_dir);
+                         "Can't chroot to %s", ap_unixd_config.chroot_dir);
             return rv;
         }
 
@@ -175,14 +175,14 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
 
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */
-    if (geteuid() == 1 && unixd_config.user_id > 1) {
+    if (geteuid() == 1 && ap_unixd_config.user_id > 1) {
         GETPRIVMODE();
-        if (setuid(unixd_config.user_id) == -1) {
+        if (setuid(ap_unixd_config.user_id) == -1) {
             GETUSERMODE();
             rv = errno;
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                         "setuid: unable to change to uid: %ld",
-                        (long) unixd_config.user_id);
+                        (long) ap_unixd_config.user_id);
             return rv;
         }
         GETUSERMODE();
@@ -191,13 +191,13 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
 #ifdef _OSD_POSIX
-        os_init_job_environment(NULL, unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
+        os_init_job_environment(NULL, ap_unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
 #endif
-        setuid(unixd_config.user_id) == -1)) {
+        setuid(ap_unixd_config.user_id) == -1)) {
         rv = errno;
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                     "setuid: unable to change to uid: %ld",
-                    (long) unixd_config.user_id);
+                    (long) ap_unixd_config.user_id);
         return rv;
     }
 #if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
@@ -229,10 +229,10 @@ unixd_set_user(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    unixd_config.user_name = arg;
-    unixd_config.user_id = ap_uname2id(arg);
+    ap_unixd_config.user_name = arg;
+    ap_unixd_config.user_id = ap_uname2id(arg);
 #if !defined (BIG_SECURITY_HOLE) && !defined (OS2)
-    if (unixd_config.user_id == 0) {
+    if (ap_unixd_config.user_id == 0) {
         return "Error:\tApache has not been designed to serve pages while\n"
                 "\trunning as root.  There are known race conditions that\n"
                 "\twill allow any local user to read any file on the system.\n"
@@ -257,7 +257,7 @@ unixd_set_group(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    unixd_config.group_id = ap_gname2id(arg);
+    ap_unixd_config.group_id = ap_gname2id(arg);
 
     return NULL;
 }
@@ -274,7 +274,7 @@ unixd_set_chroot_dir(cmd_parms *cmd, void *dummy,
         return "ChrootDir must be a valid directory";
     }
 
-    unixd_config.chroot_dir = arg;
+    ap_unixd_config.chroot_dir = arg;
     return NULL;
 }
 
@@ -283,22 +283,22 @@ unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                  apr_pool_t *ptemp)
 {
     apr_finfo_t wrapper;
-    unixd_config.user_name = DEFAULT_USER;
-    unixd_config.user_id = ap_uname2id(DEFAULT_USER);
-    unixd_config.group_id = ap_gname2id(DEFAULT_GROUP);
+    ap_unixd_config.user_name = DEFAULT_USER;
+    ap_unixd_config.user_id = ap_uname2id(DEFAULT_USER);
+    ap_unixd_config.group_id = ap_gname2id(DEFAULT_GROUP);
 
-    unixd_config.chroot_dir = NULL; /* none */
+    ap_unixd_config.chroot_dir = NULL; /* none */
 
     /* Check for suexec */
-    unixd_config.suexec_enabled = 0;
+    ap_unixd_config.suexec_enabled = 0;
     if ((apr_stat(&wrapper, SUEXEC_BIN, APR_FINFO_NORM, ptemp))
          == APR_SUCCESS) {
         if ((wrapper.protection & APR_USETID) && wrapper.user == 0) {
-            unixd_config.suexec_enabled = 1;
+            ap_unixd_config.suexec_enabled = 1;
         }
     }
 
-    sys_privileges_handlers(1);
+    ap_sys_privileges_handlers(1);
     return OK;
 }
 
@@ -308,20 +308,20 @@ AP_DECLARE(int) unixd_setup_child(void)
         return -1;
     }
 
-    if (NULL != unixd_config.chroot_dir) {
+    if (NULL != ap_unixd_config.chroot_dir) {
         if (geteuid()) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                          "Cannot chroot when not started as root");
             return -1;
         }
-        if (chdir(unixd_config.chroot_dir) != 0) {
+        if (chdir(ap_unixd_config.chroot_dir) != 0) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-                         "Can't chdir to %s", unixd_config.chroot_dir);
+                         "Can't chdir to %s", ap_unixd_config.chroot_dir);
             return -1;
         }
-        if (chroot(unixd_config.chroot_dir) != 0) {
+        if (chroot(ap_unixd_config.chroot_dir) != 0) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-                         "Can't chroot to %s", unixd_config.chroot_dir);
+                         "Can't chroot to %s", ap_unixd_config.chroot_dir);
             return -1;
         }
         if (chdir("/") != 0) {
@@ -333,13 +333,13 @@ AP_DECLARE(int) unixd_setup_child(void)
 
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */
-    if (geteuid() == 1 && unixd_config.user_id > 1) {
+    if (geteuid() == 1 && ap_unixd_config.user_id > 1) {
         GETPRIVMODE();
-        if (setuid(unixd_config.user_id) == -1) {
+        if (setuid(ap_unixd_config.user_id) == -1) {
             GETUSERMODE();
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                         "setuid: unable to change to uid: %ld",
-                        (long) unixd_config.user_id);
+                        (long) ap_unixd_config.user_id);
             exit(1);
         }
         GETUSERMODE();
@@ -348,12 +348,12 @@ AP_DECLARE(int) unixd_setup_child(void)
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
 #ifdef _OSD_POSIX
-        os_init_job_environment(NULL, unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
+        os_init_job_environment(NULL, ap_unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
 #endif
-        setuid(unixd_config.user_id) == -1)) {
+        setuid(ap_unixd_config.user_id) == -1)) {
         ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
                     "setuid: unable to change to uid: %ld",
-                    (long) unixd_config.user_id);
+                    (long) ap_unixd_config.user_id);
         return -1;
     }
 #if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)

@@ -368,7 +368,7 @@ AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sb, request_rec *r)
     ws->conn_bytes += r->bytes_sent;
 }
 
-int find_child_by_pid(apr_proc_t *pid)
+AP_DECLARE(int) ap_find_child_by_pid(apr_proc_t *pid)
 {
     int i;
     int max_daemons_limit;

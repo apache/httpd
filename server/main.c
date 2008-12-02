@@ -798,8 +798,8 @@ int main(int argc, const char * const argv[])
  * has all of the APR functions specified by the apr/apr.exports and
  * apr-util/aprutil.exports files.
  */
-const void *suck_in_APR(void);
-const void *suck_in_APR(void)
+const void *ap_suck_in_APR(void);
+const void *ap_suck_in_APR(void)
 {
     extern const void *ap_ugly_hack;
 

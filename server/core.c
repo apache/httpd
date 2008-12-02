@@ -3680,23 +3680,23 @@ static int default_handler(request_rec *r)
 /* Optional function coming from mod_logio, used for logging of output
  * traffic
  */
-APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
-APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *authz_ap_some_auth_required;
+APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *ap__logio_add_bytes_out;
+APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *ap__authz_ap_some_auth_required;
 
 /* Insist that at least one module will undertake to provide system
  * security by dropping startup privileges.
  */
 static int sys_privileges = 0;
-AP_DECLARE(int) sys_privileges_handlers(int inc)
+AP_DECLARE(int) ap_sys_privileges_handlers(int inc)
 {
     sys_privileges += inc;
     return sys_privileges;
 }
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
+    ap__logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
-    authz_ap_some_auth_required = APR_RETRIEVE_OPTIONAL_FN(authz_some_auth_required);
+    ap__authz_ap_some_auth_required = APR_RETRIEVE_OPTIONAL_FN(authz_some_auth_required);
     authn_ap_auth_type = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_type);
     authn_ap_auth_name = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_name);
     access_compat_ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(access_compat_ap_satisfies);

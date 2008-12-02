@@ -1583,7 +1583,7 @@ static void server_main_loop(int remaining_children_to_start)
                 sick_child_detected = 1;
             }
             /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = find_child_by_pid(&pid);
+            child_slot = ap_find_child_by_pid(&pid);
             if (child_slot >= 0) {
                 for (i = 0; i < ap_threads_per_child; i++)
                     ap_update_child_status_from_indexes(child_slot, i, SERVER_DEAD,
@@ -1674,7 +1674,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #else
     if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
 #endif
-        rv = unixd_set_proc_mutex_perms(accept_mutex);
+        rv = ap_unixd_set_proc_mutex_perms(accept_mutex);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                          "Couldn't set permissions on cross-process lock; "

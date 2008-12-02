@@ -1139,7 +1139,7 @@ const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
 #ifdef AP_MPM_WANT_FATAL_SIGNAL_HANDLER
 
 static pid_t parent_pid, my_pid;
-apr_pool_t *pconf;
+static apr_pool_t *pconf;
 
 #if AP_ENABLE_EXCEPTION_HOOK
 

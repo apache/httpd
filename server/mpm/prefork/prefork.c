@@ -664,7 +664,7 @@ static int make_child(server_rec *s, int slot)
 
 #ifdef _OSD_POSIX
     /* BS2000 requires a "special" version of fork() before a setuid() call */
-    if ((pid = os_fork(unixd_config.user_name)) == -1) {
+    if ((pid = os_fork(ap_unixd_config.user_name)) == -1) {
 #elif defined(TPF)
     if ((pid = os_fork(s, slot)) == -1) {
 #else
@@ -897,7 +897,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #else
     if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
 #endif
-        rv = unixd_set_proc_mutex_perms(accept_mutex);
+        rv = ap_unixd_set_proc_mutex_perms(accept_mutex);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                          "Couldn't set permissions on cross-process lock; "
@@ -987,7 +987,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             }
 
             /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = find_child_by_pid(&pid);
+            child_slot = ap_find_child_by_pid(&pid);
             if (child_slot >= 0) {
                 (void) ap_update_child_status_from_indexes(child_slot, 0, SERVER_DEAD,
                                                            (request_rec *) NULL);
@@ -1056,7 +1056,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* Time to shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
-        if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
+        if (ap_unixd_killpg(getpgrp(), SIGTERM) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGTERM");
         }
         ap_reclaim_child_processes(1);          /* Start with SIGTERM */
@@ -1147,7 +1147,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * way, try and make sure that all of our processes are
          * really dead.
          */
-        unixd_killpg(getpgrp(), SIGTERM);
+        ap_unixd_killpg(getpgrp(), SIGTERM);
 
         return 1;
     }
@@ -1195,7 +1195,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
     else {
         /* Kill 'em off */
-        if (unixd_killpg(getpgrp(), SIGHUP) < 0) {
+        if (ap_unixd_killpg(getpgrp(), SIGHUP) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGHUP");
         }
         ap_reclaim_child_processes(0);          /* Not when just starting up */

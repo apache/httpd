@@ -859,7 +859,7 @@ static int perchild_setup_child(int childnum)
     child_info_t *ug = &child_info_table[childnum];
 
     if (ug->uid == -1 && ug->gid == -1) {
-        return unixd_setup_child();
+        return ap_unixd_setup_child();
     }
     if (set_group_privs(ug->uid, ug->gid)) {
         return -1;
@@ -868,7 +868,7 @@ static int perchild_setup_child(int childnum)
     if (!geteuid()
         && (
 #ifdef _OSD_POSIX
-            os_init_job_environment(server_conf, unixd_config.user_name,
+            os_init_job_environment(server_conf, ap_unixd_config.user_name,
                                     one_process) != 0 ||
 #endif
             setuid(ug->uid) == -1)) {
@@ -1329,7 +1329,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* Time to gracefully shut down:
          * Kill child processes, tell them to call child_exit, etc...
          */
-        if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
+        if (ap_unixd_killpg(getpgrp(), SIGTERM) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
                          "killpg SIGTERM");
         }
@@ -1392,7 +1392,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */
-        if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
+        if (ap_unixd_killpg(getpgrp(), SIGTERM) < 0) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf,
                          "killpg SIGTERM");
         }
@@ -1483,7 +1483,7 @@ static int perchild_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptem
         my_pid = getpid();
     }
 
-    unixd_pre_config(ptemp);
+    ap_unixd_pre_config(ptemp);
     ap_listen_pre_config();
     num_daemons = DEFAULT_NUM_DAEMON;
     threads_to_start = DEFAULT_START_THREAD;

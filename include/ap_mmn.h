@@ -181,12 +181,13 @@
  *                         from util_filter.h to httpd.h and change their
  *                         numeric values so they do not overlap with other
  *                         potential status codes
+ * 20081201.0 (2.3.0-dev)  Rename several APIs to include ap_ prefix.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20081129
+#define MODULE_MAGIC_NUMBER_MAJOR 20081201
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

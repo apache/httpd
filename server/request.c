@@ -1666,13 +1666,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
-extern APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *authz_ap_some_auth_required;
+extern APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *ap__authz_ap_some_auth_required;
 
 AP_DECLARE(int) ap_some_auth_required(request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
-    if (authz_ap_some_auth_required) {
-        return authz_ap_some_auth_required(r);
+    if (ap__authz_ap_some_auth_required) {
+        return ap__authz_ap_some_auth_required(r);
     }
     else
         return 0;

@@ -172,7 +172,7 @@ apr_status_t ap_cleanup_scoreboard(void *d);
 AP_DECLARE(void) ap_create_sb_handle(ap_sb_handle_t **new_sbh, apr_pool_t *p,
                                      int child_num, int thread_num);
     
-int find_child_by_pid(apr_proc_t *pid);
+AP_DECLARE(int) ap_find_child_by_pid(apr_proc_t *pid);
 AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status, request_rec *r);
 AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_num,
                                                     int status, request_rec *r);

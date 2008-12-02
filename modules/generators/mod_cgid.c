@@ -622,7 +622,7 @@ static int cgid_server(void *data)
     }
 
     if (!geteuid()) {
-        if (chown(sockname, unixd_config.user_id, -1) < 0) {
+        if (chown(sockname, ap_unixd_config.user_id, -1) < 0) {
             ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
                          "Couldn't change owner of unix domain socket %s",
                          sockname);

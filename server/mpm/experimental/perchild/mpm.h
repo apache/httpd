@@ -50,7 +50,7 @@
 
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 #define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
-#define MPM_ACCEPT_FUNC unixd_accept
+#define MPM_ACCEPT_FUNC ap_unixd_accept
 
 /* Table of child status */
 #define SERVER_DEAD 0

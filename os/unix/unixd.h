@@ -78,11 +78,12 @@ typedef struct {
     int suexec_enabled;
     const char *chroot_dir;
 } unixd_config_rec;
-AP_DECLARE_DATA extern unixd_config_rec unixd_config;
+AP_DECLARE_DATA extern unixd_config_rec ap_unixd_config;
 
 #if defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)
-AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
-                           const char *arg, const char * arg2, int type);
+AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
+                                     const char *arg, 
+                                     const char * arg2, int type);
 #endif
 
 /**
@@ -94,15 +95,15 @@ AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
  * for SysV semaphores.  Otherwise, it is safe to call it for all
  * mutex types.
  */
-AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex);
-AP_DECLARE(apr_status_t) unixd_set_global_mutex_perms(apr_global_mutex_t *gmutex);
-AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr, apr_pool_t *ptrans);
+AP_DECLARE(apr_status_t) ap_unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex);
+AP_DECLARE(apr_status_t) ap_unixd_set_global_mutex_perms(apr_global_mutex_t *gmutex);
+AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr, apr_pool_t *ptrans);
 
 #ifdef HAVE_KILLPG
-#define unixd_killpg(x, y)	(killpg ((x), (y)))
+#define ap_unixd_killpg(x, y)	(killpg ((x), (y)))
 #define ap_os_killpg(x, y)      (killpg ((x), (y)))
 #else /* HAVE_KILLPG */
-#define unixd_killpg(x, y)	(kill (-(x), (y)))
+#define ap_unixd_killpg(x, y)	(kill (-(x), (y)))
 #define ap_os_killpg(x, y)      (kill (-(x), (y)))
 #endif /* HAVE_KILLPG */
 

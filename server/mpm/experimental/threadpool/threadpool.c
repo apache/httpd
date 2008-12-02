@@ -1243,7 +1243,7 @@ static void child_main(int child_num_arg)
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
-    if (unixd_setup_child()) {
+    if (ap_unixd_setup_child()) {
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
@@ -1629,7 +1629,7 @@ static void server_main_loop(int remaining_children_to_start)
                 return;
             }
             /* non-fatal death... note that it's gone in the scoreboard. */
-            child_slot = find_child_by_pid(&pid);
+            child_slot = ap_find_child_by_pid(&pid);
             if (child_slot >= 0) {
                 for (i = 0; i < ap_threads_per_child; i++)
                     ap_update_child_status_from_indexes(child_slot, i, SERVER_DEAD,
@@ -1726,7 +1726,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 #else
     if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
 #endif
-        rv = unixd_set_proc_mutex_perms(accept_mutex);
+        rv = ap_unixd_set_proc_mutex_perms(accept_mutex);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                          "Couldn't set permissions on cross-process lock; "
@@ -1966,7 +1966,7 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         parent_pid = ap_my_pid = getpid();
     }
 
-    unixd_pre_config(ptemp);
+    ap_unixd_pre_config(ptemp);
     ap_listen_pre_config();
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     min_spare_threads = DEFAULT_MIN_FREE_DAEMON * DEFAULT_THREADS_PER_CHILD;
