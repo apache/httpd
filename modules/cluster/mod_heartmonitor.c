@@ -407,6 +407,10 @@ static void hm_child_init(apr_pool_t *p, server_rec *s)
     hm_ctx_t *ctx =
         ap_get_module_config(s->module_config, &heartmonitor_module);
 
+    if (!ctx->active) {
+        return;
+    }
+
     apr_proc_mutex_child_init(&ctx->mutex, ctx->mutex_path, p);
 
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
@@ -429,10 +433,16 @@ static void hm_child_init(apr_pool_t *p, server_rec *s)
 static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
+    apr_status_t rv;
     hm_ctx_t *ctx = ap_get_module_config(s->module_config,
                                          &heartmonitor_module);
 
-    apr_status_t rv = apr_proc_mutex_create(&ctx->mutex,
+
+    if (!ctx->active) {
+        return OK;
+    }
+
+    rv = apr_proc_mutex_create(&ctx->mutex,
                                             ctx->mutex_path,
 #if APR_HAS_FCNTL_SERIALIZE
 
@@ -510,7 +520,12 @@ static const char *cmd_hm_listen(cmd_parms *cmd,
         return err;
     }
 
-    ctx->active = 1;
+    if (!ctx->active) {
+        ctx->active = 1;
+    }
+    else {
+        return "HeartbeatListen: May only be specified once.";
+    }
 
     rv = apr_parse_addr_port(&host_str, &scope_id, &port, mcast_addr, p);
 
