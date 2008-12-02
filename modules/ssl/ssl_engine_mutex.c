@@ -71,7 +71,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
     }
 
 #ifdef AP_NEED_SET_MUTEX_PERMS
-    rv = unixd_set_global_mutex_perms(mc->pMutex);
+    rv = ap_unixd_set_global_mutex_perms(mc->pMutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Could not set permissions on ssl_mutex; check User "
