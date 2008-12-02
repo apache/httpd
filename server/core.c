@@ -2907,7 +2907,7 @@ static const char *set_limit_cpu(cmd_parms *cmd, void *conf_,
 {
     core_dir_config *conf = conf_;
 
-    unixd_set_rlimit(cmd, &conf->limit_cpu, arg, arg2, RLIMIT_CPU);
+    ap_unixd_set_rlimit(cmd, &conf->limit_cpu, arg, arg2, RLIMIT_CPU);
     return NULL;
 }
 #endif
@@ -2919,11 +2919,11 @@ static const char *set_limit_mem(cmd_parms *cmd, void *conf_,
     core_dir_config *conf = conf_;
 
 #if defined(RLIMIT_AS)
-    unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2 ,RLIMIT_AS);
+    ap_unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2 ,RLIMIT_AS);
 #elif defined(RLIMIT_DATA)
-    unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2, RLIMIT_DATA);
+    ap_unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2, RLIMIT_DATA);
 #elif defined(RLIMIT_VMEM)
-    unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2, RLIMIT_VMEM);
+    ap_unixd_set_rlimit(cmd, &conf->limit_mem, arg, arg2, RLIMIT_VMEM);
 #endif
 
     return NULL;
@@ -2936,7 +2936,7 @@ static const char *set_limit_nproc(cmd_parms *cmd, void *conf_,
 {
     core_dir_config *conf = conf_;
 
-    unixd_set_rlimit(cmd, &conf->limit_nproc, arg, arg2, RLIMIT_NPROC);
+    ap_unixd_set_rlimit(cmd, &conf->limit_nproc, arg, arg2, RLIMIT_NPROC);
     return NULL;
 }
 #endif
