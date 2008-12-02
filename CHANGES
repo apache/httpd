@@ -1,6 +1,16 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.11
 
+  *) core: When the ap_http_header_filter processes an error bucket, cleanup
+     the passed brigade before returning AP_FILTER_ERROR down the filter 
+     chain. This unambiguously ensures the same error bucket isn't revisited
+     [Ruediger Pluem]
+
+  *) core: Error responses set by filters were being coerced into 500 errors,
+     sometimes appended to the original error response. Log entry of:
+     'Handler for (null) returned invalid result code -3'
+     [Eric Covener]
+
   *) configure: Don't reject libtool 2.x
      PR 44817 [Arfrever Frehtes Taifersar Arahesis <Arfrever.FTA gmail.com>]
 
