@@ -107,7 +107,7 @@ dialup_send_pulse(dialup_baton_t *db)
     }
 }
 
-void 
+static void 
 dialup_callback(void *baton)
 {
     int status;
