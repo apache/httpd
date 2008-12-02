@@ -1135,7 +1135,11 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         }
     }
     if (eb) {
-        ap_die(eb->status, r);
+        int status;
+
+        status = eb->status;
+        apr_brigade_cleanup(b);
+        ap_die(status, r);
         return AP_FILTER_ERROR;
     }
 
