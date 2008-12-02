@@ -2535,7 +2535,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         }
 
 #ifdef AP_NEED_SET_MUTEX_PERMS
-        result = unixd_set_global_mutex_perms(st->util_ldap_cache_lock);
+        result = ap_unixd_set_global_mutex_perms(st->util_ldap_cache_lock);
         if (result != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, result, s,
                          "LDAP cache: failed to set mutex permissions");
