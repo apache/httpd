@@ -461,6 +461,14 @@ be passed through</description>
     <p>In the example above all directives that are neither in the group
     <code>AuthConfig</code> nor <code>Indexes</code> cause an internal
     server error.</p>
+
+    <note><p>For security and performance reasons, do not set
+    <code>AllowOverride</code> to anything other than <code>None</code> 
+    in your <code>&lt;Directory /&gt;</code> block. Instead, find (or
+    create) the <code>&lt;Directory&gt;</code> block that refers to the
+    directory where you're actually planning to place a
+    <code>.htaccess</code> file.</p>
+    </note>
 </usage>
 
 <seealso><directive module="core">AccessFileName</directive></seealso>
