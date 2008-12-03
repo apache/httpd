@@ -19,7 +19,6 @@ proxy_http_objs="mod_proxy_http.lo"
 proxy_fcgi_objs="mod_proxy_fcgi.lo"
 proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo ajp_utils.lo"
 proxy_balancer_objs="mod_proxy_balancer.lo"
-proxy_lb_hb_objs="mod_lbmethod_heartbeat.lo"
 
 case "$host" in
   *os2*)
@@ -31,7 +30,6 @@ case "$host" in
     proxy_fcgi_objs="$proxy_fcgi_objs mod_proxy.la"
     proxy_ajp_objs="$proxy_ajp_objs mod_proxy.la"
     proxy_balancer_objs="$proxy_balancer_objs mod_proxy.la"
-    proxy_lb_hb_objs="$proxy_lb_hb_objs mod_proxy.la"
     ;;
 esac
 
@@ -41,7 +39,6 @@ APACHE_MODULE(proxy_http, Apache proxy HTTP module, $proxy_http_objs, , $proxy_m
 APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module, $proxy_fcgi_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_ajp, Apache proxy AJP module, $proxy_ajp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module, $proxy_balancer_objs, , $proxy_mods_enable)
-APACHE_MODULE(lbmethod_heartbeat, Apache proxy Load balancing from Heartbeats, $proxy_lb_hb_objs, , $proxy_mods_enable)
 
 
 AC_DEFUN([CHECK_SERF], [
@@ -81,5 +78,4 @@ APACHE_MODULE(serf, [Reverse proxy module using Serf], $serf_objects, , no, [
 ])
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current/../generators])
-
 APACHE_MODPATH_FINISH
