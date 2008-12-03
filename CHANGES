@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_balancer: Move all load balancing implementations
+     as individual, self-contained mod_proxy submodules under
+     modules/proxy/balancers [Jim Jagielski]
+
   *) Rename APIs to include ap_ prefix:
         find_child_by_pid -> ap_find_child_by_pid
         suck_in_APR -> ap_suck_in_APR
