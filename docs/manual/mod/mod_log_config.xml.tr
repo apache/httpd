@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 706314:721035 (outdated) -->
+<!-- English Revision: 721035 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -112,6 +112,14 @@
           <code><var>Filanca</var>:</code> başlık satır(lar)ının
           içeriği. Diğer modüllerde (örn. <module>mod_headers</module>)
           yapılan değişikliklerden etkilenir.</td></tr>
+
+    <tr><td><code>%k</code></td>
+        <td>Bu bağlantıda işlenen isteklerin sayısı; yani örneğin,
+        '1' değeri bağlantı kurulduktan sonraki ilk kalıcı bağlantıyı,
+        '2', ikinci bağlantıyı, ..., vb. gösterir;
+          <directive module="core">KeepAlive</directive> kullanılmışsa
+          değer anlamlıdır; aksi takdirde değer daima (ilk isteği
+          belirten) 0’dır.</td></tr>
 
     <tr><td><code>%l</code></td>
         <td>Uzak kullanıcı kimliği (sağlanmışsa, identd üzerinden).
