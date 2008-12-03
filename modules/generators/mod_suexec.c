@@ -64,7 +64,7 @@ static const char *set_suexec_ugid(cmd_parms *cmd, void *mconfig,
     if (err != NULL) {
         return err;
     }
-    if (unixd_config.suexec_enabled) {
+    if (ap_unixd_config.suexec_enabled) {
         cfg->ugid.uid = ap_uname2id(uid);
         cfg->ugid.gid = ap_gname2id(gid);
         cfg->ugid.userdir = 0;
@@ -94,7 +94,7 @@ static int suexec_post_config(apr_pool_t *p, apr_pool_t *plog,
     apr_pool_userdata_get(&reported, SUEXEC_POST_CONFIG_USERDATA,
                           s->process->pool);
 
-    if ((reported == NULL) && unixd_config.suexec_enabled) {
+    if ((reported == NULL) && ap_unixd_config.suexec_enabled) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
                      "suEXEC mechanism enabled (wrapper: %s)", SUEXEC_BIN);
 
