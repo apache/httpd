@@ -86,6 +86,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#addiconbytype">AddIconByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulticon">DefaultIcon</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#headername">HeaderName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#indexheadinsert">IndexHeadInsert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexignore">IndexIgnore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexoptions">IndexOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#indexorderdefault">IndexOrderDefault</a></li>
@@ -474,6 +475,25 @@ of the index listing</td></tr>
     then you will probably want to set <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>, so that these tags are not
     repeated.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IndexHeadInsert" id="IndexHeadInsert">IndexHeadInsert</a> <a name="indexheadinsert" id="indexheadinsert">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inserts text in the HEAD section of an index page.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IndexHeadInsert <var>"markup ..."</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+</table>
+    <p>The <code class="directive">IndexHeadInsert</code> directive specifies a
+    string to insert in the <var>&lt;head&gt;</var> section of the HTML
+    generated for the index page.</p>
+    <div class="example"><h3>Example</h3><p><code>
+      
+      IndexHeadInsert "&lt;link rel=\"sitemap\" href=\"/sitemap.html\"&gt;"
+    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
