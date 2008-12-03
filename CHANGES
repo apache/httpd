@@ -29,7 +29,7 @@ Changes with Apache 2.3.0
   *) mod_heartmonitor: New module to collect heartbeats, and write out a file
      so that other modules can load balance traffic as needed. [Paul Querna]
 
-  *) mod_heartbeat: New module to genarate multicast heartbeats to know if a 
+  *) mod_heartbeat: New module to generate multicast heartbeats to know if a 
      server is online. [Paul Querna]
 
   *) core: Error responses set by filters were being coerced into 500 errors,
