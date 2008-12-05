@@ -40,10 +40,6 @@
 #include "apr_time.h"
 #include "apr_hooks.h"
 
-#include "apreq_parser.h"
-#include "apreq_param.h"
-#include "apreq2/apreq_module_apache2.h"
-
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
