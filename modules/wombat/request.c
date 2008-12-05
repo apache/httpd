@@ -139,11 +139,10 @@ static int req_aprtable2luatable_cb(void *l, const char *key, const char *value)
 /* r:parseargs() returning a lua table */
 static int req_parseargs(lua_State* L) {
     request_rec* r = apw_check_request_rec(L, 1);
-    apreq_handle_t* h = apreq_handle_apache2(r);
     lua_newtable(L);
     lua_newtable(L); /* [table, table] */
     const apr_table_t* form_table;
-    if (apreq_args(h, &form_table) == APR_SUCCESS) {
+    if (ap_args_to_table(r, &form_table) == APR_SUCCESS) {
         apr_table_do(req_aprtable2luatable_cb, L, form_table, NULL);                
     }
     return 2; /* [table<string, string>, table<string, array<string>>] */
