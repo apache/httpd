@@ -1005,6 +1005,7 @@ struct request_rec {
 
     apr_thread_mutex_t *invoke_mtx;
 
+    apr_table_t *body_table;
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
  * record to improve 64bit alignment the next time we need to break
