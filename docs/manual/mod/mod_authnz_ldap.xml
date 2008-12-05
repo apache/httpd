@@ -1024,7 +1024,7 @@ objects that are groups during sub-group processing.</description>
     to use. The syntax of the URL is</p>
 <example>ldap://host:port/basedn?attribute?scope?filter</example>
     <p>If you want to specify more than one LDAP URL that Apache should try in turn, the syntax is:</p>
-<example>AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com"</example>
+<example>AuthLDAPUrl "ldap://ldap1.example.com ldap2.example.com/dc=..."</example>
 <p><em><strong>Caveat: </strong>If you specify multiple servers, you need to enclose the entire URL string in quotes; 
 otherwise you will get an error: "AuthLDAPURL takes one argument, URL to define LDAP connection.." </em> 
 You can of course use search parameters on each of these.</p>
