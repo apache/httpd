@@ -721,3 +721,118 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
     va_end(strs.args);
     return res;
 }
+
+
+static void
+argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
+{
+    char *key;
+    char *value;
+    char *strtok_state;
+
+    if (str == NULL) {
+        return;
+    }
+    
+    key = apr_strtok(str, "&", &strtok_state);
+    while (key) {
+        value = strchr(key, '=');
+        if (value) {
+            *value = '\0';      /* Split the string in two */
+            value++;            /* Skip passed the = */
+        }
+        else {
+            value = "1";
+        }
+        ap_unescape_url(key);
+        ap_unescape_url(value);
+        apr_table_set(parms, key, value);
+        /*
+         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+         "Found query arg: %s = %s", key, value);
+         */
+        key = apr_strtok(NULL, "&", &strtok_state);
+    }
+}
+
+AP_DECLARE(void) ap_args_to_table(request_rec *r, apr_table_t **table)
+{
+    apr_table_t *t = apr_table_make(r->pool, 10);
+    argstr_to_table(r->pool, r->args, t);
+    *table = t;
+}
+
+AP_DECLARE(apr_status_t) ap_body_to_table(request_rec *r, apr_table_t **table)
+{
+    apr_bucket_brigade *bb;
+    apr_bucket_brigade *tmpbb;
+    apr_status_t rv = APR_SUCCESS;
+
+    if (r->body_table) {
+        *table = r->body_table;
+        return APR_SUCCESS;
+    }
+    
+    *table = NULL;
+
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    tmpbb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+
+    do {
+        apr_off_t len;
+
+        rv = ap_get_brigade(r->input_filters, tmpbb, AP_MODE_READBYTES,
+                            APR_BLOCK_READ, AP_IOBUFSIZE);
+        if (rv) {
+            break;
+        }
+
+        rv = apr_brigade_length(tmpbb, 1, &len);
+        if (rv) {
+            break;
+        }
+        
+        if (len == 0) {
+            break;
+        }
+
+        APR_BRIGADE_CONCAT(bb, tmpbb);
+    } while(1);
+
+    if (!rv) {
+        r->body_table = apr_table_make(r->pool, 10);
+        
+        if (!APR_BRIGADE_EMPTY(bb)) {
+            char *buffer;
+            apr_off_t len;
+            apr_pool_t *tpool;
+
+            apr_pool_create(&tpool, r->pool);
+            
+            rv = apr_brigade_length(bb, 1, &len);
+
+            if (!rv) {
+                apr_size_t total;
+                buffer = apr_palloc(tpool, len+1);
+                
+                total = len+1;
+
+                rv = apr_brigade_flatten(bb, buffer, &total);
+
+                buffer[total] = '\0';
+
+                argstr_to_table(r->pool, buffer, r->body_table);
+            }
+            apr_pool_destroy(tpool);
+        }
+    }
+
+    apr_brigade_destroy(bb);
+    apr_brigade_destroy(tmpbb);
+
+    *table = r->body_table;
+
+    return rv;
+}
+
+
