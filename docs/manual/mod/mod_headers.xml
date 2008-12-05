@@ -379,13 +379,13 @@ headers</description>
         headers are sent on the wire. This is a measure of the duration
         of the request. The value is preceded by <code>D=</code>.</td></tr>
 
-    <tr><td><code>%{FOOBAR}e</code></td>
+    <tr><td><code>%{VARNAME}e</code></td>
         <td>The contents of the <a href="../env.html">environment
-        variable</a> <code>FOOBAR</code>.</td></tr>
+        variable</a> <code>VARNAME</code>.</td></tr>
 
-    <tr><td><code>%{FOOBAR}s</code></td>
+    <tr><td><code>%{VARNAME}s</code></td>
         <td>The contents of the <a href="mod_ssl.html#envvars">SSL environment
-        variable</a> <code>FOOBAR</code>, if <module>mod_ssl</module> is enabled.</td></tr>
+        variable</a> <code>VARNAME</code>, if <module>mod_ssl</module> is enabled.</td></tr>
 
     </table>
 

@@ -90,22 +90,22 @@
 <tr><td><code>%b</code></td>
         <td>Size of response in bytes, excluding HTTP headers. In CLF format, <em>i.e.</em>
         a '<code>-</code>' rather than a 0 when no bytes are sent.</td></tr>
-<tr class="odd"><td><code>%{<var>Foobar</var>}C</code></td>
-        <td>The contents of cookie <var>Foobar</var> in the request sent
+<tr class="odd"><td><code>%{<var>VARNAME</var>}C</code></td>
+        <td>The contents of cookie <var>VARNAME</var> in the request sent
         to the server.</td></tr>
 <tr><td><code>%D</code></td>
         <td>The time taken to serve the request, in microseconds.</td></tr>
-<tr class="odd"><td><code>%{<var>FOOBAR</var>}e</code></td>
+<tr class="odd"><td><code>%{<var>VARNAME</var>}e</code></td>
         <td>The contents of the environment variable
-        <var>FOOBAR</var></td></tr>
+        <var>VARNAME</var></td></tr>
 <tr><td><code>%f</code></td>
         <td>Filename</td></tr>
 <tr class="odd"><td><code>%h</code></td>
         <td>Remote host</td></tr>
 <tr><td><code>%H</code></td>
         <td>The request protocol</td></tr>
-<tr class="odd"><td><code>%{<var>Foobar</var>}i</code></td>
-        <td>The contents of <code><var>Foobar</var>:</code> header line(s)
+<tr class="odd"><td><code>%{<var>VARNAME</var>}i</code></td>
+        <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the request sent to the server. Changes made by other
         modules (e.g. <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>) affect this.
         </td></tr>
@@ -121,11 +121,11 @@
         <code>On</code>.</td></tr>
 <tr><td><code>%m</code></td>
         <td>The request method</td></tr>
-<tr class="odd"><td><code>%{<var>Foobar</var>}n</code></td>
-        <td>The contents of note <var>Foobar</var> from another
+<tr class="odd"><td><code>%{<var>VARNAME</var>}n</code></td>
+        <td>The contents of note <var>VARNAME</var> from another
         module.</td></tr>
-<tr><td><code>%{<var>Foobar</var>}o</code></td>
-        <td>The contents of <code><var>Foobar</var>:</code> header line(s)
+<tr><td><code>%{<var>VARNAME</var>}o</code></td>
+        <td>The contents of <code><var>VARNAME</var>:</code> header line(s)
         in the reply.</td></tr>
 <tr class="odd"><td><code>%p</code></td>
         <td>The canonical port of the server serving the request</td></tr>
