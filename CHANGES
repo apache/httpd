@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Remove X-Pad header which was added as a work around to a bug in 
+     Netscape 2.x to 4.0b2. [Takashi Sato <takashi lans-tv.com>]
+
   *) Add DTrace Statically Defined Tracing (SDT) probes.
     [Theo Schlossnagle <jesus omniti.com>, Paul Querna]
 
