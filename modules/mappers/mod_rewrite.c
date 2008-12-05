@@ -490,7 +490,8 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
 
     conf = ap_get_module_config(r->server->module_config, &rewrite_module);
 
-    if (!conf->rewritelogfp || level > conf->rewriteloglevel) {
+    if ((!conf->rewritelogfp || level > conf->rewriteloglevel) &&
+        !AP_REWRITE_LOG_ENABLED()) {
         return;
     }
 
@@ -523,6 +524,11 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
                            perdir ? perdir : "",
                            perdir ? "] ": "",
                            text);
+
+    AP_REWRITE_LOG((uintptr_t)r, level, r->main ? 0 : 1, (char *)ap_get_server_name(r), logline);
+
+    if (!conf->rewritelogfp || level > conf->rewriteloglevel)
+        return;
 
     rv = apr_global_mutex_lock(rewrite_log_lock);
     if (rv != APR_SUCCESS) {
