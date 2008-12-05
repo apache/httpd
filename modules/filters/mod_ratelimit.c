@@ -170,6 +170,7 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
                 if (f->c->aborted) {
                     apr_brigade_cleanup(bb);
                     ctx->state = RATE_ERROR;
+                    break;
                 }
 
                 if (do_sleep) {
