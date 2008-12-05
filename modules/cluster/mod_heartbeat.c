@@ -186,7 +186,7 @@ static void start_hb_worker(apr_pool_t *p, hb_ctx_t *ctx)
 
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "Heartbeat: apr_thread_cond_create failed");
+                     "Heartbeat: apr_thread_mutex_create failed");
         ctx->status = rv;
         return;
     }
