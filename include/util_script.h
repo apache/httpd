@@ -140,6 +140,10 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data);
 
+AP_DECLARE(void) ap_args_to_table(request_rec *r, apr_table_t **table);
+
+AP_DECLARE(apr_status_t) ap_body_to_table(request_rec *r, apr_table_t **table);
+    
 #ifdef __cplusplus
 }
 #endif
