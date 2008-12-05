@@ -73,7 +73,8 @@ static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
                 ready++;
             }
             else if (res != SERVER_DEAD &&
-                     res != SERVER_STARTING && res != SERVER_IDLE_KILL) {
+                     res != SERVER_STARTING && res != SERVER_IDLE_KILL &&
+                     ps->generation == ap_my_generation) {
                 busy++;
             }
         }
