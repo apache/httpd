@@ -22,6 +22,13 @@
 #include "ap_mpm.h"
 #include "scoreboard.h"
 
+
+#ifndef HN_UPDATE_SEC
+/* How often we update the stats file */
+/* TODO: Make a runtime config */
+#define HN_UPDATE_SEC (5)
+#endif
+
 module AP_MODULE_DECLARE_DATA heartmonitor_module;
 
 typedef struct hm_server_t
@@ -322,7 +329,7 @@ static void *hm_worker(apr_thread_t *thd, void *data)
 
         now = apr_time_now();
 
-        if (apr_time_sec((now - last)) > 5) {
+        if (apr_time_sec((now - last)) > HN_UPDATE_SECONDS) {
             hm_update_stats(ctx, p);
             apr_pool_clear(p);
             last = now;
