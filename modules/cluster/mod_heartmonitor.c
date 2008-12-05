@@ -387,7 +387,7 @@ static void start_hm_worker(apr_pool_t *p, hm_ctx_t *ctx)
 
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "Heartmonitor: apr_thread_cond_create failed");
+                     "Heartmonitor: apr_thread_mutex_create failed");
         ctx->status = rv;
         return;
     }
