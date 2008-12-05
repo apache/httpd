@@ -20,6 +20,13 @@
 #include "apr_version.h"
 #include "apr_hooks.h"
 
+#ifndef LBM_HEARTBEAT_MAX_LASTSEEN
+/* If we haven't seen a heartbeat in the last N seconds, don't count this IP
+ * as allive.
+ */
+#define LBM_HEARTBEAT_MAX_LASTSEEN (10)
+#endif
+
 module AP_MODULE_DECLARE_DATA lbmethod_heartbeat_module;
 
 typedef struct lb_hb_ctx_t
@@ -256,7 +263,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
 
         if (PROXY_WORKER_IS_USABLE(worker)) {
             server->worker = worker;
-            if (server->seen < 10) {
+            if (server->seen < LBM_HEARTBEAT_MAX_LASTSEEN) {
                 openslots += server->ready;
                 APR_ARRAY_PUSH(up_servers, hb_server_t *) = server;
             }
