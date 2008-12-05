@@ -40,7 +40,7 @@ typedef struct hm_ctx_t
     const char *mutex_path;
     apr_sockaddr_t *mcast_addr;
     int status;
-    int keep_running;
+    volatile int keep_running;
     apr_thread_mutex_t *start_mtx;
     apr_thread_t *thread;
     apr_socket_t *sock;
