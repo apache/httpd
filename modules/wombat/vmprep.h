@@ -100,13 +100,13 @@ void apw_load_apache2_lmodule(lua_State *L);
  * a handle to a lua state. If there is not an extant vm matching the
  * spec then a new one is created.
  */
-// lua_State* apw_rgetvm(request_rec *r, apw_vm_spec *spec);
+/* lua_State* apw_rgetvm(request_rec *r, apw_vm_spec *spec); */
 
 /* returns NULL if the spec requires a request scope */
-// lua_State* apw_cgetvm(conn_rec *r, apw_vm_spec *spec);
+/* lua_State* apw_cgetvm(conn_rec *r, apw_vm_spec *spec);*/
 
 /* returns NULL if the spec requires a request scope or conn scope */
-// lua_State* apw_sgetvm(server_rec *r, apw_vm_spec *spec);
+/* lua_State* apw_sgetvm(server_rec *r, apw_vm_spec *spec); */
 
 typedef void (*apw_lua_state_open_callback) (lua_State* L, apr_pool_t* p, void* ctx);
 
