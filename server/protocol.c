@@ -842,9 +842,11 @@ request_rec *ap_read_request(conn_rec *conn)
     apr_socket_t *csd;
     apr_interval_time_t cur_timeout;
 
+
     apr_pool_create(&p, conn->pool);
     apr_pool_tag(p, "request");
     r = apr_pcalloc(p, sizeof(request_rec));
+    AP_READ_REQUEST_ENTRY((intptr_t)r, (uintptr_t)conn);
     r->pool            = p;
     r->connection      = conn;
     r->server          = conn->base_server;
@@ -894,11 +896,12 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
             apr_brigade_destroy(tmp_bb);
-            return r;
+            goto traceout;
         }
 
         apr_brigade_destroy(tmp_bb);
-        return NULL;
+        r = NULL;
+        goto traceout;
     }
 
     /* We may have been in keep_alive_timeout mode, so toggle back
@@ -921,7 +924,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
             apr_brigade_destroy(tmp_bb);
-            return r;
+            goto traceout;
         }
 
         if (apr_table_get(r->headers_in, "Transfer-Encoding")
@@ -949,7 +952,7 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
             apr_brigade_destroy(tmp_bb);
-            return r;
+            goto traceout;
         }
     }
 
@@ -1003,14 +1006,15 @@ request_rec *ap_read_request(conn_rec *conn)
         ap_send_error_response(r, 0);
         ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
-        return r;
+        goto traceout;
     }
 
     if ((access_status = ap_run_post_read_request(r))) {
         ap_die(access_status, r);
         ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
-        return NULL;
+        r = NULL;
+        goto traceout;
     }
 
     if (((expect = apr_table_get(r->headers_in, "Expect")) != NULL)
@@ -1032,10 +1036,14 @@ request_rec *ap_read_request(conn_rec *conn)
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
-            return r;
+            goto traceout;
         }
     }
 
+    AP_READ_REQUEST_SUCCESS((uintptr_t)r, (char *)r->method, (char *)r->uri, (char *)r->server->defn_name, r->status);
+    return r;
+    traceout:
+    AP_READ_REQUEST_FAILURE((uintptr_t)r);
     return r;
 }
 

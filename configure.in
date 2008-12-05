@@ -380,7 +380,8 @@ grp.h \
 strings.h \
 sys/prctl.h \
 sys/processor.h \
-sys/sem.h
+sys/sem.h \
+sys/sdt.h
 )
 AC_HEADER_SYS_WAIT
 
@@ -445,6 +446,33 @@ AC_ARG_WITH(port,APACHE_HELP_STRING(--with-port=PORT,Port on which to listen (de
 AC_ARG_WITH(sslport,APACHE_HELP_STRING(--with-sslport=SSLPORT,Port on which to securelisten (default is 443)),
         [if test "$withval" = "yes"; then AC_MSG_ERROR('option --with-sslport requires a value (the SSL TCP port number)'); else SSLPORT="$withval"; fi],
 	[SSLPORT=443])
+
+DTRACE=true
+AC_ARG_ENABLE(dtrace,APACHE_HELP_STRING(--enable-dtrace,Enable DTrace probes),
+[
+  enable_dtrace=$enableval
+  APR_ADDTO(CPPFLAGS, -DAPR_DTRACE_PROVIDER)
+  AC_MSG_ERROR('DTrace Support in the build system is not complete. Patches Welcome!')
+],
+[
+  enable_dtrace=no
+])
+
+dnl Disabled dtrace build for now.
+enable_dtrace=no
+
+case $host in
+  *-solaris2*)
+    if test $enable_dtrace = "yes" -a "$ac_cv_header_sys_sdt_h" = "yes"; then
+        AC_DEFINE(AP_ENABLE_DTRACE, 1,
+                  [Enable DTrace probes])
+        DTRACE="/usr/sbin/dtrace $DTRACEFLAGS"
+        test -f include/apache_probes.h || $DTRACE -h -s apache_probes.d -o include/apache_probes.h
+    fi
+    ;;
+esac
+
+APACHE_SUBST(DTRACE)
 
 APR_CHECK_APR_DEFINE(APR_HAVE_IPV6)
 

@@ -260,6 +260,7 @@ void ap_process_request_after_handler(request_rec *r)
     
     c->cs->state = CONN_STATE_WRITE_COMPLETION;
     check_pipeline(c);
+    AP_PROCESS_REQUEST_RETURN((uintptr_t)r, r->uri, r->status);
     if (ap_extended_status) {
         ap_time_process_request(c->sbh, STOP_PREQUEST);
     }
@@ -284,6 +285,7 @@ void ap_process_async_request(request_rec *r)
      * Use this hook with extreme care and only if you know what you are
      * doing.
      */
+    AP_PROCESS_REQUEST_ENTRY((uintptr_t)r, r->uri);
     if (ap_extended_status) {
         ap_time_process_request(r->connection->sbh, START_PREQUEST);
     }
@@ -299,6 +301,10 @@ void ap_process_async_request(request_rec *r)
     }
 
     if (access_status == SUSPENDED) {
+        /* TODO: Should move these steps into a generic function, so modules
+         * working on a suspended request can also call _ENTRY again.
+         */
+        AP_PROCESS_REQUEST_RETURN((uintptr_t)r, r->uri, access_status);
         if (ap_extended_status) {
             ap_time_process_request(c->sbh, STOP_PREQUEST);
         }
@@ -535,6 +541,8 @@ AP_DECLARE(void) ap_internal_redirect(const char *new_uri, request_rec *r)
 {
     request_rec *new = internal_internal_redirect(new_uri, r);
     int access_status;
+
+    AP_INTERNAL_REDIRECT(r->uri, new_uri);
 
     /* ap_die was already called, if an error occured */
     if (!new) {
