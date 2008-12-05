@@ -243,7 +243,12 @@
 #else
 #undef _DTRACE_VERSION
 #endif
+
+#ifdef _DTRACE_VERSION
 #include "apache_probes.h"
+#else
+#include "apache_noprobes.h"
+#endif
 
 /* TODO - We need to put OS detection back to make all the following work */
 
