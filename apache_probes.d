@@ -9,8 +9,8 @@ provider ap {
 
   /* Explicit, modules */
   probe rewrite__log(uintptr_t, int, int, char *, char *);
-  probe proxy__run(uintptr_t);
-  probe proxy__run__finished(uintptr_t);
+  probe proxy__run(uintptr_t, uintptr_t, uintptr_t, char *, int);
+  probe proxy__run__finished(uintptr_t, int, int);
 
   /* Implicit, APR hooks */
   probe translate_name__entry();
