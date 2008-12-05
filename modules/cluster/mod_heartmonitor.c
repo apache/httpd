@@ -443,6 +443,7 @@ static void hm_child_init(apr_pool_t *p, server_rec *s)
 static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
+    apr_lockmech_e mech;
     apr_status_t rv;
     hm_ctx_t *ctx = ap_get_module_config(s->module_config,
                                          &heartmonitor_module);
@@ -452,25 +453,26 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
         return OK;
     }
 
-    rv = apr_proc_mutex_create(&ctx->mutex,
-                                            ctx->mutex_path,
 #if APR_HAS_FCNTL_SERIALIZE
-
-                                            APR_LOCK_FCNTL,
+    mech = APR_LOCK_FCNTL;
 #else
 #if APR_HAS_FLOCK_SERIALIZE
-                                            APR_LOCK_FLOCK,
+    mech = APR_LOCK_FLOCK;
 #else
 #error port me to a non crap platform.
 #endif
 #endif
+    
+    rv = apr_proc_mutex_create(&ctx->mutex,
+                                            ctx->mutex_path,
+                                            mech,
                                             p);
 
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "Heartmonitor: Failed to create listener "
-                     "mutex at %s (type=%s)", ctx->mutex_path,
-                     apr_proc_mutex_defname());
+                     "mutex at %s (type=%d)", ctx->mutex_path,
+                     mech);
         return !OK;
     }
 
