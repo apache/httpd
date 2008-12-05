@@ -199,7 +199,7 @@ headers</td></tr>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] set|append|merge|add|unset|echo|edit
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -222,26 +222,6 @@ headers</td></tr>
     argument. This can be one of the following values:</p>
 
     <dl>
-    <dt><code>set</code></dt>
-    <dd>The response header is set, replacing any previous header
-    with this name. The <var>value</var> may be a format string.</dd>
-
-    <dt><code>append</code></dt>
-    <dd>The response header is appended to any existing header of
-    the same name. When a new value is merged onto an existing
-    header it is separated from the existing header with a comma.
-    This is the HTTP standard way of giving a header multiple values.</dd>
-
-    <dt><code>merge</code></dt>
-    <dd>The response header is appended to any existing header of
-    the same name, unless the value to be appended already appears in the
-    header's comma-delimited list of values.  When a new value is merged onto
-    an existing header it is separated from the existing header with a comma.
-    This is the HTTP standard way of giving a header multiple values.
-    Values are compared in a case sensitive manner, and after
-    all format specifiers have been processed.  Values in double quotes
-    are considered different from otherwise identical unquoted values.</dd>
-
     <dt><code>add</code></dt>
     <dd>The response header is added to the existing set of headers,
     even if this header already exists. This can result in two
@@ -249,10 +229,11 @@ headers</td></tr>
     unforeseen consequences, and in general <code>set</code>,
     <code>append</code> or <code>merge</code> should be used instead.</dd>
 
-    <dt><code>unset</code></dt>
-    <dd>The response header of this name is removed, if it exists.
-    If there are multiple headers of the same name, all will be
-    removed. <var>value</var> must be omitted.</dd>
+    <dt><code>append</code></dt>
+    <dd>The response header is appended to any existing header of
+    the same name. When a new value is merged onto an existing
+    header it is separated from the existing header with a comma.
+    This is the HTTP standard way of giving a header multiple values.</dd>
 
     <dt><code>echo</code></dt>
     <dd>Request headers with this name are echoed back in the
@@ -266,6 +247,25 @@ headers</td></tr>
     search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
     is a replacement string, which may contain backreferences.</dd>
     </dl>
+
+    <dt><code>merge</code></dt>
+    <dd>The response header is appended to any existing header of
+    the same name, unless the value to be appended already appears in the
+    header's comma-delimited list of values.  When a new value is merged onto
+    an existing header it is separated from the existing header with a comma.
+    This is the HTTP standard way of giving a header multiple values.
+    Values are compared in a case sensitive manner, and after
+    all format specifiers have been processed.  Values in double quotes
+    are considered different from otherwise identical unquoted values.</dd>
+
+    <dt><code>set</code></dt>
+    <dd>The response header is set, replacing any previous header
+    with this name. The <var>value</var> may be a format string.</dd>
+
+    <dt><code>unset</code></dt>
+    <dd>The response header of this name is removed, if it exists.
+    If there are multiple headers of the same name, all will be
+    removed. <var>value</var> must be omitted.</dd>
 
     <p>This argument is followed by a <var>header</var> name, which
     can include the final colon, but it is not required. Case is
@@ -337,7 +337,7 @@ headers</td></tr>
 <div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|merge|add|unset|edit <var>header</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|merge|set|unset <var>header</var>
 [<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -351,9 +351,13 @@ headers</td></tr>
     of the following values:</p>
 
     <dl>
-    <dt><code>set</code></dt>
-    <dd>The request header is set, replacing any previous header
-    with this name</dd>
+
+    <dt><code>add</code></dt>
+    <dd>The request header is added to the existing set of headers,
+    even if this header already exists. This can result in two
+    (or more) headers having the same name. This can lead to
+    unforeseen consequences, and in general <code>set</code>,
+    <code>append</code> or <code>merge</code> should be used instead.</dd>
 
     <dt><code>append</code></dt>
     <dd>The request header is appended to any existing header of the
@@ -361,6 +365,13 @@ headers</td></tr>
     it is separated from the existing header with a comma. This
     is the HTTP standard way of giving a header multiple
     values.</dd>
+
+    <dt><code>edit</code></dt>
+    <dd>If this request header exists, its value is transformed according
+    to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
+    search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
+    is a replacement string, which may contain backreferences.</dd>
+    </dl>
 
     <dt><code>merge</code></dt>
     <dd>The response header is appended to any existing header of
@@ -372,24 +383,14 @@ headers</td></tr>
     all format specifiers have been processed.  Values in double quotes
     are considered different from otherwise identical unquoted values.</dd>
 
-    <dt><code>add</code></dt>
-    <dd>The request header is added to the existing set of headers,
-    even if this header already exists. This can result in two
-    (or more) headers having the same name. This can lead to
-    unforeseen consequences, and in general <code>set</code>,
-    <code>append</code> or <code>merge</code> should be used instead.</dd>
+    <dt><code>set</code></dt>
+    <dd>The request header is set, replacing any previous header
+    with this name</dd>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
     there are multiple headers of the same name, all will be removed.
     <var>value</var> must be omitted.</dd>
-
-    <dt><code>edit</code></dt>
-    <dd>If this request header exists, its value is transformed according
-    to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
-    search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
-    is a replacement string, which may contain backreferences.</dd>
-    </dl>
 
     <p>This argument is followed by a header name, which can
     include the final colon, but it is not required. Case is
