@@ -35,7 +35,7 @@ typedef struct hb_ctx_t
     int server_limit;
     int thread_limit;
     int status;
-    int keep_running;
+    volatile int keep_running;
     apr_proc_mutex_t *mutex;
     const char *mutex_path;
     apr_thread_mutex_t *start_mtx;
