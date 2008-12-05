@@ -392,6 +392,9 @@ static void start_hm_worker(apr_pool_t *p, hm_ctx_t *ctx)
         return;
     }
 
+    /* This mutex fixes problems with a fast start/fast end, where the pool 
+     * cleanup was being invoked before the thread completely spawned. 
+     */
     apr_thread_mutex_lock(ctx->start_mtx);
 
     apr_pool_cleanup_register(p, ctx, hm_pool_cleanup, apr_pool_cleanup_null);
