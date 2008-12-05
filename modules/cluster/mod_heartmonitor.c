@@ -491,6 +491,8 @@ static void *hm_create_config(apr_pool_t *p, server_rec *s)
 
     ctx->active = 0;
     ctx->storage_path = ap_server_root_relative(p, "logs/hb.dat");
+    ctx->mutex_path = 
+        ap_server_root_relative(p, apr_pstrcat(p, ctx->storage_path, ".hm-lock", NULL));
 
     return ctx;
 }
