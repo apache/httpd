@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Add DTrace Statically Defined Tracing (SDT) probes.
+    [Theo Schlossnagle <jesus omniti.com>, Paul Querna]
+
   *) mod_proxy_balancer: Move all load balancing implementations
      as individual, self-contained mod_proxy submodules under
      modules/proxy/balancers [Jim Jagielski]
