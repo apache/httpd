@@ -1,4 +1,7 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.2.12
+
+
 Changes with Apache 2.2.11
 
   *) core: When the ap_http_header_filter processes an error bucket, cleanup
