@@ -94,7 +94,7 @@ fi
 
 wombat_objects="apr_lua.lo config.lo mod_wombat.lo request.lo vmprep.lo"
 
-APACHE_MODULE(wombat, Apache Lua Framework, $wombat_objects, , yes,
+APACHE_MODULE(wombat, Apache Lua Framework, $wombat_objects, , no,
 [
 CHECK_LUA()
 APR_ADDTO(LIBS, ["$LUA_LIBS"])
