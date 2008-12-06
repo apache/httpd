@@ -121,16 +121,16 @@ integrity, and authentication.</p>
     <p>A summary such as this is called a <dfn>message digest</dfn>, <em>one-way
     function</em> or <em>hash function</em>. Message digests are used to create
     a short, fixed-length representation of a longer, variable-length message.
-    Digest algorithms are designed to produce a unique digests for each
+    Digest algorithms are designed to produce a unique digest for each
     message. Message digests are designed to make it impractically difficult 
-    to determine the message from the digest, and (in theory) impossible to 
+    to determine the message from the digest and (in theory) impossible to 
     find two different messages which create the same digest -- thus 
     eliminating the possibility of substituting one message for another while 
     maintaining the same digest.</p>
 
     <p>Another challenge that Alice faces is finding a way to send the digest
     to the bank securely; if the digest is not sent securely, its integrity may
-    be compromised, and with it, the possibility for the bank to determine the
+    be compromised and with it the possibility for the bank to determine the
     integrity of the original message. Only if the digest is sent securely can
     the integrity of the associated message be determined.</p>
     
@@ -144,7 +144,7 @@ message is really from her, so an intruder cannot request a transaction
 involving her account. A <em>digital signature</em>, created by Alice and
 included with the message, serves this purpose.</p>
 
-<p>Digital signatures are created by encrypting a digest of the message, and
+<p>Digital signatures are created by encrypting a digest of the message and
 other information (such as a sequence number) with the sender's private key.
 Though anyone can <em>decrypt</em> the signature using the public key, only the
 sender knows the private key. This means that only the sender can have signed
@@ -161,16 +161,16 @@ the bank from a fraudulent claim from Alice that she did not send the message
 <h2><a name="certificates" id="certificates">Certificates</a></h2>
 
 <p>Although Alice could have sent a private message to the bank, signed
-it, and ensured the integrity of the message, she still needs to be sure
+it and ensured the integrity of the message, she still needs to be sure
 that she is really communicating with the bank. This means that she needs
 to be sure that the public key she is using is part of the bank's key-pair, 
 and not an intruder's. Similarly, the bank needs to verify that the message
 signature really was signed by the private key that belongs to Alice.</p>
 
 <p>If each party has a certificate which validates the other's identity,
-confirms the public key, and is signed by a trusted agency, then both
+confirms the public key and is signed by a trusted agency, then both
 can be assured that they are communicating with whom they think they are.
-Such a trusted agency is called a <em>Certificate Authority</em>, and
+Such a trusted agency is called a <em>Certificate Authority</em> and
 certificates are used for authentication.</p>
 
 <h3><a name="certificatecontents" id="certificatecontents">Certificate Contents</a></h3>
@@ -178,9 +178,9 @@ certificates are used for authentication.</p>
     <p>A certificate associates a public key with the real identity of
     an individual, server, or other entity, known as the subject. As
     shown in <a href="#table1">Table 1</a>, information about the subject
-    includes identifying information (the distinguished name), and the
+    includes identifying information (the distinguished name) and the
     public key. It also includes the identification and signature of the
-    Certificate Authority that issued the certificate, and the period of
+    Certificate Authority that issued the certificate and the period of
     time during which the certificate is valid. It may have additional
     information (or extensions) as well as administrative information
     for the Certificate Authority's use, such as a serial number.</p>
@@ -205,7 +205,7 @@ certificates are used for authentication.</p>
     <p>A distinguished name is used to provide an identity in a specific
     context -- for instance, an individual might have a personal
     certificate as well as one for their identity as an employee.
-    Distinguished names are defined by the X.509 standard [<a href="#X509">X509</a>], which defines the fields, field names, and
+    Distinguished names are defined by the X.509 standard [<a href="#X509">X509</a>], which defines the fields, field names and
     abbreviations used to refer to the fields (see <a href="#table2">Table
     2</a>).</p>
 
@@ -246,7 +246,7 @@ certificates are used for authentication.</p>
     
 
     <p>A Certificate Authority may define a policy specifying which
-    distinguished field names are optional, and which are required. It
+    distinguished field names are optional and which are required. It
     may also place requirements upon the field contents, as may users of
     certificates. For example, a Netscape browser requires that the
     Common Name for a certificate representing a server matches a wildcard 
@@ -255,7 +255,7 @@ certificates are used for authentication.</p>
 
     <p>The binary format of a certificate is defined using the ASN.1
     notation [<a href="#X208">X208</a>] [<a href="#PKCS">PKCS</a>]. This
-    notation defines how to specify the contents, and encoding rules
+    notation defines how to specify the contents and encoding rules
     define how this information is translated into binary form. The binary
     encoding of the certificate is defined using Distinguished Encoding
     Rules (DER), which are based on the more general Basic Encoding Rules
@@ -339,21 +339,21 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
     <h4><a name="certificatemanagement" id="certificatemanagement">Certificate Management</a></h4>
     
         <p>Establishing a Certificate Authority is a responsibility which
-        requires a solid administrative, technical, and management
+        requires a solid administrative, technical and management
         framework. Certificate Authorities not only issue certificates,
         they also manage them -- that is, they determine for how long
-        certificates remain valid, they renew them, and they keep lists of
+        certificates remain valid, they renew them and keep lists of
         certificates that were issued in the past but are no longer valid
 	    (Certificate Revocation Lists, or CRLs).</p> 
 
         <p>For example, if Alice is entitled to a certificate as an 
-        employee of a company, but has now left
+        employee of a company but has now left
         that company, her certificate may need to be revoked.
         Because certificates are only issued after the subject's identity has
-        been verified, and can then be passed around to all those with whom 
+        been verified and can then be passed around to all those with whom 
         the subject may communicate, it is impossible to tell from the 
         certificate alone that it has been revoked. 
-        When examining certificates for validity, therefore, 
+        Therefore when examining certificates for validity 
         it is necessary to contact the issuing Certificate Authority to 
         check CRLs -- this is usually not an automated part of the process.</p>
 
@@ -376,15 +376,15 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 placed between a reliable connection-oriented network layer protocol
 (e.g. TCP/IP) and the application protocol layer (e.g. HTTP). SSL provides
 for secure communication between client and server by allowing mutual
-authentication, the use of digital signatures for integrity, and encryption
+authentication, the use of digital signatures for integrity and encryption
 for privacy.</p>
 
 <p>The protocol is designed to support a range of choices for specific
-algorithms used for cryptography, digests, and signatures. This allows
+algorithms used for cryptography, digests and signatures. This allows
 algorithm selection for specific servers to be made based on legal, export
-or other concerns, and also enables the protocol to take advantage of new
-algorithms. Choices are negotiated between client and server at the start
-of establishing a protocol session.</p>
+or other concerns and also enables the protocol to take advantage of new
+algorithms. Choices are negotiated between client and server when
+establishing a protocol session.</p>
 
 <h3><a name="table4" id="table4">Table 4: Versions of the SSL protocol</a></h3>
 
@@ -396,14 +396,14 @@ of establishing a protocol session.</p>
         <th>Browser Support</th></tr>
     <tr><td>SSL v2.0</td>
         <td>Vendor Standard (from Netscape Corp.) [<a href="#SSL2">SSL2</a>]</td>
-        <td>First SSL protocol for which implementations exists</td>
+        <td>First SSL protocol for which implementations exist</td>
         <td>- NS Navigator 1.x/2.x<br />
         - MS IE 3.x<br />
         - Lynx/2.8+OpenSSL</td></tr>
     <tr><td>SSL v3.0</td>
         <td>Expired Internet Draft (from Netscape Corp.) [<a href="#SSL3">SSL3</a>]</td>
         <td>Revisions to prevent specific security attacks, add non-RSA
-        ciphers, and support for certificate chains</td>
+        ciphers and support for certificate chains</td>
         <td>- NS Navigator 2.x/3.x/4.x<br />
         - MS IE 3.x/4.x<br />
         - Lynx/2.8+OpenSSL</td></tr>
