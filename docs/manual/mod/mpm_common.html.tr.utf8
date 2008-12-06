@@ -26,7 +26,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -34,11 +33,9 @@
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#chrootdir">ChrootDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#lockfile">LockFile</a></li>
@@ -57,7 +54,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#threadstacksize">ThreadStackSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#user">User</a></li>
 </ul>
 </div>
 
@@ -146,27 +142,6 @@
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun başlatıldıktan sonra chroot(8) yapacağı dizini
-  belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ChrootDir <var>/dizin/yolu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p>Bu yönerge httpd 2.2.9(?) ve sonrasında mevcuttur ve sunucuya
-      başlatıldıktan sonra ağdan gelen istekleri kabul etmeden önce
-      belirtilen dizine <var>chroot(8)</var> yapmasını söyler.</p>
-    <p>Sunucuyu chroot altında çalıştırmanın basit bir işlem olmadığına ve
-      özellikle CGI veya PHP gibi betikler çalıştırıyorsanız ek ayarlamalar
-      yapmanız gerektiğine dikkat ediniz. Lütfen, bu özelliği kullanmaya
-      çalışmadan önce chroot işlemleri hakkında gerektiği kadar bilgi sahibi
-      olduğunuzdan emin olunuz.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">Yönergesi</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>core</code> dosyasını dökümlemek üzere Apache’nin geçmeye
@@ -237,58 +212,6 @@
     <p>Bu değerin <code>0</code> olarak belirtilmesi, sunucunun bekleyen bütün
       isteklere hizmet sunumu tamamlanıncaya kadar (gerekirse sonsuza kadar)
       bekleyebileceği anlamına gelir.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Group <var>unix-grubu</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Group #-1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0’dan itibaren sadece sunucu geneli için geçerlidir.</td></tr>
-</table>
-    <p><code class="directive">Group</code> yönergesi, sunucunun hangi grup altında
-      isteklere yanıt vereceğini belirler. Bu yönergenin uygulanabilmesi için
-      sunucunun <code>root</code> olarak çalıştırılmış olması gerekir.
-      Sunucuyu <code>root</code> dışında bir kullanıcı başlattığı takdirde,
-      sunucu belirtilen gruba geçemez ve kullanıcının kendi grubunda
-      çalışmaya devam eder. <var>unix-grubu</var> şunlardan biri olabilir:</p>
-
-    <dl>
-      <dt>Bir grup adı</dt>
-      <dd>Gruba ismiyle başvurulur.</dd>
-
-      <dt><code>#</code> ardından grup numarası</dt>
-      <dd>Gruba numarası ile başvurulur.</dd>
-    </dl>
-
-    <div class="example"><h3>Örnek</h3><p><code>
-      Group www-group
-    </code></p></div>
-
-    <p>Çalışan sunucu için özellikle yeni bir grup atamanız önerilir. Bazı
-      sistem yöneticileri <code>nobody</code> grubunu kullanırlar fakat
-      bu her zaman mümkün olmadığı gibi arzulanan da değildir.</p>
-
-    <div class="warning"><h3>Güvenlik</h3>
-      <p>Ne yaptığınızı ve ne tehlikelere yol açacağınızı bilmiyorsanız
-      <code class="directive">Group</code> (veya <code class="directive"><a href="#user">User</a></code>) yönergesine değer olarak
-      <code>root</code> atamayınız.</p>
-    </div>
-
-    <p>Özel bilgi: Bu yönergenin <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> taşıyıcısı içinde kullanımı
-      artık desteklenmemektedir. Sunucunuzu <code class="program"><a href="../programs/suexec.html">suexec</a></code> için
-      yapılandırırken <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> yönergesini
-      kullanınız.</p>
-
-    <div class="note"><h3>Ek Bilgi</h3>
-      <p><code class="directive">Group</code> yönergesi <code class="module"><a href="../mod/beos.html">beos</a></code> ve
-        <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> MPM’lerinde mevcut olsa da, aslında
-        işlevsiz olup sadece uyumluluk adına mevcuttur.</p>
-    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -940,71 +863,6 @@
         yapılan bir değişiklik mevcut <code class="directive">ThreadStackSize</code>
         ayarını geçersiz hale getirebilir.</li>
     </ul>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="User" id="User">User</a> <a name="user" id="user">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
-  belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>User <var>unix-kullanıcısı</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>User #-1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0’dan itibaren sadece sunucu geneli için
-  geçerlidir.</td></tr>
-</table>
-    <p><code class="directive">User</code> yönergesi, sunucunun hangi kullanıcı olarak
-      isteklere yanıt vereceğini belirler. Bu yönergenin uygulanabilmesi için
-      sunucunun <code>root</code> olarak çalıştırılmış olması gerekir.
-      Sunucuyu <code>root</code> dışında bir kullanıcı başlattığı takdirde,
-      sunucu belirtilen kullanıcıya geçemez ve mevcut kullanıcıyla çalışmaya
-      devam eder. Eğer sunucuyu <code>root</code> olarak başlatmışsanız ana
-      süreç root olarak çalışmaya devam edecektir. <var>unix-kullanıcısı</var>
-      şunlardan biri olabilir:</p>
-
-    <dl>
-      <dt>Bir kullanıcı adı</dt>
-      <dd>Gruba ismiyle başvurulur.</dd>
-
-      <dt><code>#</code> ardından kullanıcı numarası</dt>
-      <dd>Kullanıcıya numarası ile başvurulur.</dd>
-    </dl>
-
-    <p>Bu yönergede belirtilecek kullanıcının, başkaları tarafından üzerinde
-      değişiklik yapılabilecek dosyalardan başkasına erişemeyen bir kullanıcı
-      olmaması gerektiği gibi, HTTP isteklerini işlemek dışında işlemler de
-      yapabilen bir kullanıcı olmamalıdır.
-      Çalışan sunucu için özellikle yeni bir grup atamanız önerilir. Bazı
-      sistem yöneticileri <code>nobody</code> kullanıcısını kullanırlar fakat
-      <code>nobody</code> kullanıcısı sistemde başka amaçlarla
-      kullanılabildiğinden bu her zaman mümkün olmadığı gibi arzulanan da
-      değildir.</p>
-
-    <div class="warning"><h3>Güvenlik</h3>
-      <p>Ne yaptığınızı ve ne tehlikelere yol açacağınızı bilmiyorsanız
-      <code class="directive">User</code> (veya <code class="directive"><a href="#group">Group</a></code>) yönergesine değer olarak
-      <code>root</code> atamayınız.</p>
-    </div>
-
-    <p>Sanal konakları farklı kullanıcı kimliklerle çalıştırmak üzere
-      tasarlanan <code class="module"><a href="../mod/perchild.html">perchild</a></code> modülü kullanıldığında <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümlerinde
-      <code class="directive"><a href="../mod/perchild.html#assignuserid">AssignUserID</a></code> yönergesi ile
-      farklı bir kullanıcı kimlik tanımlanmadığı takdirde
-      <code class="directive">User</code> yönergesi ile ana sunucu için tanımlanan
-      kullanıcı kimlik sanal konak için de geçerli olur.</p>
-
-    <p>Özel bilgi: Bu yönergenin <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> taşıyıcısı içinde kullanımı
-      artık desteklenmemektedir. Sunucunuzu <code class="program"><a href="../programs/suexec.html">suexec</a></code> için
-      yapılandırırken <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> yönergesini
-      kullanınız.</p>
-
-    <div class="note"><h3>Ek Bilgi</h3>
-      <p><code class="directive">User</code>yönergesi <code class="module"><a href="../mod/beos.html">beos</a></code> ve
-        <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> MPM’lerinde mevcut olsa da, aslında
-        işlevsiz olup sadece uyumluluk adına mevcuttur.</p>
-    </div>
 
 </div>
 </div>

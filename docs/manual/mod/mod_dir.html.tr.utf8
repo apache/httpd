@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
@@ -67,7 +66,7 @@
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>İstemci bir dizin istediğinde dizin içeriğini listeler.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DirectoryIndex
-    None | <var>yerel-url</var> [<var>yerel-url</var>] ...</code></td></tr>
+    disabled | <var>yerel-url</var> [<var>yerel-url</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DirectoryIndex index.html</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
@@ -102,8 +101,11 @@
       <code>index.txt</code> mevcut olduğunda <code>/cgi-bin/index.pl</code>
       CGI betiği çalıştırılacaktır.</p>
 
-    <p><code>None</code> değeri <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>’in bir dizin listesi
-      aramasını engeller.</p>
+    <p><code>disabled</code> değeri tek başına <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>’in bir
+      dizin listesi aramasını engeller. <code>disabled</code> değiştirgesi
+      öncesinde ve sonrasında başka bir değiştirge hatta bir <code>disabled</code>
+      daha olsa bile tek başına <code>disabled</code> verilmiş gibi
+      yorumlanır.</p>
 
 
 </div>

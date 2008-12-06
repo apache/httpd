@@ -26,7 +26,6 @@
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/prefork.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Evresiz ön çatallamalı HTTP sunucusu oluşturur</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>mpm_prefork_module</td></tr>
@@ -51,7 +50,7 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#group">Group</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
@@ -66,7 +65,7 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
 <h3>Konular</h3>
 <ul id="topics">
@@ -101,8 +100,8 @@ ayarlanması</a></li>
       <code>root</code> tarafından çalıştırılmış olması gerekirse de çocuk
       süreçler Apache tarafından daha az yetkili bir kullanıcının aidiyetinde
       çalıştırılırlar. Apache’nin çocuk süreçlerinin kullanıcı ve gruplarını
-      ayarlamak için <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code> ve
-      <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code> yönergeleri
+      ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ve
+      <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> yönergeleri
       kullanılır. Çocuk süreçlerin sunacakları içeriği okumaya yetkili
       olmaları gerekir, fakat bu yetkinin mümkün olduğunca kısıtlı
       tutulmasına çalışılmalıdır.</p>

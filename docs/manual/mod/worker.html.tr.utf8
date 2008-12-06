@@ -26,7 +26,6 @@
 <a href="../ja/mod/worker.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/worker.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Çok evreli ve çok süreçli melez bir HTTP sunucusu oluşturan çok
 süreçlilik modülü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr>
@@ -50,7 +49,7 @@ süreçlilik modülü.</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#group">Group</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
@@ -68,7 +67,7 @@ süreçlilik modülü.</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#user">User</a></li>
 </ul>
 <h3>Konular</h3>
 <ul id="topics">
@@ -145,12 +144,13 @@ ayarlanması</a></li>
       çalıştırılmış olması gerekirse de çocuk süreçler ve evreler Apache
       tarafından daha az yetkili bir kullanıcının aidiyetinde
       çalıştırılırlar. Apache’nin çocuk süreçlerinin kullanıcı ve gruplarını
-      ayarlamak için User ve Group yönergeleri kullanılır. Çocuk süreçlerin
-      sunacakları içeriği okumaya yetkili olmaları gerekir, fakat bu yetkinin
-      mümkün olduğunca kısıtlı tutulmasına çalışılmalıdır. Bundan başka,
-      <code class="program"><a href="../programs/suexec.html">suexec</a></code> kullanılmadığı takdirde, bu yönergeler CGI
-      betikleri tarafından miras alınacak yetkili kullanıcı ve grubu da
-      ayarlarlar.</p>
+      ayarlamak için <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> ve
+      <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> yönergeleri kullanılır.
+      Çocuk süreçlerin sunacakları içeriği okumaya yetkili olmaları gerekir,
+      fakat bu yetkinin mümkün olduğunca kısıtlı tutulmasına çalışılmalıdır.
+      Bundan başka, <code class="program"><a href="../programs/suexec.html">suexec</a></code> kullanılmadığı takdirde, bu
+      yönergeler CGI betikleri tarafından miras alınacak yetkili kullanıcı
+      ve grubu da ayarlarlar.</p>
 
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
       yönergesi ana sunucunun eski süreçleri öldürüp yenilerini oluşturmayı

@@ -24,7 +24,6 @@
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_2.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Bu belgede Apache HTTP Sunucusunun 2.0 ve 2.2 sürümleri arasındaki
     başlıca farklara değinilmiştir. 1.3 sürümüne göre yeni özellikler için <a href="new_features_2_0.html">Apache 2.0’da Yeni olan Özellikler</a>
@@ -43,19 +42,19 @@
 
       <dt>Authn/Authz</dt>
       <dd>Mevcut kimlik doğrulama ve yetkilendirme modüllerinin iç işleyişi
-        yeniden düzenlendi. Yeni <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> modülü
-        belli kimlik doğrulama yapılandırmalarını büyük oranda
-        basitleştirebilir. Bu değişikliklerin kullanıcıları ve modül
-        yazarlarını nasıl etkilediğini öğrenmek için <a href="#module">modül
-        değişikliklerine</a> ve <a href="#developer">geliştirici
-        değişikliklerine</a> bakabilirsiniz.</dd>
+        yeniden düzenlendi. Yeni <code>mod_authn_alias</code> modülü
+        (2.3/2.4 sürümlerinde kaldırılmıştır) belli kimlik doğrulama
+        yapılandırmalarını büyük oranda basitleştirebilir. Bu değişikliklerin
+        kullanıcıları ve modül yazarlarını nasıl etkilediğini öğrenmek için
+        <a href="#module">modül değişikliklerine</a> ve <a href="#developer">geliştirici değişikliklerine</a> bakabilirsiniz.</dd>
 
       <dt>Önbellekleme</dt>
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> ve
-        <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> modüllerinde büyük oranda değişikliğe
-        gidilerek bunlar deneysel olmaktan çıkarılıp üretim amaçlı modüller
-        haline getirildiler. <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> tarafından
-        kullanılan disk alanının  <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> tarafından
+        <code>mod_mem_cache</code> (2.3/2.4 sürümlerinde kaldırılmıştır)
+        modüllerinde büyük oranda değişikliğe gidilerek bunlar deneysel
+        olmaktan çıkarılıp üretim amaçlı modüller haline getirildiler.
+        <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> tarafından kullanılan disk
+        alanının  <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> tarafından
         düzenli aralıklarla temizlenebilmesi sağlandı.</dd>
 
       <dt>Yapılandırma</dt>
@@ -131,7 +130,8 @@
         <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code> ve <code>mod_access</code>  modülünün
         ismi de <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code> olarak değiştirilmiştir.
         Ayrıca, belli kimlik doğrulama yapılandırmalarını basitleştirmek
-        üzere <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> diye yeni bir modül vardır.
+        üzere <code>mod_authn_alias</code> diye yeni bir modül vardır
+        (2.3/2.4 sürümlerinde kaldırılmıştır).
       </dd>
 
       <dt><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>

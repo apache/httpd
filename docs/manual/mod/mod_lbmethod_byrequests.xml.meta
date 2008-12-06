@@ -2,13 +2,11 @@
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
 <metafile>
-  <basename>configure</basename>
-  <path>/programs/</path>
+  <basename>mod_lbmethod_byrequests</basename>
+  <path>/mod/</path>
   <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>
-    <variant outdated="yes">ko</variant>
-    <variant>tr</variant>
   </variants>
 </metafile>

@@ -26,7 +26,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -1606,8 +1605,8 @@ yönergeleri sarmalar.</td></tr>
 
     <p>Bir istemci kalıcı bağlantı kullandığı takdirde, bağlantı üzerinden kaç
       istek gönderilirse gönderilsin,
-      <code class="directive">MaxRequestsPerChild</code> yönergesi bakımından tek bir
-      istek olarak değerlendirilir.</p>
+      <code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code> yönergesi
+      bakımından tek bir istek olarak değerlendirilir.</p>
 
 <h3>Ayrıca bakınız:</h3>
 <ul>

@@ -51,6 +51,9 @@
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml</modulefile>
   <modulefile>mod_isapi.xml</modulefile>
+  <modulefile>mod_lbmethod_bybusyness.xml</modulefile>
+  <modulefile>mod_lbmethod_byrequests.xml</modulefile>
+  <modulefile>mod_lbmethod_bytraffic.xml</modulefile>
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml.tr</modulefile>
   <modulefile>mod_log_forensic.xml.tr</modulefile>
@@ -82,7 +85,7 @@
   <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml.tr</modulefile>
   <modulefile>mod_unique_id.xml</modulefile>
-  <modulefile>mod_unixd.xml</modulefile>
+  <modulefile>mod_unixd.xml.tr</modulefile>
   <modulefile>mod_userdir.xml.tr</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_version.xml</modulefile>
