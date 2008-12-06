@@ -22,7 +22,6 @@
 <a href="../ko/programs/configure.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/configure.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code>configure</code> betiği, Apache HTTP Sunucusunun kaynak kodlarını
       belli bir platform için yapılandırmakta ve derlemekte kullanılır.
@@ -439,8 +438,7 @@
           dosya önbelleklemesi etkin kılınır. Bu deneysel modülün kullanımı,
           aşırı yüklü sunucularda ya da önbellekli vekillerde ilginç sonuçlar
           verebilir. Bunun yanında en azından bir saklama alanı yönetim modülü
-          (örn, <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> veya
-          <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code>) gerekebilir.</dd>
+          (örn, <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>) gerekebilir.</dd>
 
         <dt><code>--enable-cern-meta</code></dt>
         <dd><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code> modülü tarafından sağlanan CERN
@@ -511,10 +509,6 @@
         <dd><code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> modülü tarafından sağlanan başlıklarda
           bulunan girdi ve çıktı bayt sayılarının günlüklenmesi etkin
           kılınır.</dd>
-
-        <dt><code>--enable-mem-cache</code></dt>
-        <dd><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> modülü tarafından sağlanan bellekte
-          önbellekleme etkin kılınır.</dd>
 
         <dt><code>--enable-mime-magic</code></dt>
         <dd><code class="module"><a href="../mod/mod_mime_magic.html">mod_mime_magic</a></code> modülü tarafından sağlanan
@@ -734,7 +728,8 @@
             ./configure \<br />
             <span class="indent">
                 --with-ldap \<br />
-                --enable-mods-shared="all ssl ldap cache proxy authn_alias mem_cache file_cache authnz_ldap charset_lite dav_lock disk_cache"
+                --enable-mods-shared="all ssl ldap cache proxy authn_alias
+                file_cache authnz_ldap charset_lite dav_lock disk_cache"
             </span>
           </code></p></div>
         </dd>

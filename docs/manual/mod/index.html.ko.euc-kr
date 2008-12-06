@@ -126,7 +126,10 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>서버 설정에 대한 종합적인 정보를 보여준다</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Windows용 아파치에서 ISAPI Extension 사용</dd>
-<dt><a href="mod_ldap.html" id="L" name="L">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
+<dt><a href="mod_lbmethod_bybusyness.html" id="L" name="L">mod_lbmethod_bybusyness</a></dt><dd>Pending Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
+<dt><a href="mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></dt><dd>Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
+<dt><a href="mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></dt><dd>Weighted Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
+<dt><a href="mod_ldap.html">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>서버로의 요청을 로그에 기록한다</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>

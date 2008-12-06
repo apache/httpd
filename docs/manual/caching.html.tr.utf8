@@ -22,15 +22,14 @@
 <a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belge <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
-      <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code>,
-      <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> modülleri ve <a href="programs/htcacheclean.html">htcacheclean</a> için bir başvuru
-      kılavuzu niteliğindedir. HTTP sunucusu ve vekil olarak çalışmada
-      işlemleri hızlandırmak için bilinen sorunlar ve yanlış
-      yapılandırmalardan kaçınarak Apache’nin önbellekleme özelliklerinin
-      nasıl kullanılacağı açıklanmıştır.</p>
+      <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>
+      modülleri ve <a href="programs/htcacheclean.html">htcacheclean</a>
+      için bir başvuru kılavuzu niteliğindedir. HTTP sunucusu ve vekil
+      olarak çalışmada işlemleri hızlandırmak için bilinen sorunlar ve
+      yanlış yapılandırmalardan kaçınarak Apache’nin önbellekleme
+      özelliklerinin nasıl kullanılacağı açıklanmıştır.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Giriş</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#overview">Önbelleklemeye Bir Bakış</a></li>
@@ -51,16 +50,16 @@
       vekili olarak çalışmada HTTP işlemlerini hızlandırmak anlamında sunucuya
       güç katarlar.</p>
 
-    <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, ortam sağlayıcı modülleri olan
-      <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> ve <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> ile
-      birlikte HTTP önbelleklemesini akıllıca yerine getirir. İçeriğin kendisi
-      önbellekte saklanırken <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> içeriğin
-      önbelleklenebilmesini denetim altında tutan HTTP başlıkları ve
-      seçenekleri ile ilgilenir. Yerel ve vekalet edilen içeriğin her ikisinin
-      de aynı anda işlem görmesi sağlanabilir. <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
-      vekalet edilen içeriğe, devingen yerel içeriğe veya zamanla değişen
-      yerel dosyalara erişimi hızlandırma ihtiyacına yönelik olarak hem basit
-      hem de karmaşık önbellekleme yapılandırmalarını mümkün kılar.</p>
+    <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, ortam sağlayıcı modülü olan
+      <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> ile birlikte HTTP önbelleklemesini
+      akıllıca yerine getirir. İçeriğin kendisi önbellekte saklanırken
+      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> içeriğin önbelleklenebilmesini denetim
+      altında tutan HTTP başlıkları ve seçenekleri ile ilgilenir. Yerel ve
+      vekalet edilen içeriğin her ikisinin de aynı anda işlem görmesi
+      sağlanabilir. <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, vekalet edilen içeriğe,
+      devingen yerel içeriğe veya zamanla değişen yerel dosyalara erişimi
+      hızlandırma ihtiyacına yönelik olarak hem basit hem de karmaşık
+      önbellekleme yapılandırmalarını mümkün kılar.</p>
 
     <p><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> ise biraz daha temel ancak bazen daha
       kullanışlı olabilen bir önbellekleme şekli ile ilgilenir. URL’lerin
@@ -87,7 +86,7 @@
 
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
 
     <p>Bir istek sonuçlanıncaya kadar <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülünde iki
       aşamadan geçer. İlkinde <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> bir URL eşleme modülü
@@ -378,12 +377,12 @@
 <h2><a name="filehandle" id="filehandle">Dosya Tanıtıcı Önbelleklemesi</a></h2>
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
 
     <p>Bir dosyanın açılması işlemi, özellikle de ağ dosya sistemlerinde
       bulunan dosyalar için önemli bir gecikme kaynağı olabilir. Önbellekte,
       çok sunulan dosyaların kendilerinin değil, açık dosya tanıtıcılarının
-      saklanması Apache’yi bu tür gecikmelerden koruyabilir. Apache’de iki tür
+      saklanması Apache’yi bu tür gecikmelerden koruyabilir. Apache’de tek türde
       dosya tanıtıcı önbelleklemesi yapılabilmektedir.</p>
 
     <h3><code>CacheFile</code> yönergesi ile</h3>
@@ -421,29 +420,12 @@
         kapanmadıkça dosyaların silinmesiyle açılan yer serbest
         kalmayacaktır.</p>
     
-
-    <h3><code>CacheEnable</code> yönergesi ile</h3>
-      
-
-      <p><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> modülünün ayrıca, <code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code> yönergesi üzerinden etkin
-        kılınabilen kendine özgü bir dosya tanıtıcı önbellekleme şeması
-        vardır.</p>
-
-      <div class="example"><p><code>
-        CacheEnable fd /
-      </code></p></div>
-
-      <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>’nin devreye girdiği her işlemde olduğu
-        gibi bu tür dosya tanıtıcı önbelleklemesi de akıllıca yapılır ve
-        önbellekteki içerik zaman aşımına uğradığı halde sunulmaya devam
-        edilmez.</p>
-    
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="inmemory" id="inmemory">Sistem Belleğinde Önbellekleme</a></h2>
     
 
-     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li></ul></td></tr></table>
+     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li></ul></td></tr></table>
 
     <p>İçeriğin sistem belleğinden sunulması içerik sunmanın evrensel olarak
       en hızlı yoludur. Dosyaların bir disk denetleyiciden okunması ya da daha
@@ -504,13 +486,6 @@
       Apache tarafından yerine getirilmesinin daha iyi olacağı bazı durumlar
       vardır.</p>
 
-    <p>Öncelikle, işletim sistemi sadece bildiği dosyaları önbellekler (veya
-      önbelleklediği dosyaları bilir). Eğer Apache’yi bir vekil sunucu olarak
-      çalıştırıyorsanız, önbelleklediğiniz dosyalar yerel olarak saklanmadan
-      uzaktan sunulabilir. Ancak bellekiçi önbelleklemenin sağladığı hız
-      artışının dayanılmaz çekiciliğine karşı koyamıyorsanız, Apache’nin kendi
-      bellekiçi önbelleklemesine ihtiyacınız var demektir.</p>
-
     <h3><code>MMapStatic</code> yönergesi ile</h3>
       
 
@@ -536,25 +511,6 @@
         taşımaktadır; aksi takdirde işletim sistemi belleği diske
         takaslayacağından beklenen fayda sağlanamayacaktır.</p>
     
-
-    <h3><code>mod_mem_cache</code> modülü ile</h3>
-      
-
-      <p><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> modülü HTTP belirtimine uygun olarak
-        bellekiçi önbelleklemeyi akıllıca uygular. Ayrıca yüksek belleği
-        doğrudan kullanabildiğinden <var>MMap</var> desteği olmayan
-        sistemlerde bile bellekiçi önbellekleme yapabilir.</p>
-
-      <p>Bu tür önbellekleme şöyle etkin kılınabilir:</p>
-
-      <div class="example"><p><code>
-        # Bellekiçi önbelleklemeyi etkin kılalım<br />
-        CacheEnable mem /<br />
-        <br />
-        # Önbellek 1 Megabayttan büyük olmasın<br />
-        MCacheSize 1024
-      </code></p></div>
-    
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="disk" id="disk">Disk Üzerinde Önbellekleme</a></h2>
@@ -563,10 +519,9 @@
      <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li></ul></td></tr></table>
 
     <p><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> modülü önbelleklemenin
-      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> için disk üzerinde yapılmasını mümkün kılar.
-      <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code> modülünde olduğu gibi bu önbellekleme de
-      akıllıca yapılır ve önbellekteki içerik sadece geçerli kabul edildiği
-      sürece sunulabilir.</p>
+      <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> için disk üzerinde yapılmasını mümkün
+      kılar. Bbu önbellekleme akıllıca yapılır ve önbellekteki içerik
+      sadece geçerli kabul edildiği sürece sunulabilir.</p>
 
     <p>Modül bu amaçla genelde şöyle kullanılır:</p>
 

@@ -51,6 +51,9 @@
   <modulefile>mod_include.xml</modulefile>
   <modulefile>mod_info.xml</modulefile>
   <modulefile>mod_isapi.xml</modulefile>
+  <modulefile>mod_lbmethod_bybusyness.xml</modulefile>
+  <modulefile>mod_lbmethod_byrequests.xml</modulefile>
+  <modulefile>mod_lbmethod_bytraffic.xml</modulefile>
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml</modulefile>
   <modulefile>mod_log_forensic.xml</modulefile>

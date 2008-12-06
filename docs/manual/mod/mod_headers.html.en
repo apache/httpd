@@ -246,7 +246,6 @@ headers</td></tr>
     to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
     is a replacement string, which may contain backreferences.</dd>
-    </dl>
 
     <dt><code>merge</code></dt>
     <dd>The response header is appended to any existing header of
@@ -266,6 +265,7 @@ headers</td></tr>
     <dd>The response header of this name is removed, if it exists.
     If there are multiple headers of the same name, all will be
     removed. <var>value</var> must be omitted.</dd>
+    </dl>
 
     <p>This argument is followed by a <var>header</var> name, which
     can include the final colon, but it is not required. Case is
@@ -371,7 +371,6 @@ headers</td></tr>
     to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
     is a replacement string, which may contain backreferences.</dd>
-    </dl>
 
     <dt><code>merge</code></dt>
     <dd>The response header is appended to any existing header of
@@ -391,6 +390,7 @@ headers</td></tr>
     <dd>The request header of this name is removed, if it exists. If
     there are multiple headers of the same name, all will be removed.
     <var>value</var> must be omitted.</dd>
+    </dl>
 
     <p>This argument is followed by a header name, which can
     include the final colon, but it is not required. Case is

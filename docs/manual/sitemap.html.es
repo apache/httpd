@@ -216,6 +216,9 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_include.html">Módulo Apache mod_include</a></li>
 <li><a href="mod/mod_info.html">Módulo Apache mod_info</a></li>
 <li><a href="mod/mod_isapi.html">Módulo Apache mod_isapi</a></li>
+<li><a href="mod/mod_lbmethod_bybusyness.html">Módulo Apache mod_lbmethod_bybusyness</a></li>
+<li><a href="mod/mod_lbmethod_byrequests.html">Módulo Apache mod_lbmethod_byrequests</a></li>
+<li><a href="mod/mod_lbmethod_bytraffic.html">Módulo Apache mod_lbmethod_bytraffic</a></li>
 <li><a href="mod/mod_ldap.html">Módulo Apache mod_ldap</a></li>
 <li><a href="mod/mod_log_config.html">Módulo Apache mod_log_config</a></li>
 <li><a href="mod/mod_log_forensic.html">Módulo Apache mod_log_forensic</a></li>
