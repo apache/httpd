@@ -60,7 +60,6 @@ also be found at http://httpd.apache.org/docs/.
 %package -n mod_ssl
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
-Serial: 1
 BuildPrereq: openssl-devel
 Prereq: openssl, dev, /bin/cat
 Requires: httpd, make, httpd-mmn = %{mmn}
@@ -80,9 +79,6 @@ if test x${vmmn} != x%{mmn}; then
    : Update the mmn macro and rebuild.
    exit 1
 fi
-
-# regenerate configure scripts
-./buildconf
 
 # Before configure; fix location of build dir in generated apxs
 %{__perl} -pi -e "s:\@exp_installbuilddir\@:%{_libdir}/httpd/build:g" \
@@ -113,6 +109,7 @@ EOF
  	--prefix=%{_sysconfdir}/httpd \
         --with-apr=/usr/bin/apr-1-config \
         --with-apr-util=/usr/bin/apu-1-config \
+        --with-pcre=/usr/bin/pcre-config \
         --exec-prefix=%{_prefix} \
  	--bindir=%{_bindir} \
  	--sbindir=%{_sbindir} \
@@ -136,6 +133,8 @@ EOF
 	--enable-deflate --enable-cgid \
 	--enable-proxy --enable-proxy-connect \
 	--enable-proxy-http --enable-proxy-ftp \
+        --enable-session --enable-session-cookie \
+        --enable-session-dbd \
 	$*
 
 make %{?_smp_mflags}
@@ -316,6 +315,7 @@ rm -rf $RPM_BUILD_ROOT
 %config %{_sysconfdir}/rc.d/init.d/httpd
 
 %{_sbindir}/ab
+%{_sbindir}/fcgistarter
 %{_sbindir}/htcacheclean
 %{_sbindir}/htdbm
 %{_sbindir}/htdigest
@@ -332,7 +332,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/httpd/modules
 # everything but mod_ssl.so:
 %{_libdir}/httpd/modules/mod_[a-r]*.so
-%{_libdir}/httpd/modules/mod_s[petu]*.so
+%{_libdir}/httpd/modules/mod_s[opetu]*.so
 %{_libdir}/httpd/modules/mod_[t-z]*.so
 
 %dir %{contentdir}
