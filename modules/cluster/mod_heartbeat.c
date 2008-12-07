@@ -118,7 +118,7 @@ static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
 #define apr_time_from_msec(x) (x * 1000)
 #endif
 
-static void *hb_worker(apr_thread_t *thd, void *data)
+static void* APR_THREAD_FUNC hb_worker(apr_thread_t *thd, void *data)
 {
     hb_ctx_t *ctx = (hb_ctx_t *) data;
     apr_status_t rv;
