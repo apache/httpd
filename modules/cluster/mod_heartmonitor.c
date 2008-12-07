@@ -287,7 +287,7 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
 #define apr_time_from_msec(x) (x * 1000)
 #endif
 
-static void *hm_worker(apr_thread_t *thd, void *data)
+static void* APR_THREAD_FUNC hm_worker(apr_thread_t *thd, void *data)
 {
     apr_time_t last;
     hm_ctx_t *ctx = (hm_ctx_t *) data;
