@@ -227,7 +227,6 @@ install -m644 ./build/rpm/httpd.logrotate \
 
 # Remove unpackaged files
 rm -rf $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.exp \
-       $RPM_BUILD_ROOT%{contentdir}/htdocs/* \
        $RPM_BUILD_ROOT%{contentdir}/cgi-bin/* 
 
 %pre
@@ -337,12 +336,14 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{contentdir}
 %dir %{contentdir}/cgi-bin
+%dir %{contentdir}/htdocs
 %dir %{contentdir}/html
 %dir %{contentdir}/icons
 %dir %{contentdir}/error
 %dir %{contentdir}/error/include
 %{contentdir}/icons/*
 %{contentdir}/error/README
+%{contentdir}/htdocs/index.html
 %config(noreplace) %{contentdir}/error/*.var
 %config(noreplace) %{contentdir}/error/include/*.html
 
