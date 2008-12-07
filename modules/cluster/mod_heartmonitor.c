@@ -46,7 +46,7 @@ typedef struct hm_ctx_t
     apr_proc_mutex_t *mutex;
     const char *mutex_path;
     apr_sockaddr_t *mcast_addr;
-    int status;
+    apr_status_t status;
     volatile int keep_running;
     apr_thread_mutex_t *start_mtx;
     apr_thread_t *thread;
@@ -294,7 +294,7 @@ static void* APR_THREAD_FUNC hm_worker(apr_thread_t *thd, void *data)
     apr_status_t rv;
 
     ctx->p = apr_thread_pool_get(thd);
-    ctx->status = 0;
+    ctx->status = APR_SUCCESS;
     ctx->keep_running = 1;
     apr_thread_mutex_unlock(ctx->start_mtx);
 
@@ -427,12 +427,12 @@ static void hm_child_init(apr_pool_t *p, server_rec *s)
                  "Heartmonitor: Starting Listener Thread. mcast=%pI",
                  ctx->mcast_addr);
 
-    ctx->status = -1;
+    ctx->status = APR_EGENERAL;
 
     start_hm_worker(p, ctx);
 
-    if (ctx->status != 0) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+    if (ctx->status) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, ctx->status, s,
                      "Heartmonitor: Failed to start listener thread.");
         return;
     }
