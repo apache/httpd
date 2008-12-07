@@ -541,7 +541,7 @@ static const char *cmd_hm_listen(cmd_parms *cmd,
         return "HeartbeatListen: May only be specified once.";
     }
 
-    rv = apr_parse_addr_port(&host_str, &scope_id, &port, mcast_addr, p);
+    rv = apr_parse_addr_port(&host_str, &scope_id, &port, mcast_addr, cmd->temp_pool);
 
     if (rv) {
         return "HeartbeatListen: Unable to parse multicast address.";

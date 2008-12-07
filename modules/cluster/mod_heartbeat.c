@@ -308,7 +308,7 @@ static const char *cmd_hb_address(cmd_parms *cmd,
         return "HeartbeatAddress: May only be specified once.";
     }
 
-    rv = apr_parse_addr_port(&host_str, &scope_id, &port, addr, p);
+    rv = apr_parse_addr_port(&host_str, &scope_id, &port, addr, cmd->temp_pool);
 
     if (rv) {
         return "HeartbeatAddress: Unable to parse address.";
@@ -329,14 +329,14 @@ static const char *cmd_hb_address(cmd_parms *cmd,
         return "HeartbeatAddress: apr_sockaddr_info_get failed.";
     }
 
-    rv = apr_temp_dir_get(&tmpdir, p);
+    rv = apr_temp_dir_get(&tmpdir, cmd->temp_pool);
     if (rv) {
         return "HeartbeatAddress: unable to find temp directory.";
     }
 
-    path = apr_pstrcat(p, tmpdir, "/hb-tmp.XXXXXX", NULL);
+    path = apr_pstrcat(cmd->temp_pool, tmpdir, "/hb-tmp.XXXXXX", NULL);
 
-    rv = apr_file_mktemp(&ctx->lockf, path, 0, p);
+    rv = apr_file_mktemp(&ctx->lockf, path, 0, cmd->temp_pool);
 
     if (rv) {
         return "HeartbeatAddress: unable to allocate temp file.";
