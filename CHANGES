@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
+ 
+  *) mod_cache: When an explicit Expires or Cache-Control header is set, cache 
+     normally non-cacheable response statuses. PR 46346. 
+     [Alex Polvi <alex polvi.net>]
 
   *) mod_ratelimit: New module to do bandwidth rate limiting. [Paul Querna]
 
