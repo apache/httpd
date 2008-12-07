@@ -34,7 +34,7 @@ typedef struct hb_ctx_t
     apr_sockaddr_t *mcast_addr;
     int server_limit;
     int thread_limit;
-    int status;
+    apr_status_t status;
     volatile int keep_running;
     apr_proc_mutex_t *mutex;
     const char *mutex_path;
@@ -125,7 +125,7 @@ static void* APR_THREAD_FUNC hb_worker(apr_thread_t *thd, void *data)
 
     apr_pool_t *pool = apr_thread_pool_get(thd);
     apr_pool_tag(pool, "heartbeat_worker");
-    ctx->status = 0;
+    ctx->status = APR_SUCCESS;
     ctx->keep_running = 1;
     apr_thread_mutex_unlock(ctx->start_mtx);
 
@@ -218,11 +218,11 @@ static void hb_child_init(apr_pool_t *p, server_rec *s)
     if (ctx->active) {
         apr_proc_mutex_child_init(&ctx->mutex, ctx->mutex_path, p);
         
-        ctx->status = -1;
+        ctx->status = APR_EGENERAL;
         
         start_hb_worker(p, ctx);
-        if (ctx->status != 0) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+        if (ctx->status) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, ctx->status, s,
                          "Heartbeat: Failed to start worker thread.");
             return;
         }
