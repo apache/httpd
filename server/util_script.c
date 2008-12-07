@@ -724,7 +724,7 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
 
 
 static void
-argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
+argstr_to_table(char *str, apr_table_t *parms)
 {
     char *key;
     char *value;
@@ -758,7 +758,7 @@ argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
 AP_DECLARE(void) ap_args_to_table(request_rec *r, apr_table_t **table)
 {
     apr_table_t *t = apr_table_make(r->pool, 10);
-    argstr_to_table(r->pool, r->args, t);
+    argstr_to_table(apr_pstrdup(r->pool, r->args), t);
     *table = t;
 }
 
@@ -821,7 +821,7 @@ AP_DECLARE(apr_status_t) ap_body_to_table(request_rec *r, apr_table_t **table)
 
                 buffer[total] = '\0';
 
-                argstr_to_table(r->pool, buffer, r->body_table);
+                argstr_to_table(buffer, r->body_table);
             }
             apr_pool_destroy(tpool);
         }
