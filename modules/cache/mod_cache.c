@@ -438,7 +438,28 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * We include 304 Not Modified here too as this is the origin server
          * telling us to serve the cached copy.
          */
-        reason = apr_psprintf(p, "Response status %d", r->status);
+        if (exps != NULL || cc_out != NULL) {
+            /* We are also allowed to cache any response given that it has a 
+             * valid Expires or Cache Control header. If we find a either of 
+             * those here,  we pass request through the rest of the tests. From 
+             * the RFC:
+             *
+             * A response received with any other status code (e.g. status 
+             * codes 302 and 307) MUST NOT be returned in a reply to a 
+             * subsequent request unless there are cache-control directives or 
+             * another header(s) that explicitly allow it. For example, these 
+             * include the following: an Expires header (section 14.21); a 
+             * "max-age", "s-maxage",  "must-revalidate", "proxy-revalidate", 
+             * "public" or "private" cache-control directive (section 14.9).
+             */
+        }
+        else {
+            reason = apr_psprintf(p, "Response status %d", r->status);
+        }
+    }
+
+    if (reason) {
+        /* noop */
     }
     else if (exps != NULL && exp == APR_DATE_BAD) {
         /* if a broken Expires header is present, don't cache it */
