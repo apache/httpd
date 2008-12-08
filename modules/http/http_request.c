@@ -522,9 +522,26 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
         ap_add_output_filter_handle(ap_subreq_core_filter_handle,
                                     NULL, r, r->connection);
     }
-    else if (r->output_filters->frec == ap_subreq_core_filter_handle) {
-        ap_remove_output_filter(r->output_filters);
-        r->output_filters = r->output_filters->next;
+    else {
+        /*
+         * We need to check if we now have the SUBREQ_CORE filter in our filter
+         * chain. If this is the case we need to remove it since we are NO
+         * subrequest. But we need to keep in mind that the SUBREQ_CORE filter
+         * does not necessarily need to be the first filter in our chain. So we
+         * need to go through the chain. But we only need to walk up the chain
+         * until the proto_output_filters as the SUBREQ_CORE filter is below the
+         * protocol filters.
+         */
+        ap_filter_t *next;
+
+        next = r->output_filters;
+        while (next && (next->frec != ap_subreq_core_filter_handle)
+               && (next != r->proto_output_filters)) {
+                next = next->next;
+        }
+        if (next && (next->frec == ap_subreq_core_filter_handle)) {
+            ap_remove_output_filter(next);
+        }
     }
 
     /* If any filters pointed at the now-defunct rr, we must point them
