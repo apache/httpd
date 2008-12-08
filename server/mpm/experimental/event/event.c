@@ -2385,7 +2385,6 @@ static int event_check_config(apr_pool_t *p, apr_pool_t *plog,
 {
     static int restart_num = 0;
     int startup = 0;
-    apr_status_t rv;
 
     /* the reverse of pre_config, we want this only the first time around */
     if (restart_num++ == 0) {
