@@ -1,9 +1,0 @@
-The config.m4 file that normally would be located
-in this directory is actually concatted to the end
-of ../config.m4 (ie: modules/proxy/config.m4).
-
-This is done to force the correct loading of the
-submodules. So if additional bundled LB submodules are
-added, ../config.m4 must be updated as well.
-
-There is likely a better way to do this...
