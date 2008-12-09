@@ -647,6 +647,10 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer, const cha
 
 void         ssl_var_log_config_register(apr_pool_t *p);
 
+/* Extract SSL_*_DN_* variables into table 't' from SSL object 'ssl',
+ * allocating from 'p': */
+void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p);
+
 #ifdef HAVE_OCSP
 /* Perform OCSP validation of the current cert in the given context.
  * Returns non-zero on success or zero on failure.  On failure, the
