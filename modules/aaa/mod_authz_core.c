@@ -61,7 +61,7 @@
                    ((section)->negate ? "Not" : ""),    \
                    (((section)->op == AUTHZ_LOGIC_AND)    \
                     ? "All" : "Any"),                       \
-                   ">", NULL))                                \
+                   ">", NULL))
 
 typedef struct provider_alias_rec {
     char *provider_name;
@@ -639,7 +639,8 @@ static const command_rec authz_cmds[] =
                      "(or not) for a request to suceeed"),
     AP_INIT_RAW_ARGS("<MatchAll", add_authz_section, NULL, OR_AUTHCFG,
                      "container for grouping authorization directives "
-                     "of which none must fail and at least one must pass "                           "for a request to succeed"),
+                     "of which none must fail and at least one must pass "
+                     "for a request to succeed"),
     AP_INIT_RAW_ARGS("<MatchAny", add_authz_section, NULL, OR_AUTHCFG,
                      "container for grouping authorization directives "
                      "of which one must pass "
