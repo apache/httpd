@@ -30,7 +30,11 @@
 #include "ap_provider.h"
 #include "apr_pools.h"
 
-/** If this flag is set, the store/retrieve/delete/status interfaces
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/** If this flag is set, the store/retrieve/remove/status interfaces
  * of the provider are NOT safe to be called concurrently from
  * multiple processes or threads, and an external global mutex must be
  * used to serialize access to the provider. */
@@ -141,7 +145,7 @@ typedef struct ap_socache_provider_t {
      * @param idlen Length of id blob
      * @param pool Pool for temporary allocations.
      */
-    void (*delete)(ap_socache_instance_t *instance, server_rec *s,
+    void (*remove)(ap_socache_instance_t *instance, server_rec *s,
                    const unsigned char *id, unsigned int idlen,
                    apr_pool_t *pool);
 
@@ -162,6 +166,10 @@ typedef struct ap_socache_provider_t {
 
 /** Default provider name. */
 #define AP_SOCACHE_DEFAULT_PROVIDER "default"
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* AP_SOCACHE_H */
 /** @} */
