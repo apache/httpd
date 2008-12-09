@@ -67,7 +67,8 @@ typedef struct ap_socache_provider_t {
      * passed as the first argument to subsequent invocations.
      *
      * @param instance Output parameter to which instance object is written.
-     * @param arg Used-specified configuration string
+     * @param arg Used-specified configuration string.  May be NULL to
+     *        force use of defaults.
      * @param tmp Pool to be used for any temporary allocations
      * @param p Pool to be use for any allocations lasting as long as 
      * the created instance
@@ -76,18 +77,22 @@ typedef struct ap_socache_provider_t {
     const char *(*create)(ap_socache_instance_t **instance, const char *arg, 
                           apr_pool_t *tmp, apr_pool_t *p);
 
-    /* Initialize the cache.  NAMESPACE must given a unique string
-     * prefix for use with memcached; if hints is non-NULL, it gives a
-     * set of hints for the provider.  Return APR error code. 
-
+    /* Initialize the cache.  The cname must be of maximum length 16
+     * characters, and uniquely identifies the consumer of the cache
+     * within the server; using the module name is recommended, e.g.
+     * "mod_ssl-sess".  This string may be used within a filesystem
+     * path so use of only alphanumeric [a-z0-9_-] characters is
+     * recommended.  If hints is non-NULL, it gives a set of hints for
+     * the provider.  Return APR error code.
+     *
      * @param instance The cache instance
-     * @param namespace A unique string identifying the consumer of this API
+     * @param cname A unique string identifying the consumer of this API
      * @param hints Optional hints argument describing expected cache use
      * @param s Server structure to which the cache is associated
      * @param pool Pool for long-lived allocations
      * @return APR status value indicating success.
      */
-    apr_status_t (*init)(ap_socache_instance_t *instance, const char *namespace, 
+    apr_status_t (*init)(ap_socache_instance_t *instance, const char *cname, 
                          const struct ap_socache_hints *hints,
                          server_rec *s, apr_pool_t *pool);
 

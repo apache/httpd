@@ -53,6 +53,8 @@ struct ap_socache_instance_t {
  */
 #define SSL_DBM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
+#define DEFAULT_DBM_PREFIX DEFAULT_REL_RUNTIMEDIR "/socache-dbm-"
+
 /* ### this should use apr_dbm_usednames. */
 #if !defined(SSL_DBM_FILE_SUFFIX_DIR) && !defined(SSL_DBM_FILE_SUFFIX_PAG)
 #if defined(DBM_SUFFIX)
@@ -81,9 +83,11 @@ static const char *socache_dbm_create(ap_socache_instance_t **context,
 
     *context = ctx = apr_pcalloc(p, sizeof *ctx);
 
-    ctx->data_file = ap_server_root_relative(p, arg);
-    if (!ctx->data_file) {
-        return apr_psprintf(tmp, "Invalid cache file path %s", arg);
+    if (arg && *arg) {
+        ctx->data_file = ap_server_root_relative(p, arg);
+        if (!ctx->data_file) {
+            return apr_psprintf(tmp, "Invalid cache file path %s", arg);
+        }
     }
 
     apr_pool_create(&ctx->pool, p);
@@ -101,9 +105,17 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
 
     /* for the DBM we need the data file */
     if (ctx->data_file == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "SSLSessionCache required");
-        return APR_EINVAL;
+        const char *path = apr_pstrcat(p, DEFAULT_DBM_PREFIX, namespace,
+                                       NULL);
+
+        ctx->data_file = ap_server_root_relative(p, path);
+
+        if (ctx->data_file == NULL) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                         "could not use default path '%s' for DBM socache",
+                         path);
+            return APR_EINVAL;
+        }
     }
 
     /* open it once to create it and to make sure it _can_ be created */
