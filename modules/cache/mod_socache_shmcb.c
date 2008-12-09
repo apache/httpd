@@ -269,8 +269,14 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
     /* Allocate the context. */
     *context = ctx = apr_pcalloc(p, sizeof *ctx);
     
-    ctx->data_file = path = ap_server_root_relative(p, arg);
     ctx->shm_size  = 1024*512; /* 512KB */
+
+    if (!arg || *arg == '\0') {
+        /* Use defaults. */
+        return NULL;
+    }
+    
+    ctx->data_file = path = ap_server_root_relative(p, arg);
 
     cp = strchr(path, '(');
     if (cp) {
@@ -301,6 +307,9 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
     return NULL;
 }
 
+#define DEFAULT_SHMCB_PREFIX DEFAULT_REL_RUNTIMEDIR "/socache-shmcb-"
+#define DEFAULT_SHMCB_SUFFIX ".cache"
+
 static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
                                        const char *namespace, 
                                        const struct ap_socache_hints *hints,
@@ -315,14 +324,25 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
 
     /* Create shared memory segment */
     if (ctx->data_file == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "SSLSessionCache required");
-        return APR_EINVAL;
+        const char *path = apr_pstrcat(p, DEFAULT_SHMCB_PREFIX, namespace, 
+                                       DEFAULT_SHMCB_SUFFIX, NULL);
+
+        ctx->data_file = ap_server_root_relative(p, path);
     }
 
     /* Use anonymous shm by default, fall back on name-based. */
     rv = apr_shm_create(&ctx->shm, ctx->shm_size, NULL, p);
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
+        /* If anon shm isn't supported, fail if no named file was
+         * configured successfully; the ap_server_root_relative call
+         * above will return NULL for invalid paths. */
+        if (ctx->data_file == NULL) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                         "Could not use default path '%s' for shmcb socache",
+                         ctx->data_file);
+            return APR_EINVAL;
+        }
+
         /* For a name-based segment, remove it first in case of a
          * previous unclean shutdown. */
         apr_shm_remove(ctx->data_file, p);
@@ -332,8 +352,8 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "could not allocate shared memory for shmcb "
-                     "session cache");
+                     "Could not allocate shared memory segment for shmcb "
+                     "socache");
         return rv;
     }
 
