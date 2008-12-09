@@ -330,6 +330,34 @@ typedef struct {
     int non_ssl_request;
 } SSLConnRec;
 
+/* BIG FAT WARNING: SSLModConfigRec has unusual memory lifetime: it is
+ * allocated out of the "process" pool and only a single such
+ * structure is created and used for the lifetime of the process.
+ * (The process pool is s->process->pool and is stored in the .pPool
+ * field.)  Most members of this structure are likewise allocated out
+ * of the process pool, but notably sesscache and sesscache_context
+ * are not.
+ *
+ * The structure is treated as mostly immutable after a single config
+ * parse has completed; the post_config hook (ssl_init_Module) flips
+ * the bFixed flag to true and subsequent invocations of the config
+ * callbacks hence do nothing.
+ *
+ * This odd lifetime strategy is used so that encrypted private keys
+ * can be decrypted once at startup and continue to be used across
+ * subsequent server reloads where the interactive password prompt is
+ * not possible.
+
+ * It is really an ABI nightmare waiting to happen since DSOs are
+ * reloaded across restarts, and nothing prevents the struct type
+ * changing across such reloads, yet the cached structure will be
+ * assumed to match regardless.
+ *
+ * This should really be fixed using a smaller structure which only
+ * stores that which is absolutely necessary (the private keys, maybe
+ * the random seed), and have that structure be strictly ABI-versioned
+ * for safety.
+ */
 typedef struct {
     pid_t           pid;
     apr_pool_t     *pPool;
