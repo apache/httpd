@@ -160,5 +160,8 @@ typedef struct ap_socache_provider_t {
 /** The provider version used to register socache providers. */
 #define AP_SOCACHE_PROVIDER_VERSION "0"
 
+/** Default provider name. */
+#define AP_SOCACHE_DEFAULT_PROVIDER "default"
+
 #endif /* AP_SOCACHE_H */
 /** @} */
