@@ -2,6 +2,10 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_ssl: Improve environment variable extraction to be more
+     efficient and to correctly handle DNs with duplicate tags.
+     PR 45975.  [Joe Orton]
+
   *) Remove the obsolete serial attribute from the RPM spec file. Compile
      against the external pcre. Add missing binaries fcgistarter, and
      mod_socache* and mod_session*. [Graham Leggett]
