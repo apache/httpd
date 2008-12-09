@@ -398,7 +398,7 @@ person in</title>
     AuthBasicProvider file ldap<br />
     AuthUserFile /usr/local/apache/passwd/passwords<br />
     AuthLDAPURL ldap://ldaphost/o=yourorg<br />
-    Require valid-user
+    Require valid-user<br />
     &lt;/Directory&gt;
     </example>
 
@@ -424,7 +424,7 @@ person in</title>
     AuthLDAPURL ldap://ldaphost/o=yourorg
     AuthGroupFile /usr/local/apache/passwd/groups<br />
     Require group GroupName<br />
-    Require ldap-group cn=mygroup,o=yourorg
+    Require ldap-group cn=mygroup,o=yourorg<br />
     &lt;/Directory&gt;
     </example>
 
