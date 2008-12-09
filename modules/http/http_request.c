@@ -541,6 +541,9 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
         }
         if (next && (next->frec == ap_subreq_core_filter_handle)) {
             ap_remove_output_filter(next);
+            if (next == r->output_filters) {
+                r->output_filters = r->output_filters->next;
+            }
         }
     }
 
