@@ -956,10 +956,6 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         return err;
     }
 
-    if (ssl_config_global_isfixed(mc)) {
-        return NULL;
-    }
-
     /* The OpenSSL session cache mode must have both the flags
      * SSL_SESS_CACHE_SERVER and SSL_SESS_CACHE_NO_INTERNAL set if a
      * session cache is configured; NO_INTERNAL prevents the
@@ -989,7 +985,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
             /* Cache found; create it, passing anything beyond the colon. */
             mc->sesscache_mode = enabled_flags;
             err = mc->sesscache->create(&mc->sesscache_context, sep + 1, 
-                                        cmd->pool, mc->pPool);
+                                        cmd->temp_pool, cmd->pool);
         }
         else {
             apr_array_header_t *name_list;
