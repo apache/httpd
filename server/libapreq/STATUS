@@ -1,0 +1,35 @@
+/** @page apreq_status STATUS
+
+    2.08 under development.
+
+Contributors looking for a mission:
+
+    - just do an egrep on "TODO" or "XXX" and see what's there
+
+
+CURRENT RELEASE NOTES:
+
+
+RELEASE SHOWSTOPPERS:
+
+
+
+CURRENT VOTES:
+
+
+TODO:
+
+      apreq2-config doesn't install correctly.
+      mod_apreq2    doesn't even build.
+
+
+OPEN ISSUES:
+
+
+BUGS:
+
+
+WISH LIST:
+
+
+*/
