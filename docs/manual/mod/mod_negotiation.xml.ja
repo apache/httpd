@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -84,8 +84,8 @@
       このヘッダがない場合、ファイルの実際の長さが使用されます。</dd>
 
       <dt><code>Content-Type:</code></dt>
-      <dd>ドキュメントの MIME
-      メディアタイプ、オプショナルなパラメータ付き。パラメータの構文は
+      <dd>ドキュメントの <glossary ref="mime-type">MIME
+      メディアタイプ</glossary>、オプショナルなパラメータ付き。パラメータの構文は
       <code>name=value</code>
       で、メディアタイプや他のパラメータとはセミコロンで分離されます。
       共通のパラメータは以下のとおり:
