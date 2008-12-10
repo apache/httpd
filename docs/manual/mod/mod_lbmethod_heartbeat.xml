@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_lbmethod_bybusyness.xml.meta">
+<modulesynopsis metafile="mod_lbmethod_heartbeat.xml.meta">
 
 <name>mod_lbmethod_heartbeat</name>
 <description><!-- FIXME: --> This document is still under development.</description>
