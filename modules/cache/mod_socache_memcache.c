@@ -103,7 +103,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
     rv = apr_memcache_create(p, nservers, 0, &ctx->mc);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "SSLSessionCache: Failed to create Memcache Object of '%d' size.", 
+                     "socache: Failed to create Memcache Object of '%d' size.", 
                      nservers);
         return rv;
     }
@@ -120,13 +120,13 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
         rv = apr_parse_addr_port(&host_str, &scope_id, &port, split, p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "SSLSessionCache: Failed to Parse Server: '%s'", split);
+                         "socache: Failed to Parse memcache Server: '%s'", split);
             return rv;
         }
 
         if (host_str == NULL) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "SSLSessionCache: Failed to Parse Server, "
+                         "socache: Failed to Parse Server, "
                          "no hostname specified: '%s'", split);
             return APR_EINVAL;
         }
@@ -144,7 +144,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
                                         &st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "SSLSessionCache: Failed to Create Server: %s:%d", 
+                         "socache: Failed to Create memcache Server: %s:%d", 
                          host_str, port);
             return rv;
         }
@@ -152,7 +152,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
         rv = apr_memcache_add_server(ctx->mc, st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                         "SSLSessionCache: Failed to Add Server: %s:%d", 
+                         "socache: Failed to Add memcache Server: %s:%d", 
                          host_str, port);
             return rv;
         }
@@ -228,8 +228,8 @@ static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx,
                                         unsigned char *dest, unsigned int *destlen,
                                         apr_pool_t *p)
 {
-    apr_size_t der_len;
-    char buf[MC_KEY_LEN], *der;
+    apr_size_t data_len;
+    char buf[MC_KEY_LEN], *data;
     apr_status_t rv;
 
     if (socache_mc_id2key(ctx, id, idlen, buf, sizeof buf)) {
@@ -239,23 +239,22 @@ static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx,
     /* ### this could do with a subpool, but _getp looks like it will
      * eat memory like it's going out of fashion anyway. */
 
-    rv = apr_memcache_getp(ctx->mc, p, buf,
-                           &der, &der_len, NULL);
+    rv = apr_memcache_getp(ctx->mc, p, buf, &data, &data_len, NULL);
     if (rv) {
         if (rv != APR_NOTFOUND) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "scache_mc: 'get_session' FAIL");
+                         "scache_mc: 'retrieve' FAIL");
         }
         return rv;
     }
-    else if (der_len > *destlen) {
+    else if (data_len > *destlen) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "scache_mc: 'get_session' OVERFLOW");
-        return rv;
+                     "scache_mc: 'retrieve' OVERFLOW");
+        return APR_ENOMEM;
     }    
 
-    memcpy(dest, der, der_len);
-    *destlen = der_len;
+    memcpy(dest, data, data_len);
+    *destlen = data_len;
 
     return APR_SUCCESS;
 }
