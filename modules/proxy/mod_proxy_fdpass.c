@@ -27,6 +27,15 @@
 /* for apr_wait_for_io_or_timeout */
 #include "apr_support.h"
 
+#define PROXY_FDPASS_FLUSHER "proxy_fdpass_flusher"
+
+typedef struct proxy_fdpass_flush proxy_fdpass_flush;
+struct proxy_fdpass_flush {
+    const char *name;
+    int (*flusher)(request_rec *r);
+    void            *context;
+};
+
 module AP_MODULE_DECLARE_DATA proxy_fdpass_module;
 
 static int proxy_fdpass_canon(request_rec *r, char *url)
@@ -190,26 +199,21 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    r->connection->keepalive = AP_CONN_CLOSE;
-
-    /* TODO: Make this part a provider, so you can send a custom body / headers,
-     * before passing the client off to the socket. 
-     */
     {
         int status;
-        apr_bucket_brigade *bb;
-        apr_bucket *e;
+        const char *flush_method = "flush";
 
-        bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-        e = apr_bucket_flush_create(r->connection->bucket_alloc);
+        proxy_fdpass_flush *flush = ap_lookup_provider(PROXY_FDPASS_FLUSHER, flush_method, "0");
 
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+        if (!flush) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "proxy: FD: Unable to find configured flush "
+                          "provider '%s'", flush_method);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
 
-        status = ap_pass_brigade(r->output_filters, bb);
-        
-        if (status != OK) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                          "proxy: FD: ap_pass_brigade failed:");
+        status = flush->flusher(r);
+        if (status) {
             return status;
         }
     }
@@ -244,8 +248,41 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
     return OK;
 }
 
+static int standard_flush(request_rec *r)
+{
+    int status;
+    apr_bucket_brigade *bb;
+    apr_bucket *e;
+
+    r->connection->keepalive = AP_CONN_CLOSE;
+
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    e = apr_bucket_flush_create(r->connection->bucket_alloc);
+    
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+
+    status = ap_pass_brigade(r->output_filters, bb);
+
+    if (status != OK) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "proxy: FD: ap_pass_brigade failed:");
+        return status;
+    }
+
+    return OK;
+}
+
+
+static const proxy_fdpass_flush builtin_flush =
+{
+    "flush",
+    &standard_flush,
+    NULL
+};
+
 static void register_hooks(apr_pool_t *p)
 {
+    ap_register_provider(p, PROXY_FDPASS_FLUSHER, "flush", "0", &builtin_flush);
     proxy_hook_scheme_handler(proxy_fdpass_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_fdpass_canon, NULL, NULL, APR_HOOK_FIRST);
 }
