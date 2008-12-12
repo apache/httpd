@@ -58,7 +58,7 @@ struct ap_socache_instance_t {
     const char *servers;
     apr_memcache_t *mc;
     const char *tag;
-    apr_size_t taglen;
+    apr_size_t taglen; /* strlen(tag) + 1 */
 };
 
 static const char *socache_mc_create(ap_socache_instance_t **context, 
@@ -69,6 +69,10 @@ static const char *socache_mc_create(ap_socache_instance_t **context,
     
     *context = ctx = apr_palloc(p, sizeof *ctx);
 
+    if (!arg || !*arg) {
+        return "List of server names required to create memcache socache.";
+    }
+    
     ctx->servers = apr_pstrdup(p, arg);
 
     return NULL;
@@ -157,7 +161,10 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
     }
 
     ctx->tag = apr_pstrcat(p, namespace, ":", NULL);
-    ctx->taglen = strlen(ctx->tag);
+    ctx->taglen = strlen(ctx->tag) + 1;
+
+    /* socache API constraint: */
+    AP_DEBUG_ASSERT(ctx->taglen <= 16);
 
     return APR_SUCCESS;
 }
@@ -167,21 +174,28 @@ static void socache_mc_kill(ap_socache_instance_t *context, server_rec *s)
     /* noop. */
 }
 
-static void mc_session_id2sz(ap_socache_instance_t *ctx,
+/* Converts (binary) id into a key prefixed by the predetermined
+ * namespace tag; writes output to key buffer.  Returns non-zero if
+ * the id won't fit in the key buffer. */
+static int socache_mc_id2key(ap_socache_instance_t *ctx,
                              const unsigned char *id, unsigned int idlen,
-                             char *buf, apr_size_t buflen)
+                             char *key, apr_size_t keylen)
 {
-    apr_size_t maxlen = (buflen - ctx->taglen) / 2;
     char *cp;
     unsigned int n;
 
-    cp = apr_cpystrn(buf, ctx->tag, ctx->taglen);
-    for (n = 0; n < idlen && n < maxlen; n++) {
+    if (idlen * 2 + ctx->taglen >= keylen)
+        return 1;
+
+    cp = apr_cpystrn(key, ctx->tag, ctx->taglen);
+
+    for (n = 0; n < idlen; n++) {
         apr_snprintf(cp, 3, "%02X", (unsigned) id[n]);
         cp += 2;
     }
 
     *cp = '\0';
+    return 0;
 }
 
 static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s, 
@@ -192,7 +206,9 @@ static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s,
     char buf[MC_KEY_LEN];
     apr_status_t rv;
 
-    mc_session_id2sz(ctx, id, idlen, buf, sizeof(buf));
+    if (socache_mc_id2key(ctx, id, idlen, buf, sizeof buf)) {
+        return APR_EINVAL;
+    }
 
     rv = apr_memcache_set(ctx->mc, buf, (char*)ucaData, nData, timeout, 0);
 
@@ -216,7 +232,9 @@ static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx,
     char buf[MC_KEY_LEN], *der;
     apr_status_t rv;
 
-    mc_session_id2sz(ctx, id, idlen, buf, sizeof(buf));
+    if (socache_mc_id2key(ctx, id, idlen, buf, sizeof buf)) {
+        return APR_EINVAL;
+    }
 
     /* ### this could do with a subpool, but _getp looks like it will
      * eat memory like it's going out of fashion anyway. */
@@ -249,7 +267,9 @@ static void socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s,
     char buf[MC_KEY_LEN];
     apr_status_t rv;
 
-    mc_session_id2sz(ctx, id, idlen, buf, sizeof(buf));
+    if (socache_mc_id2key(ctx, id, idlen, buf, sizeof buf)) {
+        return;
+    }
 
     rv = apr_memcache_delete(ctx->mc, buf, 0);
 
