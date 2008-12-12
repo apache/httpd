@@ -657,6 +657,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
     apr_socket_t *sock;
     apr_pool_t *p;
     apr_size_t len;
+    ap_listen_rec *lp;
 
     /* create a temporary pool for the socket.  pconf stays around too long */
     rv = apr_pool_create(&p, pod->p);
@@ -664,8 +665,19 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
         return rv;
     }
 
-    rv = apr_socket_create(&sock, ap_listeners->bind_addr->family,
-                           SOCK_STREAM, 0, p);
+    /* If possible, find a listener which is configured for
+     * plain-HTTP, not SSL; using an SSL port would either be
+     * expensive to do correctly (performing a complete SSL handshake)
+     * or cause log spam by doing incorrectly (simply sending EOF). */
+    lp = ap_listeners;
+    while (lp && lp->protocol && strcasecmp(lp->protocol, "http") != 0) {
+        lp = lp->next;
+    }
+    if (!lp) {
+        lp = ap_listeners;
+    }
+
+    rv = apr_socket_create(&sock, lp->bind_addr->family, SOCK_STREAM, 0, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                      "get socket to connect to listener");
@@ -688,7 +700,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
         return rv;
     }
 
-    rv = apr_socket_connect(sock, ap_listeners->bind_addr);
+    rv = apr_socket_connect(sock, lp->bind_addr);
     if (rv != APR_SUCCESS) {
         int log_level = APLOG_WARNING;
 
@@ -701,7 +713,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
         }
 
         ap_log_error(APLOG_MARK, log_level, rv, ap_server_conf,
-                     "connect to listener on %pI", ap_listeners->bind_addr);
+                     "connect to listener on %pI", lp->bind_addr);
     }
 
     /* Create the request string. We include a User-Agent so that
