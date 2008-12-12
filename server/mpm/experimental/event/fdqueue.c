@@ -50,7 +50,7 @@ static apr_status_t queue_info_cleanup(void *data_)
             break;
         }
         if (apr_atomic_casptr
-            ((volatile void **) &(qi->recycled_pools), first_pool->next,
+            ((void*) &(qi->recycled_pools), first_pool->next,
              first_pool) == first_pool) {
             apr_pool_destroy(first_pool->pool);
         }
@@ -209,7 +209,7 @@ void ap_push_pool(fd_queue_info_t * queue_info,
             struct recycled_pool *next = queue_info->recycled_pools;
             new_recycle->next = next;
             if (apr_atomic_casptr
-                ((volatile void **) &(queue_info->recycled_pools),
+                ((void*) &(queue_info->recycled_pools),
                  new_recycle, next) == next) {
                 break;
             }
@@ -238,7 +238,7 @@ void ap_pop_pool(apr_pool_t ** recycled_pool, fd_queue_info_t * queue_info)
             break;
         }
         if (apr_atomic_casptr
-            ((volatile void **) &(queue_info->recycled_pools),
+            ((void*) &(queue_info->recycled_pools),
              first_pool->next, first_pool) == first_pool) {
             *recycled_pool = first_pool->pool;
             break;
