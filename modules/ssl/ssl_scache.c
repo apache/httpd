@@ -114,7 +114,7 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     }
     
     rv = mc->sesscache->store(mc->sesscache_context, s, id, idlen, 
-                              expiry, encoded, len);
+                              expiry, encoded, len, p);
 
     if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_off(s);

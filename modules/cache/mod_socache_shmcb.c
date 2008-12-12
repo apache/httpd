@@ -447,11 +447,11 @@ static void socache_shmcb_kill(ap_socache_instance_t *ctx, server_rec *s)
 }
 
 static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx, 
-                                        server_rec *s, 
-                                        const unsigned char *id, unsigned int idlen,
-                                        time_t timeout, 
+                                        server_rec *s, const unsigned char *id, 
+                                        unsigned int idlen, time_t timeout, 
                                         unsigned char *encoded,
-                                        unsigned int len_encoded)
+                                        unsigned int len_encoded,
+                                        apr_pool_t *p)
 {
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
@@ -503,12 +503,13 @@ static apr_status_t socache_shmcb_retrieve(ap_socache_instance_t *ctx,
     return rv == 0 ? APR_SUCCESS : APR_EGENERAL;
 }
 
-static void socache_shmcb_remove(ap_socache_instance_t *ctx, server_rec *s, 
-                                 const unsigned char *id, unsigned int idlen,
-                                 apr_pool_t *p)
+static apr_status_t socache_shmcb_remove(ap_socache_instance_t *ctx, 
+                                         server_rec *s, const unsigned char *id,
+                                         unsigned int idlen, apr_pool_t *p)
 {
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
+    apr_status_t rv;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "socache_shmcb_remove (0x%02x -> subcache %d)",
@@ -516,14 +517,19 @@ static void socache_shmcb_remove(ap_socache_instance_t *ctx, server_rec *s,
     if (idlen < 4) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short session_id provided "
                 "(%u bytes)", idlen);
-        return;
+        return APR_EINVAL;
     }
-    if (shmcb_subcache_remove(s, header, subcache, id, idlen))
+    if (shmcb_subcache_remove(s, header, subcache, id, idlen) == 0) {
         header->stat_removes_hit++;
-    else
+        rv = APR_SUCCESS;
+    } else {
         header->stat_removes_miss++;
+        rv = APR_NOTFOUND;
+    }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving socache_shmcb_remove successfully");
+
+    return rv;
 }
 
 static void socache_shmcb_status(ap_socache_instance_t *ctx, 
