@@ -201,7 +201,8 @@ static int socache_mc_id2key(ap_socache_instance_t *ctx,
 static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s, 
                                      const unsigned char *id, unsigned int idlen,
                                      time_t timeout,
-                                     unsigned char *ucaData, unsigned int nData)
+                                     unsigned char *ucaData, unsigned int nData,
+                                     apr_pool_t *p)
 {
     char buf[MC_KEY_LEN];
     apr_status_t rv;
@@ -222,8 +223,7 @@ static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx, 
-                                        server_rec *s, 
+static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx, server_rec *s, 
                                         const unsigned char *id, unsigned int idlen,
                                         unsigned char *dest, unsigned int *destlen,
                                         apr_pool_t *p)
@@ -259,15 +259,15 @@ static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx,
     return APR_SUCCESS;
 }
 
-static void socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s, 
-                              const unsigned char *id, unsigned int idlen,
-                              apr_pool_t *p)
+static apr_status_t socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s, 
+                                      const unsigned char *id, 
+                                      unsigned int idlen, apr_pool_t *p)
 {
     char buf[MC_KEY_LEN];
     apr_status_t rv;
 
     if (socache_mc_id2key(ctx, id, idlen, buf, sizeof buf)) {
-        return;
+        return APR_EINVAL;
     }
 
     rv = apr_memcache_delete(ctx->mc, buf, 0);
@@ -276,8 +276,9 @@ static void socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
                      "scache_mc: error deleting key '%s' ",
                      buf);
-        return;
     }
+
+    return rv;
 }
 
 static void socache_mc_status(ap_socache_instance_t *ctx, request_rec *r, int flags)

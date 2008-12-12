@@ -71,9 +71,9 @@ struct ap_socache_instance_t {
 
 static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s);
 
-static void socache_dbm_remove(ap_socache_instance_t *ctx, server_rec *s, 
-                               const unsigned char *id, unsigned int idlen,
-                               apr_pool_t *p);
+static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx, 
+                                       server_rec *s, const unsigned char *id, 
+                                       unsigned int idlen, apr_pool_t *p);
 
 static const char *socache_dbm_create(ap_socache_instance_t **context, 
                                       const char *arg, 
@@ -176,10 +176,11 @@ static void socache_dbm_kill(ap_socache_instance_t *ctx, server_rec *s)
     return;
 }
 
-static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx, server_rec *s,
-                                      const unsigned char *id, unsigned int idlen,
-                                      time_t expiry, unsigned char *ucaData, 
-                                      unsigned int nData)
+static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx, 
+                                      server_rec *s, const unsigned char *id, 
+                                      unsigned int idlen, time_t expiry, 
+                                      unsigned char *ucaData, 
+                                      unsigned int nData, apr_pool_t *pool)
 {
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
@@ -315,9 +316,9 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
     return APR_SUCCESS;
 }
 
-static void socache_dbm_remove(ap_socache_instance_t *ctx, server_rec *s, 
-                               const unsigned char *id, unsigned int idlen,
-                               apr_pool_t *p)
+static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx, 
+                                       server_rec *s, const unsigned char *id,
+                                       unsigned int idlen, apr_pool_t *p)
 {
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
@@ -336,12 +337,12 @@ static void socache_dbm_remove(ap_socache_instance_t *ctx, server_rec *s,
                      "Cannot open SSLSessionCache DBM file `%s' for writing "
                      "(delete)",
                      ctx->data_file);
-        return;
+        return rv;
     }
     apr_dbm_delete(dbm, dbmkey);
     apr_dbm_close(dbm);
 
-    return;
+    return APR_SUCCESS;
 }
 
 static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)

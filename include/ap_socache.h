@@ -116,11 +116,14 @@ typedef struct ap_socache_provider_t {
      * @param expiry Absolute time at which the object expires
      * @param data Data to store; binary blob
      * @param datalen Length of data blob
+     * @param pool Pool for temporary allocations.
+     * @return APR status value.
      */
     apr_status_t (*store)(ap_socache_instance_t *instance, server_rec *s, 
                           const unsigned char *id, unsigned int idlen, 
                           time_t expiry, 
-                          unsigned char *data, unsigned int datalen);
+                          unsigned char *data, unsigned int datalen,
+                          apr_pool_t *pool);
 
     /**
      * Retrieve a cached object.
@@ -132,6 +135,8 @@ typedef struct ap_socache_provider_t {
      * @param datalen On entry, length of data buffer; on exit, the
      * number of bytes written to the data buffer.
      * @param pool Pool for temporary allocations.
+     * @return APR status value; APR_NOTFOUND if the object was not
+     * found
      */
     apr_status_t (*retrieve)(ap_socache_instance_t *instance, server_rec *s,
                              const unsigned char *id, unsigned int idlen,
@@ -145,9 +150,9 @@ typedef struct ap_socache_provider_t {
      * @param idlen Length of id blob
      * @param pool Pool for temporary allocations.
      */
-    void (*remove)(ap_socache_instance_t *instance, server_rec *s,
-                   const unsigned char *id, unsigned int idlen,
-                   apr_pool_t *pool);
+    apr_status_t (*remove)(ap_socache_instance_t *instance, server_rec *s,
+                           const unsigned char *id, unsigned int idlen,
+                           apr_pool_t *pool);
 
     /** Dump the status of a cache instance for mod_status.  Will use
      * the ap_r* interfaces to produce appropriate status output.

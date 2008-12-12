@@ -93,7 +93,8 @@ static void socache_dc_kill(ap_socache_instance_t *ctx, server_rec *s)
 static apr_status_t socache_dc_store(ap_socache_instance_t *ctx, server_rec *s, 
                                      const unsigned char *id, unsigned int idlen,
                                      time_t timeout,
-                                     unsigned char *der, unsigned int der_len)
+                                     unsigned char *der, unsigned int der_len,
+                                     apr_pool_t *p)
 {
     /* !@#$%^ - why do we deal with *absolute* time anyway??? */
     timeout -= time(NULL);
@@ -128,15 +129,17 @@ static apr_status_t socache_dc_retrieve(ap_socache_instance_t *ctx, server_rec *
     return APR_SUCCESS;
 }
 
-static void socache_dc_remove(ap_socache_instance_t *ctx, server_rec *s, 
-                              const unsigned char *id, unsigned int idlen, 
-                              apr_pool_t *p)
+static apr_status_t socache_dc_remove(ap_socache_instance_t *ctx, 
+                                      server_rec *s, const unsigned char *id, 
+                                      unsigned int idlen, apr_pool_t *p)
 {
     /* Remove any corresponding session from the distributed cache context */
     if (!DC_CTX_remove_session(ctx->dc, id, idlen)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove_session' MISS");
+        return APR_NOTFOUND;
     } else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove_session' HIT");
+        return APR_SUCCESS;
     }
 }
 
