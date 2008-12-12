@@ -2,6 +2,9 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_fdpass: New module to pass a client connection over to a separate
+     process that is reading from a unix daemon socket.
+
   *) mod_ssl: Improve environment variable extraction to be more
      efficient and to correctly handle DNs with duplicate tags.
      PR 45975.  [Joe Orton]
