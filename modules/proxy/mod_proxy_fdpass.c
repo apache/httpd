@@ -27,14 +27,7 @@
 /* for apr_wait_for_io_or_timeout */
 #include "apr_support.h"
 
-#define PROXY_FDPASS_FLUSHER "proxy_fdpass_flusher"
-
-typedef struct proxy_fdpass_flush proxy_fdpass_flush;
-struct proxy_fdpass_flush {
-    const char *name;
-    int (*flusher)(request_rec *r);
-    void            *context;
-};
+#include "mod_proxy_fdpass.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fdpass_module;
 
