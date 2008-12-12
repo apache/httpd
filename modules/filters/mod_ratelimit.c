@@ -40,6 +40,7 @@ typedef struct rl_ctx_t
     apr_bucket_brigade *holdingbb;
 } rl_ctx_t;
 
+#if 0
 static void brigade_dump(request_rec *r, apr_bucket_brigade *bb)
 {
     apr_bucket *e;
@@ -52,6 +53,7 @@ static void brigade_dump(request_rec *r, apr_bucket_brigade *bb)
 
     }
 }
+#endif
 
 static apr_status_t
 rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
