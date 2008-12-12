@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
+  
+  *) mod_ssl: Add SSLRenegBufferSize directive to allow changing the
+     size of the buffer used for the request-body where necessary
+     during a per-dir renegotiation.  PR 39243.  [Joe Orton]
 
   *) mod_proxy_fdpass: New module to pass a client connection over to a separate
      process that is reading from a unix daemon socket.

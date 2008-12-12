@@ -139,6 +139,11 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define SSL_SESSION_CACHE_TIMEOUT  300
 #endif
 
+/* Default setting for per-dir reneg buffer. */
+#ifndef DEFAULT_RENEG_BUFFER_SIZE
+#define DEFAULT_RENEG_BUFFER_SIZE (128 * 1024)
+#endif
+
 /**
  * Define the per-server SSLLogLevel constants which provide
  * finer-than-debug resolution to decide if logs are to be
@@ -488,6 +493,7 @@ typedef struct {
     const char   *szCACertificatePath;
     const char   *szCACertificateFile;
     const char   *szUserName;
+    apr_size_t    nRenegBufferSize;
 } SSLDirConfigRec;
 
 /**
@@ -532,6 +538,7 @@ const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, void *);
 const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLUserName(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLLogLevelDebugDump(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *arg);
 
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
@@ -603,7 +610,7 @@ long         ssl_io_data_cb(BIO *, int, MODSSL_BIO_CB_ARG_TYPE *, int, long, lon
 
 /* ssl_io_buffer_fill fills the setaside buffering of the HTTP request
  * to allow an SSL renegotiation to take place. */
-int          ssl_io_buffer_fill(request_rec *r);
+int          ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen);
 
 /**  PRNG  */
 int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);

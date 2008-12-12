@@ -601,8 +601,14 @@ int ssl_hook_Access(request_rec *r)
         && !r->expecting_100) {
         int rv;
 
-        /* Fill the I/O buffer with the request body if possible. */
-        rv = ssl_io_buffer_fill(r);
+        if (dc->nRenegBufferSize > 0) {
+            /* Fill the I/O buffer with the request body if possible. */
+            rv = ssl_io_buffer_fill(r, dc->nRenegBufferSize);
+        }
+        else {
+            /* If the reneg buffer size is set to zero, just fail. */
+            rv = HTTP_REQUEST_ENTITY_TOO_LARGE;
+        }
 
         if (rv) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,

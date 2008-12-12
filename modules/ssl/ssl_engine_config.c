@@ -295,6 +295,8 @@ void *ssl_config_perdir_create(apr_pool_t *p, char *dir)
     dc->szCACertificateFile    = NULL;
     dc->szUserName             = NULL;
 
+    dc->nRenegBufferSize = DEFAULT_RENEG_BUFFER_SIZE;
+
     return dc;
 }
 
@@ -331,6 +333,8 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeString(szCACertificatePath);
     cfgMergeString(szCACertificateFile);
     cfgMergeString(szUserName);
+
+    cfgMergeInt(nRenegBufferSize);
 
     return mrg;
 }
@@ -1144,6 +1148,19 @@ const char *ssl_cmd_SSLRequire(cmd_parms *cmd,
     require = apr_array_push(dc->aRequirement);
     require->cpExpr = apr_pstrdup(cmd->pool, arg);
     require->mpExpr = expr;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *arg)
+{
+    SSLDirConfigRec *dc = dcfg;
+    
+    dc->nRenegBufferSize = atoi(arg);
+    if (dc->nRenegBufferSize < 0) {
+        return apr_pstrcat(cmd->pool, "Invalid size for SSLRenegBufferSize: ",
+                           arg, NULL);
+    }
 
     return NULL;
 }
