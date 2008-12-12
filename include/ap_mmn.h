@@ -183,14 +183,15 @@
  *                         potential status codes
  * 20081201.0 (2.3.0-dev)  Rename several APIs to include ap_ prefix.
  * 20081201.1 (2.3.0-dev)  Added ap_args_to_table and ap_body_to_table.
+ * 20081212.0 (2.3.0-dev)  Remove sb_type from process_score in scoreboard.h.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20081201
+#define MODULE_MAGIC_NUMBER_MAJOR 20081212
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
