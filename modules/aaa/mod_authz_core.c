@@ -44,24 +44,7 @@
 #include <netinet/in.h>
 #endif
 
-#define FORMAT_AUTHZ_RESULT(result) \
-    (((result) == AUTHZ_DENIED)       \
-     ? "denied"                         \
-     : (((result) == AUTHZ_GRANTED)       \
-        ? "granted" : "neutral"))
-
-#define FORMAT_AUTHZ_COMMAND(p,section) \
-    ((section)->provider                  \
-     ? apr_pstrcat((p),                     \
-                   ((section)->negate ?       \
-                    "Match not " : "Match "),    \
-                   (section)->provider_name, " ", \
-                   (section)->provider_args, NULL)  \
-     : apr_pstrcat((p), "<Match",                     \
-                   ((section)->negate ? "Not" : ""),    \
-                   (((section)->op == AUTHZ_LOGIC_AND)    \
-                    ? "All" : "Any"),                       \
-                   ">", NULL))
+#undef AUTHZ_EXTRA_CONFIGS
 
 typedef struct provider_alias_rec {
     char *provider_name;
@@ -95,7 +78,6 @@ typedef struct authz_core_dir_conf authz_core_dir_conf;
 struct authz_core_dir_conf {
     authz_section_conf *section;
     authz_logic_op op;
-    int old_require;
     authz_core_dir_conf *next;
 };
 
@@ -314,12 +296,34 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
     return errmsg;
 }
 
-static authz_section_conf* create_default_section(apr_pool_t *p,
-                                                  int old_require)
+static const char* format_authz_result(authz_status result)
+{
+    return ((result == AUTHZ_DENIED)
+            ? "denied"
+            : ((result == AUTHZ_GRANTED)
+               ? "granted"
+               : "neutral"));
+}
+
+static const char* format_authz_command(apr_pool_t *p,
+                                        authz_section_conf *section)
+{
+    return (section->provider
+            ? apr_pstrcat(p, "Require ", (section->negate ? "not " : ""),
+                          section->provider_name, " ",
+                          section->provider_args, NULL)
+            : apr_pstrcat(p, "<Require",
+                          ((section->op == AUTHZ_LOGIC_AND)
+                           ? (section->negate ? "NotAll" : "All")
+                           : (section->negate ? "None" : "Any")),
+                          ">", NULL));
+}
+
+static authz_section_conf* create_default_section(apr_pool_t *p)
 {
     authz_section_conf *section = apr_pcalloc(p, sizeof(*section));
 
-    section->op = old_require ? AUTHZ_LOGIC_OR : AUTHZ_LOGIC_AND;
+    section->op = AUTHZ_LOGIC_OR;
 
     return section;
 }
@@ -331,21 +335,9 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     authz_section_conf *section = apr_pcalloc(cmd->pool, sizeof(*section));
     authz_section_conf *child;
 
-    if (!strcasecmp(cmd->cmd->name, "Require")) {
-        if (conf->section && !conf->old_require) {
-            return "Require directive not allowed with "
-                   "Match and related directives";
-        }
-
-        conf->old_require = 1;
-    }
-    else if (conf->old_require) {
-        return "Match directive not allowed with Require directives";
-    }
-
     section->provider_name = ap_getword_conf(cmd->pool, &args);
 
-    if (!conf->old_require && !strcasecmp(section->provider_name, "not")) {
+    if (!strcasecmp(section->provider_name, "not")) {
         section->provider_name = ap_getword_conf(cmd->pool, &args);
         section->negate = 1;
     }
@@ -377,14 +369,14 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     section->limited = cmd->limited;
 
     if (!conf->section) {
-        conf->section = create_default_section(cmd->pool, conf->old_require);
+        conf->section = create_default_section(cmd->pool);
     }
 
     if (section->negate && conf->section->op == AUTHZ_LOGIC_OR) {
         return apr_psprintf(cmd->pool, "negative %s directive has no effect "
                             "in %s directive",
                             cmd->cmd->name,
-                            FORMAT_AUTHZ_COMMAND(cmd->pool, conf->section));
+                            format_authz_command(cmd->pool, conf->section));
     }
 
     conf->section->limited |= section->limited;
@@ -416,12 +408,6 @@ static const char *add_authz_section(cmd_parms *cmd, void *mconfig,
     apr_int64_t old_limited = cmd->limited;
     const char *errmsg;
 
-    if (conf->old_require) {
-        return apr_pstrcat(cmd->pool, cmd->cmd->name,
-                           "> directive not allowed with "
-                           "Require directives", NULL);
-    }
-
     if (endp == NULL) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
                            "> directive missing closing '>'", NULL);
@@ -437,13 +423,13 @@ static const char *add_authz_section(cmd_parms *cmd, void *mconfig,
 
     section = apr_pcalloc(cmd->pool, sizeof(*section));
 
-    if (!strcasecmp(cmd->cmd->name, "<MatchAll")) {
+    if (!strcasecmp(cmd->cmd->name, "<RequireAll")) {
         section->op = AUTHZ_LOGIC_AND;
     }
-    else if (!strcasecmp(cmd->cmd->name, "<MatchAny")) {
+    else if (!strcasecmp(cmd->cmd->name, "<RequireAny")) {
         section->op = AUTHZ_LOGIC_OR;
     }
-    else if (!strcasecmp(cmd->cmd->name, "<MatchNotAll")) {
+    else if (!strcasecmp(cmd->cmd->name, "<RequireNotAll")) {
         section->op = AUTHZ_LOGIC_AND;
         section->negate = 1;
     }
@@ -473,14 +459,14 @@ static const char *add_authz_section(cmd_parms *cmd, void *mconfig,
         authz_section_conf *child;
 
         if (!old_section) {
-            old_section = conf->section = create_default_section(cmd->pool, 0);
+            old_section = conf->section = create_default_section(cmd->pool);
         }
 
         if (section->negate && old_section->op == AUTHZ_LOGIC_OR) {
             return apr_psprintf(cmd->pool, "%s directive has "
                                 "no effect in %s directive",
-                                FORMAT_AUTHZ_COMMAND(cmd->pool, section),
-                                FORMAT_AUTHZ_COMMAND(cmd->pool, old_section));
+                                format_authz_command(cmd->pool, section),
+                                format_authz_command(cmd->pool, old_section));
         }
 
         old_section->limited |= section->limited;
@@ -505,7 +491,7 @@ static const char *add_authz_section(cmd_parms *cmd, void *mconfig,
     }
     else {
         return apr_pstrcat(cmd->pool,
-                           FORMAT_AUTHZ_COMMAND(cmd->pool, section),
+                           format_authz_command(cmd->pool, section),
                            " directive contains no authorization directives",
                            NULL);
     }
@@ -521,15 +507,15 @@ static const char *authz_merge_sections(cmd_parms *cmd, void *mconfig,
     if (!strcasecmp(arg, "Off")) {
         conf->op = AUTHZ_LOGIC_OFF;
     }
-    else if (!strcasecmp(arg, "MatchAll")) {
+    else if (!strcasecmp(arg, "And")) {
         conf->op = AUTHZ_LOGIC_AND;
     }
-    else if (!strcasecmp(arg, "MatchAny")) {
+    else if (!strcasecmp(arg, "Or")) {
         conf->op = AUTHZ_LOGIC_OR;
     }
     else {
         return apr_pstrcat(cmd->pool, cmd->cmd->name, " must be one of: "
-                           "Off | MatchAll | MatchAny", NULL);
+                           "Off | And | Or", NULL);
     }
 
     return NULL;
@@ -541,28 +527,6 @@ static int authz_core_check_section(apr_pool_t *p, server_rec *s,
     authz_section_conf *prev = NULL;
     authz_section_conf *child = section->first;
     int ret = !OK;
-
-    while (child) {
-        if (!child->negate) {
-            ret = OK;
-            break;
-        }
-
-        child = child->next;
-    }
-
-    if (ret != OK) {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, APR_SUCCESS, s,
-                     apr_pstrcat(p, (is_conf
-                                     ? "<Directory>, <Location>, or similar"
-                                     : FORMAT_AUTHZ_COMMAND(p, section)),
-                                 " directive contains only negative "
-                                 "authorization directives", NULL));
-
-        return ret;
-    }
-
-    child = section->first;
 
     while (child) {
         if (child->first) {
@@ -595,7 +559,27 @@ static int authz_core_check_section(apr_pool_t *p, server_rec *s,
         child = child->next;
     }
 
-    return OK;
+    child = section->first;
+
+    while (child) {
+        if (!child->negate) {
+            ret = OK;
+            break;
+        }
+
+        child = child->next;
+    }
+
+    if (ret != OK) {
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, APR_SUCCESS, s,
+                     apr_pstrcat(p, (is_conf
+                                     ? "<Directory>, <Location>, or similar"
+                                     : format_authz_command(p, section)),
+                                 " directive contains only negative "
+                                 "authorization directives", NULL));
+    }
+
+    return ret;
 }
 
 static int authz_core_pre_config(apr_pool_t *p, apr_pool_t *plog,
@@ -612,7 +596,7 @@ static int authz_core_check_config(apr_pool_t *p, apr_pool_t *plog,
     authz_core_dir_conf *conf = authz_core_first_dir_conf;
 
     while (conf) {
-        if (conf->section && !conf->old_require) {
+        if (conf->section) {
             if (authz_core_check_section(p, s, conf->section, 1) != OK) {
                 return !OK;
             }
@@ -631,29 +615,27 @@ static const command_rec authz_cmds[] =
                      "container for grouping an authorization provider's "
                      "directives under a provider alias"),
     AP_INIT_RAW_ARGS("Require", add_authz_provider, NULL, OR_AUTHCFG,
-                     "specifies legacy authorization directives "
-                     "of which one must pass "
-                     "for a request to suceeed"),
-    AP_INIT_RAW_ARGS("Match", add_authz_provider, NULL, OR_AUTHCFG,
-                     "specifies authorization directives that must pass "
-                     "(or not) for a request to suceeed"),
-    AP_INIT_RAW_ARGS("<MatchAll", add_authz_section, NULL, OR_AUTHCFG,
+                     "specifies authorization directives "
+                     "which one must pass (or not) for a request to suceeed"),
+    AP_INIT_RAW_ARGS("<RequireAll", add_authz_section, NULL, OR_AUTHCFG,
                      "container for grouping authorization directives "
                      "of which none must fail and at least one must pass "
                      "for a request to succeed"),
-    AP_INIT_RAW_ARGS("<MatchAny", add_authz_section, NULL, OR_AUTHCFG,
+    AP_INIT_RAW_ARGS("<RequireAny", add_authz_section, NULL, OR_AUTHCFG,
                      "container for grouping authorization directives "
                      "of which one must pass "
                      "for a request to succeed"),
-    AP_INIT_RAW_ARGS("<MatchNotAll", add_authz_section, NULL, OR_AUTHCFG,
+#ifdef AUTHZ_EXTRA_CONFIGS
+    AP_INIT_RAW_ARGS("<RequireNotAll", add_authz_section, NULL, OR_AUTHCFG,
                      "container for grouping authorization directives "
                      "of which some must fail or none must pass "
                      "for a request to succeed"),
-    AP_INIT_RAW_ARGS("<MatchNotAny", add_authz_section, NULL, OR_AUTHCFG,
+#endif
+    AP_INIT_RAW_ARGS("<RequireNone", add_authz_section, NULL, OR_AUTHCFG,
                      "container for grouping authorization directives "
                      "of which none must pass "
                      "for a request to succeed"),
-    AP_INIT_TAKE1("MergeAuthz", authz_merge_sections, NULL, OR_AUTHCFG,
+    AP_INIT_TAKE1("AuthMerging", authz_merge_sections, NULL, OR_AUTHCFG,
                   "controls how a <Directory>, <Location>, or similar "
                   "directive's authorization directives are combined with "
                   "those of its predecessor"),
@@ -674,8 +656,8 @@ static authz_status apply_authz_sections(request_rec *r,
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
                       "authorization result of %s: %s "
                       "(directive limited to other methods)",
-                      FORMAT_AUTHZ_COMMAND(r->pool, section),
-                      FORMAT_AUTHZ_RESULT(auth_result));
+                      format_authz_command(r->pool, section),
+                      format_authz_result(auth_result));
 
         return auth_result;
     }
@@ -733,8 +715,8 @@ static authz_status apply_authz_sections(request_rec *r,
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r,
                   "authorization result of %s: %s",
-                  FORMAT_AUTHZ_COMMAND(r->pool, section),
-                  FORMAT_AUTHZ_RESULT(auth_result));
+                  format_authz_command(r->pool, section),
+                  format_authz_result(auth_result));
 
     return auth_result;
 }
