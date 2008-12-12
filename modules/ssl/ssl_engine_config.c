@@ -949,7 +949,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
                                     const char *arg)
 {
     SSLModConfigRec *mc = myModConfig(cmd->server);
-    const char *err, *sep;
+    const char *err, *sep, *name;
     long enabled_flags;
 
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
@@ -974,8 +974,16 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
          * doing it by default if "none" is used. */
         mc->sesscache_mode = enabled_flags;
     }
-    else if ((sep = ap_strchr_c(arg, ':')) != NULL) {
-        char *name = apr_pstrmemdup(cmd->pool, arg, sep - arg);
+    else {
+        /* Argument is of form 'name:args' or just 'name'. */
+        sep = ap_strchr_c(arg, ':');
+        if (sep) {
+            name = apr_pstrmemdup(cmd->pool, arg, sep - arg);
+            sep++;
+        }
+        else {
+            name = arg;
+        }
 
         /* Find the provider of given name. */
         mc->sesscache = ap_lookup_provider(AP_SOCACHE_PROVIDER_GROUP,
@@ -984,7 +992,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         if (mc->sesscache) {
             /* Cache found; create it, passing anything beyond the colon. */
             mc->sesscache_mode = enabled_flags;
-            err = mc->sesscache->create(&mc->sesscache_context, sep + 1, 
+            err = mc->sesscache->create(&mc->sesscache_context, sep, 
                                         cmd->temp_pool, cmd->pool);
         }
         else {
@@ -1001,10 +1009,6 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
             err = apr_psprintf(cmd->pool, "'%s' session cache not supported "
                                "(known names: %s)", name, all_names);
         }
-    }
-    else {
-        err = apr_psprintf(cmd->pool, "'%s' session cache not supported or missing argument",
-                           arg);
     }
 
     if (err) {
