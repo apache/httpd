@@ -297,6 +297,9 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->conn_timeout = timeout;
         worker->conn_timeout_set = 1;
     }
+    else if (!strcasecmp(key, "flusher")) {
+        worker->flusher = apr_pstrdup(p, val);
+    }
     else {
         return "unknown Worker parameter";
     }

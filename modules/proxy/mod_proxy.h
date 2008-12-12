@@ -354,6 +354,7 @@ struct proxy_worker {
     char            disablereuse_set;
     apr_interval_time_t conn_timeout;
     char            conn_timeout_set;
+    const char      *flusher;  /* flush provider used by mod_proxy_fdpass */
 };
 
 /*
