@@ -1,11 +1,4 @@
 APACHE_MODPATH_INIT(proxy/balancers)
-if test "$enable_proxy" = "shared"; then
-  proxy_mods_enable=shared
-elif test "$enable_proxy" = "yes"; then
-  proxy_mods_enable=yes
-else
-  proxy_mods_enable=no
-fi
 
 proxy_lb_br_objs="mod_lbmethod_byrequests.lo"
 proxy_lb_bt_objs="mod_lbmethod_bytraffic.lo"
