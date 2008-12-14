@@ -942,7 +942,7 @@ environment variable</description>
         will search for all objects in the tree. Filters are
         limited to approximately 8000 characters (the definition of
         <code>MAX_STRING_LEN</code> in the Apache source code). This
-        should be than sufficient for any application.</dd>
+        should be more than sufficient for any application.</dd>
 </dl>
 
     <p>When doing searches, the attribute, filter and username passed
