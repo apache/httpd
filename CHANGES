@@ -2,9 +2,12 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_cgid: Do not add an empty argument when calling the CGI script.
+     PR 46380 [Ruediger Pluem]
+
   *) scoreboard: Remove unused sb_type from process_score.
      [Torsten Foertsch <torsten.foertsch@gmx.net>, Chris Darroch]
-  
+
   *) mod_ssl: Add SSLRenegBufferSize directive to allow changing the
      size of the buffer used for the request-body where necessary
      during a per-dir renegotiation.  PR 39243.  [Joe Orton]
@@ -21,7 +24,7 @@ Changes with Apache 2.3.1
      mod_socache* and mod_session*. [Graham Leggett]
 
 Changes with Apache 2.3.0
- 
+
   *) mod_cache: When an explicit Expires or Cache-Control header is set, cache 
      normally non-cacheable response statuses. PR 46346. 
      [Alex Polvi <alex polvi.net>]
