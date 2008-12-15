@@ -668,5 +668,11 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r)
                        ap_make_content_type(r, r->content_type));
     }
 
+    if (!apr_table_get(headers_out, "Content-Encoding")
+        && r->content_encoding) {
+        apr_table_setn(headers_out, "Content-Encoding",
+                       r->content_encoding);
+    }
+
     return headers_out;
 }
