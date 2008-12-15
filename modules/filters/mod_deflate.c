@@ -584,6 +584,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         else {
             apr_table_mergen(r->headers_out, "Content-Encoding", "gzip");
         }
+        /* Fix r->content_encoding if it was set before */
+        if (r->content_encoding) {
+            r->content_encoding = apr_table_get(r->headers_out,
+                                                "Content-Encoding");
+        }
         apr_table_unset(r->headers_out, "Content-Length");
         apr_table_unset(r->headers_out, "Content-MD5");
         deflate_check_etag(r, "gzip");
