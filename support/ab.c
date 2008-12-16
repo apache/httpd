@@ -1892,9 +1892,7 @@ static int parse_url(char *url)
 
     if ((cp = strchr(url, '/')) == NULL)
         return 1;
-    h = apr_palloc(cntxt, cp - url + 1);
-    memcpy(h, url, cp - url);
-    h[cp - url] = '\0';
+    h = apr_pstrmemdup(cntxt, url, cp - url);
     rv = apr_parse_addr_port(&hostname, &scope_id, &port, h, cntxt);
     if (rv != APR_SUCCESS || !hostname || scope_id) {
         return 1;
