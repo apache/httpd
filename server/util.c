@@ -578,9 +578,8 @@ AP_DECLARE(char *) ap_make_dirstr_parent(apr_pool_t *p, const char *s)
         return apr_pstrdup(p, "");
     }
     l = (last_slash - s) + 1;
-    d = apr_palloc(p, l + 1);
-    memcpy(d, s, l);
-    d[l] = 0;
+    d = apr_pstrmemdup(p, s, l);
+
     return (d);
 }
 
@@ -611,9 +610,7 @@ AP_DECLARE(char *) ap_getword(apr_pool_t *atrans, const char **line, char stop)
     }
 
     len = pos - *line;
-    res = (char *)apr_palloc(atrans, len + 1);
-    memcpy(res, *line, len);
-    res[len] = 0;
+    res = apr_pstrmemdup(atrans, *line, len);
 
     if (stop) {
         while (*pos == stop) {
@@ -641,9 +638,7 @@ AP_DECLARE(char *) ap_getword_white(apr_pool_t *atrans, const char **line)
     }
 
     len = pos - *line;
-    res = (char *)apr_palloc(atrans, len + 1);
-    memcpy(res, *line, len);
-    res[len] = 0;
+    res = apr_pstrmemdup(atrans, *line, len);
 
     while (apr_isspace(*pos)) {
         ++pos;
