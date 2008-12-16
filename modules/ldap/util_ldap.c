@@ -292,7 +292,16 @@ static int uldap_connection_init(request_rec *r,
                   APR_LDAP_NONE,
                   &(result));
 
-    if (result != NULL && result->rc) {
+    if (NULL == result) {
+        /* something really bad happened */
+        ldc->bound = 0;
+        if (NULL == ldc->reason) {
+            ldc->reason = "LDAP: ldap initialization failed";
+        }
+        return(APR_EGENERAL);
+    }
+
+    if (result->rc) {
         ldc->reason = result->reason;
     }
 
