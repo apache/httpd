@@ -2,6 +2,9 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Set Listen protocol to "https" if port is set to 443 and no proto is specified
+     (as documented but not implemented). PR 46066  [Dan Poirier <poirier pobox.com>]
+
   *) Output -M and -S dumps (modules and vhosts) to stdout instead of stderr.
      PR 42571 and PR 44266 (dup).  [Dan Poirier <poirier pobox.com>]
 
