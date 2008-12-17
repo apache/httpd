@@ -2,6 +2,9 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Output -M and -S dumps (modules and vhosts) to stdout instead of stderr.
+     PR 42571 and PR 44266 (dup).  [Dan Poirier <poirier pobox.com>]
+
   *) mod_ldap: Avoid a segfault when result->rc is checked in uldap_connection_init
      when result is NULL. This could happen if LDAP initialization failed.
      PR 45994.  [Dan Poirier <poirier pobox.com>]
