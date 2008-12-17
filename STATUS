@@ -112,10 +112,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR 45994.  [Dan Poirier <poirier pobox.com>]
    Trunk version of patch:
       http://svn.apache.org/viewvc?view=rev&revision=727053
-   Backport versoin for 2.2.x of patch:
+   Backport version for 2.2.x of patch:
       http://people.apache.org/~rederpj/backport_PR45994_util_ldap.c.diff
    +1: rederpj,
 
+ * Output -M and -S dumps (modules and vhosts) to stdout instead of stderr.
+   PR 42571 and PR 44266 (dup).  [Dan Poirier <poirier pobox.com>]
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?view=rev&revision=727452
+   Backport version for 2.2.x of patch (trunk patch applies with offsets):
+      http://people.apache.org/~rederpj/backport_PR42571_moduleVhostToStdout.diff
+   +1: rederpj,
 
 PATCHES/ISSUES THAT ARE STALLED
 
