@@ -86,15 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_ldap: Avoid a segfault when result->rc is checked in uldap_connection_init
-   when result is NULL. This could happen if LDAP initialization failed.
-   PR 45994.  [Dan Poirier <poirier pobox.com>]
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?view=rev&revision=727053
-   Backport version for 2.2.x of patch:
-      http://people.apache.org/~rederpj/backport_PR45994_util_ldap.c.diff
-   +1: rederpj, rpluem, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
