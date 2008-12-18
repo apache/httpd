@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_cache: Correctly save Content-Encoding of cachable entity. PR 46401
+     [Dan Poirier <poirier pobox.com>]
+
   *) Output -M and -S dumps (modules and vhosts) to stdout instead of stderr.
      PR 42571 and PR 44266 (dup).  [Dan Poirier <poirier pobox.com>]
 

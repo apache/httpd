@@ -614,6 +614,12 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                        ap_make_content_type(r, r->content_type));
     }
 
+    if (!apr_table_get(headers_out, "Content-Encoding")
+        && r->content_encoding) {
+        apr_table_setn(headers_out, "Content-Encoding",
+                       r->content_encoding);
+    }
+
     headers_out = apr_table_overlay(r->pool, headers_out, r->err_headers_out);
     mobj->header_out = deep_table_copy(mobj->pool, headers_out);
 
