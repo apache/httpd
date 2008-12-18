@@ -86,14 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_cache: Correctly save Content-Encoding of cachable entity. PR 46401
-   [Dan Poirier <poirier pobox.com>]
-   Trunk version of patch (committed by rpluem):
-      http://svn.apache.org/viewvc?view=rev&revision=726796
-   Backport version of patch:
-      http://people.apache.org/~rederpj/backport_PR46401_cache_Content-Encoding.diff
-   +1: rederpj, rpluem, covener 
-
  * mod_ldap: Avoid a segfault when result->rc is checked in uldap_connection_init
    when result is NULL. This could happen if LDAP initialization failed.
    PR 45994.  [Dan Poirier <poirier pobox.com>]
