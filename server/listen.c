@@ -633,7 +633,11 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
     }
 
     if (argc != 2) {
-        proto = "http";
+        if (port == 443) {
+            proto = "https";
+        } else {
+            proto = "http";
+        }
     }
     else {
         proto = apr_pstrdup(cmd->pool, argv[1]);
