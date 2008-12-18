@@ -89,16 +89,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-
- * mod_cache: When an expires or cache-control header are sent, the RFC does
-   allow us to cache normally non-cacheable response statuses.
-   PR 46346.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=724093&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, covener, rederpj
-
  * mod_cache: Correctly save Content-Encoding of cachable entity. PR 46401
    [Dan Poirier <poirier pobox.com>]
    Trunk version of patch (committed by rpluem):
