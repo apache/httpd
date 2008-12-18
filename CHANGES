@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_cache: When an explicit Expires or Cache-Control header is set, cache
+     normally non-cacheable response statuses. PR 46346.
+     [Alex Polvi <alex polvi.net>]
 
 Changes with Apache 2.2.11
 
