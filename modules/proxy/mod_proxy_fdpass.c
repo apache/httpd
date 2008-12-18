@@ -104,7 +104,7 @@ static apr_status_t get_socket_from_path(apr_pool_t *p,
     }
 
     sa.sun_family = AF_UNIX;
-    strncpy(sa.sun_path, path, sizeof(sa.sun_path));
+    apr_cpystrn(sa.sun_path, path, sizeof(sa.sun_path));
 
     rv = socket_connect_un(s, &sa);
     if (rv) {
