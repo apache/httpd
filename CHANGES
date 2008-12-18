@@ -2,9 +2,6 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) Set Listen protocol to "https" if port is set to 443 and no proto is specified
-     (as documented but not implemented). PR 46066  [Dan Poirier <poirier pobox.com>]
-
   *) mod_ldap: Avoid a segfault when result->rc is checked in uldap_connection_init
      when result is NULL. This could happen if LDAP initialization failed.
      PR 45994.  [Dan Poirier <poirier pobox.com>]
