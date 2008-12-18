@@ -5,9 +5,6 @@ Changes with Apache 2.3.1
   *) Set Listen protocol to "https" if port is set to 443 and no proto is specified
      (as documented but not implemented). PR 46066  [Dan Poirier <poirier pobox.com>]
 
-  *) Output -M and -S dumps (modules and vhosts) to stdout instead of stderr.
-     PR 42571 and PR 44266 (dup).  [Dan Poirier <poirier pobox.com>]
-
   *) mod_ldap: Avoid a segfault when result->rc is checked in uldap_connection_init
      when result is NULL. This could happen if LDAP initialization failed.
      PR 45994.  [Dan Poirier <poirier pobox.com>]
