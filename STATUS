@@ -124,6 +124,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rederpj/backport_PR42571_moduleVhostToStdout.diff
    +1: rederpj, covener
 
+ * Set Listen protocol to "https" if port is set to 443 and no proto is specified
+     (as documented but not implemented). PR 46066  [Dan Poirier <poirier pobox.com>]
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?view=rev&revision=727477
+   Backport version for 2.2.x of patch (trunk patch applies with offset):
+      http://people.apache.org/~rederpj/backport_PR46066_443https.diff
+   +1: rederpj, 
+   
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
