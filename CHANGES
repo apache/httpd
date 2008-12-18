@@ -2,10 +2,6 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) mod_ldap: Avoid a segfault when result->rc is checked in uldap_connection_init
-     when result is NULL. This could happen if LDAP initialization failed.
-     PR 45994.  [Dan Poirier <poirier pobox.com>]
-
   *) mod_cgid: Do not add an empty argument when calling the CGI script.
      PR 46380 [Ruediger Pluem]
 
