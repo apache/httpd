@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) Set Listen protocol to "https" if port is set to 443 and no proto is specified
+     (as documented but not implemented). PR 46066  [Dan Poirier <poirier pobox.com>]
+
   *) mod_cache: Correctly save Content-Encoding of cachable entity. PR 46401
      [Dan Poirier <poirier pobox.com>]
 
