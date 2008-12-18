@@ -677,7 +677,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
 #endif
     if (ap_exists_config_define("DUMP_VHOSTS")) {
         apr_file_t *thefile = NULL;
-        apr_file_open_stderr(&thefile, p);
+        apr_file_open_stdout(&thefile, p);
         dump_vhost_config(thefile);
     }
 }

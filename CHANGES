@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) Output -M and -S dumps (modules and vhosts) to stdout instead of stderr.
+     PR 42571 and PR 44266 (dup).  [Dan Poirier <poirier pobox.com>]
+
   *) mod_cache: When an explicit Expires or Cache-Control header is set, cache
      normally non-cacheable response statuses. PR 46346.
      [Alex Polvi <alex polvi.net>]

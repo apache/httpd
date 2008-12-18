@@ -363,7 +363,7 @@ static void dump_loaded_modules(apr_pool_t *p, server_rec *s)
         return;
     }
 
-    apr_file_open_stderr(&out, p);
+    apr_file_open_stdout(&out, p);
 
     apr_file_printf(out, "Loaded Modules:\n");
 
