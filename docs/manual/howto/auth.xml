@@ -430,8 +430,9 @@ person in</title>
 
     <p>To take authorization a little further, authorization container
     directives such as
-    <directive module="mod_authz_core" type="section">MatchAll</directive> and
-    <directive module="mod_authz_core" type="section">MatchAny</directive>
+    <directive module="mod_authz_core" type="section">RequireAll</directive>
+    and
+    <directive module="mod_authz_core" type="section">RequireAny</directive>
     allow logic to be applied so that the order in which authorization
     is handled can be completely controled through the configuration.
     See <a href="../mod/mod_authz_core.html#logic">Authorization
@@ -454,20 +455,18 @@ person in</title>
         configured and called in a specific order which didn't depend on the 
         load order of the auth module itself. This same provider based mechanism 
         has been brought forward into authorization as well. What this means is 
-        that the <directive module="mod_authz_core">Require</directive> and
-        <directive module="mod_authz_core">Match</directive> directives
-        not only specify which authorization methods should be used, they also 
+        that the <directive module="mod_authz_core">Require</directive> directive
+        not only specifies which authorization methods should be used, it also 
         specifies the order in which they are called. Multiple authorization 
-        methods are called in the same order in which the 
-        <directive module="mod_authz_core">Require</directive>
-        or <directive module="mod_authz_core">Match</directive> directives
+        methods are called in the same order in which the
+        <directive module="mod_authz_core">Require</directive> directives
         appear in the configuration.</p>
 
         <p>With the introduction of authorization container directives
         such as
-        <directive module="mod_authz_core" type="section">MatchAll</directive>
+        <directive module="mod_authz_core" type="section">RequireAll</directive>
         and 
-        <directive module="mod_authz_core" type="section">MatchAny</directive>,
+        <directive module="mod_authz_core" type="section">RequireAny</directive>,
         the configuration also has control over when the
         authorization methods are called and what criteria determines when 
         access is granted.  See
@@ -478,24 +477,10 @@ person in</title>
         <p>By default all
         <directive module="mod_authz_core">Require</directive> 
         directives are handled as though contained within a
-        <directive module="mod_authz_core" type="section">MatchAny</directive>
+        <directive module="mod_authz_core" type="section">RequireAny</directive>
         container directive.  In other words, if 
         any of the specified authorization methods succeed, then authorization 
         is granted.</p>
-
-        <p>In contrast, by default all
-        <directive module="mod_authz_core">Match</directive> directives
-        are handled as though contained within a
-        <directive module="mod_authz_core" type="section">MatchAll</directive>
-        container directive (unless they are explicitly contained within
-        a different authorization container directive).
-        This permits
-        <directive module="mod_authz_core">Match</directive> directives
-        to be usefully mixed with negated
-        <code>Match not</code> directives.  To authorize the request,
-        none of the negated directives can match their parameters,
-        while all of the positive directives must match their
-        parameters (or else return a neutral result).</p>
 
     </section>
 
@@ -514,9 +499,8 @@ person in</title>
         a document.</p> 
 
         <p>The usage of these providers is specified through the 
-        <directive module="mod_authz_core">Require</directive> and 
-        <directive module="mod_authz_core">Match</directive> directives.
-        These directives register the authorization providers
+        <directive module="mod_authz_core">Require</directive> directive.
+        This directive registers the authorization providers
         that will be called during the authorization stage of the request
         processing. For example:</p>
     
@@ -540,7 +524,12 @@ person in</title>
         following:</p>
     
         <example>
-          Match not ip 10.252.46.165
+          &lt;RequireAll&gt;
+          <indent>
+            Require all granted<br/>
+            Require not ip 10.252.46.165
+          </indent>
+          &lt;/RequireAll&gt;
         </example>
     
         <p>Visitors coming from that address will not be able to see
@@ -548,33 +537,38 @@ person in</title>
         machine name, rather than an IP address, you can use that.</p>
     
         <example>
-          Match not host <var>host.example.com</var>
+          &lt;RequireAll&gt;
+          <indent>
+            Require all granted<br/>
+            Require not host <var>host.example.com</var>
+          </indent>
+          &lt;/RequireAll&gt;
         </example>
     
         <p>And, if you'd like to block access from an entire domain,
         you can specify just part of an address or domain name:</p>
     
         <example>
-          Match all granted<br />
-          &lt;MatchNotAny&gt;
+          &lt;RequireAll&gt;
           <indent>
-            Match ip 192.168.205<br />
-            Match host phishers.example.com moreidiots.example<br />
-            Match host ke
+            Require all granted<br/>
+            &lt;RequireNone&gt;
+            <indent>
+              Require ip 192.168.205<br />
+              Require host phishers.example.com moreidiots.example<br />
+              Require host ke
+            </indent>
+            &lt;/RequireNone&gt;
           </indent>
-          &lt;/MatchNotAny&gt;
+          &lt;/RequireAll&gt;
         </example>
     
         <p>The above example uses the <directive module="mod_authz_core"
-        type="section">MatchNotAny</directive> container directive
+        type="section">RequireNone</directive> directive
         to make sure that none of the 
-        <directive module="mod_authz_core">Match</directive> directives
-        match their parameters before granting access.  Note that
-        the <code>Match all granted</code> directive and the
-        <directive module="mod_authz_core"
-        type="section">MatchNotAny</directive> are implicitly contained
-        within a <directive module="mod_authz_core"
-        type="section">MatchAll</directive> directive.</p>
+        <directive module="mod_authz_core">Require</directive> directives
+        contained within it
+        match their parameters before granting access.</p>
     
     </section>
 
