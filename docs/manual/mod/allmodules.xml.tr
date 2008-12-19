@@ -46,6 +46,8 @@
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_headers.xml</modulefile>
+  <modulefile>mod_heartbeat.xml</modulefile>
+  <modulefile>mod_heartmonitor.xml</modulefile>
   <modulefile>mod_ident.xml</modulefile>
   <modulefile>mod_imagemap.xml</modulefile>
   <modulefile>mod_include.xml</modulefile>
@@ -54,6 +56,7 @@
   <modulefile>mod_lbmethod_bybusyness.xml</modulefile>
   <modulefile>mod_lbmethod_byrequests.xml</modulefile>
   <modulefile>mod_lbmethod_bytraffic.xml</modulefile>
+  <modulefile>mod_lbmethod_heartbeat.xml</modulefile>
   <modulefile>mod_ldap.xml</modulefile>
   <modulefile>mod_log_config.xml.tr</modulefile>
   <modulefile>mod_log_forensic.xml.tr</modulefile>

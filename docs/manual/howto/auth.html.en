@@ -399,7 +399,7 @@ person in</a></h2>
     AuthBasicProvider file ldap<br />
     AuthUserFile /usr/local/apache/passwd/passwords<br />
     AuthLDAPURL ldap://ldaphost/o=yourorg<br />
-    Require valid-user
+    Require valid-user<br />
     &lt;/Directory&gt;
     </code></p></div>
 
@@ -425,14 +425,15 @@ person in</a></h2>
     AuthLDAPURL ldap://ldaphost/o=yourorg
     AuthGroupFile /usr/local/apache/passwd/groups<br />
     Require group GroupName<br />
-    Require ldap-group cn=mygroup,o=yourorg
+    Require ldap-group cn=mygroup,o=yourorg<br />
     &lt;/Directory&gt;
     </code></p></div>
 
     <p>To take authorization a little further, authorization container
     directives such as
-    <code class="directive"><a href="../mod/mod_authz_core.html#matchall">&lt;MatchAll&gt;</a></code> and
-    <code class="directive"><a href="../mod/mod_authz_core.html#matchany">&lt;MatchAny&gt;</a></code>
+    <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
+    and
+    <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
     allow logic to be applied so that the order in which authorization
     is handled can be completely controled through the configuration.
     See <a href="../mod/mod_authz_core.html#logic">Authorization
@@ -455,20 +456,18 @@ person in</a></h2>
         configured and called in a specific order which didn't depend on the 
         load order of the auth module itself. This same provider based mechanism 
         has been brought forward into authorization as well. What this means is 
-        that the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> and
-        <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code> directives
-        not only specify which authorization methods should be used, they also 
+        that the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive
+        not only specifies which authorization methods should be used, it also 
         specifies the order in which they are called. Multiple authorization 
-        methods are called in the same order in which the 
-        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
-        or <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code> directives
+        methods are called in the same order in which the
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directives
         appear in the configuration.</p>
 
         <p>With the introduction of authorization container directives
         such as
-        <code class="directive"><a href="../mod/mod_authz_core.html#matchall">&lt;MatchAll&gt;</a></code>
+        <code class="directive"><a href="../mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>
         and 
-        <code class="directive"><a href="../mod/mod_authz_core.html#matchany">&lt;MatchAny&gt;</a></code>,
+        <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>,
         the configuration also has control over when the
         authorization methods are called and what criteria determines when 
         access is granted.  See
@@ -479,24 +478,10 @@ person in</a></h2>
         <p>By default all
         <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
         directives are handled as though contained within a
-        <code class="directive"><a href="../mod/mod_authz_core.html#matchany">&lt;MatchAny&gt;</a></code>
+        <code class="directive"><a href="../mod/mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></code>
         container directive.  In other words, if 
         any of the specified authorization methods succeed, then authorization 
         is granted.</p>
-
-        <p>In contrast, by default all
-        <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code> directives
-        are handled as though contained within a
-        <code class="directive"><a href="../mod/mod_authz_core.html#matchall">&lt;MatchAll&gt;</a></code>
-        container directive (unless they are explicitly contained within
-        a different authorization container directive).
-        This permits
-        <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code> directives
-        to be usefully mixed with negated
-        <code>Match not</code> directives.  To authorize the request,
-        none of the negated directives can match their parameters,
-        while all of the positive directives must match their
-        parameters (or else return a neutral result).</p>
 
     
 
@@ -515,9 +500,8 @@ person in</a></h2>
         a document.</p> 
 
         <p>The usage of these providers is specified through the 
-        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> and 
-        <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code> directives.
-        These directives register the authorization providers
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.
+        This directive registers the authorization providers
         that will be called during the authorization stage of the request
         processing. For example:</p>
     
@@ -541,7 +525,12 @@ person in</a></h2>
         following:</p>
     
         <div class="example"><p><code>
-          Match not ip 10.252.46.165
+          &lt;RequireAll&gt;
+          <span class="indent">
+            Require all granted<br />
+            Require not ip 10.252.46.165
+          </span>
+          &lt;/RequireAll&gt;
         </code></p></div>
     
         <p>Visitors coming from that address will not be able to see
@@ -549,30 +538,37 @@ person in</a></h2>
         machine name, rather than an IP address, you can use that.</p>
     
         <div class="example"><p><code>
-          Match not host <var>host.example.com</var>
+          &lt;RequireAll&gt;
+          <span class="indent">
+            Require all granted<br />
+            Require not host <var>host.example.com</var>
+          </span>
+          &lt;/RequireAll&gt;
         </code></p></div>
     
         <p>And, if you'd like to block access from an entire domain,
         you can specify just part of an address or domain name:</p>
     
         <div class="example"><p><code>
-          Match all granted<br />
-          &lt;MatchNotAny&gt;
+          &lt;RequireAll&gt;
           <span class="indent">
-            Match ip 192.168.205<br />
-            Match host phishers.example.com moreidiots.example<br />
-            Match host ke
+            Require all granted<br />
+            &lt;RequireNone&gt;
+            <span class="indent">
+              Require ip 192.168.205<br />
+              Require host phishers.example.com moreidiots.example<br />
+              Require host ke
+            </span>
+            &lt;/RequireNone&gt;
           </span>
-          &lt;/MatchNotAny&gt;
+          &lt;/RequireAll&gt;
         </code></p></div>
     
-        <p>The above example uses the <code class="directive"><a href="../mod/mod_authz_core.html#matchnotany">&lt;MatchNotAny&gt;</a></code> container directive
+        <p>The above example uses the <code class="directive"><a href="../mod/mod_authz_core.html#requirenone">&lt;RequireNone&gt;</a></code> directive
         to make sure that none of the 
-        <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code> directives
-        match their parameters before granting access.  Note that
-        the <code>Match all granted</code> directive and the
-        <code class="directive"><a href="../mod/mod_authz_core.html#matchnotany">&lt;MatchNotAny&gt;</a></code> are implicitly contained
-        within a <code class="directive"><a href="../mod/mod_authz_core.html#matchall">&lt;MatchAll&gt;</a></code> directive.</p>
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directives
+        contained within it
+        match their parameters before granting access.</p>
     
     
 
