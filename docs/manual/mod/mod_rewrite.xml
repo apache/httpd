@@ -1277,6 +1277,33 @@ cannot use <code>$N</code> in the substitution string!
         <code>HttpOnly</code> flag is used, making the cookie inaccessible
         to JavaScript code on browsers that support this feature.</dd>
 
+        <dt>'<code>discardpathinfo|DPI'
+        (discard PATH_INFO)</code></dt><dd>
+        <p>In per-directory context, the URI each <directive>RewriteRule</directive>
+        compares against is the concatenation of the current values of the URI 
+        and PATH_INFO.</p>  
+
+        <p>The current URI can be the initial URI as requested by the client, the
+        result of a previous round of mod_rewrite processing, or the resulf of
+        a prior rule in the current round of mod_rewrite processing.</p>
+
+        <p>In contrast, the PATH_INFO that is appended to the URI before each 
+        rule reflects only the value of PATH_INFO before this round of 
+        mod_rewrite processing. As a consequence, if large portions
+        of the URI are matched and copied into a substitution in multiple
+        <directive>RewriteRule</directive> directives, without regard for
+        which parts of the URI came from the current PATH_INFO, the final 
+        URI may have multiple copies of PATH_INFO appended to it.</p>
+
+        <p>Use this flag on any substitution where the PATH_INFO that resulted
+        from the previous mapping of this request to the filesystem is not of 
+        interest.  This flag permanently forgets the PATH_INFO established 
+        before this round of mod_rewrite processing began. PATH_INFO will 
+        not be recalculated until the current round of mod_rewrite processing
+        completes.  Subsequent rules during this round of processing will see 
+        only the direct result of substitutions, without any PATH_INFO 
+        appended.</p></dd>
+
         <dt>
         '<code>env|E=</code><em>VAR</em>:<em>VAL</em>'
         (set environment variable)</dt><dd>
