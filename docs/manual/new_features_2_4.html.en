@@ -75,9 +75,9 @@
       <dt>Authorization Logic Containers</dt>
 
       <dd>Advanced authorization logic may now be specified using the
-          <code class="directive"><a href="./mod/mod_authz_core.html#match">Match</a></code> directive
+          <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code> directive
           and the related container directives, such as
-          <code class="directive"><a href="./mod/mod_authz_core.html#matchall">&lt;MatchAll&gt;</a></code>, all
+          <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>, all
           provided by the <code class="module"><a href="./mod/mod_authz_core.html">mod_authz_core</a></code> module.</dd>
     </dl>
   </div></div>

@@ -180,7 +180,7 @@ for HTTP Basic authentication.</td></tr>
       access.</li>
 
       <li>Fetch the distinguished name of the entry retrieved from
-      the search and attempt to bind to the LDAP server using the
+      the search and attempt to bind to the LDAP server using that
       DN and the password passed by the HTTP client. If the bind is
       unsuccessful, deny or decline access.</li>
     </ol>

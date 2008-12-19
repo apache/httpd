@@ -1970,8 +1970,8 @@ URLs</td></tr>
     </div>
 
     <p>For all origin (non-proxy) requests, the URL to be matched is a
-    URL-path of the form <code>/path/</code>.  No scheme, hostname,
-    port, or query string may be included.  For proxy requests, the
+    URL-path of the form <code>/path/</code>.  <em>No scheme, hostname,
+    port, or query string may be included.</em>  For proxy requests, the
     URL to be matched is of the form
     <code>scheme://servername/path</code>, and you must include the
     prefix.</p>
