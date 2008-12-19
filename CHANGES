@@ -2,6 +2,11 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
+    way that per-directory rewrites append the previous notion of PATH_INFO
+    to each substitution before evaluating subsequent rules. 
+    PR38642 [Eric Covener]
+
   *) mod_cgid: Do not add an empty argument when calling the CGI script.
      PR 46380 [Ruediger Pluem]
 

@@ -152,6 +152,7 @@ static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
 #define RULEFLAG_NOSUB              1<<12
 #define RULEFLAG_STATUS             1<<13
 #define RULEFLAG_ESCAPEBACKREF      1<<14
+#define RULEFLAG_DISCARDPATHINFO    1<<15
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -3379,7 +3380,12 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             ++error;
         }
         break;
-
+    case 'd':
+    case 'D':
+        if (!*key || !strcasecmp(key, "PI") || !strcasecmp(key,"iscardpath")) {       
+            cfg->flags |= (RULEFLAG_DISCARDPATHINFO);
+        } 
+        break;
     case 'e':
     case 'E':
         if (!*key || !strcasecmp(key, "nv")) {             /* env */
@@ -3435,7 +3441,6 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             ++error;
         }
         break;
-
     case 'l':
     case 'L':
         if (!*key || !strcasecmp(key, "ast")) {            /* last */
@@ -3987,6 +3992,11 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 
     /* Now adjust API's knowledge about r->filename and r->args */
     r->filename = newuri;
+
+    if (ctx->perdir && (p->flags & RULEFLAG_DISCARDPATHINFO)) {
+        r->path_info = "\0"; 
+    }
+
     splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
 
     /* Add the previously stripped per-directory location prefix, unless
