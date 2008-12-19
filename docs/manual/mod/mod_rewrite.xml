@@ -1284,7 +1284,7 @@ cannot use <code>$N</code> in the substitution string!
         and PATH_INFO.</p>  
 
         <p>The current URI can be the initial URI as requested by the client, the
-        result of a previous round of mod_rewrite processing, or the resulf of
+        result of a previous round of mod_rewrite processing, or the result of
         a prior rule in the current round of mod_rewrite processing.</p>
 
         <p>In contrast, the PATH_INFO that is appended to the URI before each 
