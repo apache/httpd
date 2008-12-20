@@ -3994,7 +3994,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
     r->filename = newuri;
 
     if (ctx->perdir && (p->flags & RULEFLAG_DISCARDPATHINFO)) {
-        r->path_info = "\0"; 
+        r->path_info = NULL; 
     }
 
     splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
