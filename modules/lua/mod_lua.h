@@ -57,7 +57,7 @@
 #define lua_unboxpointer(L,i)	(*(void **)(lua_touserdata(L, i)))
 #endif
 
-void rstack_dump(lua_State *L, request_rec *r, const char *msg);
+void apl_rstack_dump(lua_State *L, request_rec *r, const char *msg);
 
 typedef struct
 {

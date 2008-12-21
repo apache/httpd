@@ -22,7 +22,7 @@
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
 
-void rstack_dump(lua_State *L, request_rec *r, const char *msg)
+void apl_rstack_dump(lua_State *L, request_rec *r, const char *msg)
 {
     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, "Lua Stack Dump: [%s]", msg);
 
@@ -427,9 +427,9 @@ static int req_newindex(lua_State *L)
     /* request_rec* r = lua_touserdata(L, lua_upvalueindex(1)); */
     /* const char* key = luaL_checkstring(L, -2); */
     request_rec *r = apl_check_request_rec(L, 1);
-    rstack_dump(L, r, "req_newindex");
+    apl_rstack_dump(L, r, "req_newindex");
     const char *key = luaL_checkstring(L, 2);
-    rstack_dump(L, r, "req_newindex");
+    apl_rstack_dump(L, r, "req_newindex");
     if (0 == apr_strnatcmp("status", key)) {
         int code = luaL_checkinteger(L, 3);
         r->status = code;
