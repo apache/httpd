@@ -16,12 +16,12 @@
  */
 
 #include "mod_lua.h"
-#include "config.h"
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
 
 #include "lua_apr.h"
+#include "lua_config.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(apl, AP_LUA, int, lua_open,
                                     (lua_State *L, apr_pool_t *p),
