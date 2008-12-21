@@ -893,6 +893,7 @@ AP_DECLARE(void) ap_mpm_register_timed_callback(apr_time_t t,
                                                 ap_mpm_callback_fn_t *cbfn,
                                                 void *baton)
 {
+    int inserted = 0;
     timer_event_t *ep;
     timer_event_t *te;
     /* oh yeah, and make locking smarter/fine grained. */
@@ -914,7 +915,6 @@ AP_DECLARE(void) ap_mpm_register_timed_callback(apr_time_t t,
     te->when = t + apr_time_now();
 
     /* Okay, insert sorted by when.. */
-    int inserted = 0;
     for (ep = APR_RING_FIRST(&timer_ring);
          ep != APR_RING_SENTINEL(&timer_ring,
                                  timer_event_t, link);
