@@ -83,7 +83,7 @@ is, the entire website.</p>
 
 <div class="example"><p><code>
 RewriteEngine On<br />
-RewriteRule ^/index.html - [CO=frontdoor:yes:.apache.org:1440:/]
+RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
 </code></p></div>
 
 <p>This rule doesn't rewrite the request (the "-" rewrite target tells
@@ -161,6 +161,22 @@ The regular expression above - <code>!\.</code> - will match any request
 that does not contain the literal <code>.</code> character.
 </p>
 
+<p>This can be also used to force the handler based on some conditions.
+For example, the following snippet used in per-server context allows
+<code>.php</code> files to be <em>displayed</em> by <code>mod_php</code>
+if they are requested with the <code>.phps</code> extension:
+
+<div class="example"><p><code>
+RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
+</code></p></div>
+</p>
+
+<p>The regular expression above - <code>^(/source/.+\.php)s$</code> - will
+match any request that starts with <code>/source/</code> followed by 1 or
+n characters followed by <code>.phps</code> literally. The backreference
+$1 referrers to the captured match within parenthesis of the regular
+expression.</p>
+
 
 <h3><a name="flag_l" id="flag_l">L|last</a></h3>
 <p>The [L] flag causes <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to stop processing
@@ -192,7 +208,7 @@ argument to <code>index.php</code>, however, the <code class="directive"><a href
 is already for <code>index.php</code>, the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> will be skipped.</p>
 
 <div class="example"><p><code>
-RewriteCond %{REQUEST_URI} !index\.php<br />
+RewriteCond %{REQUEST_URI} !=index.php<br />
 RewriteRule ^(.*) index.php?req=$1 [L]
 </code></p></div>
 
