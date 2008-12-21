@@ -84,7 +84,11 @@ URLs on the fly</description>
       initially requested</em>, that is, <em>before</em> any
       rewriting. This is important to note because the rewriting process is
       primarily used to rewrite logical URLs to physical
-      pathnames.</p>
+      pathnames.<br />
+      These variables are set in per-server context, which means
+      that they are available in per-directory context only, if
+      <directive>RewriteEngine</directive> is set to <code>on</code> in
+      per-server context.</p>
 
 <example><title>Example</title>
 <pre>
@@ -178,7 +182,15 @@ later</compatibility>
       this means that the maps, conditions and rules of the main
       server are inherited. In per-directory context this means
       that conditions and rules of the parent directory's
-      <code>.htaccess</code> configuration are inherited.</dd>
+      <code>.htaccess</code> configuration or
+      <directive type="section" module="core">Directory</directive>
+      sections are inherited. The inherited rules are virtually copied
+      to the section where this directive is being used. If used in
+      combination with local rules, the inherited rules are copied behind
+      the local rules. The position of this directive - below or above
+      of local rules - has no influence on this behavior. If local
+      rules forced the rewriting to stop, the inherited rules won't
+      be processed.</dd>
       </dl>
 </usage>
 
@@ -473,13 +485,14 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
           looked-up value as a newline-terminated string on
           <code>stdout</code> or the four-character string
           ``<code>NULL</code>'' if it fails (<em>i.e.</em>, there
-          is no corresponding value for the given key). A trivial
-          program which will implement a 1:1 map (<em>i.e.</em>,
-          key == value) could be:</p>
+          is no corresponding value for the given key).</p>
 
           <p>External rewriting programs are not started if they're defined in a
           context that does not have <directive>RewriteEngine</directive> set to
           <code>on</code></p>.
+          
+          <p>A trivial program which will implement a 1:1 map (<em>i.e.</em>,
+          key == value) could be:</p>
 
 <example>
 <pre>
@@ -673,7 +686,7 @@ Result:
           (0 &lt;= N &lt;= 9), which provide access to the grouped
           parts (in parentheses) of the pattern, from the
           <code>RewriteRule</code> which is subject to the current 
-          set of <code>RewriteCond</code> conditions..
+          set of <code>RewriteCond</code> conditions.
         </li>
         <li>
           <strong>RewriteCond backreferences</strong>: These are
@@ -831,14 +844,26 @@ Result:
       <p>Other things you should be aware of:</p>
 
       <ol>
-        <li>The variables SCRIPT_FILENAME and REQUEST_FILENAME
+        <li>
+        <p>The variables SCRIPT_FILENAME and REQUEST_FILENAME
         contain the same value - the value of the
         <code>filename</code> field of the internal
         <code>request_rec</code> structure of the Apache server.
         The first name is the commonly known CGI variable name
         while the second is the appropriate counterpart of
         REQUEST_URI (which contains the value of the
-        <code>uri</code> field of <code>request_rec</code>).</li>
+        <code>uri</code> field of <code>request_rec</code>).</p>
+        <p>If a substitution occurred and the rewriting continues,
+        the value of both variables will be updated accordingly.</p>
+        <p>If used in per-server context (<em>i.e.</em>, before the
+        request is mapped to the filesystem) SCRIPT_FILENAME and
+        REQUEST_FILENAME cannot contain the full local filesystem
+        path since the path is unknown at this stage of processing.
+        Both variables will initially contain the value of REQUEST_URI
+        in that case. In order to obtain the full local filesystem
+        path of the request in per-server context, use an URL-based
+        look-ahead <code>%{LA-U:REQUEST_FILENAME}</code> to determine
+        the final value of REQUEST_FILENAME.</p></li>
 
         <li>
         <code>%{ENV:variable}</code>, where <em>variable</em> can be
@@ -1095,7 +1120,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>. On the first RewriteRule it is applied to the
+      expression</a>. On the first RewriteRule it is applied to the (%-encoded)
       <a href="./directive-dict.html#Syntax">URL-path</a> of the request;
       subsequent patterns are applied to the output of the last matched
       RewriteRule.</p>
@@ -1239,13 +1264,15 @@ cannot use <code>$N</code> in the substitution string!
         <dd><p>Apache has to unescape URLs before mapping them,
         so backreferences will be unescaped at the time they are applied.
         Using the B flag, non-alphanumeric characters in backreferences
-        will be escaped.  For example, consider the rule:</p>
-        <pre><code> RewriteRule ^(.*)$ index.php?show=$1 </code></pre>
-        <p>This will map <code>/C++</code> to <code>index.php?show=/C++</code>.
+        will be escaped. For example, consider the rule:
+        <example>
+        RewriteRule ^(/.*)$ /index.php?show=$1
+        </example>
+        This will map <code>/C++</code> to <code>/index.php?show=/C++</code>.
         But it will also map <code>/C%2b%2b</code> to
-        <code>index.php?show=/C++</code>, because the <code>%2b</code>
+        <code>/index.php?show=/C++</code>, because the <code>%2b</code>
         has been unescaped.  With the B flag, it will instead map to
-        <code>index.php?show=/C%2b%2b</code>.</p>
+        <code>/index.php?show=/C%2b%2b</code>.</p>
         <p>This escaping is particularly necessary in a proxy situation,
         when the backend may break if presented with an unescaped URL.</p>
         </dd>
@@ -1342,7 +1369,11 @@ cannot use <code>$N</code> in the substitution string!
         <directive module="mod_alias">ScriptAlias</directive>, 
         which internally forces all files
         inside the mapped directory to have a handler of
-        ``<code>cgi-script</code>''.</dd>
+        ``<code>cgi-script</code>''.<br />
+        If used in per-directory context, there must not be a substitution
+        which changes the path. Use this flag in per-directory context only
+        with <code>-</code> (dash) as the substitution, otherwise the request
+        will fail.</dd>
 
         <dt>'<code>last|L</code>'
         (last rule)</dt><dd> Stop the rewriting process
@@ -1388,7 +1419,7 @@ cannot use <code>$N</code> in the substitution string!
           from happening. This allows percent symbols to appear in
           the output, as in 
 <example>
-    RewriteRule /foo/(.*) /bar?arg=P1\%3d$1 [R,NE]
+    RewriteRule ^/foo/(.*) /bar?arg=P1\%3d$1 [R,NE]
 </example>
           which would turn '<code>/foo/zed</code>' into a safe
           request for '<code>/bar?arg=P1=zed</code>'. 
@@ -1401,7 +1432,7 @@ cannot use <code>$N</code> in the substitution string!
           <p>This flag forces the rewriting engine to skip a
           rewriting rule if the current request is an internal
           sub-request. For instance, sub-requests occur internally
-          in Apache when <module>mod_include</module> tries to find out
+          in Apache when <module>mod_dir</module> tries to find out
           information about possible directory default files
           (<code>index.xxx</code> files). On sub-requests it is not
           always useful, and can even cause errors, if
@@ -1529,13 +1560,9 @@ cannot use <code>$N</code> in the substitution string!
          Force the <glossary>MIME-type</glossary> of the target file to be
         <em>MIME-type</em>. This can be used to
         set up the content-type based on some conditions.
-        For example, the following snippet allows <code>.php</code> files to
-        be <em>displayed</em> by <code>mod_php</code> if they are called with
-        the <code>.phps</code> extension:
-        <example>
-            RewriteRule ^(.+\.php)s$ $1 [T=application/x-httpd-php-source]
-        </example>
-        </dd>
+        If used in per-directory context, use only <code>-</code> (dash)
+        as the substitution, otherwise the MIME-type set with this flag
+        is lost due to an internal re-processing.</dd>
       </dl>
 
 
@@ -1583,7 +1610,8 @@ virtual host context, rather than in a <directive type="section"
 module="core">Directory</directive> section.</p>
 
 <p>Although rewrite rules are syntactically permitted in <directive
-type="section" module="core">Location</directive> sections, this
+type="section" module="core">Location</directive> and <directive
+type="section" module="core">Files</directive> sections, this
 should never be necessary and is unsupported.</p>
 
 </note>
