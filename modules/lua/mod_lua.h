@@ -44,8 +44,8 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include "request.h"
-#include "vmprep.h"
+#include "lua_request.h"
+#include "lua_vmprep.h"
 
 
 /**

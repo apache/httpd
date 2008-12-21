@@ -4,7 +4,7 @@
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
-#include "apr_lua.h"
+#include "lua_apr.h"
 
 /**
  * make a userdata out of a C pointer, and vice versa

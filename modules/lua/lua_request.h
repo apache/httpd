@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef REQUEST_H
-#define REQUEST_H
+#ifndef _LUA_REQUEST_H_
+#define _LUA_REQUEST_H_
 
 APR_DECLARE(void) apl_push_request(lua_State* L, request_rec* r);
 APR_DECLARE(void) apl_load_request_lmodule(lua_State *L, apr_pool_t *p);
@@ -33,5 +33,5 @@ typedef struct {
 } req_fun_t;
 
 
-#endif
+#endif /* !_LUA_REQUEST_H_ */
 

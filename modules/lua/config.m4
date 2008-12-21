@@ -92,7 +92,7 @@ else
 fi 
 ])
 
-lua_objects="apr_lua.lo config.lo mod_lua.lo request.lo vmprep.lo"
+lua_objects="lua_apr.lo lua_config.lo mod_lua.lo lua_request.lo lua_vmprep.lo"
 
 APACHE_MODULE(lua, Apache Lua Framework, $lua_objects, , no,
 [

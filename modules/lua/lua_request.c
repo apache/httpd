@@ -17,7 +17,7 @@
 
 #include "mod_lua.h"
 #include "util_script.h"
-#include "apr_lua.h"
+#include "lua_apr.h"
 
 typedef char* (*req_field_string_f) (request_rec* r);
 typedef int (*req_field_int_f) (request_rec* r);
