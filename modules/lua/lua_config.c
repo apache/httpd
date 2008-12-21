@@ -54,13 +54,14 @@ apr_status_t apl_lua_map_handler(apl_dir_cfg *cfg,
                                  const char *function,
                                  const char *pattern, const char *scope)
 {
+    ap_regex_t *uri_pattern;
     apr_status_t rv;
     apl_mapped_handler_spec *handler =
         apr_palloc(cfg->pool, sizeof(apl_mapped_handler_spec));
     handler->uri_pattern = NULL;
     handler->function_name = NULL;
 
-    ap_regex_t *uri_pattern = apr_palloc(cfg->pool, sizeof(ap_regex_t));
+    uri_pattern = apr_palloc(cfg->pool, sizeof(ap_regex_t));
     if ((rv = ap_regcomp(uri_pattern, pattern, 0)) != APR_SUCCESS) {
         return rv;
     }
@@ -162,13 +163,14 @@ static int cmd_foo(lua_State *L)
 /* helper function for the logging functions below */
 static int cmd_log_at(lua_State *L, int level)
 {
+    const char *msg;
     cmd_parms *cmd = check_cmd_parms(L, 1);
     lua_Debug dbg;
 
     lua_getstack(L, 1, &dbg);
     lua_getinfo(L, "Sl", &dbg);
 
-    const char *msg = luaL_checkstring(L, 2);
+    msg = luaL_checkstring(L, 2);
     ap_log_error(dbg.source, dbg.currentline, level, 0, cmd->server, msg);
     return 0;
 }

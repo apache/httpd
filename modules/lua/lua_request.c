@@ -24,10 +24,11 @@ typedef int (*req_field_int_f) (request_rec * r);
 
 void apl_rstack_dump(lua_State *L, request_rec *r, const char *msg)
 {
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, "Lua Stack Dump: [%s]", msg);
-
     int i;
     int top = lua_gettop(L);
+
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, "Lua Stack Dump: [%s]", msg);
+
     for (i = 1; i <= top; i++) {
         int t = lua_type(L, i);
         switch (t) {
@@ -188,10 +189,10 @@ static int req_write(lua_State *L)
 /* r:parsebody() */
 static int req_parsebody(lua_State *L)
 {
+    apr_table_t *form_table;
     request_rec *r = apl_check_request_rec(L, 1);
     lua_newtable(L);
     lua_newtable(L);
-    apr_table_t *form_table;
     if (ap_body_to_table(r, &form_table) == APR_SUCCESS) {
         apr_table_do(req_aprtable2luatable_cb, L, form_table, NULL);
     }
@@ -308,15 +309,17 @@ static int req_assbackwards_field(request_rec *r)
 
 static int req_dispatch(lua_State *L)
 {
+    apr_hash_t *dispatch;
+    req_fun_t *rft;
     request_rec *r = apl_check_request_rec(L, 1);
     const char *name = luaL_checkstring(L, 2);
     lua_pop(L, 2);
 
     lua_getfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
-    apr_hash_t *dispatch = lua_touserdata(L, 1);
+    dispatch = lua_touserdata(L, 1);
     lua_pop(L, 1);
 
-    req_fun_t *rft = apr_hash_get(dispatch, name, APR_HASH_KEY_STRING);
+    rft = apr_hash_get(dispatch, name, APR_HASH_KEY_STRING);
     if (rft) {
         switch (rft->type) {
         case APL_REQ_FUNTYPE_TABLE:{
@@ -327,34 +330,37 @@ static int req_dispatch(lua_State *L)
             }
 
         case APL_REQ_FUNTYPE_LUACFUN:{
+                lua_CFunction func = rft->fun;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> lua_CFunction",
                               name);
-                lua_CFunction func = rft->fun;
                 lua_pushcfunction(L, func);
                 return 1;
             }
         case APL_REQ_FUNTYPE_STRING:{
+                req_field_string_f func = rft->fun;
+                char *rs;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> string", name);
-                req_field_string_f func = rft->fun;
-                char *rs = (*func) (r);
+                rs = (*func) (r);
                 lua_pushstring(L, rs);
                 return 1;
             }
         case APL_REQ_FUNTYPE_INT:{
+                req_field_int_f func = rft->fun;
+                int rs;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> int", name);
-                req_field_int_f func = rft->fun;
-                int rs = (*func) (r);
+                rs = (*func) (r);
                 lua_pushnumber(L, rs);
                 return 1;
             }
         case APL_REQ_FUNTYPE_BOOLEAN:{
+                req_field_int_f func = rft->fun;
+                int rs;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> boolean", name);
-                req_field_int_f func = rft->fun;
-                int rs = (*func) (r);
+                rs = (*func) (r);
                 lua_pushboolean(L, rs);
                 return 1;
             }
@@ -368,13 +374,14 @@ static int req_dispatch(lua_State *L)
 /* helper function for the logging functions below */
 static int req_log_at(lua_State *L, int level)
 {
+    const char *msg;
     request_rec *r = apl_check_request_rec(L, 1);
     lua_Debug dbg;
 
     lua_getstack(L, 1, &dbg);
     lua_getinfo(L, "Sl", &dbg);
 
-    const char *msg = luaL_checkstring(L, 2);
+    msg = luaL_checkstring(L, 2);
     ap_log_rerror(dbg.source, dbg.currentline, level, 0, r, msg);
     return 0;
 }
@@ -424,11 +431,12 @@ static int req_debug(lua_State *L)
 /* handle r.status = 201 */
 static int req_newindex(lua_State *L)
 {
+    const char *key;
     /* request_rec* r = lua_touserdata(L, lua_upvalueindex(1)); */
     /* const char* key = luaL_checkstring(L, -2); */
     request_rec *r = apl_check_request_rec(L, 1);
     apl_rstack_dump(L, r, "req_newindex");
-    const char *key = luaL_checkstring(L, 2);
+    key = luaL_checkstring(L, 2);
     apl_rstack_dump(L, r, "req_newindex");
     if (0 == apr_strnatcmp("status", key)) {
         int code = luaL_checkinteger(L, 3);

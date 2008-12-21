@@ -99,13 +99,14 @@ static apr_status_t luahood(ap_filter_t *f, apr_bucket_brigade *bb) {
  */
 static int lua_handler(request_rec *r)
 {
+    apl_dir_cfg *dcfg;
     if (strcmp(r->handler, "lua-script")) {
         return DECLINED;
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "handling [%s] in mod_lua",
                   r->filename);
-    apl_dir_cfg *dcfg = ap_get_module_config(r->per_dir_config, &lua_module);
+    dcfg = ap_get_module_config(r->per_dir_config, &lua_module);
 
     if (!r->header_only) {
         lua_State *L;
@@ -173,6 +174,7 @@ static int apl_alias_munger(request_rec *r)
         if (OK ==
             ap_regexec(cnd->uri_pattern, r->uri, AP_MAX_REG_MATCH, matches,
                        0)) {
+            mapped_request_details *d;
             r->handler = "lua-script";
 
             spec = apr_pcalloc(r->pool, sizeof(apl_vm_spec));
@@ -187,8 +189,7 @@ static int apl_alias_munger(request_rec *r)
                 spec->pool = r->pool;
             }
 
-            mapped_request_details *d =
-                apr_palloc(r->pool, sizeof(mapped_request_details));
+            d = apr_palloc(r->pool, sizeof(mapped_request_details));
 
             d->function_name =
                 ap_pregsub(r->pool, cnd->function_name, r->uri,
@@ -210,6 +211,7 @@ static int apl_alias_munger(request_rec *r)
 
 static int lua_request_rec_hook_harness(request_rec *r, const char *name)
 {
+    int rc;
     lua_State *L;
     apl_vm_spec *spec;
     apl_server_cfg *server_cfg = ap_get_module_config(r->server->module_config,
@@ -268,9 +270,10 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
                 apl_run_lua_request(L, r);
             }
             else {
+                int t;
                 apl_run_lua_request(L, r);
 
-                int t = lua_gettop(L);
+                t = lua_gettop(L);
                 lua_setglobal(L, "r");
                 lua_settop(L, t);
             }
@@ -279,12 +282,12 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
                 report_lua_error(L, r);
                 return 500;
             }
-            apr_status_t rv = DECLINED;
+            rc = DECLINED;
             if (lua_isnumber(L, -1)) {
-                rv = lua_tointeger(L, -1);
+                rc = lua_tointeger(L, -1);
             }
-            if (rv != DECLINED) {
-                return rv;
+            if (rc != DECLINED) {
+                return rc;
             }
         }
     }
@@ -425,6 +428,7 @@ static const char *register_named_block_function_hook(const char *name,
                                                       const char *line)
 {
     const char *function;
+    apl_mapped_handler_spec *spec;
 
     if (line && line[0] == '>') {
         function = NULL;
@@ -443,8 +447,7 @@ static const char *register_named_block_function_hook(const char *name,
         }
     }
 
-    apl_mapped_handler_spec *spec =
-        apr_pcalloc(cmd->pool, sizeof(apl_mapped_handler_spec));
+    spec = apr_pcalloc(cmd->pool, sizeof(apl_mapped_handler_spec));
 
     {
         cr_ctx ctx;
@@ -453,6 +456,7 @@ static const char *register_named_block_function_hook(const char *name,
         char *tmp;
         int rv;
         ap_directive_t **current;
+        hack_section_baton *baton;
 
         apr_snprintf(buf, sizeof(buf), "%u", cmd->config_file->line_number);
         spec->file_name =
@@ -505,8 +509,7 @@ static const char *register_named_block_function_hook(const char *name,
             *current = apr_pcalloc(cmd->pool, sizeof(**current));
         }
 
-        hack_section_baton *baton =
-            apr_pcalloc(cmd->pool, sizeof(hack_section_baton));
+        baton = apr_pcalloc(cmd->pool, sizeof(hack_section_baton));
         baton->name = name;
         baton->spec = spec;
 
