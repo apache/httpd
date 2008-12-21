@@ -127,7 +127,7 @@ static int lua_handler(request_rec *r)
         const apl_dir_cfg *cfg =
             ap_get_module_config(r->per_dir_config, &lua_module);
         lua_State *L = apl_get_lua_state(r->pool,
-                                         d->spec->file,
+                                         d->spec,
                                          cfg->package_paths,
                                          cfg->package_cpaths,
                                          &lua_open_callback, NULL);
@@ -206,8 +206,8 @@ static int apl_alias_munger(request_rec *r)
 
 static int lua_request_rec_hook_harness(request_rec *r, const char *name)
 {
-    char *fixed_filename;
-
+    apl_server_cfg *server_cfg = ap_get_module_config(r->server->module_config,
+                                                      &lua_module);
     const apl_dir_cfg *cfg =
         (apl_dir_cfg *) ap_get_module_config(r->per_dir_config,
                                              &lua_module);
@@ -216,10 +216,13 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
     if (hook_specs) {
         int i;
         for (i = 0; i < hook_specs->nelts; i++) {
+            char *fixed_filename = NULL;
             apl_mapped_handler_spec *hook_spec =
                 ((apl_mapped_handler_spec **) hook_specs->elts)[i];
-            if (hook_spec == NULL)
+            
+            if (hook_spec == NULL) {
                 continue;
+            }
             apl_vm_spec *spec = apr_pcalloc(r->pool, sizeof(apl_vm_spec));
 
             spec->file = hook_spec->file_name;
@@ -229,20 +232,10 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
             spec->bytecode_len = hook_spec->bytecode_len;
             spec->pool = r->pool;
 
-            /*
-               const apl_dir_cfg* cfg = ap_get_module_config(r->per_dir_config, &lua_module);
-               lua_State *L =  apl_get_lua_state(r->pool,
-               d->spec->file,
-               cfg->package_paths,
-               cfg->package_cpaths,
-               &lua_open_callback, NULL);
-             */
-            apl_server_cfg *server_cfg =
-                ap_get_module_config(r->server->module_config, &lua_module);
-            apr_filepath_merge(&fixed_filename, server_cfg->root_path,
+            apr_filepath_merge(&spec->file, server_cfg->root_path,
                                spec->file, APR_FILEPATH_NOTRELATIVE, r->pool);
             lua_State *L = apl_get_lua_state(r->pool,
-                                             fixed_filename,
+                                             spec,
                                              cfg->package_paths,
                                              cfg->package_cpaths,
                                              &lua_open_callback, NULL);

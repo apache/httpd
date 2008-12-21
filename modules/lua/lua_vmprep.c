@@ -258,7 +258,7 @@ static void munge_path(lua_State *L,
 }
 
 lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
-                             char *file,
+                             apl_vm_spec *spec,
                              apr_array_header_t *package_paths,
                              apr_array_header_t *package_cpaths,
                              apl_lua_state_open_callback cb, void *btn)
@@ -267,29 +267,37 @@ lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
     lua_State *L;
     ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, lifecycle_pool,
                   "obtaining lua_State");
-    if (!apr_pool_userdata_get((void **) &L, file, lifecycle_pool)) {
+    if (!apr_pool_userdata_get((void **) &L, spec->file, lifecycle_pool)) {
         ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, lifecycle_pool,
-                      "creating lua_State with file %s", file);
+                      "creating lua_State with file %s", spec->file);
         /* not available, so create */
         L = luaL_newstate();
         luaL_openlibs(L);
         if (package_paths)
             munge_path(L, "path", "?.lua", "./?.lua", lifecycle_pool,
-                       package_paths, file);
+                       package_paths, spec->file);
         if (package_cpaths)
             munge_path(L, "cpath", "?.so", "./?.so", lifecycle_pool,
-                       package_cpaths, file);
+                       package_cpaths, spec->file);
 
         if (cb) {
             cb(L, lifecycle_pool, btn);
         }
 
-        luaL_loadfile(L, file);
-        lua_pcall(L, 0, LUA_MULTRET, 0);
-        apr_pool_userdata_set(L, file, &cleanup_lua, lifecycle_pool);
+        apr_pool_userdata_set(L, spec->file, &cleanup_lua, lifecycle_pool);
+
+        if (spec->bytecode && spec->bytecode_len > 0) {
+            luaL_loadbuffer(L, spec->bytecode, spec->bytecode_len, spec->file);
+            lua_pcall(L, 0, LUA_MULTRET, 0);
+        }
+        else {
+            luaL_loadfile(L, spec->file);
+            lua_pcall(L, 0, LUA_MULTRET, 0);
+        }
 
         lua_pushlightuserdata(L, lifecycle_pool);
         lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Wombat.pool");
     }
+
     return L;
 }
