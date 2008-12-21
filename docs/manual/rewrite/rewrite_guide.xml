@@ -298,12 +298,12 @@ RewriteEngine on
 
 #   first try to find it in dir1/...
 #   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_FILENAME}  -f
+RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f
 RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]
 
 #   second try to find it in dir2/...
 #   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_FILENAME}  -f
+RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f
 RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
 
 #   else go on for other Alias or ScriptAlias directives,
@@ -517,6 +517,8 @@ RewriteBase   /~quux/
 #   parse out basename, but remember the fact
 RewriteRule   ^(.*)\.html$              $1      [C,E=WasHTML:yes]
 #   rewrite to document.phtml if exists
+#   Note: This is a per-directory example, so %{REQUEST_FILENAME} is the full 
+#         filesystem path as already mapped by the server.
 RewriteCond   %{REQUEST_FILENAME}.phtml -f
 RewriteRule   ^(.*)$ $1.phtml                   [S=1]
 #   else reverse the previous basename cutout

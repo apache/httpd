@@ -345,7 +345,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
 
 <div class="example"><pre>
 RewriteEngine on
-RewriteCond   /your/docroot/%{REQUEST_FILENAME} <strong>!-f</strong>
+RewriteCond   %{DOCUMENT_ROOT/%{REQUEST_URI} <strong>!-f</strong>
 RewriteRule   ^(.+)                             http://<strong>webserverB</strong>.dom/$1
 </pre></div>
 
@@ -575,7 +575,10 @@ RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
           through the proxy throughput feature:</p>
 
 <div class="example"><pre>
-RewriteRule ^/~([^/]+)/?(.*)          /home/$1/.www/$2
+RewriteRule ^/~([^/]+)/?(.*)          /home/$1/.www/$2 [C]
+# REQUEST_FILENAME usage below is correct in this per-server context example 
+# because the rule that references REQUEST_FILENAME is chained to a rule that
+# sets REQUEST_FILENAME. 
 RewriteCond %{REQUEST_FILENAME}       <strong>!-f</strong>
 RewriteCond %{REQUEST_FILENAME}       <strong>!-d</strong>
 RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom/~$1/pub/$2 [<strong>P</strong>]
@@ -850,6 +853,7 @@ HREF="*"
           This is done via the following ruleset:
 
 <div class="example"><pre>
+# This example is valid in per-directory context only
 RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong>
 RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
 </pre></div>
