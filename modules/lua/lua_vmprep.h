@@ -65,6 +65,10 @@ typedef struct
     /* pool to use for lifecycle if APL_SCOPE_ONCE is set, otherwise unused */
     apr_pool_t *pool;
 
+    /* Pre-compiled Lua Byte code to load directly.  If bytecode_len is >0, 
+     * the file part of this structure is ignored for loading purposes, but
+     * it is used for error messages. 
+     */
     const char *bytecode;
     apr_size_t bytecode_len;
 } apl_vm_spec;
@@ -127,7 +131,7 @@ typedef void (*apl_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
  * @ctx a baton passed to cb
  */
 lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
-                             char *file,
+                             apl_vm_spec *spec,
                              apr_array_header_t *package_paths,
                              apr_array_header_t *package_cpaths,
                              apl_lua_state_open_callback cb, void *btn);
