@@ -90,7 +90,7 @@ is, the entire website.</p>
 
 <example>
 RewriteEngine On<br />
-RewriteRule ^/index.html - [CO=frontdoor:yes:.apache.org:1440:/]
+RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
 </example>
 
 <p>This rule doesn't rewrite the request (the "-" rewrite target tells
@@ -168,6 +168,22 @@ RewriteRule !\. - [H=application/x-httpd-php]
 The regular expression above - <code>!\.</code> - will match any request
 that does not contain the literal <code>.</code> character.
 </p>
+
+<p>This can be also used to force the handler based on some conditions.
+For example, the following snippet used in per-server context allows
+<code>.php</code> files to be <em>displayed</em> by <code>mod_php</code>
+if they are requested with the <code>.phps</code> extension:
+
+<example>
+RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
+</example>
+</p>
+
+<p>The regular expression above - <code>^(/source/.+\.php)s$</code> - will
+match any request that starts with <code>/source/</code> followed by 1 or
+n characters followed by <code>.phps</code> literally. The backreference
+$1 referrers to the captured match within parenthesis of the regular
+expression.</p>
 </section>
 
 <section id="flag_l"><title>L|last</title>
@@ -204,7 +220,7 @@ is already for <code>index.php</code>, the <directive
 module="mod_rewrite">RewriteRule</directive> will be skipped.</p>
 
 <example>
-RewriteCond %{REQUEST_URI} !index\.php<br />
+RewriteCond %{REQUEST_URI} !=index.php<br />
 RewriteRule ^(.*) index.php?req=$1 [L]
 </example>
 </section>
