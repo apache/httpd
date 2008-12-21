@@ -14,19 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "mod_lua.h"
 
 #ifndef _APL_CONFIG_H_
 #define _APL_CONFIG_H_
-                 
-APR_DECLARE(void) apl_load_config_lmodule(lua_State *L);                                                                 
 
-APR_DECLARE(apr_status_t) apl_lua_map_handler(apl_dir_cfg *cfg, 
-                                              const char *file, 
+APR_DECLARE(void) apl_load_config_lmodule(lua_State *L);
+
+APR_DECLARE(apr_status_t) apl_lua_map_handler(apl_dir_cfg *cfg,
+                                              const char *file,
                                               const char *function,
                                               const char *pattern,
                                               const char *scope);
 
 #endif /* !_APL_CONFIG_H_ */
-

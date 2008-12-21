@@ -57,58 +57,63 @@
 #define lua_unboxpointer(L,i)	(*(void **)(lua_touserdata(L, i)))
 #endif
 
-void rstack_dump(lua_State* L, request_rec* r, const char* msg);
+void rstack_dump(lua_State *L, request_rec *r, const char *msg);
 
-typedef struct {
-    apr_array_header_t* package_paths;
-    apr_array_header_t* package_cpaths;
+typedef struct
+{
+    apr_array_header_t *package_paths;
+    apr_array_header_t *package_cpaths;
 
     /**
      * mapped handlers
      */
-    apr_array_header_t* mapped_handlers;
+    apr_array_header_t *mapped_handlers;
 
     apr_pool_t *pool;
-    
+
     /**
      * CODE_CACHE_STAT | CODE_CACHE_FOREVER | CODE_CACHE_NEVER
-     */ 
+     */
     unsigned int code_cache_style;
-    
+
     /** 
      * APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER
      */
     unsigned int vm_scope;
     unsigned int vm_server_pool_min;
     unsigned int vm_server_pool_max;
-    
+
     /* info for the hook harnesses */
-    apr_hash_t *hooks; /* <wombat_hook_info> */
-    
+    apr_hash_t *hooks;          /* <wombat_hook_info> */
+
     /* the actual directory being configured */
     char *dir;
 } apl_dir_cfg;
 
-typedef struct {
+typedef struct
+{
     apl_code_cache *code_cache;
     apr_hash_t *vm_reslists;
     apr_thread_rwlock_t *vm_reslists_lock;
 
     /* value of the LuaRoot directive */
-    const char *root_path;  
+    const char *root_path;
 } apl_server_cfg;
 
-typedef struct {
+typedef struct
+{
     char *function_name;
     apl_vm_spec *spec;
 } mapped_request_details;
 
-typedef struct {
+typedef struct
+{
     mapped_request_details *mapped_request_details;
     apr_hash_t *request_scoped_vms;
 } apl_request_cfg;
 
-typedef struct {
+typedef struct
+{
     lua_State *L;
     char *function;
 } apl_filter_ctx;
@@ -140,4 +145,3 @@ APR_DECLARE_EXTERNAL_HOOK(apl, AP_LUA, int, lua_request,
                           (lua_State *L, request_rec *r));
 
 #endif /* !_MOD_LUA_H_ */
-
