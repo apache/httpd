@@ -18,9 +18,9 @@
 #include "lua_config.h"
 #include "lua_vmprep.h"
 
-static apw_dir_cfg* check_dir_config(lua_State* L, int index) {
+static apl_dir_cfg* check_dir_config(lua_State* L, int index) {
     luaL_checkudata(L, index, "Apache2.DirConfig");
-    apw_dir_cfg *cfg = (apw_dir_cfg*)lua_unboxpointer(L, index);
+    apl_dir_cfg *cfg = (apl_dir_cfg*)lua_unboxpointer(L, index);
     return cfg;    
 }
 
@@ -30,22 +30,22 @@ static cmd_parms* check_cmd_parms(lua_State* L, int index) {
     return cmd;    
 }
 
-static int apw_toscope(const char *name) {
-    if (0 == apr_strnatcmp("once", name)) return APW_SCOPE_ONCE;
-    if (0 == apr_strnatcmp("request", name)) return APW_SCOPE_REQUEST;
-    if (0 == apr_strnatcmp("connection", name)) return APW_SCOPE_CONN;
-    if (0 == apr_strnatcmp("conn", name)) return APW_SCOPE_CONN;
-    if (0 == apr_strnatcmp("server", name)) return APW_SCOPE_SERVER;
-    return APW_SCOPE_ONCE;
+static int apl_toscope(const char *name) {
+    if (0 == apr_strnatcmp("once", name)) return APL_SCOPE_ONCE;
+    if (0 == apr_strnatcmp("request", name)) return APL_SCOPE_REQUEST;
+    if (0 == apr_strnatcmp("connection", name)) return APL_SCOPE_CONN;
+    if (0 == apr_strnatcmp("conn", name)) return APL_SCOPE_CONN;
+    if (0 == apr_strnatcmp("server", name)) return APL_SCOPE_SERVER;
+    return APL_SCOPE_ONCE;
 }
 
-apr_status_t apw_lua_map_handler(apw_dir_cfg *cfg, 
+apr_status_t apl_lua_map_handler(apl_dir_cfg *cfg, 
                                  const char *file, 
                                  const char *function,
                                  const char *pattern,
                                  const char *scope) {
     apr_status_t rv;
-    apw_mapped_handler_spec *handler = apr_palloc(cfg->pool, sizeof(apw_mapped_handler_spec));
+    apl_mapped_handler_spec *handler = apr_palloc(cfg->pool, sizeof(apl_mapped_handler_spec));
     handler->uri_pattern = NULL;
     handler->function_name = NULL;
     
@@ -55,17 +55,17 @@ apr_status_t apw_lua_map_handler(apw_dir_cfg *cfg,
     }
     handler->file_name = apr_pstrdup(cfg->pool, file);
     handler->uri_pattern = uri_pattern;
-    handler->scope = apw_toscope(scope);
+    handler->scope = apl_toscope(scope);
     
     handler->function_name = apr_pstrdup(cfg->pool, function);
-    *(const apw_mapped_handler_spec**)apr_array_push(cfg->mapped_handlers) = handler;    
+    *(const apl_mapped_handler_spec**)apr_array_push(cfg->mapped_handlers) = handler;    
     return APR_SUCCESS;
 }
 
-/* Change to use apw_lua_map_handler */
+/* Change to use apl_lua_map_handler */
 static int cfg_lua_map_handler(lua_State *L) {
-    apw_dir_cfg *cfg = check_dir_config(L, 1);
-    apw_mapped_handler_spec *handler = apr_palloc(cfg->pool, sizeof(apw_mapped_handler_spec));
+    apl_dir_cfg *cfg = check_dir_config(L, 1);
+    apl_mapped_handler_spec *handler = apr_palloc(cfg->pool, sizeof(apl_mapped_handler_spec));
     handler->uri_pattern = NULL;
     handler->function_name = NULL;
     
@@ -92,10 +92,10 @@ static int cfg_lua_map_handler(lua_State *L) {
     lua_getfield(L, 2, "scope");
     if (lua_isstring(L, -1)) {
         const char *scope = lua_tostring(L, -1);
-        handler->scope = apw_toscope(scope);
+        handler->scope = apl_toscope(scope);
     }
     else {
-        handler->scope = APW_SCOPE_ONCE;
+        handler->scope = APL_SCOPE_ONCE;
     }
     lua_pop(L, 1);
     
@@ -110,18 +110,18 @@ static int cfg_lua_map_handler(lua_State *L) {
     lua_pop(L, 1);
     
     
-    *(const apw_mapped_handler_spec**)apr_array_push(cfg->mapped_handlers) = handler;    
+    *(const apl_mapped_handler_spec**)apr_array_push(cfg->mapped_handlers) = handler;    
     return 0;
 }
 
 static int cfg_directory(lua_State *L) {
-    apw_dir_cfg *cfg = check_dir_config(L, 1);
+    apl_dir_cfg *cfg = check_dir_config(L, 1);
     lua_pushstring(L, cfg->dir);
     return 1;
 }
 
 /*static int cfg_root(lua_State *L) {
-    apw_dir_cfg *cfg = check_dir_config(L, 1);
+    apl_dir_cfg *cfg = check_dir_config(L, 1);
     lua_pushstring(L, cfg->root_path);
     return 1;
 }*/
@@ -180,7 +180,7 @@ static const struct luaL_Reg cmd_methods[] = {
     {NULL, NULL}
 };
 
-void apw_load_config_lmodule(lua_State *L) {
+void apl_load_config_lmodule(lua_State *L) {
     luaL_newmetatable(L, "Apache2.DirConfig"); /* [metatable] */
     lua_pushvalue(L, -1); 
 
