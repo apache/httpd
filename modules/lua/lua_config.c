@@ -15,8 +15,8 @@
  * limitations under the License.
  */
  
-#include "config.h"
-#include "vmprep.h"
+#include "lua_config.h"
+#include "lua_vmprep.h"
 
 static apw_dir_cfg* check_dir_config(lua_State* L, int index) {
     luaL_checkudata(L, index, "Apache2.DirConfig");

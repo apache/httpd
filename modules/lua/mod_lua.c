@@ -21,7 +21,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "apr_lua.h"
+#include "lua_apr.h"
 
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(apl, AP_LUA, int, lua_open,
                                     (lua_State *L, apr_pool_t *p),

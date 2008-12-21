@@ -14,12 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "vmprep.h"
 #include "mod_lua.h"
 #include "http_log.h"
 #include "apr_reslist.h"
 #include "apr_uuid.h"
-#include "config.h"
+#include "lua_config.h"
 #include "apr_file_info.h"
 
 /* forward dec'l from this file */
