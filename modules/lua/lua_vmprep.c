@@ -26,10 +26,11 @@
 static void pstack_dump(lua_State *L, apr_pool_t *r, int level,
                         const char *msg)
 {
-    ap_log_perror(APLOG_MARK, level, 0, r, "Lua Stack Dump: [%s]", msg);
-
     int i;
     int top = lua_gettop(L);
+
+    ap_log_perror(APLOG_MARK, level, 0, r, "Lua Stack Dump: [%s]", msg);
+
     for (i = 1; i <= top; i++) {
         int t = lua_type(L, i);
         switch (t) {
@@ -235,19 +236,25 @@ static void munge_path(lua_State *L,
                        apr_pool_t *pool,
                        apr_array_header_t *paths, const char *file)
 {
+    const char *current;
+    const char *parent_dir;
+    const char *pattern;
+    const char *modified;
+    char *part;
+    int i;
+
     lua_getglobal(L, "package");
     lua_getfield(L, -1, field);
-    const char *current = lua_tostring(L, -1);
-    const char *parent_dir = ap_make_dirstr_parent(pool, file);
-    const char *pattern = apr_pstrcat(pool, parent_dir, sub_pat, NULL);
+    current = lua_tostring(L, -1);
+    parent_dir = ap_make_dirstr_parent(pool, file);
+    pattern = apr_pstrcat(pool, parent_dir, sub_pat, NULL);
     luaL_gsub(L, current, rep_pat, pattern);
     lua_setfield(L, -3, field);
     lua_getfield(L, -2, field);
-    const char *modified = lua_tostring(L, -1);
+    modified = lua_tostring(L, -1);
     lua_pop(L, 2);
 
-    char *part = apr_pstrdup(pool, modified);
-    int i;
+    part = apr_pstrdup(pool, modified);
     for (i = 0; i < paths->nelts; i++) {
         const char *new_path = ((const char **) paths->elts)[i];
         part = apr_pstrcat(pool, part, ";", new_path, NULL);
@@ -272,12 +279,14 @@ lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
         /* not available, so create */
         L = luaL_newstate();
         luaL_openlibs(L);
-        if (package_paths)
+        if (package_paths) {
             munge_path(L, "path", "?.lua", "./?.lua", lifecycle_pool,
                        package_paths, spec->file);
-        if (package_cpaths)
+        }
+        if (package_cpaths) {
             munge_path(L, "cpath", "?.so", "./?.so", lifecycle_pool,
                        package_cpaths, spec->file);
+        }
 
         if (cb) {
             cb(L, lifecycle_pool, btn);

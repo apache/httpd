@@ -39,12 +39,13 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(apl, AP_LUA, int, lua_request,
  */
 static void report_lua_error(lua_State *L, request_rec *r)
 {
+    const char *lua_response;
     r->status = 500;
     r->content_type = "text/html";
 
     ap_rputs("<b>Error!</b>\n", r);
     ap_rputs("<p>", r);
-    const char *lua_response = lua_tostring(L, -1);
+    lua_response = lua_tostring(L, -1);
     ap_rputs(lua_response, r);
     ap_rputs("</p>\n", r);
 
@@ -107,10 +108,14 @@ static int lua_handler(request_rec *r)
     apl_dir_cfg *dcfg = ap_get_module_config(r->per_dir_config, &lua_module);
 
     if (!r->header_only) {
+        lua_State *L;
+        const apl_dir_cfg *cfg = ap_get_module_config(r->per_dir_config,
+                                                      &lua_module);
         apl_request_cfg *rcfg =
             ap_get_module_config(r->request_config, &lua_module);
         mapped_request_details *d = rcfg->mapped_request_details;
         apl_vm_spec *spec = NULL;
+
         if (!d) {
             d = apr_palloc(r->pool, sizeof(mapped_request_details));
             spec = apr_pcalloc(r->pool, sizeof(apl_vm_spec));
@@ -121,16 +126,15 @@ static int lua_handler(request_rec *r)
             d->spec = spec;
             d->function_name = "handle";
         }
+
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "request details scope:%u, cache:%u", d->spec->scope,
                       d->spec->code_cache_style);
-        const apl_dir_cfg *cfg =
-            ap_get_module_config(r->per_dir_config, &lua_module);
-        lua_State *L = apl_get_lua_state(r->pool,
-                                         d->spec,
-                                         cfg->package_paths,
-                                         cfg->package_cpaths,
-                                         &lua_open_callback, NULL);
+        L = apl_get_lua_state(r->pool,
+                              d->spec,
+                              cfg->package_paths,
+                              cfg->package_cpaths,
+                              &lua_open_callback, NULL);
 
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "got a vm!");
         if (!L) {
@@ -154,22 +158,24 @@ static int lua_handler(request_rec *r)
  */
 static int apl_alias_munger(request_rec *r)
 {
+    apl_vm_spec *spec;
+    apl_request_cfg *rcfg = ap_get_module_config(r->request_config,
+                                                 &lua_module);
     const apl_dir_cfg *cfg =
         ap_get_module_config(r->per_dir_config, &lua_module);
-
     int i;
     ap_regmatch_t matches[AP_MAX_REG_MATCH];
 
     for (i = 0; i < cfg->mapped_handlers->nelts; i++) {
         const apl_mapped_handler_spec *cnd =
-            ((const apl_mapped_handler_spec **) cfg->mapped_handlers->
-             elts)[i];
+            ((const apl_mapped_handler_spec **) cfg->mapped_handlers->elts)[i];
+
         if (OK ==
             ap_regexec(cnd->uri_pattern, r->uri, AP_MAX_REG_MATCH, matches,
                        0)) {
             r->handler = "lua-script";
 
-            apl_vm_spec *spec = apr_pcalloc(r->pool, sizeof(apl_vm_spec));
+            spec = apr_pcalloc(r->pool, sizeof(apl_vm_spec));
             spec->file =
                 ap_pregsub(r->pool, cnd->file_name, r->uri, AP_MAX_REG_MATCH,
                            matches);
@@ -191,8 +197,6 @@ static int apl_alias_munger(request_rec *r)
 
             /* now do replacement on method name where? */
             r->filename = apr_pstrdup(r->pool, spec->file);
-            apl_request_cfg *rcfg =
-                ap_get_module_config(r->request_config, &lua_module);
             rcfg->mapped_request_details = d;
             return OK;
         }
@@ -206,6 +210,8 @@ static int apl_alias_munger(request_rec *r)
 
 static int lua_request_rec_hook_harness(request_rec *r, const char *name)
 {
+    lua_State *L;
+    apl_vm_spec *spec;
     apl_server_cfg *server_cfg = ap_get_module_config(r->server->module_config,
                                                       &lua_module);
     const apl_dir_cfg *cfg =
@@ -223,7 +229,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
             if (hook_spec == NULL) {
                 continue;
             }
-            apl_vm_spec *spec = apr_pcalloc(r->pool, sizeof(apl_vm_spec));
+            spec = apr_pcalloc(r->pool, sizeof(apl_vm_spec));
 
             spec->file = hook_spec->file_name;
             spec->code_cache_style = hook_spec->code_cache_style;
@@ -234,11 +240,11 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
 
             apr_filepath_merge(&spec->file, server_cfg->root_path,
                                spec->file, APR_FILEPATH_NOTRELATIVE, r->pool);
-            lua_State *L = apl_get_lua_state(r->pool,
-                                             spec,
-                                             cfg->package_paths,
-                                             cfg->package_cpaths,
-                                             &lua_open_callback, NULL);
+            L = apl_get_lua_state(r->pool,
+                                  spec,
+                                  cfg->package_paths,
+                                  cfg->package_cpaths,
+                                  &lua_open_callback, NULL);
 
 
 
@@ -446,6 +452,7 @@ static const char *register_named_block_function_hook(const char *name,
         lua_State *lvm;
         char *tmp;
         int rv;
+        ap_directive_t **current;
 
         apr_snprintf(buf, sizeof(buf), "%u", cmd->config_file->line_number);
         spec->file_name =
@@ -491,7 +498,7 @@ static const char *register_named_block_function_hook(const char *name,
             lua_close(lvm);
         }
 
-        ap_directive_t **current = mconfig;
+        current = mconfig;
 
         /* Here, we have to replace our current config node for the next pass */
         if (!*current) {
@@ -520,6 +527,7 @@ static const char *register_named_file_function_hook(const char *name,
                                                      const char *file,
                                                      const char *function)
 {
+    apl_mapped_handler_spec *spec;
     apl_dir_cfg *cfg = (apl_dir_cfg *) _cfg;
 
     apr_array_header_t *hook_specs =
@@ -531,8 +539,7 @@ static const char *register_named_file_function_hook(const char *name,
                      APR_HASH_KEY_STRING, hook_specs);
     }
 
-    apl_mapped_handler_spec *spec =
-        apr_pcalloc(cmd->pool, sizeof(apl_mapped_handler_spec));
+    spec = apr_pcalloc(cmd->pool, sizeof(apl_mapped_handler_spec));
     spec->file_name = apr_pstrdup(cmd->pool, file);
     spec->function_name = apr_pstrdup(cmd->pool, function);
     spec->scope = cfg->vm_scope;
@@ -823,10 +830,9 @@ static const char *lua_map_handler(cmd_parms *cmd, void *_cfg,
                                    const char *function)
 {
     apl_dir_cfg *cfg = (apl_dir_cfg *) _cfg;
-
+    apr_status_t rv;
     const char *function_name;
     function_name = function ? function : "handle";
-    apr_status_t rv;
     rv = apl_lua_map_handler(cfg, file, function_name, path, "once");
     if (rv != APR_SUCCESS) {
         return apr_psprintf(cmd->pool,

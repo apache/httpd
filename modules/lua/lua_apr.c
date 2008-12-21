@@ -34,8 +34,9 @@
 
 apr_table_t *check_apr_table(lua_State *L, int index)
 {
+    apr_table_t *t;
     luaL_checkudata(L, index, "Apr.Table");
-    apr_table_t *t = (apr_table_t *) lua_unboxpointer(L, index);
+    t = (apr_table_t *) lua_unboxpointer(L, index);
     return t;
 }
 
