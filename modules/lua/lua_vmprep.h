@@ -45,22 +45,23 @@
 
 /**
  * Specification for a lua virtual machine
- */ 
-typedef struct {
+ */
+typedef struct
+{
 
     /* NEED TO ADD ADDITIONAL PACKAGE PATHS AS PART OF SPEC INSTEAD OF DIR CONFIG */
-    apr_array_header_t* package_paths;
-    apr_array_header_t* package_cpaths;
-    
+    apr_array_header_t *package_paths;
+    apr_array_header_t *package_cpaths;
+
     /* name of base file to load in the vm */
-    char *file;             
+    char *file;
 
     /* APL_CODE_CACHE_STAT | APL_CODE_CACHE_FOREVER | APL_CODE_CACHE_NEVER */
     int code_cache_style;
 
     /* APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER */
     int scope;
-    
+
     /* pool to use for lifecycle if APL_SCOPE_ONCE is set, otherwise unused */
     apr_pool_t *pool;
 
@@ -68,7 +69,8 @@ typedef struct {
     apr_size_t bytecode_len;
 } apl_vm_spec;
 
-typedef struct {
+typedef struct
+{
     int code_cache_style;
     char *function_name;
     char *file_name;
@@ -78,17 +80,18 @@ typedef struct {
     apr_size_t bytecode_len;
 } apl_mapped_handler_spec;
 
-typedef struct {
+typedef struct
+{
     apr_pool_t *pool;
     apr_hash_t *compiled_files;
-    apr_thread_rwlock_t* compiled_files_lock;
+    apr_thread_rwlock_t *compiled_files_lock;
 } apl_code_cache;
 
 /* remove and make static once out of mod_wombat.c */
-void apl_openlibs(lua_State* L);
+void apl_openlibs(lua_State *L);
 
 /* remove and make static once out of mod_wombat.c */
-void apl_registerlib(lua_State* L, char* name, lua_CFunction f);
+void apl_registerlib(lua_State *L, char *name, lua_CFunction f);
 
 /**
  * Fake out addition of the "apache2" module
@@ -108,7 +111,8 @@ void apl_load_apache2_lmodule(lua_State *L);
 /* returns NULL if the spec requires a request scope or conn scope */
 /* lua_State* apl_sgetvm(server_rec *r, apl_vm_spec *spec); */
 
-typedef void (*apl_lua_state_open_callback) (lua_State* L, apr_pool_t* p, void* ctx);
+typedef void (*apl_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
+                                             void *ctx);
 
 /*
  * alternate means of getting lua_State (preferred eventually)
@@ -122,14 +126,12 @@ typedef void (*apl_lua_state_open_callback) (lua_State* L, apr_pool_t* p, void* 
  * @cb callback for vm initialization called *before* the file is opened
  * @ctx a baton passed to cb
  */
-lua_State* apl_get_lua_state(apr_pool_t* lifecycle_pool, 
-                             char* file, 
-                             apr_array_header_t* package_paths, 
-                             apr_array_header_t* package_cpaths,
-                             apl_lua_state_open_callback cb,
-                             void* btn);
-                             
-                             
+lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
+                             char *file,
+                             apr_array_header_t *package_paths,
+                             apr_array_header_t *package_cpaths,
+                             apl_lua_state_open_callback cb, void *btn);
+
+
 
 #endif
-

@@ -18,7 +18,7 @@
 #ifndef _LUA_REQUEST_H_
 #define _LUA_REQUEST_H_
 
-APR_DECLARE(void) apl_push_request(lua_State* L, request_rec* r);
+APR_DECLARE(void) apl_push_request(lua_State *L, request_rec *r);
 APR_DECLARE(void) apl_load_request_lmodule(lua_State *L, apr_pool_t *p);
 
 #define APL_REQ_FUNTYPE_STRING      1
@@ -27,11 +27,11 @@ APR_DECLARE(void) apl_load_request_lmodule(lua_State *L, apr_pool_t *p);
 #define APL_REQ_FUNTYPE_LUACFUN     4
 #define APL_REQ_FUNTYPE_BOOLEAN     5
 
-typedef struct {
+typedef struct
+{
     void *fun;
     int type;
 } req_fun_t;
 
 
 #endif /* !_LUA_REQUEST_H_ */
-
