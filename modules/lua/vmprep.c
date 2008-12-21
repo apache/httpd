@@ -24,7 +24,7 @@
 
 /* forward dec'l from this file */
 
-void pstack_dump(lua_State* L, apr_pool_t* r, int level, const char* msg) {
+static void pstack_dump(lua_State* L, apr_pool_t* r, int level, const char* msg) {
     ap_log_perror(APLOG_MARK, level, 0, r, "Lua Stack Dump: [%s]", msg);
 
     int i;
