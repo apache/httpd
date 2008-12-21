@@ -501,39 +501,39 @@ static const char* register_named_file_function_hook(const char *name,
     return NULL;
 }
 
-int lua_check_user_id_harness(request_rec *r) {
+static int lua_check_user_id_harness(request_rec *r) {
     return lua_request_rec_hook_harness(r, "check_user_id");
 }
 
-int lua_translate_name_harness(request_rec *r) {
+static int lua_translate_name_harness(request_rec *r) {
     return lua_request_rec_hook_harness(r, "translate_name");
 }
 
-int lua_fixup_harness(request_rec *r) {
+static int lua_fixup_harness(request_rec *r) {
     return lua_request_rec_hook_harness(r, "fixups");
 }
 
-int lua_map_to_storage_harness(request_rec *r) {
+static int lua_map_to_storage_harness(request_rec *r) {
     return lua_request_rec_hook_harness(r, "map_to_storage");
 }
 
-int lua_type_checker_harness(request_rec *r) {
+static int lua_type_checker_harness(request_rec *r) {
     return lua_request_rec_hook_harness(r, "type_checker");
 }
 
-int lua_access_checker_harness(request_rec *r) {
+static int lua_access_checker_harness(request_rec *r) {
     return lua_request_rec_hook_harness(r, "access_checker");
 }
 
-int lua_auth_checker_harness(request_rec *r) {
+static int lua_auth_checker_harness(request_rec *r) {
     return lua_request_rec_hook_harness(r, "auth_checker");
 }
 
-void lua_insert_filter_harness(request_rec *r) {
+static void lua_insert_filter_harness(request_rec *r) {
     /* ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, "LuaHookInsertFilter not yet implemented"); */
 }
 
-int lua_quick_harness(request_rec *r, int lookup) {
+static int lua_quick_harness(request_rec *r, int lookup) {
     if(lookup) {
         return DECLINED;
     }
@@ -624,7 +624,7 @@ static const char* register_package_helper(cmd_parms *cmd, const char *arg, apr_
  * Called for config directive which looks like
  * LuaPackagePath /lua/package/path/mapped/thing/like/this/?.lua
  */
-const char* register_package_dir(cmd_parms *cmd, void *_cfg, const char *arg) {
+static const char* register_package_dir(cmd_parms *cmd, void *_cfg, const char *arg) {
     apl_dir_cfg* cfg = (apl_dir_cfg*)_cfg;
     
     return register_package_helper(cmd, arg, cfg->package_paths);
@@ -634,7 +634,7 @@ const char* register_package_dir(cmd_parms *cmd, void *_cfg, const char *arg) {
  * Called for config directive which looks like
  * LuaPackageCPath /lua/package/path/mapped/thing/like/this/?.so
  */
-const char* register_package_cdir(cmd_parms *cmd, void *_cfg, const char *arg) {
+static const char* register_package_cdir(cmd_parms *cmd, void *_cfg, const char *arg) {
     apl_dir_cfg* cfg = (apl_dir_cfg*)_cfg;
     
     return register_package_helper(cmd, arg, cfg->package_cpaths);
@@ -644,7 +644,7 @@ const char* register_package_cdir(cmd_parms *cmd, void *_cfg, const char *arg) {
  * Called for config directive which looks like
  * LuaCodeCache 
  */
-const char* register_code_cache(cmd_parms *cmd, void *_cfg, const char *arg) {
+static const char* register_code_cache(cmd_parms *cmd, void *_cfg, const char *arg) {
     apl_dir_cfg* cfg = (apl_dir_cfg*)_cfg;
     if (apr_strnatcmp("stat", arg) == 0) {
         cfg->code_cache_style = APL_CODE_CACHE_STAT;
