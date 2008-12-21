@@ -92,8 +92,9 @@ void rstack_dump(lua_State *L, request_rec *r, const char *msg)
  */
 static request_rec *apl_check_request_rec(lua_State *L, int index)
 {
+    request_rec *r;
     luaL_checkudata(L, index, "Apache2.Request");
-    request_rec *r = (request_rec *) lua_unboxpointer(L, index);
+    r = (request_rec *) lua_unboxpointer(L, index);
     return r;
 }
 
@@ -102,6 +103,7 @@ static request_rec *apl_check_request_rec(lua_State *L, int index)
 static int req_aprtable2luatable_cb(void *l, const char *key,
                                     const char *value)
 {
+    int t;
     lua_State *L = (lua_State *) l;     /* [table<s,t>, table<s,s>] */
     /* rstack_dump(L, RRR, "start of cb"); */
     /* L is [table<s,t>, table<s,s>] */
@@ -109,7 +111,7 @@ static int req_aprtable2luatable_cb(void *l, const char *key,
 
     lua_getfield(L, -1, key);   /* [VALUE, table<s,t>, table<s,s>] */
     /* rstack_dump(L, RRR, "after getfield"); */
-    int t = lua_type(L, -1);
+    t = lua_type(L, -1);
     switch (t) {
     case LUA_TNIL:
     case LUA_TNONE:{
@@ -149,10 +151,10 @@ static int req_aprtable2luatable_cb(void *l, const char *key,
 /* r:parseargs() returning a lua table */
 static int req_parseargs(lua_State *L)
 {
+    apr_table_t *form_table;
     request_rec *r = apl_check_request_rec(L, 1);
     lua_newtable(L);
     lua_newtable(L);            /* [table, table] */
-    apr_table_t *form_table;
     ap_args_to_table(r, &form_table);
     apr_table_do(req_aprtable2luatable_cb, L, form_table, NULL);
     return 2;                   /* [table<string, string>, table<string, array<string>>] */

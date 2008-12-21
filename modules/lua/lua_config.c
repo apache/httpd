@@ -20,15 +20,17 @@
 
 static apl_dir_cfg *check_dir_config(lua_State *L, int index)
 {
+    apl_dir_cfg *cfg;
     luaL_checkudata(L, index, "Apache2.DirConfig");
-    apl_dir_cfg *cfg = (apl_dir_cfg *) lua_unboxpointer(L, index);
+    cfg = (apl_dir_cfg *) lua_unboxpointer(L, index);
     return cfg;
 }
 
 static cmd_parms *check_cmd_parms(lua_State *L, int index)
 {
+    cmd_parms *cmd;
     luaL_checkudata(L, index, "Apache2.CommandParameters");
-    cmd_parms *cmd = (cmd_parms *) lua_unboxpointer(L, index);
+    cmd = (cmd_parms *) lua_unboxpointer(L, index);
     return cmd;
 }
 
