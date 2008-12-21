@@ -108,6 +108,7 @@ static apr_status_t read_heartbeats(const char *path, apr_hash_t *servers,
             hb_server_t *server;
             char buf[4096];
             apr_size_t bsize = sizeof(buf);
+            const char *ip;
 
             apr_brigade_cleanup(tmpbb);
 
@@ -142,7 +143,7 @@ static apr_status_t read_heartbeats(const char *path, apr_hash_t *servers,
                 continue;
             }
             
-            const char *ip = apr_pstrndup(pool, buf, t - buf);
+            ip = apr_pstrndup(pool, buf, t - buf);
             t++;
 
             server = apr_hash_get(servers, ip, APR_HASH_KEY_STRING);
