@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include "mod_wombat.h"
+#include "mod_lua.h"
 #include "util_script.h"
 #include "apr_lua.h"
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include "mod_wombat.h"
+#include "mod_lua.h"
 #include "config.h"
 #include <string.h>
 #include <stdlib.h>
@@ -33,7 +33,7 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(apw, WOMBAT, int, wombat_request,
                                     (L, r),
                                     OK, DECLINED)
 
-module AP_MODULE_DECLARE_DATA wombat_module;
+module AP_MODULE_DECLARE_DATA lua_module;
 
 /**
  * error reporting if lua has an error. 
@@ -100,10 +100,10 @@ static int wombat_handler(request_rec *r) {
     }
     
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "handling [%s] in mod_wombat", r->filename);
-    apw_dir_cfg *dcfg = ap_get_module_config(r->per_dir_config, &wombat_module);
+    apw_dir_cfg *dcfg = ap_get_module_config(r->per_dir_config, &lua_module);
     
     if (!r->header_only) {        
-        apw_request_cfg* rcfg = ap_get_module_config(r->request_config, &wombat_module);
+        apw_request_cfg* rcfg = ap_get_module_config(r->request_config, &lua_module);
         mapped_request_details *d = rcfg->mapped_request_details;
         apw_vm_spec *spec = NULL;
         if (!d) {
@@ -119,7 +119,7 @@ static int wombat_handler(request_rec *r) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "request details scope:%u, cache:%u",
                                                        d->spec->scope,
                                                        d->spec->code_cache_style);
-        const apw_dir_cfg* cfg = ap_get_module_config(r->per_dir_config, &wombat_module);
+        const apw_dir_cfg* cfg = ap_get_module_config(r->per_dir_config, &lua_module);
         lua_State *L =  apw_get_lua_state(r->pool,
                                           d->spec->file,
                                           cfg->package_paths,
@@ -147,7 +147,7 @@ static int wombat_handler(request_rec *r) {
  * Like mod_alias except for lua handler fun :-) 
  */
 static int apw_alias_munger(request_rec *r) {
-    const apw_dir_cfg *cfg = ap_get_module_config(r->per_dir_config, &wombat_module);
+    const apw_dir_cfg *cfg = ap_get_module_config(r->per_dir_config, &lua_module);
     
     int i;
     ap_regmatch_t matches[AP_MAX_REG_MATCH];
@@ -174,7 +174,7 @@ static int apw_alias_munger(request_rec *r) {
             
             /* now do replacement on method name where? */
             r->filename = apr_pstrdup(r->pool, spec->file);
-            apw_request_cfg *rcfg = ap_get_module_config(r->request_config, &wombat_module);
+            apw_request_cfg *rcfg = ap_get_module_config(r->request_config, &lua_module);
             rcfg->mapped_request_details = d;
             return OK;
         }
@@ -190,7 +190,7 @@ static int wombat_request_rec_hook_harness(request_rec *r, const char *name) {
     char *fixed_filename;
     
     const apw_dir_cfg* cfg = (apw_dir_cfg*) ap_get_module_config(r->per_dir_config,
-                                                                       &wombat_module);
+                                                                       &lua_module);
     apr_array_header_t *hook_specs = apr_hash_get(cfg->hooks, name, APR_HASH_KEY_STRING);
     if (hook_specs) {
         int i;
@@ -207,14 +207,14 @@ static int wombat_request_rec_hook_harness(request_rec *r, const char *name) {
             spec->pool = r->pool;
             
             /*
-            const apw_dir_cfg* cfg = ap_get_module_config(r->per_dir_config, &wombat_module);
+            const apw_dir_cfg* cfg = ap_get_module_config(r->per_dir_config, &lua_module);
             lua_State *L =  apw_get_lua_state(r->pool,
                                               d->spec->file,
                                               cfg->package_paths,
                                               cfg->package_cpaths,
                                               &wombat_open_callback, NULL);
             */            
-            apw_server_cfg *server_cfg = ap_get_module_config(r->server->module_config, &wombat_module);
+            apw_server_cfg *server_cfg = ap_get_module_config(r->server->module_config, &lua_module);
             apr_filepath_merge(&fixed_filename, server_cfg->root_path, spec->file, APR_FILEPATH_NOTRELATIVE, r->pool);
             lua_State *L =  apw_get_lua_state(r->pool,
                                               fixed_filename,
@@ -608,7 +608,7 @@ static const char* register_quick_block(cmd_parms *cmd, void *_cfg, const char *
 static const char* register_package_helper(cmd_parms *cmd, const char *arg, apr_array_header_t *dir_array) {
     apr_status_t rv;
         
-    apw_server_cfg *server_cfg = ap_get_module_config(cmd->server->module_config, &wombat_module);
+    apw_server_cfg *server_cfg = ap_get_module_config(cmd->server->module_config, &lua_module);
     char *fixed_filename;
     rv = apr_filepath_merge(&fixed_filename, server_cfg->root_path, arg, APR_FILEPATH_NOTRELATIVE, cmd->pool);
     if (rv != APR_SUCCESS) {
@@ -710,7 +710,7 @@ static const char* lua_map_handler(cmd_parms *cmd, void *_cfg, const char *path,
 
 static const char* register_lua_root(cmd_parms *cmd, void *_cfg, const char *root) {
     /* apw_dir_cfg* cfg = (apw_dir_cfg*)_cfg; */
-    apw_server_cfg* cfg = ap_get_module_config(cmd->server->module_config, &wombat_module);
+    apw_server_cfg* cfg = ap_get_module_config(cmd->server->module_config, &lua_module);
     
     cfg->root_path = root;
     return NULL;
@@ -820,7 +820,7 @@ static int create_request_config(request_rec *r) {
     apw_request_cfg *cfg = apr_palloc(r->pool, sizeof(apw_request_cfg));
     cfg->mapped_request_details = NULL;
     cfg->request_scoped_vms = apr_hash_make(r->pool);
-    ap_set_module_config(r->request_config, &wombat_module, cfg);
+    ap_set_module_config(r->request_config, &lua_module, cfg);
     return OK;
 }
 
@@ -869,7 +869,7 @@ static void wombat_register_hooks(apr_pool_t *p) {
 		      APR_HOOK_REALLY_FIRST); 
 }
 
-module AP_MODULE_DECLARE_DATA wombat_module = {
+module AP_MODULE_DECLARE_DATA lua_module = {
     STANDARD20_MODULE_STUFF, 
     create_dir_config,              /* create per-dir    config structures */
     NULL,                           /* merge  per-dir    config structures */
