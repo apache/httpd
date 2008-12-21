@@ -265,10 +265,9 @@ lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
 {
 
     lua_State *L;
-    ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, lifecycle_pool,
-                  "obtaining lua_State");
+
     if (!apr_pool_userdata_get((void **) &L, spec->file, lifecycle_pool)) {
-        ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, lifecycle_pool,
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
                       "creating lua_State with file %s", spec->file);
         /* not available, so create */
         L = luaL_newstate();
