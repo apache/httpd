@@ -1,5 +1,5 @@
 
-APACHE_MODPATH_INIT(wombat)
+APACHE_MODPATH_INIT(lua)
 
 dnl Check for Lua 5.1 Libraries
 dnl CHECK_LUA(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
@@ -92,9 +92,9 @@ else
 fi 
 ])
 
-wombat_objects="apr_lua.lo config.lo mod_wombat.lo request.lo vmprep.lo"
+lua_objects="apr_lua.lo config.lo mod_lua.lo request.lo vmprep.lo"
 
-APACHE_MODULE(wombat, Apache Lua Framework, $wombat_objects, , no,
+APACHE_MODULE(lua, Apache Lua Framework, $lua_objects, , no,
 [
 CHECK_LUA()
 APR_ADDTO(LIBS, ["$LUA_LIBS"])

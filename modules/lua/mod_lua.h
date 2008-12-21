@@ -1,6 +1,3 @@
-#ifndef MOD_WOMBAT_H
-#define MOD_WOMBAT_H
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -17,6 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#ifndef _MOD_LUA_H_
+#define _MOD_LUA_H_
 
 #include <stdio.h>
 
@@ -113,8 +113,7 @@ typedef struct {
     char *function;
 } apw_filter_ctx;
 
-extern module AP_MODULE_DECLARE_DATA wombat_module;
-/* module wombat_module; */
+extern module AP_MODULE_DECLARE_DATA lua_module;
 
 #if !defined(WIN32)
 #define WOMBAT_DECLARE(type)            type
@@ -140,5 +139,5 @@ APR_DECLARE_EXTERNAL_HOOK(apw, WOMBAT, int, wombat_open,
 APR_DECLARE_EXTERNAL_HOOK(apw, WOMBAT, int, wombat_request,
                           (lua_State *L, request_rec *r));
 
-#endif /* !MOD_WOMBAT_H */
+#endif /* !_MOD_LUA_H_ */
 

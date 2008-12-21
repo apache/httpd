@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #include "vmprep.h"
-#include "mod_wombat.h"
+#include "mod_lua.h"
 #include "http_log.h"
 #include "apr_reslist.h"
 #include "apr_uuid.h"

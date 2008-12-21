@@ -15,7 +15,7 @@
  * limitations under the License.
  */
  
-#include "mod_wombat.h"
+#include "mod_lua.h"
 
 #ifndef APW_CONFIG_H
 #define APW_CONFIG_H
