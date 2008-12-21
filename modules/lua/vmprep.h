@@ -34,14 +34,14 @@
 #ifndef VMPREP_H
 #define VMPREP_H
 
-#define APW_CODE_CACHE_STAT     1
-#define APW_CODE_CACHE_FOREVER  2
-#define APW_CODE_CACHE_NEVER    3
+#define APL_CODE_CACHE_STAT     1
+#define APL_CODE_CACHE_FOREVER  2
+#define APL_CODE_CACHE_NEVER    3
 
-#define APW_SCOPE_ONCE          1
-#define APW_SCOPE_REQUEST       2
-#define APW_SCOPE_CONN          3
-#define APW_SCOPE_SERVER        4
+#define APL_SCOPE_ONCE          1
+#define APL_SCOPE_REQUEST       2
+#define APL_SCOPE_CONN          3
+#define APL_SCOPE_SERVER        4
 
 /**
  * Specification for a lua virtual machine
@@ -55,18 +55,18 @@ typedef struct {
     /* name of base file to load in the vm */
     char *file;             
 
-    /* APW_CODE_CACHE_STAT | APW_CODE_CACHE_FOREVER | APW_CODE_CACHE_NEVER */
+    /* APL_CODE_CACHE_STAT | APL_CODE_CACHE_FOREVER | APL_CODE_CACHE_NEVER */
     int code_cache_style;
 
-    /* APW_SCOPE_ONCE | APW_SCOPE_REQUEST | APW_SCOPE_CONN | APW_SCOPE_SERVER */
+    /* APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER */
     int scope;
     
-    /* pool to use for lifecycle if APW_SCOPE_ONCE is set, otherwise unused */
+    /* pool to use for lifecycle if APL_SCOPE_ONCE is set, otherwise unused */
     apr_pool_t *pool;
 
     const char *bytecode;
     apr_size_t bytecode_len;
-} apw_vm_spec;
+} apl_vm_spec;
 
 typedef struct {
     int code_cache_style;
@@ -76,39 +76,39 @@ typedef struct {
     ap_regex_t *uri_pattern;
     const char *bytecode;
     apr_size_t bytecode_len;
-} apw_mapped_handler_spec;
+} apl_mapped_handler_spec;
 
 typedef struct {
     apr_pool_t *pool;
     apr_hash_t *compiled_files;
     apr_thread_rwlock_t* compiled_files_lock;
-} apw_code_cache;
+} apl_code_cache;
 
 /* remove and make static once out of mod_wombat.c */
-void apw_openlibs(lua_State* L);
+void apl_openlibs(lua_State* L);
 
 /* remove and make static once out of mod_wombat.c */
-void apw_registerlib(lua_State* L, char* name, lua_CFunction f);
+void apl_registerlib(lua_State* L, char* name, lua_CFunction f);
 
 /**
  * Fake out addition of the "apache2" module
  */
-void apw_load_apache2_lmodule(lua_State *L);
+void apl_load_apache2_lmodule(lua_State *L);
 
 /**
- * the apw_?getvm family of functions is used to create and/or obtain
+ * the apl_?getvm family of functions is used to create and/or obtain
  * a handle to a lua state. If there is not an extant vm matching the
  * spec then a new one is created.
  */
-/* lua_State* apw_rgetvm(request_rec *r, apw_vm_spec *spec); */
+/* lua_State* apl_rgetvm(request_rec *r, apl_vm_spec *spec); */
 
 /* returns NULL if the spec requires a request scope */
-/* lua_State* apw_cgetvm(conn_rec *r, apw_vm_spec *spec);*/
+/* lua_State* apl_cgetvm(conn_rec *r, apl_vm_spec *spec);*/
 
 /* returns NULL if the spec requires a request scope or conn scope */
-/* lua_State* apw_sgetvm(server_rec *r, apw_vm_spec *spec); */
+/* lua_State* apl_sgetvm(server_rec *r, apl_vm_spec *spec); */
 
-typedef void (*apw_lua_state_open_callback) (lua_State* L, apr_pool_t* p, void* ctx);
+typedef void (*apl_lua_state_open_callback) (lua_State* L, apr_pool_t* p, void* ctx);
 
 /*
  * alternate means of getting lua_State (preferred eventually)
@@ -122,11 +122,11 @@ typedef void (*apw_lua_state_open_callback) (lua_State* L, apr_pool_t* p, void* 
  * @cb callback for vm initialization called *before* the file is opened
  * @ctx a baton passed to cb
  */
-lua_State* apw_get_lua_state(apr_pool_t* lifecycle_pool, 
+lua_State* apl_get_lua_state(apr_pool_t* lifecycle_pool, 
                              char* file, 
                              apr_array_header_t* package_paths, 
                              apr_array_header_t* package_cpaths,
-                             apw_lua_state_open_callback cb,
+                             apl_lua_state_open_callback cb,
                              void* btn);
                              
                              

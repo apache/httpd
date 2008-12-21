@@ -17,16 +17,16 @@
  
 #include "mod_lua.h"
 
-#ifndef APW_CONFIG_H
-#define APW_CONFIG_H
+#ifndef _APL_CONFIG_H_
+#define _APL_CONFIG_H_
                  
-APR_DECLARE(void) apw_load_config_lmodule(lua_State *L);                                                                 
+APR_DECLARE(void) apl_load_config_lmodule(lua_State *L);                                                                 
 
-APR_DECLARE(apr_status_t) apw_lua_map_handler(apw_dir_cfg *cfg, 
+APR_DECLARE(apr_status_t) apl_lua_map_handler(apl_dir_cfg *cfg, 
                                               const char *file, 
                                               const char *function,
                                               const char *pattern,
                                               const char *scope);
 
-#endif
+#endif /* !_APL_CONFIG_H_ */
 
