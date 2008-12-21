@@ -93,7 +93,7 @@ static void pstack_dump(lua_State* L, apr_pool_t* r, int level, const char* msg)
 
 /* BEGIN apache lmodule  */
 
-void apw_load_apache2_lmodule(lua_State *L) {
+void apl_load_apache2_lmodule(lua_State *L) {
     lua_getglobal(L, "package");
     lua_getfield(L, -1, "loaded");
     lua_newtable(L);    
@@ -256,11 +256,11 @@ static void munge_path(lua_State *L,
   lua_pop(L, 1); /* pop "package" off the stack     */
 }
 
-lua_State* apw_get_lua_state(apr_pool_t* lifecycle_pool, 
+lua_State* apl_get_lua_state(apr_pool_t* lifecycle_pool, 
                             char* file, 
                             apr_array_header_t* package_paths, 
                             apr_array_header_t* package_cpaths,
-                            apw_lua_state_open_callback cb,
+                            apl_lua_state_open_callback cb,
                             void* btn) {
     
     lua_State* L;

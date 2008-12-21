@@ -4,6 +4,7 @@
 #include "lua.h"
 #include "lauxlib.h"
 #include "lualib.h"
+#include "apr_lua.h"
 
 /**
  * make a userdata out of a C pointer, and vice versa
@@ -22,7 +23,7 @@ apr_table_t* check_apr_table(lua_State* L, int index) {
 }
 
 
-void apw_push_apr_table(lua_State* L, const char *name, apr_table_t *t) {
+void apl_push_apr_table(lua_State* L, const char *name, apr_table_t *t) {
     lua_boxpointer(L, t);    
     luaL_getmetatable(L, "Apr.Table");
     lua_setmetatable(L, -2);

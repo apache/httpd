@@ -87,7 +87,7 @@ void rstack_dump(lua_State* L, request_rec* r, const char* msg) {
  * userdata thingamajig and return it if it is. if it is not
  * lua will enter its error handling routine.
  */
-static request_rec* apw_check_request_rec(lua_State* L, int index) {
+static request_rec* apl_check_request_rec(lua_State* L, int index) {
     luaL_checkudata(L, index, "Apache2.Request");
     request_rec* r = (request_rec*)lua_unboxpointer(L, index);
     return r;    
@@ -139,7 +139,7 @@ static int req_aprtable2luatable_cb(void *l, const char *key, const char *value)
 
 /* r:parseargs() returning a lua table */
 static int req_parseargs(lua_State* L) {
-    request_rec* r = apw_check_request_rec(L, 1);
+    request_rec* r = apl_check_request_rec(L, 1);
     lua_newtable(L);
     lua_newtable(L); /* [table, table] */
     apr_table_t* form_table;
@@ -150,7 +150,7 @@ static int req_parseargs(lua_State* L) {
 
 /* wrap ap_rputs as r:puts(String) */
 static int req_puts(lua_State* L) {    
-    request_rec* r = apw_check_request_rec(L, 1);
+    request_rec* r = apl_check_request_rec(L, 1);
     
     int argc = lua_gettop(L);
     int i;
@@ -163,7 +163,7 @@ static int req_puts(lua_State* L) {
 
 /* wrap ap_rwrite as r:write(String) */
 static int req_write(lua_State* L) {
-    request_rec* r = apw_check_request_rec(L, 1);
+    request_rec* r = apl_check_request_rec(L, 1);
     size_t n;
     const char* buf = luaL_checklstring(L, 2, &n);
   
@@ -173,7 +173,7 @@ static int req_write(lua_State* L) {
 
 /* r:parsebody() */
 static int req_parsebody(lua_State* L) {
-    request_rec* r = apw_check_request_rec(L, 1);
+    request_rec* r = apl_check_request_rec(L, 1);
     lua_newtable(L);
     lua_newtable(L);
     apr_table_t* form_table;
@@ -185,7 +185,7 @@ static int req_parsebody(lua_State* L) {
 
 /* r:addoutputfilter(name|function) */
 static int req_add_output_filter(lua_State *L) {
-    request_rec* r = apw_check_request_rec(L, 1);    
+    request_rec* r = apl_check_request_rec(L, 1);    
     const char *name = luaL_checkstring(L, 2);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "adding output filter %s", name);
     ap_add_output_filter(name, L, r, r->connection);
@@ -193,7 +193,7 @@ static int req_add_output_filter(lua_State *L) {
 }
 
 static int req_document_root(lua_State* L) {
-  request_rec* r = apw_check_request_rec(L, 1);
+  request_rec* r = apl_check_request_rec(L, 1);
   char* doc_root = apr_pstrdup(r->pool, ap_document_root(r));
   lua_pushstring(L, doc_root);
   return 1;
@@ -272,7 +272,7 @@ static int req_assbackwards_field(request_rec* r) {
 /* END dispatch mathods for request_rec fields */
 
 static int req_dispatch(lua_State* L) {
-    request_rec* r = apw_check_request_rec(L, 1);
+    request_rec* r = apl_check_request_rec(L, 1);
     const char *name = luaL_checkstring(L, 2);
     lua_pop(L, 2);
  
@@ -283,20 +283,20 @@ static int req_dispatch(lua_State* L) {
     req_fun_t* rft = apr_hash_get(dispatch, name, APR_HASH_KEY_STRING);
     if (rft) {
         switch(rft->type) {
-            case APW_REQ_FUNTYPE_TABLE: {
+            case APL_REQ_FUNTYPE_TABLE: {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "request_rec->dispatching %s -> apr table (NOT IMPLEMENTED YET)", name);
                 return 0;
             }
             
-            case APW_REQ_FUNTYPE_LUACFUN: {
+            case APL_REQ_FUNTYPE_LUACFUN: {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "request_rec->dispatching %s -> lua_CFunction", name);
                 lua_CFunction func = rft->fun;
                 lua_pushcfunction(L, func);      
                 return 1;                
             }
-            case APW_REQ_FUNTYPE_STRING: {
+            case APL_REQ_FUNTYPE_STRING: {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "request_rec->dispatching %s -> string", name);
                 req_field_string_f func = rft->fun;
@@ -304,7 +304,7 @@ static int req_dispatch(lua_State* L) {
                 lua_pushstring(L, rs);
                 return 1;                
             }
-            case APW_REQ_FUNTYPE_INT: {
+            case APL_REQ_FUNTYPE_INT: {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "request_rec->dispatching %s -> int", name);
                 req_field_int_f func = rft->fun;
@@ -312,7 +312,7 @@ static int req_dispatch(lua_State* L) {
                 lua_pushnumber(L, rs);
                 return 1;                
             }
-            case APW_REQ_FUNTYPE_BOOLEAN: {
+            case APL_REQ_FUNTYPE_BOOLEAN: {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
                               "request_rec->dispatching %s -> boolean", name);
                 req_field_int_f func = rft->fun;
@@ -330,7 +330,7 @@ static int req_dispatch(lua_State* L) {
 
 /* helper function for the logging functions below */
 static int req_log_at(lua_State* L, int level) {
-    request_rec* r = apw_check_request_rec(L, 1);
+    request_rec* r = apl_check_request_rec(L, 1);
     lua_Debug dbg;
     
     lua_getstack(L, 1, &dbg);
@@ -355,7 +355,7 @@ static int req_debug(lua_State* L)  { req_log_at(L, APLOG_DEBUG); return 0; }
 static int req_newindex(lua_State* L) {
     /* request_rec* r = lua_touserdata(L, lua_upvalueindex(1)); */ 
     /* const char* key = luaL_checkstring(L, -2); */
-    request_rec* r = apw_check_request_rec(L, 1);
+    request_rec* r = apl_check_request_rec(L, 1);
     rstack_dump(L, r, "req_newindex");
     const char *key = luaL_checkstring(L, 2);
     rstack_dump(L, r, "req_newindex");
@@ -429,72 +429,72 @@ static req_fun_t* makefun(void* fun, int type, apr_pool_t* pool) {
     return rft;
 }
 
-void apw_load_request_lmodule(lua_State *L, apr_pool_t *p) {
+void apl_load_request_lmodule(lua_State *L, apr_pool_t *p) {
     
     apr_hash_t* dispatch = apr_hash_make(p);
     
     apr_hash_set(dispatch, "puts", APR_HASH_KEY_STRING, 
-                 makefun(&req_puts, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_puts, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "write", APR_HASH_KEY_STRING, 
-                 makefun(&req_write, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_write, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "document_root", APR_HASH_KEY_STRING, 
-                 makefun(&req_document_root, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_document_root, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "parseargs", APR_HASH_KEY_STRING, 
-                 makefun(&req_parseargs, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_parseargs, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "parsebody", APR_HASH_KEY_STRING, 
-                 makefun(&req_parsebody, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_parsebody, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "debug", APR_HASH_KEY_STRING, 
-                 makefun(&req_debug, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_debug, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "info", APR_HASH_KEY_STRING, 
-                 makefun(&req_info, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_info, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "notice", APR_HASH_KEY_STRING, 
-                 makefun(&req_notice, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_notice, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "warn", APR_HASH_KEY_STRING, 
-                 makefun(req_warn, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(req_warn, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "err", APR_HASH_KEY_STRING, 
-                 makefun(&req_err, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_err, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "crit", APR_HASH_KEY_STRING, 
-                 makefun(&req_crit, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_crit, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "alert", APR_HASH_KEY_STRING, 
-                 makefun(&req_alert, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_alert, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "emerg", APR_HASH_KEY_STRING, 
-                 makefun(&req_emerg, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_emerg, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "add_output_filter", APR_HASH_KEY_STRING, 
-                 makefun(&req_add_output_filter, APW_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_add_output_filter, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "assbackwards", APR_HASH_KEY_STRING, 
-                 makefun(&req_assbackwards_field, APW_REQ_FUNTYPE_BOOLEAN, p));
+                 makefun(&req_assbackwards_field, APL_REQ_FUNTYPE_BOOLEAN, p));
     apr_hash_set(dispatch, "status", APR_HASH_KEY_STRING, 
-                 makefun(&req_status_field, APW_REQ_FUNTYPE_INT, p));
+                 makefun(&req_status_field, APL_REQ_FUNTYPE_INT, p));
     apr_hash_set(dispatch, "protocol", APR_HASH_KEY_STRING, 
-                 makefun(&req_protocol_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_protocol_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "range", APR_HASH_KEY_STRING, 
-                 makefun(&req_range_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_range_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "content_type", APR_HASH_KEY_STRING, 
-                 makefun(&req_content_type_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_content_type_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "content_encoding", APR_HASH_KEY_STRING, 
-                 makefun(&req_content_encoding_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_content_encoding_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "ap_auth_type", APR_HASH_KEY_STRING, 
-                 makefun(&req_ap_auth_type_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_ap_auth_type_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "unparsed_uri", APR_HASH_KEY_STRING, 
-                 makefun(&req_unparsed_uri_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_unparsed_uri_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "user", APR_HASH_KEY_STRING, 
-                 makefun(&req_user_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_user_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "filename", APR_HASH_KEY_STRING, 
-                 makefun(&req_filename_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_filename_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "canonical_filename", APR_HASH_KEY_STRING, 
-                 makefun(&req_canonical_filename_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_canonical_filename_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "path_info", APR_HASH_KEY_STRING, 
-                 makefun(&req_path_info_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_path_info_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "args", APR_HASH_KEY_STRING, 
-                 makefun(&req_args_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_args_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "hostname", APR_HASH_KEY_STRING, 
-                 makefun(&req_hostname_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_hostname_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "uri", APR_HASH_KEY_STRING, 
-                 makefun(&req_uri_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_uri_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "the_request", APR_HASH_KEY_STRING, 
-                 makefun(&req_the_request_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_the_request_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "method", APR_HASH_KEY_STRING, 
-                 makefun(&req_method_field, APW_REQ_FUNTYPE_STRING, p));
+                 makefun(&req_method_field, APL_REQ_FUNTYPE_STRING, p));
     
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
@@ -525,13 +525,13 @@ void apw_load_request_lmodule(lua_State *L, apr_pool_t *p) {
 
 }
 
-void apw_push_connection(lua_State* L, conn_rec* c) {  
+void apl_push_connection(lua_State* L, conn_rec* c) {  
     lua_boxpointer(L, c);
     luaL_getmetatable(L, "Apache2.Connection");
     lua_setmetatable(L, -2);
     luaL_getmetatable(L, "Apache2.Connection");
 
-    apw_push_apr_table(L, "notes", c->notes);
+    apl_push_apr_table(L, "notes", c->notes);
 
     lua_pushstring(L, c->remote_ip);
     lua_setfield(L, -2, "remote_ip");    
@@ -540,7 +540,7 @@ void apw_push_connection(lua_State* L, conn_rec* c) {
 }
 
 
-void apw_push_server(lua_State* L, server_rec* s) {  
+void apl_push_server(lua_State* L, server_rec* s) {  
     lua_boxpointer(L, s);
     luaL_getmetatable(L, "Apache2.Server");
     lua_setmetatable(L, -2);
@@ -552,7 +552,7 @@ void apw_push_server(lua_State* L, server_rec* s) {
     lua_pop(L, 1);
 }
 
-void apw_push_request(lua_State* L, request_rec* r) {  
+void apl_push_request(lua_State* L, request_rec* r) {  
     lua_boxpointer(L, r);
     luaL_getmetatable(L, "Apache2.Request");
     lua_setmetatable(L, -2);

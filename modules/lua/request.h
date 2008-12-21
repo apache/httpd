@@ -18,14 +18,14 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 
-APR_DECLARE(void) apw_push_request(lua_State* L, request_rec* r);
-APR_DECLARE(void) apw_load_request_lmodule(lua_State *L, apr_pool_t *p);
+APR_DECLARE(void) apl_push_request(lua_State* L, request_rec* r);
+APR_DECLARE(void) apl_load_request_lmodule(lua_State *L, apr_pool_t *p);
 
-#define APW_REQ_FUNTYPE_STRING      1
-#define APW_REQ_FUNTYPE_INT         2
-#define APW_REQ_FUNTYPE_TABLE       3
-#define APW_REQ_FUNTYPE_LUACFUN     4
-#define APW_REQ_FUNTYPE_BOOLEAN     5
+#define APL_REQ_FUNTYPE_STRING      1
+#define APL_REQ_FUNTYPE_INT         2
+#define APL_REQ_FUNTYPE_TABLE       3
+#define APL_REQ_FUNTYPE_LUACFUN     4
+#define APL_REQ_FUNTYPE_BOOLEAN     5
 
 typedef struct {
     void *fun;

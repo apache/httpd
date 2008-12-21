@@ -76,7 +76,7 @@ typedef struct {
     unsigned int code_cache_style;
     
     /** 
-     * APW_SCOPE_ONCE | APW_SCOPE_REQUEST | APW_SCOPE_CONN | APW_SCOPE_SERVER
+     * APL_SCOPE_ONCE | APL_SCOPE_REQUEST | APL_SCOPE_CONN | APL_SCOPE_SERVER
      */
     unsigned int vm_scope;
     unsigned int vm_server_pool_min;
@@ -87,56 +87,56 @@ typedef struct {
     
     /* the actual directory being configured */
     char *dir;
-} apw_dir_cfg;
+} apl_dir_cfg;
 
 typedef struct {
-    apw_code_cache *code_cache;
+    apl_code_cache *code_cache;
     apr_hash_t *vm_reslists;
     apr_thread_rwlock_t *vm_reslists_lock;
 
     /* value of the LuaRoot directive */
     const char *root_path;  
-} apw_server_cfg;
+} apl_server_cfg;
 
 typedef struct {
     char *function_name;
-    apw_vm_spec *spec;
+    apl_vm_spec *spec;
 } mapped_request_details;
 
 typedef struct {
     mapped_request_details *mapped_request_details;
     apr_hash_t *request_scoped_vms;
-} apw_request_cfg;
+} apl_request_cfg;
 
 typedef struct {
     lua_State *L;
     char *function;
-} apw_filter_ctx;
+} apl_filter_ctx;
 
 extern module AP_MODULE_DECLARE_DATA lua_module;
 
 #if !defined(WIN32)
-#define WOMBAT_DECLARE(type)            type
-#define WOMBAT_DECLARE_NONSTD(type)     type
-#define WOMBAT_DECLARE_DATA
-#elif defined(WOMBAT_DECLARE_STATIC)
-#define WOMBAT_DECLARE(type)            type __stdcall
-#define WOMBAT_DECLARE_NONSTD(type)     type
-#define WOMBAT_DECLARE_DATA
-#elif defined(WOMBAT_DECLARE_EXPORT)
-#define WOMBAT_DECLARE(type)            __declspec(dllexport) type __stdcall
-#define WOMBAT_DECLARE_NONSTD(type)     __declspec(dllexport) type
-#define WOMBAT_DECLARE_DATA             __declspec(dllexport)
+#define AP_LUA_DECLARE(type)            type
+#define AP_LUA_DECLARE_NONSTD(type)     type
+#define AP_LUA_DECLARE_DATA
+#elif defined(LUA_DECLARE_STATIC)
+#define AP_LUA_DECLARE(type)            type __stdcall
+#define AP_LUA_DECLARE_NONSTD(type)     type
+#define AP_LUA_DECLARE_DATA
+#elif defined(LUA_DECLARE_EXPORT)
+#define AP_LUA_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define AP_LUA_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define AP_LUA_DECLARE_DATA             __declspec(dllexport)
 #else
-#define WOMBAT_DECLARE(type)            __declspec(dllimport) type __stdcall
-#define WOMBAT_DECLARE_NONSTD(type)     __declspec(dllimport) type
-#define WOMBAT_DECLARE_DATA             __declspec(dllimport)
+#define AP_LUA_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define AP_LUA_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define AP_LUA_DECLARE_DATA             __declspec(dllimport)
 #endif
 
-APR_DECLARE_EXTERNAL_HOOK(apw, WOMBAT, int, wombat_open,
+APR_DECLARE_EXTERNAL_HOOK(apl, AP_LUA, int, lua_open,
                           (lua_State *L, apr_pool_t *p));
 
-APR_DECLARE_EXTERNAL_HOOK(apw, WOMBAT, int, wombat_request,
+APR_DECLARE_EXTERNAL_HOOK(apl, AP_LUA, int, lua_request,
                           (lua_State *L, request_rec *r));
 
 #endif /* !_MOD_LUA_H_ */
