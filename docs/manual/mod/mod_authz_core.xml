@@ -87,8 +87,8 @@
              AuthName LDAP_Protected_Place<br /><br />
 
              #implied OR operation<br /> 
-             Require alias1-ldap-group<br /> 
-             Require alias2-ldap-group<br />
+             Require ldap-group-alias1<br /> 
+             Require ldap-group-alias2<br />
           </indent> &lt;/Directory&gt;<br />
         </example>
     </section>
