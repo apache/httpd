@@ -23,6 +23,7 @@
 
 /* forward dec'l from this file */
 
+#if 0
 static void pstack_dump(lua_State *L, apr_pool_t *r, int level,
                         const char *msg)
 {
@@ -88,6 +89,7 @@ static void pstack_dump(lua_State *L, apr_pool_t *r, int level,
         }
     }
 }
+#endif
 
 /* BEGIN modules*/
 
