@@ -40,7 +40,7 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(apl, AP_LUA, int, lua_request,
 static void report_lua_error(lua_State *L, request_rec *r)
 {
     const char *lua_response;
-    r->status = 500;
+    r->status = HTTP_INTERNAL_SERVER_ERROR;
     r->content_type = "text/html";
 
     ap_rputs("<b>Error!</b>\n", r);
@@ -140,7 +140,7 @@ static int lua_handler(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "got a vm!");
         if (!L) {
             /* TODO annotate spec with failure reason */
-            r->status = 500;
+            r->status = HTTP_INTERNAL_SERVER_ERROR;
             ap_rputs("Unable to compile VM, see logs", r);
         }
         lua_getglobal(L, d->function_name);
@@ -254,7 +254,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
                 ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
                               "lua: Failed to obtain lua interpreter for %s %s",
                               hook_spec->function_name, hook_spec->file_name);
-                return 500;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
 
             if (hook_spec->function_name != NULL) {
@@ -264,7 +264,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
                                   "lua: Unable to find function %s in %s",
                                   hook_spec->function_name,
                                   hook_spec->file_name);
-                    return 500;
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
                 apl_run_lua_request(L, r);
@@ -280,7 +280,7 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
 
             if (lua_pcall(L, 1, 1, 0)) {
                 report_lua_error(L, r);
-                return 500;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
             rc = DECLINED;
             if (lua_isnumber(L, -1)) {
