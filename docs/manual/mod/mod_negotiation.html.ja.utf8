@@ -25,8 +25,6 @@
 <p><span>言語: </span><a href="../en/mod/mod_negotiation.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
-          更新された内容を見るには英語版をご覧下さい。</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td><a href="../content-negotiation.html">コンテントネゴシエーション</a>
   機能を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
@@ -100,8 +98,8 @@
       このヘッダがない場合、ファイルの実際の長さが使用されます。</dd>
 
       <dt><code>Content-Type:</code></dt>
-      <dd>ドキュメントの MIME
-      メディアタイプ、オプショナルなパラメータ付き。パラメータの構文は
+      <dd>ドキュメントの <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME
+      メディアタイプ</a>、オプショナルなパラメータ付き。パラメータの構文は
       <code>name=value</code>
       で、メディアタイプや他のパラメータとはセミコロンで分離されます。
       共通のパラメータは以下のとおり:

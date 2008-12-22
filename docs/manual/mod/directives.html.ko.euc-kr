@@ -117,6 +117,7 @@
 <li><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
+<li><a href="mod_authz_core.html#authmerging">AuthMerging</a></li>
 <li><a href="mod_authn_core.html#authname">AuthName</a></li>
 <li><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
 <li><a href="mod_authn_core.html#authtype">AuthType</a></li>
@@ -224,6 +225,10 @@
 <li><a href="mod_unixd.html#group">Group</a></li>
 <li><a href="mod_headers.html#header" id="H" name="H">Header</a></li>
 <li><a href="mod_autoindex.html#headername">HeaderName</a></li>
+<li><a href="mod_heartbeat.html#heartbeataddress">HeartbeatAddress</a></li>
+<li><a href="mod_heartmonitor.html#heartbeatlisten">HeartbeatListen</a></li>
+<li><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage</a></li>
+<li><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage</a></li>
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
 <li><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
 <li><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout</a></li>
@@ -280,12 +285,7 @@
 <li><a href="mpm_common.html#lockfile">LockFile</a></li>
 <li><a href="mod_log_config.html#logformat">LogFormat</a></li>
 <li><a href="core.html#loglevel">LogLevel</a></li>
-<li><a href="mod_authz_core.html#match" id="M" name="M">Match</a></li>
-<li><a href="mod_authz_core.html#matchall">&lt;MatchAll&gt;</a></li>
-<li><a href="mod_authz_core.html#matchany">&lt;MatchAny&gt;</a></li>
-<li><a href="mod_authz_core.html#matchnotall">&lt;MatchNotAll&gt;</a></li>
-<li><a href="mod_authz_core.html#matchnotany">&lt;MatchNotAny&gt;</a></li>
-<li><a href="mpm_common.html#maxclients">MaxClients</a></li>
+<li><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients</a></li>
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
 <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
@@ -294,7 +294,6 @@
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
 <li><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
-<li><a href="mod_authz_core.html#mergeauthz">MergeAuthz</a></li>
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
 <li><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
@@ -354,6 +353,9 @@
 <li><a href="mod_mime.html#removetype">RemoveType</a></li>
 <li><a href="mod_headers.html#requestheader">RequestHeader</a></li>
 <li><a href="mod_authz_core.html#require">Require</a></li>
+<li><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></li>
+<li><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt;</a></li>
+<li><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt;</a></li>
 <li><a href="mod_rewrite.html#rewritebase">RewriteBase</a></li>
 <li><a href="mod_rewrite.html#rewritecond">RewriteCond</a></li>
 <li><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></li>

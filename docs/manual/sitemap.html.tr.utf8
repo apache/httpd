@@ -209,6 +209,8 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_file_cache.html">Apache Modülü mod_file_cache</a></li>
 <li><a href="mod/mod_filter.html">Apache Modülü mod_filter</a></li>
 <li><a href="mod/mod_headers.html">Apache Modülü mod_headers</a></li>
+<li><a href="mod/mod_heartbeat.html">Apache Modülü mod_heartbeat</a></li>
+<li><a href="mod/mod_heartmonitor.html">Apache Modülü mod_heartmonitor</a></li>
 <li><a href="mod/mod_ident.html">Apache Modülü mod_ident</a></li>
 <li><a href="mod/mod_imagemap.html">Apache Modülü mod_imagemap</a></li>
 <li><a href="mod/mod_include.html">Apache Modülü mod_include</a></li>
@@ -217,6 +219,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_lbmethod_bybusyness.html">Apache Modülü mod_lbmethod_bybusyness</a></li>
 <li><a href="mod/mod_lbmethod_byrequests.html">Apache Modülü mod_lbmethod_byrequests</a></li>
 <li><a href="mod/mod_lbmethod_bytraffic.html">Apache Modülü mod_lbmethod_bytraffic</a></li>
+<li><a href="mod/mod_lbmethod_heartbeat.html">Apache Modülü mod_lbmethod_heartbeat</a></li>
 <li><a href="mod/mod_ldap.html">Apache Modülü mod_ldap</a></li>
 <li><a href="mod/mod_log_config.html">Apache Modülü mod_log_config</a></li>
 <li><a href="mod/mod_log_forensic.html">Apache Modülü mod_log_forensic</a></li>

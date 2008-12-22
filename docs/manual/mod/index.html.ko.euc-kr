@@ -121,6 +121,8 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_file_cache.html" id="F" name="F">mod_file_cache</a></dt><dd>메모리에 정적 파일들을 캐쉬</dd>
 <dt><a href="mod_filter.html">mod_filter</a></dt><dd>Context-sensitive smart filter configuration module</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>HTTP 요청 헤더와 응답 헤더 수정</dd>
+<dt><a href="mod_heartbeat.html">mod_heartbeat</a></dt><dd />
+<dt><a href="mod_heartmonitor.html">mod_heartmonitor</a></dt><dd />
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident 검색</dd>
 <dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>서버측 이미지맵(imagemap) 처리</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
@@ -129,6 +131,7 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_lbmethod_bybusyness.html" id="L" name="L">mod_lbmethod_bybusyness</a></dt><dd>Pending Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
 <dt><a href="mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></dt><dd>Request Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
 <dt><a href="mod_lbmethod_bytraffic.html">mod_lbmethod_bytraffic</a></dt><dd>Weighted Traffic Counting load balancer scheduler algorithm for <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></dd>
+<dt><a href="mod_lbmethod_heartbeat.html">mod_lbmethod_heartbeat</a></dt><dd> This document is still under development.</dd>
 <dt><a href="mod_ldap.html">mod_ldap</a></dt><dd>LDAP connection pooling and result caching services for use
 by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>서버로의 요청을 로그에 기록한다</dd>
