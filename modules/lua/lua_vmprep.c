@@ -266,6 +266,25 @@ static void munge_path(lua_State *L,
     lua_pop(L, 1);              /* pop "package" off the stack     */
 }
 
+#ifdef AP_ENABLE_LUAJIT
+static int loadjitmodule(lua_State *L, apr_pool_t *lifecycle_pool) {
+    lua_getglobal(L, "require");
+    lua_pushliteral(L, "jit.");
+    lua_pushvalue(L, -3);
+    lua_concat(L, 2);
+    if (lua_pcall(L, 1, 1, 0)) {
+        const char *msg = lua_tostring(L, -1);
+        ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, lifecycle_pool,
+                      "Failed to init LuaJIT: %s", msg);
+        return 1;
+    }
+    lua_getfield(L, -1, "start");
+    lua_remove(L, -2);  /* drop module table */
+    return 0;
+}
+
+#endif
+
 lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
                              apl_vm_spec *spec,
                              apr_array_header_t *package_paths,
@@ -280,6 +299,9 @@ lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
                       "creating lua_State with file %s", spec->file);
         /* not available, so create */
         L = luaL_newstate();
+#ifdef AP_ENABLE_LUAJIT
+        luaopen_jit(L);
+#endif
         luaL_openlibs(L);
         if (package_paths) {
             munge_path(L, "path", "?.lua", "./?.lua", lifecycle_pool,
@@ -305,6 +327,9 @@ lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
             lua_pcall(L, 0, LUA_MULTRET, 0);
         }
 
+#ifdef AP_ENABLE_LUAJIT
+        loadjitmodule(L, lifecycle_pool);
+#endif
         lua_pushlightuserdata(L, lifecycle_pool);
         lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Wombat.pool");
     }
