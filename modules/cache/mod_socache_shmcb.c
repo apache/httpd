@@ -31,6 +31,16 @@
 
 #define SHMCB_MAX_SIZE (64 * 1024 * 1024)
 
+/* Check for definition of DEFAULT_REL_RUNTIMEDIR */
+#ifndef DEFAULT_REL_RUNTIMEDIR
+#define DEFAULT_SHMCB_PREFIX "logs/socache-shmcb-"
+#else
+#define DEFAULT_SHMCB_PREFIX DEFAULT_REL_RUNTIMEDIR "/socache-shmcb-"
+#endif
+
+#define DEFAULT_SHMCB_SUFFIX ".cache"
+
+
 /* 
  * This shared memory based SSL session cache implementation was
  * originally written by Geoff Thorpe <geoff geoffthorpe.net> for C2Net
@@ -306,9 +316,6 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
 
     return NULL;
 }
-
-#define DEFAULT_SHMCB_PREFIX DEFAULT_REL_RUNTIMEDIR "/socache-shmcb-"
-#define DEFAULT_SHMCB_SUFFIX ".cache"
 
 static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
                                        const char *namespace, 
