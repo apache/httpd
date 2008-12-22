@@ -224,10 +224,9 @@ static int lua_request_rec_hook_harness(request_rec *r, const char *name)
     if (hook_specs) {
         int i;
         for (i = 0; i < hook_specs->nelts; i++) {
-            char *fixed_filename = NULL;
             apl_mapped_handler_spec *hook_spec =
                 ((apl_mapped_handler_spec **) hook_specs->elts)[i];
-            
+
             if (hook_spec == NULL) {
                 continue;
             }
