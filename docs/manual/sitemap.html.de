@@ -213,6 +213,8 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_file_cache.html">Apache-Modul mod_file_cache</a></li>
 <li><a href="mod/mod_filter.html">Apache-Modul mod_filter</a></li>
 <li><a href="mod/mod_headers.html">Apache-Modul mod_headers</a></li>
+<li><a href="mod/mod_heartbeat.html">Apache-Modul mod_heartbeat</a></li>
+<li><a href="mod/mod_heartmonitor.html">Apache-Modul mod_heartmonitor</a></li>
 <li><a href="mod/mod_ident.html">Apache-Modul mod_ident</a></li>
 <li><a href="mod/mod_imagemap.html">Apache-Modul mod_imagemap</a></li>
 <li><a href="mod/mod_include.html">Apache-Modul mod_include</a></li>
@@ -221,6 +223,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_lbmethod_bybusyness.html">Apache-Modul mod_lbmethod_bybusyness</a></li>
 <li><a href="mod/mod_lbmethod_byrequests.html">Apache-Modul mod_lbmethod_byrequests</a></li>
 <li><a href="mod/mod_lbmethod_bytraffic.html">Apache-Modul mod_lbmethod_bytraffic</a></li>
+<li><a href="mod/mod_lbmethod_heartbeat.html">Apache-Modul mod_lbmethod_heartbeat</a></li>
 <li><a href="mod/mod_ldap.html">Apache-Modul mod_ldap</a></li>
 <li><a href="mod/mod_log_config.html">Apache-Modul mod_log_config</a></li>
 <li><a href="mod/mod_log_forensic.html">Apache-Modul mod_log_forensic</a></li>

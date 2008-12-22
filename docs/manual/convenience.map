@@ -84,6 +84,7 @@ authldapremoteuserisdn	mod/mod_authnz_ldap.html#authldapremoteuserisdn
 authldapsubgroupattribute	mod/mod_authnz_ldap.html#authldapsubgroupattribute
 authldapsubgroupclass	mod/mod_authnz_ldap.html#authldapsubgroupclass
 authldapurl	mod/mod_authnz_ldap.html#authldapurl
+authmerging	mod/mod_authz_core.html#authmerging
 authname	mod/mod_authn_core.html#authname
 authnprovideralias	mod/mod_authn_core.html#authnprovideralias
 authtype	mod/mod_authn_core.html#authtype
@@ -193,6 +194,10 @@ gracefulshutdowntimeout	mod/mpm_common.html#gracefulshutdowntimeout
 group	mod/mod_unixd.html#group
 header	mod/mod_headers.html#header
 headername	mod/mod_autoindex.html#headername
+heartbeataddress	mod/mod_heartbeat.html#heartbeataddress
+heartbeatlisten	mod/mod_heartmonitor.html#heartbeatlisten
+heartbeatstorage	mod/mod_lbmethod_heartbeat.html#heartbeatstorage
+heartbeatstorage	mod/mod_heartmonitor.html#heartbeatstorage
 hostnamelookups	mod/core.html#hostnamelookups
 identitycheck	mod/mod_ident.html#identitycheck
 identitychecktimeout	mod/mod_ident.html#identitychecktimeout
@@ -250,11 +255,6 @@ locationmatch	mod/core.html#locationmatch
 lockfile	mod/mpm_common.html#lockfile
 logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
-match	mod/mod_authz_core.html#match
-matchall	mod/mod_authz_core.html#matchall
-matchany	mod/mod_authz_core.html#matchany
-matchnotall	mod/mod_authz_core.html#matchnotall
-matchnotany	mod/mod_authz_core.html#matchnotany
 maxclients	mod/mpm_common.html#maxclients
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
@@ -264,7 +264,6 @@ maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads
 maxthreadsperchild	mod/perchild.html#maxthreadsperchild
-mergeauthz	mod/mod_authz_core.html#mergeauthz
 metadir	mod/mod_cern_meta.html#metadir
 metafiles	mod/mod_cern_meta.html#metafiles
 metasuffix	mod/mod_cern_meta.html#metasuffix
@@ -324,6 +323,9 @@ removeoutputfilter	mod/mod_mime.html#removeoutputfilter
 removetype	mod/mod_mime.html#removetype
 requestheader	mod/mod_headers.html#requestheader
 require	mod/mod_authz_core.html#require
+requireall	mod/mod_authz_core.html#requireall
+requireany	mod/mod_authz_core.html#requireany
+requirenone	mod/mod_authz_core.html#requirenone
 rewritebase	mod/mod_rewrite.html#rewritebase
 rewritecond	mod/mod_rewrite.html#rewritecond
 rewriteengine	mod/mod_rewrite.html#rewriteengine
