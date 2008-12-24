@@ -347,7 +347,6 @@ static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void **mem)
     if (!ptr) {
 	return APR_ENOSHMAVAIL;
     }
-    ptr = score->base + score->size * id;
     *mem = ptr;
     return APR_SUCCESS;
 }
