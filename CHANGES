@@ -2,6 +2,10 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_cache: Introduce 'no-cache' per-request environment variable
+    to prevent the saving of an otherwise cacheable response.
+    [Eric Covener]
+
  *) mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
     way that per-directory rewrites append the previous notion of PATH_INFO
     to each substitution before evaluating subsequent rules. 

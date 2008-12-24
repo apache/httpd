@@ -538,6 +538,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                               "*", NULL)) {
         reason = "Vary header contains '*'";
     }
+    else if (apr_table_get(r->subprocess_env, "no-cache") != NULL) { 
+        reason = "environment variable 'no-cache' is set";
+    }
     else if (r->no_cache) {
         /* or we've been asked not to cache it above */
         reason = "r->no_cache present";
