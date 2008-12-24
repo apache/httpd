@@ -17,7 +17,6 @@
 /* Memory handler for a shared memory divided in slot.
  * This one uses shared memory.
  */
-#define CORE_PRIVATE
 
 #include "apr.h"
 #include "apr_file_io.h"

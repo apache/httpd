@@ -17,7 +17,6 @@
 /* Memory handler for a plain memory divided in slot.
  * This one uses plain memory.
  */
-#define CORE_PRIVATE
 
 #include "apr.h"
 #include "apr_pools.h"
