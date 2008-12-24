@@ -157,7 +157,7 @@ static apr_status_t ap_slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *f
 	ptr = ptr + mem->size;
 	func((void *) ptr, data, pool);
     }
-    return 0;
+    return APR_SUCCESS;
 }
 static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
 {
