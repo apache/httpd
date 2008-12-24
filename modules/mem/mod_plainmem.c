@@ -46,12 +46,12 @@ static apr_status_t ap_slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *f
     void *ptr;
 
     if (!mem)
-        return APR_ENOSHMAVAIL;
+	return APR_ENOSHMAVAIL;
 
     ptr = mem->base;
     for (i = 0; i < mem->num; i++) {
-        ptr = ptr + mem->size;
-        func((void *)ptr, data, pool);
+	ptr = ptr + mem->size;
+	func((void *) ptr, data, pool);
     }
     return 0;
 }
@@ -64,42 +64,43 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     apr_status_t rv;
 
     if (name) {
-        if (name[0] == ':')
-            fname = name;
-        else
-            fname = ap_server_root_relative(pool, name);
+	if (name[0] == ':')
+	    fname = name;
+	else
+	    fname = ap_server_root_relative(pool, name);
 
-        /* first try to attach to existing slotmem */
-        if (next) {
-            for (;;) {
-                if (strcmp(next->name, fname) == 0) {
-                    /* we already have it */
-                    *new = next;
-                    return APR_SUCCESS;
-                }
-                if (!next->next)
-                    break;
-                next = next->next;
-            }
-        }
-    } else
-        fname = "anonymous";
+	/* first try to attach to existing slotmem */
+	if (next) {
+	    for (;;) {
+		if (strcmp(next->name, fname) == 0) {
+		    /* we already have it */
+		    *new = next;
+		    return APR_SUCCESS;
+		}
+		if (!next->next)
+		    break;
+		next = next->next;
+	    }
+	}
+    }
+    else
+	fname = "anonymous";
 
     /* create the memory using the globalpool */
     res = (ap_slotmem_t *) apr_pcalloc(globalpool, sizeof(ap_slotmem_t));
-    res->base =  apr_pcalloc(globalpool, item_size * item_num);
+    res->base = apr_pcalloc(globalpool, item_size * item_num);
     if (!res->base)
-        return APR_ENOSHMAVAIL;
+	return APR_ENOSHMAVAIL;
 
     /* For the chained slotmem stuff */
     res->name = apr_pstrdup(globalpool, fname);
     res->size = item_size;
     res->num = item_num;
     res->next = NULL;
-    if (globallistmem==NULL)
-        globallistmem = res;
+    if (globallistmem == NULL)
+	globallistmem = res;
     else
-        next->next = res;
+	next->next = res;
 
     *new = res;
     return APR_SUCCESS;
@@ -114,45 +115,46 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     apr_status_t rv;
 
     if (name) {
-        if (name[0] == ':')
-            fname = name;
-        else
-            fname = ap_server_root_relative(pool, name);
-    } else
-        return APR_ENOSHMAVAIL;
+	if (name[0] == ':')
+	    fname = name;
+	else
+	    fname = ap_server_root_relative(pool, name);
+    }
+    else
+	return APR_ENOSHMAVAIL;
 
     /* first try to attach to existing slotmem */
     if (next) {
-        for (;;) {
-            if (strcmp(next->name, fname) == 0) {
-                /* we already have it */
-                *new = next;
-                *item_size = next->size;
-                *item_num = next->num;
-                return APR_SUCCESS;
-            }
-            if (!next->next)
-                break;
-            next = next->next;
-        }
+	for (;;) {
+	    if (strcmp(next->name, fname) == 0) {
+		/* we already have it */
+		*new = next;
+		*item_size = next->size;
+		*item_num = next->num;
+		return APR_SUCCESS;
+	    }
+	    if (!next->next)
+		break;
+	    next = next->next;
+	}
     }
 
     return APR_ENOSHMAVAIL;
 }
 
-static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void**mem)
+static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void **mem)
 {
 
     void *ptr;
 
     if (!score)
-        return APR_ENOSHMAVAIL;
-    if (id<0 || id>score->num)
-        return APR_ENOSHMAVAIL;
+	return APR_ENOSHMAVAIL;
+    if (id < 0 || id > score->num)
+	return APR_ENOSHMAVAIL;
 
     ptr = score->base + score->size * id;
     if (!ptr)
-        return APR_ENOSHMAVAIL;
+	return APR_ENOSHMAVAIL;
     *mem = ptr;
     return APR_SUCCESS;
 }
@@ -165,7 +167,7 @@ static const slotmem_storage_method storage = {
 };
 
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,
-                             apr_pool_t *ptemp)
+		          apr_pool_t *ptemp)
 {
     globalpool = p;
     return OK;
@@ -179,10 +181,10 @@ static void ap_plainmem_register_hook(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA plainmem_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,       /* create per-directory config structure */
-    NULL,       /* merge per-directory config structures */
-    NULL,       /* create per-server config structure */
-    NULL,       /* merge per-server config structures */
-    NULL,       /* command apr_table_t */
-    ap_plainmem_register_hook /* register hooks */
+    NULL,			/* create per-directory config structure */
+    NULL,			/* merge per-directory config structures */
+    NULL,			/* create per-server config structure */
+    NULL,			/* merge per-server config structures */
+    NULL,			/* command apr_table_t */
+    ap_plainmem_register_hook	/* register hooks */
 };

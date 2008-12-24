@@ -38,16 +38,16 @@ static int initialize_cleanup(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
 }
 
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,
-                             apr_pool_t *ptemp)
+		          apr_pool_t *ptemp)
 {
     apr_pool_t *global_pool;
     apr_status_t rv;
 
     rv = apr_pool_create(&global_pool, NULL);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "Fatal error: unable to create global pool for shared slotmem");
-        return rv;
+	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+	    "Fatal error: unable to create global pool for shared slotmem");
+	return rv;
     }
     sharedmem_initglobalpool(global_pool);
     return OK;
@@ -63,10 +63,10 @@ static void ap_sharedmem_register_hook(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA sharedmem_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,       /* create per-directory config structure */
-    NULL,       /* merge per-directory config structures */
-    NULL,       /* create per-server config structure */
-    NULL,       /* merge per-server config structures */
-    NULL,       /* command apr_table_t */
-    ap_sharedmem_register_hook /* register hooks */
+    NULL,			/* create per-directory config structure */
+    NULL,			/* merge per-directory config structures */
+    NULL,			/* create per-server config structure */
+    NULL,			/* merge per-server config structures */
+    NULL,			/* command apr_table_t */
+    ap_sharedmem_register_hook	/* register hooks */
 };
