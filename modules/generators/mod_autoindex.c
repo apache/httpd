@@ -120,6 +120,8 @@ typedef struct autoindex_config_struct {
     char *default_icon;
     char *style_sheet;
     char *head_insert;
+    char *header;
+    char *readme;
     apr_int32_t opts;
     apr_int32_t incremented_opts;
     apr_int32_t decremented_opts;
@@ -136,8 +138,6 @@ typedef struct autoindex_config_struct {
     apr_array_header_t *alt_list;
     apr_array_header_t *desc_list;
     apr_array_header_t *ign_list;
-    apr_array_header_t *hdr_list;
-    apr_array_header_t *rdme_list;
 
     char *ctype;
     char *charset;
@@ -310,20 +310,6 @@ static const char *add_desc(cmd_parms *cmd, void *d, const char *desc,
 static const char *add_ignore(cmd_parms *cmd, void *d, const char *ext)
 {
     push_item(((autoindex_config_rec *) d)->ign_list, 0, ext, cmd->path, NULL);
-    return NULL;
-}
-
-static const char *add_header(cmd_parms *cmd, void *d, const char *name)
-{
-    push_item(((autoindex_config_rec *) d)->hdr_list, 0, NULL, cmd->path,
-              name);
-    return NULL;
-}
-
-static const char *add_readme(cmd_parms *cmd, void *d, const char *name)
-{
-    push_item(((autoindex_config_rec *) d)->rdme_list, 0, NULL, cmd->path,
-              name);
     return NULL;
 }
 
@@ -585,10 +571,12 @@ static const command_rec autoindex_cmds[] =
                     "one or more file extensions"),
     AP_INIT_ITERATE2("AddDescription", add_desc, BY_PATH, DIR_CMD_PERMS,
                      "Descriptive text followed by one or more filenames"),
-    AP_INIT_TAKE1("HeaderName", add_header, NULL, DIR_CMD_PERMS,
-                  "a filename"),
-    AP_INIT_TAKE1("ReadmeName", add_readme, NULL, DIR_CMD_PERMS,
-                  "a filename"),
+    AP_INIT_TAKE1("HeaderName", ap_set_string_slot,
+                  (void *)APR_OFFSETOF(autoindex_config_rec, header),
+                  DIR_CMD_PERMS, "a filename"),
+    AP_INIT_TAKE1("ReadmeName", ap_set_string_slot,
+                  (void *)APR_OFFSETOF(autoindex_config_rec, header),
+                  DIR_CMD_PERMS, "a filename"),
     AP_INIT_RAW_ARGS("FancyIndexing", ap_set_deprecated, NULL, OR_ALL,
                      "The FancyIndexing directive is no longer supported. "
                      "Use IndexOptions FancyIndexing."),
@@ -619,8 +607,6 @@ static void *create_autoindex_config(apr_pool_t *p, char *dummy)
     new->alt_list = apr_array_make(p, 4, sizeof(struct item));
     new->desc_list = apr_array_make(p, 4, sizeof(ai_desc_t));
     new->ign_list = apr_array_make(p, 4, sizeof(struct item));
-    new->hdr_list = apr_array_make(p, 4, sizeof(struct item));
-    new->rdme_list = apr_array_make(p, 4, sizeof(struct item));
     new->opts = 0;
     new->incremented_opts = 0;
     new->decremented_opts = 0;
@@ -643,6 +629,10 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
                                           : base->style_sheet;
     new->head_insert = add->head_insert ? add->head_insert
                                           : base->head_insert;
+    new->header = add->header ? add->header
+                                : base->header;
+    new->readme = add->readme ? add->readme
+                                : base->readme;
     new->icon_height = add->icon_height ? add->icon_height : base->icon_height;
     new->icon_width = add->icon_width ? add->icon_width : base->icon_width;
 
@@ -651,10 +641,8 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
 
     new->alt_list = apr_array_append(p, add->alt_list, base->alt_list);
     new->ign_list = apr_array_append(p, add->ign_list, base->ign_list);
-    new->hdr_list = apr_array_append(p, add->hdr_list, base->hdr_list);
     new->desc_list = apr_array_append(p, add->desc_list, base->desc_list);
     new->icon_list = apr_array_append(p, add->icon_list, base->icon_list);
-    new->rdme_list = apr_array_append(p, add->rdme_list, base->rdme_list);
     if (add->opts & NO_OPTIONS) {
         /*
          * If the current directory says 'no options' then we also
@@ -798,8 +786,6 @@ static char *find_item(request_rec *r, apr_array_header_t *list, int path_only)
 
 #define find_icon(d,p,t) find_item(p,d->icon_list,t)
 #define find_alt(d,p,t) find_item(p,d->alt_list,t)
-#define find_header(d,p) find_item(p,d->hdr_list,0)
-#define find_readme(d,p) find_item(p,d->rdme_list,0)
 
 static char *find_default_item(char *bogus_name, apr_array_header_t *list)
 {
@@ -2170,7 +2156,7 @@ static int index_directory(request_rec *r,
         *title_endp-- = '\0';
     }
 
-    emit_head(r, find_header(autoindex_conf, r),
+    emit_head(r, autoindex_conf->header,
               autoindex_opts & SUPPRESS_PREAMBLE,
               autoindex_opts & EMIT_XHTML, title_name);
 
@@ -2242,7 +2228,7 @@ static int index_directory(request_rec *r,
                        keyid, direction, colargs);
     apr_dir_close(thedir);
 
-    emit_tail(r, find_readme(autoindex_conf, r),
+    emit_tail(r, autoindex_conf->readme,
               autoindex_opts & SUPPRESS_PREAMBLE);
 
     return 0;
