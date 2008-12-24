@@ -132,7 +132,11 @@ manager</description>
       CacheEnable  disk  http://www.apache.org/<br />
     </example>
 
+    <p> The <code>no-cache</code> environment variable can be set to 
+    disable caching on a finer grained set of resources.</p>
+
 </usage>
+<seealso><a href="../env.html">Environment Variables in Apache</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -150,8 +154,11 @@ manager</description>
     <example><title>Example</title>
       CacheDisable /local_files
     </example>
-</usage>
 
+    <p> The <code>no-cache</code> environment variable can be set to 
+    disable caching on a finer grained set of resources.</p>
+</usage>
+<seealso><a href="../env.html">Environment Variables in Apache</a></seealso>
 </directivesynopsis>
 <directivesynopsis>
 <name>CacheMaxExpire</name>

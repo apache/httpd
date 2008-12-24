@@ -143,6 +143,13 @@
       CacheDisable /local_files
     </code></p></div>
 
+    <p> The <code>no-cache</code> environment variable can be set to 
+    disable caching on a finer grained set of resources.</p>
+
+<h3>See also</h3>
+<ul>
+<li><a href="../env.html">Environment Variables in Apache</a></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheEnable" id="CacheEnable">CacheEnable</a> <a name="cacheenable" id="cacheenable">Directive</a></h2>
@@ -181,7 +188,14 @@ manager</td></tr>
       CacheEnable  disk  http://www.apache.org/<br />
     </code></p></div>
 
+    <p> The <code>no-cache</code> environment variable can be set to 
+    disable caching on a finer grained set of resources.</p>
 
+
+<h3>See also</h3>
+<ul>
+<li><a href="../env.html">Environment Variables in Apache</a></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheIgnoreCacheControl" id="CacheIgnoreCacheControl">CacheIgnoreCacheControl</a> <a name="cacheignorecachecontrol" id="cacheignorecachecontrol">Directive</a></h2>
