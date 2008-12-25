@@ -60,19 +60,21 @@ module AP_MODULE_DECLARE_DATA sed_module;
 /* This function will be call back from libsed functions if there is any error
  * happend during execution of sed scripts
  */
-static void log_sed_errf(void *data, const char *error)
+static apr_status_t log_sed_errf(void *data, const char *error)
 {
     request_rec *r = (request_rec *) data;
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error);
+    return APR_SUCCESS;
 }
 
 /* This function will be call back from libsed functions if there is any
  * compilation error.
  */
-static void sed_compile_errf(void *data, const char *error)
+static apr_status_t sed_compile_errf(void *data, const char *error)
 {
     sed_expr_config *sed_cfg = (sed_expr_config *) data;
     sed_cfg->last_error = error;
+    return APR_SUCCESS;
 }
 
 /* clear the temporary pool (used for transient buckets)
@@ -97,9 +99,9 @@ static void alloc_outbuf(sed_filter_ctxt* ctx)
 /* append_bucket
  * Allocate a new bucket from buf and sz and append to ctx->bb
  */
-static void append_bucket(sed_filter_ctxt* ctx, char* buf, int sz)
+static apr_status_t append_bucket(sed_filter_ctxt* ctx, char* buf, int sz)
 {
-    int rv;
+    apr_status_t status = APR_SUCCESS;
     apr_bucket *b;
     if (ctx->tpool == ctx->r->pool) {
         /* We are not using transient bucket */
@@ -116,38 +118,42 @@ static void append_bucket(sed_filter_ctxt* ctx, char* buf, int sz)
         if (ctx->numbuckets >= MAX_TRANSIENT_BUCKETS) {
             b = apr_bucket_flush_create(ctx->r->connection->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-            rv = ap_pass_brigade(ctx->f->next, ctx->bb);
+            status = ap_pass_brigade(ctx->f->next, ctx->bb);
             apr_brigade_cleanup(ctx->bb);
             clear_ctxpool(ctx);
         }
     }
+    return status;
 }
 
 /*
  * flush_output_buffer
  * Flush the  output data (stored in ctx->outbuf)
  */
-static void flush_output_buffer(sed_filter_ctxt *ctx)
+static apr_status_t flush_output_buffer(sed_filter_ctxt *ctx)
 {
     int size = ctx->curoutbuf - ctx->outbuf;
     char *out;
+    apr_status_t status = APR_SUCCESS;
     if ((ctx->outbuf == NULL) || (size <=0))
-        return;
+        return status;
     out = apr_palloc(ctx->tpool, size);
     memcpy(out, ctx->outbuf, size);
-    append_bucket(ctx, out, size);
+    status = append_bucket(ctx, out, size);
     ctx->curoutbuf = ctx->outbuf;
+    return status;
 }
 
 /* This is a call back function. When libsed wants to generate the output,
  * this function will be invoked.
  */
-static void sed_write_output(void *dummy, char *buf, int sz)
+static apr_status_t sed_write_output(void *dummy, char *buf, int sz)
 {
     /* dummy is basically filter context. Context is passed during invocation
      * of sed_eval_buffer
      */
     int remainbytes = 0;
+    apr_status_t status = APR_SUCCESS;
     sed_filter_ctxt *ctx = (sed_filter_ctxt *) dummy;
     if (ctx->outbuf == NULL) {
         alloc_outbuf(ctx);
@@ -161,14 +167,15 @@ static void sed_write_output(void *dummy, char *buf, int sz)
             ctx->curoutbuf += remainbytes;
         }
         /* buffer is now full */
-        append_bucket(ctx, ctx->outbuf, ctx->bufsize);
+        status = append_bucket(ctx, ctx->outbuf, ctx->bufsize);
         /* old buffer is now used so allocate new buffer */
         alloc_outbuf(ctx);
-        /* if size is bigger than the allocated buffer directly add to output brigade */
-        if (sz >= ctx->bufsize) {
+        /* if size is bigger than the allocated buffer directly add to output
+         * brigade */
+        if ((status == APR_SUCCESS) && (sz >= ctx->bufsize)) {
             char* newbuf = apr_palloc(ctx->tpool, sz);
             memcpy(newbuf, buf, sz);
-            append_bucket(ctx, newbuf, sz);
+            status = append_bucket(ctx, newbuf, sz);
             /* pool might get clear after append_bucket */
             if (ctx->outbuf == NULL) {
                 alloc_outbuf(ctx);
@@ -183,6 +190,7 @@ static void sed_write_output(void *dummy, char *buf, int sz)
         memcpy(ctx->curoutbuf, buf, sz);
         ctx->curoutbuf += sz;
     }
+    return status;
 }
 
 /* Compile a sed expression. Compiled context is saved in sed_cfg->sed_cmds.
@@ -227,7 +235,6 @@ static apr_status_t init_context(ap_filter_t *f, sed_expr_config *sed_cfg, int u
 {
     apr_status_t status;
     sed_filter_ctxt* ctx;
-    apr_pool_t *tpool;
     request_rec *r = f->r;
     /* Create the context. Call sed_init_eval. libsed will generated
      * output by calling sed_write_output and generates any error by
@@ -318,7 +325,11 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
             apr_bucket *b1 = APR_BUCKET_NEXT(b);
             /* Now clean up the internal sed buffer */
             sed_finalize_eval(&ctx->eval, ctx);
-            flush_output_buffer(ctx);
+            status = flush_output_buffer(ctx);
+            if (status != APR_SUCCESS) {
+                clear_ctxpool(ctx);
+                return status;
+            }
             APR_BUCKET_REMOVE(b);
             /* Insert the eos bucket to ctx->bb brigade */
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
@@ -327,7 +338,11 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
         else if (APR_BUCKET_IS_FLUSH(b)) {
             apr_bucket *b1 = APR_BUCKET_NEXT(b);
             APR_BUCKET_REMOVE(b);
-            flush_output_buffer(ctx);
+            status = flush_output_buffer(ctx);
+            if (status != APR_SUCCESS) {
+                clear_ctxpool(ctx);
+                return status;
+            }
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
             b = b1;
         }
@@ -353,8 +368,11 @@ static apr_status_t sed_response_filter(ap_filter_t *f,
         }
     }
     apr_brigade_cleanup(bb);
-    flush_output_buffer(ctx);
-    status = APR_SUCCESS;
+    status = flush_output_buffer(ctx);
+    if (status != APR_SUCCESS) {
+        clear_ctxpool(ctx);
+        return status;
+    }
     if (!APR_BRIGADE_EMPTY(ctx->bb)) {
         status = ap_pass_brigade(f->next, ctx->bb);
         apr_brigade_cleanup(ctx->bb);
