@@ -62,8 +62,8 @@ struct sed_label_s {
     sed_reptr_t *address;
 };
 
-typedef void (sed_err_fn_t)(void *data, const char *error);
-typedef void (sed_write_fn_t)(void *ctx, char *buf, int sz);
+typedef apr_status_t (sed_err_fn_t)(void *data, const char *error);
+typedef apr_status_t (sed_write_fn_t)(void *ctx, char *buf, int sz);
 
 typedef struct sed_commands_s sed_commands_t;
 #define NWFILES 11 /* 10 plus one for standard output */
