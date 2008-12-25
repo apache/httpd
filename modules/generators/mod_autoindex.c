@@ -738,12 +738,9 @@ struct ent {
     int isdir;
 };
 
-static char *find_item(request_rec *r, apr_array_header_t *list, int path_only)
+static char *find_item(const char *content_type, const char *content_encoding,
+                       char *path, apr_array_header_t *list, int path_only)
 {
-    const char *content_type = ap_field_noparam(r->pool, r->content_type);
-    const char *content_encoding = r->content_encoding;
-    char *path = r->filename;
-
     struct item *items = (struct item *) list->elts;
     int i;
 
@@ -784,23 +781,16 @@ static char *find_item(request_rec *r, apr_array_header_t *list, int path_only)
     return NULL;
 }
 
-#define find_icon(d,p,t) find_item(p,d->icon_list,t)
-#define find_alt(d,p,t) find_item(p,d->alt_list,t)
-
-static char *find_default_item(char *bogus_name, apr_array_header_t *list)
+static char *find_item_by_request(request_rec *r, apr_array_header_t *list, int path_only)
 {
-    request_rec r;
-    /* Bleah.  I tried to clean up find_item, and it lead to this bit
-     * of ugliness.   Note that the fields initialized are precisely
-     * those that find_item looks at...
-     */
-    r.filename = bogus_name;
-    r.content_type = r.content_encoding = NULL;
-    return find_item(&r, list, 1);
+    return find_item(ap_field_noparam(r->pool, r->content_type),
+                     r->content_encoding, r->filename, list, path_only);
 }
 
-#define find_default_icon(d,n) find_default_item(n, d->icon_list)
-#define find_default_alt(d,n) find_default_item(n, d->alt_list)
+#define find_icon(d,p,t) find_item_by_request(p,d->icon_list,t)
+#define find_alt(d,p,t) find_item_by_request(p,d->alt_list,t)
+#define find_default_icon(d,n) find_item(NULL, NULL, n, d->icon_list, 1)
+#define find_default_alt(d,n) find_item(NULL, NULL, n, d->alt_list, 1)
 
 /*
  * Look through the list of pattern/description pairs and return the first one
