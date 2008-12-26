@@ -73,6 +73,7 @@
   <modulefile>mod_proxy_fcgi.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
+  <modulefile>mod_proxy_scgi.xml</modulefile>
   <modulefile>mod_request.xml</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
   <modulefile>mod_sed.xml</modulefile>
