@@ -166,7 +166,7 @@ header is present</td></tr>
     <p>In conjunction with <code>Require dbd-login</code> or
     <code>Require dbd-logout</code>, this provides the option to
     redirect the client back to the Referring page (the URL in
-    the <code>Referer</code> HTTP request header, if present.
+    the <code>Referer</code> HTTP request header, if present).
     When there is no <code>Referer</code> header,
     <code>AuthzDBDLoginToReferer On</code> will be ignored.</p>
 
