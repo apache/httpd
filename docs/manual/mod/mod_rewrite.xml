@@ -1264,15 +1264,15 @@ cannot use <code>$N</code> in the substitution string!
         <dd><p>Apache has to unescape URLs before mapping them,
         so backreferences will be unescaped at the time they are applied.
         Using the B flag, non-alphanumeric characters in backreferences
-        will be escaped. For example, consider the rule:
+        will be escaped. For example, consider the rule:</p>
         <example>
         RewriteRule ^(/.*)$ /index.php?show=$1
         </example>
-        This will map <code>/C++</code> to <code>/index.php?show=/C++</code>.
-        But it will also map <code>/C%2b%2b</code> to
-        <code>/index.php?show=/C++</code>, because the <code>%2b</code>
-        has been unescaped.  With the B flag, it will instead map to
-        <code>/index.php?show=/C%2b%2b</code>.</p>
+        <p>This will map <code>/C++</code> to
+        <code>/index.php?show=/C++</code>. But it will also map
+        <code>/C%2b%2b</code> to <code>/index.php?show=/C++</code>, because
+        the <code>%2b</code> has been unescaped.  With the B flag, it will
+        instead map to <code>/index.php?show=/C%2b%2b</code>.</p>
         <p>This escaping is particularly necessary in a proxy situation,
         when the backend may break if presented with an unescaped URL.</p>
         </dd>
