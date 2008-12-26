@@ -31,7 +31,7 @@
 <compatibility>Split off from <module>mod_proxy_balancer</module> in 2.3</compatibility>
 
 <summary>
-<!-- FIXME: --> This document is still under development.
+<!-- FIXME: --> <p>This document is still under development.</p>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 <seealso><module>mod_proxy_balancer</module></seealso>

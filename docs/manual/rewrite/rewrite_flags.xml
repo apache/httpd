@@ -172,12 +172,11 @@ that does not contain the literal <code>.</code> character.
 <p>This can be also used to force the handler based on some conditions.
 For example, the following snippet used in per-server context allows
 <code>.php</code> files to be <em>displayed</em> by <code>mod_php</code>
-if they are requested with the <code>.phps</code> extension:
+if they are requested with the <code>.phps</code> extension:</p>
 
 <example>
 RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
 </example>
-</p>
 
 <p>The regular expression above - <code>^(/source/.+\.php)s$</code> - will
 match any request that starts with <code>/source/</code> followed by 1 or
