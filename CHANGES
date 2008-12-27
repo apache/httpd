@@ -2,6 +2,9 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_cgid: fix segfault problem on solaris.
+    PR 39332 [Masaoki Kobayashi <masaoki techfirm.co.jp>]
+
  *) mod_proxy_scgi: Added. [André Malo]
 
  *) mod_cache: Introduce 'no-cache' per-request environment variable
@@ -17,7 +20,7 @@ Changes with Apache 2.3.1
      PR 46380 [Ruediger Pluem]
 
   *) scoreboard: Remove unused sb_type from process_score.
-     [Torsten Foertsch <torsten.foertsch@gmx.net>, Chris Darroch]
+     [Torsten Foertsch <torsten.foertsch gmx.net>, Chris Darroch]
 
   *) mod_ssl: Add SSLRenegBufferSize directive to allow changing the
      size of the buffer used for the request-body where necessary
