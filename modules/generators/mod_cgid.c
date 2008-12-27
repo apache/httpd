@@ -342,6 +342,33 @@ static apr_status_t sock_write(int fd, const void *buf, size_t buf_size)
     return APR_SUCCESS;
 }
 
+static apr_status_t sock_writev(int fd, request_rec *r, int count, ...)
+{
+    va_list ap;
+    int rc;
+    struct iovec *vec;
+    int i;
+    int total_bytes = 0;
+
+    vec = (struct iovec *)apr_palloc(r->pool, count * sizeof(struct iovec));
+    va_start(ap, count);
+    for(i=0; i<count; i++) {
+        vec[i].iov_base = va_arg(ap, caddr_t);
+        vec[i].iov_len  = va_arg(ap, int);
+        total_bytes += vec[i].iov_len;
+    }
+    va_end(ap);
+
+    do {
+        rc = writev(fd, vec, count);
+    } while (rc < 0 && errno == EINTR);
+    if (rc < 0) {
+        return errno;
+    }
+
+    return APR_SUCCESS;
+}
+
 static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
                             cgid_req_t *req)
 {
@@ -470,31 +497,31 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     req.loglevel = r->server->loglevel;
 
     /* Write the request header */
-    if ((stat = sock_write(fd, &req, sizeof(req))) != APR_SUCCESS) {
-        return stat;
+    if (req.args_len) {
+        stat = sock_writev(fd, r, 5,
+                           &req, sizeof(req),
+                           r->filename, req.filename_len,
+                           argv0, req.argv0_len,
+                           r->uri, req.uri_len,
+                           r->args, req.args_len);
+    } else {
+        stat = sock_writev(fd, r, 4,
+                           &req, sizeof(req),
+                           r->filename, req.filename_len,
+                           argv0, req.argv0_len,
+                           r->uri, req.uri_len);
     }
 
-    /* Write filename, argv0, uri, and args */
-    if ((stat = sock_write(fd, r->filename, req.filename_len)) != APR_SUCCESS ||
-        (stat = sock_write(fd, argv0, req.argv0_len)) != APR_SUCCESS ||
-        (stat = sock_write(fd, r->uri, req.uri_len)) != APR_SUCCESS) {
+    if (stat != APR_SUCCESS) {
         return stat;
-    }
-    if (req.args_len) {
-        if ((stat = sock_write(fd, r->args, req.args_len)) != APR_SUCCESS) {
-            return stat;
-        }
     }
 
     /* write the environment variables */
     for (i = 0; i < req.env_count; i++) {
         apr_size_t curlen = strlen(env[i]);
 
-        if ((stat = sock_write(fd, &curlen, sizeof(curlen))) != APR_SUCCESS) {
-            return stat;
-        }
-
-        if ((stat = sock_write(fd, env[i], curlen)) != APR_SUCCESS) {
+        if ((stat = sock_writev(fd, r, 2, &curlen, sizeof(curlen),
+                                env[i], curlen)) != APR_SUCCESS) {
             return stat;
         }
     }
