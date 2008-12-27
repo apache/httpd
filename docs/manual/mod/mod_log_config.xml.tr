@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 703997:723557 (outdated) -->
+<!-- English Revision: 723557 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -88,15 +88,15 @@
           biçeminde hiç bayt gönderilmemişse günlüğe '<code>-</code>' yerine
           '<code>0</code>' çıktılanır.</td></tr>
 
-    <tr><td><code>%{<var>Fesmekan</var>}C</code></td>
-        <td>İstek içinde sunucuya gönderilen <var>Fesmekan</var> çerezinin
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}C</code></td>
+        <td>İstek içinde sunucuya gönderilen <var>DEĞİŞKEN</var> çerezinin
           içeriği.</td></tr>
 
     <tr><td><code>%D</code></td>
         <td>Mikrosaniye cinsinden isteği sunmak için harcanan zaman.</td></tr>
 
-    <tr><td><code>%{<var>FALANCA</var>}e</code></td>
-        <td><var>FALANCA</var> ortam değişkeninin içeriği.</td></tr>
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}e</code></td>
+        <td><var>DEĞİŞKEN</var> ortam değişkeninin içeriği.</td></tr>
 
     <tr><td><code>%f</code></td>
         <td>Dosya ismi</td></tr>
@@ -107,9 +107,9 @@
     <tr><td><code>%H</code></td>
         <td>İstek Protokolü</td></tr>
 
-    <tr><td><code>%{<var>Filanca</var>}i</code></td>
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}i</code></td>
         <td>İstekle birlikte sunucuya gönderilen
-          <code><var>Filanca</var>:</code> başlık satır(lar)ının
+          <code><var>DEĞİŞKEN</var>:</code> başlık satır(lar)ının
           içeriği. Diğer modüllerde (örn. <module>mod_headers</module>)
           yapılan değişikliklerden etkilenir.</td></tr>
 
@@ -130,11 +130,11 @@
     <tr><td><code>%m</code></td>
         <td>İstek yöntemi</td></tr>
 
-    <tr><td><code>%{<var>Filanca</var>}n</code></td>
-        <td>Diğer modüldeki <var>Filanca</var> bilgisinin içeriği.</td></tr>
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}n</code></td>
+        <td>Diğer modüldeki <var>DEĞİŞKEN</var> bilgisinin içeriği.</td></tr>
 
-    <tr><td><code>%{<var>Filanca</var>}o</code></td>
-        <td>Yanıttaki <code><var>Filanca</var>:</code> başlık satır(lar)ının
+    <tr><td><code>%{<var>DEĞİŞKEN</var>}o</code></td>
+        <td>Yanıttaki <code><var>DEĞİŞKEN</var>:</code> başlık satır(lar)ının
           içeriği.</td></tr>
 
     <tr><td><code>%p</code></td>
