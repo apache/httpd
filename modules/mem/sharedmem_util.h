@@ -20,3 +20,5 @@
 const slotmem_storage_method *sharedmem_getstorage(void);
 void sharedmem_initglobalpool(apr_pool_t *p);
 void sharedmem_initialize_cleanup(apr_pool_t *p);
+apr_global_mutex_t *sharedmem_mutex;
+const char *mutex_fname;
