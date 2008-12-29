@@ -4,7 +4,7 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(mem)
 
-sharedmem_objs="mod_sharedmem.lo sharedmem_util.lo"
+sharedmem_objs="mod_sharedmem.lo"
 APACHE_MODULE(sharedmem, memslot provider that uses shared memory, $sharedmem_objs, , most)
 APACHE_MODULE(plainmem, memslot provider that uses plain memory, , , no)
 
