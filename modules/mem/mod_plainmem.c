@@ -18,13 +18,6 @@
  * This one uses plain memory.
  */
 
-#include "apr.h"
-#include "apr_pools.h"
-
-#include "httpd.h"
-#include "http_config.h"
-#include "http_log.h"
-
 #include  "slotmem.h"
 
 struct ap_slotmem {

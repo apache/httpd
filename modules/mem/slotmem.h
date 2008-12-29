@@ -28,15 +28,25 @@
  * @{
  */
 
-#include "apr.h"
-#include "apr_strings.h"
-#include "apr_pools.h"
-#include "apr_shm.h"
-
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "ap_provider.h"
+
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_pools.h"
+#include "apr_shm.h"
+#include "apr_global_mutex.h"
+#include "apr_file_io.h"
+
+#ifdef AP_NEED_SET_MUTEX_PERMS
+#include "unixd.h"
+#endif
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>         /* for getpid() */
+#endif
 
 #define SLOTMEM_STORAGE "slotmem"
 
@@ -92,7 +102,21 @@ AP_DECLARE(apr_status_t) (* ap_slotmem_attach)(ap_slotmem_t **new, const char *n
  * @param mem address to store the pointer to the slot
  * @return APR_SUCCESS if all went well
  */
-AP_DECLARE(apr_status_t) (* ap_slotmem_mem)(ap_slotmem_t *s, int item_id, void**mem); 
+AP_DECLARE(apr_status_t) (* ap_slotmem_mem)(ap_slotmem_t *s, int item_id, void**mem);
+/**
+ * lock the memory segment
+ * NOTE: All slots share the same mutex
+ * @param s ap_slotmem_t to use
+ * @return APR_SUCCESS if all went well
+ */
+AP_DECLARE(apr_status_t) (* ap_slotmem_lock)(ap_slotmem_t *s);
+/**
+ * unlock the memory segment
+ * NOTE: All slots share the same mutex
+ * @param s ap_slotmem_t to use.
+ * @return APR_SUCCESS if all went well
+ */
+AP_DECLARE(apr_status_t) (* ap_slotmem_unlock)(ap_slotmem_t *s);
 };
 
 typedef struct slotmem_storage_method slotmem_storage_method;

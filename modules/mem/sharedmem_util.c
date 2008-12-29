@@ -18,16 +18,6 @@
  * This one uses shared memory.
  */
 
-#include "apr.h"
-#include "apr_file_io.h"
-#include "apr_strings.h"
-#include "apr_pools.h"
-#include "apr_shm.h"
-
-#include "httpd.h"
-#include "http_config.h"
-#include "http_log.h"
-
 #include "slotmem.h"
 #include "sharedmem_util.h"
 
@@ -44,6 +34,7 @@ struct ap_slotmem {
     apr_size_t size;
     int num;
     apr_pool_t *globalpool;
+    apr_global_mutex_t *sharedmem_mutex;
     struct ap_slotmem *next;
 };
 
@@ -247,6 +238,7 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     res->size = item_size;
     res->num = item_num;
     res->globalpool = globalpool;
+    res->sharedmem_mutex = sharedmem_mutex;
     res->next = NULL;
     if (globallistmem == NULL) {
 	globallistmem = res;
@@ -317,6 +309,7 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     res->size = desc.item_size;
     res->num = desc.item_num;
     res->globalpool = globalpool;
+    res->sharedmem_mutex = sharedmem_mutex;
     res->next = NULL;
     if (globallistmem == NULL) {
 	globallistmem = res;
@@ -330,19 +323,19 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     *item_num = desc.item_num;
     return APR_SUCCESS;
 }
-static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void **mem)
+static apr_status_t ap_slotmem_mem(ap_slotmem_t *slot, int id, void **mem)
 {
 
     void *ptr;
 
-    if (!score) {
+    if (!slot) {
 	return APR_ENOSHMAVAIL;
     }
-    if (id < 0 || id > score->num) {
+    if (id < 0 || id > slot->num) {
 	return APR_ENOSHMAVAIL;
     }
 
-    ptr = score->base + score->size * id;
+    ptr = slot->base + slot->size * id;
     if (!ptr) {
 	return APR_ENOSHMAVAIL;
     }
@@ -350,11 +343,23 @@ static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void **mem)
     return APR_SUCCESS;
 }
 
+static apr_status_t ap_slotmem_lock(ap_slotmem_t *slot)
+{
+    return (apr_global_mutex_lock(slot->sharedmem_mutex));    
+}
+
+static apr_status_t ap_slotmem_unlock(ap_slotmem_t *slot)
+{
+    return (apr_global_mutex_unlock(slot->sharedmem_mutex));
+}
+
 static const slotmem_storage_method storage = {
     &ap_slotmem_do,
     &ap_slotmem_create,
     &ap_slotmem_attach,
-    &ap_slotmem_mem
+    &ap_slotmem_mem,
+    &ap_slotmem_lock,
+    &ap_slotmem_unlock
 };
 
 /* make the storage usuable from outside */
