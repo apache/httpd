@@ -18,7 +18,7 @@
  * This one uses shared memory.
  */
 
-#include  "slotmem.h"
+#include  "mod_slotmem.h"
 
 /* The description of the slots to reuse the slotmem */
 struct sharedslotdesc {
@@ -123,7 +123,7 @@ static apr_status_t cleanup_slotmem(void *param)
     return APR_SUCCESS;
 }
 
-static apr_status_t ap_slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
+static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 {
     int i;
     void *ptr;
@@ -139,7 +139,7 @@ static apr_status_t ap_slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *f
     }
     return APR_SUCCESS;
 }
-static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
+static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
     void *ptr;
@@ -240,7 +240,7 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     *new = res;
     return APR_SUCCESS;
 }
-static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)
+static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
     void *ptr;
@@ -313,7 +313,7 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     *item_num = desc.item_num;
     return APR_SUCCESS;
 }
-static apr_status_t ap_slotmem_mem(ap_slotmem_t *slot, int id, void **mem)
+static apr_status_t slotmem_mem(ap_slotmem_t *slot, int id, void **mem)
 {
 
     void *ptr;
@@ -333,27 +333,27 @@ static apr_status_t ap_slotmem_mem(ap_slotmem_t *slot, int id, void **mem)
     return APR_SUCCESS;
 }
 
-static apr_status_t ap_slotmem_lock(ap_slotmem_t *slot)
+static apr_status_t slotmem_lock(ap_slotmem_t *slot)
 {
     return (apr_global_mutex_lock(slot->smutex));    
 }
 
-static apr_status_t ap_slotmem_unlock(ap_slotmem_t *slot)
+static apr_status_t slotmem_unlock(ap_slotmem_t *slot)
 {
     return (apr_global_mutex_unlock(slot->smutex));
 }
 
-static const slotmem_storage_method storage = {
-    &ap_slotmem_do,
-    &ap_slotmem_create,
-    &ap_slotmem_attach,
-    &ap_slotmem_mem,
-    &ap_slotmem_lock,
-    &ap_slotmem_unlock
+static const ap_slotmem_storage_method storage = {
+    &slotmem_do,
+    &slotmem_create,
+    &slotmem_attach,
+    &slotmem_mem,
+    &slotmem_lock,
+    &slotmem_unlock
 };
 
 /* make the storage usuable from outside */
-static const slotmem_storage_method *sharedmem_getstorage(void)
+static const ap_slotmem_storage_method *sharedmem_getstorage(void)
 {
     return (&storage);
 }
@@ -466,7 +466,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
 
 static void ap_sharedmem_register_hook(apr_pool_t *p)
 {
-    const slotmem_storage_method *storage = sharedmem_getstorage();
+    const ap_slotmem_storage_method *storage = sharedmem_getstorage();
     ap_register_provider(p, SLOTMEM_STORAGE, "shared", "0", storage);
     ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
