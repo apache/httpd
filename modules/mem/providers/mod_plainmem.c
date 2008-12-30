@@ -18,15 +18,7 @@
  * This one uses plain memory.
  */
 
-#include  "slotmem.h"
-
-struct ap_slotmem {
-    char *name;
-    void *base;
-    apr_size_t size;
-    int num;
-    struct ap_slotmem *next;
-};
+#include  "mod_slotmem.h"
 
 /* global pool and list of slotmem we are handling */
 static struct ap_slotmem *globallistmem = NULL;
@@ -167,6 +159,7 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
 
 static void ap_plainmem_register_hook(apr_pool_t *p)
 {
+    static const char * const prePos[] = { "mod_slotmem.c", NULL };
     ap_register_provider(p, SLOTMEM_STORAGE, "plain", "0", &storage);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
