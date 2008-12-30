@@ -26,21 +26,10 @@ struct sharedslotdesc {
     int item_num;
 };
 
-struct ap_slotmem {
-    char *name;
-    apr_shm_t *shm;
-    void *base;
-    apr_size_t size;
-    int num;
-    apr_pool_t *globalpool;
-    apr_global_mutex_t *sharedmem_mutex;
-    struct ap_slotmem *next;
-};
-
 /* global pool and list of slotmem we are handling */
 static struct ap_slotmem *globallistmem = NULL;
-static apr_pool_t *globalpool = NULL;
-static apr_global_mutex_t *sharedmem_mutex;
+static apr_pool_t *gpool = NULL;
+static apr_global_mutex_t *smutex;
 static const char *mutex_fname;
 
 /*
@@ -75,12 +64,12 @@ static void store_slotmem(ap_slotmem_t *slotmem)
     apr_size_t nbytes;
     const char *storename;
 
-    storename = store_filename(slotmem->globalpool, slotmem->name);
+    storename = store_filename(slotmem->gpool, slotmem->name);
 
-    rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->globalpool);
+    rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->gpool);
     if (APR_STATUS_IS_EEXIST(rv)) {
-	apr_file_remove(storename, slotmem->globalpool);
-	rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->globalpool);
+	apr_file_remove(storename, slotmem->gpool);
+	rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->gpool);
     }
     if (rv != APR_SUCCESS) {
 	return;
@@ -123,10 +112,10 @@ static apr_status_t cleanup_slotmem(void *param)
 
     if (*mem) {
 	ap_slotmem_t *next = *mem;
-	pool = next->globalpool;
+	pool = next->gpool;
 	while (next) {
 	    store_slotmem(next);
-	    rv = apr_shm_destroy(next->shm);
+	    rv = apr_shm_destroy((apr_shm_t *)next->shm);
 	    next = next->next;
 	}
 	apr_pool_destroy(pool);
@@ -160,7 +149,7 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     const char *fname;
     apr_status_t rv;
 
-    if (globalpool == NULL)
+    if (gpool == NULL)
 	return APR_ENOSHMAVAIL;
     if (name) {
 	if (name[0] == ':') {
@@ -190,24 +179,24 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     }
 
     /* first try to attach to existing shared memory */
-    res = (ap_slotmem_t *) apr_pcalloc(globalpool, sizeof(ap_slotmem_t));
+    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
     if (name && name[0] != ':') {
-	rv = apr_shm_attach(&res->shm, fname, globalpool);
+	rv = apr_shm_attach((apr_shm_t **)&res->shm, fname, gpool);
     }
     else {
 	rv = APR_EINVAL;
     }
     if (rv == APR_SUCCESS) {
 	/* check size */
-	if (apr_shm_size_get(res->shm) != item_size * item_num + sizeof(struct sharedslotdesc)) {
-	    apr_shm_detach(res->shm);
+	if (apr_shm_size_get((apr_shm_t *)res->shm) != item_size * item_num + sizeof(struct sharedslotdesc)) {
+	    apr_shm_detach((apr_shm_t *)res->shm);
 	    res->shm = NULL;
 	    return APR_EINVAL;
 	}
-	ptr = apr_shm_baseaddr_get(res->shm);
+	ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
 	memcpy(&desc, ptr, sizeof(desc));
 	if (desc.item_size != item_size || desc.item_num != item_num) {
-	    apr_shm_detach(res->shm);
+	    apr_shm_detach((apr_shm_t *)res->shm);
 	    res->shm = NULL;
 	    return APR_EINVAL;
 	}
@@ -215,16 +204,16 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     }
     else {
 	if (name && name[0] != ':') {
-	    apr_shm_remove(fname, globalpool);
-	    rv = apr_shm_create(&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, globalpool);
+	    apr_shm_remove(fname, gpool);
+	    rv = apr_shm_create((apr_shm_t **)&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, gpool);
 	}
 	else {
-	    rv = apr_shm_create(&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, globalpool);
+	    rv = apr_shm_create((apr_shm_t **)&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, gpool);
 	}
 	if (rv != APR_SUCCESS) {
 	    return rv;
 	}
-	ptr = apr_shm_baseaddr_get(res->shm);
+	ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
 	desc.item_size = item_size;
 	desc.item_num = item_num;
 	memcpy(ptr, &desc, sizeof(desc));
@@ -234,12 +223,12 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     }
 
     /* For the chained slotmem stuff */
-    res->name = apr_pstrdup(globalpool, fname);
+    res->name = apr_pstrdup(gpool, fname);
     res->base = ptr;
     res->size = item_size;
     res->num = item_num;
-    res->globalpool = globalpool;
-    res->sharedmem_mutex = sharedmem_mutex;
+    res->gpool = gpool;
+    res->smutex = smutex;
     res->next = NULL;
     if (globallistmem == NULL) {
 	globallistmem = res;
@@ -261,7 +250,7 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     const char *fname;
     apr_status_t rv;
 
-    if (globalpool == NULL) {
+    if (gpool == NULL) {
 	return APR_ENOSHMAVAIL;
     }
     if (name) {
@@ -293,24 +282,24 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     }
 
     /* first try to attach to existing shared memory */
-    res = (ap_slotmem_t *) apr_pcalloc(globalpool, sizeof(ap_slotmem_t));
-    rv = apr_shm_attach(&res->shm, fname, globalpool);
+    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
+    rv = apr_shm_attach((apr_shm_t **)&res->shm, fname, gpool);
     if (rv != APR_SUCCESS) {
 	return rv;
     }
 
     /* Read the description of the slotmem */
-    ptr = apr_shm_baseaddr_get(res->shm);
+    ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
     memcpy(&desc, ptr, sizeof(desc));
     ptr = ptr + sizeof(desc);
 
     /* For the chained slotmem stuff */
-    res->name = apr_pstrdup(globalpool, fname);
+    res->name = apr_pstrdup(gpool, fname);
     res->base = ptr;
     res->size = desc.item_size;
     res->num = desc.item_num;
-    res->globalpool = globalpool;
-    res->sharedmem_mutex = sharedmem_mutex;
+    res->gpool = gpool;
+    res->smutex = smutex;
     res->next = NULL;
     if (globallistmem == NULL) {
 	globallistmem = res;
@@ -346,12 +335,12 @@ static apr_status_t ap_slotmem_mem(ap_slotmem_t *slot, int id, void **mem)
 
 static apr_status_t ap_slotmem_lock(ap_slotmem_t *slot)
 {
-    return (apr_global_mutex_lock(slot->sharedmem_mutex));    
+    return (apr_global_mutex_lock(slot->smutex));    
 }
 
 static apr_status_t ap_slotmem_unlock(ap_slotmem_t *slot)
 {
-    return (apr_global_mutex_unlock(slot->sharedmem_mutex));
+    return (apr_global_mutex_unlock(slot->smutex));
 }
 
 static const slotmem_storage_method storage = {
@@ -370,9 +359,9 @@ static const slotmem_storage_method *sharedmem_getstorage(void)
 }
 
 /* initialise the global pool */
-static void sharedmem_initglobalpool(apr_pool_t *p)
+static void sharedmem_initgpool(apr_pool_t *p)
 {
-    globalpool = p;
+    gpool = p;
 }
 
 /* Add the pool_clean routine */
@@ -424,7 +413,7 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
         return rv;
     }
 
-    rv = apr_global_mutex_create(&sharedmem_mutex,
+    rv = apr_global_mutex_create(&smutex,
                                  mutex_fname, APR_LOCK_DEFAULT, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
@@ -433,7 +422,7 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
     }
 
 #ifdef AP_NEED_SET_MUTEX_PERMS
-    rv = ap_unixd_set_global_mutex_perms(sharedmem_mutex);
+    rv = ap_unixd_set_global_mutex_perms(smutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "sharedmem: failed to set mutex permissions");
@@ -457,7 +446,7 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
 	    "Fatal error: unable to create global pool for shared slotmem");
 	return rv;
     }
-    sharedmem_initglobalpool(global_pool);
+    sharedmem_initgpool(global_pool);
     return OK;
 }
 
@@ -465,7 +454,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
 {
     apr_status_t rv;
 
-    rv = apr_global_mutex_child_init(&sharedmem_mutex,
+    rv = apr_global_mutex_child_init(&smutex,
                                      mutex_fname, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
