@@ -24,7 +24,7 @@
 static struct ap_slotmem *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
 
-static apr_status_t ap_slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
+static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 {
     int i;
     void *ptr;
@@ -40,13 +40,11 @@ static apr_status_t ap_slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *f
     return APR_SUCCESS;
 }
 
-static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
+static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
 {
-    void *slotmem = NULL;
     ap_slotmem_t *res;
     ap_slotmem_t *next = globallistmem;
     const char *fname;
-    apr_status_t rv;
 
     if (name) {
         if (name[0] == ':')
@@ -91,13 +89,10 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     return APR_SUCCESS;
 }
 
-static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)
+static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)
 {
-    void *slotmem = NULL;
-    ap_slotmem_t *res;
     ap_slotmem_t *next = globallistmem;
     const char *fname;
-    apr_status_t rv;
 
     if (name) {
         if (name[0] == ':')
@@ -127,7 +122,7 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     return APR_ENOSHMAVAIL;
 }
 
-static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void **mem)
+static apr_status_t slotmem_mem(ap_slotmem_t *score, int id, void **mem)
 {
 
     void *ptr;
@@ -144,11 +139,11 @@ static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void **mem)
     return APR_SUCCESS;
 }
 
-static const slotmem_storage_method storage = {
-    &ap_slotmem_do,
-    &ap_slotmem_create,
-    &ap_slotmem_attach,
-    &ap_slotmem_mem
+static const ap_slotmem_storage_method storage = {
+    &slotmem_do,
+    &slotmem_create,
+    &slotmem_attach,
+    &slotmem_mem
 };
 
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,
@@ -160,7 +155,7 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
 
 static void ap_plainmem_register_hook(apr_pool_t *p)
 {
-    static const char * const prePos[] = { "mod_slotmem.c", NULL };
+    /* XXX: static const char * const prePos[] = { "mod_slotmem.c", NULL }; */
     ap_register_provider(p, SLOTMEM_STORAGE, "plain", "0", &storage);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
