@@ -30,7 +30,7 @@ struct ap_slotmem {
 
 /* global pool and list of slotmem we are handling */
 static struct ap_slotmem *globallistmem = NULL;
-static apr_pool_t *globalpool = NULL;
+static apr_pool_t *gpool = NULL;
 
 static apr_status_t ap_slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 {
@@ -78,14 +78,14 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     else
 	fname = "anonymous";
 
-    /* create the memory using the globalpool */
-    res = (ap_slotmem_t *) apr_pcalloc(globalpool, sizeof(ap_slotmem_t));
-    res->base = apr_pcalloc(globalpool, item_size * item_num);
+    /* create the memory using the gpool */
+    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
+    res->base = apr_pcalloc(gpool, item_size * item_num);
     if (!res->base)
 	return APR_ENOSHMAVAIL;
 
     /* For the chained slotmem stuff */
-    res->name = apr_pstrdup(globalpool, fname);
+    res->name = apr_pstrdup(gpool, fname);
     res->size = item_size;
     res->num = item_num;
     res->next = NULL;
@@ -161,7 +161,7 @@ static const slotmem_storage_method storage = {
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,
 		          apr_pool_t *ptemp)
 {
-    globalpool = p;
+    gpool = p;
     return OK;
 }
 
