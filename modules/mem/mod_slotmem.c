@@ -70,10 +70,11 @@ AP_DECLARE(apr_status_t) ap_slotmem_unlock(ap_slotmem_storage_method *sm,
 
 module AP_MODULE_DECLARE_DATA slotmem_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    NULL,			/* command apr_table_t */
+    NULL,                       /* create per-directory config structure */
+    NULL,                       /* merge per-directory config structures */
+    NULL,                       /* create per-server config structure */
+    NULL,                       /* merge per-server config structures */
+    NULL,                       /* command apr_table_t */
     NULL                        /* register hooks */
 };
+

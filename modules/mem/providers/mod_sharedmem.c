@@ -45,18 +45,19 @@ static const char *store_filename(apr_pool_t *pool, const char *slotmemname)
     const char *storename;
     const char *fname;
     if (strcmp(slotmemname, "anonymous") == 0)
-	fname = ap_server_root_relative(pool, "logs/anonymous");
+        fname = ap_server_root_relative(pool, "logs/anonymous");
     else if (slotmemname[0] == ':') {
-	const char *tmpname;
-	tmpname = apr_pstrcat(pool, "logs/", &slotmemname[1], NULL);
-	fname = ap_server_root_relative(pool, tmpname);
+        const char *tmpname;
+        tmpname = apr_pstrcat(pool, "logs/", &slotmemname[1], NULL);
+        fname = ap_server_root_relative(pool, tmpname);
     }
     else {
-	fname = slotmemname;
+        fname = slotmemname;
     }
     storename = apr_pstrcat(pool, fname, ".slotmem", NULL);
     return storename;
 }
+
 static void store_slotmem(ap_slotmem_t *slotmem)
 {
     apr_file_t *fp;
@@ -68,11 +69,11 @@ static void store_slotmem(ap_slotmem_t *slotmem)
 
     rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->gpool);
     if (APR_STATUS_IS_EEXIST(rv)) {
-	apr_file_remove(storename, slotmem->gpool);
-	rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->gpool);
+        apr_file_remove(storename, slotmem->gpool);
+        rv = apr_file_open(&fp, storename, APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->gpool);
     }
     if (rv != APR_SUCCESS) {
-	return;
+        return;
     }
     nbytes = slotmem->size * slotmem->num;
     apr_file_write(fp, slotmem->base, &nbytes);
@@ -89,18 +90,18 @@ static void restore_slotmem(void *ptr, const char *name, apr_size_t item_size, i
     storename = store_filename(pool, name);
     rv = apr_file_open(&fp, storename, APR_READ | APR_WRITE, APR_OS_DEFAULT, pool);
     if (rv == APR_SUCCESS) {
-	apr_finfo_t fi;
-	if (apr_file_info_get(&fi, APR_FINFO_SIZE, fp) == APR_SUCCESS) {
-	    if (fi.size == nbytes) {
-		apr_file_read(fp, ptr, &nbytes);
-	    }
-	    else {
-		apr_file_close(fp);
-		apr_file_remove(storename, pool);
-		return;
-	    }
-	}
-	apr_file_close(fp);
+        apr_finfo_t fi;
+        if (apr_file_info_get(&fi, APR_FINFO_SIZE, fp) == APR_SUCCESS) {
+            if (fi.size == nbytes) {
+                apr_file_read(fp, ptr, &nbytes);
+            }
+            else {
+                apr_file_close(fp);
+                apr_file_remove(storename, pool);
+                return;
+            }
+        }
+        apr_file_close(fp);
     }
 }
 
@@ -111,14 +112,14 @@ static apr_status_t cleanup_slotmem(void *param)
     apr_pool_t *pool = NULL;
 
     if (*mem) {
-	ap_slotmem_t *next = *mem;
-	pool = next->gpool;
-	while (next) {
-	    store_slotmem(next);
-	    rv = apr_shm_destroy((apr_shm_t *)next->shm);
-	    next = next->next;
-	}
-	apr_pool_destroy(pool);
+        ap_slotmem_t *next = *mem;
+        pool = next->gpool;
+        while (next) {
+            store_slotmem(next);
+            rv = apr_shm_destroy((apr_shm_t *)next->shm);
+            next = next->next;
+        }
+        apr_pool_destroy(pool);
     }
     return APR_SUCCESS;
 }
@@ -129,16 +130,17 @@ static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func
     void *ptr;
 
     if (!mem) {
-	return APR_ENOSHMAVAIL;
+        return APR_ENOSHMAVAIL;
     }
 
     ptr = mem->base;
     for (i = 0; i < mem->num; i++) {
-	ptr = ptr + mem->size;
-	func((void *) ptr, data, pool);
+        ptr = ptr + mem->size;
+        func((void *) ptr, data, pool);
     }
     return APR_SUCCESS;
 }
+
 static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
@@ -150,76 +152,76 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     apr_status_t rv;
 
     if (gpool == NULL)
-	return APR_ENOSHMAVAIL;
+        return APR_ENOSHMAVAIL;
     if (name) {
-	if (name[0] == ':') {
-	    fname = name;
-	}
-	else {
-	    fname = ap_server_root_relative(pool, name);
-	}
+        if (name[0] == ':') {
+            fname = name;
+        }
+        else {
+            fname = ap_server_root_relative(pool, name);
+        }
 
-	/* first try to attach to existing slotmem */
-	if (next) {
-	    for (;;) {
-		if (strcmp(next->name, fname) == 0) {
-		    /* we already have it */
-		    *new = next;
-		    return APR_SUCCESS;
-		}
-		if (!next->next) {
-		    break;
-		}
-		next = next->next;
-	    }
-	}
+        /* first try to attach to existing slotmem */
+        if (next) {
+            for (;;) {
+                if (strcmp(next->name, fname) == 0) {
+                    /* we already have it */
+                    *new = next;
+                    return APR_SUCCESS;
+                }
+                if (!next->next) {
+                    break;
+                }
+                next = next->next;
+            }
+        }
     }
     else {
-	fname = "anonymous";
+        fname = "anonymous";
     }
 
     /* first try to attach to existing shared memory */
     res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
     if (name && name[0] != ':') {
-	rv = apr_shm_attach((apr_shm_t **)&res->shm, fname, gpool);
+        rv = apr_shm_attach((apr_shm_t **)&res->shm, fname, gpool);
     }
     else {
-	rv = APR_EINVAL;
+        rv = APR_EINVAL;
     }
     if (rv == APR_SUCCESS) {
-	/* check size */
-	if (apr_shm_size_get((apr_shm_t *)res->shm) != item_size * item_num + sizeof(struct sharedslotdesc)) {
-	    apr_shm_detach((apr_shm_t *)res->shm);
-	    res->shm = NULL;
-	    return APR_EINVAL;
-	}
-	ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
-	memcpy(&desc, ptr, sizeof(desc));
-	if (desc.item_size != item_size || desc.item_num != item_num) {
-	    apr_shm_detach((apr_shm_t *)res->shm);
-	    res->shm = NULL;
-	    return APR_EINVAL;
-	}
-	ptr = ptr + sizeof(desc);
+        /* check size */
+        if (apr_shm_size_get((apr_shm_t *)res->shm) != item_size * item_num + sizeof(struct sharedslotdesc)) {
+            apr_shm_detach((apr_shm_t *)res->shm);
+            res->shm = NULL;
+            return APR_EINVAL;
+        }
+        ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
+        memcpy(&desc, ptr, sizeof(desc));
+        if (desc.item_size != item_size || desc.item_num != item_num) {
+            apr_shm_detach((apr_shm_t *)res->shm);
+            res->shm = NULL;
+            return APR_EINVAL;
+        }
+        ptr = ptr + sizeof(desc);
     }
     else {
-	if (name && name[0] != ':') {
-	    apr_shm_remove(fname, gpool);
-	    rv = apr_shm_create((apr_shm_t **)&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, gpool);
-	}
-	else {
-	    rv = apr_shm_create((apr_shm_t **)&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, gpool);
-	}
-	if (rv != APR_SUCCESS) {
-	    return rv;
-	}
-	ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
-	desc.item_size = item_size;
-	desc.item_num = item_num;
-	memcpy(ptr, &desc, sizeof(desc));
-	ptr = ptr + sizeof(desc);
-	memset(ptr, 0, item_size * item_num);
-	restore_slotmem(ptr, fname, item_size, item_num, pool);
+        if (name && name[0] != ':') {
+            apr_shm_remove(fname, gpool);
+            rv = apr_shm_create((apr_shm_t **)&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, gpool);
+        }
+        else {
+            rv = apr_shm_create((apr_shm_t **)&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, gpool);
+        }
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
+        desc.item_size = item_size;
+        desc.item_num = item_num;
+        memcpy(ptr, &desc, sizeof(desc));
+        ptr = ptr + sizeof(desc);
+        memset(ptr, 0, item_size * item_num);
+        restore_slotmem(ptr, fname, item_size, item_num, pool);
     }
 
     /* For the chained slotmem stuff */
@@ -231,15 +233,16 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     res->smutex = smutex;
     res->next = NULL;
     if (globallistmem == NULL) {
-	globallistmem = res;
+        globallistmem = res;
     }
     else {
-	next->next = res;
+        next->next = res;
     }
 
     *new = res;
     return APR_SUCCESS;
 }
+
 static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
@@ -251,41 +254,41 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     apr_status_t rv;
 
     if (gpool == NULL) {
-	return APR_ENOSHMAVAIL;
+        return APR_ENOSHMAVAIL;
     }
     if (name) {
-	if (name[0] == ':') {
-	    fname = name;
-	}
-	else {
-	    fname = ap_server_root_relative(pool, name);
-	}
+        if (name[0] == ':') {
+            fname = name;
+        }
+        else {
+            fname = ap_server_root_relative(pool, name);
+        }
     }
     else {
-	return APR_ENOSHMAVAIL;
+        return APR_ENOSHMAVAIL;
     }
 
     /* first try to attach to existing slotmem */
     if (next) {
-	for (;;) {
-	    if (strcmp(next->name, fname) == 0) {
-		/* we already have it */
-		*new = next;
-		*item_size = next->size;
-		*item_num = next->num;
-		return APR_SUCCESS;
-	    }
-	    if (!next->next)
-		break;
-	    next = next->next;
-	}
+        for (;;) {
+            if (strcmp(next->name, fname) == 0) {
+                /* we already have it */
+                *new = next;
+                *item_size = next->size;
+                *item_num = next->num;
+                return APR_SUCCESS;
+            }
+            if (!next->next)
+                break;
+            next = next->next;
+        }
     }
 
     /* first try to attach to existing shared memory */
     res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
     rv = apr_shm_attach((apr_shm_t **)&res->shm, fname, gpool);
     if (rv != APR_SUCCESS) {
-	return rv;
+        return rv;
     }
 
     /* Read the description of the slotmem */
@@ -302,10 +305,10 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     res->smutex = smutex;
     res->next = NULL;
     if (globallistmem == NULL) {
-	globallistmem = res;
+        globallistmem = res;
     }
     else {
-	next->next = res;
+        next->next = res;
     }
 
     *new = res;
@@ -313,21 +316,22 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     *item_num = desc.item_num;
     return APR_SUCCESS;
 }
+
 static apr_status_t slotmem_mem(ap_slotmem_t *slot, int id, void **mem)
 {
 
     void *ptr;
 
     if (!slot) {
-	return APR_ENOSHMAVAIL;
+        return APR_ENOSHMAVAIL;
     }
     if (id < 0 || id > slot->num) {
-	return APR_ENOSHMAVAIL;
+        return APR_ENOSHMAVAIL;
     }
 
     ptr = slot->base + slot->size * id;
     if (!ptr) {
-	return APR_ENOSHMAVAIL;
+        return APR_ENOSHMAVAIL;
     }
     *mem = ptr;
     return APR_SUCCESS;
@@ -335,7 +339,7 @@ static apr_status_t slotmem_mem(ap_slotmem_t *slot, int id, void **mem)
 
 static apr_status_t slotmem_lock(ap_slotmem_t *slot)
 {
-    return (apr_global_mutex_lock(slot->smutex));    
+    return (apr_global_mutex_lock(slot->smutex));
 }
 
 static apr_status_t slotmem_unlock(ap_slotmem_t *slot)
@@ -370,7 +374,7 @@ static void sharedmem_initialize_cleanup(apr_pool_t *p)
     apr_pool_cleanup_register(p, &globallistmem, cleanup_slotmem, apr_pool_cleanup_null);
 }
 
-/* 
+/*
  * Create the shared mem mutex and
  * make sure the shared memory is cleaned
  */
@@ -435,16 +439,16 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
 }
 
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,
-		          apr_pool_t *ptemp)
+                      apr_pool_t *ptemp)
 {
     apr_pool_t *global_pool;
     apr_status_t rv;
 
     rv = apr_pool_create(&global_pool, NULL);
     if (rv != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-	    "Fatal error: unable to create global pool for shared slotmem");
-	return rv;
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+            "Fatal error: unable to create global pool for shared slotmem");
+        return rv;
     }
     sharedmem_initgpool(global_pool);
     return OK;
@@ -475,10 +479,11 @@ static void ap_sharedmem_register_hook(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA sharedmem_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    NULL,			/* command apr_table_t */
-    ap_sharedmem_register_hook	/* register hooks */
+    NULL,                       /* create per-directory config structure */
+    NULL,                       /* merge per-directory config structures */
+    NULL,                       /* create per-server config structure */
+    NULL,                       /* merge per-server config structures */
+    NULL,                       /* command apr_table_t */
+    ap_sharedmem_register_hook  /* register hooks */
 };
+

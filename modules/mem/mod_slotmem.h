@@ -50,7 +50,7 @@
 
 #define SLOTMEM_STORAGE "slotmem"
 
-typedef struct ap_slotmem ap_slotmem_t; 
+typedef struct ap_slotmem ap_slotmem_t;
 
 struct ap_slotmem {
     char                 *name;       /* per segment name */
