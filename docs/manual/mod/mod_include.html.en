@@ -426,7 +426,9 @@
       <dt><code>DOCUMENT_URI</code></dt>
       <dd>The (%-decoded) URL path of the document requested by the
       user. Note that in the case of nested include files, this is
-      <em>not</em> the URL for the current document.</dd>
+      <em>not</em> the URL for the current document.  Note also that
+      if the URL is modified internally (e.g. by an <code class="directive"><a href="../mod/mod_alias.html#alias">alias</a></code> or <code class="directive"><a href="../mod/mod_dir.html#directoryindex">directoryindex</a></code>), the modified
+      URL is shown.</dd>
 
       <dt><code>LAST_MODIFIED</code></dt>
       <dd>The last modification date of the document requested by
