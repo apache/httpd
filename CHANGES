@@ -2,6 +2,9 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_rewrite: fix "B" flag breakage by reverting r5589343
+    PR 45529 [Bob Ionescu <bobsiegen googlemail.com>]
+
  *) CGI: return 504 (Gateway timeout) rather than 500 when a script
     times out before returning status line/headers.
     PR 42190 [Nick Kew]
