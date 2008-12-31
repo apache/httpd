@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-/* Memory handler for a plain memory divided in slot.
- * This one uses plain memory.
+/* Memory handler for memory divided in slot.
+ * We provide a universal API and are a simple
+ * front-end to the actual memory providers.
  */
 
 #include  "mod_slotmem.h"
