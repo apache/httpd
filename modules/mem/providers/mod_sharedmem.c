@@ -149,6 +149,7 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     ap_slotmem_t *res;
     ap_slotmem_t *next = globallistmem;
     const char *fname;
+    apr_shm_t *shm;
     apr_status_t rv;
 
     if (gpool == NULL)
@@ -181,25 +182,22 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     }
 
     /* first try to attach to existing shared memory */
-    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
     if (name && name[0] != ':') {
-        rv = apr_shm_attach((apr_shm_t **)&res->shm, fname, gpool);
+        rv = apr_shm_attach(&shm, fname, gpool);
     }
     else {
         rv = APR_EINVAL;
     }
     if (rv == APR_SUCCESS) {
         /* check size */
-        if (apr_shm_size_get((apr_shm_t *)res->shm) != item_size * item_num + sizeof(struct sharedslotdesc)) {
-            apr_shm_detach((apr_shm_t *)res->shm);
-            res->shm = NULL;
+        if (apr_shm_size_get(shm) != item_size * item_num + sizeof(struct sharedslotdesc)) {
+            apr_shm_detach(shm);
             return APR_EINVAL;
         }
-        ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
+        ptr = apr_shm_baseaddr_get(shm);
         memcpy(&desc, ptr, sizeof(desc));
         if (desc.item_size != item_size || desc.item_num != item_num) {
-            apr_shm_detach((apr_shm_t *)res->shm);
-            res->shm = NULL;
+            apr_shm_detach(shm);
             return APR_EINVAL;
         }
         ptr = ptr + sizeof(desc);
@@ -207,15 +205,15 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     else {
         if (name && name[0] != ':') {
             apr_shm_remove(fname, gpool);
-            rv = apr_shm_create((apr_shm_t **)&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, gpool);
+            rv = apr_shm_create(&shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, gpool);
         }
         else {
-            rv = apr_shm_create((apr_shm_t **)&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, gpool);
+            rv = apr_shm_create(&shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, gpool);
         }
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
+        ptr = apr_shm_baseaddr_get(shm);
         desc.item_size = item_size;
         desc.item_num = item_num;
         memcpy(ptr, &desc, sizeof(desc));
@@ -225,7 +223,9 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     }
 
     /* For the chained slotmem stuff */
+    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
     res->name = apr_pstrdup(gpool, fname);
+    res->shm = shm;
     res->base = ptr;
     res->size = item_size;
     res->num = item_num;
@@ -251,6 +251,7 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     ap_slotmem_t *next = globallistmem;
     struct sharedslotdesc desc;
     const char *fname;
+    apr_shm_t *shm;
     apr_status_t rv;
 
     if (gpool == NULL) {
@@ -285,19 +286,20 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     }
 
     /* first try to attach to existing shared memory */
-    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
-    rv = apr_shm_attach((apr_shm_t **)&res->shm, fname, gpool);
+    rv = apr_shm_attach(&shm, fname, gpool);
     if (rv != APR_SUCCESS) {
         return rv;
     }
 
     /* Read the description of the slotmem */
-    ptr = apr_shm_baseaddr_get((apr_shm_t *)res->shm);
+    ptr = apr_shm_baseaddr_get(shm);
     memcpy(&desc, ptr, sizeof(desc));
     ptr = ptr + sizeof(desc);
 
     /* For the chained slotmem stuff */
+    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
     res->name = apr_pstrdup(gpool, fname);
+    res->shm = shm;
     res->base = ptr;
     res->size = desc.item_size;
     res->num = desc.item_num;
