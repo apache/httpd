@@ -2,6 +2,12 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_include: support generating non-ASCII characters as entities in SSI
+    PR 25202 [Nick Kew]
+
+ *) core/utils: Enhance ap_escape_html API to support escaping non-ASCII chars
+    PR 25202 [Nick Kew]
+
  *) mod_rewrite: fix "B" flag breakage by reverting r5589343
     PR 45529 [Bob Ionescu <bobsiegen googlemail.com>]
 

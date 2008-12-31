@@ -1738,7 +1738,7 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
 
 /* ap_escape_uri is now a macro for os_escape_path */
 
-AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
+AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc)
 {
     int i, j;
     char *x;
@@ -1750,6 +1750,8 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
         else if (s[i] == '&')
             j += 4;
         else if (s[i] == '"')
+            j += 5;
+        else if (toasc && !apr_isascii(s[i]))
             j += 5;
 
     if (j == 0)
@@ -1773,13 +1775,17 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
             memcpy(&x[j], "&quot;", 6);
             j += 5;
         }
+        else if (toasc && !apr_isascii(s[i])) {
+            char *esc = apr_psprintf(p, "&#%3.3d;", (unsigned char)s[i]);
+            memcpy(&x[j], esc, 6);
+            j += 5;
+        }
         else
             x[j] = s[i];
 
     x[j] = '\0';
     return x;
 }
-
 AP_DECLARE(char *) ap_escape_logitem(apr_pool_t *p, const char *str)
 {
     char *ret;
