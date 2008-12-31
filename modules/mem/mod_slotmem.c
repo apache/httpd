@@ -21,6 +21,11 @@
 
 #include  "mod_slotmem.h"
 
+AP_DECLARE(apr_array_header_t *) ap_slotmem_methods(apr_pool_t *pool)
+{
+    return (ap_list_provider_names(pool, SLOTMEM_STORAGE, "0"));
+}
+
 AP_DECLARE(ap_slotmem_storage_method *) ap_slotmem_method(const char *provider)
 {
     return (ap_lookup_provider(SLOTMEM_STORAGE, provider, "0"));

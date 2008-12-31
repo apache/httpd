@@ -143,6 +143,12 @@ typedef struct ap_slotmem_storage_method ap_slotmem_storage_method;
  *  simple interface for all
  */
 /**
+ * obtain the array of provider methods desired
+ * @param pool is the pool to use
+ * @return pointer to array of provider names available
+ */
+AP_DECLARE(apr_array_header_t *) ap_slotmem_methods(apr_pool_t *pool);
+/**
  * obtain the provider method desired
  * @param provider is name of the provider to use
  * @return pointer to provider or NULL
