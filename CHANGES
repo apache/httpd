@@ -2,6 +2,10 @@
 Changes with Apache 2.3.1
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_slotmem: Add in new slot-based memory access API module, including
+    2 providers (mod_sharedmem and mod_plainmem) [Jim Jagielski,
+    Jean-Frederic Clere, Brian Akins <brian.akins turner.com>]
+
  *) mod_include: support generating non-ASCII characters as entities in SSI
     PR 25202 [Nick Kew]
 
