@@ -21,7 +21,7 @@
 #include  "mod_slotmem.h"
 
 /* global pool and list of slotmem we are handling */
-static struct ap_slotmem *globallistmem = NULL;
+static struct ap_slotmem_t *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
 
 static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)

@@ -50,9 +50,9 @@
 
 #define SLOTMEM_STORAGE "slotmem"
 
-typedef struct ap_slotmem ap_slotmem_t;
+typedef struct ap_slotmem_t ap_slotmem_t;
 
-struct ap_slotmem {
+struct ap_slotmem_t {
     char                 *name;       /* per segment name */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
     void                 *base;       /* data set start */
@@ -61,7 +61,7 @@ struct ap_slotmem {
     apr_pool_t           *gpool;      /* per segment global pool */
     apr_global_mutex_t   *smutex;     /* mutex */
     void                 *context;    /* general purpose storage */
-    struct ap_slotmem    *next;       /* location of next allocated segment */
+    struct ap_slotmem_t  *next;       /* location of next allocated segment */
 };
 
 

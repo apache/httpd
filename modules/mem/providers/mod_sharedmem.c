@@ -27,7 +27,7 @@ struct sharedslotdesc {
 };
 
 /* global pool and list of slotmem we are handling */
-static struct ap_slotmem *globallistmem = NULL;
+static struct ap_slotmem_t *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
 static apr_global_mutex_t *smutex;
 static const char *mutex_fname;
