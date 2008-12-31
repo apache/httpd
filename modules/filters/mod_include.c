@@ -1192,7 +1192,8 @@ static apr_status_t handle_echo(include_ctx_t *ctx, ap_filter_t *f,
                     echo_text = ap_escape_uri(ctx->dpool, val);
                     break;
                 case E_ENTITY:
-                    echo_text = ap_escape_html(ctx->dpool, val);
+                    /* PR#25202: escape anything non-ascii here */
+                    echo_text = ap_escape_html2(ctx->dpool, val, 1);
                     break;
                 }
 

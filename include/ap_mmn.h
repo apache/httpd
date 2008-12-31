@@ -184,6 +184,8 @@
  * 20081201.0 (2.3.0-dev)  Rename several APIs to include ap_ prefix.
  * 20081201.1 (2.3.0-dev)  Added ap_args_to_table and ap_body_to_table.
  * 20081212.0 (2.3.0-dev)  Remove sb_type from process_score in scoreboard.h.
+ * 20081231.0 (2.3.0-dev)  Switch ap_escape_html API: add ap_escape_html2,
+ *                         and make ap_escape_html a macro for it.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
