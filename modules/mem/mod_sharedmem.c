@@ -18,7 +18,19 @@
  * This one uses shared memory.
  */
 
-#include  "mod_slotmem.h"
+#include  "ap_slotmem.h"
+
+struct ap_slotmem_t {
+    char                 *name;       /* per segment name */
+    void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
+    void                 *base;       /* data set start */
+    apr_size_t           size;        /* size of each memory slot */
+    int                  num;         /* number of mem slots */
+    apr_pool_t           *gpool;      /* per segment global pool */
+    apr_global_mutex_t   *smutex;     /* mutex */
+    struct ap_slotmem_t  *next;       /* location of next allocated segment */
+};
+
 
 /* The description of the slots to reuse the slotmem */
 struct sharedslotdesc {
@@ -473,7 +485,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
 static void ap_sharedmem_register_hook(apr_pool_t *p)
 {
     const ap_slotmem_storage_method *storage = sharedmem_getstorage();
-    ap_register_provider(p, SLOTMEM_STORAGE, "shared", "0", storage);
+    ap_register_provider(p, AP_SLOTMEM_STORAGE, "shared", "0", storage);
     ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(child_init, NULL, NULL, APR_HOOK_MIDDLE);
