@@ -18,7 +18,18 @@
  * This one uses plain memory.
  */
 
-#include  "mod_slotmem.h"
+#include  "ap_slotmem.h"
+
+struct ap_slotmem_t {
+    char                 *name;       /* per segment name */
+    void                 *base;       /* data set start */
+    apr_size_t           size;        /* size of each memory slot */
+    int                  num;         /* number of mem slots */
+    apr_pool_t           *gpool;      /* per segment global pool */
+    apr_global_mutex_t   *smutex;     /* mutex */
+    struct ap_slotmem_t  *next;       /* location of next allocated segment */
+};
+
 
 /* global pool and list of slotmem we are handling */
 static struct ap_slotmem_t *globallistmem = NULL;
@@ -156,7 +167,7 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
 static void ap_plainmem_register_hook(apr_pool_t *p)
 {
     /* XXX: static const char * const prePos[] = { "mod_slotmem.c", NULL }; */
-    ap_register_provider(p, SLOTMEM_STORAGE, "plain", "0", &storage);
+    ap_register_provider(p, AP_SLOTMEM_STORAGE, "plain", "0", &storage);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
