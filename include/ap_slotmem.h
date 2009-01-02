@@ -62,61 +62,63 @@ typedef struct ap_slotmem_t ap_slotmem_t;
 typedef apr_status_t ap_slotmem_callback_fn_t(void* mem, void *data, apr_pool_t *pool);
 
 struct ap_slotmem_storage_method {
-/**
- * call the callback on all worker slots
- * @param s ap_slotmem_t to use.
- * @param funct callback function to call for each element.
- * @param data parameter for the callback function.
- * @param pool is pool used to create scoreboard
- * @return APR_SUCCESS if all went well
- */
-apr_status_t (* slotmem_do)(ap_slotmem_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool);
-
-/**
- * create a new slotmem with each item size is item_size.
- * This would create shared memory, basically.
- * @param pointer to store the address of the scoreboard.
- * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
- * @param item_size size of each item
- * @param item_num number of item to create.
- * @param pool is pool used to create scoreboard
- * @return APR_SUCCESS if all went well
- */
-apr_status_t (* slotmem_create)(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool);
-
-/**
- * attach to an existing slotmem.
- * This would attach to  shared memory, basically.
- * @param pointer to store the address of the scoreboard.
- * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
- * @param item_size size of each item
- * @param item_num max number of item.
- * @param pool is pool to memory allocate.
- * @return APR_SUCCESS if all went well
- */
-apr_status_t (* slotmem_attach)(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool);
-/**
- * get the memory associated with this worker slot.
- * @param s ap_slotmem_t to use.
- * @param item_id item to return for 0 to item_num
- * @param mem address to store the pointer to the slot
- * @return APR_SUCCESS if all went well
- */
-apr_status_t (* slotmem_mem)(ap_slotmem_t *s, int item_id, void**mem);
-/**
- * lock the memory segment
- * NOTE: All slots share the same mutex
- * @param s ap_slotmem_t to use
- * @return APR_SUCCESS if all went well
- */
-apr_status_t (* slotmem_lock)(ap_slotmem_t *s);
-/**
- * unlock the memory segment
- * NOTE: All slots share the same mutex
- * @param s ap_slotmem_t to use.
- * @return APR_SUCCESS if all went well
- */
-apr_status_t (* slotmem_unlock)(ap_slotmem_t *s);
+    /*
+     * Name of the provider method
+     */
+    const char *name;
+    /**
+     * call the callback on all worker slots
+     * @param s ap_slotmem_t to use.
+     * @param funct callback function to call for each element.
+     * @param data parameter for the callback function.
+     * @param pool is pool used to create scoreboard
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* slotmem_do)(ap_slotmem_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool);
+    /**
+     * create a new slotmem with each item size is item_size.
+     * This would create shared memory, basically.
+     * @param pointer to store the address of the scoreboard.
+     * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
+     * @param item_size size of each item
+     * @param item_num number of item to create.
+     * @param pool is pool used to create scoreboard
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* slotmem_create)(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool);
+    /**
+     * attach to an existing slotmem.
+     * This would attach to  shared memory, basically.
+     * @param pointer to store the address of the scoreboard.
+     * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
+     * @param item_size size of each item
+     * @param item_num max number of item.
+     * @param pool is pool to memory allocate.
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* slotmem_attach)(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool);
+    /**
+     * get the memory associated with this worker slot.
+     * @param s ap_slotmem_t to use.
+     * @param item_id item to return for 0 to item_num
+     * @param mem address to store the pointer to the slot
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* slotmem_mem)(ap_slotmem_t *s, int item_id, void**mem);
+    /**
+     * lock the memory segment
+     * NOTE: All slots share the same mutex
+     * @param s ap_slotmem_t to use
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* slotmem_lock)(ap_slotmem_t *s);
+    /**
+     * unlock the memory segment
+     * NOTE: All slots share the same mutex
+     * @param s ap_slotmem_t to use.
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* slotmem_unlock)(ap_slotmem_t *s);
 };
 
 typedef struct ap_slotmem_storage_method ap_slotmem_storage_method;
