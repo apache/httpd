@@ -88,7 +88,9 @@ if test -z "${LUA_LIBS}"; then
   ifelse([$2], , AC_MSG_ERROR([Lua 5.1 library is required]), $2)
 else
   AC_MSG_NOTICE([using '${LUA_LIBS}' for Lua Library])
-  AC_ARG_ENABLE(luajit, [--enable-luajit  Enable LuaJit Support], APR_ADDTO(CPPFLAGS, ["-DAP_ENABLE_LUAJIT"]))
+  AC_ARG_ENABLE(luajit,
+    APACHE_HELP_STRING(--enable-luajit,Enable LuaJit Support),
+    APR_ADDTO(CPPFLAGS, ["-DAP_ENABLE_LUAJIT"]))
   ifelse([$1], , , $1) 
 fi 
 ])
