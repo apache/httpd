@@ -85,8 +85,7 @@ AC_DEFUN([CHECK_SERF], [
   fi
 ])
 
-serf_objects="mod_serf.lo"
-APACHE_MODULE(serf, [Reverse proxy module using Serf], $serf_objects, , no, [
+APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
     CHECK_SERF
 ])
 
