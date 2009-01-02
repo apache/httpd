@@ -42,7 +42,14 @@ APACHE_MODULE(proxy_ftp, Apache proxy FTP module, $proxy_ftp_objs, , $proxy_mods
 APACHE_MODULE(proxy_http, Apache proxy HTTP module, $proxy_http_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module, $proxy_fcgi_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_scgi, Apache proxy SCGI module, $proxy_scgi_objs, , $proxy_mods_enable)
-APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module, $proxy_fdpass_objs, , $proxy_mods_enable)
+APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module, $proxy_fdpass_objs, , $proxy_mods_enable, [
+  AC_CHECK_DECLS(CMSG_DATA, [ap_HAVE_DECL_CMSG_DATA="yes"], [ap_HAVE_DECL_CMSG_DATA="no"], [[#include <sys/socket.h>]])
+  if test $ap_HAVE_DECL_CMSG_DATA = "no"; then
+    AC_MSG_WARN([Your system does not support CMSG_DATA.])
+    enable_proxy_fdpass="no"
+    _apmod_error_fatal="no"
+  fi
+])
 APACHE_MODULE(proxy_ajp, Apache proxy AJP module, $proxy_ajp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module, $proxy_balancer_objs, , $proxy_mods_enable)
 

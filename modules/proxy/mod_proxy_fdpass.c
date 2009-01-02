@@ -16,13 +16,13 @@
 
 #include "mod_proxy.h"
 
-#ifndef CMSG_DATA
-#error This module only works on unix platforms with the correct OS support
-#endif
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+
+#ifndef CMSG_DATA
+#error This module only works on unix platforms with the correct OS support
+#endif
 
 /* for apr_wait_for_io_or_timeout */
 #include "apr_support.h"
