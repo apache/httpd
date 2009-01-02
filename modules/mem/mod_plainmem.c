@@ -151,10 +151,13 @@ static apr_status_t slotmem_mem(ap_slotmem_t *score, int id, void **mem)
 }
 
 static const ap_slotmem_storage_method storage = {
+    "plainmem",
     &slotmem_do,
     &slotmem_create,
     &slotmem_attach,
-    &slotmem_mem
+    &slotmem_mem,
+    NULL,
+    NULL
 };
 
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,

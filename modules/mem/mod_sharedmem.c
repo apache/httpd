@@ -362,6 +362,7 @@ static apr_status_t slotmem_unlock(ap_slotmem_t *slot)
 }
 
 static const ap_slotmem_storage_method storage = {
+    "sharedmem",
     &slotmem_do,
     &slotmem_create,
     &slotmem_attach,
