@@ -816,6 +816,9 @@ AP_DECLARE(apr_status_t) ap_body_to_table(request_rec *r, apr_table_t **table)
 
             if (!rv) {
                 apr_size_t total;
+                /* XXX where's our test that len fits in memory??? 
+                 * theoretically can be a large file > ram space
+                 */
                 buffer = apr_palloc(tpool, len+1);
                 
                 total = len+1;
