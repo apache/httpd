@@ -63,7 +63,6 @@ static DWORD parent_pid;
 DWORD my_pid;
 
 int ap_threads_per_child = 0;
-int use_acceptex = 1;
 static int thread_limit = 0;
 static int first_thread_limit = 0;
 int winnt_mpm_state = AP_MPMQ_STARTING;
@@ -137,19 +136,6 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
     thread_limit = atoi(arg);
     return NULL;
 }
-static const char *set_disable_acceptex(cmd_parms *cmd, void *dummy, char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-    if (use_acceptex) {
-        use_acceptex = 0;
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, NULL,
-                     "Disabled use of AcceptEx() WinSock2 API");
-    }
-    return NULL;
-}
 
 static const command_rec winnt_cmds[] = {
 LISTEN_COMMANDS,
@@ -157,9 +143,6 @@ AP_INIT_TAKE1("ThreadsPerChild", set_threads_per_child, NULL, RSRC_CONF,
   "Number of threads each child creates" ),
 AP_INIT_TAKE1("ThreadLimit", set_thread_limit, NULL, RSRC_CONF,
   "Maximum worker threads in a server for this run of Apache"),
-AP_INIT_NO_ARGS("Win32DisableAcceptEx", set_disable_acceptex, NULL, RSRC_CONF,
-  "Disable use of the high performance AcceptEx WinSock2 API to work around buggy VPN or Firewall software"),
-
 { NULL }
 };
 
@@ -449,6 +432,8 @@ void get_listeners_from_parent(server_rec *s)
     DWORD BytesRead;
     int lcnt = 0;
     SOCKET nsd;
+    HANDLE hProcess = GetCurrentProcess();
+    HANDLE dup;
 
     /* Set up a default listener if necessary */
     if (ap_listeners == NULL) {
@@ -472,6 +457,7 @@ void get_listeners_from_parent(server_rec *s)
                          "setup_inherited_listeners: Unable to read socket data from parent");
             exit(APEXIT_CHILDINIT);
         }
+
         nsd = WSASocket(FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO, FROM_PROTOCOL_INFO,
                         &WSAProtocolInfo, 0, 0);
         if (nsd == INVALID_SOCKET) {
@@ -480,30 +466,12 @@ void get_listeners_from_parent(server_rec *s)
             exit(APEXIT_CHILDINIT);
         }
 
-        if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-            HANDLE hProcess = GetCurrentProcess();
-            HANDLE dup;
-            if (DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup,
-                                0, FALSE, DUPLICATE_SAME_ACCESS)) {
-                closesocket(nsd);
-                nsd = (SOCKET) dup;
-            }
+        if (DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup,
+                            0, FALSE, DUPLICATE_SAME_ACCESS)) {
+            closesocket(nsd);
+            nsd = (SOCKET) dup;
         }
-        else {
-            /* A different approach.  Many users report errors such as
-             * (32538)An operation was attempted on something that is not
-             * a socket.  : Parent: WSADuplicateSocket failed...
-             *
-             * This appears that the duplicated handle is no longer recognized
-             * as a socket handle.  SetHandleInformation should overcome that
-             * problem by not altering the handle identifier.  But this won't
-             * work on 9x - it's unsupported.
-             */
-            if (!SetHandleInformation((HANDLE)nsd, HANDLE_FLAG_INHERIT, 0)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
-                             "set_listeners_noninheritable: SetHandleInformation failed.");
-            }
-        }
+
         apr_os_sock_put(&lr->sd, &nsd, s->process->pool);
     }
 
@@ -991,7 +959,7 @@ void winnt_rewrite_args(process_rec *process)
 {
     /* Handle the following SCM aspects in this phase:
      *
-     *   -k runservice [transition for WinNT, nothing for Win9x]
+     *   -k runservice [transition in service context only]
      *   -k install
      *   -k config
      *   -k uninstall
@@ -1014,6 +982,7 @@ void winnt_rewrite_args(process_rec *process)
     apr_getopt_t *opt;
     int running_as_service = 1;
     int errout = 0;
+    apr_file_t *nullfile;
 
     pconf = process->pconf;
 
@@ -1214,33 +1183,28 @@ void winnt_rewrite_args(process_rec *process)
          * We hold the return value so that we can die in pre_config
          * after logging begins, and the failure can land in the log.
          */
-        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
-        {
-            apr_file_t *nullfile;
+        if (!errout) {
+            mpm_nt_eventlog_stderr_open(service_name, process->pool);
+        }
+        service_to_start_success = mpm_service_to_start(&service_name,
+                                                        process->pool);
+        if (service_to_start_success == APR_SUCCESS) {
+            service_set = APR_SUCCESS;
+        }
 
-            if (!errout) {
-                mpm_nt_eventlog_stderr_open(service_name, process->pool);
-            }
-            service_to_start_success = mpm_service_to_start(&service_name,
-                                                            process->pool);
-            if (service_to_start_success == APR_SUCCESS) {
-                service_set = APR_SUCCESS;
-            }
-
-            /* Open a null handle to soak stdout in this process.
-             * Windows service processes are missing any file handle
-             * usable for stdin/out/err.  This was the cause of later 
-             * trouble with invocations of apr_file_open_stdout()
-             */
-            if ((rv = apr_file_open(&nullfile, "NUL",
-                                    APR_READ | APR_WRITE, APR_OS_DEFAULT,
-                                    process->pool)) == APR_SUCCESS) {
-                apr_file_t *nullstdout;
-                if (apr_file_open_stdout(&nullstdout, process->pool)
-                        == APR_SUCCESS)
-                    apr_file_dup2(nullstdout, nullfile, process->pool);
-                apr_file_close(nullfile);
-            }
+        /* Open a null handle to soak stdout in this process.
+         * Windows service processes are missing any file handle
+         * usable for stdin/out/err.  This was the cause of later 
+         * trouble with invocations of apr_file_open_stdout()
+         */
+        if ((rv = apr_file_open(&nullfile, "NUL",
+                                APR_READ | APR_WRITE, APR_OS_DEFAULT,
+                                process->pool)) == APR_SUCCESS) {
+            apr_file_t *nullstdout;
+            if (apr_file_open_stdout(&nullstdout, process->pool)
+                    == APR_SUCCESS)
+                apr_file_dup2(nullstdout, nullfile, process->pool);
+            apr_file_close(nullfile);
         }
     }
 
@@ -1387,20 +1351,12 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
         }
     }
 
-    /* use_acceptex (enabled by default) is not available on Win9x.
-     */
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-        use_acceptex = 0;
-    }
-
     ap_listen_pre_config();
     thread_limit = DEFAULT_THREAD_LIMIT;
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
-#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-        ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
-#endif
+    ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 

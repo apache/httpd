@@ -35,7 +35,6 @@
 #define AP_DEFAULT_SERVICE_NAME "Apache2.x"
 #endif
 
-#define SERVICECONFIG9X "Software\\Microsoft\\Windows\\CurrentVersion\\RunServices"
 #define SERVICECONFIG "System\\CurrentControlSet\\Services\\%s"
 #define SERVICEPARAMS "System\\CurrentControlSet\\Services\\%s\\Parameters"
 
@@ -67,7 +66,6 @@ void mpm_nt_eventlog_stderr_flush(void);
 
 /* From mpm_winnt.c: */
 
-extern int use_acceptex;
 extern int winnt_mpm_state;
 extern OSVERSIONINFO osver;
 extern DWORD stack_res_flag;
