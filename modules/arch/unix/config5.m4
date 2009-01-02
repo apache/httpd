@@ -11,7 +11,7 @@ fi
 
 APACHE_MODULE(unixd, unix specific support, , , $unixd_mods_enable)
 APACHE_MODULE(privileges, Per-virtualhost Unix UserIDs and enhanced security for Solaris, , , no, [
-  AC_CHECK_HEADERS(priv.h, [], [ap_HAVE_PRIV_H="no"])
+  AC_CHECK_HEADERS(priv.h, [ap_HAVE_PRIV_H="yes"], [ap_HAVE_PRIV_H="no"])
   if test $ap_HAVE_PRIV_H = "no"; then
     AC_MSG_WARN([Your system does not support privileges.])
     enable_privileges="no"
