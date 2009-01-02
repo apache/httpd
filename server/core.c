@@ -441,13 +441,10 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
     conf->subreq_limit = 0;
 
     conf->protocol = NULL;
-    conf->accf_map = apr_table_make(a, 5);
+    conf->accf_map = is_virtual ? NULL : apr_table_make(a, 5);
 
-#ifdef APR_TCP_DEFER_ACCEPT
-    apr_table_set(conf->accf_map, "http", "data");
-    apr_table_set(conf->accf_map, "https", "data");
-#endif
-
+    /* A mapping only makes sense in the global context */
+    if (conf->accf_map) {
 #if APR_HAS_SO_ACCEPTFILTER
 #ifndef ACCEPT_FILTER_NAME
 #define ACCEPT_FILTER_NAME "httpready"
@@ -458,9 +455,13 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 #endif
 #endif
 #endif
-    apr_table_set(conf->accf_map, "http", ACCEPT_FILTER_NAME);
-    apr_table_set(conf->accf_map, "https", "dataready");
+    apr_table_setn(conf->accf_map, "http", ACCEPT_FILTER_NAME);
+    apr_table_setn(conf->accf_map, "https", "dataready");
+#else
+    apr_table_setn(conf->accf_map, "http", "data");
+    apr_table_setn(conf->accf_map, "https", "data");
 #endif
+    }
 
     conf->trace_enable = AP_TRACE_UNSET;
 
