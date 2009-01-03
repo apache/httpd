@@ -127,7 +127,7 @@ case $host in
         APACHECTL_ULIMIT="ulimit -S -n \`ulimit -h -n\`"
         ;;
     *)
-        if TMP_ULIMIT=`ulimit -H -n` && ulimit -S -n $TMP_ULIMIT ; then
+        if TMP_ULIMIT=`ulimit -H -n` && ulimit -S -n $TMP_ULIMIT >/dev/null 2>&1; then
             APACHECTL_ULIMIT="ulimit -S -n \`ulimit -H -n\`"
         else
             APACHECTL_ULIMIT=""
