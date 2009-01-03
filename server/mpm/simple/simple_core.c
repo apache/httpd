@@ -46,6 +46,8 @@ apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool)
     apr_pool_tag(sc->pool, "simple-mpm-core");
 
     sc->mpm_state = AP_MPMQ_STARTING;
+    sc->procmgr.proc_count = SIMPLE_DEF_PROC;
+    sc->procmgr.thread_count = SIMPLE_DEF_THREADS;
     sc->procmgr.max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 
     sc->children = apr_hash_make(sc->pool);

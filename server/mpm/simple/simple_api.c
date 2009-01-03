@@ -185,12 +185,6 @@ static void simple_process_start(process_rec * process)
     ap_mpm_rewrite_args(process);
 }
 
-#define SIMPLE_MAX_PROC (500000)
-#define SIMPLE_MIN_PROC (1)
-
-#define SIMPLE_MAX_THREADS (500000)
-#define SIMPLE_MIN_THREADS (1)
-
 static int
 simple_check_config(apr_pool_t * p, apr_pool_t * plog,
                     apr_pool_t * ptemp, server_rec * s)
@@ -199,28 +193,28 @@ simple_check_config(apr_pool_t * p, apr_pool_t * plog,
 
     if (sc->procmgr.proc_count > SIMPLE_MAX_PROC) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                     "simple_check_config: SimpleProcCount must be less than %d",
+                     "simple_check_config: SimpleProcCount must be at most %d",
                      SIMPLE_MAX_PROC);
         return !OK;
     }
 
     if (sc->procmgr.proc_count < SIMPLE_MIN_PROC) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                     "simple_check_config: SimpleProcCount must be more than %d",
+                     "simple_check_config: SimpleProcCount must be at least %d",
                      SIMPLE_MIN_PROC);
         return !OK;
     }
 
     if (sc->procmgr.thread_count > SIMPLE_MAX_THREADS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                     "simple_check_config: SimpleThreadCount must be less than %d",
+                     "simple_check_config: SimpleThreadCount must be at most %d",
                      SIMPLE_MAX_THREADS);
         return !OK;
     }
 
     if (sc->procmgr.thread_count < SIMPLE_MIN_THREADS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
-                     "simple_check_config: SimpleThreadCount must be more than %d",
+                     "simple_check_config: SimpleThreadCount must be at least %d",
                      SIMPLE_MIN_THREADS);
         return !OK;
     }
