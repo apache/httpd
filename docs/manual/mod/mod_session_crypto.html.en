@@ -52,11 +52,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocertificatefile">SessionCryptoCertificateFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocertificatekeyfile">SessionCryptoCertificateKeyFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocipher">SessionCryptoCipher</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptodigest">SessionCryptoDigest</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptoengine">SessionCryptoEngine</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptodriver">SessionCryptoDriver</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
 </ul>
 <h3>Topics</h3>
@@ -93,112 +89,48 @@
 
     </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoCertificateFile" id="SessionCryptoCertificateFile">SessionCryptoCertificateFile</a> <a name="sessioncryptocertificatefile" id="sessioncryptocertificatefile">Directive</a></h2>
+<div class="directive-section"><h2><a name="SessionCryptoDriver" id="SessionCryptoDriver">SessionCryptoDriver</a> <a name="sessioncryptodriver" id="sessioncryptodriver">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The certificate used to encrypt and decrypt the session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoCertificateFile <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The crypto driver to be used to encrypt the session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
 </table>
-    <p>The <code class="directive">SessionCryptoCertificateFile</code> directive specifies the name
-    of a certificate to be used to asymmetrically encrypt the contents of the session before
-    writing the session, or decrypting the content of the session after reading the session.</p>
+    <p>The <code class="directive">SessionCryptoDriver</code> directive specifies the name of
+    the crypto driver to be used for encryption. If not specified, the driver defaults
+    to the recommended driver compiled into APR-util.</p>
 
-    <p>Changing the certificate on a server has the effect of invalidating all existing
-    sessions.</p>
+    <p>The <var>NSS</var> crypto driver requires some parameters for configuration,
+    which are specified as parameters with optional values after the driver name.</p>
 
-    <p>If the key associated with this certificate is protected with a passphrase, the
-    <code class="directive"><a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> directive
-    will be interpreted as the passphrase to use to decrypt the key.</p>
+    <div class="example"><h3>NSS without a certificate database</h3><p><code>
+      SessionCryptoDriver nss
+    </code></p></div>
 
-    <div class="warning"><h3>Experimental</h3>
-      <p>This directive is dependent on experimental support for asymmetrical encryption
-      support currently available in prerelease versions of OpenSSL, and will only be
-      available on platforms that support it.</p>
-    </div>
-    
+    <div class="example"><h3>NSS with certificate database</h3><p><code>
+      SessionCryptoDriver nss dir=certs
+    </code></p></div>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoCertificateKeyFile" id="SessionCryptoCertificateKeyFile">SessionCryptoCertificateKeyFile</a> <a name="sessioncryptocertificatekeyfile" id="sessioncryptocertificatekeyfile">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The certificate key used to encrypt and decrypt the session</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoCertificateKeyFile <var>file</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
-</table>
-    <p>The <code class="directive">SessionCryptoCertificateKeyFile</code> directive specifies the name
-    of a certificate key to be used alongside a certificate to encrypt the contents of the
-    session before writing the session, or decrypting the content of the session after reading
-    the session.</p>
-    
-    <p>Changing the certificate or key on a server has the effect of invalidating all existing
-    sessions.</p>
+    <div class="example"><h3>NSS with certificate database and parameters</h3><p><code>
+      SessionCryptoDriver nss dir=certs key3=key3.db cert7=cert7.db secmod=secmod
+    </code></p></div>
 
-    <p>If this key is protected with a passphrase, the
-    <code class="directive"><a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> directive
-    will be interpreted as the passphrase to use to decrypt the key.</p>
+    <p>The <var>NSS</var> crypto driver might have already been configured by another
+    part of the server, for example from <code class="module"><a href="../mod/mod_nss.html">mod_nss</a></code> or
+    <code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code>. If found to have already been configured,
+    a warning will be logged, and the existing configuration will have taken affect.
+    To avoid this warning, use the noinit parameter as follows.</p>
 
-    <div class="warning"><h3>Experimental</h3>
-      <p>This directive is dependent on experimental support for asymmetrical encryption
-      support currently available in prerelease versions of OpenSSL, and will only be
-      available on platforms that support it.</p>
-    </div>
-    
+    <div class="example"><h3>NSS with certificate database</h3><p><code>
+      SessionCryptoDriver nss noinit
+    </code></p></div>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoCipher" id="SessionCryptoCipher">SessionCryptoCipher</a> <a name="sessioncryptocipher" id="sessioncryptocipher">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of the cipher to use during encryption / decryption</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoCipher <var>cipher</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AES256</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
-</table>
-    <p>The <code class="directive">SessionCryptoCipher</code> directive specifies the name
-    of the cipher to use during encryption. The ciphers available will depend on the
-    underlying encryption toolkit on the server platform.</p>
+    <p>To prevent confusion, ensure that all modules requiring NSS are configured with
+    identical parameters.</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoDigest" id="SessionCryptoDigest">SessionCryptoDigest</a> <a name="sessioncryptodigest" id="sessioncryptodigest">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of the digest to use during encryption / decryption</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoDigest <var>cipher</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SHA</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
-</table>
-    <p>The <code class="directive">SessionCryptoDigest</code> directive specifies the name
-    of the digest to use during encryption. The list of digests available will depend
-    on the underlying encryption toolkit on the server platform.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SessionCryptoEngine" id="SessionCryptoEngine">SessionCryptoEngine</a> <a name="sessioncryptoengine" id="sessioncryptoengine">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of the engine to use during encryption / decryption</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoEngine <var>engine</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
-</table>
-    <p>The <code class="directive">SessionCryptoEngine</code> directive specifies the name
-    of the engine to use during encryption, depending on the capabilities of the
-    underlying encryption toolkit on the server platform.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -214,15 +146,26 @@
 </table>
     <p>The <code class="directive">SessionCryptoPassphrase</code> directive specifies the key
     to be used to enable symmetrical encryption on the contents of the session before
-    writing the session, or decrypting the contents of the session after reading the session.</p>
+    writing the session, or decrypting the contents of the session after reading the
+    session.</p>
 
     <p>Keys are more secure when they are long, and consist of truly random characters.
     Changing the key on a server has the effect of invalidating all existing sessions.</p>
 
-    <p>If the <code class="directive"><a href="#sessioncryptocertificatefile">SessionCryptoCertificateFile</a></code>
-    directive is set and asymmetrical encryption is enabled instead, the
-    <code class="directive"><a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> directive
-    will be interpreted as the passphrase of the key, if the key is encrypted.</p>
+    <p>The cipher can be set to <var>3des192</var> or <var>aes256</var> using the
+    <var>cipher</var> parameter as per the example below. If not set, the cipher defaults
+    to <var>aes256</var>.</p>
+    
+    <div class="example"><h3>Cipher</h3><p><code>
+      SessionCryptoPassphrase secret cipher=aes256
+    </code></p></div>
+
+    <p>The <var>openssl</var> crypto driver supports an optional parameter to specify
+    the engine to be used for encryption.</p>
+
+    <div class="example"><h3>OpenSSL with engine support</h3><p><code>
+      SessionCryptoPassphrase secret engine=name
+    </code></p></div>
 
 
 </div>
