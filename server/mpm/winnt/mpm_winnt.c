@@ -989,6 +989,9 @@ void winnt_rewrite_args(process_rec *process)
     osver.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
     GetVersionEx(&osver);
 
+    /* We wish this was *always* a reservation, but sadly it wasn't so and
+     * we couldn't break a hard limit prior to NT Kernel 5.1
+     */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT 
         && ((osver.dwMajorVersion > 5)
          || ((osver.dwMajorVersion == 5) && (osver.dwMinorVersion > 0)))) {
@@ -1323,7 +1326,6 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
         one_process = -1;
 
     if (!strcasecmp(signal_arg, "runservice")
-            && (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
             && (service_to_start_success != APR_SUCCESS)) {
         ap_log_error(APLOG_MARK,APLOG_CRIT, service_to_start_success, NULL,
                      "%s: Unable to start the service manager.",
@@ -1552,26 +1554,6 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
             CleanNullACL((void *)sa);
-
-            /* Now that we are flying at 15000 feet...
-             * wipe out the Win95 service console,
-             * signal the SCM the WinNT service started, or
-             * if not a service, setup console handlers instead.
-             */
-            if (!strcasecmp(signal_arg, "runservice"))
-            {
-                if (osver.dwPlatformId != VER_PLATFORM_WIN32_NT)
-                {
-                    rv = mpm_service_to_start(&service_name,
-                                              s->process->pool);
-                    if (rv != APR_SUCCESS) {
-                        ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
-                                     "%s: Unable to start the service manager.",
-                                     service_name);
-                        return HTTP_INTERNAL_SERVER_ERROR;
-                    }
-                }
-            }
 
             /* Create the start mutex, as an unnamed object for security.
              * Ths start mutex is used during a restart to prevent more than
