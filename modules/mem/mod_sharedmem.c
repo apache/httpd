@@ -432,6 +432,13 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
         return rv;
     }
 
+    rv = apr_file_close(fmutex);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "sharedmem: could not close mutex file");
+        return rv;
+    }
+
     rv = apr_global_mutex_create(&smutex,
                                  mutex_fname, APR_LOCK_DEFAULT, p);
     if (rv != APR_SUCCESS) {
