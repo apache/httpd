@@ -2,6 +2,8 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_auth_form: Fix a pool lifetime issue, don't remove the subrequest
+    until the main request is cleaned up. [Graham Leggett]
 
 Changes with Apache 2.3.1
 
