@@ -433,11 +433,9 @@ void ShowTryPopupMenu(HWND hWnd)
         appendMenuItem(hMenu, IDM_RESTORE,
                        g_lpMsg[IDS_MSG_MNUSHOW - IDS_MSG_FIRST],
                        TRUE, TRUE);
-        if (g_dwOSVersion >= OS_VERSION_WINNT) {
-            appendMenuItem(hMenu, IDC_SMANAGER,
-                           g_lpMsg[IDS_MSG_MNUSERVICES - IDS_MSG_FIRST],
-                           FALSE, TRUE);
-        }
+        appendMenuItem(hMenu, IDC_SMANAGER,
+                       g_lpMsg[IDS_MSG_MNUSERVICES - IDS_MSG_FIRST],
+                       FALSE, TRUE);
         appendMenuItem(hMenu, 0, _T(""), FALSE, TRUE);
         appendMenuItem(hMenu, IDM_EXIT,
                        g_lpMsg[IDS_MSG_MNUEXIT - IDS_MSG_FIRST],
@@ -1000,12 +998,6 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                       g_lpMsg[IDS_MSG_CONNECT - IDS_MSG_FIRST]);
         SetWindowText(GetDlgItem(hDlg, IDC_SEXIT),
                       g_lpMsg[IDS_MSG_MNUEXIT - IDS_MSG_FIRST]);
-        if (g_dwOSVersion < OS_VERSION_WINNT)
-        {
-            ShowWindow(GetDlgItem(hDlg, IDC_SMANAGER), SW_HIDE);
-            ShowWindow(GetDlgItem(hDlg, IDC_SCONNECT), SW_HIDE);
-            ShowWindow(GetDlgItem(hDlg, IDC_SDISCONN), SW_HIDE);
-        }
         hListBox = GetDlgItem(hDlg, IDL_SERVICES);
         g_hwndStdoutList = GetDlgItem(hDlg, IDL_STDOUT);
         hStatusBar = CreateStatusWindow(0x0800 /* SBT_TOOLTIPS */
