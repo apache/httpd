@@ -339,12 +339,13 @@ dnl
 AC_DEFUN(APACHE_CHECK_SSL_TOOLKIT,[
 if test "x$ap_ssltk_configured" = "x"; then
   dnl initialise the variables we use
+  ap_ssltk_found=""
   ap_ssltk_base=""
   ap_ssltk_libs=""
   ap_ssltk_type=""
 
   dnl Determine the SSL/TLS toolkit's base directory, if any
-  AC_MSG_CHECKING([for SSL/TLS toolkit base])
+  AC_MSG_CHECKING([for user-provided SSL/TLS toolkit base])
   AC_ARG_WITH(sslc, APACHE_HELP_STRING(--with-sslc=DIR,RSA SSL-C SSL/TLS toolkit), [
     dnl If --with-sslc specifies a directory, we use that directory or fail
     if test "x$withval" != "xyes" -a "x$withval" != "x"; then
@@ -371,7 +372,30 @@ if test "x$ap_ssltk_configured" = "x"; then
   saved_LIBS="$LIBS"
   saved_LDFLAGS="$LDFLAGS"
   SSL_LIBS=""
-  if test "x$ap_ssltk_base" != "x"; then
+
+  dnl Before doing anything else, load in pkg-config variables (if not sslc).
+  if test "x$ap_ssltk_type" = "x" -a -n "$PKGCONFIG"; then
+    saved_PKG_CONFIG_PATH="$PKG_CONFIG_PATH"
+    if test "x$ap_ssltk_base" != "x" -a \
+            -f "${ap_ssltk_base}/lib/pkgconfig/openssl.pc"; then
+      dnl Ensure that the given path is used by pkg-config too, otherwise
+      dnl the system openssl.pc might be picked up instead.
+      PKG_CONFIG_PATH="${ap_ssltk_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+      export PKG_CONFIG_PATH
+    fi
+    ap_ssltk_libs="`$PKGCONFIG --libs-only-l openssl 2>&1`"
+    if test $? -eq 0; then
+      ap_ssltk_found="yes"
+      pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
+      APR_ADDTO(CPPFLAGS, [$pkglookup])
+      APR_ADDTO(INCLUDES, [$pkglookup])
+      pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
+      APR_ADDTO(LDFLAGS, [$pkglookup])
+      APR_ADDTO(SSL_LIBS, [$pkglookup])
+    fi
+    PKG_CONFIG_PATH="$saved_PKG_CONFIG_PATH"
+  fi
+  if test "x$ap_ssltk_base" != "x" -a "x$ap_ssltk_found" = "x"; then
     APR_ADDTO(CPPFLAGS, [-I$ap_ssltk_base/include])
     APR_ADDTO(INCLUDES, [-I$ap_ssltk_base/include])
     APR_ADDTO(LDFLAGS, [-L$ap_ssltk_base/lib])
@@ -433,29 +457,9 @@ if test "x$ap_ssltk_configured" = "x"; then
     AC_MSG_ERROR([...No recognized SSL/TLS toolkit detected])
   fi
 
-  if test "$ap_ssltk_type" = "openssl"; then
-    if test "x$ap_ssltk_base" != "x" -a \
-            -f "${ap_ssltk_base}/lib/pkgconfig/openssl.pc"; then
-      dnl Ensure that the given path is used by pkg-config too, otherwise
-      dnl the system openssl.pc might be picked up instead.
-      PKG_CONFIG_PATH="${ap_ssltk_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
-      export PKG_CONFIG_PATH
-    fi
-    if test -n "$PKGCONFIG"; then
-      ap_ssltk_libs="`$PKGCONFIG --libs-only-l openssl 2>&1`"
-      if test $? -eq 0; then
-        pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
-        APR_ADDTO(CPPFLAGS, [$pkglookup])
-        APR_ADDTO(INCLUDES, [$pkglookup])
-        pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
-        APR_ADDTO(LDFLAGS, [$pkglookup])
-        APR_ADDTO(SSL_LIBS, [$pkglookup])
-      else
-        ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
-      fi
-    else
-      ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
-    fi
+  if test "$ap_ssltk_type" = "openssl" -a "x$ap_ssltk_found" = "x"; then
+    ap_ssltk_found="yes"
+    ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
   fi
   APR_ADDTO(SSL_LIBS, [$ap_ssltk_libs])
   APR_ADDTO(LIBS, [$ap_ssltk_libs])
