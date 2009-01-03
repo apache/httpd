@@ -77,8 +77,7 @@ AC_DEFUN([CHECK_SERF], [
   ])
   
   if test "$serf_found" = "yes"; then
-    APR_ADDTO(LDFLAGS, ["-L$serf_prefix/lib"])
-    APR_ADDTO(LIBS, ["-lserf-0"])
+    MOD_SERF_LDADD="-L$serf_prefix/lib -lserf-0"
     APR_ADDTO(INCLUDES, ["-I$serf_prefix/include/serf-0"])
   else
     AC_MSG_ERROR(unable to find serf)
