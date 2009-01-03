@@ -15,9 +15,15 @@
 #
 # The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
 #
+<IfModule !mpm_simple_module>
 <IfModule !mpm_winnt_module>
 <IfModule !mpm_netware_module>
+<IfModule !mpm_mpmt_os2_module>
+<IfModule !mpm_beos_module>
 LockFile "@rel_logfiledir@/accept.lock"
+</IfModule>
+</IfModule>
+</IfModule>
 </IfModule>
 </IfModule>
 
