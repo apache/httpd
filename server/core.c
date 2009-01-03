@@ -420,31 +420,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     return (void*)conf;
 }
 
-static void *create_core_server_config(apr_pool_t *a, server_rec *s)
-{
-    core_server_config *conf;
-    int is_virtual = s->is_virtual;
-
-    conf = (core_server_config *)apr_pcalloc(a, sizeof(core_server_config));
-
-#ifdef GPROF
-    conf->gprof_dir = NULL;
-#endif
-
-    conf->access_name = is_virtual ? NULL : DEFAULT_ACCESS_FNAME;
-    conf->ap_document_root = is_virtual ? NULL : DOCUMENT_LOCATION;
-    conf->sec_dir = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
-    conf->sec_url = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
-
-    /* recursion stopper */
-    conf->redirect_limit = 0; /* 0 == unset */
-    conf->subreq_limit = 0;
-
-    conf->protocol = NULL;
-    conf->accf_map = is_virtual ? NULL : apr_table_make(a, 5);
-
-    /* A mapping only makes sense in the global context */
-    if (conf->accf_map) {
 #if APR_HAS_SO_ACCEPTFILTER
 #ifndef ACCEPT_FILTER_NAME
 #define ACCEPT_FILTER_NAME "httpready"
@@ -455,13 +430,53 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 #endif
 #endif
 #endif
-    apr_table_setn(conf->accf_map, "http", ACCEPT_FILTER_NAME);
-    apr_table_setn(conf->accf_map, "https", "dataready");
+#endif
+
+static void *create_core_server_config(apr_pool_t *a, server_rec *s)
+{
+    core_server_config *conf;
+    int is_virtual = s->is_virtual;
+
+    conf = (core_server_config *)apr_pcalloc(a, sizeof(core_server_config));
+
+    /* global-default / global-only settings */
+
+    if (!is_virtual) {
+        conf->ap_document_root = DOCUMENT_LOCATION;
+        conf->access_name = DEFAULT_ACCESS_FNAME;
+
+        /* A mapping only makes sense in the global context */
+        conf->accf_map = apr_table_make(a, 5);
+#if APR_HAS_SO_ACCEPTFILTER
+        apr_table_setn(conf->accf_map, "http", ACCEPT_FILTER_NAME);
+        apr_table_setn(conf->accf_map, "https", "dataready");
 #else
-    apr_table_setn(conf->accf_map, "http", "data");
-    apr_table_setn(conf->accf_map, "https", "data");
+        apr_table_setn(conf->accf_map, "http", "data");
+        apr_table_setn(conf->accf_map, "https", "data");
 #endif
     }
+    /* pcalloc'ed - we have NULL's/0's
+    else ** is_virtual ** {
+        conf->ap_document_root = NULL;
+        conf->access_name = NULL;
+        conf->accf_map = NULL;
+    }
+     */
+
+    /* initialization, no special case for global context */
+
+    conf->sec_dir = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
+    conf->sec_url = apr_array_make(a, 40, sizeof(ap_conf_vector_t *));
+
+    /* pcalloc'ed - we have NULL's/0's
+    conf->gprof_dir = NULL;
+
+    ** recursion stopper; 0 == unset
+    conf->redirect_limit = 0;
+    conf->subreq_limit = 0;
+
+    conf->protocol = NULL;
+     */
 
     conf->trace_enable = AP_TRACE_UNSET;
 
@@ -472,36 +487,35 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
 {
     core_server_config *base = (core_server_config *)basev;
     core_server_config *virt = (core_server_config *)virtv;
-    core_server_config *conf;
+    core_server_config *conf = (core_server_config *)
+                               apr_pmemdup(p, base, sizeof(core_server_config));
 
-    conf = (core_server_config *)apr_pmemdup(p, virt, sizeof(core_server_config));
+    if (virt->ap_document_root)
+        conf->ap_document_root = virt->ap_document_root;
 
-    if (!conf->access_name) {
-        conf->access_name = base->access_name;
-    }
+    if (virt->access_name)
+        conf->access_name = virt->access_name;
 
-    if (!conf->ap_document_root) {
-        conf->ap_document_root = base->ap_document_root;
-    }
-
-    if (!conf->protocol) {
-        conf->protocol = base->protocol;
-    }
-
+    /* XXX optimize to keep base->sec_ pointers if virt->sec_ array is empty */
     conf->sec_dir = apr_array_append(p, base->sec_dir, virt->sec_dir);
     conf->sec_url = apr_array_append(p, base->sec_url, virt->sec_url);
 
-    conf->redirect_limit = virt->redirect_limit
-                           ? virt->redirect_limit
-                           : base->redirect_limit;
+    if (virt->redirect_limit)
+        conf->redirect_limit = virt->redirect_limit;
 
-    conf->subreq_limit = virt->subreq_limit
-                         ? virt->subreq_limit
-                         : base->subreq_limit;
+    if (virt->subreq_limit)
+        conf->subreq_limit = virt->subreq_limit;
 
-    conf->trace_enable = (virt->trace_enable != AP_TRACE_UNSET)
-                         ? virt->trace_enable
-                         : base->trace_enable;
+    if (virt->trace_enable != AP_TRACE_UNSET)
+        conf->trace_enable = virt->trace_enable;
+
+    /* no action for virt->accf_map, not allowed per-vhost */
+
+    if (virt->protocol)
+        conf->protocol = virt->protocol;
+
+    if (virt->gprof_dir)
+        conf->gprof_dir = virt->gprof_dir;
 
     return conf;
 }
