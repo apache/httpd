@@ -182,7 +182,8 @@ if test "$PCRE_CONFIG" != "false"; then
   fi
   AC_MSG_NOTICE([Using external PCRE library from $PCRE_CONFIG])
   APR_ADDTO(CFLAGS, [`$PCRE_CONFIG --cflags`])
-  APR_ADDTO(LIBS, [`$PCRE_CONFIG --libs`])
+  APR_ADDTO(LTLIBRARY_LIBADD, [`$PCRE_CONFIG --libs`])
+  APACHE_SUBST(LTLIBRARY_LIBADD)
 else
   AC_MSG_ERROR([pcre-config for libpcre not found. PCRE is required and available from http://pcre.org/])
 fi
