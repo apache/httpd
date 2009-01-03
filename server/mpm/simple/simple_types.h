@@ -35,6 +35,13 @@ typedef struct
     int max_requests_per_child;
 } simple_proc_mgr_t;
 
+#define SIMPLE_MAX_PROC (500000)
+#define SIMPLE_DEF_PROC (5)
+#define SIMPLE_MIN_PROC (1)
+#define SIMPLE_MAX_THREADS (500000)
+#define SIMPLE_DEF_THREADS (5)
+#define SIMPLE_MIN_THREADS (1)
+
 typedef void (*simple_timer_cb) (simple_core_t * sc, void *baton);
 typedef void (*simple_io_sock_cb) (simple_core_t * sc, apr_socket_t * sock,
                                    int flags, void *baton);
