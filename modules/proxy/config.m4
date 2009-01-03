@@ -55,7 +55,6 @@ APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module, $proxy_balancer_objs
 
 
 AC_DEFUN([CHECK_SERF], [
-  AC_MSG_CHECKING(for serf)
   serf_found="no"
   AC_ARG_WITH(serf, APACHE_HELP_STRING([--with-serf=PREFIX],
                                   [Serf client library]),
@@ -63,7 +62,6 @@ AC_DEFUN([CHECK_SERF], [
     if test "$withval" = "yes" ; then
       AC_MSG_ERROR([--with-serf requires an argument.])
     else
-      AC_MSG_NOTICE([serf library configuration])
       serf_prefix=$withval
       save_cppflags="$CPPFLAGS"
       CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES -I$serf_prefix/include/serf-0"
@@ -75,7 +73,7 @@ AC_DEFUN([CHECK_SERF], [
       CPPFLAGS="$save_cppflags"
     fi
   ])
-  
+
   if test "$serf_found" = "yes"; then
     MOD_SERF_LDADD="-L$serf_prefix/lib -lserf-0"
     APR_ADDTO(INCLUDES, ["-I$serf_prefix/include/serf-0"])
