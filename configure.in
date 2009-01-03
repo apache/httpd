@@ -390,7 +390,13 @@ dnl ## Check for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
 dnl ## Check for library functions
+dnl ## sqrt() only needed in support/ab.c
+saved_LIBS="$LIBS"
+LIBS=""
 AC_SEARCH_LIBS(sqrt, m)
+MATH_LIBS="$LIBS"
+APACHE_SUBST(MATH_LIBS)
+LIBS="$saved_LIBS"
 
 dnl See Comment #Spoon
 
