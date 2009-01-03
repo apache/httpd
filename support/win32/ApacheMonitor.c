@@ -53,7 +53,6 @@
 #define AM_STRINGIFY_HELPER(n) #n
 #endif
 
-#define OS_VERSION_WIN9X    1
 #define OS_VERSION_WINNT    2
 #define OS_VERSION_WIN2K    3
 
@@ -112,13 +111,7 @@ HWND              g_hwndConnectDlg;
 HCURSOR           g_hCursorHourglass;
 HCURSOR           g_hCursorArrow;
 
-HANDLE            g_hpipeOutRead;
-HANDLE            g_hpipeOutWrite;
-HANDLE            g_hpipeInRead;
-HANDLE            g_hpipeInWrite;
-HANDLE            g_hpipeStdError;
 LANGID            g_LangID;
-PROCESS_INFORMATION g_lpRedirectProc;
 CRITICAL_SECTION  g_stcSection;
 LPTSTR            g_szLocalHost;
 
@@ -314,9 +307,6 @@ BOOL GetSystemOSVersion(LPDWORD dwVersion)
         break;
 
     case VER_PLATFORM_WIN32_WINDOWS:
-        *dwVersion = OS_VERSION_WIN9X;
-        break;
-
     case VER_PLATFORM_WIN32s:
     default:
         *dwVersion = 0;
@@ -575,165 +565,10 @@ static void addListBoxStringA(HWND hListBox, LPSTR lpStr)
 #endif
 
 
-static DWORD WINAPI ConsoleOutputThread(LPVOID lpThreadParameter)
-{
-    static BYTE lpBuffer[MAX_PATH+1];
-    int nPtr = 0;
-    BYTE ch;
-    DWORD dwReaded;
-
-    while (ReadFile(g_hpipeOutRead, &ch, 1, &dwReaded, NULL) == TRUE)
-    {
-        if (dwReaded > 0)
-        {
-            if (ch == '\n' || nPtr >= MAX_PATH)
-            {
-                lpBuffer[nPtr] = '\0';
-                addListBoxStringA(g_hwndStdoutList, lpBuffer);
-                nPtr = 0;
-            }
-            else if (ch == '\t' && nPtr < (MAX_PATH - 4))
-            {
-                int i;
-                for (i = 0; i < 4; ++i) {
-                    lpBuffer[nPtr++] = ' ';
-                }
-            }
-            else if (ch != '\r') {
-                lpBuffer[nPtr++] = ch;
-            }
-        }
-    }
-    CloseHandle(g_hpipeInWrite);
-    CloseHandle(g_hpipeOutRead);
-    CloseHandle(g_hpipeStdError);
-    return 0;
-}
-
-
-DWORD WINAPI ConsoleWaitingThread(LPVOID lpThreadParameter)
-{
-    WaitForSingleObject(g_lpRedirectProc.hThread, INFINITE);
-    CloseHandle(g_lpRedirectProc.hThread);
-    MessageBeep(100);
-    g_bConsoleRun = FALSE;
-    SetCursor(g_hCursorArrow);
-    return 0;
-}
-
-
-BOOL RunRedirectedConsole(LPTSTR szCmdLine)
-{
-    DWORD dwThreadId;
-    HANDLE hProc;
-    STARTUPINFO stInfo;
-    BOOL bResult;
-
-    memset(&stInfo, 0, sizeof(stInfo));
-    stInfo.cb = sizeof(stInfo);
-    stInfo.dwFlags = STARTF_USESTDHANDLES|STARTF_USESHOWWINDOW;
-    stInfo.wShowWindow = SW_HIDE;
-
-    hProc = GetCurrentProcess();
-
-    if (!CreatePipe(&g_hpipeInRead, &g_hpipeInWrite, NULL, MAX_PATH)) {
-        ErrorMessage(NULL, TRUE);
-    }
-    if (!CreatePipe(&g_hpipeOutRead, &g_hpipeOutWrite, NULL, MAX_PATH*8)) {
-        ErrorMessage(NULL, TRUE);
-    }
-    DuplicateHandle(hProc, g_hpipeInRead, hProc, &g_hpipeInRead, 0, TRUE,
-                    DUPLICATE_CLOSE_SOURCE|DUPLICATE_SAME_ACCESS);
-    DuplicateHandle(hProc, g_hpipeOutWrite, hProc, &g_hpipeOutWrite, 0, TRUE,
-                    DUPLICATE_CLOSE_SOURCE|DUPLICATE_SAME_ACCESS);
-    DuplicateHandle(hProc, g_hpipeOutWrite, hProc, &g_hpipeStdError, 0, TRUE,
-                    DUPLICATE_SAME_ACCESS);
-    if (!g_hpipeInRead && !g_hpipeOutWrite && !g_hpipeStdError) {
-        ErrorMessage(NULL, TRUE);
-    }
-    stInfo.hStdInput  = g_hpipeInRead;
-    stInfo.hStdOutput = g_hpipeOutWrite;
-    stInfo.hStdError  = g_hpipeStdError;
-
-    bResult = CreateProcess(NULL,
-        szCmdLine,
-        NULL,
-        NULL,
-        TRUE,
-        CREATE_SUSPENDED,
-        NULL,
-        NULL,
-        &stInfo,
-        &g_lpRedirectProc);
-
-
-    CloseHandle(g_hpipeInRead);
-    CloseHandle(g_hpipeOutWrite);
-    CloseHandle(g_hpipeStdError);
-
-    if (!bResult)
-    {
-        CloseHandle(g_hpipeInWrite);
-        CloseHandle(g_hpipeOutRead);
-        CloseHandle(g_hpipeStdError);
-        return FALSE;
-    }
-
-    CloseHandle(CreateThread(NULL, 0, ConsoleOutputThread,
-                             0, 0, &dwThreadId));
-    ResumeThread(g_lpRedirectProc.hThread);
-    CloseHandle(CreateThread(NULL, 0, ConsoleWaitingThread,
-                             0, 0, &dwThreadId));
-
-    return TRUE;
-}
-
-
-BOOL RunAndForgetConsole(LPTSTR szCmdLine, BOOL bRedirectConsole)
-{
-    STARTUPINFO stInfo;
-    PROCESS_INFORMATION prInfo;
-    BOOL bResult;
-
-    if (bRedirectConsole) {
-        return RunRedirectedConsole(szCmdLine);
-    }
-
-    memset(&stInfo, 0, sizeof(stInfo));
-    stInfo.cb = sizeof(stInfo);
-    stInfo.dwFlags = STARTF_USESHOWWINDOW;
-    stInfo.wShowWindow = SW_HIDE;
-
-    bResult = CreateProcess(NULL,
-                            szCmdLine,
-                            NULL,
-                            NULL,
-                            TRUE,
-                            CREATE_NEW_CONSOLE,
-                            NULL,
-                            NULL,
-                            &stInfo,
-                            &prInfo);
-
-    if (!bResult) {
-        return FALSE;
-    }
-    if (g_dwOSVersion == OS_VERSION_WIN9X) {
-        /* give some time to rescan the status */
-        Sleep(2000);
-    }
-    CloseHandle(prInfo.hThread);
-    CloseHandle(prInfo.hProcess);
-    return TRUE;
-}
-
-
 BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
                          LPTSTR szComputerName, DWORD dwCommand)
 {
-    TCHAR szBuf[MAX_PATH];
     TCHAR szMsg[MAX_PATH];
-    LPTSTR sPos;
     BOOL retValue;
     BOOL serviceFlag = TRUE;
     SC_HANDLE schService;
@@ -741,206 +576,148 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
     SERVICE_STATUS schSStatus;
     int ticks;
 
-    if (g_dwOSVersion == OS_VERSION_WIN9X)
+    schSCManager = OpenSCManager(szComputerName, NULL,
+                                 SC_MANAGER_CONNECT);
+    if (!schSCManager) {
+        ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
+                     FALSE);
+        return FALSE;
+    }
+
+    schService = OpenService(schSCManager, szServiceName,
+                             SERVICE_QUERY_STATUS | SERVICE_START |
+                             SERVICE_STOP | SERVICE_USER_DEFINED_CONTROL);
+    if (schService == NULL)
     {
-        sPos = _tcsstr(szImagePath, _T("-k start"));
-        if (sPos)
-        {
-            _tcsncpy(szBuf, szImagePath, (int)(sPos - szImagePath));
-            switch (dwCommand)
-            {
-            case SERVICE_CONTROL_STOP:
-                _tcscat(szBuf, _T(" -k shutdown -n "));
-                break;
-
-            case SERVICE_CONTROL_CONTINUE:
-                _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR),
-                          g_lpMsg[IDS_MSG_SRVSTART - IDS_MSG_FIRST],
-                          szServiceName);
-                addListBoxString(g_hwndStdoutList, szMsg);
-                _tcscat(szBuf, _T(" -k start -n "));
-                serviceFlag = FALSE;
-                break;
-
-            case SERVICE_APACHE_RESTART:
-                _tcscat(szBuf, _T(" -k restart -n "));
-                break;
-
-            default:
-                return FALSE;
-            }
-            _tcscat(szBuf, szServiceName);
+        /* Avoid recursion of ImagePath NULL (from this Respawn) */
+        if (szImagePath) {
+            am_RespawnAsUserAdmin(g_hwndMain, dwCommand, 
+                                  szServiceName, szComputerName);
         }
         else {
-            return FALSE;
+            ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
+                         FALSE);
         }
-        g_bConsoleRun = TRUE;
-        SetCursor(g_hCursorHourglass);
-        if (!RunAndForgetConsole(szBuf, serviceFlag))
-        {
-            ErrorMessage(NULL, FALSE);
-            g_bConsoleRun = FALSE;
-            SetCursor(g_hCursorArrow);
-            return FALSE;
-        }
-        else if (!serviceFlag)
-        {
-            _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
-                      g_lpMsg[IDS_MSG_SRVSTARTED - IDS_MSG_FIRST],
-                      szServiceName);
-            addListBoxString(g_hwndStdoutList, szMsg);
-            g_bConsoleRun = FALSE;
-            SetCursor(g_hCursorArrow);
-            return TRUE;
-        }
+        CloseServiceHandle(schSCManager);
+        return FALSE;
     }
     else
     {
-        schSCManager = OpenSCManager(szComputerName, NULL,
-                                     SC_MANAGER_CONNECT);
-        if (!schSCManager) {
-            ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
-                         FALSE);
-            return FALSE;
-        }
-
-        schService = OpenService(schSCManager, szServiceName,
-                                 SERVICE_QUERY_STATUS | SERVICE_START |
-                                 SERVICE_STOP | SERVICE_USER_DEFINED_CONTROL);
-        if (schService == NULL)
+        retValue = FALSE;
+        g_bConsoleRun = TRUE;
+        SetCursor(g_hCursorHourglass);
+        switch (dwCommand)
         {
-            /* Avoid recursion of ImagePath NULL (from this Respawn) */
-            if (szImagePath) {
-                am_RespawnAsUserAdmin(g_hwndMain, dwCommand, 
-                                      szServiceName, szComputerName);
-            }
-            else {
-                ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
-                             FALSE);
-            }
-            CloseServiceHandle(schSCManager);
-            return FALSE;
-        }
-        else
-        {
-            retValue = FALSE;
-            g_bConsoleRun = TRUE;
-            SetCursor(g_hCursorHourglass);
-            switch (dwCommand)
-            {
-            case SERVICE_CONTROL_STOP:
-                _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
-                          g_lpMsg[IDS_MSG_SRVSTOP - IDS_MSG_FIRST],
-                          szServiceName);
-                addListBoxString(g_hwndStdoutList, szMsg);
-                if (ControlService(schService, SERVICE_CONTROL_STOP,
-                                   &schSStatus)) {
-                    Sleep(1000);
-                    while (QueryServiceStatus(schService, &schSStatus))
-                    {
-                        if (schSStatus.dwCurrentState == SERVICE_STOP_PENDING)
-                        {
-                            Sleep(1000);
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                }
-                if (QueryServiceStatus(schService, &schSStatus))
+          case SERVICE_CONTROL_STOP:
+            _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+                       g_lpMsg[IDS_MSG_SRVSTOP - IDS_MSG_FIRST],
+                       szServiceName);
+            addListBoxString(g_hwndStdoutList, szMsg);
+            if (ControlService(schService, SERVICE_CONTROL_STOP,
+                               &schSStatus)) {
+                Sleep(1000);
+                while (QueryServiceStatus(schService, &schSStatus))
                 {
-                    if (schSStatus.dwCurrentState == SERVICE_STOPPED)
-                    {
-                        retValue = TRUE;
-                        _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
-                                  g_lpMsg[IDS_MSG_SRVSTOPPED - IDS_MSG_FIRST],
-                                  szServiceName);
-                        addListBoxString(g_hwndStdoutList, szMsg);
-                    }
-                }
-                break;
-
-            case SERVICE_CONTROL_CONTINUE:
-                _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR),
-                          g_lpMsg[IDS_MSG_SRVSTART - IDS_MSG_FIRST],
-                          szServiceName);
-                addListBoxString(g_hwndStdoutList, szMsg);
-
-                if (StartService(schService, 0, NULL))
-                {
-                    Sleep(1000);
-                    while (QueryServiceStatus(schService, &schSStatus))
-                    {
-                        if (schSStatus.dwCurrentState == SERVICE_START_PENDING)
-                        {
-                            Sleep(1000);
-                        }
-                        else {
-                            break;
-                        }
-                    }
-                }
-                if (QueryServiceStatus(schService, &schSStatus))
-                {
-                    if (schSStatus.dwCurrentState == SERVICE_RUNNING)
-                    {
-                        retValue = TRUE;
-                        _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
-                                  g_lpMsg[IDS_MSG_SRVSTARTED - IDS_MSG_FIRST],
-                                  szServiceName);
-                        addListBoxString(g_hwndStdoutList, szMsg);
-                    }
-                }
-                break;
-
-            case SERVICE_APACHE_RESTART:
-                _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
-                          g_lpMsg[IDS_MSG_SRVRESTART - IDS_MSG_FIRST],
-                          szServiceName);
-                addListBoxString(g_hwndStdoutList, szMsg);
-                if (ControlService(schService, SERVICE_APACHE_RESTART,
-                                   &schSStatus))
-                {
-                    ticks = 60;
-                    while (schSStatus.dwCurrentState == SERVICE_START_PENDING)
+                    if (schSStatus.dwCurrentState == SERVICE_STOP_PENDING)
                     {
                         Sleep(1000);
-                        if (!QueryServiceStatus(schService, &schSStatus))
-                        {
-                            CloseServiceHandle(schService);
-                            CloseServiceHandle(schSCManager);
-                            g_bConsoleRun = FALSE;
-                            SetCursor(g_hCursorArrow);
-                            return FALSE;
-                        }
-                        if (!--ticks) {
-                            break;
-                        }
+                    }
+                    else {
+                        break;
                     }
                 }
+            }
+            if (QueryServiceStatus(schService, &schSStatus))
+            {
+                if (schSStatus.dwCurrentState == SERVICE_STOPPED)
+                {
+                    retValue = TRUE;
+                    _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+                               g_lpMsg[IDS_MSG_SRVSTOPPED - IDS_MSG_FIRST],
+                               szServiceName);
+                    addListBoxString(g_hwndStdoutList, szMsg);
+                }
+            }
+            break;
+
+          case SERVICE_CONTROL_CONTINUE:
+            _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR),
+                       g_lpMsg[IDS_MSG_SRVSTART - IDS_MSG_FIRST],
+                       szServiceName);
+            addListBoxString(g_hwndStdoutList, szMsg);
+
+            if (StartService(schService, 0, NULL))
+            {
+                Sleep(1000);
+                while (QueryServiceStatus(schService, &schSStatus))
+                {
+                    if (schSStatus.dwCurrentState == SERVICE_START_PENDING)
+                    {
+                        Sleep(1000);
+                    }
+                    else {
+                        break;
+                    }
+                }
+            }
+            if (QueryServiceStatus(schService, &schSStatus))
+            {
                 if (schSStatus.dwCurrentState == SERVICE_RUNNING)
                 {
                     retValue = TRUE;
                     _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
-                              g_lpMsg[IDS_MSG_SRVRESTARTED - IDS_MSG_FIRST],
-                              szServiceName);
+                               g_lpMsg[IDS_MSG_SRVSTARTED - IDS_MSG_FIRST],
+                               szServiceName);
                     addListBoxString(g_hwndStdoutList, szMsg);
                 }
-                break;
             }
-            CloseServiceHandle(schService);
-            CloseServiceHandle(schSCManager);
-            if (!retValue) {
-                ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
-                             FALSE);
-            }
-            g_bConsoleRun = FALSE;
-            SetCursor(g_hCursorArrow);
-            return retValue;
-        }
-        return FALSE;
-    }
+            break;
 
+          case SERVICE_APACHE_RESTART:
+            _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+                       g_lpMsg[IDS_MSG_SRVRESTART - IDS_MSG_FIRST],
+                       szServiceName);
+            addListBoxString(g_hwndStdoutList, szMsg);
+            if (ControlService(schService, SERVICE_APACHE_RESTART,
+                               &schSStatus))
+            {
+                ticks = 60;
+                while (schSStatus.dwCurrentState == SERVICE_START_PENDING)
+                {
+                    Sleep(1000);
+                    if (!QueryServiceStatus(schService, &schSStatus))
+                    {
+                        CloseServiceHandle(schService);
+                        CloseServiceHandle(schSCManager);
+                        g_bConsoleRun = FALSE;
+                        SetCursor(g_hCursorArrow);
+                        return FALSE;
+                    }
+                    if (!--ticks) {
+                        break;
+                    }
+                }
+            }
+            if (schSStatus.dwCurrentState == SERVICE_RUNNING)
+            {
+                retValue = TRUE;
+                _sntprintf(szMsg, sizeof(szMsg) / sizeof(TCHAR), 
+                           g_lpMsg[IDS_MSG_SRVRESTARTED - IDS_MSG_FIRST],
+                           szServiceName);
+                addListBoxString(g_hwndStdoutList, szMsg);
+            }
+            break;
+        }
+        CloseServiceHandle(schService);
+        CloseServiceHandle(schSCManager);
+        if (!retValue) {
+            ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
+                         FALSE);
+        }
+        g_bConsoleRun = FALSE;
+        SetCursor(g_hCursorArrow);
+        return retValue;
+    }
     return FALSE;
 }
 
@@ -949,55 +726,36 @@ BOOL IsServiceRunning(LPCTSTR szServiceName, LPCTSTR szComputerName,
                       LPDWORD lpdwPid)
 {
     DWORD dwPid;
-    HWND hWnd;
     SC_HANDLE schService;
     SC_HANDLE schSCManager;
     SERVICE_STATUS schSStatus;
 
-    if (g_dwOSVersion == OS_VERSION_WIN9X)
-    {
-        hWnd = FindWindow(_T("ApacheWin95ServiceMonitor"), szServiceName);
-        if (hWnd && GetWindowThreadProcessId(hWnd, &dwPid))
-        {
-            *lpdwPid = 1;
-            return TRUE;
-        }
-        else {
-            return FALSE;
-        }
-    }
-    else
-    {
-        dwPid = 0;
-        schSCManager = OpenSCManager(szComputerName, NULL,
-                                     SC_MANAGER_CONNECT);
-        if (!schSCManager) {
-            return FALSE;
-        }
-
-        schService = OpenService(schSCManager, szServiceName,
-                                 SERVICE_QUERY_STATUS);
-        if (schService != NULL)
-        {
-            if (QueryServiceStatus(schService, &schSStatus))
-            {
-                dwPid = schSStatus.dwCurrentState;
-                if (lpdwPid) {
-                    *lpdwPid = 1;
-                }
-            }
-            CloseServiceHandle(schService);
-            CloseServiceHandle(schSCManager);
-            return dwPid == SERVICE_RUNNING ? TRUE : FALSE;
-        }
-        else {
-            g_bRescanServices = TRUE;
-        }
-        CloseServiceHandle(schSCManager);
+    dwPid = 0;
+    schSCManager = OpenSCManager(szComputerName, NULL,
+                                SC_MANAGER_CONNECT);
+    if (!schSCManager) {
         return FALSE;
-
     }
 
+    schService = OpenService(schSCManager, szServiceName,
+                             SERVICE_QUERY_STATUS);
+    if (schService != NULL)
+    {
+        if (QueryServiceStatus(schService, &schSStatus))
+        {
+            dwPid = schSStatus.dwCurrentState;
+            if (lpdwPid) {
+                *lpdwPid = 1;
+            }
+        }
+        CloseServiceHandle(schService);
+        CloseServiceHandle(schSCManager);
+        return dwPid == SERVICE_RUNNING ? TRUE : FALSE;
+    }
+    else {
+        g_bRescanServices = TRUE;
+    }
+    CloseServiceHandle(schSCManager);
     return FALSE;
 }
 
