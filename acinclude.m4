@@ -382,11 +382,11 @@ if test "x$ap_ssltk_configured" = "x"; then
     fi
   fi
   if test "x$ap_ssltk_type" = "x"; then
-    AC_MSG_CHECKING([for OpenSSL version])
     dnl First check for manditory headers
     AC_CHECK_HEADERS([openssl/opensslv.h openssl/ssl.h], [ap_ssltk_type="openssl"], [])
     if test "$ap_ssltk_type" = "openssl"; then
       dnl so it's OpenSSL - test for a good version
+      AC_MSG_CHECKING([for OpenSSL version])
       AC_TRY_COMPILE([#include <openssl/opensslv.h>],[
 #if !defined(OPENSSL_VERSION_NUMBER)
 #error "Missing openssl version"
@@ -398,8 +398,8 @@ if test "x$ap_ssltk_configured" = "x"; then
       [AC_MSG_RESULT(OK)],
       [dnl Replace this with OPENSSL_VERSION_TEXT from opensslv.h?
        AC_MSG_RESULT([not encouraging])
-       echo "WARNING: OpenSSL version may contain security vulnerabilities!"
-       echo "         Ensure the latest security patches have been applied!"
+       AC_MSG_WARN([OpenSSL version may contain security vulnerabilities!]
+                   [ Ensure the latest security patches have been applied!])
       ])
     else
       AC_MSG_RESULT([no OpenSSL headers found])
@@ -407,7 +407,6 @@ if test "x$ap_ssltk_configured" = "x"; then
   fi
   if test "$ap_ssltk_type" != "openssl"; then
     dnl Might be SSL-C - report, then test anything relevant
-    AC_MSG_CHECKING([for SSL-C version])
     AC_CHECK_HEADERS([sslc.h], [ap_ssltk_type="sslc"], [ap_ssltk_type=""])
     if test "$ap_ssltk_type" = "sslc"; then
       ap_ssltk_libs="-lsslc"
@@ -443,7 +442,7 @@ if test "x$ap_ssltk_configured" = "x"; then
       export PKG_CONFIG_PATH
     fi
     if test -n "$PKGCONFIG"; then
-      ap_ssltk_libs="`$PKGCONFIG --libs-only-l openssl`"
+      ap_ssltk_libs="`$PKGCONFIG --libs-only-l openssl 2>&1`"
       if test $? -eq 0; then
         pkglookup="`$PKGCONFIG --cflags-only-I openssl`"
         APR_ADDTO(CPPFLAGS, [$pkglookup])
