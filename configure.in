@@ -182,11 +182,14 @@ if test "$PCRE_CONFIG" != "false"; then
   fi
   AC_MSG_NOTICE([Using external PCRE library from $PCRE_CONFIG])
   APR_ADDTO(CFLAGS, [`$PCRE_CONFIG --cflags`])
-  APR_ADDTO(LTLIBRARY_LIBADD, [`$PCRE_CONFIG --libs`])
-  APACHE_SUBST(LTLIBRARY_LIBADD)
+  APR_ADDTO(PCRE_LIBS, [`$PCRE_CONFIG --libs`])
 else
   AC_MSG_ERROR([pcre-config for libpcre not found. PCRE is required and available from http://pcre.org/])
 fi
+APACHE_SUBST(PCRE_LIBS)
+
+dnl Add PCRE_LIBS to HTTPD_LDFLAGS
+APR_ADDTO(HTTPD_LDFLAGS, [\$(PCRE_LIBS)])
 
 echo $ac_n "${nl}Configuring Apache httpd ...${nl}"
 
@@ -568,9 +571,9 @@ dnl enable_so tells us if *any* modules can be built as DSOs
 if test "$enable_so" = "yes"; then
   case $host in
     *-ibm-aix*)
-      HTTPD_LDFLAGS="$HTTPD_LDFLAGS -Wl,-uXML_Parse -Wl,-bE:$abs_builddir/server/httpd.exp"
-      SH_LDFLAGS="$SH_LDFLAGS \$(EXTRA_LDFLAGS) \$(EXTRA_LIBS)"
-      UTIL_LDFLAGS="$UTIL_LDFLAGS -Wl,-uXML_Parse"
+      APR_ADDTO(HTTPD_LDFLAGS, [-Wl,-uXML_Parse -Wl,-bE:$abs_builddir/server/httpd.exp])
+      APR_ADDTO(SH_LDFLAGS, [\$(EXTRA_LDFLAGS) \$(EXTRA_LIBS)])
+      APR_ADDTO(UTIL_LDFLAGS, [-Wl,-uXML_Parse])
       ;;
     *beos)
       SH_LDFLAGS='$(top_builddir)/_APP_'
@@ -578,8 +581,8 @@ if test "$enable_so" = "yes"; then
       POST_SHARED_CMDS='rm $(top_builddir)/_APP_'
       ;;
     *os390)
-      HTTPD_LDFLAGS="$HTTPD_LDFLAGS --main=$abs_srcdir/server/main.o --core-dll=$abs_srcdir/apachecore.dll"
-      SH_LDFLAGS="$SH_LDFLAGS --core-dll=$abs_srcdir/apachecore.dll"
+      APR_ADDTO(HTTPD_LDFLAGS, [--main=$abs_srcdir/server/main.o --core-dll=$abs_srcdir/apachecore.dll])
+      APR_ADDTO(SH_LDFLAGS, [--core-dll=$abs_srcdir/apachecore.dll])
   esac
   MOD_SO_ENABLED=yes
 fi
