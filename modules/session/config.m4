@@ -18,8 +18,11 @@ dnl
 APACHE_MODULE(session, session module, , , most)
 APACHE_MODULE(session_cookie, session cookie module, , , $session_mods_enable)
 APACHE_MODULE(session_crypto, session crypto module, , , no, [
-  AC_CHECK_HEADERS(apr_ssl.h, [ap_HAVE_APR_SSL_H="yes"], [ap_HAVE_APR_SSL_H="no"])
-  if test $ap_HAVE_APR_SSL_H = "no"; then
+  saved_CPPFLAGS="$CPPFLAGS"
+  CPPFLAGS="$CPPFLAGS -I$APR_INCLUDEDIR -I$APU_INCLUDEDIR"
+  AC_CHECK_HEADERS(apr_crypto.h, [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
+  CPPFLAGS="$saved_CPPFLAGS"
+  if test $ap_HAVE_APR_CRYPTO = "no"; then
     AC_MSG_WARN([Your APR does not include SSL/EVP support.])
     enable_session_crypto="no"
   fi
