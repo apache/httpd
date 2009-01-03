@@ -369,12 +369,16 @@ if test "x$ap_ssltk_configured" = "x"; then
   dnl Run header and version checks
   saved_CPPFLAGS="$CPPFLAGS"
   saved_LIBS="$LIBS"
+  saved_LDFLAGS="$LDFLAGS"
+  SSL_LIBS=""
   if test "x$ap_ssltk_base" != "x"; then
     APR_ADDTO(CPPFLAGS, [-I$ap_ssltk_base/include])
     APR_ADDTO(INCLUDES, [-I$ap_ssltk_base/include])
     APR_ADDTO(LDFLAGS, [-L$ap_ssltk_base/lib])
+    APR_ADDTO(SSL_LIBS, [-L$ap_ssltk_base/lib])
     if test "x$ap_platform_runtime_link_flag" != "x"; then
       APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_ssltk_base/lib])
+      APR_ADDTO(SSL_LIBS, [$ap_platform_runtime_link_flag$ap_ssltk_base/lib])
     fi
   fi
   if test "x$ap_ssltk_type" = "x"; then
@@ -446,6 +450,7 @@ if test "x$ap_ssltk_configured" = "x"; then
         APR_ADDTO(INCLUDES, [$pkglookup])
         pkglookup="`$PKGCONFIG --libs-only-L --libs-only-other openssl`"
         APR_ADDTO(LDFLAGS, [$pkglookup])
+        APR_ADDTO(SSL_LIBS, [$pkglookup])
       else
         ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
       fi
@@ -453,7 +458,7 @@ if test "x$ap_ssltk_configured" = "x"; then
       ap_ssltk_libs="-lssl -lcrypto `$apr_config --libs`"
     fi
   fi
-  APR_SETVAR(SSL_LIBS, [$ap_ssltk_libs])
+  APR_ADDTO(SSL_LIBS, [$ap_ssltk_libs])
   APR_ADDTO(LIBS, [$ap_ssltk_libs])
   APACHE_SUBST(SSL_LIBS)
 
@@ -471,6 +476,7 @@ if test "x$ap_ssltk_configured" = "x"; then
   dnl restore
   CPPFLAGS="$saved_CPPFLAGS"
   LIBS="$saved_LIBS"
+  LDFLAGS="$saved_LDFLAGS"
   if test "x$liberrors" != "x"; then
     AC_MSG_ERROR([... Error, SSL/TLS libraries were missing or unusable])
   fi
