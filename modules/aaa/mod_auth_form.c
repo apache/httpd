@@ -944,7 +944,12 @@ static int authenticate_form_authn(request_rec * r)
         /* make sure any user detected within the subrequest is saved back to
          * the main request.
          */
-        r->user = rr->user;
+        r->user = apr_pstrdup(r->pool, rr->user);
+
+        /* we cannot clean up rr at this point, as memory allocated to rr is
+         * referenced from the main request. It will be cleaned up when the
+         * main request is cleaned up.
+         */
 
         /* insert the kept_body filter on the main request to guarantee the
          * input filter stack cannot be read a second time, optionally inject
@@ -958,7 +963,6 @@ static int authenticate_form_authn(request_rec * r)
             r->kept_body = apr_brigade_create(r->pool, r->connection->bucket_alloc);
         }
         ap_request_insert_filter_fn(r);
-        ap_destroy_sub_req(rr);
 
         /* did the form ask to change the method? if so, switch in the redirect handler
          * to relaunch this request as the subrequest with the new method. If the
