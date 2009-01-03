@@ -330,7 +330,7 @@ static void set_service_description(void)
             /* ###: utf-ize */
             ChangeServiceConfig2(schService,
                                  1 /* SERVICE_CONFIG_DESCRIPTION */,
-                                 (LPVOID) &full_description));
+                                 (LPVOID) &full_description);
             CloseServiceHandle(schService);
         }
         CloseServiceHandle(schSCManager);
