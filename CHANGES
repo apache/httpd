@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
-Changes with Apache 2.3.1
+Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
+
+
+Changes with Apache 2.3.1
 
  *) ap_slotmem: Add in new slot-based memory access API impl., including
     2 providers (mod_sharedmem and mod_plainmem) [Jim Jagielski,
