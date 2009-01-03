@@ -17,14 +17,15 @@
 #include "mod_session.h"
 #include "apu_version.h"
 #include "apr_base64.h"                /* for apr_base64_decode et al */
-#include "apr_ssl.h"                /* for apr_*_encrypt et al */
 #include "apr_lib.h"
 #include "apr_strings.h"
 #include "http_log.h"
 
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 4)
+
+#include "apr_crypto.h"                /* for apr_*_crypt et al */
+
 #define LOG_PREFIX "mod_session_crypto: "
-#define DEFAULT_CIPHER "AES256"
-#define DEFAULT_DIGEST "SHA"
 
 module AP_MODULE_DECLARE_DATA session_crypto_module;
 
@@ -33,109 +34,110 @@ module AP_MODULE_DECLARE_DATA session_crypto_module;
  */
 typedef struct {
     const char *passphrase;
+    apr_array_header_t *params;
     int passphrase_set;
-    const char *certfile;
-    int certfile_set;
-    const char *keyfile;
-    int keyfile_set;
-    const char *cipher;
+    apr_crypto_block_key_type_e cipher;
     int cipher_set;
-    const char *digest;
-    int digest_set;
-    const char *engine;
-    int engine_set;
-} session_crypto_dir_conf;
+}session_crypto_dir_conf;
+
+/**
+ * Structure to carry the server wide session config.
+ */
+typedef struct {
+    const char *library;
+    apr_array_header_t *params;
+    const apr_crypto_driver_t *driver;
+    int library_set;
+    int noinit;
+    int noinit_set;
+}session_crypto_conf;
 
 AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z);
 AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z);
 AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
-                                       apr_pool_t *ptemp, server_rec *s);
+        apr_pool_t *ptemp, server_rec *s);
 
 /**
  * Initialise the encryption as per the current config.
  *
  * Returns APR_SUCCESS if successful.
  */
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
-static apr_status_t crypt_init(request_rec * r, apr_evp_factory_t ** f, apr_evp_crypt_key_e * key, session_crypto_dir_conf * conf)
+static apr_status_t crypt_init(request_rec * r, apr_crypto_t **f, apr_crypto_key_t **key, apr_uuid_t *salt, apr_size_t *ivSize, session_crypto_conf * conf, session_crypto_dir_conf * dconf)
 {
     apr_status_t res;
 
-    if (!conf->certfile_set && !conf->passphrase_set) {
+    if (!conf->driver) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, LOG_PREFIX
+                "encryption driver not configured, "
+                "no SessionCryptoLibrary set");
+        return APR_EGENERAL;
+    }
+
+    if (!dconf->passphrase_set) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, LOG_PREFIX
-                      "encryption not configured, "
-                      "no passphrase or certfile/keyfile set");
+                "encryption not configured, "
+                "no passphrase set");
         return APR_EGENERAL;
     }
 
     /* set up */
-    if (conf->certfile_set) {
-        *key = APR_EVP_KEY_PUBLIC;
-        res = apr_evp_factory_create(f, conf->keyfile, conf->certfile, NULL,
-                   conf->passphrase, conf->engine, conf->digest,
-                   APR_EVP_FACTORY_ASYM, r->pool);
-        if (APR_ENOTIMPL == res) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                "generic public/private key encryption is not supported by "
-                    "this version of APR. session encryption not possible");
-        }
-    }
-    else {
-        *key = APR_EVP_KEY_SYM;
-        res = apr_evp_factory_create(f, NULL, NULL, conf->cipher,
-                                     conf->passphrase, conf->engine, conf->digest,
-                                     APR_EVP_FACTORY_SYM, r->pool);
-        if (APR_ENOTIMPL == res) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                  "generic symmetrical encryption is not supported by this "
-                          "version of APR. session encryption not possible");
-        }
-    }
-    if (APR_STATUS_IS_ENOCIPHER(res)) {
+    res = apr_crypto_factory(conf->driver, r->pool, dconf->params, f);
+    if (APR_ENOTIMPL == res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "the cipher '%s' was not found", conf->cipher);
+                "generic symmetrical encryption is not supported by this "
+                "version of APR. session encryption not possible");
     }
-    if (APR_STATUS_IS_ENODIGEST(res)) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "the digest '%s' was not found", conf->digest);
+
+    if (APR_SUCCESS == res) {
+        res = apr_crypto_passphrase(conf->driver, r->pool, *f, dconf->passphrase,
+                strlen(dconf->passphrase),
+                (unsigned char *) salt, salt ? sizeof(apr_uuid_t) : 0, dconf->cipher,
+                MODE_CBC, 1, 4096, key, ivSize);
     }
-    if (APR_STATUS_IS_ENOCERT(res)) {
+
+    if (APR_STATUS_IS_ENOKEY(res)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                   "the public and private key could not be extracted from "
-                      "the certificates");
+                "the passphrase '%s' was empty", dconf->passphrase);
     }
-    if (APR_STATUS_IS_ENOENGINE(res)) {
+    if (APR_STATUS_IS_EPADDING(res)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "the engine '%s' was not found", conf->engine);
+                "padding is not supported for cipher");
+    }
+    if (APR_STATUS_IS_EKEYTYPE(res)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
+                "the key type is not known");
     }
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "encryption could not be configured. Please check the "
-                      "certificates and/or passphrase as appropriate");
-        apr_evp_factory_cleanup(*f);
+                "encryption could not be configured. Please check the "
+                "certificates and/or passphrase as appropriate");
         return APR_EGENERAL;
     }
 
     return APR_SUCCESS;
 }
-#endif
 
 /**
  * Encrypt the string given as per the current config.
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t encrypt_string(request_rec * r, session_crypto_dir_conf *conf,
-                                   const char *in, char **out)
+static apr_status_t encrypt_string(request_rec * r, session_crypto_conf *conf,
+        session_crypto_dir_conf *dconf,
+        const char *in, char **out)
 {
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
     apr_status_t res;
-    apr_evp_factory_t *f = NULL;
-    apr_evp_crypt_t *e = NULL;
-    apr_evp_crypt_key_e key;
+    apr_crypto_t *f = NULL;
+    apr_crypto_key_t *key = NULL;
+    apr_size_t ivSize = 0;
+    apr_crypto_block_t *block = NULL;
     unsigned char *encrypt = NULL;
+    unsigned char *combined = NULL;
     apr_size_t encryptlen, tlen;
     char *base64;
+    apr_size_t blockSize = 0;
+    const unsigned char *iv = NULL;
+    apr_uuid_t salt;
 
     /* by default, return an empty string */
     *out = "";
@@ -145,54 +147,51 @@ static apr_status_t encrypt_string(request_rec * r, session_crypto_dir_conf *con
         return APR_SUCCESS;
     }
 
-    res = crypt_init(r, &f, &key, conf);
+    /* use a uuid as a salt value, and prepend it to our result */
+    apr_uuid_get(&salt);
+    res = crypt_init(r, &f, &key, &salt, &ivSize, conf, dconf);
     if (res != APR_SUCCESS) {
         return res;
     }
 
-    res = apr_evp_crypt_init(f, &e, APR_EVP_ENCRYPT, key, r->pool);
+    res = apr_crypto_block_encrypt_init(conf->driver, r->pool, f, key, &iv, &block,
+            &blockSize);
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "encryption could be configured but not initialised");
-        apr_evp_factory_cleanup(f);
+                "apr_crypto_block_encrypt_init failed");
         return res;
     }
 
     /* encrypt the given string */
-    res = apr_evp_crypt(e, &encrypt, &encryptlen, (unsigned char *) in, strlen(in));
+    res = apr_crypto_block_encrypt(conf->driver, block, &encrypt,
+            &encryptlen, (unsigned char *)in, strlen(in));
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "attempt to encrypt failed");
-        apr_evp_factory_cleanup(f);
-        apr_evp_crypt_cleanup(e);
+                "apr_crypto_block_encrypt failed");
         return res;
     }
-    res = apr_evp_crypt_finish(e, encrypt + encryptlen, &tlen);
+    res = apr_crypto_block_encrypt_finish(conf->driver, block, encrypt + encryptlen,
+            &tlen);
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "attempt to finish the encryption failed");
-        apr_evp_factory_cleanup(f);
-        apr_evp_crypt_cleanup(e);
+                "apr_crypto_block_encrypt_finish failed");
         return res;
     }
     encryptlen += tlen;
 
-    /* base64 encode the result */
-    base64 = apr_pcalloc(r->pool, apr_base64_encode_len(encryptlen + 1) * sizeof(char));
-    apr_base64_encode(base64, (const char *) encrypt, encryptlen);
-    *out = base64;
+    /* prepend the salt and the iv to the result */
+    combined = apr_palloc(r->pool, ivSize + encryptlen + sizeof(apr_uuid_t));
+    memcpy(combined, &salt, sizeof(apr_uuid_t));
+    memcpy(combined + sizeof(apr_uuid_t), iv, ivSize);
+    memcpy(combined + sizeof(apr_uuid_t) + ivSize, encrypt, encryptlen);
 
-    /* clean up afterwards */
-    apr_evp_factory_cleanup(f);
-    apr_evp_crypt_cleanup(e);
+    /* base64 encode the result */
+    base64 = apr_palloc(r->pool, apr_base64_encode_len(ivSize + encryptlen + sizeof(apr_uuid_t) + 1) * sizeof(char));
+    apr_base64_encode(base64, (const char *) combined, ivSize + encryptlen + sizeof(apr_uuid_t));
+    *out = base64;
 
     return res;
 
-#else
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, r, LOG_PREFIX
-                  "crypto is not supported by APR on this platform");
-    return APR_ENOTIMPL;
-#endif
 }
 
 /**
@@ -200,54 +199,62 @@ static apr_status_t encrypt_string(request_rec * r, session_crypto_dir_conf *con
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t decrypt_string(request_rec * r, session_crypto_dir_conf *conf,
-                                   const char *in, char **out)
+static apr_status_t decrypt_string(request_rec * r, session_crypto_conf *conf,
+        session_crypto_dir_conf *dconf,
+        const char *in, char **out)
 {
-#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
     apr_status_t res;
-    apr_evp_factory_t *f = NULL;
-    apr_evp_crypt_t *e = NULL;
-    apr_evp_crypt_key_e key;
+    apr_crypto_t *f = NULL;
+    apr_crypto_key_t *key = NULL;
+    apr_size_t ivSize = 0;
+    apr_crypto_block_t *block = NULL;
     unsigned char *decrypted = NULL;
     apr_size_t decryptedlen, tlen;
     apr_size_t decodedlen;
     char *decoded;
-
-    res = crypt_init(r, &f, &key, conf);
-    if (res != APR_SUCCESS) {
-        return res;
-    }
-
-    res = apr_evp_crypt_init(f, &e, APR_EVP_DECRYPT, key, r->pool);
-    if (APR_SUCCESS != res) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "decryption could be configured but not initialised");
-        apr_evp_factory_cleanup(f);
-        return res;
-    }
+    apr_size_t blockSize = 0;
 
     /* strip base64 from the string */
     decoded = apr_palloc(r->pool, apr_base64_decode_len(in));
     decodedlen = apr_base64_decode(decoded, in);
     decoded[decodedlen] = '\0';
 
+    res = crypt_init(r, &f, &key, (apr_uuid_t *)decoded, &ivSize, conf, dconf);
+    if (res != APR_SUCCESS) {
+        return res;
+    }
+
+    /* bypass the salt at the start of the decoded block */
+    decoded += sizeof(apr_uuid_t);
+    decodedlen -= sizeof(apr_uuid_t);
+
+    res = apr_crypto_block_decrypt_init(conf->driver, r->pool, f, key, (unsigned char *)decoded, &block,
+            &blockSize);
+    if (APR_SUCCESS != res) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
+                "apr_crypto_block_decrypt_init failed");
+        return res;
+    }
+
+    /* bypass the iv at the start of the decoded block */
+    decoded += ivSize;
+    decodedlen -= ivSize;
+
     /* decrypt the given string */
-    res = apr_evp_crypt(e, &decrypted, &decryptedlen, (unsigned char *) decoded, decodedlen);
+    res = apr_crypto_block_decrypt(conf->driver, block, &decrypted,
+            &decryptedlen, (unsigned char *)decoded, decodedlen);
     if (res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "decrypt: attempt to decrypt failed");
-        apr_evp_factory_cleanup(f);
-        apr_evp_crypt_cleanup(e);
+                "apr_crypto_block_decrypt failed");
         return res;
     }
     *out = (char *) decrypted;
 
-    res = apr_evp_crypt_finish(e, decrypted + decryptedlen, &tlen);
+    res = apr_crypto_block_decrypt_finish(conf->driver, block, decrypted + decryptedlen,
+            &tlen);
     if (APR_SUCCESS != res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                      "attempt to finish the decryption failed");
-        apr_evp_factory_cleanup(f);
-        apr_evp_crypt_cleanup(e);
+                "apr_crypto_block_decrypt_finish failed");
         return res;
     }
     decryptedlen += tlen;
@@ -255,13 +262,7 @@ static apr_status_t decrypt_string(request_rec * r, session_crypto_dir_conf *con
 
     return APR_SUCCESS;
 
-#else
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_ENOTIMPL, r, LOG_PREFIX
-                  "crypto is not supported by APR on this platform");
-    return APR_ENOTIMPL;
-#endif
 }
-
 
 /**
  * Crypto encoding for the session.
@@ -274,14 +275,16 @@ AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z)
 
     char *encoded = NULL;
     apr_status_t res;
-    session_crypto_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-                                                    &session_crypto_module);
+    session_crypto_conf *conf = ap_get_module_config(r->server->module_config,
+            &session_crypto_module);
+    session_crypto_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+            &session_crypto_module);
 
-    if (conf->passphrase_set || conf->certfile_set) {
-        res = encrypt_string(r, conf, z->encoded, &encoded);
+    if (dconf->passphrase_set) {
+        res = encrypt_string(r, conf, dconf, z->encoded, &encoded);
         if (res != OK) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
-                          "encrypt session failed");
+                    "encrypt session failed");
             return res;
         }
         z->encoded = encoded;
@@ -302,14 +305,16 @@ AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
 
     char *encoded = NULL;
     apr_status_t res;
-    session_crypto_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-                                                    &session_crypto_module);
+    session_crypto_conf *conf = ap_get_module_config(r->server->module_config,
+            &session_crypto_module);
+    session_crypto_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+            &session_crypto_module);
 
-    if ((conf->passphrase_set || conf->certfile_set) && z->encoded) {
-        res = decrypt_string(r, conf, z->encoded, &encoded);
+    if ((dconf->passphrase_set) && z->encoded) {
+        res = decrypt_string(r, conf, dconf, z->encoded, &encoded);
         if (res != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
-                          "decrypt session failed, wrong passphrase?");
+                    "decrypt session failed, wrong passphrase?");
             return res;
         }
         z->encoded = encoded;
@@ -323,13 +328,103 @@ AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
  * Initialise the SSL in the post_config hook.
  */
 AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
-                                       apr_pool_t *ptemp, server_rec *s)
+        apr_pool_t *ptemp, server_rec *s)
 {
-    apr_ssl_init();
+    void *data;
+    const char *userdata_key = "session_crypto_init";
+
+    session_crypto_conf *conf = ap_get_module_config(s->module_config,
+            &session_crypto_module);
+
+    /* session_crypto_init() will be called twice. Don't bother
+     * going through all of the initialization on the first call
+     * because it will just be thrown away.*/
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (!data) {
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                apr_pool_cleanup_null, s->process->pool);
+        return OK;
+    }
+
+    if (conf->library) {
+
+        const apu_err_t *err = NULL;
+        apr_status_t rv;
+
+        rv = apr_crypto_init(p, NULL);
+        if (APR_SUCCESS != rv) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, LOG_PREFIX
+                    "APR crypto could not be initialised");
+            return rv;
+        }
+
+        rv = apr_crypto_get_driver(p, conf->library, &conf->driver, conf->params, &err);
+        if (APR_EREINIT == rv) {
+            if (!conf->noinit) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, LOG_PREFIX
+                        "warning: crypto for '%s' was already initialised, "
+                        "using existing configuration", conf->library);
+            }
+            rv = APR_SUCCESS;
+        }
+        else {
+            if (conf->noinit) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s, LOG_PREFIX
+                        "warning: crypto for '%s' was not previously initialised "
+                        "when it was expected to be, initialised instead by "
+                        "mod_session_crypto", conf->library);
+            }
+        }
+        if (APR_SUCCESS != rv && err) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, LOG_PREFIX
+                    "%s", err->msg);
+            return rv;
+        }
+        if (APR_ENOTIMPL == rv) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, LOG_PREFIX
+                    "The crypto library '%s' could not be found",
+                    conf->library);
+            return rv;
+        }
+        if (APR_SUCCESS != rv || !conf->driver) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s, LOG_PREFIX
+                    "The crypto library '%s' could not be loaded",
+                    conf->library);
+            return rv;
+        }
+
+        ap_log_error(APLOG_MARK, APLOG_INFO, rv, s, LOG_PREFIX
+                "The crypto library '%s' was loaded successfully",
+                conf->library);
+
+    }
+
     return OK;
 }
 
+static void *create_session_crypto_config(apr_pool_t * p, server_rec *s)
+{
+    session_crypto_conf *new =
+    (session_crypto_conf *) apr_pcalloc(p, sizeof(session_crypto_conf));
 
+    return (void *) new;
+}
+
+static void *merge_session_crypto_config(apr_pool_t * p, void *basev, void *addv)
+{
+    session_crypto_conf *new = (session_crypto_conf *) apr_pcalloc(p, sizeof(session_crypto_conf));
+    session_crypto_conf *add = (session_crypto_conf *) addv;
+    session_crypto_conf *base = (session_crypto_conf *) basev;
+
+    new->library = (add->library_set == 0) ? base->library : add->library;
+    new->params = (add->library_set == 0) ? base->params : add->params;
+    new->driver = (add->library_set == 0) ? base->driver : add->driver;
+    new->library_set = add->library_set || base->library_set;
+    new->noinit = (add->noinit_set == 0) ? base->noinit : add->noinit;
+    new->noinit_set = add->noinit_set || base->noinit_set;
+
+    return new;
+}
 
 static void *create_session_crypto_dir_config(apr_pool_t * p, char *dummy)
 {
@@ -337,8 +432,7 @@ static void *create_session_crypto_dir_config(apr_pool_t * p, char *dummy)
     (session_crypto_dir_conf *) apr_pcalloc(p, sizeof(session_crypto_dir_conf));
 
     /* default cipher AES256-SHA */
-    new->cipher = DEFAULT_CIPHER;
-    new->digest = DEFAULT_DIGEST;
+    new->cipher = KEY_AES_256;
 
     return (void *) new;
 }
@@ -350,112 +444,142 @@ static void *merge_session_crypto_dir_config(apr_pool_t * p, void *basev, void *
     session_crypto_dir_conf *base = (session_crypto_dir_conf *) basev;
 
     new->passphrase = (add->passphrase_set == 0) ? base->passphrase : add->passphrase;
+    new->params = (add->passphrase_set == 0) ? base->params : add->params;
     new->passphrase_set = add->passphrase_set || base->passphrase_set;
-    new->certfile = (add->certfile_set == 0) ? base->certfile : add->certfile;
-    new->certfile_set = add->certfile_set || base->certfile_set;
-    new->keyfile = (add->keyfile_set == 0) ? base->keyfile : add->keyfile;
-    new->keyfile_set = add->keyfile_set || base->keyfile_set;
     new->cipher = (add->cipher_set == 0) ? base->cipher : add->cipher;
     new->cipher_set = add->cipher_set || base->cipher_set;
-    new->digest = (add->digest_set == 0) ? base->digest : add->digest;
-    new->digest_set = add->digest_set || base->digest_set;
-    new->engine = (add->engine_set == 0) ? base->engine : add->engine;
-    new->engine_set = add->engine_set || base->engine_set;
 
     return new;
 }
 
-static const char *check_file(cmd_parms * cmd, const char **file)
+static const char *set_crypto_driver(cmd_parms * cmd, void *config, const char *arg)
 {
-    apr_finfo_t finfo;
-    const char *filepath = ap_server_root_relative(cmd->pool, *file);
+    char *word, *val;
+    int library_set = 0;
+    session_crypto_conf *conf =
+    (session_crypto_conf *)ap_get_module_config(cmd->server->module_config,
+            &session_crypto_module);
+    apr_crypto_param_t *param;
+    conf->params = apr_array_make(cmd->pool, 10, sizeof(apr_crypto_param_t));
 
-    if (!filepath) {
-        return apr_pstrcat(cmd->pool, cmd->directive->directive,
-                           ": Invalid file path ", *file, NULL);
+    while (*arg) {
+        word = ap_getword_conf(cmd->pool, &arg);
+        val = strchr(word, '=');
+        if (!val) {
+            if (!strcasecmp(word, "noinit")) {
+                conf->noinit = 1;
+                conf->noinit_set = 1;
+            }
+            else if (!library_set) {
+                conf->library = word;
+                conf->library_set = 1;
+                library_set = 1;
+            }
+            else {
+                return "Invalid SessionCryptoLibrary parameter. Parameter must "
+                "be in the form 'key=value'.";
+            }
+        }
+        else {
+            *val++ = '\0';
+            if (!strcasecmp(word, "dir")) {
+                param = apr_array_push(conf->params);
+                param->type = APR_CRYPTO_CA_TYPE_DIR;
+                param->path = val;
+            }
+            else if (!strcasecmp(word, "key3")) {
+                param = apr_array_push(conf->params);
+                param->type = APR_CRYPTO_CERT_TYPE_KEY3_DB;
+                param->path = val;
+            }
+            else if (!strcasecmp(word, "cert7")) {
+                param = apr_array_push(conf->params);
+                param->type = APR_CRYPTO_CA_TYPE_CERT7_DB;
+                param->path = val;
+            }
+            else if (!strcasecmp(word, "secmod")) {
+                param = apr_array_push(conf->params);
+                param->type = APR_CRYPTO_CA_TYPE_SECMOD;
+                param->path = val;
+            }
+        }
     }
-    if (apr_stat(&finfo, filepath,
-                 APR_FINFO_TYPE | APR_FINFO_SIZE, cmd->pool) != 0 ||
-        finfo.filetype != APR_REG || finfo.size <= 0) {
-        return apr_pstrcat(cmd->pool, cmd->directive->directive,
-                           ": File empty or missing ", *file, NULL);
+
+    return NULL;
+}
+
+static const char *set_crypto_passphrase(cmd_parms * cmd, void *config, const char *arg)
+{
+    char *word, *val;
+    int passphrase_set = 0;
+    session_crypto_dir_conf *dconf = (session_crypto_dir_conf *) config;
+    session_crypto_conf *conf =
+    (session_crypto_conf *)ap_get_module_config(cmd->server->module_config,
+            &session_crypto_module);
+    apr_crypto_param_t *param;
+    dconf->params = apr_array_make(cmd->pool, 10, sizeof(apr_crypto_param_t));
+
+    while (*arg) {
+        word = ap_getword_conf(cmd->pool, &arg);
+        val = strchr(word, '=');
+        if (!val) {
+            if (!passphrase_set) {
+                dconf->passphrase = word;
+                dconf->passphrase_set = 1;
+                passphrase_set = 1;
+            }
+            else {
+                return "Invalid SessionCryptoPassphrase parameter. Parameter must "
+                "be in the form 'key=value'.";
+            }
+        }
+        else {
+            *val++ = '\0';
+            if (!strcasecmp(word, "engine")) {
+                param = apr_array_push(dconf->params);
+                param->type = APR_CRYPTO_ENGINE;
+                param->path = val;
+            }
+            else if (!strcasecmp(word, "cipher")) {
+                if (!strcasecmp(val, "3des192")) {
+                    dconf->cipher = KEY_3DES_192;
+                    dconf->cipher_set = 1;
+                }
+                else if (!strcasecmp(val, "aes256")) {
+                    dconf->cipher = KEY_AES_256;
+                    dconf->cipher_set = 1;
+                }
+                else {
+                    return "Invalid SessionCryptoPassphrase parameter. Cipher must "
+                    "be '3des192' or 'aes256'.";
+                }
+            }
+            else {
+                return "Invalid SessionCryptoPassphrase parameter. Parameters must "
+                "be 'engine' or 'cipher'.";
+            }
+        }
     }
-    *file = filepath;
 
-    return NULL;
-}
-
-static const char *set_crypto_passphrase(cmd_parms * cmd, void *config, const char *passphrase)
-{
-    session_crypto_dir_conf *conf = (session_crypto_dir_conf *) config;
-    conf->passphrase = passphrase;
-    conf->passphrase_set = 1;
-    return NULL;
-}
-
-static const char *set_crypto_certificate_file(cmd_parms * cmd, void *config, const char *file)
-{
-    const char *res = check_file(cmd, &file);
-    if (!res) {
-        session_crypto_dir_conf *conf = (session_crypto_dir_conf *) config;
-        conf->certfile = file;
-        conf->certfile_set = 1;
+    /* if no library has been configured, set the recommended library
+     * as a sensible default.
+     */
+#ifdef APU_CRYPTO_RECOMMENDED_DRIVER
+    if (!conf->library) {
+        conf->library = APU_CRYPTO_RECOMMENDED_DRIVER;
     }
-    return res;
-}
+#endif
 
-static const char *set_crypto_certificate_keyfile(cmd_parms * cmd, void *config, const char *file)
-{
-    const char *res = check_file(cmd, &file);
-    if (!res) {
-        session_crypto_dir_conf *conf = (session_crypto_dir_conf *) config;
-        conf->keyfile = file;
-        conf->keyfile_set = 1;
-    }
-    return res;
-}
-
-static const char *set_crypto_cipher(cmd_parms * cmd, void *config, const char *cipher)
-{
-    session_crypto_dir_conf *conf = (session_crypto_dir_conf *) config;
-    conf->cipher = cipher;
-    conf->cipher_set = 1;
     return NULL;
 }
-
-static const char *set_crypto_digest(cmd_parms * cmd, void *config, const char *digest)
-{
-    session_crypto_dir_conf *conf = (session_crypto_dir_conf *) config;
-    conf->digest = digest;
-    conf->digest_set = 1;
-    return NULL;
-}
-
-static const char *set_crypto_engine(cmd_parms * cmd, void *config, const char *engine)
-{
-    session_crypto_dir_conf *conf = (session_crypto_dir_conf *) config;
-    conf->engine = engine;
-    conf->engine_set = 1;
-    return NULL;
-}
-
 
 static const command_rec session_crypto_cmds[] =
 {
-    AP_INIT_TAKE1("SessionCryptoPassphrase", set_crypto_passphrase, NULL, RSRC_CONF|OR_AUTHCFG,
-                  "The passphrase used to encrypt cookies"),
-    AP_INIT_TAKE1("SessionCryptoCertificateFile", set_crypto_certificate_file, NULL, RSRC_CONF|OR_AUTHCFG,
-                  "The name of a certificate whose public key will be used to encrypt cookies"),
-    AP_INIT_TAKE1("SessionCryptoCertificateKeyFile", set_crypto_certificate_keyfile, NULL, RSRC_CONF|OR_AUTHCFG,
-                  "The name of a private key which will be used to decrypt cookies"),
-    AP_INIT_TAKE1("SessionCryptoCipher", set_crypto_cipher, NULL, RSRC_CONF|OR_AUTHCFG,
-                  "The cipher used to encrypt cookies. Defaults to " DEFAULT_CIPHER),
-    AP_INIT_TAKE1("SessionCryptoDigest", set_crypto_digest, NULL, RSRC_CONF|OR_AUTHCFG,
-                  "The digest used to encrypt cookies. Defaults to " DEFAULT_DIGEST),
-    AP_INIT_TAKE1("SessionCryptoEngine", set_crypto_engine, NULL, RSRC_CONF|OR_AUTHCFG,
-                  "The optional engine used to encrypt cookies, if supported by the underlying crypto "
-                  "toolkit"),
-    {NULL}
+    AP_INIT_RAW_ARGS("SessionCryptoPassphrase", set_crypto_passphrase, NULL, RSRC_CONF|OR_AUTHCFG,
+            "The passphrase used to encrypt the session"),
+    AP_INIT_RAW_ARGS("SessionCryptoDriver", set_crypto_driver, NULL, RSRC_CONF,
+            "The underlying crypto library driver to use"),
+    {    NULL}
 };
 
 static void register_hooks(apr_pool_t * p)
@@ -471,8 +595,12 @@ module AP_MODULE_DECLARE_DATA session_crypto_module =
     create_session_crypto_dir_config, /* dir config creater */
     merge_session_crypto_dir_config,  /* dir merger --- default is to
                                        * override */
-    NULL,                             /* server config */
-    NULL,                             /* merge server config */
+    create_session_crypto_config,     /* server config */
+    merge_session_crypto_config,      /* merge server config */
     session_crypto_cmds,              /* command apr_table_t */
     register_hooks                    /* register hooks */
 };
+
+#else
+#error session_crypto_module requires APR v1.4.0 or later
+#endif
