@@ -2,6 +2,12 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_ext_filter: We need to detect failure to startup the filter
+    program (a mangled response is not acceptable).  Fix to detect
+    failure, and offer configuration option either to abort or
+    to remove the filter and continue.
+    PR 41120 [Nick Kew]
+
  *) mod_session_crypto: Rewrite the session_crypto module against the
     apr_crypto API. [Graham Leggett]
 

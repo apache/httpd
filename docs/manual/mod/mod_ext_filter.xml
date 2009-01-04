@@ -340,6 +340,12 @@ delivery to the client</description>
       messages written to standard error by the external filter
       program will be saved in the Apache error log.
       <code>NoLogStderr</code> disables this feature.</dd>
+
+      <dt><code>Onfail=[abort|remove]</code></dt>
+      <dd>Determines how to proceed if the external filter program
+      cannot be started.  With <code>abort</code> (the default value)
+      the request will be aborted.  With <code>remove</code>, the
+      filter is removed and the request continues without it.</dd>
     </dl>
 
     <example><title>Example</title>
