@@ -879,8 +879,18 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 return ap_pass_brigade(f->next, bb);
             }
             else {
-                f->r->status = HTTP_INTERNAL_SERVER_ERROR;
-                return HTTP_INTERNAL_SERVER_ERROR;
+                apr_bucket *e;
+                f->r->status_line = "500 Internal Server Error";
+
+                apr_brigade_cleanup(bb);
+                e = ap_bucket_error_create(HTTP_INTERNAL_SERVER_ERROR,
+                                           NULL, r->pool,
+                                           f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                ap_pass_brigade(f->next, bb);
+                return AP_FILTER_ERROR;
             }
         }
         ctx = f->ctx;
