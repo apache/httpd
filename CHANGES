@@ -2,6 +2,9 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_session_crypto: Ensure that SessionCryptoDriver can only be
+    set in the global scope. [Graham Leggett]
+
  *) mod_ext_filter: We need to detect failure to startup the filter
     program (a mangled response is not acceptable).  Fix to detect
     failure, and offer configuration option either to abort or
