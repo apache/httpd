@@ -349,8 +349,6 @@ static const char *vhost_cgimode(cmd_parms *cmd, void *dir, const char *arg)
 }
 static const char *dtraceenable(cmd_parms *cmd, void *dir, int arg)
 {
-    priv_cfg *cfg = ap_get_module_config(cmd->server->module_config,
-                                         &privileges_module);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
