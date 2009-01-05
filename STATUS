@@ -89,6 +89,37 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+  * mod_ext_filter: fix error handling when the filter prog fails to start.
+    PR 41120
+    http://svn.apache.org/viewvc?view=rev&revision=731358
+    http://svn.apache.org/viewvc?view=rev&revision=731388
+    +1: niq
+
+  * Enhance ap_escape_html to add an option to escape all non-ASCII
+    characters.  Use this to fix mod_include's handling of entities.
+    PR 25202
+      trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=730296
+      2.2.x:
+        http://people.apache.org/~niq/patches/25202
+    +1: niq
+
+  * mod_rewrite: fix "B" flag breakage by reverting r5589343
+    PR 45529
+    http://svn.apache.org/viewvc?view=rev&revision=730274
+    +1: niq
+
+  * mod_cgid: fix for segfault problem on solaris
+    PR 39332
+    http://svn.apache.org/viewvc?view=rev&revision=729579
+    +1: niq
+
+  * util_script (CGI): return 504 (Gateway timeout) rather than 500
+    when a script times out before returning status line/headers.
+    PR 42190
+    http://svn.apache.org/viewvc?view=rev&revision=729586
+    +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
