@@ -489,6 +489,7 @@ static int process_dir(char *path, apr_pool_t *pool)
                         apr_file_remove(apr_pstrcat(p, path, "/", d->basename,
                                                     CACHE_DATA_SUFFIX, NULL),
                                         p);
+                        break;
                     }
                 }
                 else {
