@@ -146,6 +146,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        (trunk version works)
     +1: covener
       
+  * Backport 104924: PR 18388; Add Set-Cookie and Set-Cookie2 to the
+    list of headers allowed to pass through on a 304 response.
+    This has been in trunk since 2004, released in 2.2.0.
+      http://svn.apache.org/viewvc?view=rev&revision=104924
+    +1: fielding
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
