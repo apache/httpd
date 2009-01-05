@@ -94,7 +94,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     http://svn.apache.org/viewvc?view=rev&revision=731358
     http://svn.apache.org/viewvc?view=rev&revision=731388
     http://svn.apache.org/viewvc?view=rev&revision=731594
-    +1: niq
+    +1: niq, rpluem
 
   * Enhance ap_escape_html to add an option to escape all non-ASCII
     characters.  Use this to fix mod_include's handling of entities.
