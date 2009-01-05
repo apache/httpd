@@ -873,9 +873,9 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "can't initialise output filter %s: %s",
                           f->frec->name,
-                          ctx->dc->onfail ? "removing" : "aborting");
+                          (ctx->dc->onfail == 1) ? "removing" : "aborting");
             ap_remove_output_filter(f);
-            if (ctx->dc->onfail) {
+            if (ctx->dc->onfail == 1) {
                 return ap_pass_brigade(f->next, bb);
             }
             else {
@@ -926,9 +926,9 @@ static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
                           "can't initialise input filter %s: %s",
                           f->frec->name,
-                          ctx->dc->onfail ? "removing" : "aborting");
+                          (ctx->dc->onfail == 1) ? "removing" : "aborting");
             ap_remove_input_filter(f);
-            if (ctx->dc->onfail) {
+            if (ctx->dc->onfail == 1) {
                 return ap_get_brigade(f->next, bb, mode, block, readbytes);
             }
             else {
