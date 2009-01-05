@@ -25,7 +25,7 @@
 #include "apr_general.h" /* stringify */
 
 #define AP_SERVER_COPYRIGHT \
-  "Copyright 2008 The Apache Software Foundation."
+  "Copyright 2009 The Apache Software Foundation."
 
 /*
  * The below defines the base string of the Server: header. Additional
