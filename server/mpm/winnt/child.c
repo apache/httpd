@@ -50,12 +50,31 @@ extern DWORD my_pid;
 apr_proc_mutex_t *start_mutex;
 HANDLE exit_event;
 
+/*
+ * The Windoes MPM uses a queue of completion contexts that it passes
+ * between the accept threads and the worker threads. Declare the
+ * functions to access the queue and the structures passed on the
+ * queue in the header file to enable modules to access them
+ * if necessary. The queue resides in the MPM.
+ */
+#ifdef CONTAINING_RECORD
+#undef CONTAINING_RECORD
+#endif
+#define CONTAINING_RECORD(address, type, field) ((type *)( \
+                                                  (char *)(address) - \
+                                                  (char *)(&((type *)0)->field)))
+#if APR_HAVE_IPV6
+#define PADDED_ADDR_SIZE (sizeof(SOCKADDR_IN6)+16)
+#else
+#define PADDED_ADDR_SIZE (sizeof(SOCKADDR_IN)+16)
+#endif
+
 /* Queue for managing the passing of winnt_conn_ctx_t between
  * the accept and worker threads.
  */
 typedef struct winnt_conn_ctx_t_s {
     struct winnt_conn_ctx_t_s *next;
-    OVERLAPPED Overlapped;
+    OVERLAPPED overlapped;
     apr_socket_t *sock;
     SOCKET accept_socket;
     char buff[2*PADDED_ADDR_SIZE];
@@ -103,7 +122,7 @@ static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
         apr_pool_clear(context->ptrans);
         context->ba = apr_bucket_alloc_create(context->ptrans);
         context->next = NULL;
-        ResetEvent(context->Overlapped.hEvent);
+        ResetEvent(context->overlapped.hEvent);
         apr_thread_mutex_lock(qlock);
         if (qtail) {
             qtail->next = context;
@@ -174,9 +193,9 @@ static winnt_conn_ctx_t *mpm_get_completion_context(void)
                                                      sizeof(winnt_conn_ctx_t));
 
 
-                context->Overlapped.hEvent = CreateEvent(NULL, TRUE,
+                context->overlapped.hEvent = CreateEvent(NULL, TRUE,
                                                          FALSE, NULL);
-                if (context->Overlapped.hEvent == NULL) {
+                if (context->overlapped.hEvent == NULL) {
                     /* Hopefully this is a temporary condition ... */
                     ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_os_error(),
                                  ap_server_conf,
@@ -196,7 +215,7 @@ static winnt_conn_ctx_t *mpm_get_completion_context(void)
                     ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
                                  "mpm_get_completion_context: Failed "
                                  "to create the transaction pool.");
-                    CloseHandle(context->Overlapped.hEvent);
+                    CloseHandle(context->overlapped.hEvent);
 
                     apr_thread_mutex_unlock(child_lock);
                     return NULL;
@@ -225,7 +244,7 @@ static apr_status_t mpm_post_completion_context(winnt_conn_ctx_t *context,
 {
     LPOVERLAPPED pOverlapped;
     if (context)
-        pOverlapped = &context->Overlapped;
+        pOverlapped = &context->overlapped;
     else
         pOverlapped = NULL;
 
@@ -364,7 +383,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                       PADDED_ADDR_SIZE,
                       PADDED_ADDR_SIZE,
                       &BytesRead,
-                      &context->Overlapped)) {
+                      &context->overlapped)) {
             rv = apr_get_netos_error();
             if ((rv == APR_FROM_OS_ERROR(WSAEINVAL)) ||
                 (rv == APR_FROM_OS_ERROR(WSAENOTSOCK))) {
@@ -413,14 +432,14 @@ static unsigned int __stdcall winnt_accept(void *lr_)
              * XXX: We should be waiting on exit_event instead of polling
              */
             while (1) {
-                rv = WaitForSingleObject(context->Overlapped.hEvent, 1000);
+                rv = WaitForSingleObject(context->overlapped.hEvent, 1000);
                 if (rv == WAIT_OBJECT_0) {
                     if (context->accept_socket == INVALID_SOCKET) {
                         /* socket already closed */
                         break;
                     }
                     if (!GetOverlappedResult((HANDLE)context->accept_socket,
-                                             &context->Overlapped,
+                                             &context->overlapped,
                                              &BytesRead, FALSE)) {
                         ap_log_error(APLOG_MARK, APLOG_WARNING,
                                      apr_get_os_error(), ap_server_conf,
@@ -477,7 +496,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
          */
         PostQueuedCompletionStatus(ThreadDispatchIOCP, 0,
                                    IOCP_CONNECTION_ACCEPTED,
-                                   &context->Overlapped);
+                                   &context->overlapped);
         context = NULL;
     }
     if (!shutdown_in_progress) {
@@ -521,7 +540,7 @@ static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
 
         switch (CompKey) {
         case IOCP_CONNECTION_ACCEPTED:
-            context = CONTAINING_RECORD(pol, winnt_conn_ctx_t, Overlapped);
+            context = CONTAINING_RECORD(pol, winnt_conn_ctx_t, overlapped);
             break;
         case IOCP_SHUTDOWN:
             apr_atomic_dec32(&g_blocked_threads);
@@ -909,7 +928,7 @@ void child_main(apr_pool_t *pconf)
     /* Empty the accept queue of completion contexts */
     apr_thread_mutex_lock(qlock);
     while (qhead) {
-        CloseHandle(qhead->Overlapped.hEvent);
+        CloseHandle(qhead->overlapped.hEvent);
         closesocket(qhead->accept_socket);
         qhead = qhead->next;
     }
