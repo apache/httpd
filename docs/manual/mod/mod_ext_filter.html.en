@@ -354,6 +354,12 @@ delivery to the client</td></tr>
       messages written to standard error by the external filter
       program will be saved in the Apache error log.
       <code>NoLogStderr</code> disables this feature.</dd>
+
+      <dt><code>Onfail=[abort|remove]</code></dt>
+      <dd>Determines how to proceed if the external filter program
+      cannot be started.  With <code>abort</code> (the default value)
+      the request will be aborted.  With <code>remove</code>, the
+      filter is removed and the request continues without it.</dd>
     </dl>
 
     <div class="example"><h3>Example</h3><p><code>
@@ -371,6 +377,6 @@ delivery to the client</td></tr>
 <a href="../ja/mod/mod_ext_filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ext_filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
