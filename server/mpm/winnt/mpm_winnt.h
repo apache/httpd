@@ -100,31 +100,6 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type);
 #define PADDED_ADDR_SIZE (sizeof(SOCKADDR_IN)+16)
 #endif
 
-typedef struct CompContext {
-    struct CompContext *next;
-    OVERLAPPED Overlapped;
-    apr_socket_t *sock;
-    SOCKET accept_socket;
-    char buff[2*PADDED_ADDR_SIZE];
-    struct sockaddr *sa_server;
-    int sa_server_len;
-    struct sockaddr *sa_client;
-    int sa_client_len;
-    apr_pool_t *ptrans;
-    apr_bucket_alloc_t *ba;
-    short socket_family;
-} COMP_CONTEXT, *PCOMP_CONTEXT;
-
-typedef enum {
-    IOCP_CONNECTION_ACCEPTED = 1,
-    IOCP_WAIT_FOR_RECEIVE = 2,
-    IOCP_WAIT_FOR_TRANSMITFILE = 3,
-    IOCP_SHUTDOWN = 4
-} io_state_e;
-
-PCOMP_CONTEXT mpm_get_completion_context(void);
-void          mpm_recycle_completion_context(PCOMP_CONTEXT pCompContext);
-apr_status_t  mpm_post_completion_context(PCOMP_CONTEXT pCompContext, io_state_e state);
 void hold_console_open_on_error(void);
 #endif /* APACHE_MPM_WINNT_H */
 /** @} */

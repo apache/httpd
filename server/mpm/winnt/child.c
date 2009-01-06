@@ -50,9 +50,31 @@ extern DWORD my_pid;
 apr_proc_mutex_t *start_mutex;
 HANDLE exit_event;
 
-/* Queue for managing the passing of COMP_CONTEXTs between
+/* Queue for managing the passing of winnt_conn_ctx_t between
  * the accept and worker threads.
  */
+typedef struct winnt_conn_ctx_t_s {
+    struct winnt_conn_ctx_t_s *next;
+    OVERLAPPED Overlapped;
+    apr_socket_t *sock;
+    SOCKET accept_socket;
+    char buff[2*PADDED_ADDR_SIZE];
+    struct sockaddr *sa_server;
+    int sa_server_len;
+    struct sockaddr *sa_client;
+    int sa_client_len;
+    apr_pool_t *ptrans;
+    apr_bucket_alloc_t *ba;
+    short socket_family;
+} winnt_conn_ctx_t;
+
+typedef enum {
+    IOCP_CONNECTION_ACCEPTED = 1,
+    IOCP_WAIT_FOR_RECEIVE = 2,
+    IOCP_WAIT_FOR_TRANSMITFILE = 3,
+    IOCP_SHUTDOWN = 4
+} io_state_e;
+
 static apr_pool_t *pchild;
 static int shutdown_in_progress = 0;
 static int workers_may_exit = 0;
@@ -61,15 +83,14 @@ static HANDLE max_requests_per_child_event;
 
 static apr_thread_mutex_t  *child_lock;
 static apr_thread_mutex_t  *qlock;
-static PCOMP_CONTEXT qhead = NULL;
-static PCOMP_CONTEXT qtail = NULL;
+static winnt_conn_ctx_t *qhead = NULL;
+static winnt_conn_ctx_t *qtail = NULL;
 static int num_completion_contexts = 0;
 static int max_num_completion_contexts = 0;
 static HANDLE ThreadDispatchIOCP = NULL;
 static HANDLE qwait_event = NULL;
 
-
-void mpm_recycle_completion_context(PCOMP_CONTEXT context)
+static void mpm_recycle_completion_context(winnt_conn_ctx_t *context)
 {
     /* Recycle the completion context.
      * - clear the ptrans pool
@@ -95,10 +116,10 @@ void mpm_recycle_completion_context(PCOMP_CONTEXT context)
     }
 }
 
-PCOMP_CONTEXT mpm_get_completion_context(void)
+static winnt_conn_ctx_t *mpm_get_completion_context(void)
 {
     apr_status_t rv;
-    PCOMP_CONTEXT context = NULL;
+    winnt_conn_ctx_t *context = NULL;
 
     while (1) {
         /* Grab a context off the queue */
@@ -149,8 +170,8 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
                 apr_allocator_t *allocator;
 
                 apr_thread_mutex_lock(child_lock);
-                context = (PCOMP_CONTEXT)apr_pcalloc(pchild,
-                                                     sizeof(COMP_CONTEXT));
+                context = (winnt_conn_ctx_t *)apr_pcalloc(pchild,
+                                                     sizeof(winnt_conn_ctx_t));
 
 
                 context->Overlapped.hEvent = CreateEvent(NULL, TRUE,
@@ -199,8 +220,8 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
     return context;
 }
 
-apr_status_t mpm_post_completion_context(PCOMP_CONTEXT context,
-                                         io_state_e state)
+static apr_status_t mpm_post_completion_context(winnt_conn_ctx_t *context,
+                                                io_state_e state)
 {
     LPOVERLAPPED pOverlapped;
     if (context)
@@ -263,7 +284,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
 {
     ap_listen_rec *lr = (ap_listen_rec *)lr_;
     apr_os_sock_info_t sockinfo;
-    PCOMP_CONTEXT context = NULL;
+    winnt_conn_ctx_t *context = NULL;
     DWORD BytesRead;
     SOCKET nlsd;
     int rv, err_count = 0;
@@ -469,7 +490,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
 }
 
 
-static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
+static winnt_conn_ctx_t *winnt_get_connection(winnt_conn_ctx_t *context)
 {
     int rc;
     DWORD BytesRead;
@@ -500,7 +521,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
         switch (CompKey) {
         case IOCP_CONNECTION_ACCEPTED:
-            context = CONTAINING_RECORD(pol, COMP_CONTEXT, Overlapped);
+            context = CONTAINING_RECORD(pol, winnt_conn_ctx_t, Overlapped);
             break;
         case IOCP_SHUTDOWN:
             apr_atomic_dec32(&g_blocked_threads);
@@ -525,7 +546,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 static unsigned int __stdcall worker_main(void *thread_num_val)
 {
     static int requests_this_child = 0;
-    PCOMP_CONTEXT context = NULL;
+    winnt_conn_ctx_t *context = NULL;
     int thread_num = (int)thread_num_val;
     ap_sb_handle_t *sbh;
 
