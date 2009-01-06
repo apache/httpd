@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_cgid: fix segfault problem on solaris.
+     PR 39332 [Masaoki Kobayashi <masaoki techfirm.co.jp>, Jeff Trawick]
+
   *) mod_ldap: Avoid a segfault when result->rc is checked in uldap_connection_init
      when result is NULL. This could happen if LDAP initialization failed.
      PR 45994.  [Dan Poirier <poirier pobox.com>]
