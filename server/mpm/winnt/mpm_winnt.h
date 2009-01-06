@@ -81,25 +81,6 @@ typedef enum {
 } ap_signal_parent_e;
 AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type);
 
-/*
- * The Windoes MPM uses a queue of completion contexts that it passes
- * between the accept threads and the worker threads. Declare the
- * functions to access the queue and the structures passed on the
- * queue in the header file to enable modules to access them
- * if necessary. The queue resides in the MPM.
- */
-#ifdef CONTAINING_RECORD
-#undef CONTAINING_RECORD
-#endif
-#define CONTAINING_RECORD(address, type, field) ((type *)( \
-                                                  (PCHAR)(address) - \
-                                                  (PCHAR)(&((type *)0)->field)))
-#if APR_HAVE_IPV6
-#define PADDED_ADDR_SIZE (sizeof(SOCKADDR_IN6)+16)
-#else
-#define PADDED_ADDR_SIZE (sizeof(SOCKADDR_IN)+16)
-#endif
-
 void hold_console_open_on_error(void);
 #endif /* APACHE_MPM_WINNT_H */
 /** @} */
