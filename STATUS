@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         r423886, r425057, r425394, r490920, r491297
       2.2.x:
         http://people.apache.org/~niq/patches/45959
-    +1: niq
+    +1: niq, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
