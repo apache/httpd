@@ -403,11 +403,7 @@
 <li><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName</a></li>
 <li><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2</a></li>
 <li><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove</a></li>
-<li><a href="mod_session_crypto.html#sessioncryptocertificatefile">SessionCryptoCertificateFile</a></li>
-<li><a href="mod_session_crypto.html#sessioncryptocertificatekeyfile">SessionCryptoCertificateKeyFile</a></li>
-<li><a href="mod_session_crypto.html#sessioncryptocipher">SessionCryptoCipher</a></li>
-<li><a href="mod_session_crypto.html#sessioncryptodigest">SessionCryptoDigest</a></li>
-<li><a href="mod_session_crypto.html#sessioncryptoengine">SessionCryptoEngine</a></li>
+<li><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver</a></li>
 <li><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
 <li><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName</a></li>
 <li><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2</a></li>
@@ -511,6 +507,6 @@
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/directives.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>
