@@ -352,7 +352,7 @@ static apr_status_t sock_writev(int fd, request_rec *r, int count, ...)
 
     vec = (struct iovec *)apr_palloc(r->pool, count * sizeof(struct iovec));
     va_start(ap, count);
-    for(i=0; i<count; i++) {
+    for (i = 0; i < count; i++) {
         vec[i].iov_base = va_arg(ap, caddr_t);
         vec[i].iov_len  = va_arg(ap, int);
         total_bytes += vec[i].iov_len;
