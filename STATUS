@@ -114,6 +114,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 39332
     http://svn.apache.org/viewvc?view=rev&revision=729579
     +1: niq, rpluem
+    +1 with r731963 + r731965: trawick
+       (http://svn.apache.org/viewvc?view=rev&revision=731963,
+        http://svn.apache.org/viewvc?view=rev&revision=731965)
 
   * util_script (CGI): return 504 (Gateway timeout) rather than 500
     when a script times out before returning status line/headers.
