@@ -549,6 +549,7 @@ static void child_main(int child_num_arg)
                 if (status != APR_SUCCESS) {
                     if (APR_STATUS_IS_EINTR(status)) {
                         if (one_process && shutdown_pending) {
+                            SAFE_ACCEPT(accept_mutex_off());
                             return;
                         }
                         else if (die_now) {
