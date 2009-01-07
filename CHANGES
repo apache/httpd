@@ -2,6 +2,9 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) prefork: Log an error instead of segfaulting when child startup fails
+    due to pollset creation failures.  PR 46467.  [Jeff Trawick]
+
  *) mod_session_crypto: Ensure that SessionCryptoDriver can only be
     set in the global scope. [Graham Leggett]
 
