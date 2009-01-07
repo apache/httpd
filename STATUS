@@ -131,8 +131,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=729317&view=rev
       2.2.x:
         trunk works
-    +1 covener
- 
+    +1 covener, rpluem
+
   * mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
     way that per-directory rewrites append the previous notion of PATH_INFO
     to each substitution before evaluating subsequent rules.
