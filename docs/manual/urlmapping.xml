@@ -55,7 +55,7 @@
 <directive module="mod_alias">Redirect</directive>
 <directive module="mod_alias">RedirectMatch</directive>
 <directive module="mod_rewrite">RewriteCond</directive>
-<directive module="mod_rewrite">RewriteMatch</directive>
+<directive module="mod_rewrite">RewriteRule</directive>
 <directive module="mod_alias">ScriptAlias</directive>
 <directive module="mod_alias">ScriptAliasMatch</directive>
 <directive module="mod_userdir">UserDir</directive>
@@ -238,8 +238,8 @@ server.</p>
 
 <example>
 ProxyPass /foo/ http://internal.example.com/bar/<br />
-ProxyPassReverse /foo/ http://internal.example.com/bar/
-ProxyPassReverseCookieDomain internal.example.com public.example.com
+ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
+ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
 ProxyPassReverseCookiePath /foo/ /bar/
 </example>
 
@@ -273,7 +273,7 @@ is available to rewrite links in HTML and XHTML.</p>
     of performing all three types of mappings discussed above:
     internal redirects (aliases), external redirects, and proxying.
     Many practical examples employing mod_rewrite are discussed in the
-    <a href="misc/rewriteguide.html">URL Rewriting Guide</a>.</p>
+    <a href="rewrite/">detailed mod_rewrite documentation</a>.</p>
 </section>
 
 <section id="notfound"><title>File Not Found</title>
