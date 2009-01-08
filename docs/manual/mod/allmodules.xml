@@ -72,6 +72,7 @@
   <modulefile>mod_proxy_balancer.xml</modulefile>
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_fcgi.xml</modulefile>
+  <modulefile>mod_proxy_fdpass.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
