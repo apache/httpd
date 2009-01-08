@@ -195,7 +195,7 @@ SSLCertificateKeyFile "@exp_sysconfdir@/server.key"
 #   approach you can use one of the following variables:
 #   o ssl-unclean-shutdown:
 #     This forces an unclean shutdown when the connection is closed, i.e. no
-#     SSL close notify alert is send or allowed to be received.  This violates
+#     SSL close notify alert is sent or allowed to be received.  This violates
 #     the SSL/TLS standard but is needed for some brain-dead browsers. Use
 #     this when you receive I/O errors because of the standard approach where
 #     mod_ssl sends the close notify alert.
