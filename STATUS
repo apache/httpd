@@ -86,6 +86,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * Prefork MPM: Log an error instead of segfaulting when child startup fails
+   due to pollset creation failures.  PR 46467.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=732414&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem, covener, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -125,21 +133,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         trunk works
     +1 covener
 
- * Prefork MPM: Log an error instead of segfaulting when child startup fails
-   due to pollset creation failures.  PR 46467.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=732414&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, covener
-
   * core: Translate locally generated "100-Continue" messages to ASCII
     on EBCDIC systems
       trunk:
         http://svn.apache.org/viewvc?rev=732832&view=rev
       2.2.x:
         trunk works
-    +1 covener
+    +1 covener, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
