@@ -126,7 +126,7 @@ static apr_status_t send_socket(apr_pool_t *p,
     apr_os_sock_t srawsock;
     struct msghdr msg;
     struct cmsghdr *cmsg;
-	struct iovec iov;
+    struct iovec iov;
     char b = '\0';
     
     rv = apr_os_sock_get(&rawsock, outbound);
@@ -144,8 +144,8 @@ static apr_status_t send_socket(apr_pool_t *p,
     msg.msg_iov = &iov;
     msg.msg_iovlen = 1;
 
-	iov.iov_base = &b;
-	iov.iov_len = 1;
+    iov.iov_base = &b;
+    iov.iov_len = 1;
 
     cmsg = apr_palloc(p, sizeof(*cmsg) + sizeof(rawsock));
     cmsg->cmsg_len = sizeof(*cmsg) + sizeof(rawsock);
