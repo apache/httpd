@@ -135,6 +135,7 @@
  * 20051115.19 (2.2.11) Added ap_timeout_parameter_parse to util.c / httpd.h
  * 20051115.20 (2.2.11) Add ap_proxy_buckets_lifetime_transform to mod_proxy.h
  * 20051115.21 (2.2.11) Export mod_rewrite.h in the public API
+ * 20051115.22 (2.2.12) Add ap_escape_html2 API, with additional option
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
