@@ -1495,6 +1495,14 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
  * @return The escaped string
  */
 AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s);
+/**
+ * Escape an html string
+ * @param p The pool to allocate from
+ * @param s The html to escape
+ * @param toasc Whether to escape all non-ASCII chars to &#nnn;
+ * @return The escaped string
+ */
+AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc);
 
 /**
  * Escape a string for logging
