@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_rewrite: fix "B" flag breakage by reverting r589343
+     PR 45529 [Bob Ionescu <bobsiegen googlemail.com>]
+
   *) mod_cgid: fix segfault problem on solaris.
      PR 39332 [Masaoki Kobayashi <masaoki techfirm.co.jp>, Jeff Trawick]
 
