@@ -114,6 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     when a script times out before returning status line/headers.
     PR 42190
     http://svn.apache.org/viewvc?view=rev&revision=729586
+    http://svn.apache.org/viewvc?view=rev&revision=732504
     +1: niq, rpluem
 
   * core: fix symlink checking in directory walk
