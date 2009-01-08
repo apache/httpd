@@ -2,6 +2,9 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) core: Translate locally generated "100-Continue" message to
+    ASCII on EBCDIC systems.  [Eric Covener]
+
  *) prefork: Fix child process hang during graceful restart/stop in
     configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
     Jeff Trawick]
