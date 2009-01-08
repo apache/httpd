@@ -58,6 +58,7 @@ typedef struct ef_filter_t {
 typedef struct ef_dir_t {
     int debug;
     int log_stderr;
+    int onfail;
 } ef_dir_t;
 
 typedef struct ef_ctx_t {
@@ -81,7 +82,6 @@ static apr_status_t ef_input_filter(ap_filter_t *, apr_bucket_brigade *,
                                     apr_off_t);
 
 #define DBGLVL_SHOWOPTIONS         1
-#define DBGLVL_ERRORCHECK          2
 #define DBGLVL_GORY                9
 
 #define ERRFN_USERDATA_KEY         "EXTFILTCHILDERRFN"
@@ -92,6 +92,7 @@ static void *create_ef_dir_conf(apr_pool_t *p, char *dummy)
 
     dc->debug = -1;
     dc->log_stderr = -1;
+    dc->onfail = -1;
 
     return dc;
 }
@@ -125,6 +126,13 @@ static void *merge_ef_dir_conf(apr_pool_t *p, void *basev, void *overridesv)
         a->log_stderr = base->log_stderr;
     }
 
+    if (over->onfail != -1) {   /* if admin coded something... */
+        a->onfail = over->onfail;
+    }
+    else {
+        a->onfail = base->onfail;
+    }
+
     return a;
 }
 
@@ -141,6 +149,12 @@ static const char *add_options(cmd_parms *cmd, void *in_dc,
     }
     else if (!strcasecmp(arg, "NoLogStderr")) {
         dc->log_stderr = 0;
+    }
+    else if (!strcasecmp(arg, "Onfail=remove")) {
+        dc->onfail = 1;
+    }
+    else if (!strcasecmp(arg, "Onfail=abort")) {
+        dc->onfail = 0;
     }
     else {
         return apr_pstrcat(cmd->temp_pool,
@@ -449,9 +463,9 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
     ap_assert(rc == APR_SUCCESS);
     apr_pool_userdata_set(f->r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ctx->p);
 
-    if (dc->debug >= DBGLVL_ERRORCHECK) {
-        rc = apr_procattr_error_check_set(ctx->procattr, 1);
-        ap_assert(rc == APR_SUCCESS);
+    rc = apr_procattr_error_check_set(ctx->procattr, 1);
+    if (rc != APR_SUCCESS) {
+        return rc;
     }
 
     /* add standard CGI variables as well as DOCUMENT_URI, DOCUMENT_PATH_INFO,
@@ -855,7 +869,29 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
     if (!ctx) {
         if ((rv = init_filter_instance(f)) != APR_SUCCESS) {
-            return rv;
+            ctx = f->ctx;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "can't initialise output filter %s: %s",
+                          f->frec->name,
+                          (ctx->dc->onfail == 1) ? "removing" : "aborting");
+            ap_remove_output_filter(f);
+            if (ctx->dc->onfail == 1) {
+                return ap_pass_brigade(f->next, bb);
+            }
+            else {
+                apr_bucket *e;
+                f->r->status_line = "500 Internal Server Error";
+
+                apr_brigade_cleanup(bb);
+                e = ap_bucket_error_create(HTTP_INTERNAL_SERVER_ERROR,
+                                           NULL, r->pool,
+                                           f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                ap_pass_brigade(f->next, bb);
+                return AP_FILTER_ERROR;
+            }
         }
         ctx = f->ctx;
     }
@@ -886,7 +922,19 @@ static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
 
     if (!ctx) {
         if ((rv = init_filter_instance(f)) != APR_SUCCESS) {
-            return rv;
+            ctx = f->ctx;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
+                          "can't initialise input filter %s: %s",
+                          f->frec->name,
+                          (ctx->dc->onfail == 1) ? "removing" : "aborting");
+            ap_remove_input_filter(f);
+            if (ctx->dc->onfail == 1) {
+                return ap_get_brigade(f->next, bb, mode, block, readbytes);
+            }
+            else {
+                f->r->status = HTTP_INTERNAL_SERVER_ERROR;
+                return HTTP_INTERNAL_SERVER_ERROR;
+            }
         }
         ctx = f->ctx;
     }

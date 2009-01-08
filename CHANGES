@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_ext_filter: fix error handling when the filter prog fails to start,
+     and introduce an onfail configuration option to abort the request
+     or to remove the broken filter and continue.
+     PR 41120 [Nick Kew]
+
   *) mod_include: support generating non-ASCII characters as entities in SSI
      PR 25202 [Nick Kew] 
 
