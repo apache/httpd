@@ -401,13 +401,18 @@
         below.</p>
 
       <dl>
-        <dt><code>--enable-auth-anon</code></dt>
+        <dt><code>--enable-authn-anon</code></dt>
         <dd>Enable anonymous user access provided by
-          <module>mod_auth_anon</module>.</dd>
+          <module>mod_authn_anon</module>.</dd>
 
-        <dt><code>--enable-auth-dbm</code></dt>
-        <dd><module>mod_auth_dbm</module> provides for HTTP Basic
+        <dt><code>--enable-authn-dbm</code></dt>
+        <dd><module>mod_authn_dbm</module> provides for HTTP Basic
           Authentication, where the usernames and passwords are stored in DBM
+          type database files. Use this option to enable the module.</dd>
+
+        <dt><code>--enable-authz-dbm</code></dt>
+        <dd><module>mod_authz_dbm</module> provides for HTTP Basic
+          Authorization, where the usernames and groups are stored in DBM
           type database files. Use this option to enable the module.</dd>
 
         <dt><code>--enable-auth-digest</code></dt>

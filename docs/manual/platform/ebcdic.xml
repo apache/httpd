@@ -357,13 +357,19 @@
       </tr>
 
       <tr>
-        <td><module>mod_auth_anon</module></td>
+        <td><module>mod_authn_anon</module></td>
         <td class="centered">+</td>
         <td></td>
       </tr>
 
       <tr>
-        <td><module>mod_auth_dbm</module></td>
+        <td><module>mod_authn_dbm</module></td>
+        <td class="centered">?</td>
+        <td>with own <code>libdb.a</code></td>
+      </tr>
+
+      <tr>
+        <td><module>mod_authz_dbm</module></td>
         <td class="centered">?</td>
         <td>with own <code>libdb.a</code></td>
       </tr>
