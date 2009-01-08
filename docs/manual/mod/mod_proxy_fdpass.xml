@@ -33,7 +33,8 @@
 <summary>
     <p>This module <em>requires</em> the service of <module
     >mod_proxy</module>. It provides support for the passing the socket of the
-    client to another process.
+    client to another process.</p>
+
     <p><code>mod_proxy_fdpass</code> uses the ability of AF_UNIX domain 
     sockets to <a href="http://www.freebsd.org/cgi/man.cgi?query=recv">pass an 
     open file descriptor</a> to allow another process to finish handling a request.
@@ -45,7 +46,7 @@
     and sends the response headers, letting the external process just send a
     response body.</p>
 
-    <o>At this time the only data passed to the external process is the client 
+    <p>At this time the only data passed to the external process is the client 
     socket. To recieve a client socket, call recvfrom with the an allocated 
     <a href="http://www.kernel.org/doc/man-pages/online/pages/man3/cmsg.3.html"
     ><code>struct cmsghdr</code></a>. Future versions of this module may include
