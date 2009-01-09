@@ -66,6 +66,10 @@ void mpm_nt_eventlog_stderr_flush(void);
 
 /* From mpm_winnt.c: */
 
+extern DWORD my_pid;
+extern apr_proc_mutex_t *start_mutex;
+extern HANDLE exit_event;
+
 extern int winnt_mpm_state;
 extern OSVERSIONINFO osver;
 extern DWORD stack_res_flag;

@@ -43,7 +43,9 @@
  * score by moving a handle down the pipe into the child's stdin.
  */
 extern apr_shm_t *ap_scoreboard_shm;
-server_rec *ap_server_conf;
+
+/* ap_my_generation are used by the scoreboard code */
+ap_generation_t volatile ap_my_generation=0;
 
 /* Definitions of WINNT MPM specific config globals */
 static HANDLE shutdown_event;  /* used to signal the parent to shutdown */
@@ -62,29 +64,27 @@ DWORD stack_res_flag;
 static DWORD parent_pid;
 DWORD my_pid;
 
+/* used by parent to signal the child to start and exit */
+apr_proc_mutex_t *start_mutex;
+HANDLE exit_event;
+
 int ap_threads_per_child = 0;
 static int thread_limit = 0;
 static int first_thread_limit = 0;
 int winnt_mpm_state = AP_MPMQ_STARTING;
-/* ap_my_generation are used by the scoreboard code */
-ap_generation_t volatile ap_my_generation=0;
-
 
 /* shared by service.c as global, although
  * perhaps it should be private.
  */
 apr_pool_t *pconf;
 
+/* on several occasions we don't have the global server context
+ * although it's needed for logging, etc.
+ */
+server_rec *ap_server_conf;
 
 /* definitions from child.c */
 void child_main(apr_pool_t *pconf);
-
-/* used by parent to signal the child to start and exit
- * NOTE: these are not sophisticated enough for multiple children
- * so they ultimately should not be shared with child.c
- */
-extern apr_proc_mutex_t *start_mutex;
-extern HANDLE exit_event;
 
 /* Only one of these, the pipe from our parent, ment only for
  * one child worker's consumption (not to be inherited!)
