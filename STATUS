@@ -124,12 +124,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~fuankg/diffs/httpd-2.0.x-ap_vhost_iterate_given_conn.diff
     +1: fuankg, wrowe, pgollucci
 
-  * Backport 104924: PR 18388; Add Set-Cookie and Set-Cookie2 to the
-    list of headers allowed to pass through on a 304 response.
-    This has been in trunk since 2004, released in 2.2.0.
-      http://svn.apache.org/viewvc?view=rev&revision=104924
-    +1: fielding, wrowe, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new

@@ -5,6 +5,9 @@ Changes with Apache 2.0.64
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
 
+  *) Add Set-Cookie and Set-Cookie2 to the list of headers allowed to pass 
+     through on a 304 response.  [Nick Kew]
+
 Changes with Apache 2.0.63
 
   *) winnt_mpm: Resolve modperl issues by redirecting console mode stdout
