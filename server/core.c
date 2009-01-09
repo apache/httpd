@@ -2268,7 +2268,7 @@ static const char *set_accf_map(cmd_parms *cmd, void *dummy,
     ap_str_tolower(proto);
     accf = apr_pstrdup(cmd->pool, iaccf);
     ap_str_tolower(accf);
-    apr_table_set(conf->accf_map, proto, accf);
+    apr_table_setn(conf->accf_map, proto, accf);
 
     return NULL;
 }
