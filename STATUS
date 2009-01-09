@@ -134,12 +134,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1 covener
 
   * core: Translate locally generated "100-Continue" messages to ASCII
-    on EBCDIC systems
+    on EBCDIC systems, and translate the status_line on the way out of
+    ap_send_interim_response().
       trunk:
         http://svn.apache.org/viewvc?rev=732832&view=rev
+        http://svn.apache.org/viewvc?rev=733134&view=rev
       2.2.x:
         trunk works
-    +1 covener, trawick
+    +1 covener
 
  * mod_authnz_ldap: Reduce number of initialization debug messages and make
    information more clear. PR 46342
