@@ -1619,7 +1619,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             const char *policy = apr_table_get(r->subprocess_env,
                                                "proxy-interim-response");
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: HTTP: received interim %d response",
                          r->status);
             if (!policy || !strcasecmp(policy, "RFC")) {
@@ -1629,7 +1629,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * policies and maybe also add option to bail out with 502
              */
             else if (strcasecmp(policy, "Suppress")) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+                ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
                              "undefined proxy interim response policy");
             }
         }
