@@ -2,6 +2,10 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) core: Translate the the status line to ASCII on EBCDIC platforms in
+    ap_send_interim_response(), affecting interim responses such as those
+    forwarded by mod_proxy_http. [Eric Covener]
+
  *) mod_authnz_ldap: Reduce number of initialization debug messages and make
     information more clear. PR 46342 [Dan Poirier]
  
