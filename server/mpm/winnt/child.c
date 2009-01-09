@@ -42,14 +42,6 @@
 #include <mswsock.h>
 #endif 
 
-/* shared with mpm_winnt.c */
-extern DWORD my_pid;
-
-/* used by parent to signal the child to start and exit */
-/* shared with mpm_winnt.c, but should be private to child.c */
-apr_proc_mutex_t *start_mutex;
-HANDLE exit_event;
-
 /*
  * The Windoes MPM uses a queue of completion contexts that it passes
  * between the accept threads and the worker threads. Declare the
