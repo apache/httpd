@@ -1672,7 +1672,7 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
     x.f = r->connection->output_filters;
     x.bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
 
-    ap_fputstrs(x.f, x.bb, status_line, NULL);
+    ap_fputs(x.f, x.bb, status_line);
     if (send_headers) {
         apr_table_do(send_header, &x, r->headers_out, NULL);
         apr_table_clear(r->headers_out);
