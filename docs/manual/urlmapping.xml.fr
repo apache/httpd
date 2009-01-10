@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 567425 -->
+<!-- English Revision: 732819 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -57,7 +57,7 @@
 <directive module="mod_alias">Redirect</directive>
 <directive module="mod_alias">RedirectMatch</directive>
 <directive module="mod_rewrite">RewriteCond</directive>
-<directive module="mod_rewrite">RewriteMatch</directive>
+<directive module="mod_rewrite">RewriteRule</directive>
 <directive module="mod_alias">ScriptAlias</directive>
 <directive module="mod_alias">ScriptAliasMatch</directive>
 <directive module="mod_userdir">UserDir</directive>
@@ -248,8 +248,8 @@ et les renvoie au client comme s'ils appartenaient au serveur local.</p>
 
 <example>
 ProxyPass /foo/ http://internal.example.com/bar/<br />
-ProxyPassReverse /foo/ http://internal.example.com/bar/
-ProxyPassReverseCookieDomain internal.example.com public.example.com
+ProxyPassReverse /foo/ http://internal.example.com/bar/<br />
+ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
 ProxyPassReverseCookiePath /foo/ /bar/
 </example>
 
@@ -282,8 +282,8 @@ permet de r&eacute;&eacute;crire les liens dans les documents HTML et XHTML.</p>
     traiter une requ&ecirc;te. Le moteur de r&eacute;&eacute;criture peut effectuer les trois types
     de mise en correspondance discut&eacute;s plus haut :
     redirections internes (aliases), redirections externes, et services mandataires.
-    De nombreux exemples pratiques utilisant mod_rewrite sont discut&eacute;s dans le
-    <a href="misc/rewriteguide.html">Guide de r&eacute;&eacute;criture des URLs</a>.</p>
+    De nombreux exemples pratiques utilisant mod_rewrite sont discut&eacute;s dans la
+    <a href="rewrite/">documentation d&eacute;taill&eacute;e de mod_rewrite</a>.</p>
 </section>
 
 <section id="notfound"><title>Fichier non trouv&eacute; (File Not Found)</title>
