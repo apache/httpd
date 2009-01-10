@@ -134,6 +134,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          that, why not a config option to set it, rather than an env var?
     covener: Seems simpler to use all the SetEnvIf and Rewrite goodies
              then making something in mod_cache more complicated.
+    rpluem: Agrees with covener. If there are still doubts this should be
+            followed up on dev@ with a discussion on the trunk revisions
+            because these are not backport related questions.
 
   * mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
     way that per-directory rewrites append the previous notion of PATH_INFO
