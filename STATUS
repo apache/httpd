@@ -120,6 +120,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x:
         trunk works
     +1 covener, rpluem
+    niq: why an env var?  We already have r->no_cache, which is something
+         of an aberration (would be better within mod_cache).  But given
+         that, why not a config option to set it, rather than an env var?
 
   * mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
     way that per-directory rewrites append the previous notion of PATH_INFO
@@ -132,6 +135,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x:
         trunk works
     +1 covener
+    niq: Confused by this.  path_info is used at line 3923 *before*
+         being set to NULL at line 4046 in the same function.  Not
+         sure if there may be other issues of order.
 
   * core: Translate locally generated "100-Continue" messages to ASCII
     on EBCDIC systems, and translate the status_line on the way out of
@@ -142,6 +148,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x:
         trunk works
     +1 covener
+    niq: should observe ap_fputstrs = ap_pstrcat + ap_fputs
+         (and surely one CHANGES entry should be sufficient?)
 
  * mod_authnz_ldap: Reduce number of initialization debug messages and make
    information more clear. PR 46342
@@ -149,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=732912
     Backport version for 2.2.x (trunk applies with fudge):
       http://people.apache.org/~rederpj/backport_PR46342_simpleLDAPinit.diff
-    +1: rederpj,
+    +1: rederpj, niq
 
  * mod_proxy_http: Add server_rec to ap_log_error() calls for interim
    response messages
@@ -158,6 +166,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x:
       trunk works
     +1: covener,
+    niq says: since there's a request_rec, why not switch to ap_log_rerror?
 
 PATCHES/ISSUES THAT ARE STALLED
 
