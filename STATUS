@@ -94,6 +94,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
    +1: rpluem, covener, trawick
 
+ * mod_authnz_ldap: Reduce number of initialization debug messages and make
+   information more clear. PR 46342
+    Trunk version of path:
+      http://svn.apache.org/viewvc?view=rev&revision=732912
+    Backport version for 2.2.x (trunk applies with fudge):
+      http://people.apache.org/~rederpj/backport_PR46342_simpleLDAPinit.diff
+    +1: rederpj, niq, covener
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -123,6 +132,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     niq: why an env var?  We already have r->no_cache, which is something
          of an aberration (would be better within mod_cache).  But given
          that, why not a config option to set it, rather than an env var?
+    covener: Seems simpler to use all the SetEnvIf and Rewrite goodies
+             then making something in mod_cache more complicated.
 
   * mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
     way that per-directory rewrites append the previous notion of PATH_INFO
@@ -138,35 +149,37 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     niq: Confused by this.  path_info is used at line 3923 *before*
          being set to NULL at line 4046 in the same function.  Not
          sure if there may be other issues of order.
-
+    covener: 1 rule is executed between these two lines, and the flag
+             prevents subsequent rules from spilling path_info back into
+             the local URI.  This preserves rulesets that are carefully
+             watching %{PATH_INFO} in their substitutions.  Not pretty
+             by any means but I think necessary to require opt-in for 2.2.x.
+ 
   * core: Translate locally generated "100-Continue" messages to ASCII
     on EBCDIC systems, and translate the status_line on the way out of
     ap_send_interim_response().
       trunk:
         http://svn.apache.org/viewvc?rev=732832&view=rev
         http://svn.apache.org/viewvc?rev=733134&view=rev
+        http://svn.apache.org/viewvc?rev=733218&view=rev
       2.2.x:
         trunk works
     +1 covener
     niq: should observe ap_fputstrs = ap_pstrcat + ap_fputs
          (and surely one CHANGES entry should be sufficient?)
-
- * mod_authnz_ldap: Reduce number of initialization debug messages and make
-   information more clear. PR 46342
-    Trunk version of path:
-      http://svn.apache.org/viewvc?view=rev&revision=732912
-    Backport version for 2.2.x (trunk applies with fudge):
-      http://people.apache.org/~rederpj/backport_PR46342_simpleLDAPinit.diff
-    +1: rederpj, niq
+    covener: rev addded addressing both
 
  * mod_proxy_http: Add server_rec to ap_log_error() calls for interim
    response messages
     trunk 
       http://svn.apache.org/viewvc?rev=733127&view=rev
+      http://svn.apache.org/viewvc?rev=733219&view=rev
     2.2.x:
       trunk works
     +1: covener,
     niq says: since there's a request_rec, why not switch to ap_log_rerror?
+    covener: added rev, ap_log_rerror() was my first thought and talked
+             myself out of it somehow.
 
 PATCHES/ISSUES THAT ARE STALLED
 
