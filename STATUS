@@ -102,6 +102,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rederpj/backport_PR46342_simpleLDAPinit.diff
     +1: rederpj, niq, covener
 
+  * mod_cache: Introduce 'no-cache' per-request environment variable
+    to prevent the saving of an otherwise cacheable response.
+      trunk:
+        http://svn.apache.org/viewvc?rev=729316&view=rev
+        http://svn.apache.org/viewvc?rev=729317&view=rev
+      2.2.x:
+        trunk works
+    +1 covener, rpluem, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -120,23 +128,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x:
         http://people.apache.org/~niq/patches/45959
     +1: niq, rpluem
-
-  * mod_cache: Introduce 'no-cache' per-request environment variable
-    to prevent the saving of an otherwise cacheable response.
-      trunk:
-        http://svn.apache.org/viewvc?rev=729316&view=rev
-        http://svn.apache.org/viewvc?rev=729317&view=rev
-      2.2.x:
-        trunk works
-    +1 covener, rpluem
-    niq: why an env var?  We already have r->no_cache, which is something
-         of an aberration (would be better within mod_cache).  But given
-         that, why not a config option to set it, rather than an env var?
-    covener: Seems simpler to use all the SetEnvIf and Rewrite goodies
-             then making something in mod_cache more complicated.
-    rpluem: Agrees with covener. If there are still doubts this should be
-            followed up on dev@ with a discussion on the trunk revisions
-            because these are not backport related questions.
 
   * mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
     way that per-directory rewrites append the previous notion of PATH_INFO
@@ -167,10 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=733218&view=rev
       2.2.x:
         trunk works
-    +1 covener
-    niq: should observe ap_fputstrs = ap_pstrcat + ap_fputs
-         (and surely one CHANGES entry should be sufficient?)
-    covener: rev addded addressing both
+    +1 covener, niq
 
  * mod_proxy_http: Add server_rec to ap_log_error() calls for interim
    response messages
@@ -179,10 +167,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=733219&view=rev
     2.2.x:
       trunk works
-    +1: covener,
-    niq says: since there's a request_rec, why not switch to ap_log_rerror?
-    covener: added rev, ap_log_rerror() was my first thought and talked
-             myself out of it somehow.
+    +1: covener, niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
