@@ -143,11 +143,12 @@ static int get_now(int use_localtime, int utc_offset)
 
 void checkRotate(rotate_config_t *config, rotate_status_t *status) {
 
-    if (status->nLogFD == NULL)
-        return;
-    if (config->tRotation) {
+    if (status->nLogFD == NULL) {
+        status->needsRotate = 1;
+    }
+    else if (config->tRotation) {
         status->now = get_now(config->use_localtime, config->utc_offset);
-        if (status->nLogFD != NULL && status->now >= status->tLogEnd) {
+        if (status->now >= status->tLogEnd) {
             status->needsRotate = 1;
         }
     }
@@ -155,8 +156,7 @@ void checkRotate(rotate_config_t *config, rotate_status_t *status) {
         apr_finfo_t finfo;
         apr_off_t current_size = -1;
 
-        if ((status->nLogFD != NULL) &&
-            (apr_file_info_get(&finfo, APR_FINFO_SIZE, status->nLogFD) == APR_SUCCESS)) {
+        if (apr_file_info_get(&finfo, APR_FINFO_SIZE, status->nLogFD) == APR_SUCCESS) {
             current_size = finfo.size;
         }
 
@@ -180,10 +180,12 @@ void doRotate(rotate_config_t *config, rotate_status_t *status) {
     status->needsRotate = 0;
     status->nLogFDprev = status->nLogFD;
     status->nLogFD = NULL;
+    status->pfile_prev = status->pfile;
 
     status->now = get_now(config->use_localtime, config->utc_offset);
     if (config->tRotation) {
         tLogStart = (status->now / config->tRotation) * config->tRotation;
+        status->tLogEnd = tLogStart + config->tRotation;
     }
     else {
         tLogStart = status->now;
@@ -200,8 +202,6 @@ void doRotate(rotate_config_t *config, rotate_status_t *status) {
     else {
         sprintf(status->filename, "%s.%010d", config->szLogRoot, tLogStart);
     }
-    status->tLogEnd = tLogStart + config->tRotation;
-    status->pfile_prev = status->pfile;
     apr_pool_create(&status->pfile, status->pool);
     rv = apr_file_open(&status->nLogFD, status->filename, APR_WRITE | APR_CREATE | APR_APPEND,
                        APR_OS_DEFAULT, status->pfile);
@@ -240,6 +240,7 @@ void doRotate(rotate_config_t *config, rotate_status_t *status) {
         apr_file_close(status->nLogFDprev);
         if (status->pfile_prev) {
             apr_pool_destroy(status->pfile_prev);
+            status->pfile_prev = NULL;
         }
     }
     status->nMessCount = 0;
@@ -377,7 +378,7 @@ int main (int argc, const char * const argv[])
             apr_file_trunc(status.nLogFD, 0);
             if (apr_file_write(status.nLogFD, status.errbuf, &nWrite) != APR_SUCCESS) {
                 fprintf(stderr, "Error writing to the file %s\n", status.filename);
-            exit(2);
+                exit(2);
             }
         }
         else {
