@@ -129,7 +129,7 @@ static void usage(const char *argv0, const char *reason)
     }
     fprintf(stderr,
             "Usage: %s [-v] [-l] [-f] <logfile> "
-            "{<rotation time in seconds>|<rotation size in megabytes>} "
+            "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
             argv0);
 #ifdef OS2
