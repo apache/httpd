@@ -98,7 +98,6 @@ struct rotate_status {
     int needsRotate;
     int reason;
     int tLogEnd;
-    int now;
     int nMessCount;
 };
 
@@ -136,10 +135,11 @@ static void usage(const char *argv0, const char *reason)
     exit(1);
 }
 
-static int get_now(int use_localtime, int utc_offset)
+static int get_now(rotate_config_t *config)
 {
     apr_time_t tNow = apr_time_now();
-    if (use_localtime) {
+    int utc_offset = config->utc_offset;
+    if (config->use_localtime) {
         /* Check for our UTC offset before using it, since it might
          * change if there's a switch between standard and daylight
          * savings time.
@@ -151,7 +151,8 @@ static int get_now(int use_localtime, int utc_offset)
     return (int)apr_time_sec(tNow) + utc_offset;
 }
 
-void closeFile(apr_pool_t *pool, apr_file_t *file) {
+static void closeFile(apr_pool_t *pool, apr_file_t *file)
+{
     if (file != NULL) {
         apr_file_close(file);
         if (pool) {
@@ -160,7 +161,8 @@ void closeFile(apr_pool_t *pool, apr_file_t *file) {
     }
 }
 
-void checkRotate(rotate_config_t *config, rotate_status_t *status) {
+static void checkRotate(rotate_config_t *config, rotate_status_t *status)
+{
 
     if (status->nLogFD == NULL) {
         status->needsRotate = 1;
@@ -169,8 +171,7 @@ void checkRotate(rotate_config_t *config, rotate_status_t *status) {
         status->needsRotate = 1;
     }
     else if (config->tRotation) {
-        status->now = get_now(config->use_localtime, config->utc_offset);
-        if (status->now >= status->tLogEnd) {
+        if (get_now(config) >= status->tLogEnd) {
             status->needsRotate = 1;
         }
     }
@@ -204,8 +205,10 @@ void checkRotate(rotate_config_t *config, rotate_status_t *status) {
     return;
 }
 
-void doRotate(rotate_config_t *config, rotate_status_t *status) {
+static void doRotate(rotate_config_t *config, rotate_status_t *status)
+{
 
+    int now = get_now(config);
     int tLogStart;
     apr_status_t rv;
 
@@ -214,10 +217,9 @@ void doRotate(rotate_config_t *config, rotate_status_t *status) {
     status->nLogFD = NULL;
     status->pfile_prev = status->pfile;
 
-    status->now = get_now(config->use_localtime, config->utc_offset);
     if (config->tRotation) {
         int tLogEnd;
-        tLogStart = (status->now / config->tRotation) * config->tRotation;
+        tLogStart = (now / config->tRotation) * config->tRotation;
         tLogEnd = tLogStart + config->tRotation;
         /*
          * Check if rotation was forced and the last rotation
@@ -225,12 +227,12 @@ void doRotate(rotate_config_t *config, rotate_status_t *status) {
          * of the time interval boundary for the file name then.
          */
         if ((status->reason == REASON_FORCE) && (tLogStart < status->tLogEnd)) {
-            tLogStart = status->now;
+            tLogStart = now;
         }
         status->tLogEnd = tLogEnd;
     }
     else {
-        tLogStart = status->now;
+        tLogStart = now;
     }
 
     if (config->use_strftime) {
@@ -346,7 +348,6 @@ int main (int argc, const char * const argv[])
     status.tLogEnd = 0;
     status.needsRotate = 0;
     status.reason = REASON_LOG;
-    status.now = 0;
     status.nMessCount = 0;
 
     apr_pool_create(&status.pool, NULL);
@@ -366,7 +367,7 @@ int main (int argc, const char * const argv[])
         usage(argv[0], NULL /* specific error message already issued */ );
     }
 
-    if (opt->ind + 2 != argc && opt->ind + 3 != argc) {
+    if ((argc - opt->ind < 2) || (argc - opt->ind > 3) ) {
         usage(argv[0], "Incorrect number of arguments");
     }
 
