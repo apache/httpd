@@ -64,6 +64,37 @@
 #define MAX_PATH        1024
 #endif
 
+typedef struct rotate_config rotate_config_t;
+
+struct rotate_config {
+    unsigned int sRotation;
+    int tRotation;
+    int utc_offset;
+    int use_localtime;
+    int use_strftime;
+    int force_open;
+    const char *szLogRoot;
+};
+
+typedef struct rotate_status rotate_status_t;
+
+struct rotate_status {
+    apr_pool_t *pool;
+    apr_pool_t *pfile;
+    apr_pool_t *pfile_prev;
+    apr_file_t *nLogFD;
+    apr_file_t *nLogFDprev;
+    char filename[MAX_PATH];
+    char errbuf[ERRMSGSZ];
+    int needsRotate;
+    int tLogEnd;
+    int now;
+    int nMessCount;
+};
+
+static rotate_config_t config;
+static rotate_status_t status;
+
 static void usage(const char *argv0, const char *reason)
 {
     if (reason) {
@@ -110,22 +141,114 @@ static int get_now(int use_localtime, int utc_offset)
     return (int)apr_time_sec(tNow) + utc_offset;
 }
 
+void checkRotate(rotate_config_t *config, rotate_status_t *status) {
+
+    if (status->nLogFD == NULL)
+        return;
+    if (config->tRotation) {
+        status->now = get_now(config->use_localtime, config->utc_offset);
+        if (status->nLogFD != NULL && status->now >= status->tLogEnd) {
+            status->needsRotate = 1;
+        }
+    }
+    else if (config->sRotation) {
+        apr_finfo_t finfo;
+        apr_off_t current_size = -1;
+
+        if ((status->nLogFD != NULL) &&
+            (apr_file_info_get(&finfo, APR_FINFO_SIZE, status->nLogFD) == APR_SUCCESS)) {
+            current_size = finfo.size;
+        }
+
+        if (current_size > config->sRotation) {
+            status->needsRotate = 1;
+        }
+    }
+    else {
+        fprintf(stderr, "No rotation time or size specified\n");
+        exit(2);
+    }
+
+    return;
+}
+
+void doRotate(rotate_config_t *config, rotate_status_t *status) {
+
+    int tLogStart;
+    apr_status_t rv;
+
+    status->needsRotate = 0;
+    status->nLogFDprev = status->nLogFD;
+    status->nLogFD = NULL;
+
+    if (config->tRotation) {
+        tLogStart = (status->now / config->tRotation) * config->tRotation;
+    }
+    else {
+        tLogStart = get_now(config->use_localtime, config->utc_offset);
+    }
+
+    if (config->use_strftime) {
+        apr_time_t tNow = apr_time_from_sec(tLogStart);
+        apr_time_exp_t e;
+        apr_size_t rs;
+
+        apr_time_exp_gmt(&e, tNow);
+        apr_strftime(status->filename, &rs, sizeof(status->filename), config->szLogRoot, &e);
+    }
+    else {
+        sprintf(status->filename, "%s.%010d", config->szLogRoot, tLogStart);
+    }
+    status->tLogEnd = tLogStart + config->tRotation;
+    status->pfile_prev = status->pfile;
+    apr_pool_create(&status->pfile, status->pool);
+    rv = apr_file_open(&status->nLogFD, status->filename, APR_WRITE | APR_CREATE | APR_APPEND,
+                       APR_OS_DEFAULT, status->pfile);
+    if (rv != APR_SUCCESS) {
+        char error[120];
+
+        apr_strerror(rv, error, sizeof error);
+
+        /* Uh-oh. Failed to open the new log file. Try to clear
+         * the previous log file, note the lost log entries,
+         * and keep on truckin'. */
+        if (status->nLogFDprev == NULL) {
+            fprintf(stderr, "Could not open log file '%s' (%s)\n", status->filename, error);
+            exit(2);
+        }
+        else {
+            apr_size_t nWrite;
+            status->nLogFD = status->nLogFDprev;
+            apr_pool_destroy(status->pfile);
+            status->pfile = status->pfile_prev;
+            /* Try to keep this error message constant length
+             * in case it occurs several times. */
+            apr_snprintf(status->errbuf, sizeof status->errbuf,
+                         "Resetting log file due to error opening "
+                         "new log file, %10d messages lost: %-25.25s\n",
+                         status->nMessCount, error);
+            nWrite = strlen(status->errbuf);
+            apr_file_trunc(status->nLogFD, 0);
+            if (apr_file_write(status->nLogFD, status->errbuf, &nWrite) != APR_SUCCESS) {
+                fprintf(stderr, "Error writing to the file %s\n", status->filename);
+                exit(2);
+            }
+        }
+    }
+    else if (status->nLogFDprev) {
+        apr_file_close(status->nLogFDprev);
+        if (status->pfile_prev) {
+            apr_pool_destroy(status->pfile_prev);
+        }
+    }
+    status->nMessCount = 0;
+}
+
 int main (int argc, const char * const argv[])
 {
-    char buf[BUFSIZE], buf2[MAX_PATH], errbuf[ERRMSGSZ];
-    int tLogEnd = 0, tRotation = 0, utc_offset = 0;
-    unsigned int sRotation = 0;
-    int nMessCount = 0;
+    char buf[BUFSIZE];
     apr_size_t nRead, nWrite;
-    int use_strftime = 0;
-    int use_localtime = 0;
-    int bypass_io = 0;
-    int now = 0;
-    const char *szLogRoot;
-    apr_file_t *f_stdin, *nLogFD = NULL, *nLogFDprev = NULL;
-    apr_pool_t *pool;
-    apr_pool_t *pfile = NULL;
-    apr_pool_t *pfile_prev = NULL;
+    apr_file_t *f_stdin;
     apr_getopt_t *opt;
     apr_status_t rv;
     char c;
@@ -135,15 +258,31 @@ int main (int argc, const char * const argv[])
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
 
-    apr_pool_create(&pool, NULL);
-    apr_getopt_init(&opt, pool, argc, argv);
+    config.sRotation = 0;
+    config.tRotation = 0;
+    config.utc_offset = 0;
+    config.use_localtime = 0;
+    config.use_strftime = 0;
+    config.force_open = 0;
+    status.pool = NULL;
+    status.pfile = NULL;
+    status.pfile_prev = NULL;
+    status.nLogFD = NULL;
+    status.nLogFDprev = NULL;
+    status.tLogEnd = 0;
+    status.needsRotate = 0;
+    status.now = 0;
+    status.nMessCount = 0;
+
+    apr_pool_create(&status.pool, NULL);
+    apr_getopt_init(&opt, status.pool, argc, argv);
     while ((rv = apr_getopt(opt, "lf", &c, &optarg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
-            use_localtime = 1;
+            config.use_localtime = 1;
             break;
         case 'f':
-            bypass_io = 1;
+            config.force_open = 1;
             break;
         }
     }
@@ -156,189 +295,92 @@ int main (int argc, const char * const argv[])
         usage(argv[0], "Incorrect number of arguments");
     }
 
-    szLogRoot = argv[opt->ind++];
+    config.szLogRoot = argv[opt->ind++];
 
     ptr = strchr(argv[opt->ind], 'M');
     if (ptr) { /* rotation based on file size */
         if (*(ptr+1) == '\0') {
-            sRotation = atoi(argv[opt->ind]) * 1048576;
+            config.sRotation = atoi(argv[opt->ind]) * 1048576;
         }
-        if (sRotation == 0) {
+        if (config.sRotation == 0) {
             usage(argv[0], "Invalid rotation size parameter");
         }
     }
     else { /* rotation based on elapsed time */
-        tRotation = atoi(argv[opt->ind]);
-        if (tRotation <= 0) {
+        config.tRotation = atoi(argv[opt->ind]);
+        if (config.tRotation <= 0) {
             usage(argv[0], "Invalid rotation time parameter");
         }
     }
     opt->ind++;
 
     if (opt->ind < argc) { /* have UTC offset */
-        if (use_localtime) {
+        if (config.use_localtime) {
             usage(argv[0], "UTC offset parameter is not valid with -l");
         }
-        utc_offset = atoi(argv[opt->ind]) * 60;
+        config.utc_offset = atoi(argv[opt->ind]) * 60;
     }
 
-    use_strftime = (strchr(szLogRoot, '%') != NULL);
-    if (apr_file_open_stdin(&f_stdin, pool) != APR_SUCCESS) {
+    config.use_strftime = (strchr(config.szLogRoot, '%') != NULL);
+    if (apr_file_open_stdin(&f_stdin, status.pool) != APR_SUCCESS) {
         fprintf(stderr, "Unable to open stdin\n");
         exit(1);
     }
 
+    /*
+     * Immediately open the logfile as we start, if we were forced
+     * to do so via '-f'.
+     */
+    if (config.force_open) {
+        doRotate(&config, &status);
+    }
+
     for (;;) {
         nRead = sizeof(buf);
-        /*
-         * Bypass reading stdin if we are forcing the logfile
-         * to be opened as soon as we start. Since we won't be
-         * writing anything, we just want to open the file.
-         * First time through is the only time we do this
-         * since we reset bypass_io after the 1st loop
-         */
-        if (!bypass_io) {
-            if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS) {
-                exit(3);
-            }
+        if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS) {
+            exit(3);
         }
-        if (tRotation) {
-            now = get_now(use_localtime, utc_offset);
-            if (nLogFD != NULL && now >= tLogEnd) {
-                nLogFDprev = nLogFD;
-                nLogFD = NULL;
-            }
-        }
-        else if (sRotation) {
-            apr_finfo_t finfo;
-            apr_off_t current_size = -1;
-
-            if ((nLogFD != NULL) &&
-                (apr_file_info_get(&finfo, APR_FINFO_SIZE, nLogFD) == APR_SUCCESS)) {
-                current_size = finfo.size;
-            }
-
-            if (current_size > sRotation) {
-                nLogFDprev = nLogFD;
-                nLogFD = NULL;
-            }
-        }
-        else {
-            fprintf(stderr, "No rotation time or size specified\n");
-            exit(2);
+        checkRotate(&config, &status);
+        if (status->needsRotate) {
+            doRotate(&config, &status);
         }
 
-        if (nLogFD == NULL) {
-            int tLogStart;
-            apr_status_t rv;
+        nWrite = nRead;
+        rv = apr_file_write(status.nLogFD, buf, &nWrite);
+        if (rv == APR_SUCCESS && nWrite != nRead) {
+            /* buffer partially written, which for rotatelogs means we encountered
+             * an error such as out of space or quota or some other limit reached;
+             * try to write the rest so we get the real error code
+             */
+            apr_size_t nWritten = nWrite;
 
-            if (tRotation) {
-                tLogStart = (now / tRotation) * tRotation;
-            }
-            else {
-                tLogStart = get_now(use_localtime, utc_offset);
-            }
-
-            if (use_strftime) {
-                apr_time_t tNow = apr_time_from_sec(tLogStart);
-                apr_time_exp_t e;
-                apr_size_t rs;
-
-                apr_time_exp_gmt(&e, tNow);
-                apr_strftime(buf2, &rs, sizeof(buf2), szLogRoot, &e);
-            }
-            else {
-                sprintf(buf2, "%s.%010d", szLogRoot, tLogStart);
-            }
-            tLogEnd = tLogStart + tRotation;
-            pfile_prev = pfile;
-            apr_pool_create(&pfile, pool);
-            rv = apr_file_open(&nLogFD, buf2, APR_WRITE | APR_CREATE | APR_APPEND,
-                               APR_OS_DEFAULT, pfile);
-            if (rv != APR_SUCCESS) {
-                char error[120];
-
-                apr_strerror(rv, error, sizeof error);
-
-                /* Uh-oh. Failed to open the new log file. Try to clear
-                 * the previous log file, note the lost log entries,
-                 * and keep on truckin'. */
-                if (nLogFDprev == NULL) {
-                    fprintf(stderr, "Could not open log file '%s' (%s)\n", buf2, error);
-                    exit(2);
-                }
-                else {
-                    nLogFD = nLogFDprev;
-                    apr_pool_destroy(pfile);
-                    pfile = pfile_prev;
-                    /* Try to keep this error message constant length
-                     * in case it occurs several times. */
-                    apr_snprintf(errbuf, sizeof errbuf,
-                                 "Resetting log file due to error opening "
-                                 "new log file, %10d messages lost: %-25.25s\n",
-                                 nMessCount, error);
-                    nWrite = strlen(errbuf);
-                    apr_file_trunc(nLogFD, 0);
-                    if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
-                        fprintf(stderr, "Error writing to the file %s\n", buf2);
-                        exit(2);
-                    }
-                }
-            }
-            else if (nLogFDprev) {
-                apr_file_close(nLogFDprev);
-                if (pfile_prev) {
-                    apr_pool_destroy(pfile_prev);
-                }
-            }
-            nMessCount = 0;
-        }
-        /*
-         * If we just bypassed reading stdin, due to bypass_io,
-         * then we have nothing to write, so skip this.
-         */
-        if (!bypass_io) {
+            nRead  = nRead - nWritten;
             nWrite = nRead;
-            rv = apr_file_write(nLogFD, buf, &nWrite);
-            if (rv == APR_SUCCESS && nWrite != nRead) {
-                /* buffer partially written, which for rotatelogs means we encountered
-                 * an error such as out of space or quota or some other limit reached;
-                 * try to write the rest so we get the real error code
-                 */
-                apr_size_t nWritten = nWrite;
+            rv = apr_file_write(status.nLogFD, buf + nWritten, &nWrite);
+        }
+        if (nWrite != nRead) {
+            char strerrbuf[120];
+            apr_off_t cur_offset;
 
-                nRead  = nRead - nWritten;
-                nWrite = nRead;
-                rv = apr_file_write(nLogFD, buf + nWritten, &nWrite);
+            cur_offset = 0;
+            if (apr_file_seek(status.nLogFD, APR_CUR, &cur_offset) != APR_SUCCESS) {
+                cur_offset = -1;
             }
-            if (nWrite != nRead) {
-                char strerrbuf[120];
-                apr_off_t cur_offset;
-                
-                cur_offset = 0;
-                if (apr_file_seek(nLogFD, APR_CUR, &cur_offset) != APR_SUCCESS) {
-                    cur_offset = -1;
-                }
-                apr_strerror(rv, strerrbuf, sizeof strerrbuf);
-                nMessCount++;
-                apr_snprintf(errbuf, sizeof errbuf,
-                             "Error %d writing to log file at offset %" APR_OFF_T_FMT ". "
-                             "%10d messages lost (%s)\n",
-                             rv, cur_offset, nMessCount, strerrbuf);
-                nWrite = strlen(errbuf);
-                apr_file_trunc(nLogFD, 0);
-                if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
-                    fprintf(stderr, "Error writing to the file %s\n", buf2);
-                exit(2);
-                }
-            }
-            else {
-                nMessCount++;
+            apr_strerror(rv, strerrbuf, sizeof strerrbuf);
+            status.nMessCount++;
+            apr_snprintf(status.errbuf, sizeof status.errbuf,
+                         "Error %d writing to log file at offset %" APR_OFF_T_FMT ". "
+                         "%10d messages lost (%s)\n",
+                         rv, cur_offset, status.nMessCount, strerrbuf);
+            nWrite = strlen(status.errbuf);
+            apr_file_trunc(status.nLogFD, 0);
+            if (apr_file_write(status.nLogFD, status.errbuf, &nWrite) != APR_SUCCESS) {
+                fprintf(stderr, "Error writing to the file %s\n", status.filename);
+            exit(2);
             }
         }
         else {
-           /* now worry about reading 'n writing all the time */
-           bypass_io = 0;
+            status.nMessCount++;
         }
     }
     /* Of course we never, but prevent compiler warnings */
