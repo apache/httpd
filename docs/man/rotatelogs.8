@@ -27,7 +27,7 @@ rotatelogs \- Piped logging program to rotate Apache logs
 .SH "SYNOPSIS"
  
 .PP
-\fBrotatelogs\fR [ -\fBl\fR ] [ -\fBf\fR ] [ -\fBv\fR ] \fIlogfile\fR \fIrotationtime\fR|\fIfilesize\fRM [ \fIoffset\fR ]
+\fBrotatelogs\fR [ -\fBl\fR ] [ -\fBf\fR ] [ -\fBv\fR ] \fIlogfile\fR \fIrotationtime\fR|\fIfilesize\fR(B|K|M|G) [ \fIoffset\fR ]
  
 
 .SH "SUMMARY"
@@ -55,8 +55,10 @@ The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' chara
 \fIrotationtime\fR
 The time between log file rotations in seconds\&. The rotation occurs at the beginning of this interval\&. For example, if the rotation time is 3600, the log file will be rotated at the beginning of every hour; if the rotation time is 86400, the log file will be rotated every night at midnight\&. (If no data is logged during an interval, no file will be created\&.)  
 .TP
-\fIfilesize\fRM
-The maximum file size in megabytes followed by the letter M to specify size rather than time\&.  
+\fIfilesize\fR(B|K|M|G)
+The maximum file size followed by exactly one of the letters B (Bytes), K (KBytes), M (MBytes) or G (GBytes)\&.
+.br
+When time and size are specified, the size must be given after the time\&. Rotation will occur whenever either time or size limits are reached\&.
 .TP
 \fIoffset\fR
 The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is used\&. For example, to use local time in the zone UTC -5 hours, specify a value of -300 for this argument\&. In most cases, -l should be used instead of specifying an offset\&.  

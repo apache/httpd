@@ -153,6 +153,10 @@ static void usage(const char *argv0, const char *reason)
     exit(1);
 }
 
+/*
+ * Get the unix time with timezone corrections
+ * given in the config struct.
+ */
 static int get_now(rotate_config_t *config)
 {
     apr_time_t tNow = apr_time_now();
@@ -169,6 +173,9 @@ static int get_now(rotate_config_t *config)
     return (int)apr_time_sec(tNow) + utc_offset;
 }
 
+/*
+ * Close a file and destroy the associated pool.
+ */
 static void closeFile(rotate_config_t *config, apr_pool_t *pool, apr_file_t *file)
 {
     if (file != NULL) {
@@ -186,6 +193,9 @@ static void closeFile(rotate_config_t *config, apr_pool_t *pool, apr_file_t *fil
     }
 }
 
+/*
+ * Dump the configuration parsing result to STDERR.
+ */
 static void dumpConfig (rotate_config_t *config)
 {
     fprintf(stderr, "Rotation time interval:      %12d\n", config->tRotation);
@@ -198,6 +208,22 @@ static void dumpConfig (rotate_config_t *config)
     fprintf(stderr, "Rotation file name: %21s\n", config->szLogRoot);
 }
 
+/*
+ * Check whether we need to rotate.
+ * Possible reasons are:
+ * - No log file open (ROTATE_NEW)
+ * - User forces us to rotate (ROTATE_FORCE)
+ * - Our log file size is already bigger than the
+ *   allowed maximum (ROTATE_SIZE)
+ * - The next log time interval expired (ROTATE_TIME)
+ *
+ * When size and time constraints are both given,
+ * it suffices that one of them is fulfilled.
+ *
+ * If the method finds a reason for rotation,
+ * and it hasn't been called while log data is available,
+ * it will close the open log file as a side effect.
+ */
 static void checkRotate(rotate_config_t *config, rotate_status_t *status)
 {
 
@@ -206,11 +232,6 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
     }
     else if (status->checkReason == CHECK_SIG_FORCE) {
         status->rotateReason = ROTATE_FORCE;
-    }
-    else if (config->tRotation) {
-        if (get_now(config) >= status->tLogEnd) {
-            status->rotateReason = ROTATE_TIME;
-        }
     }
     else if (config->sRotation) {
         apr_finfo_t finfo;
@@ -222,6 +243,16 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
 
         if (current_size > config->sRotation) {
             status->rotateReason = ROTATE_SIZE;
+        }
+        else if (config->tRotation) {
+            if (get_now(config) >= status->tLogEnd) {
+                status->rotateReason = ROTATE_TIME;
+            }
+        }
+    }
+    else if (config->tRotation) {
+        if (get_now(config) >= status->tLogEnd) {
+            status->rotateReason = ROTATE_TIME;
         }
     }
     else {
@@ -246,6 +277,17 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
     return;
 }
 
+/*
+ * Open a new log file, and if successful
+ * also close the old one.
+ *
+ * The timestamp for the calculation of the file
+ * name of the new log file will be the actual millisecond
+ * timestamp, except when a regular rotation based on a time
+ * interval is configured and the previous interval
+ * is over. Then the timestamp is the starting time
+ * of the actual interval.
+ */
 static void doRotate(rotate_config_t *config, rotate_status_t *status)
 {
 
@@ -343,7 +385,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
 static void external_rotate(int signal)
 {
     /*
-     * Set marker for signal triggered rotation
+     * Set marker for signal triggered rotation check
      */
     if (signal == SIG_FORCE) {
         status.checkReason = CHECK_SIG_FORCE;
@@ -364,6 +406,61 @@ static void external_rotate(int signal)
 }
 #endif
 
+/*
+ * Get a size or time param from a string.
+ * Parameter 'last' indicates, whether the
+ * argument is the last commadnline argument.
+ * UTC offset is only allowed as a last argument
+ * in order to make is distinguishable from the
+ * rotation interval time.
+ */
+static const char *get_time_or_size(rotate_config_t *config,
+                                    const char *arg, int last) {
+    char *ptr = NULL;
+    /* Byte multiplier */
+    unsigned int mult = 1;
+    if ((ptr = strchr(arg, 'B')) != NULL) { /* Found KB size */
+        mult = 1;
+    }
+    else if ((ptr = strchr(arg, 'K')) != NULL) { /* Found KB size */
+        mult = 1024;
+    }
+    else if ((ptr = strchr(arg, 'M')) != NULL) { /* Found MB size */
+        mult = 1024 * 1024;
+    }
+    else if ((ptr = strchr(arg, 'G')) != NULL) { /* Found GB size */
+        mult = 1024 * 1024 * 1024;
+    }
+    if (ptr) { /* rotation based on file size */
+        if (config->sRotation > 0) {
+            return "Rotation size parameter allowed only once";
+        }
+        if (*(ptr+1) == '\0') {
+            config->sRotation = atoi(arg) * mult;
+        }
+        if (config->sRotation == 0) {
+            return "Invalid rotation size parameter";
+        }
+    }
+    else if ((config->sRotation > 0 || config->tRotation > 0) && last) {
+        /* rotation based on elapsed time */
+        if (config->use_localtime) {
+            return "UTC offset parameter is not valid with -l";
+        }
+        config->utc_offset = atoi(arg) * 60;
+    }
+    else { /* rotation based on elapsed time */
+        if (config->tRotation > 0) {
+            return "Rotation time parameter allowed only once";
+        }
+        config->tRotation = atoi(arg);
+        if (config->tRotation <= 0) {
+            return "Invalid rotation time parameter";
+        }
+    }
+    return NULL;
+}
+
 int main (int argc, const char * const argv[])
 {
     char buf[BUFSIZE];
@@ -373,7 +470,7 @@ int main (int argc, const char * const argv[])
     apr_status_t rv;
     char c;
     const char *optarg;
-    char *ptr = NULL;
+    const char *err = NULL;
 
     apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
@@ -415,37 +512,27 @@ int main (int argc, const char * const argv[])
         usage(argv[0], NULL /* specific error message already issued */ );
     }
 
-    if ((argc - opt->ind < 2) || (argc - opt->ind > 3) ) {
+    /*
+     * After the initial flags we need 2 to 4 arguments,
+     * the file name, either the rotation interval time or size
+     * or both of them, and optionally the UTC offset.
+     */
+    if ((argc - opt->ind < 2) || (argc - opt->ind > 4) ) {
         usage(argv[0], "Incorrect number of arguments");
     }
 
     config.szLogRoot = argv[opt->ind++];
 
-    ptr = strchr(argv[opt->ind], 'M');
-    if (ptr) { /* rotation based on file size */
-        if (*(ptr+1) == '\0') {
-            config.sRotation = atoi(argv[opt->ind]) * 1048576;
+    /* Read in the remaining flags, namely time, size and UTC offset. */
+    for(; opt->ind < argc; opt->ind++) {
+        if ((err = get_time_or_size(&config, argv[opt->ind],
+                                    opt->ind < argc - 1 ? 0 : 1)) != NULL) {
+            usage(argv[0], err);
         }
-        if (config.sRotation == 0) {
-            usage(argv[0], "Invalid rotation size parameter");
-        }
-    }
-    else { /* rotation based on elapsed time */
-        config.tRotation = atoi(argv[opt->ind]);
-        if (config.tRotation <= 0) {
-            usage(argv[0], "Invalid rotation time parameter");
-        }
-    }
-    opt->ind++;
-
-    if (opt->ind < argc) { /* have UTC offset */
-        if (config.use_localtime) {
-            usage(argv[0], "UTC offset parameter is not valid with -l");
-        }
-        config.utc_offset = atoi(argv[opt->ind]) * 60;
     }
 
     config.use_strftime = (strchr(config.szLogRoot, '%') != NULL);
+
     if (apr_file_open_stdin(&f_stdin, status.pool) != APR_SUCCESS) {
         fprintf(stderr, "Unable to open stdin\n");
         exit(1);
