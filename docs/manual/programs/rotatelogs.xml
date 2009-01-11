@@ -41,7 +41,7 @@
      [ -<strong>f</strong> ]
      [ -<strong>v</strong> ]
      <var>logfile</var>
-     <var>rotationtime</var>|<var>filesize</var>M 
+     <var>rotationtime</var>|<var>filesize</var>(B|K|M|G) 
      [ <var>offset</var> ]</code></p>
 </section>
 
@@ -91,10 +91,15 @@ of every hour; if the rotation time is 86400, the log file will be
 rotated every night at midnight.  (If no data is logged during an
 interval, no file will be created.)</dd>
 
-<dt><code><var>filesize</var>M</code></dt>
+<dt><code><var>filesize</var>(B|K|M|G)</code></dt>
 
-<dd>The maximum file size in megabytes followed by the letter
-<code>M</code> to specify size rather than time.</dd>
+<dd>The maximum file size in followed by exactly one of the letters
+<code>B</code> (Bytes), <code>K</code> (KBytes), <code>M</code> (MBytes)
+or <code>G</code> (GBytes).
+<br/>
+When time and size are specified, the size must be given after the time.
+Rotation will occur whenever either time or size limits are reached.
+</dd>
 
 <dt><code><var>offset</var></code></dt>
 
