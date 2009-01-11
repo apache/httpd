@@ -600,10 +600,13 @@ int ssl_hook_Access(request_rec *r)
                 && strcmp(apr_table_get(r->headers_in, "content-length"), "0")))
         && !r->expecting_100) {
         int rv;
+        apr_size_t rsize;
 
-        if (dc->nRenegBufferSize > 0) {
+        rsize = dc->nRenegBufferSize == UNSET ? DEFAULT_RENEG_BUFFER_SIZE :
+                                                dc->nRenegBufferSize;
+        if (rsize > 0) {
             /* Fill the I/O buffer with the request body if possible. */
-            rv = ssl_io_buffer_fill(r, dc->nRenegBufferSize);
+            rv = ssl_io_buffer_fill(r, rsize);
         }
         else {
             /* If the reneg buffer size is set to zero, just fail. */
