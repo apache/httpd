@@ -2,6 +2,9 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) rotatelogs: Allow to trigger log file rotation from outside
+    using HUP and INT signals. PR 44427 [Rainer Jung]
+
  *) mod_ssl: Fix merging of SSLRenegBufferSize directive. PR 46508
     [<tlhackque yahoo.com>]
 

@@ -46,6 +46,7 @@
 #include "apr_general.h"
 #include "apr_time.h"
 #include "apr_getopt.h"
+#include "apr_signal.h"
 
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
@@ -63,6 +64,18 @@
 #ifndef MAX_PATH
 #define MAX_PATH        1024
 #endif
+
+#ifdef SIGHUP
+#ifdef SIGINT
+#define HAVE_SIGNALS    1
+#define SIG_CHECK       SIGHUP
+#define SIG_FORCE       SIGINT
+#endif
+#endif
+
+#define REASON_LOG      0
+#define REASON_CHECK    1
+#define REASON_FORCE    2
 
 typedef struct rotate_config rotate_config_t;
 
@@ -87,6 +100,7 @@ struct rotate_status {
     char filename[MAX_PATH];
     char errbuf[ERRMSGSZ];
     int needsRotate;
+    int reason;
     int tLogEnd;
     int now;
     int nMessCount;
@@ -141,9 +155,21 @@ static int get_now(int use_localtime, int utc_offset)
     return (int)apr_time_sec(tNow) + utc_offset;
 }
 
+void closeFile(apr_pool_t *pool, apr_file_t *file) {
+    if (file != NULL) {
+        apr_file_close(file);
+        if (pool) {
+            apr_pool_destroy(pool);
+        }
+    }
+}
+
 void checkRotate(rotate_config_t *config, rotate_status_t *status) {
 
     if (status->nLogFD == NULL) {
+        status->needsRotate = 1;
+    }
+    else if (status->reason == REASON_FORCE) {
         status->needsRotate = 1;
     }
     else if (config->tRotation) {
@@ -169,6 +195,16 @@ void checkRotate(rotate_config_t *config, rotate_status_t *status) {
         exit(2);
     }
 
+    /*
+     * Let's close the file before immediately
+     * if we got here via a signal.
+     */
+    if (status->needsRotate &&
+        (status->reason != REASON_LOG)) {
+        closeFile(status->pfile, status->nLogFD);
+        status->nLogFD = NULL;
+        status->pfile = NULL;
+    }
     return;
 }
 
@@ -184,8 +220,18 @@ void doRotate(rotate_config_t *config, rotate_status_t *status) {
 
     status->now = get_now(config->use_localtime, config->utc_offset);
     if (config->tRotation) {
+        int tLogEnd;
         tLogStart = (status->now / config->tRotation) * config->tRotation;
-        status->tLogEnd = tLogStart + config->tRotation;
+        tLogEnd = tLogStart + config->tRotation;
+        /*
+         * Check if rotation was forced and the last rotation
+         * interval is not yet over. Use the value of now instead
+         * of the time interval boundary for the file name then.
+         */
+        if ((status->reason == REASON_FORCE) && (tLogStart < status->tLogEnd)) {
+            tLogStart = status->now;
+        }
+        status->tLogEnd = tLogEnd;
     }
     else {
         tLogStart = status->now;
@@ -236,15 +282,45 @@ void doRotate(rotate_config_t *config, rotate_status_t *status) {
             }
         }
     }
-    else if (status->nLogFDprev) {
-        apr_file_close(status->nLogFDprev);
-        if (status->pfile_prev) {
-            apr_pool_destroy(status->pfile_prev);
-            status->pfile_prev = NULL;
-        }
+    else {
+        closeFile(status->pfile_prev, status->nLogFDprev);
+        status->nLogFDprev = NULL;
+        status->pfile_prev = NULL;
     }
     status->nMessCount = 0;
+    /*
+     * Reset marker for signal triggered rotation
+     */
+    status->reason = REASON_LOG;
 }
+
+#ifdef HAVE_SIGNALS
+/*
+ * called on SIG_CHECK and SIG_FORCE
+ */
+static void external_rotate(int signal)
+{
+    /*
+     * Set marker for signal triggered rotation
+     */
+    if (signal == SIG_FORCE) {
+        status.reason = REASON_FORCE;
+    }
+    else {
+        status.reason = REASON_CHECK;
+    }
+    /*
+     * Close old file conditionally
+     */
+    checkRotate(&config, &status);
+    /*
+     * Open new file if force flag was set
+     */
+    if (config.force_open && status.needsRotate) {
+        doRotate(&config, &status);
+    }
+}
+#endif
 
 int main (int argc, const char * const argv[])
 {
@@ -273,6 +349,7 @@ int main (int argc, const char * const argv[])
     status.nLogFDprev = NULL;
     status.tLogEnd = 0;
     status.needsRotate = 0;
+    status.reason = REASON_LOG;
     status.now = 0;
     status.nMessCount = 0;
 
@@ -337,9 +414,23 @@ int main (int argc, const char * const argv[])
         doRotate(&config, &status);
     }
 
+#ifdef HAVE_SIGNALS
+    apr_signal(SIG_CHECK, external_rotate);
+    apr_signal(SIG_FORCE, external_rotate);
+#endif
+
     for (;;) {
         nRead = sizeof(buf);
-        if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS) {
+#ifdef HAVE_SIGNALS
+        apr_signal_unblock(SIG_CHECK);
+        apr_signal_unblock(SIG_FORCE);
+#endif
+        rv = apr_file_read(f_stdin, buf, &nRead);
+#ifdef HAVE_SIGNALS
+        apr_signal_block(SIG_FORCE);
+        apr_signal_block(SIG_CHECK);
+#endif
+        if (rv != APR_SUCCESS) {
             exit(3);
         }
         checkRotate(&config, &status);
