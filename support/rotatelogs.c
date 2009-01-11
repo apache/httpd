@@ -69,9 +69,15 @@
 #endif
 #endif
 
-#define REASON_LOG      0
-#define REASON_CHECK    1
-#define REASON_FORCE    2
+#define CHECK_LOG       0
+#define CHECK_SIG_CHECK 1
+#define CHECK_SIG_FORCE 2
+
+#define ROTATE_NONE     0
+#define ROTATE_NEW      1
+#define ROTATE_TIME     2
+#define ROTATE_SIZE     3
+#define ROTATE_FORCE    4
 
 typedef struct rotate_config rotate_config_t;
 
@@ -95,8 +101,8 @@ struct rotate_status {
     apr_file_t *nLogFDprev;
     char filename[MAX_PATH];
     char errbuf[ERRMSGSZ];
-    int needsRotate;
-    int reason;
+    int rotateReason;
+    int checkReason;
     int tLogEnd;
     int nMessCount;
 };
@@ -165,14 +171,14 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
 {
 
     if (status->nLogFD == NULL) {
-        status->needsRotate = 1;
+        status->rotateReason = ROTATE_NEW;
     }
-    else if (status->reason == REASON_FORCE) {
-        status->needsRotate = 1;
+    else if (status->checkReason == CHECK_SIG_FORCE) {
+        status->rotateReason = ROTATE_FORCE;
     }
     else if (config->tRotation) {
         if (get_now(config) >= status->tLogEnd) {
-            status->needsRotate = 1;
+            status->rotateReason = ROTATE_TIME;
         }
     }
     else if (config->sRotation) {
@@ -184,7 +190,7 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
         }
 
         if (current_size > config->sRotation) {
-            status->needsRotate = 1;
+            status->rotateReason = ROTATE_SIZE;
         }
     }
     else {
@@ -196,8 +202,8 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
      * Let's close the file before immediately
      * if we got here via a signal.
      */
-    if (status->needsRotate &&
-        (status->reason != REASON_LOG)) {
+    if ((status->rotateReason != ROTATE_NONE) &&
+        (status->checkReason != CHECK_LOG)) {
         closeFile(status->pfile, status->nLogFD);
         status->nLogFD = NULL;
         status->pfile = NULL;
@@ -212,7 +218,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     int tLogStart;
     apr_status_t rv;
 
-    status->needsRotate = 0;
+    status->rotateReason = ROTATE_NONE;
     status->nLogFDprev = status->nLogFD;
     status->nLogFD = NULL;
     status->pfile_prev = status->pfile;
@@ -226,7 +232,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
          * interval is not yet over. Use the value of now instead
          * of the time interval boundary for the file name then.
          */
-        if ((status->reason == REASON_FORCE) && (tLogStart < status->tLogEnd)) {
+        if (tLogStart < status->tLogEnd) {
             tLogStart = now;
         }
         status->tLogEnd = tLogEnd;
@@ -289,7 +295,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     /*
      * Reset marker for signal triggered rotation
      */
-    status->reason = REASON_LOG;
+    status->checkReason = CHECK_LOG;
 }
 
 #ifdef HAVE_SIGNALS
@@ -302,10 +308,10 @@ static void external_rotate(int signal)
      * Set marker for signal triggered rotation
      */
     if (signal == SIG_FORCE) {
-        status.reason = REASON_FORCE;
+        status.checkReason = CHECK_SIG_FORCE;
     }
     else {
-        status.reason = REASON_CHECK;
+        status.checkReason = CHECK_SIG_CHECK;
     }
     /*
      * Close old file conditionally
@@ -314,7 +320,7 @@ static void external_rotate(int signal)
     /*
      * Open new file if force flag was set
      */
-    if (config.force_open && status.needsRotate) {
+    if (config.force_open && (status.rotateReason != ROTATE_NONE)) {
         doRotate(&config, &status);
     }
 }
@@ -346,8 +352,8 @@ int main (int argc, const char * const argv[])
     status.nLogFD = NULL;
     status.nLogFDprev = NULL;
     status.tLogEnd = 0;
-    status.needsRotate = 0;
-    status.reason = REASON_LOG;
+    status.rotateReason = ROTATE_NONE;
+    status.checkReason = CHECK_LOG;
     status.nMessCount = 0;
 
     apr_pool_create(&status.pool, NULL);
@@ -431,7 +437,7 @@ int main (int argc, const char * const argv[])
             exit(3);
         }
         checkRotate(&config, &status);
-        if (status.needsRotate) {
+        if (status.rotateReason != ROTATE_NONE) {
             doRotate(&config, &status);
         }
 
