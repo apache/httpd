@@ -398,13 +398,18 @@
         below.</p>
 
       <dl>
-        <dt><code>--enable-auth-anon</code></dt>
+        <dt><code>--enable-authn-anon</code></dt>
         <dd>Enable anonymous user access provided by
-          <code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code>.</dd>
+          <code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code>.</dd>
 
-        <dt><code>--enable-auth-dbm</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code> provides for HTTP Basic
+        <dt><code>--enable-authn-dbm</code></dt>
+        <dd><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> provides for HTTP Basic
           Authentication, where the usernames and passwords are stored in DBM
+          type database files. Use this option to enable the module.</dd>
+
+        <dt><code>--enable-authz-dbm</code></dt>
+        <dd><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> provides for HTTP Basic
+          Authorization, where the usernames and groups are stored in DBM
           type database files. Use this option to enable the module.</dd>
 
         <dt><code>--enable-auth-digest</code></dt>
