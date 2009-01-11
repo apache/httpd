@@ -34,6 +34,8 @@
  * -f option added Feb, 2008. This causes rotatelog to open/create
  *    the logfile as soon as it's started, not as soon as it sees
  *    data.
+ *
+ * -v option added Feb, 2008. Verbose output of command line parsing.
  */
 
 
@@ -79,6 +81,15 @@
 #define ROTATE_SIZE     3
 #define ROTATE_FORCE    4
 
+static const char *ROTATE_REASONS[] = {
+    "None",
+    "Open a new file",
+    "Time interval expired",
+    "Maximum size reached",
+    "Forced rotation",
+    NULL
+};
+
 typedef struct rotate_config rotate_config_t;
 
 struct rotate_config {
@@ -88,6 +99,7 @@ struct rotate_config {
     int use_localtime;
     int use_strftime;
     int force_open;
+    int verbose;
     const char *szLogRoot;
 };
 
@@ -116,7 +128,7 @@ static void usage(const char *argv0, const char *reason)
         fprintf(stderr, "%s\n", reason);
     }
     fprintf(stderr,
-            "Usage: %s [-l] [-f] <logfile> "
+            "Usage: %s [-v] [-l] [-f] <logfile> "
             "{<rotation time in seconds>|<rotation size in megabytes>} "
             "[offset minutes from UTC]\n\n",
             argv0);
@@ -157,14 +169,33 @@ static int get_now(rotate_config_t *config)
     return (int)apr_time_sec(tNow) + utc_offset;
 }
 
-static void closeFile(apr_pool_t *pool, apr_file_t *file)
+static void closeFile(rotate_config_t *config, apr_pool_t *pool, apr_file_t *file)
 {
     if (file != NULL) {
+        if (config->verbose) {
+            apr_finfo_t finfo;
+            apr_int32_t wanted = APR_FINFO_NAME;
+            if (apr_file_info_get(&finfo, wanted, file) == APR_SUCCESS) {
+                fprintf(stderr, "Closing file %s (%s)\n", finfo.name, finfo.fname);
+            }
+        }
         apr_file_close(file);
         if (pool) {
             apr_pool_destroy(pool);
         }
     }
+}
+
+static void dumpConfig (rotate_config_t *config)
+{
+    fprintf(stderr, "Rotation time interval:      %12d\n", config->tRotation);
+    fprintf(stderr, "Rotation size interval:      %12d\n", config->sRotation);
+    fprintf(stderr, "Rotation time UTC offset:    %12d\n", config->utc_offset);
+    fprintf(stderr, "Rotation based on localtime: %12s\n", config->use_localtime ? "yes" : "no");
+    fprintf(stderr, "Rotation file date pattern:  %12s\n", config->use_strftime ? "yes" : "no");
+    fprintf(stderr, "Rotation file forced open:   %12s\n", config->force_open ? "yes" : "no");
+    fprintf(stderr, "Rotation verbose:            %12s\n", config->verbose ? "yes" : "no");
+    fprintf(stderr, "Rotation file name: %21s\n", config->szLogRoot);
 }
 
 static void checkRotate(rotate_config_t *config, rotate_status_t *status)
@@ -198,13 +229,17 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
         exit(2);
     }
 
+    if (status->rotateReason != ROTATE_NONE && config->verbose) {
+        fprintf(stderr, "File rotation needed, reason: %s\n", ROTATE_REASONS[status->rotateReason]);
+    }
+
     /*
      * Let's close the file before immediately
      * if we got here via a signal.
      */
     if ((status->rotateReason != ROTATE_NONE) &&
         (status->checkReason != CHECK_LOG)) {
-        closeFile(status->pfile, status->nLogFD);
+        closeFile(config, status->pfile, status->nLogFD);
         status->nLogFD = NULL;
         status->pfile = NULL;
     }
@@ -253,6 +288,9 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         sprintf(status->filename, "%s.%010d", config->szLogRoot, tLogStart);
     }
     apr_pool_create(&status->pfile, status->pool);
+    if (config->verbose) {
+        fprintf(stderr, "Opening file %s\n", status->filename);
+    }
     rv = apr_file_open(&status->nLogFD, status->filename, APR_WRITE | APR_CREATE | APR_APPEND,
                        APR_OS_DEFAULT, status->pfile);
     if (rv != APR_SUCCESS) {
@@ -287,7 +325,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         }
     }
     else {
-        closeFile(status->pfile_prev, status->nLogFDprev);
+        closeFile(config, status->pfile_prev, status->nLogFDprev);
         status->nLogFDprev = NULL;
         status->pfile_prev = NULL;
     }
@@ -346,6 +384,7 @@ int main (int argc, const char * const argv[])
     config.use_localtime = 0;
     config.use_strftime = 0;
     config.force_open = 0;
+    config.verbose = 0;
     status.pool = NULL;
     status.pfile = NULL;
     status.pfile_prev = NULL;
@@ -358,13 +397,16 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
-    while ((rv = apr_getopt(opt, "lf", &c, &optarg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lfv", &c, &optarg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
             config.use_localtime = 1;
             break;
         case 'f':
             config.force_open = 1;
+            break;
+        case 'v':
+            config.verbose = 1;
             break;
         }
     }
@@ -407,6 +449,13 @@ int main (int argc, const char * const argv[])
     if (apr_file_open_stdin(&f_stdin, status.pool) != APR_SUCCESS) {
         fprintf(stderr, "Unable to open stdin\n");
         exit(1);
+    }
+
+    /*
+     * Write out result of config parsing if verbose is set.
+     */
+    if (config.verbose) {
+        dumpConfig(&config);
     }
 
     /*
