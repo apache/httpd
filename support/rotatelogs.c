@@ -51,12 +51,8 @@
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
-#if APR_HAVE_STRING_H
-#include <string.h>
-#endif
-#if APR_HAVE_STRINGS_H
-#include <strings.h>
-#endif
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #define BUFSIZE         65536
 #define ERRMSGSZ        256
