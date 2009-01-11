@@ -295,7 +295,7 @@ void *ssl_config_perdir_create(apr_pool_t *p, char *dir)
     dc->szCACertificateFile    = NULL;
     dc->szUserName             = NULL;
 
-    dc->nRenegBufferSize = DEFAULT_RENEG_BUFFER_SIZE;
+    dc->nRenegBufferSize = UNSET;
 
     return dc;
 }
