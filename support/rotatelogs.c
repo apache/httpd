@@ -181,11 +181,12 @@ void doRotate(rotate_config_t *config, rotate_status_t *status) {
     status->nLogFDprev = status->nLogFD;
     status->nLogFD = NULL;
 
+    status->now = get_now(config->use_localtime, config->utc_offset);
     if (config->tRotation) {
         tLogStart = (status->now / config->tRotation) * config->tRotation;
     }
     else {
-        tLogStart = get_now(config->use_localtime, config->utc_offset);
+        tLogStart = status->now;
     }
 
     if (config->use_strftime) {
@@ -341,7 +342,7 @@ int main (int argc, const char * const argv[])
             exit(3);
         }
         checkRotate(&config, &status);
-        if (status->needsRotate) {
+        if (status.needsRotate) {
             doRotate(&config, &status);
         }
 
