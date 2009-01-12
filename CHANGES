@@ -27,9 +27,6 @@ Changes with Apache 2.3.2
     configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
     Jeff Trawick]
 
- *) prefork: Log an error instead of segfaulting when child startup fails
-    due to pollset creation failures.  PR 46467.  [Jeff Trawick]
-
  *) mod_session_crypto: Ensure that SessionCryptoDriver can only be
     set in the global scope. [Graham Leggett]
 
