@@ -121,6 +121,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=733219&view=rev
     2.2.x:
       trunk works
+    +1: covener, niq, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
