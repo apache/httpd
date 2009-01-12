@@ -86,14 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * Prefork MPM: Log an error instead of segfaulting when child startup fails
-   due to pollset creation failures.  PR 46467.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=732414&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, covener, trawick
-
  * mod_authnz_ldap: Reduce number of initialization debug messages and make
    information more clear. PR 46342
     Trunk version of path:

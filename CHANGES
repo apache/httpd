@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) prefork: Log an error instead of segfaulting when child startup fails
+     due to pollset creation failures.  PR 46467.  [Jeff Trawick]
+
   *) mod_ext_filter: fix error handling when the filter prog fails to start,
      and introduce an onfail configuration option to abort the request
      or to remove the broken filter and continue.
