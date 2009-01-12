@@ -103,17 +103,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         trunk works
     +1 covener, rpluem, niq
 
-  * core: Translate locally generated "100-Continue" messages to ASCII
-    on EBCDIC systems, and translate the status_line on the way out of
-    ap_send_interim_response().
-      trunk:
-        http://svn.apache.org/viewvc?rev=732832&view=rev
-        http://svn.apache.org/viewvc?rev=733134&view=rev
-        http://svn.apache.org/viewvc?rev=733218&view=rev
-      2.2.x:
-        trunk works
-    +1 covener, niq, rpluem
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
