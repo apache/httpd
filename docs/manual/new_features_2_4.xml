@@ -33,8 +33,13 @@
 
   <section id="core">
     <title>Core Enhancements</title>
-    <!-- <dl>
-    </dl> -->
+    <dl>
+      <dt>KeepAliveTimeout in milliseconds</dt>
+
+      <dd>It has been made to be possible to specify <directive module="core"
+      >KeepAliveTimeout</directive> in milliseconds.
+      </dd>
+    </dl>
   </section>
 
   <section id="module">

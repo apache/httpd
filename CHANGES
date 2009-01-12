@@ -2,6 +2,9 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) core: Enhance KeepAliveTimeout to support a value in milliseconds.
+    PR 46275. [Takashi Sato]
+
  *) rotatelogs: Allow size units B, K, M, G and combination of
     time and size based rotation. [Rainer Jung]
 
