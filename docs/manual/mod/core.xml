@@ -1558,14 +1558,17 @@ the server configuration files</description>
 <name>KeepAliveTimeout</name>
 <description>Amount of time the server will wait for subsequent
 requests on a persistent connection</description>
-<syntax>KeepAliveTimeout <var>seconds</var></syntax>
+<syntax>KeepAliveTimeout <var>num</var>[ms]</syntax>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Specifying a value in milliseconds is available in 
+Apache 2.3.2 and later</compatibility>
 
 <usage>
     <p>The number of seconds Apache will wait for a subsequent
-    request before closing the connection. Once a request has been
+    request before closing the connection. By adding a postfix of ms the
+    timeout can be also set in milliseconds. Once a request has been
     received, the timeout value specified by the
     <directive module="core">Timeout</directive> directive applies.</p>
 
