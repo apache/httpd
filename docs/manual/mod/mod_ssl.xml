@@ -1324,7 +1324,7 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
 
 <directivesynopsis>
 <name>SSLRenegBufferSize</name>
-<description>Set the size for the SSL renogotiation buffer</description>
+<description>Set the size for the SSL renegotiation buffer</description>
 <syntax>SSLRenegBufferSize <var>bytes</var></syntax>
 <default>SSLRenegBufferSize 131072</default>
 <contextlist><context>directory</context>
@@ -1332,11 +1332,21 @@ SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
 <override>AuthConfig</override>
 
 <usage>
-<p>
-Configure the amount of memory that will be used for buffering the
-request body if a per-location SSL renegotiation is required due to
-changed access control requirements.
-</p>
+
+<p>If an SSL renegotiation is required in per-location context, for
+example, any use of <directive
+module="mod_ssl">SSLVerifyClient</directive> in a Directory or
+Location block, then <module>mod_ssl</module> must buffer any HTTP
+request body into memory until the new SSL handshake can be performed.
+This directive can be used to set the amount of memory that will be
+used for this buffer. </p>
+
+<note type="warning"><p>
+Note that in many configurations, the client sending the request body
+will be untrusted so a denial of service attack by consumption of
+memory must be considered when changing this configuration setting.
+</p></note>
+
 <example><title>Example</title>
 SSLRenegBufferSize 262144
 </example>
