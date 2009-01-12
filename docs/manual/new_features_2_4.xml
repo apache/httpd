@@ -36,7 +36,7 @@
     <dl>
       <dt>KeepAliveTimeout in milliseconds</dt>
 
-      <dd>It has been made to be possible to specify <directive module="core"
+      <dd>It is now possible to specify <directive module="core"
       >KeepAliveTimeout</directive> in milliseconds.
       </dd>
     </dl>
