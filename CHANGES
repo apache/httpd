@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) core: Translate the the status line to ASCII on EBCDIC platforms in
+     ap_send_interim_response() and for locally generated "100 Continue"
+     responses.  [Eric Covener]
+
   *) CGI: return 504 (Gateway timeout) rather than 500 when a script
      times out before returning status line/headers.
      PR 42190 [Nick Kew]

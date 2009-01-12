@@ -329,11 +329,14 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 ctx->eos_sent = 1;
             } else {
                 char *tmp;
+                int len;
 
                 tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
                                   ap_get_status_line(100), CRLF CRLF, NULL);
+                len = strlen(tmp);
+                ap_xlate_proto_to_ascii(tmp, len);
                 apr_brigade_cleanup(bb);
-                e = apr_bucket_pool_create(tmp, strlen(tmp), f->r->pool,
+                e = apr_bucket_pool_create(tmp, len, f->r->pool,
                                            f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_HEAD(bb, e);
                 e = apr_bucket_flush_create(f->c->bucket_alloc);
