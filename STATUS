@@ -114,15 +114,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         trunk works
     +1 covener, niq, rpluem
 
- * mod_proxy_http: Add server_rec to ap_log_error() calls for interim
-   response messages
-    trunk 
-      http://svn.apache.org/viewvc?rev=733127&view=rev
-      http://svn.apache.org/viewvc?rev=733219&view=rev
-    2.2.x:
-      trunk works
-    +1: covener, niq, rpluem
-
   * util_script (CGI): return 504 (Gateway timeout) rather than 500
     when a script times out before returning status line/headers.
     PR 42190
