@@ -1044,8 +1044,8 @@ static const char *get_canned_error_string(int status,
                "request due to maintenance downtime or capacity\n"
                "problems. Please try again later.</p>\n");
     case HTTP_GATEWAY_TIME_OUT:
-        return("<p>The proxy server did not receive a timely response\n"
-               "from the upstream server.</p>\n");
+        return("<p>The gateway did not receive a timely response\n"
+               "from the upstream server or application.</p>\n");
     case HTTP_NOT_EXTENDED:
         return("<p>A mandatory extension policy in the request is not\n"
                "accepted by the server for this resource.</p>\n");

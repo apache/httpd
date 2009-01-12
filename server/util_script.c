@@ -430,11 +430,18 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
     while (1) {
 
-        if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
+        int rv = (*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data);
+        if (rv == 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
                           "Premature end of script headers: %s",
                           apr_filepath_name_get(r->filename));
             return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        else if (rv == -1) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
+                          "Script timed out before returning headers: %s",
+                          apr_filepath_name_get(r->filename));
+            return HTTP_GATEWAY_TIME_OUT;
         }
 
         /* Delete terminal (CR?)LF */
@@ -629,7 +636,7 @@ static int getsfunc_BRIGADE(char *buf, int len, void *arg)
         rv = apr_bucket_read(e, &bucket_data, &bucket_data_len,
                              APR_BLOCK_READ);
         if (rv != APR_SUCCESS || (bucket_data_len == 0)) {
-            return 0;
+            return APR_STATUS_IS_TIMEUP(rv) ? -1 : 0;
         }
         src = bucket_data;
         src_end = bucket_data + bucket_data_len;
