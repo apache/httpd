@@ -150,7 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=733218&view=rev
       2.2.x:
         trunk works
-    +1 covener, niq
+    +1 covener, niq, rpluem
 
  * mod_proxy_http: Add server_rec to ap_log_error() calls for interim
    response messages
@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=733219&view=rev
     2.2.x:
       trunk works
-    +1: covener, niq
+    +1: covener, niq, rpluem
 
  * mod_ssl: Add SSLRenegBufferSize to configure the amount of memory that will
    be used for buffering the request body if a per-location SSL renegotiationi
