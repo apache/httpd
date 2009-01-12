@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_cache: Introduce 'no-cache' per-request environment variable
+     to prevent the saving of an otherwise cacheable response.
+     [Eric Covener]
+
   *) core: Translate the the status line to ASCII on EBCDIC platforms in
      ap_send_interim_response() and for locally generated "100 Continue"
      responses.  [Eric Covener]
