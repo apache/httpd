@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) CGI: return 504 (Gateway timeout) rather than 500 when a script
+     times out before returning status line/headers.
+     PR 42190 [Nick Kew]
+
   *) prefork: Log an error instead of segfaulting when child startup fails
      due to pollset creation failures.  PR 46467.  [Jeff Trawick]
 
