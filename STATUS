@@ -126,6 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=726109&view=rev
       http://svn.apache.org/viewvc?rev=733465&view=rev
       http://svn.apache.org/viewvc?rev=733467&view=rev
+      http://svn.apache.org/viewvc?rev=733695&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
    +1: rpluem,
