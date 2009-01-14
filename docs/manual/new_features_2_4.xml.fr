@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 728126 -->
+<!-- English Revision : 733709 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -36,8 +36,14 @@
 
   <section id="core">
     <title>Am&eacute;liorations du noyau</title>
-    <!-- <dl>
-    </dl> -->
+    <dl>
+      <dt>KeepAliveTimeout en millisecondes</dt>
+
+      <dd>La directive <directive module="core"
+      >KeepAliveTimeout</directive> permet dor&eacute;navant de
+      >pr&eacute;ciser une dur&eacute;e de vie en millisecondes.
+      </dd>
+    </dl>
   </section>
 
   <section id="module">
