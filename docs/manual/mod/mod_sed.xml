@@ -99,17 +99,17 @@ page</a>.
     </p>
     <dl>
         <dt><code>b</code></dt>
-        <dd>branch to the label specified (similar to goto).</dd>
+        <dd>Branch to the label specified (similar to goto).</dd>
         <dt><code>h</code></dt>
         <dd>Copy the current line to the hold buffer.</dd>
         <dt><code>H</code></dt>
         <dd>Append the current line to the hold buffer.</dd>
         <dt><code>g</code></dt>
-        <dd>Copy the hold buffer into the current line.</dd>
+        <dd>Copy the hold buffer to the current line.</dd>
         <dt><code>G</code></dt>
         <dd>Append the hold buffer to the current line.</dd>
         <dt><code>x</code></dt>
-        <dd>Swap the content of the hold buffer and the current line.</dd>
+        <dd>Swap the contents of the hold buffer and the current line.</dd>
     </dl>
 </section>
 
