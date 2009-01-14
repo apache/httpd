@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 711521:732790 (outdated) -->
+<!-- English Revision: 732790 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -422,13 +422,19 @@
         etkinleştirmek için aşağıdaki seçenekleri kullanabilirsiniz.</p>
 
       <dl>
-        <dt><code>--enable-auth-anon</code></dt>
-        <dd><module>mod_auth_anon</module> modülünün sağladığı anonim
+        <dt><code>--enable-authn-anon</code></dt>
+        <dd><module>mod_authn_anon</module> modülünün sağladığı anonim
           kullanıcı erişimi etkin kılınır.</dd>
 
-        <dt><code>--enable-auth-dbm</code></dt>
-        <dd><module>mod_auth_dbm</module> modülü kullanıcı isimlerinin ve
+        <dt><code>--enable-authn-dbm</code></dt>
+        <dd><module>mod_authn_dbm</module> modülü kullanıcı isimlerinin ve
           parolalarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
+          Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
+          kılmak için kullanabilirsiniz.</dd>
+
+        <dt><code>--enable-authz-dbm</code></dt>
+        <dd><module>mod_authz_dbm</module> modülü kullanıcı isimlerinin ve
+          gruplarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
           Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
           kılmak için kullanabilirsiniz.</dd>
 

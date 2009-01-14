@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 726882 -->
+<!-- English Revision: 733557 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -1570,16 +1570,18 @@ yönergeleri sarmalar.</description>
 <name>KeepAliveTimeout</name>
 <description>Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
 </description>
-<syntax>KeepAliveTimeout <var>saniye</var></syntax>
+<syntax>KeepAliveTimeout <var>sayı</var>[ms]</syntax>
 <default>KeepAliveTimeout 5</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Apache 2.3.2'den itibaren milisaniyelik değerler belirtilebilmektedir.</compatibility>
 
 <usage>
     <p>Sunucunun kalıcı bir bağlantıyı kapatmadan önce bir sonraki isteği kaç
-      saniye bekleyeceğini belirler. İstek alındıktan sonra <directive
-      module="core">Timeout</directive> yönergesiyle belirtilen zaman aşımı
-      değeri uygulanır.</p>
+      saniye bekleyeceğini belirler. Ayrıca, ms soneki kullanılarak süreyi
+      milisaniye olarak belirtmek de mümkündür. İstek alındıktan sonra
+      <directive module="core">Timeout</directive> yönergesiyle belirtilen
+      zaman aşımı değeri uygulanır.</p>
 
     <p><directive>KeepAliveTimeout</directive> için yüksek bir değer belirtmek
       ağır yüklü sunucularda başarım sorunlarına yol açar. Daha yüksek bir
