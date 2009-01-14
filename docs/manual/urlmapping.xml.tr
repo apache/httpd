@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 567425:732819 (outdated) -->
+<!-- English Revision: 732819 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -59,7 +59,7 @@
 <directive module="mod_alias">Redirect</directive>
 <directive module="mod_alias">RedirectMatch</directive>
 <directive module="mod_rewrite">RewriteCond</directive>
-<directive module="mod_rewrite">RewriteMatch</directive>
+<directive module="mod_rewrite">RewriteRule</directive>
 <directive module="mod_alias">ScriptAlias</directive>
 <directive module="mod_alias">ScriptAliasMatch</directive>
 <directive module="mod_userdir">UserDir</directive>
@@ -269,8 +269,8 @@
       de uygulayabilecek yetenektedir: Dahili yönlendirmeler (rumuzlar),
       harici yönlendirmeler ve vekalet. <module>mod_rewrite</module> modülü
       tarafından sağlanan yeteneklerin ayrıntılı açıklamaları ve bunların
-      kullanım örnekleri <a href="misc/rewriteguide.html">URL Yeniden Yazma
-      Rehberi</a>nde bulunmaktadır.</p>
+      kullanım örnekleri ayrıntılı olarak <a href="rewrite/">mod_rewrite
+      belgeleri</a>nde bulunmaktadır.</p>
 </section>
 
 <section id="notfound"><title>Dosya orada yok</title>
