@@ -24,7 +24,7 @@
 
 <name>mod_unixd</name>
 <description>Basic (required) security for Unix-family platforms.</description>
-<status>Core</status>
+<status>Base</status>
 
 <directivesynopsis>
 <name>Group</name>
@@ -125,8 +125,7 @@ requests</description>
 <syntax>ChrootDir <var>/path/to/directory</var></syntax>
 <default>none</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>event</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>mod_unixd</module></modulelist>
 
 <usage>
     <p>This directive, available in httpd 2.2.9(?) and later, tells the
