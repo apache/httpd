@@ -24,7 +24,10 @@
 
      <p><code>rotatelogs</code> is a simple program for use in
      conjunction with Apache's piped logfile feature.  It supports
-     rotation based on a time interval or maximum size of the log.</p>
+     rotation based on a time interval or maximum size of the log.
+     Rotation happens automatically during log activity, but can also
+     be triggered externally with the signals SIGHUP (checks the
+     configured rotation rules) and SIGINT (force rotate).</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
@@ -38,8 +41,9 @@
      <p><code><strong>rotatelogs</strong>
      [ -<strong>l</strong> ]
      [ -<strong>f</strong> ]
+     [ -<strong>v</strong> ]
      <var>logfile</var>
-     <var>rotationtime</var>|<var>filesize</var>M 
+     <var>rotationtime</var>|<var>filesize</var>(B|K|M|G) 
      [ <var>offset</var> ]</code></p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -63,6 +67,11 @@ and when the first request is handled, meaning that the
 associated logfile does not "exist" until then, which
 causes problems from some automated logging tools)</dd>
 
+<dt><code>-v</code></dt>
+<dd>Produce verbose output on STDERR. The output contains
+the result of the configuration parsing, and all file open and
+close actions.</dd>
+
 <dt><code><var>logfile</var></code></dt>
 
 <dd>The path plus basename of the logfile.  If <var>logfile</var>
@@ -84,10 +93,15 @@ of every hour; if the rotation time is 86400, the log file will be
 rotated every night at midnight.  (If no data is logged during an
 interval, no file will be created.)</dd>
 
-<dt><code><var>filesize</var>M</code></dt>
+<dt><code><var>filesize</var>(B|K|M|G)</code></dt>
 
-<dd>The maximum file size in megabytes followed by the letter
-<code>M</code> to specify size rather than time.</dd>
+<dd>The maximum file size in followed by exactly one of the letters
+<code>B</code> (Bytes), <code>K</code> (KBytes), <code>M</code> (MBytes)
+or <code>G</code> (GBytes).
+<br />
+When time and size are specified, the size must be given after the time.
+Rotation will occur whenever either time or size limits are reached.
+</dd>
 
 <dt><code><var>offset</var></code></dt>
 

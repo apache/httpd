@@ -261,7 +261,7 @@ alias</td></tr>
 <tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user-id</var> <var>group-id</var>
 <var>num-children</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Specify user ID and group ID for a number of child
 processes</td></tr>
-<tr><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
+<tr><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">apache が起動後に chroot(8) するディレクトリ
 </td></tr>
 <tr><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4"><code>Content-MD5</code> HTTP 応答ヘッダの生成を有効にする</td></tr>
@@ -357,7 +357,7 @@ API</td></tr>
 送られるようにする</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Forensic ログのファイル名を設定する</td></tr>
 <tr><td><a href="mpm_common.html#gracefulshutdowntimeout" id="G" name="G">GracefulShutDownTimeout <var>seconds</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">穏やかな停止をかけた後、終了するまで待つ時間</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
+<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
 <tr><td><a href="mpm_common.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">リクエストに応答する際に所属するグループ</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] set|append|add|unset|echo
@@ -398,7 +398,7 @@ an imagemap</td></tr>
 Name|Date|Size|Description</a></td><td> Ascending Name </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">
 ディレクトリインデックスの標準の順番付けを設定</td></tr>
 <tr><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ディレクトリインデックスに CSS スタイルシートを追加する</td></tr>
-<tr class="odd"><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command to filter the request data (typically post data)</td></tr>
+<tr class="odd"><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command to filter request data (typically <code>POST</code> data)</td></tr>
 <tr><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the error log</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
@@ -502,7 +502,7 @@ using the specified magic file</td></tr>
     [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">ディレクトリに対して使用可能な機能を設定する</td></tr>
 <tr><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">デフォルトのアクセス可能な状態と、<code class="directive">Allow</code> と
 <code class="directive">Deny</code> が評価される順番を制御する</td></tr>
-<tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filtering the response content</td></tr>
+<tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filtering response content</td></tr>
 <tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">シェルからの環境変数を渡す</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">デーモンのプロセス ID
@@ -718,65 +718,66 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <em>context</em> <em>source</em> 
 [<em>bytes</em>]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pseudo Random Number Generator (PRNG) seeding 
 source</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expression</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Allow access only when an arbitrarily complex 
+<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>bytes</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the size for the SSL renegotiation buffer</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expression</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow access only when an arbitrarily complex 
 boolean expression is true</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Deny access when SSL is not used for the 
+<tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Deny access when SSL is not used for the 
 HTTP request</td></tr>
-<tr><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <em>type</em></a></td><td> none </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of the global/inter-process SSL Session 
+<tr class="odd"><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <em>type</em></a></td><td> none </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of the global/inter-process SSL Session 
 Cache</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of seconds before an SSL session expires
+<tr><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of seconds before an SSL session expires
 in the Session Cache</td></tr>
-<tr><td><a href="mod_ssl.html#sslusername">SSLUserName <em>varname</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Variable name to determine user name</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
+<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName <em>varname</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Variable name to determine user name</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
 Certificate verification</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">起動時に生成される子サーバプロセスの数</td></tr>
-<tr><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">起動時に生成されるスレッドの数</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
-<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">CGI プログラムのユーザパーミッション、グループパーミッション</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">設定可能な子プロセス毎のスレッド数の上限を
+<tr><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">起動時に生成される子サーバプロセスの数</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">起動時に生成されるスレッドの数</td></tr>
+<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
+<tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">CGI プログラムのユーザパーミッション、グループパーミッション</td></tr>
+<tr><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">設定可能な子プロセス毎のスレッド数の上限を
 設定します</td></tr>
-<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">子プロセスそれぞれに生成されるスレッド数</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>size</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントのコネクションを受け持つスレッドが使用する
+<tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">子プロセスそれぞれに生成されるスレッド数</td></tr>
+<tr><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>size</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">クライアントのコネクションを受け持つスレッドが使用する
 スタックのバイト数</td></tr>
-<tr><td><a href="core.html#timeout">TimeOut <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">各イベントについて、リクエストを失敗させるまでにサーバが
+<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">各イベントについて、リクエストを失敗させるまでにサーバが
 待つ時間を設定</td></tr>
-<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4"><code>TRACE</code> メソッドのリクエストに対する応答方法を決める
+<tr><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4"><code>TRACE</code> メソッドのリクエストに対する応答方法を決める
 </td></tr>
-<tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ログファイルの位置を指定</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td /></tr><tr class="odd"><td class="descr" colspan="4"><code>mime.types</code> ファイルの位置</td></tr>
-<tr><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">環境から変数を取り除く</td></tr>
-<tr class="odd"><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|Dns</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">サーバが自分自身の名前とポートを決定する方法を設定する</td></tr>
-<tr><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">自分自身の名前とポート番号を解決する方法を設定する
+<tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ログファイルの位置を指定</td></tr>
+<tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td /></tr><tr><td class="descr" colspan="4"><code>mime.types</code> ファイルの位置</td></tr>
+<tr class="odd"><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">環境から変数を取り除く</td></tr>
+<tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|Dns</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバが自分自身の名前とポートを決定する方法を設定する</td></tr>
+<tr class="odd"><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">自分自身の名前とポート番号を解決する方法を設定する
 </td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">The userid under which the server will answer
+<tr><td><a href="mod_unixd.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The userid under which the server will answer
 requests</td></tr>
-<tr><td><a href="mpm_common.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">リクエストに応答する際に用いるユーザ ID</td></tr>
-<tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ユーザ専用ディレクトリの位置</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines whether the virtualhost can run
+<tr class="odd"><td><a href="mpm_common.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストに応答する際に用いるユーザ ID</td></tr>
+<tr><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ユーザ専用ディレクトリの位置</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the virtualhost can run
 subprocesses, and the privileges available to subprocesses.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to subprocesses created
+<tr><td><a href="mod_privileges.html#vhostcgiprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Assign arbitrary privileges to subprocesses created
 by a virtual host.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>unix-groupid</var></a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Sets the Group ID under which a virtual host runs.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to a virtual host.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines whether the server runs with enhanced security
+<tr class="odd"><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>unix-groupid</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the Group ID under which a virtual host runs.</td></tr>
+<tr><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Assign arbitrary privileges to a virtual host.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the server runs with enhanced security
 for the virtualhost.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>unix-userid</var></a></td><td></td><td>v</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the User ID under which a virtual host runs.</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the document root
+<tr><td><a href="mod_privileges.html#vhostuser">VHostUser <var>unix-userid</var></a></td><td></td><td>v</td><td>X</td></tr><tr><td class="descr" colspan="4">Sets the User ID under which a virtual host runs.</td></tr>
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root
 for a given virtual host</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root
+<tr><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the document root
 for a given virtual host</td></tr>
-<tr><td><a href="core.html#virtualhost">&lt;VirtualHost
+<tr class="odd"><td><a href="core.html#virtualhost">&lt;VirtualHost
     <var>addr</var>[:<var>port</var>] [<var>addr</var>[:<var>port</var>]]
-    ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">特定のホスト名や IP アドレスのみに適用されるディレクティブを
+    ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">特定のホスト名や IP アドレスのみに適用されるディレクティブを
 囲む</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the CGI directory for
+<tr><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the CGI directory for
 a given virtual host</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the cgi directory for
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the cgi directory for
 a given virtual host</td></tr>
-<tr class="odd"><td><a href="mpm_winnt.html#win32disableacceptex" id="W" name="W">Win32DisableAcceptEx</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">ネットワーク接続の受け付けに accept() をAcceptEx の代わりに使う</td></tr>
-<tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">実行ビットが設定されたファイルの SSI ディレクティブを
+<tr><td><a href="mpm_winnt.html#win32disableacceptex" id="W" name="W">Win32DisableAcceptEx</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">ネットワーク接続の受け付けに accept() をAcceptEx の代わりに使う</td></tr>
+<tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">実行ビットが設定されたファイルの SSI ディレクティブを
 解析する</td></tr>
 </table></div>
 <div class="bottomlang">

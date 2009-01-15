@@ -172,6 +172,8 @@ under different user IDs.</dd>
 <code>CONNECT</code> request handling</dd>
 <dt><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></dt><dd>FastCGI support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_fdpass.html">mod_proxy_fdpass</a></dt><dd>FastCGI support module for
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>FTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
@@ -180,7 +182,7 @@ under different user IDs.</dd>
 <dt><a href="mod_request.html" id="R" name="R">mod_request</a></dt><dd>Filters to handle and make available HTTP request bodies</dd>
 <dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
-<dt><a href="mod_sed.html" id="S" name="S">mod_sed</a></dt><dd>Filtering Input (request) and Output (response) content using sed commands</dd>
+<dt><a href="mod_sed.html" id="S" name="S">mod_sed</a></dt><dd>Filter Input (request) and Output (response) content using <code>sed</code> syntax</dd>
 <dt><a href="mod_session.html">mod_session</a></dt><dd>Session support</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
@@ -203,6 +205,7 @@ performance</dd>
 and Group</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Provides an environment variable with a unique
 identifier for each request</dd>
+<dt><a href="mod_unixd.html">mod_unixd</a></dt><dd>Basic (required) security for Unix-family platforms.</dd>
 <dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>User-specific directories</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site

@@ -237,6 +237,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_proxy_balancer.html">Módulo Apache mod_proxy_balancer</a></li>
 <li><a href="mod/mod_proxy_connect.html">Módulo Apache mod_proxy_connect</a></li>
 <li><a href="mod/mod_proxy_fcgi.html">Módulo Apache mod_proxy_fcgi</a></li>
+<li><a href="mod/mod_proxy_fdpass.html">Módulo Apache mod_proxy_fdpass</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Módulo Apache mod_proxy_ftp</a></li>
 <li><a href="mod/mod_proxy_http.html">Módulo Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Módulo Apache mod_proxy_scgi</a></li>
@@ -257,6 +258,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_substitute.html">Módulo Apache mod_substitute</a></li>
 <li><a href="mod/mod_suexec.html">Módulo Apache mod_suexec</a></li>
 <li><a href="mod/mod_unique_id.html">Módulo Apache mod_unique_id</a></li>
+<li><a href="mod/mod_unixd.html">Módulo Apache mod_unixd</a></li>
 <li><a href="mod/mod_userdir.html">Módulo Apache mod_userdir</a></li>
 <li><a href="mod/mod_usertrack.html">Módulo Apache mod_usertrack</a></li>
 <li><a href="mod/mod_version.html">Módulo Apache mod_version</a></li>
