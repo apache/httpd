@@ -390,39 +390,7 @@ Certificate for testing purposes?</a></h3>
        create your own CA to sign it.<br />
        Commercial CAs usually ask you to post the CSR into a web form, 
        pay for the signing, and then send a signed Certificate, which 
-       you can store in a server.crt file. For more information about 
-       commercial CAs see the following locations:<br />
-       <br />
-       <ol>
-       <li>  Verisign<br />
-             <a href="http://digitalid.verisign.com/server/apacheNotice.htm">
-             http://digitalid.verisign.com/server/apacheNotice.htm
-             </a>
-       </li>
-       <li>  Thawte<br />
-         <a href="http://www.thawte.com/">http://www.thawte.com/</a>
-       </li>
-       <li>  CertiSign Certificadora Digital Ltda.<br />
-             <a href="http://www.certisign.com.br">
-             http://www.certisign.com.br
-             </a>
-       </li>
-       <li>  IKS GmbH<br />
-             <a href="http://www.iks-jena.de/leistungen/ca/">
-             http://www.iks-jena.de/leistungen/ca/
-             </a>
-       </li>
-       <li>  Uptime Commerce Ltd.<br />
-             <a href="http://www.uptimecommerce.com">
-             http://www.uptimecommerce.com
-             </a>
-       </li>
-       <li>  BelSign NV/SA<br />
-             <a href="http://www.belsign.be">
-             http://www.belsign.be
-             </a>
-       </li>
-       </ol>
+       you can store in a server.crt file.<br />
 
        For details on how to create your own CA, and use this to sign
        a CSR, see <a href="#ownca">below</a>.<br />
