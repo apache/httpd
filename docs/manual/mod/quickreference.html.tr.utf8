@@ -415,7 +415,7 @@ an imagemap</td></tr>
 Name|Date|Size|Description</a></td><td> Ascending Name </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Dizin içerik listesinin öntanımlı sıralamasını belirler.
 </td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet <var>url-yolu</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin listesine bir biçembent ekler.</td></tr>
-<tr><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr><td class="descr" colspan="4">Sed command to filter the request data (typically post data)</td></tr>
+<tr><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr><td class="descr" colspan="4">Sed command to filter request data (typically <code>POST</code> data)</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the error log</td></tr>
 <tr><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
@@ -428,7 +428,7 @@ extensions</td></tr>
 <tr><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
 <tr class="odd"><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP kalıcı bağlantılarını etkin kılar</td></tr>
-<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>saniye</var></a></td><td> 5 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
+<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>sayı</var>[ms]</a></td><td> 5 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
 </td></tr>
 <tr class="odd"><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>azami_bayt_sayısı</var></a></td><td> 0 </td><td>d</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">mod_include gibi süzgeçler tarafından kullanılma olasılığına karşı
 istek gövdesi iptal edilmek yerine belirtilen azami boyutta tutulur.
@@ -532,7 +532,7 @@ directly</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
-<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr><td class="descr" colspan="4">Sed command for filtering the response content</td></tr>
+<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>D</td></tr><tr><td class="descr" colspan="4">Sed command for filtering response content</td></tr>
 <tr class="odd"><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
 ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini kabuktan aktarır.</td></tr>
 <tr><td><a href="mpm_common.html#pidfile">PidFile <var>dosya</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ana sürecin süreç kimliğinin (PID) kaydedileceği dosyayı belirler.</td></tr>
@@ -780,69 +780,70 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <em>context</em> <em>source</em> 
 [<em>bytes</em>]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pseudo Random Number Generator (PRNG) seeding 
 source</td></tr>
-<tr><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expression</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Allow access only when an arbitrarily complex 
+<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>bytes</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the size for the SSL renegotiation buffer</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expression</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow access only when an arbitrarily complex 
 boolean expression is true</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Deny access when SSL is not used for the 
+<tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Deny access when SSL is not used for the 
 HTTP request</td></tr>
-<tr><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <em>type</em></a></td><td> none </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of the global/inter-process SSL Session 
+<tr class="odd"><td><a href="mod_ssl.html#sslsessioncache">SSLSessionCache <em>type</em></a></td><td> none </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of the global/inter-process SSL Session 
 Cache</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <em>seconds</em></a></td><td> 300 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of seconds before an SSL session expires
+<tr><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <em>seconds</em></a></td><td> 300 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of seconds before an SSL session expires
 in the Session Cache</td></tr>
-<tr><td><a href="mod_ssl.html#sslusername">SSLUserName <em>varname</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Variable name to determine user name</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
+<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName <em>varname</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Variable name to determine user name</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
 Certificate verification</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan çocuk süreçlerin
+<tr><td><a href="mpm_common.html#startservers">StartServers <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan çocuk süreçlerin
   sayısını belirler.</td></tr>
-<tr><td><a href="mpm_common.html#startthreads">StartThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan evrelerin sayısını
+<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan evrelerin sayısını
   belirler.</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
-<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Kullanıcı Grup</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">CGI betiklerini çalıştıracak kullanıcı ve grup belirtilir.
+<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>D</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
+<tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>Kullanıcı Grup</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">CGI betiklerini çalıştıracak kullanıcı ve grup belirtilir.
 </td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Çocuk süreç başına ayarlanabilir evre sayısının üst sınırını
+<tr><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Çocuk süreç başına ayarlanabilir evre sayısının üst sınırını
   belirler.</td></tr>
-<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Her çocuk süreç tarafından oluşturulan evrelerin sayısını
+<tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Her çocuk süreç tarafından oluşturulan evrelerin sayısını
   belirler.</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>boyut</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İstemci bağlantılarını elde eden evreler tarafından kullanılan
+<tr><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>boyut</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">İstemci bağlantılarını elde eden evreler tarafından kullanılan
   yığıtın bayt cinsinden uzunluğunu belirler.</td></tr>
-<tr><td><a href="core.html#timeout">TimeOut <var>saniye</var></a></td><td> 300 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir istek için başarısız olmadan önce belirli olayların
+<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>saniye</var></a></td><td> 300 </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir istek için başarısız olmadan önce belirli olayların
 gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
-<tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>TRACE</code> isteklerinde davranış şeklini belirler
+<tr><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>TRACE</code> isteklerinde davranış şeklini belirler
 </td></tr>
-<tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>dosya</var>|<var>borulu-süreç</var>
-[<var>takma-ad</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir günlük dosyasının yerini belirtir.</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
-<tr><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
-...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortamdaki değişkenleri tanımsız hale getirir.</td></tr>
-<tr class="odd"><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
+<tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>dosya</var>|<var>borulu-süreç</var>
+[<var>takma-ad</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir günlük dosyasının yerini belirtir.</td></tr>
+<tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
+<tr class="odd"><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>ortam-değişkeni</var> [<var>ortam-değişkeni</var>]
+...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortamdaki değişkenleri tanımsız hale getirir.</td></tr>
+<tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
 </td></tr>
-<tr><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
+<tr class="odd"><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
 </td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#user">User <var>unix-kullanıcısı</var></a></td><td> #-1 </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
+<tr><td><a href="mod_unixd.html#user">User <var>unix-kullanıcısı</var></a></td><td> #-1 </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
   belirler.</td></tr>
-<tr><td><a href="mod_userdir.html#userdir">UserDir <em>dizin</em> [<em>dizin</em>] ...</a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Kullanıcıya özel dizinlerin yeri</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the virtualhost can run
+<tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>dizin</em> [<em>dizin</em>] ...</a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Kullanıcıya özel dizinlerin yeri</td></tr>
+<tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the virtualhost can run
 subprocesses, and the privileges available to subprocesses.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostcgiprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Assign arbitrary privileges to subprocesses created
+<tr class="odd"><td><a href="mod_privileges.html#vhostcgiprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to subprocesses created
 by a virtual host.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>unix-groupid</var></a></td><td></td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the Group ID under which a virtual host runs.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Assign arbitrary privileges to a virtual host.</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the server runs with enhanced security
+<tr><td><a href="mod_privileges.html#vhostgroup">VHostGroup <var>unix-groupid</var></a></td><td></td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Sets the Group ID under which a virtual host runs.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#vhostprivs">VHostPrivs [+-]?<var>privilege-name</var> [[+-]?privilege-name] ...</a></td><td></td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Assign arbitrary privileges to a virtual host.</td></tr>
+<tr><td><a href="mod_privileges.html#vhostsecure">VHostSecure On|Off</a></td><td> On </td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the server runs with enhanced security
 for the virtualhost.</td></tr>
-<tr><td><a href="mod_privileges.html#vhostuser">VHostUser <var>unix-userid</var></a></td><td></td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Sets the User ID under which a virtual host runs.</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.
+<tr class="odd"><td><a href="mod_privileges.html#vhostuser">VHostUser <var>unix-userid</var></a></td><td></td><td>k</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the User ID under which a virtual host runs.</td></tr>
+<tr><td><a href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.
 </td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Bir sanal konağın belge kök dizinini devingen olarak yapılandırır.
 </td></tr>
-<tr class="odd"><td><a href="core.html#virtualhost">&lt;VirtualHost
+<tr><td><a href="core.html#virtualhost">&lt;VirtualHost
     <var>adres</var>[:<var>port</var>] [<var>adres</var>[:<var>port</var>]]
-    ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sadece belli bir konak ismine ve porta uygulanacak yönergeleri barındırır.</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Bir sanal konağın CGI dizinini devingen olarak yapılandırır.
+    ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sadece belli bir konak ismine ve porta uygulanacak yönergeleri barındırır.</td></tr>
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Bir sanal konağın CGI dizinini devingen olarak yapılandırır.
 </td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Bir sanal konağın CGI dizinini devingen olarak yapılandırır.
+<tr><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>hesaplanan-dizin</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Bir sanal konağın CGI dizinini devingen olarak yapılandırır.
 </td></tr>
-<tr><td><a href="mpm_winnt.html#win32disableacceptex" id="W" name="W">Win32DisableAcceptEx</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Use accept() rather than AcceptEx() to accept network connections</td></tr>
-<tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Parse SSI directives in files with the execute bit
+<tr class="odd"><td><a href="mpm_winnt.html#win32disableacceptex" id="W" name="W">Win32DisableAcceptEx</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Use accept() rather than AcceptEx() to accept network connections</td></tr>
+<tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Parse SSI directives in files with the execute bit
 set</td></tr>
 </table></div>
 <div class="bottomlang">

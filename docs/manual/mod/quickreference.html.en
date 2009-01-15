@@ -271,7 +271,7 @@ module</td></tr>
 <tr><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user-id</var> <var>group-id</var>
 <var>num-children</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify user ID and group ID for a number of child
 processes</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
+<tr class="odd"><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
 <tr><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
@@ -373,7 +373,7 @@ MIME content-type</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
 <tr><td><a href="mpm_common.html#gracefulshutdowntimeout" id="G" name="G">GracefulShutDownTimeout <var>seconds</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
 will exit.</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
+<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
@@ -413,7 +413,7 @@ indexing</td></tr>
 <tr><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault Ascending|Descending
 Name|Date|Size|Description</a></td><td> Ascending Name </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the default ordering of the directory index</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Adds a CSS stylesheet to the directory index</td></tr>
-<tr><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sed command to filter the request data (typically post data)</td></tr>
+<tr><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sed command to filter request data (typically <code>POST</code> data)</td></tr>
 <tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the error log</td></tr>
 <tr><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
@@ -426,7 +426,7 @@ extensions</td></tr>
 <tr><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
 <tr class="odd"><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables HTTP persistent connections</td></tr>
-<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>seconds</var></a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for subsequent
+<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>num</var>[ms]</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr>
 <tr class="odd"><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>maximum size in bytes</var></a></td><td> 0 </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Keep the request body instead of discarding it up to
 the specified maximum size, for potential use by filters such as
@@ -528,7 +528,7 @@ directory</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
-<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sed command for filtering the response content</td></tr>
+<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sed command for filtering response content</td></tr>
 <tr class="odd"><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
 <tr><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">File where the server records the process ID
@@ -778,7 +778,7 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed <em>context</em> <em>source</em> 
 [<em>bytes</em>]</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pseudo Random Number Generator (PRNG) seeding 
 source</td></tr>
-<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>bytes</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the size for the SSL renogotiation buffer</td></tr>
+<tr><td><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize <var>bytes</var></a></td><td> 131072 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the size for the SSL renegotiation buffer</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslrequire">SSLRequire <em>expression</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow access only when an arbitrarily complex 
 boolean expression is true</td></tr>
 <tr><td><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Deny access when SSL is not used for the 
@@ -812,7 +812,7 @@ requests</td></tr>
 port</td></tr>
 <tr class="odd"><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures how the server determines its own name and
 port</td></tr>
-<tr><td><a href="mod_unixd.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">The userid under which the server will answer
+<tr><td><a href="mod_unixd.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The userid under which the server will answer
 requests</td></tr>
 <tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
 </a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the user-specific directories</td></tr>

@@ -1618,15 +1618,18 @@ yönergeleri sarmalar.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir kalıcı bağlantıda sunucunun bir sonraki isteği bekleme süresi
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>KeepAliveTimeout <var>saniye</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>KeepAliveTimeout <var>sayı</var>[ms]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>KeepAliveTimeout 5</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.3.2'den itibaren milisaniyelik değerler belirtilebilmektedir.</td></tr>
 </table>
     <p>Sunucunun kalıcı bir bağlantıyı kapatmadan önce bir sonraki isteği kaç
-      saniye bekleyeceğini belirler. İstek alındıktan sonra <code class="directive"><a href="#timeout">Timeout</a></code> yönergesiyle belirtilen zaman aşımı
-      değeri uygulanır.</p>
+      saniye bekleyeceğini belirler. Ayrıca, ms soneki kullanılarak süreyi
+      milisaniye olarak belirtmek de mümkündür. İstek alındıktan sonra
+      <code class="directive"><a href="#timeout">Timeout</a></code> yönergesiyle belirtilen
+      zaman aşımı değeri uygulanır.</p>
 
     <p><code class="directive">KeepAliveTimeout</code> için yüksek bir değer belirtmek
       ağır yüklü sunucularda başarım sorunlarına yol açar. Daha yüksek bir

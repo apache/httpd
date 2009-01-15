@@ -414,13 +414,19 @@
         etkinleştirmek için aşağıdaki seçenekleri kullanabilirsiniz.</p>
 
       <dl>
-        <dt><code>--enable-auth-anon</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_anon.html">mod_auth_anon</a></code> modülünün sağladığı anonim
+        <dt><code>--enable-authn-anon</code></dt>
+        <dd><code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code> modülünün sağladığı anonim
           kullanıcı erişimi etkin kılınır.</dd>
 
-        <dt><code>--enable-auth-dbm</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth_dbm.html">mod_auth_dbm</a></code> modülü kullanıcı isimlerinin ve
+        <dt><code>--enable-authn-dbm</code></dt>
+        <dd><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> modülü kullanıcı isimlerinin ve
           parolalarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
+          Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
+          kılmak için kullanabilirsiniz.</dd>
+
+        <dt><code>--enable-authz-dbm</code></dt>
+        <dd><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code> modülü kullanıcı isimlerinin ve
+          gruplarının DBM türü veritabanı dosyalarında saklandığı HTTP Temel
           Kimlik Kanıtlaması için destek sağlar. Bu seçeneği bu modülü etkin
           kılmak için kullanabilirsiniz.</dd>
 
