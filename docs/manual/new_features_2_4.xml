@@ -44,8 +44,15 @@
 
   <section id="module">
     <title>Module Enhancements</title>
-    <!-- <dl>
-    </dl> -->
+    <dl>
+      <dt><module>mod_ssl</module>: Support for OCSP validation of client certificates</dt>
+
+      <dd><module>mod_ssl</module> can now be configured to use an
+      OCSP server to check the validation status of a client
+      certificate.  The default responder is configurable, along with
+      the decision on whether to prefer the responder designated in
+      the client certificate itself.</dd>
+    </dl>
   </section>
 
   <section id="programs">
@@ -85,6 +92,16 @@
           <directive module="mod_authz_core"
           type="section">RequireAll</directive>, all
           provided by the <module>mod_authz_core</module> module.</dd>
+
+      <dt>Small-Object Caching Interface</dt>
+
+      <dd>The <var>ap_socache.h</var> header exposes a provider-based
+      interface for caching small data objects, based on the previous
+      implementation of the <module>mod_ssl</module> session cache.
+      Providers using a shared-memory cyclic buffer, disk-based dbm
+      files, and a memcache distributed cache are currently
+      supported.</dd>
+
     </dl>
   </section>
 </manualpage>
