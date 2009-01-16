@@ -28,10 +28,7 @@
 <summary>
      <p><code>rotatelogs</code> is a simple program for use in
      conjunction with Apache's piped logfile feature.  It supports
-     rotation based on a time interval or maximum size of the log.
-     Rotation happens automatically during log activity, but can also
-     be triggered externally with the signals SIGHUP (checks the
-     configured rotation rules) and SIGINT (force rotate).</p>
+     rotation based on a time interval or maximum size of the log.</p>
 </summary>
 
 <section id="synopsis"><title>Synopsis</title>
