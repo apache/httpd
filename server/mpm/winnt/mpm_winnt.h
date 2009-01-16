@@ -25,6 +25,7 @@
 #ifndef APACHE_MPM_WINNT_H
 #define APACHE_MPM_WINNT_H
 
+#include "apr_proc_mutex.h"
 #include "ap_listen.h"
 
 /* From service.c: */
