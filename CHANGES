@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_authnz_ldap: Reduce number of initialization debug messages and make
+     information more clear. PR 46342 [Dan Poirier]
+
   *) mod_cache: Introduce 'no-cache' per-request environment variable
      to prevent the saving of an otherwise cacheable response.
      [Eric Covener]
