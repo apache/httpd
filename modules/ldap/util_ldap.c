@@ -371,6 +371,7 @@ static int uldap_connection_init(request_rec *r,
                      ((ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ? "On" : "Off"),
                      result->rc);
         result->reason = "Unable to set LDAP_OPT_REFERRALS.";
+        ldc->reason = result->reason;
         uldap_connection_unbind(ldc);
         return(result->rc);
     }
@@ -390,6 +391,7 @@ static int uldap_connection_init(request_rec *r,
                        ldc->ReferralHopLimit,
                        result->rc);
           result->reason = "Unable to set LDAP_OPT_REFHOPLIMIT.";
+          ldc->reason = result->reason;
           uldap_connection_unbind(ldc);
           return(result->rc);
         }
