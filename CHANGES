@@ -20,9 +20,6 @@ Changes with Apache 2.3.2
     ap_send_interim_response() and for locally generated "100 Continue"
     responses.  [Eric Covener]
 
- *) mod_authnz_ldap: Reduce number of initialization debug messages and make
-    information more clear. PR 46342 [Dan Poirier]
-
  *) prefork: Fix child process hang during graceful restart/stop in
     configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
     Jeff Trawick]
