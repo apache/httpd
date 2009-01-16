@@ -48,7 +48,6 @@
 #include "apr_general.h"
 #include "apr_time.h"
 #include "apr_getopt.h"
-#include "apr_signal.h"
 
 #if APR_HAVE_STDLIB_H
 #include <stdlib.h>
@@ -62,18 +61,6 @@
 #ifndef MAX_PATH
 #define MAX_PATH        1024
 #endif
-
-#ifdef SIGHUP
-#ifdef SIGINT
-#define HAVE_SIGNALS    1
-#define SIG_CHECK       SIGHUP
-#define SIG_FORCE       SIGINT
-#endif
-#endif
-
-#define CHECK_LOG       0
-#define CHECK_SIG_CHECK 1
-#define CHECK_SIG_FORCE 2
 
 #define ROTATE_NONE     0
 #define ROTATE_NEW      1
@@ -114,7 +101,6 @@ struct rotate_status {
     char filename[MAX_PATH];
     char errbuf[ERRMSGSZ];
     int rotateReason;
-    int checkReason;
     int tLogEnd;
     int nMessCount;
 };
@@ -219,19 +205,12 @@ static void dumpConfig (rotate_config_t *config)
  *
  * When size and time constraints are both given,
  * it suffices that one of them is fulfilled.
- *
- * If the method finds a reason for rotation,
- * and it hasn't been called while log data is available,
- * it will close the open log file as a side effect.
  */
 static void checkRotate(rotate_config_t *config, rotate_status_t *status)
 {
 
     if (status->nLogFD == NULL) {
         status->rotateReason = ROTATE_NEW;
-    }
-    else if (status->checkReason == CHECK_SIG_FORCE) {
-        status->rotateReason = ROTATE_FORCE;
     }
     else if (config->sRotation) {
         apr_finfo_t finfo;
@@ -264,16 +243,6 @@ static void checkRotate(rotate_config_t *config, rotate_status_t *status)
         fprintf(stderr, "File rotation needed, reason: %s\n", ROTATE_REASONS[status->rotateReason]);
     }
 
-    /*
-     * Let's close the file before immediately
-     * if we got here via a signal.
-     */
-    if ((status->rotateReason != ROTATE_NONE) &&
-        (status->checkReason != CHECK_LOG)) {
-        closeFile(config, status->pfile, status->nLogFD);
-        status->nLogFD = NULL;
-        status->pfile = NULL;
-    }
     return;
 }
 
@@ -372,39 +341,7 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         status->pfile_prev = NULL;
     }
     status->nMessCount = 0;
-    /*
-     * Reset marker for signal triggered rotation
-     */
-    status->checkReason = CHECK_LOG;
 }
-
-#ifdef HAVE_SIGNALS
-/*
- * called on SIG_CHECK and SIG_FORCE
- */
-static void external_rotate(int signal)
-{
-    /*
-     * Set marker for signal triggered rotation check
-     */
-    if (signal == SIG_FORCE) {
-        status.checkReason = CHECK_SIG_FORCE;
-    }
-    else {
-        status.checkReason = CHECK_SIG_CHECK;
-    }
-    /*
-     * Close old file conditionally
-     */
-    checkRotate(&config, &status);
-    /*
-     * Open new file if force flag was set
-     */
-    if (config.force_open && (status.rotateReason != ROTATE_NONE)) {
-        doRotate(&config, &status);
-    }
-}
-#endif
 
 /*
  * Get a size or time param from a string.
@@ -489,7 +426,6 @@ int main (int argc, const char * const argv[])
     status.nLogFDprev = NULL;
     status.tLogEnd = 0;
     status.rotateReason = ROTATE_NONE;
-    status.checkReason = CHECK_LOG;
     status.nMessCount = 0;
 
     apr_pool_create(&status.pool, NULL);
@@ -553,22 +489,9 @@ int main (int argc, const char * const argv[])
         doRotate(&config, &status);
     }
 
-#ifdef HAVE_SIGNALS
-    apr_signal(SIG_CHECK, external_rotate);
-    apr_signal(SIG_FORCE, external_rotate);
-#endif
-
     for (;;) {
         nRead = sizeof(buf);
-#ifdef HAVE_SIGNALS
-        apr_signal_unblock(SIG_CHECK);
-        apr_signal_unblock(SIG_FORCE);
-#endif
         rv = apr_file_read(f_stdin, buf, &nRead);
-#ifdef HAVE_SIGNALS
-        apr_signal_block(SIG_FORCE);
-        apr_signal_block(SIG_CHECK);
-#endif
         if (rv != APR_SUCCESS) {
             exit(3);
         }
