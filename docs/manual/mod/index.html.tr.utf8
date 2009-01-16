@@ -197,6 +197,7 @@ Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 çalışmasını mümkün kılar.</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Provides an environment variable with a unique
 identifier for each request</dd>
+<dt><a href="mod_unixd.html">mod_unixd</a></dt><dd>Unix ailesi platformlar için temel (gerekli) güvenlik.</dd>
 <dt><a href="mod_userdir.html">mod_userdir</a></dt><dd>Kullanıcılara özel dizinler</dd>
 <dt><a href="mod_usertrack.html">mod_usertrack</a></dt><dd>
 <em>Clickstream</em> logging of user activity on a site

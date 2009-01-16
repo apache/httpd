@@ -270,7 +270,7 @@ module</td></tr>
 <tr><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user-id</var> <var>group-id</var>
 <var>num-children</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify user ID and group ID for a number of child
 processes</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/dizin/yolu</var></a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun başlatıldıktan sonra chroot(8) yapacağı dizini
+<tr class="odd"><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/dizin/yolu</var></a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun başlatıldıktan sonra chroot(8) yapacağı dizini
   belirler.</td></tr>
 <tr><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>Content-MD5</code> HTTP yanıt başlıklarının üretimini
   etkin kılar.</td></tr>
@@ -374,7 +374,7 @@ found</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>dosya-adı</var>|<var>borulu-süreç</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adli günlük için dosya ismini belirler.</td></tr>
 <tr><td><a href="mpm_common.html#gracefulshutdowntimeout" id="G" name="G">GracefulShutDownTimeout <var>saniye</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun nazikçe kapatılmasının ardından ana süreç çıkana kadar
   geçecek süre için bir zaman aşımı belirler.</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-grubu</var></a></td><td> #-1 </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
+<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-grubu</var></a></td><td> #-1 </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>dosya-ismi</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin listesinin tepesine yerleştirilecek dosyanın ismini
@@ -819,7 +819,7 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
 </td></tr>
 <tr class="odd"><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun kendi adını ve portunu nasıl belirleyeceğini ayarlar
 </td></tr>
-<tr><td><a href="mod_unixd.html#user">User <var>unix-kullanıcısı</var></a></td><td> #-1 </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
+<tr><td><a href="mod_unixd.html#user">User <var>unix-kullanıcısı</var></a></td><td> #-1 </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
   belirler.</td></tr>
 <tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>dizin</em> [<em>dizin</em>] ...</a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Kullanıcıya özel dizinlerin yeri</td></tr>
 <tr><td><a href="mod_privileges.html#vhostcgimode" id="V" name="V">VHostCGIMode On|Off|Secure</a></td><td> On </td><td>k</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the virtualhost can run
