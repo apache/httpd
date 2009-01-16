@@ -22,6 +22,7 @@
 #include "http_config.h"  /* for read_config */
 #include "http_core.h"    /* for get_remote_host */
 #include "http_connection.h"
+#include "http_vhost.h"   /* for ap_update_vhost_given_ip */
 #include "apr_portable.h"
 #include "apr_thread_proc.h"
 #include "apr_getopt.h"
@@ -37,6 +38,7 @@
 #include "mpm_common.h"
 #include <malloc.h>
 #include "apr_atomic.h"
+#include "apr_buckets.h"
 
 #ifdef __MINGW32__
 #include <mswsock.h>
@@ -76,7 +78,7 @@ typedef struct winnt_conn_ctx_t_s {
     int sa_client_len;
     apr_pool_t *ptrans;
     apr_bucket_alloc_t *ba;
-    short socket_family;
+    apr_bucket *data;
 } winnt_conn_ctx_t;
 
 typedef enum {
@@ -231,50 +233,6 @@ static winnt_conn_ctx_t *mpm_get_completion_context(void)
     return context;
 }
 
-static apr_status_t mpm_post_completion_context(winnt_conn_ctx_t *context,
-                                                io_state_e state)
-{
-    LPOVERLAPPED pOverlapped;
-    if (context)
-        pOverlapped = &context->overlapped;
-    else
-        pOverlapped = NULL;
-
-    PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, state, pOverlapped);
-    return APR_SUCCESS;
-}
-
-
-/*
- * find_ready_listener()
- * Only used by Win9* and should go away when the win9*_accept() function is
- * reimplemented using apr_poll().
- */
-static ap_listen_rec *head_listener;
-
-static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
-{
-    ap_listen_rec *lr;
-    SOCKET nsd;
-
-    lr = head_listener;
-    do {
-        apr_os_sock_get(&nsd, lr->sd);
-        if (FD_ISSET(nsd, main_fds)) {
-            head_listener = lr->next;
-            if (!head_listener) {
-                head_listener = ap_listeners;
-            }
-            return lr;
-        }
-        lr = lr->next;
-        if (!lr) {
-            lr = ap_listeners;
-        }
-    } while (lr != head_listener);
-    return NULL;
-}
-
 
 /* Windows NT/2000 specific code...
  * Accept processing for on Windows NT uses a producer/consumer queue
@@ -290,7 +248,8 @@ static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
  *    Worker threads block on the ThreadDispatch IOCompletionPort awaiting
  *    connections to service.
  */
-#define MAX_ACCEPTEX_ERR_COUNT 100
+#define MAX_ACCEPTEX_ERR_COUNT 10
+
 static unsigned int __stdcall winnt_accept(void *lr_)
 {
     ap_listen_rec *lr = (ap_listen_rec *)lr_;
@@ -298,11 +257,34 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     winnt_conn_ctx_t *context = NULL;
     DWORD BytesRead;
     SOCKET nlsd;
-    int rv, err_count = 0;
+    core_server_config *core_sconf;
+    const char *accf_name;
+    int rv;
+    int accf;
+    int err_count = 0;
+    HANDLE events[3];
 #if APR_HAVE_IPV6
     SOCKADDR_STORAGE ss_listen;
     int namelen = sizeof(ss_listen);
 #endif
+
+    core_sconf = ap_get_module_config(ap_server_conf->module_config,
+                                      &core_module);
+    accf_name = apr_table_get(core_sconf->accf_map, lr->protocol);
+
+    if (strcmp(accf_name, "data") == 0)
+        accf = 2;
+    else if (strcmp(accf_name, "connect") == 0)
+        accf = 1;
+    else if (strcmp(accf_name, "none") == 0)
+        accf = 0;
+    else {
+        accf = 0;
+        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), 
+                     ap_server_conf,
+                     "winnt_accept: unrecognized AcceptFilter '", accf_name,
+                     "', using 'none' instead");
+    }
 
     apr_os_sock_get(&nlsd, lr->sd);
 
@@ -324,113 +306,137 @@ static unsigned int __stdcall winnt_accept(void *lr_)
             context = mpm_get_completion_context();
             if (!context) {
                 /* Temporary resource constraint? */
-                Sleep(0);
-                continue;
-            }
-        }
-
-        /* Create and initialize the accept socket */
-#if APR_HAVE_IPV6
-        if (context->accept_socket == INVALID_SOCKET) {
-            context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, 
-                                            IPPROTO_TCP);
-            context->socket_family = ss_listen.ss_family;
-        }
-        else if (context->socket_family != ss_listen.ss_family) {
-            closesocket(context->accept_socket);
-            context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, 
-                                            IPPROTO_TCP);
-            context->socket_family = ss_listen.ss_family;
-        }
-
-        if (context->accept_socket == INVALID_SOCKET) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
-                         ap_server_conf,
-                         "winnt_accept: Failed to allocate an accept socket. "
-                         "Temporary resource constraint? Try again.");
-            Sleep(100);
-            continue;
-        }
-#else
-        if (context->accept_socket == INVALID_SOCKET) {
-            context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-            if (context->accept_socket == INVALID_SOCKET) {
-                /* Another temporary condition? */
                 ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
                              ap_server_conf,
-                             "winnt_accept: Failed to allocate an accept "
-                             "socket. Temporary resource constraint? "
-                             "Retrying.");
+                             "winnt_accept: Failed to grab a connection ctx."
+                             "  Temporary resource constraint? Retrying.");
                 Sleep(100);
                 continue;
             }
         }
-#endif
-        /* AcceptEx on the completion context. The completion context will be
-         * signaled when a connection is accepted.
-         */
-        if (!AcceptEx(nlsd, context->accept_socket,
-                      context->buff,
-                      0,
-                      PADDED_ADDR_SIZE,
-                      PADDED_ADDR_SIZE,
-                      &BytesRead,
-                      &context->overlapped)) {
-            rv = apr_get_netos_error();
-            if ((rv == APR_FROM_OS_ERROR(WSAEINVAL)) ||
-                (rv == APR_FROM_OS_ERROR(WSAENOTSOCK))) {
-                /* We can get here when:
-                 * 1) the client disconnects early
-                 * 2) TransmitFile does not properly recycle the accept socket (typically
-                 *    because the client disconnected)
-                 * 3) there is VPN or Firewall software installed with buggy AcceptEx implementation
-                 * 4) the webserver is using a dynamic address that has changed
-                 */
-                ++err_count;
-                closesocket(context->accept_socket);
-                context->accept_socket = INVALID_SOCKET;
-                if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                                 "Child %d: Encountered too many AcceptEx "
-                                 "faults accepting client connections. "
-                                 "Possible causes: dynamic address renewal, "
-                                 "or incompatible VPN or firewall software. "
-                                 "Try the directive 'AcceptFilter none'.",
-                                 my_pid);
-                    err_count = 0;
-                }
-                continue;
-            }
-            else if ((rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) &&
-                     (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING))) {
-                ++err_count;
-                if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                                 "Child %d: Encountered too many AcceptEx "
-                                 "faults accepting client connections. "
-                                 "Possible causes: Unknown. "
-                                 "Try the directive 'AcceptFilter none'.",
-                                 my_pid);
-                    err_count = 0;
-                }
-                closesocket(context->accept_socket);
-                context->accept_socket = INVALID_SOCKET;
-                continue;
-            }
-            err_count = 0;
 
-            /* Wait for pending i/o.
-             * Wake up once per second to check for shutdown .
-             * XXX: We should be waiting on exit_event instead of polling
+        if (accf > 0) /* Either 'connect' or 'data' */
+        {
+            DWORD len;
+            char *buf;
+
+            /* Create and initialize the accept socket */
+#if APR_HAVE_IPV6
+            if (context->accept_socket == INVALID_SOCKET) {
+                context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, 
+                                                IPPROTO_TCP);
+                context->socket_family = ss_listen.ss_family;
+            }
+            else if (context->socket_family != ss_listen.ss_family) {
+                closesocket(context->accept_socket);
+                context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, 
+                                                IPPROTO_TCP);
+                context->socket_family = ss_listen.ss_family;
+            }
+#else
+            if (context->accept_socket == INVALID_SOCKET)
+                context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+#endif
+
+            if (context->accept_socket == INVALID_SOCKET) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
+                             ap_server_conf,
+                             "winnt_accept: Failed to allocate an accept socket. "
+                             "Temporary resource constraint? Try again.");
+                Sleep(100);
+                continue;
+            }
+
+
+            if (accf == 2) { /* 'data' */
+                len = APR_BUCKET_BUFF_SIZE;
+                buf = apr_bucket_alloc(len, context->ba); /* XXX: check for failure? */
+                len -= PADDED_ADDR_SIZE * 2;
+            }
+            else {
+                len = 0;
+                buf = context->buff;
+            }
+
+            /* AcceptEx on the completion context. The completion context will be
+             * signaled when a connection is accepted.
              */
-            while (1) {
-                rv = WaitForSingleObject(context->overlapped.hEvent, 1000);
-                if (rv == WAIT_OBJECT_0) {
-                    if (context->accept_socket == INVALID_SOCKET) {
-                        /* socket already closed */
-                        break;
+            if (!AcceptEx(nlsd, context->accept_socket, buf, len,
+                          PADDED_ADDR_SIZE, PADDED_ADDR_SIZE, &BytesRead,
+                          &context->overlapped)) {
+                rv = apr_get_netos_error();
+                if ((rv == APR_FROM_OS_ERROR(WSAECONNRESET)) ||
+                    (rv == APR_FROM_OS_ERROR(WSAEACCES))) {
+                    /* We can get here when:
+                     * 1) the client disconnects early
+                     * 2) handshake was incomplete
+                     */
+                    if (accf == 2)
+                        apr_bucket_free(buf);
+                    closesocket(context->accept_socket);
+                    context->accept_socket = INVALID_SOCKET;
+                    continue;
+                }
+                else if ((rv == APR_FROM_OS_ERROR(WSAEINVAL)) ||
+                         (rv == APR_FROM_OS_ERROR(WSAENOTSOCK))) {
+                    /* We can get here when:
+                     * 1) TransmitFile does not properly recycle the accept socket (typically
+                     *    because the client disconnected)
+                     * 2) there is VPN or Firewall software installed with 
+                     *    buggy WSAAccept or WSADuplicateSocket implementation
+                     * 3) the dynamic address / adapter has changed
+                     * Give five chances, then fall back on AcceptMutex 'none'
+                     */
+                    if (accf == 2)
+                        apr_bucket_free(buf);
+                    closesocket(context->accept_socket);
+                    context->accept_socket = INVALID_SOCKET;
+                    ++err_count;
+                    if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
+                        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                                     "Child %d: Encountered too many AcceptEx "
+                                     "faults accepting client connections. "
+                                     "Possible causes: dynamic address renewal, "
+                                     "or incompatible VPN or firewall software. ",
+                                     my_pid);
+                        ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf,
+                                     "winnt_mpm: falling back to "
+                                     "'AcceptFilter none'.");
+                        err_count = 0;
+                        accf = 0;
                     }
-                    if (!GetOverlappedResult((HANDLE)context->accept_socket,
+                    continue;
+                }
+                else if ((rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) &&
+                         (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING))) {
+                    if (accf == 2)
+                        apr_bucket_free(buf);
+                    closesocket(context->accept_socket);
+                    context->accept_socket = INVALID_SOCKET;
+                    ++err_count;
+                    if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
+                        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                                     "Child %d: Encountered too many AcceptEx "
+                                     "faults accepting client connections.",
+                                     my_pid);
+                        ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf,
+                                     "winnt_mpm: falling back to "
+                                     "'AcceptFilter none'.");
+                        err_count = 0;
+                        accf = 0;
+                    }
+                    continue;
+                }
+
+                err_count = 0;
+                events[0] = context->overlapped.hEvent;
+                events[1] = exit_event;
+                events[2] = max_requests_per_child_event;
+
+                rv = WaitForMultipleObjects(3, events, FALSE, INFINITE);
+                if (rv == WAIT_OBJECT_0) {
+                    if ((context->accept_socket != INVALID_SOCKET) &&
+                        !GetOverlappedResult((HANDLE)context->accept_socket,
                                              &context->overlapped,
                                              &BytesRead, FALSE)) {
                         ap_log_error(APLOG_MARK, APLOG_WARNING,
@@ -439,54 +445,148 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                         closesocket(context->accept_socket);
                         context->accept_socket = INVALID_SOCKET;
                     }
+                }
+                else {
+                    /* exit_event triggered or event handle was closed */
+                    closesocket(context->accept_socket);
+                    context->accept_socket = INVALID_SOCKET;
+                    if (accf == 2)
+                        apr_bucket_free(buf);
                     break;
                 }
-                /* WAIT_TIMEOUT */
-                if (shutdown_in_progress) {
+
+                if (context->accept_socket == INVALID_SOCKET) {
+                    if (accf == 2)
+                        apr_bucket_free(buf);
+                    continue;
+                }
+            }
+            err_count = 0;
+
+            /* Potential optimization; consider handing off to the worker */
+
+            /* Inherit the listen socket settings. Required for
+             * shutdown() to work
+             */
+            if (setsockopt(context->accept_socket, SOL_SOCKET,
+                           SO_UPDATE_ACCEPT_CONTEXT, (char *)&nlsd,
+                           sizeof(nlsd))) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(),
+                             ap_server_conf,
+                             "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
+                /* Not a failure condition. Keep running. */
+            }
+
+            /* Get the local & remote address */
+            GetAcceptExSockaddrs(buf, len, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
+                                 &context->sa_server, &context->sa_server_len,
+                                 &context->sa_client, &context->sa_client_len);
+
+            sockinfo.os_sock = &context->accept_socket;
+            sockinfo.local   = context->sa_server;
+            sockinfo.remote  = context->sa_client;
+            sockinfo.family  = context->sa_server->sa_family;
+            sockinfo.type    = SOCK_STREAM;
+            apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
+
+            /* For 'data', craft a bucket for our data result 
+             * and pass to worker_main as context->overlapped.Pointer
+             */
+            if (accf == 2 && BytesRead)
+            {
+                apr_bucket *b;
+                b = apr_bucket_heap_create(buf, APR_BUCKET_BUFF_SIZE,
+                                           apr_bucket_free, context->ba);
+                /* Adjust the bucket to refer to the actual bytes read */
+                b->length = BytesRead;
+                context->overlapped.Pointer = b;
+            }
+            else
+                context->overlapped.Pointer = NULL;
+        }
+        else /* (accf = 0)  e.g. 'none' */
+        {
+            if (context->accept_socket && 
+                    (context->accept_socket != INVALID_SOCKET))
+                closesocket(context->accept_socket);
+
+            /* AcceptEx on the completion context. The completion context will be
+             * signaled when a connection is accepted.
+             */
+            context->sa_server = (void *)context->buff;
+            context->sa_server_len = sizeof(context->buff);
+            context->accept_socket = WSAAccept(nlsd, context->sa_server,
+                                               &context->sa_server_len,
+                                               NULL, 0);
+            if (context->accept_socket == INVALID_SOCKET) {
+                rv = apr_get_netos_error();
+                if ((rv == APR_FROM_OS_ERROR(WSAECONNRESET)) ||
+                    (rv == APR_FROM_OS_ERROR(WSAEACCES))) {
+                    continue;
+                }
+                else if ((rv != APR_FROM_OS_ERROR(WSAEWOULDBLOCK)) &&
+                         (rv != APR_FROM_OS_ERROR(WSAEACCES))) {
+                    /* We can get here when:
+                     * 1) there is VPN or Firewall software installed with 
+                     *    buggy WSAAccept or WSADuplicateSocket implementation
+                     * 2) the dynamic address / adapter has changed
+                     */
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                                 "winnt_mpm: failed to accept connection, "
+                                 "perhaps the network configuration changed?");
                     closesocket(context->accept_socket);
                     context->accept_socket = INVALID_SOCKET;
                     break;
                 }
+
+                /* Wait for pending i/o.
+                 * Wake up once per second to check for shutdown .
+                 * XXX: We should be waiting on exit_event instead of polling
+                 */
+                while (1) {
+                    rv = WaitForSingleObject(context->overlapped.hEvent, 1000);
+                    if (rv == WAIT_OBJECT_0) {
+                        if (context->accept_socket == INVALID_SOCKET) {
+                            /* socket already closed */
+                            break;
+                        }
+                        if (!GetOverlappedResult((HANDLE)context->accept_socket,
+                                                 &context->overlapped,
+                                                 &BytesRead, FALSE)) {
+                            ap_log_error(APLOG_MARK, APLOG_WARNING,
+                                         apr_get_os_error(), ap_server_conf,
+                                 "winnt_accept: Asynchronous AcceptEx failed.");
+                            closesocket(context->accept_socket);
+                            context->accept_socket = INVALID_SOCKET;
+                        }
+                        break;
+                    }
+                    /* WAIT_TIMEOUT */
+                    if (shutdown_in_progress) {
+                        closesocket(context->accept_socket);
+                        context->accept_socket = INVALID_SOCKET;
+                        break;
+                    }
+                }
+                if (context->accept_socket == INVALID_SOCKET) {
+                    continue;
+                }
             }
-            if (context->accept_socket == INVALID_SOCKET) {
-                continue;
-            }
-        }
-        err_count = 0;
-        /* Inherit the listen socket settings. Required for
-         * shutdown() to work
-         */
-        if (setsockopt(context->accept_socket, SOL_SOCKET,
-                       SO_UPDATE_ACCEPT_CONTEXT, (char *)&nlsd,
-                       sizeof(nlsd))) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(),
-                         ap_server_conf,
-                         "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
-            /* Not a failure condition. Keep running. */
+
+            /* The normal code path resolves the remote address later */
+            sockinfo.os_sock = &context->accept_socket;
+            sockinfo.local   = context->sa_server;
+            sockinfo.family  = context->sa_server->sa_family;
+            sockinfo.type    = SOCK_STREAM;
+            apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
+
+            context->overlapped.Pointer = NULL;
         }
 
-        /* Get the local & remote address */
-        GetAcceptExSockaddrs(context->buff,
-                             0,
-                             PADDED_ADDR_SIZE,
-                             PADDED_ADDR_SIZE,
-                             &context->sa_server,
-                             &context->sa_server_len,
-                             &context->sa_client,
-                             &context->sa_client_len);
-
-        sockinfo.os_sock = &context->accept_socket;
-        sockinfo.local   = context->sa_server;
-        sockinfo.remote  = context->sa_client;
-        sockinfo.family  = context->sa_server->sa_family;
-        sockinfo.type    = SOCK_STREAM;
-        apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
-
-        /* When a connection is received, send an io completion notification to
-         * the ThreadDispatchIOCP. This function could be replaced by
-         * mpm_post_completion_context(), but why do an extra function call...
+        /* When a connection is received, send an io completion notification
+         * to the ThreadDispatchIOCP.
          */
-        PostQueuedCompletionStatus(ThreadDispatchIOCP, 0,
+        PostQueuedCompletionStatus(ThreadDispatchIOCP, BytesRead,
                                    IOCP_CONNECTION_ACCEPTED,
                                    &context->overlapped);
         context = NULL;
@@ -560,10 +660,12 @@ static unsigned int __stdcall worker_main(void *thread_num_val)
     winnt_conn_ctx_t *context = NULL;
     int thread_num = (int)thread_num_val;
     ap_sb_handle_t *sbh;
+    apr_bucket *e;
+    int rc;
+    conn_rec *c;
+    apr_int32_t disconnected;
 
     while (1) {
-        conn_rec *c;
-        apr_int32_t disconnected;
 
         ap_update_child_status_from_indexes(0, thread_num, SERVER_READY, NULL);
 
@@ -583,35 +685,79 @@ static unsigned int __stdcall worker_main(void *thread_num_val)
             }
         }
 
+        e = context->overlapped.Pointer;
+
         ap_create_sb_handle(&sbh, context->ptrans, 0, thread_num);
         c = ap_run_create_connection(context->ptrans, ap_server_conf,
                                      context->sock, thread_num, sbh,
                                      context->ba);
 
-        if (c) {
-            ap_process_connection(c, context->sock);
+        if (!c)
+        {
+            /* ap_run_create_connection closes the socket on failure */
+            context->accept_socket = INVALID_SOCKET;
+            if (e)
+                apr_bucket_free(e);
+            continue;
+        }
+
+        /* follow ap_process_connection(c, context->sock) logic
+         * as it left us no chance to reinject our first data bucket.
+         */
+        ap_update_vhost_given_ip(c);
+
+        rc = ap_run_pre_connection(c, context->sock);
+        if (rc != OK && rc != DONE) {
+            c->aborted = 1;
+        }
+
+        if (e && c->aborted)
+        {
+            apr_bucket_free(e);
+        }
+        else if (e)
+        {
+            core_ctx_t *ctx;
+            core_net_rec *net;
+            ap_filter_t *filt;
+
+            filt = c->input_filters;
+            while ((strcmp(filt->frec->name, "core_in") != 0) && filt->next)
+                filt = filt->next;
+            net = filt->ctx;
+            ctx = net->in_ctx;
+
+            if (net->in_ctx)
+                ctx = net->in_ctx;
+            else
+            {
+                ctx = apr_pcalloc(c->pool, sizeof(*ctx));
+                ctx->b = apr_brigade_create(c->pool, c->bucket_alloc);
+                ctx->tmpbb = apr_brigade_create(c->pool, c->bucket_alloc);
+
+                /* seed the brigade with AcceptEx read heap bucket */
+                e = context->overlapped.Pointer;
+                APR_BRIGADE_INSERT_HEAD(ctx->b, e);
+
+                /* also seed the brigade with the client socket. */
+                e = apr_bucket_socket_create(net->client_socket,
+                                             c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(ctx->b, e);
+                net->in_ctx = ctx;
+            }
+        }
+
+        if (!c->aborted)
+        {
+            ap_run_process_connection(c);
+
             apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED,
                                &disconnected);
+
             if (!disconnected) {
                 context->accept_socket = INVALID_SOCKET;
                 ap_lingering_close(c);
             }
-            else {
-                /* If the socket is disconnected but we are not using acceptex,
-                 * we cannot reuse the socket. Disconnected sockets are removed
-                 * from the apr_socket_t struct by apr_sendfile() to prevent the
-                 * socket descriptor from being inadvertently closed by a call
-                 * to apr_socket_close(), so close it directly.
-                 */
-                /* XXX Study me for NT;
-                 * closesocket(context->accept_socket);
-                 * context->accept_socket = INVALID_SOCKET;
-                 */
-            }
-        }
-        else {
-            /* ap_run_create_connection closes the socket on failure */
-            context->accept_socket = INVALID_SOCKET;
         }
     }
 
