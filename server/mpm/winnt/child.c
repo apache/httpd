@@ -231,50 +231,6 @@ static winnt_conn_ctx_t *mpm_get_completion_context(void)
     return context;
 }
 
-static apr_status_t mpm_post_completion_context(winnt_conn_ctx_t *context,
-                                                io_state_e state)
-{
-    LPOVERLAPPED pOverlapped;
-    if (context)
-        pOverlapped = &context->overlapped;
-    else
-        pOverlapped = NULL;
-
-    PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, state, pOverlapped);
-    return APR_SUCCESS;
-}
-
-
-/*
- * find_ready_listener()
- * Only used by Win9* and should go away when the win9*_accept() function is
- * reimplemented using apr_poll().
- */
-static ap_listen_rec *head_listener;
-
-static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
-{
-    ap_listen_rec *lr;
-    SOCKET nsd;
-
-    lr = head_listener;
-    do {
-        apr_os_sock_get(&nsd, lr->sd);
-        if (FD_ISSET(nsd, main_fds)) {
-            head_listener = lr->next;
-            if (!head_listener) {
-                head_listener = ap_listeners;
-            }
-            return lr;
-        }
-        lr = lr->next;
-        if (!lr) {
-            lr = ap_listeners;
-        }
-    } while (lr != head_listener);
-    return NULL;
-}
-
 
 /* Windows NT/2000 specific code...
  * Accept processing for on Windows NT uses a producer/consumer queue
