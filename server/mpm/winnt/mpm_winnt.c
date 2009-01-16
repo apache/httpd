@@ -1325,12 +1325,6 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
         ap_exists_config_define("DEBUG"))
         one_process = -1;
 
-    /* XXX: presume proper privilages; one nice thing would be
-     * a loud emit if running as "LocalSystem"/"SYSTEM" to indicate
-     * they should change to a user with write access to logs/ alone.
-     */
-    ap_sys_privileges_handlers(1);
-
     if (!strcasecmp(signal_arg, "runservice")
             && (service_to_start_success != APR_SUCCESS)) {
         ap_log_error(APLOG_MARK,APLOG_CRIT, service_to_start_success, NULL,
