@@ -19,14 +19,13 @@
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.3</a> &gt; <a href="./">Modüller</a></div>
 <div id="page-content">
-<div id="preamble"><h1>Apache Temel Özellikleri</h1>
+<div id="preamble"><h1>Apache Modülü mod_unixd</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_unixd.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../tr/mod/mod_unixd.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix ailesi pletformlar için temel (gerekli) güvenlik.</td></tr>
-<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
+<table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix ailesi platformlar için temel (gerekli) güvenlik.</td></tr>
+<tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
@@ -44,8 +43,8 @@
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ChrootDir <var>/dizin/yolu</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/mod_unixd.html">mod_unixd</a></code></td></tr>
 </table>
     <p>Bu yönerge httpd 2.2.9(?) ve sonrasında mevcuttur ve sunucuya
       başlatıldıktan sonra ağdan gelen istekleri kabul etmeden önce
@@ -64,7 +63,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>Group <var>unix-grubu</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>Group #-1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_unixd</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0’dan itibaren sadece sunucu geneli için geçerlidir.</td></tr>
 </table>
@@ -112,7 +111,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>User <var>unix-kullanıcısı</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>User #-1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_unixd</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.0’dan itibaren sadece sunucu geneli için
   geçerlidir.</td></tr>
