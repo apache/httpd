@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 733709 -->
+<!-- English Revision : 734691 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -48,8 +48,17 @@
 
   <section id="module">
     <title>Am&eacute;liorations des modules</title>
-    <!-- <dl>
-    </dl> -->
+    <dl>
+      <dt><module>mod_ssl</module>: support de la validation OCSP des
+      certificats clients</dt>
+
+      <dd><module>mod_ssl</module> peut maintenant v&eacute;rifier la
+      validit&eacute; des certificats clients en se connectant &agrave;
+      un serveur OCSP. Il est possible de d&eacute;finir un
+      r&eacute;pondeur par d&eacute;faut, et de choisir si l'on
+      pr&eacute;f&egrave;re le r&eacute;pondeur d&eacute;sign&eacute;
+      dans le certificat client lui-m&ecirc;me.</dd>
+    </dl>
   </section>
 
   <section id="programs">
@@ -87,6 +96,19 @@
       conteneur associ&eacute;es, comme <directive module="mod_authz_core"
       type="section">RequireAll</directive>, toutes fournies par le module
       <module>mod_authz_core</module>.</dd>
+
+      <dt>Interface de mise en cache des petits objets</dt>
+
+      <dd>Le fichier d'en-t&ecirc;tes <var>ap_socache.h</var> fournit une
+      interface à base de fournisseur pour la mise en cache des petits
+      objets de donn&eacute;es, en s'inspirant de
+      l'impl&eacute;mentation pr&eacute;c&eacute;dente
+      du cache de session par <module>mod_ssl</module>. Sont support&eacute;s
+      actuellement : les fournisseurs utilisant un tampon cyclique en
+      m&eacute;moire partag&eacute;e, les fichiers dbm sur disque, et les caches
+      distribu&eacute;s de type memcache./dd>
+
+      
     </dl>
   </section>
 </manualpage>
