@@ -132,7 +132,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?rev=732451&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: trawick, 
+   +1: trawick, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
