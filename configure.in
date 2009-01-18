@@ -73,10 +73,14 @@ echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 AC_ARG_WITH(included-apr,
 APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
 
-# Only APR 1.x is supported.
+# Default to APR 1.x
 apr_version=1
 
 if test "x$with_included_apr" = "xyes"; then
+   # accept a bundled APR 2.x
+   if test -f "$srcdir/srclib/apr/apr-2-config"; then
+     apr_version=2
+   fi
    apr_found=reconfig
    apr_config="$srcdir/srclib/apr/apr-${apr_version}-config"
 else 
@@ -110,10 +114,14 @@ APR_CONFIG="$APR_BINDIR/apr-`echo ${APR_VERSION} | sed 's,\..*,,'`-config"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-# Only APR-util 1.x is supported.
+# Default to APR-util 1.x 
 apu_version=1
 
 if test "x$with_included_apr" = "xyes"; then
+   # accept a bundled APU 2.x
+   if test -f "$srcdir/srclib/apr-util/apu-2-config"; then
+     apu_version=2
+   fi
    apu_found=reconfig
    apu_config="${srcdir}/srclib/apr-util/apu-${apu_version}-config"
 else 
@@ -352,12 +360,12 @@ AC_ISC_POSIX
 # Ensure that satisfactory versions of apr and apr-util are 
 # found if external copies are configured.
 if test "${apr_found}" = "yes"; then
-  # Require APR 1.3.x otherwise fail
+  # Require at least APR 1.3.x otherwise fail
   APACHE_CHECK_APxVER([apr], 1, 3)
 fi
 
 if test "${apu_found}" = "yes"; then
-  # Require APR-util 1.3.x otherwise fail
+  # Require at least APR-util 1.3.x otherwise fail
   APACHE_CHECK_APxVER([apu], 1, 3)
 fi
 
