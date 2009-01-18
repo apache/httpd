@@ -152,6 +152,8 @@ Changes with Apache 2.3.0
      and to enable different virtualhosts to run with different
      privileges and Unix user/group IDs [Nick Kew]
 
+  *) mod_mem_cache: this module has been removed. [William Rowe]
+
   *) authn/z: Remove mod_authn_default and mod_authz_default.
      [Chris Darroch]
 
@@ -266,7 +268,7 @@ Changes with Apache 2.3.0
      overwritten. PR 44262 [Michał Grzędzicki <lazy iq.pl>]
 
   *) ap_cache_cacheable_headers_out() will (now) always
-     merge an error heaeders _before_ clearing them and _before_
+     merge an error headers _before_ clearing them and _before_
      merging in the actual entity headers and doing normal
      hop-by-hop cleansing. [Dirk-Willem van Gulik].
 
