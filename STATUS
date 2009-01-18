@@ -134,6 +134,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
    +1: trawick, rpluem
 
+ * mod_proxy: Set the error time if we set a worker in error mode.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=734703&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
+ * mod_proxy_balancer: Try first if we find any "recoverable" workers before
+   we force them to recover.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=734710&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
