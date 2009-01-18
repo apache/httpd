@@ -138,7 +138,6 @@ BEGIN {
 	  print "#LoadModule logio_module modules/mod_logio.so" > dstfl;
 	  print "LoadModule log_config_module modules/mod_log_config.so" > dstfl;
 	  print "#LoadModule log_forensic_module modules/mod_log_forensic.so" > dstfl;
-	  print "#LoadModule mem_cache_module modules/mod_mem_cache.so" > dstfl;
 	  print "LoadModule mime_module modules/mod_mime.so" > dstfl;
 	  print "#LoadModule mime_magic_module modules/mod_mime_magic.so" > dstfl;
 	  print "LoadModule negotiation_module modules/mod_negotiation.so" > dstfl;

@@ -302,7 +302,6 @@ _build:
 	cd modules\cache
 	 $(MAKE) $(MAKEOPT) -f mod_cache.mak       CFG="mod_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak  CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_socache_dbm.mak CFG="mod_socache_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !IFDEF ALL
@@ -525,7 +524,6 @@ _copybin:
 	copy modules\arch\win32\$(LONG)\mod_isapi.$(src_so) 	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_cache.$(src_so)		"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_file_cache.$(src_so) 	"$(inst_so)" <.y
-	copy modules\cache\$(LONG)\mod_mem_cache.$(src_so)	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_socache_dbm.$(src_so)	"$(inst_so)" <.y
 	-copy modules\cache\$(LONG)\mod_socache_dc.$(src_so)	"$(inst_so)" <.y
