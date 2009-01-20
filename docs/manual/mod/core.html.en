@@ -1509,10 +1509,12 @@ the server configuration files</td></tr>
     include several files at once, in alphabetical order. In
     addition, if <code class="directive">Include</code> points to a directory,
     rather than a file, Apache will read all files in that directory
-    and any subdirectory.  But including entire directories is not
+    and any subdirectory.  However, including entire directories is not
     recommended, because it is easy to accidentally leave temporary
     files in a directory that can cause <code class="program"><a href="../programs/httpd.html">httpd</a></code> to
-    fail.</p>
+    fail. Instead, we encourage you to use the wildcard syntax shown
+    below, to include files that match a particular pattern, such as
+    *.conf, for example.</p>
 
     <p>The file path specified may be an absolute path, or may be relative 
     to the <code class="directive"><a href="#serverroot">ServerRoot</a></code> directory.</p>
