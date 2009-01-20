@@ -45,6 +45,7 @@ to change the scope of other configuration directives.</p>
 <directive type="section" module="core">DirectoryMatch</directive>
 <directive type="section" module="core">Files</directive>
 <directive type="section" module="core">FilesMatch</directive>
+<directive type="section" module="core">If</directive>
 <directive type="section" module="core">IfDefine</directive>
 <directive type="section" module="core">IfModule</directive>
 <directive type="section" module="mod_version">IfVersion</directive>
