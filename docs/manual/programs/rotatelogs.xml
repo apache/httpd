@@ -93,9 +93,10 @@ interval, no file will be created.)</dd>
 <dd>The maximum file size in followed by exactly one of the letters
 <code>B</code> (Bytes), <code>K</code> (KBytes), <code>M</code> (MBytes)
 or <code>G</code> (GBytes).
-<br/>
+<p>
 When time and size are specified, the size must be given after the time.
 Rotation will occur whenever either time or size limits are reached.
+</p>
 </dd>
 
 <dt><code><var>offset</var></code></dt>
