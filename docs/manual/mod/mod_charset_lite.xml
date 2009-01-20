@@ -29,11 +29,6 @@
 <identifier>charset_lite_module</identifier>
 
 <summary>
-    <p>This is an <strong>experimental</strong> module and should
-    be used with care. Experiment with your
-    <module>mod_charset_lite</module> configuration to ensure that it
-    performs the desired function.</p>
-
     <p><module>mod_charset_lite</module> allows the administrator to
     specify the source character set of objects as well as the
     character set they should be translated into before sending to the
