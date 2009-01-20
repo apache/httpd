@@ -340,7 +340,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, NULL,
                          "%s: Invalid error log path '%s'.",
                          ap_server_argv0, s->error_fname);
-            return NULL;
+            return DONE;
         }
 
         /* Spawn a new child logger.  If this is the main server_rec,
