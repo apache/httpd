@@ -1093,6 +1093,8 @@ void child_main(apr_pool_t *pconf)
                  "Child %d: All worker threads have exited.", my_pid);
 
     apr_thread_mutex_destroy(child_lock);
+    apr_thread_mutex_destroy(qlock);
+    CloseHandle(qwait_event);
 
     apr_pool_destroy(pchild);
     CloseHandle(exit_event);
