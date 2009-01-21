@@ -432,8 +432,6 @@ void get_listeners_from_parent(server_rec *s)
     DWORD BytesRead;
     int lcnt = 0;
     SOCKET nsd;
-    HANDLE hProcess = GetCurrentProcess();
-    HANDLE dup;
 
     /* Set up a default listener if necessary */
     if (ap_listeners == NULL) {
@@ -466,12 +464,10 @@ void get_listeners_from_parent(server_rec *s)
             exit(APEXIT_CHILDINIT);
         }
 
-        if (DuplicateHandle(hProcess, (HANDLE) nsd, hProcess, &dup,
-                            0, FALSE, DUPLICATE_SAME_ACCESS)) {
-            closesocket(nsd);
-            nsd = (SOCKET) dup;
+        if (!SetHandleInformation((HANDLE)nsd, HANDLE_FLAG_INHERIT, 0)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_os_error(), ap_server_conf,
+                         "set_listeners_noninheritable: SetHandleInformation failed.");
         }
-
         apr_os_sock_put(&lr->sd, &nsd, s->process->pool);
     }
 
