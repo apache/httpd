@@ -82,7 +82,7 @@ the cgi daemon</description>
 
 <usage>
     <p>This directive sets the filename prefix of the socket to use for
-    communication with the CGI daemon, an extension corresponding to
+    communication with the CGI daemon, an extension correspondening to
     the process ID of the server will be appended. The socket will be opened
     using the permissions of the user who starts Apache (usually
     root). To maintain the security of communications with CGI
