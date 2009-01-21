@@ -24,7 +24,7 @@
 
 <name>mod_charset_lite</name>
 <description>Specify character set translation or recoding</description>
-<status>Experimental</status>
+<status>Extension</status>
 <sourcefile>mod_charset_lite.c</sourcefile>
 <identifier>charset_lite_module</identifier>
 
