@@ -139,6 +139,7 @@ static void* APR_THREAD_FUNC hb_worker(apr_thread_t *thd, void *data)
     }
 
     apr_pool_create(&tpool, pool);
+    apr_pool_tag(tpool, "heartbeat_worker_temp");
     while (ctx->keep_running) {
         apr_pool_clear(tpool);
         int mpm_state = 0;
@@ -154,7 +155,6 @@ static void* APR_THREAD_FUNC hb_worker(apr_thread_t *thd, void *data)
             break;
         }
 
-        apr_pool_tag(tpool, "heartbeat_worker_temp");
         hb_monitor(ctx, tpool);
         apr_sleep(apr_time_from_sec(HEARTBEAT_INTERVAL));
     }
