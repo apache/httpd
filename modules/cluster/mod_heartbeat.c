@@ -120,6 +120,7 @@ static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
 
 static void* APR_THREAD_FUNC hb_worker(apr_thread_t *thd, void *data)
 {
+    apr_pool_t *tpool;
     hb_ctx_t *ctx = (hb_ctx_t *) data;
     apr_status_t rv;
 
@@ -137,9 +138,10 @@ static void* APR_THREAD_FUNC hb_worker(apr_thread_t *thd, void *data)
         apr_sleep(apr_time_from_msec(200));
     }
 
+    apr_pool_create(&tpool, pool);
     while (ctx->keep_running) {
+        apr_pool_clear(tpool);
         int mpm_state = 0;
-        apr_pool_t *tpool;
 
         rv = ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state);
 
@@ -152,13 +154,12 @@ static void* APR_THREAD_FUNC hb_worker(apr_thread_t *thd, void *data)
             break;
         }
 
-        apr_pool_create(&tpool, pool);
         apr_pool_tag(tpool, "heartbeat_worker_temp");
         hb_monitor(ctx, tpool);
-        apr_pool_destroy(tpool);
         apr_sleep(apr_time_from_sec(HEARTBEAT_INTERVAL));
     }
 
+    apr_pool_destroy(tpool);
     apr_proc_mutex_unlock(ctx->mutex);
     apr_thread_exit(ctx->thread, APR_SUCCESS);
 
