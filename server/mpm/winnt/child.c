@@ -285,8 +285,9 @@ static unsigned int __stdcall winnt_accept(void *lr_)
         accf = 0;
         ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), 
                      ap_server_conf,
-                     "winnt_accept: unrecognized AcceptFilter '", accf_name,
-                     "', using 'none' instead");
+                     "winnt_accept: unrecognized AcceptFilter '%s', "
+                     "only 'data', 'connect' or 'none' are valid. "
+                     "Using 'none' instead", accf_name);
     }
 
     apr_os_sock_get(&nlsd, lr->sd);
