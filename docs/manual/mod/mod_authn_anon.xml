@@ -81,7 +81,7 @@
     </ul>
 
     <example><title>Example</title>
-      &lt;Directory /foo&gt;
+      &lt;Directory /var/www/html/private&gt;
       <indent>
         AuthName "Use 'anonymous' &amp; Email address for guest entry"<br />
         AuthType Basic<br />
