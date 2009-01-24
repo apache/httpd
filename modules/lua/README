@@ -2,6 +2,7 @@
 * Requirements:
 ** lua 5.1 ( http://www.lua.org/ )
 ** libapreq2 ( http://httpd.apache.org/apreq/download.cgi )
+   This is no longer a requirement, actually
 ** Apache HTTPD 2.2 ( http://httpd.apache.org/ )
 
 * Documentation
