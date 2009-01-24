@@ -21,6 +21,7 @@
 
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
+typedef apr_table_t *(*req_field_apr_table_f) (request_rec * r);
 
 void apl_rstack_dump(lua_State *L, request_rec *r, const char *msg)
 {
@@ -213,8 +214,7 @@ static int req_add_output_filter(lua_State *L)
 static int req_document_root(lua_State *L)
 {
     request_rec *r = apl_check_request_rec(L, 1);
-    char *doc_root = apr_pstrdup(r->pool, ap_document_root(r));
-    lua_pushstring(L, doc_root);
+    lua_pushstring(L, ap_document_root(r));
     return 1;
 }
 
@@ -305,6 +305,17 @@ static int req_assbackwards_field(request_rec *r)
     return r->assbackwards;
 }
 
+static apr_table_t* req_headers_in(request_rec *r)
+{
+    return r->headers_in;
+}
+
+static apr_table_t* req_headers_out(request_rec *r)
+{
+    return r->headers_out;
+}
+
+
 /* END dispatch mathods for request_rec fields */
 
 static int req_dispatch(lua_State *L)
@@ -323,10 +334,14 @@ static int req_dispatch(lua_State *L)
     if (rft) {
         switch (rft->type) {
         case APL_REQ_FUNTYPE_TABLE:{
+                req_field_apr_table_f func = rft->fun;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                              "request_rec->dispatching %s -> apr table (NOT IMPLEMENTED YET)",
+                              "request_rec->dispatching %s -> apr table",
                               name);
-                return 0;
+                apr_table_t *rs;
+                rs = (*func)(r);
+                apl_push_apr_table(L, rs);          
+                return 1;
             }
 
         case APL_REQ_FUNTYPE_LUACFUN:{
@@ -426,25 +441,6 @@ static int req_debug(lua_State *L)
 {
     req_log_at(L, APLOG_DEBUG);
     return 0;
-}
-
-static int req_headers_in(lua_State *L)
-{
-    const char *key;
-    const char *value;
-    request_rec *r = apl_check_request_rec(L, 1);
-
-    key = luaL_checkstring(L, 2);
-
-    value = apr_table_get(r->headers_in, key);
-    if (value) {
-        lua_pushstring(L, value);
-    }
-    else {
-        lua_pushnil(L);
-    }
-
-    return 1;
 }
 
 /* handle r.status = 201 */
@@ -603,7 +599,11 @@ void apl_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_method_field, APL_REQ_FUNTYPE_STRING, p));
 
     apr_hash_set(dispatch, "headers_in", APR_HASH_KEY_STRING,
-                 makefun(&req_headers_in, APL_REQ_FUNTYPE_LUACFUN, p));
+                 makefun(&req_headers_in, APL_REQ_FUNTYPE_TABLE, p));
+
+    apr_hash_set(dispatch, "headers_out", APR_HASH_KEY_STRING,
+                 makefun(&req_headers_out, APL_REQ_FUNTYPE_TABLE, p));
+
 
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
@@ -641,7 +641,8 @@ void apl_push_connection(lua_State *L, conn_rec *c)
     lua_setmetatable(L, -2);
     luaL_getmetatable(L, "Apache2.Connection");
 
-    apl_push_apr_table(L, "notes", c->notes);
+    apl_push_apr_table(L, c->notes);
+    lua_setfield(L, -2, "notes");
 
     lua_pushstring(L, c->remote_ip);
     lua_setfield(L, -2, "remote_ip");

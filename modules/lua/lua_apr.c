@@ -41,12 +41,11 @@ apr_table_t *check_apr_table(lua_State *L, int index)
 }
 
 
-void apl_push_apr_table(lua_State *L, const char *name, apr_table_t *t)
+void apl_push_apr_table(lua_State *L, apr_table_t *t)
 {
     lua_boxpointer(L, t);
     luaL_getmetatable(L, "Apr.Table");
     lua_setmetatable(L, -2);
-    lua_setfield(L, -2, name);
 }
 
 static int lua_table_set(lua_State *L)
