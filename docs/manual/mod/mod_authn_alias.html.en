@@ -48,17 +48,48 @@
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#example">Example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Examples</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Example</a></h2>
-    <p>The example below creates two different ldap authentication 
-    provider aliases based on the ldap provider.  This allows
-    a single authenticated location to be serviced by multiple 
-    ldap hosts:</p>
+<h2><a name="example" id="example">Examples</a></h2>
 
-    <div class="example"><h3>Example</h3><p><code>
+        <p>This example checks for passwords in two different text
+        files.</p>
+
+        <div class="example"><h3>Checking multiple text password files</h3><p><code>
+
+        # Check here first<br />
+        &lt;AuthnProviderAlias file file1&gt;<br />
+        <span class="indent">
+            AuthUserFile /www/conf/passwords1<br />
+        </span>
+        &lt;/AuthnProviderAlias&gt;<br />
+        <br />
+        # Then check here<br />
+        &lt;AuthnProviderAlias file file2&gt;   <br />
+        <span class="indent">
+            AuthUserFile /www/conf/passwords2<br />
+        </span>
+        &lt;/AuthnProviderAlias&gt;<br />
+        <br />
+        &lt;Directory /var/web/pages/secure&gt;<br />
+        <span class="indent">
+            AuthBasicProvider file1 file2<br />
+            <br />
+            AuthType Basic<br />
+            AuthName "Protected Area"<br />
+            Require valid-user<br />
+        </span>
+        &lt;/Directory&gt;<br />
+        </code></p></div>
+
+         <p>The example below creates two different ldap authentication 
+         provider aliases based on the ldap provider.  This allows
+         a single authenticated location to be serviced by multiple ldap
+         hosts:</p>
+     
+      <div class="example"><h3>Checking multiple LDAP servers</h3><p><code>
       LoadModule authn_alias_module modules/mod_authn_alias.so<br /><br />
       &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
       <span class="indent">
@@ -116,6 +147,6 @@ the specified alias</td></tr>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authn_alias.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
