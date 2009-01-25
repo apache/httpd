@@ -48,13 +48,44 @@
     extended authentication provider to be reference by multiple 
     locations.</p>
 
-    <section id="example"><title>Example</title>
+    <section id="example"><title>Examples</title>
+
+        <p>This example checks for passwords in two different text
+        files.</p>
+
+        <example><title>Checking multiple text password files</title>
+
+        # Check here first<br />
+        &lt;AuthnProviderAlias file file1&gt;<br />
+        <indent>
+            AuthUserFile /www/conf/passwords1<br />
+        </indent>
+        &lt;/AuthnProviderAlias&gt;<br />
+        <br />
+        # Then check here<br />
+        &lt;AuthnProviderAlias file file2&gt;   <br />
+        <indent>
+            AuthUserFile /www/conf/passwords2<br />
+        </indent>
+        &lt;/AuthnProviderAlias&gt;<br />
+        <br />
+        &lt;Directory /var/web/pages/secure&gt;<br />
+        <indent>
+            AuthBasicProvider file1 file2<br />
+            <br />
+            AuthType Basic<br />
+            AuthName "Protected Area"<br />
+            Require valid-user<br />
+        </indent>
+        &lt;/Directory&gt;<br />
+        </example>
+
         <p>The example below creates two different ldap authentication 
         provider aliases based on the ldap provider.  This allows
         a single authenticated location to be serviced by multiple ldap
         hosts:</p>
     
-        <example><title>Example</title>
+        <example><title>Checking multiple LDAP servers</title>
           &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
           <indent>
              AuthLDAPBindDN cn=youruser,o=ctx<br />
