@@ -316,15 +316,24 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
         char *wildcard = NULL;
         const char *escpath;
 
-        /* Save "scheme://site" prefix without password */
-        site = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITPASSWORD | APR_URI_UNP_OMITPATHINFO);
         /*
-         * In the reverse proxy case we usually have no site. So contruct
-         * one.
+         * In the reverse proxy case we need to construct our site string
+         * via ap_construct_url. For non anonymous sites apr_uri_unparse would
+         * only supply us with 'username@' which leads to the construction of
+         * an invalid base href later on. Losing the username part of the URL
+         * is no problem in the reverse proxy case as the browser sents the
+         * credentials anyway once entered.
          */
-        if ((*site == '\0') && (r->proxyreq == PROXYREQ_REVERSE)) {
+        if (r->proxyreq == PROXYREQ_REVERSE) {
             site = ap_construct_url(p, "", r);
         }
+        else {
+            /* Save "scheme://site" prefix without password */
+            site = apr_uri_unparse(p, &f->r->parsed_uri,
+                                   APR_URI_UNP_OMITPASSWORD |
+                                   APR_URI_UNP_OMITPATHINFO);
+        }
+
         /* ... and path without query args */
         path = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITSITEPART | APR_URI_UNP_OMITQUERY);
 
