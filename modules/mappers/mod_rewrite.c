@@ -82,6 +82,9 @@
 #if APR_HAVE_CTYPE_H
 #include <ctype.h>
 #endif
+#if APR_HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
 
 #include "ap_config.h"
 #include "httpd.h"
@@ -1945,6 +1948,18 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                                       tm.tm_hour, tm.tm_min, tm.tm_sec);
                 rewritelog((r, 1, ctx->perdir, "RESULT='%s'", result));
                 return (char *)result;
+            }
+            else if (!strcmp(var, "IPV6")) {
+                int flag = FALSE;
+#if APR_HAVE_IPV6
+                apr_sockaddr_t *addr = r->connection->remote_addr;
+                flag = (addr->family == AF_INET6 &&
+                        !IN6_IS_ADDR_V4MAPPED((struct in6_addr *)addr->ipaddr_ptr));
+                rewritelog((r, 1, ctx->perdir, "IPV6='%s'", flag ? "on" : "off"));
+#else
+                rewritelog((r, 1, ctx->perdir, "IPV6='off' (IPv6 is not enabled)"));
+#endif
+                result = (flag ? "on" : "off");
             }
             break;
 
