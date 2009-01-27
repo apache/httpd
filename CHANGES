@@ -2,6 +2,9 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) mod_rewrite: Add IPV6 variable to RewriteCond
+    [Ryan Phillips <ryan-apache trolocsis.com>]
+
  *) core: Enhance KeepAliveTimeout to support a value in milliseconds.
     PR 46275. [Takashi Sato]
 
