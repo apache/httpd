@@ -121,7 +121,7 @@ static apr_status_t privileges_end_req(void *data)
     /* restore default privileges */
     if (setppriv(PRIV_SET, PRIV_EFFECTIVE, priv_default) == -1) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Error restoring default privileges: %s");
+                      "Error restoring default privileges: %s", strerror(errno));
     }
     return APR_SUCCESS;
 }
@@ -157,19 +157,19 @@ static int privileges_req(request_rec *r)
     /* set vhost's privileges */
     if (setppriv(PRIV_SET, PRIV_EFFECTIVE, cfg->priv) == -1) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Error setting effective privileges: %s");
+                      "Error setting effective privileges: %s", strerror(errno));
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* ... including those of any subprocesses */
     if (setppriv(PRIV_SET, PRIV_INHERITABLE, cfg->child_priv) == -1) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Error setting inheritable privileges: %s");
+                      "Error setting inheritable privileges: %s", strerror(errno));
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     if (setppriv(PRIV_SET, PRIV_LIMIT, cfg->child_priv) == -1) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Error setting limit privileges: %s");
+                      "Error setting limit privileges: %s", strerror(errno));
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -253,7 +253,7 @@ static int privileges_postconf(apr_pool_t *pconf, apr_pool_t *plog,
     priv_emptyset(priv_setid);
     if (priv_addset(priv_setid, PRIV_PROC_SETID) == -1) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, ptemp,
-                      "priv_addset: ", strerror(errno));
+                      "priv_addset: %s", strerror(errno));
         return !OK;
     }
     return OK;
