@@ -111,6 +111,11 @@ lower level modules</td></tr>
       &lt;/Location&gt;
     </code></p></div>
 
+    <p> Providers are queried in order until a provider finds a match
+    for the requested username, at which point this sole provider will 
+    attempt to check the password.  A failure to verify the password does
+    not result in control being passed on to subsequent providers.</p>
+
     <p>Providers are implemented by <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>,
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>,
     and <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
