@@ -1718,13 +1718,6 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                            "ISO-8859-1",  NULL));
     }
     else {
-        if (r->content_type) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: FTP: Content-Type set to %s", r->content_type);
-        }
-        else {
-            ap_set_content_type(r, ap_default_type(r));
-        }
         if (xfer_type != 'A' && size != NULL) {
             /* We "trust" the ftp server to really serve (size) bytes... */
             apr_table_setn(r->headers_out, "Content-Length", size);
@@ -1732,9 +1725,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                          "proxy: FTP: Content-Length set to %s", size);
         }
     }
-    apr_table_setn(r->headers_out, "Content-Type", r->content_type);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: FTP: Content-Type set to %s", r->content_type);
+    if (r->content_type) {
+        apr_table_setn(r->headers_out, "Content-Type", r->content_type);
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: FTP: Content-Type set to %s", r->content_type);
+    }
 
 #if defined(USE_MDTM) && (defined(HAVE_TIMEGM) || defined(HAVE_GMTOFF))
     if (mtime != 0L) {

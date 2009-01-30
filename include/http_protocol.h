@@ -129,7 +129,7 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
 /**
  * Build the content-type that should be sent to the client from the
  * content-type specified.  The following rules are followed:
- *    - if type is NULL, type is set to ap_default_type(r)
+ *    - if type is NULL or "", return NULL (do not set content-type).
  *    - if charset adding is disabled, stop processing and return type.
  *    - then, if there are no parameters on type, add the default charset
  *    - return type

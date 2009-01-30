@@ -82,10 +82,8 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, get_mgmt_items,
  * server operations, including options and commands which control the
  * operation of other modules.  Consider this the bureaucracy module.
  *
- * The core module also defines handlers, etc., do handle just enough
- * to allow a server with the core module ONLY to actually serve documents
- * (though it slaps DefaultType on all of 'em); this was useful in testing,
- * but may not be worth preserving.
+ * The core module also defines handlers, etc., to handle just enough
+ * to allow a server with the core module ONLY to actually serve documents.
  *
  * This file could almost be mod_core.c, except for the stuff which affects
  * the http_conf_globals.
@@ -261,10 +259,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (!(new->override_opts & OPT_UNSET)) {
         conf->override_opts = new->override_opts;
-    }
-
-    if (new->ap_default_type) {
-        conf->ap_default_type = new->ap_default_type;
     }
 
     if (conf->response_code_strings == NULL) {
@@ -700,18 +694,6 @@ AP_DECLARE(int) ap_satisfies(request_rec *r)
         return access_compat_ap_satisfies(r);
     }
     return SATISFY_NOSPEC;
-}
-
-AP_DECLARE(const char *) ap_default_type(request_rec *r)
-{
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    return conf->ap_default_type
-               ? conf->ap_default_type
-               : DEFAULT_CONTENT_TYPE;
 }
 
 AP_DECLARE(const char *) ap_document_root(request_rec *r) /* Don't use this! */
@@ -1472,6 +1454,18 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
         else {
             d->opts |= opt;
         }
+    }
+
+    return NULL;
+}
+
+static const char *set_default_type(cmd_parms *cmd, void *d_,
+                                   const char *arg)
+{
+    if ((strcasecmp(arg, "off") != 0) && (strcasecmp(arg, "none") != 0)) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+              "Ignoring deprecated use of DefaultType in line %d of %s.",
+                     cmd->directive->line_num, cmd->directive->filename);
     }
 
     return NULL;
@@ -3246,9 +3240,8 @@ AP_INIT_RAW_ARGS("AllowOverride", set_override, NULL, ACCESS_CONF,
   "config files"),
 AP_INIT_RAW_ARGS("Options", set_options, NULL, OR_OPTIONS,
   "Set a number of attributes for a given directory"),
-AP_INIT_TAKE1("DefaultType", ap_set_string_slot,
-  (void*)APR_OFFSETOF(core_dir_config, ap_default_type),
-  OR_FILEINFO, "the default MIME type for untypable files"),
+AP_INIT_TAKE1("DefaultType", set_default_type, NULL, OR_FILEINFO,
+  "the default media type for otherwise untyped files (DEPRECATED)"),
 AP_INIT_RAW_ARGS("FileETag", set_etag_bits, NULL, OR_FILEINFO,
   "Specify components used to construct a file's ETag"),
 AP_INIT_TAKE1("EnableMMAP", set_enable_mmap, NULL, OR_FILEINFO,

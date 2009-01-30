@@ -1157,8 +1157,7 @@ static int read_types_multi(negotiation_state *neg)
         anymatch = 1;
 
         /* See if it's something which we have access to, and which
-         * has a known type and encoding (as opposed to something
-         * which we'll be slapping default_type on later).
+         * has a known type and encoding.
          */
         sub_req = ap_sub_req_lookup_dirent(&dirent, r, AP_SUBREQ_MERGE_ARGS,
                                            NULL);
@@ -1238,8 +1237,7 @@ static int read_types_multi(negotiation_state *neg)
         }
 
         /*
-         * ###: be warned, the _default_ content type is already
-         * picked up here!  If we failed the subrequest, or don't
+         * If we failed the subrequest, or don't
          * know what we are serving, then continue.
          */
         if (sub_req->status != HTTP_OK || (!sub_req->content_type)) {
