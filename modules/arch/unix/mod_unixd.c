@@ -22,6 +22,7 @@
 #include "mpm_common.h"
 #include "os.h"
 #include "ap_mpm.h"
+#include "unixd.h"
 #include "apr_thread_proc.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
@@ -302,7 +303,7 @@ unixd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
-AP_DECLARE(int) unixd_setup_child(void)
+AP_DECLARE(int) ap_unixd_setup_child(void)
 {
     if (set_group_privs()) {
         return -1;
