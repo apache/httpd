@@ -2,6 +2,11 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) Disabled DefaultType directive and removed ap_default_type()
+    from core.  We now exclude Content-Type from responses for which
+    a media type has not been configured via mime.types, AddType,
+    ForceType, or some other mechanism. PR 13986. [Roy T. Fielding]
+
  *) mod_rewrite: Add IPV6 variable to RewriteCond
     [Ryan Phillips <ryan-apache trolocsis.com>]
 

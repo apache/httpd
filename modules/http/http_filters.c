@@ -1181,7 +1181,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     }
 
     ctype = ap_make_content_type(r, r->content_type);
-    if (strcasecmp(ctype, NO_CONTENT_TYPE)) {
+    if (ctype) {
         apr_table_setn(r->headers_out, "Content-Type", ctype);
     }
 

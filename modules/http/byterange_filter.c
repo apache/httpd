@@ -192,7 +192,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                            "byteranges; boundary=",
                                            ctx->boundary, NULL));
 
-        if (strcasecmp(orig_ct, NO_CONTENT_TYPE)) {
+        if (orig_ct) {
             ctx->bound_head = apr_pstrcat(r->pool,
                                           CRLF "--", ctx->boundary,
                                           CRLF "Content-type: ",

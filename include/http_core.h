@@ -149,13 +149,6 @@ AP_DECLARE(int) ap_allow_options(request_rec *r);
 AP_DECLARE(int) ap_allow_overrides(request_rec *r);
 
 /**
- * Retrieve the value of the DefaultType directive, or text/plain if not set
- * @param r The current request
- * @return The default type
- */
-AP_DECLARE(const char *) ap_default_type(request_rec *r);     
-
-/**
  * Retrieve the document root for this server
  * @param r The current request
  * @warning Don't use this!  If your request went through a Userdir, or 
@@ -438,13 +431,6 @@ typedef struct {
     overrides_t override;
     allow_options_t override_opts;
     
-    /* MIME typing --- the core doesn't do anything at all with this,
-     * but it does know what to slap on a request for a document which
-     * goes untyped by other mechanisms before it slips out the door...
-     */
-    
-    char *ap_default_type;
-  
     /* Custom response config. These can contain text or a URL to redirect to.
      * if response_code_strings is NULL then there are none in the config,
      * if it's not null then it's allocated to sizeof(char*)*RESPONSE_CODES.

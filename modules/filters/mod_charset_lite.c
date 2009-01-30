@@ -803,9 +803,9 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     /* Check the mime type to see if translation should be performed.
      */
     if (!ctx->noop && ctx->xlate == NULL) {
-        const char *mime_type = f->r->content_type ? f->r->content_type : ap_default_type(f->r);
+        const char *mime_type = f->r->content_type;
 
-        if (strncasecmp(mime_type, "text/", 5) == 0 ||
+        if (mime_type && (strncasecmp(mime_type, "text/", 5) == 0 ||
 #if APR_CHARSET_EBCDIC
         /* On an EBCDIC machine, be willing to translate mod_autoindex-
          * generated output.  Otherwise, it doesn't look too cool.
@@ -822,7 +822,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             strcmp(mime_type, DIR_MAGIC_TYPE) == 0 ||
 #endif
             strncasecmp(mime_type, "message/", 8) == 0 || 
-            dc->force_xlate == FX_FORCE) {
+            dc->force_xlate == FX_FORCE)) {
 
             rv = apr_xlate_open(&ctx->xlate,
                                 dc->charset_default, dc->charset_source, f->r->pool);
@@ -840,7 +840,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         }
         else {
             ctx->noop = 1;
-            if (dc->debug >= DBGLVL_GORY) {
+            if (mime_type && dc->debug >= DBGLVL_GORY) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
                               "mime type is %s; no translation selected",
                               mime_type);

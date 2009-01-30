@@ -94,7 +94,7 @@ AP_DECLARE(void) ap_setup_make_content_type(apr_pool_t *pool)
 /*
  * Builds the content-type that should be sent to the client from the
  * content-type specified.  The following rules are followed:
- *    - if type is NULL, type is set to ap_default_type(r)
+ *    - if type is NULL or "", return NULL (do not set content-type).
  *    - if charset adding is disabled, stop processing and return type.
  *    - then, if there are no parameters on type, add the default charset
  *    - return type
@@ -108,8 +108,8 @@ AP_DECLARE(const char *)ap_make_content_type(request_rec *r, const char *type)
     core_request_config *request_conf;
     apr_size_t type_len;
 
-    if (!type) {
-        type = ap_default_type(r);
+    if (!type || *type == '\0') {
+        return NULL;
     }
 
     if (conf->add_default_charset != ADD_DEFAULT_CHARSET_ON) {
