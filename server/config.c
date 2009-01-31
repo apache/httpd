@@ -324,6 +324,12 @@ static int ap_invoke_filter_init(ap_filter_t *filters)
     return OK;
 }
 
+/*
+ * TODO: Move this to an appropriate include file and possibly prefix it
+ * with AP_.
+ */
+#define DEFAULT_HANDLER_NAME ""
+
 AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
 {
     const char *handler;
@@ -355,19 +361,24 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
         return result;
     }
 
-    if (!r->handler && r->content_type) {
-        handler = r->content_type;
-        if ((p=ap_strchr_c(handler, ';')) != NULL) {
-            char *new_handler = (char *)apr_pmemdup(r->pool, handler,
-                                                    p - handler + 1);
-            char *p2 = new_handler + (p - handler);
-            handler = new_handler;
+    if (!r->handler) {
+        if (r->content_type) {
+            handler = r->content_type;
+            if ((p=ap_strchr_c(handler, ';')) != NULL) {
+                char *new_handler = (char *)apr_pmemdup(r->pool, handler,
+                                                        p - handler + 1);
+                char *p2 = new_handler + (p - handler);
+                handler = new_handler;
 
-            /* exclude media type arguments */
-            while (p2 > handler && p2[-1] == ' ')
-                --p2; /* strip trailing spaces */
+                /* exclude media type arguments */
+                while (p2 > handler && p2[-1] == ' ')
+                    --p2; /* strip trailing spaces */
 
-            *p2='\0';
+                *p2='\0';
+            }
+        }
+        else {
+            handler = DEFAULT_HANDLER_NAME;
         }
 
         r->handler = handler;
