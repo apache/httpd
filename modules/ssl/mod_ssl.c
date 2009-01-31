@@ -195,6 +195,10 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_DIR(Require, AUTHCFG, RAW_ARGS,
                "Require a boolean expression to evaluate to true for granting access"
                "(arbitrary complex boolean expression - see manual)")
+    SSL_CMD_DIR(RenegBufferSize, AUTHCFG, TAKE1,
+                "Configure the amount of memory that will be used for buffering the "
+                "request body if a per-location SSL renegotiation is required due to "
+                "changed access control requirements")
 
     /* Deprecated directives. */
     AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL,

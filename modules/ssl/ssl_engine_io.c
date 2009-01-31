@@ -1447,17 +1447,12 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     return status;
 }
 
-/* 128K maximum buffer size by default. */
-#ifndef SSL_MAX_IO_BUFFER
-#define SSL_MAX_IO_BUFFER (128 * 1024)
-#endif
-
 struct modssl_buffer_ctx {
     apr_bucket_brigade *bb;
     apr_pool_t *pool;
 };
 
-int ssl_io_buffer_fill(request_rec *r)
+int ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen)
 {
     conn_rec *c = r->connection;
     struct modssl_buffer_ctx *ctx;
@@ -1475,7 +1470,8 @@ int ssl_io_buffer_fill(request_rec *r)
     /* ... and a temporary brigade. */
     tempb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "filling buffer");
+    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "filling buffer, max size "
+                  "%" APR_SIZE_T_FMT " bytes", maxlen);
 
     do {
         apr_status_t rv;
@@ -1531,9 +1527,10 @@ int ssl_io_buffer_fill(request_rec *r)
                       total, eos);
 
         /* Fail if this exceeds the maximum buffer size. */
-        if (total > SSL_MAX_IO_BUFFER) {
+        if (total > maxlen) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "request body exceeds maximum size for SSL buffer");
+                          "request body exceeds maximum size (%" APR_SIZE_T_FMT 
+                          ") for SSL buffer", maxlen);
             return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }
 

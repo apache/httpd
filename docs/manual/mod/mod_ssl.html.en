@@ -71,6 +71,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyverify">SSLProxyVerify</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslrandomseed">SSLRandomSeed</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslrenegbuffersize">SSLRenegBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslrequire">SSLRequire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslrequiressl">SSLRequireSSL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncache">SSLSessionCache</a></li>
@@ -1351,6 +1352,36 @@ SSLRandomSeed startup exec:/usr/local/bin/truerand 16<br />
 SSLRandomSeed connect builtin<br />
 SSLRandomSeed connect file:/dev/random<br />
 SSLRandomSeed connect file:/dev/urandom 1024<br />
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLRenegBufferSize" id="SSLRenegBufferSize">SSLRenegBufferSize</a> <a name="sslrenegbuffersize" id="sslrenegbuffersize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set the size for the SSL renegotiation buffer</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLRenegBufferSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLRenegBufferSize 131072</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+
+<p>If an SSL renegotiation is required in per-location context, for
+example, any use of <code class="directive"><a href="#sslverifyclient">SSLVerifyClient</a></code> in a Directory or
+Location block, then <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> must buffer any HTTP
+request body into memory until the new SSL handshake can be performed.
+This directive can be used to set the amount of memory that will be
+used for this buffer. </p>
+
+<div class="warning"><p>
+Note that in many configurations, the client sending the request body
+will be untrusted so a denial of service attack by consumption of
+memory must be considered when changing this configuration setting.
+</p></div>
+
+<div class="example"><h3>Example</h3><p><code>
+SSLRenegBufferSize 262144
 </code></p></div>
 
 </div>
