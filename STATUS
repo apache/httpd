@@ -100,7 +100,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=728020&view=rev (doc typo)
       2.2.x:
         trunk works
-    +1 covener, jorton
+    +1 covener, jorton, pgollucci
     niq: Confused by this.  path_info is used at line 3923 *before*
          being set to NULL at line 4046 in the same function.  Not
          sure if there may be other issues of order.
@@ -121,7 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=733695&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: rpluem, jorton
+   +1: rpluem, jorton, pgollucci
 
  * prefork: release mutex when exiting in single-process mode,
    add timeout to pollset-poll to avoid hanging during graceful
@@ -132,14 +132,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?rev=732451&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: trawick, rpluem, jorton
+   +1: trawick, rpluem, jorton, pgollucci
 
  * mod_proxy: Set the error time if we set a worker in error mode.
    Trunk version of patch:
       http://svn.apache.org/viewvc?rev=734703&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: rpluem, trawick
+   +1: rpluem, trawick, pgollucci
 
  * mod_proxy_balancer: Try first if we find any "recoverable" workers before
    we force them to recover.
@@ -147,7 +147,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=734710&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, pgollucci
 
 PATCHES/ISSUES THAT ARE STALLED
 
