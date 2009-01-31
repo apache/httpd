@@ -86,19 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_ssl: Add SSLRenegBufferSize to configure the amount of memory that will
-   be used for buffering the request body if a per-location SSL renegotiationi
-   is required due to changed access control requirements.
-   PR 39243, 46508
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=726109&view=rev
-      http://svn.apache.org/viewvc?rev=733465&view=rev
-      http://svn.apache.org/viewvc?rev=733467&view=rev
-      http://svn.apache.org/viewvc?rev=733695&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, jorton, pgollucci
-
  * prefork: release mutex when exiting in single-process mode,
    add timeout to pollset-poll to avoid hanging during graceful
    stop/restart with multiple listening sockets
