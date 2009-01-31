@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
   
+ *) prefork: Fix child process hang during graceful restart/stop in
+    configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
+    Jeff Trawick]
+
   *) mod_ssl: Add SSLRenegBufferSize directive to allow changing the
      size of the buffer used for the request-body where necessary
      during a per-dir renegotiation.  PR 39243.  [Joe Orton]

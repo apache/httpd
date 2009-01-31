@@ -86,17 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * prefork: release mutex when exiting in single-process mode,
-   add timeout to pollset-poll to avoid hanging during graceful
-   stop/restart with multiple listening sockets
-   PR 42829
-   Trunk version of patche:
-     http://svn.apache.org/viewvc?rev=732421&view=rev
-     http://svn.apache.org/viewvc?rev=732451&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: trawick, rpluem, jorton, pgollucci
-
  * mod_proxy: Set the error time if we set a worker in error mode.
    Trunk version of patch:
       http://svn.apache.org/viewvc?rev=734703&view=rev
