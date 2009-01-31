@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+ *) mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
+    way that per-directory rewrites append the previous notion of PATH_INFO
+    to each substitution before evaluating subsequent rules. 
+    PR38642 [Eric Covener]
+
   *) mod_authnz_ldap: Reduce number of initialization debug messages and make
      information more clear. PR 46342 [Dan Poirier]
 
