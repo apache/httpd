@@ -232,7 +232,8 @@ application/vnd.cups-postscript
 application/vnd.cups-ppd			ppd
 application/vnd.cups-raster
 application/vnd.cups-raw
-application/vnd.curl				curl
+application/vnd.curl.car			car
+application/vnd.curl.pcurl			pcurl
 application/vnd.cybank
 application/vnd.data-vision.rdz			rdz
 application/vnd.denovo.fcselayout-link		fe_launch
@@ -965,7 +966,10 @@ text/troff					t tr roff man me ms
 text/ulpfec
 text/uri-list					uri uris urls
 text/vnd.abc
-text/vnd.curl
+text/vnd.curl					curl
+text/vnd.curl.dcurl				dcurl
+text/vnd.curl.scurl				scurl
+text/vnd.curl.mcurl				mcurl
 text/vnd.dmclientscript
 text/vnd.esmertec.theme-descriptor
 text/vnd.fly					fly
