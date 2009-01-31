@@ -86,26 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
-    way that per-directory rewrites append the previous notion of PATH_INFO
-    to each substitution before evaluating subsequent rules.
-    PR38642
-      trunk:
-        http://svn.apache.org/viewvc?rev=728015&view=rev
-        http://svn.apache.org/viewvc?rev=728220&view=rev
-        http://svn.apache.org/viewvc?rev=728020&view=rev (doc typo)
-      2.2.x:
-        trunk works
-    +1 covener, jorton, pgollucci
-    niq: Confused by this.  path_info is used at line 3923 *before*
-         being set to NULL at line 4046 in the same function.  Not
-         sure if there may be other issues of order.
-    covener: 1 rule is executed between these two lines, and the flag
-             prevents subsequent rules from spilling path_info back into
-             the local URI.  This preserves rulesets that are carefully
-             watching %{PATH_INFO} in their substitutions.  Not pretty
-             by any means but I think necessary to require opt-in for 2.2.x.
-
  * mod_ssl: Add SSLRenegBufferSize to configure the amount of memory that will
    be used for buffering the request body if a per-location SSL renegotiationi
    is required due to changed access control requirements.
