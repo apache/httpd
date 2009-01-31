@@ -25,15 +25,10 @@
 <a href="../ko/mod/mod_charset_lite.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Specify character set translation or recoding</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>charset_lite_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_charset_lite.c</td></tr></table>
 <h3>Summary</h3>
-
-    <p>This is an <strong>experimental</strong> module and should
-    be used with care. Experiment with your
-    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> configuration to ensure that it
-    performs the desired function.</p>
 
     <p><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> allows the administrator to
     specify the source character set of objects as well as the
@@ -107,7 +102,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CharsetDefault <var>charset</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
     <p>The <code class="directive">CharsetDefault</code> directive specifies the
@@ -137,7 +132,7 @@
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CharsetOptions DebugLevel=0 NoImplicitAdd</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
     <p>The <code class="directive">CharsetOptions</code> directive configures certain
@@ -184,7 +179,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CharsetSourceEnc <var>charset</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_charset_lite</td></tr>
 </table>
     <p>The <code class="directive">CharsetSourceEnc</code> directive specifies the
