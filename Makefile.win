@@ -65,6 +65,15 @@ CTARGET=/build
 !ERROR Need srclib\  apr, apr-iconv and apr-util
 !ENDIF
 
+!IF !EXIST("srclib\pcre")
+!MESSAGE Please check out or download and unpack the current PCRE library source
+!MESSAGE under your srclib dir, and compile the pcre.dll with CMake options
+!MESSAGE BUILD_SHARED_LIBS and CMAKE_BUILD_TYPE RelWithDebInfo.
+!MESSAGE Apache cannot build without this library!
+!MESSAGE 
+!ERROR Need srclib\pcre
+!ENDIF
+
 # Note; _tryssl: is only used by the msvc developer studio environment to 'fix up'
 #	the build, since conditional dependencies aren't supported.
 #
@@ -260,10 +269,6 @@ _build:
 	  for %d in (odbc $(DBD_LIST)) do \
 	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak   CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
-	cd ..\..
-	cd srclib\pcre
-	 $(MAKE) $(MAKEOPT) -f dftables.mak        CFG="dftables - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f pcre.mak            CFG="pcre - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd server
 	 $(MAKE) $(MAKEOPT) -f gen_test_char.mak   CFG="gen_test_char - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -503,6 +508,7 @@ _copybin:
 	for %d in (odbc $(DBD_LIST)) do ( \
 	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
+	copy srclib\pcre\pcre.$(src_dll)			"$(inst_dll)" <.y
 	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.$(src_so) 	"$(inst_so)" <.y
