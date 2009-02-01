@@ -2,6 +2,9 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
+ *) Added 20x22 icons for ODF, SVG, and XML documents.  PR 37185.
+    [Peter Harlow]
+
  *) Disabled DefaultType directive and removed ap_default_type()
     from core.  We now exclude Content-Type from responses for which
     a media type has not been configured via mime.types, AddType,
