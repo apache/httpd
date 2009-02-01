@@ -406,7 +406,15 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
     for (i = 0; i < balancer->workers->nelts; i++, worker++) {
         if (!(worker->s->status & PROXY_WORKER_IN_ERROR)) {
             ok = 1;
-            break;    
+            break;
+        }
+        else {
+            /* Try if we can recover */
+            ap_proxy_retry_worker("BALANCER", worker, s);
+            if (!(worker->s->status & PROXY_WORKER_IN_ERROR)) {
+                ok = 1;
+                break;
+            }
         }
     }
     if (!ok) {
