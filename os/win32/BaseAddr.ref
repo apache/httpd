@@ -46,6 +46,7 @@ mod_setenvif.so         0x6FC00000    0x00010000
 mod_userdir.so          0x6FBF0000    0x00010000
 mod_cache.so            0x6FBE0000    0x00010000
 mod_disk_cache.so       0x6FBD0000    0x00010000
+mod_buffer.so           0x6FBC0000    0x00010000
 mod_deflate.so          0x6FBA0000    0x00020000
 mod_ext_filter.so       0x6FB90000    0x00010000
 mod_charset_lite.so     0x6FB80000    0x00010000
