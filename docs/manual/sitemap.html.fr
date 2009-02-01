@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Plan du site - Serveur Apache HTTP</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page">
+<div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div>
+<div id="page-content"><div id="preamble"><h1>Plan du site</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/sitemap.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+<p>Cette page contient la liste des éléments actuellement disponibles de
+la <a href="./">Documentation du serveur HTTP Apache Version
+2.3</a>.</p>
+</div>
+<div id="quickview"><ul id="toc">
+<li><img alt="" src="./images/down.gif" /> <a href="#release">Notes de version</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#using">Utilisation du serveur HTTP Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#vhosts">Documentation des serveurs virtuels Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#rewrite">Guide de réécriture d'URLs</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#ssl">Chiffrement SSL/TLS avec Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#howto">Guides, Tutoriels, and Recettes</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#platform">Notes spécifiques à certains systèmes</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#programs">Le serveur HTTP Apache et ses programmes associés</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#misc">Documentations diverses sur Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#modules">Modules Apache</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#developer">Documentation du développeur</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#index">Glossaire et Index</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="release" id="release">Notes de version</a></h2>
+<ul><li><a href="upgrading.html">Mise à jour vers 2.4 depuis 2.2</a></li>
+<li><a href="new_features_2_4.html">Nouvelles fonctionnalités d'Apache 2.3/2.4</a></li>
+<li><a href="new_features_2_2.html">Nouvelles fonctionnalités d'Apache 2.1/2.2</a></li>
+<li><a href="new_features_2_0.html">Nouvelles fonctionnalités d'Apache 2.0</a></li>
+<li><a href="license.html">License Apache</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="using" id="using">Utilisation du serveur HTTP Apache</a></h2>
+<ul><li><a href="install.html">Compilation et installation</a></li>
+<li><a href="invoking.html">Démarrage</a></li>
+<li><a href="stopping.html">Arrêt ou redémarrage</a></li>
+<li><a href="configuring.html">Fichiers de configuration</a></li>
+<li><a href="sections.html">Comment fonctionnent les sections Directory,
+Location et Files</a></li>
+<li><a href="caching.html">Mise en cache du contenu</a></li>
+<li><a href="server-wide.html">Configuration niveau serveur</a></li>
+<li><a href="logs.html">Fichiers de traces</a></li>
+<li><a href="urlmapping.html">Mise en correspondance des URLs avec le système de fichiers</a></li>
+<li><a href="misc/security_tips.html">Conseils sur la sécurité</a></li>
+<li><a href="dso.html">Objets Dynamiques Partagés (DSO)</a></li>
+<li><a href="content-negotiation.html">Négociation sur le contenu</a></li>
+<li><a href="custom-error.html">Messages d'erreur personnalisés</a></li>
+<li><a href="bind.html">Définition des adresses et ports qu'utilise
+Apache</a></li>
+<li><a href="mpm.html">Modules multi-processus (MPMs)</a></li>
+<li><a href="env.html">Les variables d'environnement d'Apache</a></li>
+<li><a href="handler.html">Utilisation des gestionnaires d'Apache</a></li>
+<li><a href="filter.html">Filtres</a></li>
+<li><a href="suexec.html">Support de suEXEC</a></li>
+<li><a href="misc/perf-tuning.html">Optimisation des performances</a></li>
+<li><a href="faq/">Frequently Asked Questions</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="vhosts" id="vhosts">Documentation des serveurs virtuels Apache</a></h2>
+<ul><li class="separate"><a href="vhosts/">Aperçu</a></li>
+<li><a href="vhosts/name-based.html">Serveurs virtuels basés sur le nom</a></li>
+<li><a href="vhosts/ip-based.html">Support des serveurs virtuels basés
+sur l'adresse IP</a></li>
+<li><a href="vhosts/mass.html">Configuration dynamique de l'hébergement
+virtuel de masse</a></li>
+<li><a href="vhosts/examples.html">Exemples de serveurs virtuels</a></li>
+<li><a href="vhosts/details.html">Discussion approfondie à propos de la
+sélection d'un serveur virtuel</a></li>
+<li><a href="vhosts/fd-limits.html">Limitations inhérentes aux
+descripteurs de fichiers</a></li>
+<li><a href="dns-caveats.html">Problèmes avec DNS et Apache</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="rewrite" id="rewrite">Guide de réécriture d'URLs</a></h2>
+<ul><li class="separate"><a href="rewrite/">Survol</a></li>
+<li><a href="mod/mod_rewrite.html">Documentation de référence de mod_rewrite</a></li>
+<li><a href="rewrite/rewrite_intro.html">Introduction</a></li>
+<li><a href="rewrite/rewrite_flags.html">Drapeaux</a></li>
+<li><a href="rewrite/rewrite_tech.html">Détails techniques</a></li>
+<li><a href="rewrite/rewrite_guide.html">Guide de réécriture - exemples utiles</a></li>
+<li><a href="rewrite/rewrite_guide_advanced.html">Guide de réécriture avancée -
+autres exemples utiles</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="ssl" id="ssl">Chiffrement SSL/TLS avec Apache</a></h2>
+<ul><li class="separate"><a href="ssl/">Aperçu</a></li>
+<li><a href="ssl/ssl_intro.html">Chiffrement SSL/TLS :
+Introduction</a></li>
+<li><a href="ssl/ssl_compat.html">Chiffrement SSL/TLS :
+Compatibilité</a></li>
+<li><a href="ssl/ssl_howto.html">Chiffrement SSL/TLS : Recettes</a></li>
+<li><a href="ssl/ssl_faq.html">Chiffrement SSL/TLS : FAQ</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="howto" id="howto">Guides, Tutoriels, and Recettes</a></h2>
+<ul><li class="separate"><a href="howto/">Aperçu</a></li>
+<li><a href="howto/auth.html">Authentification</a></li>
+<li><a href="howto/cgi.html">Contenu dynamique avec CGI</a></li>
+<li><a href="howto/ssi.html">Introduction aux Inclusions côté serveur
+(Server Side Includes - SSI)</a></li>
+<li><a href="howto/htaccess.html">Fichiers .htaccess</a></li>
+<li><a href="howto/public_html.html">Répertoires web des
+utilisateurs</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="platform" id="platform">Notes spécifiques à certains systèmes</a></h2>
+<ul><li class="separate"><a href="platform/">Aperçu</a></li>
+<li><a href="platform/windows.html">Utiliser Apache avec Microsoft
+Windows</a></li>
+<li><a href="platform/win_compiling.html">Compiler Apache pour
+Microsoft Windows</a></li>
+<li><a href="platform/netware.html">Utiliser Apache avec Novell
+NetWare</a></li>
+<li><a href="platform/perf-hp.html">Mise en oeuvre d'un serveur web
+hautes performances sous HPUX</a></li>
+<li><a href="platform/ebcdic.html">Le portage EBCDIC d'Apache</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="programs" id="programs">Le serveur HTTP Apache et ses programmes associés</a></h2>
+<ul><li class="separate"><a href="programs/">Aperçu</a></li>
+<li><a href="programs/httpd.html">Page de manuel : httpd</a></li>
+<li><a href="programs/ab.html">Page de manuel : ab</a></li>
+<li><a href="programs/apachectl.html">Page de manuel : apachectl</a></li>
+<li><a href="programs/apxs.html">Page de manuel : apxs</a></li>
+<li><a href="programs/configure.html">Page de manuel : configure</a></li>
+<li><a href="programs/dbmmanage.html">Page de manuel : dbmmanage</a></li>
+<li><a href="programs/htcacheclean.html">Page de manuel : htcacheclean</a></li>
+<li><a href="programs/htdbm.html">Page de manuel : htdbm</a></li>
+<li><a href="programs/htdigest.html">Page de manuel : htdigest</a></li>
+<li><a href="programs/htpasswd.html">Page de manuel : htpasswd</a></li>
+<li><a href="programs/logresolve.html">Page de manuel : logresolve</a></li>
+<li><a href="programs/rotatelogs.html">Page de manuel : rotatelogs</a></li>
+<li><a href="programs/suexec.html">Page de manuel : suexec</a></li>
+<li><a href="programs/other.html">Autres programmes</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="misc" id="misc">Documentations diverses sur Apache</a></h2>
+<ul><li class="separate"><a href="misc/">Aperçu</a></li>
+<li><a href="misc/relevant_standards.html">Standards concernés</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="modules" id="modules">Modules Apache</a></h2>
+<ul><li><a href="mod/module-dict.html">Définitions des termes utilisés pour
+décrire les modules Apache</a></li>
+<li><a href="mod/directive-dict.html">Définitions des termes utilisés
+pour décrire les directives Apache</a></li>
+</ul><ul><li><a href="mod/core.html">Fonctionalités de Base Apache</a></li>
+<li><a href="mod/mpm_common.html">Apache MPM: Directives Communes</a></li>
+<li><a href="mod/beos.html">Apache MPM beos</a></li>
+<li><a href="mod/event.html">Apache MPM event</a></li>
+<li><a href="mod/leader.html">Apache MPM leader</a></li>
+<li><a href="mod/mpm_netware.html">Apache MPM netware</a></li>
+<li><a href="mod/mpmt_os2.html">Apache MPM os2</a></li>
+<li><a href="mod/perchild.html">Apache MPM perchild</a></li>
+<li><a href="mod/prefork.html">Apache MPM prefork</a></li>
+<li><a href="mod/threadpool.html">Apache MPM threadpool</a></li>
+<li><a href="mod/mpm_winnt.html">Apache MPM winnt</a></li>
+<li><a href="mod/worker.html">Apache MPM worker</a></li>
+</ul><ul><li><a href="mod/mod_access_compat.html">Mudule Apache mod_access_compat</a></li>
+<li><a href="mod/mod_actions.html">Mudule Apache mod_actions</a></li>
+<li><a href="mod/mod_alias.html">Mudule Apache mod_alias</a></li>
+<li><a href="mod/mod_asis.html">Mudule Apache mod_asis</a></li>
+<li><a href="mod/mod_auth_basic.html">Mudule Apache mod_auth_basic</a></li>
+<li><a href="mod/mod_auth_digest.html">Mudule Apache mod_auth_digest</a></li>
+<li><a href="mod/mod_auth_form.html">Mudule Apache mod_auth_form</a></li>
+<li><a href="mod/mod_authn_anon.html">Mudule Apache mod_authn_anon</a></li>
+<li><a href="mod/mod_authn_core.html">Mudule Apache mod_authn_core</a></li>
+<li><a href="mod/mod_authn_dbd.html">Mudule Apache mod_authn_dbd</a></li>
+<li><a href="mod/mod_authn_dbm.html">Mudule Apache mod_authn_dbm</a></li>
+<li><a href="mod/mod_authn_file.html">Mudule Apache mod_authn_file</a></li>
+<li><a href="mod/mod_authnz_ldap.html">Mudule Apache mod_authnz_ldap</a></li>
+<li><a href="mod/mod_authz_core.html">Mudule Apache mod_authz_core</a></li>
+<li><a href="mod/mod_authz_dbd.html">Mudule Apache mod_authz_dbd</a></li>
+<li><a href="mod/mod_authz_dbm.html">Mudule Apache mod_authz_dbm</a></li>
+<li><a href="mod/mod_authz_groupfile.html">Mudule Apache mod_authz_groupfile</a></li>
+<li><a href="mod/mod_authz_host.html">Mudule Apache mod_authz_host</a></li>
+<li><a href="mod/mod_authz_owner.html">Mudule Apache mod_authz_owner</a></li>
+<li><a href="mod/mod_authz_user.html">Mudule Apache mod_authz_user</a></li>
+<li><a href="mod/mod_autoindex.html">Mudule Apache mod_autoindex</a></li>
+<li><a href="mod/mod_buffer.html">Mudule Apache mod_buffer</a></li>
+<li><a href="mod/mod_cache.html">Mudule Apache mod_cache</a></li>
+<li><a href="mod/mod_cern_meta.html">Mudule Apache mod_cern_meta</a></li>
+<li><a href="mod/mod_cgi.html">Mudule Apache mod_cgi</a></li>
+<li><a href="mod/mod_cgid.html">Mudule Apache mod_cgid</a></li>
+<li><a href="mod/mod_charset_lite.html">Mudule Apache mod_charset_lite</a></li>
+<li><a href="mod/mod_dav.html">Mudule Apache mod_dav</a></li>
+<li><a href="mod/mod_dav_fs.html">Mudule Apache mod_dav_fs</a></li>
+<li><a href="mod/mod_dav_lock.html">Mudule Apache mod_dav_lock</a></li>
+<li><a href="mod/mod_dbd.html">Mudule Apache mod_dbd</a></li>
+<li><a href="mod/mod_deflate.html">Mudule Apache mod_deflate</a></li>
+<li><a href="mod/mod_dir.html">Mudule Apache mod_dir</a></li>
+<li><a href="mod/mod_disk_cache.html">Mudule Apache mod_disk_cache</a></li>
+<li><a href="mod/mod_dumpio.html">Mudule Apache mod_dumpio</a></li>
+<li><a href="mod/mod_echo.html">Mudule Apache mod_echo</a></li>
+<li><a href="mod/mod_env.html">Mudule Apache mod_env</a></li>
+<li><a href="mod/mod_example.html">Mudule Apache mod_example</a></li>
+<li><a href="mod/mod_expires.html">Mudule Apache mod_expires</a></li>
+<li><a href="mod/mod_ext_filter.html">Mudule Apache mod_ext_filter</a></li>
+<li><a href="mod/mod_file_cache.html">Mudule Apache mod_file_cache</a></li>
+<li><a href="mod/mod_filter.html">Mudule Apache mod_filter</a></li>
+<li><a href="mod/mod_headers.html">Mudule Apache mod_headers</a></li>
+<li><a href="mod/mod_heartbeat.html">Mudule Apache mod_heartbeat</a></li>
+<li><a href="mod/mod_heartmonitor.html">Mudule Apache mod_heartmonitor</a></li>
+<li><a href="mod/mod_ident.html">Mudule Apache mod_ident</a></li>
+<li><a href="mod/mod_imagemap.html">Mudule Apache mod_imagemap</a></li>
+<li><a href="mod/mod_include.html">Mudule Apache mod_include</a></li>
+<li><a href="mod/mod_info.html">Mudule Apache mod_info</a></li>
+<li><a href="mod/mod_isapi.html">Mudule Apache mod_isapi</a></li>
+<li><a href="mod/mod_lbmethod_bybusyness.html">Mudule Apache mod_lbmethod_bybusyness</a></li>
+<li><a href="mod/mod_lbmethod_byrequests.html">Mudule Apache mod_lbmethod_byrequests</a></li>
+<li><a href="mod/mod_lbmethod_bytraffic.html">Mudule Apache mod_lbmethod_bytraffic</a></li>
+<li><a href="mod/mod_lbmethod_heartbeat.html">Mudule Apache mod_lbmethod_heartbeat</a></li>
+<li><a href="mod/mod_ldap.html">Mudule Apache mod_ldap</a></li>
+<li><a href="mod/mod_log_config.html">Mudule Apache mod_log_config</a></li>
+<li><a href="mod/mod_log_forensic.html">Mudule Apache mod_log_forensic</a></li>
+<li><a href="mod/mod_logio.html">Mudule Apache mod_logio</a></li>
+<li><a href="mod/mod_mime.html">Mudule Apache mod_mime</a></li>
+<li><a href="mod/mod_mime_magic.html">Mudule Apache mod_mime_magic</a></li>
+<li><a href="mod/mod_negotiation.html">Mudule Apache mod_negotiation</a></li>
+<li><a href="mod/mod_nw_ssl.html">Mudule Apache mod_nw_ssl</a></li>
+<li><a href="mod/mod_plainmem.html">Mudule Apache mod_plainmem</a></li>
+<li><a href="mod/mod_privileges.html">Mudule Apache mod_privileges</a></li>
+<li><a href="mod/mod_proxy.html">Mudule Apache mod_proxy</a></li>
+<li><a href="mod/mod_proxy_ajp.html">Mudule Apache mod_proxy_ajp</a></li>
+<li><a href="mod/mod_proxy_balancer.html">Mudule Apache mod_proxy_balancer</a></li>
+<li><a href="mod/mod_proxy_connect.html">Mudule Apache mod_proxy_connect</a></li>
+<li><a href="mod/mod_proxy_fcgi.html">Mudule Apache mod_proxy_fcgi</a></li>
+<li><a href="mod/mod_proxy_fdpass.html">Mudule Apache mod_proxy_fdpass</a></li>
+<li><a href="mod/mod_proxy_ftp.html">Mudule Apache mod_proxy_ftp</a></li>
+<li><a href="mod/mod_proxy_http.html">Mudule Apache mod_proxy_http</a></li>
+<li><a href="mod/mod_proxy_scgi.html">Mudule Apache mod_proxy_scgi</a></li>
+<li><a href="mod/mod_request.html">Mudule Apache mod_request</a></li>
+<li><a href="mod/mod_rewrite.html">Mudule Apache mod_rewrite</a></li>
+<li><a href="mod/mod_sed.html">Mudule Apache mod_sed</a></li>
+<li><a href="mod/mod_session.html">Mudule Apache mod_session</a></li>
+<li><a href="mod/mod_session_cookie.html">Mudule Apache mod_session_cookie</a></li>
+<li><a href="mod/mod_session_crypto.html">Mudule Apache mod_session_crypto</a></li>
+<li><a href="mod/mod_session_dbd.html">Mudule Apache mod_session_dbd</a></li>
+<li><a href="mod/mod_setenvif.html">Mudule Apache mod_setenvif</a></li>
+<li><a href="mod/mod_sharedmem.html">Mudule Apache mod_sharedmem</a></li>
+<li><a href="mod/mod_slotmem.html">Mudule Apache mod_slotmem</a></li>
+<li><a href="mod/mod_so.html">Mudule Apache mod_so</a></li>
+<li><a href="mod/mod_speling.html">Mudule Apache mod_speling</a></li>
+<li><a href="mod/mod_ssl.html">Mudule Apache mod_ssl</a></li>
+<li><a href="mod/mod_status.html">Mudule Apache mod_status</a></li>
+<li><a href="mod/mod_substitute.html">Mudule Apache mod_substitute</a></li>
+<li><a href="mod/mod_suexec.html">Mudule Apache mod_suexec</a></li>
+<li><a href="mod/mod_unique_id.html">Mudule Apache mod_unique_id</a></li>
+<li><a href="mod/mod_unixd.html">Mudule Apache mod_unixd</a></li>
+<li><a href="mod/mod_userdir.html">Mudule Apache mod_userdir</a></li>
+<li><a href="mod/mod_usertrack.html">Mudule Apache mod_usertrack</a></li>
+<li><a href="mod/mod_version.html">Mudule Apache mod_version</a></li>
+<li><a href="mod/mod_vhost_alias.html">Mudule Apache mod_vhost_alias</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="developer" id="developer">Documentation du développeur</a></h2>
+<ul><li class="separate"><a href="developer/">Aperçu</a></li>
+<li><a href="developer/API.html">Notes sur l'API Apache</a></li>
+<li><a href="developer/debugging.html">Débogage de l'allocation mémoire
+dans APR</a></li>
+<li><a href="developer/documenting.html">Documenter Apache 2.0</a></li>
+<li><a href="developer/hooks.html">Fonctions d'accroche (Hook Functions)
+d'Apache 2.0</a></li>
+<li><a href="developer/modules.html">Convertir un module depuis Apache
+1.3 vers Apache 2.0</a></li>
+<li><a href="developer/request.html">Traitement des requêtes avec Apache
+2.0</a></li>
+<li><a href="developer/filters.html">Fonctionnement des filtres dans
+Apache 2.0</a></li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section"><h2><a name="index" id="index">Glossaire et Index</a></h2>
+<ul><li><a href="glossary.html">Glossaire</a></li>
+<li><a href="mod/">Index des modules</a></li>
+<li><a href="mod/directives.html">Index des directives</a></li>
+<li><a href="mod/quickreference.html">Référence rapide des directives</a></li>
+</ul>
+</div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/sitemap.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/sitemap.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/sitemap.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
+</body></html>
