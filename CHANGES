@@ -2,83 +2,83 @@
 Changes with Apache 2.3.2
 [ When backported to 2.2.x, remove entry from this file ]
 
- *) Added 20x22 icons for ODF, SVG, and XML documents.  PR 37185.
-    [Peter Harlow]
+  *) Added 20x22 icons for ODF, SVG, and XML documents.  PR 37185.
+     [Peter Harlow]
 
- *) Disabled DefaultType directive and removed ap_default_type()
-    from core.  We now exclude Content-Type from responses for which
-    a media type has not been configured via mime.types, AddType,
-    ForceType, or some other mechanism. PR 13986. [Roy T. Fielding]
+  *) Disabled DefaultType directive and removed ap_default_type()
+     from core.  We now exclude Content-Type from responses for which
+     a media type has not been configured via mime.types, AddType,
+     ForceType, or some other mechanism. PR 13986. [Roy T. Fielding]
 
- *) mod_rewrite: Add IPV6 variable to RewriteCond
-    [Ryan Phillips <ryan-apache trolocsis.com>]
+  *) mod_rewrite: Add IPV6 variable to RewriteCond
+     [Ryan Phillips <ryan-apache trolocsis.com>]
 
- *) core: Enhance KeepAliveTimeout to support a value in milliseconds.
-    PR 46275. [Takashi Sato]
+  *) core: Enhance KeepAliveTimeout to support a value in milliseconds.
+     PR 46275. [Takashi Sato]
 
- *) rotatelogs: Allow size units B, K, M, G and combination of
-    time and size based rotation. [Rainer Jung]
+  *) rotatelogs: Allow size units B, K, M, G and combination of
+     time and size based rotation. [Rainer Jung]
 
- *) rotatelogs: Add flag for verbose (debug) output. [Rainer Jung]
+  *) rotatelogs: Add flag for verbose (debug) output. [Rainer Jung]
 
- *) mod_ssl: Fix merging of SSLRenegBufferSize directive. PR 46508
-    [<tlhackque yahoo.com>]
+  *) mod_ssl: Fix merging of SSLRenegBufferSize directive. PR 46508
+     [<tlhackque yahoo.com>]
 
- *) core: Translate the the status line to ASCII on EBCDIC platforms in
-    ap_send_interim_response() and for locally generated "100 Continue"
-    responses.  [Eric Covener]
+  *) core: Translate the the status line to ASCII on EBCDIC platforms in
+     ap_send_interim_response() and for locally generated "100 Continue"
+     responses.  [Eric Covener]
 
- *) prefork: Fix child process hang during graceful restart/stop in
-    configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
-    Jeff Trawick]
+  *) prefork: Fix child process hang during graceful restart/stop in
+     configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
+     Jeff Trawick]
 
- *) mod_session_crypto: Ensure that SessionCryptoDriver can only be
-    set in the global scope. [Graham Leggett]
+  *) mod_session_crypto: Ensure that SessionCryptoDriver can only be
+     set in the global scope. [Graham Leggett]
 
- *) mod_ext_filter: We need to detect failure to startup the filter
-    program (a mangled response is not acceptable).  Fix to detect
-    failure, and offer configuration option either to abort or
-    to remove the filter and continue.
-    PR 41120 [Nick Kew]
+  *) mod_ext_filter: We need to detect failure to startup the filter
+     program (a mangled response is not acceptable).  Fix to detect
+     failure, and offer configuration option either to abort or
+     to remove the filter and continue.
+     PR 41120 [Nick Kew]
 
- *) mod_session_crypto: Rewrite the session_crypto module against the
-    apr_crypto API. [Graham Leggett]
+  *) mod_session_crypto: Rewrite the session_crypto module against the
+     apr_crypto API. [Graham Leggett]
 
- *) mod_auth_form: Fix a pool lifetime issue, don't remove the subrequest
-    until the main request is cleaned up. [Graham Leggett]
+  *) mod_auth_form: Fix a pool lifetime issue, don't remove the subrequest
+     until the main request is cleaned up. [Graham Leggett]
 
 Changes with Apache 2.3.1
 
- *) ap_slotmem: Add in new slot-based memory access API impl., including
-    2 providers (mod_sharedmem and mod_plainmem) [Jim Jagielski,
-    Jean-Frederic Clere, Brian Akins <brian.akins turner.com>]
+  *) ap_slotmem: Add in new slot-based memory access API impl., including
+     2 providers (mod_sharedmem and mod_plainmem) [Jim Jagielski,
+     Jean-Frederic Clere, Brian Akins <brian.akins turner.com>]
 
- *) mod_include: support generating non-ASCII characters as entities in SSI
-    PR 25202 [Nick Kew]
+  *) mod_include: support generating non-ASCII characters as entities in SSI
+     PR 25202 [Nick Kew]
 
- *) core/utils: Enhance ap_escape_html API to support escaping non-ASCII chars
-    PR 25202 [Nick Kew]
+  *) core/utils: Enhance ap_escape_html API to support escaping non-ASCII chars
+     PR 25202 [Nick Kew]
 
- *) mod_rewrite: fix "B" flag breakage by reverting r5589343
+  *) mod_rewrite: fix "B" flag breakage by reverting r5589343
     PR 45529 [Bob Ionescu <bobsiegen googlemail.com>]
 
- *) CGI: return 504 (Gateway timeout) rather than 500 when a script
-    times out before returning status line/headers.
-    PR 42190 [Nick Kew]
+  *) CGI: return 504 (Gateway timeout) rather than 500 when a script
+     times out before returning status line/headers.
+     PR 42190 [Nick Kew]
 
- *) mod_cgid: fix segfault problem on solaris.
-    PR 39332 [Masaoki Kobayashi <masaoki techfirm.co.jp>]
+  *) mod_cgid: fix segfault problem on solaris.
+     PR 39332 [Masaoki Kobayashi <masaoki techfirm.co.jp>]
 
- *) mod_proxy_scgi: Added. [André Malo]
+  *) mod_proxy_scgi: Added. [André Malo]
 
- *) mod_cache: Introduce 'no-cache' per-request environment variable
-    to prevent the saving of an otherwise cacheable response.
-    [Eric Covener]
+  *) mod_cache: Introduce 'no-cache' per-request environment variable
+     to prevent the saving of an otherwise cacheable response.
+     [Eric Covener]
 
- *) mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
-    way that per-directory rewrites append the previous notion of PATH_INFO
-    to each substitution before evaluating subsequent rules. 
-    PR38642 [Eric Covener]
+  *) mod_rewrite: Introduce DiscardPathInfo|DPI flag to stop the troublesome
+     way that per-directory rewrites append the previous notion of PATH_INFO
+     to each substitution before evaluating subsequent rules. 
+     PR 38642 [Eric Covener]
 
   *) mod_cgid: Do not add an empty argument when calling the CGI script.
      PR 46380 [Ruediger Pluem]
