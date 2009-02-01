@@ -97,6 +97,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
    +1: rpluem, pgollucci
 
+ * mod_proxy_balancer: Fix handling of lbset for non-seq config'ed
+   clusters:
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?view=rev&revision=739852
+      http://svn.apache.org/viewvc?view=rev&revision=739853
+      http://svn.apache.org/viewvc?view=rev&revision=739854
+   Backport version for 2.2.x of patch:
+      http://people.apache.org/~jim/patches/httpd-2.2-lbset.patch
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
