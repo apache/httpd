@@ -94,7 +94,7 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
                     if (worker->s->lbset > max_lbset)
                         max_lbset = worker->s->lbset;
                 }
-                if (worker->s->lbset > cur_lbset)
+                if (worker->s->lbset != cur_lbset)
                     continue;
                 if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
                     continue;
