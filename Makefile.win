@@ -344,6 +344,7 @@ _build:
 	cd ..\..
 !ENDIF
 	cd modules\filters
+	 $(MAKE) $(MAKEOPT) -f mod_buffer.mak      CFG="mod_buffer - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !IF EXIST("srclib\zlib")
 	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -550,6 +551,7 @@ _copybin:
 	copy modules\examples\$(LONG)\mod_example_hooks.$(src_so)  "$(inst_so)" <.y
 	copy modules\examples\$(LONG)\mod_example_ipc.$(src_so)	   "$(inst_so)" <.y
 !ENDIF
+	copy modules\filters\$(LONG)\mod_buffer.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
