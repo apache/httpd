@@ -86,9 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
  * mod_proxy_balancer: Try first if we find any "recoverable" workers before
    we force them to recover.
    Trunk version of patch:
@@ -96,6 +93,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
       Trunk version of patch works
    +1: rpluem, pgollucci, jim
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
  * mod_proxy_balancer: Fix handling of lbset for non-seq config'ed
    clusters:
