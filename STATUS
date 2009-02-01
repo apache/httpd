@@ -95,7 +95,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=734710&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: rpluem, pgollucci
+   +1: rpluem, pgollucci, jim
 
  * mod_proxy_balancer: Fix handling of lbset for non-seq config'ed
    clusters:
