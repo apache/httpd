@@ -177,7 +177,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>Set the time to keep idle connections alive where the number
+    <p>Set the time to keep idle connections alive when the number
     of connections specified in DBDKeep has been exceeded (threaded
     platforms only).</p>
 
@@ -289,7 +289,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>For modules such as authentication that use repeatedly use a
+    <p>For modules such as authentication that repeatedly use a
     single SQL statement, optimum performance is achieved by preparing
     the statement at startup rather than every time it is used.
     This directive prepares an SQL statement and assigns it a label.</p>
