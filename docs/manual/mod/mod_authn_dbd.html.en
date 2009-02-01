@@ -72,7 +72,9 @@
 <h2><a name="example" id="example">Configuration Example</a></h2>
 
 <p>This simple example shows use of this module in the context of
-the Authentication and DBD frameworks.</p>
+the Authentication and DBD frameworks. Please note that you need
+to load an authorization module, such as <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>,
+to get it working.</p>
 <div class="example"><pre>
 # mod_dbd configuration
 DBDriver pgsql
