@@ -666,14 +666,33 @@ _install:
 	copy LICENSE      "$(INSTDIR)\LICENSE.txt" <.y
 	copy NOTICE       "$(INSTDIR)\NOTICE.txt" <.y
 	copy README       "$(INSTDIR)\README.txt" <.y
+	type << >> "$(INSTDIR)\NOTICE.txt"
+
+Regular expression support is provided by the PCRE library package,
+which is open source software, written by Philip Hazel, and copyright
+by the University of Cambridge, England. The original software is
+available from
+  ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
+<<
+	-awk -f <<script1.awk < "srclib\pcre\LICENCE" >> "$(INSTDIR)\LICENSE.txt"
+BEGIN {
+    print "";
+    print "For the pcre.dll component:";
+    print "";
+    while ( getline > 0 ) {
+	if ( $$0 ~ /^End$$/ ) $$0 = "END OF PCRE LICENSE";
+	print $$0;
+   }
+}
+<<
 !IF EXIST("srclib\openssl")
 	-copy srclib\openssl\apps\openssl.cnf "$(INSTDIR)\conf\openssl.cnf" <.y
 	type << >> "$(INSTDIR)\NOTICE.txt"
 
-  This binary distribution includes cryptographic software written by
-  Eric Young (eay@cryptsoft.com), software written by Tim Hudson 
-  (tjh@cryptsoft.com), and software developed by the OpenSSL Project 
-  for use in the OpenSSL Toolkit <http://www.openssl.org/>.
+This binary distribution includes cryptographic software written by
+Eric Young (eay@cryptsoft.com), software written by Tim Hudson 
+(tjh@cryptsoft.com), and software developed by the OpenSSL Project 
+for use in the OpenSSL Toolkit <http://www.openssl.org/>.
 <<
 	-awk -f <<script.awk < "srclib\openssl\LICENSE" >> "$(INSTDIR)\LICENSE.txt"
 BEGIN {
@@ -745,9 +764,9 @@ BEGIN {
 !IF EXIST("srclib\zlib")
 	type << >> "$(INSTDIR)\NOTICE.txt"
 
-  This binary distribution of mod_deflate.so includes zlib compression code
-  <http://www.gzip.org/zlib/> written by Jean-loup Gailly (jloup@gzip.org)
-  and Mark Adler (madler@alumni.caltech.edu) .
+This binary distribution of mod_deflate.so includes zlib compression code
+<http://www.gzip.org/zlib/> written by Jean-loup Gailly (jloup@gzip.org)
+and Mark Adler (madler@alumni.caltech.edu) .
 <<
 	-awk -f <<script.awk < "srclib\zlib\README" >> "$(INSTDIR)\LICENSE.txt"
 BEGIN {
