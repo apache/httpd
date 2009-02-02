@@ -100,6 +100,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~jim/patches/httpd-2.2-lbset.patch
    +1: jim, rpluem
 
+ * mod_deflate: Fix creation of invalid Etags with mod_deflate
+   (PR 39727, comment #22)
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?view=rev&revision=740149
+   Backport version for 2.2.x of patch:
+      http://people.apache.org/~lars/mod_deflate_etagfix.patch
+   +1: lars
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
