@@ -35,8 +35,7 @@
 <div class="section">
 <h2><a name="definitions" id="definitions">Définitions</a></h2>
 
-  <dl>
-    <dt><a name="algorithm" id="algorithm">Algorithme</a></dt>
+<dt><a name="algorithm" id="algorithm">Algorithme</a></dt>
 
     <dd>Une formule sans ambiguité ou un jeu de règles destinées à
     résoudre un problème en un nombre fini d'étapes. Les algorithmes de
@@ -49,6 +48,10 @@
     <dd>Un algorithme ou un système de chiffrement des données.
     Quelques exemples : DES, IDEA, RC4, etc.<br />
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="apr" id="apr">APR</a></dt>
+    <dd>Voir "Bibliothèques pour la portabilité d'Apache"
     </dd>
 
     <dt><a name="tarball" id="tarball">Archive Tar (Tarball)</a></dt>
@@ -73,6 +76,15 @@
     Les autres entités du réseau peuvent alors utiliser la signature pour
     vérifier qu'une CA a authentifié le porteur du certificat.<br />
       Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    </dd>
+
+    <dt><a name="apacheportableruntime" id="apacheportableruntime">Bibliothèques pour la portabilité d'Apache
+       (Apache Portable Runtime)</a> <a name="apr" id="apr">(APR)</a></dt>
+    <dd>Un jeu de bibliothèques qui fournit la plupart des interfaces de base
+      entre le serveur et le système d'exploitation.  APR est développé
+      parallèlement au serveur HTTP Apache comme projet indépendant.<br />
+      Voir : <a href="http://apr.apache.org/">Apache Portable Runtime
+      Project</a>
     </dd>
 
 
@@ -130,6 +142,7 @@
       pour décrire les directives d'Apache</a>
     </dd>
 
+<dl>
     <dt><a name="accesscontrol" id="accesscontrol">Contrôle d'accès
     (Access Control)</a></dt>
     <dd>La restriction d'accès à des zones du réseau. Habituellement
@@ -323,14 +336,7 @@ Interface commune avec les programmes externes
     </dd>
 
 
-    <dt><a name="apacheportableruntime" id="apacheportableruntime">Bibliothèques pour la portabilité d'Apache
-       (Apache Portable Runtime)</a> <a name="apr" id="apr">(APR)</a></dt>
-    <dd>Un jeu de bibliothèques qui fournit la plupart des interfaces de base
-      entre le serveur et le système d'exploitation.  APR est développé
-      parallèlement au serveur HTTP Apache comme projet indépendant.<br />
-      Voir : <a href="http://apr.apache.org/">Apache Portable Runtime
-      Project</a>
-    </dd>
+    
 <dt><a name="uniformresourcelocator" id="uniformresourcelocator">
 Localisation de Ressource Uniformisée
 (Uniform Resource Locator)

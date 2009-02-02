@@ -106,7 +106,7 @@
       du cache de session par <module>mod_ssl</module>. Sont support&eacute;s
       actuellement : les fournisseurs utilisant un tampon cyclique en
       m&eacute;moire partag&eacute;e, les fichiers dbm sur disque, et les caches
-      distribu&eacute;s de type memcache./dd>
+      distribu&eacute;s de type memcache.</dd>
 
       
     </dl>

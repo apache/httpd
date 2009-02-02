@@ -48,7 +48,17 @@
 <div class="section">
 <h2><a name="module" id="module">Améliorations des modules</a></h2>
     
-    
+    <dl>
+      <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>: support de la validation OCSP des
+      certificats clients</dt>
+
+      <dd><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> peut maintenant vérifier la
+      validité des certificats clients en se connectant à
+      un serveur OCSP. Il est possible de définir un
+      répondeur par défaut, et de choisir si l'on
+      préfère le répondeur désigné
+      dans le certificat client lui-même.</dd>
+    </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="programs" id="programs">Améliorations des programmes</a></h2>
@@ -83,6 +93,19 @@
       avancée à l'aide de la directive <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code> et des directives de
       conteneur associées, comme <code class="directive"><a href="./mod/mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></code>, toutes fournies par le module
       <code class="module"><a href="./mod/mod_authz_core.html">mod_authz_core</a></code>.</dd>
+
+      <dt>Interface de mise en cache des petits objets</dt>
+
+      <dd>Le fichier d'en-têtes <var>ap_socache.h</var> fournit une
+      interface Ã&nbsp; base de fournisseur pour la mise en cache des petits
+      objets de données, en s'inspirant de
+      l'implémentation précédente
+      du cache de session par <code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>. Sont supportés
+      actuellement : les fournisseurs utilisant un tampon cyclique en
+      mémoire partagée, les fichiers dbm sur disque, et les caches
+      distribués de type memcache.</dd>
+
+      
     </dl>
   </div></div>
 <div class="bottomlang">
