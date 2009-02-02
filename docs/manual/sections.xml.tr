@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 420990 -->
+<!-- English Revision: 735922 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -49,6 +49,7 @@ için nasıl kullanılacağı açıklanmıştır.</p>
 <directive type="section" module="core">DirectoryMatch</directive>
 <directive type="section" module="core">Files</directive>
 <directive type="section" module="core">FilesMatch</directive>
+<directive type="section" module="core">If</directive>
 <directive type="section" module="core">IfDefine</directive>
 <directive type="section" module="core">IfModule</directive>
 <directive type="section" module="mod_version">IfVersion</directive>
