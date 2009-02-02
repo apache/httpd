@@ -1546,9 +1546,11 @@ yönergeleri sarmalar.</td></tr>
       (<code>fnmatch()</code>) dosya ismi kalıp karakterleri kullanılabilir.
       Ayrıca, eğer <code class="directive">Include</code> yönergesi bir dosya değil de
       bir dizin gösteriyorsa Apache bu dizindeki ve alt dizinlerindeki bütün
-      dosyaları okuyacaktır. Fakat dizinin bir bütün olarak okutulması
+      dosyaları okuyacaktır. Bunula birlikte, dizinin bir bütün olarak okutulması
       önerilmez, çünkü dizinde <code class="program"><a href="../programs/httpd.html">httpd</a></code> programının çökmesine
-      sebep olabilecek geçici dosyalar unutulabilir.</p>
+      sebep olabilecek geçici dosyalar unutulabilir. Bunun yerine, belli bir
+      şablona uyan dosyaları seçebilmek için, örneğin *.conf gibi dosya 
+      kalıplarının kullanılmasını öneriyoruz.</p>
 
     <p>Dosya yolu mutlak bir dosya yolu olarak belirtilebileceği gibi
       <code class="directive"><a href="#serverroot">ServerRoot</a></code> dizinine göreli olarak da
