@@ -393,10 +393,13 @@ static apr_status_t deflate_ctx_cleanup(void *data)
 static void deflate_check_etag(request_rec *r, const char *transform)
 {
     const char *etag = apr_table_get(r->headers_out, "ETag");
-    if (etag && (((etag[0] != 'W') && (etag[0] !='w')) || (etag[1] != '/'))) {
-        apr_table_set(r->headers_out, "ETag",
-                      apr_pstrcat(r->pool, etag, "-", transform, NULL));
-    }
+    if ((etag && (strlen(etag) > 2))) {
+        if (etag[0] == '"') {
+            etag = apr_pstrndup(r->pool, etag, strlen(etag) - 2);
+            apr_table_set(r->headers_out, "ETag",
+                          apr_pstrcat(r->pool, etag, "-", transform, "\"", NULL));
+        }
+    }   
 }
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
