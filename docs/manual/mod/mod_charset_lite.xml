@@ -29,19 +29,16 @@
 <identifier>charset_lite_module</identifier>
 
 <summary>
-    <p><module>mod_charset_lite</module> allows the administrator to
-    specify the source character set of objects as well as the
-    character set they should be translated into before sending to the
-    client. <module>mod_charset_lite</module> does not translate the
-    data itself but instead tells Apache what translation to
-    perform. <module>mod_charset_lite</module> is applicable to EBCDIC
-    and ASCII host environments. In an EBCDIC environment, Apache
-    normally translates text content from the code page of the Apache
-    process locale to ISO-8859-1. <module>mod_charset_lite</module>
-    can be used to specify that a different translation is to be
-    performed. In an ASCII environment, Apache normally performs no
-    translation, so <module>mod_charset_lite</module> is needed in
-    order for any translation to take place.</p>
+    <p><module>mod_charset_lite</module> allows the server to change
+    the character set of responses before sending them to the client.
+    In an EBCDIC environment, Apache always translates HTTP protocol
+    content (e.g. response headers) from the code page of the Apache
+    process locale to ISO-8859-1, but not the body of responses.  In
+    any environment, <module>mod_charset_lite</module> can be used to
+    specify that response bodies should be translated.  For example,
+    if files are stored in EBCDIC, then 
+    <module>mod_charset_lite</module> can translate them to
+    ISO-8859-1 before sending them to the client.</p>
 
     <p>This module provides a small subset of configuration
     mechanisms implemented by Russian Apache and its associated
