@@ -266,17 +266,6 @@ LogLevel warn
     Require all granted
 </Directory>
 
-#
-# DefaultType: the default MIME type the server will use for a document
-# if it cannot otherwise determine one, such as from filename extensions.
-# If your server contains mostly text or HTML documents, "text/plain" is
-# a good value.  If most of your content is binary, such as applications
-# or images, you may want to use "application/octet-stream" instead to
-# keep browsers from trying to display binary files as though they are
-# text.
-#
-DefaultType text/plain
-
 <IfModule mime_module>
     #
     # TypesConfig points to the file containing the list of mappings from
