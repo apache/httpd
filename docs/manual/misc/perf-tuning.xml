@@ -136,9 +136,9 @@
       server machine, in order that this activity not adversely affect
       server performance.</p>
 
-      <p>If you use any <code><directive module="mod_access">Allow</directive> 
-      from domain</code> or <code><directive 
-      module="mod_access">Deny</directive> from domain</code> 
+      <p>If you use any <code><directive module="mod_access_compat"
+      >Allow</directive> from domain</code> or <code><directive
+      module="mod_access_compat">Deny</directive> from domain</code>
       directives (i.e., using a hostname, or a domain name, rather than
       an IP address) then you will pay for
       two DNS lookups (a reverse, followed by a forward lookup
@@ -326,8 +326,8 @@
       <title>Sendfile</title>
 
       <p>In situations where Apache 2.x can ignore the contents of the file
-      to be delivered -- for example, when serving static file content -- 
-      it normally uses the kernel sendfile support the file if the OS 
+      to be delivered -- for example, when serving static file content --
+      it normally uses the kernel sendfile support the file if the OS
       supports the <code>sendfile(2)</code> operation.</p>
 
       <p>On most platforms, using sendfile improves performance by eliminating
@@ -341,14 +341,14 @@
           another box and moved to such a machine with broken sendfile support.</p>
         </li>
         <li>
-          <p>With an NFS-mounted files, the kernel may be unable 
+          <p>With an NFS-mounted files, the kernel may be unable
           to reliably serve the network file through it's own cache.</p>
         </li>
       </ul>
 
       <p>For installations where either of these factors applies, you
       should use <code>EnableSendfile off</code> to disable sendfile
-      delivery of file contents. (Note: This directive can be overridden 
+      delivery of file contents. (Note: This directive can be overridden
       on a per-directory basis.)</p>
 
     </section>
