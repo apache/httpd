@@ -59,7 +59,7 @@
       </example>
     <p>Alternatively you may prefer to default everything to binary:</p>
       <example>
-<pre>DefaultType application/octet-stream</pre>
+<pre>ForceType application/octet-stream</pre>
       </example>
     </section> <!-- /mimetypes -->
 

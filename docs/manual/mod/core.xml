@@ -212,7 +212,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
     a default charset of <code>iso-8859-1</code>. Any other value is assumed
     to be the <var>charset</var> to be used, which should be one of the
     <a href="http://www.iana.org/assignments/character-sets">IANA registered
-    charset values</a> for use in MIME media types.
+    charset values</a> for use in Internet media types (MIME types).
     For example:</p>
 
     <example>
@@ -235,9 +235,9 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
 
 <directivesynopsis>
 <name>AddOutputFilterByType</name>
-<description>assigns an output filter to a particular MIME-type</description>
+<description>assigns an output filter to a particular media-type</description>
 <syntax>AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
-<var>MIME-type</var> [<var>MIME-type</var>] ...</syntax>
+<var>media-type</var> [<var>media-type</var>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -247,7 +247,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
 <usage>
     <p>This directive activates a particular output <a
     href="../filter.html">filter</a> for a request depending on the
-    response <glossary>MIME-type</glossary>.  Because of certain
+    response <glossary>media-type</glossary>.  Because of certain
     problems discussed below, this directive is deprecated.  The same
     functionality is available using <module>mod_filter</module>.</p>
 
@@ -283,14 +283,10 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
     <note type="warning"><title>Note</title>
       <p>Enabling filters with <directive>AddOutputFilterByType</directive>
       may fail partially or completely in some cases. For example, no
-      filters are applied if the <glossary>MIME-type</glossary> could not be determined  and falls
-      back to the <directive module="core">DefaultType</directive> setting,
-      even if the <directive module="core">DefaultType</directive> is the
-      same.</p>
-
-      <p>However, if you want to make sure, that the filters will be
-      applied, assign the content type to a resource explicitly, for
-      example with <directive module="mod_mime">AddType</directive> or
+      filters are applied if the <glossary>media-type</glossary> could not
+      be determined.  If you want to make sure that the filters will be
+      applied, assign the content type to a resource explicitly; for
+      example, with <directive module="mod_mime">AddType</directive> or
       <directive module="core">ForceType</directive>. Setting the
       content type within a (non-nph) CGI script is also safe.</p>
 
@@ -385,16 +381,15 @@ be passed through</description>
       <dt>FileInfo</dt>
 
       <dd>
-      Allow use of the directives controlling document types (<directive
-      module="core">DefaultType</directive>, <directive
-      module="core">ErrorDocument</directive>, <directive
-      module="core">ForceType</directive>, <directive
-      module="mod_negotiation">LanguagePriority</directive>,
-      <directive module="core">SetHandler</directive>, <directive
-      module="core">SetInputFilter</directive>, <directive
-      module="core">SetOutputFilter</directive>, and
-      <module>mod_mime</module> Add* and Remove*
-      directives, <em>etc.</em>), document meta data (<directive
+      Allow use of the directives controlling document types
+     (<directive module="core">ErrorDocument</directive>,
+      <directive module="core">ForceType</directive>,
+      <directive module="mod_negotiation">LanguagePriority</directive>,
+      <directive module="core">SetHandler</directive>,
+      <directive module="core">SetInputFilter</directive>,
+      <directive module="core">SetOutputFilter</directive>, and
+      <module>mod_mime</module> Add* and Remove* directives),
+      document meta data (<directive
       module="mod_headers">Header</directive>, <directive
       module="mod_headers">RequestHeader</directive>, <directive
       module="mod_setenvif">SetEnvIf</directive>, <directive
@@ -539,47 +534,38 @@ headers</description>
 
 <directivesynopsis>
 <name>DefaultType</name>
-<description>MIME content-type that will be sent if the
-server cannot determine a type in any other way</description>
-<syntax>DefaultType <var>MIME-type|none</var></syntax>
-<default>DefaultType text/plain</default>
+<description>This directive has no effect other than to emit warnings
+if the value is not <code>none</code>. In prior versions, DefaultType
+would specify a default media type to assign to response content for
+which no other media type configuration could be found.
+</description>
+<syntax>DefaultType <var>media-type|none</var></syntax>
+<default>DefaultType none</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility>The argument <code>none</code> is available in Apache 2.2.7 and later</compatibility>
+<compatibility>The argument <code>none</code> is available in Apache 2.2.7 and later.  All other choices are DISABLED for 2.3.x and later.</compatibility>
 
 <usage>
-    <p>There will be times when the server is asked to provide a
-    document whose type cannot be determined by its <glossary
-    ref="mime-type">MIME types</glossary> mappings.</p>
+    <p>This directive has been disabled.  For backwards compatibility
+    of configuration files, it may be specified with the value
+    <code>none</code>, meaning no default media type. For example:</p>
 
-    <p>The server SHOULD inform the client of the content-type of the
-    document.  If the server is unable to determine this by normal
-    means, it will set it to the configured
-    <code>DefaultType</code>. For example:</p>
-
-    <example>
-      DefaultType image/gif
-    </example>
-
-    <p>would be appropriate for a directory which contained many GIF
-    images with filenames missing the <code>.gif</code> extension.</p>
-
-    <p>In cases where it can neither be determined by the server nor
-    the administrator (e.g. a proxy), it is preferable to omit the MIME
-    type altogether rather than provide information that may be false.
-    This can be accomplished using</p>
     <example>
       DefaultType None
     </example>
-    <p><code>DefaultType None</code> is only available in httpd-2.2.7 and later.</p>
 
-    <p>Note that unlike <directive
-    module="core">ForceType</directive>, this directive only
-    provides the default mime-type. All other mime-type definitions,
-    including filename extensions, that might identify the media type
-    will override this default.</p>
+    <p><code>DefaultType None</code> is only available in
+    httpd-2.2.7 and later.</p>
+
+    <p>Use the mime.types configuration file and the
+    <directive module="mod_mime">AddType</directive> to configure media
+    type assignments via file extensions, or the
+    <directive module="core">ForceType</directive> directive to configure
+    the media type for specific resources. Otherwise, the server will
+    send the response without a Content-Type header field and the
+    recipient may attempt to guess the media type.</p>
 </usage>
 </directivesynopsis>
 
@@ -1224,8 +1210,8 @@ filenames</description>
 <directivesynopsis>
 <name>ForceType</name>
 <description>Forces all matching files to be served with the specified
-MIME content-type</description>
-<syntax>ForceType <var>MIME-type</var>|None</syntax>
+media type in the HTTP Content-Type header field</description>
+<syntax>ForceType <var>media-type</var>|None</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -1238,7 +1224,7 @@ MIME content-type</description>
     <directive type="section" module="core">Files</directive>
     section, this directive forces all matching files to be served
     with the content type identification given by
-    <var>MIME-type</var>. For example, if you had a directory full of
+    <var>media-type</var>. For example, if you had a directory full of
     GIF files, but did not want to label them all with <code>.gif</code>,
     you might want to use:</p>
 
@@ -1246,11 +1232,12 @@ MIME content-type</description>
       ForceType image/gif
     </example>
 
-    <p>Note that unlike <directive module="core">DefaultType</directive>,
-    this directive overrides all mime-type associations, including
-    filename extensions, that might identify the media type.</p>
+    <p>Note that this directive overrides other indirect media type
+    associations defined in mime.types or via the
+    <directive module="mod_mime">AddType</directive>.</p>
 
-    <p>You can override any <directive>ForceType</directive> setting
+    <p>You can also override more general
+    <directive>ForceType</directive> settings
     by using the value of <code>None</code>:</p>
 
     <example>
