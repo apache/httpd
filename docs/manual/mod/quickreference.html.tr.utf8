@@ -75,7 +75,7 @@ charset</td></tr>
   <code>text/html</code> olduğunda eklenecek öntanımlı karakter kümesi
   parametresini belirler.</td></tr>
 <tr><td><a href="mod_autoindex.html#adddescription">AddDescription <var>metin dosya</var> [<var>dosya</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dosya için gösterilecek açıklama belirtilir.</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addencoding">AddEncoding <var>MIME-enc</var> <var>extension</var>
+<tr class="odd"><td><a href="mod_mime.html#addencoding">AddEncoding <var>encoding</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions to the specified encoding
 type</td></tr>
 <tr><td><a href="mod_mime.html#addhandler">AddHandler <var>handler-name</var> <var>extension</var>
@@ -93,7 +93,7 @@ belirler.</td></tr>
 <tr><td><a href="mod_mime.html#addinputfilter">AddInputFilter <var>filter</var>[;<var>filter</var>...]
 <var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Maps filename extensions to the filters that will process
 client requests</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addlanguage">AddLanguage <var>MIME-lang</var> <var>extension</var>
+<tr class="odd"><td><a href="mod_mime.html#addlanguage">AddLanguage <var>language-tag</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extension to the specified content
 language</td></tr>
 <tr><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>module-name</var> <var>string</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Adds additional information to the module
@@ -103,7 +103,7 @@ information displayed by the server-info handler</td></tr>
 responses from the server</td></tr>
 <tr><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>süzgeç</var>[;<var>süzgeç</var>...]
 <var>MIME-türü</var> [<var>MIME-türü</var>] ...</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Belli bir MIME türüne bir çıktı süzgeci atar.</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
+<tr class="odd"><td><a href="mod_mime.html#addtype">AddType <var>media-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
 <tr><td><a href="mod_alias.html#alias">Alias <var>URL-yolu</var>
@@ -304,8 +304,9 @@ a DAV resource</td></tr>
 <tr class="odd"><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify an SQL driver</td></tr>
 <tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>URL-yolu</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Özel bir simge atanmamış dosyalar için gösterilecek simgeyi
 belirler.</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sets all files in the given scope to the specified
-language</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
+header field for all resources in the current context that have not been
+assigned a language-tag by some other means.</td></tr>
 <tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-türü</var>|none</a></td><td> text/plain </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun MIME türünü saptayamadığı durumda göndereceği MIME
   içerik türünü belirler.</td></tr>
 <tr class="odd"><td><a href="core.html#define">Define <var>değişken-ismi</var></a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişkenin mevcudiyetini betimler.</td></tr>

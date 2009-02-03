@@ -893,7 +893,7 @@ void *request_config;   /* Notes on *this* request */</pre><p><code>
     per-directory. Most things are per-directory, including in particular access
     control and authorization information, but also information on how to
     determine file types from suffixes, which can be modified by
-    <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> and <code class="directive"><a href="../mod/core.html#defaulttype">DefaultType</a></code> directives, and so forth. In general,
+    <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> and <code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code> directives, and so forth. In general,
     the governing philosophy is that anything which <em>can</em> be made
     configurable by directory should be; per-server information is generally
     used in the standard set of modules for information like

@@ -23,12 +23,12 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_fdpass.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>FastCGI support module for
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>fdpass external process support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_fdpass_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_fdpass.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3 and later</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available for unix in version 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the passing the socket of the

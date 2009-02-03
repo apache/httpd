@@ -83,7 +83,7 @@ charset</td></tr>
   <code>text/plain</code> oder <code>text/html</code> hinzugefügt wird
 </td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Description to display for a file</td></tr>
-<tr><td><a href="mod_mime.html#addencoding">AddEncoding <var>MIME-enc</var> <var>extension</var>
+<tr><td><a href="mod_mime.html#addencoding">AddEncoding <var>encoding</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions to the specified encoding
 type</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addhandler">AddHandler <var>handler-name</var> <var>extension</var>
@@ -100,7 +100,7 @@ content-type</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addinputfilter">AddInputFilter <var>filter</var>[;<var>filter</var>...]
 <var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps filename extensions to the filters that will process
 client requests</td></tr>
-<tr><td><a href="mod_mime.html#addlanguage">AddLanguage <var>MIME-lang</var> <var>extension</var>
+<tr><td><a href="mod_mime.html#addlanguage">AddLanguage <var>language-tag</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extension to the specified content
 language</td></tr>
 <tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>module-name</var> <var>string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adds additional information to the module
@@ -111,7 +111,7 @@ responses from the server</td></tr>
 <tr class="odd"><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>Filter</var>[;<var>Filter</var>...]
 <var>MIME-Type</var> [<var>MIME-Type</var>] ...</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">einen Ausgabefilter einem bestimmten MIME-Type
 zuordnen</td></tr>
-<tr><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
+<tr><td><a href="mod_mime.html#addtype">AddType <var>media-type</var> <var>extension</var>
 [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
@@ -312,8 +312,9 @@ a DAV resource</td></tr>
 <tr><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify an SQL driver</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Icon to display for files when no specific icon is
 configured</td></tr>
-<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets all files in the given scope to the specified
-language</td></tr>
+<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
+header field for all resources in the current context that have not been
+assigned a language-tag by some other means.</td></tr>
 <tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>MIME-Type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">MIME-Content-Type, der gesendet wird, wenn der Server den Typ
 nicht auf andere Weise ermitteln kann.</td></tr>
 <tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>

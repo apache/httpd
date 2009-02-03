@@ -173,7 +173,7 @@ under different user IDs.</dd>
 <code>CONNECT</code> request handling</dd>
 <dt><a href="mod_proxy_fcgi.html">mod_proxy_fcgi</a></dt><dd>FastCGI support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_proxy_fdpass.html">mod_proxy_fdpass</a></dt><dd>FastCGI support module for
+<dt><a href="mod_proxy_fdpass.html">mod_proxy_fdpass</a></dt><dd>fdpass external process support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_ftp.html">mod_proxy_ftp</a></dt><dd>FTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
