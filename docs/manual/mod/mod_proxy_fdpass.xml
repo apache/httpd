@@ -23,12 +23,12 @@
 <modulesynopsis metafile="mod_proxy_fdpass.xml.meta">
 
 <name>mod_proxy_fdpass</name>
-<description>FastCGI support module for
+<description>fdpass external process support module for
 <module>mod_proxy</module></description>
 <status>Extension</status>
 <sourcefile>mod_proxy_fdpass.c</sourcefile>
 <identifier>proxy_fdpass_module</identifier>
-<compatibility>Available in version 2.3 and later</compatibility>
+<compatibility>Available for unix in version 2.3 and later</compatibility>
 
 <summary>
     <p>This module <em>requires</em> the service of <module
