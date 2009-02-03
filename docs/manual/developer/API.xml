@@ -903,7 +903,7 @@ void *request_config;   /* Notes on *this* request */</pre>
     control and authorization information, but also information on how to
     determine file types from suffixes, which can be modified by
     <directive module="mod_mime">AddType</directive> and <directive
-    module="core">DefaultType</directive> directives, and so forth. In general,
+    module="core">ForceType</directive> directives, and so forth. In general,
     the governing philosophy is that anything which <em>can</em> be made
     configurable by directory should be; per-server information is generally
     used in the standard set of modules for information like

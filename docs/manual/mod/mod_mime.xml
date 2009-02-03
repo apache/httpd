@@ -32,13 +32,15 @@
 <identifier>mime_module</identifier>
 
 <summary>
-    <p>This module is used to associate various bits of "meta
-    information" with files by their filename extensions. This
-    information relates the filename of the document to it's
-    mime-type, language, character set and encoding. This
-    information is sent to the browser, and participates in content
-    negotiation, so the user's preferences are respected when
-    choosing one of several possible files to serve. See
+    <p>This module is used to assign content metadata to the content
+    selected for an HTTP response by mapping patterns in the
+    URI or filenames to the metadata values.  For example, the filename
+    extensions of content files often define the content's Internet
+    media type, language, character set, and content-encoding. This
+    information is sent in HTTP messages containing that content and
+    used in content negotiation when selecting alternatives, such that
+    the user's preferences are respected when choosing one of several
+    possible contents to serve. See
     <module>mod_negotiation</module> for more information
     about <a href="../content-negotiation.html">content negotiation</a>.</p>
 
@@ -47,11 +49,11 @@
     module="mod_mime">AddEncoding</directive>, <directive
     module="mod_mime">AddLanguage</directive> and <directive
     module="mod_mime">AddType</directive> are all used to map file
-    extensions onto the meta-information for that file. Respectively
+    extensions onto the metadata for that file. Respectively
     they set the character set, content-encoding, content-language,
-    and <glossary>MIME-type</glossary> (content-type) of documents.  The directive <directive
+    and <glossary>media-type</glossary> (content-type) of documents.  The directive <directive
     module="mod_mime">TypesConfig</directive> is used to specify a
-    file which also maps extensions onto MIME types. </p>
+    file which also maps extensions onto media types. </p>
 
     <p>In addition, <module>mod_mime</module> may define the <a
     href="../handler.html">handler</a> and <a
@@ -65,14 +67,14 @@
     <module>mod_negotiation</module> to consider these file extensions
     to be included when testing Multiviews matches.</p>
 
-    <p>While <module>mod_mime</module> associates meta-information
+    <p>While <module>mod_mime</module> associates metadata
     with filename extensions, the <module>core</module> server
     provides directives that are used to associate all the files in a
     given container (<em>e.g.</em>, <directive type="section"
     module="core">Location</directive>, <directive type="section"
     module="core">Directory</directive>, or <directive type="section"
     module="core">Files</directive>) with particular
-    meta-information. These directives include <directive
+    metadata. These directives include <directive
     module="core">ForceType</directive>, <directive
     module="core">SetHandler</directive>, <directive
     module="core">SetInputFilter</directive>, and <directive
@@ -80,11 +82,11 @@
     override any filename extension mappings defined in
     <module>mod_mime</module>.</p>
 
-    <p>Note that changing the meta-information for a file does not
+    <p>Note that changing the metadata for a file does not
     change the value of the <code>Last-Modified</code> header.
     Thus, previously cached copies may still be used by a client or
     proxy, with the previous headers. If you change the
-    meta-information (language, content type, character set or
+    metadata (language, content type, character set or
     encoding) you may need to 'touch' affected files (updating
     their last modified date) to ensure that all visitors are
     receive the corrected content headers.</p>
@@ -93,25 +95,24 @@
 module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
-<seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">SetHandler</directive></seealso>
 <seealso><directive module="core">SetInputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
 
 <section id="multipleext"><title>Files with Multiple Extensions</title>
-    <p>Files can have more than one extension, and the order of the
+    <p>Files can have more than one extension; the order of the
     extensions is <em>normally</em> irrelevant. For example, if the
     file <code>welcome.html.fr</code> maps onto content type
     <code>text/html</code> and language French then the file
     <code>welcome.fr.html</code> will map onto exactly the same
     information.  If more than one extension is given that maps onto
-    the same type of meta-information, then the one to the right will
+    the same type of metadata, then the one to the right will
     be used, except for languages and content encodings. For example,
-    if <code>.gif</code> maps to the <glossary>MIME-type</glossary>
+    if <code>.gif</code> maps to the <glossary>media-type</glossary>
     <code>image/gif</code> and <code>.html</code> maps to the
-    MIME-type <code>text/html</code>, then the file
+    media-type <code>text/html</code>, then the file
     <code>welcome.gif.html</code> will be associated with the
-    MIME-type <code>text/html</code>.</p>
+    media-type <code>text/html</code>.</p>
 
     <p><a href="#charset-lang">Languages</a> and <a href="#contentencoding"
     >content encodings</a> are treated accumulative, because one can assign
@@ -121,14 +122,15 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     text/html</code>.</p>
 
     <p>Care should be taken when a file with multiple extensions
-    gets associated with both a <glossary>MIME-type</glossary> and a handler. This will
+    gets associated with both a <glossary>media-type</glossary>
+    and a handler. This will
     usually result in the request being handled by the module associated
     with the handler. For example, if the <code>.imap</code>
     extension is mapped to the handler <code>imap-file</code> (from
     <module>mod_imagemap</module>) and the <code>.html</code> extension is
-    mapped to the MIME-type <code>text/html</code>, then the file
+    mapped to the media-type <code>text/html</code>, then the file
     <code>world.imap.html</code> will be associated with both the
-    <code>imap-file</code> handler and <code>text/html</code> MIME-type.
+    <code>imap-file</code> handler and <code>text/html</code> media-type.
     When it is processed, the <code>imap-file</code> handler will be used,
     and so it will be treated as a <module>mod_imagemap</module> imagemap
     file.</p>
@@ -151,7 +153,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 </section>
 
 <section id="contentencoding"><title>Content encoding</title>
-    <p>A file of a particular <glossary>MIME-type</glossary> can additionally be encoded a
+    <p>A file of a particular <glossary>media-type</glossary> can additionally be encoded a
     particular way to simplify transmission over the Internet.
     While this usually will refer to compression, such as
     <code>gzip</code>, it can also refer to encryption, such a
@@ -252,9 +254,10 @@ charset</description>
 
 <usage>
     <p>The <directive>AddCharset</directive> directive maps the given
-    filename extensions to the specified content charset. <var>charset</var>
-    is the <a href="http://www.iana.org/assignments/character-sets">MIME
-    charset parameter</a> of filenames containing
+    filename extensions to the specified content charset (the Internet
+    registered name for a given character encoding). <var>charset</var>
+    is the <a href="http://www.iana.org/assignments/character-sets">media
+    type's charset parameter</a> for resources with filenames containing
     <var>extension</var>. This mapping is added to any already in force,
     overriding any mappings that already exist for the same
     <var>extension</var>.</p>
@@ -291,7 +294,7 @@ charset</description>
 <name>AddEncoding</name>
 <description>Maps the given filename extensions to the specified encoding
 type</description>
-<syntax>AddEncoding <var>MIME-enc</var> <var>extension</var>
+<syntax>AddEncoding <var>encoding</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -299,8 +302,9 @@ type</description>
 
 <usage>
     <p>The <directive>AddEncoding</directive> directive maps the given
-    filename extensions to the specified encoding type. <var>MIME-enc</var>
-    is the MIME encoding to use for documents containing the
+    filename extensions to the specified HTTP content-encoding.
+    <var>encoding</var> is the HTTP content coding to append to the
+    value of the Content-Encoding header field for documents named with the
     <var>extension</var>. This mapping is added to any already in force,
     overriding any mappings that already exist for the same
     <var>extension</var>.</p>
@@ -326,7 +330,7 @@ type</description>
     <code>AddEncoding</code> directive. To make this long story
     short, you should always use <code>x-gzip</code> and
     <code>x-compress</code> for these two specific encodings. More
-    recent encodings, such as <code>deflate</code> should be
+    recent encodings, such as <code>deflate</code>, should be
     specified without the <code>x-</code>.</p>
 
     <p>The <var>extension</var> argument is case-insensitive and can
@@ -411,7 +415,7 @@ later.</compatibility>
 <name>AddLanguage</name>
 <description>Maps the given filename extension to the specified content
 language</description>
-<syntax>AddLanguage <var>MIME-lang</var> <var>extension</var>
+<syntax>AddLanguage <var>language-tag</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -419,10 +423,11 @@ language</description>
 
 <usage>
     <p>The <directive>AddLanguage</directive> directive maps the given
-    filename extension to the specified content language.
-    <var>MIME-lang</var> is the MIME language of filenames containing
-    <var>extension</var>. This mapping is added to any already in force,
-    overriding any mappings that already exist for the same
+    filename extension to the specified content language.  Files with the
+    filename <var>extension</var> are assigned an HTTP Content-Language
+    value of <var>language-tag</var> corresponding to the language
+    identifiers defined by RFC 3066.
+    This directive overrides any mappings that already exist for the same
     <var>extension</var>.</p>
 
     <example><title>Example</title>
@@ -511,7 +516,7 @@ later.</compatibility>
 <name>AddType</name>
 <description>Maps the given filename extensions onto the specified content
 type</description>
-<syntax>AddType <var>MIME-type</var> <var>extension</var>
+<syntax>AddType <var>media-type</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -520,12 +525,12 @@ type</description>
 <usage>
     <p>The <directive>AddType</directive> directive maps the given
     filename extensions onto the specified content
-    type. <var>MIME-type</var> is the <glossary ref="mime-type">MIME
+    type. <var>media-type</var> is the <glossary ref="media-type">media
     type</glossary> to use for filenames containing
     <var>extension</var>. This mapping is added to any already in
     force, overriding any mappings that already exist for the same
     <var>extension</var>. This directive can be used to add mappings
-    not listed in the MIME types file (see the <directive
+    not listed in the media types file (see the <directive
     module="mod_mime">TypesConfig</directive> directive).</p>
     
     <example><title>Example</title>
@@ -539,7 +544,7 @@ type</description>
     </example>
 
     <note>
-      It is recommended that new MIME types be added using the
+      It is recommended that new media types be added using the
       <directive>AddType</directive> directive rather than changing the 
       <directive module="mod_mime">TypesConfig</directive> file.
     </note>
@@ -550,7 +555,6 @@ type</description>
     <var>extension</var> argument will be compared against each of
     them.</p>
 </usage>
-<seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
 </directivesynopsis>
 
@@ -611,30 +615,31 @@ a matching file with MultiViews</description>
 
 <directivesynopsis>
 <name>DefaultLanguage</name>
-<description>Sets all files in the given scope to the specified
-language</description>
-<syntax>DefaultLanguage <var>MIME-lang</var></syntax>
+<description>Defines a default language-tag to be sent in the Content-Language
+header field for all resources in the current context that have not been
+assigned a language-tag by some other means.</description>
+<syntax>DefaultLanguage <var>language-tag</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
     <p>The <directive>DefaultLanguage</directive> directive tells Apache
-    that all files in the directive's scope (<em>e.g.</em>, all files
+    that all resources in the directive's scope (<em>e.g.</em>, all resources
     covered by the current <directive module="core" type="section"
     >Directory</directive> container) that don't have an explicit language
     extension (such as <code>.fr</code> or <code>.de</code> as configured
     by <directive module="mod_mime">AddLanguage</directive>) should be
-    considered to be in the specified <var>MIME-lang</var> language. This
-    allows entire directories to be marked as containing Dutch content, for
+    assigned a Content-Language of <var>language-tag</var>. This allows
+    entire directory trees to be marked as containing Dutch content, for
     instance, without having to rename each file. Note that unlike using
     extensions to specify languages, <directive>DefaultLanguage</directive>
     can only specify a single language.</p>
 
-    <p>If no <directive>DefaultLanguage</directive> directive is in force,
+    <p>If no <directive>DefaultLanguage</directive> directive is in force
     and a file does not have any language extensions as configured
-    by <directive module="mod_mime">AddLanguage</directive>, then that file
-    will be considered to have no language attribute.</p>
+    by <directive module="mod_mime">AddLanguage</directive>, then no
+    Content-Language header field will be generated.</p>
 
     <example><title>Example</title>
       DefaultLanguage en
@@ -876,7 +881,7 @@ extensions</description>
 
 <usage>
     <p>The <directive>RemoveType</directive> directive removes any
-    <glossary ref="mime-type">MIME type</glossary> associations for files with
+    <glossary ref="media-type">media type</glossary> associations for files with
     the given extensions. This allows <code>.htaccess</code> files in
     subdirectories to undo any associations inherited from parent
     directories or the server config files. An example of its use
@@ -888,8 +893,8 @@ extensions</description>
 
     <p>This will remove any special handling of <code>.cgi</code>
     files in the <code>/foo/</code> directory and any beneath it,
-    causing the files to be treated as being of the <directive
-    module="core">DefaultType</directive>.</p>
+    causing responses containing those files to omit the HTTP
+    Content-Type header field.</p>
 
     <note><title>Note</title>
       <p><directive>RemoveType</directive> directives are processed
@@ -912,16 +917,17 @@ extensions</description>
 
 <usage>
     <p>The <directive>TypesConfig</directive> directive sets the
-    location of the <glossary ref="mime-type">MIME types</glossary>
+    location of the <glossary ref="media-type">media types</glossary>
     configuration file. <var>File-path</var> is relative to the
     <directive module="core">ServerRoot</directive>. This file sets
     the default list of mappings from filename extensions to content
     types. Most administrators use the provided
     <code>mime.types</code> file, which associates common filename
-    extensions with IANA registered content types. The current list is
+    extensions with the official list of IANA registered media types
     maintained at <a href=
     "http://www.iana.org/assignments/media-types/index.html"
-    >http://www.iana.org/assignments/media-types/index.html</a>.  This
+    >http://www.iana.org/assignments/media-types/index.html</a>
+    as well as a large number of unofficial types.  This
     simplifies the <code>httpd.conf</code> file by providing the
     majority of media-type definitions, and may be overridden by
     <directive module="mod_mime">AddType</directive> directives as
@@ -932,7 +938,7 @@ extensions</description>
     an <directive module="mod_mime">AddType</directive> directive:</p>
 
     <example>
-      <var>MIME-type</var> [<var>extension</var>] ...
+      <var>media-type</var> [<var>extension</var>] ...
     </example>
 
     <p>The case of the extension does not matter. Blank lines, and lines
