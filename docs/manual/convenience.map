@@ -365,11 +365,7 @@ session	mod/mod_session.html#session
 sessioncookiename	mod/mod_session_cookie.html#sessioncookiename
 sessioncookiename2	mod/mod_session_cookie.html#sessioncookiename2
 sessioncookieremove	mod/mod_session_cookie.html#sessioncookieremove
-sessioncryptocertificatefile	mod/mod_session_crypto.html#sessioncryptocertificatefile
-sessioncryptocertificatekeyfile	mod/mod_session_crypto.html#sessioncryptocertificatekeyfile
-sessioncryptocipher	mod/mod_session_crypto.html#sessioncryptocipher
-sessioncryptodigest	mod/mod_session_crypto.html#sessioncryptodigest
-sessioncryptoengine	mod/mod_session_crypto.html#sessioncryptoengine
+sessioncryptodriver	mod/mod_session_crypto.html#sessioncryptodriver
 sessioncryptopassphrase	mod/mod_session_crypto.html#sessioncryptopassphrase
 sessiondbdcookiename	mod/mod_session_dbd.html#sessiondbdcookiename
 sessiondbdcookiename2	mod/mod_session_dbd.html#sessiondbdcookiename2
@@ -428,6 +424,7 @@ sslproxyprotocol	mod/mod_ssl.html#sslproxyprotocol
 sslproxyverify	mod/mod_ssl.html#sslproxyverify
 sslproxyverifydepth	mod/mod_ssl.html#sslproxyverifydepth
 sslrandomseed	mod/mod_ssl.html#sslrandomseed
+sslrenegbuffersize	mod/mod_ssl.html#sslrenegbuffersize
 sslrequire	mod/mod_ssl.html#sslrequire
 sslrequiressl	mod/mod_ssl.html#sslrequiressl
 sslsessioncache	mod/mod_ssl.html#sslsessioncache

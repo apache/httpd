@@ -282,7 +282,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
     a default charset of <code>iso-8859-1</code>. Any other value is assumed
     to be the <var>charset</var> to be used, which should be one of the
     <a href="http://www.iana.org/assignments/character-sets">IANA registered
-    charset values</a> for use in MIME media types.
+    charset values</a> for use in Internet media types (MIME types).
     For example:</p>
 
     <div class="example"><p><code>
@@ -308,9 +308,9 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigns an output filter to a particular MIME-type</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigns an output filter to a particular media-type</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
-<var>MIME-type</var> [<var>MIME-type</var>] ...</code></td></tr>
+<var>media-type</var> [<var>media-type</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -318,7 +318,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.33 and later; deprecated in Apache 2.1 and later</td></tr>
 </table>
     <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the
-    response <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a>.  Because of certain
+    response <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a>.  Because of certain
     problems discussed below, this directive is deprecated.  The same
     functionality is available using <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>.</p>
 
@@ -354,14 +354,10 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
     <div class="warning"><h3>Note</h3>
       <p>Enabling filters with <code class="directive">AddOutputFilterByType</code>
       may fail partially or completely in some cases. For example, no
-      filters are applied if the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> could not be determined  and falls
-      back to the <code class="directive"><a href="#defaulttype">DefaultType</a></code> setting,
-      even if the <code class="directive"><a href="#defaulttype">DefaultType</a></code> is the
-      same.</p>
-
-      <p>However, if you want to make sure, that the filters will be
-      applied, assign the content type to a resource explicitly, for
-      example with <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> or
+      filters are applied if the <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a> could not
+      be determined.  If you want to make sure that the filters will be
+      applied, assign the content type to a resource explicitly; for
+      example, with <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> or
       <code class="directive"><a href="#forcetype">ForceType</a></code>. Setting the
       content type within a (non-nph) CGI script is also safe.</p>
 
@@ -456,10 +452,15 @@ be passed through</td></tr>
       <dt>FileInfo</dt>
 
       <dd>
-      Allow use of the directives controlling document types (<code class="directive"><a href="#defaulttype">DefaultType</a></code>, <code class="directive"><a href="#errordocument">ErrorDocument</a></code>, <code class="directive"><a href="#forcetype">ForceType</a></code>, <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>,
-      <code class="directive"><a href="#sethandler">SetHandler</a></code>, <code class="directive"><a href="#setinputfilter">SetInputFilter</a></code>, <code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code>, and
-      <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> Add* and Remove*
-      directives, <em>etc.</em>), document meta data (<code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code>, <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookieexpires">CookieExpires</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiedomain">CookieDomain</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiestyle">CookieStyle</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookietracking">CookieTracking</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiename">CookieName</a></code>),
+      Allow use of the directives controlling document types
+     (<code class="directive"><a href="#errordocument">ErrorDocument</a></code>,
+      <code class="directive"><a href="#forcetype">ForceType</a></code>,
+      <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>,
+      <code class="directive"><a href="#sethandler">SetHandler</a></code>,
+      <code class="directive"><a href="#setinputfilter">SetInputFilter</a></code>,
+      <code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code>, and
+      <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> Add* and Remove* directives),
+      document meta data (<code class="directive"><a href="../mod/mod_headers.html#header">Header</a></code>, <code class="directive"><a href="../mod/mod_headers.html#requestheader">RequestHeader</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></code>, <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookieexpires">CookieExpires</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiedomain">CookieDomain</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiestyle">CookieStyle</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookietracking">CookieTracking</a></code>, <code class="directive"><a href="../mod/mod_usertrack.html#cookiename">CookieName</a></code>),
       <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriteengine">RewriteEngine</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriteoptions">RewriteOptions</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>, <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>) and
       <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> from
       <code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code>.
@@ -577,44 +578,37 @@ headers</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>MIME content-type that will be sent if the
-server cannot determine a type in any other way</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DefaultType <var>MIME-type|none</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DefaultType text/plain</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>This directive has no effect other than to emit warnings
+if the value is not <code>none</code>. In prior versions, DefaultType
+would specify a default media type to assign to response content for
+which no other media type configuration could be found.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DefaultType <var>media-type|none</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DefaultType none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The argument <code>none</code> is available in Apache 2.2.7 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The argument <code>none</code> is available in Apache 2.2.7 and later.  All other choices are DISABLED for 2.3.x and later.</td></tr>
 </table>
-    <p>There will be times when the server is asked to provide a
-    document whose type cannot be determined by its <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME types</a> mappings.</p>
+    <p>This directive has been disabled.  For backwards compatibility
+    of configuration files, it may be specified with the value
+    <code>none</code>, meaning no default media type. For example:</p>
 
-    <p>The server SHOULD inform the client of the content-type of the
-    document.  If the server is unable to determine this by normal
-    means, it will set it to the configured
-    <code>DefaultType</code>. For example:</p>
-
-    <div class="example"><p><code>
-      DefaultType image/gif
-    </code></p></div>
-
-    <p>would be appropriate for a directory which contained many GIF
-    images with filenames missing the <code>.gif</code> extension.</p>
-
-    <p>In cases where it can neither be determined by the server nor
-    the administrator (e.g. a proxy), it is preferable to omit the MIME
-    type altogether rather than provide information that may be false.
-    This can be accomplished using</p>
     <div class="example"><p><code>
       DefaultType None
     </code></p></div>
-    <p><code>DefaultType None</code> is only available in httpd-2.2.7 and later.</p>
 
-    <p>Note that unlike <code class="directive"><a href="#forcetype">ForceType</a></code>, this directive only
-    provides the default mime-type. All other mime-type definitions,
-    including filename extensions, that might identify the media type
-    will override this default.</p>
+    <p><code>DefaultType None</code> is only available in
+    httpd-2.2.7 and later.</p>
+
+    <p>Use the mime.types configuration file and the
+    <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> to configure media
+    type assignments via file extensions, or the
+    <code class="directive"><a href="#forcetype">ForceType</a></code> directive to configure
+    the media type for specific resources. Otherwise, the server will
+    send the response without a Content-Type header field and the
+    recipient may attempt to guess the media type.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1251,8 +1245,8 @@ filenames</td></tr>
 <div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Forces all matching files to be served with the specified
-MIME content-type</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ForceType <var>MIME-type</var>|None</code></td></tr>
+media type in the HTTP Content-Type header field</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ForceType <var>media-type</var>|None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -1265,7 +1259,7 @@ MIME content-type</td></tr>
     <code class="directive"><a href="#files">&lt;Files&gt;</a></code>
     section, this directive forces all matching files to be served
     with the content type identification given by
-    <var>MIME-type</var>. For example, if you had a directory full of
+    <var>media-type</var>. For example, if you had a directory full of
     GIF files, but did not want to label them all with <code>.gif</code>,
     you might want to use:</p>
 
@@ -1273,11 +1267,12 @@ MIME content-type</td></tr>
       ForceType image/gif
     </code></p></div>
 
-    <p>Note that unlike <code class="directive"><a href="#defaulttype">DefaultType</a></code>,
-    this directive overrides all mime-type associations, including
-    filename extensions, that might identify the media type.</p>
+    <p>Note that this directive overrides other indirect media type
+    associations defined in mime.types or via the
+    <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>.</p>
 
-    <p>You can override any <code class="directive">ForceType</code> setting
+    <p>You can also override more general
+    <code class="directive">ForceType</code> settings
     by using the value of <code>None</code>:</p>
 
     <div class="example"><p><code>
