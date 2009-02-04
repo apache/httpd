@@ -396,6 +396,7 @@
 <li><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify</a></li>
 <li><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
 <li><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed</a></li>
+<li><a href="mod_ssl.html#sslrenegbuffersize">SSLRenegBufferSize</a></li>
 <li><a href="mod_ssl.html#sslrequire">SSLRequire</a></li>
 <li><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></li>
 <li><a href="mod_ssl.html#sslsessioncache">SSLSessionCache</a></li>

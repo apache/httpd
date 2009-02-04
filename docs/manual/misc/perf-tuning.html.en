@@ -19,7 +19,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Miscellaneous Documentation</a></div><div id="page-content"><div id="preamble"><h1>Apache Performance Tuning</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-tuning.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
 
@@ -118,8 +119,7 @@
       server machine, in order that this activity not adversely affect
       server performance.</p>
 
-      <p>If you use any <code><code class="directive"><a href="../mod/mod_access.html#allow">Allow</a></code> 
-      from domain</code> or <code><code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> from domain</code> 
+      <p>If you use any <code><code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> from domain</code> or <code><code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> from domain</code>
       directives (i.e., using a hostname, or a domain name, rather than
       an IP address) then you will pay for
       two DNS lookups (a reverse, followed by a forward lookup
@@ -307,8 +307,8 @@
       
 
       <p>In situations where Apache 2.x can ignore the contents of the file
-      to be delivered -- for example, when serving static file content -- 
-      it normally uses the kernel sendfile support the file if the OS 
+      to be delivered -- for example, when serving static file content --
+      it normally uses the kernel sendfile support the file if the OS
       supports the <code>sendfile(2)</code> operation.</p>
 
       <p>On most platforms, using sendfile improves performance by eliminating
@@ -322,14 +322,14 @@
           another box and moved to such a machine with broken sendfile support.</p>
         </li>
         <li>
-          <p>With an NFS-mounted files, the kernel may be unable 
+          <p>With an NFS-mounted files, the kernel may be unable
           to reliably serve the network file through it's own cache.</p>
         </li>
       </ul>
 
       <p>For installations where either of these factors applies, you
       should use <code>EnableSendfile off</code> to disable sendfile
-      delivery of file contents. (Note: This directive can be overridden 
+      delivery of file contents. (Note: This directive can be overridden
       on a per-directory basis.)</p>
 
     
@@ -1049,7 +1049,8 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/misc/perf-tuning.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/misc/perf-tuning.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
