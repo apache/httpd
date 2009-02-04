@@ -26,7 +26,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -276,8 +275,8 @@
       Off</code> şeklinde bir atama bu işlevselliği iptal eder.
       <code>AddDefaultCharset On</code> ile bu işlevsellik etkin kılınmaktan
       başka <code>iso-8859-1</code> karakter kümesini öntanımlı olarak yanıta
-      eklenir. Yönergede <var>karküm</var> olarak belirtilecek değerler, MIME
-      ortam türlerinde kullanmak üzere <a href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
+      eklenir. Yönergede <var>karküm</var> olarak belirtilecek değerler,
+      Genel Ağ ortam türlerinde (MIME türlerinde) kullanmak üzere <a href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
       karakter kümesi değerleri</a>nden biri olmalıdır. Örnek:</p>
 
     <div class="example"><p><code>
@@ -305,9 +304,9 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belli bir MIME türüne bir çıktı süzgeci atar.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Belli bir ortam türüne bir çıktı süzgeci atar.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>AddOutputFilterByType <var>süzgeç</var>[;<var>süzgeç</var>...]
-<var>MIME-türü</var> [<var>MIME-türü</var>] ...</code></td></tr>
+<var>ortam-türü</var> [<var>ortam-türü</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -315,7 +314,7 @@
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>2.0.33 ve sonrasında mevcuttur; Apache 2.1 ve sonrasında
 kullanımı önerilmemektedir.</td></tr>
 </table>
-    <p>Bu yönerge yanıtın <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">MIME türü</a>ne
+    <p>Bu yönerge yanıtın <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">ortam türü</a>ne
       bağlı olarak bir istek için belli bir <a href="../filter.html">çıktı
       süzgecini</a> etkin kılar. Aşağıda açıklanan belli başlı sorunlardan
       dolayı bu yönergenin kullanımı önerilmemektedir. Aynı işlevsellik
@@ -353,13 +352,10 @@ kullanımı önerilmemektedir.</td></tr>
     <div class="warning"><h3>Ek Bilgi</h3>
       <p>Süzgeçlerin <code class="directive">AddOutputFilterByType</code> ile etkin
         kılınması bazı durumlarda kısmen bazılarında da tamamen başarısızlığa
-        uğrayabilir. Örneğin, <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">MIME türü</a>
-        saptanamadığı takdirde hiçbir süzgeç uygulanmaz ve <code class="directive"><a href="#defaulttype">DefaultType</a></code> aynı olsa bile son çare olarak
-        <code class="directive"><a href="#defaulttype">DefaultType</a></code> ayarlarına geri
-        dönülür.</p>
-
-      <p>Bununla birlikte, süzgeçlerin uygulanacağına emin olmak isterseniz,
-        bir kaynağa içerik türünü örneğin, <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> veya
+        uğrayabilir. Örneğin, <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">ortam türü</a>
+        saptanamadığı takdirde hiçbir süzgeç uygulanmaz. Süzgeçlerin
+        uygulanacağına emin olmak isterseniz, bir kaynağa içerik türünü
+        örneğin, <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> veya
         <code class="directive"><a href="#forcetype">ForceType</a></code> ile açıkça
         atayabilirsiniz. Ayrıca, içerik türünü (bir nph-olmayan) CGI betiği
         içinde ayarlamak da bu güvenceyi sağlar.</p>
@@ -456,7 +452,6 @@ kullanımı önerilmemektedir.</td></tr>
 
       <dd>Belge türünü denetleyen <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code>
         <code>Add*</code> ve <code>Remove*</code> yönergeleri,
-        <code class="directive"><a href="#defaulttype">DefaultType</a></code>,
         <code class="directive"><a href="#errordocument">ErrorDocument</a></code>,
         <code class="directive"><a href="#forcetype">ForceType</a></code>,
         <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>,
@@ -605,46 +600,35 @@ kullanımı önerilmemektedir.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DefaultType" id="DefaultType">DefaultType</a> <a name="defaulttype" id="defaulttype">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun MIME türünü saptayamadığı durumda göndereceği MIME
-  içerik türünü belirler.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultType <var>MIME-türü</var>|none</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DefaultType text/plain</code></td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
+uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
+sunucunun ortam türünü saptayamadığı durumda göndereceği öntanımlı ortam
+türünü belirlerdi.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultType <var>ortam-türü</var>|none</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>DefaultType none</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td><code>none</code> değeri Apache 2.2.7 ve sonrasında mevcuttur.
-</td></tr>
+Diğer tüm seçenekler Apache'nin 2.3.x ve sonraki sürümleri için iptal
+edilmiştir.</td></tr>
 </table>
-    <p>Sunucudan zaman zaman kendi <a class="glossarylink" href="../glossary.html#mime-type" title="sözlüğe bakınız">MIME
-      türü</a> ile uyuşmayan bir belge sunması istenir.</p>
-
-    <p>Sunucu, belgenin içerik türünü istemciye bildirmek zorundadır. Eğer
-      sunucu bunu normal yollardan saptayamazsa içerik türü olarak
-      <code>DefaultType</code> ile belirtilen değeri gönderir. Örneğin, GIF
-      dosyaları bulunan bir dizinde <code>.gif</code> uzantısına sahip
-      olmayan dosyaların da bulunması durumunda, bu dizin için,</p>
+  <p>Bu yönerge iptal edilmiştir. Yapılandırma dosyalarının geriye
+    uyumluluğunu sağlamak için, öntanımlı bir ortam türünün olmadığını
+    belirten <code>none</code> değeriyle belirtilebilir. Örnek:</p>
 
     <div class="example"><p><code>
-      DefaultType image/gif
+      DefaultType none
     </code></p></div>
 
-    <p>belirtilmesi uygun olurdu.</p>
-
-    <p>İçerik türünün ne sunucu ne de yönetici (örneğin, vekil) tarafından
-      saptanabildiği durumlarda MIME türünün yanlış belirtilmesindense tür
-      belirtmemek tercih edilebilir. Bu, şöyle yapılabilir:</p>
-    <div class="example"><p><code>
-      DefaultType None
-    </code></p></div>
     <p><code>DefaultType None</code> sadece httpd-2.2.7 ve sonrasında
       mevcuttur.</p>
 
-    <p>Bu yönergenin sadece öntanımlı MIME-türünü sağlaması nedeniyle
-      <code class="directive"><a href="#forcetype">ForceType</a></code> yönergesinden farklı
-      olduğuna dikkat ediniz. Dosya ismi uzantıları dahil, tüm diğer
-      MIME-türü tanımları ortam türünü tanımladığı noktada bu öntanımlı türü
-      sunulan veri için geçersiz kılacaktır.</p>
+    <p>Ortam türlerini dosya uzantıları üzerinden yapılandırmak için
+      <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> yönergesini ve
+      <code>mime.types</code> yapılandırma dosyasını veya belli özkaynak
+      türleri için ortam türlerini yapılandırmak için <code class="directive"><a href="#forcetype">ForceType</a></code> yönergesini kullanın.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1287,9 +1271,9 @@ kullanımı önerilmemektedir.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ForceType" id="ForceType">ForceType</a> <a name="forcetype" id="forcetype">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bütün dosyaların belirtilen MIME içerik türüyle sunulmasına
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bütün dosyaların belirtilen ortam türüyle sunulmasına
   sebep olur.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ForceType <var>MIME-türü</var>|None</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>ForceType <var>ortam-türü</var>|None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>dizin, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
@@ -1300,7 +1284,7 @@ kullanımı önerilmemektedir.</td></tr>
       <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>,
       <code class="directive"><a href="#location">&lt;Location&gt;</a></code> veya
       <code class="directive"><a href="#files">&lt;Files&gt;</a></code> bölümüne
-      yerleştirildiği zaman, eşleşen tüm dosyaların <var>MIME-türü</var> ile
+      yerleştirildiği zaman, eşleşen tüm dosyaların <var>ortam-türü</var> ile
       belirtilen içerik türüyle sunulmasına sebep olur. Örneğin, altında
       sadece GIF dosyaları bulunan bir dizininiz varsa ve bunlara tek tek
       <code>.gif</code> uzantısı belirtmek istemiyorsanız şu yapılandırmayı
@@ -1310,12 +1294,12 @@ kullanımı önerilmemektedir.</td></tr>
       ForceType image/gif
     </code></p></div>
 
-    <p><code class="directive"><a href="#defaulttype">DefaultType</a></code> yönergesinin tersine
-      bu yönerge ortam türünü betimleyen tüm MIME-türü tanımlarını geçersiz
-      kılar.</p>
+    <p>Bu yönerge, <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> yönergesi
+      üzerinden ve <code>mime.types</code> dosyasında örtük olarak
+      tanımlanmış ortam türü/dosya uzantısı ilişkilerini geçersiz kılar.</p>
 
-    <p>Mevcut <code class="directive">ForceType</code> ayarlarını <code>None</code>
-      değeriyle geçersiz kılabilirsiniz:</p>
+    <p>Ayrıca, daha genel <code class="directive">ForceType</code> ayarlarını da
+      <code>None</code> değeriyle geçersiz kılabilirsiniz:</p>
 
     <div class="example"><p><code>
       # tüm dosyaların image/gif olarak sunulması için:<br />
@@ -1550,7 +1534,7 @@ yönergeleri sarmalar.</td></tr>
       dosyaları okuyacaktır. Bunula birlikte, dizinin bir bütün olarak okutulması
       önerilmez, çünkü dizinde <code class="program"><a href="../programs/httpd.html">httpd</a></code> programının çökmesine
       sebep olabilecek geçici dosyalar unutulabilir. Bunun yerine, belli bir
-      şablona uyan dosyaları seçebilmek için, örneğin *.conf gibi dosya 
+      şablona uyan dosyaları seçebilmek için, örneğin *.conf gibi dosya
       kalıplarının kullanılmasını öneriyoruz.</p>
 
     <p>Dosya yolu mutlak bir dosya yolu olarak belirtilebileceği gibi

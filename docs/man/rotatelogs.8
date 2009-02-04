@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2008-03-07" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2009-02-02" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -47,7 +47,7 @@ Causes the use of local time rather than GMT as the base for the interval or for
 Causes the logfile to be opened immediately, as soon as rotatelogs starts, instead of waiting for the first logfile entry to be read (for non-busy sites, there may be a substantial delay between when the server is started and when the first request is handled, meaning that the associated logfile does not "exist" until then, which causes problems from some automated logging tools)  
 .TP
 -v
-Produce verbose output on STDERR\&. The output contains the result of the configuration parsing, and all file open and close actions.
+Produce verbose output on STDERR\&. The output contains the result of the configuration parsing, and all file open and close actions\&.  
 .TP
 \fIlogfile\fR
 The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created from the strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&.  
@@ -56,9 +56,7 @@ The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' chara
 The time between log file rotations in seconds\&. The rotation occurs at the beginning of this interval\&. For example, if the rotation time is 3600, the log file will be rotated at the beginning of every hour; if the rotation time is 86400, the log file will be rotated every night at midnight\&. (If no data is logged during an interval, no file will be created\&.)  
 .TP
 \fIfilesize\fR(B|K|M|G)
-The maximum file size followed by exactly one of the letters B (Bytes), K (KBytes), M (MBytes) or G (GBytes)\&.
-.br
-When time and size are specified, the size must be given after the time\&. Rotation will occur whenever either time or size limits are reached\&.
+The maximum file size in followed by exactly one of the letters B (Bytes), K (KBytes), M (MBytes) or G (GBytes)\&. .PP When time and size are specified, the size must be given after the time\&. Rotation will occur whenever either time or size limits are reached\&.  
 .TP
 \fIoffset\fR
 The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is used\&. For example, to use local time in the zone UTC -5 hours, specify a value of -300 for this argument\&. In most cases, -l should be used instead of specifying an offset\&.  
