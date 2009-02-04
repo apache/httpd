@@ -30,19 +30,16 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_charset_lite.c</td></tr></table>
 <h3>Summary</h3>
 
-    <p><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> allows the administrator to
-    specify the source character set of objects as well as the
-    character set they should be translated into before sending to the
-    client. <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> does not translate the
-    data itself but instead tells Apache what translation to
-    perform. <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> is applicable to EBCDIC
-    and ASCII host environments. In an EBCDIC environment, Apache
-    normally translates text content from the code page of the Apache
-    process locale to ISO-8859-1. <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>
-    can be used to specify that a different translation is to be
-    performed. In an ASCII environment, Apache normally performs no
-    translation, so <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> is needed in
-    order for any translation to take place.</p>
+    <p><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> allows the server to change
+    the character set of responses before sending them to the client.
+    In an EBCDIC environment, Apache always translates HTTP protocol
+    content (e.g. response headers) from the code page of the Apache
+    process locale to ISO-8859-1, but not the body of responses.  In
+    any environment, <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> can be used to
+    specify that response bodies should be translated.  For example,
+    if files are stored in EBCDIC, then
+    <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> can translate them to
+    ISO-8859-1 before sending them to the client.</p>
 
     <p>This module provides a small subset of configuration
     mechanisms implemented by Russian Apache and its associated
