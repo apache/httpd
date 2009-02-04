@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 735927:740420 (outdated) -->
+<!-- English Revision: 740420 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -219,8 +219,8 @@
       Off</code> şeklinde bir atama bu işlevselliği iptal eder.
       <code>AddDefaultCharset On</code> ile bu işlevsellik etkin kılınmaktan
       başka <code>iso-8859-1</code> karakter kümesini öntanımlı olarak yanıta
-      eklenir. Yönergede <var>karküm</var> olarak belirtilecek değerler, MIME
-      ortam türlerinde kullanmak üzere <a
+      eklenir. Yönergede <var>karküm</var> olarak belirtilecek değerler,
+      Genel Ağ ortam türlerinde (MIME türlerinde) kullanmak üzere <a
       href="http://www.iana.org/assignments/character-sets">IANA’da kayıtlı
       karakter kümesi değerleri</a>nden biri olmalıdır. Örnek:</p>
 
@@ -246,9 +246,9 @@
 
 <directivesynopsis>
 <name>AddOutputFilterByType</name>
-<description>Belli bir MIME türüne bir çıktı süzgeci atar.</description>
+<description>Belli bir ortam türüne bir çıktı süzgeci atar.</description>
 <syntax>AddOutputFilterByType <var>süzgeç</var>[;<var>süzgeç</var>...]
-<var>MIME-türü</var> [<var>MIME-türü</var>] ...</syntax>
+<var>ortam-türü</var> [<var>ortam-türü</var>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
@@ -257,7 +257,7 @@
 kullanımı önerilmemektedir.</compatibility>
 
 <usage>
-    <p>Bu yönerge yanıtın <glossary ref="mime-type">MIME türü</glossary>ne
+    <p>Bu yönerge yanıtın <glossary ref="mime-type">ortam türü</glossary>ne
       bağlı olarak bir istek için belli bir <a href="../filter.html">çıktı
       süzgecini</a> etkin kılar. Aşağıda açıklanan belli başlı sorunlardan
       dolayı bu yönergenin kullanımı önerilmemektedir. Aynı işlevsellik
@@ -295,15 +295,10 @@ kullanımı önerilmemektedir.</compatibility>
     <note type="warning"><title>Ek Bilgi</title>
       <p>Süzgeçlerin <directive>AddOutputFilterByType</directive> ile etkin
         kılınması bazı durumlarda kısmen bazılarında da tamamen başarısızlığa
-        uğrayabilir. Örneğin, <glossary ref="mime-type">MIME türü</glossary>
-        saptanamadığı takdirde hiçbir süzgeç uygulanmaz ve <directive
-        module="core">DefaultType</directive> aynı olsa bile son çare olarak
-        <directive module="core">DefaultType</directive> ayarlarına geri
-        dönülür.</p>
-
-      <p>Bununla birlikte, süzgeçlerin uygulanacağına emin olmak isterseniz,
-        bir kaynağa içerik türünü örneğin, <directive
-        module="mod_mime">AddType</directive> veya
+        uğrayabilir. Örneğin, <glossary ref="mime-type">ortam türü</glossary>
+        saptanamadığı takdirde hiçbir süzgeç uygulanmaz. Süzgeçlerin
+        uygulanacağına emin olmak isterseniz, bir kaynağa içerik türünü
+        örneğin, <directive module="mod_mime">AddType</directive> veya
         <directive module="core">ForceType</directive> ile açıkça
         atayabilirsiniz. Ayrıca, içerik türünü (bir nph-olmayan) CGI betiği
         içinde ayarlamak da bu güvenceyi sağlar.</p>
@@ -400,7 +395,6 @@ kullanımı önerilmemektedir.</compatibility>
 
       <dd>Belge türünü denetleyen <module>mod_mime</module>
         <code>Add*</code> ve <code>Remove*</code> yönergeleri,
-        <directive module="core">DefaultType</directive>,
         <directive module="core">ErrorDocument</directive>,
         <directive module="core">ForceType</directive>,
         <directive module="mod_negotiation">LanguagePriority</directive>,
@@ -550,46 +544,36 @@ kullanımı önerilmemektedir.</compatibility>
 
 <directivesynopsis>
 <name>DefaultType</name>
-<description>Sunucunun MIME türünü saptayamadığı durumda göndereceği MIME
-  içerik türünü belirler.</description>
-<syntax>DefaultType <var>MIME-türü</var>|none</syntax>
-<default>DefaultType text/plain</default>
+<description>Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
+uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
+sunucunun ortam türünü saptayamadığı durumda göndereceği öntanımlı ortam
+türünü belirlerdi.</description>
+<syntax>DefaultType <var>ortam-türü</var>|none</syntax>
+<default>DefaultType none</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
 <compatibility><code>none</code> değeri Apache 2.2.7 ve sonrasında mevcuttur.
-</compatibility>
+Diğer tüm seçenekler Apache'nin 2.3.x ve sonraki sürümleri için iptal
+edilmiştir.</compatibility>
 <usage>
-    <p>Sunucudan zaman zaman kendi <glossary ref="mime-type">MIME
-      türü</glossary> ile uyuşmayan bir belge sunması istenir.</p>
-
-    <p>Sunucu, belgenin içerik türünü istemciye bildirmek zorundadır. Eğer
-      sunucu bunu normal yollardan saptayamazsa içerik türü olarak
-      <code>DefaultType</code> ile belirtilen değeri gönderir. Örneğin, GIF
-      dosyaları bulunan bir dizinde <code>.gif</code> uzantısına sahip
-      olmayan dosyaların da bulunması durumunda, bu dizin için,</p>
+  <p>Bu yönerge iptal edilmiştir. Yapılandırma dosyalarının geriye
+    uyumluluğunu sağlamak için, öntanımlı bir ortam türünün olmadığını
+    belirten <code>none</code> değeriyle belirtilebilir. Örnek:</p>
 
     <example>
-      DefaultType image/gif
+      DefaultType none
     </example>
 
-    <p>belirtilmesi uygun olurdu.</p>
-
-    <p>İçerik türünün ne sunucu ne de yönetici (örneğin, vekil) tarafından
-      saptanabildiği durumlarda MIME türünün yanlış belirtilmesindense tür
-      belirtmemek tercih edilebilir. Bu, şöyle yapılabilir:</p>
-    <example>
-      DefaultType None
-    </example>
     <p><code>DefaultType None</code> sadece httpd-2.2.7 ve sonrasında
       mevcuttur.</p>
 
-    <p>Bu yönergenin sadece öntanımlı MIME-türünü sağlaması nedeniyle
-      <directive module="core">ForceType</directive> yönergesinden farklı
-      olduğuna dikkat ediniz. Dosya ismi uzantıları dahil, tüm diğer
-      MIME-türü tanımları ortam türünü tanımladığı noktada bu öntanımlı türü
-      sunulan veri için geçersiz kılacaktır.</p>
+    <p>Ortam türlerini dosya uzantıları üzerinden yapılandırmak için
+      <directive module="mod_mime">AddType</directive> yönergesini ve
+      <code>mime.types</code> yapılandırma dosyasını veya belli özkaynak
+      türleri için ortam türlerini yapılandırmak için <directive
+      module="core">ForceType</directive> yönergesini kullanın.</p>
 </usage>
 </directivesynopsis>
 
@@ -1239,9 +1223,9 @@ kullanımı önerilmemektedir.</compatibility>
 
 <directivesynopsis>
 <name>ForceType</name>
-<description>Bütün dosyaların belirtilen MIME içerik türüyle sunulmasına
+<description>Bütün dosyaların belirtilen ortam türüyle sunulmasına
   sebep olur.</description>
-<syntax>ForceType <var>MIME-türü</var>|None</syntax>
+<syntax>ForceType <var>ortam-türü</var>|None</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -1252,7 +1236,7 @@ kullanımı önerilmemektedir.</compatibility>
       <directive type="section" module="core">Directory</directive>,
       <directive type="section" module="core">Location</directive> veya
       <directive type="section" module="core">Files</directive> bölümüne
-      yerleştirildiği zaman, eşleşen tüm dosyaların <var>MIME-türü</var> ile
+      yerleştirildiği zaman, eşleşen tüm dosyaların <var>ortam-türü</var> ile
       belirtilen içerik türüyle sunulmasına sebep olur. Örneğin, altında
       sadece GIF dosyaları bulunan bir dizininiz varsa ve bunlara tek tek
       <code>.gif</code> uzantısı belirtmek istemiyorsanız şu yapılandırmayı
@@ -1262,12 +1246,12 @@ kullanımı önerilmemektedir.</compatibility>
       ForceType image/gif
     </example>
 
-    <p><directive module="core">DefaultType</directive> yönergesinin tersine
-      bu yönerge ortam türünü betimleyen tüm MIME-türü tanımlarını geçersiz
-      kılar.</p>
+    <p>Bu yönerge, <directive module="mod_mime">AddType</directive> yönergesi
+      üzerinden ve <code>mime.types</code> dosyasında örtük olarak
+      tanımlanmış ortam türü/dosya uzantısı ilişkilerini geçersiz kılar.</p>
 
-    <p>Mevcut <directive>ForceType</directive> ayarlarını <code>None</code>
-      değeriyle geçersiz kılabilirsiniz:</p>
+    <p>Ayrıca, daha genel <directive>ForceType</directive> ayarlarını da
+      <code>None</code> değeriyle geçersiz kılabilirsiniz:</p>
 
     <example>
       # tüm dosyaların image/gif olarak sunulması için:<br />
@@ -1505,7 +1489,7 @@ yönergeleri sarmalar.</description>
       dosyaları okuyacaktır. Bunula birlikte, dizinin bir bütün olarak okutulması
       önerilmez, çünkü dizinde <program>httpd</program> programının çökmesine
       sebep olabilecek geçici dosyalar unutulabilir. Bunun yerine, belli bir
-      şablona uyan dosyaları seçebilmek için, örneğin *.conf gibi dosya 
+      şablona uyan dosyaları seçebilmek için, örneğin *.conf gibi dosya
       kalıplarının kullanılmasını öneriyoruz.</p>
 
     <p>Dosya yolu mutlak bir dosya yolu olarak belirtilebileceği gibi
