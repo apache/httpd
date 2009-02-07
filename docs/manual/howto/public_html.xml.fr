@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 659902 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="public_html.xml.meta">
+<parentdocument href="./">Recettes et tutoriels</parentdocument>
+
+  <title>R&eacute;pertoires web utilisateurs</title>
+
+<summary>
+<p>Sur les syst&egrave;mes multi-utilisateurs, on peut permettre &agrave; chaque
+utilisateur d'avoir un site web dans son r&eacute;pertoire home &agrave; l'aide de la
+directive <directive module="mod_userdir">UserDir</directive>. Les
+visiteurs de l'URL <code>http://exemple.com/~nom_utilisateur/</code>
+recevront un contenu situ&eacute; dans le r&eacute;pertoire home de l'utilisateur
+"<code>nom_utilisateur</code>", et dans le sous-r&eacute;pertoire sp&eacute;cifi&eacute; par
+la directive <directive module="mod_userdir">UserDir</directive>.</p>
+<p>Notez que par d&eacute;faut, l'acc&egrave;s &agrave; ces r&eacute;pertoires n'est
+<strong>pas</strong> permis. Vous pouvez en permettre l'acc&egrave;s &agrave; l'aide
+de la directive <directive module="mod_userdir">UserDir</directive> en
+d&eacute;commentant la ligne</p>
+    <example>
+      #Include conf/extra/httpd-userdir.conf
+    </example>
+    <p>dans le fichier de configuration par d&eacute;faut, et en adaptant le
+    fichier <code>httpd-userdir.conf</code> selon vos besoins, ou en
+    incluant les directives appropri&eacute;es dans une section
+    <code>Directory</code> du fichier de configuration principal.</p>
+</summary>
+
+<seealso><a href="../urlmapping.html">Mise en correspondance des URLs
+avec le syst&egrave;me de fichiers</a></seealso>
+
+  <section id="related">
+    <title>R&eacute;pertoires web utilisateurs</title>
+    <related>
+      <modulelist>
+        <module>mod_userdir</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_userdir">UserDir</directive>
+        <directive module="core">DirectoryMatch</directive>
+        <directive module="core">AllowOverride</directive>
+      </directivelist>
+    </related>
+    </section>
+
+    <section id="userdir">
+    <title>D&eacute;finition du chemin des fichiers avec UserDir</title>
+
+    <p>La directive <directive module="mod_userdir">UserDir</directive>
+    permet de sp&eacute;cifier un r&eacute;pertoire &agrave; partir duquel le contenu de
+    l'utilisateur pourra &ecirc;tre charg&eacute;. Elle peut rev&ecirc;tir plusieurs
+    formes.</p>
+
+    <p>Si le chemin sp&eacute;cifi&eacute; ne commence pas par un slash, il sera
+    interpr&eacute;t&eacute; comme chemin relatif au r&eacute;pertoire home de l'utilisateur
+    consid&eacute;r&eacute;. Par exemple, avec cette configuration :</p>
+
+    <example>
+      UserDir public_html
+    </example>
+
+    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    correspondra au chemin fichier
+    <code>/home/rbowen/public_html/fichier.html</code></p>
+
+    <p>Si le chemin sp&eacute;cifi&eacute; commence par un slash, le chemin du fichier
+    sera construit en utilisant ce chemin, suivi du nom de l'utilisateur
+    consid&eacute;r&eacute;. Par exemple, avec cette configuration :</p>
+
+    <example>
+      UserDir /var/html
+    </example>
+
+    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    correspondra au chemin fichier
+    <code>/var/html/rbowen/fichier.html</code></p>
+
+    <p>Si le chemin sp&eacute;cifi&eacute; contient un ast&eacute;risque (*), ce dernier sera
+    remplac&eacute; par le nom de l'utilisateur dans le chemin du fichier
+    correspondant. Par exemple, avec cette configuration :</p>
+
+    <example>
+      UserDir /var/www/*/docs
+    </example>
+
+    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    correspondra au chemin fichier
+    <code>/var/www/rbowen/docs/fichier.html</code></p>
+
+    <p>On peut aussi d&eacute;finir plusieurs r&eacute;pertoires ou chemins de
+    r&eacute;pertoires.</p>
+
+    <example>
+      UserDir public_html /var/html
+    </example>
+
+    <p>Avec l'URL <code>http://exemple.com/~rbowen/fichier.html</code>,
+    Apache va rechercher <code>~rbowen</code>. S'il ne le trouve pas,
+    Apache va rechercher <code>rbowen</code> dans
+    <code>/var/html</code>. S'il le trouve, l'URL ci-dessus correspondra
+    au chemin fichier <code>/var/html/rbowen/file.html</code></p>
+
+  </section>
+
+  <section id="redirect">
+    <title>Redirection vers des URLs externes</title>
+    <p>On peut utiliser la directive <directive
+    module="mod_userdir">UserDir</directive> pour rediriger les requ&ecirc;tes
+    relatives aux r&eacute;pertoires utilisateurs vers des URLs externes.</p>
+
+    <example>
+      UserDir http://exemple.org/users/*/
+    </example>
+
+    <p>L'exemple ci-dessus va rediriger une requ&ecirc;te pour
+    <code>http://exemple.com/~bob/abc.html</code> vers
+    <code>http://exemple.org/users/bob/abc.html</code>.</p>
+  </section>
+
+  <section id="enable">
+    <title>D&eacute;finition de la liste des utilisateurs autoris&eacute;s &agrave; utiliser
+    cette fonctionnalit&eacute;</title>
+
+    <p>En suivant la syntaxe d&eacute;crite dans la documentation de UserDir,
+    vous pouvez d&eacute;finir quels utilisateurs sont autoris&eacute;s &agrave; utiliser
+    cette fonctionnalit&eacute; :</p>
+
+    <example>
+      UserDir enabled<br />
+      UserDir disabled root jro fish
+    </example>
+
+    <p>La configuration ci-dessus va autoriser l'utilisation de la
+    fonctionnalit&eacute; pour tous les utilisateurs, &agrave; l'exception de ceux
+    list&eacute;s &agrave; la suite de l'argument <code>disabled</code>. De m&ecirc;me, vous
+    pouvez interdire l'utilisation de la fonctionnalit&eacute; &agrave; tous les
+    utilisateurs sauf certains d'entre eux en utilisant une
+    configuration du style :</p>
+
+    <example>
+      UserDir disabled<br />
+      UserDir enabled rbowen krietz
+    </example>
+
+    <p>Vous trouverez d'autres exemples dans la documentation de
+    <directive module="mod_userdir">UserDir</directive>.</p>
+
+  </section>
+
+  <section id="cgi">
+  <title>D&eacute;finition d'un r&eacute;pertoire CGI pour chaque utilisateur</title>
+
+   <p>Afin de r&eacute;server un r&eacute;pertoire cgi-bin pour chaque utilisateur,
+   vous pouvez utiliser une section <directive module="core"
+   type="section">Directory</directive> pour activer CGI dans un
+   sous-r&eacute;pertoire particulier d'un r&eacute;pertoire home utilisateur.</p>
+
+    <example>
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
+       SetHandler cgi-script<br />
+       &lt;/Directory&gt;
+    </example>
+
+    <p>Avec la configuration ci-dessus, et en supposant que
+    <code>UserDir</code> est d&eacute;fini &agrave; <code>public_html</code>, un
+    programme CGI <code>exemple.cgi</code> pourra &ecirc;tre charg&eacute; depuis ce
+    r&eacute;pertoire en passant par l'URL :</p>
+
+    <example>
+    http://exemple.com/~rbowen/cgi-bin/exemple.cgi
+    </example>
+
+    </section>
+
+    <section id="htaccess">
+    <title>Permettre aux utilisateurs de modifier la
+    configuration</title>
+
+    <p>Si vous voulez que vos utilisateurs puissent modifier la
+    configuration du serveur pour ce qui concerne leur espace web, ils
+    devront utiliser des fichiers <code>.htaccess</code> pour effectuer
+    ces modifications. Assurez-vous d'avoir d&eacute;fini la directive
+    <directive module="core">AllowOverride</directive> &agrave; une valeur
+    appropri&eacute;e pour les directives dont vous voulez permettre la
+    modification aux utilisateurs. Voir le <a
+    href="htaccess.html">tutoriel .htaccess</a> pour plus de d&eacute;tails sur
+    la mani&egrave;re dont tout ceci fonctionne.</p>
+
+  </section>
+
+</manualpage>
