@@ -1,6 +1,5 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.2
-[ When backported to 2.2.x, remove entry from this file ]
 
   *) mod_deflate: Fix creation of invalid Etag headers. We now make sure
      that the Etag value is properly quoted when adding the gzip marker.
