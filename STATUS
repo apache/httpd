@@ -116,6 +116,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
    FYI, mod_privileges hacked to work with the patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges.c
+   +1: niq
 
 
 PATCHES/ISSUES THAT ARE STALLED
