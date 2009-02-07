@@ -395,7 +395,7 @@ static void deflate_check_etag(request_rec *r, const char *transform)
     const char *etag = apr_table_get(r->headers_out, "ETag");
     if ((etag && (strlen(etag) > 2))) {
         if (etag[0] == '"') {
-            etag = apr_pstrndup(r->pool, etag, strlen(etag) - 2);
+            etag = apr_pstrndup(r->pool, etag, strlen(etag) - 1);
             apr_table_set(r->headers_out, "ETag",
                           apr_pstrcat(r->pool, etag, "-", transform, "\"", NULL));
         }
