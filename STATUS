@@ -107,6 +107,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
       http://people.apache.org/~lars/mod_deflate_etagfix.patch
    +1: lars
+   rpluem says: If you add r741865 I am +1.
 
  * prefork MPM: simple patch to enable mod_privileges.
    trunk: N/A (this patch substitutes for the availability of
