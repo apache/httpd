@@ -35,6 +35,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi">Non Script Aliased CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi">Script Aliased CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dynamic">Other sources of dynamic content</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dynamicsec">Dynamic content security</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Protecting System Settings</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Protect Server Files by Default</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">Watching Your Logs</a></li>
@@ -293,6 +294,24 @@
   therefore scripts executed by these engines potentially can access anything
   the server user can. Some scripting engines may provide restrictions, but
   it is better to be safe and assume not.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dynamicsec" id="dynamicsec">Dynamic content security</a></h2>
+
+  
+
+  <p>When setting up dynamic content, such as <code>mod_php</code>,
+  <code>mod_perl</code> or <code>mod_python</code>, many security considerations
+  get out of the scope of <code>httpd</code> itself, and you need to consult
+  documentation from those modules. For example, PHP lets you setup <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Safe Mode</a>,
+  which is most usually disabled by default. Another example is <a href="http://www.hardened-php.net/suhosin/">Suhosin</a>, a PHP addon for more
+  security. For more information about those, consult each project
+  documentation.</p>
+
+  <p>At the Apache level, a module named <a href="http://modsecurity.org/">mod_security</a>
+  can be seen as a HTTP firewall and, provided you configure it finely enough,
+  can help you enhance your dynamic content security.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

@@ -292,6 +292,25 @@
   it is better to be safe and assume not.</p>
 
   </section>
+   <section id="dynamicsec">
+
+  <title>Dynamic content security</title>
+
+  <p>When setting up dynamic content, such as <code>mod_php</code>,
+  <code>mod_perl</code> or <code>mod_python</code>, many security considerations
+  get out of the scope of <code>httpd</code> itself, and you need to consult
+  documentation from those modules. For example, PHP lets you setup <a
+  href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Safe Mode</a>,
+  which is most usually disabled by default. Another example is <a
+  href="http://www.hardened-php.net/suhosin/">Suhosin</a>, a PHP addon for more
+  security. For more information about those, consult each project
+  documentation.</p>
+
+  <p>At the Apache level, a module named <a href="http://modsecurity.org/">mod_security</a>
+  can be seen as a HTTP firewall and, provided you configure it finely enough,
+  can help you enhance your dynamic content security.</p>
+
+  </section>
 
   <section id="systemsettings">
 
