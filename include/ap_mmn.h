@@ -188,12 +188,13 @@
  *                         and make ap_escape_html a macro for it.
  * 20090130.0 (2.3.2-dev)  Add ap_ prefix to unixd_setup_child().
  * 20090131.0 (2.3.2-dev)  Remove ap_default_type(), disable DefaultType
+ * 20090208.0 (2.3.2-dev)  Add conn_rec::current_thread.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20090131
+#define MODULE_MAGIC_NUMBER_MAJOR 20090208
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

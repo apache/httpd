@@ -50,6 +50,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  * Not all MPMs are updated to set conn_rec::current_thread correctly.
+      (Prefork, Worker, Event, Simple are updated).
+
   * Handling of non-trailing / config by non-default handler is broken
     http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
     jerenkrantz asks: Why should this block a release?

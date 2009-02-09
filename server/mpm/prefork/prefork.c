@@ -431,6 +431,10 @@ static int num_listensocks = 0;
 
 static void child_main(int child_num_arg)
 {
+#if APR_HAS_THREADS
+    apr_thread_t *thd;
+    apr_os_thread_t osthd;
+#endif
     apr_pool_t *ptrans;
     apr_allocator_t *allocator;
     apr_status_t status;
@@ -460,6 +464,11 @@ static void child_main(int child_num_arg)
     apr_allocator_owner_set(allocator, pchild);
     apr_pool_tag(pchild, "pchild");
 
+#if APR_HAS_THREADS
+    osthd = apr_os_thread_current();
+    apr_os_thread_put(&thd, &osthd, pchild);
+#endif
+    
     apr_pool_create(&ptrans, pchild);
     apr_pool_tag(ptrans, "transaction");
 
@@ -626,6 +635,9 @@ static void child_main(int child_num_arg)
 
         current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, my_child_num, sbh, bucket_alloc);
         if (current_conn) {
+#if APR_HAS_THREADS
+            current_conn->current_thread = thd;
+#endif
             ap_process_connection(current_conn, csd);
             ap_lingering_close(current_conn);
         }

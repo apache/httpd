@@ -53,6 +53,7 @@
 #include "apr_network_io.h"
 #include "apr_buckets.h"
 #include "apr_poll.h"
+#include "apr_thread_proc.h"
 
 #include "os.h"
 
@@ -988,6 +989,7 @@ struct request_rec {
     apr_thread_mutex_t *invoke_mtx;
 
     apr_table_t *body_table;
+
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
  * record to improve 64bit alignment the next time we need to break
@@ -1094,6 +1096,15 @@ struct conn_rec {
      *  the event mpm.
      */
     int clogging_input_filters;
+    
+    /** This points to the current thread being used to process this request,
+     * over the lifetime of a request, the value may change. Users of the connection
+     * record should not rely upon it staying the same between calls that invole
+     * the MPM.
+     */
+#if APR_HAS_THREADS
+    apr_thread_t *current_thread;
+#endif
 };
 
 /** 
