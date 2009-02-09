@@ -177,6 +177,8 @@ static void *simple_io_invoke(apr_thread_t * thread, void *baton)
     simple_conn_t *scon = (simple_conn_t *) sb->baton;
     apr_status_t rv;
 
+    scon->c->current_thread = thread;
+
     rv = simple_io_process(scon);
 
     if (rv) {
@@ -207,6 +209,8 @@ static void *simple_io_setup_conn(apr_thread_t * thread, void *baton)
     scon->c->cs = apr_pcalloc(scon->pool, sizeof(conn_state_t));
     cs = scon->c->cs;
     sb = apr_pcalloc(scon->pool, sizeof(simple_sb_t));
+
+    scon->c->current_thread = thread;
 
     cs->pfd.p = scon->pool;
     cs->pfd.desc_type = APR_POLL_SOCKET;

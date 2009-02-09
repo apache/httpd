@@ -542,7 +542,7 @@ static void set_signals(void)
  * Child process main loop.
  */
 
-static int process_socket(apr_pool_t * p, apr_socket_t * sock,
+static int process_socket(apr_thread_t *thd, apr_pool_t * p, apr_socket_t * sock,
                           conn_state_t * cs, int my_child_num,
                           int my_thread_num)
 {
@@ -563,6 +563,7 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         cs->bucket_alloc = apr_bucket_alloc_create(p);
         c = ap_run_create_connection(p, ap_server_conf, sock,
                                      conn_id, sbh, cs->bucket_alloc);
+        c->current_thread = thd;
         cs->c = c;
         c->cs = cs;
         cs->p = p;
@@ -604,6 +605,7 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         c = cs->c;
         c->sbh = sbh;
         pt = cs->pfd.client_data;
+        c->current_thread = thd;
     }
 
     if (c->clogging_input_filters && !c->aborted) {
@@ -1319,7 +1321,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
         else {
             is_idle = 0;
             worker_sockets[thread_slot] = csd;
-            rv = process_socket(ptrans, csd, cs, process_slot, thread_slot);
+            rv = process_socket(thd, ptrans, csd, cs, process_slot, thread_slot);
             if (!rv) {
                 requests_this_child--;
             }

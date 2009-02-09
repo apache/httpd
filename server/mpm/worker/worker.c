@@ -517,7 +517,8 @@ static void set_signals(void)
  * Child process main loop.
  */
 
-static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
+static void process_socket(apr_thread_t *thd, apr_pool_t *p, apr_socket_t *sock,
+                           int my_child_num,
                            int my_thread_num, apr_bucket_alloc_t *bucket_alloc)
 {
     conn_rec *current_conn;
@@ -529,6 +530,7 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
     current_conn = ap_run_create_connection(p, ap_server_conf, sock,
                                             conn_id, sbh, bucket_alloc);
     if (current_conn) {
+        current_conn->current_thread = thd;
         ap_process_connection(current_conn, sock);
         ap_lingering_close(current_conn);
     }
@@ -880,7 +882,7 @@ worker_pop:
         is_idle = 0;
         worker_sockets[thread_slot] = csd;
         bucket_alloc = apr_bucket_alloc_create(ptrans);
-        process_socket(ptrans, csd, process_slot, thread_slot, bucket_alloc);
+        process_socket(thd, ptrans, csd, process_slot, thread_slot, bucket_alloc);
         worker_sockets[thread_slot] = NULL;
         requests_this_child--; 
         apr_pool_clear(ptrans);
