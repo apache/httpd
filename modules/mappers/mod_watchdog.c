@@ -17,7 +17,6 @@
 /* Watchdog module.
  */
 
-#define CORE_PRIVATE
 #include "mod_watchdog.h"
 #include "ap_provider.h"
 #include "ap_mpm.h"
