@@ -424,7 +424,6 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
 {
     apr_status_t rv;
     const char *pk = "watchdog_init_module_tag";
-    const char *lk = "watchdog_pmutex_name_tag";
     apr_pool_t *pproc = s->process->pool;
     const apr_array_header_t *wl;
 
