@@ -17,8 +17,6 @@
 
 
 #include "httpd.h"
-/* to detect sendfile enabled, we need CORE_PRIVATE. Someone should fix this. */
-#define CORE_PRIVATE
 #include "http_core.h"
 
 #include "util_filter.h"
