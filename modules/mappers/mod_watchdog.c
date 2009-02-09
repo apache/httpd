@@ -84,7 +84,7 @@ static apr_status_t wd_worker_cleanup(void *data)
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
 /* Main watchdog worker thread.                                             */
-/* For singleton workers child thread theat first obtains the process       */
+/* For singleton workers child thread that first obtains the process       */
 /* mutex is running. Threads in other child's are locked on mutex.          */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
@@ -127,9 +127,9 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     if (w->is_running) {
         watchdog_list_t *wl = w->callbacks;
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
-                     "%sWatchdog (%s) running (%d)",
+                     "%sWatchdog (%s) running (%" APR_PID_T_FMT ")",
                      w->singleton ? "Singleton" : "",
-                     w->name, getpid());
+                     w->name, (pid_t)getpid());
         apr_time_clock_hires(w->pool);
         if (wl) {
             apr_pool_t *ctx = NULL;
@@ -212,9 +212,9 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
         }
     }
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
-                     "%sWatchdog (%s) stopping (%d)",
+                     "%sWatchdog (%s) stopping (%" APR_PID_T_FMT ")",
                      w->singleton ? "Singleton" : "",
-                     w->name, getpid());
+                     w->name, (pid_t)getpid());
 
     if (locked)
         apr_proc_mutex_unlock(w->mutex);
@@ -443,7 +443,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                 "[%" APR_PID_T_FMT " - %s] "
                 "child second stage post config hook",
-                getpid(), ppid);
+                (pid_t)getpid(), ppid);
             return OK;
         }
     }
