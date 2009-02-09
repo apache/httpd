@@ -244,6 +244,7 @@ static apr_status_t wd_startup(ap_watchdog_t *w, apr_pool_t *p)
      * cleanup was being invoked before the thread completely spawned.
      */
     apr_thread_mutex_lock(w->startup);
+    apr_pool_pre_cleanup_register(p, w, wd_worker_cleanup);
 
     /* Start the newly created watchdog */
     rc = apr_thread_create(&w->thread, NULL, wd_worker, w, p);
