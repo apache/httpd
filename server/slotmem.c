@@ -41,7 +41,7 @@ AP_DECLARE(apr_status_t) ap_slotmem_do(ap_slotmem_storage_method *sm,
 
 AP_DECLARE(apr_status_t) ap_slotmem_create(ap_slotmem_storage_method *sm,
                                            ap_slotmem_t **new, const char *name,
-                                           apr_size_t item_size, int item_num,
+                                           apr_size_t item_size, unsigned int item_num,
                                            apr_pool_t *pool)
 {
     return (sm->slotmem_create(new, name, item_size, item_num, pool));
@@ -49,14 +49,14 @@ AP_DECLARE(apr_status_t) ap_slotmem_create(ap_slotmem_storage_method *sm,
 
 AP_DECLARE(apr_status_t) ap_slotmem_attach(ap_slotmem_storage_method *sm,
                                            ap_slotmem_t **new, const char *name,
-                                           apr_size_t *item_size, int *item_num,
+                                           apr_size_t *item_size, unsigned int *item_num,
                                            apr_pool_t *pool)
 {
     return (sm->slotmem_attach(new, name, item_size, item_num, pool));
 }
 
 AP_DECLARE(apr_status_t) ap_slotmem_mem(ap_slotmem_storage_method *sm,
-                                        ap_slotmem_t *s, int item_id, void**mem)
+                                        ap_slotmem_t *s, unsigned int item_id, void**mem)
 {
     return (sm->slotmem_mem(s, item_id, mem));
 }
@@ -73,6 +73,18 @@ AP_DECLARE(apr_status_t) ap_slotmem_unlock(ap_slotmem_storage_method *sm,
     return (sm->slotmem_unlock(s));
 }
 
+AP_DECLARE(apr_status_t) ap_slotmem_get(ap_slotmem_storage_method *sm,
+                                        ap_slotmem_t *s, unsigned int item_id,
+                                        unsigned char *dest, apr_size_t dest_len)
+{
+    return (sm->slotmem_get(s, item_id, dest, dest_len));
+}
+AP_DECLARE(apr_status_t) ap_slotmem_put(ap_slotmem_storage_method *sm, ap_slotmem_t *s,
+                                        unsigned int item_id, unsigned char *src,
+                                        apr_size_t src_len)
+{
+    return (sm->slotmem_put(s, item_id, src, src_len));
+}
 
 module AP_MODULE_DECLARE_DATA slotmem_module = {
     STANDARD20_MODULE_STUFF,
