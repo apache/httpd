@@ -185,7 +185,9 @@ static const ap_slotmem_storage_method storage = {
     &slotmem_attach,
     &slotmem_mem,
     NULL,
-    NULL
+    NULL,
+    &slotmem_get,
+    &slotmem_put
 };
 
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,
