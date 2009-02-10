@@ -19,9 +19,11 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.3</a> &gt; <a href="./">Çeşitli Belgeler</a></div><div id="page-content"><div id="preamble"><h1>Güvenlik İpuçları</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
     ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
@@ -402,6 +404,7 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/misc/security_tips.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/misc/security_tips.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
