@@ -79,6 +79,7 @@ AP_DECLARE(apr_status_t) ap_slotmem_get(ap_slotmem_storage_method *sm,
 {
     return (sm->slotmem_get(s, item_id, dest, dest_len));
 }
+
 AP_DECLARE(apr_status_t) ap_slotmem_put(ap_slotmem_storage_method *sm, ap_slotmem_t *s,
                                         unsigned int item_id, unsigned char *src,
                                         apr_size_t src_len)
