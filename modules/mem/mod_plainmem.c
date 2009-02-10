@@ -24,7 +24,7 @@ struct ap_slotmem_t {
     char                 *name;       /* per segment name */
     void                 *base;       /* data set start */
     apr_size_t           size;        /* size of each memory slot */
-    int                  num;         /* number of mem slots */
+    unsigned int         num;         /* number of mem slots */
     apr_pool_t           *gpool;      /* per segment global pool */
     apr_global_mutex_t   *smutex;     /* mutex */
     struct ap_slotmem_t  *next;       /* location of next allocated segment */
@@ -37,7 +37,7 @@ static apr_pool_t *gpool = NULL;
 
 static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 {
-    int i;
+    unsigned int i;
     void *ptr;
 
     if (!mem)
@@ -51,7 +51,7 @@ static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
+static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, apr_pool_t *pool)
 {
     ap_slotmem_t *res;
     ap_slotmem_t *next = globallistmem;
@@ -100,7 +100,7 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)
+static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)
 {
     ap_slotmem_t *next = globallistmem;
     const char *fname;
@@ -133,7 +133,7 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     return APR_ENOSHMAVAIL;
 }
 
-static apr_status_t slotmem_mem(ap_slotmem_t *score, int id, void **mem)
+static apr_status_t slotmem_mem(ap_slotmem_t *score, unsigned int id, void **mem)
 {
 
     void *ptr;
@@ -147,6 +147,34 @@ static apr_status_t slotmem_mem(ap_slotmem_t *score, int id, void **mem)
     if (!ptr)
         return APR_ENOSHMAVAIL;
     *mem = ptr;
+    return APR_SUCCESS;
+}
+
+static apr_status_t slotmem_get(ap_slotmem_t *slot, unsigned int id, unsigned char *dest, apr_size_t dest_len)
+{
+
+    void *ptr;
+    apr_status_t ret;
+
+    ret = slotmem_mem(slot, id, &ptr);
+    if (ret != APR_SUCCESS) {
+        return ret;
+    }
+    memcpy(dest, ptr, dest_len); /* bounds check? */
+    return APR_SUCCESS;
+}
+
+static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned char *src, apr_size_t src_len)
+{
+
+    void *ptr;
+    apr_status_t ret;
+
+    ret = slotmem_mem(slot, id, &ptr);
+    if (ret != APR_SUCCESS) {
+        return ret;
+    }
+    memcpy(ptr, src, src_len); /* bounds check? */
     return APR_SUCCESS;
 }
 
