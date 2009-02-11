@@ -75,7 +75,7 @@
     impl&eacute;mentation de mise en cache relativement simple, mises &agrave; part les
     sections sp&eacute;cifiques sur les directives <directive
     module="mod_file_cache">CacheFile</directive> et <directive
-    module="mod_file_cache">MMapStatic</directive>, les explications fournies
+    module="mod_file_cache">MMapFile</directive>, les explications fournies
     dans ce guide concernent l'architecture de mise en cache du
     module <module>mod_cache</module>.</p>
 
@@ -101,9 +101,8 @@
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
         <directive module="mod_cache">CacheDisable</directive>
-        <directive module="mod_file_cache">MMapStatic</directive>
         <directive module="mod_file_cache">CacheFile</directive>
-        <directive module="mod_file_cache">CacheFile</directive>
+        <directive module="mod_file_cache">MMapFile</directive>
         <directive module="core">UseCanonicalName</directive>
         <directive module="mod_negotiation">CacheNegotiatedDocs</directive>
       </directivelist>
@@ -513,7 +512,7 @@ Vary: negotiate,accept-language,accept-charset
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
         <directive module="mod_cache">CacheDisable</directive>
-        <directive module="mod_file_cache">MMapStatic</directive>
+        <directive module="mod_file_cache">MMapFile</directive>
       </directivelist>
     </related>
 
@@ -582,9 +581,9 @@ sys     0m0.000s</pre>
     circonstances.</p>
 
     <section>
-      <title>Mise en cache &agrave; l'aide de la directive MMapStatic</title>
+      <title>Mise en cache &agrave; l'aide de la directive MMapFile</title>
 
-      <p>La directive <directive module="mod_file_cache">MMapStatic</directive>
+      <p>La directive <directive module="mod_file_cache">MMapFile</directive>
       fournie par le module <module>mod_file_cache</module> vous permet de
       demander &agrave; Apache de charger un contenu de fichier statique en m&eacute;moire
       lors de son d&eacute;marrage (&agrave; l'aide de l'appel syst&egrave;me mmap). Apache
@@ -592,7 +591,7 @@ sys     0m0.000s</pre>
       toutes les demandes d'acc&egrave;s &agrave; ce fichier.</p>
 
       <example>
-      <pre>MMapStatic /usr/local/apache2/htdocs/index.html</pre>
+      <pre>MMapFile /usr/local/apache2/htdocs/index.html</pre>
       </example>
 
       <p>Comme dans le cas de la directive
@@ -601,7 +600,7 @@ sys     0m0.000s</pre>
       ce dernier d&eacute;marr&eacute;.</p>
 
       <p> La directive
-      <directive module="mod_file_cache">MMapStatic</directive> ne gardant
+      <directive module="mod_file_cache">MMapFile</directive> ne gardant
       pas la trace de la quantit&eacute; de m&eacute;moire qu'elle alloue, vous devez prendre
       garde de ne pas en abuser. Chaque processus enfant d'Apache utilisant
       sa propre r&eacute;plique de la m&eacute;moire allou&eacute;e, il est donc d'une importance

@@ -64,7 +64,7 @@
     <p>As <module>mod_file_cache</module> presents a relatively simple
     caching implementation, apart from the specific sections on <directive 
     module="mod_file_cache">CacheFile</directive> and <directive 
-    module="mod_file_cache">MMapStatic</directive>, the explanations
+    module="mod_file_cache">MMapFile</directive>, the explanations
     in this guide cover the <module>mod_cache</module> caching 
     architecture.</p>
 
@@ -88,9 +88,8 @@
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
         <directive module="mod_cache">CacheDisable</directive>
-        <directive module="mod_file_cache">MMapStatic</directive>
         <directive module="mod_file_cache">CacheFile</directive>
-        <directive module="mod_file_cache">CacheFile</directive>
+        <directive module="mod_file_cache">MMapFile</directive>
         <directive module="core">UseCanonicalName</directive>
         <directive module="mod_negotiation">CacheNegotiatedDocs</directive>
       </directivelist>
@@ -455,7 +454,7 @@ Vary: negotiate,accept-language,accept-charset
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
         <directive module="mod_cache">CacheDisable</directive>
-        <directive module="mod_file_cache">MMapStatic</directive>
+        <directive module="mod_file_cache">MMapFile</directive>
       </directivelist>
     </related>
        
@@ -516,16 +515,16 @@ sys     0m0.000s</pre>
     better performed by Apache.</p>
 
     <section>
-      <title>MMapStatic Caching</title>
+      <title>MMapFile Caching</title>
 
       <p><module>mod_file_cache</module> provides the 
-      <directive module="mod_file_cache">MMapStatic</directive> directive, which
+      <directive module="mod_file_cache">MMapFile</directive> directive, which
       allows you to have Apache map a static file's contents into memory at
       start time (using the mmap system call). Apache will use the in-memory 
       contents for all subsequent accesses to this file.</p>
 
       <example>
-      <pre>MMapStatic /usr/local/apache2/htdocs/index.html</pre>
+      <pre>MMapFile /usr/local/apache2/htdocs/index.html</pre>
       </example>
 
       <p>As with the
@@ -533,7 +532,7 @@ sys     0m0.000s</pre>
       changes in these files will not be picked up by Apache after it has
       started.</p>
 
-      <p> The <directive module="mod_file_cache">MMapStatic</directive> 
+      <p> The <directive module="mod_file_cache">MMapFile</directive> 
       directive does not keep track of how much memory it allocates, so
       you must ensure not to over-use the directive. Each Apache child
       process will replicate this memory, so it is critically important
