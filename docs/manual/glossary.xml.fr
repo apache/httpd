@@ -33,7 +33,7 @@
   </summary>
 
 <section id="definitions"><title>D&eacute;finitions</title>
-
+<dl>
 <dt><a name="algorithm" id="algorithm">Algorithme</a></dt>
 
     <dd>Une formule sans ambiguit&eacute; ou un jeu de r&egrave;gles destin&eacute;es &agrave;
@@ -147,7 +147,6 @@
       pour d&eacute;crire les directives d'Apache</a>
     </dd>
 
-<dl>
     <dt><a name="accesscontrol" id="accesscontrol">Contr&ocirc;le d'acc&egrave;s
     (Access Control)</a></dt>
     <dd>La restriction d'acc&egrave;s &agrave; des zones du r&eacute;seau. Habituellement
