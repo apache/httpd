@@ -107,8 +107,8 @@
     </example>
 
     <p>The <var>NSS</var> crypto driver might have already been configured by another
-    part of the server, for example from <module name="mod_nns">mod_nss</module> or
-    <module name="mod_ldap">mod_ldap</module>. If found to have already been configured,
+    part of the server, for example from <module>mod_nss</module> or
+    <module>mod_ldap</module>. If found to have already been configured,
     a warning will be logged, and the existing configuration will have taken affect.
     To avoid this warning, use the noinit parameter as follows.</p>
 

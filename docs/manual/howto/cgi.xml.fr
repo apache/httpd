@@ -567,7 +567,7 @@
       CGI.</p>
     </section>
   </section>
-reprendre ici
+<!-- reprendre ici -->
   <section id="libraries">
     <title>Biblioth&egrave;ques et modules CGI</title>
 
