@@ -27,7 +27,8 @@
 
 <summary>
     <p><code>httxt2dbm</code> is used to generate dbm files from text input, for
-    use in RewriteMap with the <code>dbm</code> map type.
+    use in <directive module="mod_rewrite">RewriteMap</directive>RewriteMap with
+    the <code>dbm</code> map type.
     </p>
 </summary>
 <seealso><program>httpd</program></seealso>
@@ -47,17 +48,17 @@
     <dt><code>-v</code></dt>
     <dd>More verbose output</dd>
 
-    <dt><code>-f</code></dt>
+    <dt><code>-f <var>DBM_TYPE</var></code></dt>
     <dd>Specify the DBM type to be used for the output. If not specified, will
     use the <glossary>APR</glossary> Default. Available types are:<br />
     <code>GDBM</code> for GDBM files<br />
     <code>SDBM</code> for SDBM files<br />
     <code>DB</code> for berkeley DB files<br />
     <code>NDBM</code> for NDBM files<br />
-    default for the default DBM type
+    <code>default</code> for the default DBM type
     </dd>
 
-    <dt><code>-i</code></dt>
+    <dt><code>-i <var>SOURCE_TXT</var></code></dt>
     <dd>Input file from which the dbm is to be created. The file should be formated
     with one record per line, of the form:<br />
     <code>key value</code><br />
@@ -65,7 +66,7 @@
     further details of this file's format and meaning.
     </dd>
 
-    <dt><code>-o</code></dt>
+    <dt><code>-o  <var>OUTPUT_DBM</var></code></dt>
     <dd>Name of the output dbm files.</dd>
     </dl>
 </section>
