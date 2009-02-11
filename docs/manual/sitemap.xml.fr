@@ -85,15 +85,15 @@ descripteurs de fichiers</page>
 <page href="dns-caveats.html">Probl&egrave;mes avec DNS et Apache</page>
 </category>
 
-+<category id="rewrite">
-+<title>Guide de r&eacute;&eacute;criture d'URLs</title>
-+<page separate="yes" href="rewrite/">Survol</page>
-+<page href="mod/mod_rewrite.html">Documentation de r&eacute;f&eacute;rence de mod_rewrite</page>
-+<page href="rewrite/rewrite_intro.html">Introduction</page>
-+<page href="rewrite/rewrite_flags.html">Drapeaux</page>
-+<page href="rewrite/rewrite_tech.html">D&eacute;tails techniques</page>
-+<page href="rewrite/rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples utiles</page>
-+<page href="rewrite/rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture avanc&eacute;e -
+<category id="rewrite">
+<title>Guide de r&eacute;&eacute;criture d'URLs</title>
+<page separate="yes" href="rewrite/">Survol</page>
+<page href="mod/mod_rewrite.html">Documentation de r&eacute;f&eacute;rence de mod_rewrite</page>
+<page href="rewrite/rewrite_intro.html">Introduction</page>
+<page href="rewrite/rewrite_flags.html">Drapeaux</page>
+<page href="rewrite/rewrite_tech.html">D&eacute;tails techniques</page>
+<page href="rewrite/rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples utiles</page>
+<page href="rewrite/rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture avanc&eacute;e -
 autres exemples utiles</page>
 </category>
 
