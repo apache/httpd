@@ -3632,6 +3632,10 @@ static int default_handler(request_rec *r)
         ap_set_etag(r);
         apr_table_setn(r->headers_out, "Accept-Ranges", "bytes");
         ap_set_content_length(r, r->finfo.size);
+        if (bld_content_md5) {
+            apr_table_setn(r->headers_out, "Content-MD5",
+                           ap_md5digest(r->pool, fd));
+        }
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
@@ -3640,11 +3644,6 @@ static int default_handler(request_rec *r)
             r->status = errstatus;
         }
         else {
-            if (bld_content_md5) {
-                apr_table_setn(r->headers_out, "Content-MD5",
-                               ap_md5digest(r->pool, fd));
-            }
-
             e = apr_brigade_insert_file(bb, fd, 0, r->finfo.size, r->pool);
 
 #if APR_HAS_MMAP
