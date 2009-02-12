@@ -432,7 +432,7 @@ static int num_listensocks = 0;
 static void child_main(int child_num_arg)
 {
 #if APR_HAS_THREADS
-    apr_thread_t *thd;
+    apr_thread_t *thd = NULL;
     apr_os_thread_t osthd;
 #endif
     apr_pool_t *ptrans;
