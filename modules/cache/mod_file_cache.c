@@ -358,16 +358,16 @@ static int file_cache_handler(request_rec *r)
         apr_table_setn(r->headers_out, "Last-Modified", datestr);
     }
 
-    ap_set_etag(r);
-    if ((errstatus = ap_meets_conditions(r)) != OK) {
-       return errstatus;
-    }
-
     /* ap_set_content_length() always converts the same number and never
      * returns an error.  Accelerate it.
      */
     r->clength = match->finfo.size;
     apr_table_setn(r->headers_out, "Content-Length", match->sizestr);
+
+    ap_set_etag(r);
+    if ((errstatus = ap_meets_conditions(r)) != OK) {
+       return errstatus;
+    }
 
     /* Call appropriate handler */
     if (!r->header_only) {
