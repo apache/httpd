@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 735925 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rotatelogs.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+  <title>rotatelogs - Apache günlüklerini döndürmek için borulu günlük kayıt
+  programı</title>
+
+<summary>
+     <p><code><strong>rotatelogs</strong></code>, Apache'nin borulu günlük
+     dosyaları özelliği ile birlikte kullanmak için tasarlanmış basit bir
+     programdır. Günlük dosyasının azami boyutuna göre veya belli aralıklarla
+     günlük dosyalarını döndürür.</p>
+</summary>
+
+<section id="synopsis"><title>Kullanım</title>
+
+     <p><code><strong>rotatelogs</strong>
+     [ -<strong>l</strong> ]
+     [ -<strong>f</strong> ]
+     [ -<strong>v</strong> ]
+     <var>dosyaismi</var>
+     <var>süre</var>|<var>boyut</var>(B|K|M|G)
+     [ <var>saat_farkı</var> ]</code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+
+<dl>
+    <dt><code><strong>-l</strong></code></dt>
+    <dd>GMT yerine yerel zamanın kullanılmasını sağlar. Zaman dilimi değişik
+    olan ortamlarda (BST, DST gibi) bu seçeneğin kullanımı beklenmedik
+    sonuçlar verebilir!</dd>
+
+    <dt><code><strong>-f</strong></code></dt>
+    <dd>İlk günlük giridisinin okunmasını beklemeden
+    <code><strong>rotatelogs</strong></code> başlar başlamaz günlük
+    dosyasının açılmasını sağlar. Çok meşgul sitelerde, sunucu başlatılıp ilk
+    istek sunuluncaya kadar geçen zamanda günlük dosyasının yokluğu
+    özdevinimli işlemler yapan bazı günlükleme araçlarında sorunlara yol
+    açabilir. Bu seçenek bu gibi durumlarda yararlıdır.</dd>
+
+    <dt><code><strong>-v</strong></code></dt>
+    <dd>Standart hataya verilen çıktı daha ayrıntılı olur. Çıktı,
+    yapılandırma çözümlemesinin sonuçlarını ve tüm dosya açma/kapama
+    işlemlerini içerir.</dd>
+
+    <dt><code><var>dosyaismi</var></code></dt>
+    <dd>Günlük dosyasının ismi yoluyla birlikte belirtilir.
+    <var>dosyaismi</var> '%' karakterleri içeriyorsa bunlar
+    <code>strftime(3)</code> biçem belirteçleri olarak ele alınır. Aksi
+    takdirde, özdevinimli olarak <var>.nnnnnnnnnn</var> uzantısı üretilir.
+    Uzantı saniye cinsindendir ve her iki durumda da bu değer, mevcut döngü
+    diliminin başlangıcına göre hesaplanır. Örneğin, döndürmenin 86400
+    saniyede bir yapılacağı belirtilmişse, <code>strftime(3)</code> biçeminde
+    oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin
+    başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur.</dd>
+
+    <dt><code><var>süre</var></code></dt>
+    <dd>Günlük dosyasının yenisinin kaç saniyede bir açılacağı belirtilir.
+    Örneğin, bu süre 3600 saniye ise günlük dosyası her saat başında
+    yenilenir; 86400 saniye ise her geceyarısı yenilenir. (Bu süre zarfında
+    günlüğe kaydedilecek bir olay gerçekleşmemişse dosya oluşturulmaz.)</dd>
+
+    <dt><code><var>boyut</var>(B|K|M|G)</code></dt>
+    <dd>Boyuta göre döndürme için azami dosya boyutu. Belirtilenin bir süre
+    değil de bir boyut değeri olarak ele alınması için değerin sonuna şu
+    karakterlerden biri eklenmelidir: <code>B</code> (Bayt), <code>K</code>
+    (kilobayt), <code>M</code> (megabayt), <code>G</code> (gigabayt).
+
+    <p>Süre ve boyut birlikte belirtilmişse boyut süreden sonra
+    belirtilmelidir. Dosya yenilemesi, bunlardan hangisi daha önce aşılırsa o
+    zaman gerçekleşir.</p></dd>
+
+    <dt><code><var>saat_farkı</var></code></dt>
+    <dd>Koordinatlı evrensel zamana göre "dakika" farkı. Belirtilmezse, sıfır
+    öntanımlıdır. Örneğin, -5 saatlik bir zaman diliminde bulunuyorsanız bu
+    değer <code>-300</code> olmalıdır. Çoğu durumda, bunun yerine
+    <code><strong>-l</strong></code> seçeneğini kullanmak gerekir.</dd>
+
+</dl>
+</section>
+
+<section id="examples"><title>Örnekler</title>
+
+<example>
+     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+</example>
+
+     <p>nnnn, günlük kaydının başladığı sistem zamanı olmak üzere
+     /var/logs/logfile.nnnn dosyası oluşturulur. Bu zaman, daima döngü
+     süresinin katları olacağından bunu cron betiklerinizi eşzamanlamakta
+     kullanabilirsiniz. Her döngü süresinin sonunda (burada 24 saat sonra)
+     yeni bir günlük dosyası açılır.</p>
+
+<example>
+     CustomLog "|bin/rotatelogs -l /var/logs/logfile.%Y.%m.%d 86400" common
+</example>
+
+     <p>yyyy, yıl; mm, ay; dd, ayın gününü belirtmek üzere
+     /var/logs/logfile.yyyy.mm.dd dosyası oluşturulur. Her gün yerel zamanla
+     geceyarısı yeni bir günlük dosyasına geçilecektir.</p>
+
+<example>
+     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+</example>
+
+     <p>Günlük dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar.
+     </p>
+
+<example>
+     ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+</example>
+     <p>Hata günlüğünün 5 megabaytta bir
+     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code> biçemli bir isimle
+     oluşturulmasını sağlar.</p>
+
+</section>
+
+<section id="portability"><title>Taşınabilirlik</title>
+
+    <p>Aşağıdaki günlük dosyası biçem belirteçlerinin tüm
+    <code>strftime(3)</code> gerçeklenimlerince desteklenmesi gerekir.
+    Kullandığınız kütüphaneye özgü belirteçler için sisteminizdeki
+    <code>strftime(3)</code> kılavuz sayfasına bakınız.</p>
+
+<table border="1" style="zebra">
+<tr><td><code>%A</code></td><td>tam gün ismi (yerelleştirilmiş)</td></tr>
+<tr><td><code>%a</code></td><td>3 harflik gün ismi
+(yerelleştirilmiş)</td></tr>
+<tr><td><code>%B</code></td><td>tam ay ismi (yerelleştirilmiş)</td></tr>
+<tr><td><code>%b</code></td><td>3 harflik ay ismi (yerelleştirilmiş)</td></tr>
+<tr><td><code>%c</code></td><td>tarih ve saat (yerelleştirilmiş)</td></tr>
+<tr><td><code>%d</code></td><td>2 haneli ay günü numarası</td></tr>
+<tr><td><code>%H</code></td><td>2 haneli saat (24 saatlik)</td></tr>
+<tr><td><code>%I</code></td><td>2 haneli saat (12 saatlik)</td></tr>
+<tr><td><code>%j</code></td><td>3 hanelik yıl günü numarası</td></tr>
+<tr><td><code>%M</code></td><td>2 haneli dakika</td></tr>
+<tr><td><code>%m</code></td><td>2 haneli ay</td></tr>
+<tr><td><code>%p</code></td><td>12 saatlik kip için öö/ös
+(yerelleştirilmiş)</td></tr>
+<tr><td><code>%S</code></td><td>2 haneli saniye</td></tr>
+<tr><td><code>%U</code></td><td>2 haneli yılın hafta numarası
+(Haftanın ilk gününün Pazar olduğu varsayımıyla)</td></tr>
+<tr><td><code>%W</code></td><td>2 haneli yılın hafta numarası
+(Haftanın ilk gününün Pazartesi olduğu varsayımıyla)</td></tr>
+<tr><td><code>%w</code></td><td>1 hanelik haftanın gün numarası
+(Haftanın ilk gününün Pazar olduğu varsayımıyla)</td></tr>
+<tr><td><code>%X</code></td><td>saat (yerelleştirilmiş)</td></tr>
+<tr><td><code>%x</code></td><td>tarih (yerelleştirilmiş)</td></tr>
+<tr><td><code>%Y</code></td><td>4 hanelik yıl</td></tr>
+<tr><td><code>%y</code></td><td>2 hanelik yıl</td></tr>
+<tr><td><code>%Z</code></td><td>zaman dilimi ismi</td></tr>
+<tr><td><code>%%</code></td><td>`%' iminin kendisi</td></tr>
+</table>
+
+</section>
+</manualpage>

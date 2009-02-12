@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 487904 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htdigest.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>htdigest - Özet kimlik doğrulama dosyalarını yönetir</title>
+
+<summary>
+    <p><code><strong>htdigest</strong></code>, HTTP kullanıcılarının digest
+    türü kimlik doğrulaması için kullanıcı isimlerinin ve parolalarının
+    saklanmasında kullanılacak düz metin dosyalarını oluşturmak ve güncellemek
+    için kullanılır. Apache HTTP sunucusunun mevcut özkaynaklarının kullanımı
+    sadece <code><strong>htdigest</strong></code> tarafından oluşturulan
+    dosyalarda listelenmiş kullanıcılara tahsis edilebilir.</p>
+
+    <p>Bu kılavuz sayfası sadece komut satırı değiştirgelerini listeler.
+    Kullanıcı kimlik doğrulamasını
+    <strong><program>httpd</program></strong>'de yapılandırmak için gerekli
+    yönergelerle ilgili ayrıntılar için Apache dağıtımının bir parçası olan
+    ve <a href="http://httpd.apache.org/"> http://httpd.apache.org/</a>
+    adresinde de bulunan Apache HTTP Sunucusu Belgelerine bakınız.</p>
+</summary>
+<seealso><program>httpd</program></seealso>
+<seealso><module>mod_auth_digest</module></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>htdigest</strong> [ -<strong>c</strong> ]
+    <var>parola-dosyası</var> <var>bölge</var> <var>kullanıcı</var></code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+    <dl>
+    <dt><code><strong>-c</strong></code></dt>
+    <dd><code><var>parola-dosyası</var></code> oluşturur. Dosya mevcutsa,
+    dosya silinip yeniden yazılır.</dd>
+
+    <dt><code><var>parola-dosyası</var></code></dt>
+    <dd>Kullanıcı ismi, parola ve bölge bilgilerini içeren dosyanın ismi.
+    <code><strong>-c</strong></code> seçeneği verilmişse ve dosya mevcut
+    değilse oluşturulur, dosya mevcutsa silinip yeniden oluşturulur.</dd>
+
+    <dt><code><var>bölge</var></code></dt>
+    <dd>Kullanıcının mensup olduğu bölge ismi.</dd>
+
+    <dt><code><var>kullanıcı</var></code></dt>
+    <dd><code><var>parola-dosyası</var></code>'nda oluşturulacak veya
+    güncellenecek kullanıcı ismi. <code><var>kullanıcı</var></code> bu
+    dosyada mevcut değilse yeni bir girdi eklenir. Girdi mevcutsa parolası
+    değiştirilir.</dd>
+    </dl>
+</section>
+
+<section id="security"><title>Güvenlik Değerlendirmeleri</title>
+    <p>Bu program bir setuid çalıştırılabiliri olarak güvenilir olmadığından
+    <em>setuid yapılmamalıdır</em>.</p>
+</section>
+
+</manualpage>

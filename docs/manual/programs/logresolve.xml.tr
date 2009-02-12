@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 420993 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="logresolve.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+  <title>logresolve - Apache günlük dosyalarındaki IP adreslerini konak
+  isimlerine dönüştürür</title>
+
+<summary>
+     <p><code><strong>logresolve</strong></code>, Apache'nin erişim
+     günlüklerindeki IP adreslerini çözümlemek için bir ardıl işlem
+     uygulamasıdır. İsim sunucunuza bindirdiği yükü en aza indirmek için
+     <code><strong>logresolve</strong></code> kendi arabelleğinde oluşturduğu
+     eşleme tablosunu kullanır.</p>
+
+     <p>Apache günlük dosyasını standart girdisinden okur. IP adresleri günlük
+     dosyası satırlarında ilk bileşen olmalı ve sonraki bileşenlerden bir
+     boşluk ile ayrılmalıdır.</p>
+</summary>
+
+<section id="synopsis"><title>Kullanım</title>
+
+     <p><code><strong>logresolve</strong> [ -<strong>s</strong>
+     <var>dosyaismi</var> ] [ -<strong>c</strong> ] &lt;
+     <var>günlük_dosyası</var> &gt; <var>yeni_günlük_dosyası</var></code></p>
+</section>
+
+
+<section id="options"><title>Seçenekler</title>
+
+<dl>
+    <dt><code>-s <var>dosyaismi</var></code></dt>
+    <dd>İstatistiklerin kaydedileceği dosyanın ismi belirtilir.</dd>
+
+    <dt><code>-c</code></dt>
+    <dd><code><strong>logresolve</strong></code> uygulamasının bazı DNS
+    sorguları yapmasına sebep olur: IP adresine karşılık olan konak ismini
+    bulduktan sonra özgün adresle karşılaştırmak için bu konak ismine karşılık
+    gelen IP adresini sorgular.</dd>
+
+</dl>
+</section>
+
+</manualpage>
