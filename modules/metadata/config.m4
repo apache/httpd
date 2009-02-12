@@ -18,6 +18,6 @@ APACHE_MODULE(usertrack, user-session tracking, , , , [
 
 APACHE_MODULE(unique_id, per-request unique ids)
 APACHE_MODULE(setenvif, basing ENV vars on headers, , , yes)
-APACHE_MODULE(version, determining httpd version in config files)
+APACHE_MODULE(version, determining httpd version in config files, , , yes)
 
 APACHE_MODPATH_FINISH
