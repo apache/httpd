@@ -445,22 +445,16 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         char *token;
         const char *encoding;
 
-        /* only work on main request/no subrequests */
-        if (r->main != NULL) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, bb);
-        }
-
-        /* some browsers might have problems, so set no-gzip
-         * (with browsermatch) for them
+        /*
+         * Only work on main request, not subrequests,
+         * that are not a 204 response with no content
+         * and are not tagged with the no-gzip env variable
+         * and not a partial response to a Range request.
          */
-        if (apr_table_get(r->subprocess_env, "no-gzip")) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, bb);
-        }
-
-        /* We can't operate on Content-Ranges */
-        if (apr_table_get(r->headers_out, "Content-Range") != NULL) {
+        if ((r->main != NULL) || (r->status == HTTP_NO_CONTENT) ||
+            apr_table_get(r->subprocess_env, "no-gzip") ||
+            apr_table_get(r->headers_out, "Content-Range")
+           ) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
@@ -563,14 +557,32 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
         }
 
-        /* For a 304 or 204 response there is no entity included in
-         * the response and hence nothing to deflate. */
-        if (r->status == HTTP_NOT_MODIFIED || r->status == HTTP_NO_CONTENT) {
+        /* At this point we have decided to filter the content, so change
+         * important content metadata before sending any response out.
+         */
+
+        /* If the entire Content-Encoding is "identity", we can replace it. */
+        if (!encoding || !strcasecmp(encoding, "identity")) {
+            apr_table_setn(r->headers_out, "Content-Encoding", "gzip");
+        }
+        else {
+            apr_table_mergen(r->headers_out, "Content-Encoding", "gzip");
+        }
+        /* Fix r->content_encoding if it was set before */
+        if (r->content_encoding) {
+            r->content_encoding = apr_table_get(r->headers_out,
+                                                "Content-Encoding");
+        }
+        apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
+        deflate_check_etag(r, "gzip");
+
+        /* For a 304 response, only change the headers */
+        if (r->status == HTTP_NOT_MODIFIED) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
@@ -605,22 +617,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         e = apr_bucket_immortal_create(gzip_header, sizeof gzip_header,
                                        f->c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
-
-        /* If the entire Content-Encoding is "identity", we can replace it. */
-        if (!encoding || !strcasecmp(encoding, "identity")) {
-            apr_table_setn(r->headers_out, "Content-Encoding", "gzip");
-        }
-        else {
-            apr_table_mergen(r->headers_out, "Content-Encoding", "gzip");
-        }
-        /* Fix r->content_encoding if it was set before */
-        if (r->content_encoding) {
-            r->content_encoding = apr_table_get(r->headers_out,
-                                                "Content-Encoding");
-        }
-        apr_table_unset(r->headers_out, "Content-Length");
-        apr_table_unset(r->headers_out, "Content-MD5");
-        deflate_check_etag(r, "gzip");
 
         /* initialize deflate output buffer */
         ctx->stream.next_out = ctx->buffer;
@@ -1051,29 +1047,31 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
     if (!ctx) {
 
-        /* only work on main request/no subrequests */
-        if (!ap_is_initial_req(r)) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, bb);
-        }
-
-        /* We can't operate on Content-Ranges */
-        if (apr_table_get(r->headers_out, "Content-Range") != NULL) {
+        /*
+         * Only work on main request, not subrequests,
+         * that are not a 204 response with no content
+         * and not a partial response to a Range request,
+         * and only when Content-Encoding ends in gzip.
+         */
+        if (!ap_is_initial_req(r) || (r->status == HTTP_NO_CONTENT) ||
+            (apr_table_get(r->headers_out, "Content-Range") != NULL) ||
+            (check_gzip(r, r->headers_out, r->err_headers_out) == 0)
+           ) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
         /*
-         * Let's see what our current Content-Encoding is.
-         * Only inflate if gzipped.
+         * At this point we have decided to filter the content, so change
+         * important content metadata before sending any response out.
+         * Content-Encoding was already reset by the check_gzip() call.
          */
-        if (check_gzip(r, r->headers_out, r->err_headers_out) == 0) {
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, bb);
-        }
+        apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
+        deflate_check_etag(r, "gunzip");
 
-        /* No need to inflate HEAD or 204/304 */
-        if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(bb))) {
+        /* For a 304 response, only change the headers */
+        if (r->status == HTTP_NOT_MODIFIED) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
@@ -1109,11 +1107,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
          */
         apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
                                   apr_pool_cleanup_null);
-
-        /* these are unlikely to be set anyway, but ... */
-        apr_table_unset(r->headers_out, "Content-Length");
-        apr_table_unset(r->headers_out, "Content-MD5");
-        deflate_check_etag(r, "gunzip");
 
         /* initialize inflate output buffer */
         ctx->stream.next_out = ctx->buffer;
