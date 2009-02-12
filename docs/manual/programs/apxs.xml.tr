@@ -1,0 +1,353 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="apxs.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>apxs - Apache Eklenti Aracı</title>
+
+<summary>
+    <p><code><strong>apxs</strong></code>, Apache Hiper Metin Aktarım
+     Protokolü (HTTP) sunucusu için ek modül derleme ve kurulum aracıdır. Bu
+     araç sayesinde, bir veya daha fazla kaynak veya nesne
+     <var>dosya</var>sından bir devingen paylaşımlı nesne (DSO - "Dynamic
+     Shared Object" kısaltması) derlemek ve bu nesneyi (modülü) Apache
+     sunucusuna çalışma anında <strong><module>mod_so</module></strong>
+     modülünün <strong><directive module="mod_so"
+     >LoadModule</directive></strong> yönergesi üzerinden yüklemek mümkün
+     olmaktadır.</p>
+
+    <p>Bu eklenti mekanizmasını platformunuzda kullanmak için DSO desteğinin
+     olması ve <strong><program>httpd</program></strong> programının
+     <strong><module>mod_so</module></strong> modülünü içerecek şekilde
+     derlenmiş olması gerekir. Eğer bunlar mevcut değilse
+     <strong><code>apxs</code></strong> aracı durumu size bildirecektir. Bunu
+     aşağıdaki komutla kendiniz de sınayabilirsiniz:</p>
+
+    <example>
+      $ httpd -l
+    </example>
+
+    <p><strong><module>mod_so</module></strong> modülü gösterilen listede yer
+     almalıdır. Bu gereksinimler sağlandığı takdirde
+     <strong><code>apxs</code></strong> aracı sayesinde DSO mekanizması
+     üzerinden kendi modüllerinizi kurmak suretiyle Apache sunucunuzun
+     işlevselliğini kolayca arttırabilirsiniz. Örnek bir uygulama:</p>
+
+    <example>
+      $ apxs -i -a -c mod_foo.c<br />
+      gcc -fpic -DSHARED_MODULE -I/dosya/yolu/apache/include -c mod_foo.c<br />
+      ld -Bshareable -o mod_foo.so mod_foo.o<br />
+      cp mod_foo.so /dosya/yolu/apache/modules/mod_foo.so<br />
+      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br />
+      [`foo' modülü /dosya/yolu/apache/etc/httpd.conf'ta etkinleştiriliyor]<br />
+      $ apachectl restart<br />
+      /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br />
+      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
+      /dosya/yolu/apache/sbin/apachectl restart: httpd started<br />
+      $ _
+    </example>
+
+    <p><var>dosya</var> olarak bir C kaynak dosyası (.c), bir nesne dosyası
+     (.o) ve hatta bir kütüphane arşivi archive (.a) belirtebilirsiniz.
+     <strong><code>apxs</code></strong> aracı bu dosya uzantılarını
+     tanıdığından C dosyalarını derleme işleminden, arşiv ve nesne
+     dosyalarını ise doğrudan ilintileme işleminden geçirir. Fakat böyle
+     önceden derlenmiş nesne dosyalarını kullanırken, devingen paylaşımlı
+     nesne olarak kullanılmalarını sağlamak üzere konumdan bağımsız kod (PIC)
+     üretecek şekilde derlenmiş olduklarından emin olmalısınız. Örneğin
+     GCC'yi bunun için daima <strong><code>-fpic</code></strong> seçeneği ile
+     kullanmalısınız. Diğer C derleyiciler için,
+     <strong><code>apxs</code></strong>'in nesne dosyalarını derlerken
+     kullanacağı seçenekleri öğrenmek için o derleyicilerin kılavuz
+     sayfalarına bakınız.</p>
+
+    <p>Apache'deki DSO desteği ile ilgili daha ayrıntılı bilgi edinmek için
+     <strong><module>mod_so</module></strong> belgesini okumakla yetinmeyip
+     <code>src/modules/standard/mod_so.c</code> kaynak dosyasını da
+     okuyunuz.</p>
+</summary>
+<seealso><program>apachectl</program></seealso>
+<seealso><program>httpd</program></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>apxs</strong> -<strong>g</strong>
+    [ -<strong>S</strong> <var>isim=değer</var> ]
+    -<strong>n</strong> <var>modüladı</var></code></p>
+
+    <p><code><strong>apxs</strong> -<strong>q</strong>
+    [ -<strong>S</strong> <var>isim=değer</var> ]
+    <var>sorgu</var> ...</code></p>
+
+    <p><code><strong>apxs</strong> -<strong>c</strong>
+    [ -<strong>S</strong> <var>isim=değer</var> ]
+    [ -<strong>o</strong> <var>dso-dosyası</var> ]
+    [ -<strong>I</strong> <var>include-dizini</var> ]
+    [ -<strong>D</strong> <var>isim=değer</var> ]
+    [ -<strong>L</strong> <var>lib-dizini</var> ]
+    [ -<strong>l</strong> <var>kütüphane-adı</var> ]
+    [ -<strong>Wc,</strong><var>derleyici-seçenekleri</var> ]
+    [ -<strong>Wl,</strong><var>ilintileyici-seçenekleri</var> ]
+    <var>dosya</var> ...</code></p>
+
+    <p><code><strong>apxs</strong> -<strong>i</strong>
+    [ -<strong>S</strong> <var>isim=değer</var> ]
+    [ -<strong>n</strong> <var>modüladı</var> ]
+    [ -<strong>a</strong> ]
+    [ -<strong>A</strong> ]
+    <var>dso-dosyası</var> ...</code></p>
+
+    <p><code><strong>apxs</strong> -<strong>e</strong>
+    [ -<strong>S</strong> <var>isim=değer</var> ]
+    [ -<strong>n</strong> <var>modüladı</var> ]
+    [ -<strong>a</strong> ]
+    [ -<strong>A</strong> ]
+    <var>dso-dosyası</var> ...</code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+    <section id="options.common"><title>Ortak Seçenekler</title>
+      <dl>
+        <dt><code><strong>-n</strong> <var>modüladı</var></code></dt>
+        <dd><code>-i</code> (kurulum) ve <code>-g</code> (şablon üretimi)
+         seçenekleri için modül ismi belirtmek amacıyla kullanılır. Bir modül
+         ismi belirtmek için bu seçeneği kullanın.
+         <code><strong>-g</strong></code> seçeneği için bu gereklidir.
+         <code><strong>-i</strong></code> seçeneği için ise araç, modül
+         ismini kaynağın ismine bakarak veya (son çare olarak) dosya isminden
+         tahmin etmeye çalışarak saptamaya çalışır.</dd>
+      </dl>
+    </section>
+
+    <section id="options.query"><title>Sorgu Seçenekleri</title>
+      <dl>
+        <dt><code><strong>-q</strong> <var>sorgu</var></code></dt>
+        <dd><strong><code>apxs</code></strong>'in belli ayarlar hakkında
+         bilgisine başvurmak için bir sorgu gerçekleştirir.
+         <code><var>sorgu</var></code> olarak şu dizgelerden biri veya
+         birkaçı belirtilebilir: <code>CC</code>, <code>CFLAGS</code>,
+         <code>CFLAGS_SHLIB</code>, <code>INCLUDEDIR</code>,
+         <code>LD_SHLIB</code>, <code>LDFLAGS_SHLIB</code>,
+         <code>LIBEXECDIR</code>, <code>LIBS_SHLIB</code>,
+         <code>SBINDIR</code>, <code>SYSCONFDIR</code>, <code>TARGET</code>.
+
+        <p>Bu seçeneği ayarları öğrenmek için kullanın. Örneğin, Apache'nin C
+         başlık dosyalarının yerini kendi Makefile dosyalarınızın içinde
+         şöyle belirtebilirsiniz:</p>
+        <example>
+          INC=-I`apxs -q INCLUDEDIR`
+        </example></dd>
+      </dl>
+    </section>
+
+    <section id="options.conf"><title>Yapılandırma Seçenekleri</title>
+      <dl>
+      <dt><code><strong>-S</strong> <var>isim=değer</var></code></dt>
+      <dd>Bu seçenek yukarıda açıklanan <code><strong>apxs</strong></code>
+        ayarlarını değiştirir.</dd>
+      </dl>
+    </section>
+
+    <section id="options.template"><title>Şablon Üretme Seçenekleri</title>
+      <dl>
+      <dt><code><strong>-g</strong></code></dt>
+      <dd><var>modüladı</var> (<strong><code>-n</code></strong> seçeneğihe
+       bakınız) adında bir alt dizin oluşturur ve içine iki dosya
+       yerleştirir: Kendi modülünüzü oluşturabilmeniz için veya
+       <code><strong>apxs</strong></code> mekanizmaları ile hemen oynamaya
+       başlayabilmeniz için <code>mod_<var>modüladı</var>.c</code> adında bir
+       modül kaynak dosyası örneği ve bu modülü derleyip kurmayı
+       kolaylaştırmak için bir <code>Makefile</code> dosyası.</dd>
+      </dl>
+    </section>
+
+    <section id="options.dso"><title>DSO Derleme Seçenekleri</title>
+      <dl>
+      <dt><code><strong>-c</strong></code></dt>
+      <dd>Bu seçenek derleme yapılacağını belirtir. Önce belirtilen C kaynak
+       <var>dosyalar</var>ını (.c), nesne dosyalarını (.o) elde etmek için
+       derler. Sonra bunları kalan nesne dosyaları (.o ve .a) ile
+       ilintileyerek <var>dso-dosyası</var> adında bir devingen paylaşımlı
+       nesne oluşturur. Eğer <strong><code>-o</code></strong> seçeneği ile
+       modül ismi belirtilmemişse <var>dosyalar</var> arasındaki ilk dosyanın
+       ismine bakarak dosya ismi tahmin edilmeye çalışılır ve
+       <code>mod_<var>isim</var>.so</code> dosya adı bu isimden elde
+       edilir.</dd>
+
+      <dt><code><strong>-o</strong> <var>dso-dosyası</var></code></dt>
+      <dd>Oluşturulacak devingen paylaşımlı nesnenin ismini belirtmek için
+       kullanılır. Modül ismi bu seçenekle belirtilmez ve <var>dosya</var>
+       listesinden bir isim tahmini de yapılamazsa son çare olarak
+       <code>mod_unknown.so</code> ismi kullanılır.</dd>
+
+      <dt><code><strong>-D</strong> <var>isim=değer</var></code></dt>
+      <dd>Bu seçenek doğrudan derleme komutlarına aktarılır. Bu seçeneği
+       derleme işlemine kendi tanımlarınızı belirtmek için kullanın.</dd>
+
+      <dt><code><strong>-I</strong> <var>include-dizini</var></code></dt>
+      <dd>Bu seçenek doğrudan derleme komutlarına aktarılır. Bu seçeneği
+       derleme işleminde kullanılmak üzere kendi başlık dosyalarınızı içeren
+       dizinleri arama yollarına eklemek için kullanın.</dd>
+
+      <dt><code><strong>-L</strong> <var>lib-dizini</var></code></dt>
+      <dd>Bu seçenek doğrudan derleme komutlarına aktarılır. Bu seçeneği
+       derleme işleminde kullanılmak üzere kendi kütüphane dizinlerinizi
+       arama yollarına eklemek için kullanın.</dd>
+
+      <dt><code><strong>-l</strong> <var>kütüphane-adı</var></code></dt>
+      <dd>Bu seçenek doğrudan derleme komutlarına aktarılır. Bu seçeneği
+       derleme işleminde kullanılmak üzere kendi kütüphanelerinizi arama
+       yollarına eklemek için kullanın.</dd>
+
+      <dt><code><strong>-Wc</strong>,<var>derleyici-seçenekleri</var></code></dt>
+      <dd>Bu seçenek <code>libtool --mode=compile</code> komutuna doğrudan
+       seçenek aktarmak için kullanılır. Bu seçeneği yerel derleyiciniz için
+       gereken ek seçenekleri belirtmek için kullanın.</dd>
+
+      <dt><code><strong>-Wl</strong>,<var>ilintileyici-seçenekleri</var></code></dt>
+      <dd>Bu seçenek <code>libtool --mode=link</code> komutuna doğrudan
+       seçenek aktarmak için kullanılır. Bu seçeneği yerel ilintileyiciniz
+       için gereken ek seçenekleri belirtmek için kullanın.</dd>
+      </dl>
+    </section>
+
+    <section id="options.dsoinstall">
+    <title>DSO Kurulum ve Yapılandırma Seçenekleri</title>
+      <dl>
+      <dt><code><strong>-i</strong></code></dt>
+      <dd>Kurulum işlemini belirtir ve devingen olarak paylaşımlı nesneleri
+       sunucunun <var>modules</var> dizinine kurar.</dd>
+
+      <dt><code><strong>-a</strong></code></dt>
+      <dd>İlgili <directive module="mod_so">LoadModule</directive> satırını
+       Apache'nin <code>httpd.conf</code> yapılandırma dosyasına özdevinimli
+       olarak ekleyerek veya böyle bir satır varsa bunu etkin kılarak modülü
+       etkinleştirir.</dd>
+
+      <dt><code><strong>-A</strong></code></dt>
+      <dd><strong><directive module="mod_so">LoadModule</directive></strong>
+       yönergesini daha sonra etkinleştirmek üzere satırın başına bir diyez
+       imi (<code>#</code>) yerleştirmesi dışında
+       <strong><code>-a</code></strong> seçeneği ile aynıdır.</dd>
+
+      <dt><code><strong>-e</strong></code></dt>
+      <dd>Modülü kurmaya çalışmaksızın Apache'nin <code>httpd.conf</code>
+       yapılandırma dosyasını <strong><code>-i</code></strong> işlemine
+       benzer şekilde <strong><code>-a</code></strong> ve
+       <strong><code>-A</code></strong> seçenekleri ile düzenleme işlemini
+       belirtir.</dd>
+      </dl>
+    </section>
+</section>
+
+<section id="examples"><title>Örnekler</title>
+    <p>Apache'nin sunucu işlevselliğini genişletmek amacıyla kullanacağınız
+     <code>mod_foo.c</code> adında bir Apache modülünüz olduğunu varsayalım.
+     Öncelikle, C kaynak dosyasını, Apache sunucusuna çalışma anında
+     yüklenmeye uygun bir paylaşımlı nesne olarak derlemeniz gerekir. Bunu
+     sağlamak için şu komutları vermelisiniz:</p>
+
+    <example>
+      $ apxs -c mod_foo.c<br />
+      /dosya/yolu/libtool --mode=compile gcc ... -c mod_foo.c<br />
+      /dosya/yolu/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
+      $ _
+    </example>
+
+    <p>Bundan sonra, Apache yapılandırmanızın bu paylaşımlı nesneyi yüklemek
+     için bir <strong><directive
+     module="mod_so">LoadModule</directive></strong> yönergesi içermesini
+     sağlamalısınız. <strong><code>apxs</code></strong> bu adımı
+     basitleştirmek amacıyla, paylaşımlı nesneyi sunucunun <var>modules</var>
+     dizinine özdevinimli olarak kurmak ve <code>httpd.conf</code> dosyasını
+     buna uygun olarak güncellemek için bir yol sağlar. Bu sonuç şöyle elde
+     edilebilir:</p>
+
+    <example>
+      $ apxs -i -a mod_foo.la<br />
+      /dosya/yolu/instdso.sh mod_foo.la /path/to/apache/modules<br />
+      /dosya/yolu/libtool --mode=install cp mod_foo.la /dosya/yolu/apache/modules
+      ...
+      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br />
+      [`foo' modülü /dosya/yolu/apache/conf/httpd.conf'da etkinleştiriliyor] <br />
+      $ _
+    </example>
+
+    <p>Yapılandıma dosyasına (eğer yoksa) şu satır eklenir:</p>
+
+    <example>
+      LoadModule foo_module modules/mod_foo.so
+    </example>
+
+    <p>Bunu öntanımlı olarak iptal etmek isterseniz
+     <strong><code>-A</code></strong> seçeneğini kullanmanız gerekir:</p>
+
+    <example>
+      $ apxs -i -A mod_foo.c
+    </example>
+
+    <p><strong><code>apxs</code></strong> mekanizmalarını hızlıca denemek
+     için örnek bir Apache modül şablonunu ve bir Makefile dosyasını şöyle
+     oluşturabilirsiniz:</p>
+
+    <example>
+      $ apxs -g -n foo<br />
+      Creating [DIR]  foo<br />
+      Creating [FILE] foo/Makefile<br />
+      Creating [FILE] foo/modules.mk<br />
+      Creating [FILE] foo/mod_foo.c<br />
+      Creating [FILE] foo/.deps<br />
+      $ _
+    </example>
+
+    <p>Ardından bu örnek modülü bir paylaşımlı nesne olarak derleyip Apache
+     sunucusuna yükleyebilirsiniz:</p>
+
+    <example>
+      $ cd foo<br />
+      $ make all reload<br />
+      apxs -c mod_foo.c<br />
+      /dosya/yolu/libtool --mode=compile gcc ... -c mod_foo.c<br />
+      /dosya/yolu/libtool --mode=link gcc ... -o mod_foo.la mod_foo.slo<br />
+      apxs -i -a -n "foo" mod_foo.la<br />
+      /dosya/yolu/instdso.sh mod_foo.la /dosya/yolu/apache/modules<br />
+      /dosya/yolu/libtool --mode=install cp mod_foo.la /dosya/yolu/apache/modules
+      ...
+       chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br />
+      [`foo' modülü /dosya/yolu/apache/conf/httpd.conf'ta etkinleştiriliyor]<br />
+       apachectl restart<br />
+       /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br />
+      chmod 755 /dosya/yolu/apache/modules/mod_foo.so<br />
+      [`foo' modülü /dosya/yolu/apache/etc/httpd.conf'ta etkinleştiriliyor]<br />
+      apachectl restart<br />
+      /dosya/yolu/apache/sbin/apachectl restart: httpd not running, trying to start<br />
+      [Tue Mar 31 11:27:55 1998] [debug] mod_so.c(303): loaded module foo_module<br />
+      /dosya/yolu/apache/sbin/apachectl restart: httpd started<br />
+      $ _
+    </example>
+
+</section>
+</manualpage>
