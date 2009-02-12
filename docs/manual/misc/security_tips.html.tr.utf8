@@ -23,7 +23,6 @@
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
     ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
@@ -36,6 +35,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#nsaliasedcgi"><code>ScriptAlias</code>’sız CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#saliasedcgi"><code>ScriptAlias</code>’lı CGI</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dynamic">Devingen içerikli kaynaklar</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dynamicsec">Devingen içeriğin güvenliği</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#systemsettings">Sistem Ayarlarının Korunması</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#protectserverfiles">Sunucu dosyalarının öntanımlı olarak korunması</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#watchyourlogs">Günlüklerin İzlenmesi</a></li>
@@ -286,6 +286,28 @@
       eriştiği herşeye erişebilirler. Bazı betik yorumlayıcıların getirdiği
       bazı sınırlamalar varsa da bunlara pek güvenmemek, gerekli sınamaları
       yine de yapmak gerekir.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dynamicsec" id="dynamicsec">Devingen içeriğin güvenliği</a></h2>
+    
+
+    <p><code>mod_php</code>, <code>mod_perl</code> veya
+      <code>mod_python</code> gibi devingen içeriği yapılandırırken
+      güvenlikle ilgili değerlendirmelerin çoğu <code>httpd</code>'nin
+      kapsamından çıkar ve bu modüllerin belgelerini incelemek ihtiyacı
+      duyarsınız. Örneğin, PHP çoğu zaman kapalı tutulan
+      <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Güvenli
+      Kip</a> ayarını etkin kılmanızı önerir. Daha fazla güvenlik için bir
+      diğer örnek bir PHP eklentisi olan
+      <a href="http://www.hardened-php.net/suhosin/">Suhosin</a>'dir. Bunlar
+      hakkında daha ayrıntılı bilgi için her projenin kendi belgelerine
+      başvurun.</p>
+
+    <p>Apache seviyesinde, <a href="http://modsecurity.org/">mod_security</a>
+      adı verilen modülü bir HTTP güvenlik duvarı gibi ele alabilir, devingen
+      içeriğin güvenliğini arttırmanıza yardımcı olmak üzere inceden inceye
+      yapılandırabilirsiniz.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
