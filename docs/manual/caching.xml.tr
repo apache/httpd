@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="style/manual.tr.xsl"?>
-<!-- English Revision: 572620 -->
+<!-- English Revision: 743406 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -70,7 +70,7 @@
       eder.</p>
 
     <p><directive module="mod_file_cache">CacheFile</directive> ve <directive
-      module="mod_file_cache">MMapStatic</directive> yönergeleri ile ilgili
+      module="mod_file_cache">MMapFile</directive> yönergeleri ile ilgili
       bölümlerde anlatılanları saymazsak <module>mod_file_cache</module>, bu
       belgenin asıl konusu olan <module>mod_cache</module> önbellekleme
       mimarisine göre daha basit bir önbellekleme gerçeklenimidir.</p>
@@ -96,8 +96,7 @@
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
         <directive module="mod_cache">CacheDisable</directive>
-        <directive module="mod_file_cache">MMapStatic</directive>
-        <directive module="mod_file_cache">CacheFile</directive>
+        <directive module="mod_file_cache">MMapFile</directive>
         <directive module="mod_file_cache">CacheFile</directive>
         <directive module="core">UseCanonicalName</directive>
         <directive module="mod_negotiation">CacheNegotiatedDocs</directive>
@@ -485,7 +484,7 @@
       <directivelist>
         <directive module="mod_cache">CacheEnable</directive>
         <directive module="mod_cache">CacheDisable</directive>
-        <directive module="mod_file_cache">MMapStatic</directive>
+        <directive module="mod_file_cache">MMapFile</directive>
       </directivelist>
     </related>
 
@@ -556,24 +555,24 @@
       bellekiçi önbelleklemesine ihtiyacınız var demektir.</p>
 
     <section>
-      <title><code>MMapStatic</code> yönergesi ile</title>
+      <title><code>MMapFile</code> yönergesi ile</title>
 
       <p><module>mod_file_cache</module> modülü, bir durağan dosyanın
         içeriğini sunucunun başlatılması sırasında (mmap sistem çağrısıyla)
         belleğe eşlenmesini mümkün kılmak için <directive
-        module="mod_file_cache" >MMapStatic</directive> yönergesini sağlar.
+        module="mod_file_cache" >MMapFile</directive> yönergesini sağlar.
         Apache bu dosyaya gelecek sonraki istekler için dosyanın bellekiçi
         içeriğini kullanacaktır.</p>
 
       <example>
-        MMapStatic /usr/local/apache2/htdocs/index.html
+        MMapFile /usr/local/apache2/htdocs/index.html
       </example>
 
       <p><directive module="mod_file_cache">CacheFile</directive> yönergesinde
         olduğu gibi bu dosyalarda Apache başlatıldıktan sonra yapılacak bir
         değişiklikten Apache’nin haberi olmayacaktır.</p>
 
-      <p><directive module="mod_file_cache">MMapStatic</directive> yönergesi
+      <p><directive module="mod_file_cache">MMapFile</directive> yönergesi
         ayırdığı belleğin toplam miktarı ile ilgilenmez, dolayısıyla
         yönergenin aşırı kullanımından kaçınmalısınız. Apache’nin çocuk
         süreçlerinin her biri bu belleğin kendilerine ait birer kopyasını
