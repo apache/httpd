@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 650172 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htcacheclean.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>htcacheclean - Disk arabelleğini temizler</title>
+
+<summary>
+    <p><code><strong>htcacheclean</strong></code>,
+    <module>mod_disk_cache</module> deposunun boyutlarını belli sınırlar
+    içinde tutmak için kullanılır. Bu araç ya elle ya da bir artalan süreci
+    olarak çalıştırılır. Artalan süreci olarak çalıştırıldığında, silinecek
+    arabellek içeriğini tespit etmek için arabellek dizinlerine belli
+    aralıklarla bakmak dışında uykuda olur. Artalan sürecini temiz olarak
+    durdurmak için TERM veya INT sinyali göndermeniz yeterlidir.</p>
+</summary>
+<seealso><module>mod_disk_cache</module></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>n</strong> ]
+    -<strong>p</strong><var>yol</var>
+    -<strong>l</strong><var>sınır</var></code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>n</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>i</strong> ]
+    -<strong>d</strong><var>süre</var>
+    -<strong>p</strong><var>yol</var>
+    -<strong>l</strong><var>sınır</var></code></p>
+</section>
+
+<section id="options"><title>Options</title>
+    <dl>
+    <dt><code><strong>-d</strong><var> süre</var></code></dt>
+    <dd>Artalanda çalışarak <code><var>süre</var></code> dakikada bir
+    arabelleği temizler. Bu seçenek <code><strong>-D</strong></code>,
+    <code><strong>-v</strong></code> ve <code><strong>-r</strong></code>
+    seçenekleri ile birlikte kullanılamaz. Artalan sürecini temiz olarak
+    sonlandırmak için <code>SIGTERM</code> veya <code>SIGINT</code> göndermek
+    yeterlidir.</dd>
+
+    <dt><code><strong>-D</strong></code></dt>
+    <dd>Kuru kuruya çalışıp, hiçbir şeyi silmez.
+    <code><strong>-d</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-v</strong></code></dt>
+    <dd>Çıktı daha ayrıntılı olur. <code><strong>-d</strong></code> seçeneği
+    ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-r</strong></code></dt>
+    <dd>İyice temizlik yapılır. Bunun için Apache HTTP sunucusunun
+    çalışmadığı varsayılır (aksi takdirde arabellek içeriği bozulabilir).
+    <code><strong>-t</strong></code> seçeneğinin de uygulanmasını sağlar.
+    <code><strong>-d</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-n</strong></code></dt>
+    <dd>Nazik olur. Diğer süreçlerin yararına daha yavaş çalışır. (a) disk
+    G/Ç işlemlerinde gecikmeler olursa ve (b) çekirdek bu arada başka bir
+    süreci öne çekmişse <code><strong>htcacheclean</strong></code> uyumayı
+    tercih edecektir.</dd>
+
+    <dt><code><strong>-t</strong></code></dt>
+    <dd>Tüm boş dizinleri siler. Öntanımlı olarak, sadece arabellek dosyaları
+    silinirse de bazı yapılandırmalarda büyük miktarda dizin oluşturulması bu
+    seçeneğin kullanılmasını gerektirebilir. Yapılandırmanız çok sayıda dizin
+    gerektiriyorsa ve dosya düğümlerinin veya dosya ayırma tablolarının
+    tükenmesi sözkonusu ise bu seçeneğin kullanılması önerilir.</dd>
+
+    <dt><code><strong>-p</strong><var> yol</var></code></dt>
+    <dd><code><var>yol</var></code>, disk arabelleğinin kök dizini olarak
+    belirtilir. <directive module="mod_disk_cache">CacheRoot</directive>
+    yönergesinde belirtilen dizin olmalıdır.</dd>
+
+    <dt><code><strong>-l</strong><var> sınır</var></code></dt>
+    <dd><code><var>sınır</var></code>, disk arabelleğinin toplam boyutu
+    olarak belirtilir. Değerin öntanımlı olarak bayt cinsinden belirtileceği
+    varsayılır. Değerin sonuna kilobayt için <code>K</code>, megabayt
+    <code>M</code>, bayt için <code>B</code>  harfi konulabilir.</dd>
+
+    <dt><code><strong>-i</strong></code></dt>
+    <dd>Akıllı olup sadece disk arabelleği değiştiği zaman çalışır. Bu
+    seçenek <code><strong>-d</strong></code> seçeneği ile birlikte
+    belirtilmek zorundadır.</dd>
+    </dl>
+</section>
+
+<section id="exit"><title>Çıkış Durumu</title>
+    <p><code><strong>htcacheclean</strong></code>, tüm işlemler başarıyla
+    yerine getirildiğinde <code>0</code>, aksi takdirde <code>1</code>
+    döndürür.</p>
+</section>
+
+</manualpage>

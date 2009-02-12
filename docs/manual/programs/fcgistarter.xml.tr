@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 669564 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="fcgistarter.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>fcgistarter - Bir FastCGI programını çalıştır</title>
+
+<summary>
+    <p></p>
+    <note><title>Bilginize</title>
+      <p>Şimdilik sadece Unix sistemlerinde çalışmaktadır.</p>
+    </note>
+</summary>
+<seealso><module>mod_proxy_fcgi</module></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>fcgistarter</strong>
+    -<strong>c</strong> <var>komut</var>
+    -<strong>p</strong> <var>port</var>
+    [ -<strong>i</strong> <var>arabirim</var> ]
+    -<strong>N</strong> <var>sayı</var>
+    </code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+    <dl>
+    <dt><code><strong>-c</strong> <var>komut</var></code></dt>
+    <dd>Çalıştırılacak FastCGI programı</dd>
+
+    <dt><code><strong>-p</strong> <var>port</var></code></dt>
+    <dd>Programın dinleyeceği port</dd>
+
+    <dt><code><strong>-i</strong> <var>arabirim</var></code></dt>
+    <dd>Programın dinleyeceği arabirim</dd>
+
+    <dt><code><strong>-N</strong> <var>sayı</var></code></dt>
+    <dd>Program örneklerinin sayısı</dd>
+
+    </dl>
+</section>
+</manualpage>

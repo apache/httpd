@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 743251 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="httxt2dbm.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>httxt2dbm - RewriteMap ile kullanmak için DBM dosyaları üretir</title>
+
+<summary>
+    <p><code><strong>httxt2dbm</strong></code>, <directive
+    module="mod_rewrite">RewriteMap</directive> ile kullanmak için düz metin
+    dosyalardan DBM dosyaları üretir.</p>
+</summary>
+<seealso><program>httpd</program></seealso>
+<seealso><module>mod_rewrite</module></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>httxt2dbm</strong>
+    [ -<strong>v</strong> ]
+    [ -<strong>f</strong> <var>DBM_türü</var> ]
+    -<strong>i</strong> <var>kaynak_metin</var>
+    -<strong>o</strong> <var>çıktı_DBM</var>
+    </code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+    <dl>
+    <dt><code><strong>-v</strong></code></dt>
+    <dd>Çıktı daha ayrıntılı olur.</dd>
+
+    <dt><code><strong>-f</strong> <var>DBM_türü</var></code></dt>
+    <dd>Çıktı için kullanılacak DBM türü belirtilir. Belirtilmediği takdirde
+    <glossary>APR</glossary> öntanımlısı kullanılır. Belirtilebilecek DBM
+    türleri:<br />
+    GDBM dosyalar için <code>GDBM</code><br />
+    SDBM dosyalar için <code>SDBM</code><br />
+    Berkeley DB dosyalar için <code>DB</code><br />
+    NDBM dosyalar için <code>NDBM</code><br />
+    öntanımlı DBM türü için <code>default</code>
+    </dd>
+
+    <dt><code><strong>-i</strong> <var>kaynak_metin</var></code></dt>
+    <dd>DBM dosyasının üretiminde kullanılacak girdi dosyası belirtilir. Bu
+    dosya, her satırda bir kayıt bulunmak üzere her satırı şöyle biçemlenmiş
+    olmalıdır:<br />
+    <code>anahtar değer</code><br />
+    Bu dosyanın biçemi ve manası ile ilgili ayrıntılar için <directive
+    module="mod_rewrite">RewriteMap</directive> yönergesinin açıklamasına
+    bakınız.
+    </dd>
+
+    <dt><code><strong>-o</strong>  <var>çıktı_DBM</var></code></dt>
+    <dd>Çıktılanacak DBM dosyasının ismi belirtilir.</dd>
+    </dl>
+</section>
+
+<section id="examples"><title>Örnekler</title>
+    <example>
+      httxt2dbm -i rewritemap.txt -o rewritemap.dbm<br />
+      httxt2dbm -f SDBM -i rewritemap.txt -o rewritemap.dbm<br />
+    </example>
+</section>
+
+</manualpage>
