@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 743005 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="htdbm.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>htdbm - DBM parola veritabanlarını yönetir</title>
+
+<summary>
+    <p><code><strong>htdbm</strong></code>,
+    <module>mod_authn_dbm</module> üzerinden HTTP kullanıcılarının temel
+    kimlik doğrulaması için kullanıcı isimlerinin ve parolalarının
+    saklanmasında kullanılacak DBM dosyalarını yönetmek için kullanılır. DBM
+    dosyaları hakkında daha ayrıntılı bilgi edinmek için
+    <strong><program>dbmmanage</program></strong> sayfasına bakınız.</p>
+</summary>
+<seealso><program>httpd</program></seealso>
+<seealso><program>dbmmanage</program></seealso>
+<seealso><module>mod_authn_dbm</module></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>htdbm</strong>
+    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>c</strong> ]
+    [ -<strong>m</strong> |
+      -<strong>d</strong> |
+      -<strong>p</strong> |
+      -<strong>s</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>x</strong> ]
+    <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
+
+    <p><code><strong>htdbm</strong> -<strong>b</strong>
+    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>c</strong> ]
+    [ -<strong>m</strong> |
+      -<strong>d</strong> |
+      -<strong>p</strong> |
+      -<strong>s</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>v</strong> ]
+    <var>parola-dosyası</var> <var>kullanıcı</var> <var>parola</var></code></p>
+
+    <p><code><strong>htdbm</strong> -<strong>n</strong>
+    [ -<strong>c</strong> ]
+    [ -<strong>m</strong> |
+      -<strong>d</strong> |
+      -<strong>p</strong> |
+      -<strong>s</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>v</strong> ]
+    <var>kullanıcı</var></code></p>
+
+    <p><code><strong>htdbm</strong> -<strong>nb</strong>
+    [ -<strong>c</strong> ]
+    [ -<strong>m</strong> |
+      -<strong>d</strong> |
+      -<strong>p</strong> |
+      -<strong>s</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>v</strong> ]
+    <var>kullanıcı</var> <var>parola</var></code></p>
+
+    <p><code><strong>htdbm</strong> -<strong>v</strong>
+    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>c</strong> ]
+    [ -<strong>m</strong> |
+      -<strong>d</strong> |
+      -<strong>p</strong> |
+      -<strong>s</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>v</strong> ]
+    <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
+
+    <p><code><strong>htdbm</strong> -<strong>vb</strong>
+    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>c</strong> ]
+    [ -<strong>m</strong> |
+      -<strong>d</strong> |
+      -<strong>p</strong> |
+      -<strong>s</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>v</strong> ]
+    <var>parola-dosyası</var> <var>kullanıcı</var> <var>parola</var></code></p>
+
+    <p><code><strong>htdbm</strong> -<strong>x</strong>
+    [ -<strong>T</strong><var>VTtürü</var> ]
+    [ -<strong>m</strong> |
+      -<strong>d</strong> |
+      -<strong>p</strong> |
+      -<strong>s</strong> ]
+    <var>parola-dosyası</var> <var>kullanıcı</var></code></p>
+
+    <p><code><strong>htdbm</strong> -<strong>l</strong>
+    [ -<strong>T</strong><var>VTtürü</var> ]
+    </code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+    <dl>
+    <dt><code><strong>-b</strong></code></dt>
+    <dd>Betik kipi; parola için istek yapmak yerine parola komut satırından
+    verilir. <strong>Parola komut satırında görünür</strong> olacağından çok
+    dikkatli kullanmak gerekir.</dd>
+
+    <dt><code><strong>-c</strong></code></dt>
+    <dd><code><var>parola-dosyası</var></code> oluşturur. Dosya mevcutsa,
+    dosya silinip yeniden yazılır. Bu seçenek
+    <code><strong>-n</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-n</strong></code></dt>
+    <dd>Sonuçları veritabanında güncellemek yerine standart çıktıya gönderir.
+    <code><var>parola-dosyası</var></code> belirtilmediğinden, bu seçenek
+    komut satırı sözdizimini değiştirir. Bu seçenek
+    <code><strong>-c</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-m</strong></code></dt>
+    <dd>Parolalar için MD5 şifrelemesi kullanılır. Windows, Netware ve TPF
+    için öntanımlıdır.</dd>
+
+    <dt><code><strong>-d</strong></code></dt>
+    <dd>Parolaları şifrelemek için <code>crypt()</code> kullanılır. Windows,
+    Netware ve TPF dışında öntanımlıdır.
+    <code><strong>htdbm</strong></code> tarafından tüm platformlarda
+    destekleniyor olsa da Windows, Netware ve TPF üzerinde
+    <program>httpd</program> sunucusu tarafından desteklenmez.</dd>
+
+    <dt><code><strong>-s</strong></code></dt>
+    <dd>Parolalar için SHA şifrelemesi kullanılır. LDAP Dizin değişim
+    biçemini (ldif) kullanarak Netscape sunucularına/sunucularından göçü
+    kolaylaştırır.</dd>
+
+    <dt><code><strong>-p</strong></code></dt>
+    <dd>Düz metin parolalar kullanılır. <code><strong>htdbm</strong></code>
+    tarafından tüm platformlarda destekleniyor olsa da Windows, Netware ve
+    TPF üzerinde <program>httpd</program> sunucusu tarafından sadece düz
+    metin parolalar kabul edilir.</dd>
+
+    <dt><code><strong>-l</strong></code></dt>
+    <dd>Veritabanındaki kullanıcıları açıklamalarıyla birlikte standart
+    çıktıya gönderir.</dd>
+
+    <dt><code><strong>-t</strong></code></dt>
+    <dd>Son değiştirgenin bir açıklama olarak yorumlanmasını sağlar. Bu
+    seçenek kullanıldığında komut satırının sonuna fazladan bir dizge
+    eklenebilir. Bu dizge, veritabanında belirtilen kullanıcının "Comment"
+    alanında saklanır.</dd>
+
+    <dt><code><strong>-v</strong></code></dt>
+    <dd>Kullanıcı adını ve parolasını doğrular. Program belirtilen parolanın
+    geçerli olup olmadığını belirten bir ileti basar. Eğer parola geçersizse
+    program hata kodu 3 ile çıkar.</dd>
+
+    <dt><code><strong>-x</strong></code></dt>
+    <dd>Kullanıcıyı siler. Kullanıcı belirtilen DBM dosyasında mevcutsa
+    silinir.</dd>
+
+    <dt><code><var>parola-dosyası</var></code></dt>
+    <dd>DBM dosyasının ismi. Genellikle, <code>.db</code>, <code>.pag</code>
+    veya <code>.dir</code> eklentisi olmaksızın belirtilir.
+    <code><strong>-c</strong></code> seçeneği ile birlikte verilmişse ve DBM
+    dosyası mevcut değilse dosya oluşturulur, mevcutsa dosya güncellenir.</dd>
+
+    <dt><code><var>kullanıcı</var></code></dt>
+    <dd><code><var>parola-dosyası</var></code>'nda oluşturulacak veya
+    güncellenecek kullanıcı ismi. <code><var>kullanıcı</var></code> bu
+    dosyada mevcut değilse yeni bir girdi eklenir. Girdi mevcutsa parolası
+    değiştirilir.</dd>
+
+    <dt><code><var>parola</var></code></dt>
+    <dd>Şifrelenip DBM dosyasında saklanacak düz metin parola. Sadece
+    <code><strong>-b</strong></code> seçeneği ile kullanılır.</dd>
+
+    <dt><code><strong>-T</strong> <var>VTtürü</var></code></dt>
+    <dd>DBM dosyasının türü; SDBM, GDBM, DB, veya "default" olabilir.</dd>
+    </dl>
+</section>
+
+<section id="bugs"><title>Hatalar</title>
+    <p>Birden fazla DBM dosya biçemi vardır ve büyük bir olasılıkla da
+    sisteminizde bu birden fazla biçemle ilgili kütüphaneler vardır. SDBM,
+    NDBM, GNU'nun GDBM projesi ve Berkeley/Sleepycat DB 2/3/4 bunların
+    başlıcalarıdır. Ne yazık ki, bu kütüphanelerin her birinin dosya
+    biçimleri farklıdır. Bu bakımdan, <code><var>dosyaismi</var></code>
+    dosyasında kullanılan dosya biçeminin <code><strong>htdbm</strong></code>
+    tarafından kullanılanla aynı biçemde olduğundan emin olmalısınız.
+    <code><strong>htdbm</strong></code> hangi tür DBM dosyasına baktığını
+    saptayacak yeterliliğe sahip değildir. Yanlış biçemli bir dosya
+    belirtirseniz hiçbir şey dönmeyebileceği gibi, başka isimde bir DBM
+    dosyasının oluşturulması veya daha da kötüsü üzerine yazmaya
+    çalışıyorsanız DBM dosyasının bozulması bile olasıdır.</p>
+
+    <p>Unix sistemlerinde, kullanılan DBM dosyasının biçemini öğrenmek için
+    <code><strong>file</strong></code> programı kullanılabilir.</p>
+</section>
+
+<section id="exit"><title>Çıkış Durumu</title>
+    <p><code><strong>htdbm</strong></code>, kullanıcı ismi ve parolasını DBM
+    dosyasına başarıyla eklemiş veya güncellemişse <code>0</code>, dosyalara
+    erişirken bir sorun çıkmışsa <code>1</code>, komut satırında bir
+    sözdizimi hatası varsa <code>2</code>, parola etkileşimli alınmış fakat
+    girdi ile eşleşme sağlanamamışsa <code>3</code>, işlem kesintiye
+    uğramışsa <code>4</code>, bir değer çok uzunsa <code>5</code> (kullanıcı,
+    parola, dosya ismi veya açıklama), kullanıcı ismi kuraldışı karakter
+    içeriyorsa (<a href="#restrictions">Kısıtlamalar</a> bölümüne bakınız)
+    <code>6</code> ve dosya geçerli bir DBM parola dosyası değilse
+    <code>7</code> değeriyle döner.</p>
+</section>
+
+<section id="examples"><title>Örnekler</title>
+    <example>
+      htdbm /usr/local/etc/apache/.htdbm-users jsmith
+    </example>
+
+    <p><code>jsmith</code> kullanıcısı için parolayı ekler veya değiştirir.
+    Parolayı vermesi için kullanıcıya parola isteği yapılır. Windows üzerinde
+    çalıştırılırsa parola Apache MD5 algoritması ile şifrelenir, aksi
+    takdirde sistemin <code>crypt()</code> yordamı kullanılır. Dosya mevcut
+    değilse <code><strong>htdbm</strong></code> beklenen hiçbir işlemi
+    yapmadan bir hata vererek çıkar.</p>
+
+    <example>
+      htdbm -c /home/doe/public_html/.htdbm jane
+    </example>
+
+    <p>Yeni bir dosya oluşturur ve kullanıcı <code>jane</code> için kaydı bir
+    girdi olarak bu dosyaya yazar. Dosya mevcutsa fakat okunamıyor veya
+    yazılamıyorsa dosyada bir değişiklik yapılmaz ve
+    <code><strong>htdbm</strong></code> bir ileti gösterip bir hata durumu
+    ile çıkar.</p>
+
+    <example>
+      htdbm -mb /usr/web/.htdbm-all jones Pwd4Steve
+    </example>
+
+    <p>Komut satırından verilen parolayı (<code>Pwd4Steve</code>) MD5
+    algoritmasıyla şifreler ve bunu belirtilen dosyada saklar.</p>
+</section>
+
+<section id="security"><title>Güvenlik Değerlendirmeleri</title>
+    <p><code><strong>htdbm</strong></code> tarafından yönetilen parola
+    dosyalarına sunucunun URI uzayından erişilememelidir; yani dosya bir
+    tarayıcı ile okunabilecek bir yerde bulunmamalıdır.</p>
+
+    <p>Komut satırında parolanın şifrelenmemiş olarak görünmesi sebebiyle
+    <code><strong>-b</strong></code> seçeneğinin kullanımından kaçınılmasını
+    öneriyoruz.</p>
+</section>
+
+<section id="restrictions"><title>Kısıtlamalar</title>
+    <p>Windows ve MPE platformlarında, <code><strong>htdbm</strong></code>
+    ile şifrelenen parolalar <code>255</code> karakterden daha uzun olamaz.
+    255 karakterden sonrası kırpılır.</p>
+
+    <p><code><strong>htdbm</strong></code> tarafından kullanılan MD5
+    algoritması Apache yazılımına özeldir; bu algoritma ile şifrelenen
+    parolalar başka HTTP sunucularında kullanılamayabilir.</p>
+
+    <p>Kullanıcı isimleri <code>255</code> bayttan uzun olamaz ve iki nokta
+    imi (<code>:</code>) içeremez.</p>
+</section>
+
+</manualpage>
