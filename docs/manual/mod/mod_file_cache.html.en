@@ -72,9 +72,7 @@
     <p><code class="module"><a href="../mod/mod_file_cache.html">mod_file_cache</a></code> caches a list of statically
     configured files via <code class="directive"><a href="#mmapfile">MMapFile</a></code> or <code class="directive"><a href="#cachefile">CacheFile</a></code> directives in the main server configuration.</p>
 
-    <p>Not all platforms support both directives. For example, Apache
-    on Windows does not currently support the <code class="directive"><a href="#mmapstatic">MMapStatic</a></code> directive, while
-    other platforms, like AIX, support both. You will receive an error
+    <p>Not all platforms support both directives. You will receive an error
     message in the server error log if you attempt to use an
     unsupported directive. If given an unsupported directive, the
     server will start but the file will not be cached. On platforms
@@ -156,7 +154,7 @@
     places these handles into the cache at server startup
     time. Handles to cached files are automatically closed on a server
     shutdown.  When the files have changed on the filesystem, the
-    server should be restarted to to re-cache them.</p>
+    server should be restarted to re-cache them.</p>
 
     <p>Be careful with the <var>file-path</var> arguments: They have
     to literally match the filesystem path Apache's URL-to-filename

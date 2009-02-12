@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>suexec - harici programları çalıştırmadan önce kullanıcıyı değiştirir - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.3</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>suexec - harici programları çalıştırmadan önce kullanıcıyı değiştirir</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/programs/suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/programs/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p><code><strong>suexec</strong></code>, CGI programlarını çalıştırmadan
+    önce Apache HTTP Sunucusu tarafından kullanıcı değiştirmek için kullanılır.
+    Bunu yapabilmek için sunucunun <code>root</code> tarafından çalıştırılmış
+    olması gerekir. HTTP artalan süreci normalde <code>root</code> aidiyetinde
+    çalışmadığından <code><strong>suexec</strong></code>'in çalıştırılabilir
+    dosyasının sahibi <code>root</code> olmalı, setuid biti etkin
+    (<code>u+s</code>) olmalı ve dosyaya <code>root</code> dışında hiç kimse
+    yazamamalıdır.</p>
+
+    <p><code><strong>suexec</strong></code> güvenlik modeli ve kavramlar
+    hakkında bilgi edinmek için suexec belgesine (<a href="../suexec.html">http://httpd.apache.org/docs/trunk/suexec.html</a>) bakınız.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
+    <p><code><strong>suexec</strong> -<strong>V</strong></code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="options" id="options">Seçenekler</a></h2>
+  <dl>
+    <dt><code><strong>-V</strong></code></dt>
+    <dd><code>root</code> iseniz, bu seçenek
+      <code><strong>suexec</strong></code>
+    derleme seçeneklerini gösterir. Güvenlik sebebiyle tüm yapılandırma
+    seçenekleri sadece derleme sırasında değiştirilebilir.</dd>
+  </dl>
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/programs/suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/programs/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/suexec.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
