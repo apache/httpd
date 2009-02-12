@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421174 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="other.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>Diğer Programlar</title>
+
+<summary>
+    <p>Aşağıdaki programlar Apache HTTP Sunucusu ile gelen basit destek
+    programları olup kendilerine ait kılavuz sayfaları yoktur. Bunlar
+    özdevinimli olarak kurulmazlar. Derleme işleminden sonra bunları
+    <code>support/</code> dizininde bulabilirsiniz.</p>
+</summary>
+
+<section id="log_server_status"><title>log_server_status</title>
+    <p>Bu perl betiği cron gibi bir şeyleri belli aralıklarla çalıştırmak için
+    tasarlanmıştır. Sunucuya bağlanıp durum bilgisini indirdikten sonra bunları
+    tek bir satır haline getirip bir günlük dosyasına kaydeder. Sonuçların
+    kaydedileceği günlük dosyasını betiğin başlangıcındaki değişkenlerde
+    değişiklik yaparak belirtebilirsiniz.</p>
+</section>
+
+<section id="split-logfile"><title>split-logfile</title>
+    <p>Bu perl betiği sanal konaklı bir birleşik günlük dosyasını girdi olarak
+    alır ve içeriğini ayrı dosyalara böler. Günlük dosyaları isimlendirilirken
+    sanal konak isimlerinin sonlarına <code>.log</code> uzantısı getirilir.
+    Günlük dosyasındaki her kaydın ilk bileşeninin, <directive
+    module="mod_log_config">LogFormat</directive> yönergesinde
+    "<code>%v</code>" belirteci ile ifade edilen sanal konak adı olduğu
+    varsayılır.</p>
+
+    <p>Birleşik günlük dosyası standart girdiden okunur. Kayıtlar okundukça
+    her biri kendi günlük dosyasına kaydedilir.</p>
+
+    <example>split-logfile &lt; access_log</example>
+</section>
+
+</manualpage>

@@ -1,0 +1,207 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421174 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="dbmmanage.xml.meta">
+<parentdocument href="./">Programlar</parentdocument>
+
+<title>dbmmanage - DBM biçemli kullanıcı kimlik doğrulama dosyalarını yönetir</title>
+
+<summary>
+    <p><code><strong>dbmmanage</strong></code>,
+    <module>mod_auth_dbm</module> üzerinden HTTP kullanıcılarının temel
+    kimlik doğrulaması için kullanıcı isimlerinin ve parolalarının
+    saklanmasında kullanılacak DBM dosyalarını oluşturmak ve güncellemek için
+    kullanılır. Apache HTTP sunucusunun mevcut özkaynaklarının kullanımı
+    sadece <code><strong>dbmmanage</strong></code> tarafından oluşturulan
+    dosyalarda listelenmiş kullanıcılara tahsis edilebilir. Bu program
+    sadece, kullanıcı isimleri bir DBM dosyasında saklanmak istenirse işe
+    yarar. Düz metin bir veritabanı kullanmak isterseniz
+    <strong><program>htpasswd</program></strong> sayfasına bakınız.</p>
+
+    <p>Bu kılavuz sayfası sadece komut satırı değiştirgelerini listeler.
+    Kullanıcı kimlik doğrulamasını
+    <strong><program>httpd</program></strong>'de yapılandırmak için gerekli
+    yönergelerle ilgili ayrıntılar için Apache dağıtımının bir parçası olan
+    ve <a href="http://httpd.apache.org/"> http://httpd.apache.org/</a>
+    adresinde de bulunan Apache HTTP Sunucusu Belgelerine bakınız.</p>
+</summary>
+<seealso><program>httpd</program></seealso>
+<seealso><module>mod_auth_dbm</module></seealso>
+
+<section id="synopsis"><title>Kullanım</title>
+    <p><code><strong>dbmmanage</strong> [ <var>kodlama</var> ]
+    <var>dosyaismi</var> add|adduser|check|delete|update
+    <var>kullanıcı</var>
+    [ <var>şifreli_parola</var>
+      [ <var>grup</var>[,<var>grup</var>...]
+        [ <var>açıklama</var> ] ] ]</code></p>
+
+    <p><code><strong>dbmmanage</strong> <var>dosyaismi</var>
+    view [ <var>kullanıcı</var> ]</code></p>
+
+    <p><code><strong>dbmmanage</strong> <var>dosyaismi</var> import</code></p>
+</section>
+
+<section id="options"><title>Seçenekler</title>
+    <dl>
+    <dt><code><var>dosyaismi</var></code></dt>
+    <dd>DBM dosyasının ismi. Genellikle, <code>.db</code>, <code>.pag</code>
+    veya <code>.dir</code> eklentisi olmaksızın belirtilir.</dd>
+
+    <dt><code><var>kullanıcı</var></code></dt>
+    <dd>İşlemleri gerçekleştirecek kullanıcı ismi.
+    <code><var>kullanıcı</var></code> ismi ikinokta imi (<code>:</code>)
+    içeremez.</dd>
+
+    <dt><code><var>şifreli_parola</var></code></dt>
+    <dd><code><strong>update</strong></code> ve
+    <code><strong>add</strong></code> komutları için kullanılacak şifreli
+    paroladır. Parolanın istenmesini sağlamak, fakat hemen ardından alanları
+    doldurmak için bir tire imi (<code>-</code>) kullanabilirsiniz. Buna ek
+    olarak, <code><strong>update</strong></code> komutunu kullanırken özgün
+    parolaya dokunulmaması için bir nokta imi (<code>.</code>)
+    kullanabilirsiniz.</dd>
+
+    <dt><code><var>grup</var></code></dt>
+    <dd>Kullanıcının üyesi olduğu grup. Grup ismi ikinokta imi
+    (<code>:</code>) içeremez.Kullanıcıyı bir gruba atamadan açıklama alanını
+    doldurmak istiyorsanız bir tire imi (<code>-</code>) kullanabilirsiniz.
+    Buna ek olarak, <code><strong>update</strong></code> komutunu kullanırken
+    özgün gruba dokunulmaması için bir nokta imi (<code>.</code>)
+    kullanabilirsiniz.</dd>
+
+    <dt><code><var>açıklama</var></code></dt>
+    <dd>Adı ve soyadı, eposta adresi gibi kullanıcıyla ilgili bir takım
+    bilgiler buraya yazılır. Sunucu bu alanı gözardı eder.</dd>
+    </dl>
+
+    <section id="options.encodings"><title>Kodlamalar</title>
+      <dl>
+      <dt><code><strong>-d</strong></code></dt>
+      <dd>CRYPT şifrelemesi (Win32 ve Netware hariç, öntanımlı)</dd>
+
+      <dt><code><strong>-m</strong></code></dt>
+      <dd>MD5 şifrelemesi (Win32 ve Netware için öntanımlı)</dd>
+
+      <dt><code><strong>-s</strong></code></dt>
+      <dd>SHA1 şifrelemesi</dd>
+
+      <dt><code><strong>-p</strong></code></dt>
+      <dd>düz metin (<em>önerilmez</em>)</dd>
+      </dl>
+    </section>
+
+    <section id="options.commands"><title>Komutlar</title>
+      <dl>
+      <dt><code><strong>add</strong></code></dt>
+      <dd><code><var>şifreli_parola</var></code>'yı kullanarak
+        <code><var>dosyaismi</var></code> dosyasına
+        <code><var>kullanıcı</var></code> için bir girdi ekler.
+
+      <example>dbmmanage passwords.dat add rbowen foKntnEF3KSXA</example>
+      </dd>
+
+      <dt><code><strong>adduser</strong></code></dt>
+      <dd>Parola sorduktan sonra <code><var>dosyaismi</var></code>
+        dosyasına <code><var>kullanıcı</var></code> için bir girdi ekler.
+
+      <example>dbmmanage passwords.dat adduser krietz</example>
+      </dd>
+
+      <dt><code><strong>check</strong></code></dt>
+      <dd>Parola sorduktan sonra belirtilen <code><var>kullanıcı</var></code>,
+        <code><var>dosyaismi</var></code> dosyasında var mı diye bakar; varsa
+        belirtilen parolayı kullanıcınınkiyle eşleştirmeye çalışır.
+
+      <example>dbmmanage passwords.dat check rbowen</example>
+      </dd>
+
+      <dt><code><strong>delete</strong></code></dt>
+      <dd><code><var>dosyaismi</var></code> dosyasından
+        <code><var>kullanıcı</var></code> girdisini siler.
+
+      <example>dbmmanage passwords.dat delete rbowen</example>
+      </dd>
+
+      <dt><code><strong>import</strong></code></dt>
+      <dd>Standart girdiden
+        <code><var>kullanıcı</var>:<var>parola</var></code> satırlarını (her
+        satırda bir tane) okur ve bunları <code><var>dosyaismi</var></code>
+        dosyasına ekler. Parola şifrelenmiş olmalıdır.</dd>
+
+      <dt><code><strong>update</strong></code></dt>
+      <dd>Belirtilen <code><var>kullanıcı</var></code>'nın
+        <code><var>dosyaismi</var></code> dosyasında mevcut olması dışında
+        <code><strong>adduser</strong></code> komutu gibidir.
+
+      <example>dbmmanage passwords.dat update rbowen</example>
+      </dd>
+
+      <dt><code><strong>view</strong></code></dt>
+      <dd>Sadece, DBM dosyasının içeriğini gösterir. Bir
+        <code><var>kullanıcı</var></code> belirtirseniz sadece o kaydı
+        gösterir.
+
+      <example>dbmmanage passwords.dat view</example>
+      </dd>
+      </dl>
+    </section>
+</section>
+
+<section id="bugs"><title>Hatalar</title>
+    <p>Birden fazla DBM dosya biçemi vardır ve büyük bir olasılıkla da
+    sisteminizde bu birden fazla biçemle ilgili kütüphaneler vardır. SDBM,
+    NDBM, GNU'nun GDBM projesi ve Berkeley DB 2 bunların başlıcalarıdır. Ne
+    yazık ki, bu kütüphanelerin her birinin dosya biçimleri farklıdır. Bu
+    bakımdan, <code><var>dosyaismi</var></code> dosyasında kullanılan dosya
+    biçeminin <code><strong>dbmmanage</strong></code> tarafından kullanılanla
+    aynı biçemde olduğundan emin olmalısınız.
+    <code><strong>dbmmanage</strong></code> hangi tür DBM dosyasına baktığını
+    saptayacak yeterliliğe sahip değildir. Yanlış biçemli bir dosya
+    belirtirseniz hiçbir şey dönmeyebileceği gibi, başka isimde bir DBM
+    dosyasının oluşturulması veya daha da kötüsü üzerine yazmaya
+    çalışıyorsanız DBM dosyasının bozulması bile olasıdır.</p>
+
+    <p><code><strong>dbmmanage</strong></code> programının başlangıcında
+    <code>@AnyDBM::ISA</code> dizisi olarak tanımlanmış DBM biçem
+    tercihlerinin bir listesi vardır. Berkeley DB 2 biçemini tercih
+    ettiğimizden <code><strong>dbmmanage</strong></code> sistem
+    kütüphanelerini şu sıraya göre arar: Berkeley DB 2, NDBM, GDBM ve SDBM.
+    <code><strong>dbmmanage</strong></code> DBM dosyası hareketleri için  bu
+    sıralamaya göre bulduğu ilk kütüphaneyi kullanacaktır. Sıralama Perl'deki
+    <code>dbmopen()</code> çağrısının kullandığından faklı olduğu gibi
+    Perl'deki standart <code>@AnyDBM::ISA</code> sıralamasından da oldukça
+    farklıdır. Bu bakımdan, DBM dosyalarınızı yönetmek için Perl ile yazılmış
+    başka araçlar kullanıyorsanız, onların da bu tercih sırasını izlemesini
+    sağlamalısınız. Benzer şekilde, bu dosyalara erişmek için diğer dillerde
+    (C gibi) yazılmış programlar kullanıyorsanız bunlar için de aynı durum
+    geçerlidir.</p>
+
+    <p>Unix sistemlerinde, kullanılan DBM dosyasının biçemini öğrenmek için
+    <code><strong>file</strong></code> programı kullanılabilir.</p>
+</section>
+
+</manualpage>
