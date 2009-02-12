@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>rotatelogs - Apache günlüklerini döndürmek için borulu günlük kayıt
+  programı - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.0</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>rotatelogs - Apache günlüklerini döndürmek için borulu günlük kayıt
+  programı</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/rotatelogs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+     <p><code><strong>rotatelogs</strong></code>, Apache'nin borulu günlük
+     dosyaları özelliği ile birlikte kullanmak için tasarlanmış basit bir
+     programdır. Günlük dosyasının azami boyutuna göre veya belli aralıklarla
+     günlük dosyalarını döndürür.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">Seçenekler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Örnekler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#portability">Taşınabilirlik</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
+
+     <p><code><strong>rotatelogs</strong>
+     [ -<strong>l</strong> ]
+     <var>dosyaismi</var>
+     [ <var>süre</var> [ <var>saat_farkı</var> ]] |
+     [ <var>boyut</var>M ]</code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="options" id="options">Seçenekler</a></h2>
+
+<dl>
+    <dt><code><strong>-l</strong></code> (<em>2.0.51 ve sonrası</em>)</dt>
+    <dd>GMT yerine yerel zamanın kullanılmasını sağlar. Zaman dilimi değişik
+    olan ortamlarda (BST, DST gibi) bu seçeneğin kullanımı beklenmedik
+    sonuçlar verebilir!</dd>
+
+    <dt><code><var>dosyaismi</var></code></dt>
+    <dd>Günlük dosyasının ismi yoluyla birlikte belirtilir.
+    <var>dosyaismi</var> '%' karakterleri içeriyorsa bunlar
+    <code>strftime(3)</code> biçem belirteçleri olarak ele alınır. Aksi
+    takdirde, özdevinimli olarak <var>.nnnnnnnnnn</var> uzantısı üretilir.
+    Uzantı saniye cinsindendir ve her iki durumda da bu değer, mevcut döngü
+    diliminin başlangıcına göre hesaplanır. Örneğin, döndürmenin 86400
+    saniyede bir yapılacağı belirtilmişse, <code>strftime(3)</code> biçeminde
+    oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin
+    başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur.</dd>
+
+    <dt><code><var>süre</var></code></dt>
+    <dd>Günlük dosyasının yenisinin kaç saniyede bir açılacağı belirtilir.
+    Örneğin, bu süre 3600 saniye ise günlük dosyası her saat başında
+    yenilenir; 86400 saniye ise her geceyarısı yenilenir. (Bu süre zarfında
+    günlüğe kaydedilecek bir olay gerçekleşmemişse dosya oluşturulmaz.)</dd>
+
+    <dt><code><var>boyut</var>M</code></dt>
+    <dd>Boyuta göre döndürme için azami dosya boyutu. Belirtilenin bir süre
+    değil de bir boyut değeri olarak ele alınması için değerin sonuna
+    <code>M</code> (megabayt) harfi konmalıdır.
+
+    <p>Süre ve boyut birlikte belirtilmişse boyut süreden sonra
+    belirtilmelidir. Dosya yenilemesi, bunlardan hangisi daha önce aşılırsa o
+    zaman gerçekleşir.</p></dd>
+
+    <dt><code><var>saat_farkı</var></code></dt>
+    <dd>Koordinatlı evrensel zamana göre "dakika" farkı. Belirtilmezse, sıfır
+    öntanımlıdır. Örneğin, -5 saatlik bir zaman diliminde bulunuyorsanız bu
+    değer <code>-300</code> olmalıdır. Çoğu durumda, bunun yerine
+    <code><strong>-l</strong></code> seçeneğini kullanmak gerekir.</dd>
+
+</dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Örnekler</a></h2>
+
+<div class="example"><p><code>
+     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+</code></p></div>
+
+     <p>nnnn, günlük kaydının başladığı sistem zamanı olmak üzere
+     /var/logs/logfile.nnnn dosyası oluşturulur. Bu zaman, daima döngü
+     süresinin katları olacağından bunu cron betiklerinizi eşzamanlamakta
+     kullanabilirsiniz. Her döngü süresinin sonunda (burada 24 saat sonra)
+     yeni bir günlük dosyası açılır.</p>
+
+<div class="example"><p><code>
+     CustomLog "|bin/rotatelogs -l /var/logs/logfile.%Y.%m.%d 86400" common
+</code></p></div>
+
+     <p>yyyy, yıl; mm, ay; dd, ayın gününü belirtmek üzere
+     /var/logs/logfile.yyyy.mm.dd dosyası oluşturulur. Her gün yerel zamanla
+     geceyarısı yeni bir günlük dosyasına geçilecektir.</p>
+
+<div class="example"><p><code>
+     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+</code></p></div>
+
+     <p>Günlük dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar.
+     </p>
+
+<div class="example"><p><code>
+     ErrorLog "|bin/rotatelogs /var/logs/errorlog.%Y-%m-%d-%H_%M_%S 5M"
+</code></p></div>
+     <p>Hata günlüğünün 5 megabaytta bir
+     <code>errorlog.YYYY-mm-dd-HH_MM_SS</code> biçemli bir isimle
+     oluşturulmasını sağlar.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="portability" id="portability">Taşınabilirlik</a></h2>
+
+    <p>Aşağıdaki günlük dosyası biçem belirteçlerinin tüm
+    <code>strftime(3)</code> gerçeklenimlerince desteklenmesi gerekir.
+    Kullandığınız kütüphaneye özgü belirteçler için sisteminizdeki
+    <code>strftime(3)</code> kılavuz sayfasına bakınız.</p>
+
+<table class="bordered"><tr><td><code>%A</code></td><td>tam gün ismi (yerelleştirilmiş)</td></tr>
+<tr class="odd"><td><code>%a</code></td><td>3 harflik gün ismi
+(yerelleştirilmiş)</td></tr>
+<tr><td><code>%B</code></td><td>tam ay ismi (yerelleştirilmiş)</td></tr>
+<tr class="odd"><td><code>%b</code></td><td>3 harflik ay ismi (yerelleştirilmiş)</td></tr>
+<tr><td><code>%c</code></td><td>tarih ve saat (yerelleştirilmiş)</td></tr>
+<tr class="odd"><td><code>%d</code></td><td>2 haneli ay günü numarası</td></tr>
+<tr><td><code>%H</code></td><td>2 haneli saat (24 saatlik)</td></tr>
+<tr class="odd"><td><code>%I</code></td><td>2 haneli saat (12 saatlik)</td></tr>
+<tr><td><code>%j</code></td><td>3 hanelik yıl günü numarası</td></tr>
+<tr class="odd"><td><code>%M</code></td><td>2 haneli dakika</td></tr>
+<tr><td><code>%m</code></td><td>2 haneli ay</td></tr>
+<tr class="odd"><td><code>%p</code></td><td>12 saatlik kip için öö/ös
+(yerelleştirilmiş)</td></tr>
+<tr><td><code>%S</code></td><td>2 haneli saniye</td></tr>
+<tr class="odd"><td><code>%U</code></td><td>2 haneli yılın hafta numarası
+(Haftanın ilk gününün Pazar olduğu varsayımıyla)</td></tr>
+<tr><td><code>%W</code></td><td>2 haneli yılın hafta numarası
+(Haftanın ilk gününün Pazartesi olduğu varsayımıyla)</td></tr>
+<tr class="odd"><td><code>%w</code></td><td>1 hanelik haftanın gün numarası
+(Haftanın ilk gününün Pazar olduğu varsayımıyla)</td></tr>
+<tr><td><code>%X</code></td><td>saat (yerelleştirilmiş)</td></tr>
+<tr class="odd"><td><code>%x</code></td><td>tarih (yerelleştirilmiş)</td></tr>
+<tr><td><code>%Y</code></td><td>4 hanelik yıl</td></tr>
+<tr class="odd"><td><code>%y</code></td><td>2 hanelik yıl</td></tr>
+<tr><td><code>%Z</code></td><td>zaman dilimi ismi</td></tr>
+<tr class="odd"><td><code>%%</code></td><td>`%' iminin kendisi</td></tr>
+</table>
+
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/programs/rotatelogs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/programs/rotatelogs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/rotatelogs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
