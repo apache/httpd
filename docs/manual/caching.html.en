@@ -68,7 +68,7 @@
     often.</p>
 
     <p>As <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> presents a relatively simple
-    caching implementation, apart from the specific sections on <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> and <code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code>, the explanations
+    caching implementation, apart from the specific sections on <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> and <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code>, the explanations
     in this guide cover the <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> caching 
     architecture.</p>
 
@@ -83,7 +83,7 @@
 
     
     
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
 
     <p>There are two main stages in <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> that can
     occur in the lifetime of a request. First, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
@@ -433,7 +433,7 @@ Vary: negotiate,accept-language,accept-charset
 <h2><a name="inmemory" id="inmemory">In-Memory Caching</a></h2>
     
 
-     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li></ul></td></tr></table>
+     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li></ul></td></tr></table>
        
     <p>Serving directly from system memory is universally the fastest method
     of serving content. Reading files from a disk controller or, even worse,
@@ -495,23 +495,23 @@ sys     0m0.000s</pre></div>
     not locally stored but remotely served. If you still want the unbeatable
     speed of in-memory caching, Apache's own memory caching is needed.</p>
 
-    <h3>MMapStatic Caching</h3>
+    <h3>MMapFile Caching</h3>
       
 
       <p><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> provides the 
-      <code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code> directive, which
+      <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> directive, which
       allows you to have Apache map a static file's contents into memory at
       start time (using the mmap system call). Apache will use the in-memory 
       contents for all subsequent accesses to this file.</p>
 
-      <div class="example"><pre>MMapStatic /usr/local/apache2/htdocs/index.html</pre></div>
+      <div class="example"><pre>MMapFile /usr/local/apache2/htdocs/index.html</pre></div>
 
       <p>As with the
       <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> directive, any
       changes in these files will not be picked up by Apache after it has
       started.</p>
 
-      <p> The <code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code> 
+      <p> The <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> 
       directive does not keep track of how much memory it allocates, so
       you must ensure not to over-use the directive. Each Apache child
       process will replicate this memory, so it is critically important

@@ -19,7 +19,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>htcacheclean - 디스크 캐쉬를 청소한다</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/programs/htcacheclean.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/programs/htcacheclean.html" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/htcacheclean.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
@@ -106,7 +107,8 @@
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/programs/htcacheclean.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/programs/htcacheclean.html" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/htcacheclean.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>

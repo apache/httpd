@@ -70,7 +70,7 @@
       değişmeyen durağan yerel dosyalara erişim zamanını azaltmaya yardım
       eder.</p>
 
-    <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> ve <code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code> yönergeleri ile ilgili
+    <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> ve <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> yönergeleri ile ilgili
       bölümlerde anlatılanları saymazsak <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>, bu
       belgenin asıl konusu olan <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> önbellekleme
       mimarisine göre daha basit bir önbellekleme gerçeklenimidir.</p>
@@ -86,7 +86,7 @@
 
     
 
-    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code></li><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code></li></ul></td></tr></table>
 
     <p>Bir istek sonuçlanıncaya kadar <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> modülünde iki
       aşamadan geçer. İlkinde <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> bir URL eşleme modülü
@@ -442,7 +442,7 @@
 <h2><a name="inmemory" id="inmemory">Sistem Belleğinde Önbellekleme</a></h2>
     
 
-     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code></li></ul></td></tr></table>
+     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code></li><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_cache.html#cacheenable">CacheEnable</a></code></li><li><code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code></li><li><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code></li></ul></td></tr></table>
 
     <p>İçeriğin sistem belleğinden sunulması içerik sunmanın evrensel olarak
       en hızlı yoludur. Dosyaların bir disk denetleyiciden okunması ya da daha
@@ -510,24 +510,24 @@
       artışının dayanılmaz çekiciliğine karşı koyamıyorsanız, Apache’nin kendi
       bellekiçi önbelleklemesine ihtiyacınız var demektir.</p>
 
-    <h3><code>MMapStatic</code> yönergesi ile</h3>
+    <h3><code>MMapFile</code> yönergesi ile</h3>
       
 
       <p><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> modülü, bir durağan dosyanın
         içeriğini sunucunun başlatılması sırasında (mmap sistem çağrısıyla)
-        belleğe eşlenmesini mümkün kılmak için <code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code> yönergesini sağlar.
+        belleğe eşlenmesini mümkün kılmak için <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> yönergesini sağlar.
         Apache bu dosyaya gelecek sonraki istekler için dosyanın bellekiçi
         içeriğini kullanacaktır.</p>
 
       <div class="example"><p><code>
-        MMapStatic /usr/local/apache2/htdocs/index.html
+        MMapFile /usr/local/apache2/htdocs/index.html
       </code></p></div>
 
       <p><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> yönergesinde
         olduğu gibi bu dosyalarda Apache başlatıldıktan sonra yapılacak bir
         değişiklikten Apache’nin haberi olmayacaktır.</p>
 
-      <p><code class="directive"><a href="./mod/mod_file_cache.html#mmapstatic">MMapStatic</a></code> yönergesi
+      <p><code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> yönergesi
         ayırdığı belleğin toplam miktarı ile ilgilenmez, dolayısıyla
         yönergenin aşırı kullanımından kaçınmalısınız. Apache’nin çocuk
         süreçlerinin her biri bu belleğin kendilerine ait birer kopyasını

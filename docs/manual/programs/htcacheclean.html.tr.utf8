@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>htcacheclean - Disk arabelleğini temizler - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Programlar</a></div><div id="page-content"><div id="preamble"><h1>htcacheclean - Disk arabelleğini temizler</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/programs/htcacheclean.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/htcacheclean.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p><code><strong>htcacheclean</strong></code>,
+    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> deposunun boyutlarını belli sınırlar
+    içinde tutmak için kullanılır. Bu araç ya elle ya da bir artalan süreci
+    olarak çalıştırılır. Artalan süreci olarak çalıştırıldığında, silinecek
+    arabellek içeriğini tespit etmek için arabellek dizinlerine belli
+    aralıklarla bakmak dışında uykuda olur. Artalan sürecini temiz olarak
+    durdurmak için TERM veya INT sinyali göndermeniz yeterlidir.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Kullanım</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#exit">Çıkış Durumu</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="synopsis" id="synopsis">Kullanım</a></h2>
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>r</strong> ]
+    [ -<strong>n</strong> ]
+    -<strong>p</strong><var>yol</var>
+    -<strong>l</strong><var>sınır</var></code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>n</strong> ]
+    [ -<strong>t</strong> ]
+    [ -<strong>i</strong> ]
+    -<strong>d</strong><var>süre</var>
+    -<strong>p</strong><var>yol</var>
+    -<strong>l</strong><var>sınır</var></code></p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="options" id="options">Options</a></h2>
+    <dl>
+    <dt><code><strong>-d</strong><var> süre</var></code></dt>
+    <dd>Artalanda çalışarak <code><var>süre</var></code> dakikada bir
+    arabelleği temizler. Bu seçenek <code><strong>-D</strong></code>,
+    <code><strong>-v</strong></code> ve <code><strong>-r</strong></code>
+    seçenekleri ile birlikte kullanılamaz. Artalan sürecini temiz olarak
+    sonlandırmak için <code>SIGTERM</code> veya <code>SIGINT</code> göndermek
+    yeterlidir.</dd>
+
+    <dt><code><strong>-D</strong></code></dt>
+    <dd>Kuru kuruya çalışıp, hiçbir şeyi silmez.
+    <code><strong>-d</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-v</strong></code></dt>
+    <dd>Çıktı daha ayrıntılı olur. <code><strong>-d</strong></code> seçeneği
+    ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-r</strong></code></dt>
+    <dd>İyice temizlik yapılır. Bunun için Apache HTTP sunucusunun
+    çalışmadığı varsayılır (aksi takdirde arabellek içeriği bozulabilir).
+    <code><strong>-t</strong></code> seçeneğinin de uygulanmasını sağlar.
+    <code><strong>-d</strong></code> seçeneği ile birlikte kullanılamaz.</dd>
+
+    <dt><code><strong>-n</strong></code></dt>
+    <dd>Nazik olur. Diğer süreçlerin yararına daha yavaş çalışır. (a) disk
+    G/Ç işlemlerinde gecikmeler olursa ve (b) çekirdek bu arada başka bir
+    süreci öne çekmişse <code><strong>htcacheclean</strong></code> uyumayı
+    tercih edecektir.</dd>
+
+    <dt><code><strong>-t</strong></code></dt>
+    <dd>Tüm boş dizinleri siler. Öntanımlı olarak, sadece arabellek dosyaları
+    silinirse de bazı yapılandırmalarda büyük miktarda dizin oluşturulması bu
+    seçeneğin kullanılmasını gerektirebilir. Yapılandırmanız çok sayıda dizin
+    gerektiriyorsa ve dosya düğümlerinin veya dosya ayırma tablolarının
+    tükenmesi sözkonusu ise bu seçeneğin kullanılması önerilir.</dd>
+
+    <dt><code><strong>-p</strong><var> yol</var></code></dt>
+    <dd><code><var>yol</var></code>, disk arabelleğinin kök dizini olarak
+    belirtilir. <code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code>
+    yönergesinde belirtilen dizin olmalıdır.</dd>
+
+    <dt><code><strong>-l</strong><var> sınır</var></code></dt>
+    <dd><code><var>sınır</var></code>, disk arabelleğinin toplam boyutu
+    olarak belirtilir. Değerin öntanımlı olarak bayt cinsinden belirtileceği
+    varsayılır. Değerin sonuna kilobayt için <code>K</code>, megabayt
+    <code>M</code>, bayt için <code>B</code>  harfi konulabilir.</dd>
+
+    <dt><code><strong>-i</strong></code></dt>
+    <dd>Akıllı olup sadece disk arabelleği değiştiği zaman çalışır. Bu
+    seçenek <code><strong>-d</strong></code> seçeneği ile birlikte
+    belirtilmek zorundadır.</dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="exit" id="exit">Çıkış Durumu</a></h2>
+    <p><code><strong>htcacheclean</strong></code>, tüm işlemler başarıyla
+    yerine getirildiğinde <code>0</code>, aksi takdirde <code>1</code>
+    döndürür.</p>
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/programs/htcacheclean.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/programs/htcacheclean.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/htcacheclean.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
