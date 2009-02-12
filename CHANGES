@@ -1,9 +1,13 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.2
 
+  *) mod_deflate: Adjust content metadata before bailing out on 304
+     responses so that the metadata does not differ from 200 response.
+     [Roy T. Fielding]
+
   *) mod_deflate: Fix creation of invalid Etag headers. We now make sure
      that the Etag value is properly quoted when adding the gzip marker.
-     PR 39727. [Lars Eilebrecht]
+     PR 39727, 45023. [Lars Eilebrecht, Roy T. Fielding]
 
   *) Added 20x22 icons for ODF, SVG, and XML documents.  PR 37185.
      [Peter Harlow]
