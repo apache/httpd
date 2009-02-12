@@ -118,6 +118,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~niq/patches/2.2mod_privileges.c
    +1: niq
 
+ * mod_version: add to 'yes' category in config.m4 so that it
+   will be compiled by default.
+      http://svn.apache.org/viewvc?view=rev&revision=743589
+   +1: fielding
 
 PATCHES/ISSUES THAT ARE STALLED
 
