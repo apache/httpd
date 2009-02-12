@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_version: add to 'yes' category in config.m4 so that it
    will be compiled by default.
       http://svn.apache.org/viewvc?view=rev&revision=743589
-   +1: fielding, jim
+   +1: fielding, jim, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
