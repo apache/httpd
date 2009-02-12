@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 686267:742125 (outdated) -->
+<!-- English Revision: 742125 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -289,6 +289,28 @@
       eriştiği herşeye erişebilirler. Bazı betik yorumlayıcıların getirdiği
       bazı sınırlamalar varsa da bunlara pek güvenmemek, gerekli sınamaları
       yine de yapmak gerekir.</p>
+
+  </section>
+
+  <section id="dynamicsec">
+    <title>Devingen içeriğin güvenliği</title>
+
+    <p><code>mod_php</code>, <code>mod_perl</code> veya
+      <code>mod_python</code> gibi devingen içeriği yapılandırırken
+      güvenlikle ilgili değerlendirmelerin çoğu <code>httpd</code>'nin
+      kapsamından çıkar ve bu modüllerin belgelerini incelemek ihtiyacı
+      duyarsınız. Örneğin, PHP çoğu zaman kapalı tutulan
+      <a href="http://www.php.net/manual/en/ini.sect.safe-mode.php">Güvenli
+      Kip</a> ayarını etkin kılmanızı önerir. Daha fazla güvenlik için bir
+      diğer örnek bir PHP eklentisi olan
+      <a href="http://www.hardened-php.net/suhosin/">Suhosin</a>'dir. Bunlar
+      hakkında daha ayrıntılı bilgi için her projenin kendi belgelerine
+      başvurun.</p>
+
+    <p>Apache seviyesinde, <a href="http://modsecurity.org/">mod_security</a>
+      adı verilen modülü bir HTTP güvenlik duvarı gibi ele alabilir, devingen
+      içeriğin güvenliğini arttırmanıza yardımcı olmak üzere inceden inceye
+      yapılandırabilirsiniz.</p>
 
   </section>
 
