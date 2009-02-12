@@ -19,7 +19,8 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Programs</a></div><div id="page-content"><div id="preamble"><h1>suexec - 외부 프로그램을 실행하기 전에 사용자를 변경한다</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../en/programs/suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/programs/suexec.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/programs/suexec.html" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/suexec.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
 
      <p>아파치 웹서버는 CGI 프로그램을 실행하기 전에 다른 사용자로
@@ -55,7 +56,8 @@
 </div></div>
 <div class="bottomlang">
 <p><span>가능한 언어: </span><a href="../en/programs/suexec.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/programs/suexec.html" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/programs/suexec.html" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/programs/suexec.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">모듈</a> | <a href="../mod/directives.html">지시어들</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">용어</a> | <a href="../sitemap.html">사이트맵</a></p></div>
