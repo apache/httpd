@@ -62,6 +62,10 @@
         <!-- Used in manualpage -->
         <message id="relatedmodules">関連モジュール</message>
         <message id="relateddirectives">関連ディレクティブ</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
+        <message id="name-section">NAME</message>
+        <message id="hyphenation"></message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">構文</message>
