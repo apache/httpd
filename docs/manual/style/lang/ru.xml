@@ -66,6 +66,10 @@
         <!-- Used in manualpage -->
         <message id="relatedmodules">Смотрите также модули</message>
         <message id="relateddirectives">Смотрите также директивы</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
+        <message id="name-section">NAME</message>
+        <message id="hyphenation"></message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Синтаксис</message>

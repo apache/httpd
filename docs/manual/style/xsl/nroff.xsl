@@ -62,7 +62,7 @@
  * CONTRIBUTOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE. 
+ * OTHER DEALINGS IN THE SOFTWARE.
  */ -->
 
 <!DOCTYPE xsl:stylesheet [
@@ -78,8 +78,8 @@
 <xsl:param name="date" />
 
 <!-- Constants used for case translation -->
-<xsl:variable name="lowercase" select="'abcdefghijklmnopqrstuvwxyz'" />
-<xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />
+<xsl:variable name="lowercase" select="$message[@id='lowercase']" />
+<xsl:variable name="uppercase" select="$message[@id='uppercase']" />
 
 <!-- ==================================================================== -->
 <!-- <manualpage>                                                         -->
@@ -127,7 +127,7 @@
 <xsl:text>" "</xsl:text>
 
 <!-- productname -->
-<xsl:value-of select="'Apache HTTP Server'" />
+<xsl:value-of select="concat($message[@id='apache'], ' ', $message[@id='http-server'])" />
 <xsl:text>" "</xsl:text>
 
 <!-- title -->
@@ -148,8 +148,8 @@
 <!-- Process heading                                                      -->
 <!-- ==================================================================== -->
 <xsl:template match="manualpage/title">
-&lf;
-<xsl:text>.SH NAME</xsl:text>&lf;
+<xsl:value-of select="$message[@id='hyphenation']" />&lf;
+<xsl:value-of select="concat('.SH ', $message[@id='name-section'])" />&lf;
 <xsl:variable name="text">
     <xsl:call-template name="filter.escape">
         <xsl:with-param name="text" select="normalize-space(.)" />

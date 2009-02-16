@@ -67,6 +67,10 @@
         <!-- Used in manualpage -->
         <message id="relatedmodules">Related Modules</message>
         <message id="relateddirectives">Related Directives</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
+        <message id="name-section">NAME</message>
+        <message id="hyphenation"></message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Syntax</message>
@@ -131,7 +135,7 @@
         <message id="before-license">Licensed under the</message>
         <message id="after-license"></message>
         <message id="langavail">Available Languages</message>
- 
+
         <!-- not up to date -->
         <message id="outofdate">This translation may be out of date. Check the
             English version for recent changes.</message>
