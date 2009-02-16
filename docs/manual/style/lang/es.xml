@@ -64,6 +64,10 @@
         <!-- Used in manualpage -->
         <message id="relatedmodules">M&#243;dulos Relacionados</message>
         <message id="relateddirectives">Directivas Relacionadas</message>
+        <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
+        <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
+        <message id="name-section">NAME</message>
+        <message id="hyphenation"></message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sintaxis</message>
