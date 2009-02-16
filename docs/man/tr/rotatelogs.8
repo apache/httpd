@@ -1,0 +1,147 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "ROTATELOGS" 8 "2009-02-16" "Apache HTTP Sunucusu" "rotatelogs"
+.nh
+.SH İSİM
+rotatelogs \- Apache günlüklerini döndürmek için borulu günlük kayıt programı
+
+.SH "KULLANIM"
+ 
+.PP
+\fBrotatelogs\fR [ -\fBl\fR ] [ -\fBf\fR ] \fIdosyaismi\fR \fIsüre\fR|\fIboyut\fRM [ \fIsaat_farkı\fR ]
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBrotatelogs\fR, Apache'nin borulu günlük dosyaları özelliği ile birlikte kullanmak için tasarlanmış basit bir programdır\&. Günlük dosyasının azami boyutuna göre veya belli aralıklarla günlük dosyalarını döndürür\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+\fB-l\fR
+GMT yerine yerel zamanın kullanılmasını sağlar\&. Zaman dilimi değişik olan ortamlarda (BST, DST gibi) bu seçeneğin kullanımı beklenmedik sonuçlar verebilir!  
+.TP
+\fB-f\fR
+İlk günlük giridisinin okunmasını beklemeden \fBrotatelogs\fR başlar başlamaz günlük dosyasının açılmasını sağlar\&. Çok meşgul sitelerde, sunucu başlatılıp ilk istek sunuluncaya kadar geçen zamanda günlük dosyasının yokluğu özdevinimli işlemler yapan bazı günlükleme araçlarında sorunlara yol açabilir\&. Bu seçenek bu gibi durumlarda yararlıdır\&. \fI2\&.2\&.9 ve sonrası için geçerlidir\&.\fR  
+.TP
+\fIdosyaismi\fR
+Günlük dosyasının ismi yoluyla birlikte belirtilir\&. \fIdosyaismi\fR '%' karakterleri içeriyorsa bunlar strftime(3) biçem belirteçleri olarak ele alınır\&. Aksi takdirde, özdevinimli olarak \fI\&.nnnnnnnnnn\fR uzantısı üretilir\&. Uzantı saniye cinsindendir ve her iki durumda da bu değer, mevcut döngü diliminin başlangıcına göre hesaplanır\&. Örneğin, döndürmenin 86400 saniyede bir yapılacağı belirtilmişse, strftime(3) biçeminde oluşturulan saat, dakika ve saniye alanları, 24 saatlik sürenin başlangıcını (geceyarısı) göstermek üzere sıfırlarla doldurulur\&.  
+.TP
+\fIsüre\fR
+Günlük dosyasının yenisinin kaç saniyede bir açılacağı belirtilir\&. Örneğin, bu süre 3600 saniye ise günlük dosyası her saat başında yenilenir; 86400 saniye ise her geceyarısı yenilenir\&. (Bu süre zarfında günlüğe kaydedilecek bir olay gerçekleşmemişse dosya oluşturulmaz\&.)  
+.TP
+\fIboyut\fRM
+Boyuta göre döndürme için azami dosya boyutu\&. Belirtilenin bir süre değil de bir boyut değeri olarak ele alınması için değerin sonuna M (megabayt) harfi konmalıdır\&. .PP Süre ve boyut birlikte belirtilmişse boyut süreden sonra belirtilmelidir\&. Dosya yenilemesi, bunlardan hangisi daha önce aşılırsa o zaman gerçekleşir\&.  
+.TP
+\fIsaat_farkı\fR
+Koordinatlı evrensel zamana göre "dakika" farkı\&. Belirtilmezse, sıfır öntanımlıdır\&. Örneğin, -5 saatlik bir zaman diliminde bulunuyorsanız bu değer -300 olmalıdır\&. Çoğu durumda, bunun yerine \fB-l\fR seçeneğini kullanmak gerekir\&.  
+ 
+.SH "ÖRNEKLER"
+ 
+.nf
+
+     CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
+
+.fi
+ 
+.PP
+nnnn, günlük kaydının başladığı sistem zamanı olmak üzere /var/logs/logfile\&.nnnn dosyası oluşturulur\&. Bu zaman, daima döngü süresinin katları olacağından bunu cron betiklerinizi eşzamanlamakta kullanabilirsiniz\&. Her döngü süresinin sonunda (burada 24 saat sonra) yeni bir günlük dosyası açılır\&.
+ 
+.nf
+
+     CustomLog "|bin/rotatelogs -l /var/logs/logfile\&.%Y\&.%m\&.%d 86400" common
+
+.fi
+ 
+.PP
+yyyy, yıl; mm, ay; dd, ayın gününü belirtmek üzere /var/logs/logfile\&.yyyy\&.mm\&.dd dosyası oluşturulur\&. Her gün yerel zamanla geceyarısı yeni bir günlük dosyasına geçilecektir\&.
+ 
+.nf
+
+     CustomLog "|bin/rotatelogs /var/logs/logfile 5M" common
+
+.fi
+ 
+.PP
+Günlük dosyası 5 megabaytlık olunca yenisinin oluşturulmasını sağlar\&.
+ 
+.nf
+
+     ErrorLog "|bin/rotatelogs /var/logs/errorlog\&.%Y-%m-%d-%H_%M_%S 5M"
+
+.fi
+ 
+.PP
+Hata günlüğünün 5 megabaytta bir errorlog\&.YYYY-mm-dd-HH_MM_SS biçemli bir isimle oluşturulmasını sağlar\&.
+ 
+.SH "TAŞINABİLİRLİK"
+ 
+.PP
+Aşağıdaki günlük dosyası biçem belirteçlerinin tüm strftime(3) gerçeklenimlerince desteklenmesi gerekir\&. Kullandığınız kütüphaneye özgü belirteçler için sisteminizdeki strftime(3) kılavuz sayfasına bakınız\&.
+  
+.Ip "\(bu \s-1%A\s0 \- tam gün ismi (yerelleştirilmiş)
+ 
+.Ip "\(bu \s-1%a\s0 \- 3 harflik gün ismi (yerelleştirilmiş)
+ 
+.Ip "\(bu \s-1%B\s0 \- tam ay ismi (yerelleştirilmiş)
+ 
+.Ip "\(bu \s-1%b\s0 \- 3 harflik ay ismi (yerelleştirilmiş)
+ 
+.Ip "\(bu \s-1%c\s0 \- tarih ve saat (yerelleştirilmiş)
+ 
+.Ip "\(bu \s-1%d\s0 \- 2 haneli ay günü numarası
+ 
+.Ip "\(bu \s-1%H\s0 \- 2 haneli saat (24 saatlik)
+ 
+.Ip "\(bu \s-1%I\s0 \- 2 haneli saat (12 saatlik)
+ 
+.Ip "\(bu \s-1%j\s0 \- 3 hanelik yıl günü numarası
+ 
+.Ip "\(bu \s-1%M\s0 \- 2 haneli dakika
+ 
+.Ip "\(bu \s-1%m\s0 \- 2 haneli ay
+ 
+.Ip "\(bu \s-1%p\s0 \- 12 saatlik kip için öö/ös (yerelleştirilmiş)
+ 
+.Ip "\(bu \s-1%S\s0 \- 2 haneli saniye
+ 
+.Ip "\(bu \s-1%U\s0 \- 2 haneli yılın hafta numarası (Haftanın ilk gününün Pazar olduğu varsayımıyla)
+ 
+.Ip "\(bu \s-1%W\s0 \- 2 haneli yılın hafta numarası (Haftanın ilk gününün Pazartesi olduğu varsayımıyla)
+ 
+.Ip "\(bu \s-1%w\s0 \- 1 hanelik haftanın gün numarası (Haftanın ilk gününün Pazar olduğu varsayımıyla)
+ 
+.Ip "\(bu \s-1%X\s0 \- saat (yerelleştirilmiş)
+ 
+.Ip "\(bu \s-1%x\s0 \- tarih (yerelleştirilmiş)
+ 
+.Ip "\(bu \s-1%Y\s0 \- 4 hanelik yıl
+ 
+.Ip "\(bu \s-1%y\s0 \- 2 hanelik yıl
+ 
+.Ip "\(bu \s-1%Z\s0 \- zaman dilimi ismi
+ 
+.Ip "\(bu \s-1%%\s0 \- `%' iminin kendisi
+  

@@ -1,0 +1,119 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTTPD" 8 "2009-02-16" "Apache HTTP Sunucusu" "httpd"
+.nh
+.SH İSİM
+httpd \- Apache Hiper Metin Aktarım Protokolü Sunucusu
+
+.SH "KULLANIM"
+ 
+.PP
+\fBhttpd\fR [ -\fBd\fR \fIsunucu-kök-dizini\fR ] [ -\fBf\fR \fIyapılandırma-dosyası\fR ] [ -\fBC\fR \fIyönerge\fR ] [ -\fBc\fR \fIyönerge\fR ] [ -\fBD\fR \fIparametre\fR ] [ -\fBe\fR \fIseviye\fR ] [ -\fBE\fR \fIdosya\fR ] [ \fB-k\fR start | restart | graceful | stop | graceful-stop ] [ -\fBR\fR \fIdizin\fR ] [ -\fBh\fR ] [ -\fBl\fR ] [ -\fBL\fR ] [ -\fBS\fR ] [ -\fBt\fR ] [ -\fBv\fR ] [ -\fBV\fR ] [ -\fBX\fR ] [ -\fBM\fR ]
+ 
+.PP
+Windows sistemlerinde, ek olarak şunlar vardır:
+ 
+.PP
+\fBhttpd\fR [ -\fBk\fR install | config | uninstall ] [ -\fBn\fR \fIisim\fR ] [ -\fBw\fR ]
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBhttpd\fR, Apache Hiper Metin Aktarım Protokolü (HTTP) sunucusu programıdır\&. Tek başına çalışan bir artalan süreci olarak tasarlanmıştır\&. Bu tarz kullanıldığında istekleri işleme sokmak için çocuk süreçlerden ve evrelerden oluşan bir havuz oluşturur\&.
+ 
+.PP
+Genelde, \fBhttpd\fR'nin doğrudan çağrılmaması gerekir\&. Unix ve benzerlerinde apachectl aracılığıyla, Windows NT, 2000 ve XP'de bir hizmet olarak, Windows 9x ve ME'de ise bir konsol uygulaması olarak çalıştırılır\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+\fB-d\fR \fIsunucu-kök-dizini\fR
+\fIsunucu-kök-dizini\fR'ni ServerRoot yönergesine ilk değer olarak atar\&. Yapılandırma dosyasındaki bir ServerRoot yönergesiyle bu atama geçersiz kılınabilir\&. Bu seçenek belirtilmediği takdirde /usr/local/apache2 dizini öntanımlıdır\&.  
+.TP
+\fB-f\fR \fIyapılandırma-dosyası\fR
+Başlatma sırasında \fIyapılandırma-dosyası\fR'ndaki yönergeler kullanılır\&. Eğer \fIyapılandırma-dosyası\fR bir / ile başlamıyorsa dosyanın ServerRoot yönergesinin değerine göreli olduğu varsayılır\&. Seçenek belirtilmediği takdirde conf/httpd\&.conf öntanımlı değerdir\&.  
+.TP
+\fB-k\fR start | restart | graceful | stop | graceful-stop
+\fBhttpd\fR'yi başlatmak, durdurmak ve yeniden başlatmak için sinyal gönderir\&. Daha ayrıntılı bilgi edinmek için Apache'nin Durdurulması belgesine bakınız\&.  
+.TP
+\fB-C\fR \fIyönerge\fR
+Yapılandırma \fIyönerge\fR'sini yapılandırma dosyalarını okumadan önce işleme sokar\&.  
+.TP
+\fB-c\fR \fIyönerge\fR
+Yapılandırma \fIyönerge\fR'sini yapılandırma dosyalarını okuduktan sonra işleme sokar\&.  
+.TP
+\fB-D\fR \fIparametre\fR
+Sunucu başlatılırken veya yeniden başlatılırken komutları şarta bağlı olarak işleme sokmak veya atlamak için yapılandırma dosyalarında kullanılan <IfDefine> bölümlerinde kullanılmak üzere bir yapılandırma \fIparametre\fR'si tanımlar\&. Ayrıca, -DNO_DETACH (ana sürecin çatallanmasını engellemek için), -DFOREGROUND (ana sürecin setsid() ve benzerlerinden çağrılmasını engellemek için) gibi daha az bilinen bazı başlatma parametrelerini atamakta da kullanılabilir\&.  
+.TP
+\fB-e\fR \fIseviye\fR
+Hata günlüğü seviyesi olarak LogLevel yönergesine sunucu başlatılırken \fIseviye\fR değerini atar\&. Bu seçenek, başlatma sırasındaki sorunları saptamak amacıyla hata iletilerinin ayrıntı seviyesini geçici olarak arttırmak için kullanılır\&.  
+.TP
+\fB-E\fR \fIdosya\fR
+Sunucunun başlatılması sırasında hata iletilerinin belirtilen \fIdosya\fR'ya gönderilmesini sağlar\&.  
+.TP
+\fB-h\fR
+Mevcut komut satırı seçeneklerinin kısa bir özetini çıktılar\&.  
+.TP
+\fB-l\fR
+Sunucunun içinde derlenmiş modüllerin listesini çıktılar\&. Bu liste LoadModule yönergesi kullanılarak devingen olarak yüklenen modülleri içermez\&.  
+.TP
+\fB-L\fR
+Durağan modüllerce sağlanmış yönergeleri olası değerleriyle geçerli konumlarına yerleştirerek listeler\&.  
+.TP
+\fB-M\fR
+Yüklü durağan ve paylaşımlı modülleri listeler\&.  
+.TP
+\fB-R\fR \fIdizin\fR
+Sunucu SHARED_CORE kullanılarak derlendiği takdirde bu seçenek paylaşımlı nesne dosyaları için \fIdizin\fR belirtir\&.  
+.TP
+\fB-S\fR
+Yapılandırma dosyasından çözümlenmiş haliyle ayarları gösterir (şu an sadece sanal konak ayarları gösterilmektedir)\&.  
+.TP
+\fB-t\fR
+Yapılandırma dosyasını sözdizimi hatalarına karşı denetler\&. Program sözdizimini denetledikten sonra sözdizimi geçerliyse 0 ile, değilse sıfırdan farklı bir değerle çıkar\&. \fB-D\fRDUMP_VHOSTS seçeneği ile birlikte kullanılmışsa ek olarak sanal konak ayrıntıları da basılır\&. \fB-D\fRDUMP_MODULES seçeneği ile ise ek olarak tüm modüller listelenir\&.  
+.TP
+\fB-v\fR
+\fBhttpd\fR sürümünü basar ve çıkar\&.  
+.TP
+\fB-V\fR
+Sürümü ve \fBhttpd\fR kurulum parametrelerini basar ve çıkar\&.  
+.TP
+\fB-X\fR
+\fBhttpd\fR hata ayıklama kipinde çalışır\&. Tek çocuk süreç başlatılır ve sunucu konsolu terketmez\&.  
+ 
+.PP
+Aşağıdaki seçenekler sadece Windows platformunda geçerlidir:
+ 
+ 
+.TP
+\fB-k\fR install | config | uninstall
+Parametreler bakımından sırasıyla: Apache bir Windows NT hizmeti haline getirilir; başlatma seçenekleri Apache hizmeti için değiştirilir; ve Apache hizmeti sistemden kaldırılır\&.  
+.TP
+\fB-n\fR \fIisim\fR
+Sinyal gönderilecek Apache hizmetinin \fIismi\fR\&.  
+.TP
+\fB-w\fR
+Hata durumunda konsol penceresi açık tutularak hata iletilerinin okunması sağlanır\&.  
+ 
