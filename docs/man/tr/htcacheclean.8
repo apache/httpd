@@ -1,0 +1,77 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "HTCACHECLEAN" 8 "2009-02-16" "Apache HTTP Sunucusu" "htcacheclean"
+.nh
+.SH İSİM
+htcacheclean \- Disk arabelleğini temizler
+
+.SH "KULLANIM"
+ 
+.PP
+\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBr\fR ] [ -\fBn\fR ] -\fBp\fR\fIyol\fR -\fBl\fR\fIsınır\fR
+ 
+.PP
+\fBhtcacheclean\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] -\fBd\fR\fIsüre\fR -\fBp\fR\fIyol\fR -\fBl\fR\fIsınır\fR
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBhtcacheclean\fR, mod_disk_cache deposunun boyutlarını belli sınırlar içinde tutmak için kullanılır\&. Bu araç ya elle ya da bir artalan süreci olarak çalıştırılır\&. Artalan süreci olarak çalıştırıldığında, silinecek arabellek içeriğini tespit etmek için arabellek dizinlerine belli aralıklarla bakmak dışında uykuda olur\&. Artalan sürecini temiz olarak durdurmak için TERM veya INT sinyali göndermeniz yeterlidir\&.
+ 
+
+.SH "OPTİONS"
+ 
+ 
+.TP
+\fB-d\fR\fI süre\fR
+Artalanda çalışarak \fIsüre\fR dakikada bir arabelleği temizler\&. Bu seçenek \fB-D\fR, \fB-v\fR ve \fB-r\fR seçenekleri ile birlikte kullanılamaz\&. Artalan sürecini temiz olarak sonlandırmak için SIGTERM veya SIGINT göndermek yeterlidir\&.  
+.TP
+\fB-D\fR
+Kuru kuruya çalışıp, hiçbir şeyi silmez\&. \fB-d\fR seçeneği ile birlikte kullanılamaz\&.  
+.TP
+\fB-v\fR
+Çıktı daha ayrıntılı olur\&. \fB-d\fR seçeneği ile birlikte kullanılamaz\&.  
+.TP
+\fB-r\fR
+İyice temizlik yapılır\&. Bunun için Apache HTTP sunucusunun çalışmadığı varsayılır (aksi takdirde arabellek içeriği bozulabilir)\&. \fB-t\fR seçeneğinin de uygulanmasını sağlar\&. \fB-d\fR seçeneği ile birlikte kullanılamaz\&.  
+.TP
+\fB-n\fR
+Nazik olur\&. Diğer süreçlerin yararına daha yavaş çalışır\&. (a) disk G/Ç işlemlerinde gecikmeler olursa ve (b) çekirdek bu arada başka bir süreci öne çekmişse \fBhtcacheclean\fR uyumayı tercih edecektir\&.  
+.TP
+\fB-t\fR
+Tüm boş dizinleri siler\&. Öntanımlı olarak, sadece arabellek dosyaları silinirse de bazı yapılandırmalarda büyük miktarda dizin oluşturulması bu seçeneğin kullanılmasını gerektirebilir\&. Yapılandırmanız çok sayıda dizin gerektiriyorsa ve dosya düğümlerinin veya dosya ayırma tablolarının tükenmesi sözkonusu ise bu seçeneğin kullanılması önerilir\&.  
+.TP
+\fB-p\fR\fI yol\fR
+\fIyol\fR, disk arabelleğinin kök dizini olarak belirtilir\&. CacheRoot yönergesinde belirtilen dizin olmalıdır\&.  
+.TP
+\fB-l\fR\fI sınır\fR
+\fIsınır\fR, disk arabelleğinin toplam boyutu olarak belirtilir\&. Değerin öntanımlı olarak bayt cinsinden belirtileceği varsayılır\&. Değerin sonuna kilobayt için K, megabayt M, bayt için B harfi konulabilir\&.  
+.TP
+\fB-i\fR
+Akıllı olup sadece disk arabelleği değiştiği zaman çalışır\&. Bu seçenek \fB-d\fR seçeneği ile birlikte belirtilmek zorundadır\&.  
+ 
+.SH "ÇIKIŞ DURUMU"
+ 
+.PP
+\fBhtcacheclean\fR, tüm işlemler başarıyla yerine getirildiğinde 0, aksi takdirde 1 döndürür\&.
+ 
