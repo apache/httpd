@@ -1,0 +1,118 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "DBMMANAGE" 1 "2009-02-16" "Apache HTTP Sunucusu" "dbmmanage"
+.nh
+.SH İSİM
+dbmmanage \- DBM biçemli kullanıcı kimlik doğrulama dosyalarını yönetir
+
+.SH "KULLANIM"
+ 
+.PP
+\fBdbmmanage\fR [ \fIkodlama\fR ] \fIdosyaismi\fR add|adduser|check|delete|update \fIkullanıcı\fR [ \fIşifreli_parola\fR [ \fIgrup\fR[,\fIgrup\fR\&.\&.\&.] [ \fIaçıklama\fR ] ] ]
+ 
+.PP
+\fBdbmmanage\fR \fIdosyaismi\fR view [ \fIkullanıcı\fR ]
+ 
+.PP
+\fBdbmmanage\fR \fIdosyaismi\fR import
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBdbmmanage\fR, mod_auth_dbm üzerinden HTTP kullanıcılarının temel kimlik doğrulaması için kullanıcı isimlerinin ve parolalarının saklanmasında kullanılacak DBM dosyalarını oluşturmak ve güncellemek için kullanılır\&. Apache HTTP sunucusunun mevcut özkaynaklarının kullanımı sadece \fBdbmmanage\fR tarafından oluşturulan dosyalarda listelenmiş kullanıcılara tahsis edilebilir\&. Bu program sadece, kullanıcı isimleri bir DBM dosyasında saklanmak istenirse işe yarar\&. Düz metin bir veritabanı kullanmak isterseniz \fBhtpasswd\fR sayfasına bakınız\&.
+ 
+.PP
+Bu kılavuz sayfası sadece komut satırı değiştirgelerini listeler\&. Kullanıcı kimlik doğrulamasını \fBhttpd\fR'de yapılandırmak için gerekli yönergelerle ilgili ayrıntılar için Apache dağıtımının bir parçası olan ve http://httpd\&.apache\&.org/ adresinde de bulunan Apache HTTP Sunucusu Belgelerine bakınız\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+\fIdosyaismi\fR
+DBM dosyasının ismi\&. Genellikle, \&.db, \&.pag veya \&.dir eklentisi olmaksızın belirtilir\&.  
+.TP
+\fIkullanıcı\fR
+İşlemleri gerçekleştirecek kullanıcı ismi\&. \fIkullanıcı\fR ismi ikinokta imi (:) içeremez\&.  
+.TP
+\fIşifreli_parola\fR
+\fBupdate\fR ve \fBadd\fR komutları için kullanılacak şifreli paroladır\&. Parolanın istenmesini sağlamak, fakat hemen ardından alanları doldurmak için bir tire imi (-) kullanabilirsiniz\&. Buna ek olarak, \fBupdate\fR komutunu kullanırken özgün parolaya dokunulmaması için bir nokta imi (\&.) kullanabilirsiniz\&.  
+.TP
+\fIgrup\fR
+Kullanıcının üyesi olduğu grup\&. Grup ismi ikinokta imi (:) içeremez\&.Kullanıcıyı bir gruba atamadan açıklama alanını doldurmak istiyorsanız bir tire imi (-) kullanabilirsiniz\&. Buna ek olarak, \fBupdate\fR komutunu kullanırken özgün gruba dokunulmaması için bir nokta imi (\&.) kullanabilirsiniz\&.  
+.TP
+\fIaçıklama\fR
+Adı ve soyadı, eposta adresi gibi kullanıcıyla ilgili bir takım bilgiler buraya yazılır\&. Sunucu bu alanı gözardı eder\&.  
+ 
+.SS "Kodlamalar"
+ 
+ 
+.TP
+\fB-d\fR
+CRYPT şifrelemesi (Win32 ve Netware hariç, öntanımlı)  
+.TP
+\fB-m\fR
+MD5 şifrelemesi (Win32 ve Netware için öntanımlı)  
+.TP
+\fB-s\fR
+SHA1 şifrelemesi  
+.TP
+\fB-p\fR
+düz metin (\fIönerilmez\fR)  
+  
+.SS "Komutlar"
+ 
+ 
+.TP
+\fBadd\fR
+\fIşifreli_parola\fR'yı kullanarak \fIdosyaismi\fR dosyasına \fIkullanıcı\fR için bir girdi ekler\&. dbmmanage passwords\&.dat add rbowen foKntnEF3KSXA  
+.TP
+\fBadduser\fR
+Parola sorduktan sonra \fIdosyaismi\fR dosyasına \fIkullanıcı\fR için bir girdi ekler\&. dbmmanage passwords\&.dat adduser krietz  
+.TP
+\fBcheck\fR
+Parola sorduktan sonra belirtilen \fIkullanıcı\fR, \fIdosyaismi\fR dosyasında var mı diye bakar; varsa belirtilen parolayı kullanıcınınkiyle eşleştirmeye çalışır\&. dbmmanage passwords\&.dat check rbowen  
+.TP
+\fBdelete\fR
+\fIdosyaismi\fR dosyasından \fIkullanıcı\fR girdisini siler\&. dbmmanage passwords\&.dat delete rbowen  
+.TP
+\fBimport\fR
+Standart girdiden \fIkullanıcı\fR:\fIparola\fR satırlarını (her satırda bir tane) okur ve bunları \fIdosyaismi\fR dosyasına ekler\&. Parola şifrelenmiş olmalıdır\&.  
+.TP
+\fBupdate\fR
+Belirtilen \fIkullanıcı\fR'nın \fIdosyaismi\fR dosyasında mevcut olması dışında \fBadduser\fR komutu gibidir\&. dbmmanage passwords\&.dat update rbowen  
+.TP
+\fBview\fR
+Sadece, DBM dosyasının içeriğini gösterir\&. Bir \fIkullanıcı\fR belirtirseniz sadece o kaydı gösterir\&. dbmmanage passwords\&.dat view  
+  
+.SH "HATALAR"
+ 
+.PP
+Birden fazla DBM dosya biçemi vardır ve büyük bir olasılıkla da sisteminizde bu birden fazla biçemle ilgili kütüphaneler vardır\&. SDBM, NDBM, GNU'nun GDBM projesi ve Berkeley DB 2 bunların başlıcalarıdır\&. Ne yazık ki, bu kütüphanelerin her birinin dosya biçimleri farklıdır\&. Bu bakımdan, \fIdosyaismi\fR dosyasında kullanılan dosya biçeminin \fBdbmmanage\fR tarafından kullanılanla aynı biçemde olduğundan emin olmalısınız\&. \fBdbmmanage\fR hangi tür DBM dosyasına baktığını saptayacak yeterliliğe sahip değildir\&. Yanlış biçemli bir dosya belirtirseniz hiçbir şey dönmeyebileceği gibi, başka isimde bir DBM dosyasının oluşturulması veya daha da kötüsü üzerine yazmaya çalışıyorsanız DBM dosyasının bozulması bile olasıdır\&.
+ 
+.PP
+\fBdbmmanage\fR programının başlangıcında @AnyDBM::ISA dizisi olarak tanımlanmış DBM biçem tercihlerinin bir listesi vardır\&. Berkeley DB 2 biçemini tercih ettiğimizden \fBdbmmanage\fR sistem kütüphanelerini şu sıraya göre arar: Berkeley DB 2, NDBM, GDBM ve SDBM\&. \fBdbmmanage\fR DBM dosyası hareketleri için bu sıralamaya göre bulduğu ilk kütüphaneyi kullanacaktır\&. Sıralama Perl'deki dbmopen() çağrısının kullandığından faklı olduğu gibi Perl'deki standart @AnyDBM::ISA sıralamasından da oldukça farklıdır\&. Bu bakımdan, DBM dosyalarınızı yönetmek için Perl ile yazılmış başka araçlar kullanıyorsanız, onların da bu tercih sırasını izlemesini sağlamalısınız\&. Benzer şekilde, bu dosyalara erişmek için diğer dillerde (C gibi) yazılmış programlar kullanıyorsanız bunlar için de aynı durum geçerlidir\&.
+ 
+.PP
+Unix sistemlerinde, kullanılan DBM dosyasının biçemini öğrenmek için \fBfile\fR programı kullanılabilir\&.
+ 

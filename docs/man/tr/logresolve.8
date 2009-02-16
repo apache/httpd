@@ -1,0 +1,51 @@
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.\" DO NOT EDIT! Generated from XML source.
+.\" XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+.de Sh \" Subsection
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp \" Vertical space (when we can't use .PP)
+.if t .sp .5v
+.if n .sp
+..
+.de Ip \" List item
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.TH "LOGRESOLVE" 8 "2009-02-16" "Apache HTTP Sunucusu" "logresolve"
+.nh
+.SH İSİM
+logresolve \- Apache günlük dosyalarındaki IP adreslerini konak isimlerine dönüştürür
+
+.SH "KULLANIM"
+ 
+.PP
+\fBlogresolve\fR [ -\fBs\fR \fIdosyaismi\fR ] [ -\fBc\fR ] < \fIgünlük_dosyası\fR > \fIyeni_günlük_dosyası\fR
+ 
+
+.SH "ÖZET"
+ 
+.PP
+\fBlogresolve\fR, Apache'nin erişim günlüklerindeki IP adreslerini çözümlemek için bir ardıl işlem uygulamasıdır\&. İsim sunucunuza bindirdiği yükü en aza indirmek için \fBlogresolve\fR kendi arabelleğinde oluşturduğu eşleme tablosunu kullanır\&.
+ 
+.PP
+Apache günlük dosyasını standart girdisinden okur\&. IP adresleri günlük dosyası satırlarında ilk bileşen olmalı ve sonraki bileşenlerden bir boşluk ile ayrılmalıdır\&.
+ 
+
+.SH "SEÇENEKLER"
+ 
+ 
+.TP
+-s \fIdosyaismi\fR
+İstatistiklerin kaydedileceği dosyanın ismi belirtilir\&.  
+.TP
+-c
+\fBlogresolve\fR uygulamasının bazı DNS sorguları yapmasına sebep olur: IP adresine karşılık olan konak ismini bulduktan sonra özgün adresle karşılaştırmak için bu konak ismine karşılık gelen IP adresini sorgular\&.  
+ 
