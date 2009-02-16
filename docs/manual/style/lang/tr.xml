@@ -69,6 +69,10 @@
         <!-- Used in manualpage -->
         <message id="relatedmodules">İlgili Modüller</message>
         <message id="relateddirectives">İlgili Yönergeler</message>
+        <message id="lowercase">abcçdefgğhıijklmnoöpqrsştuüvwxyz</message>
+        <message id="uppercase">ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ</message>
+        <message id="name-section">İSİM</message>
+        <message id="hyphenation">.nh</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Sözdizimi</message>
