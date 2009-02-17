@@ -27,6 +27,7 @@ extern module win32_module;
 extern module mpm_winnt_module;
 extern module http_module;
 extern module so_module;
+extern module watchdog_module;
 
 AP_DECLARE_DATA module *ap_prelinked_modules[] = {
   &core_module,
@@ -34,6 +35,7 @@ AP_DECLARE_DATA module *ap_prelinked_modules[] = {
   &mpm_winnt_module,
   &http_module,
   &so_module,
+  &watchdog_module,
   NULL
 };
 
@@ -43,6 +45,7 @@ ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"mpm_winnt_module", &mpm_winnt_module},
   {"http_module", &http_module},
   {"so_module", &so_module},
+  {"watchdog_module", &watchdog_module},
   {NULL, NULL}
 };
 
@@ -52,5 +55,6 @@ AP_DECLARE_DATA module *ap_preloaded_modules[] = {
   &mpm_winnt_module,
   &http_module,
   &so_module,
+  &watchdog_module,
   NULL
 };

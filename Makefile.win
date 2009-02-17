@@ -834,6 +834,7 @@ BEGIN {
 		modules\ssl\mod_ssl.h \
 		modules\mappers\mod_so.h \
 		modules\mappers\mod_rewrite.h \
+		modules\mappers\mod_watchdog.h \
 		modules\cache\mod_cache.h ) do \
 	    @copy %f "$(INSTDIR)\include" < .y > nul
 	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
