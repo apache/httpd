@@ -194,6 +194,7 @@ INSTALL_HEADERS = \
 	$(srcdir)/modules/ssl/mod_ssl.h \
 	$(srcdir)/modules/mappers/mod_so.h \
 	$(srcdir)/modules/mappers/mod_rewrite.h \
+	$(srcdir)/modules/mappers/mod_watchdog.h \
 	$(srcdir)/modules/cache/mod_cache.h \
 	$(srcdir)/os/$(OS_DIR)/*.h
 
