@@ -102,13 +102,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
  * mod_deflate: Fix creation of invalid Etags with mod_deflate
    (PR 39727, comment #22)
+   (updated to use Roy's patch)
    Trunk version of patch:
-      http://svn.apache.org/viewvc?view=rev&revision=740149
+      (http://svn.apache.org/viewvc?view=rev&revision=740149)
+      http://svn.apache.org/viewvc?view=rev&revision=743595
    Backport version for 2.2.x of patch:
-      http://people.apache.org/~lars/mod_deflate_etagfix.patch
-   +1: lars
-   rpluem says: If you add r741865 I am +1.
-   fielding says: see r743595 for replacement code and comment.
+      http://people.apache.org/~lars/mod_deflate_etagfix.patch 
+   +1: lars, fielding
 
  * prefork MPM: simple patch to enable mod_privileges.
    trunk: N/A (this patch substitutes for the availability of
