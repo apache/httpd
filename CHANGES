@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
   
+  *) mod_disk_cache: The module now turns off sendfile support if
+     'EnableSendfile off' is defined globally. PR 41218.
+     [Lars Eilebrecht, Issac Goldstand]
+
  *) prefork: Fix child process hang during graceful restart/stop in
     configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
     Jeff Trawick]
