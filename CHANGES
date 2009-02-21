@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.2
 
+  *) mod_disk_cache: The module now turns off sendfile support if
+     'EnableSendfile off' is defined globally. [Lars Eilebrecht]
+
   *) mod_deflate: Adjust content metadata before bailing out on 304
      responses so that the metadata does not differ from 200 response.
      [Roy T. Fielding]

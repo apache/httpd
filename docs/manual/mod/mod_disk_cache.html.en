@@ -32,7 +32,7 @@
 <h3>Summary</h3>
 
     <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> implements a disk based storage
-    manager. It is primarily of use in conjunction
+    manager. It is primarily of use in conjunction with
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
     <p>Content is stored in and retrieved from the cache using URI based
@@ -44,6 +44,16 @@
     <div class="note"><h3>Note:</h3>
       <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> requires the services of
       <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+    </div>
+    <div class="note"><h3>Note:</h3>
+      <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> uses the sendfile feature to
+      serve files from the cache when supported by the platform, and
+      when enabled with <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code>.
+      However, per-directory and .htaccess configuration of
+      <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> are ignored my
+      <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> as the corresponding settings are not
+      available to the module when a request is being served from the
+      cache.</p>
     </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
