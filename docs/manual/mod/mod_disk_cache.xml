@@ -30,7 +30,7 @@
 
 <summary>
     <p><module>mod_disk_cache</module> implements a disk based storage
-    manager. It is primarily of use in conjunction
+    manager. It is primarily of use in conjunction with
     <module>mod_cache</module>.</p>
 
     <p>Content is stored in and retrieved from the cache using URI based
@@ -42,6 +42,16 @@
     <note><title>Note:</title>
       <p><module>mod_disk_cache</module> requires the services of
       <module>mod_cache</module>.</p>
+    </note>
+    <note><title>Note:</title>
+      <p><module>mod_disk_cache</module> uses the sendfile feature to
+      serve files from the cache when supported by the platform, and
+      when enabled with <directive module="core">EnableSendfile</directive>.
+      However, per-directory and .htaccess configuration of
+      <directive module="core">EnableSendfile</directive> are ignored my
+      <module>mod_disk_cache</module> as the corresponding settings are not
+      available to the module when a request is being served from the
+      cache.</p>
     </note>
 </summary>
 

@@ -939,6 +939,12 @@ Locations</a></li>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
+    <p>Please note that the per-directory and .htaccess configuration
+       of <code class="directive">EnableSendfile</code> is not supported by
+       <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>.
+       Only global definition of <code class="directive">EnableSendfile</code>
+       is taken into account by the module.
+    </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

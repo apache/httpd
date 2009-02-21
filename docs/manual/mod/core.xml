@@ -900,6 +900,12 @@ Locations</a></seealso>
       </indent>
       &lt;/Directory&gt;
     </example>
+    <p>Please note that the per-directory and .htaccess configuration
+       of <directive>EnableSendfile</directive> is not supported by
+       <module>mod_disk_cache</module>.
+       Only global definition of <directive>EnableSendfile</directive>
+       is taken into account by the module.
+    </p>
 </usage>
 </directivesynopsis>
 
