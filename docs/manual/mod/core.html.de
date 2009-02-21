@@ -978,6 +978,12 @@ Dateien an den Client auszuliefern</td></tr>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
+    <p>Beachten Sie bitte, dass die verzeichnisbasierte und
+       .htaccess-Konfiguration von <code class="directive">EnableSendfile</code>
+       nicht vom <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>-Modul unterst\ufffdtzt wird.
+       Nur die globale Konfiguration von <code class="directive">EnableSendfile</code>
+       wird vom Modul beachtet.
+    </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

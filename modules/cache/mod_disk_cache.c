@@ -357,6 +357,10 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     static int error_logged = 0;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
+#ifdef APR_SENDFILE_ENABLED
+    core_dir_config *coreconf = ap_get_module_config(r->per_dir_config,
+                                                     &core_module);
+#endif
     apr_finfo_t finfo;
     cache_object_t *obj;
     cache_info *info;
@@ -452,7 +456,12 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     /* Open the data file */
     flags = APR_READ|APR_BINARY;
 #ifdef APR_SENDFILE_ENABLED
-    flags |= APR_SENDFILE_ENABLED;
+    /* When we are in the quick handler we don't have the per-directory
+     * configuration, so this check only takes the globel setting of
+     * the EnableSendFile directive into account.
+     */
+    flags |= ((coreconf->enable_sendfile == ENABLE_SENDFILE_OFF)
+              ? 0 : APR_SENDFILE_ENABLED);
 #endif
     rc = apr_file_open(&dobj->fd, dobj->datafile, flags, 0, r->pool);
     if (rc != APR_SUCCESS) {
