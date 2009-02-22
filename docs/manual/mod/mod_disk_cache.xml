@@ -48,7 +48,7 @@
       serve files from the cache when supported by the platform, and
       when enabled with <directive module="core">EnableSendfile</directive>.
       However, per-directory and .htaccess configuration of
-      <directive module="core">EnableSendfile</directive> are ignored my
+      <directive module="core">EnableSendfile</directive> are ignored by
       <module>mod_disk_cache</module> as the corresponding settings are not
       available to the module when a request is being served from the
       cache.</p>
