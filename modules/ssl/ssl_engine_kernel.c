@@ -250,7 +250,7 @@ int ssl_hook_Access(request_rec *r)
     X509_STORE *cert_store = NULL;
     X509_STORE_CTX cert_store_ctx;
     STACK_OF(SSL_CIPHER) *cipher_list_old = NULL, *cipher_list = NULL;
-    SSL_CIPHER *cipher = NULL;
+    const SSL_CIPHER *cipher = NULL;
     int depth, verify_old, verify, n;
 
     if (ssl) {
@@ -657,7 +657,7 @@ int ssl_hook_Access(request_rec *r)
                  * sk_X509_shift-ed the peer cert out of the chain.
                  * we put it back here for the purpose of quick_renegotiation.
                  */
-                cert_stack = sk_new_null();
+                cert_stack = sk_X509_new_null();
                 sk_X509_push(cert_stack, MODSSL_PCHAR_CAST cert);
             }
 

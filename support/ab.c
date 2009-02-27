@@ -480,7 +480,7 @@ static void ssl_rand_seed(void)
 
 static int ssl_print_connection_info(BIO *bio, SSL *ssl)
 {
-    SSL_CIPHER *c;
+    const SSL_CIPHER *c;
     int alg_bits,bits;
 
     c = SSL_get_current_cipher(ssl);
@@ -566,7 +566,7 @@ static void ssl_proceed_handshake(struct connection *c)
             if (verbosity >= 2)
                 ssl_print_info(c);
             if (ssl_info == NULL) {
-                SSL_CIPHER *ci;
+                const SSL_CIPHER *ci;
                 X509 *cert;
                 int sk_bits, pk_bits, swork;
 
@@ -1979,7 +1979,7 @@ int main(int argc, const char * const argv[])
     const char *optarg;
     char c;
 #ifdef USE_SSL
-    SSL_METHOD *meth = SSLv23_client_method();
+    const SSL_METHOD *meth = SSLv23_client_method();
 #endif
 
     /* table defaults  */
