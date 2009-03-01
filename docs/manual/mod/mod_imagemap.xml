@@ -150,7 +150,8 @@
 
     <section id="imapfile.values"><title>Values</title>
 
-      <p>The values for each of the directives can any of the following:</p>
+      <p>The values for each of the directives can be any of the
+      following:</p>
 
       <dl>
       <dt>a URL</dt>
@@ -158,7 +159,7 @@
       <dd><p>The URL can be relative or absolute URL. Relative URLs
       can contain '..' syntax and will be resolved relative to the
       <code>base</code> value.</p>
-      <p><code>base</code> itself will not resolved according to the
+      <p><code>base</code> itself will not be resolved according to the
       current value. A statement <code>base mailto:</code> will
       work properly, though.</p></dd>
 
