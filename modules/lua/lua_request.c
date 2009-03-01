@@ -450,46 +450,29 @@ static int req_newindex(lua_State *L)
     /* request_rec* r = lua_touserdata(L, lua_upvalueindex(1)); */
     /* const char* key = luaL_checkstring(L, -2); */
     request_rec *r = apl_check_request_rec(L, 1);
-    apl_rstack_dump(L, r, "req_newindex");
     key = luaL_checkstring(L, 2);
     apl_rstack_dump(L, r, "req_newindex");
     if (0 == apr_strnatcmp("status", key)) {
         int code = luaL_checkinteger(L, 3);
         r->status = code;
-        luaL_getmetatable(L, "Apache2.Request");
-        lua_pushinteger(L, code);
-        lua_setfield(L, -2, "status");
-        lua_pop(L, 1);
         return 0;
     }
 
     if (0 == apr_strnatcmp("content_type", key)) {
         const char *value = luaL_checkstring(L, 3);
-        r->content_type = apr_pstrdup(r->pool, value);
-        luaL_getmetatable(L, "Apache2.Request");
-        lua_pushstring(L, value);
-        lua_setfield(L, -2, "content_type");
-        lua_pop(L, 1);
+        ap_set_content_type(r, apr_pstrdup(r->pool, value));
         return 0;
     }
 
     if (0 == apr_strnatcmp("filename", key)) {
         const char *value = luaL_checkstring(L, 3);
         r->filename = apr_pstrdup(r->pool, value);
-        luaL_getmetatable(L, "Apache2.Request");
-        lua_pushstring(L, value);
-        lua_setfield(L, -2, "filename");
-        lua_pop(L, 1);
         return 0;
     }
 
     if (0 == apr_strnatcmp("uri", key)) {
         const char *value = luaL_checkstring(L, 3);
         r->uri = apr_pstrdup(r->pool, value);
-        luaL_getmetatable(L, "Apache2.Request");
-        lua_pushstring(L, value);
-        lua_setfield(L, -2, "uri");
-        lua_pop(L, 1);
         return 0;
     }
 
