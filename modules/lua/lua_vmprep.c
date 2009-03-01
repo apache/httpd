@@ -236,7 +236,8 @@ static void munge_path(lua_State *L,
                        const char *sub_pat,
                        const char *rep_pat,
                        apr_pool_t *pool,
-                       apr_array_header_t *paths, const char *file)
+                       apr_array_header_t *paths, 
+                       const char *file)
 {
     const char *current;
     const char *parent_dir;
