@@ -450,7 +450,6 @@ static int req_newindex(lua_State *L)
     /* const char* key = luaL_checkstring(L, -2); */
     request_rec *r = apl_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
-    apl_rstack_dump(L, r, "req_newindex");
     if (0 == apr_strnatcmp("status", key)) {
         int code = luaL_checkinteger(L, 3);
         r->status = code;
