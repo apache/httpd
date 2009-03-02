@@ -73,18 +73,10 @@ echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 AC_ARG_WITH(included-apr,
 APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
 
-# Default to APR 1.x
-apr_version=1
-
 if test "x$with_included_apr" = "xyes"; then
-   # accept a bundled APR 2.x
-   if test -f "$srcdir/srclib/apr/apr-2-config"; then
-     apr_version=2
-   fi
    apr_found=reconfig
-   apr_config="$srcdir/srclib/apr/apr-${apr_version}-config"
 else 
-   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, ${apr_version})
+   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, "1 2")
 fi
 
 if test "$apr_found" = "no"; then
@@ -98,6 +90,14 @@ if test "$apr_found" = "reconfig"; then
   dnl We must be the first to build and the last to be cleaned
   AP_BUILD_SRCLIB_DIRS="apr $AP_BUILD_SRCLIB_DIRS"
   AP_CLEAN_SRCLIB_DIRS="$AP_CLEAN_SRCLIB_DIRS apr"
+
+  dnl We have to find apr-N-config when we reconfigure APR.
+  for majorver in 1 2; do
+    test_apr_config="$srcdir/srclib/apr/apr-${majorver}-config"
+    if test -f $test_apr_config; then
+      apr_config=$test_apr_config
+    fi
+  done
 fi
 
 APR_SETIFNULL(CC, `$apr_config --cc`)
@@ -110,22 +110,15 @@ APR_BINDIR=`$apr_config --bindir`
 APR_INCLUDEDIR=`$apr_config --includedir`
 APR_INCLUDES=`$apr_config --includes`
 APR_VERSION=`$apr_config --version`
-APR_CONFIG="$APR_BINDIR/apr-`echo ${APR_VERSION} | sed 's,\..*,,'`-config"
+apr_major_version=`echo ${APR_VERSION} | sed 's,\..*,,'`
+APR_CONFIG="$APR_BINDIR/apr-${apr_major_version}-config"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-# Default to APR-util 1.x 
-apu_version=1
-
 if test "x$with_included_apr" = "xyes"; then
-   # accept a bundled APU 2.x
-   if test -f "$srcdir/srclib/apr-util/apu-2-config"; then
-     apu_version=2
-   fi
    apu_found=reconfig
-   apu_config="${srcdir}/srclib/apr-util/apu-${apu_version}-config"
 else 
-   APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 1, ${apu_version})
+   APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 1, ${apr_major_version})
 fi
 
 if test "$apu_found" = "no"; then
@@ -149,6 +142,8 @@ if test "$apu_found" = "reconfig"; then
   dnl We must be the last to build and the first to be cleaned
   AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS apr-util"
   AP_CLEAN_SRCLIB_DIRS="apr-util $AP_CLEAN_SRCLIB_DIRS"
+  dnl APR and APR-Util major versions must match
+  apu_config="${srcdir}/srclib/apr-util/apu-${apr_major_version}-config"
 fi
 
 APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
