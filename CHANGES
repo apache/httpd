@@ -2,7 +2,7 @@
 Changes with Apache 2.3.2
 
   *) mod_ssl: add support for type-safe STACK constructs in OpenSSL
-     development HEAD. [Kaspar Brand, Sander Temme]
+     development HEAD.  PR 45521.  [Kaspar Brand, Sander Temme]
 
   *) ab: Fix maintenance of the pollset to resolve EALREADY errors 
      with kqueue (BSD/OS X) and excessive CPU with event ports (Solaris).
