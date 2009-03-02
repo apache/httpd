@@ -1254,7 +1254,7 @@ static void start_connect(struct connection * c)
     }
 
     /* connected first time */
-    set_conn_state(c, STATE_CONNECTED); /* will this waste a pollset call? */
+    set_conn_state(c, STATE_CONNECTED);
     started++;
 #ifdef USE_SSL
     if (c->ssl) {
