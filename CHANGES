@@ -1,7 +1,7 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.2
 
-  *) ab: Fix maintenance of the pollset to resolve EINPROGRESS errors 
+  *) ab: Fix maintenance of the pollset to resolve EALREADY errors 
      with kqueue (BSD/OS X) and excessive CPU with event ports (Solaris).
      PR 44584.  [Jeff Trawick]
 
