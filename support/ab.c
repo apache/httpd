@@ -1984,7 +1984,11 @@ int main(int argc, const char * const argv[])
     const char *optarg;
     char c;
 #ifdef USE_SSL
+#if OPENSSL_VERSION_NUMBER >= 0x00909000
     const SSL_METHOD *meth = SSLv23_client_method();
+#else
+    SSL_METHOD *meth = SSLv23_client_method();
+#endif
 #endif
 
     /* table defaults  */
