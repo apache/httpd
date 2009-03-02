@@ -1133,7 +1133,8 @@ static int ssl_init_FindCAList_X509NameCmp(char **a, char **b)
     return(X509_NAME_cmp((void*)*a, (void*)*b));
 }
 #else
-static int ssl_init_FindCAList_X509NameCmp(X509_NAME **a, X509_NAME **b)
+static int ssl_init_FindCAList_X509NameCmp(const X509_NAME * const *a, 
+                                           const X509_NAME * const *b)
 {
     return(X509_NAME_cmp(*a, *b));
 }
