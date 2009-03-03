@@ -413,7 +413,6 @@ static void set_polled_events(struct connection *c, apr_int16_t new_reqevents)
             rv = apr_pollset_add(readbits, &pfd);
             if (rv != APR_SUCCESS) {
                 apr_err("apr_pollset_add()", rv);
-                exit(1);
             }
         }
 
