@@ -394,7 +394,6 @@ static void set_polled_events(struct connection *c, apr_int16_t new_reqevents)
     apr_int16_t old_reqevents = c->reqevents;
     apr_pollfd_t pfd;
     apr_status_t rv;
-    char buf[120];
 
     if (old_reqevents != new_reqevents) {
         pfd.desc_type = APR_POLL_SOCKET;
