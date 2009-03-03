@@ -17,12 +17,16 @@
               might use "/usr/local/apache2" for PREFIX (without the
               quotes).
 
-            * If you are a developer who will be linking your code with
+            * Consider if you need to use the bundled APR and APR-Util
+              via ./configure's --with-included-apr option, to use the
+              bundled source instead of a previously installed APR and
+              APR-Util (such as those provided with many OSes).  This
+              is required if you don't have the compiler which the
+              system APR was built with.  This can be advantageous if 
+              you are a developer who will be linking your code with
               Apache or using a debugger to step through server code,
-              ./configure's --with-included-apr option may be advantageous,
               as it removes the possibility of version or compile-option
-              mismatches with APR and APR-util code.  (Many OSes now
-              include their own version of APR and APR-util.)
+              mismatches with APR and APR-util code.
 
             * If you are a developer building Apache directly from
               Subversion, you will need to run ./buildconf before running
