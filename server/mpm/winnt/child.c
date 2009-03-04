@@ -481,17 +481,12 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                 /* Not a failure condition. Keep running. */
             }
 
-            /* Get the local & remote address */
+            /* Get the local & remote address 
+             * TODO; error check
+             */
             GetAcceptExSockaddrs(buf, len, PADDED_ADDR_SIZE, PADDED_ADDR_SIZE,
                                  &context->sa_server, &context->sa_server_len,
                                  &context->sa_client, &context->sa_client_len);
-
-            sockinfo.os_sock = &context->accept_socket;
-            sockinfo.local   = context->sa_server;
-            sockinfo.remote  = context->sa_client;
-            sockinfo.family  = context->sa_server->sa_family;
-            sockinfo.type    = SOCK_STREAM;
-            apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
             /* For 'data', craft a bucket for our data result 
              * and pass to worker_main as context->overlapped.Pointer
@@ -510,15 +505,98 @@ static unsigned int __stdcall winnt_accept(void *lr_)
         }
         else /* (accf = 0)  e.g. 'none' */
         {
-            /* XXX: Implement classic WSAAccept for broken providers */
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                         "winnt_mpm: AcceptFilter 'none' is not yet supported"
-                         " (a classic WSAAccept logic).  Use AcceptFilter"
-                         " 'connect' or 'data' in the meantime");
-            closesocket(context->accept_socket);
-            context->accept_socket = INVALID_SOCKET;
-            break;
+            /* There is no socket reuse without AcceptEx() */
+            if (context->accept_socket != INVALID_SOCKET) {
+                closesocket(context->accept_socket);
+                context->accept_socket = INVALID_SOCKET;
+            }
+
+            err_count = 0;
+            events[0] = exit_event;
+            events[1] = max_requests_per_child_event;
+            events[2] = context->overlapped.hEvent;
+
+            /* This could be a persistant event per-listener rather than
+             * per-accept.  However, the event needs to be removed from
+             * the target socket if not removed from the listen socket
+             * prior to accept(), or the event select is inherited.
+             * and must be removed from the accepted socket.
+             */
+            rv = WSAEventSelect(nlsd, events[2], FD_ACCEPT);
+            if (rv) {
+                rv = apr_get_netos_error();
+                if (rv == APR_FROM_OS_ERROR(WSAEINPROGRESS)) {
+                    ap_log_error(APLOG_MARK, APLOG_WARNING,
+                                 rv, ap_server_conf,
+                                 "WSAEventSelect() failed, retrying.");
+                    continue;
+                }
+
+                /* A more serious error that 'retry', log it */
+                ap_log_error(APLOG_MARK, APLOG_WARNING,
+                             rv, ap_server_conf,
+                             "WSAEventSelect() failed.");
+                break;
+            }
+
+            rv = WaitForMultipleObjects(3, events, FALSE, INFINITE);
+            WSAEventSelect(nlsd, events[2], 0);
+
+            if (rv != WAIT_OBJECT_0 + 2) {
+                /* not FD_ACCEPT; 
+                 * exit_event triggered or event handle was closed 
+                 */
+                break;
+            }
+
+            context->sa_client = NULL;
+            context->sa_server = (void *) context->buff;
+            context->sa_server_len = sizeof(context->buff);
+            context->accept_socket = accept(nlsd, context->sa_server,
+                                            &context->sa_server_len);
+
+            if (context->accept_socket == INVALID_SOCKET) {
+
+                rv = apr_get_netos_error();
+                if (   rv == APR_FROM_OS_ERROR(WSAECONNRESET)
+                    || rv == APR_FROM_OS_ERROR(WSAEINPROGRESS)
+                    || rv == APR_FROM_OS_ERROR(WSAEWOULDBLOCK) ) {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG,
+                                 rv, ap_server_conf,
+                                 "accept() failed, retrying.");
+                    continue;
+                }
+
+                /* A more serious error that 'retry', log it */
+                ap_log_error(APLOG_MARK, APLOG_WARNING,
+                             rv, ap_server_conf,
+                             "accept() failed.");
+
+                if (   rv == APR_FROM_OS_ERROR(WSAEMFILE)
+                    || rv == APR_FROM_OS_ERROR(WSAENOBUFS) ) {
+                    /* Hopefully a temporary condition in the provider? */
+                    Sleep(100);
+                    ++err_count;
+                    if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
+                        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                                     "Child %d: Encountered too many accept() "
+                                     "resource faults, aborting.",
+                                     my_pid);
+                        break;
+                    }
+                    continue;
+                }
+                break;
+            }
+            context->overlapped.Pointer = NULL;
         }
+
+        sockinfo.os_sock = &context->accept_socket;
+        sockinfo.local   = context->sa_server;
+        sockinfo.remote  = context->sa_client;
+        sockinfo.family  = context->sa_server->sa_family;
+        sockinfo.type    = SOCK_STREAM;
+        apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
         /* When a connection is received, send an io completion notification
          * to the ThreadDispatchIOCP.
