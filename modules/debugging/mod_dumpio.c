@@ -41,16 +41,19 @@ typedef struct dumpio_conf_t {
     int loglevel;
 } dumpio_conf_t;
 
+/* consider up to 80 additional characters, and factor the longest
+ * line length of all \xNN sequences; log_error cannot record more
+ * than MAX_STRING_LEN characters.
+ */
+#define dumpio_MAX_STRING_LEN MAX_STRING_LEN / 4 - 80
+
 /*
  * Workhorse function: simply log to the current error_log
  * info about the data in the bucket as well as the data itself
  */
-static void dumpit(ap_filter_t *f, apr_bucket *b)
+static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
 {
     conn_rec *c = f->c;
-    dumpio_conf_t *ptr =
-    (dumpio_conf_t *) ap_get_module_config(c->base_server->module_config,
-                                           &dumpio_module);
 
     ap_log_error(APLOG_MARK, ptr->loglevel, 0, c->base_server,
         "mod_dumpio:  %s (%s-%s): %" APR_SIZE_T_FMT " bytes",
@@ -59,33 +62,53 @@ static void dumpit(ap_filter_t *f, apr_bucket *b)
                 b->type->name,
                 b->length) ;
 
-    if (!(APR_BUCKET_IS_METADATA(b))) {
+    if (!(APR_BUCKET_IS_METADATA(b)))
+    {
+#if APR_CHARSET_EBCDIC
+        char xlatebuf[dumpio_MAX_STRING_LEN + 1];
+#endif
         const char *buf;
         apr_size_t nbytes;
-        char *obuf;
-        if (apr_bucket_read(b, &buf, &nbytes, APR_BLOCK_READ) == APR_SUCCESS) {
-            if (nbytes) {
-                obuf = malloc(nbytes+1);    /* use pool? */
-                memcpy(obuf, buf, nbytes);
+        apr_size_t logbytes;
+        apr_status_t rv = apr_bucket_read(b, &buf, &nbytes, APR_BLOCK_READ);
+
+        if (rv == APR_SUCCESS)
+        {
+            while (nbytes)
+            {
+                logbytes = nbytes;
+                if (logbytes > dumpio_MAX_STRING_LEN)
+                    logbytes = dumpio_MAX_STRING_LEN;
+                nbytes -= logbytes;
+
 #if APR_CHARSET_EBCDIC
-                ap_xlate_proto_from_ascii(obuf, nbytes);
-#endif
-                obuf[nbytes] = '\0';
+                memcpy(xlatebuf, buf, logbytes);
+                ap_xlate_proto_from_ascii(xlatebuf, logbytes);
+                xlatebuf[logbytes] = '\0';
                 ap_log_error(APLOG_MARK, ptr->loglevel, 0, c->base_server,
-                     "mod_dumpio:  %s (%s-%s): %s",
-                     f->frec->name,
-                     (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
-                     b->type->name,
-                     obuf);
-                free(obuf);
+                             "mod_dumpio:  %s (%s-%s): %s", f->frec->name,
+                             (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
+                             b->type->name, xlatebuf);
+#else
+                /* XXX: Seriously flawed; we do not pay attention to embedded
+                 * \0's in the request body, these should be escaped; however,
+                 * the logging function already performs a significant amount
+                 * of escaping, and so any escaping would be double-escaped.
+                 * The coding solution is to throw away the current logic
+                 * within ap_log_error, and introduce new vformatter %-escapes
+                 * for escaping text, and for binary text (fixed len strings).
+                 */
+                ap_log_error(APLOG_MARK | APLOG_NOERRNO, ptr->loglevel, 0, c->base_server,
+                             "mod_dumpio:  %s (%s-%s): %.*s", f->frec->name,
+                             (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
+                             b->type->name, logbytes, buf);
+#endif
             }
         } else {
-            ap_log_error(APLOG_MARK, ptr->loglevel, 0, c->base_server,
-                 "mod_dumpio:  %s (%s-%s): %s",
-                 f->frec->name,
-                 (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
-                 b->type->name,
-                 "error reading data");
+            ap_log_error(APLOG_MARK, ptr->loglevel, rv, c->base_server,
+                         "mod_dumpio:  %s (%s-%s): %s", f->frec->name,
+                         (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
+                         b->type->name, "error reading data");
         }
     }
 }
@@ -106,7 +129,7 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
     apr_bucket *b;
     apr_status_t ret;
     conn_rec *c = f->c;
-    dumpio_conf_t *ptr =
+    dumpio_conf_t *ptr = f->ctx;
     (dumpio_conf_t *) ap_get_module_config(c->base_server->module_config,
                                            &dumpio_module);
 
@@ -121,7 +144,7 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
 
     if (ret == APR_SUCCESS) {
         for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b)) {
-          dumpit(f, b);
+          dumpit(f, b, ptr);
         }
     } else {
         ap_log_error(APLOG_MARK, ptr->loglevel, 0, c->base_server,
@@ -135,7 +158,7 @@ static int dumpio_output_filter (ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_bucket *b;
     conn_rec *c = f->c;
-    dumpio_conf_t *ptr =
+    dumpio_conf_t *ptr = f->ctx;
     (dumpio_conf_t *) ap_get_module_config(c->base_server->module_config,
                                            &dumpio_module);
 
@@ -149,7 +172,7 @@ static int dumpio_output_filter (ap_filter_t *f, apr_bucket_brigade *bb)
             apr_bucket *flush = apr_bucket_flush_create(f->c->bucket_alloc);
             APR_BUCKET_INSERT_BEFORE(b, flush);
         }
-        dumpit(f, b);
+        dumpit(f, b, ptr);
     }
 
     return ap_pass_brigade(f->next, bb) ;
@@ -157,14 +180,15 @@ static int dumpio_output_filter (ap_filter_t *f, apr_bucket_brigade *bb)
 
 static int dumpio_pre_conn(conn_rec *c, void *csd)
 {
-    dumpio_conf_t *ptr =
-    (dumpio_conf_t *) ap_get_module_config(c->base_server->module_config,
-                                           &dumpio_module);
+    dumpio_conf_t *ptr;
+
+    ptr = (dumpio_conf_t *) ap_get_module_config(c->base_server->module_config,
+                                                 &dumpio_module);
 
     if (ptr->enable_input)
-        ap_add_input_filter("DUMPIO_IN", NULL, NULL, c);
+        ap_add_input_filter("DUMPIO_IN", ptr, NULL, c);
     if (ptr->enable_output)
-        ap_add_output_filter("DUMPIO_OUT", NULL, NULL, c);
+        ap_add_output_filter("DUMPIO_OUT", ptr, NULL, c);
     return OK;
 }
 
