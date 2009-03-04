@@ -226,6 +226,7 @@ typedef enum {
 struct connection {
     apr_pool_t *ctx;
     apr_socket_t *aprsock;
+    apr_pollfd_t pollfd;
     int state;
     apr_size_t read;            /* amount of bytes read */
     apr_size_t bread;           /* amount of body read */
@@ -244,7 +245,6 @@ struct connection {
                done;            /* Connection closed */
 
     int socknum;
-    apr_int16_t reqevents;      /* current poll events for this socket */
 #ifdef USE_SSL
     SSL *ssl;
 #endif
@@ -391,32 +391,23 @@ static void apr_err(char *s, apr_status_t rv)
 
 static void set_polled_events(struct connection *c, apr_int16_t new_reqevents)
 {
-    apr_int16_t old_reqevents = c->reqevents;
-    apr_pollfd_t pfd;
     apr_status_t rv;
 
-    if (old_reqevents != new_reqevents) {
-        pfd.desc_type = APR_POLL_SOCKET;
-        pfd.desc.s = c->aprsock;
-        pfd.client_data = c;
-
-        if (old_reqevents != 0) {
-            pfd.reqevents = old_reqevents;
-            rv = apr_pollset_remove(readbits, &pfd);
+    if (c->pollfd.reqevents != new_reqevents) {
+        if (c->pollfd.reqevents != 0) {
+            rv = apr_pollset_remove(readbits, &c->pollfd);
             if (rv != APR_SUCCESS) {
                 apr_err("apr_pollset_remove()", rv);
             }
         }
 
         if (new_reqevents != 0) {
-            pfd.reqevents = new_reqevents;
-            rv = apr_pollset_add(readbits, &pfd);
+            c->pollfd.reqevents = new_reqevents;
+            rv = apr_pollset_add(readbits, &c->pollfd);
             if (rv != APR_SUCCESS) {
                 apr_err("apr_pollset_add()", rv);
             }
         }
-
-        c->reqevents = new_reqevents;
     }
 }
 
@@ -1188,6 +1179,12 @@ static void start_connect(struct connection * c)
                 SOCK_STREAM, 0, c->ctx)) != APR_SUCCESS) {
     apr_err("socket", rv);
     }
+
+    c->pollfd.desc_type = APR_POLL_SOCKET;
+    c->pollfd.desc.s = c->aprsock;
+    c->pollfd.reqevents = 0;
+    c->pollfd.client_data = c;
+
     if ((rv = apr_socket_opt_set(c->aprsock, APR_SO_NONBLOCK, 1))
          != APR_SUCCESS) {
         apr_err("socket nonblock", rv);
@@ -1581,7 +1578,8 @@ static void test(void)
 
     stats = calloc(requests, sizeof(struct data));
 
-    if ((status = apr_pollset_create(&readbits, concurrency, cntxt, 0)) != APR_SUCCESS) {
+    if ((status = apr_pollset_create(&readbits, concurrency, cntxt,
+                                     APR_POLLSET_NOCOPY)) != APR_SUCCESS) {
         apr_err("apr_pollset_create failed", status);
     }
 
