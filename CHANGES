@@ -6,7 +6,8 @@ Changes with Apache 2.3.2
 
   *) ab: Fix maintenance of the pollset to resolve EALREADY errors 
      with kqueue (BSD/OS X) and excessive CPU with event ports (Solaris).
-     PR 44584.  [Jeff Trawick]
+     PR 44584.  Use APR_POLLSET_NOCOPY for better performance with some
+     pollset implementations.  [Jeff Trawick]
 
   *) mod_disk_cache: The module now turns off sendfile support if
      'EnableSendfile off' is defined globally. [Lars Eilebrecht]
