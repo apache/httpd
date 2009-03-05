@@ -270,6 +270,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     SOCKADDR_STORAGE ss_listen;
     int namelen = sizeof(ss_listen);
 #endif
+    u_long zero = 0;
 
     core_sconf = ap_get_module_config(ap_server_conf->module_config,
                                       &core_module);
@@ -283,7 +284,8 @@ static unsigned int __stdcall winnt_accept(void *lr_)
         accf = 0;
     else {
         accf = 0;
-        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), 
+        accf_name = "none";
+        ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
                      ap_server_conf,
                      "winnt_accept: unrecognized AcceptFilter '%s', "
                      "only 'data', 'connect' or 'none' are valid. "
@@ -302,15 +304,54 @@ static unsigned int __stdcall winnt_accept(void *lr_)
    }
 #endif
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-                 "Child %d: Starting thread to listen on port %d.", 
-                 my_pid, lr->bind_addr->port);
+    if (accf > 0) /* 'data' or 'connect' */
+    {
+        /* first, high priority event is an already accepted connection */
+        events[1] = exit_event;
+        events[2] = max_requests_per_child_event;
+    }
+    else /* accf == 0, 'none' */
+    {
+reinit: /* target of data or connect upon too many AcceptEx failures */
+
+        /* last, low priority event is a not yet accepted connection */
+        events[0] = exit_event;
+        events[1] = max_requests_per_child_event;
+        events[2] = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+        /* The event needs to be removed from the accepted socket,
+         * if not removed from the listen socket prior to accept(),
+         */
+        rv = WSAEventSelect(nlsd, events[2], FD_ACCEPT);
+        if (rv) {
+            ap_log_error(APLOG_MARK, APLOG_ERR,
+                         apr_get_netos_error(), ap_server_conf,
+                         "WSAEventSelect() failed.");
+            CloseHandle(events[2]);
+            return 1;
+        }
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
+                 "Child %d: Accept thread listening on %s:%d using %s", my_pid,
+                 lr->bind_addr->hostname ? lr->bind_addr->hostname : "*",
+                 lr->bind_addr->port, accf_name);
+
     while (!shutdown_in_progress) {
         if (!context) {
             context = mpm_get_completion_context();
             if (!context) {
+                /* Hopefully a temporary condition in the provider? */
+                ++err_count;
+                if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                                 "winnt_accept: Too many failures grabbing a "
+                                 "connection ctx.  Aborting.");
+                    break;
+                }
+
                 /* Temporary resource constraint? */
-                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, apr_get_netos_error(), 
                              ap_server_conf,
                              "winnt_accept: Failed to grab a connection ctx."
                              "  Temporary resource constraint? Retrying.");
@@ -350,7 +391,6 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                 Sleep(100);
                 continue;
             }
-
 
             if (accf == 2) { /* 'data' */
                 len = APR_BUCKET_BUFF_SIZE;
@@ -428,16 +468,18 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                                      "'AcceptFilter none'.");
                         err_count = 0;
                         accf = 0;
+                        goto reinit;
                     }
                     continue;
                 }
 
                 err_count = 0;
                 events[0] = context->overlapped.hEvent;
-                events[1] = exit_event;
-                events[2] = max_requests_per_child_event;
 
-                rv = WaitForMultipleObjects(3, events, FALSE, INFINITE);
+                do {
+                    rv = WaitForMultipleObjectsEx(3, events, FALSE, INFINITE, TRUE);
+                } while (rv == WAIT_IO_COMPLETION);
+
                 if (rv == WAIT_OBJECT_0) {
                     if ((context->accept_socket != INVALID_SOCKET) &&
                         !GetOverlappedResult((HANDLE)context->accept_socket,
@@ -506,15 +548,8 @@ static unsigned int __stdcall winnt_accept(void *lr_)
         else /* (accf = 0)  e.g. 'none' */
         {
             /* There is no socket reuse without AcceptEx() */
-            if (context->accept_socket != INVALID_SOCKET) {
+            if (context->accept_socket != INVALID_SOCKET)
                 closesocket(context->accept_socket);
-                context->accept_socket = INVALID_SOCKET;
-            }
-
-            err_count = 0;
-            events[0] = exit_event;
-            events[1] = max_requests_per_child_event;
-            events[2] = context->overlapped.hEvent;
 
             /* This could be a persistant event per-listener rather than
              * per-accept.  However, the event needs to be removed from
@@ -522,25 +557,11 @@ static unsigned int __stdcall winnt_accept(void *lr_)
              * prior to accept(), or the event select is inherited.
              * and must be removed from the accepted socket.
              */
-            rv = WSAEventSelect(nlsd, events[2], FD_ACCEPT);
-            if (rv) {
-                rv = apr_get_netos_error();
-                if (rv == APR_FROM_OS_ERROR(WSAEINPROGRESS)) {
-                    ap_log_error(APLOG_MARK, APLOG_WARNING,
-                                 rv, ap_server_conf,
-                                 "WSAEventSelect() failed, retrying.");
-                    continue;
-                }
 
-                /* A more serious error that 'retry', log it */
-                ap_log_error(APLOG_MARK, APLOG_WARNING,
-                             rv, ap_server_conf,
-                             "WSAEventSelect() failed.");
-                break;
-            }
+            do {
+                rv = WaitForMultipleObjectsEx(3, events, FALSE, INFINITE, TRUE);
+            } while (rv == WAIT_IO_COMPLETION);
 
-            rv = WaitForMultipleObjects(3, events, FALSE, INFINITE);
-            WSAEventSelect(nlsd, events[2], 0);
 
             if (rv != WAIT_OBJECT_0 + 2) {
                 /* not FD_ACCEPT; 
@@ -588,7 +609,19 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                 }
                 break;
             }
+            /* Per MSDN, cancel the inherited association of this socket 
+             * to the WSAEventSelect API, and restore the state corresponding
+             * to apr_os_sock_make's default assumptions (really, a flaw within
+             * os_sock_make and os_sock_put that it does not query).
+             */
+            WSAEventSelect(context->accept_socket, 0, 0);
+            ioctlsocket(context->accept_socket, FIONBIO, &zero);
+            setsockopt(context->accept_socket, SOL_SOCKET, SO_RCVTIMEO, 
+                       (char *) &zero, sizeof(zero));
+            setsockopt(context->accept_socket, SOL_SOCKET, SO_SNDTIMEO, 
+                       (char *) &zero, sizeof(zero));
             context->overlapped.Pointer = NULL;
+            err_count = 0;
         }
 
         sockinfo.os_sock = &context->accept_socket;
@@ -606,10 +639,14 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                                    &context->overlapped);
         context = NULL;
     }
+    if (!accf)
+        CloseHandle(events[2]);
+
     if (!shutdown_in_progress) {
         /* Yow, hit an irrecoverable error! Tell the child to die. */
         SetEvent(exit_event);
     }
+
     ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
                  "Child %d: Accept thread exiting.", my_pid);
     return 0;
