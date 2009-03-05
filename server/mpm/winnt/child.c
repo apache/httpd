@@ -615,11 +615,6 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
              * os_sock_make and os_sock_put that it does not query).
              */
             WSAEventSelect(context->accept_socket, 0, 0);
-            ioctlsocket(context->accept_socket, FIONBIO, &zero);
-            setsockopt(context->accept_socket, SOL_SOCKET, SO_RCVTIMEO, 
-                       (char *) &zero, sizeof(zero));
-            setsockopt(context->accept_socket, SOL_SOCKET, SO_SNDTIMEO, 
-                       (char *) &zero, sizeof(zero));
             context->overlapped.Pointer = NULL;
             err_count = 0;
         }
@@ -629,6 +624,16 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
         sockinfo.remote  = context->sa_client;
         sockinfo.family  = context->sa_server->sa_family;
         sockinfo.type    = SOCK_STREAM;
+        /* Restore the state corresponding to apr_os_sock_make's default
+         * assumption of timeout -1 (really, a flaw of os_sock_make and 
+         * os_sock_put that it does not query to determine ->timeout).
+         * XXX: Upon a fix to APR, these three statements should disappear.
+         */
+        ioctlsocket(context->accept_socket, FIONBIO, &zero);
+        setsockopt(context->accept_socket, SOL_SOCKET, SO_RCVTIMEO, 
+                   (char *) &zero, sizeof(zero));
+        setsockopt(context->accept_socket, SOL_SOCKET, SO_SNDTIMEO, 
+                   (char *) &zero, sizeof(zero));
         apr_os_sock_make(&context->sock, &sockinfo, context->ptrans);
 
         /* When a connection is received, send an io completion notification
