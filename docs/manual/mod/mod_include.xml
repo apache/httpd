@@ -154,7 +154,7 @@
       module="mod_include">SSIErrorMsg</directive> directives.</dd>
 
       <dt><code>sizefmt</code></dt>
-      <dd>The value sets the format to be used which displaying
+      <dd>The value sets the format to be used when displaying
       the size of a file. Valid values are <code>bytes</code>
       for a count in bytes, or <code>abbrev</code> for a count
       in Kb or Mb as appropriate, for example a size of 1024 bytes
@@ -169,7 +169,7 @@
 
     <section id="element.echo"><title>The echo Element</title>
       <p>This command prints one of the <a href="#includevars">include
-      variables</a>, defined below. If the variable is unset, the result is
+      variables</a> defined below. If the variable is unset, the result is
       determined by the <directive module="mod_include"
       >SSIUndefinedEcho</directive> directive. Any dates printed are
       subject to the currently configured <code>timefmt</code>.</p>
@@ -500,7 +500,7 @@
     <code>else</code> or <code>endif</code> element is included in the
     output stream.</p>
 
-    <p>The <code>elif</code> or <code>else</code> statements are be used
+    <p>The <code>elif</code> or <code>else</code> statements are used
     to put text into the output stream if the original
     <var>test_condition</var> was false. These elements are optional.</p>
 
