@@ -86,6 +86,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_deflate: Fix creation of invalid Etags with mod_deflate
+   (PR 39727, comment #22)
+   (updated to use Roy's patch)
+   Trunk version of patch:
+      (http://svn.apache.org/viewvc?view=rev&revision=740149)
+      http://svn.apache.org/viewvc?view=rev&revision=743595
+   Backport version for 2.2.x of patch:
+      http://people.apache.org/~lars/mod_deflate_etagfix.patch 
+   +1: lars, fielding, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -99,16 +109,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
       http://people.apache.org/~jim/patches/httpd-2.2-lbset.patch
    +1: jim, rpluem
-
- * mod_deflate: Fix creation of invalid Etags with mod_deflate
-   (PR 39727, comment #22)
-   (updated to use Roy's patch)
-   Trunk version of patch:
-      (http://svn.apache.org/viewvc?view=rev&revision=740149)
-      http://svn.apache.org/viewvc?view=rev&revision=743595
-   Backport version for 2.2.x of patch:
-      http://people.apache.org/~lars/mod_deflate_etagfix.patch 
-   +1: lars, fielding, minfrin
 
  * prefork MPM: simple patch to enable mod_privileges.
    trunk: N/A (this patch substitutes for the availability of
