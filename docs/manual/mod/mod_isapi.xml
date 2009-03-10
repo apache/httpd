@@ -52,7 +52,7 @@
     processed as an ISAPI extension, edit the httpd.conf file and add the
     following line:</p>
     <example>
-        AddHandler isapi-handler.dll
+        AddHandler isapi-handler .dll
     </example>
 
     <note>In older versions of the Apache server,
