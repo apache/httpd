@@ -50,7 +50,7 @@
       serve files from the cache when supported by the platform, and
       when enabled with <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code>.
       However, per-directory and .htaccess configuration of
-      <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> are ignored my
+      <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> are ignored by
       <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> as the corresponding settings are not
       available to the module when a request is being served from the
       cache.</p>

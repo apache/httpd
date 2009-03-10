@@ -57,7 +57,7 @@ headers</td></tr>
 
     <p>Order of processing is important and is affected both by the
     order in the configuration file and by placement in <a href="../sections.html#mergin">configuration sections</a>. These
-    two headers have a different effect if reversed:</p>
+    two directives have a different effect if reversed:</p>
 
     <div class="example"><p><code>
       RequestHeader append MirrorID "mirror 12"<br />
