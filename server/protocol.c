@@ -1677,7 +1677,7 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
         apr_table_do(send_header, &x, r->headers_out, NULL);
         apr_table_clear(r->headers_out);
     }
-    ap_fputs(x.f, x.bb, CRLF);
+    ap_fputs(x.f, x.bb, CRLF_ASCII);
     ap_fflush(x.f, x.bb);
     apr_brigade_destroy(x.bb);
 }
