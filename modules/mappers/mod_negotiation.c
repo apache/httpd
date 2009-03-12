@@ -2530,7 +2530,7 @@ static void set_neg_headers(request_rec *r, negotiation_state *neg,
         /* Generate the string components for this Alternates entry */
 
         *((const char **) apr_array_push(arr)) = "{\"";
-        *((const char **) apr_array_push(arr)) = variant->file_name;
+        *((const char **) apr_array_push(arr)) = ap_escape_path_segment(r->pool, variant->file_name);
         *((const char **) apr_array_push(arr)) = "\" ";
 
         qstr = (char *) apr_palloc(r->pool, 6);
@@ -2804,7 +2804,7 @@ static int setup_choice_response(request_rec *r, negotiation_state *neg,
     }
 
     apr_table_setn(r->err_headers_out, "Content-Location",
-                  apr_pstrdup(r->pool, variant->file_name));
+                  ap_escape_path_segment(r->pool, variant->file_name));
 
     set_neg_headers(r, neg, alg_choice);         /* add Alternates and Vary */
 
