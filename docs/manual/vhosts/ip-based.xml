@@ -118,7 +118,7 @@
     host. e.g.</p>
 
     <example>
-    &lt;VirtualHost www.smallco.com&gt;<br />
+    &lt;VirtualHost 172.20.30.40:80&gt;<br />
     ServerAdmin webmaster@mail.smallco.com<br />
     DocumentRoot /groups/smallco/www<br />
     ServerName www.smallco.com<br />
@@ -126,7 +126,7 @@
     TransferLog /groups/smallco/logs/access_log<br />
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost www.baygroup.org&gt;<br />
+    &lt;VirtualHost 172.20.30.50:80&gt;<br />
     ServerAdmin webmaster@mail.baygroup.org<br />
     DocumentRoot /groups/baygroup/www<br />
     ServerName www.baygroup.org<br />
@@ -136,7 +136,8 @@
     </example>
 
     <p>It is recommended that you use an IP address instead of a
-    hostname (see <a href="../dns-caveats.html">DNS caveats</a>).</p>
+    hostname in the &lt;VirtualHost&gt; directive
+    (see <a href="../dns-caveats.html">DNS caveats</a>).</p>
 
     <p>Almost <strong>any</strong> configuration directive can be
     put in the VirtualHost directive, with the exception of
