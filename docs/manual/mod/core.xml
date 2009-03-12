@@ -2657,9 +2657,10 @@ to name-virtual hosts</description>
     <directive>ServerAlias</directive> may include wildcards, if appropriate.</p>
 
     <example>
-      &lt;VirtualHost *&gt;<br />
+      &lt;VirtualHost *:80&gt;<br />
       ServerName server.domain.com<br />
       ServerAlias server server2.domain.com server2<br />
+      ServerAlias *.example.com<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
