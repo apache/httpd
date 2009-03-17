@@ -672,6 +672,7 @@ application/x-futuresplash			spl
 application/x-gtar				gtar
 application/x-gzip
 application/x-hdf				hdf
+application/x-java-jnlp-file			jnlp
 application/x-latex				latex
 application/x-ms-wmd				wmd
 application/x-ms-wmz				wmz
