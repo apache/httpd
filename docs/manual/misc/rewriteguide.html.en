@@ -1753,10 +1753,10 @@ RewriteMap    vhost        txt:/path/to/vhost.map
 #   via a huge and complicated single rule:
 #
 #   1. make sure we don't map for common locations
-RewriteCond   %{REQUEST_URL}  !^/commonurl1/.*
-RewriteCond   %{REQUEST_URL}  !^/commonurl2/.*
+RewriteCond   %{REQUEST_URI}  !^/commonurl1/.*
+RewriteCond   %{REQUEST_URI}  !^/commonurl2/.*
     :
-RewriteCond   %{REQUEST_URL}  !^/commonurlN/.*
+RewriteCond   %{REQUEST_URI}  !^/commonurlN/.*
 #
 #   2. make sure we have a Host header, because
 #      currently our approach only supports
