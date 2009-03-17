@@ -199,7 +199,6 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         tmp_b = apr_bucket_transient_create(s1, strlen(s1),
                                             f->r->connection->bucket_alloc);
                         APR_BUCKET_INSERT_BEFORE(b, tmp_b);
-                        tmp_b = APR_BUCKET_NEXT(b);
                         apr_bucket_delete(b);
                         b = tmp_b;
                     }
@@ -249,7 +248,6 @@ static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
                         tmp_b = apr_bucket_transient_create(s1, strlen(s1),
                                             f->r->connection->bucket_alloc);
                         APR_BUCKET_INSERT_BEFORE(b, tmp_b);
-                        tmp_b = APR_BUCKET_NEXT(b);
                         apr_bucket_delete(b);
                         b = tmp_b;
                     }
