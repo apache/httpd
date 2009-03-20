@@ -5,7 +5,7 @@ The current version of this file can be found at:
 
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
 
-Documentation status is maintained seperately and can be found at:
+Documentation status is maintained separately and can be found at:
 
   * docs/STATUS in this source tree, or
   * http://svn.apache.org/repos/asf/httpd/httpd/trunk/docs/STATUS
@@ -125,6 +125,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Patch for version 2.2.x:
      http://people.apache.org/~lars/cacheignoreheaders-fix.patch
    +1: lars, minfrin
+
+ * mod_mime_magic: For compressed content the module sets the
+   content encoding header and also tries to determine the
+   uncompressed content type by using an external gzip.
+   Several bugs break this functionality:
+   - Starting gzip doesn't work because an invalid working
+     directory is used and neither the full path name for gzip
+     nor the PATH variable is used.
+   - When gzip works, but cannot detect the content type, then
+     content encoding is also not set.
+   - Too few bytes are uncompressed so often the content type
+     can not be determined.
+   Patches in trunk (separated to make review easier):
+     http://svn.apache.org/viewvc?rev=756671&view=rev (working dir)
+     http://svn.apache.org/viewvc?rev=756675&view=rev (use PATH)
+     http://svn.apache.org/viewvc?rev=756678&view=rev (content encoding)
+     http://svn.apache.org/viewvc?rev=756683&view=rev (read more bytes)
+   Those patches apply to 2.2.x as well.
+   +1: rjung
 
 
 PATCHES/ISSUES THAT ARE STALLED
