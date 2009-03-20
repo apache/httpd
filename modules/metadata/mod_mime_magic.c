@@ -2138,7 +2138,8 @@ static int create_uncompress_child(struct uncompress_parms *parm, apr_pool_t *cn
     if ((apr_procattr_create(&procattr, child_context) != APR_SUCCESS) ||
         (apr_procattr_io_set(procattr, APR_FULL_BLOCK,
                            APR_FULL_BLOCK, APR_NO_PIPE)   != APR_SUCCESS) ||
-        (apr_procattr_dir_set(procattr, r->filename)        != APR_SUCCESS) ||
+        (apr_procattr_dir_set(procattr,
+                              ap_make_dirstr_parent(r->pool, r->filename)) != APR_SUCCESS) ||
         (apr_procattr_cmdtype_set(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
         /* Something bad happened, tell the world. */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_ENOPROC, r,
@@ -2473,5 +2474,3 @@ module AP_MODULE_DECLARE_DATA mime_magic_module =
     mime_magic_cmds,           /* command apr_table_t */
     register_hooks              /* register hooks */
 };
-
-
