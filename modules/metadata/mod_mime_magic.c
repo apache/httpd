@@ -885,10 +885,10 @@ static int tryit(request_rec *r, unsigned char *buf, apr_size_t nb,
     /*
      * Try compression stuff
      */
-        if (checkzmagic == 1) {
-                        if (zmagic(r, buf, nb) == 1)
-                        return OK;
-        }
+    if (checkzmagic == 1) {
+        if (zmagic(r, buf, nb) == 1)
+            return OK;
+    }
 
     /*
      * try tests in /etc/magic (or surrogate magic file)
