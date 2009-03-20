@@ -2099,10 +2099,12 @@ static int zmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
     if (i == ncompr)
         return 0;
 
-    if ((newsize = uncompress(r, i, &newbuf, nbytes)) > 0) {
+    if ((newsize = uncompress(r, i, &newbuf, HOWMANY)) > 0) {
         /* set encoding type in the request record */
         r->content_encoding = compr[i].encoding;
 
+        newbuf[newsize-1] = '\0';  /* null-terminate uncompressed data */
+        /* Try to detect the content type of the uncompressed data */
         if (tryit(r, newbuf, newsize, 0) != OK) {
             return 0;
         }
