@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.2
 
+  *) mod_mime_magic: Fix detection of compressed content. [Rainer Jung]
+
   *) mod_negotiation: Escape pathes of filenames in 406 responses to avoid
      HTML injections and HTTP response splitting.  PR 46837.
      [Geoff Keating <geoffk apple.com>]
