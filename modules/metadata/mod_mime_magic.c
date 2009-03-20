@@ -2100,12 +2100,12 @@ static int zmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
         return 0;
 
     if ((newsize = uncompress(r, i, &newbuf, nbytes)) > 0) {
+        /* set encoding type in the request record */
+        r->content_encoding = compr[i].encoding;
+
         if (tryit(r, newbuf, newsize, 0) != OK) {
             return 0;
         }
-
-        /* set encoding type in the request record */
-        r->content_encoding = compr[i].encoding;
     }
     return 1;
 }
