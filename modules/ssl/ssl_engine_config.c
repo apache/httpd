@@ -749,22 +749,7 @@ const char *ssl_cmd_SSLPKCS7CertificateFile(cmd_parms *cmd,
 }
 
 #define NO_PER_DIR_SSL_CA \
-    "Your ssl library does not have support for per-directory CA"
-
-#ifdef HAVE_SSL_SET_CERT_STORE
-#   define MODSSL_HAVE_SSL_SET_CERT_STORE 1
-#else
-#   define MODSSL_HAVE_SSL_SET_CERT_STORE 0
-#endif
-
-#define MODSSL_SET_CA(f) \
-    if (cmd->path) \
-        if (MODSSL_HAVE_SSL_SET_CERT_STORE) \
-            dc->f = arg; \
-        else \
-            return NO_PER_DIR_SSL_CA; \
-    else \
-        sc->f = arg \
+    "Your SSL library does not have support for per-directory CA"
 
 const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd,
                                          void *dcfg,
@@ -776,6 +761,10 @@ const char *ssl_cmd_SSLCACertificatePath(cmd_parms *cmd,
 
     if ((err = ssl_cmd_check_dir(cmd, &arg))) {
         return err;
+    }
+    
+    if (cmd->path) {
+        return NO_PER_DIR_SSL_CA;
     }
 
     /* XXX: bring back per-dir */
@@ -794,6 +783,10 @@ const char *ssl_cmd_SSLCACertificateFile(cmd_parms *cmd,
 
     if ((err = ssl_cmd_check_file(cmd, &arg))) {
         return err;
+    }
+
+    if (cmd->path) {
+        return NO_PER_DIR_SSL_CA;
     }
 
     /* XXX: bring back per-dir */

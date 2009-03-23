@@ -475,7 +475,6 @@ if test "x$ap_ssltk_configured" = "x"; then
     AC_CHECK_FUNCS([SSLC_library_version SSL_CTX_new], [], [liberrors="yes"])
     AC_CHECK_FUNCS(SSL_set_state)
   fi
-  AC_CHECK_FUNCS(SSL_set_cert_store)
   dnl restore
   CPPFLAGS="$saved_CPPFLAGS"
   LIBS="$saved_LIBS"
