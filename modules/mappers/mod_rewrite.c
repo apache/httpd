@@ -4083,7 +4083,20 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
      * ourself).
      */
     if (p->flags & RULEFLAG_PROXY) {
-        /* PR#39746: Escaping things here gets repeated in mod_proxy */
+        /* For rules evaluated in server context, the mod_proxy fixup
+         * hook can be relied upon to escape the URI as and when
+         * necessary, since it occurs later.  If in directory context,
+         * the ordering of the fixup hooks is forced such that
+         * mod_proxy comes first, so the URI must be escaped here
+         * instead.  See PR 39746, 46428, and other headaches. */
+        if (ctx->perdir && (p->flags & RULEFLAG_NOESCAPE) == 0) {
+            char *old_filename = r->filename;
+            
+            r->filename = ap_escape_uri(r->pool, r->filename);
+            rewritelog((r, 2, ctx->perdir, "escaped URI in per-dir context "
+                        "for proxy, %s -> %s", old_filename, r->filename));
+        }
+        
         fully_qualify_uri(r);
 
         rewritelog((r, 2, ctx->perdir, "forcing proxy-throughput with %s",
