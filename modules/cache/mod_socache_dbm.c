@@ -51,7 +51,7 @@ struct ap_socache_instance_t {
 /**
  * Support for DBM library
  */
-#define SSL_DBM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
+#define DBM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
 
 /* Check for definition of DEFAULT_REL_RUNTIMEDIR */
 #ifndef DEFAULT_REL_RUNTIMEDIR
@@ -61,16 +61,16 @@ struct ap_socache_instance_t {
 #endif
 
 /* ### this should use apr_dbm_usednames. */
-#if !defined(SSL_DBM_FILE_SUFFIX_DIR) && !defined(SSL_DBM_FILE_SUFFIX_PAG)
+#if !defined(DBM_FILE_SUFFIX_DIR) && !defined(DBM_FILE_SUFFIX_PAG)
 #if defined(DBM_SUFFIX)
-#define SSL_DBM_FILE_SUFFIX_DIR DBM_SUFFIX
-#define SSL_DBM_FILE_SUFFIX_PAG DBM_SUFFIX
+#define DBM_FILE_SUFFIX_DIR DBM_SUFFIX
+#define DBM_FILE_SUFFIX_PAG DBM_SUFFIX
 #elif defined(__FreeBSD__) || (defined(DB_LOCK) && defined(DB_SHMEM))
-#define SSL_DBM_FILE_SUFFIX_DIR ".db"
-#define SSL_DBM_FILE_SUFFIX_PAG ".db"
+#define DBM_FILE_SUFFIX_DIR ".db"
+#define DBM_FILE_SUFFIX_PAG ".db"
 #else
-#define SSL_DBM_FILE_SUFFIX_DIR ".dir"
-#define SSL_DBM_FILE_SUFFIX_PAG ".pag"
+#define DBM_FILE_SUFFIX_DIR ".dir"
+#define DBM_FILE_SUFFIX_PAG ".pag"
 #endif
 #endif
 
@@ -127,9 +127,9 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
     apr_pool_clear(ctx->pool);
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file,
-            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
+            APR_DBM_RWCREATE, DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "Cannot create SSLSessionCache DBM file `%s'",
+                     "Cannot create socache DBM file `%s'",
                      ctx->data_file);
         return rv;
     }
@@ -146,14 +146,14 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
      */
     if (geteuid() == 0 /* is superuser */) {
         chown(ctx->data_file, ap_unixd_config.user_id, -1 /* no gid change */);
-        if (chown(apr_pstrcat(p, ctx->data_file, SSL_DBM_FILE_SUFFIX_DIR, NULL),
+        if (chown(apr_pstrcat(p, ctx->data_file, DBM_FILE_SUFFIX_DIR, NULL),
                   ap_unixd_config.user_id, -1) == -1) {
             if (chown(apr_pstrcat(p, ctx->data_file, ".db", NULL),
                       ap_unixd_config.user_id, -1) == -1)
                 chown(apr_pstrcat(p, ctx->data_file, ".dir", NULL),
                       ap_unixd_config.user_id, -1);
         }
-        if (chown(apr_pstrcat(p, ctx->data_file, SSL_DBM_FILE_SUFFIX_PAG, NULL),
+        if (chown(apr_pstrcat(p, ctx->data_file, DBM_FILE_SUFFIX_PAG, NULL),
                   ap_unixd_config.user_id, -1) == -1) {
             if (chown(apr_pstrcat(p, ctx->data_file, ".db", NULL),
                       ap_unixd_config.user_id, -1) == -1)
@@ -170,8 +170,8 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
 static void socache_dbm_kill(ap_socache_instance_t *ctx, server_rec *s)
 {
     /* the correct way */
-    unlink(apr_pstrcat(ctx->pool, ctx->data_file, SSL_DBM_FILE_SUFFIX_DIR, NULL));
-    unlink(apr_pstrcat(ctx->pool, ctx->data_file, SSL_DBM_FILE_SUFFIX_PAG, NULL));
+    unlink(apr_pstrcat(ctx->pool, ctx->data_file, DBM_FILE_SUFFIX_DIR, NULL));
+    unlink(apr_pstrcat(ctx->pool, ctx->data_file, DBM_FILE_SUFFIX_PAG, NULL));
     /* the additional ways to be sure */
     unlink(apr_pstrcat(ctx->pool, ctx->data_file, ".dir", NULL));
     unlink(apr_pstrcat(ctx->pool, ctx->data_file, ".pag", NULL));
@@ -228,9 +228,9 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
     apr_pool_clear(ctx->pool);
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file,
-                           APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
+                           APR_DBM_RWCREATE, DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "Cannot open SSLSessionCache DBM file `%s' for writing "
+                     "Cannot open socache DBM file `%s' for writing "
                      "(store)",
                      ctx->data_file);
         free(dbmval.dptr);
@@ -238,7 +238,7 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
     }
     if ((rv = apr_dbm_store(dbm, dbmkey, dbmval)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "Cannot store SSL session to DBM file `%s'",
+                     "Cannot store socache object to DBM file `%s'",
                      ctx->data_file);
         apr_dbm_close(dbm);
         free(dbmval.dptr);
@@ -281,9 +281,9 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
      */
     apr_pool_clear(ctx->pool);
     if ((rc = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
-                           SSL_DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
+                           DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
-                     "Cannot open SSLSessionCache DBM file `%s' for reading "
+                     "Cannot open socache DBM file `%s' for reading "
                      "(fetch)",
                      ctx->data_file);
         return rc;
@@ -337,9 +337,9 @@ static apr_status_t socache_dbm_remove(ap_socache_instance_t *ctx,
     apr_pool_clear(ctx->pool);
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
-                           SSL_DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
+                           DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "Cannot open SSLSessionCache DBM file `%s' for writing "
+                     "Cannot open socache DBM file `%s' for writing "
                      "(delete)",
                      ctx->data_file);
         return rv;
@@ -401,9 +401,9 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
         /* pass 1: scan DBM database */
         keyidx = 0;
         if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
-                               SSL_DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
+                               DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "Cannot open SSLSessionCache DBM file `%s' for "
+                         "Cannot open socache DBM file `%s' for "
                          "scanning",
                          ctx->data_file);
             break;
@@ -434,9 +434,9 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
 
         /* pass 2: delete expired elements */
         if (apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
-                         SSL_DBM_FILE_MODE, ctx->pool) != APR_SUCCESS) {
+                         DBM_FILE_MODE, ctx->pool) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "Cannot re-open SSLSessionCache DBM file `%s' for "
+                         "Cannot re-open socache DBM file `%s' for "
                          "expiring",
                          ctx->data_file);
             break;
@@ -473,9 +473,9 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
 
     apr_pool_clear(ctx->pool);
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
-                           SSL_DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
+                           DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                     "Cannot open SSLSessionCache DBM file `%s' for status "
+                     "Cannot open socache DBM file `%s' for status "
                      "retrival",
                      ctx->data_file);
         return;
