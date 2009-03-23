@@ -117,7 +117,7 @@ void ssl_log_cxerror(const char *file, int line, int level,
     char *sname, *iname, *serial;
     BIGNUM *bn;
     
-    if (c->base_server->loglevel < level) {
+    if (mySrvFromConn(c)->loglevel < level) {
         /* Bail early since the rest of this function is expensive. */
         return;
     }

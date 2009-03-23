@@ -1124,7 +1124,7 @@ int ssl_hook_Fixup(request_rec *r)
 RSA *ssl_callback_TmpRSA(SSL *ssl, int export, int keylen)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-    SSLModConfigRec *mc = myModConfig(c->base_server);
+    SSLModConfigRec *mc = myModConfigFromConn(c);
     int idx;
 
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
@@ -1156,7 +1156,7 @@ RSA *ssl_callback_TmpRSA(SSL *ssl, int export, int keylen)
 DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-    SSLModConfigRec *mc = myModConfig(c->base_server);
+    SSLModConfigRec *mc = myModConfigFromConn(c);
     int idx;
 
     ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
@@ -1185,7 +1185,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSL *ssl = X509_STORE_CTX_get_ex_data(ctx,
                                           SSL_get_ex_data_X509_STORE_CTX_idx());
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
-    server_rec *s       = conn->base_server;
+    server_rec *s       = mySrvFromConn(conn);
     request_rec *r      = (request_rec *)SSL_get_app_data2(ssl);
 
     SSLSrvConfigRec *sc = mySrvConfig(s);
@@ -1316,7 +1316,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
 
 int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
 {
-    server_rec *s       = c->base_server;
+    server_rec *s       = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLConnRec *sslconn = myConnConfig(c);
     modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
@@ -1541,7 +1541,7 @@ static void modssl_proxy_info_log(server_rec *s,
 int ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
-    server_rec *s = c->base_server;
+    server_rec *s = mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     X509_NAME *ca_name, *issuer;
     X509_INFO *info;
@@ -1639,7 +1639,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
 {
     /* Get Apache context back through OpenSSL context */
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
-    server_rec *s       = conn->base_server;
+    server_rec *s       = mySrvFromConn(conn);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     long timeout        = sc->session_cache_timeout;
     BOOL rc;
@@ -1687,7 +1687,7 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
 {
     /* Get Apache context back through OpenSSL context */
     conn_rec *conn = (conn_rec *)SSL_get_app_data(ssl);
-    server_rec *s  = conn->base_server;
+    server_rec *s  = mySrvFromConn(conn);
     SSL_SESSION *session;
 
     /*
@@ -1766,7 +1766,7 @@ void ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE ssl, int where, int rc
         return;
     }
 
-    s = c->base_server;
+    s = mySrvFromConn(c);
     if (!(sc = mySrvConfig(s))) {
         return;
     }
@@ -1882,6 +1882,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
     BOOL found = FALSE;
     apr_array_header_t *names;
     int i;
+    SSLConnRec *sslcon;
 
     /* check ServerName */
     if (!strcasecmp(servername, s->server_hostname)) {
@@ -1924,7 +1925,8 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
     }
 
     /* set SSL_CTX (if matched) */
-    if (found && (ssl = ((SSLConnRec *)myConnConfig(c))->ssl) &&
+    sslcon = myConnConfig(c);
+    if (found && (ssl = sslcon->ssl) &&
         (sc = mySrvConfig(s))) {
         SSL_set_SSL_CTX(ssl, sc->server->ssl_ctx);
         /*
@@ -1955,7 +1957,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * cases, it also ensures that these messages are routed
          * to the proper log.
          */
-        c->base_server = s;
+        sslcon->server = s;
 
         /*
          * There is one special filter callback, which is set
@@ -1964,7 +1966,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * (and the first vhost doesn't use APLOG_DEBUG), then
          * we need to set that callback here.
          */
-        if (c->base_server->loglevel >= APLOG_DEBUG) {
+        if (mySrvFromConn(c)->loglevel >= APLOG_DEBUG) {
             BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
             BIO_set_callback_arg(SSL_get_rbio(ssl), (void *)ssl);
         }
