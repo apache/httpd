@@ -290,6 +290,8 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
 
     sslconn = apr_pcalloc(c->pool, sizeof(*sslconn));
 
+    sslconn->server = c->base_server;
+
     myConnConfigSet(c, sslconn);
 
     return sslconn;
@@ -297,9 +299,10 @@ static SSLConnRec *ssl_init_connection_ctx(conn_rec *c)
 
 int ssl_proxy_enable(conn_rec *c)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    SSLSrvConfigRec *sc;
 
     SSLConnRec *sslconn = ssl_init_connection_ctx(c);
+    sc = mySrvConfig(sslconn->server);
 
     if (!sc->proxy_enabled) {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
@@ -317,10 +320,16 @@ int ssl_proxy_enable(conn_rec *c)
 
 int ssl_engine_disable(conn_rec *c)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    SSLSrvConfigRec *sc;
 
-    SSLConnRec *sslconn;
+    SSLConnRec *sslconn = myConnConfig(c);
 
+    if (sslconn) {
+        sc = mySrvConfig(sslconn->server);
+    }
+    else {
+        sc = mySrvConfig(c->base_server);
+    }
     if (sc->enabled == SSL_ENABLED_FALSE) {
         return 0;
     }
@@ -334,20 +343,23 @@ int ssl_engine_disable(conn_rec *c)
 
 int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    SSLSrvConfigRec *sc;
     SSL *ssl;
     SSLConnRec *sslconn = myConnConfig(c);
     char *vhost_md5;
     modssl_ctx_t *mctx;
-
-    /*
-     * Seed the Pseudo Random Number Generator (PRNG)
-     */
-    ssl_rand_seed(c->base_server, c->pool, SSL_RSCTX_CONNECT, "");
+    server_rec *server;
 
     if (!sslconn) {
         sslconn = ssl_init_connection_ctx(c);
     }
+    server = sslconn->server;
+    sc = mySrvConfig(server);
+
+    /*
+     * Seed the Pseudo Random Number Generator (PRNG)
+     */
+    ssl_rand_seed(server, c->pool, SSL_RSCTX_CONNECT, "");
 
     mctx = sslconn->is_proxy ? sc->proxy : sc->server;
 
@@ -360,7 +372,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
                       "Unable to create a new SSL connection from the SSL "
                       "context");
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, server);
 
         c->aborted = 1;
 
@@ -375,7 +387,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
     {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
                       "Unable to set session id context to `%s'", vhost_md5);
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, server);
 
         c->aborted = 1;
 
@@ -424,9 +436,15 @@ static apr_port_t ssl_hook_default_port(const request_rec *r)
 
 static int ssl_hook_pre_connection(conn_rec *c, void *csd)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    SSLSrvConfigRec *sc;
     SSLConnRec *sslconn = myConnConfig(c);
 
+    if (sslconn) {
+        sc = mySrvConfig(sslconn->server);
+    }
+    else {
+        sc = mySrvConfig(c->base_server);
+    }
     /*
      * Immediately stop processing if SSL is disabled for this connection
      */

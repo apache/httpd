@@ -128,6 +128,9 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define mySrvConfig(srv) (SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module)
 #define myDirConfig(req) (SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module)
 #define myModConfig(srv) (mySrvConfig((srv)))->mc
+#define mySrvFromConn(c) (myConnConfig(c))->server
+#define mySrvConfigFromConn(c) mySrvConfig(mySrvFromConn(c))
+#define myModConfigFromConn(c) myModConfig(mySrvFromConn(c))
 
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
@@ -333,6 +336,7 @@ typedef struct {
     int is_proxy;
     int disabled;
     int non_ssl_request;
+    server_rec *server;
 } SSLConnRec;
 
 /* BIG FAT WARNING: SSLModConfigRec has unusual memory lifetime: it is

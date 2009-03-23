@@ -82,7 +82,7 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
         rv = apr_socket_create(&sd, sa->family, SOCK_STREAM, APR_PROTO_TCP, p);
         if (rv == APR_SUCCESS) {
             /* Inherit the default I/O timeout. */
-            apr_socket_timeout_set(sd, c->base_server->timeout);
+            apr_socket_timeout_set(sd, mySrvFromConn(c)->timeout);
 
             rv = apr_socket_connect(sd, sa);
             if (rv == APR_SUCCESS) {
@@ -262,7 +262,7 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
      * bio. */
     response = d2i_OCSP_RESPONSE_bio(bio, NULL);
     if (response == NULL) {
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, mySrvFromConn(c));
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
                       "failed to decode OCSP response data");
     }
@@ -280,7 +280,7 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
 
     bio = serialize_request(request, uri);
     if (bio == NULL) {
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, c->base_server);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, mySrvFromConn(c));
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
                       "could not serialize OCSP request");
         return NULL;
