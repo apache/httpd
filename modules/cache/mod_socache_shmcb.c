@@ -40,16 +40,6 @@
 
 #define DEFAULT_SHMCB_SUFFIX ".cache"
 
-
-/* 
- * This shared memory based SSL session cache implementation was
- * originally written by Geoff Thorpe <geoff geoffthorpe.net> for C2Net
- * Europe as a contribution to Ralf Engelschall's mod_ssl project.
- *
- * Since rewritten by GT to not use alignment-fudging memcpys and reduce
- * complexity.
- */
-
 /*
  * Header structure - the start of the shared-mem segment
  */
@@ -135,7 +125,7 @@ struct ap_socache_instance_t {
  * index of the first in use, subcache->idx_used gives the number in
  * use.  Both ->idx_* values have a range of [0, header->index_num)
  *
- * Each in-use SHMCBIndex structure represents a single SSL session.
+ * Each in-use SHMCBIndex structure represents a single cached object.
  * The ID and data segment are stored consecutively in the subcache's
  * cyclic data buffer.  The "Data" segment can thus be seen to 
  * look like this, for example
@@ -584,7 +574,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
                header->subcache_num, header->index_num);
     if (non_empty_subcaches) {
         average_expiry = (time_t)(expiry_total / (double)non_empty_subcaches);
-        ap_rprintf(r, "time left on oldest entries' SSL sessions: ");
+        ap_rprintf(r, "time left on oldest entries' objects: ");
         if (now < average_expiry)
             ap_rprintf(r, "avg: <b>%d</b> seconds, (range: %d...%d)<br>",
                        (int)(average_expiry - now),

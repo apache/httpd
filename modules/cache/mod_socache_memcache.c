@@ -283,7 +283,6 @@ static apr_status_t socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s,
 
 static void socache_mc_status(ap_socache_instance_t *ctx, request_rec *r, int flags)
 {
-    /* SSLModConfigRec *mc = myModConfig(r->server); */
     /* TODO: Make a mod_status handler. meh. */
 }
 
