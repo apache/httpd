@@ -115,7 +115,9 @@ APR_CONFIG="$APR_BINDIR/apr-${apr_major_version}-config"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-if test "x$with_included_apr" = "xyes"; then
+if test "x${apr_major_version}" = "x2"; then
+   apu_found=obsolete
+elif test "x$with_included_apr" = "xyes"; then
    apu_found=reconfig
 else 
    APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 1, ${apr_major_version})
@@ -146,12 +148,16 @@ if test "$apu_found" = "reconfig"; then
   apu_config="${srcdir}/srclib/apr-util/apu-${apr_major_version}-config"
 fi
 
-APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
-APU_BINDIR=`$apu_config --bindir`
-APU_INCLUDEDIR=`$apu_config --includedir`
-APU_INCLUDES=`$apu_config --includes`
-APU_VERSION=`$apu_config --version`
-APU_CONFIG="$APU_BINDIR/apu-`echo ${APU_VERSION} | sed 's,\..*,,'`-config"
+if test "$apu_found" = "obsolete"; then
+  AC_MSG_NOTICE([APR-util obsoleted, woohoo])
+else
+  APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
+  APU_BINDIR=`$apu_config --bindir`
+  APU_INCLUDEDIR=`$apu_config --includedir`
+  APU_INCLUDES=`$apu_config --includes`
+  APU_VERSION=`$apu_config --version`
+  APU_CONFIG="$APU_BINDIR/apu-`echo ${APU_VERSION} | sed 's,\..*,,'`-config"
+fi
 
 dnl In case we picked up CC and CPP from APR, get that info into the
 dnl config cache so that PCRE uses it.  Otherwise, CC and CPP used for
@@ -642,7 +648,9 @@ APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
   AC_DEFINE_UNQUOTED(AP_SUEXEC_UMASK, 0$withval, [umask for suexec'd process] ) ] )
 
 dnl APR should go after the other libs, so the right symbols can be picked up
-AP_LIBS="$AP_LIBS `$apu_config --avoid-ldap --link-libtool --libs`"
+if test x${apu_found} != xobsolete; then
+  AP_LIBS="$AP_LIBS `$apu_config --avoid-ldap --link-libtool --libs`"
+fi
 AP_LIBS="$AP_LIBS `$apr_config --link-libtool --libs`" 
 APACHE_SUBST(AP_LIBS)
 APACHE_SUBST(AP_BUILD_SRCLIB_DIRS)
