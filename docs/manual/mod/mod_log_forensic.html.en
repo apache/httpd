@@ -146,7 +146,7 @@ version 2.1</td></tr></table>
 
       <div class="note"><h3>Note</h3>
         <p>When entering a file path on non-Unix platforms, care should be taken
-        to make sure that only forward slashed are used even though the platform
+        to make sure that only forward slashes are used even though the platform
         may allow the use of back slashes. In general it is a good idea to always 
         use forward slashes throughout the configuration files.</p>
       </div></dd>

@@ -25,6 +25,8 @@
 <a href="../ja/mod/mod_log_forensic.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mod_log_forensic.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバに送られたリクエストの forensic ロギング</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>log_forensic_module</td></tr>
