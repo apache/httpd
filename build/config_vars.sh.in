@@ -37,7 +37,7 @@ fi
 
 APR_LIBTOOL="`${APR_CONFIG} --apr-libtool`"
 APR_INCLUDEDIR="`${APR_CONFIG} --includedir`"
-APU_INCLUDEDIR="`${APU_CONFIG} --includedir`"
+test -n "@APU_CONFIG@" && APU_INCLUDEDIR="`${APU_CONFIG} --includedir`"
 
 installbuilddir="@exp_installbuilddir@"
 
