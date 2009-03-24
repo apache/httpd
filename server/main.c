@@ -471,7 +471,6 @@ int main(int argc, const char * const argv[])
     const char *temp_error_log = NULL;
     const char *error;
     process_rec *process;
-    server_rec *server_conf;
     apr_pool_t *pglobal;
     apr_pool_t *pconf;
     apr_pool_t *plog; /* Pool of log streams, reset _after_ each read of conf */
@@ -655,8 +654,8 @@ int main(int argc, const char * const argv[])
     if (temp_error_log) {
         ap_replace_stderr_log(process->pool, temp_error_log);
     }
-    server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
-    if (!server_conf) {
+    ap_server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
+    if (!ap_server_conf) {
         destroy_and_exit_process(process, 1);
     }
 
@@ -666,21 +665,21 @@ int main(int argc, const char * const argv[])
         destroy_and_exit_process(process, 1);
     }
 
-    rv = ap_process_config_tree(server_conf, ap_conftree,
+    rv = ap_process_config_tree(ap_server_conf, ap_conftree,
                                 process->pconf, ptemp);
     if (rv == OK) {
-        ap_fixup_virtual_hosts(pconf, server_conf);
-        ap_fini_vhost_config(pconf, server_conf);
+        ap_fixup_virtual_hosts(pconf, ap_server_conf);
+        ap_fini_vhost_config(pconf, ap_server_conf);
         apr_hook_sort_all();
 
-        if (ap_run_check_config(pconf, plog, ptemp, server_conf) != OK) {
+        if (ap_run_check_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
                          NULL, "Configuration check failed");
             destroy_and_exit_process(process, 1);
         }
 
         if (configtestonly) {
-            ap_run_test_config(pconf, server_conf);
+            ap_run_test_config(pconf, ap_server_conf);
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, "Syntax OK");
             destroy_and_exit_process(process, 0);
         }
@@ -702,14 +701,13 @@ int main(int argc, const char * const argv[])
 
     apr_pool_clear(plog);
 
-    ap_server_conf = server_conf;
-    if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
+    if ( ap_run_open_logs(pconf, plog, ptemp, ap_server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
                      0, NULL, "Unable to open logs");
         destroy_and_exit_process(process, 1);
     }
 
-    if ( ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
+    if ( ap_run_post_config(pconf, plog, ptemp, ap_server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
                      NULL, "Configuration Failed");
         destroy_and_exit_process(process, 1);
@@ -734,8 +732,8 @@ int main(int argc, const char * const argv[])
         apr_pool_create(&ptemp, pconf);
         apr_pool_tag(ptemp, "ptemp");
         ap_server_root = def_server_root;
-        server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
-        if (!server_conf) {
+        ap_server_conf = ap_read_config(process, ptemp, confname, &ap_conftree);
+        if (!ap_server_conf) {
             destroy_and_exit_process(process, 1);
         }
 
@@ -745,28 +743,28 @@ int main(int argc, const char * const argv[])
             destroy_and_exit_process(process, 1);
         }
 
-        if (ap_process_config_tree(server_conf, ap_conftree, process->pconf,
+        if (ap_process_config_tree(ap_server_conf, ap_conftree, process->pconf,
                                    ptemp) != OK) {
             destroy_and_exit_process(process, 1);
         }
-        ap_fixup_virtual_hosts(pconf, server_conf);
-        ap_fini_vhost_config(pconf, server_conf);
+        ap_fixup_virtual_hosts(pconf, ap_server_conf);
+        ap_fini_vhost_config(pconf, ap_server_conf);
         apr_hook_sort_all();
 
-        if (ap_run_check_config(pconf, plog, ptemp, server_conf) != OK) {
+        if (ap_run_check_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
                          NULL, "Configuration check failed");
             destroy_and_exit_process(process, 1);
         }
 
         apr_pool_clear(plog);
-        if (ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
+        if (ap_run_open_logs(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
                          0, NULL, "Unable to open logs");
             destroy_and_exit_process(process, 1);
         }
 
-        if (ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
+        if (ap_run_post_config(pconf, plog, ptemp, ap_server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
                          0, NULL, "Configuration Failed");
             destroy_and_exit_process(process, 1);
@@ -777,7 +775,7 @@ int main(int argc, const char * const argv[])
 
         ap_run_optional_fn_retrieve();
 
-        if (ap_mpm_run(pconf, plog, server_conf))
+        if (ap_mpm_run(pconf, plog, ap_server_conf))
             break;
 
         apr_pool_lock(pconf, 0);
