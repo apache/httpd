@@ -121,7 +121,8 @@ mkdir -p ${DIR}/ssl ${DIR}/htdocs ${DIR}/logs || exit 1
 # keyUsage = cRLSign, keyCertSign values. This is fine
 # for most browsers.
 #
-serial=$RANDOM
+serial=$RANDOM$$
+
 openssl req -new -nodes -batch \
     -x509  \
     -days 10 -subj '/CN=Da Root/O=SNI testing/' -set_serial $serial \
@@ -134,13 +135,13 @@ mkdir -p ${CDIR}
 #
 openssl req -new -nodes -batch \
     -x509  \
-    -days 10 -subj '/CN=Da Second Root/O=SNI user access I/' -set_serial $RANDOM \
+    -days 10 -subj '/CN=Da Second Root/O=SNI user access I/' -set_serial 2$serial$$\
     -keyout ${CDIR}/xs-root-1.key -out ${CDIR}/xs-root-1.pem  \
     || exit 2
 
 openssl req -new -nodes -batch \
     -x509  \
-    -days 10 -subj '/CN=Da Second Root/O=SNI user access II/' -set_serial $RANDOM \
+    -days 10 -subj '/CN=Da Second Root/O=SNI user access II/' -set_serial 3$serial$$ \
     -keyout ${CDIR}/xs-root-2.key -out ${CDIR}/xs-root-2.pem  \
     || exit 2
 
@@ -169,7 +170,7 @@ do
     #
     openssl x509 -text -req \
         -CA ${CDIR}/xs-root-$i.pem -CAkey ${CDIR}/xs-root-$i.key \
-        -set_serial $RANDOM -in ${CDIR}/client-$i.req -out ${CDIR}/client-$i.pem \
+        -set_serial 3$serial$$ -in ${CDIR}/client-$i.req -out ${CDIR}/client-$i.pem \
                 || exit 4
 
     # And create a pkcs#12 version for easy browser import.
