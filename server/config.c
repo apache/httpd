@@ -49,12 +49,10 @@
 #include "http_main.h"
 #include "http_vhost.h"
 #include "util_cfgtree.h"
-#include "mpm.h"
-
 
 AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
-
 AP_DECLARE_DATA const char *ap_server_root = NULL;
+AP_DECLARE_DATA server_rec *ap_server_conf = NULL;
 
 AP_DECLARE_DATA apr_array_header_t *ap_server_pre_read_config = NULL;
 AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config = NULL;
@@ -2195,7 +2193,3 @@ AP_DECLARE(void) ap_show_modules(void)
         printf("  %s\n", ap_loaded_modules[n]->name);
 }
 
-AP_DECLARE(const char *) ap_show_mpm(void)
-{
-    return MPM_NAME;
-}

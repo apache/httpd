@@ -39,14 +39,12 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "http_main.h"
-#include "mpm.h"
 #include "mpm_common.h"
 #include "ap_mpm.h"
 #include "ap_listen.h"
-#include "mpm_default.h"
 #include "util_mutex.h"
 
-#ifdef AP_MPM_WANT_SET_SCOREBOARD
+#ifndef AP_MPM_NO_SET_SCOREBOARD
 #include "scoreboard.h"
 #endif
 
@@ -65,6 +63,11 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(fatal_exception)
     APR_HOOK_LINK(monitor)
     APR_HOOK_LINK(drop_privileges)
+    APR_HOOK_LINK(mpm)
+    APR_HOOK_LINK(mpm_query)
+    APR_HOOK_LINK(mpm_get_child_pid)
+    APR_HOOK_LINK(mpm_note_child_killed)
+    APR_HOOK_LINK(mpm_register_timed_callback)
 )
 AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
                           (ap_exception_info_t *ei), (ei), OK, DECLINED)
@@ -72,6 +75,11 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(monitor)
     APR_HOOK_LINK(drop_privileges)
+    APR_HOOK_LINK(mpm)
+    APR_HOOK_LINK(mpm_query)
+    APR_HOOK_LINK(mpm_get_child_pid)
+    APR_HOOK_LINK(mpm_note_child_killed)
+    APR_HOOK_LINK(mpm_register_timed_callback)
 )
 #endif
 AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
@@ -79,9 +87,30 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
 AP_IMPLEMENT_HOOK_RUN_ALL(int, drop_privileges,
                           (apr_pool_t * pchild, server_rec * s),
                           (pchild, s), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm,
+                            (apr_pool_t *pconf, apr_pool_t *plog, server_rec *s),
+                            (pconf, plog, s), DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_query,
+                            (int query_code, int *result),
+                            (query_code, result), APR_ENOTIMPL)
+AP_IMPLEMENT_HOOK_RUN_FIRST(pid_t, mpm_get_child_pid,
+                            (int childnum),
+                            (childnum), 0)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_note_child_killed,
+                            (int childnum),
+                            (childnum), APR_ENOTIMPL)
+AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_timed_callback,
+                            (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton),
+                            (t, cbfn, baton), APR_ENOTIMPL)
 
+/* XXX
+ * need better concept for controlling generation of MPM helper functions
+ * Unix MPMs don't have/need mpm.h; currently we rely on non-Unix MPMs providing that file
+ * with AP_MPM_NO_xxx defined for functions that won't work or won't be needed
+ * mpm_common.h has the #if HACK #include "mpm.h"
+ */
 
-#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+#ifndef AP_MPM_NO_RECLAIM_CHILD_PROCESSES
 
 typedef enum {DO_NOTHING, SEND_SIGTERM, SEND_SIGKILL, GIVEUP} action_t;
 
@@ -142,7 +171,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     proc.pid = pid;
     waitret = apr_proc_wait(&proc, &status, &why, APR_NOWAIT);
     if (waitret != APR_CHILD_NOTDONE) {
-#ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
+#ifndef AP_MPM_NO_PROCESS_CHILD_STATUS
         if (waitret == APR_CHILD_DONE)
             ap_process_child_status(&proc, why, status);
 #endif
@@ -257,14 +286,14 @@ void ap_reclaim_child_processes(int terminate)
         /* now see who is done */
         not_dead_yet = 0;
         for (i = 0; i < max_daemons; ++i) {
-            pid_t pid = MPM_CHILD_PID(i);
+            pid_t pid = ap_mpm_get_child_pid(i);
 
             if (pid == 0) {
                 continue; /* not every scoreboard entry is in use */
             }
 
             if (reclaim_one_pid(pid, action_table[cur_action].action)) {
-                MPM_NOTE_CHILD_KILLED(i);
+                ap_mpm_note_child_killed(i);
             }
             else {
                 ++not_dead_yet;
@@ -301,14 +330,14 @@ void ap_relieve_child_processes(void)
 
     /* now see who is done */
     for (i = 0; i < max_daemons; ++i) {
-        pid_t pid = MPM_CHILD_PID(i);
+        pid_t pid = ap_mpm_get_child_pid(i);
 
         if (pid == 0) {
             continue; /* not every scoreboard entry is in use */
         }
 
         if (reclaim_one_pid(pid, DO_NOTHING)) {
-            MPM_NOTE_CHILD_KILLED(i);
+            ap_mpm_note_child_killed(i);
         }
     }
 
@@ -343,7 +372,7 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
     proc.pid = pid;
     rv = apr_proc_wait(&proc, &status, &why, APR_NOWAIT);
     if (rv == APR_CHILD_DONE) {
-#ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
+#ifndef AP_MPM_NO_PROCESS_CHILD_STATUS
         /* The child already died - log the termination status if
          * necessary: */
         ap_process_child_status(&proc, why, status);
@@ -382,9 +411,9 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
 
     return kill(pid, sig) ? errno : APR_SUCCESS;
 }
-#endif /* AP_MPM_WANT_RECLAIM_CHILD_PROCESSES */
+#endif /* AP_MPM_NO_RECLAIM_CHILD_PROCESSES */
 
-#ifdef AP_MPM_WANT_WAIT_OR_TIMEOUT
+#ifndef AP_MPM_NO_WAIT_OR_TIMEOUT
 
 /* number of calls to wait_or_timeout between writable probes */
 #ifndef INTERVAL_OF_WRITABLE_PROBES
@@ -413,13 +442,13 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
         return;
     }
 
-    apr_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
+    apr_sleep(1000000);
     ret->pid = -1;
     return;
 }
-#endif /* AP_MPM_WANT_WAIT_OR_TIMEOUT */
+#endif /* AP_MPM_NO_WAIT_OR_TIMEOUT */
 
-#ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
+#ifndef AP_MPM_NO_PROCESS_CHILD_STATUS
 int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
 {
     int signum = status;
@@ -479,7 +508,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
     }
     return 0;
 }
-#endif /* AP_MPM_WANT_PROCESS_CHILD_STATUS */
+#endif /* AP_MPM_NO_PROCESS_CHILD_STATUS */
 
 #if defined(TCP_NODELAY) && !defined(MPE) && !defined(TPF)
 void ap_sock_disable_nagle(apr_socket_t *s)
@@ -571,7 +600,7 @@ int initgroups(const char *name, gid_t basegid)
 }
 #endif /* def NEED_INITGROUPS */
 
-#ifdef AP_MPM_USES_POD
+#ifndef AP_MPM_NO_POD
 
 AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
 {
@@ -777,7 +806,7 @@ void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
 #endif /* #ifdef AP_MPM_USES_POD */
 
 /* standard mpm configuration handling */
-#ifdef AP_MPM_WANT_SET_PIDFILE
+#ifndef AP_MPM_NO_SET_PIDFILE
 const char *ap_pid_fname = NULL;
 
 const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
@@ -797,7 +826,7 @@ const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
 }
 #endif
 
-#ifdef AP_MPM_WANT_SET_SCOREBOARD
+#ifndef AP_MPM_NO_SET_SCOREBOARD
 const char * ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
                                    const char *arg)
 {
@@ -811,7 +840,7 @@ const char * ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
 }
 #endif
 
-#ifdef AP_MPM_WANT_SET_LOCKFILE
+#ifndef AP_MPM_NO_SET_LOCKFILE
 const char *ap_lock_fname = NULL;
 
 const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
@@ -827,7 +856,7 @@ const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
 }
 #endif
 
-#ifdef AP_MPM_WANT_SET_MAX_REQUESTS
+#ifndef AP_MPM_NO_SET_MAX_REQUESTS
 int ap_max_requests_per_child = 0;
 
 const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
@@ -844,7 +873,7 @@ const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
 }
 #endif
 
-#ifdef AP_MPM_WANT_SET_COREDUMPDIR
+#ifndef AP_MPM_NO_SET_COREDUMPDIR
 char ap_coredump_dir[MAX_STRING_LEN];
 int ap_coredumpdir_configured;
 
@@ -878,7 +907,7 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 }
 #endif
 
-#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+#ifndef AP_MPM_NO_SET_GRACEFUL_SHUTDOWN
 int ap_graceful_shutdown_timeout = 0;
 
 const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
@@ -893,7 +922,7 @@ const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
 }
 #endif
 
-#ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+#ifndef AP_MPM_NO_SET_ACCEPT_LOCK_MECH
 apr_lockmech_e ap_accept_lock_mech = APR_LOCK_DEFAULT;
 
 AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
@@ -936,7 +965,7 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
 
 #endif
 
-#ifdef AP_MPM_WANT_SIGNAL_SERVER
+#ifndef AP_MPM_NO_SIGNAL_SERVER
 
 static const char *dash_k_arg;
 
@@ -1025,7 +1054,7 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
     }
 
     if (!strcmp(dash_k_arg, "graceful-stop")) {
-#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+#ifndef AP_MPM_NO_SET_GRACEFUL_SHUTDOWN
         if (!running) {
             printf("%s\n", status);
         }
@@ -1098,9 +1127,9 @@ void ap_mpm_rewrite_args(process_rec *process)
     }
 }
 
-#endif /* AP_MPM_WANT_SIGNAL_SERVER */
+#endif /* AP_MPM_NO_SIGNAL_SERVER */
 
-#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+#ifndef AP_MPM_NO_SET_MAX_MEM_FREE
 apr_uint32_t ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 
 const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
@@ -1122,9 +1151,9 @@ const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-#endif /* AP_MPM_WANT_SET_MAX_MEM_FREE */
+#endif /* AP_MPM_NO_SET_MAX_MEM_FREE */
 
-#ifdef AP_MPM_WANT_SET_STACKSIZE
+#ifndef AP_MPM_NO_SET_STACKSIZE
 apr_size_t ap_thread_stacksize = 0; /* use system default */
 
 const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
@@ -1146,9 +1175,9 @@ const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-#endif /* AP_MPM_WANT_SET_STACKSIZE */
+#endif /* AP_MPM_NO_SET_STACKSIZE */
 
-#ifdef AP_MPM_WANT_FATAL_SIGNAL_HANDLER
+#ifndef AP_MPM_NO_FATAL_SIGNAL_HANDLER
 
 static pid_t parent_pid, my_pid;
 static apr_pool_t *pconf;
@@ -1304,15 +1333,35 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
     return APR_SUCCESS;
 }
 
-#endif /* AP_MPM_WANT_FATAL_SIGNAL_HANDLER */
+#endif /* AP_MPM_NO_FATAL_SIGNAL_HANDLER */
 
-#ifndef AP_MPM_HAS_USER_CALLBACKS
-
-AP_DECLARE(void) ap_mpm_register_timed_callback(apr_time_t t,
-                                                ap_mpm_callback_fn_t *cbfn,
-                                                void *baton)
+AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf)
 {
-    abort();
+    return ap_run_mpm(pconf, plog, server_conf);
 }
 
-#endif /* AP_MPM_HAS_USER_CALLBACKS */
+AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+{
+    return ap_run_mpm_query(query_code, result);
+}
+
+AP_DECLARE(pid_t) ap_mpm_get_child_pid(int childnum)
+{
+    return ap_run_mpm_get_child_pid(childnum);
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_note_child_killed(int childnum)
+{
+    return ap_run_mpm_note_child_killed(childnum);
+}
+
+AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton)
+{
+    return ap_run_mpm_register_timed_callback(t, cbfn, baton);
+}
+
+AP_DECLARE(const char *)ap_show_mpm(void)
+{
+    /* XXX hook this */
+    return "(unknown)";
+}

@@ -42,7 +42,6 @@
 #include "util_filter.h"
 #include "util_ebcdic.h"
 #include "util_mutex.h"
-#include "mpm.h"
 #include "mpm_common.h"
 #include "scoreboard.h"
 #include "mod_core.h"

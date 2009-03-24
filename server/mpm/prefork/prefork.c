@@ -88,7 +88,6 @@
 
 /* config globals */
 
-int ap_threads_per_child=0;         /* Worker threads per child */
 static apr_proc_mutex_t *accept_mutex;
 static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
@@ -99,13 +98,14 @@ static int first_server_limit = 0;
 static int mpm_state = AP_MPMQ_STARTING;
 static ap_pod_t *pod;
 
+#define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
+
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
  * to deal with MaxClients changes across AP_SIG_GRACEFUL restarts.  We
  * use this value to optimize routines that have to scan the entire scoreboard.
  */
-int ap_max_daemons_limit = -1;
-server_rec *ap_server_conf;
+static int max_daemons_limit = -1;
 
 /* one_process --- debugging mode variable; can be set from the command line
  * with the -X flag.  If set, this gets you the child_main loop running
@@ -128,7 +128,7 @@ static pid_t parent_pid;
 #ifndef MULTITHREAD
 static int my_child_num;
 #endif
-ap_generation_t volatile ap_my_generation=0;
+static ap_generation_t volatile my_generation=0;
 
 #ifdef TPF
 int tpf_child = 0;
@@ -203,7 +203,7 @@ static void accept_mutex_on(void)
     if (rv != APR_SUCCESS) {
         const char *msg = "couldn't grab the accept mutex";
 
-        if (ap_my_generation !=
+        if (my_generation !=
             ap_scoreboard_image->global->running_generation) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL, "%s", msg);
             clean_child_exit(0);
@@ -221,7 +221,7 @@ static void accept_mutex_off(void)
     if (rv != APR_SUCCESS) {
         const char *msg = "couldn't release the accept mutex";
 
-        if (ap_my_generation !=
+        if (my_generation !=
             ap_scoreboard_image->global->running_generation) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL, "%s", msg);
             /* don't exit here... we have a connection to
@@ -247,7 +247,7 @@ static void accept_mutex_off(void)
 #define SAFE_ACCEPT(stmt) do {stmt;} while(0)
 #endif
 
-AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+static apr_status_t prefork_query(int query_code, int *result)
 {
     switch(query_code){
     case AP_MPMQ_MAX_DAEMON_USED:
@@ -289,8 +289,22 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
     case AP_MPMQ_MPM_STATE:
         *result = mpm_state;
         return APR_SUCCESS;
+    case AP_MPMQ_GENERATION:
+        *result = my_generation;
+        return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
+}
+
+static pid_t prefork_get_child_pid(int childnum)
+{
+    return ap_scoreboard_image->parent[childnum].pid;
+}
+
+static apr_status_t prefork_note_child_killed(int childnum)
+{
+    ap_scoreboard_image->parent[childnum].pid = 0;
+    return APR_SUCCESS;
 }
 
 /*****************************************************************
@@ -510,6 +524,8 @@ static void child_main(int child_num_arg)
 
         /* ### check the status */
         (void) apr_pollset_add(pollset, &pfd);
+
+        lr->accept_func = ap_unixd_accept;
     }
 
     mpm_state = AP_MPMQ_RUNNING;
@@ -650,7 +666,7 @@ static void child_main(int child_num_arg)
         if (ap_mpm_pod_check(pod) == APR_SUCCESS) { /* selected as idle? */
             die_now = 1;
         }
-        else if (ap_my_generation !=
+        else if (my_generation !=
                  ap_scoreboard_image->global->running_generation) { /* restart? */
             /* yeah, this could be non-graceful restart, in which case the
              * parent will kill us soon enough, but why bother checking?
@@ -666,8 +682,8 @@ static int make_child(server_rec *s, int slot)
 {
     int pid;
 
-    if (slot + 1 > ap_max_daemons_limit) {
-        ap_max_daemons_limit = slot + 1;
+    if (slot + 1 > max_daemons_limit) {
+        max_daemons_limit = slot + 1;
     }
 
     if (one_process) {
@@ -794,7 +810,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     for (i = 0; i < ap_daemons_limit; ++i) {
         int status;
 
-        if (i >= ap_max_daemons_limit && free_length == idle_spawn_rate)
+        if (i >= max_daemons_limit && free_length == idle_spawn_rate)
             break;
         ws = &ap_scoreboard_image->servers[i][0];
         status = ws->status;
@@ -827,7 +843,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             last_non_dead = i;
         }
     }
-    ap_max_daemons_limit = last_non_dead + 1;
+    max_daemons_limit = last_non_dead + 1;
     if (idle_count > ap_daemons_max_free) {
         /* kill off one child... we use the pod because that'll cause it to
          * shut down gracefully, in case it happened to pick up a request
@@ -892,7 +908,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
  * Executive routines.
  */
 
-int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
+static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     int index;
     int remaining_children_to_start;
@@ -939,7 +955,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* fix the generation number in the global score; we just got a new,
          * cleared scoreboard
          */
-        ap_scoreboard_image->global->running_generation = ap_my_generation;
+        ap_scoreboard_image->global->running_generation = my_generation;
     }
 
     set_signals();
@@ -1113,7 +1129,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_close_listeners();
 
         /* kill off the idle ones */
-        ap_mpm_pod_killpg(pod, ap_max_daemons_limit);
+        ap_mpm_pod_killpg(pod, max_daemons_limit);
 
         /* Send SIGUSR1 to the active children */
         active_children = 0;
@@ -1188,15 +1204,15 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     /* XXX: we really need to make sure this new generation number isn't in
      * use by any of the children.
      */
-    ++ap_my_generation;
-    ap_scoreboard_image->global->running_generation = ap_my_generation;
+    ++my_generation;
+    ap_scoreboard_image->global->running_generation = my_generation;
 
     if (is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                     "Graceful restart requested, doing restart");
 
         /* kill off the idle ones */
-        ap_mpm_pod_killpg(pod, ap_max_daemons_limit);
+        ap_mpm_pod_killpg(pod, max_daemons_limit);
 
         /* This is mostly for debugging... so that we know what is still
          * gracefully dealing with existing request.  This will break
@@ -1409,7 +1425,7 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
         ap_daemons_limit = 1;
     }
 
-    /* ap_daemons_to_start > ap_daemons_limit checked in ap_mpm_run() */
+    /* ap_daemons_to_start > ap_daemons_limit checked in prefork_run() */
     if (ap_daemons_to_start < 0) {
         if (startup) {
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
@@ -1440,7 +1456,7 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
         ap_daemons_min_free = 1;
     }
 
-    /* ap_daemons_max_free < ap_daemons_min_free + 1 checked in ap_mpm_run() */
+    /* ap_daemons_max_free < ap_daemons_min_free + 1 checked in prefork_run() */
 
     return OK;
 }
@@ -1463,6 +1479,10 @@ static void prefork_hooks(apr_pool_t *p)
      */
     ap_hook_pre_config(prefork_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_check_config(prefork_check_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm(prefork_run, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_query(prefork_query, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_get_child_pid(prefork_get_child_pid, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_note_child_killed(prefork_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg)

@@ -69,10 +69,6 @@ fi
 MPM_DIR=server/mpm/$MPM_SUBDIR_NAME
 MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 
-if test ! -f "$abs_srcdir/$MPM_DIR/mpm.h"; then
-    AC_MSG_ERROR(the selected mpm -- $apache_cv_mpm -- is not supported)
-fi
-
 APACHE_SUBST(MPM_NAME)
 APACHE_SUBST(MPM_SUBDIR_NAME)
 MODLIST="$MODLIST mpm_${MPM_NAME}"

@@ -39,7 +39,6 @@
 #include "util_script.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
-#include "mpm.h"
 #include "apr.h"
 #include "apr_strings.h"
 #define APR_WANT_STRFUNC

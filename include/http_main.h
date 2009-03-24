@@ -26,6 +26,7 @@
 #ifndef APACHE_HTTP_MAIN_H
 #define APACHE_HTTP_MAIN_H
 
+#include "httpd.h"
 #include "apr_optional.h"
 
 /** AP_SERVER_BASEARGS is the command argument list parsed by http_main.c
@@ -42,6 +43,8 @@ extern "C" {
 AP_DECLARE_DATA extern const char *ap_server_argv0;
 /** The global server's ServerRoot */
 AP_DECLARE_DATA extern const char *ap_server_root;
+/** The global server's server_rec */
+AP_DECLARE_DATA extern server_rec *ap_server_conf;
 
 /* for -C, -c and -D switches */
 /** An array of all -C directives.  These are processed before the server's

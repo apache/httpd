@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
+#include "apr_portable.h"
 #include "pod.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
-AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
+AP_DECLARE(apr_status_t) ap_worker_pod_open(apr_pool_t *p, ap_worker_pod_t **pod)
 {
     apr_status_t rv;
 
@@ -41,7 +42,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(int) ap_mpm_pod_check(ap_pod_t *pod)
+AP_DECLARE(int) ap_worker_pod_check(ap_worker_pod_t *pod)
 {
     char c;
     apr_os_file_t fd;
@@ -63,7 +64,7 @@ AP_DECLARE(int) ap_mpm_pod_check(ap_pod_t *pod)
     return AP_NORESTART;
 }
 
-AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod)
+AP_DECLARE(apr_status_t) ap_worker_pod_close(ap_worker_pod_t *pod)
 {
     apr_status_t rv;
 
@@ -79,7 +80,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod)
     return rv;
 }
 
-static apr_status_t pod_signal_internal(ap_pod_t *pod, int graceful)
+static apr_status_t pod_signal_internal(ap_worker_pod_t *pod, int graceful)
 {
     apr_status_t rv;
     char char_of_death = graceful ? GRACEFUL_CHAR : RESTART_CHAR;
@@ -93,12 +94,12 @@ static apr_status_t pod_signal_internal(ap_pod_t *pod, int graceful)
     return rv;
 }
 
-AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod, int graceful)
+AP_DECLARE(apr_status_t) ap_worker_pod_signal(ap_worker_pod_t *pod, int graceful)
 {
     return pod_signal_internal(pod, graceful);
 }
 
-AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num, int graceful)
+AP_DECLARE(void) ap_worker_pod_killpg(ap_worker_pod_t *pod, int num, int graceful)
 {
     int i;
     apr_status_t rv = APR_SUCCESS;

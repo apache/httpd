@@ -34,15 +34,20 @@
 
 #define MPM_NAME "WinNT"
 
-#define AP_MPM_WANT_SET_PIDFILE
-#define AP_MPM_WANT_SET_MAX_REQUESTS
-#define AP_MPM_WANT_SET_SCOREBOARD
-#define AP_MPM_WANT_SET_MAX_MEM_FREE
-#define AP_MPM_WANT_SET_STACKSIZE
+#define AP_MPM_NO_SET_ACCEPT_LOCK_MECH
+#define AP_MPM_NO_RECLAIM_CHILD_PROCESSES
+#define AP_MPM_NO_WAIT_OR_TIMEOUT
+#define AP_MPM_NO_PROCESS_CHILD_STATUS
+#define AP_MPM_NO_POD
+#define AP_MPM_NO_SET_LOCKFILE
+#define AP_MPM_NO_SET_COREDUMPDIR
+#define AP_MPM_NO_SET_SCOREBOARD
+#define AP_MPM_NO_SET_GRACEFUL_SHUTDOWN
+#define AP_MPM_NO_SIGNAL_SERVER
+#define AP_MPM_NO_FATAL_SIGNAL_HANDLER
 
 extern int ap_threads_per_child;
 extern int ap_thread_limit;
-extern server_rec *ap_server_conf;
 
 #endif /* APACHE_MPM_H */
 /** @} */

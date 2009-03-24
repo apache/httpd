@@ -34,7 +34,6 @@
 #include "http_config.h"
 #include "ap_mpm.h"
 
-#include "mpm.h"
 #include "scoreboard.h"
 
 AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
@@ -436,6 +435,7 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
     int old_status;
     worker_score *ws;
     process_score *ps;
+    int mpm_generation;
 
     if (child_num < 0) {
         return -1;
@@ -450,7 +450,8 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
     if (status == SERVER_READY
         && old_status == SERVER_STARTING) {
         ws->thread_num = child_num * thread_limit + thread_num;
-        ps->generation = ap_my_generation;
+        ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
+        ps->generation = mpm_generation;
     }
 
     if (ap_extended_status) {
