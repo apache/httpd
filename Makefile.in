@@ -181,7 +181,6 @@ INSTALL_HEADERS = \
 	include/*.h \
 	$(srcdir)/include/*.h \
 	$(srcdir)/os/$(OS_DIR)/os.h \
-	$(srcdir)/server/mpm/$(MPM_SUBDIR_NAME)/*.h \
 	$(srcdir)/modules/database/mod_dbd.h \
 	$(srcdir)/modules/dav/main/mod_dav.h \
 	$(srcdir)/modules/filters/mod_include.h \
