@@ -1590,8 +1590,6 @@ static int winnt_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, s
 {
     /* Initialize shared static objects.
      */
-    ap_server_conf = s;
-
     if (parent_pid != my_pid) {
         return OK;
     }

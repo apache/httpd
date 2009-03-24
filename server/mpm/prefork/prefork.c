@@ -1257,7 +1257,6 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     apr_status_t rv;
 
     pconf = p;
-    ap_server_conf = s;
 
     /* the reverse of pre_config, we want this only the first time around */
     if (restart_num++ == 0) {
