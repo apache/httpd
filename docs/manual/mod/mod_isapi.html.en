@@ -69,7 +69,7 @@
     processed as an ISAPI extension, edit the httpd.conf file and add the
     following line:</p>
     <div class="example"><p><code>
-        AddHandler isapi-handler.dll
+        AddHandler isapi-handler .dll
     </code></p></div>
 
     <div class="note">In older versions of the Apache server,
