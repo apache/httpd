@@ -92,8 +92,6 @@ extern "C" {
 /**
  * Make sure all child processes that have been spawned by the parent process
  * have died.  This includes process registered as "other_children".
- * @warning This is only defined if the MPM defines 
- *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
  * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
@@ -112,8 +110,6 @@ void ap_reclaim_child_processes(int terminate);
 /**
  * Catch any child processes that have been spawned by the parent process
  * which have exited. This includes processes registered as "other_children".
- * @warning This is only defined if the MPM defines 
- *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
  * @tip This function requires that some macros are defined by the MPM: <pre>
  *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
  *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
@@ -129,8 +125,6 @@ void ap_relieve_child_processes(void);
 /**
  * Tell ap_reclaim_child_processes() and ap_relieve_child_processes() about 
  * an MPM child process which has no entry in the scoreboard.
- * @warning This is only defined if the MPM defines
- *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
  * @param pid The process id of an MPM child process which should be
  * reclaimed when ap_reclaim_child_processes() is called.
  * @tip If an extra MPM child process terminates prior to calling
@@ -144,8 +138,6 @@ void ap_register_extra_mpm_process(pid_t pid);
 /**
  * Unregister an MPM child process which was previously registered by a
  * call to ap_register_extra_mpm_process().
- * @warning This is only defined if the MPM defines
- *          AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
  * @param pid The process id of an MPM child process which no longer needs to
  * be reclaimed.
  * @return 1 if the process was found and removed, 0 otherwise

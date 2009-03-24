@@ -60,7 +60,6 @@ AP_DECLARE_DATA extern apr_array_header_t *ap_server_config_defines;
 /**
  * An optional function to send signal to server on presence of '-k'
  * command line argument.
- * Called if MPM defines AP_MPM_WANT_SIGNAL_SERVER
  * @param status The exit status after sending signal
  * @param pool Memory pool to allocate from
  */

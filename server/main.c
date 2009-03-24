@@ -372,17 +372,12 @@ static void usage(process_rec *process)
                  "       %s [-k install|config|uninstall] [-n service_name]",
                  pad);
 #endif
-#ifdef AP_MPM_WANT_SIGNAL_SERVER
-#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+/* XXX not all MPMs support signalling the server in general or graceful-stop
+ * in particular
+ */
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-k start|restart|graceful|graceful-stop|stop]",
                  pad);
-#else
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "       %s [-k start|restart|graceful|stop]",
-                 pad);
-#endif /* AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN */
-#endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-S]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,

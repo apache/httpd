@@ -203,7 +203,6 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
     }
 #if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
     /* this applies to Linux 2.4+ */
-#ifdef AP_MPM_WANT_SET_COREDUMPDIR
     if (ap_coredumpdir_configured) {
         if (prctl(PR_SET_DUMPABLE, 1)) {
             rv = errno;
@@ -213,7 +212,6 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
             return rv;
         }
     }
-#endif
 #endif
 #endif
 
@@ -359,7 +357,6 @@ AP_DECLARE(int) ap_unixd_setup_child(void)
     }
 #if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
     /* this applies to Linux 2.4+ */
-#ifdef AP_MPM_WANT_SET_COREDUMPDIR
     if (ap_coredumpdir_configured) {
         if (prctl(PR_SET_DUMPABLE, 1)) {
             ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
@@ -367,7 +364,6 @@ AP_DECLARE(int) ap_unixd_setup_child(void)
                          " after software errors");
         }
     }
-#endif
 #endif
 #endif
     return 0;

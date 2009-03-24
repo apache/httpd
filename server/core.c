@@ -3361,41 +3361,26 @@ AP_INIT_FLAG("AllowEncodedSlashes", set_allow2f, NULL, RSRC_CONF,
 
 /*
  * These are default configuration directives that mpms can/should
- * pay attention to. If an mpm wishes to use these, they should
- * #defined them in mpm.h.
+ * pay attention to.
+ * XXX These are not for all platforms, and even some Unix MPMs might not want
+ * some directives.
  */
-#ifdef AP_MPM_WANT_SET_PIDFILE
 AP_INIT_TAKE1("PidFile",  ap_mpm_set_pidfile, NULL, RSRC_CONF,
               "A file for logging the server process ID"),
-#endif
-#ifdef AP_MPM_WANT_SET_SCOREBOARD
 AP_INIT_TAKE1("ScoreBoardFile", ap_mpm_set_scoreboard, NULL, RSRC_CONF,
               "A file for Apache to maintain runtime process management information"),
-#endif
-#ifdef AP_MPM_WANT_SET_LOCKFILE
 AP_INIT_TAKE1("LockFile",  ap_mpm_set_lockfile, NULL, RSRC_CONF,
               "The lockfile used when Apache needs to lock the accept() call (deprecated)"),
-#endif
-#ifdef AP_MPM_WANT_SET_MAX_REQUESTS
 AP_INIT_TAKE1("MaxRequestsPerChild", ap_mpm_set_max_requests, NULL, RSRC_CONF,
               "Maximum number of requests a particular child serves before dying."),
-#endif
-#ifdef AP_MPM_WANT_SET_COREDUMPDIR
 AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
-#endif
-#ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF,
               AP_AVAILABLE_MUTEXES_STRING),
-#endif
-#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
 AP_INIT_TAKE1("MaxMemFree", ap_mpm_set_max_mem_free, NULL, RSRC_CONF,
               "Maximum number of 1k blocks a particular childs allocator may hold."),
-#endif
-#ifdef AP_MPM_WANT_SET_STACKSIZE
 AP_INIT_TAKE1("ThreadStackSize", ap_mpm_set_thread_stacksize, NULL, RSRC_CONF,
               "Size in bytes of stack used by threads handling client connections"),
-#endif
 #if AP_ENABLE_EXCEPTION_HOOK
 AP_INIT_TAKE1("EnableExceptionHook", ap_mpm_set_exception_hook, NULL, RSRC_CONF,
               "Controls whether exception hook may be called after a crash"),
