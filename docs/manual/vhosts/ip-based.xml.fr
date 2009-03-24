@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 659902 -->
+<!-- English Revision: 659902:752951 (outdated) -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 
 <!--
