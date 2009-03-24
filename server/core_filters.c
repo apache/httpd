@@ -46,7 +46,6 @@
 #include "apr_buckets.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
-#include "mpm.h"
 #include "mpm_common.h"
 #include "scoreboard.h"
 #include "mod_core.h"

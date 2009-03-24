@@ -27,6 +27,7 @@
 #define AP_MPM_H
 
 #include "apr_thread_proc.h"
+#include "httpd.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,9 +80,9 @@ extern "C" {
 */
 
 /**
- * This is the function that MPMs must create.  This function is responsible
- * for controlling the parent and child processes.  It will run until a 
- * restart/shutdown is indicated.
+ * This is the function that passes control to the MPM for steady-state
+ * processing.  It is responsible for controlling the parent and child
+ * processes.  It will run until a restart/shutdown is indicated.
  * @param pconf the configuration pool, reset before the config file is read
  * @param plog the log pool, reset after the config file is read
  * @param server_conf the global server config.
@@ -142,6 +143,7 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_MAX_DAEMONS          12  /* Max # of daemons by config   */
 #define AP_MPMQ_MPM_STATE            13  /* starting, running, stopping  */
 #define AP_MPMQ_IS_ASYNC             14  /* MPM can process async connections  */
+#define AP_MPMQ_GENERATION           15  /* MPM generation */
 
 /**
  * Query a property of the current MPM.  
@@ -155,10 +157,10 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 
 typedef void (ap_mpm_callback_fn_t)(void *baton);
 
-/* XXXXXXX: only added support in the Event MPM.... */
-AP_DECLARE(void) ap_mpm_register_timed_callback(apr_time_t t,
-                                                ap_mpm_callback_fn_t *cbfn,
-                                                void *baton);
+/* only added support in the Event MPM....  check for APR_ENOTIMPL */
+AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t,
+                                                       ap_mpm_callback_fn_t *cbfn,
+                                                       void *baton);
     
 /* Defining GPROF when compiling uses the moncontrol() function to
  * disable gprof profiling in the parent, and enable it only for

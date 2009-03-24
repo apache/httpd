@@ -245,12 +245,14 @@ static int status_handler(request_rec *r)
     char *stat_buffer;
     pid_t *pid_buffer, worker_pid;
     clock_t tu, ts, tcu, tcs;
-    ap_generation_t worker_generation;
+    ap_generation_t mpm_generation, worker_generation;
 
     if (strcmp(r->handler, STATUS_MAGIC_TYPE) &&
         strcmp(r->handler, "server-status")) {
         return DECLINED;
     }
+
+    ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
 
 #ifdef HAVE_TIMES
 #ifdef _SC_CLK_TCK
@@ -339,7 +341,7 @@ static int status_handler(request_rec *r)
             if (!ps_record->quiescing
                 && ps_record->pid) {
                 if (res == SERVER_READY
-                    && ps_record->generation == ap_my_generation)
+                    && ps_record->generation == mpm_generation)
                     ready++;
                 else if (res != SERVER_DEAD &&
                          res != SERVER_STARTING &&
@@ -422,7 +424,7 @@ static int status_handler(request_rec *r)
                              DEFAULT_TIME_FORMAT, 0),
                   "</dt>\n", NULL);
         ap_rprintf(r, "<dt>Parent Server Generation: %d</dt>\n",
-                   (int)ap_my_generation);
+                   (int)mpm_generation);
         ap_rputs("<dt>Server uptime: ", r);
         show_time(r, up_time);
         ap_rputs("</dt>\n", r);

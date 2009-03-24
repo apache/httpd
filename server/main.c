@@ -52,6 +52,9 @@
  * Most significant main() global data can be found in http_config.c
  */
 
+/* XXX call after module loading based on some cmd-line option/define
+ */
+
 static void show_mpm_settings(void)
 {
     int mpm_query_info;
@@ -107,8 +110,6 @@ static void show_compile_settings(void)
      * consistent
      */
     printf("Architecture:   %ld-bit\n", 8 * (long)sizeof(void *));
-
-    show_mpm_settings();
 
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
@@ -706,6 +707,7 @@ int main(int argc, const char * const argv[])
 
     apr_pool_clear(plog);
 
+    ap_server_conf = server_conf;
     if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
                      0, NULL, "Unable to open logs");

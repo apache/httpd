@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include "mpm.h"
 #include "ap_mpm.h"
 #include "httpd.h"
 #include "http_config.h"
@@ -26,13 +25,9 @@
 #include "simple_run.h"
 #include "http_core.h"
 
-/* Thie file contains the absolute minimal MPM API, to interface with httpd. */
+/* This file contains the absolute minimal MPM API, to interface with httpd. */
 
-ap_generation_t volatile ap_my_generation = 0;
-server_rec *ap_server_conf = NULL;
-
-
-     int ap_mpm_run(apr_pool_t * pconf, apr_pool_t * plog, server_rec * s)
+static int simple_run(apr_pool_t * pconf, apr_pool_t * plog, server_rec * s)
 {
     simple_core_t *sc = simple_core_get();
 
@@ -46,7 +41,7 @@ server_rec *ap_server_conf = NULL;
     return simple_main_loop(sc);
 }
 
-apr_status_t ap_mpm_query(int query_code, int *result)
+static apr_status_t simple_query(int query_code, int *result)
 {
     simple_core_t *sc = simple_core_get();
 
@@ -103,6 +98,9 @@ apr_status_t ap_mpm_query(int query_code, int *result)
     case AP_MPMQ_MPM_STATE:
         *result = sc->mpm_state;
         return APR_SUCCESS;
+    case AP_MPMQ_GENERATION:
+        *result = 0;
+        return APR_SUCCESS;
     default:
         break;
     }
@@ -115,8 +113,6 @@ simple_open_logs(apr_pool_t * p,
                  apr_pool_t * plog, apr_pool_t * ptemp, server_rec * s)
 {
     int nsock;
-
-    ap_server_conf = s;
 
     nsock = ap_setup_listeners(s);
 
@@ -232,6 +228,9 @@ static void simple_hooks(apr_pool_t * p)
 
     ap_hook_check_config(simple_check_config, NULL, NULL, APR_HOOK_MIDDLE);
 
+    ap_hook_mpm(simple_run, NULL, NULL, APR_HOOK_MIDDLE);
+
+    ap_hook_mpm_query(simple_query, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_proccount(cmd_parms * cmd, void *baton,

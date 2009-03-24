@@ -26,7 +26,6 @@
 #include "http_core.h"
 #include "ap_listen.h"
 #include "http_log.h"
-#include "mpm.h"
 #include "mpm_common.h"
 
 AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
@@ -169,11 +168,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     server->sd = s;
     server->active = 1;
 
-#ifdef MPM_ACCEPT_FUNC
-    server->accept_func = MPM_ACCEPT_FUNC;
-#else
     server->accept_func = NULL;
-#endif
 
     return APR_SUCCESS;
 }

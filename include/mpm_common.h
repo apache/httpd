@@ -38,12 +38,22 @@
 #define APACHE_MPM_COMMON_H
 
 #include "ap_config.h"
+#include "ap_mpm.h"
 
 #if APR_HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>    /* for TCP_NODELAY */
 #endif
 
+#ifdef WIN32
+/* XXX temporary mitigation for Windows; other non-Unix MPMs need this hack too
+ * include mpm.h to pick up the AP_MPM_NO_foo definitions
+ */
 #include "mpm.h"
+#endif
+
+#ifndef AP_MPM_NO_SET_ACCEPT_LOCK_MECH
+#include "apr_proc_mutex.h"
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -95,7 +105,7 @@ extern "C" {
  * in the scoreboard as well as those currently registered via
  * ap_register_extra_mpm_process().
  */
-#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+#ifndef AP_MPM_NO_RECLAIM_CHILD_PROCESSES
 void ap_reclaim_child_processes(int terminate);
 #endif
 
@@ -112,7 +122,7 @@ void ap_reclaim_child_processes(int terminate);
  * in the scoreboard as well as those currently registered via
  * ap_register_extra_mpm_process().
  */
-#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+#ifndef AP_MPM_NO_RECLAIM_CHILD_PROCESSES
 void ap_relieve_child_processes(void);
 #endif
 
@@ -127,7 +137,7 @@ void ap_relieve_child_processes(void);
  * ap_reclaim_child_processes(), remove it from the list of such processes
  * by calling ap_unregister_extra_mpm_process().
  */
-#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+#ifndef AP_MPM_NO_RECLAIM_CHILD_PROCESSES
 void ap_register_extra_mpm_process(pid_t pid);
 #endif
 
@@ -140,7 +150,7 @@ void ap_register_extra_mpm_process(pid_t pid);
  * be reclaimed.
  * @return 1 if the process was found and removed, 0 otherwise
  */
-#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+#ifndef AP_MPM_NO_RECLAIM_CHILD_PROCESSES
 int ap_unregister_extra_mpm_process(pid_t pid);
 #endif
 
@@ -153,7 +163,7 @@ int ap_unregister_extra_mpm_process(pid_t pid);
  * APR_EINVAL is returned if passed either an invalid (< 1) pid, or if
  * the pid is not in the current process group
  */
-#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+#ifndef AP_MPM_NO_RECLAIM_CHILD_PROCESSES
 apr_status_t ap_mpm_safe_kill(pid_t pid, int sig);
 #endif
 
@@ -165,7 +175,7 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig);
  * @param ret The process id of the process that died
  * @param p The pool to allocate out of
  */
-#ifdef AP_MPM_WANT_WAIT_OR_TIMEOUT
+#ifndef AP_MPM_NO_WAIT_OR_TIMEOUT
 void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret, 
                         apr_pool_t *p);
 #endif
@@ -177,7 +187,7 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
  * @param status The status returned from ap_wait_or_timeout
  * @return 0 on success, APEXIT_CHILDFATAL if MPM should terminate
  */
-#ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
+#ifndef AP_MPM_NO_PROCESS_CHILD_STATUS
 int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status);
 #endif
 
@@ -216,7 +226,7 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name);
 
 #define AP_MPM_HARD_LIMITS_FILE APACHE_MPM_DIR "/mpm_default.h"
 
-#ifdef AP_MPM_USES_POD
+#ifndef AP_MPM_NO_POD
 
 typedef struct ap_pod_t ap_pod_t;
 
@@ -270,7 +280,7 @@ AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num);
  * The maximum number of requests each child thread or
  * process handles before dying off
  */
-#ifdef AP_MPM_WANT_SET_MAX_REQUESTS
+#ifndef AP_MPM_NO_SET_MAX_REQUESTS
 extern int ap_max_requests_per_child;
 const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
                                     const char *arg);
@@ -279,7 +289,7 @@ const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
 /**
  * The filename used to store the process id.
  */
-#ifdef AP_MPM_WANT_SET_PIDFILE
+#ifndef AP_MPM_NO_SET_PIDFILE
 extern const char *ap_pid_fname;
 const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
                                const char *arg);
@@ -288,7 +298,7 @@ const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
 /**
  * The name of lockfile used when Apache needs to lock the accept() call.
  */
-#ifdef AP_MPM_WANT_SET_LOCKFILE
+#ifndef AP_MPM_NO_SET_LOCKFILE
 extern const char *ap_lock_fname;
 const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
                                 const char *arg);
@@ -297,7 +307,7 @@ const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
 /**
  * The system mutex implementation to use for the accept mutex.
  */
-#ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
+#ifndef AP_MPM_NO_SET_ACCEPT_LOCK_MECH
 extern apr_lockmech_e ap_accept_lock_mech;
 const char *ap_mpm_set_accept_lock_mech(cmd_parms *cmd, void *dummy,
                                         const char *arg);
@@ -306,7 +316,7 @@ const char *ap_mpm_set_accept_lock_mech(cmd_parms *cmd, void *dummy,
 /*
  * Set the scorboard file.
  */
-#ifdef AP_MPM_WANT_SET_SCOREBOARD
+#ifndef AP_MPM_NO_SET_SCOREBOARD
 const char *ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
                                   const char *arg);
 #endif
@@ -314,7 +324,7 @@ const char *ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
 /*
  * The directory that the server changes directory to dump core.
  */
-#ifdef AP_MPM_WANT_SET_COREDUMPDIR
+#ifndef AP_MPM_NO_SET_COREDUMPDIR
 extern char ap_coredump_dir[MAX_STRING_LEN];
 extern int ap_coredumpdir_configured;
 const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
@@ -324,7 +334,7 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 /**
  * Set the timeout period for a graceful shutdown.
  */
-#ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
+#ifndef AP_MPM_NO_SET_GRACEFUL_SHUTDOWN
 extern int ap_graceful_shutdown_timeout;
 const char *ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
                                          const char *arg);
@@ -335,24 +345,24 @@ AP_INIT_TAKE1("GracefulShutdownTimeout", ap_mpm_set_graceful_shutdown, NULL, \
 #endif
 
 
-#ifdef AP_MPM_WANT_SIGNAL_SERVER
+#ifndef AP_MPM_NO_SIGNAL_SERVER
 int ap_signal_server(int *, apr_pool_t *);
 void ap_mpm_rewrite_args(process_rec *);
 #endif
 
-#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
+#ifndef AP_MPM_NO_SET_MAX_MEM_FREE
 extern apr_uint32_t ap_max_mem_free;
 extern const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
                                            const char *arg);
 #endif
 
-#ifdef AP_MPM_WANT_SET_STACKSIZE
+#ifndef AP_MPM_NO_SET_STACKSIZE
 extern apr_size_t ap_thread_stacksize;
 extern const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
                                                const char *arg);
 #endif
 
-#ifdef AP_MPM_WANT_FATAL_SIGNAL_HANDLER
+#ifndef AP_MPM_NO_FATAL_SIGNAL_HANDLER
 extern apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *pconf);
 extern apr_status_t ap_fatal_signal_child_setup(server_rec *s);
 #endif
@@ -362,11 +372,32 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 #endif
 
+#ifndef AP_MPM_NO_CHILD_PID
+extern pid_t ap_mpm_get_child_pid(int childnum);
+extern pid_t ap_mpm_note_child_killed(int childnum);
+#endif
+
 AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p))
 
 /* register modules that undertake to manage system security */
 AP_DECLARE(int) ap_sys_privileges_handlers(int inc);
 AP_DECLARE_HOOK(int, drop_privileges, (apr_pool_t * pchild, server_rec * s))
+
+/* pass control to the MPM */
+AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *s));
+
+/* implement the mpm query function */
+AP_DECLARE_HOOK(apr_status_t, mpm_query, (int query_code, int *result));
+
+/* get pid of child by index */
+AP_DECLARE_HOOK(pid_t, mpm_get_child_pid, (int childnum));
+
+/* child specified by index has been killed */
+AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum));
+
+/* register the specified callback */
+AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
+                (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton));
 
 #ifdef __cplusplus
 }

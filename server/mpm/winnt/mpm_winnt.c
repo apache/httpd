@@ -44,8 +44,8 @@
  */
 extern apr_shm_t *ap_scoreboard_shm;
 
-/* ap_my_generation are used by the scoreboard code */
-ap_generation_t volatile ap_my_generation=0;
+/* my_generation is returned to the scoreboard code */
+static ap_generation_t volatile my_generation=0;
 
 /* Definitions of WINNT MPM specific config globals */
 static HANDLE shutdown_event;  /* used to signal the parent to shutdown */
@@ -77,11 +77,6 @@ int winnt_mpm_state = AP_MPMQ_STARTING;
  * perhaps it should be private.
  */
 apr_pool_t *pconf;
-
-/* on several occasions we don't have the global server context
- * although it's needed for logging, etc.
- */
-server_rec *ap_server_conf;
 
 /* definitions from child.c */
 void child_main(apr_pool_t *pconf);
@@ -843,8 +838,8 @@ static int master_main(server_rec *s, HANDLE shutdown_event, HANDLE restart_even
         event_handles[CHILD_HANDLE] = NULL;
     }
     if (restart_pending) {
-        ++ap_my_generation;
-        ap_scoreboard_image->global->running_generation = ap_my_generation;
+        ++my_generation;
+        ap_scoreboard_image->global->running_generation = my_generation;
     }
 die_now:
     if (shutdown_pending)
@@ -898,7 +893,7 @@ apr_array_header_t *mpm_new_argv;
  * service after we preflight the config.
  */
 
-AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+static apr_status_t winnt_query(int query_code, int *result)
 {
     switch(query_code){
         case AP_MPMQ_MAX_DAEMON_USED:
@@ -939,6 +934,9 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             return APR_SUCCESS;
         case AP_MPMQ_MPM_STATE:
             *result = winnt_mpm_state;
+            return APR_SUCCESS;
+        case AP_MPMQ_GENERATION:
+            *result = my_generation;
             return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
@@ -1334,7 +1332,7 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
                      service_name);
         exit(APEXIT_INIT);
     }
-    else if (!one_process && !ap_my_generation) {
+    else if (!one_process && !my_generation) {
         /* Open a null handle to soak stdout in this process.
          * We need to emulate apr_proc_detach, unix performs this
          * same check in the pre_config hook (although it is
@@ -1635,7 +1633,7 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
         /* Done reading from the parent, close that channel */
         CloseHandle(pipe);
 
-        ap_my_generation = ap_scoreboard_image->global->running_generation;
+        my_generation = ap_scoreboard_image->global->running_generation;
     }
     else {
         /* Single process mode - this lock doesn't even need to exist */
@@ -1654,7 +1652,7 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
 }
 
 
-AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
+static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 {
     static int restart = 0;            /* Default is "not a restart" */
 
@@ -1729,6 +1727,8 @@ static void winnt_hooks(apr_pool_t *p)
     ap_hook_post_config(winnt_post_config, NULL, NULL, 0);
     ap_hook_child_init(winnt_child_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_open_logs(winnt_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
+    ap_hook_mpm(winnt_run, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_query(winnt_query, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_MODULE_DECLARE_DATA module mpm_winnt_module = {

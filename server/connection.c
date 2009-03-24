@@ -23,7 +23,6 @@
 #include "http_request.h"
 #include "http_protocol.h"
 #include "ap_mpm.h"
-#include "mpm_default.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_vhost.h"
