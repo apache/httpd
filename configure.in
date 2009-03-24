@@ -76,7 +76,7 @@ APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
 if test "x$with_included_apr" = "xyes"; then
    apr_found=reconfig
 else 
-   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, "1 2")
+   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1 2)
 fi
 
 if test "$apr_found" = "no"; then
