@@ -950,7 +950,8 @@ through</td></tr>
     </table>
 
     <p>If the Proxy directive scheme starts with the
-    <code>balancer://</code> then a virtual worker that does not really
+    <code>balancer://</code> (eg: <code>balancer://cluster/</code>, 
+    any path information is ignored)  then a virtual worker that does not really
     communicate with the backend server will be created. Instead it is responsible
     for the management of several "real" workers. In that case the special set of
     parameters can be add to this virtual worker. See <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>

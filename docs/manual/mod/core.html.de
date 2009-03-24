@@ -980,7 +980,7 @@ Dateien an den Client auszuliefern</td></tr>
     </code></p></div>
     <p>Beachten Sie bitte, dass die verzeichnisbasierte und
        .htaccess-Konfiguration von <code class="directive">EnableSendfile</code>
-       nicht vom <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>-Modul unterst\ufffdtzt wird.
+       nicht vom <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>-Modul unterstützt wird.
        Nur die globale Konfiguration von <code class="directive">EnableSendfile</code>
        wird vom Modul beachtet.
     </p>
