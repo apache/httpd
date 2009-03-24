@@ -186,6 +186,16 @@ int ssl_hook_ReadReq(request_rec *r)
             return HTTP_BAD_REQUEST;
         }
     }
+    else if (r->connection->vhost_lookup_data) {
+        /*
+         * We are using a name based configuration here, but no hostname was
+         * provided via SNI. Don't allow that.
+         */
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "No hostname was provided via SNI for a name based"
+                     " virtual host");
+        return HTTP_FORBIDDEN;
+    }
 #endif
     SSL_set_app_data2(ssl, r);
 
