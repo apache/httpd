@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_substitute: Fix a memory leak. PR 44948
+     [Dan Poirier <poirier pobox.com>]
+
 Changes with Apache 2.3.2
 
   *) mod_mime_magic: Fix detection of compressed content. [Rainer Jung]
