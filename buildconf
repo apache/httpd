@@ -76,34 +76,39 @@ if [ $apr_found -lt 1 ]; then
     echo "   svn co http://svn.apache.org/repos/asf/apr/apr/trunk srclib/apr"
     echo ""
     should_exit=1
+else
+    apr_major_version=`grep "#define APR_MAJOR_VERSION" \
+                      $apr_src_dir/include/apr_version.h | sed 's/[^0-9]//g'`
 fi
 
-if test -z "$apu_src_dir"; then
-    apu_src_dir=`echo $apr_src_dir | sed -e 's#/apr#/apr-util#g;'`
-    apu_src_dir="$apu_src_dir `echo $apr_src_dir | sed -e 's#/apr#/aprutil#;g'`"
-    apu_src_dir="$apu_src_dir srclib/apr-util ../apr-util"
-fi
-
-for dir in $apu_src_dir
-do
-    if [ -f "${dir}/Makefile.in" ]; then
-        echo "found apr-util source: ${dir}"
-        apu_src_dir=$dir
-        apu_found=1
-        break
+if [ $apr_major_version -lt 2 ] ; then
+    if test -z "$apu_src_dir"; then
+        apu_src_dir=`echo $apr_src_dir | sed -e 's#/apr#/apr-util#g;'`
+        apu_src_dir="$apu_src_dir `echo $apr_src_dir | sed -e 's#/apr#/aprutil#;g'`"
+        apu_src_dir="$apu_src_dir srclib/apr-util ../apr-util"
     fi
-done
 
-if [ $apu_found -lt 1 ]; then
-    echo ""
-    echo "You don't have a copy of the apr-util source in srclib/apr-util. "
-    echo "Please get one the source using the following instructions, "
-    echo "or specify the location of the source with "
-    echo "--with-apr-util=[path to apr-util]:"
-    echo ""
-    echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/trunk srclib/apr-util"
-    echo ""
-    should_exit=1
+    for dir in $apu_src_dir
+    do
+        if [ -f "${dir}/Makefile.in" ]; then
+            echo "found apr-util source: ${dir}"
+            apu_src_dir=$dir
+            apu_found=1
+            break
+        fi
+    done
+
+    if [ $apu_found -lt 1 ]; then
+        echo ""
+        echo "You don't have a copy of the apr-util source in srclib/apr-util. "
+        echo "Please get one the source using the following instructions, "
+        echo "or specify the location of the source with "
+        echo "--with-apr-util=[path to apr-util]:"
+        echo ""
+        echo "   svn co http://svn.apache.org/repos/asf/apr/apr-util/trunk srclib/apr-util"
+        echo ""
+        should_exit=1
+    fi
 fi
 
 if [ $should_exit -gt 0 ]; then
@@ -127,7 +132,9 @@ esac
 # end temporary stuff
 
 apr_configure="$apr_src_dir/configure"
-aprutil_configure="$apu_src_dir/configure"
+if [ $apr_major_version -lt 2 ] ; then
+    aprutil_configure="$apu_src_dir/configure"
+fi
 config_h_in="include/ap_config_auto.h.in"
 
 cross_compile_warning="warning: AC_TRY_RUN called without default to allow cross compiling"
@@ -143,21 +150,26 @@ fi
 
 apr_src_dir=`cd $apr_src_dir && pwd` 
 
-if [ "$apu_src_dir" = "srclib/apr-util" ]; then
-    echo rebuilding $aprutil_configure
-    (cd srclib/apr-util && ./buildconf --with-apr=$apr_src_dir) || {
-        echo "./buildconf failed for apr-util" 
-        exit 1
-    }
-    rm -f srclib/apr-util/apr-util.spec
-fi
+if [ $apr_major_version -lt 2 ] ; then
+    if [ "$apu_src_dir" = "srclib/apr-util" ]; then
+        echo rebuilding $aprutil_configure
+        (cd srclib/apr-util && ./buildconf --with-apr=$apr_src_dir) || {
+            echo "./buildconf failed for apr-util" 
+            exit 1
+        }
+        rm -f srclib/apr-util/apr-util.spec
+    fi
 
-apu_src_dir=`cd $apu_src_dir && pwd` 
+    apu_src_dir=`cd $apu_src_dir && pwd`
+fi
 
 echo copying build files
 cp $apr_src_dir/build/config.guess $apr_src_dir/build/config.sub \
    $apr_src_dir/build/PrintPath $apr_src_dir/build/apr_common.m4 \
-   $apr_src_dir/build/find_apr.m4 $apu_src_dir/build/find_apu.m4 build
+   $apr_src_dir/build/find_apr.m4 build
+if [ $apr_major_version -lt 2 ] ; then
+    cp $apu_src_dir/build/find_apu.m4 build
+fi
 
 # Remove any libtool files so one can switch between libtool 1.3
 # and libtool 1.4 by simply rerunning the buildconf script.
