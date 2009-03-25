@@ -366,7 +366,7 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
 
 #ifndef AP_MPM_NO_CHILD_PID
 extern pid_t ap_mpm_get_child_pid(int childnum);
-extern pid_t ap_mpm_note_child_killed(int childnum);
+extern apr_status_t ap_mpm_note_child_killed(int childnum);
 #endif
 
 AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p))
