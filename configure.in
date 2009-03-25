@@ -120,7 +120,12 @@ if test "x${apr_major_version}" = "x2"; then
 elif test "x$with_included_apr" = "xyes"; then
    apu_found=reconfig
 else 
-   APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 1, ${apr_major_version})
+   dnl If httpd is buildconf'ed against an apr 2.x tree, then 1.x
+   dnl isn't supported. 
+   ifdef([APR_FIND_APU], [
+     APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 
+                  1, ${apr_major_version})
+   ], [apu_found=no])
 fi
 
 if test "$apu_found" = "no"; then
