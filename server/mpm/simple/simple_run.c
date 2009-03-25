@@ -18,6 +18,7 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "http_main.h"
 #include "simple_types.h"
 #include "simple_event.h"
 #include "simple_children.h"
@@ -27,7 +28,6 @@
 #include "scoreboard.h"
 
 #include "ap_listen.h"
-#include "mpm.h"
 #include "mpm_common.h"
 
 /**
