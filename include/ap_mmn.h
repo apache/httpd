@@ -189,6 +189,7 @@
  * 20090130.0 (2.3.2-dev)  Add ap_ prefix to unixd_setup_child().
  * 20090131.0 (2.3.2-dev)  Remove ap_default_type(), disable DefaultType
  * 20090208.0 (2.3.2-dev)  Add conn_rec::current_thread.
+ * 20090208.1 (2.3.3-dev)  Add ap_set_retained_data()/ap_get_retained_data()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -196,7 +197,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20090208
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

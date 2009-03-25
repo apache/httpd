@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) Provide ap_set_retained_data()/ap_get_retained_data() for preservation
+     of module state across unload/load.  [Jeff Trawick]
+
   *) mod_substitute: Fix a memory leak. PR 44948
      [Dan Poirier <poirier pobox.com>]
 

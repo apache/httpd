@@ -53,6 +53,7 @@
 AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
 AP_DECLARE_DATA const char *ap_server_root = NULL;
 AP_DECLARE_DATA server_rec *ap_server_conf = NULL;
+AP_DECLARE_DATA apr_pool_t *ap_pglobal = NULL;
 
 AP_DECLARE_DATA apr_array_header_t *ap_server_pre_read_config = NULL;
 AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config = NULL;
@@ -2193,3 +2194,19 @@ AP_DECLARE(void) ap_show_modules(void)
         printf("  %s\n", ap_loaded_modules[n]->name);
 }
 
+AP_DECLARE(void *) ap_get_retained_data(const char *key)
+{
+    void *retained;
+
+    apr_pool_userdata_get((void *)&retained, key, ap_pglobal);
+    return retained;
+}
+
+AP_DECLARE(void *) ap_set_retained_data(const char *key, apr_size_t size)
+{
+    void *retained;
+
+    retained = apr_pcalloc(ap_pglobal, size);
+    apr_pool_userdata_set((const void *)retained, key, apr_pool_cleanup_null, ap_pglobal);
+    return retained;
+}
