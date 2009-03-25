@@ -55,6 +55,9 @@ static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
     int i, j;
     apr_uint32_t ready = 0;
     apr_uint32_t busy = 0;
+    ap_generation_t mpm_generation;
+
+    ap_mpm_query(AP_MPMQ_GENERATION, &mpm_generation);
 
     for (i = 0; i < ctx->server_limit; i++) {
         process_score *ps;
@@ -69,12 +72,12 @@ static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
 
             res = ws->status;
 
-            if (res == SERVER_READY && ps->generation == ap_my_generation) {
+            if (res == SERVER_READY && ps->generation == mpm_generation) {
                 ready++;
             }
             else if (res != SERVER_DEAD &&
                      res != SERVER_STARTING && res != SERVER_IDLE_KILL &&
-                     ps->generation == ap_my_generation) {
+                     ps->generation == mpm_generation) {
                 busy++;
             }
         }
