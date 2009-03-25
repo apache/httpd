@@ -342,11 +342,16 @@ if (! -x "$apr_config") {
     exit(1);
 }
 
-my $apu_config = get_vars("APU_CONFIG");
+my $apr_major_version = (split /\./, `$apr_config --version`)[0];
 
-if (! -x "$apu_config") {
-    error("$apu_config not found!");
-    exit(1);
+my $apu_config = "";
+if ($apr_major_version < 2) {
+    $apu_config = get_vars("APU_CONFIG");
+
+    if (! -x "$apu_config") {
+        error("$apu_config not found!");
+        exit(1);
+    }
 }
 
 my $libtool = `$apr_config --apr-libtool`;
@@ -354,8 +359,11 @@ chomp($libtool);
 
 my $apr_includedir = `$apr_config --includes`;
 chomp($apr_includedir);
-my $apu_includedir = `$apu_config --includes`;
-chomp($apu_includedir);
+my $apu_includedir = "";
+if ($apr_major_version < 2) {
+    $apu_includedir = `$apu_config --includes`;
+    chomp($apu_includedir);
+}
 
 if ($opt_c) {
     ##
@@ -446,8 +454,11 @@ if ($opt_c) {
         
         my $apr_libs=`$apr_config --cflags --ldflags --link-libtool --libs`;
         chomp($apr_libs);
-        my $apu_libs=`$apu_config --ldflags --link-libtool --libs`;
-        chomp($apu_libs);
+        my $apu_libs="";
+        if ($apr_major_version < 2) {
+            $apu_libs=`$apu_config --ldflags --link-libtool --libs`;
+            chomp($apu_libs);
+        }
         
         $opt .= " ".$apu_libs." ".$apr_libs;
     }
