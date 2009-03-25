@@ -915,6 +915,21 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
                                        apr_pool_t *p,
                                        apr_pool_t *ptemp);
 
+/**
+ * Store data which will be retained across unload/load of modules
+ * @param key The unique key associated with this module's retained data
+ * @param Size in bytes of the retained data (to be allocated)
+ * @return Address of new retained data structure, initially cleared
+ */
+AP_DECLARE(void *) ap_set_retained_data(const char *key, apr_size_t size);
+
+/**
+ * Retrieve data which was stored by ap_set_retained_data()
+ * @param key The unique key associated with this module's retained data
+ * @return Address of previously retained data structure, or NULL if not yet saved
+ */
+AP_DECLARE(void *) ap_get_retained_data(const char *key);
+    
 /* Module-method dispatchers, also for http_request.c */
 /**
  * Run the handler phase of each module until a module accepts the

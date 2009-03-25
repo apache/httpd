@@ -471,7 +471,6 @@ int main(int argc, const char * const argv[])
     const char *temp_error_log = NULL;
     const char *error;
     process_rec *process;
-    apr_pool_t *pglobal;
     apr_pool_t *pconf;
     apr_pool_t *plog; /* Pool of log streams, reset _after_ each read of conf */
     apr_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
@@ -485,7 +484,7 @@ int main(int argc, const char * const argv[])
     AP_MONCONTROL(0); /* turn off profiling of startup */
 
     process = init_process(&argc, &argv);
-    pglobal = process->pool;
+    ap_pglobal = process->pool;
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
 
@@ -494,15 +493,15 @@ int main(int argc, const char * const argv[])
     apr_pool_abort_set(abort_on_oom, apr_pool_parent_get(process->pool));
 
 #if APR_CHARSET_EBCDIC
-    if (ap_init_ebcdic(pglobal) != APR_SUCCESS) {
+    if (ap_init_ebcdic(ap_pglobal) != APR_SUCCESS) {
         destroy_and_exit_process(process, 1);
     }
 #endif
-    if (ap_expr_init(pglobal) != APR_SUCCESS) {
+    if (ap_expr_init(ap_pglobal) != APR_SUCCESS) {
         destroy_and_exit_process(process, 1);
     }
 
-    apr_pool_create(&pcommands, pglobal);
+    apr_pool_create(&pcommands, ap_pglobal);
     apr_pool_tag(pcommands, "pcommands");
     ap_server_pre_read_config  = apr_array_make(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = apr_array_make(pcommands, 1, sizeof(char *));
@@ -639,7 +638,7 @@ int main(int argc, const char * const argv[])
         usage(process);
     }
 
-    apr_pool_create(&plog, pglobal);
+    apr_pool_create(&plog, ap_pglobal);
     apr_pool_tag(plog, "plog");
     apr_pool_create(&ptemp, pconf);
     apr_pool_tag(ptemp, "ptemp");

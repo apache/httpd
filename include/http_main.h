@@ -45,6 +45,8 @@ AP_DECLARE_DATA extern const char *ap_server_argv0;
 AP_DECLARE_DATA extern const char *ap_server_root;
 /** The global server's server_rec */
 AP_DECLARE_DATA extern server_rec *ap_server_conf;
+/** global pool, for access prior to creation of server_rec */
+AP_DECLARE_DATA extern apr_pool_t *ap_pglobal;
 
 /* for -C, -c and -D switches */
 /** An array of all -C directives.  These are processed before the server's
