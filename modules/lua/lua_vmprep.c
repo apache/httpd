@@ -95,7 +95,7 @@ static void pstack_dump(lua_State *L, apr_pool_t *r, int level,
 
 /* BEGIN apache lmodule  */
 
-void apl_load_apache2_lmodule(lua_State *L)
+AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L)
 {
     lua_getglobal(L, "package");
     lua_getfield(L, -1, "loaded");
@@ -286,11 +286,12 @@ static int loadjitmodule(lua_State *L, apr_pool_t *lifecycle_pool) {
 
 #endif
 
-lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
-                             apl_vm_spec *spec,
-                             apr_array_header_t *package_paths,
-                             apr_array_header_t *package_cpaths,
-                             apl_lua_state_open_callback cb, void *btn)
+AP_LUA_DECLARE(lua_State*)ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
+                                               ap_lua_vm_spec *spec,
+                                               apr_array_header_t *package_paths,
+                                               apr_array_header_t *package_cpaths,
+                                               ap_lua_state_open_callback cb,
+                                               void *btn)
 {
 
     lua_State *L;

@@ -44,6 +44,28 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+/* Create a set of AP_LUA_DECLARE(type), AP_LUA_DECLARE_NONSTD(type) and 
+ * AP_LUA_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define AP_LUA_DECLARE(type)            type
+#define AP_LUA_DECLARE_NONSTD(type)     type
+#define AP_LUA_DECLARE_DATA
+#elif defined(AP_LUA_DECLARE_STATIC)
+#define AP_LUA_DECLARE(type)            type __stdcall
+#define AP_LUA_DECLARE_NONSTD(type)     type
+#define AP_LUA_DECLARE_DATA
+#elif defined(AP_LUA_DECLARE_EXPORT)
+#define AP_LUA_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define AP_LUA_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define AP_LUA_DECLARE_DATA             __declspec(dllexport)
+#else
+#define AP_LUA_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define AP_LUA_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define AP_LUA_DECLARE_DATA             __declspec(dllimport)
+#endif
+
+
 #include "lua_request.h"
 #include "lua_vmprep.h"
 
@@ -57,7 +79,7 @@
 #define lua_unboxpointer(L,i)	(*(void **)(lua_touserdata(L, i)))
 #endif
 
-void apl_rstack_dump(lua_State *L, request_rec *r, const char *msg);
+void ap_lua_rstack_dump(lua_State *L, request_rec *r, const char *msg);
 
 typedef struct
 {
@@ -88,60 +110,42 @@ typedef struct
 
     /* the actual directory being configured */
     char *dir;
-} apl_dir_cfg;
+} ap_lua_dir_cfg;
 
 typedef struct
 {
-    apl_code_cache *code_cache;
+    ap_lua_code_cache *code_cache;
     apr_hash_t *vm_reslists;
     apr_thread_rwlock_t *vm_reslists_lock;
 
     /* value of the LuaRoot directive */
     const char *root_path;
-} apl_server_cfg;
+} ap_lua_server_cfg;
 
 typedef struct
 {
     char *function_name;
-    apl_vm_spec *spec;
+    ap_lua_vm_spec *spec;
 } mapped_request_details;
 
 typedef struct
 {
     mapped_request_details *mapped_request_details;
     apr_hash_t *request_scoped_vms;
-} apl_request_cfg;
+} ap_lua_request_cfg;
 
 typedef struct
 {
     lua_State *L;
     char *function;
-} apl_filter_ctx;
+} ap_lua_filter_ctx;
 
 extern module AP_MODULE_DECLARE_DATA lua_module;
 
-#if !defined(WIN32)
-#define AP_LUA_DECLARE(type)            type
-#define AP_LUA_DECLARE_NONSTD(type)     type
-#define AP_LUA_DECLARE_DATA
-#elif defined(LUA_DECLARE_STATIC)
-#define AP_LUA_DECLARE(type)            type __stdcall
-#define AP_LUA_DECLARE_NONSTD(type)     type
-#define AP_LUA_DECLARE_DATA
-#elif defined(LUA_DECLARE_EXPORT)
-#define AP_LUA_DECLARE(type)            __declspec(dllexport) type __stdcall
-#define AP_LUA_DECLARE_NONSTD(type)     __declspec(dllexport) type
-#define AP_LUA_DECLARE_DATA             __declspec(dllexport)
-#else
-#define AP_LUA_DECLARE(type)            __declspec(dllimport) type __stdcall
-#define AP_LUA_DECLARE_NONSTD(type)     __declspec(dllimport) type
-#define AP_LUA_DECLARE_DATA             __declspec(dllimport)
-#endif
-
-APR_DECLARE_EXTERNAL_HOOK(apl, AP_LUA, int, lua_open,
+APR_DECLARE_EXTERNAL_HOOK(ap_lua, AP_LUA, int, lua_open,
                           (lua_State *L, apr_pool_t *p));
 
-APR_DECLARE_EXTERNAL_HOOK(apl, AP_LUA, int, lua_request,
+APR_DECLARE_EXTERNAL_HOOK(ap_lua, AP_LUA, int, lua_request,
                           (lua_State *L, request_rec *r));
 
 #endif /* !_MOD_LUA_H_ */

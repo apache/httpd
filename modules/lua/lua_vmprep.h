@@ -71,7 +71,7 @@ typedef struct
      */
     const char *bytecode;
     apr_size_t bytecode_len;
-} apl_vm_spec;
+} ap_lua_vm_spec;
 
 typedef struct
 {
@@ -82,40 +82,40 @@ typedef struct
     ap_regex_t *uri_pattern;
     const char *bytecode;
     apr_size_t bytecode_len;
-} apl_mapped_handler_spec;
+} ap_lua_mapped_handler_spec;
 
 typedef struct
 {
     apr_pool_t *pool;
     apr_hash_t *compiled_files;
     apr_thread_rwlock_t *compiled_files_lock;
-} apl_code_cache;
+} ap_lua_code_cache;
 
 /* remove and make static once out of mod_wombat.c */
-void apl_openlibs(lua_State *L);
+AP_LUA_DECLARE(void) ap_lua_openlibs(lua_State *L);
 
 /* remove and make static once out of mod_wombat.c */
-void apl_registerlib(lua_State *L, char *name, lua_CFunction f);
+AP_LUA_DECLARE(void) ap_lua_registerlib(lua_State *L, char *name, lua_CFunction f);
 
 /**
  * Fake out addition of the "apache2" module
  */
-void apl_load_apache2_lmodule(lua_State *L);
+AP_LUA_DECLARE(void) ap_lua_load_apache2_lmodule(lua_State *L);
 
 /**
- * the apl_?getvm family of functions is used to create and/or obtain
+ * the ap_lua_?getvm family of functions is used to create and/or obtain
  * a handle to a lua state. If there is not an extant vm matching the
  * spec then a new one is created.
  */
-/* lua_State* apl_rgetvm(request_rec *r, apl_vm_spec *spec); */
+/* lua_State* ap_lua_rgetvm(request_rec *r, ap_lua_vm_spec *spec); */
 
 /* returns NULL if the spec requires a request scope */
-/* lua_State* apl_cgetvm(conn_rec *r, apl_vm_spec *spec);*/
+/* lua_State* ap_lua_cgetvm(conn_rec *r, ap_lua_vm_spec *spec);*/
 
 /* returns NULL if the spec requires a request scope or conn scope */
-/* lua_State* apl_sgetvm(server_rec *r, apl_vm_spec *spec); */
+/* lua_State* ap_lua_sgetvm(server_rec *r, ap_lua_vm_spec *spec); */
 
-typedef void (*apl_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
+typedef void (*ap_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
                                              void *ctx);
 
 /*
@@ -130,11 +130,12 @@ typedef void (*apl_lua_state_open_callback) (lua_State *L, apr_pool_t *p,
  * @cb callback for vm initialization called *before* the file is opened
  * @ctx a baton passed to cb
  */
-lua_State *apl_get_lua_state(apr_pool_t *lifecycle_pool,
-                             apl_vm_spec *spec,
-                             apr_array_header_t *package_paths,
-                             apr_array_header_t *package_cpaths,
-                             apl_lua_state_open_callback cb, void *btn);
+AP_LUA_DECLARE(lua_State*) ap_lua_get_lua_state(apr_pool_t *lifecycle_pool,
+                                                ap_lua_vm_spec *spec,
+                                                apr_array_header_t *package_paths,
+                                                apr_array_header_t *package_cpaths,
+                                                ap_lua_state_open_callback cb, 
+                                                void *btn);
 
 
 
