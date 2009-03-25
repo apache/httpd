@@ -120,9 +120,7 @@ static int max_spare_threads = 0;
 static int ap_daemons_limit = 0;
 static int max_clients = 0;
 static int server_limit = 0;
-static int first_server_limit = 0;
 static int thread_limit = 0;
-static int first_thread_limit = 0;
 static int dying = 0;
 static int workers_may_exit = 0;
 static int start_thread_may_exit = 0;
@@ -135,6 +133,17 @@ static fd_queue_info_t *worker_queue_info;
 static int mpm_state = AP_MPMQ_STARTING;
 static int sick_child_detected;
 static ap_generation_t volatile my_generation = 0;
+
+/* data retained by worker across load/unload of the module
+ * allocated on first call to pre-config hook; located on
+ * subsequent calls to pre-config hook
+ */
+typedef struct worker_retained_data {
+    int first_server_limit;
+    int first_thread_limit;
+    int module_loads;
+} worker_retained_data;
+static worker_retained_data *retained;
 
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 
@@ -1880,7 +1889,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     "SIGHUP received.  Attempting to restart");
     }
 
-    return 0;
+    return OK;
 }
 
 /* This really should be a post_config hook, but the error log is already
@@ -1888,7 +1897,6 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
  */
 static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    static int restart_num = 0;
     int startup = 0;
     int level_flags = 0;
     apr_status_t rv;
@@ -1896,7 +1904,7 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     pconf = p;
 
     /* the reverse of pre_config, we want this only the first time around */
-    if (restart_num++ == 0) {
+    if (retained->module_loads == 1) {
         startup = 1;
         level_flags |= APLOG_STARTUP;
     }
@@ -1922,9 +1930,9 @@ static int worker_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
 static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp)
 {
-    static int restart_num = 0;
     int no_detach, debug, foreground;
     apr_status_t rv;
+    const char *userdata_key = "mpm_worker_module";
 
     mpm_state = AP_MPMQ_STARTING;
 
@@ -1941,7 +1949,12 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     }
 
     /* sigh, want this only the second time around */
-    if (restart_num++ == 1) {
+    retained = ap_get_retained_data(userdata_key);
+    if (!retained) {
+        retained = ap_set_retained_data(userdata_key, sizeof(*retained));
+    }
+    ++retained->module_loads;
+    if (retained->module_loads == 2) {
         is_graceful = 0;
 
         if (!one_process && !foreground) {
@@ -2021,16 +2034,16 @@ static int worker_check_config(apr_pool_t *p, apr_pool_t *plog,
     /* you cannot change ServerLimit across a restart; ignore
      * any such attempts
      */
-    if (!first_server_limit) {
-        first_server_limit = server_limit;
+    if (!retained->first_server_limit) {
+        retained->first_server_limit = server_limit;
     }
-    else if (server_limit != first_server_limit) {
+    else if (server_limit != retained->first_server_limit) {
         /* don't need a startup console version here */
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                      "changing ServerLimit to %d from original value of %d "
                      "not allowed during restart",
-                     server_limit, first_server_limit);
-        server_limit = first_server_limit;
+                     server_limit, retained->first_server_limit);
+        server_limit = retained->first_server_limit;
     }
 
     if (thread_limit > MAX_THREAD_LIMIT) {
@@ -2065,16 +2078,16 @@ static int worker_check_config(apr_pool_t *p, apr_pool_t *plog,
     /* you cannot change ThreadLimit across a restart; ignore
      * any such attempts
      */
-    if (!first_thread_limit) {
-        first_thread_limit = thread_limit;
+    if (!retained->first_thread_limit) {
+        retained->first_thread_limit = thread_limit;
     }
-    else if (thread_limit != first_thread_limit) {
+    else if (thread_limit != retained->first_thread_limit) {
         /* don't need a startup console version here */
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                      "changing ThreadLimit to %d from original value of %d "
                      "not allowed during restart",
-                     thread_limit, first_thread_limit);
-        thread_limit = first_thread_limit;
+                     thread_limit, retained->first_thread_limit);
+        thread_limit = retained->first_thread_limit;
     }
 
     if (threads_per_child > thread_limit) {
