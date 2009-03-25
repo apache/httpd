@@ -68,6 +68,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(mpm_get_child_pid)
     APR_HOOK_LINK(mpm_note_child_killed)
     APR_HOOK_LINK(mpm_register_timed_callback)
+    APR_HOOK_LINK(mpm_get_name)
 )
 AP_IMPLEMENT_HOOK_RUN_ALL(int, fatal_exception,
                           (ap_exception_info_t *ei), (ei), OK, DECLINED)
@@ -80,6 +81,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(mpm_get_child_pid)
     APR_HOOK_LINK(mpm_note_child_killed)
     APR_HOOK_LINK(mpm_register_timed_callback)
+    APR_HOOK_LINK(mpm_get_name)
 )
 #endif
 AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
@@ -102,6 +104,9 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_note_child_killed,
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_timed_callback,
                             (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton),
                             (t, cbfn, baton), APR_ENOTIMPL)
+AP_IMPLEMENT_HOOK_RUN_FIRST(const char *, mpm_get_name,
+                            (void),
+                            (), "")
 
 /* XXX
  * need better concept for controlling generation of MPM helper functions
@@ -1362,6 +1367,5 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t, ap_mpm_cal
 
 AP_DECLARE(const char *)ap_show_mpm(void)
 {
-    /* XXX hook this */
-    return "(unknown)";
+    return ap_run_mpm_get_name();
 }

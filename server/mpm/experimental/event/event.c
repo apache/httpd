@@ -394,6 +394,11 @@ static apr_status_t event_note_child_killed(int childnum)
     return APR_SUCCESS;
 }
 
+static const char *event_get_name(void)
+{
+    return "event";
+}
+
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
@@ -2667,6 +2672,7 @@ static void event_hooks(apr_pool_t * p)
     ap_hook_mpm_note_child_killed(event_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_register_timed_callback(event_register_timed_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);
+    ap_hook_mpm_get_name(event_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy,

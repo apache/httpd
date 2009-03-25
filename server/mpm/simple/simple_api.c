@@ -108,6 +108,12 @@ static apr_status_t simple_query(int query_code, int *result)
     return APR_ENOTIMPL;
 }
 
+static const char *
+simple_get_name(void)
+{
+    return "simple";
+}
+
 static int
 simple_open_logs(apr_pool_t * p,
                  apr_pool_t * plog, apr_pool_t * ptemp, server_rec * s)
@@ -226,6 +232,8 @@ static void simple_hooks(apr_pool_t * p)
     ap_hook_mpm(simple_run, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_hook_mpm_query(simple_query, NULL, NULL, APR_HOOK_MIDDLE);
+
+    ap_hook_mpm_get_name(simple_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_proccount(cmd_parms * cmd, void *baton,

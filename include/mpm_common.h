@@ -391,6 +391,9 @@ AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum))
 AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
                 (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton))
 
+/* get MPM name */
+AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
+
 #ifdef __cplusplus
 }
 #endif
