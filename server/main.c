@@ -52,9 +52,6 @@
  * Most significant main() global data can be found in http_config.c
  */
 
-/* XXX call after module loading based on some cmd-line option/define
- */
-
 static void show_mpm_settings(void)
 {
     int mpm_query_info;
@@ -110,6 +107,8 @@ static void show_compile_settings(void)
      * consistent
      */
     printf("Architecture:   %ld-bit\n", 8 * (long)sizeof(void *));
+
+    show_mpm_settings();
 
     printf("Server compiled with....\n");
 #ifdef BIG_SECURITY_HOLE
@@ -465,7 +464,7 @@ static void usage(process_rec *process)
 int main(int argc, const char * const argv[])
 {
     char c;
-    int configtestonly = 0;
+    int configtestonly = 0, showcompile = 0;
     const char *confname = SERVER_CONFIG_FILE;
     const char *def_server_root = HTTPD_ROOT;
     const char *temp_error_log = NULL;
@@ -600,8 +599,14 @@ int main(int argc, const char * const argv[])
             destroy_and_exit_process(process, 0);
 
         case 'V':
-            show_compile_settings();
-            destroy_and_exit_process(process, 0);
+            if (strcmp(ap_show_mpm(), "")) { /* MPM built-in? */
+                show_compile_settings();
+                destroy_and_exit_process(process, 0);
+            }
+            else {
+                showcompile = 1;
+            }
+            break;
 
         case 'l':
             ap_show_modules();
@@ -680,6 +685,10 @@ int main(int argc, const char * const argv[])
         if (configtestonly) {
             ap_run_test_config(pconf, ap_server_conf);
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, "Syntax OK");
+            destroy_and_exit_process(process, 0);
+        }
+        else if (showcompile) { /* deferred due to dynamically loaded MPM */
+            show_compile_settings();
             destroy_and_exit_process(process, 0);
         }
     }
