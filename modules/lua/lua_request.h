@@ -15,11 +15,13 @@
  * limitations under the License.
  */
 
+#include "mod_lua.h"
+
 #ifndef _LUA_REQUEST_H_
 #define _LUA_REQUEST_H_
 
-APR_DECLARE(void) apl_push_request(lua_State *L, request_rec *r);
-APR_DECLARE(void) apl_load_request_lmodule(lua_State *L, apr_pool_t *p);
+AP_LUA_DECLARE(void) ap_lua_push_request(lua_State *L, request_rec *r);
+AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p);
 
 #define APL_REQ_FUNTYPE_STRING      1
 #define APL_REQ_FUNTYPE_INT         2

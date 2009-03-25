@@ -23,7 +23,7 @@ typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
 typedef apr_table_t *(*req_field_apr_table_f) (request_rec * r);
 
-void apl_rstack_dump(lua_State *L, request_rec *r, const char *msg)
+void ap_lua_rstack_dump(lua_State *L, request_rec *r, const char *msg)
 {
     int i;
     int top = lua_gettop(L);
@@ -92,7 +92,7 @@ void apl_rstack_dump(lua_State *L, request_rec *r, const char *msg)
  * userdata thingamajig and return it if it is. if it is not
  * lua will enter its error handling routine.
  */
-static request_rec *apl_check_request_rec(lua_State *L, int index)
+static request_rec *ap_lua_check_request_rec(lua_State *L, int index)
 {
     request_rec *r;
     luaL_checkudata(L, index, "Apache2.Request");
@@ -154,7 +154,7 @@ static int req_aprtable2luatable_cb(void *l, const char *key,
 static int req_parseargs(lua_State *L)
 {
     apr_table_t *form_table;
-    request_rec *r = apl_check_request_rec(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     lua_newtable(L);
     lua_newtable(L);            /* [table, table] */
     ap_args_to_table(r, &form_table);
@@ -165,7 +165,7 @@ static int req_parseargs(lua_State *L)
 /* wrap ap_rputs as r:puts(String) */
 static int req_puts(lua_State *L)
 {
-    request_rec *r = apl_check_request_rec(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
 
     int argc = lua_gettop(L);
     int i;
@@ -179,7 +179,7 @@ static int req_puts(lua_State *L)
 /* wrap ap_rwrite as r:write(String) */
 static int req_write(lua_State *L)
 {
-    request_rec *r = apl_check_request_rec(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     size_t n;
     const char *buf = luaL_checklstring(L, 2, &n);
 
@@ -191,7 +191,7 @@ static int req_write(lua_State *L)
 static int req_parsebody(lua_State *L)
 {
     apr_table_t *form_table;
-    request_rec *r = apl_check_request_rec(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     lua_newtable(L);
     lua_newtable(L);
     if (ap_body_to_table(r, &form_table) == APR_SUCCESS) {
@@ -203,7 +203,7 @@ static int req_parsebody(lua_State *L)
 /* r:addoutputfilter(name|function) */
 static int req_add_output_filter(lua_State *L)
 {
-    request_rec *r = apl_check_request_rec(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     const char *name = luaL_checkstring(L, 2);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "adding output filter %s",
                   name);
@@ -214,7 +214,7 @@ static int req_add_output_filter(lua_State *L)
 /* BEGIN dispatch mathods for request_rec fields */
 
 /* not really a field, but we treat it like one */
-static char *req_document_root(request_rec *r)
+static const char *req_document_root(request_rec *r)
 {
     return ap_document_root(r);
 }
@@ -321,7 +321,7 @@ static int req_dispatch(lua_State *L)
 {
     apr_hash_t *dispatch;
     req_fun_t *rft;
-    request_rec *r = apl_check_request_rec(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     const char *name = luaL_checkstring(L, 2);
     lua_pop(L, 2);
 
@@ -333,13 +333,13 @@ static int req_dispatch(lua_State *L)
     if (rft) {
         switch (rft->type) {
         case APL_REQ_FUNTYPE_TABLE:{
+                apr_table_t *rs;
                 req_field_apr_table_f func = rft->fun;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> apr table",
                               name);
-                apr_table_t *rs;
                 rs = (*func)(r);
-                apl_push_apr_table(L, rs);          
+                ap_lua_push_apr_table(L, rs);          
                 return 1;
             }
 
@@ -389,7 +389,7 @@ static int req_dispatch(lua_State *L)
 static int req_log_at(lua_State *L, int level)
 {
     const char *msg;
-    request_rec *r = apl_check_request_rec(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     lua_Debug dbg;
 
     lua_getstack(L, 1, &dbg);
@@ -448,7 +448,7 @@ static int req_newindex(lua_State *L)
     const char *key;
     /* request_rec* r = lua_touserdata(L, lua_upvalueindex(1)); */
     /* const char* key = luaL_checkstring(L, -2); */
-    request_rec *r = apl_check_request_rec(L, 1);
+    request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
     if (0 == apr_strnatcmp("status", key)) {
         int code = luaL_checkinteger(L, 3);
@@ -508,7 +508,7 @@ static req_fun_t *makefun(void *fun, int type, apr_pool_t *pool)
     return rft;
 }
 
-void apl_load_request_lmodule(lua_State *L, apr_pool_t *p)
+AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
 {
 
     apr_hash_t *dispatch = apr_hash_make(p);
@@ -614,14 +614,14 @@ void apl_load_request_lmodule(lua_State *L, apr_pool_t *p)
 
 }
 
-void apl_push_connection(lua_State *L, conn_rec *c)
+void ap_lua_push_connection(lua_State *L, conn_rec *c)
 {
     lua_boxpointer(L, c);
     luaL_getmetatable(L, "Apache2.Connection");
     lua_setmetatable(L, -2);
     luaL_getmetatable(L, "Apache2.Connection");
 
-    apl_push_apr_table(L, c->notes);
+    ap_lua_push_apr_table(L, c->notes);
     lua_setfield(L, -2, "notes");
 
     lua_pushstring(L, c->remote_ip);
@@ -631,7 +631,7 @@ void apl_push_connection(lua_State *L, conn_rec *c)
 }
 
 
-void apl_push_server(lua_State *L, server_rec *s)
+void ap_lua_push_server(lua_State *L, server_rec *s)
 {
     lua_boxpointer(L, s);
     luaL_getmetatable(L, "Apache2.Server");
@@ -644,7 +644,7 @@ void apl_push_server(lua_State *L, server_rec *s)
     lua_pop(L, 1);
 }
 
-void apl_push_request(lua_State *L, request_rec *r)
+AP_LUA_DECLARE(void) ap_lua_push_request(lua_State *L, request_rec *r)
 {
     lua_boxpointer(L, r);
     luaL_getmetatable(L, "Apache2.Request");

@@ -18,11 +18,11 @@
 #include "lua_config.h"
 #include "lua_vmprep.h"
 
-static apl_dir_cfg *check_dir_config(lua_State *L, int index)
+static ap_lua_dir_cfg *check_dir_config(lua_State *L, int index)
 {
-    apl_dir_cfg *cfg;
+    ap_lua_dir_cfg *cfg;
     luaL_checkudata(L, index, "Apache2.DirConfig");
-    cfg = (apl_dir_cfg *) lua_unboxpointer(L, index);
+    cfg = (ap_lua_dir_cfg *) lua_unboxpointer(L, index);
     return cfg;
 }
 
@@ -49,15 +49,16 @@ static int apl_toscope(const char *name)
     return APL_SCOPE_ONCE;
 }
 
-apr_status_t apl_lua_map_handler(apl_dir_cfg *cfg,
-                                 const char *file,
-                                 const char *function,
-                                 const char *pattern, const char *scope)
+AP_LUA_DECLARE(apr_status_t) ap_lua_map_handler(ap_lua_dir_cfg *cfg,
+                                                 const char *file,
+                                                 const char *function,
+                                                 const char *pattern,
+                                                 const char *scope)
 {
     ap_regex_t *uri_pattern;
     apr_status_t rv;
-    apl_mapped_handler_spec *handler =
-        apr_palloc(cfg->pool, sizeof(apl_mapped_handler_spec));
+    ap_lua_mapped_handler_spec *handler =
+        apr_palloc(cfg->pool, sizeof(ap_lua_mapped_handler_spec));
     handler->uri_pattern = NULL;
     handler->function_name = NULL;
 
@@ -70,17 +71,17 @@ apr_status_t apl_lua_map_handler(apl_dir_cfg *cfg,
     handler->scope = apl_toscope(scope);
 
     handler->function_name = apr_pstrdup(cfg->pool, function);
-    *(const apl_mapped_handler_spec **) apr_array_push(cfg->mapped_handlers) =
+    *(const ap_lua_mapped_handler_spec **) apr_array_push(cfg->mapped_handlers) =
         handler;
     return APR_SUCCESS;
 }
 
-/* Change to use apl_lua_map_handler */
+/* Change to use ap_lua_map_handler */
 static int cfg_lua_map_handler(lua_State *L)
 {
-    apl_dir_cfg *cfg = check_dir_config(L, 1);
-    apl_mapped_handler_spec *handler =
-        apr_palloc(cfg->pool, sizeof(apl_mapped_handler_spec));
+    ap_lua_dir_cfg *cfg = check_dir_config(L, 1);
+    ap_lua_mapped_handler_spec *handler =
+        apr_palloc(cfg->pool, sizeof(ap_lua_mapped_handler_spec));
     handler->uri_pattern = NULL;
     handler->function_name = NULL;
 
@@ -126,20 +127,20 @@ static int cfg_lua_map_handler(lua_State *L)
     lua_pop(L, 1);
 
 
-    *(const apl_mapped_handler_spec **) apr_array_push(cfg->mapped_handlers) =
+    *(const ap_lua_mapped_handler_spec **) apr_array_push(cfg->mapped_handlers) =
         handler;
     return 0;
 }
 
 static int cfg_directory(lua_State *L)
 {
-    apl_dir_cfg *cfg = check_dir_config(L, 1);
+    ap_lua_dir_cfg *cfg = check_dir_config(L, 1);
     lua_pushstring(L, cfg->dir);
     return 1;
 }
 
 /*static int cfg_root(lua_State *L) {
-    apl_dir_cfg *cfg = check_dir_config(L, 1);
+    ap_lua_dir_cfg *cfg = check_dir_config(L, 1);
     lua_pushstring(L, cfg->root_path);
     return 1;
 }*/
@@ -233,7 +234,7 @@ static const struct luaL_Reg cmd_methods[] = {
     {NULL, NULL}
 };
 
-void apl_load_config_lmodule(lua_State *L)
+AP_LUA_DECLARE(void) ap_lua_load_config_lmodule(lua_State *L)
 {
     luaL_newmetatable(L, "Apache2.DirConfig");  /* [metatable] */
     lua_pushvalue(L, -1);
