@@ -547,10 +547,6 @@ SOURCE=.\include\ap_listen.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\include\ap_mpm.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\os\win32\ap_regkey.c
 # End Source File
 # Begin Source File
@@ -564,35 +560,6 @@ SOURCE=.\server\mpm\winnt\child.c
 # Begin Source File
 
 SOURCE=.\server\listen.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\server\mpm\winnt\mpm.h
-
-!IF  "$(CFG)" == "libhttpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mpm.h
-InputPath=.\server\mpm\winnt\mpm.h
-
-".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating include/mpm.h
-InputPath=.\server\mpm\winnt\mpm.h
-
-".\include\mpm.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\server\mpm\winnt\mpm.h > .\include\mpm.h
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
