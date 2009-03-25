@@ -376,20 +376,20 @@ AP_DECLARE(int) ap_sys_privileges_handlers(int inc);
 AP_DECLARE_HOOK(int, drop_privileges, (apr_pool_t * pchild, server_rec * s))
 
 /* pass control to the MPM */
-AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *s));
+AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *s))
 
 /* implement the mpm query function */
-AP_DECLARE_HOOK(apr_status_t, mpm_query, (int query_code, int *result));
+AP_DECLARE_HOOK(apr_status_t, mpm_query, (int query_code, int *result))
 
 /* get pid of child by index */
-AP_DECLARE_HOOK(pid_t, mpm_get_child_pid, (int childnum));
+AP_DECLARE_HOOK(pid_t, mpm_get_child_pid, (int childnum))
 
 /* child specified by index has been killed */
-AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum));
+AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum))
 
 /* register the specified callback */
 AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
-                (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton));
+                (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton))
 
 #ifdef __cplusplus
 }
