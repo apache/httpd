@@ -942,6 +942,11 @@ static apr_status_t winnt_query(int query_code, int *result)
     return APR_ENOTIMPL;
 }
 
+static const char *winnt_get_name(void)
+{
+    return "WinNT";
+}
+
 #define SERVICE_UNSET (-1)
 static apr_status_t service_set = SERVICE_UNSET;
 static apr_status_t service_to_start_success;
@@ -1727,6 +1732,7 @@ static void winnt_hooks(apr_pool_t *p)
     ap_hook_open_logs(winnt_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     ap_hook_mpm(winnt_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(winnt_query, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_get_name(winnt_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_MODULE_DECLARE_DATA module mpm_winnt_module = {

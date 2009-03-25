@@ -316,6 +316,11 @@ static apr_status_t prefork_note_child_killed(int childnum)
     return APR_SUCCESS;
 }
 
+static const char *prefork_get_name(void)
+{
+    return "prefork";
+}
+
 /*****************************************************************
  * Connection structures and accounting...
  */
@@ -1494,6 +1499,7 @@ static void prefork_hooks(apr_pool_t *p)
     ap_hook_mpm_query(prefork_query, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_child_pid(prefork_get_child_pid, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_note_child_killed(prefork_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_get_name(prefork_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg)
