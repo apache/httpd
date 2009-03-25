@@ -21,8 +21,10 @@
 #include "ap_mpm.h"
 #include "httpd.h"
 #include "http_log.h"
+#include "http_config.h"
+#include "http_main.h"
 
-static simple_core_t g_simple_core;
+static simple_core_t *g_simple_core;
 
 #ifndef DEFAULT_MAX_REQUESTS_PER_CHILD
 #define DEFAULT_MAX_REQUESTS_PER_CHILD 0
@@ -31,16 +33,23 @@ static simple_core_t g_simple_core;
 
 simple_core_t *simple_core_get()
 {
-    return &g_simple_core;
+    return g_simple_core;
 }
 
-apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool)
+apr_status_t simple_core_init_once(void)
 {
     apr_status_t rv;
+    const char *userdata_key = "mpm_simple_module";
+    simple_core_t *sc;
 
-    memset(sc, 0, sizeof(simple_core_t));
+    g_simple_core = ap_get_retained_data(userdata_key);
+    if (g_simple_core) {
+        return APR_SUCCESS;
+    }
+    
+    sc = g_simple_core = ap_set_retained_data(userdata_key, sizeof(*g_simple_core));
 
-    apr_pool_create(&sc->pool, pool);
+    apr_pool_create(&sc->pool, ap_pglobal);
 
     apr_pool_tag(sc->pool, "simple-mpm-core");
 
@@ -59,7 +68,7 @@ apr_status_t simple_core_init(simple_core_t * sc, apr_pool_t * pool)
 
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "simple_core_init: apr_thread_mutex_create failed.");
+                     "simple_core_init_once: apr_thread_mutex_create failed.");
         return rv;
     }
 

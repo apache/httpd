@@ -131,7 +131,18 @@ simple_pre_config(apr_pool_t * pconf, apr_pool_t * plog, apr_pool_t * ptemp)
 {
     int run_debug;
     apr_status_t rv;
-    simple_core_t *sc = simple_core_get();
+    simple_core_t *sc;
+
+    /* this is our first 'real' entry point, so setup everything here. */
+    rv = simple_core_init_once();
+
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                     "simple_core_init_once: Fatal Error Encountered");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    sc = simple_core_get();
 
     sc->restart_num++;
 
@@ -163,22 +174,6 @@ simple_pre_config(apr_pool_t * pconf, apr_pool_t * plog, apr_pool_t * ptemp)
     }
 
     return OK;
-}
-
-static void simple_process_start(process_rec * process)
-{
-    apr_status_t rv;
-
-    /* this is our first 'real' entry point, so setup everything here. */
-    rv = simple_core_init(simple_core_get(), process->pool);
-
-    if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "simple_core_init: Fatal Error Encountered");
-        exit(EXIT_FAILURE);
-    }
-
-    ap_mpm_rewrite_args(process);
 }
 
 static int
@@ -275,7 +270,7 @@ static const command_rec simple_cmds[] = {
 
 module AP_MODULE_DECLARE_DATA mpm_simple_module = {
     MPM20_MODULE_STUFF,
-    simple_process_start,       /* hook to run before apache parses args */
+    ap_mpm_rewrite_args,        /* hook to run before apache parses args */
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
