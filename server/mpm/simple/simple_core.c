@@ -18,7 +18,6 @@
  */
 
 #include "simple_types.h"
-#include "mpm.h"
 #include "ap_mpm.h"
 #include "httpd.h"
 #include "http_log.h"

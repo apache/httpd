@@ -24,7 +24,6 @@
 #include "http_connection.h"
 #include "util_filter.h"
 #include "http_main.h"
-#include "mpm.h"
 #include "scoreboard.h"
 #include "http_vhost.h"
 
