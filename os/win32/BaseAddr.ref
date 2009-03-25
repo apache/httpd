@@ -96,6 +96,4 @@ mod_socache_dc.so       0x6F8A0000    0x00010000
 mod_socache_memcache.so 0x6F890000    0x00010000
 mod_socache_shmcb.so    0x6F880000    0x00010000
 mod_sed.so              0x6F870000    0x00010000
-; These modules were removed,
-; their base addresses can be reused.
-;mod_mem_cache.so        0x6FBC0000    0x00010000
+mod_lua.so              0x6F860000    0x00010000

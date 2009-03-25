@@ -74,6 +74,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name mod_lbmethod_rr
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_lua
+    End Project Dependency
 }}}
 
 ###############################################################################
@@ -2051,6 +2054,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_logio"=.\modules\loggers\mod_logio.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_lua"=.\modules\lua\mod_lua.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
