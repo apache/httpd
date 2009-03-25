@@ -39,6 +39,7 @@
 #include <malloc.h>
 #include "apr_atomic.h"
 #include "apr_buckets.h"
+#include "scoreboard.h"
 
 #ifdef __MINGW32__
 #include <mswsock.h>
