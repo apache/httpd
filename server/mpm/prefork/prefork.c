@@ -94,9 +94,18 @@ static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;      /* MaxClients */
 static int server_limit = 0;
-static int first_server_limit = 0;
 static int mpm_state = AP_MPMQ_STARTING;
 static ap_pod_t *pod;
+
+/* data retained by prefork across load/unload of the module
+ * allocated on first call to pre-config hook; located on
+ * subsequent calls to pre-config hook
+ */
+typedef struct prefork_retained_data {
+    int first_server_limit;
+    int module_loads;
+} prefork_retained_data;
+static prefork_retained_data *retained;
 
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
 
@@ -1251,7 +1260,6 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
  */
 static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    static int restart_num = 0;
     int startup = 0;
     int level_flags = 0;
     apr_status_t rv;
@@ -1259,7 +1267,7 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
     pconf = p;
 
     /* the reverse of pre_config, we want this only the first time around */
-    if (restart_num++ == 0) {
+    if (retained->module_loads == 1) {
         startup = 1;
         level_flags |= APLOG_STARTUP;
     }
@@ -1282,9 +1290,9 @@ static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 
 static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    static int restart_num = 0;
     int no_detach, debug, foreground;
     apr_status_t rv;
+    const char *userdata_key = "mpm_prefork_module";
 
     mpm_state = AP_MPMQ_STARTING;
 
@@ -1302,7 +1310,12 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     }
 
     /* sigh, want this only the second time around */
-    if (restart_num++ == 1) {
+    retained = ap_get_retained_data(userdata_key);
+    if (!retained) {
+        retained = ap_set_retained_data(userdata_key, sizeof(*retained));
+    }
+    ++retained->module_loads;
+    if (retained->module_loads == 2) {
         is_graceful = 0;
 
         if (!one_process && !foreground) {
@@ -1340,11 +1353,10 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
 static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
                                 apr_pool_t *ptemp, server_rec *s)
 {
-    static int restart_num = 0;
     int startup = 0;
 
     /* the reverse of pre_config, we want this only the first time around */
-    if (restart_num++ == 0) {
+    if (retained->module_loads == 1) {
         startup = 1;
     }
 
@@ -1380,16 +1392,16 @@ static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
     /* you cannot change ServerLimit across a restart; ignore
      * any such attempts
      */
-    if (!first_server_limit) {
-        first_server_limit = server_limit;
+    if (!retained->first_server_limit) {
+        retained->first_server_limit = server_limit;
     }
-    else if (server_limit != first_server_limit) {
+    else if (server_limit != retained->first_server_limit) {
         /* don't need a startup console version here */
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                      "changing ServerLimit to %d from original value of %d "
                      "not allowed during restart",
-                     server_limit, first_server_limit);
-        server_limit = first_server_limit;
+                     server_limit, retained->first_server_limit);
+        server_limit = retained->first_server_limit;
     }
 
     if (ap_daemons_limit > server_limit) {
