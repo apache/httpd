@@ -104,7 +104,7 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_register_timed_callback,
                             (t, cbfn, baton), APR_ENOTIMPL)
 AP_IMPLEMENT_HOOK_RUN_FIRST(const char *, mpm_get_name,
                             (void),
-                            (), "")
+                            (), NULL)
 
 /* number of calls to wait_or_timeout between writable probes */
 #ifndef INTERVAL_OF_WRITABLE_PROBES
@@ -442,5 +442,11 @@ AP_DECLARE(apr_status_t) ap_mpm_register_timed_callback(apr_time_t t, ap_mpm_cal
 
 AP_DECLARE(const char *)ap_show_mpm(void)
 {
-    return ap_run_mpm_get_name();
+    const char *name = ap_run_mpm_get_name();
+
+    if (!name) {
+        name = "";
+    }
+
+    return name;
 }
