@@ -37,7 +37,7 @@
 #include "mpm_common.h"
 #include <malloc.h>
 #include "apr_atomic.h"
-
+#include "scoreboard.h"
 
 /* scoreboard.c does the heavy lifting; all we do is create the child
  * score by moving a handle down the pipe into the child's stdin.
@@ -45,7 +45,7 @@
 extern apr_shm_t *ap_scoreboard_shm;
 
 /* my_generation is returned to the scoreboard code */
-static ap_generation_t volatile my_generation=0;
+static volatile ap_generation_t my_generation=0;
 
 /* Definitions of WINNT MPM specific config globals */
 static HANDLE shutdown_event;  /* used to signal the parent to shutdown */

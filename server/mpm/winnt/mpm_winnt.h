@@ -67,6 +67,8 @@ void mpm_nt_eventlog_stderr_flush(void);
 
 /* From mpm_winnt.c: */
 
+extern int ap_threads_per_child;
+
 extern DWORD my_pid;
 extern apr_proc_mutex_t *start_mutex;
 extern HANDLE exit_event;
