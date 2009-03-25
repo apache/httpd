@@ -389,7 +389,8 @@ static const command_rec unixd_cmds[] = {
 };
 
 module AP_MODULE_DECLARE_DATA unixd_module = {
-    STANDARD20_MODULE_STUFF,
+    MPM20_MODULE_STUFF,
+    ap_mpm_rewrite_args,
     NULL,
     NULL,
     NULL,
