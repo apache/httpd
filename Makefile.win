@@ -823,7 +823,6 @@ BEGIN {
 		srclib\apr-util\include\*.h \
 		include\*.h \
 		os\win32\os.h \
-		server\mpm\winnt\mpm*.h \
 		modules\database\mod_dbd.h \
 		modules\dav\main\mod_dav.h \
 		modules\filters\mod_include.h \
