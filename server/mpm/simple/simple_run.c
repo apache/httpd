@@ -260,7 +260,7 @@ static int simple_setup_pollcb(simple_core_t * sc)
     
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "simple_core_init: apr_pollcb_create failed.");
+                     "simple_setup_pollcb: apr_pollcb_create failed.");
         return rv;
     }
     return rv;

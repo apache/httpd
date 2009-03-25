@@ -68,7 +68,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
         rv = apr_pollcb_remove(sc->pollcb, &cs->pfd);
         if (rv) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                         "process_socket: apr_pollset_remove failure");
+                         "process_socket: apr_pollcb_remove failure");
             /*AP_DEBUG_ASSERT(rv == APR_SUCCESS);*/
         }
         
@@ -157,7 +157,7 @@ static apr_status_t simple_io_process(simple_conn_t * scon)
 
             if (rv) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                             "process_socket: apr_pollset_add failure in read request line");
+                             "process_socket: apr_pollcb_add failure in read request line");
                 AP_DEBUG_ASSERT(rv == APR_SUCCESS);
             }
 
