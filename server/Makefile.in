@@ -10,8 +10,8 @@ LTLIBRARY_SOURCES = \
     test_char.h \
 	config.c log.c main.c vhost.c util.c \
 	util_script.c util_md5.c util_cfgtree.c util_ebcdic.c util_time.c \
-	connection.c listen.c util_mutex.c \
-	mpm_common.c util_charset.c util_cookies.c util_debug.c util_xml.c \
+	connection.c listen.c util_mutex.c mpm_common.c mpm_unix.c \
+	util_charset.c util_cookies.c util_debug.c util_xml.c \
 	util_expr.c util_filter.c util_pcre.c exports.c \
 	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c \
 	eoc_bucket.c eor_bucket.c core_filters.c slotmem.c
