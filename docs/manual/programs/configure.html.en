@@ -325,10 +325,9 @@
           option to disable CGI support.</dd>
 
         <dt><code>--disable-cgid</code></dt>
-        <dd>When using the threaded MPMs <code class="module"><a href="../mod/worker.html">worker</a></code> or
-          <code class="module"><a href="../mod/perchild.html">perchild</a></code> support for CGI scripts is provided by
-          <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code> by default. To disable CGI support use
-          this option.</dd>
+        <dd>When using the threaded MPM <code class="module"><a href="../mod/worker.html">worker</a></code>,
+          support for CGI scripts is provided by <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>
+          by default. To disable CGI support use this option.</dd>
 
         <dt><code>--disable-charset-lite</code></dt>
         <dd>Disable character set translation provided by
@@ -660,10 +659,7 @@
           exactly one <a href="../mpm.html">Multi-Processing Module</a>.
           Otherwise the <a href="../mpm.html#defaults">default MPM</a> for
           your operating system will be taken. Possible MPMs are
-          <code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>,
-          <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>,
-          <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> and
-          <code class="module"><a href="../mod/worker.html">worker</a></code>.</dd>
+          <code class="module"><a href="../mod/prefork.html">prefork</a></code> and <code class="module"><a href="../mod/worker.html">worker</a></code>.</dd>
       </dl>
     
 

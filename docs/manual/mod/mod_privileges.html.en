@@ -35,10 +35,10 @@ OpenSolaris platforms</td></tr></table>
 Unix&#8482; <var>User</var> and <var>Group</var> IDs, and with different
 <a href="http://www.sun.com/bigadmin/features/articles/least_privilege.jsp">Solaris Privileges</a>.  In particular, it offers a solution to the
 problem of privilege separation between different Virtual Hosts, first
-promised by the abandoned <code class="module"><a href="../mod/perchild.html">perchild</a></code> MPM.
-It also offers other security enhancements.</p>
+promised by the abandoned perchild MPM.  It also offers other security
+enhancements.</p>
 
-<p>Unlike <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code>
+<p>Unlike perchild, <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code>
 is not itself an MPM.  It works <em>within</em> a processing model to
 set privileges and User/Group <em>per request</em> in a running process.
 It is therefore not compatible with a threaded MPM, and will refuse
