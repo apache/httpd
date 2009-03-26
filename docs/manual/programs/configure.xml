@@ -662,7 +662,6 @@
           exactly one <a href="../mpm.html">Multi-Processing Module</a>.
           Otherwise the <a href="../mpm.html#defaults">default MPM</a> for
           your operating system will be taken. Possible MPMs are
-          <module>mpmt_os2</module>,
           <module>prefork</module> and <module>worker</module>.</dd>
       </dl>
     </section>

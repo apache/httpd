@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
 APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
-                          MPM={simple|event|worker|prefork|mpmt_os2|winnt}
+                          MPM={simple|event|worker|prefork|winnt}
                           Specify "shared" instead of an MPM name to load MPMs dynamically.
 ),[
   APACHE_MPM=$withval
