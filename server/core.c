@@ -3860,7 +3860,6 @@ static int core_pre_connection(conn_rec *c, void *csd)
     core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
     apr_status_t rv;
 
-#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
     /* The Nagle algorithm says that we should delay sending partial
      * packets in hopes of getting more data.  We don't want to do
      * this; we are not telnet.  There are bad interactions between
@@ -3876,7 +3875,6 @@ static int core_pre_connection(conn_rec *c, void *csd)
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
                       "apr_socket_opt_set(APR_TCP_NODELAY)");
     }
-#endif
 
     /* The core filter requires the timeout mode to be set, which
      * incidentally sets the socket to be nonblocking.  If this
