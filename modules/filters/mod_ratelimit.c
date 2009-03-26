@@ -123,7 +123,7 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
             /* Find where we 'stop' going full speed. */
             for (e = APR_BRIGADE_FIRST(bb);
                  e != APR_BRIGADE_SENTINEL(bb); e = APR_BUCKET_NEXT(e)) {
-                if (RL_BUCKET_IS_END(e)) {
+                if (AP_RL_BUCKET_IS_END(e)) {
                     apr_bucket *f;
                     f = APR_RING_LAST(&bb->list);
                     APR_RING_UNSPLICE(e, f, link);
@@ -154,7 +154,7 @@ rate_limit_filter(ap_filter_t *f, apr_bucket_brigade *input_bb)
         while (ctx->state == RATE_LIMIT && !APR_BRIGADE_EMPTY(bb)) {
             for (e = APR_BRIGADE_FIRST(bb);
                  e != APR_BRIGADE_SENTINEL(bb); e = APR_BUCKET_NEXT(e)) {
-                if (RL_BUCKET_IS_START(e)) {
+                if (AP_RL_BUCKET_IS_START(e)) {
                     apr_bucket *f;
                     f = APR_RING_LAST(&bb->list);
                     APR_RING_UNSPLICE(e, f, link);
@@ -239,8 +239,8 @@ rl_bucket_read(apr_bucket *b, const char **str,
     return APR_SUCCESS;
 }
 
-AP_DECLARE(apr_bucket *)
-    rl_end_create(apr_bucket_alloc_t *list)
+AP_RL_DECLARE(apr_bucket *)
+    ap_rl_end_create(apr_bucket_alloc_t *list)
 {
     apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
 
@@ -250,13 +250,13 @@ AP_DECLARE(apr_bucket *)
     b->length = 0;
     b->start = 0;
     b->data = NULL;
-    b->type = &rl_bucket_type_end;
+    b->type = &ap_rl_bucket_type_end;
 
     return b;
 }
 
-AP_DECLARE(apr_bucket *)
-    rl_start_create(apr_bucket_alloc_t *list)
+AP_RL_DECLARE(apr_bucket *)
+    ap_rl_start_create(apr_bucket_alloc_t *list)
 {
     apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
 
@@ -266,14 +266,14 @@ AP_DECLARE(apr_bucket *)
     b->length = 0;
     b->start = 0;
     b->data = NULL;
-    b->type = &rl_bucket_type_start;
+    b->type = &ap_rl_bucket_type_start;
 
     return b;
 }
 
 
 
-AP_DECLARE_DATA const apr_bucket_type_t rl_bucket_type_end = {
+AP_RL_DECLARE_DATA const apr_bucket_type_t ap_rl_bucket_type_end = {
     "RL_END", 5, APR_BUCKET_METADATA,
     apr_bucket_destroy_noop,
     rl_bucket_read,
@@ -283,7 +283,7 @@ AP_DECLARE_DATA const apr_bucket_type_t rl_bucket_type_end = {
 };
 
 
-AP_DECLARE_DATA const apr_bucket_type_t rl_bucket_type_start = {
+AP_RL_DECLARE_DATA const apr_bucket_type_t ap_rl_bucket_type_start = {
     "RL_START", 5, APR_BUCKET_METADATA,
     apr_bucket_destroy_noop,
     rl_bucket_read,
