@@ -227,54 +227,32 @@ APR_ADDTO(INCLUDES, $APU_INCLUDES)
 dnl Add in path to PCRE includes
 APR_ADDTO(INCLUDES, $PCRE_INCLUDES)
 
-echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
-
-case $host in
-  *os2*)
-      # Use a custom made libtool replacement
-      echo "using aplibtool"
-      LIBTOOL="$abs_srcdir/srclib/apr/build/aplibtool"
-      SH_LIBTOOL="$LIBTOOL --shared --export-all"
-      SH_LIBS="\$(ALL_LIBS)"
-      CORE_IMPLIB_FILE="ApacheCoreOS2.la"
-      CORE_IMPLIB="$abs_srcdir/server/$CORE_IMPLIB_FILE"
-      MK_IMPLIB="emximp"
-      other_targets="$other_targets os2core"
-      INSTALL_PROG_FLAGS="-e .exe"
-      SHLTCFLAGS=""
-      LTCFLAGS=""
-      ;;
-  *)
-      if test "x$LTFLAGS" = "x"; then
-          LTFLAGS='--silent'
-      fi
-      my_libtool=`$apr_config --apr-libtool`
-      LIBTOOL="$my_libtool \$(LTFLAGS)"
-      libtoolversion=`$my_libtool --version`
-      case $libtoolversion in
-          *1.[[45]]* | *[[2-9]].[[0-9]]*)
-              SH_LIBTOOL='$(LIBTOOL)'
-              SHLTCFLAGS="-prefer-pic"
-              LTCFLAGS="-prefer-non-pic -static"
-              ;;
-          *)
-              SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool $(LTFLAGS)'
-              SHLTCFLAGS=""
-              LTCFLAGS=""
-              ;;
-      esac
-      ;;
+if test "x$LTFLAGS" = "x"; then
+    LTFLAGS='--silent'
+fi
+my_libtool=`$apr_config --apr-libtool`
+LIBTOOL="$my_libtool \$(LTFLAGS)"
+libtoolversion=`$my_libtool --version`
+case $libtoolversion in
+    *1.[[45]]* | *[[2-9]].[[0-9]]*)
+        SH_LIBTOOL='$(LIBTOOL)'
+        SHLTCFLAGS="-prefer-pic"
+        LTCFLAGS="-prefer-non-pic -static"
+        ;;
+    *)
+        SH_LIBTOOL='$(SHELL) $(top_builddir)/shlibtool $(LTFLAGS)'
+        SHLTCFLAGS=""
+        LTCFLAGS=""
+        ;;
 esac
 APACHE_SUBST(SHLTCFLAGS)
 APACHE_SUBST(LTCFLAGS)
 
+echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
+
 case $host in
   *-apple-aux3*)
       APR_SETVAR(APACHE_MPM, [prefork])
-      APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
-      ;;
-  *os2-emx*)
-      APR_SETVAR(APACHE_MPM, [mpmt_os2])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
   *-linux-*)

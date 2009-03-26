@@ -1723,8 +1723,8 @@ AP_CORE_DECLARE_NONSTD(const char *) ap_limit_section(cmd_parms *cmd,
     return errmsg;
 }
 
-/* XXX: Bogus - need to do this differently (at least OS2/Netware suffer
- * the same problem!!!
+/* XXX: Bogus - need to do this differently (at least Netware suffers
+ * the same problem!!!)
  * We use this in <DirectoryMatch> and <FilesMatch>, to ensure that
  * people don't get bitten by wrong-cased regex matches
  */

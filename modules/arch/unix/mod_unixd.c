@@ -107,8 +107,8 @@ static int set_group_privs(void)
         else
             name = ap_unixd_config.user_name;
 
-#if !defined(OS2) && !defined(TPF)
-        /* OS/2 and TPF don't support groups. */
+#if !defined(TPF)
+        /* TPF doesn't support groups. */
 
         /*
          * Set the GID before initgroups(), since on some platforms
@@ -129,7 +129,7 @@ static int set_group_privs(void)
                         "and Group %u", name, (unsigned)ap_unixd_config.group_id);
             return -1;
         }
-#endif /* !defined(OS2) && !defined(TPF) */
+#endif /* !defined(TPF) */
     }
     return 0;
 }
@@ -230,7 +230,7 @@ unixd_set_user(cmd_parms *cmd, void *dummy,
 
     ap_unixd_config.user_name = arg;
     ap_unixd_config.user_id = ap_uname2id(arg);
-#if !defined (BIG_SECURITY_HOLE) && !defined (OS2)
+#if !defined (BIG_SECURITY_HOLE)
     if (ap_unixd_config.user_id == 0) {
         return "Error:\tApache has not been designed to serve pages while\n"
                 "\trunning as root.  There are known race conditions that\n"

@@ -75,10 +75,7 @@ extern "C" {
  * file with a relative pathname will have this added.
  */
 #ifndef HTTPD_ROOT
-#ifdef OS2
-/** Set default for OS/2 file system */
-#define HTTPD_ROOT "/os2httpd"
-#elif defined(WIN32)
+#if defined(WIN32)
 /** Set default for Windows file system */
 #define HTTPD_ROOT "/apache"
 #elif defined (NETWARE)
@@ -103,13 +100,7 @@ extern "C" {
  * directive.
  */
 #ifndef DOCUMENT_LOCATION
-#ifdef OS2
-/* Set default for OS/2 file system */
-#define DOCUMENT_LOCATION  HTTPD_ROOT "/docs"
-#else
-/* Set default for non OS/2 file system */
 #define DOCUMENT_LOCATION  HTTPD_ROOT "/htdocs"
-#endif
 #endif /* DOCUMENT_LOCATION */
 
 /** Maximum number of dynamically loaded modules */
@@ -122,7 +113,7 @@ extern "C" {
 
 /** The name of the log files */
 #ifndef DEFAULT_ERRORLOG
-#if defined(OS2) || defined(WIN32)
+#if defined(WIN32)
 #define DEFAULT_ERRORLOG "logs/error.log"
 #else
 #define DEFAULT_ERRORLOG "logs/error_log"
@@ -131,12 +122,7 @@ extern "C" {
 
 /** Define this to be what your per-directory security files are called */
 #ifndef DEFAULT_ACCESS_FNAME
-#ifdef OS2
-/* Set default for OS/2 file system */
-#define DEFAULT_ACCESS_FNAME "htaccess"
-#else
 #define DEFAULT_ACCESS_FNAME ".htaccess"
-#endif
 #endif /* DEFAULT_ACCESS_FNAME */
 
 /** The name of the server config file */
@@ -1603,7 +1589,7 @@ AP_DECLARE(char *) ap_make_full_path(apr_pool_t *a, const char *dir, const char 
  * Test if the given path has an an absolute path.
  * @param p The pool to allocate from
  * @param dir The directory name
- * @note The converse is not necessarily true, some OS's (Win32/OS2/Netware) have
+ * @note The converse is not necessarily true, some OS's (Win32/Netware) have
  * multiple forms of absolute paths.  This only reports if the path is absolute
  * in a canonical sense.
  */

@@ -37,11 +37,6 @@
 #include "apr_date.h"           /* For apr_date_parse_http() */
 #include "util_ebcdic.h"
 
-#ifdef OS2
-#define INCL_DOS
-#include <os2.h>
-#endif
-
 /*
  * Various utility functions which are common to a whole lot of
  * script-type extensions mechanisms, and might as well be gathered
@@ -122,7 +117,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     conn_rec *c = r->connection;
     const char *rem_logname;
     char *env_path;
-#if defined(WIN32) || defined(OS2)
+#if defined(WIN32)
     char *env_temp;
 #endif
     const char *host;
@@ -197,21 +192,6 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     }
     if (env_temp = getenv("WINDIR")) {
         apr_table_addn(e, "WINDIR", env_temp);
-    }
-#endif
-
-#ifdef OS2
-    if ((env_temp = getenv("COMSPEC")) != NULL) {
-        apr_table_addn(e, "COMSPEC", env_temp);
-    }
-    if ((env_temp = getenv("ETC")) != NULL) {
-        apr_table_addn(e, "ETC", env_temp);
-    }
-    if ((env_temp = getenv("DPATH")) != NULL) {
-        apr_table_addn(e, "DPATH", env_temp);
-    }
-    if ((env_temp = getenv("PERLLIB_PREFIX")) != NULL) {
-        apr_table_addn(e, "PERLLIB_PREFIX", env_temp);
     }
 #endif
 

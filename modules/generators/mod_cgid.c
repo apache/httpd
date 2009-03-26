@@ -1366,7 +1366,7 @@ static int cgid_handler(request_rec *r)
         return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
                                "attempt to include NPH CGI script");
 
-#if defined(OS2) || defined(WIN32)
+#if defined(WIN32)
 #error mod_cgid does not work on this platform.  If you teach it to, look
 #error at mod_cgi.c for required code in this path.
 #else

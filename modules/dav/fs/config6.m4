@@ -10,14 +10,6 @@ else
   dav_fs_enable=$dav_enable
 fi
 
-case "$host" in
-  *os2*)
-    # OS/2 DLLs must resolve all symbols at build time
-    # and we need some from main DAV module
-    dav_fs_objects="$dav_fs_objects ../main/mod_dav.la"
-    ;;
-esac
-
 APACHE_MODULE(dav_fs, DAV provider for the filesystem, $dav_fs_objects, , $dav_fs_enable)
 
 APACHE_MODPATH_FINISH

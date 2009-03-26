@@ -529,8 +529,8 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
         r->uri = r->parsed_uri.path ? r->parsed_uri.path
                  : apr_pstrdup(r->pool, "/");
 
-#if defined(OS2) || defined(WIN32)
-        /* Handle path translations for OS/2 and plug security hole.
+#if defined(WIN32)
+        /* Handle path translations and plug security hole.
          * This will prevent "http://www.wherever.com/..\..\/" from
          * returning a directory for the root drive.
          */
@@ -540,7 +540,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
             for (x = r->uri; (x = strchr(x, '\\')) != NULL; )
                 *x = '/';
         }
-#endif /* OS2 || WIN32 */
+#endif /* WIN32 */
     }
     else {
         r->args = NULL;
