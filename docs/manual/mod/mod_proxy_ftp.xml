@@ -144,5 +144,57 @@
       </note>
     </section> <!-- /ftppass -->
 
+    <section id="wildcard"><title>Why do I get a file listing when I expected
+        a file to be downloaded?</title>
+      <p>In order to allow both browsing the directories on an FTP server and
+        downloading files, Apache looks at the request URL.  If it looks like
+        a directory, or contains wildcard characters ("*?[{~"), then it
+        guesses that a listing is wanted instead of a download.</p>
+      <p>You can disable the special handling of names with wildcard characters.
+        See the <directive>ProxyFtpListOnWildcard</directive> directive.
+      </p>
+    </section> <!-- /wildcard -->
+       
+<directivesynopsis>
+<name>ProxyFtpListOnWildcard</name>
+<description>Whether wildcards in requested filenames trigger a file listing</description>
+<syntax>ProxyFtpListOnWildcard [on|off]</syntax>
+<default>on</default>
+<contextlist><context>server config</context><context>virtual host</context>
+  <context>directory</context></contextlist>
+<compatibility>Available in Apache xxx and later</compatibility>
+
+<usage>
+  <p>The <directive>ProxyFtpListOnWildcard</directive> directive
+    controls whether wildcard characters ("*?[{~") in requested
+    filenames cause <module>mod_proxy_ftp</module> to return a listing
+    of files instead of downloading a file.  By default (value on),
+    they do.  Set to "off" to allow downloading files even if they
+    have wildcard characters in their names.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyFtpEscapeWildcards</name>
+<description>Whether wildcards in requested filenames are escaped when sent to the FTP server</description>
+<syntax>ProxyFtpEscapeWildcards [on|off]</syntax>
+<default>on</default>
+<contextlist><context>server config</context><context>virtual host</context>
+  <context>directory</context></contextlist>
+<compatibility>Available in Apache xxx and later</compatibility>
+
+<usage>
+  <p>The <directive>ProxyFtpEscapeWildcards</directive> directive
+    controls whether wildcard characters ("*?[{~") in requested
+    filenames are escaped with backslash before sending them to the
+    FTP server.  That is the default behavior, but many FTP servers
+    don't know about the escaping and try to serve the literal filenames
+    they were sent, including the backslashes in the names.  </p>
+    <p>Set to "off" to allow downloading files with wildcards
+    in their names from FTP servers that don't understand wildcard
+    escaping.</p>
+</usage>
+</directivesynopsis>
+
 
 </modulesynopsis>
