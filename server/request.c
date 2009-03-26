@@ -822,7 +822,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
                 /* We will never skip '0' element components, e.g. plain old
                  * <Directory >, and <Directory "/"> are classified as zero
-                 * so that Win32/Netware/OS2 etc all pick them up.
+                 * so that Win32/Netware etc all pick them up.
                  * Otherwise, skip over the mismatches.
                  */
                 if (entry_core->d_components

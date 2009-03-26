@@ -1,6 +1,5 @@
 
-CLEAN_TARGETS = gen_test_char test_char.h \
-	ApacheCoreOS2.def httpd.exp export_files \
+CLEAN_TARGETS = gen_test_char test_char.h httpd.exp export_files \
 	exports.c export_vars.h
 
 SUBDIRS = mpm
@@ -69,12 +68,6 @@ exports.c: export_files
 
 export_vars.h: export_files
 	$(AWK) -f $(top_srcdir)/build/make_var_export.awk `cat $?` > $@
-
-# Rule to make def file for OS/2 core dll
-ApacheCoreOS2.def: exports.c export_vars.h $(top_srcdir)/os/$(OS_DIR)/core_header.def
-	cat $(top_srcdir)/os/$(OS_DIR)/core_header.def > $@
-	$(CPP) $< $(ALL_CPPFLAGS) $(ALL_INCLUDES) | grep "ap_hack_" | sed -e 's/^.*[)]\(.*\);$$/  "\1"/' >> $@
-	$(CPP) $(ALL_CPPFLAGS) $(ALL_INCLUDES) export_vars.h | grep "^[a-z]" | sed -e 's/^\(.*\)$$/  "\1"/' >> $@
 
 # Rule to make exp file for AIX DSOs
 httpd.exp: exports.c export_vars.h

@@ -490,7 +490,7 @@ if ($opt_i or $opt_e) {
     my @cmds = ();
     my $f;
     foreach $f (@args) {
-        #  ack all potential gcc, hp/ux, win32+os2+aix and os/x extensions
+        #  ack all potential gcc, hp/ux, win32, aix and os/x extensions
         if ($f !~ m#(\.so$|\.la$|\.sl$|\.dll$|\.dylib$|)#) {
             error("file $f is not a shared object");
             exit(1);

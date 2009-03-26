@@ -774,8 +774,8 @@ indexing</description>
       <dd>This returns the <code>Last-Modified</code> and <code>ETag</code>
       values for the listed directory in the HTTP header. It is only valid
       if the operating system and file system return appropriate stat()
-      results. Some Unix systems do so, as do OS2's JFS and Win32's
-      NTFS volumes. OS2 and Win32 FAT volumes, for example, do not.
+      results. Some Unix systems do so, as do Win32's
+      NTFS volumes. Win32 FAT volumes, for example, do not.
       Once this feature is enabled, the client or proxy can track
       changes to the list of files when they perform a <code>HEAD</code>
       request. Note some operating systems correctly track new and
