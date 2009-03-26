@@ -142,16 +142,6 @@ _tryzlib:
 !ENDIF
 
 
-_tryssl:
-	@echo -----
-	@echo mod_ssl and ab/ssl will not build unless openssl is installed
-	@echo in srclib\openssl.  They must be precompiled using the 
-	@echo ms/ntdll.mak file, see srclib\openssl\INSTALL.W32.  The most
-	@echo recent version confirmed to build with mod_ssl and ab is 0.9.8d.
-	@echo Available from http://www.openssl.org/
-!ENDIF
-
-
 !IF EXIST("srclib\lua")
 
 _trylua:
