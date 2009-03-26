@@ -98,15 +98,10 @@
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_version.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
-  <modulefile>beos.xml.es</modulefile>
   <modulefile>mpm_common.xml</modulefile>
   <modulefile>event.xml</modulefile>
-  <modulefile>leader.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
-  <modulefile>mpmt_os2.xml</modulefile>
-  <modulefile>perchild.xml</modulefile>
   <modulefile>prefork.xml</modulefile>
-  <modulefile>threadpool.xml</modulefile>
   <modulefile>mpm_winnt.xml</modulefile>
   <modulefile>worker.xml</modulefile>
 </modulefilelist>

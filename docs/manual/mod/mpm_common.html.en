@@ -66,7 +66,7 @@ accepting requests on network sockets</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AcceptMutex Default</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">AcceptMutex</code> directives sets the
     method (and lockfile location if appropriate) that Apache uses to
@@ -150,7 +150,7 @@ switch before dumping core</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for the default setting</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>This controls the directory to which Apache attempts to
     switch before dumping core. The default is in the
@@ -177,7 +177,7 @@ after a crash</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>EnableExceptionHook Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.0.49 and later</td></tr>
 </table>
     <p>For safety reasons this directive is only available if the server was
@@ -218,7 +218,7 @@ listens to</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Required directive since Apache 2.0<br />
 The <var>protocol</var> argument was added in 2.1.5</td></tr>
 </table>
@@ -299,7 +299,7 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ListenBacklog 511</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The maximum length of the queue of pending connections.
     Generally no tuning is needed or desired, however on some
@@ -322,7 +322,7 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LockFile logs/accept.lock</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">LockFile</code> directive sets the path to
     the lockfile used when Apache is used with an <code class="directive"><a href="#acceptmutex">AcceptMutex</a></code> value of either
@@ -362,7 +362,7 @@ simultaneously</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">MaxClients</code> directive sets the limit
     on the number of simultaneous requests that will be served.  Any
@@ -378,11 +378,10 @@ simultaneously</td></tr>
     The default value is <code>256</code>; to increase it, you must also raise
     <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
-    <p>For threaded and hybrid servers (<em>e.g.</em> <code class="module"><a href="../mod/beos.html">beos</a></code>
+    <p>For threaded and hybrid servers (<em>e.g.</em> <code class="module"><a href="../mod/event.html">event</a></code>
     or <code class="module"><a href="../mod/worker.html">worker</a></code>) <code class="directive">MaxClients</code> restricts
     the total number of threads that will be available to serve clients.
-    The default value for <code class="module"><a href="../mod/beos.html">beos</a></code> is <code>50</code>. For
-    hybrid MPMs the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
+    For hybrid MPMs the default value is <code>16</code> (<code class="directive"><a href="#serverlimit">ServerLimit</a></code>) multiplied by the value of
     <code>25</code> (<code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>). Therefore, to increase <code class="directive">MaxClients</code> to a value that requires more than 16 processes,
     you must also raise <code class="directive"><a href="#serverlimit">ServerLimit</a></code>.</p>
 
@@ -396,7 +395,7 @@ to hold without calling <code>free()</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxMemFree 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>
     <p>The <code class="directive">MaxMemFree</code> directive sets the
     maximum number of free Kbytes that the main allocator is allowed
@@ -413,7 +412,7 @@ will handle during its life</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxRequestsPerChild 10000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">MaxRequestsPerChild</code> directive sets
     the limit on the number of requests that an individual child
@@ -447,44 +446,31 @@ will handle during its life</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>Maximum number of idle threads. Different MPMs deal with this
     directive differently.</p>
 
-    <p>For <code class="module"><a href="../mod/perchild.html">perchild</a></code> the default is
-    <code>MaxSpareThreads 10</code>. This MPM monitors the number of
-    idle threads on a per-child basis. If there are too many idle
-    threads in that child, the server will begin to kill threads
-    within that child.</p>
-
-    <p>For <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code> and <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> the default is <code>MaxSpareThreads 250</code>.
-    These MPMs deal with idle threads on a server-wide basis. If there
-    are too many idle threads in the server then child processes are
-    killed until the number of idle threads is less than this number.</p>
+    <p>For <code class="module"><a href="../mod/worker.html">worker</a></code>, the default is 
+    <code>MaxSpareThreads 250</code>. This MPM deals with idle threads
+    on a server-wide basis. If there are too many idle threads in the
+    server then child processes are killed until the number of idle
+    threads is less than this number.</p>
 
     <p>For <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> the default is
     <code>MaxSpareThreads 100</code>. Since this MPM runs a
     single-process, the spare thread count is also server-wide.</p>
-
-    <p><code class="module"><a href="../mod/beos.html">beos</a></code> and <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> work
-    similar to <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>. The default for
-    <code class="module"><a href="../mod/beos.html">beos</a></code> is <code>MaxSpareThreads 50</code>. For
-    <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> the default value is <code>10</code>.</p>
 
     <div class="note"><h3>Restrictions</h3>
       <p>The range of the <code class="directive">MaxSpareThreads</code> value
       is restricted. Apache will correct the given value automatically
       according to the following rules:</p>
       <ul>
-        <li><code class="module"><a href="../mod/perchild.html">perchild</a></code> requires <code class="directive">MaxSpareThreads</code> to be less or equal than <code class="directive"><a href="#threadlimit">ThreadLimit</a></code>.</li>
-
         <li><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> wants the value to be greater than
         <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>.</li>
 
-        <li>For <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> and
-        <code class="module"><a href="../mod/worker.html">worker</a></code> the value must be greater or equal than
-        the sum of <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>
+        <li>For <code class="module"><a href="../mod/worker.html">worker</a></code>, the value must be greater or equal
+        to the sum of <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>
         and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</li>
       </ul>
     </div>
@@ -504,22 +490,14 @@ spikes</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>Minimum number of idle threads to handle request spikes.
     Different MPMs deal with this directive
     differently.</p>
 
-    <p><code class="module"><a href="../mod/perchild.html">perchild</a></code> uses a default of
-    <code>MinSpareThreads 5</code> and monitors the number of idle
-    threads on a per-child basis. If there aren't enough idle threads
-    in that child, the server will begin to create new threads within
-    that child. Thus, if you set <code class="directive"><a href="../mod/perchild.html#numservers">NumServers</a></code> to <code>10</code> and a <code class="directive">MinSpareThreads</code> value of <code>5</code>, you'll have
-    at least 50 idle threads on your system.</p>
-
-    <p><code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code> and
-    <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> use a default of <code>MinSpareThreads
-    75</code> and deal with idle threads on a server-wide basis. If
+    <p><code class="module"><a href="../mod/worker.html">worker</a></code> uses a default of <code>MinSpareThreads
+    75</code> and deals with idle threads on a server-wide basis. If
     there aren't enough idle threads in the server then child
     processes are created until the number of idle threads is greater
     than <var>number</var>.</p>
@@ -527,11 +505,6 @@ spikes</td></tr>
     <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> uses a default of
     <code>MinSpareThreads 10</code> and, since it is a single-process
     MPM, tracks this on a server-wide bases.</p>
-
-    <p><code class="module"><a href="../mod/beos.html">beos</a></code> and <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> work
-    similar to <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>. The default for
-    <code class="module"><a href="../mod/beos.html">beos</a></code> is <code>MinSpareThreads 1</code>. For
-    <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> the default value is <code>5</code>.</p>
 
 <h3>See also</h3>
 <ul>
@@ -548,7 +521,7 @@ of the daemon</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>PidFile logs/httpd.pid</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">PidFile</code> directive sets the file to
     which the server records the process id of the daemon. If the
@@ -581,7 +554,7 @@ of the daemon</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ReceiveBufferSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The server will set the TCP receive buffer size to the number of
     bytes specified.</p>
@@ -599,7 +572,7 @@ the child processes</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ScoreBoardFile logs/apache_status</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>Apache uses a scoreboard to communicate between its parent
     and child processes.  Some architectures require a file to facilitate
@@ -635,7 +608,7 @@ Apache</a></li>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SendBufferSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The server will set the TCP send buffer size to the number of bytes
     specified. Very useful to increase past standard OS defaults on
@@ -654,7 +627,7 @@ Apache</a></li>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>For the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, this directive sets the
     maximum configured value for <code class="directive"><a href="#maxclients">MaxClients</a></code> for the lifetime of the
@@ -677,16 +650,12 @@ Apache</a></li>
     Do not set the value of this directive any higher than what you
     might want to set <code class="directive"><a href="#maxclients">MaxClients</a></code> to.</p>
 
-    <p>With <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code> and
-    <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> use this directive only
+    <p>With <code class="module"><a href="../mod/worker.html">worker</a></code>, use this directive only
     if your <code class="directive"><a href="#maxclients">MaxClients</a></code> and
     <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>
     settings require more than 16 server processes (default). Do not set
     the value of this directive any higher than the number of server
     processes required by what you may want for <code class="directive"><a href="#maxclients ">MaxClients </a></code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>.</p>
-
-    <p>With the <code class="module"><a href="../mod/perchild.html">perchild</a></code> MPM, use this directive only
-    if you need to set <code class="directive"><a href="../mod/perchild.html#numservers">NumServers</a></code> higher than 8 (default).</p>
 
     <div class="note"><h3>Note</h3>
       <p>There is a hard limit of <code>ServerLimit 20000</code> compiled
@@ -707,18 +676,16 @@ Apache</a></li>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">StartServers</code> directive sets the
     number of child server processes created on startup. As the number
     of processes is dynamically controlled depending on the load,
     there is usually little reason to adjust this parameter.</p>
 
-    <p>The default value differs from MPM to MPM. For
-    <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> and
-    <code class="module"><a href="../mod/worker.html">worker</a></code> the default is <code>StartServers 3</code>.
-    For <code class="module"><a href="../mod/prefork.html">prefork</a></code> defaults to <code>5</code> and for
-    <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> to <code>2</code>.</p>
+    <p>The default value differs from MPM to MPM. <code class="module"><a href="../mod/worker.html">worker</a></code>
+    defaults to <code>StartServers 3</code>; <code class="module"><a href="../mod/prefork.html">prefork</a></code> 
+    defaults to <code>5</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -729,25 +696,17 @@ Apache</a></li>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code></td></tr>
 </table>
     <p>Number of threads created on startup. As the
     number of threads is dynamically controlled depending on the
     load, there is usually little reason to adjust this
     parameter.</p>
 
-    <p>For <code class="module"><a href="../mod/perchild.html">perchild</a></code> the default is <code>StartThreads
-    5</code> and this directive tracks the number of threads per
-    process at startup.</p>
-
     <p>For <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> the default is
     <code>StartThreads 50</code> and, since there is only a single
     process, this is the total number of threads created at startup to
     serve requests.</p>
-
-    <p>For <code class="module"><a href="../mod/beos.html">beos</a></code> the default is <code>StartThreads
-    10</code>. It also reflects the total number of threads created
-    at startup to serve requests.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -759,7 +718,7 @@ per child process</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available for <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> in Apache 2.0.41
 and later</td></tr>
 </table>
@@ -798,7 +757,7 @@ and later</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>This directive sets the number of threads created by each
     child process. The child creates these threads at startup and
@@ -823,7 +782,7 @@ client connections</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>65536 on NetWare; varies on other operating systems</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr>
 </table>
     <p>The <code class="directive">ThreadStackSize</code> directive sets the 
