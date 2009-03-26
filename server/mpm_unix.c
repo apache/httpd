@@ -141,17 +141,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
                      " still did not exit, "
                      "sending a SIGKILL",
                      pid);
-#ifndef BEOS
         kill(pid, SIGKILL);
-#else
-        /* sending a SIGKILL kills the entire team on BeOS, and as
-         * httpd thread is part of that team it removes any chance
-         * of ever doing a restart.  To counter this I'm changing to
-         * use a kinder, gentler way of killing a specific thread
-         * that is just as effective.
-         */
-        kill_thread(pid);
-#endif
         break;
 
     case GIVEUP:

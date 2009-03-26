@@ -154,30 +154,6 @@
     proxycachedir: ${localstatedir}/proxy
 </Layout>
 
-#  BeOS layout...
-<Layout beos>
-    prefix:        /boot/home/apache
-    exec_prefix:   ${prefix}
-    bindir:        ${exec_prefix}/bin
-    sbindir:       ${exec_prefix}/bin
-    libdir:        ${exec_prefix}/lib
-    libexecdir:    ${exec_prefix}/libexec
-    mandir:        ${prefix}/man
-    sysconfdir:    ${prefix}/conf
-    datadir:       ${prefix}
-    installbuilddir: ${datadir}/build
-    errordir:      ${datadir}/error
-    iconsdir:      ${datadir}/icons
-    htdocsdir:     ${datadir}/htdocs
-    manualdir:     ${datadir}/manual
-    cgidir:        ${datadir}/cgi-bin
-    includedir:    ${prefix}/include
-    localstatedir: ${prefix}
-    runtimedir:    ${localstatedir}/logs
-    logfiledir:    ${localstatedir}/logs
-    proxycachedir: ${localstatedir}/proxy
-</Layout>
-
 #   SuSE 6.x layout
 <Layout SuSE>
     prefix:        /usr
