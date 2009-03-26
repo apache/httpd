@@ -357,17 +357,6 @@ const char *ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
                                arg, NULL);
     }
 
-    /* perchild can't use SysV sems because the permissions on the accept
-     * mutex can't be set to allow all processes to use the mutex and
-     * at the same time keep all users from being able to dink with the
-     * mutex
-     */
-#if defined(PERCHILD_MPM)
-    if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
-        return apr_pstrcat(cmd->pool, "Invalid AcceptMutex argument ", arg,
-                           " (" AP_AVAILABLE_MUTEXES_STRING ")", NULL);
-    }
-#endif
     if (lockfile && !ap_lock_fname)
         ap_lock_fname = lockfile;
     return NULL;

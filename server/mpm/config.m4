@@ -1,7 +1,7 @@
 AC_MSG_CHECKING(which MPM to use)
 AC_ARG_WITH(mpm,
 APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
-                          MPM={simple|beos|event|worker|prefork|mpmt_os2|perchild|leader|threadpool|winnt}
+                          MPM={simple|beos|event|worker|prefork|mpmt_os2|winnt}
                           Specify "shared" instead of an MPM name to load MPMs dynamically.
 ),[
   APACHE_MPM=$withval
@@ -17,7 +17,7 @@ apache_cv_mpm=$APACHE_MPM
 dnl Note that a build with an explicitly loaded MPM must support threaded MPMs.
 ap_mpm_is_threaded ()
 {
-    if test "$apache_cv_mpm" = "shared" -o "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "event" -o "$apache_cv_mpm" = "simple" -o "$apache_cv_mpm" = "perchild" -o "$apache_cv_mpm" = "leader" -o "$apache_cv_mpm" = "winnt" -o "$apache_cv_mpm" = "threadpool" ; then
+    if test "$apache_cv_mpm" = "shared" -o "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "event" -o "$apache_cv_mpm" = "simple" -o "$apache_cv_mpm" = "winnt" ; then
         return 0
     else
         return 1
@@ -27,7 +27,7 @@ ap_mpm_is_threaded ()
 dnl No such check for a shared MPM.
 ap_mpm_is_experimental ()
 {
-    if test "$apache_cv_mpm" = "event" -o "$apache_cv_mpm" = "perchild" -o "$apache_cv_mpm" = "leader" -o "$apache_cv_mpm" = "threadpool" ; then
+    if test "$apache_cv_mpm" = "event"; then
         return 0
     else
         return 1

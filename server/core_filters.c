@@ -212,10 +212,9 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
      * the brigade that was passed down, and send that brigade back.
      *
      * NOTE:  This is VERY dangerous to use, and should only be done with
-     * extreme caution.  However, the Perchild MPM needs this feature
-     * if it is ever going to work correctly again.  With this, the Perchild
-     * MPM can easily request the socket and all data that has been read,
-     * which means that it can pass it to the correct child process.
+     * extreme caution.  FWLIW, this would be needed by an MPM like Perchild;
+     * such an MPM can easily request the socket and all data that has been
+     * read, which means that it can pass it to the correct child process.
      */
     if (mode == AP_MODE_EXHAUSTIVE) {
         apr_bucket *e;
