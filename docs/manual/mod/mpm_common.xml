@@ -199,7 +199,7 @@ of the daemon</description>
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_winnt</module><module>mpmt_os2</module>
+<modulelist><module>mpm_winnt</module>
 <module>prefork</module><module>worker</module></modulelist>
 
 <usage>
@@ -238,7 +238,6 @@ listens to</description>
 <syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module>
 <module>prefork</module><module>worker</module>
 <module>event</module>
 </modulelist>
@@ -321,7 +320,7 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 <contextlist><context>server config</context></contextlist>
 <modulelist>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module>
+<module>prefork</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -442,7 +441,7 @@ will handle during its life</description>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module>
+<module>mpm_winnt</module>
 <module>prefork</module><module>worker</module></modulelist>
 
 <usage>
@@ -477,7 +476,7 @@ will handle during its life</description>
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpmt_os2</module>
+<modulelist><module>mpm_netware</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -493,10 +492,6 @@ will handle during its life</description>
     <p>For <module>mpm_netware</module> the default is
     <code>MaxSpareThreads 100</code>. Since this MPM runs a
     single-process, the spare thread count is also server-wide.</p>
-
-    <p><module>mpmt_os2</module> works
-    similar to <module>mpm_netware</module>. For
-    <module>mpmt_os2</module> the default value is <code>10</code>.</p>
 
     <note><title>Restrictions</title>
       <p>The range of the <directive>MaxSpareThreads</directive> value
@@ -523,7 +518,7 @@ spikes</description>
 <syntax>MinSpareThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpmt_os2</module>
+<modulelist><module>mpm_netware</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -540,10 +535,6 @@ spikes</description>
     <p><module>mpm_netware</module> uses a default of
     <code>MinSpareThreads 10</code> and, since it is a single-process
     MPM, tracks this on a server-wide bases.</p>
-
-    <p><module>mpmt_os2</module> works
-    similar to <module>mpm_netware</module>.  For
-    <module>mpmt_os2</module> the default value is <code>5</code>.</p>
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -591,7 +582,7 @@ Apache</a></seealso>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module>
+<module>prefork</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -610,7 +601,7 @@ Apache</a></seealso>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>prefork</module>
+<module>prefork</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -686,8 +677,7 @@ Apache</a></seealso>
 <syntax>StartServers <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpmt_os2</module>
-<module>prefork</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -698,8 +688,7 @@ Apache</a></seealso>
 
     <p>The default value differs from MPM to MPM. <module>worker</module>
     defaults to <code>StartServers 3</code>; <module>prefork</module> 
-    defaults to <code>5</code>; <module>mpmt_os2</module> defaults to
-    <code>2</code>.</p>
+    defaults to <code>5</code>.</p>
 </usage>
 </directivesynopsis>
 
