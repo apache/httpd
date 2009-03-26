@@ -124,8 +124,7 @@ switch before dumping core</description>
 <syntax>CoreDumpDirectory <var>directory</var></syntax>
 <default>See usage for the default setting</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_winnt</module><module>prefork</module>
+<modulelist><module>mpm_winnt</module><module>prefork</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -200,8 +199,7 @@ of the daemon</description>
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_winnt</module><module>mpmt_os2</module>
+<modulelist><module>mpm_winnt</module><module>mpmt_os2</module>
 <module>prefork</module><module>worker</module></modulelist>
 
 <usage>
@@ -239,8 +237,7 @@ of the daemon</description>
 listens to</description>
 <syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
+<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
 <module>mpmt_os2</module>
 <module>prefork</module><module>worker</module>
 <module>event</module>
@@ -322,7 +319,7 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 <syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
+<modulelist>
 <module>mpm_netware</module><module>mpm_winnt</module>
 <module>mpmt_os2</module><module>prefork</module>
 <module>worker</module></modulelist>
@@ -388,8 +385,7 @@ simultaneously</description>
 <syntax>MaxClients <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>prefork</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -407,11 +403,10 @@ simultaneously</description>
     The default value is <code>256</code>; to increase it, you must also raise
     <directive module="mpm_common">ServerLimit</directive>.</p>
 
-    <p>For threaded and hybrid servers (<em>e.g.</em> <module>beos</module>
+    <p>For threaded and hybrid servers (<em>e.g.</em> <module>event</module>
     or <module>worker</module>) <directive>MaxClients</directive> restricts
     the total number of threads that will be available to serve clients.
-    The default value for <module>beos</module> is <code>50</code>. For
-    hybrid MPMs the default value is <code>16</code> (<directive
+    For hybrid MPMs the default value is <code>16</code> (<directive
     module="mpm_common">ServerLimit</directive>) multiplied by the value of
     <code>25</code> (<directive module="mpm_common"
     >ThreadsPerChild</directive>). Therefore, to increase <directive
@@ -428,8 +423,7 @@ to hold without calling <code>free()</code></description>
 <syntax>MaxMemFree <var>KBytes</var></syntax>
 <default>MaxMemFree 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_netware</module><module>prefork</module>
+<modulelist><module>mpm_netware</module><module>prefork</module>
 <module>worker</module><module>mpm_winnt</module></modulelist>
 
 <usage>
@@ -483,8 +477,7 @@ will handle during its life</description>
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_netware</module><module>mpmt_os2</module>
+<modulelist><module>mpm_netware</module><module>mpmt_os2</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -501,9 +494,8 @@ will handle during its life</description>
     <code>MaxSpareThreads 100</code>. Since this MPM runs a
     single-process, the spare thread count is also server-wide.</p>
 
-    <p><module>beos</module> and <module>mpmt_os2</module> work
-    similar to <module>mpm_netware</module>. The default for
-    <module>beos</module> is <code>MaxSpareThreads 50</code>. For
+    <p><module>mpmt_os2</module> works
+    similar to <module>mpm_netware</module>. For
     <module>mpmt_os2</module> the default value is <code>10</code>.</p>
 
     <note><title>Restrictions</title>
@@ -531,8 +523,7 @@ spikes</description>
 <syntax>MinSpareThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_netware</module><module>mpmt_os2</module>
+<modulelist><module>mpm_netware</module><module>mpmt_os2</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -550,9 +541,8 @@ spikes</description>
     <code>MinSpareThreads 10</code> and, since it is a single-process
     MPM, tracks this on a server-wide bases.</p>
 
-    <p><module>beos</module> and <module>mpmt_os2</module> work
-    similar to <module>mpm_netware</module>. The default for
-    <module>beos</module> is <code>MinSpareThreads 1</code>. For
+    <p><module>mpmt_os2</module> works
+    similar to <module>mpm_netware</module>.  For
     <module>mpmt_os2</module> the default value is <code>5</code>.</p>
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
@@ -566,8 +556,7 @@ the child processes</description>
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_winnt</module><module>prefork</module>
+<modulelist><module>mpm_winnt</module><module>prefork</module>
 <module>worker</module></modulelist>
 
 <usage>
@@ -601,8 +590,7 @@ Apache</a></seealso>
 <syntax>ReceiveBufferSize <var>bytes</var></syntax>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
+<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
 <module>mpmt_os2</module><module>prefork</module>
 <module>worker</module></modulelist>
 
@@ -621,8 +609,7 @@ Apache</a></seealso>
 <syntax>SendBufferSize <var>bytes</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
+<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
 <module>mpmt_os2</module><module>prefork</module>
 <module>worker</module></modulelist>
 
@@ -722,8 +709,7 @@ Apache</a></seealso>
 <syntax>StartThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>mpm_netware</module>
-</modulelist>
+<modulelist><module>mpm_netware</module></modulelist>
 
 <usage>
     <p>Number of threads created on startup. As the
@@ -735,10 +721,6 @@ Apache</a></seealso>
     <code>StartThreads 50</code> and, since there is only a single
     process, this is the total number of threads created at startup to
     serve requests.</p>
-
-    <p>For <module>beos</module> the default is <code>StartThreads
-    10</code>. It also reflects the total number of threads created
-    at startup to serve requests.</p>
 </usage>
 </directivesynopsis>
 
