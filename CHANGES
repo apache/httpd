@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_proxy_ftp: Add ProxyFtpListOnWildcard directive to allow files with
+     globbing characters to be retrieved instead of converted into a 
+     directory listing.  PR 46789 [Dan Poirier <poirier pobox.com>]
+
   *) Provide ap_set_retained_data()/ap_get_retained_data() for preservation
      of module state across unload/load.  [Jeff Trawick]
 
