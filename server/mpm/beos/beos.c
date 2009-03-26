@@ -54,6 +54,8 @@
 #include "apr_thread_mutex.h"
 #include "apr_poll.h"
 
+#define MPM_HARD_LIMITS_FILE APACHE_MPM_DIR "/mpm_default.h"
+
 extern int _kset_fd_limit_(int num);
 
 /* Limit on the total --- clients will be locked out if more servers than
@@ -1105,7 +1107,7 @@ static int beos_check_config(apr_pool_t *pconf, apr_pool_t *plog,
                          " To increase, please see the HARD_THREAD_LIMIT"
                          "define in");
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         " server/mpm/beos%s.", AP_MPM_HARD_LIMITS_FILE);
+                         " server/mpm/beos%s.", MPM_HARD_LIMITS_FILE);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                          "MaxClients of %d exceeds compile-time limit "

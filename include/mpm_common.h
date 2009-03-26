@@ -193,8 +193,6 @@ AP_DECLARE(uid_t) ap_uname2id(const char *name);
 AP_DECLARE(gid_t) ap_gname2id(const char *name);
 #endif
 
-#define AP_MPM_HARD_LIMITS_FILE APACHE_MPM_DIR "/mpm_default.h"
-
 typedef struct ap_pod_t ap_pod_t;
 
 struct ap_pod_t {
