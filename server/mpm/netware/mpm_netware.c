@@ -106,6 +106,8 @@
 #define WORKER_READY        SERVER_READY
 #define WORKER_IDLE_KILL    SERVER_IDLE_KILL
 
+#define MPM_HARD_LIMITS_FILE APACHE_MPM_DIR "/mpm_default.h"
+
 /* config globals */
 
 int ap_threads_per_child=0;         /* Worker threads per child */
@@ -1020,7 +1022,7 @@ static int netware_check_config(apr_pool_t *p, apr_pool_t *plog,
                          " To increase, please see the HARD_THREAD_LIMIT"
                          "define in");
             ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
-                         " server/mpm/netware%s.", AP_MPM_HARD_LIMITS_FILE);
+                         " server/mpm/netware%s.", MPM_HARD_LIMITS_FILE);
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                          "MaxThreads of %d exceeds compile-time limit "
