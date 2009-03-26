@@ -105,7 +105,15 @@ SOURCE=.\lua_apr.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\lua_apr.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\lua_config.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\lua_config.h
 # End Source File
 # Begin Source File
 
@@ -113,11 +121,23 @@ SOURCE=.\lua_request.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\lua_request.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\lua_vmprep.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\lua_vmprep.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\mod_lua.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\mod_lua.h
 # End Source File
 # Begin Source File
 
