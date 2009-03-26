@@ -17,14 +17,35 @@
 #ifndef _MOD_RATELIMIT_H_
 #define _MOD_RATELIMIT_H_
 
-AP_DECLARE_DATA extern const apr_bucket_type_t rl_bucket_type_end;
-AP_DECLARE_DATA extern const apr_bucket_type_t rl_bucket_type_start;
+/* Create a set of AP_RL_DECLARE(type), AP_RL_DECLARE_NONSTD(type) and 
+ * AP_RL_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define AP_RL_DECLARE(type)            type
+#define AP_RL_DECLARE_NONSTD(type)     type
+#define AP_RL_DECLARE_DATA
+#elif defined(AP_RL_DECLARE_STATIC)
+#define AP_RL_DECLARE(type)            type __stdcall
+#define AP_RL_DECLARE_NONSTD(type)     type
+#define AP_RL_DECLARE_DATA
+#elif defined(AP_RL_DECLARE_EXPORT)
+#define AP_RL_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define AP_RL_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define AP_RL_DECLARE_DATA             __declspec(dllexport)
+#else
+#define AP_RL_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define AP_RL_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define AP_RL_DECLARE_DATA             __declspec(dllimport)
+#endif
 
-#define RL_BUCKET_IS_END(e)         (e->type == &rl_bucket_type_end)
-#define RL_BUCKET_IS_START(e)         (e->type == &rl_bucket_type_start)
+AP_RL_DECLARE_DATA extern const apr_bucket_type_t ap_rl_bucket_type_end;
+AP_RL_DECLARE_DATA extern const apr_bucket_type_t ap_rl_bucket_type_start;
+
+#define AP_RL_BUCKET_IS_END(e)         (e->type == &ap_rl_bucket_type_end)
+#define AP_RL_BUCKET_IS_START(e)         (e->type == &ap_rl_bucket_type_start)
 
 /* TODO: Make these Optional Functions, so that module load order doesn't matter. */
-apr_bucket* rl_end_create(apr_bucket_alloc_t *list);
-apr_bucket* rl_start_create(apr_bucket_alloc_t *list);
+AP_RL_DECLARE(apr_bucket*) ap_rl_end_create(apr_bucket_alloc_t *list);
+AP_RL_DECLARE(apr_bucket*) ap_rl_start_create(apr_bucket_alloc_t *list);
 
 #endif
