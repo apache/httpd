@@ -74,9 +74,11 @@ CTARGET=/build
 !ERROR Need srclib\pcre
 !ENDIF
 
-# Note; _tryssl: is only used by the msvc developer studio environment to 'fix up'
-#	the build, since conditional dependencies aren't supported.
+
+# Note; _tryfoo: blocks are used only by the msvc developer studio environment 
+#	to 'fix up' the build, since conditional dependencies aren't supported.
 #
+
 !IF EXIST("srclib\openssl")
 !IF "$(LONG)" == "Debug" && EXIST("srclib\openssl\out32dll.dbg\openssl.exe")
 SSLBIN=out32dll.dbg
@@ -113,6 +115,7 @@ _tryssl:
 	@echo Available from http://www.openssl.org/
 !ENDIF
 
+
 !IF EXIST("srclib\zlib")
 
 _tryzlib:
@@ -138,6 +141,40 @@ _tryzlib:
 
 !ENDIF
 
+
+_tryssl:
+	@echo -----
+	@echo mod_ssl and ab/ssl will not build unless openssl is installed
+	@echo in srclib\openssl.  They must be precompiled using the 
+	@echo ms/ntdll.mak file, see srclib\openssl\INSTALL.W32.  The most
+	@echo recent version confirmed to build with mod_ssl and ab is 0.9.8d.
+	@echo Available from http://www.openssl.org/
+!ENDIF
+
+
+!IF EXIST("srclib\lua")
+
+_trylua:
+!IF $(USEMAK) == 1
+	cd modules\lua
+	$(MAKE) $(MAKEOPT) -f mod_lua.mak CFG="mod_lua - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ELSEIF $(USESLN) == 1
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_lua
+!ELSE
+	@msdev Apache.dsw /USEENV /MAKE \
+		"mod_lua - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+
+!ELSE
+#     NOT EXIST("srclib\lua")
+
+_trylua:
+	@echo -----
+	@echo mod_lua will not build unless lua is installed in srclib\lua.
+	@echo Version 5.1 includes an etc\luavs.bat that will satisfy this requirement.
+
+!ENDIF
 
 
 _trydbd:
@@ -352,6 +389,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_filter.mak      CFG="mod_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_ratelimit.mak   CFG="mod_ratelimit - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_request.mak     CFG="mod_request - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_sed.mak         CFG="mod_sed - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_substitute.mak  CFG="mod_substitute - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -371,6 +409,11 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_log_forensic.mak CFG="mod_log_forensic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_logio.mak       CFG="mod_logio - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+!IF EXIST("srclib\lua")
+	cd modules\lua
+	 $(MAKE) $(MAKEOPT) -f mod_lua.mak         CFG="mod_lua - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+!ENDIF
 	cd modules\mappers
 	 $(MAKE) $(MAKEOPT) -f mod_actions.mak     CFG="mod_actions - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_alias.mak       CFG="mod_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -462,6 +505,9 @@ _build:
 !IF EXIST("srclib\zlib")
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
 !ENDIF
+!IF EXIST("srclib\lua")
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_lua
+!ENDIF
 
 !ELSE
 
@@ -494,6 +540,10 @@ _build:
 !IF EXIST("srclib\zlib")
 	@msdev Apache.dsw /USEENV /MAKE \
 		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
+!ENDIF
+!IF EXIST("srclib\lua")
+	@msdev Apache.dsw /USEENV /MAKE \
+		"mod_lua - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ENDIF
@@ -562,6 +612,7 @@ _copybin:
 	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_include.$(src_so) 	"$(inst_so)" <.y
+	copy modules\filters\$(LONG)\mod_ratelimit.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_request.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_sed.$(src_so) 		"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_substitute.$(src_so)	"$(inst_so)" <.y
@@ -575,6 +626,12 @@ _copybin:
 	copy modules\loggers\$(LONG)\mod_log_config.$(src_so) 	"$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_log_forensic.$(src_so) "$(inst_so)" <.y
 	copy modules\loggers\$(LONG)\mod_logio.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\lua")
+	copy modules\lua\$(LONG)\mod_lua.$(src_so) 		"$(inst_so)" <.y
+!IF EXIST("srclib\lua\src\lua51.$(src_dll)")
+	copy srclib\lua\src\lua51.$(src_dll)		 	"$(inst_dll)" <.y
+!ENDIF
+!ENDIF
 	copy modules\mappers\$(LONG)\mod_actions.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_alias.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_dir.$(src_so) 		"$(inst_so)" <.y
@@ -781,6 +838,26 @@ BEGIN {
 	}
     }
     exit 1;
+}
+<<
+!ENDIF
+!IF EXIST("srclib\lua")
+	type << >> "$(INSTDIR)\NOTICE.txt"
+
+This binary distribution of mod_lua.so includes the Lua language, 
+developed at Lua.org, a laboratory of the Department of Computer Science 
+of PUC-Rio (the Pontifical Catholic University of Rio de Janeiro in Brazil).
+For complete information, visit Lua's web site at http://www.lua.org/
+<<
+	-awk -f <<script.awk < "srclib\lua\COPYRIGHT" >> "$(INSTDIR)\LICENSE.txt"
+BEGIN {
+    print "";
+    print "For the mod_lua language component:";
+    print "";
+    while ( getline > 0 && $$0 !~ /end of COPYRIGHT/ ) {
+	print $$0;
+    }
+    exit 0;
 }
 <<
 !ENDIF

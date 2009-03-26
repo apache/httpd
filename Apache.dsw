@@ -74,9 +74,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name mod_lbmethod_rr
     End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_lua
-    End Project Dependency
 }}}
 
 ###############################################################################
@@ -262,6 +259,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_proxy_http
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_ratelimit
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_request
@@ -2319,6 +2319,27 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_proxy
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_ratelimit"=.\modules\filters\mod_ratelimit.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
     End Project Dependency
 }}}
 
