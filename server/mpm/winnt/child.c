@@ -735,7 +735,7 @@ static unsigned int __stdcall worker_main(void *thread_num_val)
             break;
         }
 
-        /* Have we hit MaxRequestPerChild connections? */
+        /* Have we hit MaxRequestsPerChild connections? */
         if (ap_max_requests_per_child) {
             requests_this_child++;
             if (requests_this_child > ap_max_requests_per_child) {
