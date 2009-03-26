@@ -1759,12 +1759,10 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 ap_get_server_description());
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                 "Server built: %s", ap_get_server_built());
-#ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
                 "AcceptMutex: %s (default: %s)",
                 apr_proc_mutex_name(accept_mutex),
                 apr_proc_mutex_defname());
-#endif
     restart_pending = shutdown_pending = 0;
     mpm_state = AP_MPMQ_RUNNING;
 
@@ -1987,9 +1985,7 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
-#ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-        ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
-#endif
+    ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
