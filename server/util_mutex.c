@@ -85,7 +85,7 @@ AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
         }
     }
 #endif
-#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
+#if APR_HAS_SYSVSEM_SERIALIZE
     else if (!strcasecmp(meth, "sysvsem") || !strcasecmp(meth, "sem")) {
         *mutexmech = APR_LOCK_SYSVSEM;
     }

@@ -34,8 +34,7 @@ accepting requests on network sockets</description>
 <syntax>AcceptMutex Default|<var>method</var></syntax>
 <default>AcceptMutex Default</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -125,9 +124,9 @@ switch before dumping core</description>
 <syntax>CoreDumpDirectory <var>directory</var></syntax>
 <default>See usage for the default setting</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>beos</module>
+<module>mpm_winnt</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>This controls the directory to which Apache attempts to
@@ -155,9 +154,8 @@ after a crash</description>
 <syntax>EnableExceptionHook On|Off</syntax>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module>
-<module>worker</module></modulelist>
+<modulelist>
+<module>prefork</module><module>worker</module></modulelist>
 <compatibility>Available in version 2.0.49 and later</compatibility>
 
 <usage>
@@ -202,10 +200,9 @@ of the daemon</description>
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
-<module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p>The <directive>PidFile</directive> directive sets the file to
@@ -242,10 +239,10 @@ of the daemon</description>
 listens to</description>
 <syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<module>mpmt_os2</module>
+<module>prefork</module><module>worker</module>
 <module>event</module>
 </modulelist>
 <compatibility>Required directive since Apache 2.0<br/>
@@ -325,10 +322,10 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 <syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>The maximum length of the queue of pending connections.
@@ -351,8 +348,8 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist>
+<module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -391,8 +388,8 @@ simultaneously</description>
 <syntax>MaxClients <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>beos</module>
+<module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -431,9 +428,9 @@ to hold without calling <code>free()</code></description>
 <syntax>MaxMemFree <var>KBytes</var></syntax>
 <default>MaxMemFree 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>prefork</module>
-<module>threadpool</module><module>worker</module><module>mpm_winnt</module></modulelist>
+<module>worker</module><module>mpm_winnt</module></modulelist>
 
 <usage>
     <p>The <directive>MaxMemFree</directive> directive sets the
@@ -450,10 +447,9 @@ will handle during its life</description>
 <syntax>MaxRequestsPerChild <var>number</var></syntax>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_netware</module>
+<modulelist><module>mpm_netware</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
-<module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p>The <directive>MaxRequestsPerChild</directive> directive sets
@@ -487,26 +483,19 @@ will handle during its life</description>
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
-</modulelist>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Maximum number of idle threads. Different MPMs deal with this
     directive differently.</p>
 
-    <p>For <module>perchild</module> the default is
-    <code>MaxSpareThreads 10</code>. This MPM monitors the number of
-    idle threads on a per-child basis. If there are too many idle
-    threads in that child, the server will begin to kill threads
-    within that child.</p>
-
-    <p>For <module>worker</module>, <module>leader</module> and <module
-    >threadpool</module> the default is <code>MaxSpareThreads 250</code>.
-    These MPMs deal with idle threads on a server-wide basis. If there
-    are too many idle threads in the server then child processes are
-    killed until the number of idle threads is less than this number.</p>
+    <p>For <module>worker</module>, the default is 
+    <code>MaxSpareThreads 250</code>. This MPM deals with idle threads
+    on a server-wide basis. If there are too many idle threads in the
+    server then child processes are killed until the number of idle
+    threads is less than this number.</p>
 
     <p>For <module>mpm_netware</module> the default is
     <code>MaxSpareThreads 100</code>. Since this MPM runs a
@@ -522,16 +511,11 @@ will handle during its life</description>
       is restricted. Apache will correct the given value automatically
       according to the following rules:</p>
       <ul>
-        <li><module>perchild</module> requires <directive
-        >MaxSpareThreads</directive> to be less or equal than <directive
-        module="mpm_common">ThreadLimit</directive>.</li>
-
         <li><module>mpm_netware</module> wants the value to be greater than
         <directive module="mpm_common">MinSpareThreads</directive>.</li>
 
-        <li>For <module>leader</module>, <module>threadpool</module> and
-        <module>worker</module> the value must be greater or equal than
-        the sum of <directive module="mpm_common">MinSpareThreads</directive>
+        <li>For <module>worker</module>, the value must be greater or equal
+        to the sum of <directive module="mpm_common">MinSpareThreads</directive>
         and <directive module="mpm_common">ThreadsPerChild</directive>.</li>
       </ul>
     </note>
@@ -547,28 +531,17 @@ spikes</description>
 <syntax>MinSpareThreads <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
-</modulelist>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Minimum number of idle threads to handle request spikes.
     Different MPMs deal with this directive
     differently.</p>
 
-    <p><module>perchild</module> uses a default of
-    <code>MinSpareThreads 5</code> and monitors the number of idle
-    threads on a per-child basis. If there aren't enough idle threads
-    in that child, the server will begin to create new threads within
-    that child. Thus, if you set <directive module="perchild"
-    >NumServers</directive> to <code>10</code> and a <directive
-    >MinSpareThreads</directive> value of <code>5</code>, you'll have
-    at least 50 idle threads on your system.</p>
-
-    <p><module>worker</module>, <module>leader</module> and
-    <module>threadpool</module> use a default of <code>MinSpareThreads
-    75</code> and deal with idle threads on a server-wide basis. If
+    <p><module>worker</module> uses a default of <code>MinSpareThreads
+    75</code> and deals with idle threads on a server-wide basis. If
     there aren't enough idle threads in the server then child
     processes are created until the number of idle threads is greater
     than <var>number</var>.</p>
@@ -593,9 +566,9 @@ the child processes</description>
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>beos</module>
+<module>mpm_winnt</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Apache uses a scoreboard to communicate between its parent
@@ -628,10 +601,10 @@ Apache</a></seealso>
 <syntax>ReceiveBufferSize <var>bytes</var></syntax>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>The server will set the TCP receive buffer size to the number of
@@ -648,10 +621,10 @@ Apache</a></seealso>
 <syntax>SendBufferSize <var>bytes</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>The server will set the TCP send buffer size to the number of bytes
@@ -670,8 +643,7 @@ Apache</a></seealso>
 <syntax>ServerLimit <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -703,8 +675,7 @@ Apache</a></seealso>
     might want to set <directive
     module="mpm_common">MaxClients</directive> to.</p>
 
-    <p>With <module>worker</module>, <module>leader</module> and
-    <module>threadpool</module> use this directive only
+    <p>With <module>worker</module>, use this directive only
     if your <directive module="mpm_common">MaxClients</directive> and
     <directive module="mpm_common">ThreadsPerChild</directive>
     settings require more than 16 server processes (default). Do not set
@@ -712,10 +683,6 @@ Apache</a></seealso>
     processes required by what you may want for <directive
     module="mpm_common">MaxClients </directive> and <directive
     module="mpm_common">ThreadsPerChild</directive>.</p>
-
-    <p>With the <module>perchild</module> MPM, use this directive only
-    if you need to set <directive
-    module="perchild">NumServers</directive> higher than 8 (default).</p>
 
     <note><title>Note</title>
       <p>There is a hard limit of <code>ServerLimit 20000</code> compiled
@@ -732,8 +699,8 @@ Apache</a></seealso>
 <syntax>StartServers <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpmt_os2</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>mpmt_os2</module>
+<module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -742,11 +709,10 @@ Apache</a></seealso>
     of processes is dynamically controlled depending on the load,
     there is usually little reason to adjust this parameter.</p>
 
-    <p>The default value differs from MPM to MPM. For
-    <module>leader</module>, <module>threadpool</module> and
-    <module>worker</module> the default is <code>StartServers 3</code>.
-    For <module>prefork</module> defaults to <code>5</code> and for
-    <module>mpmt_os2</module> to <code>2</code>.</p>
+    <p>The default value differs from MPM to MPM. <module>worker</module>
+    defaults to <code>StartServers 3</code>; <module>prefork</module> 
+    defaults to <code>5</code>; <module>mpmt_os2</module> defaults to
+    <code>2</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -757,17 +723,13 @@ Apache</a></seealso>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>mpm_netware</module>
-<module>perchild</module></modulelist>
+</modulelist>
 
 <usage>
     <p>Number of threads created on startup. As the
     number of threads is dynamically controlled depending on the
     load, there is usually little reason to adjust this
     parameter.</p>
-
-    <p>For <module>perchild</module> the default is <code>StartThreads
-    5</code> and this directive tracks the number of threads per
-    process at startup.</p>
 
     <p>For <module>mpm_netware</module> the default is
     <code>StartThreads 50</code> and, since there is only a single
@@ -787,8 +749,7 @@ per child process</description>
 <syntax>ThreadLimit <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<modulelist><module>mpm_winnt</module><module>worker</module>
 </modulelist>
 <compatibility>Available for <module>mpm_winnt</module> in Apache 2.0.41
 and later</compatibility>
@@ -832,8 +793,7 @@ and later</compatibility>
 <syntax>ThreadsPerChild <var>number</var></syntax>
 <default>See usage for details</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module><module>worker</module></modulelist>
 
 <usage>
     <p>This directive sets the number of threads created by each
@@ -858,9 +818,8 @@ client connections</description>
 <syntax>ThreadStackSize <var>size</var></syntax>
 <default>65536 on NetWare; varies on other operating systems</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>perchild</module>
-<module>threadpool</module><module>worker</module>
+<modulelist><module>mpm_netware</module>
+<module>mpm_winnt</module><module>worker</module>
 </modulelist>
 <compatibility>Available in Apache 2.1 and later</compatibility>
 

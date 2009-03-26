@@ -190,13 +190,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
        walk if the path was entirely invalid; and we can't do that either
        UNTIL 2.1 or we break modules that haven't hooked map_to_storage.
 
-  * With AP_MODE_EXHAUSTIVE in the core, it is finally clear to me
-    how the Perchild MPM should be re-written.  It hasn't worked
-    correctly since filters were added because it wasn't possible to
-    get the content that had already been written and the socket at
-    the same time.  This mode lets us do that, so the MPM can be
-    fixed.
-
   * Can a static httpd be built reliably?
       Message-ID: <20020207142751.T31582@clove.org>
 
@@ -206,12 +199,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         <Pine.LNX.4.33.0201202232430.318-100000@deepthought.cs.virginia.edu>
     Jeff wonders if we still care about this.  It is no longer an
     API issue but simply an extra trip through the brigade.
-
-  * Get perchild to work on platforms other than Linux. This
-    will require a portable mechanism to pass data and file/socket
-    descriptors between vhost child groups. An API was proposed
-    on dev@apr:
-      Message-ID: <20020111115006.K1529@clove.org>
 
   * Try to get libtool inter-library dependency code working on AIX.
       Message-ID: <cm3n10lx555.fsf@rdu163-40-092.nc.rr.com>
