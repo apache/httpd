@@ -273,9 +273,6 @@ case $host in
       APR_SETVAR(APACHE_MPM, [prefork])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
-  *-beos*)
-      APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
-      ;;
   *os2-emx*)
       APR_SETVAR(APACHE_MPM, [mpmt_os2])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
@@ -590,11 +587,6 @@ if test "$enable_so" = "yes"; then
       APR_ADDTO(HTTPD_LDFLAGS, [-Wl,-uXML_Parse -Wl,-bE:$abs_builddir/server/httpd.exp])
       APR_ADDTO(SH_LDFLAGS, [\$(EXTRA_LDFLAGS) \$(EXTRA_LIBS)])
       APR_ADDTO(UTIL_LDFLAGS, [-Wl,-uXML_Parse])
-      ;;
-    *beos)
-      SH_LDFLAGS='$(top_builddir)/_APP_'
-      PRE_SHARED_CMDS='ln -s $(top_builddir)/httpd $(top_builddir)/_APP_'
-      POST_SHARED_CMDS='rm $(top_builddir)/_APP_'
       ;;
     *os390)
       APR_ADDTO(HTTPD_LDFLAGS, [--main=$abs_srcdir/server/main.o --core-dll=$abs_srcdir/apachecore.dll])

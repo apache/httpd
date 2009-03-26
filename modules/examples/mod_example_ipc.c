@@ -54,7 +54,7 @@
 #include "http_protocol.h"
 #include "ap_config.h"
 
-#if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
+#if !defined(OS2) && !defined(WIN32) && !defined(NETWARE)
 #include "unixd.h"
 #define MOD_EXIPC_SET_MUTEX_PERMS /* XXX Apache should define something */
 #endif

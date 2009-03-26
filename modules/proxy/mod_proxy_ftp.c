@@ -1323,7 +1323,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
-#if !defined (TPF) && !defined(BEOS)
+#if !defined (TPF)
                 if (conf->recv_buffer_size > 0
                         && (rv = apr_socket_opt_set(data_sock, APR_SO_RCVBUF,
                                                     conf->recv_buffer_size))) {
@@ -1417,7 +1417,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                     return HTTP_INTERNAL_SERVER_ERROR;
                 }
 
-#if !defined (TPF) && !defined(BEOS)
+#if !defined (TPF)
                 if (conf->recv_buffer_size > 0
                         && (rv = apr_socket_opt_set(data_sock, APR_SO_RCVBUF,
                                                     conf->recv_buffer_size))) {

@@ -122,7 +122,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     conn_rec *c = r->connection;
     const char *rem_logname;
     char *env_path;
-#if defined(WIN32) || defined(OS2) || defined(BEOS)
+#if defined(WIN32) || defined(OS2)
     char *env_temp;
 #endif
     const char *host;
@@ -212,12 +212,6 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     }
     if ((env_temp = getenv("PERLLIB_PREFIX")) != NULL) {
         apr_table_addn(e, "PERLLIB_PREFIX", env_temp);
-    }
-#endif
-
-#ifdef BEOS
-    if ((env_temp = getenv("LIBRARY_PATH")) != NULL) {
-        apr_table_addn(e, "LIBRARY_PATH", env_temp);
     }
 #endif
 
