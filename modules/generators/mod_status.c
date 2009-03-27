@@ -72,18 +72,6 @@
 #include "apr_want.h"
 #include "apr_strings.h"
 
-#ifdef NEXT
-#if (NX_CURRENT_COMPILER_RELEASE == 410)
-#ifdef m68k
-#define HZ 64
-#else
-#define HZ 100
-#endif
-#else
-#include <machine/param.h>
-#endif
-#endif /* NEXT */
-
 #define STATUS_MAXLINE 64
 
 #define KBYTE 1024

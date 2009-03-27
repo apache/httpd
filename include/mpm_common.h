@@ -160,7 +160,7 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
  */
 int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status);
 
-#if defined(TCP_NODELAY) && !defined(MPE)
+#if defined(TCP_NODELAY)
 /**
  * Turn off the nagle algorithm for the specified socket.  The nagle algorithm
  * says that we should delay sending partial packets in the hopes of getting

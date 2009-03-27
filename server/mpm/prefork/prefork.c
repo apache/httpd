@@ -47,9 +47,6 @@
 #include "ap_mmn.h"
 #include "apr_poll.h"
 
-#ifdef HAVE_BSTRING_H
-#include <bstring.h>            /* for IRIX, FD_SET calls bzero() */
-#endif
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
@@ -1454,10 +1451,6 @@ static void prefork_hooks(apr_pool_t *p)
      * console.
      */
     static const char *const aszSucc[] = {"core.c", NULL};
-
-#ifdef AUX3
-    (void) set42sig();
-#endif
 
     ap_hook_open_logs(prefork_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     /* we need to set the MPM state before other pre-config hooks use MPM query

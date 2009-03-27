@@ -138,7 +138,7 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
     return;
 }
 
-#if defined(TCP_NODELAY) && !defined(MPE)
+#if defined(TCP_NODELAY)
 void ap_sock_disable_nagle(apr_socket_t *s)
 {
     /* The Nagle algorithm says that we should delay sending partial
@@ -198,10 +198,9 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name)
 #ifndef HAVE_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
 {
-#if defined(QNX) || defined(MPE) || defined(_OSD_POSIX) || defined(__TANDEM) || defined(WIN32) || defined(NETWARE)
-/* QNX and MPE do not appear to support supplementary groups. */
+#if defined(_OSD_POSIX) || defined(WIN32) || defined(NETWARE)
     return 0;
-#else /* ndef QNX */
+#else
     gid_t groups[NGROUPS_MAX];
     struct group *g;
     int index = 0;
@@ -224,7 +223,7 @@ int initgroups(const char *name, gid_t basegid)
     endgrent();
 
     return setgroups(index, groups);
-#endif /* def QNX */
+#endif
 }
 #endif /* def NEED_INITGROUPS */
 

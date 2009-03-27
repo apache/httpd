@@ -736,10 +736,7 @@
           semaphore API allows for a denial of service attack by any
           CGIs running under the same uid as the webserver
           (<em>i.e.</em>, all CGIs, unless you use something like
-          <program>suexec</program> or <code>cgiwrapper</code>). For these
-          reasons this method is not used on any architecture except
-          IRIX (where the previous two are prohibitively expensive
-          on most IRIX boxes).</p>
+          <program>suexec</program> or <code>cgiwrapper</code>).</p>
         </dd>
 
         <dt><code>AcceptMutex pthread</code></dt>
