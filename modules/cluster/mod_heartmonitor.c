@@ -183,8 +183,20 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
         }
     }
 
-    apr_file_close(fp);
+    rv = apr_file_flush(fp);
+    if (rv) {
+      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                   "Heartmonitor: Unable to flush file: %s", path);
+      return rv;
+    }
 
+    rv = apr_file_close(fp);
+    if (rv) {
+      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                   "Heartmonitor: Unable to close file: %s", path);
+      return rv;
+    }
+  
     rv = apr_file_perms_set(path,
                             APR_FPROT_UREAD | APR_FPROT_GREAD |
                             APR_FPROT_WREAD);
