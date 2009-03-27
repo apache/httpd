@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) Remove broken support for BeOS, OS/2, TPF, and even older platforms such
+     as A/UX, Next, and Tandem.  [Jeff Trawick]
+
   *) mod_proxy_ftp: Add ProxyFtpListOnWildcard directive to allow files with
      globbing characters to be retrieved instead of converted into a 
      directory listing.  PR 46789 [Dan Poirier <poirier pobox.com>]
