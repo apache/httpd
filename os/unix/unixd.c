@@ -415,17 +415,6 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
             return APR_EGENERAL;
 #endif /*ENETDOWN*/
 
-#ifdef TPF
-        case EINACT:
-            ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
-                         "offload device inactive");
-            return APR_EGENERAL;
-            break;
-        default:
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
-                         "select/accept error (%d)", status);
-            return APR_EGENERAL;
-#else
         default:
 #ifdef _OSD_POSIX /* Possibly on other platforms too */
             /* If the socket has been closed in ap_close_listeners()
@@ -438,7 +427,6 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
             ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
                          "apr_socket_accept: (client socket)");
             return APR_EGENERAL;
-#endif
     }
     return status;
 }

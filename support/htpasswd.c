@@ -201,7 +201,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         apr_cpystrn(cpw,pw,sizeof(cpw));
         break;
 
-#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
+#if (!(defined(WIN32) || defined(NETWARE)))
     case ALG_CRYPT:
     default:
         if (seed_rand()) {
@@ -243,12 +243,12 @@ static void usage(void)
     apr_file_printf(errfile, " -n  Don't update file; display results on "
                     "stdout." NL);
     apr_file_printf(errfile, " -m  Force MD5 encryption of the password"
-#if defined(WIN32) || defined(TPF) || defined(NETWARE)
+#if defined(WIN32) || defined(NETWARE)
         " (default)"
 #endif
         "." NL);
     apr_file_printf(errfile, " -d  Force CRYPT encryption of the password"
-#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
+#if (!(defined(WIN32) || defined(NETWARE)))
             " (default)"
 #endif
             "." NL);
@@ -258,7 +258,7 @@ static void usage(void)
             "rather than prompting for it." NL);
     apr_file_printf(errfile, " -D  Delete the specified user." NL);
     apr_file_printf(errfile,
-            "On Windows, NetWare and TPF systems the '-m' flag is used by "
+            "On Windows and NetWare systems the '-m' flag is used by "
             "default." NL);
     apr_file_printf(errfile,
             "On all other systems, the '-p' flag will probably not work." NL);
@@ -463,14 +463,14 @@ int main(int argc, const char * const argv[])
     check_args(pool, argc, argv, &alg, &mask, &user, &pwfilename, &password);
 
 
-#if defined(WIN32) || defined(TPF) || defined(NETWARE)
+#if defined(WIN32) || defined(NETWARE)
     if (alg == ALG_CRYPT) {
         alg = ALG_APMD5;
         apr_file_printf(errfile, "Automatically using MD5 format." NL);
     }
 #endif
 
-#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
+#if (!(defined(WIN32) || defined(NETWARE)))
     if (alg == ALG_PLAIN) {
         apr_file_printf(errfile,"Warning: storing passwords as plain text "
                         "might just not work on this platform." NL);

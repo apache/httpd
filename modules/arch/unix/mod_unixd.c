@@ -107,9 +107,6 @@ static int set_group_privs(void)
         else
             name = ap_unixd_config.user_name;
 
-#if !defined(TPF)
-        /* TPF doesn't support groups. */
-
         /*
          * Set the GID before initgroups(), since on some platforms
          * setgid() is known to zap the group list.
@@ -129,7 +126,6 @@ static int set_group_privs(void)
                         "and Group %u", name, (unsigned)ap_unixd_config.group_id);
             return -1;
         }
-#endif /* !defined(TPF) */
     }
     return 0;
 }

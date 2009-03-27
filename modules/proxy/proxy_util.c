@@ -1578,7 +1578,6 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
             continue;
         }
 
-#if !defined(TPF)
         if (conf->recv_buffer_size > 0 &&
             (rv = apr_socket_opt_set(*newsock, APR_SO_RCVBUF,
                                      conf->recv_buffer_size))) {
@@ -1586,7 +1585,6 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                          "apr_socket_opt_set(SO_RCVBUF): Failed to set "
                          "ProxyReceiveBufferSize, using default");
         }
-#endif
 
         rv = apr_socket_opt_set(*newsock, APR_TCP_NODELAY, 1);
         if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
@@ -2262,7 +2260,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         }
         conn->connection = NULL;
 
-#if !defined(TPF)
         if (worker->recv_buffer_size > 0 &&
             (rv = apr_socket_opt_set(newsock, APR_SO_RCVBUF,
                                      worker->recv_buffer_size))) {
@@ -2270,7 +2267,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                          "apr_socket_opt_set(SO_RCVBUF): Failed to set "
                          "ProxyReceiveBufferSize, using default");
         }
-#endif
 
         rv = apr_socket_opt_set(newsock, APR_TCP_NODELAY, 1);
         if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
