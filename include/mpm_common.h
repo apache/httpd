@@ -86,9 +86,9 @@ extern "C" {
  * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
- * @tip This function requires that some macros are defined by the MPM: <pre>
- *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
- *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
+ * @tip This function requires that some hooks are implemented by the MPM: <pre>
+ *  mpm_get_child_pid -- Get the pid from the specified spot in the scoreboard
+ *  mpm_note_child_killed -- Note the child died in the scoreboard
  * </pre>
  * @tip The MPM child processes which are reclaimed are those listed
  * in the scoreboard as well as those currently registered via
@@ -99,9 +99,9 @@ void ap_reclaim_child_processes(int terminate);
 /**
  * Catch any child processes that have been spawned by the parent process
  * which have exited. This includes processes registered as "other_children".
- * @tip This function requires that some macros are defined by the MPM: <pre>
- *  MPM_CHILD_PID -- Get the pid from the specified spot in the scoreboard
- *  MPM_NOTE_CHILD_KILLED -- Note the child died in the scoreboard
+ * @tip This function requires that some hooks are implemented by the MPM: <pre>
+ *  mpm_get_child_pid -- Get the pid from the specified spot in the scoreboard
+ *  mpm_note_child_killed -- Note the child died in the scoreboard
  * </pre>
  * @tip The MPM child processes which are relieved are those listed
  * in the scoreboard as well as those currently registered via
