@@ -22,18 +22,13 @@
 
 <modulesynopsis metafile="event.xml.meta">
 <name>event</name>
-<description>An experimental variant of the standard <module>worker</module>
-MPM</description>
+<description>A variant of the <module>worker</module> MPM with the goal
+of consuming threads only for connections with active processing</description>
 <status>MPM</status>
 <sourcefile>event.c</sourcefile>
 <identifier>mpm_event_module</identifier>
 
 <summary>
-    <note type="warning"><title>Warning</title>
-      <p>This MPM is experimental, so it may or may not work as
-      expected.</p> 
-    </note>
-
     <p>The <module>event</module> Multi-Processing Module (MPM) is
     designed to allow more requests to be served simultaneously by
     passing off some processing work to supporting threads, freeing up
