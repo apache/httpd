@@ -15,7 +15,7 @@
  */
 
 /**
- * @file  ap_mmn.h
+ * @file  ap_mpm.h
  * @brief Apache Multi-Processing Module library
  *
  * @defgroup APACHE_CORE_MPM Multi-Processing Module library
