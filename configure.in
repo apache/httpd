@@ -716,23 +716,3 @@ AC_SUBST(HTTPD_VERSION)
 AC_OUTPUT($APACHE_OUTPUT_FILES docs/conf/httpd.conf docs/conf/extra/httpd-autoindex.conf docs/conf/extra/httpd-dav.conf docs/conf/extra/httpd-default.conf docs/conf/extra/httpd-info.conf docs/conf/extra/httpd-languages.conf docs/conf/extra/httpd-manual.conf docs/conf/extra/httpd-mpm.conf docs/conf/extra/httpd-multilang-errordoc.conf docs/conf/extra/httpd-ssl.conf docs/conf/extra/httpd-userdir.conf docs/conf/extra/httpd-vhosts.conf include/ap_config_layout.h support/apxs support/apachectl support/dbmmanage support/envvars-std support/log_server_status support/logresolve.pl support/phf_abuse_log.cgi support/split-logfile build/rules.mk build/pkg/pkginfo build/config_vars.sh,[true],[
   APACHE_GEN_MAKEFILES
 ])
-
-case $MPM_SUBDIR_NAME in
-*experimental*)
-    echo ""
-    echo ""
-    echo "============================================================"
-    echo "    WARNING: THE '${APACHE_MPM}' MPM IS EXPERIMENTAL"
-    echo "============================================================"
-    echo " The selected MPM might not be fully functional!"
-    echo ""
-    echo " Development of this MPM is not complete. Do not use this"
-    echo " MPM unless you are a programmer willing to help fix it."
-    echo ""
-    echo " If you are looking for a stable server, you should not use"
-    echo " the '${APACHE_MPM}' MPM until it is moved out of experimental."
-    echo "============================================================"
-    echo ""
-    echo ""
-    ;;
-esac

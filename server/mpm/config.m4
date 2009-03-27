@@ -24,16 +24,6 @@ ap_mpm_is_threaded ()
     fi
 }
 
-dnl No such check for a shared MPM.
-ap_mpm_is_experimental ()
-{
-    if test "$apache_cv_mpm" = "event"; then
-        return 0
-    else
-        return 1
-    fi
-}
-
 if ap_mpm_is_threaded; then
   APR_CHECK_APR_DEFINE(APR_HAS_THREADS)
 
@@ -70,12 +60,7 @@ if test "$apache_cv_mpm" = "shared"; then
   MPM_DIR=""
 else
   MPM_NAME=$apache_cv_mpm
-  if ap_mpm_is_experimental; then
-    AC_MSG_WARN(You have selected an EXPERIMENTAL MPM.  Be warned!)
-    MPM_SUBDIR_NAME=experimental/$MPM_NAME
-  else
-    MPM_SUBDIR_NAME=$MPM_NAME
-  fi
+  MPM_SUBDIR_NAME=$MPM_NAME
   MPM_DIR=server/mpm/$MPM_SUBDIR_NAME
   MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
 
