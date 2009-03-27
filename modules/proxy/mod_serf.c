@@ -31,6 +31,7 @@ module AP_MODULE_DECLARE_DATA serf_module;
 
 typedef struct {
     int on;
+    int preservehost;
     apr_uri_t url;
 } serf_config_t;
 
@@ -290,8 +291,13 @@ static apr_status_t setup_request(serf_request_t *request,
 
     apr_table_do(copy_headers_in, hdrs_bkt, ctx->r->headers_in, NULL);
 
-    /* XXXXXX: SerfPreserveHost on */
-    serf_bucket_headers_setn(hdrs_bkt, "Host", ctx->conf->url.hostname);
+    if (ctx->conf->preservehost) {
+        serf_bucket_headers_setn(hdrs_bkt, "Host",
+                                 apr_table_get(ctx->r->headers_in, "Host"));
+    }
+    else {
+        serf_bucket_headers_setn(hdrs_bkt, "Host", ctx->conf->url.hostname);
+    }
 
     serf_bucket_headers_setn(hdrs_bkt, "Accept-Encoding", "gzip");
 
@@ -460,13 +466,29 @@ static int serf_handler(request_rec *r)
     return drive_serf(r, conf);
 }
 
-static const char *add_pass(cmd_parms *cmd, void *vconf,
-                            const char *vdest)
+static int is_true(const char *w)
 {
+    if (strcasecmp(w, "on") == 0 || 
+        strcasecmp(w, "1") == 0 ||
+        strcasecmp(w, "true") == 0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+static const char *add_pass(cmd_parms *cmd, void *vconf,
+                            int argc, char *const argv[])
+{
+    int i;
     apr_status_t rv;
     serf_config_t *conf = (serf_config_t *) vconf;
 
-    rv = apr_uri_parse(cmd->pool, vdest, &conf->url);
+    if (argc < 1) {
+        return "SerfPass must have at least a URI.";
+    }
+
+    rv = apr_uri_parse(cmd->pool, argv[0], &conf->url);
 
     if (rv != APR_SUCCESS) {
         return "mod_serf: Unable to parse SerfPass url.";
@@ -481,8 +503,20 @@ static const char *add_pass(cmd_parms *cmd, void *vconf,
         conf->url.path = "/";
     }
 
-    conf->on = 1;
+    for (i = 1; i < argc; i++) {
+        const char *p = argv[i];
+        const char *x = ap_strchr(p, '=');
+        
+        if (x) {
+            char *key = apr_pstrndup(cmd->pool, p, x-p);
+            if (strcmp(key, "preservehost") == 0) {
+                conf->preservehost = is_true(x+1);
+            }
+        }
+    }
 
+    conf->on = 1;
+    
     return NULL;
 }
 
@@ -558,6 +592,7 @@ static void *create_dir_config(apr_pool_t *p, char *dummy)
 {
     serf_config_t *new = (serf_config_t *) apr_pcalloc(p, sizeof(serf_config_t));
     new->on = 0;
+    new->preservehost = 1;
     return new;
 }
 
@@ -585,8 +620,8 @@ static const command_rec serf_cmds[] =
 {
     AP_INIT_TAKE_ARGV("SerfCluster", add_cluster, NULL, RSRC_CONF,
                       "Configure a cluster backend"),
-    AP_INIT_TAKE1("SerfPass", add_pass, NULL, OR_INDEXES,
-                  "URL to reverse proxy to"),
+    AP_INIT_TAKE_ARGV("SerfPass", add_pass, NULL, OR_INDEXES,
+                      "URL to reverse proxy to"),
     {NULL}
 };
 
