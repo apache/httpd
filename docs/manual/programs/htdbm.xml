@@ -260,7 +260,7 @@
 </section>
 
 <section id="restrictions"><title>Restrictions</title>
-    <p>On the Windows and MPE platforms, passwords encrypted with
+    <p>On the Windows platform, passwords encrypted with
     <code>htdbm</code> are limited to no more than <code>255</code>
     characters in length. Longer passwords will be truncated to 255
     characters.</p>

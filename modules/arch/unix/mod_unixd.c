@@ -170,21 +170,6 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
         }
     }
 
-#ifdef MPE
-    /* Only try to switch if we're running as MANAGER.SYS */
-    if (geteuid() == 1 && ap_unixd_config.user_id > 1) {
-        GETPRIVMODE();
-        if (setuid(ap_unixd_config.user_id) == -1) {
-            GETUSERMODE();
-            rv = errno;
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-                        "setuid: unable to change to uid: %ld",
-                        (long) ap_unixd_config.user_id);
-            return rv;
-        }
-        GETUSERMODE();
-    }
-#else
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
 #ifdef _OSD_POSIX
@@ -208,7 +193,6 @@ unixd_drop_privileges(apr_pool_t *pool, server_rec *s)
             return rv;
         }
     }
-#endif
 #endif
 
     return OK;
@@ -326,20 +310,6 @@ AP_DECLARE(int) ap_unixd_setup_child(void)
         }
     }
 
-#ifdef MPE
-    /* Only try to switch if we're running as MANAGER.SYS */
-    if (geteuid() == 1 && ap_unixd_config.user_id > 1) {
-        GETPRIVMODE();
-        if (setuid(ap_unixd_config.user_id) == -1) {
-            GETUSERMODE();
-            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-                        "setuid: unable to change to uid: %ld",
-                        (long) ap_unixd_config.user_id);
-            exit(1);
-        }
-        GETUSERMODE();
-    }
-#else
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
 #ifdef _OSD_POSIX
@@ -360,7 +330,6 @@ AP_DECLARE(int) ap_unixd_setup_child(void)
                          " after software errors");
         }
     }
-#endif
 #endif
     return 0;
 }

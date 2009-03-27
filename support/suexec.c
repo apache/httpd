@@ -55,29 +55,6 @@
 #include <grp.h>
 #endif
 
-/*
- ***********************************************************************
- * There is no initgroups() in QNX, so I believe this is safe :-)
- * Use cc -osuexec -3 -O -mf -DQNX suexec.c to compile.
- *
- * May 17, 1997.
- * Igor N. Kovalenko -- infoh mail.wplus.net
- ***********************************************************************
- */
-
-#if defined(NEED_INITGROUPS)
-int initgroups(const char *name, gid_t basegid)
-{
-    /* QNX and MPE do not appear to support supplementary groups. */
-    return 0;
-}
-#endif
-
-#if defined(SUNOS4)
-extern char *sys_errlist[];
-#define strerror(x) sys_errlist[(x)]
-#endif
-
 #if defined(PATH_MAX)
 #define AP_MAXPATH PATH_MAX
 #elif defined(MAXPATHLEN)
