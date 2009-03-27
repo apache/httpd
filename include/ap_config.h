@@ -253,7 +253,7 @@
 /* TODO - We need to put OS detection back to make all the following work */
 
 #if defined(SUNOS4) || defined(IRIX) || defined(NEXT) || defined(AUX3) \
-    || defined (UW) || defined(LYNXOS) || defined(TPF)
+    || defined (UW) || defined(LYNXOS)
 /* These systems don't do well with any lingering close code; I don't know
  * why -- manoj */
 #define NO_LINGCLOSE

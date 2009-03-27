@@ -139,11 +139,6 @@ static int my_child_num;
 #endif
 static ap_generation_t volatile my_generation=0;
 
-#ifdef TPF
-int tpf_child = 0;
-char tpf_server_name[INETD_SERVNAME_LENGTH+1];
-#endif /* TPF */
-
 static volatile int die_now = 0;
 
 #ifdef GPROF
@@ -187,10 +182,6 @@ static void chdir_for_gprof(void)
 #else
 #define chdir_for_gprof()
 #endif
-
-/* XXX - I don't know if TPF will ever use this module or not, so leave
- * the ap_check_signals calls in but disable them - manoj */
-#define ap_check_signals()
 
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code) __attribute__ ((noreturn));
@@ -719,8 +710,6 @@ static int make_child(server_rec *s, int slot)
 #ifdef _OSD_POSIX
     /* BS2000 requires a "special" version of fork() before a setuid() call */
     if ((pid = os_fork(ap_unixd_config.user_name)) == -1) {
-#elif defined(TPF)
-    if ((pid = os_fork(s, slot)) == -1) {
 #else
     if ((pid = fork()) == -1) {
 #endif
@@ -890,17 +879,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
                     idle_count, total_non_dead);
             }
             for (i = 0; i < free_length; ++i) {
-#ifdef TPF
-                if (make_child(ap_server_conf, free_slots[i]) == -1) {
-                    if(free_length == 1) {
-                        shutdown_pending = 1;
-                        ap_log_error(APLOG_MARK, APLOG_EMERG, 0, ap_server_conf,
-                                    "No active child processes: shutting down");
-                    }
-                }
-#else
                 make_child(ap_server_conf, free_slots[i]);
-#endif /* TPF */
             }
             /* the next time around we want to spawn twice as many if this
              * wasn't good enough, but not if we've just done a graceful
@@ -1094,11 +1073,6 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         }
 
         perform_idle_server_maintenance(pconf);
-#ifdef TPF
-        shutdown_pending = os_check_server(tpf_server_name);
-        ap_check_signals();
-        sleep(1);
-#endif /*TPF */
     }
     } /* one_process */
 

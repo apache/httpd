@@ -554,20 +554,6 @@ static void log_error_core(const char *file, int line, int level,
 
         logf = s->error_log;
     }
-#ifdef TPF
-    else if (tpf_child) {
-        /*
-         * If we are doing normal logging, don't log messages that are
-         * above the server log level unless it is a startup/shutdown notice
-         */
-        if ((level_and_mask != APLOG_NOTICE)
-            && (level_and_mask > s->loglevel)) {
-            return;
-        }
-
-        logf = stderr;
-    }
-#endif /* TPF */
     else {
         /*
          * If we are doing syslog logging, don't log messages that are
@@ -593,7 +579,6 @@ static void log_error_core(const char *file, int line, int level,
                             "[%s] ", priorities[level_and_mask].t_name);
     }
 
-#ifndef TPF
     if (file && level_and_mask == APLOG_DEBUG) {
 #if defined(_OSD_POSIX) || defined(WIN32) || defined(__MVS__)
         char tmp[256];
@@ -629,7 +614,6 @@ static void log_error_core(const char *file, int line, int level,
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
                             "%s(%d): ", file, line);
     }
-#endif /* TPF */
 
     if (c) {
         /* XXX: TODO: add a method of selecting whether logged client

@@ -29,8 +29,6 @@ extern "C" {
 #ifdef HAVE_SYS_TIMES_H
 #include <sys/time.h>
 #include <sys/times.h>
-#elif defined(TPF)
-#include <time.h>
 #endif
 
 #include "ap_config.h"
