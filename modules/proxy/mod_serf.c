@@ -776,6 +776,8 @@ static int hb_list_servers(void *baton,
 
     apr_pool_create(&tpool, r->pool);
 
+    path = ap_server_root_relative(tpool, path);
+
     tmpservers = apr_array_make(tpool, 32, sizeof(hb_server_t *));
     rv = read_heartbeats(path, tmpservers, tpool);
 
