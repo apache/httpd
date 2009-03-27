@@ -23,17 +23,12 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/event.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>A variant of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM with the goal
+of consuming threads only for connections with active processing</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>mpm_event_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>event.c</td></tr></table>
 <h3>Summary</h3>
-
-    <div class="warning"><h3>Warning</h3>
-      <p>This MPM is experimental, so it may or may not work as
-      expected.</p> 
-    </div>
 
     <p>The <code class="module"><a href="../mod/event.html">event</a></code> Multi-Processing Module (MPM) is
     designed to allow more requests to be served simultaneously by

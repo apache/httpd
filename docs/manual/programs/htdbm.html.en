@@ -136,14 +136,14 @@
     cannot be combined with the <code>-c</code> option.</dd>
 
     <dt><code>-m</code></dt>
-    <dd>Use MD5 encryption for passwords. On Windows, Netware and TPF, this is
+    <dd>Use MD5 encryption for passwords. On Windows and Netware, this is
     the default.</dd>
 
     <dt><code>-d</code></dt>
     <dd>Use <code>crypt()</code> encryption for passwords. The default on all
-    platforms but Windows, Netware and TPF. Though possibly supported by
+    platforms but Windows and Netware. Though possibly supported by
     <code>htdbm</code> on all platforms, it is not supported by the
-    <code class="program"><a href="../programs/httpd.html">httpd</a></code> server on Windows, Netware and TPF.</dd>
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> server on Windows and Netware.</dd>
 
     <dt><code>-s</code></dt>
     <dd>Use SHA encryption for passwords. Facilitates migration from/to Netscape
@@ -152,7 +152,7 @@
     <dt><code>-p</code></dt>
     <dd>Use plaintext passwords. Though <code>htdbm</code> will support
     creation on all platforms, the <code class="program"><a href="../programs/httpd.html">httpd</a></code> daemon will
-    only accept plain text passwords on Windows, Netware and TPF.</dd>
+    only accept plain text passwords on Windows and Netware.</dd>
 
     <dt><code>-l</code></dt>
     <dd>Print each of the usernames and comments from the database on
@@ -262,7 +262,7 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="restrictions" id="restrictions">Restrictions</a></h2>
-    <p>On the Windows and MPE platforms, passwords encrypted with
+    <p>On the Windows platform, passwords encrypted with
     <code>htdbm</code> are limited to no more than <code>255</code>
     characters in length. Longer passwords will be truncated to 255
     characters.</p>

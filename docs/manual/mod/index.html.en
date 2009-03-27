@@ -50,8 +50,8 @@
 available</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">A collection of directives that are implemented by
 more than one multi-processing module (MPM)</dd>
-<dt><a href="event.html">event</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</dd>
+<dt><a href="event.html">event</a></dt><dd>A variant of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM with the goal
+of consuming threads only for connections with active processing</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implements a non-threaded, pre-forking web server</dd>
