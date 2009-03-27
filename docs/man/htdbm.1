@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDBM" 1 "2009-01-11" "Apache HTTP Server" "htdbm"
+.TH "HTDBM" 1 "2009-03-27" "Apache HTTP Server" "htdbm"
 
 .SH NAME
 htdbm \- Manipulate DBM password databases
@@ -71,16 +71,16 @@ Create the \fIpasswdfile\fR\&. If \fIpasswdfile\fR already exists, it is rewritt
 Display the results on standard output rather than updating a database\&. This option changes the syntax of the command line, since the \fIpasswdfile\fR argument (usually the first one) is omitted\&. It cannot be combined with the -c option\&.  
 .TP
 -m
-Use MD5 encryption for passwords\&. On Windows, Netware and TPF, this is the default\&.  
+Use MD5 encryption for passwords\&. On Windows and Netware, this is the default\&.  
 .TP
 -d
-Use crypt() encryption for passwords\&. The default on all platforms but Windows, Netware and TPF\&. Though possibly supported by htdbm on all platforms, it is not supported by the httpd server on Windows, Netware and TPF\&.  
+Use crypt() encryption for passwords\&. The default on all platforms but Windows and Netware\&. Though possibly supported by htdbm on all platforms, it is not supported by the httpd server on Windows and Netware\&.  
 .TP
 -s
 Use SHA encryption for passwords\&. Facilitates migration from/to Netscape servers using the LDAP Directory Interchange Format (ldif)\&.  
 .TP
 -p
-Use plaintext passwords\&. Though htdbm will support creation on all platforms, the httpd daemon will only accept plain text passwords on Windows, Netware and TPF\&.  
+Use plaintext passwords\&. Though htdbm will support creation on all platforms, the httpd daemon will only accept plain text passwords on Windows and Netware\&.  
 .TP
 -l
 Print each of the usernames and comments from the database on stdout\&.  
@@ -159,7 +159,7 @@ The use of the -b option is discouraged, since when it is used the unencrypted p
 .SH "RESTRICTIONS"
  
 .PP
-On the Windows and MPE platforms, passwords encrypted with htdbm are limited to no more than 255 characters in length\&. Longer passwords will be truncated to 255 characters\&.
+On the Windows platform, passwords encrypted with htdbm are limited to no more than 255 characters in length\&. Longer passwords will be truncated to 255 characters\&.
  
 .PP
 The MD5 algorithm used by htdbm is specific to the Apache software; passwords encrypted using it will not be usable with other Web servers\&.
