@@ -7,7 +7,7 @@ APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
   APACHE_MPM=$withval
 ],[
   if test "x$APACHE_MPM" = "x"; then
-    APACHE_MPM=simple
+    APACHE_MPM=event
   fi
 ])
 AC_MSG_RESULT($APACHE_MPM)
