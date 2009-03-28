@@ -241,7 +241,6 @@ static serf_bucket_t* accept_response(serf_request_t *request,
                                       void *acceptor_baton,
                                       apr_pool_t *pool)
 {
-    s_baton_t *ctx = acceptor_baton;
     serf_bucket_t *c;
     serf_bucket_alloc_t *bkt_alloc;
 
@@ -992,6 +991,94 @@ static const ap_serf_cluster_provider_t builtin_heartbeat =
     NULL
 };
 
+static int static_table_check(void *rec, const char *key, const char *value)
+{
+    hb_table_baton_t *b = (hb_table_baton_t*)rec;
+    if (strcmp(key, "hosts") != 0 &&
+        strcmp(key, "order") != 0) {
+        b->msg = apr_psprintf(b->p,
+                              "SerfCluster Static Invalid parameter '%s'",
+                              key);
+        return 1;
+    }
+    
+    return 0;
+}
+
+static const char* static_config_check(void *baton,
+                                   cmd_parms *cmd,
+                                   apr_table_t *params)
+{
+    hb_table_baton_t b;
+    
+    if (apr_is_empty_table(params)) {
+        return "SerfCluster Static requires at least a host list.";
+    }
+    
+    b.p = cmd->pool;
+    b.msg = NULL;
+    
+    apr_table_do(static_table_check, &b, params, NULL);
+    
+    if (b.msg) {
+        return b.msg;
+    }
+    
+    if (apr_table_get(params, "hosts") == NULL) {
+        return "SerfCluster Static requires at least a hosts parameter";
+    }
+    return NULL;
+}
+
+static int static_list_servers(void *baton,
+                               request_rec *r,
+                               apr_table_t *params,
+                               apr_array_header_t **out_servers)
+{
+    apr_status_t rv;
+    char *ip;
+    char *strtok_state;
+    apr_array_header_t *servers;
+    const char *hosts = apr_table_get(params, "hosts");
+    const char *order = apr_table_get(params, "order");
+
+    servers = apr_array_make(r->pool, 10, sizeof(ap_serf_server_t *));
+    
+    ip = apr_strtok(apr_pstrdup(r->pool, hosts), ",", &strtok_state);
+    while (ip) {
+        char *host_str;
+        char *scope_id;
+        apr_port_t port = 0;
+        
+        rv = apr_parse_addr_port(&host_str, &scope_id, &port, ip, r->pool);
+        if (!rv) {
+            ap_serf_server_t *s = apr_palloc(r->pool, sizeof(ap_serf_server_t));
+            s->ip = host_str;
+            s->port = port ? port : 80;
+            APR_ARRAY_PUSH(servers, ap_serf_server_t *) = s;
+        }
+        ip = apr_strtok(NULL, ",", &strtok_state);
+    }
+
+    if (strcmp(order, "random") == 0) {
+        /* TODO: support order=random */
+    }
+
+    *out_servers = servers;
+
+    return OK;
+}
+
+static const ap_serf_cluster_provider_t builtin_static =
+{
+    "static",
+    NULL,
+    &static_config_check,
+    &static_list_servers,
+    NULL,
+    NULL
+};
+
 static void register_hooks(apr_pool_t *p)
 {
     apr_status_t rv;
@@ -1003,6 +1090,9 @@ static void register_hooks(apr_pool_t *p)
     
     ap_register_provider(p, AP_SERF_CLUSTER_PROVIDER,
                          "heartbeat", "0", &builtin_heartbeat);
+
+    ap_register_provider(p, AP_SERF_CLUSTER_PROVIDER,
+                         "static", "0", &builtin_static);
 
     ap_hook_handler(serf_handler, NULL, NULL, APR_HOOK_FIRST);
 }
