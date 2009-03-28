@@ -25,7 +25,6 @@
 <a href="../ja/mod/mod_log_forensic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mod_log_forensic.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucuya yapılan isteklerin adli günlük kayıtlarının tutulması</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Eklenti</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>log_forensic_module</td></tr>

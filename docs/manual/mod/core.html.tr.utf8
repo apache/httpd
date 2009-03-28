@@ -26,7 +26,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -1007,6 +1006,11 @@ kullanımı önerilmemektedir.</td></tr>
       </span>
       &lt;/Directory&gt;
     </code></p></div>
+    <p><code class="directive">EnableSendfile</code> yönergesinin .htaccess ve diziniçi
+      yapılandırmalarının <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> tarafından
+      desteklenmediğini lütfen aklınızdan çıkarmayın.
+      <code class="directive">EnableSendfile</code> yönergesinin sadece küresel
+      tanımları hesaba katılır.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2732,9 +2736,10 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       karakterleri içerebilir.</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost *&gt;<br />
+      &lt;VirtualHost *:80&gt;<br />
       ServerName sunucu.mesela.dom<br />
       ServerAlias sunucu sunucu2.mesela.dom sunucu2<br />
+      ServerAlias *.mesela.dom<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </code></p></div>
