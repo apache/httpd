@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 659902:758929 (outdated) -->
+<!-- English Revision: 758929 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -72,7 +72,7 @@
       düzeltileceği ile ilgili ayrıntıları da içerir.</p>
 
     <p>Hata günlüğü normal olarak bir dosyaya yazılır (genellikle, dosyanın
-      ismi Unix sistemlerinde <code>error_log</code>, Windows ve OS/2’de ise
+      ismi Unix sistemlerinde <code>error_log</code>, Windows’ta ise
       <code>error.log</code>’dur). Ayrıca, Unix sistemlerinde sunucunun
       hataları <code>syslog</code>’a veya <a href="#piped">borulamak suretiyle
       bir programa</a> aktarması da mümkündür.</p>

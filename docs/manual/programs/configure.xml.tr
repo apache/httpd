@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 732790:758913 (outdated) -->
+<!-- English Revision: 758913 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -343,8 +343,7 @@
           CGI desteğini iptal etmek için bu seçeneği kullanın.</dd>
 
         <dt><code>--disable-cgid</code></dt>
-        <dd><module>worker</module> veya
-          <module>perchild</module> çok evreli MPM’leri kullanılırken CGI
+        <dd><module>worker</module> çok evreli MPM’i kullanılırken CGI
           betikleri için desteği öntanımlı olarak <module>mod_cgid</module>
           modülü sağlar. CGI desteğini iptal etmek için bu seçeneği
           kullanın.</dd>
@@ -699,10 +698,7 @@
           belirtilebilir. Bu seçenek kullanılmadığı takdirde işletim
           sisteminiz için <a href="../mpm.html#defaults">öntanımlı MPM</a>
           etkin olur. Bu seçenekte belirtilebilecek MPM isimleri:
-          <module>beos</module>, <module>leader</module>,
-          <module>mpmt_os2</module>, <module>perchild</module>,
-          <module>prefork</module>, <module>threadpool</module> ve
-          <module>worker</module>.</dd>
+          <module>prefork</module> ve <module>worker</module>.</dd>
       </dl>
     </section>
 
