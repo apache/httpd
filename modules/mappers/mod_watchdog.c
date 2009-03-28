@@ -95,6 +95,7 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     int locked = 0;
     int probed = 0;
     int inited = 0;
+    int mpmq_s = 0;
 
     w->pool = apr_thread_pool_get(thread);
     w->is_running = 1;
@@ -102,6 +103,14 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
     apr_thread_mutex_unlock(w->startup);
     if (w->mutex) {
         while (w->is_running) {
+            if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
+                w->is_running = 0;
+                break;
+            }
+            if (mpmq_s == AP_MPMQ_STOPPING) {
+                w->is_running = 0;
+                break;
+            }
             rv = apr_proc_mutex_trylock(w->mutex);
             if (rv == APR_SUCCESS) {
                 if (probed) {
@@ -115,6 +124,14 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
                     while (w->is_running && probed > 0) {
                         apr_sleep(AP_WD_TM_INTERVAL);
                         probed--;
+                        if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
+                            w->is_running = 0;
+                            break;
+                        }
+                        if (mpmq_s == AP_MPMQ_STOPPING) {
+                            w->is_running = 0;
+                            break;
+                        }
                     }
                 }
                 locked = 1;
@@ -155,6 +172,12 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
         watchdog_list_t *wl = w->callbacks;
 
         apr_sleep(AP_WD_TM_SLICE);
+        if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
+            w->is_running = 0;
+        }
+        if (mpmq_s == AP_MPMQ_STOPPING) {
+            w->is_running = 0;
+        }
         if (!w->is_running) {
             break;
         }
@@ -169,6 +192,12 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
                     /* Execute watchdog callback */
                     wl->status = (*wl->callback_fn)(AP_WATCHDOG_STATE_RUNNING,
                                                     (void *)wl->data, ctx);
+                    if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpmq_s) != APR_SUCCESS) {
+                        w->is_running = 0;
+                    }
+                    if (mpmq_s == AP_MPMQ_STOPPING) {
+                        w->is_running = 0;
+                    }
                 }
             }
             wl = wl->next;
@@ -211,10 +240,10 @@ static void* APR_THREAD_FUNC wd_worker(apr_thread_t *thread, void *data)
             wl = wl->next;
         }
     }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
-                     "%sWatchdog (%s) stopping (%" APR_PID_T_FMT ")",
-                     w->singleton ? "Singleton" : "",
-                     w->name, getpid());
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, wd_server_conf->s,
+                 "%sWatchdog (%s) stopping (%" APR_PID_T_FMT ")",
+                 w->singleton ? "Singleton" : "",
+                 w->name, getpid());
 
     if (locked)
         apr_proc_mutex_unlock(w->mutex);
