@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 728169:752891 (outdated) -->
+<!-- English Revision: 752891 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -952,6 +952,11 @@ kullanımı önerilmemektedir.</compatibility>
       </indent>
       &lt;/Directory&gt;
     </example>
+    <p><directive>EnableSendfile</directive> yönergesinin .htaccess ve diziniçi
+      yapılandırmalarının <module>mod_disk_cache</module> tarafından
+      desteklenmediğini lütfen aklınızdan çıkarmayın.
+      <directive>EnableSendfile</directive> yönergesinin sadece küresel
+      tanımları hesaba katılır.</p>
 </usage>
 </directivesynopsis>
 
@@ -2694,9 +2699,10 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       karakterleri içerebilir.</p>
 
     <example>
-      &lt;VirtualHost *&gt;<br />
+      &lt;VirtualHost *:80&gt;<br />
       ServerName sunucu.mesela.dom<br />
       ServerAlias sunucu sunucu2.mesela.dom sunucu2<br />
+      ServerAlias *.mesela.dom<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
