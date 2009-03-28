@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 659902:758929 (outdated) -->
+<!-- English Revision: 758929 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -77,7 +77,7 @@
 
     <p>Le journal des erreurs est habituellement enregistr&eacute; dans un fichier
     (en g&eacute;n&eacute;ral <code>error_log</code> sur les syst&egrave;mes de type Unix et
-    <code>error.log</code> sur Windows et OS/2). Sur les syst&egrave;mes de type Unix,
+    <code>error.log</code> sur Windows). Sur les syst&egrave;mes de type Unix,
     le serveur peut aussi enregistrer ses erreurs dans
     <code>syslog</code> ou les
     <a href="#piped">rediriger vers un programme</a> par l'interm&eacute;diaire d'un
