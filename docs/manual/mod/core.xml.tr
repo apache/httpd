@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 740420:758929 (outdated) -->
+<!-- English Revision: 758929 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -910,6 +910,11 @@ edilmiştir.</compatibility>
       </indent>
       &lt;/Directory&gt;
     </example>
+    <p><directive>EnableSendfile</directive> yönergesinin .htaccess ve diziniçi
+      yapılandırmalarınını <module>mod_disk_cache</module> tarafından
+      desteklenmediğini lütfen aklınızdan çıkarmayın.
+      <directive>EnableSendfile</directive> yönergesinin sadece küresel
+      tanımları hesaba katılır.</p>
 </usage>
 </directivesynopsis>
 
@@ -1019,8 +1024,7 @@ edilmiştir.</compatibility>
 <name>ErrorLog</name>
 <description>Sunucunun hata günlüğünü tutacağı yeri belirler.</description>
 <syntax> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</syntax>
-<default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows ve
-  OS/2)</default>
+<default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -2614,9 +2618,10 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       karakterleri içerebilir.</p>
 
     <example>
-      &lt;VirtualHost *&gt;<br />
+      &lt;VirtualHost *:80&gt;<br />
       ServerName sunucu.mesela.dom<br />
       ServerAlias sunucu sunucu2.mesela.dom sunucu2<br />
+      ServerAlias *.mesela.dom<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>

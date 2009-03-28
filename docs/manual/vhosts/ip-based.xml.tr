@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 659902:752951 (outdated) -->
+<!-- English Revision: 752951 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -118,7 +118,7 @@
       oluşturulur. Örnek:</p>
 
     <example>
-    &lt;VirtualHost www.birkobi.dom&gt;
+    &lt;VirtualHost 192.168.1.10:80&gt;
     <indent>
       ServerAdmin bilgi@posta.birkobi.dom<br />
       DocumentRoot /gruplar/birkobi/belgeler<br />
@@ -128,7 +128,7 @@
     </indent>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost www.digerkobi.dom&gt;
+    &lt;VirtualHost 192.168.1.20:80&gt;
     <indent>
       ServerAdmin bilgi@posta.digerkobi.dom<br />
       DocumentRoot /gruplar/digerkobi/belgeler<br />
@@ -139,9 +139,10 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>Burada konak isimlerinin yerlerine IP adreslerini kullanmanız önerilir
-      (ayrıntılar için <a href="../dns-caveats.html">DNS ile ilgili konular</a>
-      belgesine bakınız).</p>
+    <p>&lt;VirtualHost&gt; yönergesinde konak ismi yerine
+       IP adresi kullanmanız önerilir (ayrıntılar için
+       <a href="../dns-caveats.html">DNS ile ilgili konular</a>
+       belgesine bakınız).</p>
 
     <p>Süreç oluşturmayı denetleyen yönergeler ve bir kaç başka yönerge dışında
       hemen hemen tüm yapılandırma yönergeleri <directive

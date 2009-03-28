@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 713242:758899 (outdated) -->
+<!-- English Revision: 758899 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -39,8 +39,7 @@
 <syntax>AcceptMutex Default|<var>yöntem</var></syntax>
 <default>AcceptMutex Default</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -126,9 +125,8 @@
 <syntax>CoreDumpDirectory <var>dizin</var></syntax>
 <default>Öntanımlı değer için aşağıdaki açıklamaya bakınız</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Bu yönerge <code>core</code> dosyasını dökümlemek üzere Apache’nin
@@ -158,9 +156,7 @@
 <syntax>EnableExceptionHook On|Off</syntax>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module>
-<module>worker</module></modulelist>
+<modulelist><module>prefork</module><module>worker</module></modulelist>
 <compatibility>Sürüm 2.0.49 ve sonrasında mevcuttur</compatibility>
 
 <usage>
@@ -206,10 +202,8 @@
 <syntax>PidFile <var>dosya</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>mpmt_os2</module>
-<module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p><directive>PidFile</directive> yönergesi, sunucunun artalan sürecinin
@@ -247,11 +241,9 @@
 <syntax>Listen [<var>IP-adresi</var>:]<var>port-numarası</var>
   [<var>protokol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
+<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
 <module>mpmt_os2</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
-<module>event</module>
+<module>prefork</module><module>worker</module><module>event</module>
 </modulelist>
 <compatibility>Apache 2.0’dan beri gerekli yönergelerden biridir.<br/>
 <var>protokol</var> argümanı 2.1.5 sürümünde eklenmiştir.</compatibility>
@@ -336,8 +328,7 @@
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p>Bekleyen bağlantılar kuyruğunun azami uzunluğu. Genellikle bu ayar ne
@@ -362,8 +353,7 @@
 <syntax>LockFile <var>dosya</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -399,8 +389,7 @@
 <syntax>MaxClients <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -420,12 +409,12 @@
       module="mpm_common">ServerLimit</directive> değerini de
       arttırmalısınız.</p>
 
-    <p>Çok evreli ve melez sunucularda (<module>beos</module> veya
+    <p>Çok evreli ve melez sunucularda (<module>event</module> veya
       <module>worker</module> gibi) <directive>MaxClients</directive>
       yönergesi istemcilere hizmet verecek evre sayısını sınırlar. Öntanımlı
-      değer <module>beos</module> için <code>50</code> iken melez MPM’ler için
-      <directive module="mpm_common">ServerLimit</directive> ile <directive
-      module="mpm_common">ThreadsPerChild</directive> çarpımıdır (<code>16 x
+      değer melez MPM’ler için 16'dır
+      (<directive module="mpm_common">ServerLimit</directive> ile <directive
+      module="mpm_common">ThreadsPerChild</directive> çarpılır: <code>16 x
       25</code>). Bu bakımdan <directive>MaxClients</directive> değerini 16
       süreçten fazlasına ayarlamak için <directive
       module="mpm_common">ServerLimit</directive> değerini de
@@ -460,10 +449,8 @@
 <syntax>MaxRequestsPerChild <var>sayı</var></syntax>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>mpmt_os2</module>
-<module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p><directive>MaxRequestsPerChild</directive> yönergesi, tek bir çocuk
@@ -495,23 +482,15 @@
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>mpmt_os2</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<modulelist><module>mpm_netware</module><module>worker</module>
 </modulelist>
 
 <usage>
     <p>Boştaki azami evre sayısı. Her MPM bu yönerge karşısında farklı
       davranır.</p>
 
-    <p><module>perchild</module> için <code>MaxSpareThreads 10</code>
-      öntanımlıdır. Bu MPM, boştaki evrelerin sayısını çocuk süreç başına
-      boştaki evre sayısı olarak izler.  Bir çocukta çok fazla boşta evre
-      varsa sunucu sadece o çocuğun boştaki evrelerini öldürür.</p>
-
-    <p><module>worker</module>, <module>leader</module> ve
-      <module>threadpool</module> için <code>MaxSpareThreads 250</code>
-      öntanımlıdır. Bu MPM’ler boştaki evreleri sunucu genelinde izler. Eğer
+    <p><module>worker</module> için <code>MaxSpareThreads 250</code>
+      öntanımlıdır. Bu MPM boştaki evreleri sunucu genelinde izler. Eğer
       sunucuda çok fazla boşta evre varsa, sunucu boştaki evrelerin sayısı bu
       sınırın altına inene kadar çocuk süreçleri öldürür.</p>
 
@@ -519,27 +498,16 @@
       öntanımlıdır. Bu MPM tek bir süreç olarak çalıştığından boştaki evre
       sayısı aynı zamanda sunucu genelinde boştaki evre sayısıdır.</p>
 
-    <p><module>beos</module> ve <module>mpmt_os2</module> MPM’leri
-      <module>mpm_netware</module> gibidir. <module>beos</module> için
-      <code>MaxSpareThreads 50</code> öntanımlıyken  <module>mpmt_os2</module>
-      için öntanımlı değer <code>10</code>’dur.</p>
-
     <note><title>Kısıtlamalar</title>
       <p><directive>MaxSpareThreads</directive> için değer aralığı sınırlıdır.
         Apache belirtilen değeri aşağıdaki kurallara uygun olarak
         kendiliğinden düzeltecektir:</p>
       <ul>
-        <li><module>perchild</module> için
-          <directive>MaxSpareThreads</directive> değerinin <directive
-          module="mpm_common">ThreadLimit</directive> değerinden küçük veya
-          eşit olması gerekir.</li>
-
         <li><module>mpm_netware</module> modülü, değerin <directive
           module="mpm_common">MinSpareThreads</directive> değerinden küçük
           olmasını gerektirir.</li>
 
-        <li><module>leader</module>, <module>threadpool</module> ve
-          <module>worker</module> için değer, <directive
+        <li><module>worker</module> için değer, <directive
           module="mpm_common">MinSpareThreads</directive>
           ve <directive module="mpm_common">ThreadsPerChild</directive>
           toplamına eşit veya büyük olmak zorundadır.</li>
@@ -558,37 +526,22 @@
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>mpmt_os2</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<module>mpm_netware</module><module>worker</module>
 </modulelist>
 
 <usage>
     <p>İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
       sayısı. Her MPM bu yönerge karşısında farklı davranır.</p>
 
-    <p><module>perchild</module> için <code>MinSpareThreads 5</code>
-      öntanımlıdır ve çocuk süreç başına boştaki evre sayısını izler. Bir
-      çocuk için yeterince boşta evre yoksa sunucu bu çocuk için yeni evreler
-      oluşturmaya başlar. Nitekim, <directive
-      module="perchild">NumServers</directive> için <code>10</code> ve
-      <directive>MinSpareThreads</directive> için <code>5</code> atarsanız
-      sisteminizdeki boştaki evre sayısı en az 50 olur.</p>
-
-    <p><module>worker</module>, <module>leader</module> ve
-      <module>threadpool</module> modülleri için <code>MinSpareThreads
-      75</code> öntanımlıdır ve bu modüller boştaki evreleri sunucu genelinde
-      izler. Eğer sunucuda boştaki evre sayısı yetersizse, sunucu boştaki
+    <p><module>worker</module> modülü için <code>MinSpareThreads
+      75</code> öntanımlıdır ve bu modül boştaki evreleri sunucu genelinde
+      izler. Eğer sunucuda boştaki evre sayısı yetersizse, sunucu, boştaki
       evrelerin sayısı bu sınırın üstüne çıkana kadar çocuk süreç
       oluşturur.</p>
 
     <p><module>mpm_netware</module> için <code>MinSpareThreads 10</code>
       öntanımlıdır ve tek süreç kendisi olduğundan izleme sunucu genelinde
       yapılır.</p>
-
-    <p><module>beos</module> ve <module>mpmt_os2</module> modülleri
-      <module>mpm_netware</module> gibidir. <module>beos</module> için
-      <code>MinSpareThreads 1</code> öntanımlı iken <module>mpmt_os2</module>
-      için öntanımlı değer <code>5</code>’tir.</p>
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -601,9 +554,8 @@
 <syntax>ScoreBoardFile <var>dosya-yolu</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Apache ana ve çocuk süreçler arasında iletişim için bir çetele tutar.
@@ -636,10 +588,8 @@
 <syntax>ReceiveBufferSize <var>bayt-sayısı</var></syntax>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p>Sunucu TCP alım tamponu boyunu <var>bayt-sayısı</var> ile belirtilen
@@ -658,8 +608,7 @@
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p>Sunucu TCP gönderim tamponu boyunu <var>bayt-sayısı</var> ile
@@ -679,8 +628,7 @@
 <syntax>ServerLimit <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -710,8 +658,7 @@
       <directive module="mpm_common">MaxClients</directive> için atamak
       istediğiniz değerden fazlasını atamayınız.</p>
 
-    <p><module>worker</module>, <module>leader</module> ve
-      <module>threadpool</module> modülleri söz konusu olduğunda bu yönergeyi
+    <p><module>worker</module> modülü söz konusu olduğunda bu yönergeyi
       <directive module="mpm_common">MaxClients</directive> ve
       <directive module="mpm_common">ThreadsPerChild</directive> ayarları 16
       sunucu sürecinden (16 öntanımlıdır) fazlasını gerektiriyorsa
@@ -719,10 +666,6 @@
       </directive> ve <directive
       module="mpm_common">ThreadsPerChild</directive> için gerekli gördüğünüz
       sunucu süreci sayısından fazlasını atamayınız.</p>
-
-    <p><module>perchild</module> modülüyle bu yönergeyi eğer <directive
-      module="perchild">NumServers</directive> yönergesine 8’den (öntanımlı)
-      büyük bir değer atayacaksanız kullanınız.</p>
 
     <note><title>Ek Bilgi</title>
       <p>Sunucu içinde derlenmiş olarak <code>ServerLimit 20000</code>
@@ -741,8 +684,7 @@
 <syntax>StartServers <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpmt_os2</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -752,10 +694,8 @@
       gerektirecek küçük bir sebep vardır.</p>
 
     <p>Öntanımlı değer MPM’den MPM’e fark eder. Öntanımlı değer
-      <module>leader</module>, <module>threadpool</module> ve
       <module>worker</module> için <code>3</code> iken
-      <module>prefork</module> için <code>5</code> ve
-      <module>mpmt_os2</module> için <code>2</code>’dir.</p>
+      <module>prefork</module> için <code>5</code>'tir.</p>
 </usage>
 </directivesynopsis>
 
@@ -766,8 +706,7 @@
 <syntax>StartThreads <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>mpm_netware</module>
-<module>perchild</module></modulelist>
+<modulelist><module>mpm_netware</module></modulelist>
 
 <usage>
     <p><directive>StartThreads</directive> yönergesi, sunucunun başlatılması
@@ -775,17 +714,9 @@
       olarak yüke bağlı olarak değişse de bu değerin ayarlanmasını
       gerektirecek küçük bir sebep vardır.</p>
 
-    <p><module>perchild</module> için <code>StartThreads 5</code> öntanımlı
-      olup bu yönerge sunucunun başlatılması sırasında oluşturulan süreç
-      başına evre sayısıyla bağlantısını sürdürür.</p>
-
     <p><module>mpm_netware</module> için <code>StartThreads 50</code>
       öntanımlı olup, sadece tek bir süreç olduğundan, sunucunun başlatılması
       sırasında oluşturulan evrelerin toplam sayısı <code>50</code>’dir.</p>
-
-    <p><module>beos</module> için <code>StartThreads 10</code> öntanımlı olup
-      sunucunun başlatılması sırasında oluşturulan evrelerin toplam sayısı
-      <code>10</code>’dur.</p>
 </usage>
 </directivesynopsis>
 
@@ -796,8 +727,7 @@
 <syntax>ThreadLimit <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<modulelist><module>mpm_winnt</module><module>worker</module>
 </modulelist>
 <compatibility><module>mpm_winnt</module> için Apache 2.0.41 ve sonrasında mevcuttur.</compatibility>
 
@@ -840,8 +770,7 @@
 <syntax>ThreadsPerChild <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module><module>worker</module></modulelist>
 
 <usage>
     <p>Bu yönerge, her çocuk süreç tarafından oluşturulan evrelerin sayısını
@@ -867,10 +796,8 @@
 <default>NetWare üzerinde 65536; diğer işletim sistemlerinde
   değişir.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>perchild</module>
-<module>threadpool</module><module>worker</module>
-</modulelist>
+<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
+<module>worker</module></modulelist>
 <compatibility>Apache 2.1 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
