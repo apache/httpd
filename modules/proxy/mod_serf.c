@@ -59,6 +59,7 @@ typedef struct {
     serf_config_t *conf;
     serf_ssl_context_t *ssl_ctx;
     serf_bucket_alloc_t *bkt_alloc;
+    serf_bucket_t *body_bkt;
 } s_baton_t;
 
 
@@ -350,10 +351,9 @@ static apr_status_t setup_request(serf_request_t *request,
 {
     s_baton_t *ctx = vbaton;
     serf_bucket_t *hdrs_bkt;
-    serf_bucket_t *body_bkt = NULL;
 
-    /* XXXXX: handle incoming request bodies */
-    *req_bkt = serf_bucket_request_create(ctx->r->method, ctx->r->unparsed_uri, body_bkt,
+    *req_bkt = serf_bucket_request_create(ctx->r->method, ctx->r->unparsed_uri,
+                                          ctx->body_bkt,
                                           serf_request_get_alloc(request));
 
     hdrs_bkt = serf_bucket_request_get_headers(*req_bkt);
@@ -502,6 +502,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
     baton->conf = conf;
     baton->serf_pool = pool;
     baton->bkt_alloc = serf_bucket_allocator_create(pool, NULL, NULL);
+    baton->body_bkt = NULL;
     baton->ssl_ctx = NULL;
     baton->rstatus = OK;
 
@@ -516,6 +517,45 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         baton->want_ssl = 0;
     }
 
+    rv = ap_setup_client_block(baton->r, REQUEST_CHUNKED_DECHUNK);
+    if (rv) {
+        return rv;
+    }
+
+    /* TODO: create custom serf bucket, which does async request body reads */
+    if (ap_should_client_block(r)) {
+        apr_size_t len;
+        apr_off_t flen = 0;
+        char buf[AP_IOBUFSIZE];
+        apr_file_t *fp;
+
+        rv = apr_file_mktemp(&fp, "mod_serf_buffer.XXXXXX", 0, pool);
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "mod_serf: Unable to create temp request body buffer file.");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        do {
+            len = sizeof(buf);
+            rv = ap_get_client_block(baton->r, buf, len);
+            if (rv > 0) {
+                rv = apr_file_write_full(fp, buf, rv, NULL);
+                if (rv) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "mod_serf: failed to read request body");
+                    return HTTP_INTERNAL_SERVER_ERROR;
+                }
+            }
+        } while(rv > 0);
+
+        if (rv < 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "mod_serf: failed to read request body");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+
+        apr_file_seek(fp, APR_SET, &flen);
+        baton->body_bkt = serf_bucket_file_create(fp, baton->bkt_alloc);
+    }
+    
     conn = serf_connection_create(serfme, address,
                                   conn_setup, baton,
                                   closed_connection, baton,
