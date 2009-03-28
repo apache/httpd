@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 420990:758899 (outdated) -->
+<!-- English Revision: 758899 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -105,9 +105,7 @@ pas un choix diff&eacute;rent &agrave; la compilation.</p>
 
 <table>
 <columnspec><column width=".2"/><column width=".2"/></columnspec>
-<tr><td>BeOS</td><td><module>beos</module></td></tr>
 <tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
-<tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
 <tr><td>Unix</td><td><module>prefork</module></td></tr>
 <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
 </table>

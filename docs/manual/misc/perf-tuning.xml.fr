@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 740028 -->
+<!-- English Revision : 758944 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -462,8 +462,8 @@
       <p>Apache 2.x supporte les mod&egrave;les simultan&eacute;s enfichables, appel&eacute;s
       <a href="../mpm.html">Modules Multi-Processus</a> (MPMs). Vous devez
       choisir un MPM au moment de la construction d'Apache. Certaines
-      plateformes ont des modules MPM sp&eacute;cifiques : <module>beos</module>,
-      <module>mpm_netware</module>, <module>mpmt_os2</module>, et
+      plateformes ont des modules MPM sp&eacute;cifiques : 
+      <module>mpm_netware</module>, et
       <module>mpm_winnt</module>. Sur les syst&egrave;mes de type Unix, vous avez le
       choix entre un grand nombre de modules MPM. Le choix du MPM peut affecter
       la vitesse et l'&eacute;volutivit&eacute; du d&eacute;mon httpd :</p>
@@ -780,10 +780,7 @@
 	  uid que le serveur web d'effectuer une attaque par d&eacute;ni de service
 	  (c'est &agrave; dire <em>tous</em> les CGIs, &agrave; moins que vous n'utilisiez
 	  un programme comme <program>suexec</program> ou
-	  <code>cgiwrapper</code>). C'est pour cette raison que cette m&eacute;thode
-	  n'est utilis&eacute;e sur aucune architecture sauf IRIX (o&ugrave; les deux
-	  m&eacute;thodes pr&eacute;c&eacute;dentes consomment des ressources de mani&egrave;re prohibitive
-	  sur la plupart des machines IRIX).</p>
+	  <code>cgiwrapper</code>)..</p>
         </dd>
 
         <dt><code>AcceptMutex pthread</code></dt>
