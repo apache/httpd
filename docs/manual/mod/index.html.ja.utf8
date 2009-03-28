@@ -47,20 +47,12 @@
 <dt><a href="core.html">core</a></dt><dd>常に使用可能な Apache HTTP サーバのコア機能</dd>
 <dt><a href="mpm_common.html">mpm_common</a></dt><dd class="separate">二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</dd>
-<dt><a href="beos.html">beos</a></dt><dd>This Multi-Processing Module is optimized for BeOS.</dd>
-<dt><a href="event.html">event</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</dd>
-<dt><a href="leader.html">leader</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</dd>
+<dt><a href="event.html">event</a></dt><dd>A variant of the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM with the goal
+of consuming threads only for connections with active processing</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
-<dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
-<dt><a href="perchild.html">perchild</a></dt><dd>Multi-Processing Module allowing for daemon processes serving
-requests to be assigned a variety of different userids</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>スレッドを使わず、先行して fork を行なうウェブサーバを実装
 </dd>
-<dt><a href="threadpool.html">threadpool</a></dt><dd>Yet another experimental variant of the standard
-<code class="module"><a href="../mod/worker.html">worker</a></code> MPM</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>Windows NT
 向けに最適化されたマルチプロセッシングモジュール</dd>
 <dt><a href="worker.html">worker</a></dt><dd>マルチスレッドとマルチプロセスのハイブリッド型

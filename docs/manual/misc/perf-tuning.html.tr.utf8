@@ -422,8 +422,7 @@
         (MPM) adı verilen eklemlenebilir çok görevlilik modellerini
         destekler. Apache’yi derlerken bu MPM’lerden birini seçmeniz
         gerekir. MPM’lerden bazıları platformlara özeldir:
-        <code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>,
-        <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> ve <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>. Unix
+        <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> ve <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>. Unix
         benzeri sistemler için ise seçebileceğiniz modül sayısı birden
         fazladır. MPM seçiminin httpd’nin hızında ve ölçeklenebilirliğinde
         bazı etkileri olabilir:</p>
@@ -723,9 +722,7 @@
           kullanmaları nedeniyle semafor arayüzünün hizmet reddi
           saldırılarına açık olmasıdır (<code class="program"><a href="../programs/suexec.html">suexec</a></code> veya
           <code>cgiwrapper</code> gibi bir şeyler kullanmadıkça bütün
-          CGI'ler için söz konusudur). Bu sebeple bu yöntem IRIX haricinde
-          hiçbir mimaride kullanılmaz (önceki ikisi çoğu IRIX makine için
-          elde edilmesi imkansız derecede pahalı olduğundan).</p>
+          CGI'ler için söz konusudur).</p>
         </dd>
 
         <dt><code>AcceptMutex pthread</code></dt>

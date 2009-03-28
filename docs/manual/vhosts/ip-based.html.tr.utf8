@@ -24,7 +24,6 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Sistem gereksinimleri</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Apache nasıl ayarlanır?</a></li>
@@ -116,7 +115,7 @@
       oluşturulur. Örnek:</p>
 
     <div class="example"><p><code>
-    &lt;VirtualHost www.birkobi.dom&gt;
+    &lt;VirtualHost 192.168.1.10:80&gt;
     <span class="indent">
       ServerAdmin bilgi@posta.birkobi.dom<br />
       DocumentRoot /gruplar/birkobi/belgeler<br />
@@ -126,7 +125,7 @@
     </span>
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost www.digerkobi.dom&gt;
+    &lt;VirtualHost 192.168.1.20:80&gt;
     <span class="indent">
       ServerAdmin bilgi@posta.digerkobi.dom<br />
       DocumentRoot /gruplar/digerkobi/belgeler<br />
@@ -137,9 +136,10 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>Burada konak isimlerinin yerlerine IP adreslerini kullanmanız önerilir
-      (ayrıntılar için <a href="../dns-caveats.html">DNS ile ilgili konular</a>
-      belgesine bakınız).</p>
+    <p>&lt;VirtualHost&gt; yönergesinde konak ismi yerine
+       IP adresi kullanmanız önerilir (ayrıntılar için
+       <a href="../dns-caveats.html">DNS ile ilgili konular</a>
+       belgesine bakınız).</p>
 
     <p>Süreç oluşturmayı denetleyen yönergeler ve bir kaç başka yönerge dışında
       hemen hemen tüm yapılandırma yönergeleri <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> bölümleri içinde kullanılabilir. Bir

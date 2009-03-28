@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTDBM" 1 "2009-02-16" "Apache HTTP Sunucusu" "htdbm"
+.TH "HTDBM" 1 "2009-03-28" "Apache HTTP Sunucusu" "htdbm"
 .nh
 .SH İSİM
 htdbm \- DBM parola veritabanlarını yönetir
@@ -71,10 +71,10 @@ Betik kipi; parola için istek yapmak yerine parola komut satırından verilir\&
 Sonuçları veritabanında güncellemek yerine standart çıktıya gönderir\&. \fIparola-dosyası\fR belirtilmediğinden, bu seçenek komut satırı sözdizimini değiştirir\&. Bu seçenek \fB-c\fR seçeneği ile birlikte kullanılamaz\&.  
 .TP
 \fB-m\fR
-Parolalar için MD5 şifrelemesi kullanılır\&. Windows, Netware ve TPF için öntanımlıdır\&.  
+Parolalar için MD5 şifrelemesi kullanılır\&. Windows ve Netware için bu öntanımlıdır\&.  
 .TP
 \fB-d\fR
-Parolaları şifrelemek için crypt() kullanılır\&. Windows, Netware ve TPF dışında öntanımlıdır\&. \fBhtdbm\fR tarafından tüm platformlarda destekleniyor olsa da Windows, Netware ve TPF üzerinde httpd sunucusu tarafından desteklenmez\&.  
+Parolaları şifrelemek için crypt() kullanılır\&. Windows, ve Netware dışında öntanımlıdır\&. \fBhtdbm\fR tarafından tüm platformlarda destekleniyor olsa da Windows ve Netware üzerinde httpd sunucusu tarafından desteklenmez\&.  
 .TP
 \fB-s\fR
 Parolalar için SHA şifrelemesi kullanılır\&. LDAP Dizin değişim biçemini (ldif) kullanarak Netscape sunucularına/sunucularından göçü kolaylaştırır\&.  
@@ -159,7 +159,7 @@ Komut satırında parolanın şifrelenmemiş olarak görünmesi sebebiyle \fB-b\
 .SH "KISITLAMALAR"
  
 .PP
-Windows ve MPE platformlarında, \fBhtdbm\fR ile şifrelenen parolalar 255 karakterden daha uzun olamaz\&. 255 karakterden sonrası kırpılır\&.
+Windows platformunda, \fBhtdbm\fR ile şifrelenen parolalar 255 karakterden daha uzun olamaz\&. 255 karakterden sonrası kırpılır\&.
  
 .PP
 \fBhtdbm\fR tarafından kullanılan MD5 algoritması Apache yazılımına özeldir; bu algoritma ile şifrelenen parolalar başka HTTP sunucularında kullanılamayabilir\&.
