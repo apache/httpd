@@ -337,8 +337,7 @@
           CGI desteğini iptal etmek için bu seçeneği kullanın.</dd>
 
         <dt><code>--disable-cgid</code></dt>
-        <dd><code class="module"><a href="../mod/worker.html">worker</a></code> veya
-          <code class="module"><a href="../mod/perchild.html">perchild</a></code> çok evreli MPM’leri kullanılırken CGI
+        <dd><code class="module"><a href="../mod/worker.html">worker</a></code> çok evreli MPM’i kullanılırken CGI
           betikleri için desteği öntanımlı olarak <code class="module"><a href="../mod/mod_cgid.html">mod_cgid</a></code>
           modülü sağlar. CGI desteğini iptal etmek için bu seçeneği
           kullanın.</dd>
@@ -688,10 +687,7 @@
           belirtilebilir. Bu seçenek kullanılmadığı takdirde işletim
           sisteminiz için <a href="../mpm.html#defaults">öntanımlı MPM</a>
           etkin olur. Bu seçenekte belirtilebilecek MPM isimleri:
-          <code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>,
-          <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>,
-          <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code> ve
-          <code class="module"><a href="../mod/worker.html">worker</a></code>.</dd>
+          <code class="module"><a href="../mod/prefork.html">prefork</a></code> ve <code class="module"><a href="../mod/worker.html">worker</a></code>.</dd>
       </dl>
     
 

@@ -10,9 +10,9 @@
     <variant outdated="yes">de</variant>
     <variant>en</variant>
     <variant outdated="yes">es</variant>
-    <variant outdated="yes">fr</variant>
+    <variant>fr</variant>
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
-    <variant outdated="yes">tr</variant>
+    <variant>tr</variant>
   </variants>
 </metafile>

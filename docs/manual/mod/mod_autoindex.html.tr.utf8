@@ -735,8 +735,8 @@ belirler.</td></tr>
       <dd>Bu seçenek listelenen dizin için HTTP başlığında
         <code>Last-Modified</code> ve <code>ETag</code> alanlarının dönmesini
         sağlar. Sadece işletim sistemi veya dosya sistemi uygun stat()
-        sonuçlarını döndürüyorsa bu geçerlidir. Bazı Unix sistemleri, OS2’nin
-        JFS’si ve Win32’nin NTFS’i böyledir. Ancak OS2 ve Win32 FAT dosya
+        sonuçlarını döndürüyorsa bu geçerlidir. Bazı Unix sistemleri ve
+        Win32’nin NTFS’i böyledir. Ancak Win32 FAT dosya
         sistemleri böyle değildir. Bu özellik etkin kılındığında istemci veya
         vekil <code>HEAD</code> istekleriyle dosya listesindeki değişiklikleri
         izleyebilirler. Yalnız, bazı işletim sistemlerinin yeni ve silinmiş

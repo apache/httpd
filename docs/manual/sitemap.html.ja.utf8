@@ -157,14 +157,9 @@
 <li><a href="mod/directive-dict.html">Apache ディレクティブを説明に使われる用語</a></li>
 </ul><ul><li><a href="mod/core.html">Apache コア機能</a></li>
 <li><a href="mod/mpm_common.html">Apache MPM 共通ディレクティブ</a></li>
-<li><a href="mod/beos.html">Apache MPM beos</a></li>
 <li><a href="mod/event.html">Apache MPM event</a></li>
-<li><a href="mod/leader.html">Apache MPM leader</a></li>
 <li><a href="mod/mpm_netware.html">Apache MPM netware</a></li>
-<li><a href="mod/mpmt_os2.html">Apache MPM os2</a></li>
-<li><a href="mod/perchild.html">Apache MPM perchild</a></li>
 <li><a href="mod/prefork.html">Apache MPM prefork</a></li>
-<li><a href="mod/threadpool.html">Apache MPM threadpool</a></li>
 <li><a href="mod/mpm_winnt.html">Apache MPM winnt</a></li>
 <li><a href="mod/worker.html">Apache MPM worker</a></li>
 </ul><ul><li><a href="mod/mod_access_compat.html">Apache モジュール mod_access_compat</a></li>

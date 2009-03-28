@@ -71,7 +71,7 @@
       düzeltileceği ile ilgili ayrıntıları da içerir.</p>
 
     <p>Hata günlüğü normal olarak bir dosyaya yazılır (genellikle, dosyanın
-      ismi Unix sistemlerinde <code>error_log</code>, Windows ve OS/2’de ise
+      ismi Unix sistemlerinde <code>error_log</code>, Windows’ta ise
       <code>error.log</code>’dur). Ayrıca, Unix sistemlerinde sunucunun
       hataları <code>syslog</code>’a veya <a href="#piped">borulamak suretiyle
       bir programa</a> aktarması da mümkündür.</p>

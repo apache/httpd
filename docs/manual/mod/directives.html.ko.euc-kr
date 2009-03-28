@@ -72,7 +72,6 @@
 <li><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail</a></li>
 <li><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID</a></li>
 <li><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail</a></li>
-<li><a href="perchild.html#assignuserid">AssignUserID</a></li>
 <li><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative</a></li>
 <li><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></li>
 <li><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery</a></li>
@@ -155,7 +154,6 @@
 <li><a href="mod_charset_lite.html#charsetoptions">CharsetOptions</a></li>
 <li><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc</a></li>
 <li><a href="mod_speling.html#checkspelling">CheckSpelling</a></li>
-<li><a href="perchild.html#childperuserid">ChildPerUserID</a></li>
 <li><a href="mod_unixd.html#chrootdir">ChrootDir</a></li>
 <li><a href="core.html#contentdigest">ContentDigest</a></li>
 <li><a href="mod_usertrack.html#cookiedomain">CookieDomain</a></li>
@@ -289,11 +287,9 @@
 <li><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
 <li><a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
 <li><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
-<li><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread</a></li>
 <li><a href="prefork.html#maxspareservers">MaxSpareServers</a></li>
 <li><a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
 <li><a href="mpm_netware.html#maxthreads">MaxThreads</a></li>
-<li><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild</a></li>
 <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
 <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
 <li><a href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
@@ -305,7 +301,6 @@
 <li><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></li>
 <li><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost</a></li>
 <li><a href="mod_proxy.html#noproxy">NoProxy</a></li>
-<li><a href="perchild.html#numservers">NumServers</a></li>
 <li><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
 <li><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
@@ -320,6 +315,8 @@
 <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
 <li><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></li>
 <li><a href="mod_proxy.html#proxyftpdircharset">ProxyFtpDirCharset</a></li>
+<li><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
+<li><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
 <li><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize</a></li>
 <li><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards</a></li>
