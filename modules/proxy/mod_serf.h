@@ -23,6 +23,14 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#include "ap_config_auto.h"
+#ifdef HAVE_SERF_H
+#include "serf.h"
+#ifndef AP_HAS_SERF
+#define AP_HAS_SERF 1
+#endif
+#endif
+
 #include "ap_provider.h"
 
 #ifndef _MOD_SERF_H_

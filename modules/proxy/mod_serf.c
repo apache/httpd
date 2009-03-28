@@ -25,9 +25,10 @@
 #include "serf.h"
 #include "apr_uri.h"
 #include "apr_strings.h"
-
+#include "ap_mpm.h"
 
 module AP_MODULE_DECLARE_DATA serf_module;
+static int mpm_supprts_serf = 0;
 
 typedef struct {
     int on;
@@ -325,13 +326,39 @@ static apr_status_t setup_request(serf_request_t *request,
     return APR_SUCCESS;
 }
 
+static void 
+timed_callback(void *baton)
+{
+    s_baton_t *ctx = baton;
+
+    if (ctx->keep_reading) {
+        ap_mpm_register_timed_callback(apr_time_from_msec(100), timed_callback, baton);
+    }
+    else if (ctx->rstatus) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, ctx->rstatus, ctx->r,
+                      "serf: request returned: %d", ctx->rstatus);
+        ctx->r->status = HTTP_OK;
+        ap_die(ctx->rstatus, ctx->r);
+    }
+    else {
+        ap_finalize_request_protocol(ctx->r);
+        ap_process_request_after_handler(ctx->r);
+        return;
+    }
+}
+
+
+#ifndef apr_time_from_msec
+#define apr_time_from_msec(x) (x * 1000)
+#endif
+
 /* TOOD: rewrite drive_serf to make it async */
 static int drive_serf(request_rec *r, serf_config_t *conf)
 {
     apr_status_t rv;
     apr_pool_t *pool = r->pool;
     apr_sockaddr_t *address;
-    s_baton_t baton;
+    s_baton_t *baton = apr_palloc(r->pool, sizeof(s_baton_t));
     /* XXXXX: make persistent/per-process or something.*/
     serf_context_t *serfme;
     serf_connection_t *conn;
@@ -409,49 +436,71 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    serfme = serf_context_create(pool);
-
-    baton.r = r;
-    baton.conf = conf;
-    baton.bkt_alloc = serf_bucket_allocator_create(pool, NULL, NULL);
-    baton.ssl_ctx = NULL;
-    baton.rstatus = OK;
-
-    baton.done_headers = 0;
-    baton.keep_reading = 1;
-
-    if (strcasecmp(conf->url.scheme, "https") == 0) {
-        baton.want_ssl = 1;
+    if (mpm_supprts_serf) {
+        serfme = ap_lookup_provider("mpm_serf", "instance", "0");
+        if (!serfme) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "mpm lied to us about supporting serf.");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
     }
     else {
-        baton.want_ssl = 0;
+        serfme = serf_context_create(pool);
+    }
+
+    baton->r = r;
+    baton->conf = conf;
+    baton->bkt_alloc = serf_bucket_allocator_create(pool, NULL, NULL);
+    baton->ssl_ctx = NULL;
+    baton->rstatus = OK;
+
+    baton->done_headers = 0;
+    baton->keep_reading = 1;
+
+    if (strcasecmp(conf->url.scheme, "https") == 0) {
+        baton->want_ssl = 1;
+    }
+    else {
+        baton->want_ssl = 0;
     }
 
     conn = serf_connection_create(serfme, address,
-                                  conn_setup, &baton,
-                                  closed_connection, &baton,
+                                  conn_setup, baton,
+                                  closed_connection, baton,
                                   pool);
 
     srequest = serf_connection_request_create(conn, setup_request,
-                                              &baton);
+                                              baton);
 
-    do {
-        rv = serf_context_run(serfme, SERF_DURATION_FOREVER, pool);
+    if (mpm_supprts_serf) {
 
-        /* XXXX: Handle timeouts */
-        if (APR_STATUS_IS_TIMEUP(rv)) {
-            continue;
-        }
-
+        rv = ap_mpm_register_timed_callback(apr_time_from_msec(100), timed_callback, baton);
+        
         if (rv != APR_SUCCESS) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "serf_context_run()");
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "ap_mpm_register_timed_callback failed.");
             return HTTP_INTERNAL_SERVER_ERROR;       
         }
 
-        serf_debug__closed_conn(baton.bkt_alloc);
-    } while (baton.keep_reading);
-
-    return baton.rstatus;
+        return SUSPENDED;
+    }
+    else {
+        do {
+            rv = serf_context_run(serfme, SERF_DURATION_FOREVER, pool);
+            
+            /* XXXX: Handle timeouts */
+            if (APR_STATUS_IS_TIMEUP(rv)) {
+                continue;
+            }
+            
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "serf_context_run()");
+                return HTTP_INTERNAL_SERVER_ERROR;       
+            }
+            
+            serf_debug__closed_conn(baton->bkt_alloc);
+        } while (baton->keep_reading);
+        
+        return baton->rstatus;
+    }
 }
 
 static int serf_handler(request_rec *r)
@@ -860,6 +909,13 @@ static const ap_serf_cluster_provider_t builtin_heartbeat =
 
 static void register_hooks(apr_pool_t *p)
 {
+    apr_status_t rv;
+    rv = ap_mpm_query(AP_MPMQ_HAS_SERF, &mpm_supprts_serf);
+
+    if (rv != APR_SUCCESS) {
+        mpm_supprts_serf = 0;
+    }
+    
     ap_register_provider(p, AP_SERF_CLUSTER_PROVIDER,
                          "heartbeat", "0", &builtin_heartbeat);
 
