@@ -144,6 +144,7 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_MPM_STATE            13  /* starting, running, stopping  */
 #define AP_MPMQ_IS_ASYNC             14  /* MPM can process async connections  */
 #define AP_MPMQ_GENERATION           15  /* MPM generation */
+#define AP_MPMQ_HAS_SERF             16  /* MPM can drive serf internally  */
 
 /**
  * Query a property of the current MPM.  
