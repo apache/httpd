@@ -897,6 +897,7 @@ BEGIN {
 		modules\generators\mod_status.h \
 		modules\loggers\mod_log_config.h \
 		modules\proxy\mod_proxy.h \
+		modules\proxy\mod_serf.h \
 		modules\ssl\mod_ssl.h \
 		modules\mappers\mod_so.h \
 		modules\mappers\mod_rewrite.h \
