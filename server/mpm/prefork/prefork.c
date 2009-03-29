@@ -131,9 +131,7 @@ static apr_pool_t *pchild;              /* Pool for httpd child stuff */
 
 static pid_t ap_my_pid; /* it seems silly to call getpid all the time */
 static pid_t parent_pid;
-#ifndef MULTITHREAD
 static int my_child_num;
-#endif
 static ap_generation_t volatile my_generation=0;
 
 static volatile int die_now = 0;
