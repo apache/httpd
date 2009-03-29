@@ -604,7 +604,7 @@ void ap_mpm_pod_killpg(ap_pod_t *pod, int num)
     }
 }
 
-static const char *dash_k_arg;
+static const char *dash_k_arg = NULL;
 
 static int send_signal(pid_t pid, int sig)
 {
