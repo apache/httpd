@@ -2856,7 +2856,7 @@ static const command_rec event_cmds[] = {
 
 module AP_MODULE_DECLARE_DATA mpm_event_module = {
     MPM20_MODULE_STUFF,
-    ap_mpm_rewrite_args,        /* hook to run before apache parses args */
+    NULL,                       /* hook to run before apache parses args */
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */

@@ -3949,7 +3949,8 @@ static void register_hooks(apr_pool_t *p)
 }
 
 AP_DECLARE_DATA module core_module = {
-    STANDARD20_MODULE_STUFF,
+    MPM20_MODULE_STUFF,
+    AP_PLATFORM_REWRITE_ARGS_HOOK, /* hook to run before apache parses args */
     create_core_dir_config,       /* create per-directory config structure */
     merge_core_dir_configs,       /* merge per-directory config structures */
     create_core_server_config,    /* create per-server config structure */

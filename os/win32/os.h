@@ -40,6 +40,13 @@
 
 #define PLATFORM "Win32"
 
+/* Define command-line rewriting for this platform, handled by core.
+ * For Windows, this is currently handled inside the WinNT MPM.
+ * XXX To support a choice of MPMs, extract common platform behavior
+ * into a function specified here.
+ */
+#define AP_PLATFORM_REWRITE_ARGS_HOOK NULL
+
 /* going away shortly... */
 #define HAVE_DRIVE_LETTERS
 #define HAVE_UNC_PATHS
