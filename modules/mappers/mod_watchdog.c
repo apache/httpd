@@ -528,7 +528,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
             ap_watchdog_t *w = ap_lookup_provider(AP_WATCHODG_PGROUP,
                                                   wn[i].provider_name,
                                                   AP_WATCHODG_CVERSION);
-            if (w && w->active) {
+            if (w) {
                 if (!w->active) {
                     int status = ap_run_watchdog_need(s, w->name, 0,
                                                       w->singleton);
