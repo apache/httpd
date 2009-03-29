@@ -403,7 +403,7 @@ Changes with Apache 2.3.0
   *) core: fix origin checking in SymlinksIfOwnerMatch
      PR 36783 [Robert L Mathews <rob-apache.org.bugs tigertech.net>]
 
-  *) Activate mod_cache, mod_file_cache and mod_disc_cache as part of the
+  *) Activate mod_cache, mod_file_cache and mod_disk_cache as part of the
      'most' set for '--enable-modules' and '--enable-shared-mods'. Include 
      mod_mem_cache in 'all' as well. [Dirk-Willem van Gulik]
 
