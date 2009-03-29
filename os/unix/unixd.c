@@ -26,6 +26,7 @@
 #include "apr_thread_proc.h"
 #include "apr_strings.h"
 #include "apr_portable.h"
+#include "apr_perms_set.h"
 #ifdef HAVE_PWD_H
 #include <pwd.h>
 #endif
@@ -208,71 +209,19 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
                                               attr, ugid, p);
 }
 
-/* XXX move to APR and externalize (but implement differently :) ) */
-static apr_lockmech_e proc_mutex_mech(apr_proc_mutex_t *pmutex)
-{
-    const char *mechname = apr_proc_mutex_name(pmutex);
-
-    if (!strcmp(mechname, "sysvsem")) {
-        return APR_LOCK_SYSVSEM;
-    }
-    else if (!strcmp(mechname, "flock")) {
-        return APR_LOCK_FLOCK;
-    }
-    return APR_LOCK_DEFAULT;
-}
-
 AP_DECLARE(apr_status_t) ap_unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
 {
+    apr_status_t rv = APR_SUCCESS;
     if (!geteuid()) {
-        apr_lockmech_e mech = proc_mutex_mech(pmutex);
-
-        switch(mech) {
-#if APR_HAS_SYSVSEM_SERIALIZE
-        case APR_LOCK_SYSVSEM:
-        {
-            apr_os_proc_mutex_t ospmutex;
-#if !APR_HAVE_UNION_SEMUN
-            union semun {
-                long val;
-                struct semid_ds *buf;
-                unsigned short *array;
-            };
-#endif
-            union semun ick;
-            struct semid_ds buf;
-
-            apr_os_proc_mutex_get(&ospmutex, pmutex);
-            buf.sem_perm.uid = ap_unixd_config.user_id;
-            buf.sem_perm.gid = ap_unixd_config.group_id;
-            buf.sem_perm.mode = 0600;
-            ick.buf = &buf;
-            if (semctl(ospmutex.crossproc, 0, IPC_SET, ick) < 0) {
-                return errno;
-            }
-        }
-        break;
-#endif
-#if APR_HAS_FLOCK_SERIALIZE
-        case APR_LOCK_FLOCK:
-        {
-            const char *lockfile = apr_proc_mutex_lockfile(pmutex);
-
-            if (lockfile) {
-                if (chown(lockfile, ap_unixd_config.user_id,
-                          -1 /* no gid change */) < 0) {
-                    return errno;
-                }
-            }
-        }
-        break;
-#endif
-        default:
-            /* do nothing */
-            break;
+        rv = APR_PERMS_SET_FN(proc_mutex)(pmutex,
+                                          APR_FPROT_GWRITE | APR_FPROT_UWRITE,
+                                          ap_unixd_config.user_id,
+                                          ap_unixd_config.group_id);
+        if (rv == APR_ENOTIMPL) {
+            rv = APR_SUCCESS;
         }
     }
-    return APR_SUCCESS;
+    return rv;
 }
 
 AP_DECLARE(apr_status_t) ap_unixd_set_global_mutex_perms(apr_global_mutex_t *gmutex)
