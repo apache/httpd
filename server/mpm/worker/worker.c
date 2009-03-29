@@ -354,11 +354,6 @@ static apr_status_t worker_query(int query_code, int *result)
     return APR_ENOTIMPL;
 }
 
-static pid_t worker_get_child_pid(int childnum)
-{
-    return ap_scoreboard_image->parent[childnum].pid;
-}
-
 static apr_status_t worker_note_child_killed(int childnum)
 {
     ap_scoreboard_image->parent[childnum].pid = 0;
@@ -2245,7 +2240,6 @@ static void worker_hooks(apr_pool_t *p)
     ap_hook_check_config(worker_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm(worker_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(worker_query, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_mpm_get_child_pid(worker_get_child_pid, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_note_child_killed(worker_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(worker_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
