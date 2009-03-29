@@ -214,7 +214,7 @@ AP_DECLARE(apr_status_t) ap_unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
     apr_status_t rv = APR_SUCCESS;
     if (!geteuid()) {
         rv = APR_PERMS_SET_FN(proc_mutex)(pmutex,
-                                          APR_FPROT_GWRITE | APR_FPROT_UWRITE,
+                                          APR_FPROT_UWRITE | APR_FPROT_UREAD,
                                           ap_unixd_config.user_id,
                                           ap_unixd_config.group_id);
         if (rv == APR_ENOTIMPL) {
