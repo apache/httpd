@@ -40,6 +40,10 @@
  * parent process. */
 #define AP_NEED_SET_MUTEX_PERMS 1
 
+/* Define command-line rewriting for this platform, handled by core.
+ */
+#define AP_PLATFORM_REWRITE_ARGS_HOOK ap_mpm_rewrite_args
+
 #ifdef _OSD_POSIX
 pid_t os_fork(const char *user);
 #endif

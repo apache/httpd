@@ -32,6 +32,13 @@
 #define PLATFORM "NETWARE"
 #endif
 
+/* Define command-line rewriting for this platform, handled by core.
+ * For Netware, this is currently handled inside the Netware MPM.
+ * XXX To support a choice of MPMs, extract common platform behavior
+ * into a function specified here.
+ */
+#define AP_PLATFORM_REWRITE_ARGS_HOOK NULL
+
 #include <screen.h>
 
 AP_DECLARE_DATA extern int hold_screen_on_exit; /* Indicates whether the screen should be held open on exit*/
