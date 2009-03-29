@@ -64,15 +64,7 @@
  * and must be listed in order.
  */
 
-#ifdef UTS21
-/* The second const triggers an assembler bug on UTS 2.1.
- * Another workaround is to move some code out of this file into another,
- *   but this is easier.  Dave Dykstra, 3/31/99
- */
-static const char * status_lines[RESPONSE_CODES] =
-#else
 static const char * const status_lines[RESPONSE_CODES] =
-#endif
 {
     "100 Continue",
     "101 Switching Protocols",
