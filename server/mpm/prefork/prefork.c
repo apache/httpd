@@ -291,11 +291,6 @@ static apr_status_t prefork_query(int query_code, int *result)
     return APR_ENOTIMPL;
 }
 
-static pid_t prefork_get_child_pid(int childnum)
-{
-    return ap_scoreboard_image->parent[childnum].pid;
-}
-
 static apr_status_t prefork_note_child_killed(int childnum)
 {
     ap_scoreboard_image->parent[childnum].pid = 0;
@@ -1458,7 +1453,6 @@ static void prefork_hooks(apr_pool_t *p)
     ap_hook_check_config(prefork_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm(prefork_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(prefork_query, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_mpm_get_child_pid(prefork_get_child_pid, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_note_child_killed(prefork_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(prefork_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }

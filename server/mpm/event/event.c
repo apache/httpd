@@ -404,11 +404,6 @@ static apr_status_t event_query(int query_code, int *result)
     return APR_ENOTIMPL;
 }
 
-static pid_t event_get_child_pid(int childnum)
-{
-    return ap_scoreboard_image->parent[childnum].pid;
-}
-
 static apr_status_t event_note_child_killed(int childnum)
 {
     ap_scoreboard_image->parent[childnum].pid = 0;
@@ -2744,7 +2739,6 @@ static void event_hooks(apr_pool_t * p)
     ap_hook_check_config(event_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm(event_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(event_query, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_mpm_get_child_pid(event_get_child_pid, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_note_child_killed(event_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_register_timed_callback(event_register_timed_callback, NULL, NULL,
                                         APR_HOOK_MIDDLE);

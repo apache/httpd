@@ -63,7 +63,6 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(drop_privileges)
     APR_HOOK_LINK(mpm)
     APR_HOOK_LINK(mpm_query)
-    APR_HOOK_LINK(mpm_get_child_pid)
     APR_HOOK_LINK(mpm_note_child_killed)
     APR_HOOK_LINK(mpm_register_timed_callback)
     APR_HOOK_LINK(mpm_get_name)
@@ -76,7 +75,6 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(drop_privileges)
     APR_HOOK_LINK(mpm)
     APR_HOOK_LINK(mpm_query)
-    APR_HOOK_LINK(mpm_get_child_pid)
     APR_HOOK_LINK(mpm_note_child_killed)
     APR_HOOK_LINK(mpm_register_timed_callback)
     APR_HOOK_LINK(mpm_get_name)
@@ -93,9 +91,6 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm,
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_query,
                             (int query_code, int *result),
                             (query_code, result), APR_ENOTIMPL)
-AP_IMPLEMENT_HOOK_RUN_FIRST(pid_t, mpm_get_child_pid,
-                            (int childnum),
-                            (childnum), 0)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_note_child_killed,
                             (int childnum),
                             (childnum), APR_ENOTIMPL)
@@ -411,11 +406,6 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
     return ap_run_mpm_query(query_code, result);
-}
-
-AP_DECLARE(pid_t) ap_mpm_get_child_pid(int childnum)
-{
-    return ap_run_mpm_get_child_pid(childnum);
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_note_child_killed(int childnum)

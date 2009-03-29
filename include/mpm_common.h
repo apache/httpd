@@ -86,8 +86,7 @@ extern "C" {
  * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
- * @tip This function requires that some hooks are implemented by the MPM: <pre>
- *  mpm_get_child_pid -- Get the pid from the specified spot in the scoreboard
+ * @tip This function requires that a hook is implemented by the MPM: <pre>
  *  mpm_note_child_killed -- Note the child died in the scoreboard
  * </pre>
  * @tip The MPM child processes which are reclaimed are those listed
@@ -99,8 +98,7 @@ void ap_reclaim_child_processes(int terminate);
 /**
  * Catch any child processes that have been spawned by the parent process
  * which have exited. This includes processes registered as "other_children".
- * @tip This function requires that some hooks are implemented by the MPM: <pre>
- *  mpm_get_child_pid -- Get the pid from the specified spot in the scoreboard
+ * @tip This function requires that a hook is implemented by the MPM: <pre>
  *  mpm_note_child_killed -- Note the child died in the scoreboard
  * </pre>
  * @tip The MPM child processes which are relieved are those listed
@@ -314,7 +312,6 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 #endif
 
-AP_DECLARE(pid_t) ap_mpm_get_child_pid(int childnum);
 AP_DECLARE(apr_status_t) ap_mpm_note_child_killed(int childnum);
 
 AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p))
@@ -328,9 +325,6 @@ AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *s))
 
 /* implement the mpm query function */
 AP_DECLARE_HOOK(apr_status_t, mpm_query, (int query_code, int *result))
-
-/* get pid of child by index */
-AP_DECLARE_HOOK(pid_t, mpm_get_child_pid, (int childnum))
 
 /* child specified by index has been killed */
 AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum))

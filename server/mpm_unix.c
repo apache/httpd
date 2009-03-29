@@ -42,6 +42,7 @@
 #include "mpm_common.h"
 #include "ap_mpm.h"
 #include "ap_listen.h"
+#include "scoreboard.h"
 #include "util_mutex.h"
 
 #ifdef HAVE_PWD_H
@@ -217,7 +218,8 @@ void ap_reclaim_child_processes(int terminate)
         /* now see who is done */
         not_dead_yet = 0;
         for (i = 0; i < max_daemons; ++i) {
-            pid_t pid = ap_mpm_get_child_pid(i);
+            process_score *ps = ap_get_scoreboard_process(i);
+            pid_t pid = ps->pid;
 
             if (pid == 0) {
                 continue; /* not every scoreboard entry is in use */
@@ -261,7 +263,8 @@ void ap_relieve_child_processes(void)
 
     /* now see who is done */
     for (i = 0; i < max_daemons; ++i) {
-        pid_t pid = ap_mpm_get_child_pid(i);
+        process_score *ps = ap_get_scoreboard_process(i);
+        pid_t pid = ps->pid;
 
         if (pid == 0) {
             continue; /* not every scoreboard entry is in use */
