@@ -19,15 +19,19 @@
 #include "http_log.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
+#include "apr_time.h"
 #include "ap_mpm.h"
 #include "scoreboard.h"
+#include "mod_watchdog.h"
 
 
-#ifndef HN_UPDATE_SEC
+#ifndef HM_UPDATE_SEC
 /* How often we update the stats file */
 /* TODO: Make a runtime config */
-#define HN_UPDATE_SEC (5)
+#define HM_UPDATE_SEC (5)
 #endif
+
+#define HM_WATHCHDOG_NAME ("_heartmonitor_")
 
 module AP_MODULE_DECLARE_DATA heartmonitor_module;
 
@@ -43,16 +47,15 @@ typedef struct hm_ctx_t
 {
     int active;
     const char *storage_path;
-    apr_proc_mutex_t *mutex;
-    const char *mutex_path;
+    ap_watchdog_t *watchdog;
+    apr_interval_time_t interval;
     apr_sockaddr_t *mcast_addr;
     apr_status_t status;
     volatile int keep_running;
-    apr_thread_mutex_t *start_mtx;
-    apr_thread_t *thread;
     apr_socket_t *sock;
     apr_pool_t *p;
     apr_hash_t *servers;
+    server_rec *s;
 } hm_ctx_t;
 
 static apr_status_t hm_listen(hm_ctx_t *ctx)
@@ -299,194 +302,114 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
 #define apr_time_from_msec(x) (x * 1000)
 #endif
 
-static void* APR_THREAD_FUNC hm_worker(apr_thread_t *thd, void *data)
+
+static apr_status_t hm_watchdog_callback(int state, void *data,
+                                         apr_pool_t *pool)
 {
-    apr_time_t last;
-    hm_ctx_t *ctx = (hm_ctx_t *) data;
-    apr_status_t rv;
-
-    ctx->p = apr_thread_pool_get(thd);
-    ctx->status = APR_SUCCESS;
-    ctx->keep_running = 1;
-    apr_thread_mutex_unlock(ctx->start_mtx);
-
-    while (ctx->keep_running) {
-        rv = apr_proc_mutex_trylock(ctx->mutex);
-        if (rv == APR_SUCCESS) {
-            break;
-        }
-        apr_sleep(apr_time_from_msec(200));
-    }
-
-    rv = hm_listen(ctx);
-
-    if (rv) {
-        ctx->status = rv;
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "Heartmonitor: Unable to listen for connections!");
-        apr_proc_mutex_unlock(ctx->mutex);
-        apr_thread_exit(ctx->thread, rv);
-        return NULL;
-    }
-
-
-    last = apr_time_now();
-    while (ctx->keep_running) {
-        int n;
-        apr_pool_t *p;
-        apr_pollfd_t pfd;
-        apr_interval_time_t timeout;
-        apr_time_t now;
-        apr_pool_create(&p, ctx->p);
-
-        now = apr_time_now();
-
-        if (apr_time_sec((now - last)) > HN_UPDATE_SEC) {
-            hm_update_stats(ctx, p);
-            apr_pool_clear(p);
-            last = now;
-        }
-
-        pfd.desc_type = APR_POLL_SOCKET;
-        pfd.desc.s = ctx->sock;
-        pfd.p = p;
-        pfd.reqevents = APR_POLLIN;
-
-        timeout = apr_time_from_sec(1);
-
-        rv = apr_poll(&pfd, 1, &n, timeout);
-
-        if (!ctx->keep_running) {
-            break;
-        }
-
-        if (rv) {
-            apr_pool_destroy(p);
-            continue;
-        }
-
-        if (pfd.rtnevents & APR_POLLIN) {
-            hm_recv(ctx, p);
-        }
-
-        apr_pool_destroy(p);
-    }
-
-    apr_proc_mutex_unlock(ctx->mutex);
-    apr_thread_exit(ctx->thread, APR_SUCCESS);
-
-    return NULL;
-}
-
-static apr_status_t hm_pool_cleanup(void *baton)
-{
-    apr_status_t rv;
-    hm_ctx_t *ctx = (hm_ctx_t *) baton;
-
-    ctx->keep_running = 0;
-
-    apr_thread_join(&rv, ctx->thread);
-
-    return rv;
-}
-
-static void start_hm_worker(apr_pool_t *p, hm_ctx_t *ctx)
-{
-    apr_status_t rv;
-
-    rv = apr_thread_mutex_create(&ctx->start_mtx, APR_THREAD_MUTEX_UNNESTED,
-                                 p);
-
-    if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "Heartmonitor: apr_thread_mutex_create failed");
-        ctx->status = rv;
-        return;
-    }
-
-    /* This mutex fixes problems with a fast start/fast end, where the pool 
-     * cleanup was being invoked before the thread completely spawned. 
-     */
-    apr_thread_mutex_lock(ctx->start_mtx);
-
-    apr_pool_cleanup_register(p, ctx, hm_pool_cleanup, apr_pool_cleanup_null);
-
-    rv = apr_thread_create(&ctx->thread, NULL, hm_worker, ctx, p);
-    if (rv) {
-        apr_pool_cleanup_kill(p, ctx, hm_pool_cleanup);
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
-                     "Heartmonitor: apr_thread_create failed");
-        ctx->status = rv;
-    }
-
-    apr_thread_mutex_lock(ctx->start_mtx);
-    apr_thread_mutex_unlock(ctx->start_mtx);
-    apr_thread_mutex_destroy(ctx->start_mtx);
-}
-
-static void hm_child_init(apr_pool_t *p, server_rec *s)
-{
-    hm_ctx_t *ctx =
-        ap_get_module_config(s->module_config, &heartmonitor_module);
+    apr_status_t rv = APR_SUCCESS;
+    apr_time_t cur, now;
+    hm_ctx_t *ctx = (hm_ctx_t *)data;
 
     if (!ctx->active) {
-        return;
+        return rv;
     }
 
-    apr_proc_mutex_child_init(&ctx->mutex, ctx->mutex_path, p);
+    switch (state) {
+        case AP_WATCHDOG_STATE_STARTING:
+            rv = hm_listen(ctx);
+            if (rv) {
+                ctx->status = rv;
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                             "Heartmonitor: Unable to listen for connections!");
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s,
+                             "Heartmonitor: %s listener started.",
+                             HM_WATHCHDOG_NAME);
+            }
+        break;
+        case AP_WATCHDOG_STATE_RUNNING:
+            hm_update_stats(ctx, pool);
+            cur = now = apr_time_sec(apr_time_now());
+            /* TODO: Insted HN_UPDATE_SEC use
+             * the ctx->interval
+             */
+            while ((now - cur) < apr_time_sec(ctx->interval)) {
+                int n;
+                apr_status_t rc;
+                apr_pool_t *p;
+                apr_pollfd_t pfd;
+                apr_interval_time_t timeout;
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
-                 "Heartmonitor: Starting Listener Thread. mcast=%pI",
-                 ctx->mcast_addr);
+                apr_pool_create(&p, pool);
 
-    ctx->status = APR_EGENERAL;
+                pfd.desc_type = APR_POLL_SOCKET;
+                pfd.desc.s = ctx->sock;
+                pfd.p = p;
+                pfd.reqevents = APR_POLLIN;
 
-    start_hm_worker(p, ctx);
+                timeout = apr_time_from_sec(1);
 
-    if (ctx->status) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, ctx->status, s,
-                     "Heartmonitor: Failed to start listener thread.");
-        return;
+                rc = apr_poll(&pfd, 1, &n, timeout);
+
+                if (!ctx->keep_running) {
+                    break;
+                }
+                if (rc == APR_SUCCESS && (pfd.rtnevents & APR_POLLIN)) {
+                    hm_recv(ctx, p);
+                }
+                now = apr_time_sec(apr_time_now());
+                apr_pool_destroy(p);
+            }
+        break;
+        case AP_WATCHDOG_STATE_STOPPING:
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s,
+                         "Heartmonitor: stopping %s listener.",
+                         HM_WATHCHDOG_NAME);
+
+            ctx->keep_running = 0;
+            if (ctx->sock) {
+                apr_socket_close(ctx->sock);
+                ctx->sock = NULL;
+            }
+        break;
     }
-
-    return;
+    return rv;
 }
 
 static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
-    apr_lockmech_e mech;
     apr_status_t rv;
     hm_ctx_t *ctx = ap_get_module_config(s->module_config,
                                          &heartmonitor_module);
 
-
     if (!ctx->active) {
         return OK;
     }
-
-#if APR_HAS_FCNTL_SERIALIZE
-    mech = APR_LOCK_FCNTL;
-#else
-#if APR_HAS_FLOCK_SERIALIZE
-    mech = APR_LOCK_FLOCK;
-#else
-#error port me to a non crap platform.
-#endif
-#endif
-    
-    rv = apr_proc_mutex_create(&ctx->mutex,
-                                            ctx->mutex_path,
-                                            mech,
-                                            p);
-
+    apr_pool_create(&ctx->p, p);
+    rv = ap_watchdog_get_instance(&ctx->watchdog,
+                                  HM_WATHCHDOG_NAME,
+                                  0, 1, p);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "Heartmonitor: Failed to create listener "
-                     "mutex at %s (type=%d)", ctx->mutex_path,
-                     mech);
+                     "Heartmonitor: Failed to create watchdog "
+                     "instance (%s)", HM_WATHCHDOG_NAME);
         return !OK;
     }
+    /* Register a callback with zero interval. */
+    rv = ap_watchdog_register_callback(ctx->watchdog,
+                                       0,
+                                       ctx,
+                                       hm_watchdog_callback);
+    if (rv) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "Heartmonitor: Failed to register watchdog "
+                     "callback (%s)", HM_WATHCHDOG_NAME);
+        return !OK;
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+                 "Heartmonitor: wd callback %s", HM_WATHCHDOG_NAME);
 
     return OK;
 }
@@ -494,7 +417,6 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
 static void hm_register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(hm_post_config, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_child_init(hm_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static void *hm_create_config(apr_pool_t *p, server_rec *s)
@@ -503,9 +425,10 @@ static void *hm_create_config(apr_pool_t *p, server_rec *s)
 
     ctx->active = 0;
     ctx->storage_path = ap_server_root_relative(p, "logs/hb.dat");
-    ctx->mutex_path = 
-        ap_server_root_relative(p, apr_pstrcat(p, ctx->storage_path, ".hm-lock", NULL));
-
+    /* TODO: Add directive for tuning the update interval
+     */
+    ctx->interval = apr_time_from_sec(HM_UPDATE_SEC);
+    ctx->s = s;
     return ctx;
 }
 
@@ -523,8 +446,6 @@ static const char *cmd_hm_storage(cmd_parms *cmd,
     }
 
     ctx->storage_path = ap_server_root_relative(p, path);
-    ctx->mutex_path =
-        ap_server_root_relative(p, apr_pstrcat(p, path, ".hm-lock", NULL));
 
     return NULL;
 }
