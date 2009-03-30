@@ -1745,7 +1745,13 @@ static void test(void)
             if ((rv & APR_POLLERR) || (rv & APR_POLLNVAL)) {
                 bad++;
                 err_except++;
-                start_connect(c);
+                /* avoid apr_poll/EINPROGRESS loop on HP-UX, let recv discover ECONNREFUSED */
+                if (c->state == STATE_CONNECTING) { 
+                    read_connection(c);
+                }
+                else { 
+                    start_connect(c);
+                }
                 continue;
             }
             if (rv & APR_POLLOUT) {

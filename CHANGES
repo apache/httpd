@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) ab: Fix a 100% CPU loop on platforms where a failed non-blocking connect
+     returns EINPROGRESS and a subsequent poll() returns only POLLERR.
+     Observed on HP-UX.  [Eric Covener]
+
   *) Remove broken support for BeOS, OS/2, TPF, and even older platforms such
      as A/UX, Next, and Tandem.  [Jeff Trawick]
 
