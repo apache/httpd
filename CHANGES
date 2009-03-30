@@ -13,7 +13,7 @@ Changes with Apache 2.3.3
      globbing characters to be retrieved instead of converted into a 
      directory listing.  PR 46789 [Dan Poirier <poirier pobox.com>]
 
-  *) Provide ap_set_retained_data()/ap_get_retained_data() for preservation
+  *) Provide ap_retained_data_create()/ap_retained_data_get() for preservation
      of module state across unload/load.  [Jeff Trawick]
 
   *) mod_substitute: Fix a memory leak. PR 44948
