@@ -114,7 +114,6 @@ static int hb_monitor(hb_ctx_t *ctx, apr_pool_t *p)
 
 static int hb_watchdog_init(server_rec *s, const char *name, apr_pool_t *pool)
 {
-    apr_status_t rv;
     hb_ctx_t *ctx = ap_get_module_config(s->module_config, &heartbeat_module);
 
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &ctx->thread_limit);
@@ -125,15 +124,11 @@ static int hb_watchdog_init(server_rec *s, const char *name, apr_pool_t *pool)
 
 static int hb_watchdog_exit(server_rec *s, const char *name, apr_pool_t *pool)
 {
-    apr_status_t rv;
-    hb_ctx_t *ctx = ap_get_module_config(s->module_config, &heartbeat_module);
-
     return OK;
 }
 
 static int hb_watchdog_step(server_rec *s, const char *name, apr_pool_t *pool)
 {
-    apr_status_t rv;
     hb_ctx_t *ctx = ap_get_module_config(s->module_config, &heartbeat_module);
 
     if (!ctx->active || strcmp(name, AP_WATCHDOG_SINGLETON)) {
@@ -172,8 +167,6 @@ static const char *cmd_hb_address(cmd_parms *cmd,
                                   void *dconf, const char *addr)
 {
     apr_status_t rv;
-    const char *tmpdir = NULL;
-    char *path;
     char *host_str;
     char *scope_id;
     apr_port_t port = 0;
