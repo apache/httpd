@@ -2194,7 +2194,7 @@ AP_DECLARE(void) ap_show_modules(void)
         printf("  %s\n", ap_loaded_modules[n]->name);
 }
 
-AP_DECLARE(void *) ap_get_retained_data(const char *key)
+AP_DECLARE(void *) ap_retained_data_get(const char *key)
 {
     void *retained;
 
@@ -2202,7 +2202,7 @@ AP_DECLARE(void *) ap_get_retained_data(const char *key)
     return retained;
 }
 
-AP_DECLARE(void *) ap_set_retained_data(const char *key, apr_size_t size)
+AP_DECLARE(void *) ap_retained_data_create(const char *key, apr_size_t size)
 {
     void *retained;
 

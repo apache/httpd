@@ -42,12 +42,12 @@ apr_status_t simple_core_init_once(void)
     const char *userdata_key = "mpm_simple_module";
     simple_core_t *sc;
 
-    g_simple_core = ap_get_retained_data(userdata_key);
+    g_simple_core = ap_retained_data_get(userdata_key);
     if (g_simple_core) {
         return APR_SUCCESS;
     }
     
-    sc = g_simple_core = ap_set_retained_data(userdata_key, sizeof(*g_simple_core));
+    sc = g_simple_core = ap_retained_data_create(userdata_key, sizeof(*g_simple_core));
 
     apr_pool_create(&sc->pool, ap_pglobal);
 

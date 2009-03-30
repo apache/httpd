@@ -2438,9 +2438,9 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     }
 
     /* sigh, want this only the second time around */
-    retained = ap_get_retained_data(userdata_key);
+    retained = ap_retained_data_get(userdata_key);
     if (!retained) {
-        retained = ap_set_retained_data(userdata_key, sizeof(*retained));
+        retained = ap_retained_data_create(userdata_key, sizeof(*retained));
     }
     ++retained->module_loads;
     if (retained->module_loads == 2) {

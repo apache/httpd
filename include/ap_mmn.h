@@ -189,7 +189,7 @@
  * 20090130.0 (2.3.2-dev)  Add ap_ prefix to unixd_setup_child().
  * 20090131.0 (2.3.2-dev)  Remove ap_default_type(), disable DefaultType
  * 20090208.0 (2.3.2-dev)  Add conn_rec::current_thread.
- * 20090208.1 (2.3.3-dev)  Add ap_set_retained_data()/ap_get_retained_data()
+ * 20090208.1 (2.3.3-dev)  Add ap_retained_data_create()/ap_retained_data_get()
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
