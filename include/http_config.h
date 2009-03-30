@@ -921,14 +921,14 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
  * @param Size in bytes of the retained data (to be allocated)
  * @return Address of new retained data structure, initially cleared
  */
-AP_DECLARE(void *) ap_set_retained_data(const char *key, apr_size_t size);
+AP_DECLARE(void *) ap_retained_data_create(const char *key, apr_size_t size);
 
 /**
- * Retrieve data which was stored by ap_set_retained_data()
+ * Retrieve data which was stored by ap_retained_data_create()
  * @param key The unique key associated with this module's retained data
  * @return Address of previously retained data structure, or NULL if not yet saved
  */
-AP_DECLARE(void *) ap_get_retained_data(const char *key);
+AP_DECLARE(void *) ap_retained_data_get(const char *key);
     
 /* Module-method dispatchers, also for http_request.c */
 /**
