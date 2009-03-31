@@ -2,9 +2,6 @@
 
 Changes with Apache 2.3.3
 
-  *) script support: avoid possibly sending contents with a 204 or 304
-     response.  PR 40953 [Nick Kew]
-
   *) ab: Fix a 100% CPU loop on platforms where a failed non-blocking connect
      returns EINPROGRESS and a subsequent poll() returns only POLLERR.
      Observed on HP-UX.  [Eric Covener]

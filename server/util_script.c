@@ -462,10 +462,6 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
             if ((cgi_status == HTTP_UNSET) && (r->method_number == M_GET)) {
                 cond_status = ap_meets_conditions(r);
             }
-            else if ((cgi_status == HTTP_NO_CONTENT) ||
-                     (cgi_status == HTTP_NOT_MODIFIED)) {
-                r->header_only = 1; /* discard any body */
-            }
             apr_table_overlap(r->err_headers_out, merge,
                 APR_OVERLAP_TABLES_MERGE);
             if (!apr_is_empty_table(cookie_table)) {
