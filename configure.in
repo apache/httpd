@@ -538,7 +538,6 @@ dnl reading config stubs
 esyscmd(./build/config-stubs .)
 
 APACHE_SUBST(progname)
-APACHE_SUBST(MPM_LIB)
 APACHE_SUBST(OS)
 APACHE_SUBST(OS_DIR)
 APACHE_SUBST(BUILTIN_LIBS)
@@ -677,8 +676,6 @@ AC_DEFINE_UNQUOTED(SERVER_CONFIG_FILE, "${rel_sysconfdir}/${progname}.conf",
 	[Location of the config file, relative to the Apache root directory])
 AC_DEFINE_UNQUOTED(AP_TYPES_CONFIG_FILE, "${rel_sysconfdir}/mime.types",
 	[Location of the MIME types config file, relative to the Apache root directory])
-AC_DEFINE_UNQUOTED(APACHE_MPM_DIR, "$MPM_DIR",
-	[Location of the source for the current MPM])
 
 perlbin=`$ac_aux_dir/PrintPath perl`
 if test "x$perlbin" = "x"; then
