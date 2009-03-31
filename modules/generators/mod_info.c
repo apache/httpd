@@ -402,10 +402,6 @@ static int show_server_settings(request_rec * r)
     ap_rputs(" -D OS=\"" OS "\"\n", r);
 #endif
 
-#ifdef APACHE_MPM_DIR
-    ap_rputs(" -D APACHE_MPM_DIR=\"" APACHE_MPM_DIR "\"\n", r);
-#endif
-
 #ifdef HAVE_SHMGET
     ap_rputs(" -D HAVE_SHMGET\n", r);
 #endif

@@ -57,17 +57,14 @@ if test "$apache_cv_mpm" = "shared"; then
   MPM_NAME=""
   MPM_SUBDIR_NAME=""
   MPM_LIB=""
-  MPM_DIR=""
 else
   MPM_NAME=$apache_cv_mpm
   MPM_SUBDIR_NAME=$MPM_NAME
-  MPM_DIR=server/mpm/$MPM_SUBDIR_NAME
-  MPM_LIB=$MPM_DIR/lib${MPM_NAME}.la
+  MPM_LIB=server/mpm/$MPM_SUBDIR_NAME/lib${MPM_NAME}.la
 
-  APACHE_SUBST(MPM_NAME)
-  APACHE_SUBST(MPM_SUBDIR_NAME)
   MODLIST="$MODLIST mpm_${MPM_NAME}"
 fi
 
 APACHE_SUBST(MPM_NAME)
 APACHE_SUBST(MPM_SUBDIR_NAME)
+APACHE_SUBST(MPM_LIB)

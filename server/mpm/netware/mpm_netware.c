@@ -106,7 +106,7 @@
 #define WORKER_READY        SERVER_READY
 #define WORKER_IDLE_KILL    SERVER_IDLE_KILL
 
-#define MPM_HARD_LIMITS_FILE APACHE_MPM_DIR "/mpm_default.h"
+#define MPM_HARD_LIMITS_FILE "/mpm_default.h"
 
 /* config globals */
 

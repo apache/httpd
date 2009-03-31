@@ -46,8 +46,6 @@ AP_DECLARE_DATA extern int hold_screen_on_exit; /* Indicates whether the screen 
 #define CASE_BLIND_FILESYSTEM
 #define NO_WRITEV
 
-#define APACHE_MPM_DIR  "server/mpm/netware" /* generated on unix */
-
 #define getpid NXThreadGetId
 
 /* Hold the screen open if there is an exit code and the hold_screen_on_exit flag >= 0 or the
