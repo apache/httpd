@@ -31,11 +31,6 @@
 
 module AP_MODULE_DECLARE_DATA dialup_module;
 
-#ifndef apr_time_from_msec
-#define apr_time_from_msec(x) (x * 1000)
-#endif
-
-
 typedef struct dialup_dcfg_t {
     apr_size_t bytes_per_second;
 } dialup_dcfg_t;

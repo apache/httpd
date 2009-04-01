@@ -57,6 +57,7 @@
 #include "apr_queue.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_version.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -142,6 +143,10 @@
 #endif
 
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
+
+#if !APR_VERSION_AT_LEAST(1,4,0)
+#define apr_time_from_msec(x) (x * 1000)
+#endif
 
 /*
  * Actual definitions of config globals
@@ -1030,10 +1035,6 @@ static apr_status_t event_register_timed_callback(apr_time_t t,
 
     return APR_SUCCESS;
 }
-
-#ifndef apr_time_from_msec
-#define apr_time_from_msec(x) (x * 1000)
-#endif
 
 static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 {
