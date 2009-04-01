@@ -88,9 +88,9 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, drop_privileges,
 AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm,
                             (apr_pool_t *pconf, apr_pool_t *plog, server_rec *s),
                             (pconf, plog, s), DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_query,
-                            (int query_code, int *result),
-                            (query_code, result), APR_ENOTIMPL)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int, mpm_query,
+                            (int query_code, int *result, apr_status_t *_rv),
+                            (query_code, result, _rv), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(apr_status_t, mpm_note_child_killed,
                             (int childnum),
                             (childnum), APR_ENOTIMPL)
@@ -405,7 +405,13 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
 
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
-    return ap_run_mpm_query(query_code, result);
+    apr_status_t rv;
+
+    if (ap_run_mpm_query(query_code, result, &rv) == DECLINED) {
+        rv = APR_EGENERAL;
+    }
+
+    return rv;
 }
 
 AP_DECLARE(apr_status_t) ap_mpm_note_child_killed(int childnum)

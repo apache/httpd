@@ -305,53 +305,57 @@ static void signal_threads(int mode)
     }
 }
 
-static apr_status_t worker_query(int query_code, int *result)
+static int worker_query(int query_code, int *result, apr_status_t *rv)
 {
-    switch(query_code){
+    *rv = APR_SUCCESS;
+    switch (query_code) {
         case AP_MPMQ_MAX_DAEMON_USED:
             *result = max_daemons_limit;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_IS_THREADED:
             *result = AP_MPMQ_STATIC;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_IS_FORKED:
             *result = AP_MPMQ_DYNAMIC;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_HARD_LIMIT_DAEMONS:
             *result = server_limit;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_HARD_LIMIT_THREADS:
             *result = thread_limit;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_THREADS:
             *result = threads_per_child;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MIN_SPARE_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MIN_SPARE_THREADS:
             *result = min_spare_threads;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_SPARE_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_SPARE_THREADS:
             *result = max_spare_threads;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_REQUESTS_DAEMON:
             *result = ap_max_requests_per_child;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_DAEMONS:
             *result = ap_daemons_limit;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MPM_STATE:
             *result = mpm_state;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_GENERATION:
             *result = my_generation;
-            return APR_SUCCESS;
+            break;
+        default:
+            *rv = APR_ENOTIMPL;
+            break;
     }
-    return APR_ENOTIMPL;
+    return OK;
 }
 
 static apr_status_t worker_note_child_killed(int childnum)

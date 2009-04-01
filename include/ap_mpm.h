@@ -147,10 +147,14 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 #define AP_MPMQ_HAS_SERF             16  /* MPM can drive serf internally  */
 
 /**
- * Query a property of the current MPM.  
+ * Query a property of the current MPM.
  * @param query_code One of APM_MPMQ_*
  * @param result A location to place the result of the query
- * @return APR_SUCCESS or APR_ENOTIMPL
+ * @return APR_EGENERAL if an mpm-query hook has not been registered;
+ * APR_SUCCESS or APR_ENOTIMPL otherwise
+ * @remark The MPM doesn't register the implementing hook until the
+ * register_hooks hook is called, so modules cannot use ap_mpm_query()
+ * until after that point.
  * @fn int ap_mpm_query(int query_code, int *result)
  */
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
