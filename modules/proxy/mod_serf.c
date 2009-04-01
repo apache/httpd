@@ -26,6 +26,7 @@
 #include "serf.h"
 #include "apr_uri.h"
 #include "apr_strings.h"
+#include "apr_version.h"
 #include "ap_mpm.h"
 
 module AP_MODULE_DECLARE_DATA serf_module;
@@ -62,6 +63,9 @@ typedef struct {
     serf_bucket_t *body_bkt;
 } s_baton_t;
 
+#if !APR_VERSION_AT_LEAST(1,4,0)
+#define apr_time_from_msec(x) (x * 1000)
+#endif
 
 /**
  * This works right now because all timers are invoked in the single listener
@@ -392,10 +396,6 @@ static apr_status_t setup_request(serf_request_t *request,
 
     return APR_SUCCESS;
 }
-
-#ifndef apr_time_from_msec
-#define apr_time_from_msec(x) (x * 1000)
-#endif
 
 /* TOOD: rewrite drive_serf to make it async */
 static int drive_serf(request_rec *r, serf_config_t *conf)

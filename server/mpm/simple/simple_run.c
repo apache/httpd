@@ -29,6 +29,11 @@
 
 #include "ap_listen.h"
 #include "mpm_common.h"
+#include "apr_version.h"
+
+#if !APR_VERSION_AT_LEAST(1,4,0)
+#define apr_time_from_msec(msec) ((apr_time_t)(msec) * 1000)
+#endif
 
 /**
  * Create Timers.
@@ -134,10 +139,6 @@ static void *simple_timer_invoke(apr_thread_t * thread, void *baton)
 
     return NULL;
 }
-
-#ifndef apr_time_from_msec
-#define apr_time_from_msec(msec) ((apr_time_t)(msec) * 1000)
-#endif
 
 static int simple_run_loop(simple_core_t * sc)
 {

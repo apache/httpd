@@ -297,12 +297,6 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
     return rv;
 }
 
-
-#ifndef apr_time_from_msec
-#define apr_time_from_msec(x) (x * 1000)
-#endif
-
-
 static apr_status_t hm_watchdog_callback(int state, void *data,
                                          apr_pool_t *pool)
 {
