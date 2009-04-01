@@ -323,8 +323,11 @@ AP_DECLARE_HOOK(int, drop_privileges, (apr_pool_t * pchild, server_rec * s))
 /* pass control to the MPM */
 AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *s))
 
-/* implement the mpm query function */
-AP_DECLARE_HOOK(apr_status_t, mpm_query, (int query_code, int *result))
+/* implement the ap_mpm_query() function
+ * The MPM should return OK+APR_ENOTIMPL for any unimplemented query codes;
+ * modules which intercede for specific query codes should DECLINE for others.
+ */
+AP_DECLARE_HOOK(int, mpm_query, (int query_code, int *result, apr_status_t *rv))
 
 /* child specified by index has been killed */
 AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum))
@@ -333,7 +336,7 @@ AP_DECLARE_HOOK(apr_status_t, mpm_note_child_killed, (int childnum))
 AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
                 (apr_time_t t, ap_mpm_callback_fn_t *cbfn, void *baton))
 
-/* get MPM name */
+/* get MPM name (e.g., "prefork" or "event") */
 AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
 
 #ifdef __cplusplus

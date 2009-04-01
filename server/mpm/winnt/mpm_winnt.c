@@ -893,53 +893,57 @@ apr_array_header_t *mpm_new_argv;
  * service after we preflight the config.
  */
 
-static apr_status_t winnt_query(int query_code, int *result)
+static int winnt_query(int query_code, int *result, apr_status_t *rv)
 {
-    switch(query_code){
+    *rv = APR_SUCCESS;
+    switch (query_code) {
         case AP_MPMQ_MAX_DAEMON_USED:
             *result = MAXIMUM_WAIT_OBJECTS;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_IS_THREADED:
             *result = AP_MPMQ_STATIC;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_IS_FORKED:
             *result = AP_MPMQ_NOT_SUPPORTED;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_HARD_LIMIT_DAEMONS:
             *result = HARD_SERVER_LIMIT;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_HARD_LIMIT_THREADS:
             *result = thread_limit;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_THREADS:
             *result = ap_threads_per_child;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MIN_SPARE_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MIN_SPARE_THREADS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_SPARE_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_SPARE_THREADS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_REQUESTS_DAEMON:
             *result = ap_max_requests_per_child;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MPM_STATE:
             *result = winnt_mpm_state;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_GENERATION:
             *result = my_generation;
-            return APR_SUCCESS;
+            break;
+        default:
+            *rv = APR_ENOTIMPL;
+            break;
     }
-    return APR_ENOTIMPL;
+    return OK;
 }
 
 static const char *winnt_get_name(void)
