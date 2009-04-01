@@ -1502,6 +1502,48 @@ SSLProxyVerifyDepth 10
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLProxyCheckPeerExpire</name>
+<description>Whether to check if remote server certificate is expired
+</description>
+<syntax>SSLProxyCheckPeerExpire on|off|optional</syntax>
+<default>SSLProxyCheckPeerExpire off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets whether it is checked if the remote server certificate
+is expired or not. If the check fails a 502 status code (Bad Gateway) is
+sent.
+</p>
+<example><title>Example</title>
+SSLProxyCheckPeerExpire on
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLProxyCheckPeerCN</name>
+<description>Whether to check the remote server certificates CN field
+</description>
+<syntax>SSLProxyCheckPeerCN on|off|optional</syntax>
+<default>SSLProxyCheckPeerCN off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets whether the remote server certificates CN field is
+compared against the hostname of the request URL. If both are not equal
+a 502 status code (Bad Gateway) is sent.
+</p>
+<example><title>Example</title>
+SSLProxyCheckPeerCN on
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLProxyEngine</name>
 <description>SSL Proxy Engine Operation Switch</description>
 <syntax>SSLProxyEngine on|off</syntax>
