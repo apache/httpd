@@ -638,7 +638,7 @@ static const char *add_pass(cmd_parms *cmd, void *vconf,
 
     for (i = 1; i < argc; i++) {
         const char *p = argv[i];
-        const char *x = ap_strchr(p, '=');
+        const char *x = ap_strchr_c(p, '=');
         
         if (x) {
             char *key = apr_pstrndup(cmd->pool, p, x-p);
@@ -690,7 +690,7 @@ static const char *add_cluster(cmd_parms *cmd, void *d,
 
     for (i = 2; i < argc; i++) {
         const char *p = argv[i];
-        const char *x = ap_strchr(p, '=');
+        const char *x = ap_strchr_c(p, '=');
 
         if (x && strlen(p) > 1) {
             apr_table_addn(cluster->params,
