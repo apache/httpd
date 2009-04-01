@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
+     to enable stricter checking of remote server certificates.
+     [Ruediger Pluem]
+
   *) ab: Fix a 100% CPU loop on platforms where a failed non-blocking connect
      returns EINPROGRESS and a subsequent poll() returns only POLLERR.
      Observed on HP-UX.  [Eric Covener]

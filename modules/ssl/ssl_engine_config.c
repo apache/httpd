@@ -173,6 +173,8 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->session_cache_timeout  = UNSET;
     sc->cipher_server_pref     = UNSET;
     sc->ssl_log_level          = SSL_LOG_UNSET;
+    sc->proxy_ssl_check_peer_expire = SSL_ENABLED_UNSET;
+    sc->proxy_ssl_check_peer_cn     = SSL_ENABLED_UNSET;
 
     modssl_ctx_init_proxy(sc, p);
 
@@ -266,6 +268,8 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
     cfgMerge(ssl_log_level, SSL_LOG_UNSET);
+    cfgMerge(proxy_ssl_check_peer_expire, SSL_ENABLED_UNSET);
+    cfgMerge(proxy_ssl_check_peer_cn, SSL_ENABLED_UNSET);
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
 
@@ -1414,6 +1418,24 @@ const char *ssl_cmd_SSLOCSPDefaultResponder(cmd_parms *cmd, void *dcfg, const ch
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
 
     sc->server->ocsp_responder = arg;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLProxyCheckPeerExpire(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->proxy_ssl_check_peer_expire = flag ? SSL_ENABLED_TRUE : SSL_ENABLED_FALSE;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->proxy_ssl_check_peer_cn = flag ? SSL_ENABLED_TRUE : SSL_ENABLED_FALSE;
 
     return NULL;
 }

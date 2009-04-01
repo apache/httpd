@@ -477,6 +477,8 @@ struct SSLSrvConfigRec {
     modssl_ctx_t    *server;
     modssl_ctx_t    *proxy;
     ssl_log_level_e  ssl_log_level;
+    ssl_enabled_t    proxy_ssl_check_peer_expire;
+    ssl_enabled_t    proxy_ssl_check_peer_cn;
 };
 
 /**
@@ -554,6 +556,8 @@ const char  *ssl_cmd_SSLProxyCARevocationPath(cmd_parms *, void *, const char *)
 const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLProxyCheckPeerExpire(cmd_parms *cmd, void *dcfg, int flag);
+const char  *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag);
 
 const char *ssl_cmd_SSLOCSPOverrideResponder(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOCSPDefaultResponder(cmd_parms *cmd, void *dcfg, const char *arg);
