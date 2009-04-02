@@ -1079,7 +1079,7 @@ static const ap_serf_cluster_provider_t builtin_static =
     NULL
 };
 
-static void register_hooks(apr_pool_t *p)
+static int serf_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
     rv = ap_mpm_query(AP_MPMQ_HAS_SERF, &mpm_supprts_serf);
@@ -1088,11 +1088,18 @@ static void register_hooks(apr_pool_t *p)
         mpm_supprts_serf = 0;
     }
     
+    return OK; 
+}
+
+static void register_hooks(apr_pool_t *p)
+{
     ap_register_provider(p, AP_SERF_CLUSTER_PROVIDER,
                          "heartbeat", "0", &builtin_heartbeat);
 
     ap_register_provider(p, AP_SERF_CLUSTER_PROVIDER,
                          "static", "0", &builtin_static);
+
+    ap_hook_post_config(serf_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 
     ap_hook_handler(serf_handler, NULL, NULL, APR_HOOK_FIRST);
 }
