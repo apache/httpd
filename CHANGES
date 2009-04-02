@@ -2,6 +2,12 @@
 
 Changes with Apache 2.3.3
 
+  *) Allow MPMs to be loaded dynamically, as with most other modules.  This
+     required changes to the MPM interfaces.  Removed: mpm.h, mpm_default.h
+     (as an installed header), APACHE_MPM_DIR, MPM_NAME, ap_threads_per_child, 
+     ap_max_daemons_limit, ap_my_generation, etc.  ap_mpm_query() can't be
+     called until after the register-hooks phase.  [Jeff Trawick]
+
   *) mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
      to enable stricter checking of remote server certificates.
      [Ruediger Pluem]
