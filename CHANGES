@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_proxy_ajp: Forward remote port information by default.
+     [Rainer Jung]
+
   *) Allow MPMs to be loaded dynamically, as with most other modules.  This
      required changes to the MPM interfaces.  Removed: mpm.h, mpm_default.h
      (as an installed header), APACHE_MPM_DIR, MPM_NAME, ap_threads_per_child, 
