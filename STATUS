@@ -145,6 +145,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Those patches apply to 2.2.x as well.
    +1: rjung
 
+ * mod_proxy_ajp: The remote port information was forgotten from
+   the builtin data of the AJP 13 protocol.  Since the servlet spec
+   allows to retrieve it via getRemotePort(), we provide the port to
+   the Tomcat connector as an additional request attribute.
+   Modern/future Tomcat versions know how to retrieve
+   the remote port from the attribute AJP_REMOTE_PORT.
+   For the AJP/Tomcat part see:
+   https://issues.apache.org/bugzilla/show_bug.cgi?id=41263
+   http://svn.eu.apache.org/viewvc?view=rev&revision=756926
+   http://svn.eu.apache.org/viewvc?view=rev&revision=757223
+   Patch in trunk:
+   http://svn.apache.org/viewvc?rev=761329&view=rev
+   +1: rjung
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
