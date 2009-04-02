@@ -41,8 +41,10 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_outerror_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
 
-static int ap_process_http_connection(conn_rec *c);
-
+/* If we are using an MPM That Supports Async Connections,
+ * use a different processing function
+ */
+static int async_mpm = 0;
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
                                           const char *arg)
@@ -130,10 +132,6 @@ static int ap_process_http_async_connection(conn_rec *c)
     request_rec *r;
     conn_state_t *cs = c->cs;
 
-    if (c->clogging_input_filters) {
-        return ap_process_http_connection(c);
-    }
-
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
 
     while (cs->state == CONN_STATE_READ_REQUEST_LINE) {
@@ -172,7 +170,7 @@ static int ap_process_http_async_connection(conn_rec *c)
     return OK;
 }
 
-static int ap_process_http_connection(conn_rec *c)
+static int ap_process_http_sync_connection(conn_rec *c)
 {
     request_rec *r;
     conn_state_t *cs = c->cs;
@@ -228,6 +226,16 @@ static int ap_process_http_connection(conn_rec *c)
     return OK;
 }
 
+static int ap_process_http_connection(conn_rec *c)
+{
+    if (async_mpm && !c->clogging_input_filters) {
+        return ap_process_http_async_connection(c);
+    }
+    else {
+        return ap_process_http_sync_connection(c);
+    }
+}
+
 static int http_create_request(request_rec *r)
 {
     if (!r->main && !r->prev) {
@@ -253,23 +261,19 @@ static int http_send_options(request_rec *r)
     return DECLINED;
 }
 
+static int http_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
+{
+    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) != APR_SUCCESS) {
+        async_mpm = 0;
+    }
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
-    /**
-     * If we ae using an MPM That Supports Async Connections,
-     * use a different processing function
-     */
-    int async_mpm = 0;
-    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) == APR_SUCCESS
-        && async_mpm == 1) {
-        ap_hook_process_connection(ap_process_http_async_connection, NULL,
-                                   NULL, APR_HOOK_REALLY_LAST);
-    }
-    else {
-        ap_hook_process_connection(ap_process_http_connection, NULL, NULL,
-                                   APR_HOOK_REALLY_LAST);
-    }
-
+    ap_hook_post_config(http_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_process_connection(ap_process_http_connection, NULL, NULL,
+                               APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_map_to_storage(http_send_options,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_http_scheme(http_scheme,NULL,NULL,APR_HOOK_REALLY_LAST);
