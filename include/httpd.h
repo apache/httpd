@@ -419,7 +419,7 @@ AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *compone
  */
 AP_DECLARE(const char *) ap_get_server_built(void);
 
-/* non-HTTP status codes retuned by hooks */
+/* non-HTTP status codes returned by hooks */
 
 #define OK 0			/**< Module has handled this stage. */
 #define DECLINED -1		/**< Module declines to handle */
