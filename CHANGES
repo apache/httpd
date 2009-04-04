@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
   
-  *) mod_deflate: revert changes in 2.2.11 that caused an invalid
+  *) mod_deflate: revert changes in 2.2.8 that caused an invalid
      etag to be emitted for on-the-fly gzip content-encoding.
      PR 39727 will require larger fixes and this fix was far more
      harmful than the original code. PR 45023. [Roy T. Fielding]
