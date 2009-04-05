@@ -80,16 +80,15 @@ extern "C" {
 */
 
 /**
- * This is the function that passes control to the MPM for steady-state
- * processing.  It is responsible for controlling the parent and child
- * processes.  It will run until a restart/shutdown is indicated.
+ * Pass control to the MPM for steady-state processing.  It is responsible
+ * for controlling the parent and child processes.  It will run until a
+ * restart/shutdown is indicated.
  * @param pconf the configuration pool, reset before the config file is read
  * @param plog the log pool, reset after the config file is read
  * @param server_conf the global server config.
- * @return 1 for shutdown 0 otherwise.
- * @fn int ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf)
+ * @return DONE for shutdown OK otherwise.
  */
-AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf);
+AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf))
 
 /**
  * Spawn a process with privileges that another module has requested

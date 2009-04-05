@@ -398,11 +398,6 @@ const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf)
-{
-    return ap_run_mpm(pconf, plog, server_conf);
-}
-
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
     apr_status_t rv;

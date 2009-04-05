@@ -177,7 +177,7 @@ static int simple_run_loop(simple_core_t * sc)
             if (!APR_STATUS_IS_EINTR(rv) && !APR_STATUS_IS_TIMEUP(rv)) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                              "simple_main_loop: apr_pollcb_poll failed");
-                return !OK;
+                return DONE;
             }
         }
 
@@ -225,7 +225,7 @@ static int simple_run_loop(simple_core_t * sc)
         }
     }
 
-    return 0;
+    return OK;
 }
 
 void simple_single_process_hack(simple_core_t * sc)
