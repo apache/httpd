@@ -39,7 +39,6 @@
 #include "apr_uri.h"
 #include "util_ebcdic.h"
 #include "ap_mpm.h"
-#include "mpm_common.h"
 #include "ap_expr.h"
 
 #if APR_HAVE_UNISTD_H
@@ -779,7 +778,7 @@ int main(int argc, const char * const argv[])
 
         ap_run_optional_fn_retrieve();
 
-        if (ap_mpm_run(pconf, plog, ap_server_conf))
+        if (ap_run_mpm(pconf, plog, ap_server_conf) != OK)
             break;
 
         apr_pool_lock(pconf, 0);

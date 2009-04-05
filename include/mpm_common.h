@@ -320,9 +320,6 @@ AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p))
 AP_DECLARE(int) ap_sys_privileges_handlers(int inc);
 AP_DECLARE_HOOK(int, drop_privileges, (apr_pool_t * pchild, server_rec * s))
 
-/* pass control to the MPM */
-AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *s))
-
 /* implement the ap_mpm_query() function
  * The MPM should return OK+APR_ENOTIMPL for any unimplemented query codes;
  * modules which intercede for specific query codes should DECLINE for others.

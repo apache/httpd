@@ -915,7 +915,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                      "Couldn't create accept lock (%s) (%d)",
                      ap_lock_fname, ap_accept_lock_mech);
         mpm_state = AP_MPMQ_STOPPING;
-        return 1;
+        return DONE;
     }
 
 #if APR_USE_SYSVSEM_SERIALIZE
@@ -930,14 +930,14 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                          "Couldn't set permissions on cross-process lock; "
                          "check User and Group directives");
             mpm_state = AP_MPMQ_STOPPING;
-            return 1;
+            return DONE;
         }
     }
 
     if (!is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
             mpm_state = AP_MPMQ_STOPPING;
-            return 1;
+            return DONE;
         }
         /* fix the generation number in the global score; we just got a new,
          * cleared scoreboard
@@ -1008,7 +1008,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             processed_status = ap_process_child_status(&pid, exitwhy, status);
             if (processed_status == APEXIT_CHILDFATAL) {
                 mpm_state = AP_MPMQ_STOPPING;
-                return 1;
+                return DONE;
             }
 
             /* non-fatal death... note that it's gone in the scoreboard. */
@@ -1095,7 +1095,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                     "caught SIGTERM, shutting down");
 
-        return 1;
+        return DONE;
     } else if (shutdown_pending) {
         /* Time to perform a graceful shut down:
          * Reap the inactive children, and ask the active ones
@@ -1169,7 +1169,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          */
         ap_unixd_killpg(getpgrp(), SIGTERM);
 
-        return 1;
+        return DONE;
     }
 
     /* we've been told to restart */
@@ -1177,7 +1177,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     apr_signal(AP_SIG_GRACEFUL, SIG_IGN);
     if (one_process) {
         /* not worth thinking about */
-        return 1;
+        return DONE;
     }
 
     /* advance to the next generation */
@@ -1223,7 +1223,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                     "SIGHUP received.  Attempting to restart");
     }
 
-    return 0;
+    return OK;
 }
 
 /* This really should be a post_config hook, but the error log is already

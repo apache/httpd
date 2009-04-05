@@ -1671,7 +1671,7 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
     if (!restart && ((parent_pid == my_pid) || one_process)) {
         /* Set up the scoreboard. */
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
-            return 1;
+            return DONE;
         }
     }
 
@@ -1686,7 +1686,7 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
         ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                      "Child %d: Child process is exiting", my_pid);
-        return 1;
+        return DONE;
     }
     else
     {
@@ -1714,11 +1714,11 @@ static int winnt_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
             CloseHandle(restart_event);
             CloseHandle(shutdown_event);
 
-            return 1;
+            return DONE;
         }
     }
 
-    return 0; /* Restart */
+    return OK; /* Restart */
 }
 
 static void winnt_hooks(apr_pool_t *p)

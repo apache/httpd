@@ -1695,7 +1695,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
                      "Couldn't create accept lock");
         mpm_state = AP_MPMQ_STOPPING;
-        return 1;
+        return DONE;
     }
 
 #if APR_USE_SYSVSEM_SERIALIZE
@@ -1710,14 +1710,14 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                          "Couldn't set permissions on cross-process lock; "
                          "check User and Group directives");
             mpm_state = AP_MPMQ_STOPPING;
-            return 1;
+            return DONE;
         }
     }
 
     if (!is_graceful) {
         if (ap_run_pre_mpm(s->process->pool, SB_SHARED) != OK) {
             mpm_state = AP_MPMQ_STOPPING;
-            return 1;
+            return DONE;
         }
         /* fix the generation number in the global score; we just got a new,
          * cleared scoreboard
@@ -1788,7 +1788,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0,
                          ap_server_conf, "caught SIGTERM, shutting down");
         }
-        return 1;
+        return DONE;
     } else if (shutdown_pending) {
         /* Time to gracefully shut down:
          * Kill child processes, tell them to call child_exit, etc...
@@ -1849,7 +1849,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         ap_worker_pod_killpg(pod, ap_daemons_limit, FALSE);
         ap_reclaim_child_processes(1);
 
-        return 1;
+        return DONE;
     }
 
     /* we've been told to restart */
@@ -1857,7 +1857,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (one_process) {
         /* not worth thinking about */
-        return 1;
+        return DONE;
     }
 
     /* advance to the next generation */
