@@ -66,14 +66,14 @@ static apr_status_t hm_listen(hm_ctx_t *ctx)
                            SOCK_DGRAM, APR_PROTO_UDP, ctx->p);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Failed to create listening socket.");
         return rv;
     }
 
     rv = apr_socket_opt_set(ctx->sock, APR_SO_REUSEADDR, 1);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Failed to set APR_SO_REUSEADDR to 1 on socket.");
         return rv;
     }
@@ -81,14 +81,14 @@ static apr_status_t hm_listen(hm_ctx_t *ctx)
 
     rv = apr_socket_opt_set(ctx->sock, APR_SO_NONBLOCK, 1);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Failed to set APR_SO_REUSEADDR to 1 on socket.");
         return rv;
     }
 
     rv = apr_socket_bind(ctx->sock, ctx->mcast_addr);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Failed to bind on socket.");
         return rv;
     }
@@ -96,14 +96,14 @@ static apr_status_t hm_listen(hm_ctx_t *ctx)
     rv = apr_mcast_join(ctx->sock, ctx->mcast_addr, NULL, NULL);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Failed to join multicast group");
         return rv;
     }
 
     rv = apr_mcast_loopback(ctx->sock, 1);
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Failed to accept localhost mulitcast on socket.");
         return rv;
     }
@@ -162,7 +162,7 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
     rv = apr_file_mktemp(&fp, path, APR_CREATE | APR_WRITE, p);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Unable to open tmp file: %s", path);
         return rv;
     }
@@ -188,14 +188,14 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
 
     rv = apr_file_flush(fp);
     if (rv) {
-      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                    "Heartmonitor: Unable to flush file: %s", path);
       return rv;
     }
 
     rv = apr_file_close(fp);
     if (rv) {
-      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+      ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                    "Heartmonitor: Unable to close file: %s", path);
       return rv;
     }
@@ -204,7 +204,7 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
                             APR_FPROT_UREAD | APR_FPROT_GREAD |
                             APR_FPROT_WREAD);
     if (rv && rv != APR_INCOMPLETE) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Unable to set file permssions on %s",
                      path);
         return rv;
@@ -213,7 +213,7 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
     rv = apr_file_rename(path, ctx->storage_path, p);
 
     if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: Unable to move file: %s -> %s", path,
                      ctx->storage_path);
         return rv;
@@ -254,12 +254,12 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
     rv = apr_socket_recvfrom(&from, ctx->sock, 0, buf, &len);
 
     if (APR_STATUS_IS_EAGAIN(rv)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: would block");
         return APR_SUCCESS;
     }
     else if (rv) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: recvfrom failed");
         return rv;
     }
@@ -276,7 +276,7 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
         char *ip;
         hm_server_t *s;
         /* TODO: REMOVE ME BEFORE PRODUCTION (????) */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ctx->s,
                      "Heartmonitor: %pI busy=%s ready=%s", &from,
                      apr_table_get(tbl, "busy"), apr_table_get(tbl, "ready"));
 
@@ -289,7 +289,7 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
         s->seen = apr_time_now();
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                      "Heartmonitor: malformed multicast message from %pI",
                      &from);
     }
@@ -313,7 +313,7 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
             rv = hm_listen(ctx);
             if (rv) {
                 ctx->status = rv;
-                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
+                ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
                              "Heartmonitor: Unable to listen for connections!");
             }
             else {
@@ -343,6 +343,7 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
                 pfd.p = p;
                 pfd.reqevents = APR_POLLIN;
 
+                // timeout = apr_time_from_sec((apr_time_sec(ctx->interval) - now + cur)>1 ? (apr_time_sec(ctx->interval) - now + cur) : 1);
                 timeout = apr_time_from_sec(1);
 
                 rc = apr_poll(&pfd, 1, &n, timeout);
@@ -404,7 +405,7 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
                      "callback (%s)", HM_WATHCHDOG_NAME);
         return !OK;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "Heartmonitor: wd callback %s", HM_WATHCHDOG_NAME);
 
     return OK;
