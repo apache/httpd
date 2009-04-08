@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_proxy_ajp: Avoid delivering content from a previous request which
+     failed to send a request body. PR 46949 [Ruediger Pluem]
+
   *) mod_proxy_ajp: Forward remote port information by default.
      [Rainer Jung]
 
