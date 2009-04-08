@@ -1,6 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
-  
+
   *) mod_deflate: revert changes in 2.2.8 that caused an invalid
      etag to be emitted for on-the-fly gzip content-encoding.
      PR 39727 will require larger fixes and this fix was far more
@@ -10,9 +10,9 @@ Changes with Apache 2.2.12
      'EnableSendfile off' is defined globally. PR 41218.
      [Lars Eilebrecht, Issac Goldstand]
 
- *) prefork: Fix child process hang during graceful restart/stop in
-    configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
-    Jeff Trawick]
+  *) prefork: Fix child process hang during graceful restart/stop in
+     configurations with multiple listening sockets.  PR 42829.  [Joe Orton,
+     Jeff Trawick]
 
   *) mod_ssl: Add SSLRenegBufferSize directive to allow changing the
      size of the buffer used for the request-body where necessary
