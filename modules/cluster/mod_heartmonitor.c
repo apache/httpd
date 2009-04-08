@@ -317,7 +317,7 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
                              "Heartmonitor: Unable to listen for connections!");
             }
             else {
-                ctx->keep_running = -1;
+                ctx->keep_running = 1;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s,
                              "Heartmonitor: %s listener started.",
                              HM_WATHCHDOG_NAME);
@@ -343,7 +343,6 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
                 pfd.p = p;
                 pfd.reqevents = APR_POLLIN;
 
-                // timeout = apr_time_from_sec((apr_time_sec(ctx->interval) - now + cur)>1 ? (apr_time_sec(ctx->interval) - now + cur) : 1);
                 timeout = apr_time_from_sec(1);
 
                 rc = apr_poll(&pfd, 1, &n, timeout);
