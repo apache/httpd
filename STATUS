@@ -159,6 +159,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=761329&view=rev
    +1: rjung
 
+* mod_proxy_ajp: Avoid delivering content from a previous request which failed
+  to send a request body by closing the connection to the backend in this case
+  instead of reusing it.
+  PR: 46949
+  Trunk version of patch:
+     http://svn.apache.org/viewvc?rev=763394&view=rev
+  Backport version for 2.2.x of patch:
+     Trunk version of patch works
+  +1: rpluem,
 
 PATCHES/ISSUES THAT ARE STALLED
 
