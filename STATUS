@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=649460
    Patch for version 2.2.x:
      http://people.apache.org/~lars/cacheignoreheaders-fix.patch
-   +1: lars, minfrin
+   +1: lars, minfrin, rpluem
 
  * mod_mime_magic: For compressed content the module sets the
    content encoding header and also tries to determine the
@@ -143,7 +143,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?rev=756678&view=rev (content encoding)
      http://svn.apache.org/viewvc?rev=756683&view=rev (read more bytes)
    Those patches apply to 2.2.x as well.
-   +1: rjung
+   +1: rjung, rpluem
 
  * mod_proxy_ajp: The remote port information was forgotten from
    the builtin data of the AJP 13 protocol.  Since the servlet spec
@@ -157,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    http://svn.eu.apache.org/viewvc?view=rev&revision=757223
    Patch in trunk:
    http://svn.apache.org/viewvc?rev=761329&view=rev
-   +1: rjung
+   +1: rjung, rpluem
 
 * mod_proxy_ajp: Avoid delivering content from a previous request which failed
   to send a request body by closing the connection to the backend in this case
