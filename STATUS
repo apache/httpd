@@ -168,6 +168,59 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Those patches apply to 2.2.x as well.
    +1: rjung, rpluem
 
+ * mod_rewrite: Correctly encode spaces in proxied requests issued by rewrite
+   rules in directory context. PR 46428
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=757427&view=rev
+   Backport version for 2.2.x of patch:
+      http://people.apache.org/~rpluem/patches/46428_2.2.x.diff
+   +1: rpluem,
+
+ * mod_include: Prevent a case of SSI timefmt-smashing with filter chains
+   including multiple INCLUDES filters
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=757376&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
+ * mod_negotiation: Escape pathes of filenames in 406 responses to avoid
+   HTML injections and HTTP response splitting
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=752812&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
+ * mod_substitute: Avoid endless loops in substitution.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=755190&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
+ * mod_substitute: Fix a memory leak.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=757741&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
+ * mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
+   to enable stricter checking of remote server certificates.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=760866&view=rev
+   Backport version for 2.2.x of patch:
+      http://people.apache.org/~rpluem/patches/SSLProxyCheckPeer.diff
+   +1: rpluem,
+
+ * mod_proxy_ajp: Check more strictly that the backend follows the AJP protocol.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=764239&view=rev
+   Backport version for 2.2.x of patch:
+     Trunk version of patch works
+  +1: rpluem,
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
