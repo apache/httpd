@@ -180,6 +180,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     int backend_failed = 0;
     apr_off_t bb_len;
     int data_sent = 0;
+    int request_ended = 0;
     int headers_sent = 0;
     int rv = 0;
     apr_int32_t conn_poll_fd;
@@ -415,6 +416,15 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 }
                 break;
             case CMD_AJP13_SEND_HEADERS:
+                if (headers_sent) {
+                    /* Do not send anything to the client.
+                     * Backend already send us the headers.
+                     */
+                    backend_failed = 1;
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                 "proxy: Backend sent headers twice.");
+                    break;
+                }
                 /* AJP13_SEND_HEADERS: process them */
                 status = ajp_parse_header(r, conf, conn->data);
                 if (status != APR_SUCCESS) {
@@ -480,6 +490,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 }
                 /* XXX: what about flush here? See mod_jk */
                 data_sent = 1;
+                request_ended = 1;
                 break;
             default:
                 backend_failed = 1;
@@ -531,6 +542,17 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "output: %i", backend_failed, output_failed);
         /* We had a failure: Close connection to backend */
         conn->close++;
+        /* Return DONE to avoid error messages being added to the stream */
+        if (data_sent) {
+            rv = DONE;
+        }
+    }
+    else if (!request_ended) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: Processing of request didn't terminate cleanly");
+        /* We had a failure: Close connection to backend */
+        conn->close++;
+        backend_failed = 1;
         /* Return DONE to avoid error messages being added to the stream */
         if (data_sent) {
             rv = DONE;
