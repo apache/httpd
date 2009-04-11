@@ -81,10 +81,50 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-  None
+* mod_proxy_ajp: Avoid delivering content from a previous request which failed
+  to send a request body by closing the connection to the backend in this case
+  instead of reusing it.
+  PR: 46949
+  Trunk version of patch:
+     http://svn.apache.org/viewvc?rev=763394&view=rev
+  Backport version for 2.2.x of patch:
+     Trunk version of patch works
+  +1: rpluem, wrowe
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+ * mod_disk_cache/mod_mem_cache: the modules currently fail to correctly
+   handle the CacheIgnoreHeaders directive. The issue is that
+   r->err_headers_out gets merged into the headers_out value *after* 
+   ap_cache_cacheable_headers() gets called. So it is not possible to
+   remove headers with CacheIgnoreHeaders when they have been set in
+   r->err_headers_out. This issue does not exist in trunk, as the code
+   related to ap_cache_cacheable_headers() got refactored completely.
+   In trunk the API was changed so this patch is not a full backport
+   from trunk, but just fixes the actual bug.
+   Related patches in trunk:
+     http://svn.apache.org/viewvc?view=rev&revision=649162
+     http://svn.apache.org/viewvc?view=rev&revision=649176
+     http://svn.apache.org/viewvc?view=rev&revision=649460
+   Patch for version 2.2.x:
+     http://people.apache.org/~lars/cacheignoreheaders-fix.patch
+   +1: lars, minfrin, rpluem
+
+ * mod_proxy_ajp: The remote port information was forgotten from
+   the builtin data of the AJP 13 protocol.  Since the servlet spec
+   allows to retrieve it via getRemotePort(), we provide the port to
+   the Tomcat connector as an additional request attribute.
+   Modern/future Tomcat versions know how to retrieve
+   the remote port from the attribute AJP_REMOTE_PORT.
+   For the AJP/Tomcat part see:
+   https://issues.apache.org/bugzilla/show_bug.cgi?id=41263
+   http://svn.eu.apache.org/viewvc?view=rev&revision=756926
+   http://svn.eu.apache.org/viewvc?view=rev&revision=757223
+   Patch in trunk:
+   http://svn.apache.org/viewvc?rev=761329&view=rev
+   +1: rjung, rpluem, wrowe
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -109,23 +149,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~niq/patches/2.2mod_privileges.c
    +1: niq
 
- * mod_disk_cache/mod_mem_cache: the modules currently fail to correctly
-   handle the CacheIgnoreHeaders directive. The issue is that
-   r->err_headers_out gets merged into the headers_out value *after* 
-   ap_cache_cacheable_headers() gets called. So it is not possible to
-   remove headers with CacheIgnoreHeaders when they have been set in
-   r->err_headers_out. This issue does not exist in trunk, as the code
-   related to ap_cache_cacheable_headers() got refactored completely.
-   In trunk the API was changed so this patch is not a full backport
-   from trunk, but just fixes the actual bug.
-   Related patches in trunk:
-     http://svn.apache.org/viewvc?view=rev&revision=649162
-     http://svn.apache.org/viewvc?view=rev&revision=649176
-     http://svn.apache.org/viewvc?view=rev&revision=649460
-   Patch for version 2.2.x:
-     http://people.apache.org/~lars/cacheignoreheaders-fix.patch
-   +1: lars, minfrin, rpluem
-
  * mod_mime_magic: For compressed content the module sets the
    content encoding header and also tries to determine the
    uncompressed content type by using an external gzip.
@@ -145,29 +168,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Those patches apply to 2.2.x as well.
    +1: rjung, rpluem
 
- * mod_proxy_ajp: The remote port information was forgotten from
-   the builtin data of the AJP 13 protocol.  Since the servlet spec
-   allows to retrieve it via getRemotePort(), we provide the port to
-   the Tomcat connector as an additional request attribute.
-   Modern/future Tomcat versions know how to retrieve
-   the remote port from the attribute AJP_REMOTE_PORT.
-   For the AJP/Tomcat part see:
-   https://issues.apache.org/bugzilla/show_bug.cgi?id=41263
-   http://svn.eu.apache.org/viewvc?view=rev&revision=756926
-   http://svn.eu.apache.org/viewvc?view=rev&revision=757223
-   Patch in trunk:
-   http://svn.apache.org/viewvc?rev=761329&view=rev
-   +1: rjung, rpluem
-
-* mod_proxy_ajp: Avoid delivering content from a previous request which failed
-  to send a request body by closing the connection to the backend in this case
-  instead of reusing it.
-  PR: 46949
-  Trunk version of patch:
-     http://svn.apache.org/viewvc?rev=763394&view=rev
-  Backport version for 2.2.x of patch:
-     Trunk version of patch works
-  +1: rpluem,
 
 PATCHES/ISSUES THAT ARE STALLED
 
