@@ -17,6 +17,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_core.h"
 #include "apr_strings.h"
 #include "apr_hash.h"
 #include "apr_time.h"
@@ -107,8 +108,6 @@ static apr_status_t hm_listen(hm_ctx_t *ctx)
                      "Heartmonitor: Failed to accept localhost mulitcast on socket.");
         return rv;
     }
-
-    ctx->servers = apr_hash_make(ctx->p);
 
     return APR_SUCCESS;
 }
@@ -240,6 +239,44 @@ static hm_server_t *hm_get_server(hm_ctx_t *ctx, const char *ip)
     return s;
 }
 
+/* Process a message receive from a backend node */
+static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
+                                  apr_sockaddr_t *from, char *buf, int len)
+{
+    apr_table_t *tbl;
+
+    buf[len] = '\0';
+
+    tbl = apr_table_make(p, 10);
+
+    qs_to_table(buf, tbl, p);
+
+    if (apr_table_get(tbl, "v") != NULL &&
+        apr_table_get(tbl, "busy") != NULL &&
+        apr_table_get(tbl, "ready") != NULL) {
+        char *ip;
+        hm_server_t *s;
+        /* TODO: REMOVE ME BEFORE PRODUCTION (????) */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s,
+                     "Heartmonitor: %pI busy=%s ready=%s", from,
+                     apr_table_get(tbl, "busy"), apr_table_get(tbl, "ready"));
+
+        apr_sockaddr_ip_get(&ip, from);
+
+        s = hm_get_server(ctx, ip);
+
+        s->busy = atoi(apr_table_get(tbl, "busy"));
+        s->ready = atoi(apr_table_get(tbl, "ready"));
+        s->seen = apr_time_now();
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, ctx->s,
+                     "Heartmonitor: malformed message from %pI",
+                     from);
+    }
+
+}
+/* Read message from multicast socket */
 #define MAX_MSG_LEN (1000)
 static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
 {
@@ -247,7 +284,6 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
     apr_sockaddr_t from;
     apr_size_t len = MAX_MSG_LEN;
     apr_status_t rv;
-    apr_table_t *tbl;
 
     from.pool = p;
 
@@ -264,35 +300,7 @@ static apr_status_t hm_recv(hm_ctx_t *ctx, apr_pool_t *p)
         return rv;
     }
 
-    buf[len] = '\0';
-
-    tbl = apr_table_make(p, 10);
-
-    qs_to_table(buf, tbl, p);
-
-    if (apr_table_get(tbl, "v") != NULL &&
-        apr_table_get(tbl, "busy") != NULL &&
-        apr_table_get(tbl, "ready") != NULL) {
-        char *ip;
-        hm_server_t *s;
-        /* TODO: REMOVE ME BEFORE PRODUCTION (????) */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, ctx->s,
-                     "Heartmonitor: %pI busy=%s ready=%s", &from,
-                     apr_table_get(tbl, "busy"), apr_table_get(tbl, "ready"));
-
-        apr_sockaddr_ip_get(&ip, &from);
-
-        s = hm_get_server(ctx, ip);
-
-        s->busy = atoi(apr_table_get(tbl, "busy"));
-        s->ready = atoi(apr_table_get(tbl, "ready"));
-        s->seen = apr_time_now();
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
-                     "Heartmonitor: malformed multicast message from %pI",
-                     &from);
-    }
+    hm_processmsg(ctx, p, &from, buf, len);
 
     return rv;
 }
@@ -383,7 +391,6 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (!ctx->active) {
         return OK;
     }
-    apr_pool_create(&ctx->p, p);
     rv = ap_watchdog_get_instance(&ctx->watchdog,
                                   HM_WATHCHDOG_NAME,
                                   0, 1, p);
@@ -410,9 +417,38 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
+static int hm_handler(request_rec *r)
+{
+    apr_bucket_brigade *input_brigade;
+    apr_size_t len=MAX_MSG_LEN;
+    char *buf;
+    apr_status_t status;
+    hm_ctx_t *ctx = ap_get_module_config(r->server->module_config,
+                                         &heartmonitor_module);
+
+    if (strcmp(r->handler, "hearthbeat")) {
+        return DECLINED;
+    }
+    if (r->method_number != M_POST) {
+        return HTTP_METHOD_NOT_ALLOWED;
+    }
+    buf = apr_pcalloc(r->pool, MAX_MSG_LEN);
+    input_brigade = apr_brigade_create(r->connection->pool, r->connection->bucket_alloc);
+    status = ap_get_brigade(r->input_filters, input_brigade, AP_MODE_READBYTES, APR_BLOCK_READ, MAX_MSG_LEN);
+    if (status != APR_SUCCESS) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+    apr_brigade_flatten(input_brigade, buf, &len);
+    hm_processmsg(ctx, r->pool, r->connection->remote_addr, buf, len);
+    return HTTP_OK;
+}
+
 static void hm_register_hooks(apr_pool_t *p)
 {
+    static const char * const aszSucc[]={ "mod_proxy.c", NULL };
     ap_hook_post_config(hm_post_config, NULL, NULL, APR_HOOK_MIDDLE);
+
+    ap_hook_handler(hm_handler, NULL, aszSucc, APR_HOOK_FIRST);
 }
 
 static void *hm_create_config(apr_pool_t *p, server_rec *s)
@@ -425,6 +461,9 @@ static void *hm_create_config(apr_pool_t *p, server_rec *s)
      */
     ctx->interval = apr_time_from_sec(HM_UPDATE_SEC);
     ctx->s = s;
+    apr_pool_create(&ctx->p, p);
+    ctx->servers = apr_hash_make(ctx->p);
+
     return ctx;
 }
 
