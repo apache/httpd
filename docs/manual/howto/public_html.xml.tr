@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 658547 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="public_html.xml.meta">
+<parentdocument href="./">Nasıllar ve Öğreticiler</parentdocument>
+
+  <title>Kullanıcı Dizinleri (public_html)</title>
+
+<summary>
+  <p>Çok kullanıcılı sistemlerde, <directive module="mod_userdir"
+    >UserDir</directive> yönergesi ile her kullanıcının kendi ev dizininde
+    bir sitesi olması sağlanabilir.
+    <code>http://example.com/~kullanıcı/</code> adresinin ziyaretçileri
+    "kullanıcı" isimli kullanıcının ev dizininin içeriğini değil, <directive
+    module="mod_userdir">UserDir</directive> yönergesinde belirtilen alt
+    dizinin içeriğini görürler.</p>
+</summary>
+
+<seealso><a href="../urlmapping.html">URL’lerin Dosya Sistemi ile
+  Eşleştirilmesi</a></seealso>
+
+  <section id="related">
+    <title>Kullanıcı sayfaları dizinleri</title>
+    <related>
+      <modulelist>
+        <module>mod_userdir</module>
+      </modulelist>
+      <directivelist>
+        <directive module="mod_userdir">UserDir</directive>
+        <directive module="core">DirectoryMatch</directive>
+        <directive module="core">AllowOverride</directive>
+      </directivelist>
+    </related>
+    </section>
+
+    <section id="userdir">
+    <title><code>UserDir</code> ile dosya yolunun belirtilmesi</title>
+
+    <p><directive module="mod_userdir">UserDir</directive> yönergesinde
+     kullanıcı sayfalarının yükleneceği dizin belirtilir. Bu yönergeye değeri
+     çeşitli biçimlerde atanabilir.</p>
+
+    <p>Başında bölü çizgisi bulunmayan bir dosya yolu belirtilmişse,
+     kullanıcının ev dizinine göreli bir dizin belirtildiği varsayılır.
+     Yapılandırmada şöyle bir satır varsa:</p>
+
+    <example>
+      UserDir public_html
+    </example>
+
+    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+      gelen dosya yolu <code>/home/orhan/public_html/dosya.html</code> olarak
+      çözümlenir.</p>
+
+    <p>Eğer başında bölü çizgisi bulunan bir dosya yolu belirtilirse,
+      kullanıcı sayfalarının bu dizinin altında kullanıcı ismini taşıyan
+      dizinlerde bulunacağı varsayılır. Yapılandırmada şöyle bir satır
+      varsa:</p>
+
+    <example>
+      UserDir /var/html
+    </example>
+
+    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+      gelen dosya yolu <code>/var/html/orhan/dosya.html</code> olarak
+      çözümlenir.</p>
+
+    <p>Eğer belirtilen dosya yolu bir yıldız imi (*) içeriyorsa yıldız iminin
+      yerine kullanıcı ismi yerleştirilerek elde edilen dosya yolu
+      kullanılır. Yapılandırmada şöyle bir satır varsa:</p>
+
+    <example>
+      UserDir /var/siteler/*/sayfam
+    </example>
+
+    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+      gelen dosya yolu <code>/var/siteler/orhan/sayfam/dosya.html</code>
+      olarak çözümlenir.</p>
+
+    <p>Çok sayıda dizin veya dizin yolu belirtmek de mümkündür.</p>
+
+    <example>
+      UserDir public_html /var/siteler
+    </example>
+
+    <p><code>http://example.com/~orhan/dosya.html</code> adresini Apache önce
+      <code>/home/orhan/public_html/dosya.html</code> olarak arayacak,
+      bulamazsa <code>/var/siteler/orhan/sayfam/dosya.html</code> olarak
+      arayacak, bulduğunda istenen dosyayı sunacaktır.</p>
+
+  </section>
+
+  <section id="redirect">
+    <title>Harici adreslere yönlendirme</title>
+    <p><directive module="mod_userdir">UserDir</directive> yönergesi
+      kullanıcı dizini isteklerini harici adreslere yönlendirmek için de
+      kullanılabilir.</p>
+
+    <example>
+      UserDir http://example.org/users/*/
+    </example>
+
+    <p>Bu yapılandırmaya göre <code>http://example.com/~bob/abc.html</code>
+    için yapılan bir istek <code>http://example.org/users/bob/abc.html</code>
+    adresine yönlendirilecektir.</p>
+  </section>
+
+  <section id="enable">
+    <title>Bu özelliği kullanacak kullanıcıların sınırlandırılması</title>
+
+    <p><directive module="mod_userdir">UserDir</directive> yönergesinin
+      açıklamasında belirtilen sözdizimini kullanarak bu işlevselliği bazı
+      kullanıcılara yasaklayabilirsiniz:</p>
+
+    <example>
+      UserDir enabled<br />
+      UserDir disabled root ahmet mustafa
+    </example>
+
+    <p>Bu yapılandırma ile <code>disabled</code> deyiminin bulunduğu
+      satırdaki kullanıcılar dışında kalan bütün kullanıcılar için bu özellik
+      etkin olacaktır. Benzer şekilde, aşağıdaki yapılandırma ile
+      işlevselliğin belli kullanıcılar dışında kullanılmamasını da
+      sağlayabilirsiniz:</p>
+
+    <example>
+      UserDir disabled<br />
+      UserDir enabled orhan yasar
+    </example>
+
+    <p>Daha fazla örnek için <directive module="mod_userdir"
+      >UserDir</directive> yönergesinin açıklamasına bakabilirsiniz.</p>
+
+  </section>
+
+  <section id="cgi">
+  <title>Her kullanıcıya bir CGI dizini tahsis etmek</title>
+
+   <p>Her kullanıcıya kendine ait bir CGI dizini vermek isterseniz, bir
+    <directive module="core" type="section">Directory</directive> yönergesi
+    ile kullanıcının ev dizinindeki belli bir dizini CGI-etkin duruma
+    getirebilirsiniz.</p>
+
+    <example>
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
+       SetHandler cgi-script<br />
+       &lt;/Directory&gt;
+    </example>
+
+    <p> <directive module="mod_userdir">UserDir</directive> yönergesinde
+      <code>public_html</code> belirtildiği varsayımıyla
+      <code>mesela.cgi</code> betiği bu dizinden şöyle bir adresle
+      yüklenebilir:</p>
+
+    <example>
+      http://example.com/~orhan/cgi-bin/mesela.cgi
+    </example>
+
+    </section>
+
+    <section id="htaccess">
+    <title>Kullanıcıların yapılandırmayı değiştirmesine izin vermek</title>
+
+    <p>Kullanıcıların kendilerine ayrılan bölge içinde sunucu
+      yapılandırmasını değiştirebilmelerine izin vermek isterseniz,
+      <code>.htaccess</code> dosyalarını kullanmalarına izin vermeniz
+      gerekir. Kullanıcının değiştirmesine izin vereceğiniz yönerge türlerini
+      <directive module="core">AllowOverride</directive> yönergesinde
+      belirtmeyi ihmal etmeyin. <code>.htaccess</code> dosyalarının kullanımı
+      ile ilgili daha ayrıntılı bilgi için <a href="htaccess.html">.htaccess
+      öğreticisi</a>ne bakınız.</p>
+
+  </section>
+
+</manualpage>
