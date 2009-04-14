@@ -440,7 +440,13 @@ static int hm_handler(request_rec *r)
     }
     apr_brigade_flatten(input_brigade, buf, &len);
     hm_processmsg(ctx, r->pool, r->connection->remote_addr, buf, len);
-    return HTTP_OK;
+
+    ap_set_content_type(r, "text/plain");
+    ap_set_content_length(r, 2);
+    ap_rprintf(r, "OK");
+    ap_rflush(r);
+    
+    return OK;
 }
 
 static void hm_register_hooks(apr_pool_t *p)
