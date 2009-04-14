@@ -153,21 +153,40 @@
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>Bu yönerge <code>core</code> dosyasını dökümlemek üzere Apache’nin
-      geçmeye çalışacağı dizini belirler. <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dizini öntanımlı dizin olmakla
-      birlikte, bu dizin kullanıcılar tarafından yazılabilir bir dizin
-      olmadığından bir <code>core</code> dosyası dökümlenmez. Hata ayıklama
-      amacıyla bir <code>core</code> dosyası dökümlemek isterseniz farklı bir
-      yer belirtmek için bu yönergeyi kullanabilirsiniz.</p>
+      geçmeye çalışacağı dizini belirler. Eğer işletim sisteminiz, çöken bir
+      sürecin olması durumunda <code>core</code> dosyasını çalışma dizinine
+      yazacak şekilde yapılandırılmışsa,
+      <code class="directive">CoreDumpDirectory</code> yönergesinin değeri olarak,
+      öntanımlı olan ve sunucuyu çalıştıran kullanıcı tarafından yazılamayan
+      <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> dizini yerine çalışma
+      dizinini belirtmek gerekir.</p>
+    <p>Hata ayıklamak amacıyla bir <code>core</code> dosyası dökümlemek
+      isterseniz farklı bir yer belirtmek için bu yönergeyi
+      kullanabilirsiniz. Eğer işletim sisteminiz çöken bir sürecin olması
+      durumunda <code>core</code> dosyasını çalışma dizinine yazacak şekilde
+      yapılandırılmamışsa, bu yönergenin bir etkisi olmaz.</p>
 
     <div class="note"><h3>Linux üzerinde <code>core</code> dökümlemek</h3>
       <p>Apache root olarak başlatılıp başka bir kullanıcıya geçilirse Linux
         çekirdeği süreç tarafından yazılabilir olsa bile <code>core</code>
         dökümlemeyi <em>iptal eder</em>. Eğer
         <code class="directive">CoreDumpDirectory</code> yönergesi ile açıkça bir
-        dizin belirtirseniz, Apache (2.0.46 ve sonraki sürümleri), Linux 2.4 ve
-        sonrasında <code>core</code> dökümlemeyi yeniden
+        dizin belirtirseniz, Apache (2.0.46 ve sonraki sürümleri), Linux 2.4
+        ve sonrasında <code>core</code> dökümlemeyi yeniden
         etkinleştirecektir.</p>
     </div>
+
+    <div class="note"><h3>Özel sinyaller</h3>
+      <p><code class="directive">CoreDumpDirectory</code> işlemi sadece belli
+        sinyaller için gerçekleşir: SIGFPE, SIGILL, SIGABORT, SIGSEGV ve
+        SIGBUS.</p>
+      <p>Bazı işletim sistemlerinde SIGQUIT sinyali de bir <code>core</code>
+        dosyası dökümler ancak bunu <code class="directive">CoreDumpDirectory</code>
+        veya <code class="directive">EnableExceptionHook</code> işlemi üzerinden
+        yapmaz, dolayısıyla <code>core</code> dosyasının yeri tamamen işletim
+        sisteminin belirlediği yer olur.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

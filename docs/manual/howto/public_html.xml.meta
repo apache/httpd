@@ -11,5 +11,6 @@
     <variant>fr</variant>
     <variant>ja</variant>
     <variant outdated="yes">ko</variant>
+    <variant>tr</variant>
   </variants>
 </metafile>

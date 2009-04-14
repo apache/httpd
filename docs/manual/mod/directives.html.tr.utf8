@@ -445,6 +445,8 @@
 <li><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
 <li><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
 <li><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
+<li><a href="mod_ssl.html#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
+<li><a href="mod_ssl.html#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
 <li><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
 <li><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine</a></li>
 <li><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
