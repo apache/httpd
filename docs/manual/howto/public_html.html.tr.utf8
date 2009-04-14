@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Kullanıcı Dizinleri (public_html) - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a> &gt; <a href="./">Nasıllar ve Öğreticiler</a></div><div id="page-content"><div id="preamble"><h1>Kullanıcı Dizinleri (public_html)</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/howto/public_html.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/howto/public_html.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+  <p>Çok kullanıcılı sistemlerde, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi ile her kullanıcının kendi ev dizininde
+    bir sitesi olması sağlanabilir.
+    <code>http://example.com/~kullanıcı/</code> adresinin ziyaretçileri
+    "kullanıcı" isimli kullanıcının ev dizininin içeriğini değil, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinde belirtilen alt
+    dizinin içeriğini görürler.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Kullanıcı sayfaları dizinleri</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#userdir"><code>UserDir</code> ile dosya yolunun belirtilmesi</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirect">Harici adreslere yönlendirme</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Bu özelliği kullanacak kullanıcıların sınırlandırılması</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cgi">Her kullanıcıya bir CGI dizini tahsis etmek</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#htaccess">Kullanıcıların yapılandırmayı değiştirmesine izin vermek</a></li>
+</ul><h3>Ayrıca bakınız:</h3><ul class="seealso"><li><a href="../urlmapping.html">URL’lerin Dosya Sistemi ile
+  Eşleştirilmesi</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="related" id="related">Kullanıcı sayfaları dizinleri</a></h2>
+    
+    <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code></li><li><code class="directive"><a href="../mod/core.html#directorymatch">DirectoryMatch</a></code></li><li><code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="userdir" id="userdir"><code>UserDir</code> ile dosya yolunun belirtilmesi</a></h2>
+    
+
+    <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinde
+     kullanıcı sayfalarının yükleneceği dizin belirtilir. Bu yönergeye değeri
+     çeşitli biçimlerde atanabilir.</p>
+
+    <p>Başında bölü çizgisi bulunmayan bir dosya yolu belirtilmişse,
+     kullanıcının ev dizinine göreli bir dizin belirtildiği varsayılır.
+     Yapılandırmada şöyle bir satır varsa:</p>
+
+    <div class="example"><p><code>
+      UserDir public_html
+    </code></p></div>
+
+    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+      gelen dosya yolu <code>/home/orhan/public_html/dosya.html</code> olarak
+      çözümlenir.</p>
+
+    <p>Eğer başında bölü çizgisi bulunan bir dosya yolu belirtilirse,
+      kullanıcı sayfalarının bu dizinin altında kullanıcı ismini taşıyan
+      dizinlerde bulunacağı varsayılır. Yapılandırmada şöyle bir satır
+      varsa:</p>
+
+    <div class="example"><p><code>
+      UserDir /var/html
+    </code></p></div>
+
+    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+      gelen dosya yolu <code>/var/html/orhan/dosya.html</code> olarak
+      çözümlenir.</p>
+
+    <p>Eğer belirtilen dosya yolu bir yıldız imi (*) içeriyorsa yıldız iminin
+      yerine kullanıcı ismi yerleştirilerek elde edilen dosya yolu
+      kullanılır. Yapılandırmada şöyle bir satır varsa:</p>
+
+    <div class="example"><p><code>
+      UserDir /var/siteler/*/sayfam
+    </code></p></div>
+
+    <p><code>http://example.com/~orhan/dosya.html</code> adresine karşılık
+      gelen dosya yolu <code>/var/siteler/orhan/sayfam/dosya.html</code>
+      olarak çözümlenir.</p>
+
+    <p>Çok sayıda dizin veya dizin yolu belirtmek de mümkündür.</p>
+
+    <div class="example"><p><code>
+      UserDir public_html /var/siteler
+    </code></p></div>
+
+    <p><code>http://example.com/~orhan/dosya.html</code> adresini Apache önce
+      <code>/home/orhan/public_html/dosya.html</code> olarak arayacak,
+      bulamazsa <code>/var/siteler/orhan/sayfam/dosya.html</code> olarak
+      arayacak, bulduğunda istenen dosyayı sunacaktır.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirect" id="redirect">Harici adreslere yönlendirme</a></h2>
+    
+    <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi
+      kullanıcı dizini isteklerini harici adreslere yönlendirmek için de
+      kullanılabilir.</p>
+
+    <div class="example"><p><code>
+      UserDir http://example.org/users/*/
+    </code></p></div>
+
+    <p>Bu yapılandırmaya göre <code>http://example.com/~bob/abc.html</code>
+    için yapılan bir istek <code>http://example.org/users/bob/abc.html</code>
+    adresine yönlendirilecektir.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="enable" id="enable">Bu özelliği kullanacak kullanıcıların sınırlandırılması</a></h2>
+    
+
+    <p><code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinin
+      açıklamasında belirtilen sözdizimini kullanarak bu işlevselliği bazı
+      kullanıcılara yasaklayabilirsiniz:</p>
+
+    <div class="example"><p><code>
+      UserDir enabled<br />
+      UserDir disabled root ahmet mustafa
+    </code></p></div>
+
+    <p>Bu yapılandırma ile <code>disabled</code> deyiminin bulunduğu
+      satırdaki kullanıcılar dışında kalan bütün kullanıcılar için bu özellik
+      etkin olacaktır. Benzer şekilde, aşağıdaki yapılandırma ile
+      işlevselliğin belli kullanıcılar dışında kullanılmamasını da
+      sağlayabilirsiniz:</p>
+
+    <div class="example"><p><code>
+      UserDir disabled<br />
+      UserDir enabled orhan yasar
+    </code></p></div>
+
+    <p>Daha fazla örnek için <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinin açıklamasına bakabilirsiniz.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cgi" id="cgi">Her kullanıcıya bir CGI dizini tahsis etmek</a></h2>
+  
+
+   <p>Her kullanıcıya kendine ait bir CGI dizini vermek isterseniz, bir
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> yönergesi
+    ile kullanıcının ev dizinindeki belli bir dizini CGI-etkin duruma
+    getirebilirsiniz.</p>
+
+    <div class="example"><p><code>
+      &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
+       Options ExecCGI<br />
+       SetHandler cgi-script<br />
+       &lt;/Directory&gt;
+    </code></p></div>
+
+    <p> <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesinde
+      <code>public_html</code> belirtildiği varsayımıyla
+      <code>mesela.cgi</code> betiği bu dizinden şöyle bir adresle
+      yüklenebilir:</p>
+
+    <div class="example"><p><code>
+      http://example.com/~orhan/cgi-bin/mesela.cgi
+    </code></p></div>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="htaccess" id="htaccess">Kullanıcıların yapılandırmayı değiştirmesine izin vermek</a></h2>
+    
+
+    <p>Kullanıcıların kendilerine ayrılan bölge içinde sunucu
+      yapılandırmasını değiştirebilmelerine izin vermek isterseniz,
+      <code>.htaccess</code> dosyalarını kullanmalarına izin vermeniz
+      gerekir. Kullanıcının değiştirmesine izin vereceğiniz yönerge türlerini
+      <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> yönergesinde
+      belirtmeyi ihmal etmeyin. <code>.htaccess</code> dosyalarının kullanımı
+      ile ilgili daha ayrıntılı bilgi için <a href="htaccess.html">.htaccess
+      öğreticisi</a>ne bakınız.</p>
+
+  </div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/howto/public_html.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/howto/public_html.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/howto/public_html.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
