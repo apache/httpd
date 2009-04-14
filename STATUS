@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=757741&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, gregames,
 
  * mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
    to enable stricter checking of remote server certificates.
