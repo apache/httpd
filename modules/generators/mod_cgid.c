@@ -88,6 +88,8 @@ static int daemon_should_exit = 0;
 static server_rec *root_server = NULL;
 static apr_pool_t *root_pool = NULL;
 static const char *sockname;
+static struct sockaddr_un *server_addr;
+static apr_socklen_t server_addr_len;
 static pid_t parent_pid;
 static ap_unix_identity_t empty_ugid = { (uid_t)-1, (gid_t)-1, -1 };
 
@@ -591,10 +593,8 @@ static void cgid_child_errfn(apr_pool_t *pool, apr_status_t err,
 
 static int cgid_server(void *data)
 {
-    struct sockaddr_un unix_addr;
     int sd, sd2, rc;
     mode_t omask;
-    apr_socklen_t len;
     apr_pool_t *ptrans;
     server_rec *main_server = data;
     apr_hash_t *script_hash = apr_hash_make(pcgi);
@@ -619,12 +619,8 @@ static int cgid_server(void *data)
         return errno;
     }
 
-    memset(&unix_addr, 0, sizeof(unix_addr));
-    unix_addr.sun_family = AF_UNIX;
-    apr_cpystrn(unix_addr.sun_path, sockname, sizeof unix_addr.sun_path);
-
     omask = umask(0077); /* so that only Apache can use socket */
-    rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
+    rc = bind(sd, (struct sockaddr *)server_addr, server_addr_len);
     umask(omask); /* can't fail, so can't clobber errno */
     if (rc < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
@@ -678,6 +674,8 @@ static int cgid_server(void *data)
         cgid_req_t cgid_req;
         apr_status_t stat;
         void *key;
+        apr_socklen_t len;
+        struct sockaddr_un unix_addr;
 
         apr_pool_clear(ptrans);
 
@@ -906,6 +904,12 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
 
         parent_pid = getpid();
         sockname = ap_server_root_relative(p, sockname);
+
+        server_addr_len = APR_OFFSETOF(struct sockaddr_un, sun_path) + strlen(sockname);
+        server_addr = (struct sockaddr_un *)apr_palloc(p, server_addr_len + 1);
+        server_addr->sun_family = AF_UNIX;
+        strcpy(server_addr->sun_path, sockname);
+
         ret = cgid_start(p, main_server, procnew);
         if (ret != OK ) {
             return ret;
@@ -1158,14 +1162,9 @@ static apr_status_t close_unix_socket(void *thefd)
 static int connect_to_daemon(int *sdptr, request_rec *r,
                              cgid_server_conf *conf)
 {
-    struct sockaddr_un unix_addr;
     int sd;
     int connect_tries;
     apr_interval_time_t sliding_timer;
-
-    memset(&unix_addr, 0, sizeof(unix_addr));
-    unix_addr.sun_family = AF_UNIX;
-    apr_cpystrn(unix_addr.sun_path, sockname, sizeof unix_addr.sun_path);
 
     connect_tries = 0;
     sliding_timer = 100000; /* 100 milliseconds */
@@ -1175,7 +1174,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
             return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno,
                                    "unable to create socket to cgi daemon");
         }
-        if (connect(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
+        if (connect(sd, (struct sockaddr *)server_addr, server_addr_len) < 0) {
             if (errno == ECONNREFUSED && connect_tries < DEFAULT_CONNECT_ATTEMPTS) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, errno, r,
                               "connect #%d to cgi daemon failed, sleeping before retry",
