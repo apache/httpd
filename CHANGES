@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_cgid: Improve handling of long AF_UNIX socket names (ScriptSock).  
+     PR 47037.  [Jeff Trawick]
+
   *) SECURITY: CVE-2008-5519 (cve.mitre.org)
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
