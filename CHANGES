@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_substitute: Fix a memory leak. PR 44948
+     [Dan Poirier <poirier pobox.com>]
+
   *) mod_proxy_ajp: Forward remote port information by default.
      [Rainer Jung]
 

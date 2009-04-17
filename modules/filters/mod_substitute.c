@@ -373,7 +373,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
              */
             rv = apr_bucket_read(b, &buff, &bytes, APR_BLOCK_READ);
             if (rv != APR_SUCCESS || bytes == 0) {
-                APR_BUCKET_REMOVE(b);
+                apr_bucket_delete(b);
             }
             else {
                 int num = 0;
