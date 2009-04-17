@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_proxy_ajp: Forward remote port information by default.
+     [Rainer Jung]
+
   *) mod_disk_cache/mod_mem_cache: Fix handling of CacheIgnoreHeaders
      directive to correctly remove headers before storing them.
      [Lars Eilebrecht]

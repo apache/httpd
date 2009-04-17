@@ -44,6 +44,14 @@
 #define SC_A_ARE_DONE           (unsigned char)0xFF
 
 /*
+ * AJP private request attributes
+ *
+ * The following request attribute is recognized by Tomcat
+ * to contain the forwarded remote port.
+ */
+#define SC_A_REQ_REMOTE_PORT    ("AJP_REMOTE_PORT")
+
+/*
  * Request methods, coded as numbers instead of strings.
  * The list of methods was taken from Section 5.1.1 of RFC 2616,
  * RFC 2518, the ACL IETF draft, and the DeltaV IESG Proposed Standard.
