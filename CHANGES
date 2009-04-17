@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_disk_cache/mod_mem_cache: Fix handling of CacheIgnoreHeaders
+     directive to correctly remove headers before storing them.
+     [Lars Eilebrecht]
+
   *) mod_deflate: revert changes in 2.2.8 that caused an invalid
      etag to be emitted for on-the-fly gzip content-encoding.
      PR 39727 will require larger fixes and this fix was far more
