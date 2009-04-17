@@ -1,70 +1,78 @@
-AC_MSG_CHECKING(which MPM to use)
-AC_ARG_WITH(mpm,
-APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
-                          MPM={simple|event|worker|prefork|winnt}
-                          Specify "shared" instead of an MPM name to load MPMs dynamically.
-),[
-  APACHE_MPM=$withval
-],[
-  if test "x$APACHE_MPM" = "x"; then
-    APACHE_MPM=event
-  fi
-])
-AC_MSG_RESULT($APACHE_MPM)
+dnl common platform checks needed by MPMs, methods for MPMs to state
+dnl their support for the platform, functions to query MPM properties
 
-apache_cv_mpm=$APACHE_MPM
+APR_CHECK_APR_DEFINE(APR_HAS_THREADS)
 
-dnl Note that a build with an explicitly loaded MPM must support threaded MPMs.
-ap_mpm_is_threaded ()
+have_threaded_sig_graceful=yes
+case $host in
+    *-linux-*)
+        case `uname -r` in
+          2.0* )
+            dnl Threaded MPM's are not supported on Linux 2.0
+            dnl as on 2.0 the linuxthreads library uses SIGUSR1
+            dnl and SIGUSR2 internally
+            have_threaded_sig_graceful=no
+          ;;
+        esac
+    ;;
+esac
+
+dnl See if APR supports APR_POLLSET_THREADSAFE.
+dnl XXX This hack tests for the underlying functions used by APR when it
+dnl XXX supports APR_POLLSET_THREADSAFE.
+dnl FIXME with a run-time check for
+dnl     apr_pollset_create(,,APR_POLLSET_THREADSAFE) == APR_SUCCESS
+AC_CHECK_FUNCS(kqueue port_create epoll_create)
+if test "$ac_cv_func_kqueue$ac_cv_func_port_create$ac_cv_func_epoll_create" != "nonono"; then
+    have_threadsafe_pollset=yes
+else
+    have_threadsafe_pollset=no
+fi
+
+dnl See if this is a forking platform w.r.t. MPMs
+case $host in
+    *mingw32*)
+        forking_mpms_supported=no
+        ;;
+    *)
+        forking_mpms_supported=yes
+        ;;
+esac
+
+dnl APACHE_MPM_SUPPORTED(name, supports-shared, is_threaded)
+AC_DEFUN(APACHE_MPM_SUPPORTED,[
+    SUPPORTED_MPMS="$SUPPORTED_MPMS $1 "
+    if test "$3" = "yes"; then
+        THREADED_MPMS="$THREADED_MPMS $1"
+    fi
+])dnl
+
+dnl APACHE_MPM_ENABLED(name)
+AC_DEFUN(APACHE_MPM_ENABLED,[
+    ENABLED_MPMS="$ENABLED_MPMS $1 "
+])dnl
+
+ap_mpm_is_supported ()
 {
-    if test "$apache_cv_mpm" = "shared" -o "$apache_cv_mpm" = "worker" -o "$apache_cv_mpm" = "event" -o "$apache_cv_mpm" = "simple" -o "$apache_cv_mpm" = "winnt" ; then
+    if echo "$SUPPORTED_MPMS" | grep " $1 " >/dev/null; then
         return 0
     else
         return 1
     fi
 }
 
-if ap_mpm_is_threaded; then
-  APR_CHECK_APR_DEFINE(APR_HAS_THREADS)
+ap_mpm_is_threaded ()
+{
+    dnl Special support for --with-mpm=shared
+    dnl Assume a threaded MPM can be used.
+    if test "x$MPM_NAME" = "xshared"; then
+        return 0
+    fi
 
-  if test "x$ac_cv_define_APR_HAS_THREADS" = "xno"; then
-    AC_MSG_RESULT(The currently selected MPM requires threads which your system seems to lack)
-    AC_MSG_CHECKING(checking for replacement)
-    AC_MSG_RESULT(prefork selected)
-    apache_cv_mpm=prefork
-  else
-    case $host in
-      *-linux-*)
-        case `uname -r` in
-          2.0* )
-            dnl Threaded MPM's are not supported on Linux 2.0
-            dnl as on 2.0 the linuxthreads library uses SIGUSR1
-            dnl and SIGUSR2 internally
-            echo "Threaded MPM's are not supported on this platform"
-            AC_MSG_CHECKING(checking for replacement)
-            AC_MSG_RESULT(prefork selected)
-            apache_cv_mpm=prefork
-          ;;
-        esac
-      ;;
-    esac
-  fi
-fi
-
-APACHE_FAST_OUTPUT(server/mpm/Makefile)
-
-if test "$apache_cv_mpm" = "shared"; then
-  MPM_NAME=""
-  MPM_SUBDIR_NAME=""
-  MPM_LIB=""
-else
-  MPM_NAME=$apache_cv_mpm
-  MPM_SUBDIR_NAME=$MPM_NAME
-  MPM_LIB=server/mpm/$MPM_SUBDIR_NAME/lib${MPM_NAME}.la
-
-  MODLIST="$MODLIST mpm_${MPM_NAME}"
-fi
-
-APACHE_SUBST(MPM_NAME)
-APACHE_SUBST(MPM_SUBDIR_NAME)
-APACHE_SUBST(MPM_LIB)
+    for mpm in $ENABLED_MPMS; do
+        if echo "$THREADED_MPMS" | grep " $mpm " >/dev/null; then
+            return 0
+        fi
+    done
+    return 1
+}

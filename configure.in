@@ -252,7 +252,6 @@ echo $ac_n "${nl}Applying OS-specific hints for httpd ...${nl}"
 
 case $host in
   *-apple-aux3*)
-      APR_SETVAR(APACHE_MPM, [prefork])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
   *-linux-*)
@@ -281,11 +280,9 @@ case $host in
       esac
       ;;
   *cygwin*)
-      APR_SETVAR(APACHE_MPM, [prefork])
       APR_SETVAR(SINGLE_LISTEN_UNSERIALIZED_ACCEPT, [1])
       ;;
   *mingw32*)
-      APR_SETVAR(APACHE_MPM, [winnt])
       APR_ADDTO(CPPFLAGS, [-DAP_DECLARE_EXPORT])
       APR_SETIFNULL(ac_cv_func_times, [no])
       APR_SETIFNULL(ac_cv_func_getpwnam, [no])
