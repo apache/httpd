@@ -126,6 +126,40 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=761329&view=rev
    +1: rjung, rpluem, wrowe, jim
 
+ * mod_mime_magic: For compressed content the module sets the
+   content encoding header and also tries to determine the
+   uncompressed content type by using an external gzip.
+   Several bugs break this functionality:
+   - Starting gzip doesn't work because an invalid working
+     directory is used and neither the full path name for gzip
+     nor the PATH variable is used.
+   - When gzip works, but cannot detect the content type, then
+     content encoding is also not set.
+   - Too few bytes are uncompressed so often the content type
+     can not be determined.
+   Patches in trunk (separated to make review easier):
+     http://svn.apache.org/viewvc?rev=756671&view=rev (working dir)
+     http://svn.apache.org/viewvc?rev=756675&view=rev (use PATH)
+     http://svn.apache.org/viewvc?rev=756678&view=rev (content encoding)
+     http://svn.apache.org/viewvc?rev=756683&view=rev (read more bytes)
+   Those patches apply to 2.2.x as well.
+   +1: rjung, rpluem, jim
+
+ * mod_substitute: Avoid endless loops in substitution.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=755190&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem, gregames, jim
+
+ * mod_substitute: Fix a memory leak.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=757741&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem, gregames, jim
+
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -148,25 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    FYI, mod_privileges hacked to work with the patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges.c
    +1: niq
-
- * mod_mime_magic: For compressed content the module sets the
-   content encoding header and also tries to determine the
-   uncompressed content type by using an external gzip.
-   Several bugs break this functionality:
-   - Starting gzip doesn't work because an invalid working
-     directory is used and neither the full path name for gzip
-     nor the PATH variable is used.
-   - When gzip works, but cannot detect the content type, then
-     content encoding is also not set.
-   - Too few bytes are uncompressed so often the content type
-     can not be determined.
-   Patches in trunk (separated to make review easier):
-     http://svn.apache.org/viewvc?rev=756671&view=rev (working dir)
-     http://svn.apache.org/viewvc?rev=756675&view=rev (use PATH)
-     http://svn.apache.org/viewvc?rev=756678&view=rev (content encoding)
-     http://svn.apache.org/viewvc?rev=756683&view=rev (read more bytes)
-   Those patches apply to 2.2.x as well.
-   +1: rjung, rpluem, jim
 
  * mod_rewrite: Correctly encode spaces in proxied requests issued by rewrite
    rules in directory context. PR 46428
@@ -191,20 +206,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
       Trunk version of patch works
    +1: rpluem, jim
-
- * mod_substitute: Avoid endless loops in substitution.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=755190&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, gregames, jim
-
- * mod_substitute: Fix a memory leak.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=757741&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, gregames, jim
 
  * mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
    to enable stricter checking of remote server certificates.
