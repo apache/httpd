@@ -1,4 +1,4 @@
-AC_MSG_CHECKING(if simple MPM supports this platform)
+AC_MSG_CHECKING(if event MPM supports this platform)
 if test $forking_mpms_supported != yes; then
     AC_MSG_RESULT(no - This is not a forking platform)
 elif test $ac_cv_define_APR_HAS_THREADS != yes; then
@@ -9,5 +9,5 @@ elif test $have_threadsafe_pollset != yes; then
     AC_MSG_RESULT(no - APR_POLLSET_THREADSAFE is not supported)
 else
     AC_MSG_RESULT(yes)
-    APACHE_MPM_SUPPORTED(simple, yes, yes)
+    APACHE_MPM_SUPPORTED(event, yes, yes)
 fi
