@@ -95,13 +95,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_substitute: Fix a memory leak.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=757741&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, gregames, jim
-
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
