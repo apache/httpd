@@ -287,7 +287,7 @@
       not be cached.</p>
 
       <p>If on the other hand, the content served differs depending on the
-      values of various HTTP headers, it is possible that it might be possible
+      values of various HTTP headers, it might be possible
       to cache it intelligently through the use of a "Vary" header.</p>
     </section>
 
@@ -308,10 +308,9 @@ Vary: negotiate,accept-language,accept-charset
       </example>
 
       <p><module>mod_cache</module> will only serve the cached content to
-      requesters with matching accept-language and accept-charset headers
+      requesters with accept-language and accept-charset headers
       matching those of the original request.</p>
     </section>
- 
   </section>
 
   <section id="security">
@@ -339,7 +338,7 @@ Vary: negotiate,accept-language,accept-charset
       directive, or <module>mod_expires</module>. Left unchecked,
       <module>mod_cache</module> - very much like a reverse proxy - would cache
       the content when served and then serve it to any client, on any IP
-      address.</p>        
+      address.</p>
     </section>
 
     <section>
