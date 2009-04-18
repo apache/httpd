@@ -133,7 +133,7 @@ enabled, the entire user-space must be carefully audited.</p>
 <p>There is no known Python extension supporting Solaris privileges, so it
 is unlikely that a script could escalate privileges unless it can
 load external (non-Python) privileges-aware code.  However, you should
-nevertheless audit your mod_ruby installation.</p>
+nevertheless audit your mod_python installation.</p>
 
 <p>*** What are the issues of Python loading a shared object?</p>
 
@@ -288,7 +288,7 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
-non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).
+non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM)
 and when <code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> is compiled with the
 <var>BIG_SECURITY_HOLE</var> compile-time option.</td></tr>
 </table>
