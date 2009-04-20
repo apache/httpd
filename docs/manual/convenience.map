@@ -39,7 +39,6 @@ anonymous_logemail	mod/mod_authn_anon.html#anonymous_logemail
 anonymous_mustgiveemail	mod/mod_authn_anon.html#anonymous_mustgiveemail
 anonymous_nouserid	mod/mod_authn_anon.html#anonymous_nouserid
 anonymous_verifyemail	mod/mod_authn_anon.html#anonymous_verifyemail
-assignuserid	mod/perchild.html#assignuserid
 authbasicauthoritative	mod/mod_auth_basic.html#authbasicauthoritative
 authbasicprovider	mod/mod_auth_basic.html#authbasicprovider
 authdbduserpwquery	mod/mod_authn_dbd.html#authdbduserpwquery
@@ -124,7 +123,6 @@ charsetoptions	mod/mod_charset_lite.html#charsetoptions
 charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
 checkcaseonly	mod/mod_speling.html#checkcaseonly
 checkspelling	mod/mod_speling.html#checkspelling
-childperuserid	mod/perchild.html#childperuserid
 chrootdir	mod/mod_unixd.html#chrootdir
 contentdigest	mod/core.html#contentdigest
 cookiedomain	mod/mod_usertrack.html#cookiedomain
@@ -259,11 +257,9 @@ maxclients	mod/mpm_common.html#maxclients
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree
 maxrequestsperchild	mod/mpm_common.html#maxrequestsperchild
-maxrequestsperthread	mod/beos.html#maxrequestsperthread
 maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads
-maxthreadsperchild	mod/perchild.html#maxthreadsperchild
 metadir	mod/mod_cern_meta.html#metadir
 metafiles	mod/mod_cern_meta.html#metafiles
 metasuffix	mod/mod_cern_meta.html#metasuffix
@@ -275,7 +271,6 @@ modmimeusepathinfo	mod/mod_mime.html#modmimeusepathinfo
 multiviewsmatch	mod/mod_mime.html#multiviewsmatch
 namevirtualhost	mod/core.html#namevirtualhost
 noproxy	mod/mod_proxy.html#noproxy
-numservers	mod/perchild.html#numservers
 nwssltrustedcerts	mod/mod_nw_ssl.html#nwssltrustedcerts
 nwsslupgradeable	mod/mod_nw_ssl.html#nwsslupgradeable
 options	mod/core.html#options
@@ -290,6 +285,8 @@ proxyblock	mod/mod_proxy.html#proxyblock
 proxydomain	mod/mod_proxy.html#proxydomain
 proxyerroroverride	mod/mod_proxy.html#proxyerroroverride
 proxyftpdircharset	mod/mod_proxy.html#proxyftpdircharset
+proxyftpescapewildcards	mod/mod_proxy_ftp.html#proxyftpescapewildcards
+proxyftplistonwildcard	mod/mod_proxy_ftp.html#proxyftplistonwildcard
 proxyiobuffersize	mod/mod_proxy.html#proxyiobuffersize
 proxymatch	mod/mod_proxy.html#proxymatch
 proxymaxforwards	mod/mod_proxy.html#proxymaxforwards
@@ -416,6 +413,8 @@ sslproxycacertificatefile	mod/mod_ssl.html#sslproxycacertificatefile
 sslproxycacertificatepath	mod/mod_ssl.html#sslproxycacertificatepath
 sslproxycarevocationfile	mod/mod_ssl.html#sslproxycarevocationfile
 sslproxycarevocationpath	mod/mod_ssl.html#sslproxycarevocationpath
+sslproxycheckpeercn	mod/mod_ssl.html#sslproxycheckpeercn
+sslproxycheckpeerexpire	mod/mod_ssl.html#sslproxycheckpeerexpire
 sslproxyciphersuite	mod/mod_ssl.html#sslproxyciphersuite
 sslproxyengine	mod/mod_ssl.html#sslproxyengine
 sslproxymachinecertificatefile	mod/mod_ssl.html#sslproxymachinecertificatefile
