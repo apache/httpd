@@ -369,6 +369,7 @@ sslproxyprotocol	mod/mod_ssl.html#sslproxyprotocol
 sslproxyverify	mod/mod_ssl.html#sslproxyverify
 sslproxyverifydepth	mod/mod_ssl.html#sslproxyverifydepth
 sslrandomseed	mod/mod_ssl.html#sslrandomseed
+sslrenegbuffersize	mod/mod_ssl.html#sslrenegbuffersize
 sslrequire	mod/mod_ssl.html#sslrequire
 sslrequiressl	mod/mod_ssl.html#sslrequiressl
 sslsessioncache	mod/mod_ssl.html#sslsessioncache
