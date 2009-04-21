@@ -39,27 +39,17 @@
 
 extern module AP_MODULE_DECLARE_DATA dbd_module;
 
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(dbd, AP, apr_status_t, post_connect,
+                                    (apr_pool_t *pool, dbd_cfg_t *cfg,
+                                    ap_dbd_t *dbd),
+                                    (pool, cfg, dbd), OK, DECLINED)
+
 /************ svr cfg: manage db connection pool ****************/
 
 #define NMIN_SET     0x1
 #define NKEEP_SET    0x2
 #define NMAX_SET     0x4
 #define EXPTIME_SET  0x8
-
-typedef struct {
-    server_rec *server;
-    const char *name;
-    const char *params;
-    int persist;
-#if APR_HAS_THREADS
-    int nmin;
-    int nkeep;
-    int nmax;
-    int exptime;
-    int set;
-#endif
-    apr_hash_t *queries;
-} dbd_cfg_t;
 
 typedef struct dbd_group_t dbd_group_t;
 
@@ -99,6 +89,8 @@ static const char *const no_dbdriver = "[DBDriver unset]";
 #define DEFAULT_NMAX 10
 #define DEFAULT_EXPTIME 300
 
+#define DEFAULT_SQL_INIT_ARRAY_SIZE 5
+
 static void *create_dbd_config(apr_pool_t *pool, server_rec *s)
 {
     svr_cfg *svr = apr_pcalloc(pool, sizeof(svr_cfg));
@@ -115,6 +107,8 @@ static void *create_dbd_config(apr_pool_t *pool, server_rec *s)
     cfg->exptime = DEFAULT_EXPTIME;
 #endif
     cfg->queries = apr_hash_make(pool);
+    cfg->init_queries = apr_array_make(pool, DEFAULT_SQL_INIT_ARRAY_SIZE,
+                                       sizeof(const char *));
 
     return svr;
 }
@@ -137,8 +131,31 @@ static void *merge_dbd_config(apr_pool_t *pool, void *basev, void *addv)
     new->exptime = (add->set&EXPTIME_SET) ? add->exptime : base->exptime;
 #endif
     new->queries = apr_hash_overlay(pool, add->queries, base->queries);
+    new->init_queries = apr_array_append(pool, add->init_queries,
+                                         base->init_queries);
 
     return svr;
+}
+
+static void ap_dbd_sql_init(server_rec *s, const char *query)
+{
+    svr_cfg *svr;
+    const char **arr_item;
+
+    svr = ap_get_module_config(s->module_config, &dbd_module);
+    if (!svr) {
+         /* some modules may call from within config directive handlers, and
+          * if these are called in a server context that contains no mod_dbd
+          * config directives, then we have to create our own server config
+          */
+         svr = create_dbd_config(config_pool, s);
+         ap_set_module_config(s->module_config, &dbd_module, svr);
+    }
+
+    if (query) {
+        arr_item = apr_array_push(svr->cfg->init_queries);
+        *arr_item = query;
+    }
 }
 
 static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
@@ -244,6 +261,17 @@ static const char *dbd_prepare(cmd_parms *cmd, void *dconf, const char *query,
     return NULL;
 }
 
+static const char *dbd_init_sql(cmd_parms *cmd, void *dconf, const char *query)
+{
+    if (!query || *query == '\n') {
+        return "You should specify SQL statement";
+    }
+
+    ap_dbd_sql_init(cmd->server, query);
+
+    return NULL;
+}
+
 static const command_rec dbd_cmds[] = {
     AP_INIT_TAKE1("DBDriver", dbd_param, (void*)cmd_name, RSRC_CONF,
                   "SQL Driver"),
@@ -254,6 +282,8 @@ static const command_rec dbd_cmds[] = {
     AP_INIT_TAKE12("DBDPrepareSQL", dbd_prepare, NULL, RSRC_CONF,
                    "SQL statement to prepare (or nothing, to override "
                    "statement inherited from main server) and label"),
+    AP_INIT_TAKE1("DBDInitSQL", dbd_init_sql, NULL, RSRC_CONF,
+                   "SQL statement to be executed after connection is created"),
 #if APR_HAS_THREADS
     AP_INIT_TAKE1("DBDMin", dbd_param_int, (void*)cmd_min, RSRC_CONF,
                   "Minimum number of connections"),
@@ -430,6 +460,27 @@ static apr_status_t dbd_prepared_init(apr_pool_t *pool, dbd_cfg_t *cfg,
     return rv;
 }
 
+static apr_status_t dbd_init_sql_init(apr_pool_t *pool, dbd_cfg_t *cfg,
+                                      ap_dbd_t *rec)
+{
+    int i;
+    apr_status_t rv = APR_SUCCESS;
+
+    for (i = 0; i < cfg->init_queries->nelts; i++) {
+        int nrows;
+        char **query_p;
+
+        query_p = (char **)cfg->init_queries->elts + i;
+
+        if (apr_dbd_query(rec->driver, rec->handle, &nrows, *query_p)) {
+            rv = APR_EGENERAL;
+            break;
+        }
+    }
+
+    return rv;
+}
+
 static apr_status_t dbd_close(void *data)
 {
     ap_dbd_t *rec = data;
@@ -550,6 +601,8 @@ static apr_status_t dbd_construct(void **data_ptr,
         apr_pool_destroy(rec->pool);
         return rv;
     }
+
+    dbd_run_post_connect(prepared_pool, cfg, rec);
 
     *data_ptr = rec;
 
@@ -920,6 +973,9 @@ static void dbd_hooks(apr_pool_t *pool)
     APR_REGISTER_OPTIONAL_FN(ap_dbd_close);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_acquire);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_cacquire);
+
+    APR_OPTIONAL_HOOK(dbd, post_connect, dbd_init_sql_init,
+                      NULL, NULL, APR_HOOK_MIDDLE);
 
     apr_dbd_init(pool);
 }
