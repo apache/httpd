@@ -2207,41 +2207,56 @@ hosting</description>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>The <directive>NameVirtualHost</directive> directive is a
-    required directive if you want to configure <a
-    href="../vhosts/">name-based virtual hosts</a>.</p>
 
-    <p>Although <var>addr</var> can be hostname it is recommended
-    that you always use an IP address, e.g.</p>
+<p>A single <directive>NameVirtualHost</directive> directive 
+identifies a set of identical virtual hosts on which the server will  
+further select from on the basis of the <em>hostname</em> 
+requested by the client.  The <code class="directive">NameVirtualHost</code> 
+directive is a required directive if you want to configure 
+<a href="../vhosts/">name-based virtual hosts</a>.</p>
 
-    <example>
-      NameVirtualHost 111.22.33.44
-    </example>
+<p>This directive, and the corresponding <directive >VirtualHost</directive>,
+<em>must</em> be qualified with a port number if the server supports both HTTP 
+and HTTPS connections.</p>
 
-    <p>With the <directive>NameVirtualHost</directive> directive you
-    specify the IP address on which the server will receive requests
-    for the name-based virtual hosts. This will usually be the address
-    to which your name-based virtual host names resolve. In cases
-    where a firewall or other proxy receives the requests and forwards
-    them on a different IP address to the server, you must specify the
-    IP address of the physical interface on the machine which will be
-    servicing the requests. If you have multiple name-based hosts on
-    multiple addresses, repeat the directive for each address.</p>
+<p>Although <var>addr</var> can be a hostname, it is recommended
+that you always use an IP address or a wildcard.  A wildcard
+NameVirtualHost matches only virtualhosts that also have a literal wildcard
+as their argument.</p>
 
-    <note><title>Note</title>
-      <p>Note, that the "main server" and any <code>_default_</code> servers
-      will <strong>never</strong> be served for a request to a
-      <directive>NameVirtualHost</directive> IP address (unless for some
-      reason you specify <directive>NameVirtualHost</directive> but then
-      don't define any <directive>VirtualHost</directive>s for that
-      address).</p>
-    </note>
+<p>In cases where a firewall or other proxy receives the requests and 
+forwards them on a different IP address to the server, you must specify the
+IP address of the physical interface on the machine which will be
+servicing the requests. </p>
 
-    <p>Optionally you can specify a port number on which the
-    name-based virtual hosts should be used, e.g.</p>
+<p> In the example below, requests received on interface 192.0.2.1 and port 80 
+will only select among the first two virtual hosts. Requests received on
+port 80 on any other interface will only select among the third and fourth
+virtual hosts. In the common case where the interface isn't important 
+to the mapping, only the "*:80" NameVirtualHost and VirtualHost directives 
+are necessary.</p>
 
-    <example>
-      NameVirtualHost 111.22.33.44:8080
+   <example>
+      NameVirtualHost 192.0.2.1:80<br />
+      NameVirtualHost *:80<br /><br />
+
+      &lt;VirtualHost 192.0.2.1:80&gt;<br />
+      &nbsp; ServerName namebased-a.example.com<br />
+      &lt;/VirtualHost&gt;<br />
+      <br />
+      &lt;VirtualHost 192.0.2.1:80&gt;<br />
+      &nbsp; Servername namebased-b.example.com<br />
+      &lt;/VirtualHost&gt;<br />
+      <br />
+      &lt;VirtualHost *:80&gt;<br />
+      &nbsp; ServerName namebased-c.example.com <br />
+      &lt;/VirtualHost&gt;<br />
+      <br />
+      &lt;VirtualHost *:80&gt;<br />
+      &nbsp; ServerName namebased-d.example.com <br />
+      &lt;/VirtualHost&gt;<br />
+      <br />
+
     </example>
 
     <p>IPv6 addresses must be enclosed in square brackets, as shown
@@ -2249,13 +2264,6 @@ hosting</description>
 
     <example>
       NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
-    </example>
-
-    <p>To receive requests on all interfaces, you can use an argument of
-    <code>*</code></p>
-
-    <example>
-      NameVirtualHost *
     </example>
 
     <note><title>Argument to <directive type="section">VirtualHost</directive>
@@ -2266,8 +2274,8 @@ hosting</description>
       >NameVirtualHost</directive> directive.</p>
 
       <example>
-        NameVirtualHost 1.2.3.4<br />
-        &lt;VirtualHost 1.2.3.4&gt;<br />
+        NameVirtualHost 192.0.2.2:80<br />
+        &lt;VirtualHost 192.0.2.2:80&gt;<br />
         # ...<br />
         &lt;/VirtualHost&gt;<br />
       </example>
@@ -3240,12 +3248,7 @@ hostname or IP address</description>
     not explicitly listed in another virtual host. In the absence
     of any <code>_default_</code> virtual host the "main" server config,
     consisting of all those definitions outside any VirtualHost
-    section, is used when no IP-match occurs.  (But note that any IP
-    address that matches a <directive
-    module="core">NameVirtualHost</directive> directive will use neither
-    the "main" server config nor the <code>_default_</code> virtual host.
-    See the <a href="../vhosts/name-based.html">name-based virtual hosting</a>
-    documentation for further details.)</p>
+    section, is used when no IP-match occurs.</p>
 
     <p>You can specify a <code>:port</code> to change the port that is
     matched. If unspecified then it defaults to the same port as the
