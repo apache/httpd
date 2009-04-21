@@ -55,6 +55,23 @@
 #include <httpd.h>
 #include <apr_optional.h>
 #include <apr_hash.h>
+#include <apr_hooks.h>
+
+typedef struct {
+    server_rec *server;
+    const char *name;
+    const char *params;
+    int persist;
+#if APR_HAS_THREADS
+    int nmin;
+    int nkeep;
+    int nmax;
+    int exptime;
+    int set;
+#endif
+    apr_hash_t *queries;
+    apr_array_header_t *init_queries;
+} dbd_cfg_t;
 
 typedef struct {
     apr_dbd_t *handle;
@@ -97,6 +114,9 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_close, (server_rec*, ap_dbd_t*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_acquire, (request_rec*));
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
+
+APR_DECLARE_EXTERNAL_HOOK(dbd, AP, apr_status_t, post_connect,
+                          (apr_pool_t *, dbd_cfg_t *, ap_dbd_t *));
 
 #endif
 /** @} */
