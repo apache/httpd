@@ -89,7 +89,7 @@ RELEASE SHOWSTOPPERS:
      http://svn.apache.org/viewvc?rev=763394&view=rev
   Backport version for 2.2.x of patch:
      Trunk version of patch works
-  +1: rpluem, wrowe
+  +1: rpluem, wrowe, jfclere
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
@@ -108,7 +108,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=739854
    Backport version for 2.2.x of patch:
       http://people.apache.org/~jim/patches/httpd-2.2-lbset.patch
-   +1: jim, rpluem
+   +1: jim, rpluem, jfclere
 
  * prefork MPM: simple patch to enable mod_privileges.
    trunk: N/A (this patch substitutes for the availability of
@@ -149,14 +149,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=760866&view=rev
    Backport version for 2.2.x of patch:
       http://people.apache.org/~rpluem/patches/SSLProxyCheckPeer.diff
-   +1: rpluem, jim
+   +1: rpluem, jim, jfclere
 
  * mod_proxy_ajp: Check more strictly that the backend follows the AJP protocol.
    Trunk version of patch:
       http://svn.apache.org/viewvc?rev=764239&view=rev
    Backport version for 2.2.x of patch:
      Trunk version of patch works
-  +1: rpluem, jim
+  +1: rpluem, jim, jfclere
 
 
 PATCHES/ISSUES THAT ARE STALLED
