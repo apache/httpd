@@ -970,8 +970,8 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                       g_lpMsg[IDS_MSG_SERVICES - IDS_MSG_FIRST]);
         SetWindowText(GetDlgItem(hDlg, IDC_SCONNECT),
                       g_lpMsg[IDS_MSG_CONNECT - IDS_MSG_FIRST]);
-        SetWindowText(GetDlgItem(hDlg, IDC_SEXIT),
-                      g_lpMsg[IDS_MSG_MNUEXIT - IDS_MSG_FIRST]);
+        SetWindowText(GetDlgItem(hDlg, IDCANCEL),
+                      g_lpMsg[IDS_MSG_OK - IDS_MSG_FIRST]);
         hListBox = GetDlgItem(hDlg, IDL_SERVICES);
         g_hwndStdoutList = GetDlgItem(hDlg, IDL_STDOUT);
         hStatusBar = CreateStatusWindow(0x0800 /* SBT_TOOLTIPS */
@@ -1050,6 +1050,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
         }
         switch (lpdis->itemAction)
         {
+        case ODA_FOCUS:
         case ODA_SELECT:
         case ODA_DRAWENTIRE:
             g_hBmpPicture = (HBITMAP)SendMessage(lpdis->hwndItem,
@@ -1082,6 +1083,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                 if (g_hBmpPicture == g_hBmpStop)
                 {
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTART), TRUE);
+                    Button_SetStyle(GetDlgItem(hDlg, IDC_SSTART), BS_DEFPUSHBUTTON, TRUE);
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
                     Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), FALSE);
                 }
@@ -1089,6 +1091,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                 {
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTART), FALSE);
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), TRUE);
+                    Button_SetStyle(GetDlgItem(hDlg, IDC_SSTOP), BS_DEFPUSHBUTTON, TRUE);
                     Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), TRUE);
                 }
                 else {
@@ -1111,9 +1114,16 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                 else {
                     SendMessage(hStatusBar, SB_SETTEXT, 0, (LPARAM)_T(""));
                 }
-                SetTextColor(lpdis->hDC, GetSysColor(COLOR_HIGHLIGHTTEXT));
-                SetBkColor(lpdis->hDC, GetSysColor(COLOR_HIGHLIGHT));
-                FillRect(lpdis->hDC, &rcBitmap, (HBRUSH)(COLOR_HIGHLIGHTTEXT));
+                if (lpdis->itemState & ODS_FOCUS) {
+                    SetTextColor(lpdis->hDC, GetSysColor(COLOR_HIGHLIGHTTEXT));
+                    SetBkColor(lpdis->hDC, GetSysColor(COLOR_HIGHLIGHT));
+                    FillRect(lpdis->hDC, &rcBitmap, (HBRUSH)(COLOR_HIGHLIGHT+1));
+                }
+                else {
+                    SetTextColor(lpdis->hDC, GetSysColor(COLOR_INACTIVECAPTIONTEXT));
+                    SetBkColor(lpdis->hDC, GetSysColor(COLOR_INACTIVECAPTION));
+                    FillRect(lpdis->hDC, &rcBitmap, (HBRUSH)(COLOR_INACTIVECAPTION+1));
+                }
             }
             else
             {
@@ -1122,9 +1132,6 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                FillRect(lpdis->hDC, &rcBitmap, (HBRUSH)(COLOR_WINDOW+1));
             }
             TextOut(lpdis->hDC, XBITMAP + 6, y, szBuf, (int)_tcslen(szBuf));
-            break;
-
-        case ODA_FOCUS:
             break;
         }
         return TRUE;
@@ -1157,7 +1164,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
             }
             break;
 
-        case IDOK:
+        case IDCANCEL:
             EndDialog(hDlg, TRUE);
             return TRUE;
 
@@ -1202,11 +1209,6 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
             else {
                 WinExec("Control.exe SrvMgr.cpl Services", SW_NORMAL);
             }
-            return TRUE;
-
-        case IDC_SEXIT:
-            EndDialog(hDlg, TRUE);
-            SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)IDM_EXIT, 0);
             return TRUE;
 
         case IDC_SCONNECT:
