@@ -39,7 +39,7 @@
 
 extern module AP_MODULE_DECLARE_DATA dbd_module;
 
-APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(dbd, AP, apr_status_t, post_connect,
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(dbd, DBD, apr_status_t, post_connect,
                                     (apr_pool_t *pool, dbd_cfg_t *cfg,
                                     ap_dbd_t *dbd),
                                     (pool, cfg, dbd), OK, DECLINED)
