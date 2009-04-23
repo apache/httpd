@@ -1,0 +1,254 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_remoteip.xml.meta">
+
+<name>mod_remoteip</name>
+<description>Replaces the apparent client remote IP address and hostname 
+for the request with the IP address list presented by a proxies or a load 
+balancer via the request headers.
+</description>
+
+<status>Base</status>
+<sourcefile>mod_remoteip.c</sourcefile>
+<identifier>remoteip_module</identifier>
+
+<summary>
+    <p>This module is used to treat the remote host which initiated the 
+    request as the originating remote host as identified by httpd for the
+    purposes of authorization and logging, even where that remote host is
+    behind a load balancer, front end server, or proxy server.</p>
+
+    <p>The module replaces the apparent remote (client) IP/hostname for 
+    the request with the IP address reported in the request header
+    configured with the <directive>RemoteIPHeader</directive> directive.</p>
+
+    <p>Once replaced as instructed, this apparent IP address is then used
+    for <module>mod_authz_host</module> features
+    <directive module="mod_authz_host" type="section">Require host</directive>
+    and <directive module="mod_authz_host" type="section">Require ip</directive>,
+    is reported by <module>mod_status</module>, and is recorded by
+    <module>mod_log_config</module> <code>%a</code> and <code>%h</code>
+    directives.  It also determines the machine probed for an inetd 
+    identity by <module>mod_ident</module> based on the 
+    <directive module="mod_ident">IdentityCheck</directive> configuration.</p>
+
+    <note type="warning">It is critical to only enable this behavior from
+
+    intermediate hosts (proxies, etc) which are trusted by this server, since
+    it is trivial for the remote client to impersonate another client.</note>
+</summary>
+
+<seealso><module>mod_authz_host</module></seealso>
+<seealso><module>mod_status</module></seealso>
+<seealso><module>mod_log_config</module></seealso>
+<seealso><module>mod_ident</module></seealso>
+
+<section id="processing"><title>Remote IP Processing</title>
+
+    <p>Apache identifies the client with the connection's remote_ip value,
+    and the connection remote_host and remote_logname are derived from this 
+    value.  These fields play a role in authentication, authorization and 
+    logging and other purposes by other loadable modules.</p>
+
+    <p>mod_remoteip replaces the true remote_ip with the advertised remote_ip as
+    provided by a proxy, for every evaluation of the client that occurs in the
+    server, and resets the remote_host and remote_logname values to trigger a 
+    fresh dns or ident query of the remote IP address.</p>
+
+    <p>When multiple, comma delimited remote IP addresses are listed in the 
+    header value, they are processed in Right-to-Left order.  Processessing
+    halts when the a given remote IP address is not trusted to present the
+    preceeding IP address.  The header field is updated to this remaining 
+    list of unconfirmed IP addresses, or if all IP addresses were trusted,
+    this header is removed from the request altogether.</p>
+
+    <p>In replacing the remote_ip, the module stores the list of intermediate
+    hosts in a remoteip-proxy-ip-list note, which <module>mod_log_config</module>
+    can record using the <code>%{remoteip-proxy-ip-list}n</code> format token.
+    If the administrator needs to store this as an additional header, this
+    same value can also be recording as a header using the directive
+    <directive>RemoteIPProxiesHeader</directive>.</p>
+
+    <note><title>IPv4-over-IPv6 Mapped Addresses</title>
+    As with httpd in general, any IPv4-over-IPv6 mapped addresses are recorded
+    in their IPv4 representation.</note>
+
+    <note><title>Internal (Private) Addresses</title>
+    All internal addresses 10/8, 172.16/12, 192.168/16, 169.254/16 and 127/8
+    blocks (and IPv6 addresses outside of the public 2000::/3 block) are only
+    evaluated by mod_remoteip when <directive>RemoteIPInternalProxy</directive>
+    internal (intranet) proxies are registered.</note> 
+
+</section>
+
+<directivesynopsis>
+<name>RemoteIPHeader</name>
+<description>Declare the header field which should be parsed for client IP addresses</description>
+<syntax>RemoteIPHeader <var>header-field</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>The <directive>RemoteIPHeader</directive> directive triggers 
+    <module>mod_remoteip</module> to treat the value of the specified
+    <var>header-field</var> header as the client IP address, or list
+    of intermediate client IP addresses, subject to further configuration 
+    of the <directive>RemoteIPInternalProxy</directive> and
+    <directive>RemoteIPTrustedProxy</directive> directives.  Unless these
+    other directives are used, <module>mod_remoteip</module> will trust all
+    hosts presenting a <directive>RemoteIPHeader</directive> IP value.</p>
+
+    <example><title>Internal (Load Balancer) Example</title>
+        RemoteIPHeader X-Client-IP
+    </example>
+
+    <example><title>Proxy Example</title>
+        RemoteIPHeader X-Forwarded-For
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPInternalProxy</name>
+<description>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</description>
+<syntax>RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>The <directive>RemoteIPInternalProxy</directive> directive adds one
+    or more addresses (or address blocks) to trust as presenting a valid
+    RemoteIPHeader value of the client IP.  Unlike the
+    <directive>RemoteIPTrustedProxy</directive> directive, any IP address
+    presented in this header, including private intranet addresses, are 
+    trusted when passed from these proxies.</p>
+
+    <example><title>Internal (Load Balancer) Example</title>
+        RemoteIPHeader X-Client-IP<br/>
+        RemoteIPTrustedProxy 10.0.2.0/24<br/>
+        RemoteIPTrustedProxy gateway.localdomain
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPInternalProxyList</name>
+<description>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</description>
+<syntax>RemoteIPInternalProxyList <var>filename</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>The <directive>RemoteIPInternalProxyList</directive> directive specifies
+    a file parsed at startup, and builds a list of addresses (or address blocks)
+    to trust as presenting a valid RemoteIPHeader value of the client IP.</p>
+
+    <p>The '<code>#</code>' hash character designates a comment line, otherwise
+    each whitespace or newline seperated entry is processed identically to
+    the <directive>RemoteIPInternalProxy</directive> directive.</p>
+
+    <example><title>Internal (Load Balancer) Example</title>
+        RemoteIPHeader X-Client-IP<br/>
+        RemoteIPTrustedProxyList conf/trusted-proxies.lst
+    </example>
+
+    <example><title>conf/trusted-proxies.lst contents</title>
+         # Our internally trusted proxies;<br/>
+         10.0.2.0/24         #Everyone in the testing group<br/>
+         gateway.localdomain #The front end balancer
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxiesHeader</name>
+<description>Declare the header field which will record all intermediate IP addresses</description>
+<syntax>RemoteIPProxiesHeader <var>HeaderFieldName</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>The <directive>RemoteIPProxiesHeader</directive> directive specifies
+    a header into which <module>mod_remoteip</module> will collect a list of
+    all of the intermediate client IP addresses trusted to resolve the actual
+    remote IP.  Note that intermediate <directive>RemoteIPTrustedProxy</directive>
+    addresses are recorded in this header, while any intermediate 
+    <directive>RemoteIPInternalProxy</directive> addresses are discarded.</p>
+
+    <example><title>Example</title>
+        RemoteIPHeader X-Forwarded-For<br/>
+        RemoteIPProxiesHeader X-Forwarded-By
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPTrustedProxy</name>
+<description>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</description>
+<syntax>RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>The <directive>RemoteIPTrustedProxy</directive> directive adds one
+    or more addresses (or address blocks) to trust as presenting a valid
+    RemoteIPHeader value of the client IP.  Unlike the
+    <directive>RemoteIPInternalProxy</directive> directive, any intranet 
+    or private IP address reported by such proxies, including the 10/8, 172.16/12,
+    192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
+    2000::/3 block) are not trusted as the remote IP, and are left in the 
+    <directive>RemoteIPHeader</directive> header's value.</p>
+
+    <example><title>Trusted (Load Balancer) Example</title>
+        RemoteIPHeader X-Forwarded-For<br/>
+        RemoteIPTrustedProxy 10.0.2.16/28<br/>
+        RemoteIPTrustedProxy proxy.example.com
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPTrustedProxyList</name>
+<description>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</description>
+<syntax>RemoteIPTrustedProxyList <var>filename</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>The <directive>RemoteIPTrustedProxyList</directive> directive specifies
+    a file parsed at startup, and builds a list of addresses (or address blocks)
+    to trust as presenting a valid RemoteIPHeader value of the client IP.</p>
+
+    <p>The '<code>#</code>' hash character designates a comment line, otherwise
+    each whitespace or newline seperated entry is processed identically to
+    the <directive>RemoteIPTrustedProxy</directive> directive.</p>
+
+    <example><title>Trusted (Load Balancer) Example</title>
+        RemoteIPHeader X-Forwarded-For<br/>
+        RemoteIPTrustedProxyList conf/trusted-proxies.lst
+    </example>
+
+    <example><title>conf/trusted-proxies.lst contents</title>
+       # Identified external proxies;<br/>
+       192.0.2.16/28         #wap phone group of proxies<br/>
+       proxy.isp.example.com #some well known ISP
+    </example>
+</usage>
+</directivesynopsis>
+
+
+</modulesynopsis>
