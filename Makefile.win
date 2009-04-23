@@ -422,6 +422,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_headers.mak     CFG="mod_headers - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_ident.mak       CFG="mod_ident - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mime_magic.mak  CFG="mod_mime_magic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_remoteip.mak    CFG="mod_remoteip - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_setenvif.mak    CFG="mod_setenvif - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_unique_id.mak   CFG="mod_unique_id - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_usertrack.mak   CFG="mod_usertrack - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -637,6 +638,7 @@ _copybin:
 	copy modules\metadata\$(LONG)\mod_headers.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_ident.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_mime_magic.$(src_so) 	"$(inst_so)" <.y
+	copy modules\metadata\$(LONG)\mod_remoteip.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_setenvif.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_unique_id.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_usertrack.$(src_so) 	"$(inst_so)" <.y
