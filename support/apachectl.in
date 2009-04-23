@@ -98,7 +98,7 @@ fullstatus)
     $LYNX $STATUSURL
     ;;
 *)
-    $HTTPD $ARGV
+    $HTTPD "$@"
     ERROR=$?
 esac
 
