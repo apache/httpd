@@ -91,6 +91,8 @@ RELEASE SHOWSTOPPERS:
      Trunk version of patch works
   +1: rpluem, wrowe, jfclere
 
+* We should wait for a release of APR 1.3.4 at least for
+  http://svn.apache.org/viewvc?view=rev&revision=727605
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
