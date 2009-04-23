@@ -26,7 +26,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -2229,39 +2228,57 @@ uygulanır.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p><code class="directive">NameVirtualHost</code> yönergesi <a href="../vhosts/">isme dayalı sanal konakları</a> yapılandırmak isterseniz gerekli olur.
+    <p>Sunucunun, istemci tarafından talep edilen <em>konak ismine</em>
+      dayanarak seçtiği her sanal konak kümesi için ayrı bir
+      <code class="directive">NameVirtualHost</code> yönergesi vardır.
+      <code class="directive">NameVirtualHost</code> yönergesi <a href="../vhosts/">isme dayalı sanal konakları</a> yapılandırmak isterseniz gerekli olur.
     </p>
 
+    <p>Bu yönerge ve bununle ilişkili <code class="directive">VirtualHost</code>
+      yönergesi, suncu hem HTTP hem de HTTPS bağlantılarını desteklediği
+      takdirde <em>mutlaka</em> bir port numarası da içermelidir.</p>
+
     <p><var>adres</var> olarak bir konak ismi de belirtebilirsiniz ama daima
-      bir IP adresi kullanmanızı öneririz. Örnek:</p>
+      bir IP adresi veya bir * kullanmanızı öneririz. Bir yıldız imi
+      belirtilmiş <code class="directive">NameVirtualHost</code> yönergeleri sadece
+      adres yerine bir * belirtilmiş <code class="directive">VirtualHost</code>
+      yönergeleri ile eşleşir.</p>
 
-    <div class="example"><p><code>
-      NameVirtualHost 111.22.33.44
-    </code></p></div>
+    <p>İstekleri bir güvenlik duvarının veya başka bir vekil sunucunun
+      aldığı ve bunları farklı bir IP adresine sahip bir sunucuya
+      yönlendirdiği durumlarda, bu yönergeye değer olarak istekleri sunan
+      makinenin fiziksel ağ arabiriminin IP adresi belirtilmelidir.</p>
 
-    <p><code class="directive">NameVirtualHost</code> yönergesi ile sunucunun isme
-      dayalı sanal konaklar için istekleri hangi IP adresinden alacağı
-      belirtilir. Bu adres genellikle isme dayalı sanal konak isimleri
-      çözümlendiğinde elde edilen IP adresidir. İstekleri bir güvenlik
-      duvarının veya bir vekilin alıp sunucuya yönlendirdiği durumlarda ise bu
-      adres sunucunun istekleri aldığı fiziksel arabirimin IP adresi olmalıdır.
-      Çok sayıda adres üzerinde çok sayıda isme dayalı sanal konak varsa her
-      adresin kendi yönergeleri olmalıdır.</p>
+    <p>Aşağıdaki örnekte, 192.0.2.1 IP adresli arabirimin 80. portundan
+      alınan isteklerle sadece ilk iki sanal konak arasında seçim
+      yapılacaktır. Diğer arabirimlerin 80.portundan gelen istekler için ise
+      sadece üçüncü ve dördüncü sanal konak arasında seçim yapılacaktır.
+      İsteklerin hangi arabirimden geldiğinin önemli olmadığı durumlarda
+      (genelde böyledir) <code class="directive">NameVirtualHost</code> ve
+      <code class="directive">VirtualHost</code> yönergelerine sadece "*:80"
+      belirtmek yeterlidir.</p>
 
-    <div class="note"><h3>Ek Bilgi</h3>
-      <p>“Ana sunucu” ve <code>_default_</code> sunucuların bir
-        <code class="directive">NameVirtualHost</code> IP adresine yapılan bir isteği
-        <strong>asla</strong> sunmayacağına dikkat ediniz (bir sebeple
-        <code class="directive">NameVirtualHost</code> belirtip bu adres için herhangi
-        bir <code class="directive">VirtualHost</code> tanımlamadığınız durumlar
-        hariç).</p>
-    </div>
+   <div class="example"><p><code>
+      NameVirtualHost 192.0.2.1:80<br />
+      NameVirtualHost *:80<br /><br />
 
-    <p>Seçimlik olarak, isme dayalı sanal konakların kullanması gereken port
-      numarasını örnekteki gibi belirtebilirsiniz:</p>
+      &lt;VirtualHost 192.0.2.1:80&gt;<br />
+      &nbsp; ServerName namebased-a.example.com<br />
+      &lt;/VirtualHost&gt;<br />
+      <br />
+      &lt;VirtualHost 192.0.2.1:80&gt;<br />
+      &nbsp; Servername namebased-b.example.com<br />
+      &lt;/VirtualHost&gt;<br />
+      <br />
+      &lt;VirtualHost *:80&gt;<br />
+      &nbsp; ServerName namebased-c.example.com <br />
+      &lt;/VirtualHost&gt;<br />
+      <br />
+      &lt;VirtualHost *:80&gt;<br />
+      &nbsp; ServerName namebased-d.example.com <br />
+      &lt;/VirtualHost&gt;<br />
+      <br />
 
-    <div class="example"><p><code>
-      NameVirtualHost 111.22.33.44:8080
     </code></p></div>
 
     <p>IPv6 adresleri belirtilirken örnekteki gibi köşeli ayraçlar arasına
@@ -2271,22 +2288,15 @@ uygulanır.</td></tr>
       NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
     </code></p></div>
 
-    <p>İsteklerin bütün arabirimlerden alınacağını belirtmek için değer olarak
-      <code>*</code> belirtebilirsiniz:</p>
-
-    <div class="example"><p><code>
-      NameVirtualHost *
-    </code></p></div>
-
-    <div class="note"><h3><code class="directive">&lt;VirtualHost&gt;</code> yönergesinin
-      argümanı</h3>
+    <div class="note"><h3><code class="directive">&lt;VirtualHost&gt;</code>
+          yönergesinin değeri</h3>
       <p><code class="directive">&lt;VirtualHost&gt;</code> yönergesinin
-      argümanının <code class="directive">NameVirtualHost</code> yönergesininkiyle tam
+      değerinin <code class="directive">NameVirtualHost</code> yönergesininkiyle tam
       olarak eşleşmesi gerektiğine dikkat ediniz.</p>
 
       <div class="example"><p><code>
-        NameVirtualHost 1.2.3.4<br />
-        &lt;VirtualHost 1.2.3.4&gt;<br />
+        NameVirtualHost 192.0.2.2:80<br />
+        &lt;VirtualHost 192.0.2.2:80&gt;<br />
         # ...<br />
         &lt;/VirtualHost&gt;<br />
       </code></p></div>
@@ -3219,17 +3229,12 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</td></tr>
     </div>
 
     <p>IP’ye dayalı sanal konakları kullanıyorsanız, diğer sanal konaklarda
-      açıkça belirtilmemiş IP adresleriyle eşleşecek sanal konağı
+      açıkça belirtilmemiş bir IP adresiyle eşleşecek sanal konağı
       <code>_default_</code> özel ismiyle belirtebilirsiniz. "Ana" sunucu
       yapılandırmasında <code>_default_</code> diye bir sanal konağın
       bulunmaması halinde, hiçbir IP adresi eşleşmesi bulunamadığı takdirde
-      <code class="directive">&lt;VirtualHost&gt;</code> bölümleri dışında kalan
-      tüm yapılandırmalar bu amaca yönelik olarak kullanılır. (Yalnız dikkat
-      edin, bir <code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code> yönergesi
-      ile eşleşen bir IP adresi için ne "ana" sunucu yapılandırması ne de
-      <code>_default_</code> sanal konak yapılandırması kullanılır. Bu konuda
-      daha ayrıntılı bilgi için <a href="../vhosts/name-based.html">isme dayalı
-      sanal konaklar</a> belgesine bakınız.)</p>
+      <code class="directive">&lt;VirtualHost&gt;</code> bölümleri dışında
+      kalan tüm yapılandırmalar bu amaca yönelik olarak kullanılır.</p>
 
     <p>Eşleşilecek portu değiştirmek için bir <code>:port</code>
       belirtebilirsiniz. Port bu şekilde değiştirilmediği takdirde ana
