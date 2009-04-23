@@ -165,7 +165,11 @@ under different user IDs.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_request.html" id="R" name="R">mod_request</a></dt><dd>HTTP istek gövdelerini işleme sokup kullanılabilir kılan süzgeçler</dd>
+<dt><a href="mod_remoteip.html" id="R" name="R">mod_remoteip</a></dt><dd>Replaces the apparent client remote IP address and hostname 
+for the request with the IP address list presented by a proxies or a load 
+balancer via the request headers.
+</dd>
+<dt><a href="mod_request.html">mod_request</a></dt><dd>HTTP istek gövdelerini işleme sokup kullanılabilir kılan süzgeçler</dd>
 <dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
 <dt><a href="mod_sed.html" id="S" name="S">mod_sed</a></dt><dd>Filter Input (request) and Output (response) content using <code>sed</code> syntax</dd>

@@ -351,6 +351,12 @@
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
 <li><a href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
+<li><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader</a></li>
+<li><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy</a></li>
+<li><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList</a></li>
+<li><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader</a></li>
+<li><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy</a></li>
+<li><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList</a></li>
 <li><a href="mod_mime.html#removecharset">RemoveCharset</a></li>
 <li><a href="mod_mime.html#removeencoding">RemoveEncoding</a></li>
 <li><a href="mod_mime.html#removehandler">RemoveHandler</a></li>
