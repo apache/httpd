@@ -237,6 +237,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Módulo Apache mod_proxy_ftp</a></li>
 <li><a href="mod/mod_proxy_http.html">Módulo Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Módulo Apache mod_proxy_scgi</a></li>
+<li><a href="mod/mod_remoteip.html">Módulo Apache mod_remoteip</a></li>
 <li><a href="mod/mod_request.html">Módulo Apache mod_request</a></li>
 <li><a href="mod/mod_rewrite.html">Módulo Apache mod_rewrite</a></li>
 <li><a href="mod/mod_sed.html">Módulo Apache mod_sed</a></li>

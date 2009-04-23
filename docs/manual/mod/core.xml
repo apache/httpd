@@ -2211,7 +2211,7 @@ hosting</description>
 <p>A single <directive>NameVirtualHost</directive> directive 
 identifies a set of identical virtual hosts on which the server will  
 further select from on the basis of the <em>hostname</em> 
-requested by the client.  The <code class="directive">NameVirtualHost</code> 
+requested by the client.  The <directive>NameVirtualHost</directive>
 directive is a required directive if you want to configure 
 <a href="../vhosts/">name-based virtual hosts</a>.</p>
 

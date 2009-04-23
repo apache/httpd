@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_remoteip - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_remoteip</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_remoteip.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Replaces the apparent client remote IP address and hostname 
+for the request with the IP address list presented by a proxies or a load 
+balancer via the request headers.
+</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>remoteip_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_remoteip.c</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module is used to treat the remote host which initiated the 
+    request as the originating remote host as identified by httpd for the
+    purposes of authorization and logging, even where that remote host is
+    behind a load balancer, front end server, or proxy server.</p>
+
+    <p>The module replaces the apparent remote (client) IP/hostname for 
+    the request with the IP address reported in the request header
+    configured with the <code class="directive">RemoteIPHeader</code> directive.</p>
+
+    <p>Once replaced as instructed, this apparent IP address is then used
+    for <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> features
+    <code class="directive"><a href="../mod/mod_authz_host.html#require host">&lt;Require host&gt;</a></code>
+    and <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code>,
+    is reported by <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, and is recorded by
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> <code>%a</code> and <code>%h</code>
+    directives.  It also determines the machine probed for an inetd 
+    identity by <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> based on the 
+    <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code> configuration.</p>
+
+    <div class="warning">It is critical to only enable this behavior from
+
+    intermediate hosts (proxies, etc) which are trusted by this server, since
+    it is trivial for the remote client to impersonate another client.</div>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipheader">RemoteIPHeader</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipinternalproxylist">RemoteIPInternalProxyList</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxiesheader">RemoteIPProxiesHeader</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxylist">RemoteIPTrustedProxyList</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#processing">Remote IP Processing</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
+<li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>
+<li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
+<li><code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="processing" id="processing">Remote IP Processing</a></h2>
+
+    <p>Apache identifies the client with the connection's remote_ip value,
+    and the connection remote_host and remote_logname are derived from this 
+    value.  These fields play a role in authentication, authorization and 
+    logging and other purposes by other loadable modules.</p>
+
+    <p>mod_remoteip replaces the true remote_ip with the advertised remote_ip as
+    provided by a proxy, for every evaluation of the client that occurs in the
+    server, and resets the remote_host and remote_logname values to trigger a 
+    fresh dns or ident query of the remote IP address.</p>
+
+    <p>When multiple, comma delimited remote IP addresses are listed in the 
+    header value, they are processed in Right-to-Left order.  Processessing
+    halts when the a given remote IP address is not trusted to present the
+    preceeding IP address.  The header field is updated to this remaining 
+    list of unconfirmed IP addresses, or if all IP addresses were trusted,
+    this header is removed from the request altogether.</p>
+
+    <p>In replacing the remote_ip, the module stores the list of intermediate
+    hosts in a remoteip-proxy-ip-list note, which <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>
+    can record using the <code>%{remoteip-proxy-ip-list}n</code> format token.
+    If the administrator needs to store this as an additional header, this
+    same value can also be recording as a header using the directive
+    <code class="directive">RemoteIPProxiesHeader</code>.</p>
+
+    <div class="note"><h3>IPv4-over-IPv6 Mapped Addresses</h3>
+    As with httpd in general, any IPv4-over-IPv6 mapped addresses are recorded
+    in their IPv4 representation.</div>
+
+    <div class="note"><h3>Internal (Private) Addresses</h3>
+    All internal addresses 10/8, 172.16/12, 192.168/16, 169.254/16 and 127/8
+    blocks (and IPv6 addresses outside of the public 2000::/3 block) are only
+    evaluated by mod_remoteip when <code class="directive">RemoteIPInternalProxy</code>
+    internal (intranet) proxies are registered.</div> 
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPHeader" id="RemoteIPHeader">RemoteIPHeader</a> <a name="remoteipheader" id="remoteipheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare the header field which should be parsed for client IP addresses</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPHeader <var>header-field</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>The <code class="directive">RemoteIPHeader</code> directive triggers 
+    <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> to treat the value of the specified
+    <var>header-field</var> header as the client IP address, or list
+    of intermediate client IP addresses, subject to further configuration 
+    of the <code class="directive">RemoteIPInternalProxy</code> and
+    <code class="directive">RemoteIPTrustedProxy</code> directives.  Unless these
+    other directives are used, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will trust all
+    hosts presenting a <code class="directive">RemoteIPHeader</code> IP value.</p>
+
+    <div class="example"><h3>Internal (Load Balancer) Example</h3><p><code>
+        RemoteIPHeader X-Client-IP
+    </code></p></div>
+
+    <div class="example"><h3>Proxy Example</h3><p><code>
+        RemoteIPHeader X-Forwarded-For
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPInternalProxy" id="RemoteIPInternalProxy">RemoteIPInternalProxy</a> <a name="remoteipinternalproxy" id="remoteipinternalproxy">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>The <code class="directive">RemoteIPInternalProxy</code> directive adds one
+    or more addresses (or address blocks) to trust as presenting a valid
+    RemoteIPHeader value of the client IP.  Unlike the
+    <code class="directive">RemoteIPTrustedProxy</code> directive, any IP address
+    presented in this header, including private intranet addresses, are 
+    trusted when passed from these proxies.</p>
+
+    <div class="example"><h3>Internal (Load Balancer) Example</h3><p><code>
+        RemoteIPHeader X-Client-IP<br />
+        RemoteIPTrustedProxy 10.0.2.0/24<br />
+        RemoteIPTrustedProxy gateway.localdomain
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPInternalProxyList" id="RemoteIPInternalProxyList">RemoteIPInternalProxyList</a> <a name="remoteipinternalproxylist" id="remoteipinternalproxylist">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPInternalProxyList <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>The <code class="directive">RemoteIPInternalProxyList</code> directive specifies
+    a file parsed at startup, and builds a list of addresses (or address blocks)
+    to trust as presenting a valid RemoteIPHeader value of the client IP.</p>
+
+    <p>The '<code>#</code>' hash character designates a comment line, otherwise
+    each whitespace or newline seperated entry is processed identically to
+    the <code class="directive">RemoteIPInternalProxy</code> directive.</p>
+
+    <div class="example"><h3>Internal (Load Balancer) Example</h3><p><code>
+        RemoteIPHeader X-Client-IP<br />
+        RemoteIPTrustedProxyList conf/trusted-proxies.lst
+    </code></p></div>
+
+    <div class="example"><h3>conf/trusted-proxies.lst contents</h3><p><code>
+         # Our internally trusted proxies;<br />
+         10.0.2.0/24         #Everyone in the testing group<br />
+         gateway.localdomain #The front end balancer
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPProxiesHeader" id="RemoteIPProxiesHeader">RemoteIPProxiesHeader</a> <a name="remoteipproxiesheader" id="remoteipproxiesheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare the header field which will record all intermediate IP addresses</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPProxiesHeader <var>HeaderFieldName</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>The <code class="directive">RemoteIPProxiesHeader</code> directive specifies
+    a header into which <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> will collect a list of
+    all of the intermediate client IP addresses trusted to resolve the actual
+    remote IP.  Note that intermediate <code class="directive">RemoteIPTrustedProxy</code>
+    addresses are recorded in this header, while any intermediate 
+    <code class="directive">RemoteIPInternalProxy</code> addresses are discarded.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+        RemoteIPHeader X-Forwarded-For<br />
+        RemoteIPProxiesHeader X-Forwarded-By
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPTrustedProxy" id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</a> <a name="remoteiptrustedproxy" id="remoteiptrustedproxy">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>The <code class="directive">RemoteIPTrustedProxy</code> directive adds one
+    or more addresses (or address blocks) to trust as presenting a valid
+    RemoteIPHeader value of the client IP.  Unlike the
+    <code class="directive">RemoteIPInternalProxy</code> directive, any intranet 
+    or private IP address reported by such proxies, including the 10/8, 172.16/12,
+    192.168/16, 169.254/16 and 127/8 blocks (or outside of the IPv6 public
+    2000::/3 block) are not trusted as the remote IP, and are left in the 
+    <code class="directive">RemoteIPHeader</code> header's value.</p>
+
+    <div class="example"><h3>Trusted (Load Balancer) Example</h3><p><code>
+        RemoteIPHeader X-Forwarded-For<br />
+        RemoteIPTrustedProxy 10.0.2.16/28<br />
+        RemoteIPTrustedProxy proxy.example.com
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPTrustedProxyList" id="RemoteIPTrustedProxyList">RemoteIPTrustedProxyList</a> <a name="remoteiptrustedproxylist" id="remoteiptrustedproxylist">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RemoteIPTrustedProxyList <var>filename</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>The <code class="directive">RemoteIPTrustedProxyList</code> directive specifies
+    a file parsed at startup, and builds a list of addresses (or address blocks)
+    to trust as presenting a valid RemoteIPHeader value of the client IP.</p>
+
+    <p>The '<code>#</code>' hash character designates a comment line, otherwise
+    each whitespace or newline seperated entry is processed identically to
+    the <code class="directive">RemoteIPTrustedProxy</code> directive.</p>
+
+    <div class="example"><h3>Trusted (Load Balancer) Example</h3><p><code>
+        RemoteIPHeader X-Forwarded-For<br />
+        RemoteIPTrustedProxyList conf/trusted-proxies.lst
+    </code></p></div>
+
+    <div class="example"><h3>conf/trusted-proxies.lst contents</h3><p><code>
+       # Identified external proxies;<br />
+       192.0.2.16/28         #wap phone group of proxies<br />
+       proxy.isp.example.com #some well known ISP
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_remoteip.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
