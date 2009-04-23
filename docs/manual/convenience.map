@@ -313,6 +313,12 @@ redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
+remoteipheader	mod/mod_remoteip.html#remoteipheader
+remoteipinternalproxy	mod/mod_remoteip.html#remoteipinternalproxy
+remoteipinternalproxylist	mod/mod_remoteip.html#remoteipinternalproxylist
+remoteipproxiesheader	mod/mod_remoteip.html#remoteipproxiesheader
+remoteiptrustedproxy	mod/mod_remoteip.html#remoteiptrustedproxy
+remoteiptrustedproxylist	mod/mod_remoteip.html#remoteiptrustedproxylist
 removecharset	mod/mod_mime.html#removecharset
 removeencoding	mod/mod_mime.html#removeencoding
 removehandler	mod/mod_mime.html#removehandler
