@@ -81,6 +81,12 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+* We should wait for a release of APR 1.3.4 at least for
+  http://svn.apache.org/viewvc?view=rev&revision=727605
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
 * mod_proxy_ajp: Avoid delivering content from a previous request which failed
   to send a request body by closing the connection to the backend in this case
   instead of reusing it.
@@ -91,17 +97,6 @@ RELEASE SHOWSTOPPERS:
      Trunk version of patch works
   +1: rpluem, wrowe, jfclere
 
-* We should wait for a release of APR 1.3.4 at least for
-  http://svn.apache.org/viewvc?view=rev&revision=727605
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
-
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
  * mod_proxy_balancer: Fix handling of lbset for non-seq config'ed
    clusters:
    Trunk version of patch:
@@ -111,6 +106,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
       http://people.apache.org/~jim/patches/httpd-2.2-lbset.patch
    +1: jim, rpluem, jfclere
+
+ * mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
+   to enable stricter checking of remote server certificates.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=760866&view=rev
+   Backport version for 2.2.x of patch:
+      http://people.apache.org/~rpluem/patches/SSLProxyCheckPeer.diff
+   +1: rpluem, jim, jfclere
+
+ * mod_proxy_ajp: Check more strictly that the backend follows the AJP protocol.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=764239&view=rev
+   Backport version for 2.2.x of patch:
+     Trunk version of patch works
+  +1: rpluem, jim, jfclere
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
  * prefork MPM: simple patch to enable mod_privileges.
    trunk: N/A (this patch substitutes for the availability of
@@ -144,22 +157,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
       Trunk version of patch works
    +1: rpluem, jim
-
- * mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
-   to enable stricter checking of remote server certificates.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=760866&view=rev
-   Backport version for 2.2.x of patch:
-      http://people.apache.org/~rpluem/patches/SSLProxyCheckPeer.diff
-   +1: rpluem, jim, jfclere
-
- * mod_proxy_ajp: Check more strictly that the backend follows the AJP protocol.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=764239&view=rev
-   Backport version for 2.2.x of patch:
-     Trunk version of patch works
-  +1: rpluem, jim, jfclere
-
 
 PATCHES/ISSUES THAT ARE STALLED
 
