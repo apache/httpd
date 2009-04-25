@@ -265,10 +265,11 @@ static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn)
  */
 int ssl_hook_Access(request_rec *r)
 {
-    SSLDirConfigRec *dc = myDirConfig(r);
-    SSLSrvConfigRec *sc = mySrvConfig(r->server);
-    SSLConnRec *sslconn = myConnConfig(r->connection);
-    SSL *ssl            = sslconn ? sslconn->ssl : NULL;
+    SSLDirConfigRec *dc         = myDirConfig(r);
+    SSLSrvConfigRec *sc         = mySrvConfig(r->server);
+    SSLConnRec *sslconn         = myConnConfig(r->connection);
+    SSL *ssl                    = sslconn ? sslconn->ssl : NULL;
+    server_rec *handshakeserver = sslconn ? sslconn->server : NULL;
     SSL_CTX *ctx = NULL;
     apr_array_header_t *requires;
     ssl_require_t *ssl_requires;
@@ -362,7 +363,7 @@ int ssl_hook_Access(request_rec *r)
      *   has to enable this via ``SSLOptions +OptRenegotiate''. So we do no
      *   implicit optimizations.
      */
-    if (dc->szCipherSuite) {
+    if (dc->szCipherSuite || (r->server != handshakeserver)) {
         /* remember old state */
 
         if (dc->nOptions & SSL_OPT_OPTRENEGOTIATE) {
@@ -377,7 +378,10 @@ int ssl_hook_Access(request_rec *r)
         }
 
         /* configure new state */
-        if (!modssl_set_cipher_list(ssl, dc->szCipherSuite)) {
+        if ((dc->szCipherSuite || sc->server->auth.cipher_suite) &&
+            !modssl_set_cipher_list(ssl, dc->szCipherSuite ?
+                                         dc->szCipherSuite :
+                                         sc->server->auth.cipher_suite)) {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "Unable to reconfigure (per-directory) "
                           "permitted SSL ciphers");
@@ -443,8 +447,13 @@ int ssl_hook_Access(request_rec *r)
             sk_SSL_CIPHER_free(cipher_list_old);
         }
 
-        /* tracing */
         if (renegotiate) {
+#ifdef SSL_OP_CIPHER_SERVER_PREFERENCE
+            if (sc->cipher_server_pref == TRUE) {
+                SSL_set_options(ssl, SSL_OP_CIPHER_SERVER_PREFERENCE);
+            }
+#endif
+            /* tracing */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                          "Reconfigured cipher suite will force renegotiation");
         }
@@ -457,29 +466,22 @@ int ssl_hook_Access(request_rec *r)
      * function and not by OpenSSL internally (and our function is aware of
      * both the per-server and per-directory contexts). So we cannot ask
      * OpenSSL about the currently verify depth. Instead we remember it in our
-     * ap_ctx attached to the SSL* of OpenSSL.  We've to force the
+     * SSLConnRec attached to the SSL* of OpenSSL.  We've to force the
      * renegotiation if the reconfigured/new verify depth is less than the
      * currently active/remembered verify depth (because this means more
      * restriction on the certificate chain).
      */
-    if ((sc->server->auth.verify_depth != UNSET) &&
-        (dc->nVerifyDepth == UNSET)) {
-        /* apply per-vhost setting, if per-directory config is not set */
-        dc->nVerifyDepth = sc->server->auth.verify_depth;
-    }
-    if (dc->nVerifyDepth != UNSET) {
-        /* XXX: doesnt look like sslconn->verify_depth is actually used */
-        if (!(n = sslconn->verify_depth)) {
-            sslconn->verify_depth = n = sc->server->auth.verify_depth;
-        }
-
-        /* determine whether a renegotiation has to be forced */
-        if (dc->nVerifyDepth < n) {
-            renegotiate = TRUE;
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "Reduced client verification depth will force "
-                          "renegotiation");
-        }
+    n = sslconn->verify_depth ?
+        sslconn->verify_depth :
+        (mySrvConfig(handshakeserver))->server->auth.verify_depth;
+    /* determine the new depth */
+    sslconn->verify_depth = (dc->nVerifyDepth != UNSET) ?
+                            dc->nVerifyDepth : sc->server->auth.verify_depth;
+    if (sslconn->verify_depth < n) {
+        renegotiate = TRUE;
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                     "Reduced client verification depth will force "
+                     "renegotiation");
     }
 
     /*
@@ -496,23 +498,22 @@ int ssl_hook_Access(request_rec *r)
      * verification but at least skip the I/O-intensive renegotation
      * handshake.
      */
-    if ((sc->server->auth.verify_mode != SSL_CVERIFY_UNSET) &&
-        (dc->nVerifyClient == SSL_CVERIFY_UNSET)) {
-        /* apply per-vhost setting, if per-directory config is not set */
-        dc->nVerifyClient = sc->server->auth.verify_mode;
-    }
-    if (dc->nVerifyClient != SSL_CVERIFY_UNSET) {
+    if ((dc->nVerifyClient != SSL_CVERIFY_UNSET) ||
+        (sc->server->auth.verify_mode != SSL_CVERIFY_UNSET)) {
         /* remember old state */
         verify_old = SSL_get_verify_mode(ssl);
         /* configure new state */
         verify = SSL_VERIFY_NONE;
 
-        if (dc->nVerifyClient == SSL_CVERIFY_REQUIRE) {
+        if ((dc->nVerifyClient == SSL_CVERIFY_REQUIRE) ||
+            (sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE)) {
             verify |= SSL_VERIFY_PEER_STRICT;
         }
 
         if ((dc->nVerifyClient == SSL_CVERIFY_OPTIONAL) ||
-            (dc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA))
+            (dc->nVerifyClient == SSL_CVERIFY_OPTIONAL_NO_CA) ||
+            (sc->server->auth.verify_mode == SSL_CVERIFY_OPTIONAL) ||
+            (sc->server->auth.verify_mode == SSL_CVERIFY_OPTIONAL_NO_CA))
         {
             verify |= SSL_VERIFY_PEER;
         }
@@ -547,6 +548,45 @@ int ssl_hook_Access(request_rec *r)
                               "%srenegotiation",
                               renegotiate_quick ? "quick " : "");
              }
+        }
+        /* If we're handling a request for a vhost other than the default one,
+         * then we need to make sure that client authentication is properly
+         * enforced. For clients supplying an SNI extension, the peer
+         * certificate verification has happened in the handshake already
+         * (and r->server == handshakeserver). For non-SNI requests,
+         * an additional check is needed here. If client authentication
+         * is configured as mandatory, then we can only proceed if the
+         * CA list doesn't have to be changed (OpenSSL doesn't provide
+         * an option to change the list for an existing session).
+         */
+        if ((r->server != handshakeserver)
+            && renegotiate
+            && ((verify & SSL_VERIFY_PEER) ||
+                (verify & SSL_VERIFY_FAIL_IF_NO_PEER_CERT))) {
+            SSLSrvConfigRec *hssc = mySrvConfig(handshakeserver);
+
+#define MODSSL_CFG_CA_NE(f, sc1, sc2) \
+            (sc1->server->auth.f && \
+             (!sc2->server->auth.f || \
+              strNE(sc1->server->auth.f, sc2->server->auth.f)))
+
+            if (MODSSL_CFG_CA_NE(ca_cert_file, sc, hssc) ||
+                MODSSL_CFG_CA_NE(ca_cert_path, sc, hssc)) {
+                if (verify & SSL_VERIFY_FAIL_IF_NO_PEER_CERT) {
+                    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                         "Non-default virtual host with SSLVerify set to "
+                         "'require' and VirtualHost-specific CA certificate "
+                         "list is only available to clients with TLS server "
+                         "name indication (SNI) support");
+                    modssl_set_verify(ssl, verify_old, NULL);
+                    return HTTP_FORBIDDEN;
+                } else
+                    /* let it pass, possibly with an "incorrect" peer cert,
+                     * so make sure the SSL_CLIENT_VERIFY environment variable
+                     * will indicate partial success only, later on.
+                     */
+                    sslconn->verify_info = "GENEROUS";
+            }
         }
     }
 
@@ -732,8 +772,10 @@ int ssl_hook_Access(request_rec *r)
         /*
          * Finally check for acceptable renegotiation results
          */
-        if (dc->nVerifyClient != SSL_CVERIFY_NONE) {
-            BOOL do_verify = (dc->nVerifyClient == SSL_CVERIFY_REQUIRE);
+        if ((dc->nVerifyClient != SSL_CVERIFY_NONE) ||
+            (sc->server->auth.verify_mode != SSL_CVERIFY_NONE)) {
+            BOOL do_verify = ((dc->nVerifyClient == SSL_CVERIFY_REQUIRE) ||
+                              (sc->server->auth.verify_mode == SSL_CVERIFY_REQUIRE));
 
             if (do_verify && (SSL_get_verify_result(ssl) != X509_V_OK)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -1195,8 +1237,8 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     SSL *ssl = X509_STORE_CTX_get_ex_data(ctx,
                                           SSL_get_ex_data_X509_STORE_CTX_idx());
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
-    server_rec *s       = mySrvFromConn(conn);
     request_rec *r      = (request_rec *)SSL_get_app_data2(ssl);
+    server_rec *s       = r ? r->server : mySrvFromConn(conn);
 
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLDirConfigRec *dc = r ? myDirConfig(r) : NULL;
@@ -1326,7 +1368,10 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
 
 int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
 {
-    server_rec *s       = mySrvFromConn(c);
+    SSL *ssl = X509_STORE_CTX_get_ex_data(ctx,
+                                          SSL_get_ex_data_X509_STORE_CTX_idx());
+    request_rec *r      = (request_rec *)SSL_get_app_data2(ssl);
+    server_rec *s       = r ? r->server : mySrvFromConn(c);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLConnRec *sslconn = myConnConfig(c);
     modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
