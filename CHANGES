@@ -5,6 +5,9 @@ Changes with Apache 2.2.12
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) mod_proxy_ajp: Check more strictly that the backend follows the AJP
+     protocol. [Mladen Turk]
+
   *) mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
      to enable stricter checking of remote server certificates.
      [Ruediger Pluem]
