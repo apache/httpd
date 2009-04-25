@@ -28,6 +28,7 @@
                                   core keeps dumping.''
                                             -- Unknown    */
 #include "ssl_private.h"
+#include "apr_date.h"
 
 /*  _________________________________________________________________
 **
@@ -1011,6 +1012,31 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
 }
 
 /*
+ * Parse an ASN1time string as returned by ASN1_UTCTIME_print into an
+ * apr_time_t.
+ */
+static apr_time_t parseASN1time(apr_pool_t *p, const char *asn1time)
+{
+    char *asctime;
+
+    /*
+     * Little bit ugly hack:
+     * The ASN1time looks very similar to the asctime format which can be
+     * parsed by apr_date_parse_rfc:
+     * It misses the weekday at the beginning (which is ignored by
+     * apr_date_parse_rfc anyway) and it has a GMT at the end which
+     * does not into the asctime pattern. So add a dummy "Sun " before
+     * the ASN1time and remove the GMT string at the end.
+     */
+    asctime = apr_pstrcat(p, "Sun ", asn1time, NULL);
+    if (strlen(asctime) < 25) {
+        return APR_DATE_BAD;
+    }
+    asctime[24] = '\0';
+    return apr_date_parse_rfc(asctime);
+}
+
+/*
  * The hook is NOT registered with ap_hook_process_connection. Instead, it is
  * called manually from the churn () before it tries to read any data.
  * There is some problem if I accept conn_rec *. Still investigating..
@@ -1032,6 +1058,8 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
     }
 
     if (sslconn->is_proxy) {
+        const char *hostname_note;
+
         if ((n = SSL_connect(filter_ctx->pssl)) <= 0) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                           "SSL Proxy connect failed");
@@ -1039,6 +1067,47 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
             return HTTP_BAD_GATEWAY;
+        }
+
+        if (sc->proxy_ssl_check_peer_expire == SSL_ENABLED_TRUE) {
+            apr_time_t start_time;
+            apr_time_t end_time;
+            apr_time_t now;
+
+            start_time = parseASN1time(c->pool,
+                                       ssl_var_lookup(NULL, c->base_server,
+                                                      c, NULL,
+                                                      "SSL_CLIENT_V_START"));
+            end_time = parseASN1time(c->pool,
+                                     ssl_var_lookup(NULL, c->base_server,
+                                                    c, NULL,
+                                                    "SSL_CLIENT_V_END"));
+            now = apr_time_now();
+            if ((now > end_time) || (now < start_time)) {
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+                              "SSL Proxy: Peer certificate is expired");
+                /* ensure that the SSL structures etc are freed, etc: */
+                ssl_filter_io_shutdown(filter_ctx, c, 1);
+                return HTTP_BAD_GATEWAY;
+            }
+        }
+        if ((sc->proxy_ssl_check_peer_cn == SSL_ENABLED_TRUE)
+            && ((hostname_note =
+                 apr_table_get(c->notes, "proxy-request-hostname")) != NULL)) {
+            const char *hostname;
+
+            hostname = ssl_var_lookup(NULL, c->base_server, c, NULL,
+                                      "SSL_CLIENT_S_DN_CN");
+            apr_table_unset(c->notes, "proxy-request-hostname");
+            if (strcasecmp(hostname, hostname_note)) {
+                ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+                              "SSL Proxy: Peer certificate CN mismatch:"
+                              " Certificate CN: %s Requested hostname: %s",
+                              hostname, hostname_note);
+                /* ensure that the SSL structures etc are freed, etc: */
+                ssl_filter_io_shutdown(filter_ctx, c, 1);
+                return HTTP_BAD_GATEWAY;
+            }
         }
 
         return APR_SUCCESS;
