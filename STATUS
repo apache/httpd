@@ -97,16 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      Trunk version of patch works
   +1: rpluem, wrowe, jfclere
 
- * mod_proxy_balancer: Fix handling of lbset for non-seq config'ed
-   clusters:
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?view=rev&revision=739852
-      http://svn.apache.org/viewvc?view=rev&revision=739853
-      http://svn.apache.org/viewvc?view=rev&revision=739854
-   Backport version for 2.2.x of patch:
-      http://people.apache.org/~jim/patches/httpd-2.2-lbset.patch
-   +1: jim, rpluem, jfclere
-
  * mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
    to enable stricter checking of remote server certificates.
    Trunk version of patch:
