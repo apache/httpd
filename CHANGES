@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) SECURITY: CVE-2009-1191 (cve.mitre.org)
+     mod_proxy_ajp: Avoid delivering content from a previous request which
+     failed to send a request body. PR 46949 [Ruediger Pluem]
+
   *) mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
      to enable stricter checking of remote server certificates.
      [Ruediger Pluem]
