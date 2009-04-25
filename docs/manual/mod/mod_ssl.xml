@@ -1505,7 +1505,7 @@ SSLProxyVerifyDepth 10
 <name>SSLProxyCheckPeerExpire</name>
 <description>Whether to check if remote server certificate is expired
 </description>
-<syntax>SSLProxyCheckPeerExpire on|off|optional</syntax>
+<syntax>SSLProxyCheckPeerExpire on|off</syntax>
 <default>SSLProxyCheckPeerExpire off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
@@ -1526,7 +1526,7 @@ SSLProxyCheckPeerExpire on
 <name>SSLProxyCheckPeerCN</name>
 <description>Whether to check the remote server certificates CN field
 </description>
-<syntax>SSLProxyCheckPeerCN on|off|optional</syntax>
+<syntax>SSLProxyCheckPeerCN on|off</syntax>
 <default>SSLProxyCheckPeerCN off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
