@@ -97,14 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      Trunk version of patch works
   +1: rpluem, wrowe, jfclere
 
- * mod_ssl: Add SSLProxyCheckPeerExpire and SSLProxyCheckPeerCN directives
-   to enable stricter checking of remote server certificates.
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=760866&view=rev
-   Backport version for 2.2.x of patch:
-      http://people.apache.org/~rpluem/patches/SSLProxyCheckPeer.diff
-   +1: rpluem, jim, jfclere
-
  * mod_proxy_ajp: Check more strictly that the backend follows the AJP protocol.
    Trunk version of patch:
       http://svn.apache.org/viewvc?rev=764239&view=rev
