@@ -479,6 +479,9 @@ struct SSLSrvConfigRec {
     ssl_log_level_e  ssl_log_level;
     ssl_enabled_t    proxy_ssl_check_peer_expire;
     ssl_enabled_t    proxy_ssl_check_peer_cn;
+#ifndef OPENSSL_NO_TLSEXT
+    ssl_enabled_t    strict_sni_vhost_check;
+#endif
 };
 
 /**
@@ -544,6 +547,9 @@ const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLUserName(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLLogLevelDebugDump(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *arg);
+#ifndef OPENSSL_NO_TLSEXT
+const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag);
+#endif
 
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
