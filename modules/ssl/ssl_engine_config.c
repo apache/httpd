@@ -175,6 +175,9 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->ssl_log_level          = SSL_LOG_UNSET;
     sc->proxy_ssl_check_peer_expire = SSL_ENABLED_UNSET;
     sc->proxy_ssl_check_peer_cn     = SSL_ENABLED_UNSET;
+#ifndef OPENSSL_NO_TLSEXT
+    sc->strict_sni_vhost_check = SSL_ENABLED_UNSET;
+#endif
 
     modssl_ctx_init_proxy(sc, p);
 
@@ -270,6 +273,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(ssl_log_level, SSL_LOG_UNSET);
     cfgMerge(proxy_ssl_check_peer_expire, SSL_ENABLED_UNSET);
     cfgMerge(proxy_ssl_check_peer_cn, SSL_ENABLED_UNSET);
+#ifndef OPENSSL_NO_TLSEXT
+    cfgMerge(strict_sni_vhost_check, SSL_ENABLED_UNSET);
+#endif
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
 
@@ -1439,6 +1445,17 @@ const char *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag)
 
     return NULL;
 }
+
+#ifndef OPENSSL_NO_TLSEXT
+const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->strict_sni_vhost_check = flag ? SSL_ENABLED_TRUE : SSL_ENABLED_FALSE;
+
+    return NULL;
+}
+#endif
 
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
 {

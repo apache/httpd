@@ -1354,6 +1354,37 @@ SSLRenegBufferSize 262144
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSLStrictSNIVHostCheck</name>
+<description>Whether to allow non SNI clients to access a name based virtual
+host.
+</description>
+<syntax>SSLStrictSNIVHostCheck on|off</syntax>
+<default>SSLStrictSNIVHostCheck off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+
+<usage>
+<p>
+This directive sets whether a non SNI client is allowed to access a name based
+virtual host. If set to <code>on</code> in the non default name based virtual
+host, non SNI clients are not allowed to access this particular virtual host.
+If set to <code>on</code> in the default name based virtual host, non SNI
+clients are not allowed to access any name based virtual host belonging to
+this IP / port combination.
+</p>
+
+<note type="warning"><p>
+This option is only available if httpd was compiled against an SNI capable
+version of OpenSSL.
+</p></note>
+
+<example><title>Example</title>
+SSLStrictSNIVHostCheck on
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SSLProxyMachineCertificatePath</name>
 <description>Directory of PEM-encoded client certificates and keys to be used by the proxy</description>
 <syntax>SSLProxyMachineCertificatePath <em>directory</em></syntax>

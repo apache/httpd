@@ -186,10 +186,16 @@ int ssl_hook_ReadReq(request_rec *r)
             return HTTP_BAD_REQUEST;
         }
     }
-    else if (r->connection->vhost_lookup_data) {
+    else if (((sc->strict_sni_vhost_check == SSL_ENABLED_TRUE)
+             || (mySrvConfig(sslconn->server))->strict_sni_vhost_check
+                == SSL_ENABLED_TRUE)
+             && r->connection->vhost_lookup_data) {
         /*
          * We are using a name based configuration here, but no hostname was
-         * provided via SNI. Don't allow that.
+         * provided via SNI. Don't allow that if are requested to do strict
+         * checking. Check wether this strict checking was setup either in the
+         * server config we used for handshaking or in our current server.
+         * This should avoid insecure configuration by accident.
          */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "No hostname was provided via SNI for a name based"
