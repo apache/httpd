@@ -87,16 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-* mod_proxy_ajp: Avoid delivering content from a previous request which failed
-  to send a request body by closing the connection to the backend in this case
-  instead of reusing it.
-  PR: 46949
-  Trunk version of patch:
-     http://svn.apache.org/viewvc?rev=763394&view=rev
-  Backport version for 2.2.x of patch:
-     Trunk version of patch works
-  +1: rpluem, wrowe, jfclere
-
  * mod_proxy_ajp: Check more strictly that the backend follows the AJP protocol.
    Trunk version of patch:
       http://svn.apache.org/viewvc?rev=764239&view=rev
