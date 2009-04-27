@@ -132,6 +132,14 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
     return mycandidate;
 }
 
+static apr_status_t reset(proxy_balancer *balancer, request_rec *r) {
+        return APR_SUCCESS;
+}
+
+static apr_status_t age(proxy_balancer *balancer, request_rec *r) {
+        return APR_SUCCESS;
+}
+
 /*
  * How to add additional lbmethods:
  *   1. Create func which determines "best" candidate worker
@@ -142,6 +150,8 @@ static const proxy_balancer_method byrequests =
 {
     "byrequests",
     &find_best_byrequests,
+    &reset,
+    &age,
     NULL
 };
 
