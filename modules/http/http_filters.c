@@ -331,7 +331,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 int len;
 
                 tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
-                                  ap_get_status_line(100), CRLF CRLF, NULL);
+                                  ap_get_status_line(HTTP_CONTINUE), CRLF CRLF,
+                                  NULL);
                 len = strlen(tmp);
                 ap_xlate_proto_to_ascii(tmp, len);
                 apr_brigade_cleanup(bb);
