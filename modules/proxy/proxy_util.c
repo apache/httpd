@@ -2346,6 +2346,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             worker->hostname);
     }
     else {
+        if (worker->s->retries) {
+        }
         worker->s->error_time = 0;
         worker->s->retries = 0;
     }

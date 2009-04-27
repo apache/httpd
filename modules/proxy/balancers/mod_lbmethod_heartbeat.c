@@ -299,10 +299,20 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
     return mycandidate;
 }
 
+static apr_status_t reset(proxy_balancer *balancer, request_rec *r) {
+        return APR_SUCCESS;
+}
+
+static apr_status_t age(proxy_balancer *balancer, request_rec *r) {
+        return APR_SUCCESS;
+}
+
 static const proxy_balancer_method heartbeat =
 {
     "heartbeat",
     &find_best_hb,
+    &reset,
+    &age,
     NULL
 };
 
