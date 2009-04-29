@@ -1035,31 +1035,6 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
 }
 
 /*
- * Parse an ASN1time string as returned by ASN1_UTCTIME_print into an
- * apr_time_t.
- */
-static apr_time_t parseASN1time(apr_pool_t *p, const char *asn1time)
-{
-    char *asctime;
-
-    /*
-     * Little bit ugly hack:
-     * The ASN1time looks very similar to the asctime format which can be
-     * parsed by apr_date_parse_rfc:
-     * It misses the weekday at the beginning (which is ignored by
-     * apr_date_parse_rfc anyway) and it has a GMT at the end which
-     * does not into the asctime pattern. So add a dummy "Sun " before
-     * the ASN1time and remove the GMT string at the end.
-     */
-    asctime = apr_pstrcat(p, "Sun ", asn1time, NULL);
-    if (strlen(asctime) < 25) {
-        return APR_DATE_BAD;
-    }
-    asctime[24] = '\0';
-    return apr_date_parse_rfc(asctime);
-}
-
-/*
  * The hook is NOT registered with ap_hook_process_connection. Instead, it is
  * called manually from the churn () before it tries to read any data.
  * There is some problem if I accept conn_rec *. Still investigating..
@@ -1099,26 +1074,22 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         }
 
         if (sc->proxy_ssl_check_peer_expire == SSL_ENABLED_TRUE) {
-            apr_time_t start_time;
-            apr_time_t end_time;
-            apr_time_t now;
-
-            start_time = parseASN1time(c->pool,
-                                       ssl_var_lookup(NULL, c->base_server,
-                                                      c, NULL,
-                                                      "SSL_CLIENT_V_START"));
-            end_time = parseASN1time(c->pool,
-                                     ssl_var_lookup(NULL, c->base_server,
-                                                    c, NULL,
-                                                    "SSL_CLIENT_V_END"));
-            now = apr_time_now();
-            if ((now > end_time) || (now < start_time)) {
+            cert = SSL_get_peer_certificate(filter_ctx->pssl);
+            if (!cert
+                || (X509_cmp_current_time(
+                     X509_get_notBefore(cert)) >= 0)
+                || (X509_cmp_current_time(
+                     X509_get_notAfter(cert)) <= 0)) {
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                               "SSL Proxy: Peer certificate is expired");
+                if (cert) {
+                    X509_free(cert);
+                }
                 /* ensure that the SSL structures etc are freed, etc: */
                 ssl_filter_io_shutdown(filter_ctx, c, 1);
                 return HTTP_BAD_GATEWAY;
             }
+            X509_free(cert);
         }
         if ((sc->proxy_ssl_check_peer_cn == SSL_ENABLED_TRUE)
             && ((hostname_note =
