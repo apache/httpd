@@ -1073,7 +1073,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             return MODSSL_ERROR_BAD_GATEWAY;
         }
 
-        if (sc->proxy_ssl_check_peer_expire == SSL_ENABLED_TRUE) {
+        if (sc->proxy_ssl_check_peer_expire != SSL_ENABLED_FALSE) {
             cert = SSL_get_peer_certificate(filter_ctx->pssl);
             if (!cert
                 || (X509_cmp_current_time(
@@ -1091,7 +1091,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             }
             X509_free(cert);
         }
-        if ((sc->proxy_ssl_check_peer_cn == SSL_ENABLED_TRUE)
+        if ((sc->proxy_ssl_check_peer_cn != SSL_ENABLED_FALSE)
             && ((hostname_note =
                  apr_table_get(c->notes, "proxy-request-hostname")) != NULL)) {
             const char *hostname;
