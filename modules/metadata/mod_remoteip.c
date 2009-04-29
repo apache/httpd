@@ -33,7 +33,7 @@ typedef struct {
     /** A proxy IP mask to match */
     apr_ipsubnet_t *ip;
     /** Flagged if internal, otherwise an external trusted proxy */
-    int internal;
+    void  *internal;
 } remoteip_proxymatch_t;
 
 typedef struct {
@@ -141,7 +141,7 @@ static const char *proxies_set(cmd_parms *cmd, void *internal,
     if (!config->proxymatch_ip)
         config->proxymatch_ip = apr_array_make(cmd->pool, 1, sizeof(*match));
     match = (remoteip_proxymatch_t *) apr_array_push(config->proxymatch_ip);
-    match->internal = (int)internal;
+    match->internal = internal;
 
     if (looks_like_ip(ip)) {
         /* Note s may be null, that's fine (explicit host) */
@@ -167,7 +167,7 @@ static const char *proxies_set(cmd_parms *cmd, void *internal,
                 break;
             match = (remoteip_proxymatch_t *) 
                     apr_array_push(config->proxymatch_ip);
-            match->internal = (int)internal;
+            match->internal = internal;
         }
     }
 
@@ -235,7 +235,7 @@ static int remoteip_modify_connection(request_rec *r)
     char *parse_remote;
     char *eos;
     unsigned char *addrbyte;
-    int internal = 0;
+    void *internal = NULL;
 
     apr_pool_userdata_get((void*)&conn, "mod_remoteip-conn", c->pool);
 
