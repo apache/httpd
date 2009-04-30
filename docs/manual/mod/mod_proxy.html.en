@@ -353,17 +353,20 @@ proxy</td></tr>
 <div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a member to a load balancing group</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerMember <var>url</var> [<var>key=value [key=value ...]]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerMember is only available in Apache 2.2
         and later.</td></tr>
 </table>
-    <p>This directive adds a member to a load balancing group. It must be used
+    <p>This directive adds a member to a load balancing group. It could be used
     within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
-    directive, and can take any of the parameters available to
+    directive, and can take any of the key value pairs available to
     <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
+    <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
+    container directive. It corresponds to the url of a balancer defined in
+    <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
