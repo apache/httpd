@@ -1761,22 +1761,26 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
 
     if (cmd->path)
         path = apr_pstrdup(cmd->pool, cmd->path);
+
     while (*arg) {
+        char *val;
         word = ap_getword_conf(cmd->pool, &arg);
-        if (!path)
-            path = word;
-        else if (!name)
-            name = word;
-        else {
-            char *val = strchr(word, '=');
-            if (!val)
+        val = strchr(word, '=');
+
+        if (!val) {
+            if (!path)
+                path = word;
+            else if (!name)
+                name = word;
+            else {
                 if (cmd->path)
                     return "BalancerMember can not have a balancer name when defined in a location";
                 else
                     return "Invalid BalancerMember parameter. Parameter must "
                            "be in the form 'key=value'";
-            else
-                *val++ = '\0';
+            }
+        } else {
+            *val++ = '\0';
             apr_table_setn(params, word, val);
         }
     }
