@@ -516,22 +516,25 @@ expressions</description>
 <directivesynopsis>
 <name>BalancerMember</name>
 <description>Add a member to a load balancing group</description>
-<syntax>BalancerMember <var>url</var> [<var
+<syntax>BalancerMember [<var>balancerurl</var>] <var>url</var> [<var
   >key=value [key=value ...]]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>BalancerMember is only available in Apache 2.2
   and later.</compatibility>
 <usage>
-    <p>This directive adds a member to a load balancing group. It must be used
+    <p>This directive adds a member to a load balancing group. It could be used
     within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
-    directive, and can take any of the parameters available to
+    directive, and can take any of the key value pair parameters available to
     <directive module="mod_proxy">ProxyPass</directive> directives.</p>
     <p>One additional parameter is available only to <directive
     module="mod_proxy">BalancerMember</directive> directives:
     <var>loadfactor</var>. This is the member load factor - a number between 1 
     (default) and 100, which defines the weighted load to be applied to the 
     member in question.</p>
+    <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
+    container directive. It corresponds to the url of a balancer defined in
+    <directive module="mod_proxy">ProxyPass</directive> directive.</p>
 </usage>
 </directivesynopsis>
 
