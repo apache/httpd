@@ -1987,8 +1987,8 @@ URLs</td></tr>
     characters. Neither wildcard character matches a / in the URL-path.</p>
 
     <p><a class="glossarylink" href="../glossary.html#regex" title="see glossary">Regular expressions</a>
-    can also be used, with the addition of the
-    <code>~</code> character. For example:</p>
+    can also be used, with the addition of the <code>~</code> 
+    character. For example:</p>
 
     <div class="example"><p><code>
       &lt;Location ~ "/(extra|special)/data"&gt;
@@ -1996,7 +1996,9 @@ URLs</td></tr>
 
     <p>would match URLs that contained the substring <code>/extra/data</code>
     or <code>/special/data</code>. The directive <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> behaves
-    identical to the regex version of <code class="directive">&lt;Location&gt;</code>.</p>
+    identical to the regex version of <code class="directive">&lt;Location&gt;</code>, and is preferred, for the
+    simple reason that <code>~</code> is hard to distinguish from
+    <code>-</code> in many fonts.</p>
 
     <p>The <code class="directive">&lt;Location&gt;</code>
     functionality is especially useful when combined with the
@@ -2038,7 +2040,8 @@ URLs</td></tr>
 <ul>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
     and &lt;Files&gt; sections work</a> for an explanation of how these
-    different sections are combined when a request is received</li>
+    different sections are combined when a request is received.</li>
+<li><code class="directive"><a href="#locationmatch">LocationMatch</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
