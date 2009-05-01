@@ -205,10 +205,11 @@ a different URL</description>
     the client to refetch the resource at the new location.</p>
 
     <p>The old <em>URL-path</em> is a case-sensitive (%-decoded) path
-    beginning with a slash.  A relative path is not allowed.  The new
-    <em>URL</em> should be an absolute URL beginning with a scheme and
-    hostname, but a URL-path beginning with a slash may also be used,
-    in which case the scheme and hostname of the current server will
+    beginning with a slash.  A relative path is not allowed.</p>
+    
+    <p>The new <em>URL</em> may be either an absolute URL beginning 
+    with a scheme and hostname, or a URL-path beginning with a slash.
+    In this latter case the scheme and hostname of the current server will
     be added.</p>
 
     <p>Then any request beginning with <em>URL-Path</em> will return a
@@ -217,7 +218,10 @@ a different URL</description>
     <em>URL-Path</em> will be appended to the target URL.</p>
 
     <example><title>Example:</title>
-      Redirect /service http://foo2.example.com/service
+      Redirect /service http://foo2.example.com/service<br />
+      <br />
+      # Redirect to a URL on the same host<br />
+      Redirect /one /two
     </example>
 
     <p>If the client requests <code>http://example.com/service/foo.txt</code>,
