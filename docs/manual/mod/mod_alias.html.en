@@ -227,6 +227,7 @@ a different URL</td></tr>
     <em>URL-Path</em> will be appended to the target URL.</p>
 
     <div class="example"><h3>Example:</h3><p><code>
+      # Redirect to a URL on a different host<br />
       Redirect /service http://foo2.example.com/service<br />
       <br />
       # Redirect to a URL on the same host<br />
