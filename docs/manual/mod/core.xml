@@ -1970,8 +1970,8 @@ URLs</description>
     characters. Neither wildcard character matches a / in the URL-path.</p>
 
     <p><glossary ref="regex">Regular expressions</glossary>
-    can also be used, with the addition of the
-    <code>~</code> character. For example:</p>
+    can also be used, with the addition of the <code>~</code> 
+    character. For example:</p>
 
     <example>
       &lt;Location ~ "/(extra|special)/data"&gt;
@@ -1981,7 +1981,9 @@ URLs</description>
     or <code>/special/data</code>. The directive <directive
     type="section" module="core">LocationMatch</directive> behaves
     identical to the regex version of <directive
-    type="section">Location</directive>.</p>
+    type="section">Location</directive>, and is preferred, for the
+    simple reason that <code>~</code> is hard to distinguish from
+    <code>-</code> in many fonts.</p>
 
     <p>The <directive type="section">Location</directive>
     functionality is especially useful when combined with the
@@ -2024,7 +2026,8 @@ URLs</description>
 </usage>
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
     and &lt;Files&gt; sections work</a> for an explanation of how these
-    different sections are combined when a request is received</seealso>
+    different sections are combined when a request is received.</seealso>
+<seealso><directive module="core">LocationMatch</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis type="section">
