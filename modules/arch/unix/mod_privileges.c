@@ -38,12 +38,19 @@ module AP_MODULE_DECLARE_DATA privileges_module;
 
 /* #define BIG_SECURITY_HOLE 1 */
 
+typedef enum { PRIV_UNSET, PRIV_FAST, PRIV_SECURE, PRIV_SELECTIVE } priv_mode;
+
 typedef struct {
     priv_set_t *priv;
     priv_set_t *child_priv;
     uid_t uid;
     gid_t gid;
+    priv_mode mode;
 } priv_cfg;
+
+typedef struct {
+    priv_mode mode;
+} priv_dir_cfg;
 
 static priv_set_t *priv_setid;
 static priv_set_t *priv_default = NULL;
@@ -55,6 +62,15 @@ static apr_status_t priv_cfg_cleanup(void *CFG)
     priv_freeset(cfg->priv);
     priv_freeset(cfg->child_priv);
     return APR_SUCCESS;
+}
+static void *privileges_merge_cfg(apr_pool_t *pool, void *BASE, void *ADD)
+{
+    /* inherit the mode if it's not set; the rest won't be inherited */
+    priv_cfg *base = BASE;
+    priv_cfg *add = ADD;
+    priv_cfg *ret = apr_pmemdup(pool, add, sizeof(priv_cfg));
+    ret->mode = (add->mode == PRIV_UNSET) ? base->mode : add->mode;
+    return ret;
 }
 static void *privileges_create_cfg(apr_pool_t *pool, server_rec *s)
 {
@@ -83,6 +99,7 @@ static void *privileges_create_cfg(apr_pool_t *pool, server_rec *s)
     /* we´ll use 0 for unset */
     cfg->uid = 0;
     cfg->gid = 0;
+    cfg->mode = PRIV_UNSET;
     apr_pool_cleanup_register(pool, cfg, priv_cfg_cleanup,
                               apr_pool_cleanup_null);
 
@@ -92,15 +109,40 @@ static void *privileges_create_cfg(apr_pool_t *pool, server_rec *s)
     }
     return cfg;
 }
+static void *privileges_create_dir_cfg(apr_pool_t *pool, char *dummy)
+{
+    priv_dir_cfg *cfg = apr_palloc(pool, sizeof(priv_dir_cfg));
+    cfg->mode = PRIV_UNSET;
+    return cfg;
+}
+static void *privileges_merge_dir_cfg(apr_pool_t *pool, void *BASE, void *ADD)
+{
+    priv_dir_cfg *base = BASE;
+    priv_dir_cfg *add = ADD;
+    priv_dir_cfg *ret = apr_palloc(pool, sizeof(priv_dir_cfg));
+    ret->mode = (add->mode == PRIV_UNSET) ? base->mode : add->mode;
+    return ret;
+}
 
 static apr_status_t privileges_end_req(void *data)
 {
     request_rec *r = data;
     priv_cfg *cfg = ap_get_module_config(r->server->module_config,
                                          &privileges_module);
+    priv_dir_cfg *dcfg = ap_get_module_config(r->per_dir_config,
+                                              &privileges_module);
 
     /* ugly hack: grab default uid and gid from unixd */
     extern unixd_config_rec ap_unixd_config;
+
+    /* If we forked a child, we dropped privilege to revert, so
+     * all we can do now is exit
+     */
+    if ((cfg->mode == PRIV_SECURE) ||
+        ((cfg->mode == PRIV_SELECTIVE) && (dcfg->mode == PRIV_SECURE))) {
+    //    return APR_SUCCESS;
+        exit(0);
+    }
 
     /* if either user or group are not the default, restore them */
     if (cfg->uid || cfg->gid) {
@@ -125,15 +167,102 @@ static apr_status_t privileges_end_req(void *data)
     }
     return APR_SUCCESS;
 }
+#if 0
+static apr_status_t privileges_end_proc(void *data)
+{
+    /* FIXME
+     * The process exists only for the request, and was created
+     * on the request pool which is now being destroyed.
+     * Need to figure out what needs doing here.
+     */
+    exit(0);
+}
+#endif
 static int privileges_req(request_rec *r)
 {
+    /* secure mode: fork a process to handle the request */
+    apr_proc_t proc;
+    apr_status_t rv;
+    int exitcode;
+    apr_exit_why_e exitwhy;
+    int fork_req;
     priv_cfg *cfg = ap_get_module_config(r->server->module_config,
                                          &privileges_module);
+
+    void *breadcrumb = ap_get_module_config(r->request_config,
+                                            &privileges_module);
+
+    if (!breadcrumb) {
+        /* first call: this is the vhost */
+        fork_req = (cfg->mode == PRIV_SECURE);
+
+        /* set breadcrumb */
+        ap_set_module_config(r->request_config, &privileges_module, &cfg->mode);
+
+        /* If we have per-dir config, defer doing anything */
+        if ((cfg->mode == PRIV_SELECTIVE)) {
+            /* Defer dropping privileges 'til we have a directory
+             * context that'll tell us whether to fork.
+             */
+            return DECLINED;
+        }
+    }
+    else {
+        /* second call is for per-directory. */
+        priv_dir_cfg *dcfg;
+        if ((cfg->mode != PRIV_SELECTIVE)) {
+            /* Our fate was already determined for the vhost -
+             * nothing to do per-directory
+             */
+            return DECLINED;
+        }
+        dcfg = ap_get_module_config(r->per_dir_config, &privileges_module);
+        fork_req = (dcfg->mode == PRIV_SECURE);
+    }
+
+    if (fork_req) {
+       rv = apr_proc_fork(&proc, r->pool);
+        switch (rv) {
+        case APR_INPARENT:
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "parent waiting for child");
+            /* FIXME - does the child need to run synchronously?
+             * esp. if we enable mod_privileges with threaded MPMs?
+             * We do need at least to ensure r outlives the child.
+             */
+            rv = apr_proc_wait(&proc, &exitcode, &exitwhy, APR_WAIT);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "parent: child %s",
+                          (rv == APR_CHILD_DONE) ? "done" : "notdone");
+
+            /* The child has taken responsibility for reading all input
+             * and sending all output.  So we need to bow right out,
+             * and even abandon "normal" housekeeping.
+             */
+            r->eos_sent = 1;
+            apr_table_unset(r->headers_in, "Content-Type");
+            apr_table_unset(r->headers_in, "Content-Length");
+            /* Testing with ab and 100k requests reveals no nasties
+             * so I infer we're not leaking anything like memory
+             * or file descriptors.  That's nice!
+             */
+            return DONE;
+        case APR_INCHILD:
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "In child!");
+//            apr_pool_cleanup_register(r->pool, r, privileges_end_proc,
+//                                      apr_pool_cleanup_null);
+            break;  /* now we'll drop privileges in the child */
+        default:
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Failed to fork secure child process!");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+    }
+
+    /* OK, now drop privileges. */
 
     /* cleanup should happen even if something fails part-way through here */
     apr_pool_cleanup_register(r->pool, r, privileges_end_req,
                               apr_pool_cleanup_null);
-
     /* set user and group if configured */
     if (cfg->uid || cfg->gid) {
         if (setppriv(PRIV_ON, PRIV_EFFECTIVE, priv_setid) == -1) {
@@ -171,6 +300,16 @@ static int privileges_req(request_rec *r)
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Error setting limit privileges: %s", strerror(errno));
         return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    /* If we're in a child process, drop down PPERM too */
+    if (fork_req) {
+        if (setppriv(PRIV_SET, PRIV_PERMITTED, cfg->priv) == -1) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Error setting permitted privileges: %s",
+                          strerror(errno));
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
     }
 
     return OK;
@@ -261,6 +400,7 @@ static int privileges_postconf(apr_pool_t *pconf, apr_pool_t *plog,
 static int privileges_init(apr_pool_t *pconf, apr_pool_t *plog,
                            apr_pool_t *ptemp)
 {
+#if 0
     /* refuse to work if the MPM is threaded */
     int threaded;
     int rv = ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
@@ -275,12 +415,14 @@ static int privileges_init(apr_pool_t *pconf, apr_pool_t *plog,
                       "mod_privileges is not compatible with a threaded MPM.");
         return !OK;
     }
+#endif
     return OK;
 }
 static void privileges_hooks(apr_pool_t *pool)
 {
     ap_hook_post_read_request(privileges_req, NULL, NULL,
                               APR_HOOK_REALLY_FIRST);
+    ap_hook_header_parser(privileges_req, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_drop_privileges(privileges_drop_first, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_drop_privileges(privileges_drop_last, NULL, NULL, APR_HOOK_LAST);
     ap_hook_post_config(privileges_postconf, NULL, NULL, APR_HOOK_MIDDLE);
@@ -357,6 +499,39 @@ static const char *dtraceenable(cmd_parms *cmd, void *dir, int arg)
     return NULL;
 }
 
+static const char *privs_mode(cmd_parms *cmd, void *dir, const char *arg)
+{
+    priv_mode mode = PRIV_UNSET;
+    if (!strcasecmp(arg, "FAST")) {
+        mode = PRIV_FAST;
+    }
+    else if (!strcasecmp(arg, "SECURE")) {
+        mode = PRIV_SECURE;
+    }
+    else if (!strcasecmp(arg, "SELECTIVE")) {
+        mode = PRIV_SELECTIVE;
+    }
+
+    if (cmd->path) {
+        /* In a directory context, set the per_dir_config */
+        priv_dir_cfg *cfg = dir;
+        cfg->mode = mode;
+        if ((mode == PRIV_UNSET) || (mode == PRIV_SELECTIVE)) {
+            return "PrivilegesMode in a Directory context must be FAST or SECURE";
+        }
+    }
+    else {
+        /* In a global or vhost context, set the server config */
+        priv_cfg *cfg = ap_get_module_config(cmd->server->module_config,
+                                             &privileges_module);
+        cfg->mode = mode;
+        if (mode == PRIV_UNSET) {
+            return "PrivilegesMode must be FAST, SECURE or SELECTIVE";
+        }
+    }
+    return NULL;
+}
+
 #ifdef BIG_SECURITY_HOLE
 static const char *vhost_privs(cmd_parms *cmd, void *dir, const char *arg)
 {
@@ -394,18 +569,19 @@ static const char *vhost_cgiprivs(cmd_parms *cmd, void *dir, const char *arg)
     return NULL;
 }
 #endif
-
 static const command_rec privileges_cmds[] = {
     AP_INIT_TAKE1("VHostUser", vhost_user, NULL, RSRC_CONF,
                   "Userid under which the virtualhost will run"),
     AP_INIT_TAKE1("VHostGroup", vhost_group, NULL, RSRC_CONF,
                   "Group under which the virtualhost will run"),
     AP_INIT_FLAG("VHostSecure", vhost_secure, NULL, RSRC_CONF,
-                 "Run in secure mode (default ON)"),
+                 "Run in enhanced security mode (default ON)"),
     AP_INIT_TAKE1("VHostCGIMode", vhost_cgimode, NULL, RSRC_CONF,
                   "Enable fork+exec for this virtualhost (Off|Secure|On)"),
     AP_INIT_FLAG("DTracePrivileges", dtraceenable, NULL, RSRC_CONF,
                  "Enable DTrace"),
+    AP_INIT_TAKE1("PrivilegesMode", privs_mode, NULL, RSRC_CONF|ACCESS_CONF,
+                  "tradeoff performance vs security (fast or secure)"),
 #ifdef BIG_SECURITY_HOLE
     AP_INIT_ITERATE("VHostPrivs", vhost_privs, NULL, RSRC_CONF,
                     "Privileges available in the (virtual) server"),
@@ -416,10 +592,10 @@ static const command_rec privileges_cmds[] = {
 };
 module AP_MODULE_DECLARE_DATA privileges_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,
-    NULL,
+    privileges_create_dir_cfg,
+    privileges_merge_dir_cfg,
     privileges_create_cfg,
-    NULL,
+    privileges_merge_cfg,
     privileges_cmds,
     privileges_hooks
 };
