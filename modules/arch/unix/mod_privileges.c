@@ -140,7 +140,6 @@ static apr_status_t privileges_end_req(void *data)
      */
     if ((cfg->mode == PRIV_SECURE) ||
         ((cfg->mode == PRIV_SELECTIVE) && (dcfg->mode == PRIV_SECURE))) {
-    //    return APR_SUCCESS;
         exit(0);
     }
 
@@ -167,17 +166,6 @@ static apr_status_t privileges_end_req(void *data)
     }
     return APR_SUCCESS;
 }
-#if 0
-static apr_status_t privileges_end_proc(void *data)
-{
-    /* FIXME
-     * The process exists only for the request, and was created
-     * on the request pool which is now being destroyed.
-     * Need to figure out what needs doing here.
-     */
-    exit(0);
-}
-#endif
 static int privileges_req(request_rec *r)
 {
     /* secure mode: fork a process to handle the request */
@@ -248,8 +236,6 @@ static int privileges_req(request_rec *r)
             return DONE;
         case APR_INCHILD:
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "In child!");
-//            apr_pool_cleanup_register(r->pool, r, privileges_end_proc,
-//                                      apr_pool_cleanup_null);
             break;  /* now we'll drop privileges in the child */
         default:
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -400,7 +386,6 @@ static int privileges_postconf(apr_pool_t *pconf, apr_pool_t *plog,
 static int privileges_init(apr_pool_t *pconf, apr_pool_t *plog,
                            apr_pool_t *ptemp)
 {
-#if 0
     /* refuse to work if the MPM is threaded */
     int threaded;
     int rv = ap_mpm_query(AP_MPMQ_IS_THREADED, &threaded);
@@ -415,7 +400,6 @@ static int privileges_init(apr_pool_t *pconf, apr_pool_t *plog,
                       "mod_privileges is not compatible with a threaded MPM.");
         return !OK;
     }
-#endif
     return OK;
 }
 static void privileges_hooks(apr_pool_t *pool)
