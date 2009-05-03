@@ -107,7 +107,7 @@
         the "proxy: error reading status line from remote server" error message
         caused by the race condition that the backend server closed the
         pooled connection after the connection check by the proxy and
-        before data send by the proxy reached the backend. It has to be
+        before data sent by the proxy reached the backend. It has to be
         kept in mind that setting this variable downgrades performance,
         especially with HTTP/1.0 clients.
         </dd>
