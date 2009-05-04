@@ -1798,8 +1798,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         if ((err = ap_proxy_add_worker(&worker, cmd->pool, conf, name)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     } else {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
-                         "worker %s already used by another worker", worker->name);
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+                     "worker %s already used by another worker", worker->name);
     }
     PROXY_COPY_CONF_PARAMS(worker, conf);
 
