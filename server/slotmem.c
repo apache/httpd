@@ -61,18 +61,6 @@ AP_DECLARE(apr_status_t) ap_slotmem_mem(ap_slotmem_storage_method *sm,
     return (sm->slotmem_mem(s, item_id, mem));
 }
 
-AP_DECLARE(apr_status_t) ap_slotmem_lock(ap_slotmem_storage_method *sm,
-                                         ap_slotmem_t *s)
-{
-    return (sm->slotmem_lock(s));
-}
-
-AP_DECLARE(apr_status_t) ap_slotmem_unlock(ap_slotmem_storage_method *sm,
-                                           ap_slotmem_t *s)
-{
-    return (sm->slotmem_unlock(s));
-}
-
 AP_DECLARE(apr_status_t) ap_slotmem_get(ap_slotmem_storage_method *sm,
                                         ap_slotmem_t *s, unsigned int item_id,
                                         unsigned char *dest, apr_size_t dest_len)
