@@ -20,6 +20,25 @@
 
 #include  "ap_slotmem.h"
 
+#include "httpd.h"
+#ifdef AP_NEED_SET_MUTEX_PERMS
+#include "unixd.h"
+#endif
+
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>         /* for getpid() */
+#endif
+
+#if HAVE_SYS_SEM_H
+#include <sys/shm.h>
+#if !defined(SHM_R)
+#define SHM_R 0400
+#endif
+#if !defined(SHM_W)
+#define SHM_W 0200
+#endif
+#endif
+
 struct ap_slotmem_t {
     char                 *name;       /* per segment name */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
@@ -43,6 +62,41 @@ static struct ap_slotmem_t *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
 static apr_global_mutex_t *smutex;
 static const char *mutex_fname;
+
+apr_status_t unixd_set_shm_perms(const char *fname)
+{
+#ifdef AP_NEED_SET_MUTEX_PERMS
+#if APR_USE_SHMEM_SHMGET || APR_USE_SHMEM_SHMGET_ANON
+    struct shmid_ds shmbuf;
+    key_t shmkey;
+    int shmid;
+
+    shmkey = ftok(fname, 1);
+    if (shmkey == (key_t)-1) {
+        return errno;
+    }
+    if ((shmid = shmget(shmkey, 0, SHM_R | SHM_W)) == -1) {
+        return errno;
+    }
+#if MODULE_MAGIC_NUMBER_MAJOR > 20081212
+    shmbuf.shm_perm.uid  = ap_unixd_config.user_id;
+    shmbuf.shm_perm.gid  = ap_unixd_config.group_id;
+#else
+    shmbuf.shm_perm.uid  = unixd_config.user_id;
+    shmbuf.shm_perm.gid  = unixd_config.group_id;
+#endif
+    shmbuf.shm_perm.mode = 0600;
+    if (shmctl(shmid, IPC_SET, &shmbuf) == -1) {
+        return errno;
+    }
+    return APR_SUCCESS;
+#else
+    return APR_ENOTIMPL;
+#endif
+#else
+    return APR_ENOTIMPL;
+#endif
+}
 
 /*
  * Persiste the slotmem in a file
@@ -224,6 +278,13 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
         }
         if (rv != APR_SUCCESS) {
             return rv;
+        }
+        if (name && name[0] != ':') {
+            /* Set permissions to shared memory
+             * so it can be attached by child process
+             * having different user credentials
+             */
+            unixd_set_shm_perms(fname);
         }
         ptr = apr_shm_baseaddr_get(shm);
         desc.item_size = item_size;
