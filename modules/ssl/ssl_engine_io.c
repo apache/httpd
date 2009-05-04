@@ -1059,11 +1059,11 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         return APR_SUCCESS;
     }
 
-    server = mySrvFromConn(c);
+    server = sslconn->server;
     if (sslconn->is_proxy) {
         const char *hostname_note;
 
-        sc = mySrvConfig(sslconn->server);
+        sc = mySrvConfig(server);
         if ((n = SSL_connect(filter_ctx->pssl)) <= 0) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                           "SSL Proxy connect failed");
@@ -1096,7 +1096,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                  apr_table_get(c->notes, "proxy-request-hostname")) != NULL)) {
             const char *hostname;
 
-            hostname = ssl_var_lookup(NULL, c->base_server, c, NULL,
+            hostname = ssl_var_lookup(NULL, server, c, NULL,
                                       "SSL_CLIENT_S_DN_CN");
             apr_table_unset(c->notes, "proxy-request-hostname");
             if (strcasecmp(hostname, hostname_note)) {
