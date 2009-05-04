@@ -126,7 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
  * Correct mod_headers handling of content-type header, trunk version works;
      https://svn.apache.org/viewvc?view=rev&revision=680082
-   +1: wrowe
+   +1: wrowe, rpluem
 
  * mod_ssl: Improve and simplify the implementation of SSLProxyCheckPeerExpire
    by directly using X509_get_notBefore(), X509_get_notAfter() and
