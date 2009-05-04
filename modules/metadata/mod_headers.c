@@ -680,6 +680,9 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
             }
             break;
         case hdr_set:
+            if (!strcasecmp(hdr->header, "Content-Type")) {
+                 ap_set_content_type(r, process_tags(hdr, r));
+            }
             apr_table_setn(headers, hdr->header, process_tags(hdr, r));
             break;
         case hdr_unset:
