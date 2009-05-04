@@ -413,17 +413,6 @@ static apr_status_t slotmem_mem(ap_slotmem_t *slot, unsigned int id, void **mem)
     return APR_SUCCESS;
 }
 
-/* XXX: Those 2 should be removed */
-static apr_status_t slotmem_lock(ap_slotmem_t *slot)
-{
-    return (apr_global_mutex_lock(slot->smutex));
-}
-
-static apr_status_t slotmem_unlock(ap_slotmem_t *slot)
-{
-    return (apr_global_mutex_unlock(slot->smutex));
-}
-
 static apr_status_t slotmem_get(ap_slotmem_t *slot, unsigned int id, unsigned char *dest, apr_size_t dest_len)
 {
 
