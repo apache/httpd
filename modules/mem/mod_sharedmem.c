@@ -207,7 +207,7 @@ static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, apr_pool_t *pool)
+static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, int type, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
     void *ptr;
@@ -292,7 +292,8 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + sizeof(desc);
         memset(ptr, 0, item_size * item_num);
-        restore_slotmem(ptr, fname, item_size, item_num, pool);
+        if (type & CREPER_SLOTMEM)
+            restore_slotmem(ptr, fname, item_size, item_num, pool);
     }
 
     /* For the chained slotmem stuff */

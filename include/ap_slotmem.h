@@ -50,6 +50,8 @@
 
 #define AP_SLOTMEM_STORAGE "slotmem"
 
+#define CREPER_SLOTMEM 2 /* create a persistent slotmem */
+
 typedef struct ap_slotmem_t ap_slotmem_t;
 
 /**
@@ -81,10 +83,11 @@ struct ap_slotmem_storage_method {
      * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
      * @param item_size size of each item
      * @param item_num number of item to create.
+     * @param type type of slotmem.
      * @param pool is pool used
      * @return APR_SUCCESS if all went well
      */
-    apr_status_t (* slotmem_create)(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, apr_pool_t *pool);
+    apr_status_t (* slotmem_create)(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, int type, apr_pool_t *pool);
     /**
      * attach to an existing slotmem.
      * This would attach to  shared memory, basically.
@@ -163,10 +166,11 @@ AP_DECLARE(apr_status_t) ap_slotmem_do(ap_slotmem_storage_method *sm, ap_slotmem
  * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
  * @param item_size size of each item
  * @param item_num number of item to create.
+ * @param type (persistent/allocatable/etc)
  * @param pool is pool used
  * @return APR_SUCCESS if all went well
  */
-AP_DECLARE(apr_status_t) ap_slotmem_create(ap_slotmem_storage_method *sm, ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, apr_pool_t *pool);
+AP_DECLARE(apr_status_t) ap_slotmem_create(ap_slotmem_storage_method *sm, ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, int type, apr_pool_t *pool);
 
 /**
  * attach to an existing slotmem.
