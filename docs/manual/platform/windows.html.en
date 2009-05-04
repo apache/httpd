@@ -560,11 +560,15 @@
 
     <p>You can also tell Apache to restart. This forces it to reread
     the configuration file. Any operations in progress are allowed to
-    complete without interruption. To restart Apache, use:</p>
+    complete without interruption. To restart Apache, either press
+    Control-Break in the console window you used for starting Apache,
+    or enter</p>
 
     <div class="example"><p><code>
       httpd.exe -k restart
     </code></p></div>
+
+    <p>in any other console window.</p>
 
     <div class="note">Note for people familiar with the Unix version of Apache:
     these commands provide a Windows equivalent to <code>kill -TERM
