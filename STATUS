@@ -128,6 +128,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      https://svn.apache.org/viewvc?view=rev&revision=680082
    +1: wrowe
 
+ * mod_ssl: Improve and simplify the implementation of SSLProxyCheckPeerExpire
+   by directly using X509_get_notBefore(), X509_get_notAfter() and
+   X509_cmp_current_time().
+    Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=769809&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
