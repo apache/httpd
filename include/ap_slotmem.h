@@ -104,20 +104,6 @@ struct ap_slotmem_storage_method {
      */
     apr_status_t (* slotmem_mem)(ap_slotmem_t *s, unsigned int item_id, void**mem);
     /**
-     * lock the memory segment
-     * NOTE: All slots share the same mutex
-     * @param s ap_slotmem_t to use
-     * @return APR_SUCCESS if all went well
-     */
-    apr_status_t (* slotmem_lock)(ap_slotmem_t *s);
-    /**
-     * unlock the memory segment
-     * NOTE: All slots share the same mutex
-     * @param s ap_slotmem_t to use.
-     * @return APR_SUCCESS if all went well
-     */
-    apr_status_t (* slotmem_unlock)(ap_slotmem_t *s);
-    /**
      * retrieve the memory associated with this worker slot.
      * @param s ap_slotmem_t to use.
      * @param item_id item to return for 0 to item_num
@@ -202,22 +188,6 @@ AP_DECLARE(apr_status_t) ap_slotmem_attach(ap_slotmem_storage_method *sm, ap_slo
  * @return APR_SUCCESS if all went well
  */
 AP_DECLARE(apr_status_t) ap_slotmem_mem(ap_slotmem_storage_method *sm, ap_slotmem_t *s, unsigned int item_id, void**mem);
-/**
- * lock the memory segment
- * NOTE: All slots share the same mutex
- * @param sm ap_slotmem_storage_method provider obtained
- * @param s ap_slotmem_t to use
- * @return APR_SUCCESS if all went well
- */
-AP_DECLARE(apr_status_t) ap_slotmem_lock(ap_slotmem_storage_method *sm, ap_slotmem_t *s);
-/**
- * unlock the memory segment
- * NOTE: All slots share the same mutex
- * @param sm ap_slotmem_storage_method provider obtained
- * @param s ap_slotmem_t to use.
- * @return APR_SUCCESS if all went well
- */
-AP_DECLARE(apr_status_t) ap_slotmem_unlock(ap_slotmem_storage_method *sm, ap_slotmem_t *s);
 /**
  * retrieve the memory associated with this worker slot.
  * @param sm ap_slotmem_storage_method provider obtained

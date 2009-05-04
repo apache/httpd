@@ -351,6 +351,7 @@ static apr_status_t slotmem_mem(ap_slotmem_t *slot, unsigned int id, void **mem)
     return APR_SUCCESS;
 }
 
+/* XXX: Those 2 should be removed */
 static apr_status_t slotmem_lock(ap_slotmem_t *slot)
 {
     return (apr_global_mutex_lock(slot->smutex));
@@ -395,8 +396,6 @@ static const ap_slotmem_storage_method storage = {
     &slotmem_create,
     &slotmem_attach,
     &slotmem_mem,
-    &slotmem_lock,
-    &slotmem_unlock,
     &slotmem_get,
     &slotmem_put
 };
