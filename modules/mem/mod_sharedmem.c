@@ -63,7 +63,7 @@ static apr_pool_t *gpool = NULL;
 static apr_global_mutex_t *smutex;
 static const char *mutex_fname;
 
-apr_status_t unixd_set_shm_perms(const char *fname)
+static apr_status_t unixd_set_shm_perms(const char *fname)
 {
 #ifdef AP_NEED_SET_MUTEX_PERMS
 #if APR_USE_SHMEM_SHMGET || APR_USE_SHMEM_SHMGET_ANON
