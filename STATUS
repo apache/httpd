@@ -134,28 +134,32 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
     +1: rpluem, jim
 
-PATCHES/ISSUES THAT ARE STALLED
-
-   * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
+   * mod_ssl:  Add server name indication support (RFC 4366) and better
+     support for name based virtual hosts with SSL. PR 34607
       Trunk version of patches:
+         http://svn.apache.org/viewvc?view=rev&revision=591955
          http://svn.apache.org/viewvc?view=rev&revision=606190
          http://svn.apache.org/viewvc?view=rev&revision=607420
          http://svn.apache.org/viewvc?view=rev&revision=607425
          http://svn.apache.org/viewvc?view=rev&revision=611216
-         http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_kernel.c?r1=611216&r2=630436
+         http://svn.apache.org/viewvc?view=rev&revision=620505
+         http://svn.apache.org/viewvc?view=rev&revision=627699
+         http://svn.apache.org/viewvc?view=rev&revision=630436
          http://svn.apache.org/viewvc?view=rev&revision=662815
-
+         http://svn.apache.org/viewvc?view=rev&revision=757373
+         http://svn.apache.org/viewvc?view=rev&revision=757463
+         http://svn.apache.org/viewvc?view=rev&revision=757720
+         http://svn.apache.org/viewvc?view=rev&revision=761181
+         http://svn.apache.org/viewvc?view=rev&revision=768499
+         http://svn.apache.org/viewvc?view=rev&revision=768501
+         http://svn.apache.org/viewvc?view=rev&revision=768596
+         http://svn.apache.org/viewvc?view=rev&revision=770907
+         http://svn.apache.org/viewvc?view=rev&revision=771455
       Backport version for 2.2.x of updated patch:
-         http://people.apache.org/~fuankg/diffs/httpd-2.2.x-sni.diff
-      +1: fuankg
-      +0: like ssl upgrade of 2.2, perhaps this is a good reason to bring
-          httpd-2.4 to completion?  vhost changes could be disruptive to
-          third party module authors.
-      -1: rpluem: jorton found some problems with the trunk version and they
-                  should be fixed / discussed in trunk before we backport.
-          pquerna: Until issues for this feature are fixed in trunk, we can not
-                   backport it.
+         http://people.apache.org/~rpluem/patches/sni_backport_2.2.x.diff
+      +1: rpluem,
 
+PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
     http://www.vuxml.org/freebsd/pkg-pcre.html
