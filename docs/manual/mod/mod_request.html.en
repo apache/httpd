@@ -59,7 +59,7 @@ mod_include.</td></tr>
 
     <p>When this directive has a value greater than zero, request
     handlers that would otherwise discard request bodies will
-    instead set the request body aside for use by filters up to
+    instead let the request body aside for use by filters up to
     the maximum size specified. In the case of the mod_include
     filter, an attempt to <code>POST</code> a request to the static
     shtml file will cause any subrequests to be <code>POST</code>
