@@ -1471,12 +1471,12 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
 
 PROXY_DECLARE(void)
 ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
-                                proxy_worker **worker)
+                                proxy_worker *worker)
 {
     proxy_worker **runtime;
 
     runtime = apr_array_push(balancer->workers);
-    memcpy(runtime, worker, sizeof(proxy_worker *));
+    *runtime = worker
     (*runtime)->id = proxy_lb_workers;
     /* Increase the total runtime count */
     proxy_lb_workers++;

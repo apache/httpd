@@ -1814,7 +1814,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     }
     /* Add the worker to the load balancer */
-    ap_proxy_add_worker_to_balancer(cmd->pool, balancer, &worker);
+    ap_proxy_add_worker_to_balancer(cmd->pool, balancer, worker);
     return NULL;
 }
 
