@@ -103,3 +103,5 @@ mod_lbmethod_bybusyness.so  0x6F830000    0x00010000
 mod_lbmethod_byrequests.so  0x6F820000    0x00010000
 mod_lbmethod_bytraffic.so   0x6F810000    0x00010000
 mod_lbmethod_heartbeat.so   0x6F800000    0x00010000
+mod_heartbeat.so            0x6F7F0000    0x00010000
+mod_heartmonitor.so         0x6F7E0000    0x00010000

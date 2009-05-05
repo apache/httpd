@@ -85,6 +85,27 @@ extern "C" {
 
 typedef struct ap_watchdog_t ap_watchdog_t;
 
+/* Create a set of AP_WD_DECLARE(type), AP_WD_DECLARE_NONSTD(type) and 
+ * AP_WD_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define AP_WD_DECLARE(type)            type
+#define AP_WD_DECLARE_NONSTD(type)     type
+#define AP_WD_DECLARE_DATA
+#elif defined(AP_WD_DECLARE_STATIC)
+#define AP_WD_DECLARE(type)            type __stdcall
+#define AP_WD_DECLARE_NONSTD(type)     type
+#define AP_WD_DECLARE_DATA
+#elif defined(AP_WD_DECLARE_EXPORT)
+#define AP_WD_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define AP_WD_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define AP_WD_DECLARE_DATA             __declspec(dllexport)
+#else
+#define AP_WD_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define AP_WD_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define AP_WD_DECLARE_DATA             __declspec(dllimport)
+#endif
+
 /**
  * Callback function used for watchdog.
  * @param state Watchdog state function. See AP_WATCHODG_STATE_ .
@@ -108,7 +129,7 @@ typedef apr_status_t ap_watchdog_callback_fn_t(int state, void *data,
  *         and function will create a new watchdog instance.
  *         Note that default client process watchdog works in singleton mode.
  */
-AP_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
+AP_WD_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
                                                   const char *name,
                                                   int parent,
                                                   int singleton,
@@ -122,7 +143,7 @@ AP_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
  * @param data The data to pass to the callback function.
  * @return APR_SUCCESS if all went well. APR_EEXIST if already registered.
  */
-AP_DECLARE(apr_status_t) ap_watchdog_register_callback(ap_watchdog_t *watchdog,
+AP_WD_DECLARE(apr_status_t) ap_watchdog_register_callback(ap_watchdog_t *watchdog,
                             apr_interval_time_t interval,
                             const void *data,
                             ap_watchdog_callback_fn_t *callback);
@@ -135,7 +156,7 @@ AP_DECLARE(apr_status_t) ap_watchdog_register_callback(ap_watchdog_t *watchdog,
  * @param data The data to pass to the callback function.
  * @return APR_SUCCESS if all went well. APR_EOF if callback was not found.
  */
-AP_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
+AP_WD_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
                             apr_interval_time_t interval,
                             const void *data,
                             ap_watchdog_callback_fn_t *callback);
@@ -152,7 +173,7 @@ AP_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
  *         should ensure their post_config hook is called after watchdog
  *         post_config.
  */
-APR_DECLARE_EXTERNAL_HOOK(ap, AP, int, watchdog_need, (server_rec *s,
+APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_need, (server_rec *s,
                           const char *name,
                           int parent, int singleton))
 
@@ -163,7 +184,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP, int, watchdog_need, (server_rec *s,
  * @param name Watchdog name.
  * @param pool The pool used to create the watchdog.
  */
-APR_DECLARE_EXTERNAL_HOOK(ap, AP, int, watchdog_init, (
+APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_init, (
                           server_rec *s,
                           const char *name,
                           apr_pool_t *pool))
@@ -174,7 +195,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP, int, watchdog_init, (
  * @param name Watchdog name.
  * @param pool The pool used to create the watchdog.
  */
-APR_DECLARE_EXTERNAL_HOOK(ap, AP, int, watchdog_exit, (
+APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_exit, (
                           server_rec *s,
                           const char *name,
                           apr_pool_t *pool))
@@ -185,7 +206,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP, int, watchdog_exit, (
  * @param name Watchdog name.
  * @param pool Temporary pool destroyed after the call.
  */
-APR_DECLARE_EXTERNAL_HOOK(ap, AP, int, watchdog_step, (
+APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_step, (
                           server_rec *s,
                           const char *name,
                           apr_pool_t *pool))

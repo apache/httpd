@@ -336,11 +336,13 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak  CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_socache_dbm.mak CFG="mod_socache_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-!IFDEF ALL
-	 $(MAKE) $(MAKEOPT) -f mod_socache_dc.mak  CFG="mod_socache_dc - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-!ENDIF
+#	 $(MAKE) $(MAKEOPT) -f mod_socache_dc.mak  CFG="mod_socache_dc - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_socache_memcache.mak CFG="mod_socache_memcache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_socache_shmcb.mak CFG="mod_socache_shmcb - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\cluster
+	 $(MAKE) $(MAKEOPT) -f mod_heartbeat.mak   CFG="mod_heartbeat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_heartmonitor.mak CFG="mod_heartmonitor - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\dav\main
 	 $(MAKE) $(MAKEOPT) -f mod_dav.mak         CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -414,6 +416,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_speling.mak     CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_userdir.mak     CFG="mod_userdir - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_vhost_alias.mak CFG="mod_vhost_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_watchdog.mak    CFG="mod_watchdog - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\metadata
 	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak   CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -580,9 +583,11 @@ _copybin:
 	copy modules\cache\$(LONG)\mod_file_cache.$(src_so) 	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_socache_dbm.$(src_so)	"$(inst_so)" <.y
-	-copy modules\cache\$(LONG)\mod_socache_dc.$(src_so)	"$(inst_so)" <.y
+#	copy modules\cache\$(LONG)\mod_socache_dc.$(src_so)	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_socache_memcache.$(src_so) "$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_socache_shmcb.$(src_so)	"$(inst_so)" <.y
+	copy modules\cluster\$(LONG)\mod_heartbeat.$(src_so)	"$(inst_so)" <.y
+	copy modules\cluster\$(LONG)\mod_heartmonitor.$(src_so)	"$(inst_so)" <.y
 	copy modules\database\$(LONG)\mod_dbd.$(src_so)		"$(inst_so)" <.y
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.$(src_so) 	"$(inst_so)" <.y
 	copy modules\dav\lock\$(LONG)\mod_dav_lock.$(src_so) 	"$(inst_so)" <.y
@@ -638,6 +643,7 @@ _copybin:
 	copy modules\mappers\$(LONG)\mod_speling.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_userdir.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_vhost_alias.$(src_so) 	"$(inst_so)" <.y
+	copy modules\mappers\$(LONG)\mod_watchdog.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_cern_meta.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_env.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_expires.$(src_so) 	"$(inst_so)" <.y
@@ -667,9 +673,7 @@ _copybin:
 	copy modules\session\$(LONG)\mod_session_cookie.$(src_so) "$(inst_so)" <.y
 	copy modules\session\$(LONG)\mod_session_dbd.$(src_so)    "$(inst_so)" <.y
 !IF EXIST("srclib\openssl")
-!IFDEF ALL
-	-copy modules\session\$(LONG)\mod_session_crypto.$(src_so) "$(inst_so)" <.y
-!ENDIF
+#	copy modules\session\$(LONG)\mod_session_crypto.$(src_so) "$(inst_so)" <.y
 	copy modules\ssl\$(LONG)\mod_ssl.$(src_so) 		"$(inst_so)" <.y
 	-copy srclib\openssl\$(SSLBIN)\libeay32.$(src_dll) 	"$(inst_dll)" <.y
 	-copy srclib\openssl\$(SSLBIN)\ssleay32.$(src_dll) 	"$(inst_dll)" <.y
