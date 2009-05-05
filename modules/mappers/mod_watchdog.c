@@ -300,11 +300,11 @@ static apr_status_t wd_startup(ap_watchdog_t *w, apr_pool_t *p)
     return rc;
 }
 
-AP_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
-                                                  const char *name,
-                                                  int parent,
-                                                  int singleton,
-                                                  apr_pool_t *p)
+AP_WD_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
+                                                     const char *name,
+                                                     int parent,
+                                                     int singleton,
+                                                     apr_pool_t *p)
 {
     ap_watchdog_t *w;
     const char *pver = parent ? AP_WATCHODG_PVERSION : AP_WATCHODG_CVERSION;
@@ -330,10 +330,10 @@ AP_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
                                 pver, *watchdog);
 }
 
-AP_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
-                            apr_interval_time_t interval,
-                            const void *data,
-                            ap_watchdog_callback_fn_t *callback)
+AP_WD_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
+                                apr_interval_time_t interval,
+                                const void *data,
+                                ap_watchdog_callback_fn_t *callback)
 {
     watchdog_list_t *c = w->callbacks;
     apr_status_t rv = APR_EOF;
@@ -355,10 +355,10 @@ AP_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
     return rv;
 }
 
-AP_DECLARE(apr_status_t) ap_watchdog_register_callback(ap_watchdog_t *w,
-                            apr_interval_time_t interval,
-                            const void *data,
-                            ap_watchdog_callback_fn_t *callback)
+AP_WD_DECLARE(apr_status_t) ap_watchdog_register_callback(ap_watchdog_t *w,
+                                apr_interval_time_t interval,
+                                const void *data,
+                                ap_watchdog_callback_fn_t *callback)
 {
     watchdog_list_t *c = w->callbacks;
 
@@ -726,7 +726,7 @@ static void wd_register_hooks(apr_pool_t *p)
 /* the static hooks into our module from the other parts of the server.     */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
-module AP_MODULE_DECLARE_DATA watchdog_module = {
+AP_MODULE_DECLARE_DATA module watchdog_module = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure    */
     NULL,                       /* merge per-directory config structures    */
@@ -748,22 +748,22 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(watchdog_step)
 )
 
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap, AP, int, watchdog_need,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(ap, AP_WD, int, watchdog_need,
                                       (server_rec *s, const char *name,
                                        int parent, int singleton),
                                       (s, name, parent, singleton),
                                       DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap, AP, int, watchdog_init,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap, AP_WD, int, watchdog_init,
                                     (server_rec *s, const char *name,
                                      apr_pool_t *pool),
                                     (s, name, pool),
                                     OK, DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap, AP, int, watchdog_exit,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap, AP_WD, int, watchdog_exit,
                                     (server_rec *s, const char *name,
                                      apr_pool_t *pool),
                                     (s, name, pool),
                                     OK, DECLINED)
-APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap, AP, int, watchdog_step,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(ap, AP_WD, int, watchdog_step,
                                     (server_rec *s, const char *name,
                                      apr_pool_t *pool),
                                     (s, name, pool),

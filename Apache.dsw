@@ -210,6 +210,12 @@ Package=<4>
     Project_Dep_Name mod_headers
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_heartbeat
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_heartmonitor
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_ident
     End Project Dependency
     Begin Project Dependency
@@ -328,6 +334,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_vhost_alias
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_watchdog
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name ab
@@ -1873,6 +1882,48 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_heartbeat"=.\modules\cluster\mod_heartbeat.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_heartmonitor"=.\modules\cluster\mod_heartmonitor.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_ident"=.\modules\metadata\mod_ident.dsp - Package Owner=<4>
 
 Package=<5>
@@ -2922,6 +2973,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_vhost_alias"=.\modules\mappers\mod_vhost_alias.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_watchdog"=.\modules\mappers\mod_watchdog.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
