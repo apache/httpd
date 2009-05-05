@@ -60,7 +60,7 @@ typedef struct {
     const char *proxy_ips;
     /** The remaining list of untrusted proxied remote ip's */
     const char *proxied_remote;
-    /** The most recetly modified ip and address record */
+    /** The most recently modified ip and address record */
     const char *proxied_ip;
     apr_sockaddr_t proxied_addr;
 } remoteip_conn_t;
@@ -113,6 +113,7 @@ static const char *proxies_header_name_set(cmd_parms *cmd, void *dummy,
 }
 
 /* Would be quite nice if APR exported this */
+/* apr:network_io/unix/sockaddr.c */
 static int looks_like_ip(const char *ipstr)
 {
     if (ap_strchr_c(ipstr, ':')) {
