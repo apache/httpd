@@ -1081,7 +1081,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
         if ((strncasecmp(real, "balancer://", 11) == 0) &&
             (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
             int n, l3 = 0;
-            proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
+            proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
             const char *urlpart = ap_strchr_c(real + 11, '/');
             if (urlpart) {
                 if (!urlpart[1])
@@ -1095,20 +1095,20 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
              * translate url http://example.com/foo/bar/that to /bash/that
              */
             for (n = 0; n < balancer->workers->nelts; n++) {
-                l2 = strlen(worker->name);
+                l2 = strlen((*worker)->name);
                 if (urlpart) {
                     /* urlpart (l3) assuredly starts with its own '/' */
-                    if (worker->name[l2 - 1] == '/')
+                    if ((*worker)->name[l2 - 1] == '/')
                         --l2;
                     if (l1 >= l2 + l3 
-                            && strncasecmp(worker->name, url, l2) == 0
+                            && strncasecmp((*worker)->name, url, l2) == 0
                             && strncmp(urlpart, url + l2, l3) == 0) {
                         u = apr_pstrcat(r->pool, ent[i].fake, &url[l2 + l3],
                                         NULL);
                         return ap_construct_url(r->pool, u, r);
                     }
                 }
-                else if (l1 >= l2 && strncasecmp(worker->name, url, l2) == 0) {
+                else if (l1 >= l2 && strncasecmp((*worker)->name, url, l2) == 0) {
                     u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
                     return ap_construct_url(r->pool, u, r);
                 }
@@ -1303,7 +1303,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
 
     (*balancer)->name = uri;
     (*balancer)->lbmethod = lbmethod;
-    (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker));
+    (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS
     if (apr_thread_mutex_create(&((*balancer)->mutex),
@@ -1471,13 +1471,13 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
 
 PROXY_DECLARE(void)
 ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
-                                proxy_worker *worker)
+                                proxy_worker **worker)
 {
-    proxy_worker *runtime;
+    proxy_worker **runtime;
 
     runtime = apr_array_push(balancer->workers);
-    memcpy(runtime, worker, sizeof(proxy_worker));
-    runtime->id = proxy_lb_workers;
+    memcpy(runtime, worker, sizeof(proxy_worker *));
+    (*runtime)->id = proxy_lb_workers;
     /* Increase the total runtime count */
     proxy_lb_workers++;
 

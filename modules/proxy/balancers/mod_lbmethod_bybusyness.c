@@ -27,7 +27,7 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
 {
 
     int i;
-    proxy_worker *worker;
+    proxy_worker **worker;
     proxy_worker *mycandidate = NULL;
     int cur_lbset = 0;
     int max_lbset = 0;
@@ -46,17 +46,17 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
         checking_standby = checked_standby = 0;
         while (!mycandidate && !checked_standby) {
 
-            worker = (proxy_worker *)balancer->workers->elts;
+            worker = (proxy_worker **)balancer->workers->elts;
             for (i = 0; i < balancer->workers->nelts; i++, worker++) {
                 if  (!checking_standby) {    /* first time through */
-                    if (worker->s->lbset > max_lbset)
-                        max_lbset = worker->s->lbset;
+                    if ((*worker)->s->lbset > max_lbset)
+                        max_lbset = (*worker)->s->lbset;
                 }
 
-                if (worker->s->lbset != cur_lbset)
+                if ((*worker)->s->lbset != cur_lbset)
                     continue;
 
-                if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
+                if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(*worker) : PROXY_WORKER_IS_STANDBY(*worker)) )
                     continue;
 
                 /* If the worker is in error state run
@@ -65,21 +65,21 @@ static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
                  * The worker might still be unusable, but we try
                  * anyway.
                  */
-                if (!PROXY_WORKER_IS_USABLE(worker))
-                    ap_proxy_retry_worker("BALANCER", worker, r->server);
+                if (!PROXY_WORKER_IS_USABLE(*worker))
+                    ap_proxy_retry_worker("BALANCER", *worker, r->server);
 
                 /* Take into calculation only the workers that are
                  * not in error state or not disabled.
                  */
-                if (PROXY_WORKER_IS_USABLE(worker)) {
+                if (PROXY_WORKER_IS_USABLE(*worker)) {
 
-                    worker->s->lbstatus += worker->s->lbfactor;
-                    total_factor += worker->s->lbfactor;
+                    (*worker)->s->lbstatus += (*worker)->s->lbfactor;
+                    total_factor += (*worker)->s->lbfactor;
                     
                     if (!mycandidate
-                        || worker->s->busy < mycandidate->s->busy
-                        || (worker->s->busy == mycandidate->s->busy && worker->s->lbstatus > mycandidate->s->lbstatus))
-                        mycandidate = worker;
+                        || (*worker)->s->busy < mycandidate->s->busy
+                        || ((*worker)->s->busy == mycandidate->s->busy && (*worker)->s->lbstatus > mycandidate->s->lbstatus))
+                        mycandidate = *worker;
 
                 }
 
