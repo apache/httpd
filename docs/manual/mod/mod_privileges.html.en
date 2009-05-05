@@ -59,6 +59,7 @@ separation is an issue.</p>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dtraceprivileges">DTracePrivileges</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#privilegesmode">PrivilegesMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#vhostcgimode">VHostCGIMode</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#vhostcgiprivs">VHostCGIPrivs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#vhostgroup">VHostGroup</a></li>
@@ -73,89 +74,60 @@ separation is an issue.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="security" id="security">Security Considerations</a></h2>
-<p>There are three principal security concerns with mod_privileges:</p>
+
+<p><code class="module"><a href="../mod/mod_privileges.html">mod_privileges</a></code> introduces new security concerns
+in situations where <strong>untrusted code</strong> may be run
+<strong>within the webserver process</strong>.  This applies to
+untrusted modules, and scripts running under modules such as
+mod_php or mod_perl.  Scripts running externally (e.g. as CGI
+or in an appserver behind mod_proxy or mod_jk) are NOT affected.</p>
+
+<p>The basic security concerns with mod_privileges are:</p>
 <ul><li>Running as a system user introduces the same security issues
     as mod_suexec, and near-equivalents such as cgiwrap and suphp.</li>
 <li>A privileges-aware malicious user extension (module or script)
     could escalate its privileges to anything available to the
-    httpd process in any virtual host.</li>
+    httpd process in any virtual host.  This introduces new risks
+    if (and only if) mod_privileges is compiled with the
+    <var>BIG_SECURITY_HOLE</var> option.</li>
 <li>A privileges-aware malicious user extension (module or script)
-    could escalate privileges to set its user ID to another
-    system user (and/or group).</li>
+    could escalate privileges to set its user ID to another system
+    user (and/or group).</li>
 </ul>
 
-<p>The first is amply discussed in the suexec page and elsewhere, and
-doesn't need repeating here.  The second and third boil down to one
-principle: ensure no untrusted privileges-aware code can be loaded.
-</p>
-
-<p>There are several ways privileges-aware code could be loaded into Apache:</p>
-<ul>
-<li>within the base system (e.g. mod_privileges itself if statically linked).</li>
-<li>Loaded at startup using a LoadModule or LoadFile directive.</li>
-<li>Loaded at startup indirectly by an application module such as mod_php.</li>
-<li>Loaded at runtime by an application module or script.</li>
-</ul>
-
-<p>What gets loaded at startup is under the control of the sysop, and
-relatively easy to deal with.  A tool will be provided to audit your
-installation.  That leaves code loaded in the course of processing a
-request as the threat.  There is unfortunately no generic way apache
-can control what a script running under an application module can load,
-so you should use the security provided by your scripting module
-and language.</p>
-
-<h3>Security with mod_php</h3>
-
-<p>There is no known PHP extension supporting Solaris privileges, so it
-is unlikely that a script could escalate privileges unless it can
-load external (non-PHP) privileges-aware code.  However, you should
-nevertheless audit your mod_php installation.</p>
-
-<p>To prevent scripts loading privileges-aware code, PHP's dl() function
-should be disabled.  This is automatic in safe mode.</p>
-
-
-
-<h3>Security with mod_perl</h3>
-
-<p>Perl has an extension Sun::Solaris::Privileges that exposes the privileges
-API to scripts.  You should ensure this extension is NOT installed if you
-have untrusted users.</p>
-
-<p>You will also need to ensure that your users cannot load shared objects
-(including PerlXS) from their own user directories, or that if this is
-enabled, the entire user-space must be carefully audited.</p>
-
-
-<h3>Security with mod_python</h3>
-
-<p>There is no known Python extension supporting Solaris privileges, so it
-is unlikely that a script could escalate privileges unless it can
-load external (non-Python) privileges-aware code.  However, you should
-nevertheless audit your mod_python installation.</p>
-
-<p>*** What are the issues of Python loading a shared object?</p>
-
-
-<h3>Security with mod_ruby</h3>
-
-<p>There is no known Ruby extension supporting Solaris privileges, so it
-is unlikely that a script could escalate privileges unless it can
-load external (non-Ruby) privileges-aware code.  However, you should
-nevertheless audit your mod_ruby installation.</p>
-
-<p>*** What are the issues of Ruby loading a shared object?</p>
-
-
-<h3>Security with Lua/mod_wombat</h3>
-
-<p>???</p>
-
-<h3>Security with scripts</h3>
-<p>The security issues of mod_privileges do not affect scripts such as
-traditional CGI, which run in a separate process.  That includes
-PHP, Perl, Python, Ruby, etc, run out-of-process.</p>
+<p>The <code class="directive">PrivilegesMode</code> directive allows you to
+select either <var>FAST</var> or <var>SECURE</var> mode.  You can
+mix modes, using <var>FAST</var> mode for trusted users and
+fully-audited code paths, while imposing SECURE mode where an
+untrusted user has scope to introduce code.</p>
+<p>Before describing the modes, we should also introduce the target
+use cases: Benign vs Hostile.  In a benign situation, you want to
+separate users for their convenience, and protect them and the server
+against the risks posed by honest mistakes, but you trust your users
+are not deliberately subverting system security.  In a hostile
+situation - e.g. commercial hosting - you may have users deliberately
+attacking the system or each other.</p>
+<dl>
+<dt>FAST mode</dt>
+<dd>In <var>FAST</var> mode, requests are run in-process with the
+selected uid/gid and privileges, so the overhead is negligible.
+This is suitable for benign situations, but is not secure against an
+attacker escalating privileges with an in-process module or script.</dd>
+<dt>SECURE mode</dt>
+<dd>A request in <var>SECURE</var> mode forks a subprocess, which
+then drops privileges.  This is a very similar case to running CGI
+with suexec, but for the entire request cycle, and with the benefit
+of fine-grained control of privileges.</dd>
+</dl>
+<p>You can select different <code class="directive">PrivilegesMode</code>s for
+each virtual host, and even in a directory context within a virtual
+host.  <var>FAST</var> mode is appropriate where the user(s) are
+trusted and/or have no privilege to load in-process code.
+<var>SECURE</var> mode is appropriate to cases where untrusted code
+might be run in-process.  However, even in <var>SECURE</var> mode,
+there is no protection against a malicious user who is able to
+introduce privileges-aware code running <em>before the start of the
+request-processing cycle.</em></p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -176,6 +148,47 @@ non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a
     Note that <var>DTracePrivileges On</var> will not in itself
     activate DTrace, but <var>DTracePrivileges Off</var> will prevent
     it working.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="PrivilegesMode" id="PrivilegesMode">PrivilegesMode</a> <a name="privilegesmode" id="privilegesmode">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Trade off processing speed and efficiency vs security against
+malicious privileges-aware code.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>PrivilegesMode FAST|SECURE|SELECTIVE</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_privileges</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available on Solaris 10 and OpenSolaris with
+non-threaded MPMs (<code class="module"><a href="../mod/prefork.html">prefork</a></code> or custom MPM).</td></tr>
+</table><p>This directive trades off performance vs security against
+malicious, privileges-aware code.  In <var>SECURE</var> mode, each request
+runs in a secure subprocess, incurring a substantial performance penalty.
+In <var>FAST</var> mode, the server is not protected against escalation
+of privileges as discussed above.</p>
+<p>This directive differs slightly between a <code>&lt;Directory&gt;</code>
+	context (including equivalents such as Location/Files/If) and a
+	top-level or <code>&lt;VirtualHost&gt;</code>.</p>
+<p>At top-level, it sets a default that will be inherited by virtualhosts.
+	In a virtual host, FAST or SECURE mode acts on the entire
+	HTTP request, and any settings in a <code>&lt;Directory&gt;</code>
+	context will be <strong>ignored</strong>.  A third pseudo-mode
+	SELECTIVE defers the choice of FAST vs SECURE to directives in a
+	<code>&lt;Directory&gt;</code> context.</p>
+<p>In a <code>&lt;Directory&gt;</code> context, it is applicable only
+	where SELECTIVE mode was set for the VirtualHost.  Only
+	FAST or SECURE can be set in this context (SELECTIVE would be
+meaningless).</p>
+<div class="warning"><h3>Warning</h3>
+	Where SELECTIVE mode is selected for a virtual host, the activation
+	of privileges must be deferred until <em>after</em> the mapping
+	phase of request processing has determined what
+	<code>&lt;Directory&gt;</code> context applies to the request.
+	This might give an attacker opportunities to introduce
+	code through a <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+	running at top-level or <code>&lt;VirtualHost&gt;</code> context
+	<em>before</em> privileges have been dropped and userid/gid set.
+</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

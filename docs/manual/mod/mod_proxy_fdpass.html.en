@@ -46,7 +46,7 @@
     response body.</p>
 
     <p>At this time the only data passed to the external process is the client 
-    socket. To recieve a client socket, call recvfrom with the an allocated 
+    socket. To receive a client socket, call recvfrom with an allocated 
     <a href="http://www.kernel.org/doc/man-pages/online/pages/man3/cmsg.3.html"><code>struct cmsghdr</code></a>. Future versions of this module may include
     more data after the client socket, but this is not implemented at this time.
     </p>
