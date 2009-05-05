@@ -1591,13 +1591,6 @@ static const char *
 
     psf->req = flag;
     psf->req_set = 1;
-
-    if (flag && !psf->forward) {
-        psf->forward = ap_proxy_create_worker(parms->pool);
-        psf->forward->name     = "proxy:forward";
-        psf->forward->hostname = "*";
-        psf->forward->scheme   = "*";
-    }
     return NULL;
 }
 
@@ -1821,7 +1814,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
     }
     /* Add the worker to the load balancer */
-    ap_proxy_add_worker_to_balancer(cmd->pool, balancer, worker);
+    ap_proxy_add_worker_to_balancer(cmd->pool, balancer, &worker);
     return NULL;
 }
 
@@ -2203,7 +2196,7 @@ static int proxy_status_hook(request_rec *r, int flags)
     proxy_server_conf *conf = (proxy_server_conf *)
         ap_get_module_config(sconf, &proxy_module);
     proxy_balancer *balancer = NULL;
-    proxy_worker *worker = NULL;
+    proxy_worker **worker = NULL;
 
     if (flags & AP_STATUS_SHORT || conf->balancers->nelts == 0 ||
         conf->proxy_status == status_off)
@@ -2239,27 +2232,27 @@ static int proxy_status_hook(request_rec *r, int flags)
                  "<th>F</th><th>Set</th><th>Acc</th><th>Wr</th><th>Rd</th>"
                  "</tr>\n", r);
 
-        worker = (proxy_worker *)balancer->workers->elts;
+        worker = (proxy_worker **)balancer->workers->elts;
         for (n = 0; n < balancer->workers->nelts; n++) {
             char fbuf[50];
-            ap_rvputs(r, "<tr>\n<td>", worker->scheme, "</td>", NULL);
-            ap_rvputs(r, "<td>", worker->hostname, "</td><td>", NULL);
-            if (worker->s->status & PROXY_WORKER_DISABLED)
+            ap_rvputs(r, "<tr>\n<td>", (*worker)->scheme, "</td>", NULL);
+            ap_rvputs(r, "<td>", (*worker)->hostname, "</td><td>", NULL);
+            if ((*worker)->s->status & PROXY_WORKER_DISABLED)
                 ap_rputs("Dis", r);
-            else if (worker->s->status & PROXY_WORKER_IN_ERROR)
+            else if ((*worker)->s->status & PROXY_WORKER_IN_ERROR)
                 ap_rputs("Err", r);
-            else if (worker->s->status & PROXY_WORKER_INITIALIZED)
+            else if ((*worker)->s->status & PROXY_WORKER_INITIALIZED)
                 ap_rputs("Ok", r);
             else
                 ap_rputs("-", r);
-            ap_rvputs(r, "</td><td>", worker->s->route, NULL);
-            ap_rvputs(r, "</td><td>", worker->s->redirect, NULL);
-            ap_rprintf(r, "</td><td>%d</td>", worker->s->lbfactor);
-            ap_rprintf(r, "<td>%d</td>", worker->s->lbset);
-            ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>", worker->s->elected);
-            ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
+            ap_rvputs(r, "</td><td>", (*worker)->s->route, NULL);
+            ap_rvputs(r, "</td><td>", (*worker)->s->redirect, NULL);
+            ap_rprintf(r, "</td><td>%d</td>", (*worker)->s->lbfactor);
+            ap_rprintf(r, "<td>%d</td>", (*worker)->s->lbset);
+            ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>", (*worker)->s->elected);
+            ap_rputs(apr_strfsize((*worker)->s->transferred, fbuf), r);
             ap_rputs("</td><td>", r);
-            ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
+            ap_rputs(apr_strfsize((*worker)->s->read, fbuf), r);
             ap_rputs("</td>\n", r);
 
             /* TODO: Add the rest of dynamic worker data */
@@ -2305,8 +2298,12 @@ static void child_init(apr_pool_t *p, server_rec *s)
             ap_proxy_initialize_worker(worker, s);
             worker++;
         }
-        /* Initialize forward worker if defined */
-        if (conf->forward) {
+        /* Create and initialize forward worker if defined */
+        if (conf->req_set && conf->req) {
+            conf->forward = ap_proxy_create_worker(p);
+            conf->forward->name     = "proxy:forward";
+            conf->forward->hostname = "*";
+            conf->forward->scheme   = "*";
             ap_proxy_initialize_worker_share(conf, conf->forward, s);
             ap_proxy_initialize_worker(conf->forward, s);
             /* Do not disable worker in case of errors */
@@ -2354,7 +2351,7 @@ static void register_hooks(apr_pool_t *p)
      * make sure that we are called after the mpm
      * initializes.
      */
-    static const char *const aszPred[] = { "mpm_winnt.c", NULL};
+    static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy_balancer.c", NULL};
 
     APR_REGISTER_OPTIONAL_FN(ap_proxy_lb_workers);
     APR_REGISTER_OPTIONAL_FN(ap_proxy_lb_worker_size);

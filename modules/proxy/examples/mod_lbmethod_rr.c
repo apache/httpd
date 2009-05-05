@@ -43,7 +43,7 @@ static proxy_worker *find_best_roundrobin(proxy_balancer *balancer,
                                          request_rec *r)
 {
     int i;
-    proxy_worker *worker;
+    proxy_worker **worker;
     proxy_worker *mycandidate = NULL;
     int checking_standby;
     int checked_standby;
@@ -70,17 +70,17 @@ static proxy_worker *find_best_roundrobin(proxy_balancer *balancer,
 
     checking_standby = checked_standby = 0;
     while (!mycandidate && !checked_standby) {
-        worker = (proxy_worker *)balancer->workers->elts;
+        worker = (proxy_worker **)balancer->workers->elts;
 
         for (i = 0; i < balancer->workers->nelts; i++, worker++) {
             if (i < ctx->index)
                 continue;
-            if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
+            if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(*worker) : PROXY_WORKER_IS_STANDBY(*worker)) )
                 continue;
-            if (!PROXY_WORKER_IS_USABLE(worker))
-                ap_proxy_retry_worker("BALANCER", worker, r->server);
-            if (PROXY_WORKER_IS_USABLE(worker)) {
-                mycandidate = worker;
+            if (!PROXY_WORKER_IS_USABLE(*worker))
+                ap_proxy_retry_worker("BALANCER", *worker, r->server);
+            if (PROXY_WORKER_IS_USABLE(*worker)) {
+                mycandidate = *worker;
                 break;
             }
         }

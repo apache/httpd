@@ -82,20 +82,20 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
                                  proxy_balancer *balancer)
 {
     int i;
-    proxy_worker *workers;
+    proxy_worker **workers;
 
-    workers = (proxy_worker *)balancer->workers->elts;
+    workers = (proxy_worker **)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         int worker_is_initialized;
-        worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(workers);
+        worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(*workers);
         if (!worker_is_initialized) {
             proxy_worker_stat *slot;
             /*
              * If the worker is not initialized check whether its scoreboard
              * slot is already initialized.
              */
-            slot = (proxy_worker_stat *) ap_get_scoreboard_lb(workers->id);
+            slot = (proxy_worker_stat *) ap_get_scoreboard_lb((*workers)->id);
             if (slot) {
                 worker_is_initialized = slot->status & PROXY_WORKER_INITIALIZED;
             }
@@ -103,13 +103,13 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
                 worker_is_initialized = 0;
             }
         }
-        ap_proxy_initialize_worker_share(conf, workers, s);
-        ap_proxy_initialize_worker(workers, s);
+        ap_proxy_initialize_worker_share(conf, *workers, s);
+        ap_proxy_initialize_worker(*workers, s);
         if (!worker_is_initialized) {
             /* Set to the original configuration */
-            workers->s->lbstatus = workers->s->lbfactor =
-            (workers->lbfactor ? workers->lbfactor : 1);
-            workers->s->lbset = workers->lbset;
+            (*workers)->s->lbstatus = (*workers)->s->lbfactor =
+            ((*workers)->lbfactor ? (*workers)->lbfactor : 1);
+            (*workers)->s->lbset = (*workers)->lbset;
         }
         ++workers;
     }
@@ -401,18 +401,18 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
 {
     int i;
     int ok = 0;
-    proxy_worker *worker;
+    proxy_worker **worker;
 
-    worker = (proxy_worker *)balancer->workers->elts;
+    worker = (proxy_worker **)balancer->workers->elts;
     for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-        if (!(worker->s->status & PROXY_WORKER_IN_ERROR)) {
+        if (!((*worker)->s->status & PROXY_WORKER_IN_ERROR)) {
             ok = 1;
             break;
         }
         else {
             /* Try if we can recover */
-            ap_proxy_retry_worker("BALANCER", worker, s);
-            if (!(worker->s->status & PROXY_WORKER_IN_ERROR)) {
+            ap_proxy_retry_worker("BALANCER", *worker, s);
+            if (!((*worker)->s->status & PROXY_WORKER_IN_ERROR)) {
                 ok = 1;
                 break;
             }
@@ -421,13 +421,13 @@ static void force_recovery(proxy_balancer *balancer, server_rec *s)
     if (!ok) {
         /* If all workers are in error state force the recovery.
          */
-        worker = (proxy_worker *)balancer->workers->elts;
+        worker = (proxy_worker **)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-            ++worker->s->retries;
-            worker->s->status &= ~PROXY_WORKER_IN_ERROR;
+            ++(*worker)->s->retries;
+            (*worker)->s->status &= ~PROXY_WORKER_IN_ERROR;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "proxy: BALANCER: (%s). Forcing recovery for worker (%s)",
-                         balancer->name, worker->hostname);
+                         balancer->name, (*worker)->hostname);
         }
     }
 }
@@ -955,7 +955,7 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
      * make sure that we are called after the mpm
      * initializes and after the mod_proxy
      */
-    static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy.c", NULL};
+    static const char *const aszPred[] = { "mpm_winnt.c", NULL};
      /* manager handler */
     ap_hook_post_config(balancer_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);

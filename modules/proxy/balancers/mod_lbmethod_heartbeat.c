@@ -223,7 +223,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
     apr_status_t rv;
     int i;
     apr_uint32_t openslots = 0;
-    proxy_worker *worker;
+    proxy_worker **worker;
     hb_server_t *server;
     apr_array_header_t *up_servers;
     proxy_worker *mycandidate = NULL;
@@ -251,19 +251,19 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
     up_servers = apr_array_make(tpool, apr_hash_count(servers), sizeof(hb_server_t *));
 
     for (i = 0; i < balancer->workers->nelts; i++) {
-        worker = &APR_ARRAY_IDX(balancer->workers, i, proxy_worker);
-        server = apr_hash_get(servers, worker->hostname, APR_HASH_KEY_STRING);
+        worker = &APR_ARRAY_IDX(balancer->workers, i, proxy_worker *);
+        server = apr_hash_get(servers, (*worker)->hostname, APR_HASH_KEY_STRING);
 
         if (!server) {
             continue;
         }
 
-        if (!PROXY_WORKER_IS_USABLE(worker)) {
-            ap_proxy_retry_worker("BALANCER", worker, r->server);
+        if (!PROXY_WORKER_IS_USABLE(*worker)) {
+            ap_proxy_retry_worker("BALANCER", *worker, r->server);
         }
 
-        if (PROXY_WORKER_IS_USABLE(worker)) {
-            server->worker = worker;
+        if (PROXY_WORKER_IS_USABLE(*worker)) {
+            server->worker = *worker;
             if (server->seen < LBM_HEARTBEAT_MAX_LASTSEEN) {
                 openslots += server->ready;
                 APR_ARRAY_PUSH(up_servers, hb_server_t *) = server;
