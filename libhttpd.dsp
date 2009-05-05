@@ -423,10 +423,6 @@ SOURCE=.\modules\mappers\mod_so.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mappers\mod_watchdog.c
-# End Source File
-# Begin Source File
-
 SOURCE=.\modules\arch\win32\mod_win32.c
 # End Source File
 # Begin Source File

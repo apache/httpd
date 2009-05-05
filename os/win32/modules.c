@@ -35,7 +35,6 @@ AP_DECLARE_DATA module *ap_prelinked_modules[] = {
   &mpm_winnt_module,
   &http_module,
   &so_module,
-  &watchdog_module,
   NULL
 };
 
@@ -45,7 +44,6 @@ ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"mpm_winnt_module", &mpm_winnt_module},
   {"http_module", &http_module},
   {"so_module", &so_module},
-  {"watchdog_module", &watchdog_module},
   {NULL, NULL}
 };
 

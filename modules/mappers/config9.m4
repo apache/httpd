@@ -61,30 +61,16 @@ APACHE_MODULE(so, DSO capability, , , $enable_so)
 
 APR_CHECK_APR_DEFINE(APR_HAS_THREADS)
 
-case "x$enable_watchdog" in
-    "xyes")
-        if test $ac_cv_define_APR_HAS_THREADS = "no"; then
-            AC_MSG_ERROR([mod_watchdog has been requested but cannot be built on your system])
-        fi
-        ;;
-    "xshared")
-        AC_MSG_ERROR([mod_watchdog can not be built as a shared DSO])
-        ;;
-    "xno")
-        ;;
-    "x")
-        enable_watchdog=$ac_cv_define_APR_HAS_THREADS
-        ;;
-esac
-
-dnl mod_watchdog can only be built statically.
-if test "x$enable_watchdog" = "xyes"; then
-    enable_watchdog="static"
+if test $ac_cv_define_APR_HAS_THREADS = "no"; then
+    enable_watchdog="no"
+else
+    enable_watchdog="most"
 fi
 
-APACHE_MODULE(watchdog, Watchdog module, , , $enable_watchdog)
-
-dnl ### why save the cache?
-AC_CACHE_SAVE
+APACHE_MODULE(watchdog, Watchdog module, , , $enable_watchdog, [
+    if test $ac_cv_define_APR_HAS_THREADS = "no"; then
+        AC_MSG_ERROR([mod_watchdog requires apr to be built with --enable-threads])
+    fi
+])
 
 APACHE_MODPATH_FINISH
