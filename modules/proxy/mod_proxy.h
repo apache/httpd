@@ -606,7 +606,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
  */
 PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(apr_pool_t *pool,
                                                     proxy_balancer *balancer,
-                                                    proxy_worker **worker);
+                                                    proxy_worker *worker);
 /**
  * Get the most suitable worker and(or) balancer for the request
  * @param worker   worker used for processing request
