@@ -1080,7 +1080,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
          */
         if ((strncasecmp(real, "balancer://", 11) == 0) &&
             (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
-            int n, l3;
+            int n, l3 = 0;
             proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
             const char *urlpart = ap_strchr_c(real + 11, '/');
             if (urlpart) {
