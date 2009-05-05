@@ -601,7 +601,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
  * Add the worker to the balancer
  * @param pool     memory pool for adding worker 
  * @param balancer balancer to add to
- * @param address of balancer worker to add
+ * @param balancer worker to add
  * @note Single worker can be added to multiple balancers.
  */
 PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(apr_pool_t *pool,
