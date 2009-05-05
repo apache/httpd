@@ -42,7 +42,7 @@ AP_DECLARE(apr_status_t) ap_slotmem_do(ap_slotmem_storage_method *sm,
 AP_DECLARE(apr_status_t) ap_slotmem_create(ap_slotmem_storage_method *sm,
                                            ap_slotmem_t **new, const char *name,
                                            apr_size_t item_size, unsigned int item_num,
-                                           int type,
+                                           apslotmem_type type,
                                            apr_pool_t *pool)
 {
     return (sm->slotmem_create(new, name, item_size, item_num, type, pool));

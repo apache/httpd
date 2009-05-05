@@ -63,6 +63,7 @@ static apr_pool_t *gpool = NULL;
 static apr_global_mutex_t *smutex;
 static const char *mutex_fname;
 
+/* apr:shmem/unix/shm.c */
 static apr_status_t unixd_set_shm_perms(const char *fname)
 {
 #ifdef AP_NEED_SET_MUTEX_PERMS
@@ -207,7 +208,7 @@ static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, int type, apr_pool_t *pool)
+static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, apslotmem_type type, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
     void *ptr;
@@ -283,6 +284,8 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
             /* Set permissions to shared memory
              * so it can be attached by child process
              * having different user credentials
+             *
+             * See apr:shmem/unix/shm.c
              */
             unixd_set_shm_perms(fname);
         }
@@ -292,7 +295,7 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + sizeof(desc);
         memset(ptr, 0, item_size * item_num);
-        if (type & CREPER_SLOTMEM)
+        if (type == SLOTMEM_PERSIST)
             restore_slotmem(ptr, fname, item_size, item_num, pool);
     }
 

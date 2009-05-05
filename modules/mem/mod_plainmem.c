@@ -51,7 +51,7 @@ static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, int type, apr_pool_t *pool)
+static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, apslotmem_type type, apr_pool_t *pool)
 {
     ap_slotmem_t *res;
     ap_slotmem_t *next = globallistmem;
