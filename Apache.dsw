@@ -225,6 +225,18 @@ Package=<4>
     Project_Dep_Name mod_isapi
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_lbmethod_bybusyness
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_lbmethod_byrequests
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_lbmethod_bytraffic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_lbmethod_heartbeat
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_log_config
     End Project Dependency
     Begin Project Dependency
@@ -1961,6 +1973,114 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_lbmethod_bybusyness"=.\modules\proxy\balancers\mod_lbmethod_bybusyness.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_balancer
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_lbmethod_byrequests"=.\modules\proxy\balancers\mod_lbmethod_byrequests.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_balancer
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_lbmethod_bytraffic"=.\modules\proxy\balancers\mod_lbmethod_bytraffic.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_balancer
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_lbmethod_heartbeat"=.\modules\proxy\balancers\mod_lbmethod_heartbeat.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_balancer
     End Project Dependency
 }}}
 
