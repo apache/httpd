@@ -2349,6 +2349,11 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     }
     else {
         if (worker->s->retries) {
+            /*
+             * A worker came back. So here is where we need to
+             * either reset all params to initial conditions or
+             * apply some sort of aging
+             */
         }
         worker->s->error_time = 0;
         worker->s->retries = 0;
