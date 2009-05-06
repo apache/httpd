@@ -100,7 +100,7 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
           (head[0] == 0x12 && head[1] == 0x34))) {
 
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                      "ajp_check_msg_header() got bad signature %x%x",
+                      "ajp_check_msg_header() got bad signature %02x%02x",
                       head[0], head[1]);
 
         return AJP_EBAD_SIGNATURE;
@@ -281,7 +281,7 @@ apr_status_t ajp_msg_append_string_ex(ajp_msg_t *msg, const char *value,
     }
 
     len = strlen(value);
-    if ((msg->len + len + 2) > msg->max_size) {
+    if ((msg->len + len + 3) > msg->max_size) {
         return ajp_log_overflow(msg, "ajp_msg_append_cvt_string");
     }
 
@@ -292,7 +292,7 @@ apr_status_t ajp_msg_append_string_ex(ajp_msg_t *msg, const char *value,
     memcpy(msg->buf + msg->len, value, len + 1); /* including \0 */
 
     if (convert)   /* convert from EBCDIC if needed */
-        ajp_xlate_to_ascii((char *)msg->buf + msg->len, len + 1);
+        ap_xlate_proto_to_ascii((char *)msg->buf + msg->len, len + 1);
 
     msg->len += len + 1;
 

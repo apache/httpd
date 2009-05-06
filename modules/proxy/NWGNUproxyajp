@@ -227,7 +227,7 @@ FILES_nlm_Ximports = \
 # Don't link with Winsock if standard sockets are being used
 ifndef USE_STDSOCKETS
 FILES_nlm_Ximports += @ws2nlm.imp \
-	$(EOLIST)
+	       $(EOLIST)
 endif
  
 #   

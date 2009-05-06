@@ -399,6 +399,11 @@ static int stream_reqbody_chunked(apr_pool_t *p,
                                    5, bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
+    if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+        e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+    }
+
     /* Now we have headers-only, or the chunk EOS mark; flush it */
     rv = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
     return rv;
@@ -442,6 +447,11 @@ static int stream_reqbody_cl(apr_pool_t *p,
             /* We can't pass this EOS to the output_filters. */
             e = APR_BRIGADE_LAST(input_brigade);
             apr_bucket_delete(e);
+
+            if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+                e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+            }
         }
 
         /* C-L < bytes streamed?!?
@@ -657,6 +667,9 @@ static int spool_reqbody_cl(apr_pool_t *p,
             e = apr_bucket_file_create(tmpfile, 0, (apr_size_t)fsize, p,
                                        bucket_alloc);
         }
+    }
+    if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+        e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
     /* This is all a single brigade, pass with flush flagged */
@@ -697,8 +710,6 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      */
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
-        force10 = 1;
         /*
          * According to RFC 2616 8.2.3 we are not allowed to forward an
          * Expect: 100-continue to an HTTP/1.0 server. Instead we MUST return
@@ -707,6 +718,8 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         if (r->expecting_100) {
             return HTTP_EXPECTATION_FAILED;
         }
+        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
+        force10 = 1;
         p_conn->close++;
     } else {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
@@ -868,6 +881,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                 }
             }
         }
+
 
         /* Skip Transfer-Encoding and Content-Length for now.
          */
@@ -1092,7 +1106,7 @@ skip_body:
      * otherwise sent Connection: Keep-Alive.
      */
     if (!force10) {
-        if (p_conn->close || p_conn->close_on_recycle) {
+        if (p_conn->close) {
             buf = apr_pstrdup(p, "Connection: close" CRLF);
         }
         else {
@@ -1140,39 +1154,39 @@ skip_body:
     return OK;
 }
 
-static void process_proxy_header(request_rec* r, proxy_dir_conf* c,
-                      const char* key, const char* value)
+static void process_proxy_header(request_rec *r, proxy_dir_conf *c,
+                                 const char *key, const char *value)
 {
-    static const char* date_hdrs[]
-        = { "Date", "Expires", "Last-Modified", NULL } ;
+    static const char *date_hdrs[]
+        = { "Date", "Expires", "Last-Modified", NULL };
     static const struct {
-        const char* name;
+        const char *name;
         ap_proxy_header_reverse_map_fn func;
     } transform_hdrs[] = {
-        { "Location", ap_proxy_location_reverse_map } ,
-        { "Content-Location", ap_proxy_location_reverse_map } ,
-        { "URI", ap_proxy_location_reverse_map } ,
-        { "Destination", ap_proxy_location_reverse_map } ,
-        { "Set-Cookie", ap_proxy_cookie_reverse_map } ,
+        { "Location", ap_proxy_location_reverse_map },
+        { "Content-Location", ap_proxy_location_reverse_map },
+        { "URI", ap_proxy_location_reverse_map },
+        { "Destination", ap_proxy_location_reverse_map },
+        { "Set-Cookie", ap_proxy_cookie_reverse_map },
         { NULL, NULL }
-    } ;
-    int i ;
-    for ( i = 0 ; date_hdrs[i] ; ++i ) {
-        if ( !strcasecmp(date_hdrs[i], key) ) {
+    };
+    int i;
+    for (i = 0; date_hdrs[i]; ++i) {
+        if (!strcasecmp(date_hdrs[i], key)) {
             apr_table_add(r->headers_out, key,
-                ap_proxy_date_canon(r->pool, value)) ;
-            return ;
+                          ap_proxy_date_canon(r->pool, value));
+            return;
         }
     }
-    for ( i = 0 ; transform_hdrs[i].name ; ++i ) {
-        if ( !strcasecmp(transform_hdrs[i].name, key) ) {
+    for (i = 0; transform_hdrs[i].name; ++i) {
+        if (!strcasecmp(transform_hdrs[i].name, key)) {
             apr_table_add(r->headers_out, key,
-                (*transform_hdrs[i].func)(r, c, value)) ;
-            return ;
+                          (*transform_hdrs[i].func)(r, c, value));
+            return;
        }
     }
-    apr_table_add(r->headers_out, key, value) ;
-    return ;
+    apr_table_add(r->headers_out, key, value);
+    return;
 }
 
 /*
@@ -1928,6 +1942,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
 
     backend->is_ssl = is_ssl;
+
     if (is_ssl) {
         ap_proxy_ssl_connection_cleanup(backend, r);
     }
@@ -1937,7 +1952,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
      * is not a request that is coming over an already kept alive connection
      * with the client, do NOT reuse the connection to the backend, because
      * we cannot forward a failure to the client in this case as the client
-     * does NOT expects this in this situation.
+     * does NOT expect this in this situation.
      * Yes, this creates a performance penalty.
      */
     if ((r->proxyreq == PROXYREQ_REVERSE) && (!c->keepalives)
@@ -1966,6 +1981,15 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         if ((status = ap_proxy_connection_create(proxy_function, backend,
                                                  c, r->server)) != OK)
             goto cleanup;
+        /*
+         * On SSL connections set a note on the connection what CN is
+         * requested, such that mod_ssl can check if it is requested to do
+         * so.
+         */
+        if (is_ssl) {
+            apr_table_set(backend->connection->notes, "proxy-request-hostname",
+                          uri->hostname);
+        }
     }
 
     /* Step Four: Send the Request */

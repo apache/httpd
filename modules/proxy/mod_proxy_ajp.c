@@ -180,6 +180,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     int backend_failed = 0;
     apr_off_t bb_len;
     int data_sent = 0;
+    int request_ended = 0;
     int headers_sent = 0;
     int rv = 0;
     apr_int32_t conn_poll_fd;
@@ -197,7 +198,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     else if (maxsize < AJP_MSG_BUFFER_SZ)
        maxsize = AJP_MSG_BUFFER_SZ;
     maxsize = APR_ALIGN(maxsize, 1024);
-       
+
     /*
      * Send the AJP request to the remote server
      */
@@ -307,21 +308,17 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                          "proxy: read zero bytes, expecting"
                          " %" APR_OFF_T_FMT " bytes",
                          content_length);
-            status = ajp_send_data_msg(conn->sock, msg, 0);
-            if (status != APR_SUCCESS) {
-                /* We had a failure: Close connection to backend */
-                conn->close++;
-                ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                            "proxy: send failed to %pI (%s)",
-                            conn->worker->cp->addr,
-                            conn->worker->hostname);
-                return HTTP_INTERNAL_SERVER_ERROR;
-            }
-            else {
-                /* Client send zero bytes with C-L > 0
-                 */
-                return HTTP_BAD_REQUEST;
-            }
+            /*
+             * We can only get here if the client closed the connection
+             * to us without sending the body.
+             * Now the connection is in the wrong state on the backend.
+             * Sending an empty data msg doesn't help either as it does
+             * not move this connection to the correct state on the backend
+             * for later resusage by the next request again.
+             * Close it to clean things up.
+             */
+            conn->close++;
+            return HTTP_BAD_REQUEST;
         }
     }
 
@@ -419,6 +416,15 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 }
                 break;
             case CMD_AJP13_SEND_HEADERS:
+                if (headers_sent) {
+                    /* Do not send anything to the client.
+                     * Backend already send us the headers.
+                     */
+                    backend_failed = 1;
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                 "proxy: Backend sent headers twice.");
+                    break;
+                }
                 /* AJP13_SEND_HEADERS: process them */
                 status = ajp_parse_header(r, conf, conn->data);
                 if (status != APR_SUCCESS) {
@@ -484,6 +490,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 }
                 /* XXX: what about flush here? See mod_jk */
                 data_sent = 1;
+                request_ended = 1;
                 break;
             default:
                 backend_failed = 1;
@@ -540,6 +547,17 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             rv = DONE;
         }
     }
+    else if (!request_ended) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "proxy: Processing of request didn't terminate cleanly");
+        /* We had a failure: Close connection to backend */
+        conn->close++;
+        backend_failed = 1;
+        /* Return DONE to avoid error messages being added to the stream */
+        if (data_sent) {
+            rv = DONE;
+        }
+    }
     else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: got response from %pI (%s)",
@@ -579,6 +597,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         ap_pass_brigade(r->output_filters, output_brigade);
 
     apr_brigade_destroy(output_brigade);
+
+    if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
+        conn->close++;
+    }
 
     return rv;
 }
@@ -627,20 +649,18 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
                  "proxy: AJP: serving URL %s", url);
 
     /* create space for state information */
-    if (!backend) {
-        status = ap_proxy_acquire_connection(scheme, &backend, worker,
-                                             r->server);
-        if (status != OK) {
-            if (backend) {
-                backend->close_on_recycle = 1;
-                ap_proxy_release_connection(scheme, backend, r->server);
-            }
-            return status;
+    status = ap_proxy_acquire_connection(scheme, &backend, worker,
+                                         r->server);
+    if (status != OK) {
+        if (backend) {
+            backend->close = 1;
+            ap_proxy_release_connection(scheme, backend, r->server);
         }
+        return status;
     }
 
     backend->is_ssl = 0;
-    backend->close_on_recycle = 0;
+    backend->close = 0;
 
     retry = 0;
     while (retry < 2) {

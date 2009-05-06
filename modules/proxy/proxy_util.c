@@ -677,6 +677,9 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 
     if (4 == sscanf(host, "%d.%d.%d.%d", &ip_addr[0], &ip_addr[1], &ip_addr[2], &ip_addr[3])) {
         for (addr.s_addr = 0, i = 0; i < 4; ++i) {
+            /* ap_proxy_is_ipaddr() already confirmed that we have
+             * a valid octet in ip_addr[i]
+             */
             addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
         }
 
@@ -1049,6 +1052,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
     /*
      * XXX FIXME: Make sure this handled the ambiguous case of the :<PORT>
      * after the hostname
+     * XXX FIXME: Ensure the /uri component is a case sensitive match
      */
     if (r->proxyreq != PROXYREQ_REVERSE) {
         return url;
@@ -1066,10 +1070,7 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
         proxy_server_conf *sconf = (proxy_server_conf *)
             ap_get_module_config(r->server->module_config, &proxy_module);
         proxy_balancer *balancer;
-        const char *real;
-        real = ent[i].real;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "ppr: real: %s", real);
+        const char *real = ent[i].real;
         /*
          * First check if mapping against a balancer and see
          * if we have such a entity. If so, then we need to
@@ -1077,42 +1078,49 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
          * or may not be the right one... basically, we need
          * to find which member actually handled this request.
          */
-        if ((strncasecmp(real, "balancer:", 9) == 0) &&
+        if ((strncasecmp(real, "balancer://", 11) == 0) &&
             (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
-            int n;
-            proxy_worker *worker;
-            worker = (proxy_worker *)balancer->workers->elts;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "ppr: checking balancer: %s",
-                         balancer->name);
+            int n, l3 = 0;
+            proxy_worker **worker = (proxy_worker **)balancer->workers->elts;
+            const char *urlpart = ap_strchr_c(real + 11, '/');
+            if (urlpart) {
+                if (!urlpart[1])
+                    urlpart = NULL;
+                else
+                    l3 = strlen(urlpart);
+            }
+            /* The balancer comparison is a bit trickier.  Given the context
+             *   BalancerMember balancer://alias http://example.com/foo
+             *   ProxyPassReverse /bash balancer://alias/bar
+             * translate url http://example.com/foo/bar/that to /bash/that
+             */
             for (n = 0; n < balancer->workers->nelts; n++) {
-                if (worker->port) {
-                    u = apr_psprintf(r->pool, "%s://%s:%d/", worker->scheme,
-                                     worker->hostname, worker->port);
+                l2 = strlen((*worker)->name);
+                if (urlpart) {
+                    /* urlpart (l3) assuredly starts with its own '/' */
+                    if ((*worker)->name[l2 - 1] == '/')
+                        --l2;
+                    if (l1 >= l2 + l3 
+                            && strncasecmp((*worker)->name, url, l2) == 0
+                            && strncmp(urlpart, url + l2, l3) == 0) {
+                        u = apr_pstrcat(r->pool, ent[i].fake, &url[l2 + l3],
+                                        NULL);
+                        return ap_construct_url(r->pool, u, r);
+                    }
                 }
-                else {
-                    u = apr_psprintf(r->pool, "%s://%s/", worker->scheme,
-                                     worker->hostname);
-                }
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "ppr: matching member (%s) and URL (%s)",
-                         u, url);
-
-                l2 = strlen(u);
-                if (l1 >= l2 && strncasecmp(u, url, l2) == 0) {
+                else if (l1 >= l2 && strncasecmp((*worker)->name, url, l2) == 0) {
                     u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "ppr: matched member (%s)", u);
                     return ap_construct_url(r->pool, u, r);
                 }
                 worker++;
             }
         }
-
-        l2 = strlen(real);
-        if (l1 >= l2 && strncasecmp(real, url, l2) == 0) {
-            u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
-            return ap_construct_url(r->pool, u, r);
+        else {
+            l2 = strlen(real);
+            if (l1 >= l2 && strncasecmp(real, url, l2) == 0) {
+                u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
+                return ap_construct_url(r->pool, u, r);
+            }
         }
     }
 
@@ -1295,7 +1303,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
 
     (*balancer)->name = uri;
     (*balancer)->lbmethod = lbmethod;
-    (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker));
+    (*balancer)->workers = apr_array_make(p, 5, sizeof(proxy_worker *));
     /* XXX Is this a right place to create mutex */
 #if APR_HAS_THREADS
     if (apr_thread_mutex_create(&((*balancer)->mutex),
@@ -1465,11 +1473,11 @@ PROXY_DECLARE(void)
 ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
                                 proxy_worker *worker)
 {
-    proxy_worker *runtime;
+    proxy_worker **runtime;
 
     runtime = apr_array_push(balancer->workers);
-    memcpy(runtime, worker, sizeof(proxy_worker));
-    runtime->id = proxy_lb_workers;
+    *runtime = worker;
+    (*runtime)->id = proxy_lb_workers;
     /* Increase the total runtime count */
     proxy_lb_workers++;
 
@@ -1529,12 +1537,13 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
                                          request_rec *r,
                                          proxy_server_conf *conf)
 {
-    int access_status;
+    int access_status = OK;
     if (balancer) {
         access_status = proxy_run_post_request(worker, balancer, r, conf);
-    }
-    else {
-        access_status = OK;
+        if (access_status == DECLINED) {
+            access_status = OK; /* no post_request handler available */
+            /* TODO: recycle direct worker */
+        }
     }
 
     return access_status;
@@ -1571,7 +1580,6 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
             continue;
         }
 
-#if !defined(TPF) && !defined(BEOS)
         if (conf->recv_buffer_size > 0 &&
             (rv = apr_socket_opt_set(*newsock, APR_SO_RCVBUF,
                                      conf->recv_buffer_size))) {
@@ -1579,7 +1587,6 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
                          "apr_socket_opt_set(SO_RCVBUF): Failed to set "
                          "ProxyReceiveBufferSize, using default");
         }
-#endif
 
         rv = apr_socket_opt_set(*newsock, APR_TCP_NODELAY, 1);
         if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
@@ -1645,8 +1652,7 @@ static apr_status_t connection_cleanup(void *theconn)
 #endif
 
     /* determine if the connection need to be closed */
-    if (conn->close_on_recycle || conn->close || worker->disablereuse ||
-        !worker->is_address_reusable) {
+    if (conn->close || !worker->is_address_reusable || worker->disablereuse) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
         conn = apr_pcalloc(p, sizeof(proxy_conn_rec));
@@ -1775,11 +1781,7 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                                                      proxy_worker *worker,
                                                      server_rec *s)
 {
-#if PROXY_HAS_SCOREBOARD
-    lb_score *score = NULL;
-#else
-    void *score = NULL;
-#endif
+    proxy_worker_stat *score = NULL;
 
     if (PROXY_WORKER_IS_INITIALIZED(worker)) {
         /* The worker share is already initialized */
@@ -1788,10 +1790,9 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
               worker->name);
         return;
     }
-#if PROXY_HAS_SCOREBOARD
-        /* Get scoreboard slot */
+    /* Get scoreboard slot */
     if (ap_scoreboard_image) {
-        score = ap_get_scoreboard_lb(worker->id);
+        score = (proxy_worker_stat *) ap_get_scoreboard_lb(worker->id);
         if (!score) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                   "proxy: ap_get_scoreboard_lb(%d) failed in child %" APR_PID_T_FMT " for worker %s",
@@ -1803,14 +1804,13 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                   worker->id, getpid(), worker->name);
         }
     }
-#endif
     if (!score) {
-        score = apr_pcalloc(conf->pool, sizeof(proxy_worker_stat));
+        score = (proxy_worker_stat *) apr_pcalloc(conf->pool, sizeof(proxy_worker_stat));
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
               "proxy: initialized plain memory in child %" APR_PID_T_FMT " for worker %s",
               getpid(), worker->name);
     }
-    worker->s = (proxy_worker_stat *)score;
+    worker->s = score;
     /*
      * recheck to see if we've already been here. Possible
      * if proxy is using scoreboard to hold shared stats
@@ -1909,8 +1909,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     else
 #endif
     {
+        void *conn;
 
-        rv = connection_constructor((void **)&(worker->cp->conn), worker, worker->cp->pool);
+        rv = connection_constructor(&conn, worker, worker->cp->pool);
+        worker->cp->conn = conn;
+
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
              "proxy: initialized single connection worker %d in child %" APR_PID_T_FMT " for (%s)",
              worker->id, getpid(), worker->hostname);
@@ -1994,7 +1997,6 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
     (*conn)->worker = worker;
     (*conn)->close  = 0;
-    (*conn)->close_on_recycle = 0;
 #if APR_HAS_THREADS
     (*conn)->inreslist = 0;
 #endif
@@ -2208,11 +2210,13 @@ static int is_socket_connected(apr_socket_t *sock)
     socket_status = apr_socket_recv(sock, test_buffer, &buffer_len);
     /* put back old timeout */
     apr_socket_timeout_set(sock, current_timeout);
-    if (APR_STATUS_IS_EOF(socket_status) || 
-        APR_STATUS_IS_ECONNRESET(socket_status))
+    if (APR_STATUS_IS_EOF(socket_status)
+        || APR_STATUS_IS_ECONNRESET(socket_status)) {
         return 0;
-    else
+    }
+    else {
         return 1;
+    }
 }
 #endif /* USE_ALTERNATE_IS_CONNECTED */
 
@@ -2258,7 +2262,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         }
         conn->connection = NULL;
 
-#if !defined(TPF) && !defined(BEOS)
         if (worker->recv_buffer_size > 0 &&
             (rv = apr_socket_opt_set(newsock, APR_SO_RCVBUF,
                                      worker->recv_buffer_size))) {
@@ -2266,7 +2269,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                          "apr_socket_opt_set(SO_RCVBUF): Failed to set "
                          "ProxyReceiveBufferSize, using default");
         }
-#endif
 
         rv = apr_socket_opt_set(newsock, APR_TCP_NODELAY, 1);
         if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
@@ -2346,6 +2348,13 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             worker->hostname);
     }
     else {
+        if (worker->s->retries) {
+            /*
+             * A worker came back. So here is where we need to
+             * either reset all params to initial conditions or
+             * apply some sort of aging
+             */
+        }
         worker->s->error_time = 0;
         worker->s->retries = 0;
     }
@@ -2408,7 +2417,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                  proxy_function, backend_addr, conn->hostname);
 
     /*
-     * save the timout of the socket because core_pre_connection
+     * save the timeout of the socket because core_pre_connection
      * will set it to base_server->timeout
      * (core TimeOut directive).
      */
@@ -2435,7 +2444,7 @@ int ap_proxy_lb_workers(void)
      * able to reconfigure to.
      */
     if (!lb_workers_limit)
-    lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
+        lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
     return lb_workers_limit;
 }
 

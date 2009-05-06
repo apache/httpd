@@ -243,7 +243,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     ajp_msg_reset(msg);
 
     if (ajp_msg_append_uint8(msg, CMD_AJP13_FORWARD_REQUEST)     ||
-        ajp_msg_append_uint8(msg, method)                        ||
+        ajp_msg_append_uint8(msg, (apr_byte_t) method)           ||
         ajp_msg_append_string(msg, r->protocol)                  ||
         ajp_msg_append_string(msg, uri->path)                    ||
         ajp_msg_append_string(msg, r->connection->remote_ip)     ||
@@ -504,7 +504,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
 
     rc = ajp_msg_get_string(msg, &ptr);
     if (rc == APR_SUCCESS) {
-#if defined(AS400) || defined(_OSD_POSIX) /* EBCDIC platforms */
+#if APR_CHARSET_EBCDIC /* copy only if we have to */
         ptr = apr_pstrdup(r->pool, ptr);
         ap_xlate_proto_from_ascii(ptr, strlen(ptr));
 #endif
@@ -566,9 +566,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
                        "Null header name");
                 return rc;
             }
-#if defined(AS400) || defined(_OSD_POSIX)
             ap_xlate_proto_from_ascii(stringname, strlen(stringname));
-#endif
         }
 
         rc = ajp_msg_get_string(msg, &value);
@@ -593,9 +591,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
           value = ap_proxy_location_reverse_map(r, dconf, value);
         }
 
-#if defined(AS400) || defined(_OSD_POSIX)
         ap_xlate_proto_from_ascii(value, strlen(value));
-#endif
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                "ajp_unmarshal_response: Header[%d] [%s] = [%s]",
                        i, stringname, value);

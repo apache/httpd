@@ -65,19 +65,6 @@
 #define AJP13_SSL_SESSION_INDICATOR     "SSL_SESSION_ID"
 #define AJP13_SSL_KEY_SIZE_INDICATOR    "SSL_CIPHER_USEKEYSIZE"
 
-#if APR_CHARSET_EBCDIC
-
-#define USE_CHARSET_EBCDIC
-#define ajp_xlate_to_ascii(b, l) ap_xlate_proto_to_ascii(b, l)
-#define ajp_xlate_from_ascii(b, l) ap_xlate_proto_from_ascii(b, l)
-
-#else                           /* APR_CHARSET_EBCDIC */
-
-#define ajp_xlate_to_ascii(b, l) 
-#define ajp_xlate_from_ascii(b, l) 
-
-#endif
-
 #ifdef AJP_USE_HTTPD_WRAP
 #include "httpd_wrap.h"
 #else
@@ -91,7 +78,7 @@
 #endif
 
 #include "mod_proxy.h"
-
+#include "util_ebcdic.h"
 
 /** AJP Specific error codes
  */
@@ -131,10 +118,10 @@ struct ajp_msg
     apr_size_t  len;
     /** The current read position */ 
     apr_size_t  pos;
-    /** The size of the buffer */
-    apr_size_t max_size;
     /** Flag indicating the origing of the message */ 
     int         server_side;
+    /** The size of the buffer */
+    apr_size_t max_size;
 };
 
 /**

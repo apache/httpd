@@ -2,8 +2,8 @@
 * PLEASE NOTE: Now that development for  *
 * mod_proxy has been folded back into    *
 * the httpd-2.1 tree, this file has      *
-* been depreciated. Proxy changes should *
-* be noted in httpd-2.1's CHANGES file.  *
+* been deprecated. Proxy changes should *
+* be noted in httpd-2.x's CHANGES file.  *
 * This file exists for historical        *
 * purposes.                              *
 ******************************************

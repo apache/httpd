@@ -236,7 +236,7 @@ typedef struct {
     apr_sockaddr_t *addr;   /* Preparsed remote address info */
     apr_uint32_t flags;     /* Conection flags */
     int          close;     /* Close 'this' connection */
-    int          close_on_recycle; /* Close the connection when returning to pool */
+    int          close_on_recycle; /* No longer used */
     proxy_worker *worker;   /* Connection pool this connection belongs to */
     void         *data;     /* per scheme connection data */
 #if APR_HAS_THREADS
@@ -384,13 +384,16 @@ struct proxy_balancer {
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
     void            *context;   /* general purpose storage */
-    int             scolonsep;  /* true if ';' seps sticky session paths */
+    int             scolonsep;     /* true if ';' seps sticky session paths */
+    const char      *sticky_path;  /* URL sticky session identifier */
 };
 
 struct proxy_balancer_method {
     const char *name;            /* name of the load balancer method*/
     proxy_worker *(*finder)(proxy_balancer *balancer,
                             request_rec *r);
+    apr_status_t (*reset)(proxy_balancer *balancer, request_rec *r);
+    apr_status_t (*age)(proxy_balancer *balancer, request_rec *r);
     void            *context;   /* general purpose storage */
 };
 
@@ -742,13 +745,6 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
  */
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade);
-
-/* Scoreboard */
-#if MODULE_MAGIC_NUMBER_MAJOR > 20020903
-#define PROXY_HAS_SCOREBOARD 1
-#else
-#define PROXY_HAS_SCOREBOARD 0
-#endif
 
 /**
  * Transform buckets from one bucket allocator to another one by creating a
