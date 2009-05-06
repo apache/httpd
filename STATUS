@@ -159,6 +159,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~rpluem/patches/sni_backport_2.2.x.diff
       +1: rpluem,
 
+ * proxy_util: Resolve broken ProxyPassReverse balancer: syntax, Given;
+
+     BalancerMember balancer://alias http://example.com/foo
+     ProxyPassReverse /bash balancer://alias/bar
+   should translate url http://example.com/foo/bar/that to /bash/that
+   Trunk version of patch works:
+       http://svn.apache.org/viewvc?view=rev&revision=771587
+   +1: wrowe
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
