@@ -293,9 +293,6 @@ static const char *set_worker_param(apr_pool_t *p,
         worker->conn_timeout = timeout;
         worker->conn_timeout_set = 1;
     }
-    else if (!strcasecmp(key, "flusher")) {
-        worker->flusher = apr_pstrdup(p, val);
-    }
     else {
         return "unknown Worker parameter";
     }
@@ -1006,7 +1003,6 @@ static int proxy_handler(request_rec *r)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "Running scheme %s handler (attempt %d)",
                      scheme, attempts);
-        AP_PROXY_RUN(r, worker, conf, url, attempts);
         access_status = proxy_run_scheme_handler(r, worker, conf,
                                                  url, NULL, 0);
         if (access_status == OK)
@@ -1057,7 +1053,6 @@ cleanup:
     ap_proxy_post_request(worker, balancer, r, conf);
 
     proxy_run_request_status(&access_status, r);
-    AP_PROXY_RUN_FINISHED(r, attempts, access_status);
 
     return access_status;
 }
