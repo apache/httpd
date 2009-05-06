@@ -70,7 +70,8 @@ static apr_status_t socket_connect_un(apr_socket_t *sock,
     }
 
     do {
-        rv = connect(rawsock, (struct sockaddr*)sa, sizeof(*sa) + strlen(sa->sun_path));
+        rv = connect(rawsock, (struct sockaddr*)sa,
+                               sizeof(*sa) + strlen(sa->sun_path));
     } while (rv == -1 && errno == EINTR);
 
     if ((rv == -1) && (errno == EINPROGRESS || errno == EALREADY)
@@ -196,7 +197,8 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
         int status;
         const char *flush_method = worker->flusher ? worker->flusher : "flush";
 
-        proxy_fdpass_flush *flush = ap_lookup_provider(PROXY_FDPASS_FLUSHER, flush_method, "0");
+        proxy_fdpass_flush *flush = ap_lookup_provider(PROXY_FDPASS_FLUSHER,
+                                                       flush_method, "0");
 
         if (!flush) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -228,7 +230,8 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
          * connected to, so that when the core closes it, it doesn't close 
          * the tcp connection to the client.
          */
-        rv = apr_socket_create(&dummy, APR_INET, SOCK_STREAM, APR_PROTO_TCP, r->connection->pool);
+        rv = apr_socket_create(&dummy, APR_INET, SOCK_STREAM, APR_PROTO_TCP,
+                               r->connection->pool);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "proxy: FD: failed to create dummy socket");
