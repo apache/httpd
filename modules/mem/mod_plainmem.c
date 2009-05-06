@@ -26,7 +26,6 @@ struct ap_slotmem_t {
     apr_size_t           size;        /* size of each memory slot */
     unsigned int         num;         /* number of mem slots */
     apr_pool_t           *gpool;      /* per segment global pool */
-    apr_global_mutex_t   *smutex;     /* mutex */
     struct ap_slotmem_t  *next;       /* location of next allocated segment */
 };
 
