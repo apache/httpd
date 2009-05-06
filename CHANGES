@@ -6,6 +6,9 @@ Changes with Apache 2.3.3
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) Windows: Fix usage message.
+     [Rainer Jung]
+
   *) apachectl: When passing through arguments to httpd in
      non-SysV mode, use the "$@" syntax to preserve arguments.
      [Eric Covener]
