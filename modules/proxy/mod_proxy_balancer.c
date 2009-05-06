@@ -953,7 +953,7 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
     /* Only the mpm_winnt has child init hook handler.
      * make sure that we are called after the mpm
-     * initializes and after the mod_proxy
+     * initializes
      */
     static const char *const aszPred[] = { "mpm_winnt.c", NULL};
      /* manager handler */
