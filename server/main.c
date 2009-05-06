@@ -361,17 +361,18 @@ static void usage(process_rec *process)
 
 #ifdef WIN32
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "       %s [-w] [-k start|restart|stop|shutdown]", pad);
+                 "       %s [-w] [-k start|restart|stop|shutdown] [-n service_name]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-k install|config|uninstall] [-n service_name]",
                  pad);
-#endif
+#else
 /* XXX not all MPMs support signalling the server in general or graceful-stop
  * in particular
  */
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-k start|restart|graceful|graceful-stop|stop]",
                  pad);
+#endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-S]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
@@ -405,7 +406,7 @@ static void usage(process_rec *process)
 #ifdef WIN32
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -n name            : set service name and use its "
-                 "ServerConfigFile");
+                 "ServerConfigFile and ServerRoot");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -k start           : tell Apache to start");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
