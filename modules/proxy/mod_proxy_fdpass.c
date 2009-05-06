@@ -60,12 +60,12 @@ static apr_status_t socket_connect_un(apr_socket_t *sock,
     apr_interval_time_t t;
 
     rv = apr_os_sock_get(&rawsock, sock);
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         return rv;
     }
 
     rv = apr_socket_timeout_get(sock, &t);
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         return rv;
     }
 
@@ -99,7 +99,7 @@ static apr_status_t get_socket_from_path(apr_pool_t *p,
 
     rv = apr_socket_create(&s, AF_UNIX, SOCK_STREAM, 0, p);
 
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         return rv;
     }
 
@@ -107,7 +107,7 @@ static apr_status_t get_socket_from_path(apr_pool_t *p,
     apr_cpystrn(sa.sun_path, path, sizeof(sa.sun_path));
 
     rv = socket_connect_un(s, &sa);
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         return rv;
     }
 
@@ -130,12 +130,12 @@ static apr_status_t send_socket(apr_pool_t *p,
     char b = '\0';
     
     rv = apr_os_sock_get(&rawsock, outbound);
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         return rv;
     }
 
     rv = apr_os_sock_get(&srawsock, s);
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         return rv;
     }
     
@@ -185,7 +185,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
 
     rv = get_socket_from_path(r->pool, url, &sock);
 
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "proxy: FD: Failed to connect to '%s'",
                       url);
@@ -216,7 +216,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
     clientsock = ap_get_module_config(r->connection->conn_config, &core_module);
 
     rv = send_socket(r->pool, sock, clientsock);
-    if (rv) {
+    if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "proxy: FD: send_socket failed:");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -229,7 +229,7 @@ static int proxy_fdpass_handler(request_rec *r, proxy_worker *worker,
          * the tcp connection to the client.
          */
         rv = apr_socket_create(&dummy, APR_INET, SOCK_STREAM, APR_PROTO_TCP, r->connection->pool);
-        if (rv) {
+        if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "proxy: FD: failed to create dummy socket");
             return HTTP_INTERNAL_SERVER_ERROR;
