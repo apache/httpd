@@ -951,6 +951,10 @@ static void child_init(apr_pool_t *p, server_rec *s)
 
 }
 
+extern const proxy_balancer_method proxy_balancer_bytraffic;
+extern const proxy_balancer_method proxy_balancer_byrequests;
+extern const proxy_balancer_method proxy_balancer_bybusyness;
+
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
     /* Only the mpm_winnt has child init hook handler.
@@ -965,6 +969,14 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
     proxy_hook_pre_request(proxy_balancer_pre_request, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_post_request(proxy_balancer_post_request, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_balancer_canon, NULL, NULL, APR_HOOK_FIRST);
+
+    ap_register_provider(p, PROXY_LBMETHOD, "bytraffic", "0",
+                         &proxy_balancer_bytraffic);
+    ap_register_provider(p, PROXY_LBMETHOD, "byrequests", "0",
+                         &proxy_balancer_byrequests);
+    ap_register_provider(p, PROXY_LBMETHOD, "bybusyness", "0",
+                         &proxy_balancer_bybusyness);
+
 }
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module = {

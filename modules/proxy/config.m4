@@ -17,7 +17,7 @@ proxy_connect_objs="mod_proxy_connect.lo"
 proxy_ftp_objs="mod_proxy_ftp.lo"
 proxy_http_objs="mod_proxy_http.lo"
 proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo ajp_utils.lo"
-proxy_balancer_objs="mod_proxy_balancer.lo"
+proxy_balancer_objs="mod_proxy_balancer.lo mod_lbmethod_bybusyness.lo mod_lbmethod_byrequests.lo mod_lbmethod_bytraffic.lo"
 
 case "$host" in
   *os2*)
