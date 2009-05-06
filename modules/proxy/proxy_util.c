@@ -1476,7 +1476,7 @@ ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
     proxy_worker **runtime;
 
     runtime = apr_array_push(balancer->workers);
-    *runtime = worker
+    *runtime = worker;
     (*runtime)->id = proxy_lb_workers;
     /* Increase the total runtime count */
     proxy_lb_workers++;
