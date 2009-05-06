@@ -20,8 +20,6 @@
 #include "apr_version.h"
 #include "apr_hooks.h"
 
-module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module;
-
 static proxy_worker *find_best_bybusyness(proxy_balancer *balancer,
                                 request_rec *r)
 {
@@ -113,27 +111,11 @@ static apr_status_t age(proxy_balancer *balancer, request_rec *r) {
         return APR_SUCCESS;
 }
 
-static const proxy_balancer_method bybusyness =
+const proxy_balancer_method proxy_balancer_bybusyness =
 {
     "bybusyness",
     &find_best_bybusyness,
     &reset,
     &age,
     NULL
-};
-
-
-static void register_hook(apr_pool_t *p)
-{
-    ap_register_provider(p, PROXY_LBMETHOD, "bybusyness", "0", &bybusyness);
-}
-
-module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module = {
-    STANDARD20_MODULE_STUFF,
-    NULL,       /* create per-directory config structure */
-    NULL,       /* merge per-directory config structures */
-    NULL,       /* create per-server config structure */
-    NULL,       /* merge per-server config structures */
-    NULL,       /* command apr_table_t */
-    register_hook /* register hooks */
 };

@@ -20,8 +20,6 @@
 #include "apr_version.h"
 #include "apr_hooks.h"
 
-module AP_MODULE_DECLARE_DATA lbmethod_byrequests_module;
-
 /*
  * The idea behind the find_best_byrequests scheduler is the following:
  *
@@ -146,30 +144,11 @@ static apr_status_t age(proxy_balancer *balancer, request_rec *r) {
  *      (eg: find_best_bytraffic, above)
  *   2. Register it as a provider.
  */
-static const proxy_balancer_method byrequests =
+const proxy_balancer_method proxy_balancer_byrequests =
 {
     "byrequests",
     &find_best_byrequests,
     &reset,
     &age,
     NULL
-};
-
-static void register_hook(apr_pool_t *p)
-{
-    /* Only the mpm_winnt has child init hook handler.
-     * make sure that we are called after the mpm
-     * initializes and after the mod_proxy
-     */
-    ap_register_provider(p, PROXY_LBMETHOD, "byrequests", "0", &byrequests);
-}
-
-module AP_MODULE_DECLARE_DATA lbmethod_byrequests_module = {
-    STANDARD20_MODULE_STUFF,
-    NULL,       /* create per-directory config structure */
-    NULL,       /* merge per-directory config structures */
-    NULL,       /* create per-server config structure */
-    NULL,       /* merge per-server config structures */
-    NULL,       /* command apr_table_t */
-    register_hook /* register hooks */
 };
