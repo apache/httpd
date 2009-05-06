@@ -87,16 +87,6 @@ apr_status_t ap_registry_get_server_root(apr_pool_t *p, char **buf)
 }
 
 
-/* The service configuration's is stored under the following trees:
- *
- * HKLM\System\CurrentControlSet\Services\[service name]
- *
- *     \DisplayName
- *     \ImagePath
- *     \Parameters\ConfigArgs
- */
-
-
 /* exit() for Win32 is macro mapped (horrible, we agree) that allows us
  * to catch the non-zero conditions and inform the console process that
  * the application died, and hang on to the console a bit longer.
@@ -442,6 +432,16 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 
     return (rv);
 }
+
+
+/* The service configuration's is stored under the following trees:
+ *
+ * HKLM\System\CurrentControlSet\Services\[service name]
+ *
+ *     \DisplayName
+ *     \ImagePath
+ *     \Parameters\ConfigArgs
+ */
 
 
 apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
