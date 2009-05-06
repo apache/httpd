@@ -1076,6 +1076,9 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
          * find the particulars of the actual worker which may
          * or may not be the right one... basically, we need
          * to find which member actually handled this request.
+         *
+         * TODO: Recover the path from real and use that
+         *       for more exact matching
          */
         if ((strncasecmp(real, "balancer:", 9) == 0) &&
             (balancer = ap_proxy_get_balancer(r->pool, sconf, real))) {
