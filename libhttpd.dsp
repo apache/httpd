@@ -284,16 +284,16 @@ InputPath=.\modules\proxy\mod_proxy.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\modules\mappers\mod_so.h
+SOURCE=.\modules\core\mod_so.h
 
 !IF  "$(CFG)" == "libhttpd - Win32 Release"
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating include/mod_so.h
-InputPath=.\modules\mappers\mod_so.h
+InputPath=.\modules\core\mod_so.h
 
 ".\include\mod_so.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\modules\mappers\mod_so.h > .\include\mod_so.h
+	type .\modules\core\mod_so.h > .\include\mod_so.h
 
 # End Custom Build
 
@@ -301,10 +301,10 @@ InputPath=.\modules\mappers\mod_so.h
 
 # PROP Ignore_Default_Tool 1
 # Begin Custom Build - Creating include/mod_so.h
-InputPath=.\modules\mappers\mod_so.h
+InputPath=.\modules\core\mod_so.h
 
 ".\include\mod_so.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	type .\modules\mappers\mod_so.h > .\include\mod_so.h
+	type .\modules\core\mod_so.h > .\include\mod_so.h
 
 # End Custom Build
 

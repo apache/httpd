@@ -2996,7 +2996,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_watchdog"=.\modules\mappers\mod_watchdog.dsp - Package Owner=<4>
+Project: "mod_watchdog"=.\modules\core\mod_watchdog.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
