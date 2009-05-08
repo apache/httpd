@@ -68,7 +68,7 @@ extern "C" {
 #define OPT_NONE 0
 /** Indexes directive */
 #define OPT_INDEXES 1
-/**  Includes directive */
+/** SSI is enabled without exec= permission  */
 #define OPT_INCLUDES 2
 /**  FollowSymLinks directive */
 #define OPT_SYM_LINKS 4
@@ -76,14 +76,14 @@ extern "C" {
 #define OPT_EXECCGI 8
 /**  directive unset */
 #define OPT_UNSET 16
-/**  IncludesNOEXEC directive */
-#define OPT_INCNOEXEC 32
+/**  SSI exec= permission is permitted, iff OPT_INCLUDES is also set */
+#define OPT_INC_WITH_EXEC 32
 /** SymLinksIfOwnerMatch directive */
 #define OPT_SYM_OWNER 64
 /** MultiViews directive */
 #define OPT_MULTI 128
 /**  All directives */
-#define OPT_ALL (OPT_INDEXES|OPT_INCLUDES|OPT_SYM_LINKS|OPT_EXECCGI)
+#define OPT_ALL (OPT_INDEXES|OPT_INCLUDES|OPT_INC_WITH_EXEC|OPT_SYM_LINKS|OPT_EXECCGI)
 /** @} */
 
 /**

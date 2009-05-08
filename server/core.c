@@ -108,8 +108,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->opts = dir ? OPT_UNSET : OPT_UNSET|OPT_ALL;
     conf->opts_add = conf->opts_remove = OPT_NONE;
     conf->override = dir ? OR_UNSET : OR_UNSET|OR_ALL;
-    conf->override_opts = OPT_UNSET | OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER
-                          | OPT_MULTI;
+    conf->override_opts = OPT_UNSET | OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
 
     conf->content_md5 = 2;
     conf->accept_path_info = 3;
@@ -239,8 +238,13 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->opts_remove = (conf->opts_remove & ~new->opts_add)
                             | new->opts_remove;
         conf->opts = (conf->opts & ~conf->opts_remove) | conf->opts_add;
-        if ((base->opts & OPT_INCNOEXEC) && (new->opts & OPT_INCLUDES)) {
-            conf->opts = (conf->opts & ~OPT_INCNOEXEC) | OPT_INCLUDES;
+
+        /* if Includes was enabled without exec in the new config, but
+         * was enabled with exec in the base, then disable exec in the
+         * resulting options. */
+        if ((base->opts & OPT_INC_WITH_EXEC) 
+            && (new->opts & OPT_INC_WITH_EXEC) == 0) {
+            conf->opts &= ~OPT_INC_WITH_EXEC;
         }
     }
     else {
@@ -1287,10 +1291,12 @@ static const char *set_allow_opts(cmd_parms *cmd, allow_options_t *opts,
             opt = OPT_INDEXES;
         }
         else if (!strcasecmp(w, "Includes")) {
-            opt = OPT_INCLUDES;
+            /* If Includes is permitted, both Includes and
+             * IncludesNOEXEC may be changed. */
+            opt = (OPT_INCLUDES | OPT_INC_WITH_EXEC);
         }
         else if (!strcasecmp(w, "IncludesNOEXEC")) {
-            opt = (OPT_INCLUDES | OPT_INCNOEXEC);
+            opt = OPT_INCLUDES;
         }
         else if (!strcasecmp(w, "FollowSymLinks")) {
             opt = OPT_SYM_LINKS;
@@ -1406,10 +1412,10 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
             opt = OPT_INDEXES;
         }
         else if (!strcasecmp(w, "Includes")) {
-            opt = OPT_INCLUDES;
+            opt = (OPT_INCLUDES | OPT_INC_WITH_EXEC);
         }
         else if (!strcasecmp(w, "IncludesNOEXEC")) {
-            opt = (OPT_INCLUDES | OPT_INCNOEXEC);
+            opt = OPT_INCLUDES;
         }
         else if (!strcasecmp(w, "FollowSymLinks")) {
             opt = OPT_SYM_LINKS;
