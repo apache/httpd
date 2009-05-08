@@ -87,6 +87,30 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_rewrite: Correctly encode spaces in proxied requests issued by rewrite
+   rules in directory context. PR 46428
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=757427&view=rev
+   Backport version for 2.2.x of patch:
+      http://people.apache.org/~rpluem/patches/46428_2.2.x.diff
+   +1: rpluem, jim, wrowe
+
+ * mod_include: Prevent a case of SSI timefmt-smashing with filter chains
+   including multiple INCLUDES filters
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=757376&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem, jim, wrowe
+
+ * mod_negotiation: Escape pathes of filenames in 406 responses to avoid
+   HTML injections and HTTP response splitting
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=752812&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem, jim, wrowe
+
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -100,30 +124,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    FYI, mod_privileges hacked to work with the patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges.c
    +1: niq
-
- * mod_rewrite: Correctly encode spaces in proxied requests issued by rewrite
-   rules in directory context. PR 46428
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=757427&view=rev
-   Backport version for 2.2.x of patch:
-      http://people.apache.org/~rpluem/patches/46428_2.2.x.diff
-   +1: rpluem, jim
-
- * mod_include: Prevent a case of SSI timefmt-smashing with filter chains
-   including multiple INCLUDES filters
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=757376&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, jim
-
- * mod_negotiation: Escape pathes of filenames in 406 responses to avoid
-   HTML injections and HTTP response splitting
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=752812&view=rev
-   Backport version for 2.2.x of patch:
-      Trunk version of patch works
-   +1: rpluem, jim
 
  * mod_ssl: Improve and simplify the implementation of SSLProxyCheckPeerExpire
    by directly using X509_get_notBefore(), X509_get_notAfter() and
