@@ -340,6 +340,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_socache_memcache.mak CFG="mod_socache_memcache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_socache_shmcb.mak CFG="mod_socache_shmcb - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd modules\core
+	 $(MAKE) $(MAKEOPT) -f mod_watchdog.mak    CFG="mod_watchdog - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
 	cd modules\cluster
 	 $(MAKE) $(MAKEOPT) -f mod_heartbeat.mak   CFG="mod_heartbeat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_heartmonitor.mak CFG="mod_heartmonitor - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -416,7 +419,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_speling.mak     CFG="mod_speling - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_userdir.mak     CFG="mod_userdir - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_vhost_alias.mak CFG="mod_vhost_alias - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_watchdog.mak    CFG="mod_watchdog - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\metadata
 	 $(MAKE) $(MAKEOPT) -f mod_cern_meta.mak   CFG="mod_cern_meta - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -906,19 +908,20 @@ BEGIN {
 		srclib\apr-util\include\*.h \
 		include\*.h \
 		os\win32\os.h \
+		modules\cache\mod_cache.h \
+		modules\core\mod_so.h \
+		modules\core\mod_watchdog.h \
 		modules\database\mod_dbd.h \
 		modules\dav\main\mod_dav.h \
 		modules\filters\mod_include.h \
 		modules\generators\mod_cgi.h \
 		modules\generators\mod_status.h \
 		modules\loggers\mod_log_config.h \
+		modules\mappers\mod_rewrite.h \
 		modules\proxy\mod_proxy.h \
 		modules\proxy\mod_serf.h \
 		modules\ssl\mod_ssl.h \
-		modules\mappers\mod_so.h \
-		modules\mappers\mod_rewrite.h \
-		modules\mappers\mod_watchdog.h \
-		modules\cache\mod_cache.h ) do \
+          ) do \
 	    @copy %f "$(INSTDIR)\include" < .y > nul
 	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\Lib$(SHORT)\apr-1.pdb		"$(INSTDIR)\lib" <.y

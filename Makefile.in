@@ -181,6 +181,9 @@ INSTALL_HEADERS = \
 	include/*.h \
 	$(srcdir)/include/*.h \
 	$(srcdir)/os/$(OS_DIR)/os.h \
+	$(srcdir)/modules/core/mod_so.h \
+	$(srcdir)/modules/core/mod_watchdog.h \
+	$(srcdir)/modules/cache/mod_cache.h \
 	$(srcdir)/modules/database/mod_dbd.h \
 	$(srcdir)/modules/dav/main/mod_dav.h \
 	$(srcdir)/modules/filters/mod_include.h \
@@ -192,10 +195,6 @@ INSTALL_HEADERS = \
 	$(srcdir)/modules/proxy/mod_serf.h \
         ${srcdir}/modules/session/mod_session.h \
 	$(srcdir)/modules/ssl/mod_ssl.h \
-	$(srcdir)/modules/mappers/mod_so.h \
-	$(srcdir)/modules/mappers/mod_rewrite.h \
-	$(srcdir)/modules/mappers/mod_watchdog.h \
-	$(srcdir)/modules/cache/mod_cache.h \
 	$(srcdir)/os/$(OS_DIR)/*.h
 
 install-include:

@@ -216,7 +216,7 @@ if test "$abs_builddir" != "$abs_srcdir"; then
   APR_ADDTO(INCLUDES, [-I\$(top_builddir)/include])
 fi
 
-APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/aaa -I\$(top_srcdir)/modules/filters -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/modules/session -I\$(top_srcdir)/include -I\$(top_srcdir)/modules/generators -I\$(top_srcdir)/modules/mappers -I\$(top_srcdir)/modules/database])
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/os/\$(OS_DIR) -I\$(top_srcdir)/modules/http -I\$(top_srcdir)/modules/aaa -I\$(top_srcdir)/modules/filters -I\$(top_srcdir)/modules/proxy -I\$(top_srcdir)/modules/session -I\$(top_srcdir)/include -I\$(top_srcdir)/modules/core -I\$(top_srcdir)/modules/generators  -I\$(top_srcdir)/modules/mappers -I\$(top_srcdir)/modules/database])
 
 # apr/apr-util --includes may pick up system paths for dependent
 # libraries, so ensure these are later in INCLUDES than local source
