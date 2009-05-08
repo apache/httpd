@@ -9,7 +9,7 @@ define dump_table
 	if $t[$i].val == (void *)0L
 	   printf "[%u] '%s'=>NULL\n", $i, $t[$i].key
 	else
-	   printf "[%u] '%s'='%s'\n", $i, $t[$i].key, $t[$i].val
+	   printf "[%u] '%s'='%s' [%p]\n", $i, $t[$i].key, $t[$i].val, $t[$i].val
 	end
 	set $i = $i + 1
     end
