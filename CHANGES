@@ -5,6 +5,9 @@ Changes with Apache 2.2.12
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) mod_rewrite: When evaluating a proxy rule in directory context, do
+     escape the filename by default. PR 46428 [Joe Orton]
+
   *) mod_proxy_ajp: Check more strictly that the backend follows the AJP
      protocol. [Mladen Turk]
 
