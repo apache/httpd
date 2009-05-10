@@ -239,12 +239,13 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
                             | new->opts_remove;
         conf->opts = (conf->opts & ~conf->opts_remove) | conf->opts_add;
 
-        /* if Includes was enabled without exec in the new config, but
-         * was enabled with exec in the base, then disable exec in the
-         * resulting options. */
-        if ((base->opts & OPT_INC_WITH_EXEC)
-            && (new->opts & OPT_INC_WITH_EXEC) == 0
-            && (new->opts & OPT_INCLUDES)) {
+        /* If Includes was enabled with exec in the base config, but
+         * was enabled without exec in the new config, then disable
+         * exec in the merged set. */
+        if (((base->opts & (OPT_INCLUDES|OPT_INC_WITH_EXEC))
+             == (OPT_INCLUDES|OPT_INC_WITH_EXEC))
+            && ((new->opts & (OPT_INCLUDES|OPT_INC_WITH_EXEC))
+                == OPT_INCLUDES)) {
             conf->opts &= ~OPT_INC_WITH_EXEC;
         }
     }
