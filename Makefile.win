@@ -588,6 +588,7 @@ _copybin:
 #	copy modules\cache\$(LONG)\mod_socache_dc.$(src_so)	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_socache_memcache.$(src_so) "$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_socache_shmcb.$(src_so)	"$(inst_so)" <.y
+	copy modules\core\$(LONG)\mod_watchdog.$(src_so) 	"$(inst_so)" <.y
 	copy modules\cluster\$(LONG)\mod_heartbeat.$(src_so)	"$(inst_so)" <.y
 	copy modules\cluster\$(LONG)\mod_heartmonitor.$(src_so)	"$(inst_so)" <.y
 	copy modules\database\$(LONG)\mod_dbd.$(src_so)		"$(inst_so)" <.y
@@ -645,7 +646,6 @@ _copybin:
 	copy modules\mappers\$(LONG)\mod_speling.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_userdir.$(src_so) 	"$(inst_so)" <.y
 	copy modules\mappers\$(LONG)\mod_vhost_alias.$(src_so) 	"$(inst_so)" <.y
-	copy modules\mappers\$(LONG)\mod_watchdog.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_cern_meta.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_env.$(src_so) 	"$(inst_so)" <.y
 	copy modules\metadata\$(LONG)\mod_expires.$(src_so) 	"$(inst_so)" <.y
