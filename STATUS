@@ -87,14 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_rewrite: Correctly encode spaces in proxied requests issued by rewrite
-   rules in directory context. PR 46428
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=757427&view=rev
-   Backport version for 2.2.x of patch:
-      http://people.apache.org/~rpluem/patches/46428_2.2.x.diff
-   +1: rpluem, jim, wrowe
-
  * mod_include: Prevent a case of SSI timefmt-smashing with filter chains
    including multiple INCLUDES filters
    Trunk version of patch:
