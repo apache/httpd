@@ -242,8 +242,9 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         /* if Includes was enabled without exec in the new config, but
          * was enabled with exec in the base, then disable exec in the
          * resulting options. */
-        if ((base->opts & OPT_INC_WITH_EXEC) 
-            && (new->opts & OPT_INC_WITH_EXEC) == 0) {
+        if ((base->opts & OPT_INC_WITH_EXEC)
+            && (new->opts & OPT_INC_WITH_EXEC) == 0
+            && (new->opts & OPT_INCLUDES)) {
             conf->opts &= ~OPT_INC_WITH_EXEC;
         }
     }
