@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x patch:
       http://people.apache.org/~jorton/2.2.x-CVE-2009-1195.patch
       (unmodified merge from trunk + CHANGES entry)
-   +1: jorton
+   +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
