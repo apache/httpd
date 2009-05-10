@@ -580,7 +580,7 @@ static void decodehtml(char *s)
     *p = '\0';
 }
 
-static void add_include_vars(request_rec *r, const char *timefmt)
+static void add_include_vars(request_rec *r)
 {
     apr_table_t *e = r->subprocess_env;
     char *t;
@@ -608,26 +608,17 @@ static void add_include_vars(request_rec *r, const char *timefmt)
     }
 }
 
-static const char *add_include_vars_lazy(request_rec *r, const char *var)
+static const char *add_include_vars_lazy(request_rec *r, const char *var, const char *timefmt)
 {
     char *val;
     if (!strcasecmp(var, "DATE_LOCAL")) {
-        include_dir_config *conf =
-            (include_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                       &include_module);
-        val = ap_ht_time(r->pool, r->request_time, conf->default_time_fmt, 0);
+        val = ap_ht_time(r->pool, r->request_time, timefmt, 0);
     }
     else if (!strcasecmp(var, "DATE_GMT")) {
-        include_dir_config *conf =
-            (include_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                       &include_module);
-        val = ap_ht_time(r->pool, r->request_time, conf->default_time_fmt, 1);
+        val = ap_ht_time(r->pool, r->request_time, timefmt, 1);
     }
     else if (!strcasecmp(var, "LAST_MODIFIED")) {
-        include_dir_config *conf =
-            (include_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                       &include_module);
-        val = ap_ht_time(r->pool, r->finfo.mtime, conf->default_time_fmt, 0);
+        val = ap_ht_time(r->pool, r->finfo.mtime, timefmt, 0);
     }
     else if (!strcasecmp(var, "USER_NAME")) {
         if (apr_uid_name_get(&val, r->finfo.user, r->pool) != APR_SUCCESS) {
@@ -684,7 +675,7 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
         val = apr_table_get(r->subprocess_env, var);
 
         if (val == LAZY_VALUE) {
-            val = add_include_vars_lazy(r, var);
+            val = add_include_vars_lazy(r, var, ctx->time_str);
         }
     }
 
@@ -2424,7 +2415,7 @@ static apr_status_t handle_printenv(include_ctx_t *ctx, ap_filter_t *f,
         /* get value */
         val_text = elts[i].val;
         if (val_text == LAZY_VALUE) {
-            val_text = add_include_vars_lazy(r, elts[i].key);
+            val_text = add_include_vars_lazy(r, elts[i].key, ctx->time_str);
         }
         val_text = ap_escape_html(ctx->dpool, elts[i].val);
         v_len = strlen(val_text);
@@ -3609,7 +3600,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
          * environment */
         ap_add_common_vars(r);
         ap_add_cgi_vars(r);
-        add_include_vars(r, conf->default_time_fmt);
+        add_include_vars(r);
     }
     /* Always unset the content-length.  There is no way to know if
      * the content will be modified at some point by send_parsed_content.
