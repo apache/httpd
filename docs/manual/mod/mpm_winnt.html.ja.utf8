@@ -53,35 +53,9 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#win32disableacceptex">Win32DisableAcceptEx</a></li>
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Win32DisableAcceptEx" id="Win32DisableAcceptEx">Win32DisableAcceptEx</a> <a name="win32disableacceptex" id="win32disableacceptex">ディレクティブ</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ネットワーク接続の受け付けに accept() をAcceptEx の代わりに使う</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>Win32DisableAcceptEx</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AcceptEx() はデフォルトで有効になっています。AcceptEx() を無効にする
-ためにこのディレクティブを使います。</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mpm_winnt</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.49 バージョン以降で使用可能</td></tr>
-</table>
-    <p>AcceptEx() は Microsoft WinSock v2 API で、場合によっては
-    BSD 形式の <code>accept()</code> API よりもよい性能を発揮します。
-    よく使われている Windows 製品の中で、特にウィルススキャナや VPN パッケージ
-    の中には、バグが原因で <code>AcceptEx()</code> の適切な動作を妨げるものがあります。
-    以下のようなエラーに遭遇した場合は、このディレクティブを使用して
-    <code>AcceptEx()</code> を使用しないようにしてください。</p>
-
-    <div class="example"><p><code>
-        [error] (730038)An operation was attempted on something that is
-        not a socket.: winnt_accept: AcceptEx failed. Attempting to recover.
-    </code></p></div>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>言語: </span><a href="../de/mod/mpm_winnt.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

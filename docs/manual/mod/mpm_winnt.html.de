@@ -51,38 +51,9 @@
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#win32disableacceptex">Win32DisableAcceptEx</a></li>
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Win32DisableAcceptEx" id="Win32DisableAcceptEx">Win32DisableAcceptEx</a>-<a name="win32disableacceptex" id="win32disableacceptex">Direktive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Beschreibung:</a></th><td>Für die Annahme von Netzwerkverbindungen wird accept() anstelle von AcceptEx() verwendet</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Win32DisableAcceptEx</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Voreinstellung:</a></th><td><code>AcceptEx() ist standardmäßig aktiviert. Verwenden Sie diese
-Direktive, um den Gebrauch von AcceptEx() zu deaktivieren.</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>mpm_winnt</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Verfügbar ab Version 2.0.49</td></tr>
-</table>
-    <p><code>AcceptEx()</code> ist eine Schnittstelle zu Microsoft Winsock v2,
-    die unter bestimmten Umständen einige Leistungsverbesserungen
-    gegenüber der <code>accept()</code>-API von BSD bietet. Einige beliebte
-    Windows-Produkte, typischerweise Virenscanner oder VPN-Pakete, besitzen
-    jedoch Fehler, welche den einwandfreien Betrieb von <code>AcceptEx()</code>
-    stören. Wenn Sie einen Fehler wie:</p>
-
-    <div class="example"><p><code>
-        [error] (730038)An operation was attempted on something that is
-        not a socket.: winnt_accept: AcceptEx failed. Attempting to recover.
-    </code></p></div>
-
-    <p>erhalten, sollten Sie diese Direktive verwenden, um den Gebrauch von
-    <code>AcceptEx()</code> zu unterbinden.</p>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="../de/mod/mpm_winnt.html" title="Deutsch">&nbsp;de&nbsp;</a> |

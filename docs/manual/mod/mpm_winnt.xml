@@ -61,31 +61,4 @@ NT.</description>
 <directivesynopsis location="mpm_common"><name>ThreadStackSize</name>
 </directivesynopsis>
 
-<directivesynopsis>
-<name>Win32DisableAcceptEx</name>
-<description>Use accept() rather than AcceptEx() to accept network connections</description>
-<syntax>Win32DisableAcceptEx</syntax>
-<default>AcceptEx() is enabled by default. Use this directive to disable use of
-    AcceptEx()</default>
-<contextlist><context>server config</context></contextlist>
-<compatibility>Available in Version 2.0.49 and later</compatibility>
-
-<usage>
-    <p><code>AcceptEx()</code> is a Microsoft WinSock v2 API that provides
-    some performance improvements over the use of the BSD style
-    <code>accept()</code> API in certain circumstances. Some popular Windows
-    products, typically virus scanning or virtual private network
-    packages, have bugs that interfere with the proper operation of
-    <code>AcceptEx()</code>. If you encounter an error condition like:</p>
-
-    <example>
-        [error] (730038)An operation was attempted on something that is
-        not a socket.: winnt_accept: AcceptEx failed. Attempting to recover.
-    </example>
-
-    <p>you should use this directive to disable the use of
-    <code>AcceptEx()</code>.</p>
-</usage>
-</directivesynopsis>
-
 </modulesynopsis>
