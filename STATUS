@@ -87,6 +87,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * CVE-2009-1195 security fix for Includes merging.
+   trunk version of patch:
+      http://svn.apache.org/viewvc?rev=772997&view=rev
+      http://svn.apache.org/viewvc?rev=773322&view=rev
+      http://svn.apache.org/viewvc?rev=773342&view=rev
+   2.2.x patch:
+      http://people.apache.org/~jorton/2.2.x-CVE-2009-1195.patch
+      (unmodified merge from trunk + CHANGES entry)
+   +1: jorton, rpluem, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -142,15 +151,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=771587
    +1: wrowe
 
- * CVE-2009-1195 security fix for Includes merging.
-   trunk version of patch:
-      http://svn.apache.org/viewvc?rev=772997&view=rev
-      http://svn.apache.org/viewvc?rev=773322&view=rev
-      http://svn.apache.org/viewvc?rev=773342&view=rev
-   2.2.x patch:
-      http://people.apache.org/~jorton/2.2.x-CVE-2009-1195.patch
-      (unmodified merge from trunk + CHANGES entry)
-   +1: jorton, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
