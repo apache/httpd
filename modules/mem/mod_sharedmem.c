@@ -472,7 +472,7 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
     }
     memcpy(ptr, src, src_len); /* bounds check? */
     /* We know the id fit it */
-    inuse = (slot->base + (slot->size * slot->num);
+    inuse = (slot->base + (slot->size * slot->num));
     inuse[id] = 1;
     return APR_SUCCESS;
 }
