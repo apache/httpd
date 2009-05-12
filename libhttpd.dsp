@@ -419,7 +419,7 @@ SOURCE=.\server\vhost.c
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=.\modules\mappers\mod_so.c
+SOURCE=.\modules\core\mod_so.c
 # End Source File
 # Begin Source File
 
