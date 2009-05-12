@@ -60,8 +60,18 @@ struct sharedslotdesc {
 /* global pool and list of slotmem we are handling */
 static struct ap_slotmem_t *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
-static apr_global_mutex_t *smutex;
-static const char *mutex_fname;
+static apr_global_mutex_t *smutex = NULL;
+static const char *mutex_fname = NULL;
+
+#define SLOTMEM_LOCK(s) do {      \
+    if (s)                        \
+        apr_global_mutex_lock(s); \
+} while (0)
+
+#define SLOTMEM_UNLOCK(s) do {      \
+    if (s)                          \
+        apr_global_mutex_unlock(s); \
+} while (0)
 
 /* apr:shmem/unix/shm.c */
 static apr_status_t unixd_set_shm_perms(const char *fname)
@@ -201,10 +211,12 @@ static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func
     }
 
     ptr = mem->base;
+    SLOTMEM_LOCK(mem->smutex);
     for (i = 0; i < mem->num; i++) {
         ptr = ptr + mem->size;
         func((void *) ptr, data, pool);
     }
+    SLOTMEM_UNLOCK(mem->smutex);
     return APR_SUCCESS;
 }
 
@@ -270,6 +282,7 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
         ptr = ptr + sizeof(desc);
     }
     else {
+        SLOTMEM_LOCK(smutex);
         if (name && name[0] != ':') {
             apr_shm_remove(fname, gpool);
             rv = apr_shm_create(&shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, gpool);
@@ -277,6 +290,7 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
         else {
             rv = apr_shm_create(&shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, gpool);
         }
+        SLOTMEM_UNLOCK(smutex);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -444,6 +458,16 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
     return APR_SUCCESS;
 }
 
+static unsigned int slotmem_num_slots(ap_slotmem_t *slot)
+{
+    return slot->num;
+}
+
+static apr_size_t slotmem_slot_size(ap_slotmem_t *slot)
+{
+    return slot->size;
+}
+
 static const ap_slotmem_storage_method storage = {
     "sharedmem",
     &slotmem_do,
@@ -451,7 +475,9 @@ static const ap_slotmem_storage_method storage = {
     &slotmem_attach,
     &slotmem_mem,
     &slotmem_get,
-    &slotmem_put
+    &slotmem_put,
+    &slotmem_num_slots,
+    &slotmem_slot_size
 };
 
 /* make the storage usuable from outside */

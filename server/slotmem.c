@@ -76,6 +76,16 @@ AP_DECLARE(apr_status_t) ap_slotmem_put(ap_slotmem_storage_method *sm, ap_slotme
     return (sm->slotmem_put(s, item_id, src, src_len));
 }
 
+AP_DECLARE(unsigned int) ap_slotmem_num_slots(ap_slotmem_storage_method *sm, ap_slotmem_t *s)
+{
+    return (sm->slotmem_num_slots(s));
+}
+
+AP_DECLARE(apr_size_t) ap_slotmem_slot_size(ap_slotmem_storage_method *sm, ap_slotmem_t *s)
+{
+    return (sm->slotmem_slot_size(s));
+}
+
 module AP_MODULE_DECLARE_DATA slotmem_module = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */

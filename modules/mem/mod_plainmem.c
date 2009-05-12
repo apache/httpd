@@ -177,6 +177,16 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
     return APR_SUCCESS;
 }
 
+static unsigned int slotmem_num_slots(ap_slotmem_t *slot)
+{
+    return slot->num;
+}
+
+static apr_size_t slotmem_slot_size(ap_slotmem_t *slot)
+{
+    return slot->size;
+}
+
 static const ap_slotmem_storage_method storage = {
     "plainmem",
     &slotmem_do,
@@ -184,7 +194,9 @@ static const ap_slotmem_storage_method storage = {
     &slotmem_attach,
     &slotmem_mem,
     &slotmem_get,
-    &slotmem_put
+    &slotmem_put,
+    &slotmem_num_slots,
+    &slotmem_slot_size
 };
 
 static int pre_config(apr_pool_t *p, apr_pool_t *plog,
