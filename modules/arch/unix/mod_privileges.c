@@ -29,10 +29,14 @@
 /* TODO - get rid of unixd dependency */
 #include "unixd.h"
 
-#define CFG_CHECK(x) if (x == -1) return strerror(errno);
+#define CFG_CHECK(x) if ((x) == -1) { \
+    char msgbuf[128]; \
+    apr_strerror(errno, msgbuf, sizeof(msgbuf)); \
+    return apr_pstrdup(cmd->pool, msgbuf); \
+}
 #define CR_CHECK(x) if (x == -1) \
-    ap_log_error(APLOG_MARK, APLOG_CRIT,0,0, \
-                 "Failed to initialise privileges: %s", strerror(errno))
+    ap_log_error(APLOG_MARK, APLOG_CRIT, errno, 0, \
+                 "Failed to initialise privileges")
 
 module AP_MODULE_DECLARE_DATA privileges_module;
 
@@ -161,8 +165,8 @@ static apr_status_t privileges_end_req(void *data)
 
     /* restore default privileges */
     if (setppriv(PRIV_SET, PRIV_EFFECTIVE, priv_default) == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Error restoring default privileges: %s", strerror(errno));
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                      "Error restoring default privileges");
     }
     return APR_SUCCESS;
 }
@@ -271,29 +275,28 @@ static int privileges_req(request_rec *r)
     }
     /* set vhost's privileges */
     if (setppriv(PRIV_SET, PRIV_EFFECTIVE, cfg->priv) == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Error setting effective privileges: %s", strerror(errno));
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                      "Error setting effective privileges");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* ... including those of any subprocesses */
     if (setppriv(PRIV_SET, PRIV_INHERITABLE, cfg->child_priv) == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Error setting inheritable privileges: %s", strerror(errno));
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                      "Error setting inheritable privileges");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     if (setppriv(PRIV_SET, PRIV_LIMIT, cfg->child_priv) == -1) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "Error setting limit privileges: %s", strerror(errno));
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                      "Error setting limit privileges");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     /* If we're in a child process, drop down PPERM too */
     if (fork_req) {
         if (setppriv(PRIV_SET, PRIV_PERMITTED, cfg->priv) == -1) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "Error setting permitted privileges: %s",
-                          strerror(errno));
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, errno, r,
+                          "Error setting permitted privileges");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
@@ -301,8 +304,8 @@ static int privileges_req(request_rec *r)
     return OK;
 }
 #define PDROP_CHECK(x) if (x == -1) { \
-        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s, \
-                     "Error dropping privileges: %s", strerror(errno)); \
+        ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s, \
+                     "Error dropping privileges"); \
         return !OK; \
     }
 
@@ -377,8 +380,8 @@ static int privileges_postconf(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_cleanup_null);
     priv_emptyset(priv_setid);
     if (priv_addset(priv_setid, PRIV_PROC_SETID) == -1) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, ptemp,
-                      "priv_addset: %s", strerror(errno));
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, errno, ptemp,
+                      "priv_addset");
         return !OK;
     }
     return OK;
