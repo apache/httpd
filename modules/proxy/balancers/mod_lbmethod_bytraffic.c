@@ -105,11 +105,11 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
     return mycandidate;
 }
 
-static apr_status_t reset(proxy_balancer *balancer, request_rec *r) {
+static apr_status_t reset(proxy_balancer *balancer, server_rec *r) {
         return APR_SUCCESS;
 }
 
-static apr_status_t age(proxy_balancer *balancer, request_rec *r) {
+static apr_status_t age(proxy_balancer *balancer, server_rec *r) {
         return APR_SUCCESS;
 }
 
@@ -117,9 +117,9 @@ static const proxy_balancer_method bytraffic =
 {
     "bytraffic",
     &find_best_bytraffic,
+    NULL,
     &reset,
-    &age,
-    NULL
+    &age
 };
 
 static void register_hook(apr_pool_t *p)

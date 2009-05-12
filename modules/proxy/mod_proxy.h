@@ -390,9 +390,9 @@ struct proxy_balancer_method {
     const char *name;            /* name of the load balancer method*/
     proxy_worker *(*finder)(proxy_balancer *balancer,
                             request_rec *r);
-    apr_status_t (*reset)(proxy_balancer *balancer, request_rec *r);
-    apr_status_t (*age)(proxy_balancer *balancer, request_rec *r);
     void            *context;   /* general purpose storage */
+    apr_status_t (*reset)(proxy_balancer *balancer, server_rec *r);
+    apr_status_t (*age)(proxy_balancer *balancer, server_rec *r);
 };
 
 #if APR_HAS_THREADS
