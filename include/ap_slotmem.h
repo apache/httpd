@@ -126,6 +126,18 @@ struct ap_slotmem_storage_method {
      * @return APR_SUCCESS if all went well
      */
     apr_status_t (* slotmem_put)(ap_slotmem_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len);
+    /**
+     * return number of slots allocated for this entry.
+     * @param s ap_slotmem_t to use.
+     * @return number of slots
+     */
+    unsigned int (* slotmem_num_slots)(ap_slotmem_t *s);
+    /**
+     * return slot size allocated for this entry.
+     * @param s ap_slotmem_t to use.
+     * @return size of slot
+     */
+    apr_size_t (* slotmem_slot_size)(ap_slotmem_t *s);
 };
 
 typedef struct ap_slotmem_storage_method ap_slotmem_storage_method;
@@ -214,5 +226,19 @@ AP_DECLARE(apr_status_t) ap_slotmem_get(ap_slotmem_storage_method *sm, ap_slotme
  * @return APR_SUCCESS if all went well
  */
 AP_DECLARE(apr_status_t) ap_slotmem_put(ap_slotmem_storage_method *sm, ap_slotmem_t *s, unsigned int item_id, unsigned char *src, apr_size_t src_len);
+/**
+ * return number of slots allocated for this entry.
+ * @param sm ap_slotmem_storage_method provider obtained
+ * @param s ap_slotmem_t to use.
+ * @return number of slots
+ */
+AP_DECLARE(unsigned int) ap_slotmem_num_slots(ap_slotmem_storage_method *sm, ap_slotmem_t *s);
+/**
+ * return slot size allocated for this entry.
+ * @param sm ap_slotmem_storage_method provider obtained
+ * @param s ap_slotmem_t to use.
+ * @return size of slot
+ */
+AP_DECLARE(apr_size_t) ap_slotmem_slot_size(ap_slotmem_storage_method *sm, ap_slotmem_t *s);
 
 #endif /*SLOTMEM_H*/
