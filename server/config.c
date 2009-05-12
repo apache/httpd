@@ -1510,7 +1510,7 @@ static const char *process_command_config(server_rec *s,
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
-    parms.override_opts = OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER | OPT_MULTI;
+    parms.override_opts = OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
 
     parms.config_file = ap_pcfg_open_custom(p, "-c/-C directives",
                                             &arr_parms, NULL,
@@ -1617,7 +1617,7 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
-    parms.override_opts = OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER | OPT_MULTI;
+    parms.override_opts = OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
 
     rv = ap_pcfg_openfile(&cfp, p, fname);
     if (rv != APR_SUCCESS) {
@@ -1755,7 +1755,7 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
     parms.temp_pool = ptemp;
     parms.server = s;
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
-    parms.override_opts = OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER | OPT_MULTI;
+    parms.override_opts = OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
     parms.limited = -1;
 
     errmsg = ap_walk_config(conftree, &parms, s->lookup_defaults);
