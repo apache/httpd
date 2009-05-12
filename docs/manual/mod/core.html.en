@@ -105,15 +105,22 @@ available</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1.5 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1.5 and later.
+On Windows from Apache 2.3.3 and later.</td></tr>
 </table>
     <p>This directive enables operating system specific optimizations for a 
        listening socket by the Protocol type. The basic premise is for the 
        kernel to not send a socket to the server process until either data 
        is received or an entire HTTP Request is buffered. Only
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">
-       FreeBSD's Accept Filters</a> and Linux's more primitive 
-       <code>TCP_DEFER_ACCEPT</code> are currently supported.</p>
+       FreeBSD's Accept Filters</a>, Linux's more primitive 
+       <code>TCP_DEFER_ACCEPT</code>, and Windows' optimized AcceptEx()
+       are currently supported.</p>
+
+    <p>Using <code>none</code> for an argument will disable any accept filters 
+       for that protocol.  This is useful for protocols that require a server
+       send data first, such as <code>ftp:</code> or <code>nntp</code>:</p>
+    <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
 
     <p>The default values on FreeBSD are:</p>
     <div class="example"><p><code>
@@ -142,10 +149,28 @@ available</td></tr>
        <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">
        tcp(7)</a> man page.</p>
 
-    <p>Using <code>none</code> for an argument will disable any accept filters 
-       for that protocol.  This is useful for protocols that require a server
-       send data first, such as <code>nntp</code>:</p>
-    <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
+    <p>The default values on Windows are:</p>
+    <div class="example"><p><code>
+        AcceptFilter http data <br />
+        AcceptFilter https data
+    </code></p></div>
+
+    <p>Window's mpm_winnt interprets the AcceptFilter to toggle the AcceptEx()
+       API, and does not support http protocol buffering.  There are two values
+       which utilize the Windows AcceptEx() API and will recycle network
+       sockets between connections.  <code>data</code> waits until data has
+       been transmitted as documented above, and the initial data buffer and
+       network endpoint addresses are all retrieved from the single AcceptEx()
+       invocation.  <code>connect</code> will use the AcceptEx() API, also
+       retrieve the network endpoint addresses, but like <code>none</code>
+       the <code>connect</code> option does not wait for the initial data
+       transmission.</p>
+
+    <p>On Windows, <code>none</code> uses accept() rather than than AcceptEx()
+       and will not recycle sockets between connections.  This is useful for
+       network adapters with broken driver support, as well as some virtual
+       network providers such as vpn drivers, or spam, virus or spyware
+       filters.</p>  
 
 
 </div>

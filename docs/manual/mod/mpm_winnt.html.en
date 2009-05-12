@@ -51,38 +51,9 @@ NT.</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#win32disableacceptex">Win32DisableAcceptEx</a></li>
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="Win32DisableAcceptEx" id="Win32DisableAcceptEx">Win32DisableAcceptEx</a> <a name="win32disableacceptex" id="win32disableacceptex">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Use accept() rather than AcceptEx() to accept network connections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Win32DisableAcceptEx</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AcceptEx() is enabled by default. Use this directive to disable use of
-    AcceptEx()</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mpm_winnt</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Version 2.0.49 and later</td></tr>
-</table>
-    <p><code>AcceptEx()</code> is a Microsoft WinSock v2 API that provides
-    some performance improvements over the use of the BSD style
-    <code>accept()</code> API in certain circumstances. Some popular Windows
-    products, typically virus scanning or virtual private network
-    packages, have bugs that interfere with the proper operation of
-    <code>AcceptEx()</code>. If you encounter an error condition like:</p>
-
-    <div class="example"><p><code>
-        [error] (730038)An operation was attempted on something that is
-        not a socket.: winnt_accept: AcceptEx failed. Attempting to recover.
-    </code></p></div>
-
-    <p>you should use this directive to disable the use of
-    <code>AcceptEx()</code>.</p>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../de/mod/mpm_winnt.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
