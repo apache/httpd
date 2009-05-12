@@ -158,7 +158,7 @@ static void store_slotmem(ap_slotmem_t *slotmem)
     if (rv != APR_SUCCESS) {
         return;
     }
-    nbytes = (slotmem->size * slotmem->num) + (slotmem->num + sizeof(char));
+    nbytes = (slotmem->size * slotmem->num) + (slotmem->num * sizeof(char));
     apr_file_write(fp, slotmem->base, &nbytes);
     apr_file_close(fp);
 }
