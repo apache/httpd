@@ -48,6 +48,7 @@ struct ap_slotmem_t {
     apr_pool_t           *gpool;      /* per segment global pool */
     apr_global_mutex_t   *smutex;     /* mutex */
     struct ap_slotmem_t  *next;       /* location of next allocated segment */
+    char                 *inuse;      /* is-use flag table*/
 };
 
 
@@ -56,6 +57,11 @@ struct sharedslotdesc {
     apr_size_t item_size;
     unsigned int item_num;
 };
+
+/*
+ * Memory layout:
+ *     sharedslotdesc | slots | isuse array
+ */
 
 /* global pool and list of slotmem we are handling */
 static struct ap_slotmem_t *globallistmem = NULL;
@@ -152,16 +158,16 @@ static void store_slotmem(ap_slotmem_t *slotmem)
     if (rv != APR_SUCCESS) {
         return;
     }
-    nbytes = slotmem->size * slotmem->num;
+    nbytes = (slotmem->size * slotmem->num) + (slotmem->num + sizeof(char));
     apr_file_write(fp, slotmem->base, &nbytes);
     apr_file_close(fp);
 }
 
-static void restore_slotmem(void *ptr, const char *name, apr_size_t item_size, unsigned int item_num, apr_pool_t *pool)
+static void restore_slotmem(void *ptr, const char *name, apr_size_t size, apr_pool_t *pool)
 {
     const char *storename;
     apr_file_t *fp;
-    apr_size_t nbytes = item_size * item_num;
+    apr_size_t nbytes = size;
     apr_status_t rv;
 
     storename = store_filename(pool, name);
@@ -205,16 +211,20 @@ static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func
 {
     unsigned int i;
     void *ptr;
+    char *inuse;
 
     if (!mem) {
         return APR_ENOSHMAVAIL;
     }
 
     ptr = mem->base;
+    inuse = ptr + (mem->size * mem->num);
     SLOTMEM_LOCK(mem->smutex);
-    for (i = 0; i < mem->num; i++) {
-        ptr = ptr + mem->size;
-        func((void *) ptr, data, pool);
+    for (i = 0; i < mem->num; i++, inuse++) {
+        if (*inuse) {
+            func((void *) ptr, data, pool);
+        }
+        ptr += mem->size;
     }
     SLOTMEM_UNLOCK(mem->smutex);
     return APR_SUCCESS;
@@ -229,6 +239,8 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     ap_slotmem_t *next = globallistmem;
     const char *fname;
     apr_shm_t *shm;
+    apr_size_t basesize = (item_size * item_num);
+    apr_size_t size = sizeof(struct sharedslotdesc) + (item_num * sizeof(char)) + basesize;
     apr_status_t rv;
 
     if (gpool == NULL)
@@ -269,7 +281,7 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     }
     if (rv == APR_SUCCESS) {
         /* check size */
-        if (apr_shm_size_get(shm) != item_size * item_num + sizeof(struct sharedslotdesc)) {
+        if (apr_shm_size_get(shm) != size) {
             apr_shm_detach(shm);
             return APR_EINVAL;
         }
@@ -282,13 +294,14 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
         ptr = ptr + sizeof(desc);
     }
     else {
+        apr_size_t dsize = size - sizeof(struct sharedslotdesc);
         SLOTMEM_LOCK(smutex);
         if (name && name[0] != ':') {
             apr_shm_remove(fname, gpool);
-            rv = apr_shm_create(&shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, gpool);
+            rv = apr_shm_create(&shm, size, fname, gpool);
         }
         else {
-            rv = apr_shm_create(&shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, gpool);
+            rv = apr_shm_create(&shm, size, NULL, gpool);
         }
         SLOTMEM_UNLOCK(smutex);
         if (rv != APR_SUCCESS) {
@@ -308,9 +321,9 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
         desc.item_num = item_num;
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + sizeof(desc);
-        memset(ptr, 0, item_size * item_num);
+        memset(ptr, 0, dsize);
         if (type == SLOTMEM_PERSIST)
-            restore_slotmem(ptr, fname, item_size, item_num, pool);
+            restore_slotmem(ptr, fname, dsize, pool);
     }
 
     /* For the chained slotmem stuff */
@@ -323,6 +336,7 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     res->gpool = gpool;
     res->smutex = smutex;
     res->next = NULL;
+    res->inuse = ptr + basesize;
     if (globallistmem == NULL) {
         globallistmem = res;
     }
@@ -396,6 +410,7 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     res->num = desc.item_num;
     res->gpool = gpool;
     res->smutex = smutex;
+    res->inuse = ptr + (desc.item_size * desc.item_num);
     res->next = NULL;
     if (globallistmem == NULL) {
         globallistmem = res;
@@ -448,6 +463,7 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
 {
 
     void *ptr;
+    char *inuse;
     apr_status_t ret;
 
     ret = slotmem_mem(slot, id, &ptr);
@@ -455,6 +471,9 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
         return ret;
     }
     memcpy(ptr, src, src_len); /* bounds check? */
+    /* We know the id fit it */
+    inuse = (slot->base + (slot->size * slot->num);
+    inuse[id] = 1;
     return APR_SUCCESS;
 }
 
