@@ -1443,14 +1443,8 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     (*worker)->smax = -1;
     /* Increase the total worker count */
     proxy_lb_workers++;
-    init_conn_pool(p, *worker);
-#if APR_HAS_THREADS
-    if (apr_thread_mutex_create(&((*worker)->mutex),
-                APR_THREAD_MUTEX_DEFAULT, p) != APR_SUCCESS) {
-        /* XXX: Do we need to log something here */
-        return "can not create thread mutex";
-    }
-#endif
+    (*worker)->cp = NULL;
+    (*worker)->mutex = NULL;
 
     return NULL;
 }
@@ -1464,7 +1458,8 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
     worker->smax = -1;
     /* Increase the total worker count */
     proxy_lb_workers++;
-    init_conn_pool(p, worker);
+    worker->cp = NULL;
+    worker->mutex = NULL;
 
     return worker;
 }
@@ -1839,7 +1834,7 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
 
 }
 
-PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s)
+PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, server_rec *s, apr_pool_t *p)
 {
     apr_status_t rv;
 
@@ -1864,7 +1859,24 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         worker->is_address_reusable = 1;
     }
 
+    if (worker->cp == NULL)
+        init_conn_pool(p, worker);
+    if (worker->cp == NULL) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            "can not create connection pool");
+        return APR_EGENERAL;
+    } 
+
 #if APR_HAS_THREADS
+    if (worker->mutex == NULL) {
+        rv = apr_thread_mutex_create(&(worker->mutex), APR_THREAD_MUTEX_DEFAULT, p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                "can not create thread mutex");
+            return rv;
+        }
+    }
+
     ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
     if (mpm_threads > 1) {
         /* Set hard max to no more then mpm_threads */

@@ -933,6 +933,13 @@ static int proxy_handler(request_rec *r)
                 balancer = NULL;
             goto cleanup;
         }
+
+        /* Initialise worker if needed, note the shared area must be initialized by the balancer logic */
+        if (balancer) {
+            ap_proxy_initialize_worker(worker, r->server, conf->pool); 
+            ap_proxy_initialize_worker_share(conf, worker, r->server);
+        }
+
         if (balancer && balancer->max_attempts_set && !max_attempts)
             max_attempts = balancer->max_attempts;
         /* firstly, try a proxy, unless a NoProxy directive is active */
@@ -2286,7 +2293,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
         worker = (proxy_worker *)conf->workers->elts;
         for (i = 0; i < conf->workers->nelts; i++) {
             ap_proxy_initialize_worker_share(conf, worker, s);
-            ap_proxy_initialize_worker(worker, s);
+            ap_proxy_initialize_worker(worker, s, p);
             worker++;
         }
         /* Create and initialize forward worker if defined */
@@ -2296,7 +2303,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             conf->forward->hostname = "*";
             conf->forward->scheme   = "*";
             ap_proxy_initialize_worker_share(conf, conf->forward, s);
-            ap_proxy_initialize_worker(conf->forward, s);
+            ap_proxy_initialize_worker(conf->forward, s, p);
             /* Do not disable worker in case of errors */
             conf->forward->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Disable address cache for generic forward worker */
@@ -2308,7 +2315,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
             reverse->hostname = "*";
             reverse->scheme   = "*";
             ap_proxy_initialize_worker_share(conf, reverse, s);
-            ap_proxy_initialize_worker(reverse, s);
+            ap_proxy_initialize_worker(reverse, s, p);
             /* Do not disable worker in case of errors */
             reverse->s->status |= PROXY_WORKER_IGNORE_ERRORS;
             /* Disable address cache for generic reverse worker */

@@ -392,9 +392,9 @@ struct proxy_balancer_method {
     const char *name;            /* name of the load balancer method*/
     proxy_worker *(*finder)(proxy_balancer *balancer,
                             request_rec *r);
-    apr_status_t (*reset)(proxy_balancer *balancer, request_rec *r);
-    apr_status_t (*age)(proxy_balancer *balancer, request_rec *r);
     void            *context;   /* general purpose storage */
+    apr_status_t (*reset)(proxy_balancer *balancer, server_rec *s);
+    apr_status_t (*age)(proxy_balancer *balancer, server_rec *s);
 };
 
 #if APR_HAS_THREADS
@@ -572,10 +572,12 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
  * Initize the worker
  * @param worker worker to initialize
  * @param s      current server record
+ * @param p      memory pool used for mutex and Connection pool.
  * @return       APR_SUCCESS or error code
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
-                                                       server_rec *s);
+                                                       server_rec *s,
+                                                       apr_pool_t *p);
 /**
  * Get the balancer from proxy configuration
  * @param p     memory pool used for finding balancer

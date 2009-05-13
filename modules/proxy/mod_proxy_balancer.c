@@ -106,7 +106,7 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
             }
         }
         ap_proxy_initialize_worker_share(conf, *workers, s);
-        ap_proxy_initialize_worker(*workers, s);
+        ap_proxy_initialize_worker(*workers, s, conf->pool);
         if (!worker_is_initialized) {
             /* Set to the original configuration */
             (*workers)->s->lbstatus = (*workers)->s->lbfactor =
@@ -943,6 +943,9 @@ static void child_init(apr_pool_t *p, server_rec *s)
         /* Initialize shared scoreboard data */
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
+            proxy_balancer_method *lbmethod = balancer->lbmethod;
+            if (balancer->lbmethod!=NULL && balancer->lbmethod->reset != NULL)
+               balancer->lbmethod->reset(balancer, s);
             init_balancer_members(conf, s, balancer);
             balancer++;
         }
