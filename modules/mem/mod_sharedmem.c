@@ -433,7 +433,7 @@ static apr_status_t slotmem_mem(ap_slotmem_t *slot, unsigned int id, void **mem)
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
-    if (id < 0 || id > slot->num) {
+    if (id < 0 || id >= slot->num) {
         return APR_ENOSHMAVAIL;
     }
 
@@ -457,8 +457,8 @@ static apr_status_t slotmem_get(ap_slotmem_t *slot, unsigned int id, unsigned ch
     }
 
     inuse = (slot->base + (slot->size * slot->num));
-    if (!inuse[id]) {
-        return APR_ENOSHMAVAIL;
+    if (id >= slot->num || !inuse[id] ) {
+        return APR_NOTFOUND;
     }
     ret = slotmem_mem(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
@@ -480,8 +480,8 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
     }
 
     inuse = (slot->base + (slot->size * slot->num));
-    if (!inuse[id]) {
-        return APR_ENOSHMAVAIL;
+    if (id >= slot->num || !inuse[id] ) {
+        return APR_NOTFOUND;
     }
     ret = slotmem_mem(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
@@ -541,9 +541,9 @@ static apr_status_t slotmem_return(ap_slotmem_t *slot, unsigned int id)
     inuse = (slot->base + (slot->size * slot->num));
 
     SLOTMEM_LOCK(slot->smutex);
-    if (!inuse[id]) {
+    if (id >= slot->num || !inuse[id] ) {
         SLOTMEM_UNLOCK(slot->smutex);
-        return APR_ENOSHMAVAIL;
+        return APR_NOTFOUND;
     }
     inuse[id] = 0;
     SLOTMEM_UNLOCK(slot->smutex);
