@@ -48,7 +48,7 @@ struct ap_slotmem_t {
     apr_pool_t           *gpool;      /* per segment global pool */
     apr_global_mutex_t   *smutex;     /* mutex */
     struct ap_slotmem_t  *next;       /* location of next allocated segment */
-    unsigned int         *inuse;      /* is-use flag table*/
+    char                 *inuse;      /* in-use flag table*/
 };
 
 
