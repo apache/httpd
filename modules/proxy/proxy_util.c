@@ -1864,7 +1864,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     if (worker->cp == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
             "can not create connection pool");
-        return ;
+        return APR_EGENERAL;
     } 
 
 #if APR_HAS_THREADS
