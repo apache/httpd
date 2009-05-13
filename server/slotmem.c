@@ -56,6 +56,12 @@ AP_DECLARE(apr_status_t) ap_slotmem_attach(ap_slotmem_storage_method *sm,
     return (sm->slotmem_attach(new, name, item_size, item_num, pool));
 }
 
+AP_DECLARE(apr_status_t) ap_slotmem_mem(ap_slotmem_storage_method *sm,
+                                        ap_slotmem_t *s, unsigned int item_id, void**mem)
+{
+    return (sm->slotmem_mem(s, item_id, mem));
+}
+
 AP_DECLARE(apr_status_t) ap_slotmem_get(ap_slotmem_storage_method *sm,
                                         ap_slotmem_t *s, unsigned int item_id,
                                         unsigned char *dest, apr_size_t dest_len)

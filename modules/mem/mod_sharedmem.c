@@ -555,6 +555,7 @@ static const ap_slotmem_storage_method storage = {
     &slotmem_do,
     &slotmem_create,
     &slotmem_attach,
+    &slotmem_mem,
     &slotmem_get,
     &slotmem_put,
     &slotmem_num_slots,
