@@ -132,11 +132,11 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
     return mycandidate;
 }
 
-static apr_status_t reset(proxy_balancer *balancer, server_rec *r) {
+static apr_status_t reset(proxy_balancer *balancer, server_rec *s) {
         return APR_SUCCESS;
 }
 
-static apr_status_t age(proxy_balancer *balancer, server_rec *r) {
+static apr_status_t age(proxy_balancer *balancer, server_rec *s) {
         return APR_SUCCESS;
 }
 
