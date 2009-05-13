@@ -1,13 +1,16 @@
-# This is a comment. I love comments.
-
-# This file controls what Internet media types are sent to the client for
-# given file extension(s).  Sending the correct media type to the client
-# is important so they know how to handle the content of the file.
-# Extra types can either be added here or by using an AddType directive
-# in your config files. For more information about Internet media types,
-# please read RFC 2045, 2046, 2047, 2048, and 2077.  The Internet media type
-# registry is at <http://www.iana.org/assignments/media-types/>.
-
+# This file maps Internet media types to unique file extension(s).
+# Although created for httpd, this file is used by many software systems
+# and has been placed in the public domain for unlimited redisribution.
+#
+# The table below contains both registered and (common) unregistered types.
+# A type that has no unique extension can be ignored -- they are listed
+# here to guide configurations toward known types and to make it easier to
+# identify "new" types.  File extensions are also commonly used to indicate
+# content languages and encodings, so choose them carefully.
+#
+# Internet media types should be registered as described in RFC 4288.
+# The registry is at <http://www.iana.org/assignments/media-types/>.
+#
 # MIME type					Extensions
 application/activemessage
 application/andrew-inset			ez
