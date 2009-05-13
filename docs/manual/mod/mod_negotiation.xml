@@ -40,7 +40,7 @@
       <code>type-map</code>) which explicitly lists the files
       containing the variants.</li>
 
-      <li>A MultiViews search (enabled by the <code>MultiViews</code>
+      <li>A Multiviews search (enabled by the <code>Multiviews</code>
       <directive module="core">Options</directive>), where the server does
       an implicit filename pattern match, and choose from amongst the
       results.</li>
@@ -147,8 +147,8 @@ Negotiation</a></seealso>
     </dl>
 </section>
 
-<section id="multiviews"><title>MultiViews</title>
-    <p>A MultiViews search is enabled by the <code>MultiViews</code>
+<section id="multiviews"><title>Multiviews</title>
+    <p>A Multiviews search is enabled by the <code>Multiviews</code>
     <directive module="core">Options</directive>. If the server receives a
     request for <code>/some/dir/foo</code> and
     <code>/some/dir/foo</code> does <em>not</em> exist, then the
@@ -159,7 +159,7 @@ Negotiation</a></seealso>
     of them by name. It then chooses the best match to the client's
     requirements, and returns that document.</p>
 
-    <p>The <directive module="mod_mime">MultiViewsMatch</directive>
+    <p>The <directive module="mod_mime">MultiviewsMatch</directive>
     directive configures whether Apache will consider files
     that do not have content negotiation meta-information assigned
     to them when choosing files.</p>
@@ -263,7 +263,7 @@ the client does not express a preference</description>
 <usage>
     <p>The <directive>LanguagePriority</directive> sets the precedence
     of language variants for the case where the client does not
-    express a preference, when handling a MultiViews request. The list
+    express a preference, when handling a Multiviews request. The list
     of <var>MIME-lang</var> are in order of decreasing preference.</p>
 
     <example><title>Example:</title>
