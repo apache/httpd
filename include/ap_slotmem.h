@@ -101,6 +101,14 @@ struct ap_slotmem_storage_method {
      */
     apr_status_t (* slotmem_attach)(ap_slotmem_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool);
     /**
+     * get the memory ptr associated with this worker slot.
+     * @param s ap_slotmem_t to use.
+     * @param item_id item to return for 0 to item_num
+     * @param mem address to store the pointer to the slot
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* slotmem_mem)(ap_slotmem_t *s, unsigned int item_id, void**mem);
+    /**
      * retrieve the memory associated with this worker slot.
      * @param s ap_slotmem_t to use.
      * @param item_id item to return for 0 to item_num
@@ -189,6 +197,15 @@ AP_DECLARE(apr_status_t) ap_slotmem_create(ap_slotmem_storage_method *sm, ap_slo
  * @return APR_SUCCESS if all went well
  */
 AP_DECLARE(apr_status_t) ap_slotmem_attach(ap_slotmem_storage_method *sm, ap_slotmem_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool);
+/**
+ * get the memory associated with this worker slot.
+ * @param sm ap_slotmem_storage_method provider obtained
+ * @param s ap_slotmem_t to use.
+ * @param item_id item to return for 0 to item_num
+ * @param mem address to store the pointer to the slot
+ * @return APR_SUCCESS if all went well
+ */
+AP_DECLARE(apr_status_t) ap_slotmem_mem(ap_slotmem_storage_method *sm, ap_slotmem_t *s, unsigned int item_id, void**mem);
 /**
  * retrieve the memory associated with this worker slot.
  * @param sm ap_slotmem_storage_method provider obtained
