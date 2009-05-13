@@ -165,12 +165,12 @@
         >http://www.openssl.org/source/</a>, in order to compile 
         <module>mod_ssl</module> or the abs project (<code>ab.exe</code> 
         enabled with SSL support.) To prepare OpenSSL for both 
-        <code>release</code> and <code>debug</code> builds of Apache, and
-        disable the patent protected features in OpenSSL,  you might use 
-        the following build commands:</p>
+        <code>release</code> and <code>debug</code> builds of Apache,
+        disable the patent encumbered features in OpenSSL, using zlib
+        as compiled above you might use the following build commands:</p>
 
         <example>
-          perl Configure no-mdc2 no-rc5 no-idea enable-zlib VC-WIN32 -Ipath/to/srclib/zlib<br />
+          perl Configure no-rc5 no-idea enable-zlib VC-WIN32 -Ipath/to/srclib/zlib<br />
           ms\do_masm.bat<br />
           nmake -f ms\ntdll.mak
         </example>
