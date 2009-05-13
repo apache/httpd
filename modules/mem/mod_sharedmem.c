@@ -48,7 +48,7 @@ struct ap_slotmem_t {
     apr_pool_t           *gpool;      /* per segment global pool */
     apr_global_mutex_t   *smutex;     /* mutex */
     struct ap_slotmem_t  *next;       /* location of next allocated segment */
-    char                 *inuse;      /* is-use flag table*/
+    unsigned int         *inuse;      /* is-use flag table*/
 };
 
 
@@ -449,8 +449,12 @@ static apr_status_t slotmem_get(ap_slotmem_t *slot, unsigned int id, unsigned ch
 {
 
     void *ptr;
+    char *inuse = (slot->base + (slot->size * slot->num));
     apr_status_t ret;
 
+    if (!inuse[id]) {
+        return APR_ENOSHMAVAIL;
+    }
     ret = slotmem_mem(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
@@ -463,17 +467,17 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
 {
 
     void *ptr;
-    char *inuse;
+    char *inuse = (slot->base + (slot->size * slot->num));
     apr_status_t ret;
 
+    if (!inuse[id]) {
+        return APR_ENOSHMAVAIL;
+    }
     ret = slotmem_mem(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
     }
     memcpy(ptr, src, src_len); /* bounds check? */
-    /* We know the id fit it */
-    inuse = (slot->base + (slot->size * slot->num));
-    inuse[id] = 1;
     return APR_SUCCESS;
 }
 
@@ -485,6 +489,53 @@ static unsigned int slotmem_num_slots(ap_slotmem_t *slot)
 static apr_size_t slotmem_slot_size(ap_slotmem_t *slot)
 {
     return slot->size;
+}
+
+static apr_status_t slotmem_grab(ap_slotmem_t *slot, unsigned int *id)
+{
+
+    unsigned int i;
+    char *inuse;
+
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+    inuse = (slot->base + (slot->size * slot->num));
+
+    SLOTMEM_LOCK(slot->smutex);
+    for (i = 0; i < slot->num; i++, inuse++) {
+        if (!*inuse) {
+            break;
+        }
+    }
+    if (i >= slot->num) {
+        SLOTMEM_UNLOCK(slot->smutex);
+        return APR_ENOSHMAVAIL;
+    }
+    *inuse = 1;
+    *id = i;
+    SLOTMEM_UNLOCK(slot->smutex);
+    return APR_SUCCESS;
+}
+
+static apr_status_t slotmem_return(ap_slotmem_t *slot, unsigned int id)
+{
+
+    char *inuse;
+
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+    inuse = (slot->base + (slot->size * slot->num));
+
+    SLOTMEM_LOCK(slot->smutex);
+    if (!inuse[id]) {
+        SLOTMEM_UNLOCK(slot->smutex);
+        return APR_ENOSHMAVAIL;
+    }
+    inuse[id] = 0;
+    SLOTMEM_UNLOCK(slot->smutex);
+    return APR_SUCCESS;
 }
 
 static const ap_slotmem_storage_method storage = {
