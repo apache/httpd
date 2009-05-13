@@ -104,7 +104,7 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
             }
         }
         ap_proxy_initialize_worker_share(conf, *workers, s);
-        ap_proxy_initialize_worker(*workers, s);
+        ap_proxy_initialize_worker(*workers, s, conf->pool);
         if (!worker_is_initialized) {
             /* Set to the original configuration */
             (*workers)->s->lbstatus = (*workers)->s->lbfactor =

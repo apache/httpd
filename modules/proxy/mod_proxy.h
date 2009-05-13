@@ -570,10 +570,12 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
  * Initize the worker
  * @param worker worker to initialize
  * @param s      current server record
+ * @param p      memory pool used for mutex and Connection pool.
  * @return       APR_SUCCESS or error code
  */
 PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker,
-                                                       server_rec *s);
+                                                       server_rec *s,
+                                                       apr_pool_t *p);
 /**
  * Get the balancer from proxy configuration
  * @param p     memory pool used for finding balancer
