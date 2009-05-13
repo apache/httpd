@@ -22,6 +22,7 @@ application/batch-smtp
 application/beep+xml
 application/cals-1840
 application/ccxml+xml				ccxml
+application/cea-2018+xml
 application/cellml+xml
 application/cnrp+xml
 application/commonground
@@ -42,9 +43,11 @@ application/ecmascript				ecma
 application/edi-consent
 application/edi-x12
 application/edifact
+application/emma+xml				emma
 application/epp+xml
 application/epub+zip				epub
 application/eshop
+application/example
 application/fastinfoset
 application/fastsoap
 application/fits
@@ -52,6 +55,9 @@ application/font-tdpfr				pfr
 application/h224
 application/http
 application/hyperstudio				stk
+application/ibe-key-request+xml
+application/ibe-pkg-reply+xml
+application/ibe-pp-data
 application/iges
 application/im-iscomposing+xml
 application/index
@@ -101,6 +107,8 @@ application/mpeg4-iod-xmt
 application/msword				doc dot
 application/mxf					mxf
 application/nasdata
+application/news-checkgroups
+application/news-groupinfo
 application/news-transmission
 application/nss
 application/ocsp-request
@@ -200,6 +208,9 @@ application/vnd.adobe.air-application-installer-package+zip	air
 application/vnd.adobe.xdp+xml			xdp
 application/vnd.adobe.xfdf			xfdf
 application/vnd.aether.imp
+application/vnd.airzip.filesecure.azf		azf
+application/vnd.airzip.filesecure.azs		azs
+application/vnd.amazon.ebook			azw
 application/vnd.americandynamics.acc		acc
 application/vnd.amiga.ami			ami
 application/vnd.android.package-archive		apk
@@ -212,6 +223,7 @@ application/vnd.audiograph			aep
 application/vnd.autopackage
 application/vnd.avistar+xml
 application/vnd.blueice.multipass		mpm
+application/vnd.bluetooth.ep.oob
 application/vnd.bmi				bmi
 application/vnd.businessobjects			rep
 application/vnd.cab-jscript
@@ -246,15 +258,28 @@ application/vnd.curl.pcurl			pcurl
 application/vnd.cybank
 application/vnd.data-vision.rdz			rdz
 application/vnd.denovo.fcselayout-link		fe_launch
+application/vnd.dir-bi.plate-dl-nosuffix
 application/vnd.dna				dna
 application/vnd.dolby.mlp			mlp
+application/vnd.dolby.mobile.1
+application/vnd.dolby.mobile.2
 application/vnd.dpgraph				dpg
 application/vnd.dreamfactory			dfac
 application/vnd.dvb.esgcontainer
+application/vnd.dvb.ipdcdftnotifaccess
 application/vnd.dvb.ipdcesgaccess
+application/vnd.dvb.ipdcroaming
 application/vnd.dvb.iptv.alfec-base
 application/vnd.dvb.iptv.alfec-enhancement
+application/vnd.dvb.notif-aggregate-root+xml
+application/vnd.dvb.notif-container+xml
+application/vnd.dvb.notif-generic+xml
+application/vnd.dvb.notif-ia-msglist+xml
+application/vnd.dvb.notif-ia-registration-request+xml
+application/vnd.dvb.notif-ia-registration-response+xml
+application/vnd.dvb.notif-init+xml
 application/vnd.dxr
+application/vnd.dynageo				geo
 application/vnd.ecdis-update
 application/vnd.ecowin.chart			mag
 application/vnd.ecowin.filerequest
@@ -262,6 +287,7 @@ application/vnd.ecowin.fileupdate
 application/vnd.ecowin.series
 application/vnd.ecowin.seriesrequest
 application/vnd.ecowin.seriesupdate
+application/vnd.emclient.accessrequest+xml
 application/vnd.enliven				nml
 application/vnd.epson.esf			esf
 application/vnd.epson.msf			msf
@@ -270,10 +296,25 @@ application/vnd.epson.salt			slt
 application/vnd.epson.ssf			ssf
 application/vnd.ericsson.quickcall
 application/vnd.eszigno3+xml			es3 et3
+application/vnd.etsi.aoc+xml
+application/vnd.etsi.cug+xml
+application/vnd.etsi.iptvcommand+xml
+application/vnd.etsi.iptvdiscovery+xml
+application/vnd.etsi.iptvprofile+xml
+application/vnd.etsi.iptvsad-bc+xml
+application/vnd.etsi.iptvsad-cod+xml
+application/vnd.etsi.iptvsad-npvr+xml
+application/vnd.etsi.iptvueprofile+xml
+application/vnd.etsi.mcid+xml
+application/vnd.etsi.sci+xml
+application/vnd.etsi.simservs+xml
 application/vnd.eudora.data
 application/vnd.ezpix-album			ez2
 application/vnd.ezpix-package			ez3
+application/vnd.f-secure.mobile
 application/vnd.fdf				fdf
+application/vnd.fdsn.mseed			mseed
+application/vnd.fdsn.seed			seed dataless
 application/vnd.ffsns
 application/vnd.fints
 application/vnd.flographit			gph
@@ -297,6 +338,9 @@ application/vnd.fujixerox.docuworks.binder	xbd
 application/vnd.fut-misnet
 application/vnd.fuzzysheet			fzs
 application/vnd.genomatix.tuxedo		txd
+application/vnd.geogebra.file			ggb
+application/vnd.geogebra.tool			ggt
+application/vnd.geometry-explorer		gex gre
 application/vnd.gmx				gmx
 application/vnd.google-earth.kml+xml		kml
 application/vnd.google-earth.kmz		kmz
@@ -333,6 +377,7 @@ application/vnd.igloader			igl
 application/vnd.immervision-ivp			ivp
 application/vnd.immervision-ivu			ivu
 application/vnd.informedcontrol.rms+xml
+application/vnd.informix-visionary
 application/vnd.intercon.formnet		xpw xpx
 application/vnd.intertrust.digibox
 application/vnd.intertrust.nncp
@@ -419,10 +464,10 @@ application/vnd.ms-artgalry			cil
 application/vnd.ms-asf				asf
 application/vnd.ms-cab-compressed		cab
 application/vnd.ms-excel			xls xlm xla xlc xlt xlw
-application/vnd.ms-excel.addin.macroEnabled.12		xlam
-application/vnd.ms-excel.sheet.binary.macroEnabled.12	xlsb
-application/vnd.ms-excel.sheet.macroEnabled.12		xlsm
-application/vnd.ms-excel.template.macroEnabled.12	xltm
+application/vnd.ms-excel.addin.macroenabled.12		xlam
+application/vnd.ms-excel.sheet.binary.macroenabled.12	xlsb
+application/vnd.ms-excel.sheet.macroenabled.12		xlsm
+application/vnd.ms-excel.template.macroenabled.12	xltm
 application/vnd.ms-fontobject			eot
 application/vnd.ms-htmlhelp			chm
 application/vnd.ms-ims				ims
@@ -431,19 +476,19 @@ application/vnd.ms-pki.seccat			cat
 application/vnd.ms-pki.stl			stl
 application/vnd.ms-playready.initiator+xml
 application/vnd.ms-powerpoint			ppt pps pot
-application/vnd.ms-powerpoint.addin.macroEnabled.12		ppam
-application/vnd.ms-powerpoint.presentation.macroEnabled.12	pptm
-application/vnd.ms-powerpoint.slide.macroEnabled.12		sldm
-application/vnd.ms-powerpoint.slideshow.macroEnabled.12		ppsm
-application/vnd.ms-powerpoint.template.macroEnabled.12		potm
+application/vnd.ms-powerpoint.addin.macroenabled.12		ppam
+application/vnd.ms-powerpoint.presentation.macroenabled.12	pptm
+application/vnd.ms-powerpoint.slide.macroenabled.12		sldm
+application/vnd.ms-powerpoint.slideshow.macroenabled.12		ppsm
+application/vnd.ms-powerpoint.template.macroenabled.12		potm
 application/vnd.ms-project			mpp mpt
 application/vnd.ms-tnef
 application/vnd.ms-wmdrm.lic-chlg-req
 application/vnd.ms-wmdrm.lic-resp
 application/vnd.ms-wmdrm.meter-chlg-req
 application/vnd.ms-wmdrm.meter-resp
-application/vnd.ms-word.document.macroEnabled.12	docm
-application/vnd.ms-word.template.macroEnabled.12	dotm
+application/vnd.ms-word.document.macroenabled.12	docm
+application/vnd.ms-word.template.macroenabled.12	dotm
 application/vnd.ms-works			wps wks wcm wdb
 application/vnd.ms-wpl				wpl
 application/vnd.ms-xpsdocument			xps
@@ -483,6 +528,7 @@ application/vnd.novadigm.edx			edx
 application/vnd.novadigm.ext			ext
 application/vnd.oasis.opendocument.chart		odc
 application/vnd.oasis.opendocument.chart-template	otc
+application/vnd.oasis.opendocument.database		odb
 application/vnd.oasis.opendocument.formula		odf
 application/vnd.oasis.opendocument.formula-template	odft
 application/vnd.oasis.opendocument.graphics		odg
@@ -540,6 +586,7 @@ application/vnd.openxmlformats-officedocument.spreadsheetml.template	xltx
 application/vnd.openxmlformats-officedocument.wordprocessingml.document	docx
 application/vnd.openxmlformats-officedocument.wordprocessingml.template	dotx
 application/vnd.osa.netdeploy
+application/vnd.osgi.bundle
 application/vnd.osgi.dp				dp
 application/vnd.otps.ct-kip+xml
 application/vnd.palm				pdb pqa oprc
@@ -567,13 +614,14 @@ application/vnd.qualcomm.brew-app-res
 application/vnd.quark.quarkxpress		qxd qxt qwd qwt qxl qxb
 application/vnd.rapid
 application/vnd.recordare.musicxml		mxl
-application/vnd.recordare.musicxml+xml
+application/vnd.recordare.musicxml+xml		musicxml
 application/vnd.renlearn.rlprint
 application/vnd.rim.cod				cod
 application/vnd.rn-realmedia			rm
 application/vnd.route66.link66+xml		link66
 application/vnd.ruckus.download
 application/vnd.s3sms
+application/vnd.sbm.cid
 application/vnd.sbm.mid2
 application/vnd.scribus
 application/vnd.sealed.3df
@@ -597,6 +645,7 @@ application/vnd.shana.informed.interchange	iif
 application/vnd.shana.informed.package		ipk
 application/vnd.simtech-mindmapper		twd twds
 application/vnd.smaf				mmf
+application/vnd.smart.teacher			teacher
 application/vnd.software602.filler.form+xml
 application/vnd.software602.filler.form-xml-zip
 application/vnd.solent.sdkm+xml			sdkm sdkd
@@ -631,6 +680,7 @@ application/vnd.symbian.install			sis sisx
 application/vnd.syncml+xml			xsm
 application/vnd.syncml.dm+wbxml			bdm
 application/vnd.syncml.dm+xml			xdm
+application/vnd.syncml.dm.notification
 application/vnd.syncml.ds.notification
 application/vnd.tao.intent-module-archive	tao
 application/vnd.tmobile-livetv			tmo
@@ -682,6 +732,7 @@ application/vnd.wv.csp+xml
 application/vnd.wv.ssp+xml
 application/vnd.xara				xar
 application/vnd.xfdl				xfdl
+application/vnd.xfdl.webform
 application/vnd.xmi+xml
 application/vnd.xmpie.cpkg
 application/vnd.xmpie.dpkg
@@ -691,9 +742,12 @@ application/vnd.xmpie.xlim
 application/vnd.yamaha.hv-dic			hvd
 application/vnd.yamaha.hv-script		hvs
 application/vnd.yamaha.hv-voice			hvp
+application/vnd.yamaha.openscoreformat			osf
+application/vnd.yamaha.openscoreformat.osfpvg+xml	osfpvg
 application/vnd.yamaha.smaf-audio		saf
 application/vnd.yamaha.smaf-phrase		spf
 application/vnd.yellowriver-custom-menu		cmp
+application/vnd.zul				zir zirz
 application/vnd.zzazz.deck+xml			zaz
 application/voicexml+xml			vxml
 application/watcherinfo+xml
@@ -790,8 +844,11 @@ application/xcap-caps+xml
 application/xcap-el+xml
 application/xcap-error+xml
 application/xcap-ns+xml
+application/xcon-conference-info-diff+xml
+application/xcon-conference-info+xml
 application/xenc+xml				xenc
 application/xhtml+xml				xhtml xht
+application/xhtml-voice+xml
 application/xml					xml xsl
 application/xml-dtd				dtd
 application/xml-external-parsed-entity
@@ -833,6 +890,8 @@ audio/evrcb1
 audio/evrcwb
 audio/evrcwb0
 audio/evrcwb1
+audio/example
+audio/g719
 audio/g722
 audio/g7221
 audio/g723
@@ -864,6 +923,8 @@ audio/mpeg4-generic
 audio/ogg					oga ogg spx
 audio/parityfec
 audio/pcma
+audio/pcma-wb
+audio/pcmu-wb
 audio/pcmu
 audio/prs.sid
 audio/qcelp
@@ -892,7 +953,13 @@ audio/vnd.cns.anp1
 audio/vnd.cns.inf1
 audio/vnd.digital-winds				eol
 audio/vnd.dlna.adts
+audio/vnd.dolby.heaac.1
+audio/vnd.dolby.heaac.2
 audio/vnd.dolby.mlp
+audio/vnd.dolby.mps
+audio/vnd.dolby.pl2
+audio/vnd.dolby.pl2x
+audio/vnd.dolby.pl2z
 audio/vnd.dts					dts
 audio/vnd.dts.hd				dtshd
 audio/vnd.everad.plj
@@ -929,6 +996,7 @@ chemical/x-pdb					pdb
 chemical/x-xyz					xyz
 image/bmp					bmp
 image/cgm					cgm
+image/example
 image/fits
 image/g3fax					g3
 image/gif					gif
@@ -960,6 +1028,7 @@ image/vnd.microsoft.icon
 image/vnd.mix
 image/vnd.ms-modi				mdi
 image/vnd.net-fpx				npx
+image/vnd.radiance
 image/vnd.sealed.png
 image/vnd.sealedmedia.softseal.gif
 image/vnd.sealedmedia.softseal.jpg
@@ -983,12 +1052,14 @@ image/x-xwindowdump				xwd
 message/cpim
 message/delivery-status
 message/disposition-notification
+message/example
 message/external-body
 message/global
 message/global-delivery-status
 message/global-disposition-notification
 message/global-headers
 message/http
+message/imdn+xml
 message/news
 message/partial
 message/rfc822					eml mime
@@ -997,11 +1068,13 @@ message/sip
 message/sipfrag
 message/tracking-status
 message/vnd.si.simp
+model/example
 model/iges					igs iges
 model/mesh					msh mesh silo
 model/vnd.dwf					dwf
 model/vnd.flatland.3dml
 model/vnd.gdl					gdl
+model/vnd.gs-gdl
 model/vnd.gs.gdl
 model/vnd.gtw					gtw
 model/vnd.moml+xml
@@ -1015,6 +1088,7 @@ multipart/appledouble
 multipart/byteranges
 multipart/digest
 multipart/encrypted
+multipart/example
 multipart/form-data
 multipart/header-set
 multipart/mixed
@@ -1028,8 +1102,11 @@ text/css					css
 text/csv					csv
 text/directory
 text/dns
+text/ecmascript
 text/enriched
+text/example
 text/html					html htm
+text/javascript
 text/parityfec
 text/plain					txt text conf def list log in
 text/prs.fallenstein.rst
@@ -1089,6 +1166,7 @@ video/bmpeg
 video/bt656
 video/celb
 video/dv
+video/example
 video/h261					h261
 video/h263					h263
 video/h263-1998
