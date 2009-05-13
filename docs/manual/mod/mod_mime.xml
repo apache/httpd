@@ -561,14 +561,14 @@ type</description>
 <directivesynopsis>
 <name>MultiviewsMatch</name>
 <description>The types of files that will be included when searching for
-a matching file with MultiViews</description>
-<syntax>MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
-[Handlers|Filters]</syntax>
+a matching file with Multiviews</description>
+<syntax>MultiviewsMatch Any|NegotiatedOnly|[Filters] [Handlers]</syntax>
 <default>MultiviewsMatch NegotiatedOnly</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Available in Apache 2.0.26 and later.</compatibility>
+<compatibility>Available in Apache 2.0.26 and later.  NegotiatedOnly behaves 
+ as-advertised in 2.2.11 and later.</compatibility>
 
 <usage>
     <p><directive>MultiviewsMatch</directive> permits three different
