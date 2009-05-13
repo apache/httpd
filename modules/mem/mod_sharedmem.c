@@ -449,9 +449,14 @@ static apr_status_t slotmem_get(ap_slotmem_t *slot, unsigned int id, unsigned ch
 {
 
     void *ptr;
-    char *inuse = (slot->base + (slot->size * slot->num));
+    char *inuse;
     apr_status_t ret;
 
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+
+    inuse = (slot->base + (slot->size * slot->num));
     if (!inuse[id]) {
         return APR_ENOSHMAVAIL;
     }
@@ -467,9 +472,14 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
 {
 
     void *ptr;
-    char *inuse = (slot->base + (slot->size * slot->num));
+    char *inuse;
     apr_status_t ret;
 
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+
+    inuse = (slot->base + (slot->size * slot->num));
     if (!inuse[id]) {
         return APR_ENOSHMAVAIL;
     }
@@ -500,6 +510,7 @@ static apr_status_t slotmem_grab(ap_slotmem_t *slot, unsigned int *id)
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
+
     inuse = (slot->base + (slot->size * slot->num));
 
     SLOTMEM_LOCK(slot->smutex);
@@ -526,6 +537,7 @@ static apr_status_t slotmem_return(ap_slotmem_t *slot, unsigned int id)
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
+
     inuse = (slot->base + (slot->size * slot->num));
 
     SLOTMEM_LOCK(slot->smutex);
