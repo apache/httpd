@@ -328,7 +328,8 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
         rc = log_child(p, s->error_fname + 1, &dummy, is_main);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
-                         "Couldn't start ErrorLog process");
+                         "Couldn't start ErrorLog process '%s'.",
+                         s->error_fname + 1);
             return DONE;
         }
 
@@ -1030,7 +1031,8 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     rc = log_child(p, program, &dummy, 0);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
-                     "Couldn't start piped log process");
+                     "Couldn't start piped log process '%s'.",
+                     (program == NULL) ? "NULL" : program);
         return NULL;
     }
 
