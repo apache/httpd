@@ -254,18 +254,13 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
         }
 
         /* first try to attach to existing slotmem */
-        if (next) {
-            for (;;) {
-                if (strcmp(next->name, fname) == 0) {
-                    /* we already have it */
-                    *new = next;
-                    return APR_SUCCESS;
-                }
-                if (!next->next) {
-                    break;
-                }
-                next = next->next;
+        while (next) {
+            if (strcmp(next->name, fname) == 0) {
+                /* we already have it */
+                *new = next;
+                return APR_SUCCESS;
             }
+            next = next->next;
         }
     }
     else {
@@ -375,19 +370,15 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     }
 
     /* first try to attach to existing slotmem */
-    if (next) {
-        for (;;) {
-            if (strcmp(next->name, fname) == 0) {
-                /* we already have it */
-                *new = next;
-                *item_size = next->size;
-                *item_num = next->num;
-                return APR_SUCCESS;
-            }
-            if (!next->next)
-                break;
-            next = next->next;
+    while (next) {
+        if (strcmp(next->name, fname) == 0) {
+            /* we already have it */
+            *new = next;
+            *item_size = next->size;
+            *item_num = next->num;
+            return APR_SUCCESS;
         }
+        next = next->next;
     }
 
     /* first try to attach to existing shared memory */
