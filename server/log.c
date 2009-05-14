@@ -141,14 +141,6 @@ static apr_pool_t *stderr_pool = NULL;
 
 static apr_file_t *stderr_log = NULL;
 
-/* wrap a piped_log* with additional info
- * about special stderr treatment used for main
- * error logger */
-typedef struct piped_log_wrapper {
-    piped_log *pl;
-    int special_stderr;
-} piped_log_wrapper;
-
 /* track pipe handles to close in child process */
 typedef struct read_handle_t {
     struct read_handle_t *next;
@@ -265,7 +257,6 @@ static void log_child_errfn(apr_pool_t *pool, apr_status_t err,
                  "%s", description);
 }
 
-#ifndef AP_HAVE_RELIABLE_PIPED_LOGS
 /* Create a child process running PROGNAME with a pipe connected to
  * the childs stdin.  The write-end of the pipe will be placed in
  * *FPIN on successful return.  If dummy_stderr is non-zero, the
@@ -319,11 +310,6 @@ static int log_child(apr_pool_t *p, const char *progname,
 
     return rc;
 }
-#endif
-
-/* forward declaration */
-static piped_log* piped_log_open(apr_pool_t *p, const char *program,
-                                 int special_stderr);
 
 /* Open the error log for the given server_rec.  If IS_MAIN is
  * non-zero, s is the main server. */
@@ -333,28 +319,20 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
     int rc;
 
     if (*s->error_fname == '|') {
-        piped_log *pl;
-        fname = ap_server_root_relative(p, s->error_fname + 1);
-
-        if (!fname) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, NULL,
-                         "%s: Invalid error log path '%s'.",
-                         ap_server_argv0, s->error_fname);
-            return DONE;
-        }
+        apr_file_t *dummy = NULL;
 
         /* Spawn a new child logger.  If this is the main server_rec,
          * the new child must use a dummy stderr since the current
          * stderr might be a pipe to the old logger.  Otherwise, the
          * child inherits the parents stderr. */
-        pl = piped_log_open(p, fname, is_main);
-        if (pl == NULL) {
-            ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                         "%s: Couldn't start ErrorLog process '%s'.",
-                         ap_server_argv0, fname);
+        rc = log_child(p, s->error_fname + 1, &dummy, is_main);
+        if (rc != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
+                         "Couldn't start ErrorLog process");
             return DONE;
         }
-        s->error_log = ap_piped_log_write_fd(pl);
+
+        s->error_log = dummy;
     }
 
 #ifdef HAVE_SYSLOG
@@ -383,7 +361,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
         fname = ap_server_root_relative(p, s->error_fname);
         if (!fname) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, APR_EBADPATH, NULL,
-                         "%s: Invalid error log path '%s'.",
+                         "%s: Invalid error log path %s.",
                          ap_server_argv0, s->error_fname);
             return DONE;
         }
@@ -391,7 +369,7 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
                                APR_APPEND | APR_WRITE | APR_CREATE | APR_LARGEFILE,
                                APR_OS_DEFAULT, p)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
-                         "%s: could not open error log file '%s'.",
+                         "%s: could not open error log file %s.",
                          ap_server_argv0, fname);
             return DONE;
         }
@@ -428,7 +406,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
      */
     apr_pool_create(&stderr_p, apr_pool_parent_get(p));
     apr_pool_tag(stderr_p, "stderr_pool");
-
+    
     if (open_error_log(s_main, 1, stderr_p) != OK) {
         return DONE;
     }
@@ -436,7 +414,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
     replace_stderr = 1;
     if (s_main->error_log) {
         apr_status_t rv;
-
+        
         /* Replace existing stderr with new log. */
         apr_file_flush(s_main->error_log);
         rv = apr_file_dup2(stderr_log, s_main->error_log, stderr_p);
@@ -874,23 +852,16 @@ AP_DECLARE(void) ap_log_assert(const char *szExp, const char *szFile,
 
 /* piped log support */
 
-AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
-{
-   return piped_log_open(p, program, 0);
-}
-
 #ifdef AP_HAVE_RELIABLE_PIPED_LOGS
 /* forward declaration */
 static void piped_log_maintenance(int reason, void *data, apr_wait_t status);
 
 /* Spawn the piped logger process pl->program. */
-static apr_status_t piped_log_spawn(piped_log_wrapper *plw)
+static apr_status_t piped_log_spawn(piped_log *pl)
 {
     apr_procattr_t *procattr;
     apr_proc_t *procnew = NULL;
-    apr_file_t *errfile;
     apr_status_t status;
-    piped_log *pl = plw->pl;
 
     if (((status = apr_procattr_create(&procattr, pl->p)) != APR_SUCCESS) ||
         ((status = apr_procattr_cmdtype_set(procattr,
@@ -899,14 +870,6 @@ static apr_status_t piped_log_spawn(piped_log_wrapper *plw)
                                              ap_piped_log_read_fd(pl),
                                              ap_piped_log_write_fd(pl)))
         != APR_SUCCESS) ||
-        /* If special_stderr is non-zero, the stderr for the child will
-         * be the same as the stdout of the parent. Otherwise the child
-         * will inherit the stderr from the parent. */
-        (plw->special_stderr && (status = apr_file_open_stdout(&errfile, pl->p))
-         != APR_SUCCESS) ||
-        (plw->special_stderr && (status = apr_procattr_child_err_set(procattr,
-                                                                     errfile, NULL))
-         != APR_SUCCESS) ||
         ((status = apr_procattr_child_errfn_set(procattr, log_child_errfn))
          != APR_SUCCESS) ||
         ((status = apr_procattr_error_check_set(procattr, 1)) != APR_SUCCESS)) {
@@ -916,7 +879,6 @@ static apr_status_t piped_log_spawn(piped_log_wrapper *plw)
                      "piped_log_spawn: unable to setup child process '%s': %s",
                      pl->program, apr_strerror(status, buf, sizeof(buf)));
     }
-
     else {
         char **args;
         const char *pname;
@@ -934,7 +896,7 @@ static apr_status_t piped_log_spawn(piped_log_wrapper *plw)
              * avoid a leak. */
             apr_file_close(procnew->in);
             procnew->in = NULL;
-            apr_proc_other_child_register(procnew, piped_log_maintenance, plw,
+            apr_proc_other_child_register(procnew, piped_log_maintenance, pl,
                                           ap_piped_log_write_fd(pl), pl->p);
             close_handle_in_child(pl->p, ap_piped_log_read_fd(pl));
         }
@@ -953,8 +915,7 @@ static apr_status_t piped_log_spawn(piped_log_wrapper *plw)
 
 static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
 {
-    piped_log_wrapper *plw = data;
-    piped_log *pl = plw->pl;
+    piped_log *pl = data;
     apr_status_t stats;
     int mpm_state;
 
@@ -964,7 +925,7 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
         pl->pid = NULL; /* in case we don't get it going again, this
                          * tells other logic not to try to kill it
                          */
-        apr_proc_other_child_unregister(plw);
+        apr_proc_other_child_unregister(pl);
         stats = ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state);
         if (stats != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
@@ -976,26 +937,13 @@ static void piped_log_maintenance(int reason, void *data, apr_wait_t status)
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "piped log program '%s' failed unexpectedly",
                          pl->program);
-
-            /* If special_stderr is non-zero, we need to get the write
-             * end of the pipe back from stderr before spawning. */
-            if ((plw->special_stderr && (stats = apr_file_dup(&ap_piped_log_write_fd(pl),
-                                                              stderr_log, pl->p))
-                != APR_SUCCESS) ||
-               ((stats = piped_log_spawn(plw)) != APR_SUCCESS) ||
-            /* If special_stderr is non-zero, we need to close the write
-             * end of the pipe after spawning, because we write to it via
-             * stderr. */
-               (plw->special_stderr && (stats = apr_file_close(ap_piped_log_write_fd(pl)))
-                != APR_SUCCESS)) {
-
-                char buf[120];
-
+            if ((stats = piped_log_spawn(pl)) != APR_SUCCESS) {
                 /* what can we do?  This could be the error log we're having
                  * problems opening up... */
+                char buf[120];
                 ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                              "piped_log_maintenance: unable to respawn '%s': %s",
-                         pl->program, apr_strerror(stats, buf, sizeof(buf)));
+                             pl->program, apr_strerror(stats, buf, sizeof(buf)));
             }
         }
         break;
@@ -1039,19 +987,14 @@ static apr_status_t piped_log_cleanup(void *data)
 }
 
 
-static piped_log* piped_log_open(apr_pool_t *p, const char *program,
-                                 int special_stderr)
+AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 {
     piped_log *pl;
-    piped_log_wrapper *plw;
 
     pl = apr_palloc(p, sizeof (*pl));
     pl->p = p;
     pl->program = apr_pstrdup(p, program);
     pl->pid = NULL;
-    plw = apr_palloc(p, sizeof (*plw));
-    plw->special_stderr = special_stderr;
-    plw->pl = pl;
     if (apr_file_pipe_create_ex(&ap_piped_log_read_fd(pl),
                                 &ap_piped_log_write_fd(pl),
                                 APR_FULL_BLOCK, p) != APR_SUCCESS) {
@@ -1059,7 +1002,7 @@ static piped_log* piped_log_open(apr_pool_t *p, const char *program,
     }
     apr_pool_cleanup_register(p, pl, piped_log_cleanup,
                               piped_log_cleanup_for_exec);
-    if (piped_log_spawn(plw) != APR_SUCCESS) {
+    if (piped_log_spawn(pl) != APR_SUCCESS) {
         apr_pool_cleanup_kill(p, pl, piped_log_cleanup);
         apr_file_close(ap_piped_log_read_fd(pl));
         apr_file_close(ap_piped_log_write_fd(pl));
@@ -1078,18 +1021,16 @@ static apr_status_t piped_log_cleanup(void *data)
     return APR_SUCCESS;
 }
 
-static piped_log* piped_log_open(apr_pool_t *p, const char *program,
-                                 int special_stderr)
+AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 {
     piped_log *pl;
     apr_file_t *dummy = NULL;
     int rc;
 
-    rc = log_child(p, program, &dummy, special_stderr);
+    rc = log_child(p, program, &dummy, 0);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
-                     "Couldn't start piped log process for '%s'",
-                     (program == NULL) ? "NULL" : program);
+                     "Couldn't start piped log process");
         return NULL;
     }
 
@@ -1115,3 +1056,4 @@ AP_IMPLEMENT_HOOK_VOID(error_log,
                         const request_rec *r, apr_pool_t *pool,
                         const char *errstr), (file, line, level,
                         status, s, r, pool, errstr))
+
