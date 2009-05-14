@@ -6,9 +6,6 @@ Changes with Apache 2.3.3
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
-  *) core: Allow relative pathnames for piped loggers in ErrorLog.
-     [Rainer Jung]
-
   *) Windows: Fix usage message.
      [Rainer Jung]
 
