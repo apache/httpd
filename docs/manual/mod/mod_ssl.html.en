@@ -63,6 +63,8 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeercn">SSLProxyCheckPeerCN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslproxycheckpeerexpire">SSLProxyCheckPeerExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxyengine">SSLProxyEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
@@ -1051,6 +1053,48 @@ contains the appropriate symbolic links. Use the <code>Makefile</code> which
 comes with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> to accomplish this task.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLProxyCARevocationPath /usr/local/apache2/conf/ssl.crl/
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLProxyCheckPeerCN" id="SSLProxyCheckPeerCN">SSLProxyCheckPeerCN</a> <a name="sslproxycheckpeercn" id="sslproxycheckpeercn">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to check the remote server certificates CN field
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCheckPeerCN on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCheckPeerCN off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+This directive sets whether the remote server certificates CN field is
+compared against the hostname of the request URL. If both are not equal
+a 502 status code (Bad Gateway) is sent.
+</p>
+<div class="example"><h3>Example</h3><p><code>
+SSLProxyCheckPeerCN on
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLProxyCheckPeerExpire" id="SSLProxyCheckPeerExpire">SSLProxyCheckPeerExpire</a> <a name="sslproxycheckpeerexpire" id="sslproxycheckpeerexpire">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to check if remote server certificate is expired
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProxyCheckPeerExpire on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProxyCheckPeerExpire off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+This directive sets whether it is checked if the remote server certificate
+is expired or not. If the check fails a 502 status code (Bad Gateway) is
+sent.
+</p>
+<div class="example"><h3>Example</h3><p><code>
+SSLProxyCheckPeerExpire on
 </code></p></div>
 
 </div>
