@@ -406,7 +406,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
      */
     apr_pool_create(&stderr_p, apr_pool_parent_get(p));
     apr_pool_tag(stderr_p, "stderr_pool");
-    
+
     if (open_error_log(s_main, 1, stderr_p) != OK) {
         return DONE;
     }
@@ -414,7 +414,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
     replace_stderr = 1;
     if (s_main->error_log) {
         apr_status_t rv;
-        
+
         /* Replace existing stderr with new log. */
         apr_file_flush(s_main->error_log);
         rv = apr_file_dup2(stderr_log, s_main->error_log, stderr_p);
@@ -1056,4 +1056,3 @@ AP_IMPLEMENT_HOOK_VOID(error_log,
                         const request_rec *r, apr_pool_t *pool,
                         const char *errstr), (file, line, level,
                         status, s, r, pool, errstr))
-
