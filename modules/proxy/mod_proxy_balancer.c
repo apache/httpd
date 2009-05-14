@@ -941,7 +941,6 @@ static void child_init(apr_pool_t *p, server_rec *s)
         /* Initialize shared scoreboard data */
         balancer = (proxy_balancer *)conf->balancers->elts;
         for (i = 0; i < conf->balancers->nelts; i++) {
-            proxy_balancer_method *lbmethod = balancer->lbmethod;
             if (balancer->lbmethod && balancer->lbmethod->reset)
                balancer->lbmethod->reset(balancer, s);
             init_balancer_members(conf, s, balancer);
