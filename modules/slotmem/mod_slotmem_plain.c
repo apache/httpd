@@ -198,20 +198,20 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
-static void ap_plainmem_register_hook(apr_pool_t *p)
+static void ap_slotmem_plain_register_hook(apr_pool_t *p)
 {
     /* XXX: static const char * const prePos[] = { "mod_slotmem.c", NULL }; */
     ap_register_provider(p, AP_SLOTMEM_PROVIDER_GROUP, "plain", "0", &storage);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA plainmem_module = {
+module AP_MODULE_DECLARE_DATA slotmem_plain_module = {
     STANDARD20_MODULE_STUFF,
     NULL,                        /* create per-directory config structure */
     NULL,                        /* merge per-directory config structures */
     NULL,                        /* create per-server config structure */
     NULL,                        /* merge per-server config structures */
     NULL,                        /* command apr_table_t */
-    ap_plainmem_register_hook    /* register hooks */
+    ap_slotmem_plain_register_hook    /* register hooks */
 };
 

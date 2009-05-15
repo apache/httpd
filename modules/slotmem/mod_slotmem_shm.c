@@ -554,19 +554,19 @@ static const ap_slotmem_provider_t storage = {
 };
 
 /* make the storage usuable from outside */
-static const ap_slotmem_provider_t *sharedmem_getstorage(void)
+static const ap_slotmem_provider_t *slotmem_shm_getstorage(void)
 {
     return (&storage);
 }
 
 /* initialise the global pool */
-static void sharedmem_initgpool(apr_pool_t *p)
+static void slotmem_shm_initgpool(apr_pool_t *p)
 {
     gpool = p;
 }
 
 /* Add the pool_clean routine */
-static void sharedmem_initialize_cleanup(apr_pool_t *p)
+static void slotmem_shm_initialize_cleanup(apr_pool_t *p)
 {
     apr_pool_cleanup_register(p, &globallistmem, cleanup_slotmem, apr_pool_cleanup_null);
 }
@@ -582,7 +582,7 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
     apr_status_t rv;
     void *data;
     apr_file_t *fmutex;
-    const char *userdata_key = "sharedmem_post_config";
+    const char *userdata_key = "slotmem_shm_post_config";
 
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
@@ -594,15 +594,15 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
     rv = apr_temp_dir_get(&temp_dir, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "sharedmem: search for temporary directory failed");
+                     "slotmem_shm: search for temporary directory failed");
         return rv;
     }
-    apr_filepath_merge(&template, temp_dir, "sharedmem.lck.XXXXXX",
+    apr_filepath_merge(&template, temp_dir, "slotmem_shm.lck.XXXXXX",
                        APR_FILEPATH_NATIVE, p);
     rv = apr_file_mktemp(&fmutex, template, 0, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "sharedmem: creation of mutex file in directory %s failed",
+                     "slotmem_shm: creation of mutex file in directory %s failed",
                      temp_dir);
         return rv;
     }
@@ -610,14 +610,14 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
     rv = apr_file_name_get(&mutex_fname, fmutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "sharedmem: unable to get mutex fname");
+                     "slotmem_shm: unable to get mutex fname");
         return rv;
     }
 
     rv = apr_file_close(fmutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "sharedmem: could not close mutex file");
+                     "slotmem_shm: could not close mutex file");
         return rv;
     }
 
@@ -625,7 +625,7 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
                                  mutex_fname, APR_LOCK_DEFAULT, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "sharedmem: creation of mutex failed");
+                     "slotmem_shm: creation of mutex failed");
         return rv;
     }
 
@@ -633,12 +633,12 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
     rv = ap_unixd_set_global_mutex_perms(smutex);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "sharedmem: failed to set mutex permissions");
+                     "slotmem_shm: failed to set mutex permissions");
         return rv;
     }
 #endif
 
-    sharedmem_initialize_cleanup(p);
+    slotmem_shm_initialize_cleanup(p);
     return OK;
 }
 
@@ -654,7 +654,7 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
             "Fatal error: unable to create global pool for shared slotmem");
         return rv;
     }
-    sharedmem_initgpool(global_pool);
+    slotmem_shm_initgpool(global_pool);
     return OK;
 }
 
@@ -672,22 +672,22 @@ static void child_init(apr_pool_t *p, server_rec *s)
     }
 }
 
-static void ap_sharedmem_register_hook(apr_pool_t *p)
+static void ap_slotmem_shm_register_hook(apr_pool_t *p)
 {
-    const ap_slotmem_provider_t *storage = sharedmem_getstorage();
+    const ap_slotmem_provider_t *storage = slotmem_shm_getstorage();
     ap_register_provider(p, AP_SLOTMEM_PROVIDER_GROUP, "shared", "0", storage);
     ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA sharedmem_module = {
+module AP_MODULE_DECLARE_DATA slotmem_shm_module = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */
     NULL,                       /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
     NULL,                       /* command apr_table_t */
-    ap_sharedmem_register_hook  /* register hooks */
+    ap_slotmem_shm_register_hook  /* register hooks */
 };
 
