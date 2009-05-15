@@ -1102,7 +1102,21 @@ AP_DECLARE(piped_log *) ap_open_piped_log_ex(apr_pool_t *p,
 AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p,
                                           const char *program)
 {
-   return ap_open_piped_log_ex(p, program, APR_PROGRAM_ENV);
+    apr_cmdtype_e cmdtype = APR_PROGRAM_ENV;
+
+    /* In 2.4 favor PROGRAM_ENV, accept "||prog" syntax for compatibility
+     * and "|$cmd" to override the default.
+     * Any 2.2 backport would continue to favor SHELLCMD_ENV so there 
+     * accept "||prog" to override, and "|$cmd" to ease conversion.
+     */
+    if (*program == '|')
+        ++program;
+    if (*program == '$') {
+        cmdtype = APR_SHELLCMD_ENV;
+        ++program;
+    }
+
+    return ap_open_piped_log_ex(p, program, cmdtype);
 }
 
 AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
