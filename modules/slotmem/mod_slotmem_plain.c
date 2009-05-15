@@ -20,6 +20,8 @@
 
 #include  "ap_slotmem.h"
 
+#define AP_SLOTMEM_IS_PREGRAB(t) (t->type & AP_SLOTMEM_TYPE_PREGRAB)
+
 struct ap_slotmem_instance_t {
     char                 *name;       /* per segment name */
     void                 *base;       /* data set start */
@@ -40,14 +42,19 @@ static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_f
 {
     unsigned int i;
     void *ptr;
+    char *inuse;
 
     if (!mem)
         return APR_ENOSHMAVAIL;
 
     ptr = mem->base;
-    for (i = 0; i < mem->num; i++) {
-        ptr = ptr + mem->size;
-        func((void *) ptr, data, pool);
+    inuse = mem->inuse;
+    for (i = 0; i < mem->num; i++, inuse++) {
+        if (!AP_SLOTMEM_IS_PREGRAB(mem) ||
+           (AP_SLOTMEM_IS_PREGRAB(mem) && *inuse)) {
+            func((void *) ptr, data, pool);
+        }
+        ptr += mem->size;
     }
     return APR_SUCCESS;
 }
@@ -56,6 +63,8 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
 {
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
+    apr_size_t basesize = (item_size * item_num);
+
     const char *fname;
 
     if (name) {
@@ -79,7 +88,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
 
     /* create the memory using the gpool */
     res = (ap_slotmem_instance_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_instance_t));
-    res->base = apr_pcalloc(gpool, item_size * item_num);
+    res->base = apr_pcalloc(gpool, basesize + (item_num * sizeof(char)));
     if (!res->base)
         return APR_ENOSHMAVAIL;
 
@@ -89,6 +98,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
     res->num = item_num;
     res->next = NULL;
     res->type = type;
+    res->inuse = res->base + basesize;
     if (globallistmem == NULL)
         globallistmem = res;
     else
@@ -146,10 +156,18 @@ static apr_status_t slotmem_dptr(ap_slotmem_instance_t *score, unsigned int id, 
 
 static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, unsigned char *dest, apr_size_t dest_len)
 {
-
     void *ptr;
+    char *inuse;
     apr_status_t ret;
 
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+
+    inuse = slot->inuse + id;
+    if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+        return APR_NOTFOUND;
+    }
     ret = slotmem_dptr(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
@@ -160,10 +178,18 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
 
 static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, unsigned char *src, apr_size_t src_len)
 {
-
     void *ptr;
+    char *inuse;
     apr_status_t ret;
 
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+
+    inuse = slot->inuse + id;
+    if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+        return APR_NOTFOUND;
+    }
     ret = slotmem_dptr(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
@@ -180,6 +206,51 @@ static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
 static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
 {
     return slot->size;
+}
+
+/*
+ * XXXX: if !AP_SLOTMEM_IS_PREGRAB, then still worry about
+ *       inuse for grab and return?
+ */
+static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
+{
+    unsigned int i;
+    char *inuse;
+
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+
+    inuse = slot->inuse;
+
+    for (i = 0; i < slot->num; i++, inuse++) {
+        if (!*inuse) {
+            break;
+        }
+    }
+    if (i >= slot->num) {
+        return APR_ENOSHMAVAIL;
+    }
+    *inuse = 1;
+    *id = i;
+    return APR_SUCCESS;
+}
+
+static apr_status_t slotmem_release(ap_slotmem_instance_t *slot, unsigned int id)
+{
+    char *inuse;
+
+    if (!slot) {
+        return APR_ENOSHMAVAIL;
+    }
+
+    inuse = slot->inuse;
+
+    if (id >= slot->num || !inuse[id] ) {
+        return APR_NOTFOUND;
+    }
+    inuse[id] = 0;
+    return APR_SUCCESS;
 }
 
 static const ap_slotmem_provider_t storage = {
