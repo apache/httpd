@@ -87,7 +87,7 @@ struct ap_slotmem_provider_t {
     const char *name;
     /**
      * call the callback on all worker slots
-     * @param s ap_slotmem_t to use.
+     * @param s ap_slotmem_instance_t to use.
      * @param funct callback function to call for each element.
      * @param data parameter for the callback function.
      * @param pool is pool used
@@ -117,7 +117,7 @@ struct ap_slotmem_provider_t {
     apr_status_t (* attach)(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool);
     /**
      * get the memory ptr associated with this worker slot.
-     * @param s ap_slotmem_t to use.
+     * @param s ap_slotmem_instance_t to use.
      * @param item_id item to return for 0 to item_num
      * @param mem address to store the pointer to the slot
      * @return APR_SUCCESS if all went well
@@ -125,7 +125,7 @@ struct ap_slotmem_provider_t {
     apr_status_t (* dptr)(ap_slotmem_instance_t *s, unsigned int item_id, void**mem);
     /**
      * retrieve the memory associated with this worker slot.
-     * @param s ap_slotmem_t to use.
+     * @param s ap_slotmem_instance_t to use.
      * @param item_id item to return for 0 to item_num
      * @param dest address to store the data
      * @param dest_len length of dataset to retrieve
@@ -134,7 +134,7 @@ struct ap_slotmem_provider_t {
     apr_status_t (* get)(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len);
     /**
      * store the memory associated with this worker slot.
-     * @param s ap_slotmem_t to use.
+     * @param s ap_slotmem_instance_t to use.
      * @param item_id item to return for 0 to item_num
      * @param src address of the data to store in the slot
      * @param src_len length of dataset to store in the slot
@@ -143,26 +143,26 @@ struct ap_slotmem_provider_t {
     apr_status_t (* put)(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len);
     /**
      * return number of slots allocated for this entry.
-     * @param s ap_slotmem_t to use.
+     * @param s ap_slotmem_instance_t to use.
      * @return number of slots
      */
     unsigned int (* num_slots)(ap_slotmem_instance_t *s);
     /**
      * return slot size allocated for this entry.
-     * @param s ap_slotmem_t to use.
+     * @param s ap_slotmem_instance_t to use.
      * @return size of slot
      */
     apr_size_t (* slot_size)(ap_slotmem_instance_t *s);
     /**
      * grab (or alloc) the slot associated with this item_id
-     * @param s ap_slotmem_t to use.
+     * @param s ap_slotmem_instance_t to use.
      * @param item_id item allocate and mark as in-use
      * @return APR_SUCCESS if all went well
      */
     apr_status_t (* grab)(ap_slotmem_instance_t *s, unsigned int item_id);
     /**
      * release (or free) the slot associated with this item_id
-     * @param s ap_slotmem_t to use.
+     * @param s ap_slotmem_instance_t to use.
      * @param item_id item free and mark as no longer in-use
      * @return APR_SUCCESS if all went well
      */
