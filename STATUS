@@ -146,8 +146,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      resources on all platforms.
    Trunk version (new behavior);
        http://svn.apache.org/viewvc?view=rev&revision=775300
+       http://svn.apache.org/viewvc?view=rev&revision=775320
    Proposed 2.2.12 patch, retaining default behavior from 2.2.11;
-       http://people.apache.org/~wrowe/fixlog.patch
+       http://people.apache.org/~wrowe/fixlog22.patch
    +1: wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
