@@ -860,8 +860,8 @@ static int find_ct(request_rec *r)
                 }
             }
             /* XXX Two significant problems; 1, we don't check to see if we are
-             * setting redundant filters.    2, we insert these in the types config
-             * hook, which may be too early (dunno.)
+             * setting redundant filters.    2, we insert these in the types
+             * config hook, which may be too early (dunno.)
              */
             if (exinfo->input_filters && r->proxyreq == PROXYREQ_NONE) {
                 const char *filter, *filters = exinfo->input_filters;
