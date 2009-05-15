@@ -193,6 +193,7 @@
  * 20090401.0 (2.3.3-dev)  Remove ap_threads_per_child, ap_max_daemons_limit,
  *                         ap_my_generation, etc.  ap_mpm_query() can't be called
  *                         until after the register-hooks phase.
+ * 20090401.1 (2.3.3-dev)  Protected log.c internals, http_log.h changes
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -200,7 +201,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20090401
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
