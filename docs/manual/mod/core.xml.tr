@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 767783:773774 (outdated) -->
+<!-- English Revision: 773774 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -37,7 +37,8 @@
 </description>
 <syntax>AcceptFilter <var>protocol</var> <var>kabul_süzgeci</var></syntax>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Apache 2.1.5 ve sonrasında mevcuttur.</compatibility>
+<compatibility>Windows'ta Apache 2.3.3 ve sonrasında diğerlerinde Apache
+2.1.5 ve sonrasında mevcuttur.</compatibility>
 
 <usage>
     <p>Bu yönerge protokol türüne göre bir dinleme soketinin işletim
@@ -47,7 +48,15 @@
       Şimdilik sadece <a
   href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9"
       >FreeBSD’nin Kabul Süzgeçleri</a> ve Linux’un soket seçeneklerinden
-      <code>TCP_DEFER_ACCEPT</code> desteklenmektedir.</p>
+      <code>TCP_DEFER_ACCEPT</code> ve Windows'un en iyilenmiş
+      <code>AcceptEx()</code> işlevi desteklenmektedir.</p>
+
+    <p>Değiştirge olarak <code>none</code> kullanımı, protokolün kabul
+      süzgeçlerini iptal edecektir. <code>ftp:</code> veya <code>nntp</code>
+      gibi sunucunun baştan bir veri göndermesinin gerekli olduğu
+      protokoller için kullanışlıdır. Örnek:</p>
+
+    <example>AcceptFilter nntp none</example>
 
     <p>FreeBSD için öntanımlı değerler:</p>
     <example>
@@ -59,12 +68,12 @@
       işletim sistemi çekirdeği seviyesinde tamponlar. Çekirdek isteğin
       tamamını alır almaz sunucuya gönderir. Ayrıntılar için <a
       href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9"
-      >accf_http(9)</a> kılavuz sayfasına bakınız. HTTPS istekleri şifrelenmiş
-      olduğundan sadece <a
+      >accf_http(9)</a> kılavuz sayfasına bakınız. HTTPS istekleri
+      şifrelenmiş olduğundan sadece <a
       href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9"
       >accf_data(9)</a> süzgeci kullanılır.</p>
 
-    <p>Linux’taki ön tanımlı değerler:</p>
+    <p>Linux’taki öntanımlı değerler:</p>
     <example>
         AcceptFilter http data <br/>
         AcceptFilter https data
@@ -77,11 +86,30 @@
       <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html"
       >tcp(7)</a> kılavuz sayfasına bakınız.</p>
 
-    <p>Argüman olarak <code>none</code> kullanımı o protokol için kabul
-      süzgeçlerini iptal edecektir. Bu, <code>nntp</code> gibi, sunucunun
-      baştan bir veri göndermesinin gerekli olduğu protokoller için
-      kullanışlıdır:</p>
-    <example>AcceptFilter nntp none</example>
+    <p>Windows’taki öntanımlı değerler::</p>
+
+    <example>
+      AcceptFilter http data <br/>
+      AcceptFilter https data
+    </example>
+
+    <p>Windows'un <code>mpm_winnt</code> modülü <code>AcceptEx()</code>
+      arayüzünü açıp kapamak için <code>AcceptFilter</code>'i yorumlar ve
+      http protokol tamponlamasını desteklemez. Windows
+      <code>AcceptEx()</code> arayüzünü tetikleyen iki değer vardır ve ağ
+      soketlerini bağlantılar arasında yer değiştirirler. <code>data</code>,
+      veri aktarılana kadar yukarıda anlatıldığı gibi bekler ve ilk veri
+      tamponu ve uç ağ adresleri tek bir <code>AcceptEx()</code> çağrısından
+      alınır. <code>connect</code>, <code>AcceptEx()</code> arayüzünü
+      kullanacak, ayrıca uç ağ adresleri de alınacak, fakat
+      <code>none</code> gibi <code>connect</code> seçeneği de ilk veri
+      aktarımını beklemeyecektir.</p>
+
+    <p>Windows'ta <code>none</code> <code>AcceptEx()</code>'ten ziyade
+      <code>accept()</code> kullanır ve ağ soketlerini bağlantılar arasında
+      yer değiştirmez. Sürücü desteği bozuk ağ bağdaştırıcılarından başka
+      vpn sürücüleri gibi bazı sanal ağ sağlayıcılar veya spam, virus veya
+      casus yazılım süzgeçleri için kullanışlıdır.</p>
 </usage>
 </directivesynopsis>
 
@@ -1970,8 +1998,9 @@ sınırlar.</description>
       bir karakter dizisi ile eşleşecektir. URL yolu içindeki / karakterleri
       ile hiçbir dosya kalıp karakteri eşleşmez.</p>
 
-    <p>Ayrıca, <code>~</code> karakteri eşliğinde <glossary ref="regex">düzenli
-      ifadeler</glossary> de kullanılabilir. Örneğin,</p>
+    <p>Ayrıca, <code>~</code> karakteri eşliğinde
+      <glossary ref="regex">düzenli ifadeler</glossary> de kullanılabilir.
+      Örneğin,</p>
 
     <example>
       &lt;Location ~ "/(ek|hususi)/veri"&gt;
@@ -1981,7 +2010,8 @@ sınırlar.</description>
       dizgeleriyle eşleşecektir. <directive type="section"
       module="core">LocationMatch</directive> yönergesi <directive
       type="section">Location</directive> yönergesinin düzenli ifade sürümüne
-      eşdeğer davranır.</p>
+      eşdeğer davranır ve bir çok yazı tipinde <code>~</code> karakterini
+      <code>-</code> karakterinden ayırmak zor olduğu için tercih edilir.</p>
 
     <p><directive type="section">Location</directive> işlevselliği özellikle
       <directive module="core">SetHandler</directive> yönergesi ile birlikte

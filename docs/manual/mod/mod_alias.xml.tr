@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 705117:770506 (outdated) -->
+<!-- English Revision: 770506 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -213,11 +213,10 @@ yönlendirir.</description>
 
     <p>Eski <code><em>URL-yolu</em></code> bir bölü çizgisi ile başlar ve harf
       büyüklüğüne duyarlıdır (% imlemesi çözüldükten sonra).
-      <code><em>URL-yolu</em></code> olarak göreli yollara izin verilmez.
-      <code><em>URL</em></code> ise ya bir şema ve konak ismi ile başlayan bir
-      mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olmalıdır.
-      İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu
-      ekler.</p>
+      <code><em>URL-yolu</em></code> olarak göreli yollara izin verilmez.</p>
+
+    <p><code><em>URL</em></code> ise ya bir şema ve konak ismi ile başlayan
+      bir mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olabilir. İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu ekler.</p>
 
     <p><code><em>URL-yolu</em></code> ile başlayan istekler istemciye hedef
       <code><em>URL</em></code> konumuna bir yönlendirme isteği olarak
@@ -225,7 +224,11 @@ yönlendirir.</description>
       yol hedef URL’ye eklenir.</p>
 
     <example><title>Örnek:</title>
-      Redirect /hizmet http://iki.mesela.dom/hizmet
+      # Farklı bir konaktaki bir URL'ye yönlendirme<br />
+      Redirect /hizmet http://iki.mesela.dom/hizmet<br />
+      <br />
+      # Aynı konak üzerinde yönlendirme<br />
+      Redirect /bir /iki
     </example>
 
     <p>İstemcinin yaptığı <code>http://mesela.dom/hizmet/fesmekan.txt</code>
