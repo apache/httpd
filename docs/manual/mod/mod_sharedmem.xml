@@ -20,20 +20,18 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_sharedmem.xml.meta">
+<modulesynopsis metafile="mod_slotmem_shm.xml.meta">
 
-<name>mod_sharedmem</name>
+<name>mod_slotmem_shm</name>
 <description>Slot-based shared memory provider.</description>
 <status>Extension</status>
-<sourcefile>mod_sharedmem.c</sourcefile>
-<identifier>sharedmem_module</identifier>
+<sourcefile>mod_slotmem_shm.c</sourcefile>
+<identifier>mod_slotmem_shm_module</identifier>
 
 <summary>
-    <p><code>mod_sharedmem</code> is a memory provider which
+    <p><code>mod_slotmem_shm</code> is a memory provider which
     provides for creation and access to a shared memory segment
-    in which the datasets are organized in "slots." Although
-    it can be used directly, normally <module>mod_slotmem</module>
-    is used as a front-end.
+    in which the datasets are organized in "slots."
     </p>
 
     <p><code>mod_sharedmem</code> provides the following
@@ -41,22 +39,22 @@
     </p>
 
     <dl>
-      <dt>apr_status_t slotmem_do(ap_slotmem_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)</dt>
+      <dt>apr_status_t do(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)</dt>
       <dd>call the callback on all worker slots</dd>
 
-      <dt>apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)</dt>
+      <dt>apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)</dt>
       <dd>create a new slotmem with each item size is item_size.</dd>
 
-      <dt>apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)</dt>
+      <dt>apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)</dt>
       <dd>attach to an existing slotmem.</dd>
 
-      <dt>apr_status_t slotmem_mem(ap_slotmem_t *s, int item_id, void**mem)</dt>
-      <dd>get the memory associated with this worker slot.</dd>
+      <dt>apr_status_t dptr(ap_slotmem_instance_t *s, int item_id, void**mem)</dt>
+      <dd>get the direct pointer to the memory associated with this worker slot.</dd>
 
-      <dt>apr_status_t slotmem_lock(ap_slotmem_t *s)</dt>
+      <dt>apr_status_t lock(ap_slotmem_instance_t *s)</dt>
       <dd>lock the memory segment</dd>
 
-      <dt>(apr_status_t slotmem_unlock(ap_slotmem_t *s)</dt>
+      <dt>(apr_status_t unlock(ap_slotmem_instance_t *s)</dt>
       <dd>unlock the memory segment</dd>
     </dl>
 
