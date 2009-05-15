@@ -26,7 +26,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -107,14 +106,23 @@
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Apache 2.1.5 ve sonrasında mevcuttur.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Windows'ta Apache 2.3.3 ve sonrasında diğerlerinde Apache
+2.1.5 ve sonrasında mevcuttur.</td></tr>
 </table>
     <p>Bu yönerge protokol türüne göre bir dinleme soketinin işletim
       sistemine özgü en iyilemelerini etkin kılar. İşletim sistemi çekirdeği
       için temel önerme veri alınıncaya kadar veya HTTP isteğinin tamamı
       tamponlanana kadar sunucu sürecine bir soket tahsis etmemektir.
       Şimdilik sadece <a href="http://www.freebsd.org/cgi/man.cgi?query=accept_filter&amp;sektion=9">FreeBSD’nin Kabul Süzgeçleri</a> ve Linux’un soket seçeneklerinden
-      <code>TCP_DEFER_ACCEPT</code> desteklenmektedir.</p>
+      <code>TCP_DEFER_ACCEPT</code> ve Windows'un en iyilenmiş
+      <code>AcceptEx()</code> işlevi desteklenmektedir.</p>
+
+    <p>Değiştirge olarak <code>none</code> kullanımı, protokolün kabul
+      süzgeçlerini iptal edecektir. <code>ftp:</code> veya <code>nntp</code>
+      gibi sunucunun baştan bir veri göndermesinin gerekli olduğu
+      protokoller için kullanışlıdır. Örnek:</p>
+
+    <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
 
     <p>FreeBSD için öntanımlı değerler:</p>
     <div class="example"><p><code>
@@ -124,10 +132,10 @@
 
     <p><code>httpready</code> kabul süzgeci HTTP isteklerinin tamamını
       işletim sistemi çekirdeği seviyesinde tamponlar. Çekirdek isteğin
-      tamamını alır almaz sunucuya gönderir. Ayrıntılar için <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">accf_http(9)</a> kılavuz sayfasına bakınız. HTTPS istekleri şifrelenmiş
-      olduğundan sadece <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a> süzgeci kullanılır.</p>
+      tamamını alır almaz sunucuya gönderir. Ayrıntılar için <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">accf_http(9)</a> kılavuz sayfasına bakınız. HTTPS istekleri
+      şifrelenmiş olduğundan sadece <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_data&amp;sektion=9">accf_data(9)</a> süzgeci kullanılır.</p>
 
-    <p>Linux’taki ön tanımlı değerler:</p>
+    <p>Linux’taki öntanımlı değerler:</p>
     <div class="example"><p><code>
         AcceptFilter http data <br />
         AcceptFilter https data
@@ -139,11 +147,30 @@
       Daha ayrıntılı bilgi edinmek için Linux
       <a href="http://homepages.cwi.nl/~aeb/linux/man2html/man7/tcp.7.html">tcp(7)</a> kılavuz sayfasına bakınız.</p>
 
-    <p>Argüman olarak <code>none</code> kullanımı o protokol için kabul
-      süzgeçlerini iptal edecektir. Bu, <code>nntp</code> gibi, sunucunun
-      baştan bir veri göndermesinin gerekli olduğu protokoller için
-      kullanışlıdır:</p>
-    <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
+    <p>Windows’taki öntanımlı değerler::</p>
+
+    <div class="example"><p><code>
+      AcceptFilter http data <br />
+      AcceptFilter https data
+    </code></p></div>
+
+    <p>Windows'un <code>mpm_winnt</code> modülü <code>AcceptEx()</code>
+      arayüzünü açıp kapamak için <code>AcceptFilter</code>'i yorumlar ve
+      http protokol tamponlamasını desteklemez. Windows
+      <code>AcceptEx()</code> arayüzünü tetikleyen iki değer vardır ve ağ
+      soketlerini bağlantılar arasında yer değiştirirler. <code>data</code>,
+      veri aktarılana kadar yukarıda anlatıldığı gibi bekler ve ilk veri
+      tamponu ve uç ağ adresleri tek bir <code>AcceptEx()</code> çağrısından
+      alınır. <code>connect</code>, <code>AcceptEx()</code> arayüzünü
+      kullanacak, ayrıca uç ağ adresleri de alınacak, fakat
+      <code>none</code> gibi <code>connect</code> seçeneği de ilk veri
+      aktarımını beklemeyecektir.</p>
+
+    <p>Windows'ta <code>none</code> <code>AcceptEx()</code>'ten ziyade
+      <code>accept()</code> kullanır ve ağ soketlerini bağlantılar arasında
+      yer değiştirmez. Sürücü desteği bozuk ağ bağdaştırıcılarından başka
+      vpn sürücüleri gibi bazı sanal ağ sağlayıcılar veya spam, virus veya
+      casus yazılım süzgeçleri için kullanışlıdır.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2007,8 +2034,9 @@ sınırlar.</td></tr>
       bir karakter dizisi ile eşleşecektir. URL yolu içindeki / karakterleri
       ile hiçbir dosya kalıp karakteri eşleşmez.</p>
 
-    <p>Ayrıca, <code>~</code> karakteri eşliğinde <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli
-      ifadeler</a> de kullanılabilir. Örneğin,</p>
+    <p>Ayrıca, <code>~</code> karakteri eşliğinde
+      <a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">düzenli ifadeler</a> de kullanılabilir.
+      Örneğin,</p>
 
     <div class="example"><p><code>
       &lt;Location ~ "/(ek|hususi)/veri"&gt;
@@ -2016,7 +2044,8 @@ sınırlar.</td></tr>
 
     <p>yönergesi <code>/ek/veri</code> ve <code>/hususi/veri</code> alt
       dizgeleriyle eşleşecektir. <code class="directive"><a href="#locationmatch">&lt;LocationMatch&gt;</a></code> yönergesi <code class="directive">&lt;Location&gt;</code> yönergesinin düzenli ifade sürümüne
-      eşdeğer davranır.</p>
+      eşdeğer davranır ve bir çok yazı tipinde <code>~</code> karakterini
+      <code>-</code> karakterinden ayırmak zor olduğu için tercih edilir.</p>
 
     <p><code class="directive">&lt;Location&gt;</code> işlevselliği özellikle
       <code class="directive"><a href="#sethandler">SetHandler</a></code> yönergesi ile birlikte

@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Belge ağacının parçalarının dosya sisteminin parçalarıyla
 eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -215,11 +214,10 @@ yönlendirir.</td></tr>
 
     <p>Eski <code><em>URL-yolu</em></code> bir bölü çizgisi ile başlar ve harf
       büyüklüğüne duyarlıdır (% imlemesi çözüldükten sonra).
-      <code><em>URL-yolu</em></code> olarak göreli yollara izin verilmez.
-      <code><em>URL</em></code> ise ya bir şema ve konak ismi ile başlayan bir
-      mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olmalıdır.
-      İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu
-      ekler.</p>
+      <code><em>URL-yolu</em></code> olarak göreli yollara izin verilmez.</p>
+
+    <p><code><em>URL</em></code> ise ya bir şema ve konak ismi ile başlayan
+      bir mutlak URL ya da bir bölü çizgisi ile başlayan bir URL yolu olabilir. İkinci durumda URL yolunun başına geçerli sunucu ismi ve şemayı sunucu ekler.</p>
 
     <p><code><em>URL-yolu</em></code> ile başlayan istekler istemciye hedef
       <code><em>URL</em></code> konumuna bir yönlendirme isteği olarak
@@ -227,7 +225,11 @@ yönlendirir.</td></tr>
       yol hedef URL’ye eklenir.</p>
 
     <div class="example"><h3>Örnek:</h3><p><code>
-      Redirect /hizmet http://iki.mesela.dom/hizmet
+      # Farklı bir konaktaki bir URL'ye yönlendirme<br />
+      Redirect /hizmet http://iki.mesela.dom/hizmet<br />
+      <br />
+      # Aynı konak üzerinde yönlendirme<br />
+      Redirect /bir /iki
     </code></p></div>
 
     <p>İstemcinin yaptığı <code>http://mesela.dom/hizmet/fesmekan.txt</code>
