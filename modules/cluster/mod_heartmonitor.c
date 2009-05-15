@@ -171,7 +171,7 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
     for (hi = apr_hash_first(p, ctx->servers);
          hi != NULL; hi = apr_hash_next(hi)) {
         hm_server_t *s = NULL;
-        apr_uint32_t seen;
+        apr_time_t seen;
         apr_hash_this(hi, NULL, NULL, (void **) &s);
         seen = apr_time_sec(now - s->seen);
         if (seen > SEEN_TIMEOUT) {
@@ -182,7 +182,7 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
         }
         else {
             apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u\n",
-                            s->ip, s->ready, s->busy, seen);
+                            s->ip, s->ready, s->busy, (unsigned int) seen);
         }
     }
 
