@@ -57,6 +57,9 @@ extern "C" {
 
 typedef unsigned int ap_slotmem_type_t;
 
+#define AP_SLOTMEM_TYPE_PERSIST   (1 << 0)
+#define AP_SLOTMEM_TYPE_NOTMPSAFE (1 << 1)
+
 typedef struct ap_slotmem_instance_t ap_slotmem_instance_t;
 
 /**
@@ -142,6 +145,8 @@ struct ap_slotmem_provider_t {
      */
     apr_size_t (* slot_size)(ap_slotmem_instance_t *s);
 };
+
+typedef struct ap_slotmem_provider_t ap_slotmem_provider_t;
 
 #ifdef __cplusplus
 }

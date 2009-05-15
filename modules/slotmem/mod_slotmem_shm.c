@@ -317,7 +317,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + sizeof(desc);
         memset(ptr, 0, dsize);
-        if (type == SLOTMEM_PERSIST)
+        if (type & AP_SLOTMEM_TYPE_PERSIST)
             restore_slotmem(ptr, fname, dsize, pool);
     }
 
@@ -675,7 +675,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
 static void ap_sharedmem_register_hook(apr_pool_t *p)
 {
     const ap_slotmem_provider_t *storage = sharedmem_getstorage();
-    ap_register_provider(p, AP_SLOTMEM_STORAGE, "shared", "0", storage);
+    ap_register_provider(p, AP_SLOTMEM_PROVIDER_GROUP, "shared", "0", storage);
     ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(child_init, NULL, NULL, APR_HOOK_MIDDLE);
