@@ -309,6 +309,8 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_file_t *errfile;
 
     if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS)
+        && ((rc = apr_procattr_dir_set(procattr,
+                                       ap_server_root)) == APR_SUCCESS)
         && ((rc = apr_procattr_cmdtype_set(procattr, cmdtype)) == APR_SUCCESS)
         && ((rc = apr_procattr_io_set(procattr,
                                       APR_FULL_BLOCK,
@@ -912,6 +914,8 @@ static apr_status_t piped_log_spawn(piped_log *pl)
     apr_status_t status;
 
     if (((status = apr_procattr_create(&procattr, pl->p)) != APR_SUCCESS) ||
+        ((status = apr_procattr_dir_set(procattr, ap_server_root))
+         != APR_SUCCESS) ||
         ((status = apr_procattr_cmdtype_set(procattr, pl->cmdtype))
          != APR_SUCCESS) ||
         ((status = apr_procattr_child_in_set(procattr,
