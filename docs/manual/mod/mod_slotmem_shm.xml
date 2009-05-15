@@ -34,28 +34,39 @@
     in which the datasets are organized in "slots."
     </p>
 
-    <p><code>mod_slotmem_shm</code> provides the following
-    API functions:
+    <p><code>mod_slotmem_shm</code> provides the following API functions:
     </p>
 
     <dl>
-      <dt>apr_status_t do(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)</dt>
+      <dt>apr_status_t doall(ap_slotmem_instance_t *s, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)</dt>
       <dd>call the callback on all worker slots</dd>
 
-      <dt>apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)</dt>
+      <dt>apr_status_t create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)</dt>
       <dd>create a new slotmem with each item size is item_size.</dd>
 
-      <dt>apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)</dt>
+      <dt>apr_status_t attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)</dt>
       <dd>attach to an existing slotmem.</dd>
 
-      <dt>apr_status_t dptr(ap_slotmem_instance_t *s, int item_id, void**mem)</dt>
+      <dt>apr_status_t dptr(ap_slotmem_instance_t *s, unsigned int item_id, void**mem)</dt>
       <dd>get the direct pointer to the memory associated with this worker slot.</dd>
 
-      <dt>apr_status_t lock(ap_slotmem_instance_t *s)</dt>
-      <dd>lock the memory segment</dd>
+      <dt>apr_status_t get(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len)</dt>
+      <dd>get/read the memory from this slot to dest</dd>
 
-      <dt>(apr_status_t unlock(ap_slotmem_instance_t *s)</dt>
-      <dd>unlock the memory segment</dd>
+      <dt>apr_status_t put(ap_slotmem_instance_t *slot, unsigned int item_id, unsigned char *src, apr_size_t src_len)</dt>
+      <dd>put/write the data from src to this slot</dd>
+
+      <dt>unsigned int num_slots(ap_slotmem_instance_t *s)</dt>
+      <dd>return the total number of slots in the segment</dd>
+
+      <dt>apr_size_t slot_size(ap_slotmem_instance_t *s)</dt>
+      <dd>return the total data size, in bytes, of a slot in the segment</dd>
+
+      <dt>apr_status_t grab(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
+      <dd>grab or allocate a slot and mark as in-use (does not do any data copying)</dd>
+
+      <dt>apr_status_t release(ap_slotmem_instance_t *s, unsigned int item_id);</dt>
+      <dd>release or free a slot and mark as not in-use (does not do any data copying)</dd>
     </dl>
 
 </summary>

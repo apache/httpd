@@ -124,7 +124,7 @@ struct ap_slotmem_provider_t {
      */
     apr_status_t (* dptr)(ap_slotmem_instance_t *s, unsigned int item_id, void**mem);
     /**
-     * retrieve the memory associated with this worker slot.
+     * get/read the memory associated with this worker slot.
      * @param s ap_slotmem_instance_t to use.
      * @param item_id item to return for 0 to item_num
      * @param dest address to store the data
@@ -133,7 +133,7 @@ struct ap_slotmem_provider_t {
      */
     apr_status_t (* get)(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len);
     /**
-     * store the memory associated with this worker slot.
+     * put/write the memory associated with this worker slot.
      * @param s ap_slotmem_instance_t to use.
      * @param item_id item to return for 0 to item_num
      * @param src address of the data to store in the slot
