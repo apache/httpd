@@ -272,7 +272,7 @@ typedef struct piped_log piped_log;
  * @param p The pool to allocate out of
  * @param program The program to run in the logging process
  * @return The piped log structure
- * @tip The log program is invoked as APR_SHELLCMD_ENV, 
+ * @tip The log program is invoked as APR_PROGRAM_ENV, 
  *      @see ap_open_piped_log_ex to modify this behavior
  */
 AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program);
