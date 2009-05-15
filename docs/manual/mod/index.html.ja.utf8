@@ -142,8 +142,7 @@ by other LDAP modules</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd><a href="../content-negotiation.html">コンテントネゴシエーション</a>
   機能を提供する</dd>
 <dt><a href="mod_nw_ssl.html">mod_nw_ssl</a></dt><dd>Enable SSL encryption for NetWare</dd>
-<dt><a href="mod_plainmem.html" id="P" name="P">mod_plainmem</a></dt><dd>Slot-based shared memory provider.</dd>
-<dt><a href="mod_privileges.html">mod_privileges</a></dt><dd>Support for Solaris privileges and for running virtual hosts
+<dt><a href="mod_privileges.html" id="P" name="P">mod_privileges</a></dt><dd>Support for Solaris privileges and for running virtual hosts
 under different user IDs.</dd>
 <dt><a href="mod_proxy.html">mod_proxy</a></dt><dd>HTTP/1.1 プロキシ/ゲートウェイサーバ</dd>
 <dt><a href="mod_proxy_ajp.html">mod_proxy_ajp</a></dt><dd><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> で AJP 
@@ -173,8 +172,8 @@ URLs on the fly</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
 <dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>リクエストの特徴に基づいた環境変数の設定を可能にする</dd>
-<dt><a href="mod_sharedmem.html">mod_sharedmem</a></dt><dd>Slot-based shared memory provider.</dd>
-<dt><a href="mod_slotmem.html">mod_slotmem</a></dt><dd>Slot-based memory implementation API.</dd>
+<dt><a href="mod_slotmem_plain.html">mod_slotmem_plain</a></dt><dd>Slot-based shared memory provider.</dd>
+<dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>起動時や再起動時に実行コードとモジュールをサーバにロードする
 </dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>ユーザが入力したであろう間違った URL を、

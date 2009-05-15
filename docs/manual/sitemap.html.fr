@@ -240,7 +240,6 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_mime_magic.html">Mudule Apache mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Mudule Apache mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Mudule Apache mod_nw_ssl</a></li>
-<li><a href="mod/mod_plainmem.html">Mudule Apache mod_plainmem</a></li>
 <li><a href="mod/mod_privileges.html">Mudule Apache mod_privileges</a></li>
 <li><a href="mod/mod_proxy.html">Mudule Apache mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Mudule Apache mod_proxy_ajp</a></li>
@@ -260,8 +259,8 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_session_crypto.html">Mudule Apache mod_session_crypto</a></li>
 <li><a href="mod/mod_session_dbd.html">Mudule Apache mod_session_dbd</a></li>
 <li><a href="mod/mod_setenvif.html">Mudule Apache mod_setenvif</a></li>
-<li><a href="mod/mod_sharedmem.html">Mudule Apache mod_sharedmem</a></li>
-<li><a href="mod/mod_slotmem.html">Mudule Apache mod_slotmem</a></li>
+<li><a href="mod/mod_slotmem_plain.html">Mudule Apache mod_slotmem_plain</a></li>
+<li><a href="mod/mod_slotmem_shm.html">Mudule Apache mod_slotmem_shm</a></li>
 <li><a href="mod/mod_so.html">Mudule Apache mod_so</a></li>
 <li><a href="mod/mod_speling.html">Mudule Apache mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Mudule Apache mod_ssl</a></li>

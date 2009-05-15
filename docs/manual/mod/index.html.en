@@ -151,8 +151,7 @@ by other LDAP modules</dd>
     by looking at a few bytes of its contents</dd>
 <dt><a href="mod_negotiation.html" id="N" name="N">mod_negotiation</a></dt><dd>Provides for <a href="../content-negotiation.html">content negotiation</a></dd>
 <dt><a href="mod_nw_ssl.html">mod_nw_ssl</a></dt><dd>Enable SSL encryption for NetWare</dd>
-<dt><a href="mod_plainmem.html" id="P" name="P">mod_plainmem</a></dt><dd>Slot-based shared memory provider.</dd>
-<dt><a href="mod_privileges.html">mod_privileges</a></dt><dd>Support for Solaris privileges and for running virtual hosts
+<dt><a href="mod_privileges.html" id="P" name="P">mod_privileges</a></dt><dd>Support for Solaris privileges and for running virtual hosts
 under different user IDs.</dd>
 <dt><a href="mod_proxy.html">mod_proxy</a></dt><dd>HTTP/1.1 proxy/gateway server</dd>
 <dt><a href="mod_proxy_ajp.html">mod_proxy_ajp</a></dt><dd>AJP support module for
@@ -183,8 +182,8 @@ URLs on the fly</dd>
 <dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
 <dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
 on characteristics of the request</dd>
-<dt><a href="mod_sharedmem.html">mod_sharedmem</a></dt><dd>Slot-based shared memory provider.</dd>
-<dt><a href="mod_slotmem.html">mod_slotmem</a></dt><dd>Slot-based memory implementation API.</dd>
+<dt><a href="mod_slotmem_plain.html">mod_slotmem_plain</a></dt><dd>Slot-based shared memory provider.</dd>
+<dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>Loading of executable code and
 modules into the server at start-up or restart time</dd>
 <dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs that

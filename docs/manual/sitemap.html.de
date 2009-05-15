@@ -228,7 +228,6 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache-Modul mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache-Modul mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Apache-Modul mod_nw_ssl</a></li>
-<li><a href="mod/mod_plainmem.html">Apache-Modul mod_plainmem</a></li>
 <li><a href="mod/mod_privileges.html">Apache-Modul mod_privileges</a></li>
 <li><a href="mod/mod_proxy.html">Apache-Modul mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache-Modul mod_proxy_ajp</a></li>
@@ -248,8 +247,8 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_session_crypto.html">Apache-Modul mod_session_crypto</a></li>
 <li><a href="mod/mod_session_dbd.html">Apache-Modul mod_session_dbd</a></li>
 <li><a href="mod/mod_setenvif.html">Apache-Modul mod_setenvif</a></li>
-<li><a href="mod/mod_sharedmem.html">Apache-Modul mod_sharedmem</a></li>
-<li><a href="mod/mod_slotmem.html">Apache-Modul mod_slotmem</a></li>
+<li><a href="mod/mod_slotmem_plain.html">Apache-Modul mod_slotmem_plain</a></li>
+<li><a href="mod/mod_slotmem_shm.html">Apache-Modul mod_slotmem_shm</a></li>
 <li><a href="mod/mod_so.html">Apache-Modul mod_so</a></li>
 <li><a href="mod/mod_speling.html">Apache-Modul mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache-Modul mod_ssl</a></li>
