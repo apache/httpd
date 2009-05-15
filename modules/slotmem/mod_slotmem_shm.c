@@ -198,7 +198,7 @@ static apr_status_t cleanup_slotmem(void *param)
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
+static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 {
     unsigned int i;
     void *ptr;
@@ -405,7 +405,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_mem(ap_slotmem_instance_t *slot, unsigned int id, void **mem)
+static apr_status_t slotmem_dptr(ap_slotmem_instance_t *slot, unsigned int id, void **mem)
 {
     void *ptr;
 
@@ -438,7 +438,7 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
     if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
         return APR_NOTFOUND;
     }
-    ret = slotmem_mem(slot, id, &ptr);
+    ret = slotmem_dptr(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
     }
@@ -460,7 +460,7 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
     if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
         return APR_NOTFOUND;
     }
-    ret = slotmem_mem(slot, id, &ptr);
+    ret = slotmem_dptr(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
     }
@@ -506,7 +506,7 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_return(ap_slotmem_instance_t *slot, unsigned int id)
+static apr_status_t slotmem_release(ap_slotmem_instance_t *slot, unsigned int id)
 {
     char *inuse;
 
@@ -525,10 +525,10 @@ static apr_status_t slotmem_return(ap_slotmem_instance_t *slot, unsigned int id)
 
 static const ap_slotmem_provider_t storage = {
     "sharedmem",
-    &slotmem_do,
+    &slotmem_doall,
     &slotmem_create,
     &slotmem_attach,
-    &slotmem_mem,
+    &slotmem_dptr,
     &slotmem_get,
     &slotmem_put,
     &slotmem_num_slots,
