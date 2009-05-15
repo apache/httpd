@@ -127,7 +127,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
     return APR_ENOSHMAVAIL;
 }
 
-static apr_status_t slotmem_mem(ap_slotmem_instance_t *score, unsigned int id, void **mem)
+static apr_status_t slotmem_dptr(ap_slotmem_instance_t *score, unsigned int id, void **mem)
 {
 
     void *ptr;
@@ -150,7 +150,7 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
     void *ptr;
     apr_status_t ret;
 
-    ret = slotmem_mem(slot, id, &ptr);
+    ret = slotmem_dptr(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
     }
@@ -164,7 +164,7 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
     void *ptr;
     apr_status_t ret;
 
-    ret = slotmem_mem(slot, id, &ptr);
+    ret = slotmem_dptr(slot, id, &ptr);
     if (ret != APR_SUCCESS) {
         return ret;
     }
@@ -187,7 +187,7 @@ static const ap_slotmem_provider_t storage = {
     &slotmem_do,
     &slotmem_create,
     &slotmem_attach,
-    &slotmem_mem,
+    &slotmem_dptr,
     &slotmem_get,
     &slotmem_put,
     &slotmem_num_slots,
