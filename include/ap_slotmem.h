@@ -153,6 +153,20 @@ struct ap_slotmem_provider_t {
      * @return size of slot
      */
     apr_size_t (* slot_size)(ap_slotmem_instance_t *s);
+    /**
+     * grab (or alloc) the slot associated with this item_id
+     * @param s ap_slotmem_t to use.
+     * @param item_id item allocate and mark as in-use
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* grab)(ap_slotmem_instance_t *s, unsigned int item_id);
+    /**
+     * release (or free) the slot associated with this item_id
+     * @param s ap_slotmem_t to use.
+     * @param item_id item free and mark as no longer in-use
+     * @return APR_SUCCESS if all went well
+     */
+    apr_status_t (* release)(ap_slotmem_instance_t *s, unsigned int item_id);
 };
 
 typedef struct ap_slotmem_provider_t ap_slotmem_provider_t;
