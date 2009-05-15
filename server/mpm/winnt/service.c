@@ -254,9 +254,10 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
     if (globdat.hServiceStatus)
     {
         if (currentState == SERVICE_RUNNING) {
-            globdat.ssStatus.dwWaitHint = 0;
-            globdat.ssStatus.dwCheckPoint = 0;
-            globdat.ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+            ctx->ssStatus.dwWaitHint = 0;
+            ctx->ssStatus.dwCheckPoint = 0;
+            ctx->ssStatus.dwControlsAccepted = SERVICE_ACCEPT_STOP
+                                             | SERVICE_ACCEPT_SHUTDOWN;
         }
         else if (currentState == SERVICE_STOPPED) {
             globdat.ssStatus.dwWaitHint = 0;
@@ -331,7 +332,9 @@ static void set_service_description(void)
 
 static VOID WINAPI service_nt_ctrl(DWORD dwCtrlCode)
 {
-    if (dwCtrlCode == SERVICE_CONTROL_STOP)
+    /* SHUTDOWN is offered before STOP, accept the first opportunity */
+    if ((dwCtrlCode == SERVICE_CONTROL_STOP)
+         || (dwCtrlCode == SERVICE_CONTROL_SHUTDOWN))
     {
         ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
         ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 30000);
