@@ -46,7 +46,6 @@ struct ap_slotmem_instance_t {
     apr_size_t           size;        /* size of each memory slot */
     unsigned int         num;         /* number of mem slots */
     apr_pool_t           *gpool;      /* per segment global pool */
-    apr_global_mutex_t   *smutex;     /* mutex */
     struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
     char                 *inuse;      /* in-use flag table*/
 };
@@ -66,18 +65,6 @@ struct sharedslotdesc {
 /* global pool and list of slotmem we are handling */
 static struct ap_slotmem_instance_t *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
-static apr_global_mutex_t *smutex = NULL;
-static const char *mutex_fname = NULL;
-
-#define SLOTMEM_LOCK(s) do {      \
-    if (s)                        \
-        apr_global_mutex_lock(s); \
-} while (0)
-
-#define SLOTMEM_UNLOCK(s) do {      \
-    if (s)                          \
-        apr_global_mutex_unlock(s); \
-} while (0)
 
 /* apr:shmem/unix/shm.c */
 static apr_status_t unixd_set_shm_perms(const char *fname)
@@ -219,14 +206,12 @@ static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_f
 
     ptr = mem->base;
     inuse = mem->inuse;
-    SLOTMEM_LOCK(mem->smutex);
     for (i = 0; i < mem->num; i++, inuse++) {
         if (*inuse) {
             func((void *) ptr, data, pool);
         }
         ptr += mem->size;
     }
-    SLOTMEM_UNLOCK(mem->smutex);
     return APR_SUCCESS;
 }
 
@@ -290,7 +275,6 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
     }
     else {
         apr_size_t dsize = size - sizeof(struct sharedslotdesc);
-        SLOTMEM_LOCK(smutex);
         if (name && name[0] != ':') {
             apr_shm_remove(fname, gpool);
             rv = apr_shm_create(&shm, size, fname, gpool);
@@ -298,7 +282,6 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
         else {
             rv = apr_shm_create(&shm, size, NULL, gpool);
         }
-        SLOTMEM_UNLOCK(smutex);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -329,7 +312,6 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
     res->size = item_size;
     res->num = item_num;
     res->gpool = gpool;
-    res->smutex = smutex;
     res->next = NULL;
     res->inuse = ptr + basesize;
     if (globallistmem == NULL) {
@@ -400,7 +382,6 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
     res->size = desc.item_size;
     res->num = desc.item_num;
     res->gpool = gpool;
-    res->smutex = smutex;
     res->inuse = ptr + (desc.item_size * desc.item_num);
     res->next = NULL;
     if (globallistmem == NULL) {
@@ -504,19 +485,16 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 
     inuse = slot->inuse;
 
-    SLOTMEM_LOCK(slot->smutex);
     for (i = 0; i < slot->num; i++, inuse++) {
         if (!*inuse) {
             break;
         }
     }
     if (i >= slot->num) {
-        SLOTMEM_UNLOCK(slot->smutex);
         return APR_ENOSHMAVAIL;
     }
     *inuse = 1;
     *id = i;
-    SLOTMEM_UNLOCK(slot->smutex);
     return APR_SUCCESS;
 }
 
@@ -531,13 +509,10 @@ static apr_status_t slotmem_return(ap_slotmem_instance_t *slot, unsigned int id)
 
     inuse = slot->inuse;
 
-    SLOTMEM_LOCK(slot->smutex);
     if (id >= slot->num || !inuse[id] ) {
-        SLOTMEM_UNLOCK(slot->smutex);
         return APR_NOTFOUND;
     }
     inuse[id] = 0;
-    SLOTMEM_UNLOCK(slot->smutex);
     return APR_SUCCESS;
 }
 
@@ -572,16 +547,11 @@ static void slotmem_shm_initialize_cleanup(apr_pool_t *p)
 }
 
 /*
- * Create the shared mem mutex and
- * make sure the shared memory is cleaned
+ * Make sure the shared memory is cleaned
  */
 static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    const char *temp_dir;
-    char *template;
-    apr_status_t rv;
     void *data;
-    apr_file_t *fmutex;
     const char *userdata_key = "slotmem_shm_post_config";
 
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
@@ -590,53 +560,6 @@ static int post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, serve
                                apr_pool_cleanup_null, s->process->pool);
         return OK;
     }
-
-    rv = apr_temp_dir_get(&temp_dir, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "slotmem_shm: search for temporary directory failed");
-        return rv;
-    }
-    apr_filepath_merge(&template, temp_dir, "slotmem_shm.lck.XXXXXX",
-                       APR_FILEPATH_NATIVE, p);
-    rv = apr_file_mktemp(&fmutex, template, 0, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "slotmem_shm: creation of mutex file in directory %s failed",
-                     temp_dir);
-        return rv;
-    }
-
-    rv = apr_file_name_get(&mutex_fname, fmutex);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "slotmem_shm: unable to get mutex fname");
-        return rv;
-    }
-
-    rv = apr_file_close(fmutex);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "slotmem_shm: could not close mutex file");
-        return rv;
-    }
-
-    rv = apr_global_mutex_create(&smutex,
-                                 mutex_fname, APR_LOCK_DEFAULT, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "slotmem_shm: creation of mutex failed");
-        return rv;
-    }
-
-#ifdef AP_NEED_SET_MUTEX_PERMS
-    rv = ap_unixd_set_global_mutex_perms(smutex);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "slotmem_shm: failed to set mutex permissions");
-        return rv;
-    }
-#endif
 
     slotmem_shm_initialize_cleanup(p);
     return OK;
@@ -658,27 +581,12 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
     return OK;
 }
 
-static void child_init(apr_pool_t *p, server_rec *s)
-{
-    apr_status_t rv;
-
-    rv = apr_global_mutex_child_init(&smutex,
-                                     mutex_fname, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "Failed to initialise global mutex %s in child process %"
-                     APR_PID_T_FMT ".",
-                     mutex_fname, getpid());
-    }
-}
-
 static void ap_slotmem_shm_register_hook(apr_pool_t *p)
 {
     const ap_slotmem_provider_t *storage = slotmem_shm_getstorage();
     ap_register_provider(p, AP_SLOTMEM_PROVIDER_GROUP, "shared", "0", storage);
     ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_child_init(child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA slotmem_shm_module = {
