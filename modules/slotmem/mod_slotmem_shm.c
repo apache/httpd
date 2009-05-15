@@ -39,6 +39,8 @@
 #endif
 #endif
 
+#define AP_SLOTMEM_IS_PREGRAB(t) (t->type & AP_SLOTMEM_TYPE_PREGRAB)
+
 struct ap_slotmem_instance_t {
     char                 *name;       /* per segment name */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
@@ -46,8 +48,9 @@ struct ap_slotmem_instance_t {
     apr_size_t           size;        /* size of each memory slot */
     unsigned int         num;         /* number of mem slots */
     apr_pool_t           *gpool;      /* per segment global pool */
-    struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
     char                 *inuse;      /* in-use flag table*/
+    ap_slotmem_type_t    type;        /* type-specific flags */
+    struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
 };
 
 
@@ -55,6 +58,7 @@ struct ap_slotmem_instance_t {
 struct sharedslotdesc {
     apr_size_t item_size;
     unsigned int item_num;
+    ap_slotmem_type_t type;
 };
 
 /*
@@ -207,7 +211,8 @@ static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_f
     ptr = mem->base;
     inuse = mem->inuse;
     for (i = 0; i < mem->num; i++, inuse++) {
-        if (*inuse) {
+        if (!AP_SLOTMEM_IS_PREGRAB(mem) ||
+           (AP_SLOTMEM_IS_PREGRAB(mem) && *inuse)) {
             func((void *) ptr, data, pool);
         }
         ptr += mem->size;
@@ -297,6 +302,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
         ptr = apr_shm_baseaddr_get(shm);
         desc.item_size = item_size;
         desc.item_num = item_num;
+        desc.type = type;
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + sizeof(desc);
         memset(ptr, 0, dsize);
@@ -311,6 +317,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
     res->base = ptr;
     res->size = item_size;
     res->num = item_num;
+    res->type = type;
     res->gpool = gpool;
     res->next = NULL;
     res->inuse = ptr + basesize;
@@ -381,6 +388,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
     res->base = ptr;
     res->size = desc.item_size;
     res->num = desc.item_num;
+    res->type = desc.type;
     res->gpool = gpool;
     res->inuse = ptr + (desc.item_size * desc.item_num);
     res->next = NULL;
@@ -399,7 +407,6 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
 
 static apr_status_t slotmem_mem(ap_slotmem_instance_t *slot, unsigned int id, void **mem)
 {
-
     void *ptr;
 
     if (!slot) {
@@ -419,7 +426,6 @@ static apr_status_t slotmem_mem(ap_slotmem_instance_t *slot, unsigned int id, vo
 
 static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, unsigned char *dest, apr_size_t dest_len)
 {
-
     void *ptr;
     char *inuse;
     apr_status_t ret;
@@ -428,8 +434,8 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
         return APR_ENOSHMAVAIL;
     }
 
-    inuse = slot->inuse;
-    if (id >= slot->num || !inuse[id] ) {
+    inuse = slot->inuse + id;
+    if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
         return APR_NOTFOUND;
     }
     ret = slotmem_mem(slot, id, &ptr);
@@ -442,7 +448,6 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
 
 static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, unsigned char *src, apr_size_t src_len)
 {
-
     void *ptr;
     char *inuse;
     apr_status_t ret;
@@ -451,8 +456,8 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
         return APR_ENOSHMAVAIL;
     }
 
-    inuse = slot->inuse;
-    if (id >= slot->num || !inuse[id] ) {
+    inuse = slot->inuse + id;
+    if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
         return APR_NOTFOUND;
     }
     ret = slotmem_mem(slot, id, &ptr);
@@ -473,9 +478,12 @@ static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
     return slot->size;
 }
 
+/*
+ * XXXX: if !AP_SLOTMEM_IS_PREGRAB, then still worry about
+ *       inuse for grab and return?
+ */
 static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 {
-
     unsigned int i;
     char *inuse;
 
@@ -500,7 +508,6 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 
 static apr_status_t slotmem_return(ap_slotmem_instance_t *slot, unsigned int id)
 {
-
     char *inuse;
 
     if (!slot) {
