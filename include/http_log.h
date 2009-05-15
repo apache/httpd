@@ -268,27 +268,6 @@ AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename, pid_t 
 typedef struct piped_log piped_log;
 
 /**
- * @brief The piped logging structure.  
- *
- * Piped logs are used to move functionality out of the main server.  
- * For example, log rotation is done with piped logs.
- */
-struct piped_log {
-    /** The pool to use for the piped log */
-    apr_pool_t *p;
-    /** The pipe between the server and the logging process */
-    apr_file_t *fds[2];
-    /* XXX - an #ifdef that needs to be eliminated from public view. Shouldn't
-     * be hard */
-#ifdef AP_HAVE_RELIABLE_PIPED_LOGS
-    /** The name of the program the logging process is running */
-    char *program;
-    /** The pid of the logging process */
-    apr_proc_t *pid;
-#endif
-};
-
-/**
  * Open the piped log process
  * @param p The pool to allocate out of
  * @param program The program to run in the logging process
@@ -303,18 +282,18 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program);
 AP_DECLARE(void) ap_close_piped_log(piped_log *pl);
 
 /**
- * A macro to access the read side of the piped log pipe
+ * A function to return the read side of the piped log pipe
  * @param pl The piped log structure
  * @return The native file descriptor
  */
-#define ap_piped_log_read_fd(pl)	((pl)->fds[0])
+AP_DECLARE(apr_file_t *) ap_piped_log_read_fd(piped_log *pl);
 
 /**
- * A macro to access the write side of the piped log pipe
+ * A function to return the write side of the piped log pipe
  * @param pl The piped log structure
  * @return The native file descriptor
  */
-#define ap_piped_log_write_fd(pl)	((pl)->fds[1])
+AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl);
 
 /**
  * hook method to log error messages 

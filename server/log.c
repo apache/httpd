@@ -149,6 +149,37 @@ typedef struct read_handle_t {
 
 static read_handle_t *read_handles;
 
+/**
+ * @brief The piped logging structure.  
+ *
+ * Piped logs are used to move functionality out of the main server.  
+ * For example, log rotation is done with piped logs.
+ */
+struct piped_log {
+    /** The pool to use for the piped log */
+    apr_pool_t *p;
+    /** The pipe between the server and the logging process */
+    apr_file_t *read_fd, *write_fd;
+    /* XXX - an #ifdef that needs to be eliminated from public view. Shouldn't
+     * be hard */
+#ifdef AP_HAVE_RELIABLE_PIPED_LOGS
+    /** The name of the program the logging process is running */
+    char *program;
+    /** The pid of the logging process */
+    apr_proc_t *pid;
+#endif
+};
+
+AP_DECLARE(apr_file_t *) ap_piped_log_read_fd(piped_log *pl)
+{
+    return pl->read_fd;
+}
+
+AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl)
+{
+    return pl->write_fd;
+}
+
 /* clear_handle_list() is called when plog is cleared; at that
  * point we need to forget about our old list of pipe read
  * handles.  We let the plog cleanups close the actual pipes.
@@ -868,8 +899,8 @@ static apr_status_t piped_log_spawn(piped_log *pl)
         ((status = apr_procattr_cmdtype_set(procattr,
                                             APR_SHELLCMD_ENV)) != APR_SUCCESS) ||
         ((status = apr_procattr_child_in_set(procattr,
-                                             ap_piped_log_read_fd(pl),
-                                             ap_piped_log_write_fd(pl)))
+                                             pl->read_fd,
+                                             pl->write_fd))
         != APR_SUCCESS) ||
         ((status = apr_procattr_child_errfn_set(procattr, log_child_errfn))
          != APR_SUCCESS) ||
@@ -892,14 +923,14 @@ static apr_status_t piped_log_spawn(piped_log *pl)
 
         if (status == APR_SUCCESS) {
             pl->pid = procnew;
-            /* procnew->in was dup2'd from ap_piped_log_write_fd(pl);
+            /* procnew->in was dup2'd from pl->write_fd;
              * since the original fd is still valid, close the copy to
              * avoid a leak. */
             apr_file_close(procnew->in);
             procnew->in = NULL;
             apr_proc_other_child_register(procnew, piped_log_maintenance, pl,
-                                          ap_piped_log_write_fd(pl), pl->p);
-            close_handle_in_child(pl->p, ap_piped_log_read_fd(pl));
+                                          pl->write_fd, pl->p);
+            close_handle_in_child(pl->p, pl->read_fd);
         }
         else {
             char buf[120];
@@ -971,8 +1002,8 @@ static apr_status_t piped_log_cleanup_for_exec(void *data)
 {
     piped_log *pl = data;
 
-    apr_file_close(ap_piped_log_read_fd(pl));
-    apr_file_close(ap_piped_log_write_fd(pl));
+    apr_file_close(pl->read_fd);
+    apr_file_close(pl->write_fd);
     return APR_SUCCESS;
 }
 
@@ -996,8 +1027,8 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     pl->p = p;
     pl->program = apr_pstrdup(p, program);
     pl->pid = NULL;
-    if (apr_file_pipe_create_ex(&ap_piped_log_read_fd(pl),
-                                &ap_piped_log_write_fd(pl),
+    if (apr_file_pipe_create_ex(&pl->read_fd,
+                                &pl->write_fd,
                                 APR_FULL_BLOCK, p) != APR_SUCCESS) {
         return NULL;
     }
@@ -1005,8 +1036,8 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
                               piped_log_cleanup_for_exec);
     if (piped_log_spawn(pl) != APR_SUCCESS) {
         apr_pool_cleanup_kill(p, pl, piped_log_cleanup);
-        apr_file_close(ap_piped_log_read_fd(pl));
-        apr_file_close(ap_piped_log_write_fd(pl));
+        apr_file_close(pl->read_fd);
+        apr_file_close(pl->write_fd);
         return NULL;
     }
     return pl;
@@ -1018,7 +1049,7 @@ static apr_status_t piped_log_cleanup(void *data)
 {
     piped_log *pl = data;
 
-    apr_file_close(ap_piped_log_write_fd(pl));
+    apr_file_close(pl->write_fd);
     return APR_SUCCESS;
 }
 
@@ -1038,8 +1069,8 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 
     pl = apr_palloc(p, sizeof (*pl));
     pl->p = p;
-    ap_piped_log_read_fd(pl) = NULL;
-    ap_piped_log_write_fd(pl) = dummy;
+    pl->read_fd = NULL;
+    pl->write_fd = dummy;
     apr_pool_cleanup_register(p, pl, piped_log_cleanup, piped_log_cleanup);
 
     return pl;
