@@ -65,7 +65,6 @@
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
   <modulefile>mod_nw_ssl.xml</modulefile>
-  <modulefile>mod_plainmem.xml</modulefile>
   <modulefile>mod_privileges.xml</modulefile>
   <modulefile>mod_proxy.xml</modulefile>
   <modulefile>mod_proxy_ajp.xml</modulefile>
@@ -85,8 +84,8 @@
   <modulefile>mod_session_crypto.xml</modulefile>
   <modulefile>mod_session_dbd.xml</modulefile>
   <modulefile>mod_setenvif.xml</modulefile>
-  <modulefile>mod_sharedmem.xml</modulefile>
-  <modulefile>mod_slotmem.xml</modulefile>
+  <modulefile>mod_slotmem_plain.xml</modulefile>
+  <modulefile>mod_slotmem_shm.xml</modulefile>
   <modulefile>mod_so.xml</modulefile>
   <modulefile>mod_speling.xml</modulefile>
   <modulefile>mod_ssl.xml</modulefile>

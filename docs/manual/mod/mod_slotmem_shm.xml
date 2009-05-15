@@ -34,7 +34,7 @@
     in which the datasets are organized in "slots."
     </p>
 
-    <p><code>mod_sharedmem</code> provides the following
+    <p><code>mod_slotmem_shm</code> provides the following
     API functions:
     </p>
 

@@ -22,24 +22,24 @@
 
 <modulesynopsis metafile="mod_slotmem_plain.xml.meta">
 
-<name>mod_slotmem_shm</name>
+<name>mod_slotmem_plain</name>
 <description>Slot-based shared memory provider.</description>
 <status>Extension</status>
-<sourcefile>mod_slotmem_shm.c</sourcefile>
-<identifier>mod_slotmem_shm_module</identifier>
+<sourcefile>mod_slotmem_plain.c</sourcefile>
+<identifier>mod_slotmem_plain</identifier>
 
 <summary>
-    <p><code>mod_slotmem_shm</code> is a memory provider which
+    <p><code>mod_slotmem_plain</code> is a memory provider which
     provides for creation and access to a plain memory segment
     in which the datasets are organized in "slots."
     </p>
 
     <p>If the memory needs to be shared between threads and
     processes, a better provider would be
-    <module>mod_slotmem_plain</module>.
+    <module>mod_slotmem_shm</module>.
     </p>
 
-    <p><code>mod_plainmem</code> provides the following
+    <p><code>mod_slotmem_plain</code> provides the following
     API functions:
     </p>
 

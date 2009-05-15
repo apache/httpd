@@ -224,7 +224,6 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache Modülü mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache Modülü mod_negotiation</a></li>
 <li><a href="mod/mod_nw_ssl.html">Apache Modülü mod_nw_ssl</a></li>
-<li><a href="mod/mod_plainmem.html">Apache Modülü mod_plainmem</a></li>
 <li><a href="mod/mod_privileges.html">Apache Modülü mod_privileges</a></li>
 <li><a href="mod/mod_proxy.html">Apache Modülü mod_proxy</a></li>
 <li><a href="mod/mod_proxy_ajp.html">Apache Modülü mod_proxy_ajp</a></li>
@@ -244,8 +243,8 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_session_crypto.html">Apache Modülü mod_session_crypto</a></li>
 <li><a href="mod/mod_session_dbd.html">Apache Modülü mod_session_dbd</a></li>
 <li><a href="mod/mod_setenvif.html">Apache Modülü mod_setenvif</a></li>
-<li><a href="mod/mod_sharedmem.html">Apache Modülü mod_sharedmem</a></li>
-<li><a href="mod/mod_slotmem.html">Apache Modülü mod_slotmem</a></li>
+<li><a href="mod/mod_slotmem_plain.html">Apache Modülü mod_slotmem_plain</a></li>
+<li><a href="mod/mod_slotmem_shm.html">Apache Modülü mod_slotmem_shm</a></li>
 <li><a href="mod/mod_so.html">Apache Modülü mod_so</a></li>
 <li><a href="mod/mod_speling.html">Apache Modülü mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache Modülü mod_ssl</a></li>

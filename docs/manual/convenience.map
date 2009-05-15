@@ -278,6 +278,7 @@ order	mod/mod_access_compat.html#order
 outputsed	mod/mod_sed.html#outputsed
 passenv	mod/mod_env.html#passenv
 pidfile	mod/mpm_common.html#pidfile
+privilegesmode	mod/mod_privileges.html#privilegesmode
 protocolecho	mod/mod_echo.html#protocolecho
 proxy	mod/mod_proxy.html#proxy
 proxybadheader	mod/mod_proxy.html#proxybadheader
@@ -434,6 +435,7 @@ sslrequire	mod/mod_ssl.html#sslrequire
 sslrequiressl	mod/mod_ssl.html#sslrequiressl
 sslsessioncache	mod/mod_ssl.html#sslsessioncache
 sslsessioncachetimeout	mod/mod_ssl.html#sslsessioncachetimeout
+sslstrictsnivhostcheck	mod/mod_ssl.html#sslstrictsnivhostcheck
 sslusername	mod/mod_ssl.html#sslusername
 sslverifyclient	mod/mod_ssl.html#sslverifyclient
 sslverifydepth	mod/mod_ssl.html#sslverifydepth
@@ -464,5 +466,4 @@ virtualdocumentrootip	mod/mod_vhost_alias.html#virtualdocumentrootip
 virtualhost	mod/core.html#virtualhost
 virtualscriptalias	mod/mod_vhost_alias.html#virtualscriptalias
 virtualscriptaliasip	mod/mod_vhost_alias.html#virtualscriptaliasip
-win32disableacceptex	mod/mpm_winnt.html#win32disableacceptex
 xbithack	mod/mod_include.html#xbithack
