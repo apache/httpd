@@ -13,7 +13,7 @@ LTLIBRARY_SOURCES = \
 	util_charset.c util_cookies.c util_debug.c util_xml.c \
 	util_expr.c util_filter.c util_pcre.c exports.c \
 	scoreboard.c error_bucket.c protocol.c core.c request.c provider.c \
-	eoc_bucket.c eor_bucket.c core_filters.c slotmem.c
+	eoc_bucket.c eor_bucket.c core_filters.c
 
 TARGETS = delete-exports $(LTLIBRARY_NAME) $(CORE_IMPLIB_FILE) export_vars.h httpd.exp
 

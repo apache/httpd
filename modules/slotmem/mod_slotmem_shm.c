@@ -39,7 +39,7 @@
 #endif
 #endif
 
-struct ap_slotmem_t {
+struct ap_slotmem_instance_t {
     char                 *name;       /* per segment name */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
     void                 *base;       /* data set start */
@@ -47,7 +47,7 @@ struct ap_slotmem_t {
     unsigned int         num;         /* number of mem slots */
     apr_pool_t           *gpool;      /* per segment global pool */
     apr_global_mutex_t   *smutex;     /* mutex */
-    struct ap_slotmem_t  *next;       /* location of next allocated segment */
+    struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
     char                 *inuse;      /* in-use flag table*/
 };
 
@@ -64,7 +64,7 @@ struct sharedslotdesc {
  */
 
 /* global pool and list of slotmem we are handling */
-static struct ap_slotmem_t *globallistmem = NULL;
+static struct ap_slotmem_instance_t *globallistmem = NULL;
 static apr_pool_t *gpool = NULL;
 static apr_global_mutex_t *smutex = NULL;
 static const char *mutex_fname = NULL;
@@ -141,7 +141,7 @@ static const char *store_filename(apr_pool_t *pool, const char *slotmemname)
     return storename;
 }
 
-static void store_slotmem(ap_slotmem_t *slotmem)
+static void store_slotmem(ap_slotmem_instance_t *slotmem)
 {
     apr_file_t *fp;
     apr_status_t rv;
@@ -190,12 +190,12 @@ static void restore_slotmem(void *ptr, const char *name, apr_size_t size, apr_po
 
 static apr_status_t cleanup_slotmem(void *param)
 {
-    ap_slotmem_t **mem = param;
+    ap_slotmem_instance_t **mem = param;
     apr_status_t rv;
     apr_pool_t *pool = NULL;
 
     if (*mem) {
-        ap_slotmem_t *next = *mem;
+        ap_slotmem_instance_t *next = *mem;
         pool = next->gpool;
         while (next) {
             store_slotmem(next);
@@ -207,7 +207,7 @@ static apr_status_t cleanup_slotmem(void *param)
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
+static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_fn_t *func, void *data, apr_pool_t *pool)
 {
     unsigned int i;
     void *ptr;
@@ -230,13 +230,13 @@ static apr_status_t slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *func
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_size_t item_size, unsigned int item_num, apslotmem_type type, apr_pool_t *pool)
+static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
     void *ptr;
     struct sharedslotdesc desc;
-    ap_slotmem_t *res;
-    ap_slotmem_t *next = globallistmem;
+    ap_slotmem_instance_t *res;
+    ap_slotmem_instance_t *next = globallistmem;
     const char *fname;
     apr_shm_t *shm;
     apr_size_t basesize = (item_size * item_num);
@@ -322,7 +322,7 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     }
 
     /* For the chained slotmem stuff */
-    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
+    res = (ap_slotmem_instance_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_instance_t));
     res->name = apr_pstrdup(gpool, fname);
     res->shm = shm;
     res->base = ptr;
@@ -343,12 +343,12 @@ static apr_status_t slotmem_create(ap_slotmem_t **new, const char *name, apr_siz
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)
+static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name, apr_size_t *item_size, unsigned int *item_num, apr_pool_t *pool)
 {
 /*    void *slotmem = NULL; */
     void *ptr;
-    ap_slotmem_t *res;
-    ap_slotmem_t *next = globallistmem;
+    ap_slotmem_instance_t *res;
+    ap_slotmem_instance_t *next = globallistmem;
     struct sharedslotdesc desc;
     const char *fname;
     apr_shm_t *shm;
@@ -393,7 +393,7 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     ptr = ptr + sizeof(desc);
 
     /* For the chained slotmem stuff */
-    res = (ap_slotmem_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_t));
+    res = (ap_slotmem_instance_t *) apr_pcalloc(gpool, sizeof(ap_slotmem_instance_t));
     res->name = apr_pstrdup(gpool, fname);
     res->shm = shm;
     res->base = ptr;
@@ -416,7 +416,7 @@ static apr_status_t slotmem_attach(ap_slotmem_t **new, const char *name, apr_siz
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_mem(ap_slotmem_t *slot, unsigned int id, void **mem)
+static apr_status_t slotmem_mem(ap_slotmem_instance_t *slot, unsigned int id, void **mem)
 {
 
     void *ptr;
@@ -436,7 +436,7 @@ static apr_status_t slotmem_mem(ap_slotmem_t *slot, unsigned int id, void **mem)
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_get(ap_slotmem_t *slot, unsigned int id, unsigned char *dest, apr_size_t dest_len)
+static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, unsigned char *dest, apr_size_t dest_len)
 {
 
     void *ptr;
@@ -459,7 +459,7 @@ static apr_status_t slotmem_get(ap_slotmem_t *slot, unsigned int id, unsigned ch
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned char *src, apr_size_t src_len)
+static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, unsigned char *src, apr_size_t src_len)
 {
 
     void *ptr;
@@ -482,17 +482,17 @@ static apr_status_t slotmem_put(ap_slotmem_t *slot, unsigned int id, unsigned ch
     return APR_SUCCESS;
 }
 
-static unsigned int slotmem_num_slots(ap_slotmem_t *slot)
+static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
 {
     return slot->num;
 }
 
-static apr_size_t slotmem_slot_size(ap_slotmem_t *slot)
+static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
 {
     return slot->size;
 }
 
-static apr_status_t slotmem_grab(ap_slotmem_t *slot, unsigned int *id)
+static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 {
 
     unsigned int i;
@@ -520,7 +520,7 @@ static apr_status_t slotmem_grab(ap_slotmem_t *slot, unsigned int *id)
     return APR_SUCCESS;
 }
 
-static apr_status_t slotmem_return(ap_slotmem_t *slot, unsigned int id)
+static apr_status_t slotmem_return(ap_slotmem_instance_t *slot, unsigned int id)
 {
 
     char *inuse;
@@ -541,7 +541,7 @@ static apr_status_t slotmem_return(ap_slotmem_t *slot, unsigned int id)
     return APR_SUCCESS;
 }
 
-static const ap_slotmem_storage_method storage = {
+static const ap_slotmem_provider_t storage = {
     "sharedmem",
     &slotmem_do,
     &slotmem_create,
@@ -554,7 +554,7 @@ static const ap_slotmem_storage_method storage = {
 };
 
 /* make the storage usuable from outside */
-static const ap_slotmem_storage_method *sharedmem_getstorage(void)
+static const ap_slotmem_provider_t *sharedmem_getstorage(void)
 {
     return (&storage);
 }
@@ -674,7 +674,7 @@ static void child_init(apr_pool_t *p, server_rec *s)
 
 static void ap_sharedmem_register_hook(apr_pool_t *p)
 {
-    const ap_slotmem_storage_method *storage = sharedmem_getstorage();
+    const ap_slotmem_provider_t *storage = sharedmem_getstorage();
     ap_register_provider(p, AP_SLOTMEM_STORAGE, "shared", "0", storage);
     ap_hook_post_config(post_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
