@@ -34,10 +34,11 @@
 #undef _WINUSER_
 #include <winuser.h>
 
+/* Todo; clear up statics */
 static char *mpm_service_name = NULL;
 static char *mpm_display_name = NULL;
 
-static struct
+typedef struct nt_service_ctx_t
 {
     HANDLE mpm_thread;       /* primary thread handle of the apache server */
     HANDLE service_thread;   /* thread service/monitor handle */
@@ -46,9 +47,12 @@ static struct
     HANDLE service_term;     /* NT service thread kill signal */
     SERVICE_STATUS ssStatus;
     SERVICE_STATUS_HANDLE hServiceStatus;
-} globdat;
+} nt_service_ctx_t;
 
-static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint);
+static nt_service_ctx_t globdat;
+
+static int ReportStatusToSCMgr(int currentState, int waitHint,
+                               nt_service_ctx_t *ctx);
 
 
 #define PRODREGKEY "SOFTWARE\\" AP_SERVER_BASEVENDOR "\\" \
@@ -246,12 +250,12 @@ void mpm_start_child_console_handler(void)
   WinNT service control management
  **********************************/
 
-static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
+static int ReportStatusToSCMgr(int currentState, int waitHint,
+                               nt_service_ctx_t *ctx)
 {
-    static int checkPoint = 1;
     int rv = APR_SUCCESS;
 
-    if (globdat.hServiceStatus)
+    if (ctx->hServiceStatus)
     {
         if (currentState == SERVICE_RUNNING) {
             ctx->ssStatus.dwWaitHint = 0;
@@ -260,28 +264,25 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
                                              | SERVICE_ACCEPT_SHUTDOWN;
         }
         else if (currentState == SERVICE_STOPPED) {
-            globdat.ssStatus.dwWaitHint = 0;
-            globdat.ssStatus.dwCheckPoint = 0;
-            if (!exitCode && globdat.ssStatus.dwCurrentState
-                                           != SERVICE_STOP_PENDING) {
-                /* An unexpected exit?  Better to error! */
-                exitCode = 1;
-            }
-            if (exitCode) {
-                globdat.ssStatus.dwWin32ExitCode =ERROR_SERVICE_SPECIFIC_ERROR;
-                globdat.ssStatus.dwServiceSpecificExitCode = exitCode;
-            }
+            ctx->ssStatus.dwWaitHint = 0;
+            ctx->ssStatus.dwCheckPoint = 0;
+            /* An unexpected exit?  Better to error! */
+            if (ctx->ssStatus.dwCurrentState != SERVICE_STOP_PENDING
+                    && !ctx->ssStatus.dwServiceSpecificExitCode)
+                ctx->ssStatus.dwServiceSpecificExitCode = 1;
+            if (ctx->ssStatus.dwServiceSpecificExitCode)
+                ctx->ssStatus.dwWin32ExitCode = ERROR_SERVICE_SPECIFIC_ERROR;
         }
         else {
-            globdat.ssStatus.dwCheckPoint = ++checkPoint;
-            globdat.ssStatus.dwControlsAccepted = 0;
+            ++ctx->ssStatus.dwCheckPoint;
+            ctx->ssStatus.dwControlsAccepted = 0;
             if(waitHint)
-                globdat.ssStatus.dwWaitHint = waitHint;
+                ctx->ssStatus.dwWaitHint = waitHint;
         }
 
-        globdat.ssStatus.dwCurrentState = currentState;
+        ctx->ssStatus.dwCurrentState = currentState;
 
-        rv = SetServiceStatus(globdat.hServiceStatus, &globdat.ssStatus);
+        rv = SetServiceStatus(ctx->hServiceStatus, &ctx->ssStatus);
     }
     return(rv);
 }
@@ -330,24 +331,31 @@ static void set_service_description(void)
 
 /* handle the SCM's ControlService() callbacks to our service */
 
-static VOID WINAPI service_nt_ctrl(DWORD dwCtrlCode)
+static DWORD WINAPI service_nt_ctrl(DWORD dwCtrlCode, DWORD dwEventType, 
+                                   LPVOID lpEventData, LPVOID lpContext)
 {
+    nt_service_ctx_t *ctx = lpContext;
+
     /* SHUTDOWN is offered before STOP, accept the first opportunity */
     if ((dwCtrlCode == SERVICE_CONTROL_STOP)
          || (dwCtrlCode == SERVICE_CONTROL_SHUTDOWN))
     {
         ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-        ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 30000);
-        return;
+        ReportStatusToSCMgr(SERVICE_STOP_PENDING, 30000, ctx);
+        return (NO_ERROR);
     }
     if (dwCtrlCode == SERVICE_APACHE_RESTART)
     {
         ap_signal_parent(SIGNAL_PARENT_RESTART);
-        ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 30000);
-        return;
+        ReportStatusToSCMgr(SERVICE_START_PENDING, 30000, ctx);
+        return (NO_ERROR);
+    }
+    if (dwCtrlCode == SERVICE_CONTROL_INTERROGATE) {
+        ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, 0, ctx);
+        return (NO_ERROR);
     }
 
-    ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 0);
+    return (ERROR_CALL_NOT_IMPLEMENTED);
 }
 
 
@@ -361,17 +369,18 @@ extern apr_array_header_t *mpm_new_argv;
 static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
 {
     const char *ignored;
+    nt_service_ctx_t *ctx = &globdat;
 
     /* args and service names live in the same pool */
     mpm_service_set_name(mpm_new_argv->pool, &ignored, argv[0]);
 
-    memset(&globdat.ssStatus, 0, sizeof(globdat.ssStatus));
-    globdat.ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
-    globdat.ssStatus.dwCurrentState = SERVICE_START_PENDING;
-    globdat.ssStatus.dwCheckPoint = 1;
+    memset(&ctx->ssStatus, 0, sizeof(ctx->ssStatus));
+    ctx->ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+    ctx->ssStatus.dwCurrentState = SERVICE_START_PENDING;
+    ctx->ssStatus.dwCheckPoint = 1;
 
     /* ###: utf-ize */
-    if (!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
+    if (!(ctx->hServiceStatus = RegisterServiceCtrlHandlerEx(argv[0], service_nt_ctrl, ctx)))
     {
         ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(),
                      NULL, "Failure registering service handler");
@@ -379,7 +388,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     }
 
     /* Report status, no errors, and buy 3 more seconds */
-    ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 30000);
+    ReportStatusToSCMgr(SERVICE_START_PENDING, 30000, ctx);
 
     /* We need to append all the command arguments passed via StartService()
      * to our running service... which just got here via the SCM...
@@ -408,9 +417,9 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     /* Let the main thread continue now... but hang on to the
      * signal_monitor event so we can take further action
      */
-    SetEvent(globdat.service_init);
+    SetEvent(ctx->service_init);
 
-    WaitForSingleObject(globdat.service_term, INFINITE);
+    WaitForSingleObject(ctx->service_term, INFINITE);
 }
 
 
@@ -545,9 +554,7 @@ void service_stopped(void)
         /* Cause the service_nt_main_fn to complete */
         ReleaseMutex(globdat.service_term);
 
-        ReportStatusToSCMgr(SERVICE_STOPPED, // service state
-                            NO_ERROR,        // exit code
-                            0);              // wait hint
+        ReportStatusToSCMgr(SERVICE_STOPPED, 0, &globdat);
 
         WaitForSingleObject(globdat.service_thread, 5000);
         CloseHandle(globdat.service_thread);
@@ -604,14 +611,14 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
 apr_status_t mpm_service_started(void)
 {
     set_service_description();
-    ReportStatusToSCMgr(SERVICE_RUNNING, NO_ERROR, 0);
+    ReportStatusToSCMgr(SERVICE_RUNNING, 0, &globdat);
     return APR_SUCCESS;
 }
 
 
 void mpm_service_stopping(void)
 {
-    ReportStatusToSCMgr(SERVICE_STOP_PENDING, NO_ERROR, 30000);
+    ReportStatusToSCMgr(SERVICE_STOP_PENDING, 30000, &globdat);
 }
 
 
