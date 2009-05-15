@@ -26,6 +26,8 @@ struct ap_slotmem_instance_t {
     apr_size_t           size;        /* size of each memory slot */
     unsigned int         num;         /* number of mem slots */
     apr_pool_t           *gpool;      /* per segment global pool */
+    char                 *inuse;      /* in-use flag table*/
+    ap_slotmem_type_t    type;        /* type-specific flags */
     struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
 };
 
@@ -86,6 +88,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
     res->size = item_size;
     res->num = item_num;
     res->next = NULL;
+    res->type = type;
     if (globallistmem == NULL)
         globallistmem = res;
     else
