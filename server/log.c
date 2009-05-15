@@ -167,6 +167,8 @@ struct piped_log {
     char *program;
     /** The pid of the logging process */
     apr_proc_t *pid;
+    /** How to reinvoke program when it must be replaced */
+    apr_cmdtype_e cmdtype;
 #endif
 };
 
@@ -294,7 +296,8 @@ static void log_child_errfn(apr_pool_t *pool, apr_status_t err,
  * stderr for the child will be the same as the stdout of the parent.
  * Otherwise the child will inherit the stderr from the parent. */
 static int log_child(apr_pool_t *p, const char *progname,
-                     apr_file_t **fpin, int dummy_stderr)
+                     apr_file_t **fpin, apr_cmdtype_e cmdtype,
+                     int dummy_stderr)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -306,8 +309,7 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_file_t *errfile;
 
     if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS)
-        && ((rc = apr_procattr_cmdtype_set(procattr,
-                                           APR_SHELLCMD_ENV)) == APR_SUCCESS)
+        && ((rc = apr_procattr_cmdtype_set(procattr, cmdtype)) == APR_SUCCESS)
         && ((rc = apr_procattr_io_set(procattr,
                                       APR_FULL_BLOCK,
                                       APR_NO_PIPE,
@@ -351,12 +353,26 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
 
     if (*s->error_fname == '|') {
         apr_file_t *dummy = NULL;
+        apr_cmdtype_e cmdtype = APR_PROGRAM_ENV;
+        fname = s->error_fname + 1;
 
+        /* In 2.4 favor PROGRAM_ENV, accept "||prog" syntax for compatibility
+         * and "|$cmd" to override the default.
+         * Any 2.2 backport would continue to favor SHELLCMD_ENV so there 
+         * accept "||prog" to override, and "|$cmd" to ease conversion.
+         */
+        if (*fname == '|')
+            ++fname;
+        if (*fname == '$') {
+            cmdtype = APR_SHELLCMD_ENV;
+            ++fname;
+        }
+	
         /* Spawn a new child logger.  If this is the main server_rec,
          * the new child must use a dummy stderr since the current
          * stderr might be a pipe to the old logger.  Otherwise, the
          * child inherits the parents stderr. */
-        rc = log_child(p, s->error_fname + 1, &dummy, is_main);
+        rc = log_child(p, fname, &dummy, cmdtype, is_main);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                          "Couldn't start ErrorLog process '%s'.",
@@ -896,12 +912,12 @@ static apr_status_t piped_log_spawn(piped_log *pl)
     apr_status_t status;
 
     if (((status = apr_procattr_create(&procattr, pl->p)) != APR_SUCCESS) ||
-        ((status = apr_procattr_cmdtype_set(procattr,
-                                            APR_SHELLCMD_ENV)) != APR_SUCCESS) ||
+        ((status = apr_procattr_cmdtype_set(procattr, pl->cmdtype))
+         != APR_SUCCESS) ||
         ((status = apr_procattr_child_in_set(procattr,
                                              pl->read_fd,
                                              pl->write_fd))
-        != APR_SUCCESS) ||
+         != APR_SUCCESS) ||
         ((status = apr_procattr_child_errfn_set(procattr, log_child_errfn))
          != APR_SUCCESS) ||
         ((status = apr_procattr_error_check_set(procattr, 1)) != APR_SUCCESS)) {
@@ -1019,7 +1035,9 @@ static apr_status_t piped_log_cleanup(void *data)
 }
 
 
-AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
+AP_DECLARE(piped_log *) ap_open_piped_log_ex(apr_pool_t *p,
+                                             const char *program,
+                                             apr_cmdtype_e cmdtype)
 {
     piped_log *pl;
 
@@ -1027,6 +1045,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     pl->p = p;
     pl->program = apr_pstrdup(p, program);
     pl->pid = NULL;
+    pl->cmdtype = cmdtype;
     if (apr_file_pipe_create_ex(&pl->read_fd,
                                 &pl->write_fd,
                                 APR_FULL_BLOCK, p) != APR_SUCCESS) {
@@ -1053,13 +1072,15 @@ static apr_status_t piped_log_cleanup(void *data)
     return APR_SUCCESS;
 }
 
-AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
+AP_DECLARE(piped_log *) ap_open_piped_log_ex(apr_pool_t *p,
+                                             const char *program,
+                                             apr_cmdtype_e cmdtype)
 {
     piped_log *pl;
     apr_file_t *dummy = NULL;
     int rc;
 
-    rc = log_child(p, program, &dummy, 0);
+    rc = log_child(p, program, &dummy, cmdtype, 0);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                      "Couldn't start piped log process '%s'.",
@@ -1077,6 +1098,12 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
 }
 
 #endif
+
+AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p,
+                                          const char *program)
+{
+   return ap_open_piped_log_ex(p, program, APR_PROGRAM_ENV);
+}
 
 AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
 {
