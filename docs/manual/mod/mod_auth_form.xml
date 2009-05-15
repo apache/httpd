@@ -542,7 +542,7 @@ lower level modules</description>
     specifies the URL to redirect to should the user not be authorised to view a page. By default,
     if a user is not authorised to view a page, the HTTP response code <code>HTTP_UNAUTHORIZED</code>
     will be returned with the page specified by the
-    <directive module="mod_core">ErrorDocument</directive> directive. This directive overrides this
+    <directive module="core">ErrorDocument</directive> directive. This directive overrides this
     default.</p>
     
     <p>Use this directive if you have a dedicated login page to redirect users to.</p>
