@@ -78,6 +78,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslrequiressl">SSLRequireSSL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncache">SSLSessionCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslusername">SSLUserName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifyclient">SSLVerifyClient</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslverifydepth">SSLVerifyDepth</a></li>
@@ -1684,6 +1685,37 @@ It can be set as low as 15 for testing, but should be set to higher
 values like 300 in real life.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLSessionCacheTimeout 600
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLStrictSNIVHostCheck" id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</a> <a name="sslstrictsnivhostcheck" id="sslstrictsnivhostcheck">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to allow non SNI clients to access a name based virtual
+host.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStrictSNIVHostCheck on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLStrictSNIVHostCheck off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+This directive sets whether a non SNI client is allowed to access a name based
+virtual host. If set to <code>on</code> in the non default name based virtual
+host, non SNI clients are not allowed to access this particular virtual host.
+If set to <code>on</code> in the default name based virtual host, non SNI
+clients are not allowed to access any name based virtual host belonging to
+this IP / port combination.
+</p>
+
+<div class="warning"><p>
+This option is only available if httpd was compiled against an SNI capable
+version of OpenSSL.
+</p></div>
+
+<div class="example"><h3>Example</h3><p><code>
+SSLStrictSNIVHostCheck on
 </code></p></div>
 
 </div>

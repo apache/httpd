@@ -736,47 +736,50 @@ HTTP request</td></tr>
 Cache</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout <em>seconds</em></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of seconds before an SSL session expires
 in the Session Cache</td></tr>
-<tr><td><a href="mod_ssl.html#sslusername">SSLUserName <em>varname</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Variable name to determine user name</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
-<tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
+<tr><td><a href="mod_ssl.html#sslstrictsnivhostcheck">SSLStrictSNIVHostCheck on|off</a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to allow non SNI clients to access a name based virtual
+host.
+</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslusername">SSLUserName <em>varname</em></a></td><td></td><td>sdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Variable name to determine user name</td></tr>
+<tr><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
 Certificate verification</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Anzahl der Kindprozesse des Servers, die beim Start erstellt
+<tr><td><a href="mpm_common.html#startservers">StartServers <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Anzahl der Kindprozesse des Servers, die beim Start erstellt
   werden</td></tr>
-<tr><td><a href="mpm_common.html#startthreads">StartThreads <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Anzahl der Threads, die beim Start erstellt werden</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
-<tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group for CGI programs to run as</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bestimmt die Obergrenze der konfigurierbaren Anzahl von Threads
+<tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Anzahl der Threads, die beim Start erstellt werden</td></tr>
+<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
+<tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">User and group for CGI programs to run as</td></tr>
+<tr><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Bestimmt die Obergrenze der konfigurierbaren Anzahl von Threads
   pro Kindprozess</td></tr>
-<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Anzahl der Threads, die mit jedem Kindprozess gestartet
+<tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Anzahl der Threads, die mit jedem Kindprozess gestartet
   werden</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>size</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Die Größe des Stacks in Bytes, der von Threads
+<tr><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>size</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Die Größe des Stacks in Bytes, der von Threads
 verwendet wird, die Client-Verbindungen bearbeiten.</td></tr>
-<tr><td><a href="core.html#timeout">TimeOut <var>Sekunden</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
+<tr class="odd"><td><a href="core.html#timeout">TimeOut <var>Sekunden</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Zeitspanne, die der Server auf verschiedene Ereignisse wartet,
 bevor er die Anfrage abbricht</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Specify location of a log file</td></tr>
-<tr><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
-<tr class="odd"><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes variables from the environment</td></tr>
-<tr><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Bestimmt, wie der Server seinen eigenen Namen und Port
+<tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Specify location of a log file</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The location of the <code>mime.types</code> file</td></tr>
+<tr><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes variables from the environment</td></tr>
+<tr class="odd"><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|DNS</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Bestimmt, wie der Server seinen eigenen Namen und Port
 ermittelt</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#user">User <var>Unix-User-ID</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Die Benutzerkennung, unter welcher der Server Anfragen
+<tr><td><a href="mpm_common.html#user">User <var>Unix-User-ID</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Die Benutzerkennung, unter welcher der Server Anfragen
   beantwortet</td></tr>
-<tr><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
-</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Location of the user-specific directories</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root
+<tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
+</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the user-specific directories</td></tr>
+<tr><td><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the document root
 for a given virtual host</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the document root
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root
 for a given virtual host</td></tr>
-<tr class="odd"><td><a href="core.html#virtualhost">&lt;VirtualHost
+<tr><td><a href="core.html#virtualhost">&lt;VirtualHost
     <var>Adresse</var>[:<var>Port</var>] [<var>Adresse</var>[:<var>Port</var>]]
-    ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enthält Direktiven, die nur auf bestimmte Hostnamen oder
+    ...&gt; ... &lt;/VirtualHost&gt;</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Enthält Direktiven, die nur auf bestimmte Hostnamen oder
 IP-Adressen angewendet werden</td></tr>
-<tr><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the CGI directory for
+<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the CGI directory for
 a given virtual host</td></tr>
-<tr class="odd"><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the cgi directory for
+<tr><td><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the cgi directory for
 a given virtual host</td></tr>
-<tr><td><a href="mpm_winnt.html#win32disableacceptex" id="W" name="W">Win32DisableAcceptEx</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Für die Annahme von Netzwerkverbindungen wird accept() anstelle von AcceptEx() verwendet</td></tr>
-<tr class="odd"><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Parse SSI directives in files with the execute bit
+<tr class="odd"><td><a href="mpm_winnt.html#win32disableacceptex" id="W" name="W">Win32DisableAcceptEx</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Für die Annahme von Netzwerkverbindungen wird accept() anstelle von AcceptEx() verwendet</td></tr>
+<tr><td><a href="mod_include.html#xbithack" id="X" name="X">XBitHack on|off|full</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Parse SSI directives in files with the execute bit
 set</td></tr>
 </table></div>
 <div class="bottomlang">
