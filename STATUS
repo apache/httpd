@@ -87,18 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
- * prefork MPM: simple patch to enable mod_privileges.
-   trunk: N/A (this patch substitutes for the availability of
-               drop_privileges hook).
-   2.2.x patch:
-      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
-   FYI, mod_privileges hacked to work with the patch:
-      http://people.apache.org/~niq/patches/2.2mod_privileges.c
-   +1: niq
-
  * mod_ssl: Improve and simplify the implementation of SSLProxyCheckPeerExpire
    by directly using X509_get_notBefore(), X509_get_notAfter() and
    X509_cmp_current_time().
@@ -106,7 +94,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=769809&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem, jim
+    +1: rpluem, jim, pgollucci
 
    * mod_ssl:  Add server name indication support (RFC 4366) and better
      support for name based virtual hosts with SSL. PR 34607
@@ -131,7 +119,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=771455
       Backport version for 2.2.x of updated patch:
          http://people.apache.org/~rpluem/patches/sni_backport_2.2.x.diff
-      +1: rpluem, jim
+      +1: rpluem, jim, pgollucci
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+ * prefork MPM: simple patch to enable mod_privileges.
+   trunk: N/A (this patch substitutes for the availability of
+               drop_privileges hook).
+   2.2.x patch:
+      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
+   FYI, mod_privileges hacked to work with the patch:
+      http://people.apache.org/~niq/patches/2.2mod_privileges.c
+   +1: niq
 
  * proxy_util: Resolve broken ProxyPassReverse balancer: given the config;
      BalancerMember balancer://alias http://example.com/foo
@@ -157,39 +157,7 @@ PATCHES/ISSUES THAT ARE STALLED
     http://www.vuxml.org/freebsd/pkg-pcre.html
 
     update to pcre-7.8
-    +1: pgollucci, pquerna
-    -0: covener: Don't We get a pass on some of these issues for building 
-                 without UTF-8 support and/or not having ever moved past 5.x?
-                 It's not always crisp from the advisories. I'd hate to jump 
-                 up to 7.8 and pick up unknown exposures from an expanding
-                 codebase.
-        pquerna says: We can't protect ourselves from our dependencies by _not_ 
-            upgrading -- the best policy IMO is to follow them, 5.x is not going
-            to be maintained.
-    +0
-    -1: niq: since pcre just got deleted from trunk, this isn't even
-             a backport being proposed.  It's an untested change over
-             their major versions, when we promise binary-compatibility!
-             If we're in the business of untested changes, then make
-             the sane one and just stop bundling it altogether.
-    -1: rpluem: Agree with niq on binary compatibility argument. But IMHO
-                unbundling it is also not possible with 2.2.x for the
-                same reason. IMHO this has to wait until 2.4.
-    -1: sctemme: This is one of the perils of bundling, but IMHO for 2.2.x
-                 we're stuck with it.  And if that starts inheriting us 
-                 security issues that we can't fix, all the more reason 
-                 to retire the branch.
-
-    pgollucci volunteers
-
-    pgollucci replies: known to work on freebsd see the WITH_PCRE_FROM_PORTS
-                       option in www/apache22.
-
-    backport/merge 5.0v7.8 into vendor/pcre/current
-    +1 
-    -0
-    +0
-    -1: pgollucci
+    outcome: remove from trunk, leave alone in branches/2.2.x and branches/2.0.x
 
  * core, authn/z: Avoid calling access control hooks for internal requests
    with configurations which match those of initial request.  Revert to
