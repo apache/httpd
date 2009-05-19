@@ -39,31 +39,29 @@
 #endif
 #endif
 
-#define AP_SLOTMEM_IS_PREGRAB(t) (t->type & AP_SLOTMEM_TYPE_PREGRAB)
+#define AP_SLOTMEM_IS_PREGRAB(t) (t->desc.type & AP_SLOTMEM_TYPE_PREGRAB)
+
+/* The description of the slots to reuse the slotmem */
+typedef struct {
+    apr_size_t size;             /* size of each memory slot */
+    unsigned int num;            /* number of mem slots */
+    ap_slotmem_type_t type;      /* type-specific flags */
+} sharedslotdesc_t;
 
 struct ap_slotmem_instance_t {
     char                 *name;       /* per segment name */
     void                 *shm;        /* ptr to memory segment (apr_shm_t *) */
     void                 *base;       /* data set start */
-    apr_size_t           size;        /* size of each memory slot */
-    unsigned int         num;         /* number of mem slots */
     apr_pool_t           *gpool;      /* per segment global pool */
     char                 *inuse;      /* in-use flag table*/
-    ap_slotmem_type_t    type;        /* type-specific flags */
+    sharedslotdesc_t     desc;        /* per slot desc */
     struct ap_slotmem_instance_t  *next;       /* location of next allocated segment */
 };
 
 
-/* The description of the slots to reuse the slotmem */
-struct sharedslotdesc {
-    apr_size_t item_size;
-    unsigned int item_num;
-    ap_slotmem_type_t type;
-};
-
 /*
  * Memory layout:
- *     sharedslotdesc | slots | isuse array
+ *     sharedslotdesc_t | slots | isuse array
  */
 
 /* global pool and list of slotmem we are handling */
@@ -149,7 +147,8 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     if (rv != APR_SUCCESS) {
         return;
     }
-    nbytes = (slotmem->size * slotmem->num) + (slotmem->num * sizeof(char));
+    nbytes = (slotmem->desc.size * slotmem->desc.num) +
+             (slotmem->desc.num * sizeof(char));
     apr_file_write(fp, slotmem->base, &nbytes);
     apr_file_close(fp);
 }
@@ -210,12 +209,12 @@ static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem, ap_slotmem_callbac
 
     ptr = mem->base;
     inuse = mem->inuse;
-    for (i = 0; i < mem->num; i++, inuse++) {
+    for (i = 0; i < mem->desc.num; i++, inuse++) {
         if (!AP_SLOTMEM_IS_PREGRAB(mem) ||
            (AP_SLOTMEM_IS_PREGRAB(mem) && *inuse)) {
             func((void *) ptr, data, pool);
         }
-        ptr += mem->size;
+        ptr += mem->desc.size;
     }
     return APR_SUCCESS;
 }
@@ -224,13 +223,13 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
 {
 /*    void *slotmem = NULL; */
     void *ptr;
-    struct sharedslotdesc desc;
+    sharedslotdesc_t desc;
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
     const char *fname;
     apr_shm_t *shm;
     apr_size_t basesize = (item_size * item_num);
-    apr_size_t size = sizeof(struct sharedslotdesc) + (item_num * sizeof(char)) + basesize;
+    apr_size_t size = sizeof(sharedslotdesc_t) + (item_num * sizeof(char)) + basesize;
     apr_status_t rv;
 
     if (gpool == NULL)
@@ -272,14 +271,14 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
         }
         ptr = apr_shm_baseaddr_get(shm);
         memcpy(&desc, ptr, sizeof(desc));
-        if (desc.item_size != item_size || desc.item_num != item_num) {
+        if (desc.size != item_size || desc.num != item_num) {
             apr_shm_detach(shm);
             return APR_EINVAL;
         }
         ptr = ptr + sizeof(desc);
     }
     else {
-        apr_size_t dsize = size - sizeof(struct sharedslotdesc);
+        apr_size_t dsize = size - sizeof(sharedslotdesc_t);
         if (name && name[0] != ':') {
             apr_shm_remove(fname, gpool);
             rv = apr_shm_create(&shm, size, fname, gpool);
@@ -300,8 +299,8 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
             unixd_set_shm_perms(fname);
         }
         ptr = apr_shm_baseaddr_get(shm);
-        desc.item_size = item_size;
-        desc.item_num = item_num;
+        desc.size = item_size;
+        desc.num = item_num;
         desc.type = type;
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + sizeof(desc);
@@ -315,9 +314,7 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name
     res->name = apr_pstrdup(gpool, fname);
     res->shm = shm;
     res->base = ptr;
-    res->size = item_size;
-    res->num = item_num;
-    res->type = type;
+    res->desc = desc;
     res->gpool = gpool;
     res->next = NULL;
     res->inuse = ptr + basesize;
@@ -338,7 +335,7 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
     void *ptr;
     ap_slotmem_instance_t *res;
     ap_slotmem_instance_t *next = globallistmem;
-    struct sharedslotdesc desc;
+    sharedslotdesc_t desc;
     const char *fname;
     apr_shm_t *shm;
     apr_status_t rv;
@@ -363,8 +360,8 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
         if (strcmp(next->name, fname) == 0) {
             /* we already have it */
             *new = next;
-            *item_size = next->size;
-            *item_num = next->num;
+            *item_size = next->desc.size;
+            *item_num = next->desc.num;
             return APR_SUCCESS;
         }
         next = next->next;
@@ -386,11 +383,9 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
     res->name = apr_pstrdup(gpool, fname);
     res->shm = shm;
     res->base = ptr;
-    res->size = desc.item_size;
-    res->num = desc.item_num;
-    res->type = desc.type;
+    res->desc = desc;
     res->gpool = gpool;
-    res->inuse = ptr + (desc.item_size * desc.item_num);
+    res->inuse = ptr + (desc.size * desc.num);
     res->next = NULL;
     if (globallistmem == NULL) {
         globallistmem = res;
@@ -400,8 +395,8 @@ static apr_status_t slotmem_attach(ap_slotmem_instance_t **new, const char *name
     }
 
     *new = res;
-    *item_size = desc.item_size;
-    *item_num = desc.item_num;
+    *item_size = desc.size;
+    *item_num = desc.num;
     return APR_SUCCESS;
 }
 
@@ -412,11 +407,11 @@ static apr_status_t slotmem_dptr(ap_slotmem_instance_t *slot, unsigned int id, v
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
-    if (id < 0 || id >= slot->num) {
+    if (id < 0 || id >= slot->desc.num) {
         return APR_ENOSHMAVAIL;
     }
 
-    ptr = slot->base + slot->size * id;
+    ptr = slot->base + slot->desc.size * id;
     if (!ptr) {
         return APR_ENOSHMAVAIL;
     }
@@ -435,7 +430,7 @@ static apr_status_t slotmem_get(ap_slotmem_instance_t *slot, unsigned int id, un
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+    if (id >= slot->desc.num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
         return APR_NOTFOUND;
     }
     ret = slotmem_dptr(slot, id, &ptr);
@@ -457,7 +452,7 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
     }
 
     inuse = slot->inuse + id;
-    if (id >= slot->num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
+    if (id >= slot->desc.num || (AP_SLOTMEM_IS_PREGRAB(slot) && !*inuse)) {
         return APR_NOTFOUND;
     }
     ret = slotmem_dptr(slot, id, &ptr);
@@ -470,12 +465,12 @@ static apr_status_t slotmem_put(ap_slotmem_instance_t *slot, unsigned int id, un
 
 static unsigned int slotmem_num_slots(ap_slotmem_instance_t *slot)
 {
-    return slot->num;
+    return slot->desc.num;
 }
 
 static apr_size_t slotmem_slot_size(ap_slotmem_instance_t *slot)
 {
-    return slot->size;
+    return slot->desc.size;
 }
 
 /*
@@ -493,12 +488,12 @@ static apr_status_t slotmem_grab(ap_slotmem_instance_t *slot, unsigned int *id)
 
     inuse = slot->inuse;
 
-    for (i = 0; i < slot->num; i++, inuse++) {
+    for (i = 0; i < slot->desc.num; i++, inuse++) {
         if (!*inuse) {
             break;
         }
     }
-    if (i >= slot->num) {
+    if (i >= slot->desc.num) {
         return APR_ENOSHMAVAIL;
     }
     *inuse = 1;
@@ -516,7 +511,7 @@ static apr_status_t slotmem_release(ap_slotmem_instance_t *slot, unsigned int id
 
     inuse = slot->inuse;
 
-    if (id >= slot->num || !inuse[id] ) {
+    if (id >= slot->desc.num || !inuse[id] ) {
         return APR_NOTFOUND;
     }
     inuse[id] = 0;
