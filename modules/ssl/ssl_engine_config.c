@@ -171,6 +171,9 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->cipher_server_pref     = UNSET;
     sc->proxy_ssl_check_peer_expire = SSL_ENABLED_UNSET;
     sc->proxy_ssl_check_peer_cn     = SSL_ENABLED_UNSET;
+#ifndef OPENSSL_NO_TLSEXT
+    sc->strict_sni_vhost_check = SSL_ENABLED_UNSET;
+#endif
 
     modssl_ctx_init_proxy(sc, p);
 
@@ -261,6 +264,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeBool(cipher_server_pref);
     cfgMerge(proxy_ssl_check_peer_expire, SSL_ENABLED_UNSET);
     cfgMerge(proxy_ssl_check_peer_cn, SSL_ENABLED_UNSET);
+#ifndef OPENSSL_NO_TLSEXT
+    cfgMerge(strict_sni_vhost_check, SSL_ENABLED_UNSET);
+#endif
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
 
@@ -1448,6 +1454,21 @@ const char *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag)
     sc->proxy_ssl_check_peer_cn = flag ? SSL_ENABLED_TRUE : SSL_ENABLED_FALSE;
 
     return NULL;
+}
+
+const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag)
+{
+#ifndef OPENSSL_NO_TLSEXT
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->strict_sni_vhost_check = flag ? SSL_ENABLED_TRUE : SSL_ENABLED_FALSE;
+
+    return NULL;
+#else
+    return "SSLStrictSNIVHostCheck failed; OpenSSL is not built with support "
+           "for TLS extensions and SNI indication. Refer to the "
+           "documentation, and build a compatible version of OpenSSL.";
+#endif
 }
 
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)

@@ -358,6 +358,33 @@ static void ssl_init_server_check(server_rec *s,
     }
 }
 
+#ifndef OPENSSL_NO_TLSEXT
+static void ssl_init_ctx_tls_extensions(server_rec *s,
+                                        apr_pool_t *p,
+                                        apr_pool_t *ptemp,
+                                        modssl_ctx_t *mctx)
+{
+    /*
+     * Configure TLS extensions support
+     */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "Configuring TLS extension handling");
+
+    /*
+     * Server name indication (SNI)
+     */
+    if (!SSL_CTX_set_tlsext_servername_callback(mctx->ssl_ctx,
+                          ssl_callback_ServerNameIndication) ||
+        !SSL_CTX_set_tlsext_servername_arg(mctx->ssl_ctx, mctx)) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                     "Unable to initialize TLS servername extension "
+                     "callback (incompatible OpenSSL version?)");
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_die();
+    }
+}
+#endif
+
 static void ssl_init_ctx_protocol(server_rec *s,
                                   apr_pool_t *p,
                                   apr_pool_t *ptemp,
@@ -690,6 +717,9 @@ static void ssl_init_ctx(server_rec *s,
     if (mctx->pks) {
         /* XXX: proxy support? */
         ssl_init_ctx_cert_chain(s, p, ptemp, mctx);
+#ifndef OPENSSL_NO_TLSEXT
+        ssl_init_ctx_tls_extensions(s, p, ptemp, mctx);
+#endif
     }
 }
 
@@ -1039,9 +1069,19 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         klen = strlen(key);
 
         if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
+            ap_log_error(APLOG_MARK, 
+#ifdef OPENSSL_NO_TLSEXT
+                         APLOG_WARNING, 
+#else
+                         APLOG_DEBUG, 
+#endif
+                         0,
                          base_server,
+#ifdef OPENSSL_NO_TLSEXT
                          "Init: SSL server IP/port conflict: "
+#else
+                         "Init: SSL server IP/port overlap: "
+#endif
                          "%s (%s:%d) vs. %s (%s:%d)",
                          ssl_util_vhostid(p, s),
                          (s->defn_name ? s->defn_name : "unknown"),
@@ -1058,8 +1098,14 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
 
     if (conflict) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server,
+#ifdef OPENSSL_NO_TLSEXT
                      "Init: You should not use name-based "
                      "virtual hosts in conjunction with SSL!!");
+#else
+                     "Init: Name-based SSL virtual hosts only "
+                     "work for clients with TLS server name indication "
+                     "support (RFC 4366)");
+#endif
     }
 }
 

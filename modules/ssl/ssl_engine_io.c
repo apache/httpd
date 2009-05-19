@@ -696,7 +696,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  */
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, inctx->rc, c,
                               "SSL library error %d reading data", ssl_err);
-                ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
+                ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, mySrvFromConn(c));
 
             }
             if (inctx->rc == APR_SUCCESS) {
@@ -800,7 +800,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
              */
             ap_log_cerror(APLOG_MARK, APLOG_INFO, outctx->rc, c,
                           "SSL library error %d writing data", ssl_err);
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, mySrvFromConn(c));
         }
         if (outctx->rc == APR_SUCCESS) {
             outctx->rc = APR_EGENERAL;
@@ -862,7 +862,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                          "SSL handshake failed: HTTP spoken on HTTPS port; "
                          "trying to send HTML error page");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, f->c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, sslconn->server);
 
             sslconn->non_ssl_request = 1;
             ssl_io_filter_disable(sslconn, f);
@@ -972,11 +972,11 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     SSL_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
-    if (c->base_server->loglevel >= APLOG_INFO) {
+    if (mySrvFromConn(c)->loglevel >= APLOG_INFO) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                       "Connection closed to child %ld with %s shutdown "
                       "(server %s)",
-                      c->id, type, ssl_util_vhostid(c->pool, c->base_server));
+                      c->id, type, ssl_util_vhostid(c->pool, mySrvFromConn(c)));
     }
 
     /* deallocate the SSL connection */
@@ -1022,23 +1022,26 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
 {
     conn_rec *c         = (conn_rec *)SSL_get_app_data(filter_ctx->pssl);
     SSLConnRec *sslconn = myConnConfig(c);
-    SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
+    SSLSrvConfigRec *sc;
     X509 *cert;
     int n;
     int ssl_err;
     long verify_result;
+    server_rec *server;
 
     if (SSL_is_init_finished(filter_ctx->pssl)) {
         return APR_SUCCESS;
     }
 
+    server = sslconn->server;
     if (sslconn->is_proxy) {
         const char *hostname_note;
 
+        sc = mySrvConfig(server);
         if ((n = SSL_connect(filter_ctx->pssl)) <= 0) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                           "SSL Proxy connect failed");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
             return HTTP_BAD_GATEWAY;
@@ -1067,7 +1070,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
                  apr_table_get(c->notes, "proxy-request-hostname")) != NULL)) {
             const char *hostname;
 
-            hostname = ssl_var_lookup(NULL, c->base_server, c, NULL,
+            hostname = ssl_var_lookup(NULL, server, c, NULL,
                                       "SSL_CLIENT_S_DN_CN");
             apr_table_unset(c->notes, "proxy-request-hostname");
             if (strcasecmp(hostname, hostname_note)) {
@@ -1132,8 +1135,8 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             ap_log_cerror(APLOG_MARK, APLOG_INFO, rc, c,
                           "SSL library error %d in handshake "
                           "(server %s)", ssl_err,
-                          ssl_util_vhostid(c->pool, c->base_server));
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
+                          ssl_util_vhostid(c->pool, server));
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
 
         }
         if (inctx->rc == APR_SUCCESS) {
@@ -1142,6 +1145,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
 
         return ssl_filter_io_shutdown(filter_ctx, c, 1);
     }
+    sc = mySrvConfig(sslconn->server);
 
     /*
      * Check for failed client authentication
@@ -1167,7 +1171,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
                           "accepting certificate based on "
                           "\"SSLVerifyClient optional_no_ca\" "
                           "configuration");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
         }
         else {
             const char *error = sslconn->verify_error ?
@@ -1177,7 +1181,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                          "SSL client authentication failed: %s",
                          error ? error : "unknown");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
+            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
 
             return ssl_filter_io_shutdown(filter_ctx, c, 1);
         }
@@ -1846,7 +1850,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
         return rc;
     if ((c = (conn_rec *)SSL_get_app_data(ssl)) == NULL)
         return rc;
-    s = c->base_server;
+    s = mySrvFromConn(c);
 
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
