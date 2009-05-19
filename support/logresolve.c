@@ -68,6 +68,8 @@
 #include <stdlib.h>
 #endif
 
+#define LINE_BUF_SIZE 2048
+
 static apr_file_t *errfile;
 static const char *shortname = "logresolve";
 static apr_hash_t *cache;
@@ -143,7 +145,7 @@ int main(int argc, const char * const argv[])
     char * inbuffer;
     char * outbuffer;
 #endif
-    char line[2048];
+    char line[LINE_BUF_SIZE];
     int doublelookups = 0;
 
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
@@ -204,7 +206,7 @@ int main(int argc, const char * const argv[])
 
     cache = apr_hash_make(pool);
 
-    while (apr_file_gets(line, 2048, infile) == APR_SUCCESS) {
+    while (apr_file_gets(line, sizeof(line), infile) == APR_SUCCESS) {
         char dummy[] = " " APR_EOL_STR;
 
         if (line[0] == '\0') {
