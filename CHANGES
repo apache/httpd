@@ -6,6 +6,11 @@ Changes with Apache 2.3.3
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) mod_rewrite: Fix the error string returned by RewriteRule.
+     RewriteRule returned "RewriteCond: bad flag delimiters" when the 3rd
+     argument of RewriteRule was not started with "[" or not ended with "]".
+     PR 45082 [Vitaly Polonetsky <m_vitaly topixoft.com>]
+
   *) Windows: Fix usage message.
      [Rainer Jung]
 
