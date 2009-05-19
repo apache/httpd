@@ -98,6 +98,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
    FYI, mod_privileges hacked to work with the patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges.c
+   wrowe asks; what is proposed and why two patches here?
    +1: niq
 
  * proxy_util: Resolve broken ProxyPassReverse balancer: given the config;
@@ -106,8 +107,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    proxy should translate url http://example.com/foo/bar/that to /bash/that
    Trunk version of patch works:
        http://svn.apache.org/viewvc?view=rev&revision=771587
-   Addresses PR's 40136, 45434, 46765 (amoung others, smartass :) )
-   +1: wrowe, jim (still don't agree that it is "broken" btw :) )
+   Addresses PR's 40136, 45434, 46765
+   +1: wrowe, jim
 
  * log: Provide "||program" syntax to optionally restore behavior broken in
      2.0.50 which leads to bad process handling on Solaris and wasted process
