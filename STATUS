@@ -87,39 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_ssl: Improve and simplify the implementation of SSLProxyCheckPeerExpire
-   by directly using X509_get_notBefore(), X509_get_notAfter() and
-   X509_cmp_current_time().
-    Trunk version of patch:
-       http://svn.apache.org/viewcvs.cgi?rev=769809&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, pgollucci
-
-   * mod_ssl:  Add server name indication support (RFC 4366) and better
-     support for name based virtual hosts with SSL. PR 34607
-      Trunk version of patches:
-         http://svn.apache.org/viewvc?view=rev&revision=591955
-         http://svn.apache.org/viewvc?view=rev&revision=606190
-         http://svn.apache.org/viewvc?view=rev&revision=607420
-         http://svn.apache.org/viewvc?view=rev&revision=607425
-         http://svn.apache.org/viewvc?view=rev&revision=611216
-         http://svn.apache.org/viewvc?view=rev&revision=620505
-         http://svn.apache.org/viewvc?view=rev&revision=627699
-         http://svn.apache.org/viewvc?view=rev&revision=630436
-         http://svn.apache.org/viewvc?view=rev&revision=662815
-         http://svn.apache.org/viewvc?view=rev&revision=757373
-         http://svn.apache.org/viewvc?view=rev&revision=757463
-         http://svn.apache.org/viewvc?view=rev&revision=757720
-         http://svn.apache.org/viewvc?view=rev&revision=761181
-         http://svn.apache.org/viewvc?view=rev&revision=768499
-         http://svn.apache.org/viewvc?view=rev&revision=768501
-         http://svn.apache.org/viewvc?view=rev&revision=768596
-         http://svn.apache.org/viewvc?view=rev&revision=770907
-         http://svn.apache.org/viewvc?view=rev&revision=771455
-      Backport version for 2.2.x of updated patch:
-         http://people.apache.org/~rpluem/patches/sni_backport_2.2.x.diff
-      +1: rpluem, jim, pgollucci
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

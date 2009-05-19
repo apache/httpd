@@ -11,6 +11,12 @@ Changes with Apache 2.2.12
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) mod_ssl: Add server name indication support (RFC 4366) and better
+     support for name based virtual hosts with SSL. PR 34607
+     [Peter Sylvester <peter.sylvester edelweb.fr>,
+      Kaspar Brand <asfbugz velox.ch>, Guenter Knauf, Joe Orton,
+      Ruediger Pluem]
+
   *) mod_negotiation: Escape pathes of filenames in 406 responses to avoid
      HTML injections and HTTP response splitting.  PR 46837.
      [Geoff Keating <geoffk apple.com>]

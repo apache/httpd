@@ -264,6 +264,12 @@ typedef void (*modssl_popfree_fn)(char *data);
 #define SSL_SESS_CACHE_NO_INTERNAL  SSL_SESS_CACHE_NO_INTERNAL_LOOKUP
 #endif
 
+#ifndef OPENSSL_NO_TLSEXT
+#ifndef SSL_CTRL_SET_TLSEXT_HOSTNAME
+#define OPENSSL_NO_TLSEXT
+#endif
+#endif
+
 #endif /* SSL_TOOLKIT_COMPAT_H */
 
 /** @} */

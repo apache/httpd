@@ -35,6 +35,7 @@
 #include "http_connection.h"
 #include "http_request.h"
 #include "http_protocol.h"
+#include "http_vhost.h"
 #include "util_script.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
@@ -129,6 +130,9 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #define mySrvConfig(srv) (SSLSrvConfigRec *)ap_get_module_config(srv->module_config,  &ssl_module)
 #define myDirConfig(req) (SSLDirConfigRec *)ap_get_module_config(req->per_dir_config, &ssl_module)
 #define myModConfig(srv) (mySrvConfig((srv)))->mc
+#define mySrvFromConn(c) (myConnConfig(c))->server
+#define mySrvConfigFromConn(c) mySrvConfig(mySrvFromConn(c))
+#define myModConfigFromConn(c) myModConfig(mySrvFromConn(c))
 
 #define myCtxVarSet(mc,num,val)  mc->rCtx.pV##num = val
 #define myCtxVarGet(mc,num,type) (type)(mc->rCtx.pV##num)
@@ -352,6 +356,7 @@ typedef struct {
     int is_proxy;
     int disabled;
     int non_ssl_request;
+    server_rec *server;
 } SSLConnRec;
 
 typedef struct {
@@ -456,6 +461,9 @@ struct SSLSrvConfigRec {
     modssl_ctx_t    *proxy;
     ssl_enabled_t    proxy_ssl_check_peer_expire;
     ssl_enabled_t    proxy_ssl_check_peer_cn;
+#ifndef OPENSSL_NO_TLSEXT
+    ssl_enabled_t    strict_sni_vhost_check;
+#endif
 };
 
 /**
@@ -522,6 +530,7 @@ const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, void *);
 const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLUserName(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *arg);
+const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag);
 
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);
@@ -566,6 +575,9 @@ int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE, int, int);
+#ifndef OPENSSL_NO_TLSEXT
+int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
+#endif
 
 /**  Session Cache Support  */
 void         ssl_scache_init(server_rec *, apr_pool_t *);
