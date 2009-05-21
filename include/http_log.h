@@ -289,6 +289,8 @@ struct piped_log {
     char *program;
     /** The pid of the logging process */
     apr_proc_t *pid;
+    /** How to reinvoke program when it must be replaced */
+    apr_cmdtype_e cmdtype;
 #endif
 };
 
@@ -297,8 +299,21 @@ struct piped_log {
  * @param p The pool to allocate out of
  * @param program The program to run in the logging process
  * @return The piped log structure
+ * @tip The log program is invoked as APR_SHELLCMD_ENV, 
+ *      @see ap_open_piped_log_ex to modify this behavior
  */
 AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program);
+
+/**
+ * Open the piped log process specifying the execution choice for program
+ * @param p The pool to allocate out of
+ * @param program The program to run in the logging process
+ * @param cmdtype How to invoke program, e.g. APR_PROGRAM, APR_SHELLCMD_ENV, etc
+ * @return The piped log structure
+ */
+AP_DECLARE(piped_log *) ap_open_piped_log_ex(apr_pool_t *p,
+                                             const char *program,
+                                             apr_cmdtype_e cmdtype);
 
 /**
  * Close the piped log and kill the logging process
