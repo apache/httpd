@@ -87,20 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
- * prefork MPM: simple patch to enable mod_privileges.
-   trunk: N/A (this patch substitutes for the availability of
-               drop_privileges hook).
-   2.2.x patch:
-      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
-   FYI, mod_privileges hacked to work with the patch:
-      http://people.apache.org/~niq/patches/2.2mod_privileges.c
-   wrowe asks; what is proposed and why two patches here?
-   +1: niq
-
  * proxy_util: Resolve broken ProxyPassReverse balancer: given the config;
      BalancerMember balancer://alias http://example.com/foo
      ProxyPassReverse /bash balancer://alias/bar
@@ -121,6 +107,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Proposed 2.2.12 patch, retaining default behavior from 2.2.11;
        http://people.apache.org/~wrowe/fixlog22.patch
    +1: wrowe, rpluem, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+ * prefork MPM: simple patch to enable mod_privileges.
+   trunk: N/A (this patch substitutes for the availability of
+               drop_privileges hook).
+   2.2.x patch:
+      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
+   FYI, mod_privileges hacked to work with the patch:
+      http://people.apache.org/~niq/patches/2.2mod_privileges.c
+   wrowe asks; what is proposed and why two patches here?
+   +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
