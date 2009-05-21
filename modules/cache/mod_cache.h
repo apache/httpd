@@ -155,6 +155,12 @@ typedef struct {
     /** ignore query-string when caching */
     int ignorequerystring;
     int ignorequerystring_set;
+    /** store the identifiers that should not be used for key calculation */
+    apr_array_header_t *ignore_session_id;
+    /* flag if CacheIgnoreURLSessionIdentifiers has been set */
+    #define CACHE_IGNORE_SESSION_ID_SET   1
+    #define CACHE_IGNORE_SESSION_ID_UNSET 0
+    int ignore_session_id_set;
 } cache_server_conf;
 
 /* cache info information */
