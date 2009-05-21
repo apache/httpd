@@ -109,6 +109,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=771587
    Addresses PR's 40136, 45434, 46765
    +1: wrowe, jim
+   rpluem says: If you add r771610
+   (http://svn.apache.org/viewvc?view=rev&revision=771610) I am +1.
 
  * log: Provide "||program" syntax to optionally restore behavior broken in
      2.0.50 which leads to bad process handling on Solaris and wasted process
