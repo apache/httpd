@@ -118,7 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=775320
    Proposed 2.2.12 patch, retaining default behavior from 2.2.11;
        http://people.apache.org/~wrowe/fixlog22.patch
-   +1: wrowe
+   +1: wrowe, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
