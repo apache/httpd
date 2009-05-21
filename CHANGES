@@ -1,4 +1,4 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
   *) SECURITY: CVE-2009-1195 (cve.mitre.org)
@@ -10,6 +10,19 @@ Changes with Apache 2.2.12
   *) SECURITY: CVE-2009-1191 (cve.mitre.org)
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
+
+  *) mod_proxy: Complete ProxyPassReverse to handle balancer URL's.  Given;
+       BalancerMember balancer://alias http://example.com/foo
+       ProxyPassReverse /bash balancer://alias/bar
+     backend url http://example.com/foo/bar/that is now translated /bash/that
+     [William Rowe]
+
+  *) New piped log syntax: Use "||process args" to launch the given process
+     without invoking the shell/command interpreter.  Use "|$command line"
+     (the default behavior of "|command line" in 2.2) to invoke using shell,
+     consuming an additional shell process for the lifetime of the logging
+     pipe program but granting additional process invocation flexibility.
+     [William Rowe]
 
   *) mod_ssl: Add server name indication support (RFC 4366) and better
      support for name based virtual hosts with SSL. PR 34607
