@@ -414,6 +414,8 @@ LastModified date.</description>
     an entity in the cache, such that cachable resources are not stored separately for
     each session.
     </p>
+    <p><code>CacheIgnoreURLSessionIdentifiers None</code> clears the list of ignored
+    identifiers. Otherwise, each identifier is added to the list.</p>
 
     <example><title>Example 1</title>
       CacheIgnoreURLSessionIdentifiers jsessionid
