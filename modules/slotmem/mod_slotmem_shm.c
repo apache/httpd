@@ -545,7 +545,9 @@ static const ap_slotmem_provider_t storage = {
     &slotmem_get,
     &slotmem_put,
     &slotmem_num_slots,
-    &slotmem_slot_size
+    &slotmem_slot_size,
+    &slotmem_grab,
+    &slotmem_release
 };
 
 /* make the storage usuable from outside */
