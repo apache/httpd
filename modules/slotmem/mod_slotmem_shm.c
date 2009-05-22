@@ -84,13 +84,11 @@ static apr_status_t unixd_set_shm_perms(const char *fname)
     if ((shmid = shmget(shmkey, 0, SHM_R | SHM_W)) == -1) {
         return errno;
     }
-#if MODULE_MAGIC_NUMBER_MAJOR > 20081212
+#if MODULE_MAGIC_NUMBER_MAJOR <= 20081212
+#define ap_unixd_config unixd_config
+#endif
     shmbuf.shm_perm.uid  = ap_unixd_config.user_id;
     shmbuf.shm_perm.gid  = ap_unixd_config.group_id;
-#else
-    shmbuf.shm_perm.uid  = unixd_config.user_id;
-    shmbuf.shm_perm.gid  = unixd_config.group_id;
-#endif
     shmbuf.shm_perm.mode = 0600;
     if (shmctl(shmid, IPC_SET, &shmbuf) == -1) {
         return errno;
