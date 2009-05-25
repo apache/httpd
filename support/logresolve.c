@@ -134,6 +134,7 @@ int main(int argc, const char * const argv[])
     apr_file_t * infile;
     apr_getopt_t * o;
     apr_pool_t * pool;
+    apr_pool_t *pline;
     apr_status_t status;
     const char * arg;
     char * stats = NULL;
@@ -202,6 +203,9 @@ int main(int argc, const char * const argv[])
 #endif
 
     cache = apr_hash_make(pool);
+    if(apr_pool_create(&pline, NULL) != APR_SUCCESS){
+        return 1;
+    }
 
     while (apr_file_gets(line, sizeof(line), infile) == APR_SUCCESS) {
         char *hostname;
@@ -241,7 +245,7 @@ int main(int argc, const char * const argv[])
         }
 
         /* Parse the IP address */
-        status = apr_sockaddr_info_get(&ip, line, APR_UNSPEC ,0, 0, pool);
+        status = apr_sockaddr_info_get(&ip, line, APR_UNSPEC, 0, 0, pline);
         if (status != APR_SUCCESS) {
             /* Not an IP address */
             withname++;
@@ -282,7 +286,7 @@ int main(int argc, const char * const argv[])
              * original IP address.
              */
             status = apr_sockaddr_info_get(&ipdouble, hostname, ip->family, 0,
-                                           0, pool);
+                                           0, pline);
             if (status == APR_SUCCESS ||
                 memcmp(ipdouble->ipaddr_ptr, ip->ipaddr_ptr, ip->ipaddr_len)) {
                 /* Double-lookup failed  */
@@ -304,6 +308,8 @@ int main(int argc, const char * const argv[])
         /* Store it in the cache */
         apr_hash_set(cache, line, APR_HASH_KEY_STRING,
                      apr_pstrdup(pool, hostname));
+
+        apr_pool_clear(pline);
     }
 
     /* Flush any remaining output */
