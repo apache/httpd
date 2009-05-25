@@ -84,6 +84,9 @@ RELEASE SHOWSTOPPERS:
 * We should wait for a release of APR 1.3.4 at least for
   http://svn.apache.org/viewvc?view=rev&revision=727605
 
+* Resolve API breakage with OPT_INC* changes.  See thread
+  "CVE-2009-1195 tweaks to preserve binary compatibility for stable branches"
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
