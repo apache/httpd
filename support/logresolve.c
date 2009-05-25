@@ -130,17 +130,11 @@ int main(int argc, const char * const argv[])
 {
     apr_file_t * outfile;
     apr_file_t * infile;
-    apr_file_t * statsfile;
-    apr_sockaddr_t * ip;
-    apr_sockaddr_t * ipdouble;
     apr_getopt_t * o;
     apr_pool_t * pool;
     apr_status_t status;
     const char * arg;
-    char opt;
     char * stats = NULL;
-    char * space;
-    char * hostname;
 #if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3)
     char * inbuffer;
     char * outbuffer;
@@ -164,6 +158,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_init(&o, pool, argc, argv);
 
     while (1) {
+        char opt;
         status = apr_getopt(o, "s:c", &opt, &arg);
         if (status == APR_EOF) {
             break;
@@ -207,6 +202,10 @@ int main(int argc, const char * const argv[])
     cache = apr_hash_make(pool);
 
     while (apr_file_gets(line, sizeof(line), infile) == APR_SUCCESS) {
+        char *hostname;
+        char *space;
+        apr_sockaddr_t *ip;
+        apr_sockaddr_t *ipdouble;
         char dummy[] = " " APR_EOL_STR;
 
         if (line[0] == '\0') {
@@ -309,6 +308,7 @@ int main(int argc, const char * const argv[])
     apr_file_flush(outfile);
 
     if (stats) {
+        apr_file_t *statsfile;
         if (apr_file_open(&statsfile, stats,
                        APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE,
                           APR_OS_DEFAULT, pool) != APR_SUCCESS) {
