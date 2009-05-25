@@ -479,7 +479,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      */
     path = r->parsed_uri.path;
     querystring = r->parsed_uri.query;
-    if (conf->ignore_session_id_set == CACHE_IGNORE_SESSION_ID_SET) {
+    if (conf->ignore_session_id->nelts) {
         int i;
         char **identifier;
 
