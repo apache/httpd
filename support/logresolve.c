@@ -68,6 +68,8 @@
 #include <stdlib.h>
 #endif
 
+#define READ_BUF_SIZE 10240
+#define WRITE_BUF_SIZE 10240
 #define LINE_BUF_SIZE 2048
 
 static apr_file_t *errfile;
@@ -189,14 +191,14 @@ int main(int argc, const char * const argv[])
 
 #if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3)
     /* Allocate two new 10k file buffers */
-    if ((outbuffer = apr_palloc(pool, 10240)) == NULL ||
-        (inbuffer = apr_palloc(pool, 10240)) == NULL) {
+    if ((outbuffer = apr_palloc(pool, WRITE_BUF_SIZE)) == NULL ||
+        (inbuffer = apr_palloc(pool, READ_BUF_SIZE)) == NULL) {
         return 1;
     }
 
     /* Set the buffers */
-    apr_file_buffer_set(infile, inbuffer, 10240);
-    apr_file_buffer_set(outfile, outbuffer, 10240);
+    apr_file_buffer_set(infile, inbuffer, READ_BUF_SIZE);
+    apr_file_buffer_set(outfile, outbuffer, WRITE_BUF_SIZE);
 #endif
 
     cache = apr_hash_make(pool);
