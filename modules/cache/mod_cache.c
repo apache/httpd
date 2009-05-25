@@ -1006,7 +1006,7 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         ? base->ignorequerystring
         : overrides->ignorequerystring;
     ps->ignore_session_id =
-        (overrides->ignore_session_id_set == CACHE_IGNORE_HEADERS_UNSET)
+        (overrides->ignore_session_id_set == CACHE_IGNORE_SESSION_ID_UNSET)
         ? base->ignore_session_id
         : overrides->ignore_session_id;
     return ps;
