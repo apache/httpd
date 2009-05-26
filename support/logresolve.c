@@ -203,7 +203,7 @@ int main(int argc, const char * const argv[])
 #endif
 
     cache = apr_hash_make(pool);
-    if(apr_pool_create(&pline, NULL) != APR_SUCCESS){
+    if(apr_pool_create(&pline, pool) != APR_SUCCESS){
         return 1;
     }
 
