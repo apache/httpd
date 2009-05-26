@@ -138,10 +138,8 @@ int main(int argc, const char * const argv[])
     apr_status_t status;
     const char * arg;
     char * stats = NULL;
-#if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3)
     char * inbuffer;
     char * outbuffer;
-#endif
     char line[LINE_BUF_SIZE];
     int doublelookups = 0;
 
@@ -190,7 +188,6 @@ int main(int argc, const char * const argv[])
     apr_file_open_stdout(&outfile, pool);
     apr_file_open_stdin(&infile, pool);
 
-#if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3)
     /* Allocate two new 10k file buffers */
     if ((outbuffer = apr_palloc(pool, WRITE_BUF_SIZE)) == NULL ||
         (inbuffer = apr_palloc(pool, READ_BUF_SIZE)) == NULL) {
@@ -200,7 +197,6 @@ int main(int argc, const char * const argv[])
     /* Set the buffers */
     apr_file_buffer_set(infile, inbuffer, READ_BUF_SIZE);
     apr_file_buffer_set(outfile, outbuffer, WRITE_BUF_SIZE);
-#endif
 
     cache = apr_hash_make(pool);
     if(apr_pool_create(&pline, pool) != APR_SUCCESS){
