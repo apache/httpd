@@ -257,7 +257,7 @@ The following Mutex <em>types</em> are available:</p>
 <li><code>fcntl:/path/to/mutex</code>
     <p>
     This is a portable Mutex variant where a physical (lock-)file and the <code>fcntl()</code>
-    fucntion are used as the Mutex.
+    function are used as the Mutex.
     Always use a local disk filesystem for <code>/path/to/mutex</code> and never a file
     residing on a NFS- or AFS-filesystem. It is only available when the underlying platform
     and <glossary>APR</glossary> supports it. Note: Internally, the Process ID (PID) of the
@@ -526,7 +526,8 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 
 <li><code>SSLv3</code>
     <p>
-    This is the Secure Sockets Layer (SSL) protocol, version 3.0, from the Netscape Corportaion. 
+    This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
+    the Netscape Corporation. 
     It is the successor to SSLv2 and the predecessor to TLSv1. It's supported by
     almost all popular browsers.</p></li>
 
@@ -775,7 +776,7 @@ SSLCertificateKeyFile /usr/local/apache2/conf/ssl.key/server.key
 This directive sets the optional <em>all-in-one</em> file where you can
 assemble the certificates of Certification Authorities (CA) which form the
 certificate chain of the server certificate. This starts with the issuing CA
-certificate of of the server certificate and can range up to the root CA
+certificate of the server certificate and can range up to the root CA
 certificate. Such a file is simply the concatenation of the various
 PEM-encoded CA Certificate files, usually in certificate chain order.</p>
 <p>
