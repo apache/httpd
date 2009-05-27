@@ -1047,6 +1047,7 @@ static const char *ssl_hook_Fixup_vars[] = {
     "SSL_SERVER_A_KEY",
     "SSL_SERVER_A_SIG",
     "SSL_SESSION_ID",
+    "SSL_SESSION_RESUMED",
     NULL
 };
 
