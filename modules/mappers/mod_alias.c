@@ -180,16 +180,21 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     const char *f = arg2;
     const char *url = arg3;
 
-    if (!strcasecmp(arg1, "gone"))
-        status = HTTP_GONE;
-    else if (!strcasecmp(arg1, "permanent"))
-        status = HTTP_MOVED_PERMANENTLY;
-    else if (!strcasecmp(arg1, "temp"))
-        status = HTTP_MOVED_TEMPORARILY;
-    else if (!strcasecmp(arg1, "seeother"))
-        status = HTTP_SEE_OTHER;
-    else if (apr_isdigit(*arg1))
-        status = atoi(arg1);
+    if (arg3 != NULL) {
+        if (!strcasecmp(arg1, "gone"))
+            status = HTTP_GONE;
+        else if (!strcasecmp(arg1, "permanent"))
+            status = HTTP_MOVED_PERMANENTLY;
+        else if (!strcasecmp(arg1, "temp"))
+            status = HTTP_MOVED_TEMPORARILY;
+        else if (!strcasecmp(arg1, "seeother"))
+            status = HTTP_SEE_OTHER;
+        else if (apr_isdigit(*arg1))
+            status = atoi(arg1);
+        else {
+            return "Redirect: invalid first argument (of three)";
+        }
+    }
     else {
         f = arg1;
         url = arg2;
