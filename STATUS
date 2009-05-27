@@ -91,7 +91,7 @@ RELEASE SHOWSTOPPERS:
    trunk: N/A (2.2.x compat issue only)
    2.2.x patch: 
      http://people.apache.org/~jorton/ssi-opt-compat-v1.diff
-   +1: jorton
+   +1: jorton, trawick
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
