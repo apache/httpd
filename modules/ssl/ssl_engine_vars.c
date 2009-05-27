@@ -297,6 +297,12 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
                                      buf, sizeof(buf)));
         }
     }
+    else if(ssl != NULL && strcEQ(var, "SESSION_RESUMED")) {
+        if (SSL_session_reused(ssl) == 1) 
+            result = "Resumed";
+        else
+            result = "Initial";
+    }
     else if (ssl != NULL && strlen(var) >= 6 && strcEQn(var, "CIPHER", 6)) {
         result = ssl_var_lookup_ssl_cipher(p, c, var+6);
     }
