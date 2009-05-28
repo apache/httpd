@@ -3565,7 +3565,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         intern->seen_eos = 0;
         intern->state = PARSE_PRE_HEAD;
         ctx->flags = (SSI_FLAG_PRINTING | SSI_FLAG_COND_TRUE);
-        if ((ap_allow_options(r) & OPT_INC_WITH_EXEC) == 0) {
+        if (ap_allow_options(r) & OPT_INCNOEXEC) {
             ctx->flags |= SSI_FLAG_NO_EXEC;
         }
         intern->accessenable = conf->accessenable;
