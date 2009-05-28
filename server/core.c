@@ -661,7 +661,11 @@ AP_DECLARE(int) ap_allow_options(request_rec *r)
     core_dir_config *conf =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
 
-    return conf->opts;
+    /* Per comment in http_core.h - the OPT_INC_WITH_EXEC bit is
+     * inverted, such that the exposed semantics match that of
+     * OPT_INCNOEXEC; i.e., the bit is only enabled if exec= is *not*
+     * permitted. */
+    return conf->opts ^ OPT_INC_WITH_EXEC;
 }
 
 AP_DECLARE(int) ap_allow_overrides(request_rec *r)

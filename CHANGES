@@ -5,7 +5,7 @@ Changes with Apache 2.2.12
      Prevent the "Includes" Option from being enabled in an .htaccess 
      file if the AllowOverride restrictions do not permit it.
      [Jonathan Peatfield <j.s.peatfield damtp.cam.ac.uk>, Joe Orton,
-      Ruediger Pluem]
+      Ruediger Pluem, Jeff Trawick]
 
   *) SECURITY: CVE-2009-1191 (cve.mitre.org)
      mod_proxy_ajp: Avoid delivering content from a previous request which
