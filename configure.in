@@ -263,10 +263,15 @@ AC_PROG_LN_S
 AC_CHECK_TOOL(RANLIB, ranlib, true)
 dnl AC_PATH_PROG(PERL_PATH, perl)
 
-dnl various OS checks that apparently set required flags
+dnl Various OS checks that apparently set required flags
+ifdef([AC_USE_SYSTEM_EXTENSIONS], [
+AC_USE_SYSTEM_EXTENSIONS
+], [
 AC_AIX
-AC_ISC_POSIX
 AC_MINIX
+])
+
+AC_ISC_POSIX
 
 dnl ## Check for libraries
 
