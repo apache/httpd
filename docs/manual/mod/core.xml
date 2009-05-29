@@ -1351,6 +1351,10 @@ satisfied by a request at runtime</description>
     </example>
 
     <p>would match HTTP/1.0 requests without a <var>Host:</var> header.</p>
+
+    <p>You may compare the value of any variable in the request headers
+    ($req), response headers ($resp) or environment ($env) in your
+    expression.</p>
 </usage>
 
 <seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
