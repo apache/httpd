@@ -272,7 +272,7 @@ int main(int argc, const char * const argv[])
             /* Add to cache */
             *space = '\0';
             apr_hash_set(cache, line, APR_HASH_KEY_STRING,
-                         apr_pstrdup(pool, line));
+                         apr_pstrdup(apr_hash_pool_get(cache), line));
             continue;
         }
 
@@ -293,7 +293,7 @@ int main(int argc, const char * const argv[])
                 /* Add to cache */
                 *space = '\0';
                 apr_hash_set(cache, line, APR_HASH_KEY_STRING,
-                             apr_pstrdup(pool, line));
+                             apr_pstrdup(apr_hash_pool_get(cache), line));
                 continue;
             }
         }
@@ -303,7 +303,7 @@ int main(int argc, const char * const argv[])
 
         /* Store it in the cache */
         apr_hash_set(cache, line, APR_HASH_KEY_STRING,
-                     apr_pstrdup(pool, hostname));
+                     apr_pstrdup(apr_hash_pool_get(cache), hostname));
 
         apr_pool_clear(pline);
     }
