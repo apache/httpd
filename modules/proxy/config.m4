@@ -10,7 +10,7 @@ else
   proxy_mods_enable=no
 fi
 
-AC_CHECK_DECLS(CMSG_DATA, [
+AC_CHECK_DECL(CMSG_DATA, [
   proxy_mods_fdpass_enable="$proxy_mods_enable"
 ], [
   proxy_mods_fdpass_enable="no"
