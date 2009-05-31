@@ -540,7 +540,7 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>All</code>
     <p>
     This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
-    convinient way for enabling all protocols except one when used in
+    convenient way for enabling all protocols except one when used in
     combination with the minus sign on a protocol as the example above 
     shows.</p></li>
 </ul>
