@@ -221,7 +221,7 @@ time late in the year "37".
       current cookie syntax.</li>
     </ul>
 
-    <p>Not all clients can understand all of these formats. but you
+    <p>Not all clients can understand all of these formats, but you
     should use the newest one that is generally acceptable to your
     users' browsers. At the time of writing, most browsers only fully
     support <code>CookieStyle Netscape</code>.</p>
