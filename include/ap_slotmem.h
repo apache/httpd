@@ -124,7 +124,7 @@ struct ap_slotmem_provider_t {
      */
     apr_status_t (* dptr)(ap_slotmem_instance_t *s, unsigned int item_id, void**mem);
     /**
-     * get/read the memory associated with this worker slot.
+     * get/read the data associated with this worker slot.
      * @param s ap_slotmem_instance_t to use.
      * @param item_id item to return for 0 to item_num
      * @param dest address to store the data
@@ -133,7 +133,7 @@ struct ap_slotmem_provider_t {
      */
     apr_status_t (* get)(ap_slotmem_instance_t *s, unsigned int item_id, unsigned char *dest, apr_size_t dest_len);
     /**
-     * put/write the memory associated with this worker slot.
+     * put/write the data associated with this worker slot.
      * @param s ap_slotmem_instance_t to use.
      * @param item_id item to return for 0 to item_num
      * @param src address of the data to store in the slot
@@ -154,16 +154,16 @@ struct ap_slotmem_provider_t {
      */
     apr_size_t (* slot_size)(ap_slotmem_instance_t *s);
     /**
-     * grab (or alloc) the slot associated with this item_id
+     * grab (or alloc) a free slot
      * @param s ap_slotmem_instance_t to use.
-     * @param item_id item allocate and mark as in-use
+     * @param item_id the available slot id and marked as in-use
      * @return APR_SUCCESS if all went well
      */
-    apr_status_t (* grab)(ap_slotmem_instance_t *s, unsigned int item_id);
+    apr_status_t (* grab)(ap_slotmem_instance_t *s, unsigned int *item_id);
     /**
      * release (or free) the slot associated with this item_id
      * @param s ap_slotmem_instance_t to use.
-     * @param item_id item free and mark as no longer in-use
+     * @param item_id slot id to free and mark as no longer in-use
      * @return APR_SUCCESS if all went well
      */
     apr_status_t (* release)(ap_slotmem_instance_t *s, unsigned int item_id);
