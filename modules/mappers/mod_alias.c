@@ -180,10 +180,11 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     const char *f = arg2;
     const char *url = arg3;
 
-    if (arg3 != NULL) {
-        if (!strcasecmp(arg1, "gone"))
-            status = HTTP_GONE;
-        else if (!strcasecmp(arg1, "permanent"))
+    if (!arg3 && !strcasecmp(arg1, "gone")) {
+        status = HTTP_GONE;
+    }
+    else if (arg3) {
+        if (!strcasecmp(arg1, "permanent"))
             status = HTTP_MOVED_PERMANENTLY;
         else if (!strcasecmp(arg1, "temp"))
             status = HTTP_MOVED_TEMPORARILY;
