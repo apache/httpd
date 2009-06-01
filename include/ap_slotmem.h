@@ -156,7 +156,7 @@ struct ap_slotmem_provider_t {
     /**
      * grab (or alloc) a free slot
      * @param s ap_slotmem_instance_t to use.
-     * @param item_id the available slot id and marked as in-use
+     * @param item_id ptr to the available slot id and marked as in-use
      * @return APR_SUCCESS if all went well
      */
     apr_status_t (* grab)(ap_slotmem_instance_t *s, unsigned int *item_id);
