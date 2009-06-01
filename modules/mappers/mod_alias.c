@@ -186,9 +186,7 @@ static const char *add_redirect_internal(cmd_parms *cmd,
      *   Go ahead and try to grok the 1st arg, in case it is a
      *   Redirect status. Now if we have 3 args, we expect that
      *   we were able to understand that 1st argument (it's something
-     *   we expected, so if not, then we bail. We also check that we
-     *   don't have a 3rd argument with GONE or with numeric codes
-     *   outside of 300-399; if we do, then that's an error.
+     *   we expected, so if not, then we bail
      */
     if (!strcasecmp(arg1, "permanent"))
         status = HTTP_MOVED_PERMANENTLY;
@@ -206,12 +204,6 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     if (arg3 && !grokarg1)
         return "Redirect: invalid first argument (of three)";
 
-    if (arg3 && status == HTTP_GONE)
-        return "Redirect: third argument not expected";
-        
-    if (arg3 && (apr_isdigit(*arg1) && (status < 300 || status > 399)))
-        return "Redirect: third argument not expected";
-        
     /*
      * if we don't have the 3rd arg and we didn't understand the 1st
      * one, then assume URL-path URL. This also handles case, eg, GONE
