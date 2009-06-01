@@ -177,7 +177,7 @@ static const char *add_redirect_internal(cmd_parms *cmd,
                                                          &alias_module);
     int status = (int) (long) cmd->info;
     int grokarg1 = 1;
-=    ap_regex_t *r = NULL;
+    ap_regex_t *r = NULL;
     const char *f = arg2;
     const char *url = arg3;
 
