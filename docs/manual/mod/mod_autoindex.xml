@@ -945,6 +945,7 @@ Name|Date|Size|Description</syntax>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
+<compatibility>Available in Apache 2.2.11 and later</compatibility>
 
 <usage>
     <p>The <directive>IndexHeadInsert</directive> directive specifies a
