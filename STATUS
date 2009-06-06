@@ -101,6 +101,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    wrowe asks; what is proposed and why two patches here?
    +1: niq
 
+ * modules/proxy/proxy_util.c (ap_proxy_initialize_worker): Fix
+   gcc strict-aliasing warning.
+   Trunk version of patch works:
+       http://svn.apache.org/viewvc?view=rev&revision=395552
+   +1: takashi
+
+ * mod_rewrite: Fix the error string returned by RewriteRule.
+   RewriteRule returned "RewriteCond: bad flag delimiters"
+   when the 3rd argument of RewriteRule  was not started with
+   "[" or not ended with "]". PR: 45082
+   Trunk version of patch works:
+       http://svn.apache.org/viewvc?view=rev&revision=776325
+   +1: takashi
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
