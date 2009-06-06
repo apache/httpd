@@ -34,7 +34,32 @@
     </chm>
 -->
 
-<!-- currently no deployment of non-english man pages
+<!-- currently no deployment of non-english man pageser</message>
+        <message id="status">Statut</message>
+        <message id="module">Module</message>
+
+        <!-- Status descriptions -->
+        <message id="base" letter="B">Base</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">Core</message>
+        <message id="extension" letter="E">Extension</message>
+        <message id="experimental" letter="X">Exp&#233;rimental</message>
+        <message id="external" letter="T">Externe</message>
+
+        <!-- Used in directive context lists -->
+        <message id="serverconfig" letter="s">configuration du serveur</message>
+        <message id="virtualhost" letter="v">serveur virtuel</message>
+        <message id="directory" letter="d">r&#233;pertoire</message>
+        <message id="htaccess" letter="h">.htaccess</message>
+
+        <!-- Used for directive lists -->
+        <message id="directives">Directives</message>
+        <!-- the optional attribute replace-space-with takes a string.
+             if present, the space between <directive name> and 'Directive'
+             in directivesynopsis headings will be replaced by the given string.
+             (see de.xml for an example) -->
+        <message id="directive">Directive</message>
+        <message id="n
     <man>
         <charset>ISO-8859-1</charset>
     </man>
@@ -52,16 +77,16 @@
 
         <!-- Used for the modulesynopsis and sitemap -->
         <message id="obsoleteapachemodule">Module Apache D&#233;suet</message>
-        <message id="apachemodule">Mudule Apache</message>
+        <message id="apachemodule">Module Apache</message>
         <message id="apachecore">Fonctionalit&#233;s de Base Apache</message>
-        <message id="apachempmcommon">Apache MPM: Directives Communes</message>
+        <message id="apachempmcommon">Apache MPM : Directives Communes</message>
         <message id="apachempm">Apache MPM</message>
 
         <!-- Used in description box for modulesynopsis -->
         <message id="description">Description</message>
         <message id="seealso">Voir aussi</message>
         <message id="topics">Sujets</message>
-        <message id="status">Status</message>
+        <message id="status">Statut</message>
         <message id="moduleidentifier">Identificateur&nbsp;de&nbsp;Module</message>
         <message id="sourcefile">Fichier&nbsp;Source</message>
         <message id="compatibility">Compatibilit&#233;</message>
@@ -71,15 +96,15 @@
         <message id="relateddirectives">Directives Apparent&#233;es</message>
         <message id="lowercase">abcdefghijklmnopqrstuvwxyz</message>
         <message id="uppercase">ABCDEFGHIJKLMNOPQRSTUVWXYZ</message>
-        <message id="name-section">NAME</message>
-        <message id="hyphenation"></message>
+        <message id="name-section">NOM</message>
+        <message id="hyphenation">C&#233;sure</message>
 
         <!-- Used in description box for directives -->
         <message id="syntax">Syntaxe</message>
-        <message id="default">Defaut</message>
+        <message id="default">D&#233;faut</message>
         <message id="context">Contexte</message>
         <message id="override">Annuler</message>
-        <message id="status">Status</message>
+        <message id="status">Statut</message>
         <message id="module">Module</message>
 
         <!-- Status descriptions -->
@@ -87,8 +112,8 @@
         <message id="mpm" letter="M">MPM</message>
         <message id="core" letter="C">Core</message>
         <message id="extension" letter="E">Extension</message>
-        <message id="experimental" letter="X">Experimental</message>
-        <message id="external" letter="T">External</message>
+        <message id="experimental" letter="X">Exp&#233;rimental</message>
+        <message id="external" letter="T">Externe</message>
 
         <!-- Used in directive context lists -->
         <message id="serverconfig" letter="s">configuration du serveur</message>
@@ -109,7 +134,7 @@
         <message id="summary">Sommaire</message>
 
         <!-- Used for glossary link titles -->
-        <message id="glossarylink">see glossary</message>
+        <message id="glossarylink">voir glossaire</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Serveur Apache HTTP</message>
@@ -133,7 +158,7 @@
         <message id="sitemap">Plan du site</message>
 
         <!-- footer line -->
-        <message id="before-license">Authoris&#233; sous</message>
+        <message id="before-license">Autoris&#233; sous</message>
         <message id="after-license"></message>
         <message id="langavail">Langues Disponibles</message>
  
