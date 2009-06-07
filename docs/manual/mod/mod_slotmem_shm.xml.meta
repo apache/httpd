@@ -2,14 +2,11 @@
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
 <metafile>
-  <basename>mod_status</basename>
+  <basename>mod_slotmem_shm</basename>
   <path>/mod/</path>
   <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>
-    <variant outdated="yes">ja</variant>
-    <variant outdated="yes">ko</variant>
-    <variant outdated="yes">tr</variant>
   </variants>
 </metafile>
