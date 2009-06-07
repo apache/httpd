@@ -81,6 +81,11 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+ * additional (mod_perl test suite) OPT_INCLUDES compatibility
+   trunk: N/A
+   2.2.x patch: http://people.apache.org/~trawick/mod_perl_more_compat.txt
+   +1: trawick, jorton
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
