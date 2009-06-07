@@ -616,6 +616,7 @@ _install:
 	copy LICENSE      "$(INSTDIR)\LICENSE.txt" <.y
 	copy NOTICE       "$(INSTDIR)\NOTICE.txt" <.y
 	copy README       "$(INSTDIR)\README.txt" <.y
+	copy README-win32.txt "$(INSTDIR)\README-win32.txt" <.y
 !IF EXIST("srclib\openssl")
 	-copy srclib\openssl\apps\openssl.cnf "$(INSTDIR)\conf\openssl.cnf" <.y
 	type << >> "$(INSTDIR)\NOTICE.txt"
