@@ -486,6 +486,7 @@ of the index listing</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_autoindex</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.11 and later</td></tr>
 </table>
     <p>The <code class="directive">IndexHeadInsert</code> directive specifies a
     string to insert in the <var>&lt;head&gt;</var> section of the HTML

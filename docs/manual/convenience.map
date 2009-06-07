@@ -361,6 +361,8 @@ sslproxycacertificatefile	mod/mod_ssl.html#sslproxycacertificatefile
 sslproxycacertificatepath	mod/mod_ssl.html#sslproxycacertificatepath
 sslproxycarevocationfile	mod/mod_ssl.html#sslproxycarevocationfile
 sslproxycarevocationpath	mod/mod_ssl.html#sslproxycarevocationpath
+sslproxycheckpeercn	mod/mod_ssl.html#sslproxycheckpeercn
+sslproxycheckpeerexpire	mod/mod_ssl.html#sslproxycheckpeerexpire
 sslproxyciphersuite	mod/mod_ssl.html#sslproxyciphersuite
 sslproxyengine	mod/mod_ssl.html#sslproxyengine
 sslproxymachinecertificatefile	mod/mod_ssl.html#sslproxymachinecertificatefile
@@ -374,6 +376,7 @@ sslrequire	mod/mod_ssl.html#sslrequire
 sslrequiressl	mod/mod_ssl.html#sslrequiressl
 sslsessioncache	mod/mod_ssl.html#sslsessioncache
 sslsessioncachetimeout	mod/mod_ssl.html#sslsessioncachetimeout
+sslstrictsnivhostcheck	mod/mod_ssl.html#sslstrictsnivhostcheck
 sslusername	mod/mod_ssl.html#sslusername
 sslverifyclient	mod/mod_ssl.html#sslverifyclient
 sslverifydepth	mod/mod_ssl.html#sslverifydepth
