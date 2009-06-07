@@ -34,32 +34,7 @@
     </chm>
 -->
 
-<!-- currently no deployment of non-english man pageser</message>
-        <message id="status">Statut</message>
-        <message id="module">Module</message>
-
-        <!-- Status descriptions -->
-        <message id="base" letter="B">Base</message>
-        <message id="mpm" letter="M">MPM</message>
-        <message id="core" letter="C">Core</message>
-        <message id="extension" letter="E">Extension</message>
-        <message id="experimental" letter="X">Exp&#233;rimental</message>
-        <message id="external" letter="T">Externe</message>
-
-        <!-- Used in directive context lists -->
-        <message id="serverconfig" letter="s">configuration du serveur</message>
-        <message id="virtualhost" letter="v">serveur virtuel</message>
-        <message id="directory" letter="d">r&#233;pertoire</message>
-        <message id="htaccess" letter="h">.htaccess</message>
-
-        <!-- Used for directive lists -->
-        <message id="directives">Directives</message>
-        <!-- the optional attribute replace-space-with takes a string.
-             if present, the space between <directive name> and 'Directive'
-             in directivesynopsis headings will be replaced by the given string.
-             (see de.xml for an example) -->
-        <message id="directive">Directive</message>
-        <message id="n
+<!-- currently no deployment of non-english man pages
     <man>
         <charset>ISO-8859-1</charset>
     </man>
