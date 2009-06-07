@@ -526,7 +526,7 @@ expressions</description>
     <directive module="mod_proxy">ProxyPass</directive> directives.</p>
     <p>The balancerurl is only needed when not in <code>&lt;Proxy <var>balancer://</var>...&gt;</code>
     container directive. It corresponds to the url of a balancer defined in
-    <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
+    <directive module="mod_proxy">ProxyPass</directive> directive.</p>
 </usage>
 </directivesynopsis>
 
