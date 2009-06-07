@@ -202,7 +202,7 @@
 <h2><a name="developer" id="developer">Changements pour le développeur de module</a></h2>
     
     <dl>
-      <dt><a class="glossarylink" href="./glossary.html#apr" title="see glossary">APR</a> 1.0 API</dt>
+      <dt><a class="glossarylink" href="./glossary.html#apr" title="voir glossaire">APR</a> 1.0 API</dt>
 
       <dd>Apache 2.2 utilise l'API APR 1.0.  Toutes les fonctions et
       symboles obsolètes ont été supprimés du code de <code>APR</code> et
@@ -298,6 +298,6 @@
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/new_features_2_2.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
 </body></html>

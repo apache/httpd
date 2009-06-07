@@ -103,13 +103,13 @@ l'arborescence DocumentRoot</a></h2>
     directive
     <code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
     fonctionne de la même manière, excepté que tout contenu localisé dans le
-    chemin cible sera traité comme un script <a class="glossarylink" href="./glossary.html#cgi" title="see glossary">CGI</a>.</p>
+    chemin cible sera traité comme un script <a class="glossarylink" href="./glossary.html#cgi" title="voir glossaire">CGI</a>.</p>
 
     <p>Pour les situations qui nécessitent plus de flexibilité, vous disposez
     des directives <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code>
     et <code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code>
     qui permettent des substitutions et comparaisons puissantes basées
-    sur les <a class="glossarylink" href="./glossary.html#regex" title="see glossary">expressions rationnelles</a>.
+    sur les <a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a>.
     Par exemple,</p>
 
 <div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
@@ -308,6 +308,6 @@ permet de réécrire les liens dans les documents HTML et XHTML.</p>
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
 </body></html>

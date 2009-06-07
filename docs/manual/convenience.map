@@ -108,6 +108,7 @@ cacheignorecachecontrol	mod/mod_cache.html#cacheignorecachecontrol
 cacheignoreheaders	mod/mod_cache.html#cacheignoreheaders
 cacheignorenolastmod	mod/mod_cache.html#cacheignorenolastmod
 cacheignorequerystring	mod/mod_cache.html#cacheignorequerystring
+cacheignoreurlsessionidentifiers	mod/mod_cache.html#cacheignoreurlsessionidentifiers
 cachelastmodifiedfactor	mod/mod_cache.html#cachelastmodifiedfactor
 cachemaxexpire	mod/mod_cache.html#cachemaxexpire
 cachemaxfilesize	mod/mod_disk_cache.html#cachemaxfilesize
