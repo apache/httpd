@@ -181,7 +181,7 @@ of a request or the last 63, assuming the request itself is greater than
     <table class="bordered">
       <tr>
         <th>Off (default)</th>
-        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples</td>
       </tr>
       <tr>
         <th>On</th>

@@ -146,7 +146,7 @@ système de fichiers, car les pages web peuvent être générées dynamiquement
 <p>Les conteneurs <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>
 et <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>,
 ainsi que leurs équivalents acceptant les
-<a class="glossarylink" href="./glossary.html#regex" title="see glossary">expressions rationnelles</a>,
+<a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a>,
 appliquent des directives à certaines parties du système de fichiers.
 Les directives contenues dans une section <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> s'appliquent au répertoire
 précisé, ainsi qu'à tous ses sous-répertoires.
@@ -199,7 +199,7 @@ Deny from all<br />
 
 <p>le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 et son équivalent acceptant les
-<a class="glossarylink" href="./glossary.html#regex" title="see glossary">expressions rationnelles</a>, modifient quant à eux la
+<a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, modifient quant à eux la
 configuration de parties de l'arborescence du site web.  Par exemple, la
 configuration suivante interdit l'accès à toute URL dont la partie chemin
 commence par /private.
@@ -250,7 +250,7 @@ il doit être spécifié explicitement.</p>
 <p>Si une définition des critères de correspondance
 encore plus souple est nécessaire, chaque conteneur
 possède son équivalent acceptant les expressions rationnelles : <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, et <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> acceptent les
-<a class="glossarylink" href="./glossary.html#regex" title="see glossary">expressions rationnelles</a> compatibles Perl
+<a class="glossarylink" href="./glossary.html#regex" title="voir glossaire">expressions rationnelles</a> compatibles Perl
 pour définir les critères de correspondance.  Mais voyez plus loin la section
 à propos de la combinaison des sections de configuration
 pour comprendre comment l'utilisation de
@@ -525,6 +525,6 @@ Deny from badguy.example.com<br />
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
 </body></html>

@@ -350,7 +350,7 @@ SSLCARevocationPath /usr/local/apache2/conf/ssl.crl/
 This directive sets the optional <em>all-in-one</em> file where you can
 assemble the certificates of Certification Authorities (CA) which form the
 certificate chain of the server certificate. This starts with the issuing CA
-certificate of of the server certificate and can range up to the root CA
+certificate of the server certificate and can range up to the root CA
 certificate. Such a file is simply the concatenation of the various
 PEM-encoded CA Certificate files, usually in certificate chain order.</p>
 <p>
@@ -704,7 +704,7 @@ The following Mutex <em>types</em> are available:</p>
 <li><code>fcntl:/path/to/mutex</code>
     <p>
     This is a portable Mutex variant where a physical (lock-)file and the <code>fcntl()</code>
-    fucntion are used as the Mutex.
+    function are used as the Mutex.
     Always use a local disk filesystem for <code>/path/to/mutex</code> and never a file
     residing on a NFS- or AFS-filesystem. It is only available when the underlying platform
     and <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> supports it. Note: Internally, the Process ID (PID) of the
@@ -938,7 +938,8 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 
 <li><code>SSLv3</code>
     <p>
-    This is the Secure Sockets Layer (SSL) protocol, version 3.0, from the Netscape Corportaion. 
+    This is the Secure Sockets Layer (SSL) protocol, version 3.0, from
+    the Netscape Corporation. 
     It is the successor to SSLv2 and the predecessor to TLSv1. It's supported by
     almost all popular browsers.</p></li>
 
@@ -951,7 +952,7 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>All</code>
     <p>
     This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
-    convinient way for enabling all protocols except one when used in
+    convenient way for enabling all protocols except one when used in
     combination with the minus sign on a protocol as the example above 
     shows.</p></li>
 </ul>

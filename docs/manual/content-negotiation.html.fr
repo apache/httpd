@@ -131,7 +131,7 @@ conventions de nommage</a></li>
     <p>Une liste de correspondances de types est un document associé au
     gestionnaire <code>type-map</code> (ou, dans un souci de compatibilité
     ascendante avec des configurations d'Apache plus anciennes, le
-    <a class="glossarylink" href="./glossary.html#type mime" title="see glossary">type MIME</a>
+    <a class="glossarylink" href="./glossary.html#type mime" title="voir glossaire">type MIME</a>
     <code>application/x-type-map</code>). Notez que pour utiliser cette
     fonctionnalité, vous devez, dans le fichier de configuration, définir un
     gestionnaire qui associe un suffixe de fichier à une <code>type-map</code>;
@@ -693,6 +693,6 @@ conventions de nommage</a></h2>
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/content-negotiation.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
 </body></html>
