@@ -185,8 +185,6 @@
 
     <ol>
       <li>If a vhost has no <directive module="core">ServerAdmin</directive>,
-      <directive module="core">ResourceConfig</directive>,
-      <directive module="core">AccessConfig</directive>,
       <directive module="core">Timeout</directive>,
       <directive module="core">KeepAliveTimeout</directive>,
       <directive module="core">KeepAlive</directive>,
