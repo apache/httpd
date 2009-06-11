@@ -6,6 +6,9 @@ Changes with Apache 2.3.3
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) mod_rewrite: Remove locking for writing to the rewritelog.
+      PR 46942 [Dan Poirier <poirier pobox.com>]
+
   *) mod_alias: check sanity in Redirect arguments.
      PR 44729 [Sönke Tesch <st kino-fahrplan.de>, Jim Jagielski]
 

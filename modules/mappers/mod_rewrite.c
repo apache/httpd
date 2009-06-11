@@ -385,10 +385,6 @@ static int rewrite_rand_init_done = 0;
 static const char *lockname;
 static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
 
-#ifndef REWRITELOG_DISABLED
-static apr_global_mutex_t *rewrite_log_lock = NULL;
-#endif
-
 /* Optional functions imported from mod_ssl when loaded: */
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *rewrite_is_https = NULL;
@@ -489,7 +485,6 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
     const char *rhost, *rname;
     apr_size_t nbytes;
     int redir;
-    apr_status_t rv;
     request_rec *req;
     va_list ap;
 
@@ -535,22 +530,8 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
     if (!conf->rewritelogfp || level > conf->rewriteloglevel)
         return;
 
-    rv = apr_global_mutex_lock(rewrite_log_lock);
-    if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "apr_global_mutex_lock(rewrite_log_lock) failed");
-        /* XXX: Maybe this should be fatal? */
-    }
-
     nbytes = strlen(logline);
     apr_file_write(conf->rewritelogfp, logline, &nbytes);
-
-    rv = apr_global_mutex_unlock(rewrite_log_lock);
-    if (rv != APR_SUCCESS) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "apr_global_mutex_unlock(rewrite_log_lock) failed");
-        /* XXX: Maybe this should be fatal? */
-    }
 
     return;
 }
@@ -4326,26 +4307,6 @@ static int post_config(apr_pool_t *p,
     /* check if proxy module is available */
     proxy_available = (ap_find_linked_module("mod_proxy.c") != NULL);
 
-#ifndef REWRITELOG_DISABLED
-    /* create the rewriting lockfiles in the parent */
-    if ((rv = apr_global_mutex_create(&rewrite_log_lock, NULL,
-                                      APR_LOCK_DEFAULT, p)) != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "mod_rewrite: could not create rewrite_log_lock");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
-#ifdef AP_NEED_SET_MUTEX_PERMS
-    rv = ap_unixd_set_global_mutex_perms(rewrite_log_lock);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "mod_rewrite: Could not set permissions on "
-                     "rewrite_log_lock; check User and Group directives");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-#endif /* perms */
-#endif /* rewritelog */
-
     rv = rewritelock_create(s, p);
     if (rv != APR_SUCCESS) {
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -4391,14 +4352,6 @@ static void init_child(apr_pool_t *p, server_rec *s)
                          " in child");
         }
     }
-
-#ifndef REWRITELOG_DISABLED
-    rv = apr_global_mutex_child_init(&rewrite_log_lock, NULL, p);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "mod_rewrite: could not init rewrite log lock in child");
-    }
-#endif
 
     /* create the lookup cache */
     if (!init_cache(p)) {
