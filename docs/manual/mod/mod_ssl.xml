@@ -1364,6 +1364,7 @@ host.
 <default>SSLStrictSNIVHostCheck off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
+<compatibility>Available after Apache 2.2.11</compatibility>
 
 <usage>
 <p>
