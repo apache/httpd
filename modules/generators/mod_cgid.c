@@ -302,6 +302,13 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
 }
 #endif
 
+static apr_status_t close_unix_socket(void *thefd)
+{
+    int fd = (int)((long)thefd);
+
+    return close(fd);
+}
+
 /* deal with incomplete reads and signals
  * assume you really have to read buf_size bytes
  */
@@ -652,6 +659,9 @@ static int cgid_server(void *data)
             return errno;
         }
     }
+
+    apr_pool_cleanup_register(pcgi, (void *)((long)sd),
+                              close_unix_socket, close_unix_socket);
 
     /* if running as root, switch to configured user/group */
     if ((rc = ap_run_drop_privileges(pcgi, ap_server_conf)) != 0) {
@@ -1150,13 +1160,6 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
 
     apr_file_close(f);
     return ret;
-}
-
-static apr_status_t close_unix_socket(void *thefd)
-{
-    int fd = (int)((long)thefd);
-
-    return close(fd);
 }
 
 static int connect_to_daemon(int *sdptr, request_rec *r,

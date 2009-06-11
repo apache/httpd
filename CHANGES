@@ -6,8 +6,11 @@ Changes with Apache 2.3.3
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) mod_cgid: Do not leak the listening Unix socket file descriptor to the
+     CGI process. PR 47335 [Kornél Pál <kornelpal gmail.com>]
+
   *) mod_rewrite: Remove locking for writing to the rewritelog.
-      PR 46942 [Dan Poirier <poirier pobox.com>]
+     PR 46942 [Dan Poirier <poirier pobox.com>]
 
   *) mod_alias: check sanity in Redirect arguments.
      PR 44729 [Sönke Tesch <st kino-fahrplan.de>, Jim Jagielski]
