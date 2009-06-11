@@ -780,6 +780,7 @@ static int cgid_server(void *data)
                          "couldn't set child process attributes: %s", r->filename);
 
             procnew->pid = 0; /* no process to clean up */
+            close(sd2);
         }
         else {
             apr_pool_userdata_set(r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ptrans);
