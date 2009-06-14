@@ -76,8 +76,8 @@ balancer via the request headers.
     fresh dns or ident query of the remote IP address.</p>
 
     <p>When multiple, comma delimited remote IP addresses are listed in the 
-    header value, they are processed in Right-to-Left order.  Processessing
-    halts when the a given remote IP address is not trusted to present the
+    header value, they are processed in Right-to-Left order.  Processing
+    halts when a given remote IP address is not trusted to present the
     preceeding IP address.  The header field is updated to this remaining 
     list of unconfirmed IP addresses, or if all IP addresses were trusted,
     this header is removed from the request altogether.</p>
@@ -161,7 +161,7 @@ balancer via the request headers.
     to trust as presenting a valid RemoteIPHeader value of the client IP.</p>
 
     <p>The '<code>#</code>' hash character designates a comment line, otherwise
-    each whitespace or newline seperated entry is processed identically to
+    each whitespace or newline separated entry is processed identically to
     the <directive>RemoteIPInternalProxy</directive> directive.</p>
 
     <example><title>Internal (Load Balancer) Example</title>
