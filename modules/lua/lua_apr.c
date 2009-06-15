@@ -75,7 +75,7 @@ static const luaL_reg lua_table_methods[] = {
 AP_LUA_DECLARE(int) ap_lua_init(lua_State *L, apr_pool_t *p)
 {
     luaL_newmetatable(L, "Apr.Table");
-    luaL_register(L, "apr_table", lua_table_methods, 0);
+    luaL_register(L, "apr_table", lua_table_methods);
     lua_pushstring(L, "__index");
     lua_pushstring(L, "get");
     lua_gettable(L, 2);
