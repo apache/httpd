@@ -40,6 +40,7 @@ typedef enum {
 typedef struct dir_config_struct {
     apr_array_header_t *index_names;
     slash_cfg do_slash;
+    const char *dflt;
 } dir_config_rec;
 
 #define DIR_CMD_PERMS OR_INDEXES
@@ -82,6 +83,9 @@ static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
 
 static const command_rec dir_cmds[] =
 {
+    AP_INIT_TAKE1("DefaultHandler", ap_set_string_slot,
+                  (void*)APR_OFFSETOF(dir_config_rec, dflt),
+                  DIR_CMD_PERMS, "Set a default handler"),
     AP_INIT_RAW_ARGS("DirectoryIndex", add_index, NULL, DIR_CMD_PERMS,
                     "a list of file names"),
     AP_INIT_FLAG("DirectorySlash", configure_slash, NULL, DIR_CMD_PERMS,
@@ -107,9 +111,53 @@ static void *merge_dir_configs(apr_pool_t *p, void *basev, void *addv)
     new->index_names = add->index_names ? add->index_names : base->index_names;
     new->do_slash =
         (add->do_slash == SLASH_UNSET) ? base->do_slash : add->do_slash;
+    new->dflt = add->dflt ? add->dflt : base->dflt;
     return new;
 }
 
+static int fixup_dflt(request_rec *r)
+{
+    dir_config_rec *d = ap_get_module_config(r->per_dir_config, &dir_module);
+    const char *name_ptr;
+    request_rec *rr;
+    int error_notfound = 0;
+    if ((r->finfo.filetype != APR_NOFILE) || (r->handler != NULL)) {
+        return DECLINED;
+    }
+    name_ptr = d->dflt;
+    if (r->args != NULL) {
+        name_ptr = apr_pstrcat(r->pool, name_ptr, "?", r->args, NULL);
+    }
+    rr = ap_sub_req_lookup_uri(name_ptr, r, r->output_filters);
+    if (rr->status == HTTP_OK
+        && (   (rr->handler && !strcmp(rr->handler, "proxy-server"))
+            || rr->finfo.filetype == APR_REG)) {
+        ap_internal_fast_redirect(rr, r);
+        return OK;
+    }
+    else if (ap_is_HTTP_REDIRECT(rr->status)) {
+
+        apr_pool_join(r->pool, rr->pool);
+        r->notes = apr_table_overlay(r->pool, r->notes, rr->notes);
+        r->headers_out = apr_table_overlay(r->pool, r->headers_out,
+                                           rr->headers_out);
+        r->err_headers_out = apr_table_overlay(r->pool, r->err_headers_out,
+                                               rr->err_headers_out);
+        error_notfound = rr->status;
+    }
+    else if (rr->status && rr->status != HTTP_NOT_FOUND
+             && rr->status != HTTP_OK) {
+        error_notfound = rr->status;
+    }
+
+    ap_destroy_sub_req(rr);
+    if (error_notfound) {
+        return error_notfound;
+    }
+
+    /* nothing for us to do, pass on through */
+    return DECLINED;
+}
 static int fixup_dir(request_rec *r)
 {
     dir_config_rec *d;
@@ -256,6 +304,7 @@ static int fixup_dir(request_rec *r)
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_fixups(fixup_dir,NULL,NULL,APR_HOOK_LAST);
+    ap_hook_fixups(fixup_dflt,NULL,NULL,APR_HOOK_LAST);
 }
 
 module AP_MODULE_DECLARE_DATA dir_module = {
