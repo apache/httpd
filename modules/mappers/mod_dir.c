@@ -125,6 +125,17 @@ static int fixup_dflt(request_rec *r)
         return DECLINED;
     }
     name_ptr = d->dflt;
+    if (name_ptr == NULL) {
+        return DECLINED;
+    }
+    /* XXX: if DefaultHandler points to something that doesn't exist,
+     * this may recurse until it hits the limit for internal redirects
+     * before returning an Internal Server Error.
+     */
+
+    /* The logic of this function is basically cloned and simplified
+     * from fixup_dir below.  See the comments there.
+     */
     if (r->args != NULL) {
         name_ptr = apr_pstrcat(r->pool, name_ptr, "?", r->args, NULL);
     }
@@ -303,6 +314,7 @@ static int fixup_dir(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
+    /* the order of these is of no consequence */
     ap_hook_fixups(fixup_dir,NULL,NULL,APR_HOOK_LAST);
     ap_hook_fixups(fixup_dflt,NULL,NULL,APR_HOOK_LAST);
 }
