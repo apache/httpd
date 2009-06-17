@@ -262,8 +262,8 @@ header.</description>
     <p>Ordinarily, requests containing a Cache-Control: no-cache or
     Pragma: no-cache header value will not be served from the cache.  The
     <directive>CacheIgnoreCacheControl</directive> directive allows this
-    behavior to be overridden.  <directive>CacheIgnoreCacheControl</directive>
-    On tells the server to attempt to serve the resource from the cache even
+    behavior to be overridden.  <directive>CacheIgnoreCacheControl On</directive>
+    tells the server to attempt to serve the resource from the cache even
     if the request contains no-cache header values.  Resources requiring
     authorization will <em>never</em> be cached.</p>
 
