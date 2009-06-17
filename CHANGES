@@ -6,6 +6,9 @@ Changes with Apache 2.3.3
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) mod_proxy_http: fix case sensitivity checking transfer encoding
+     PR 47383 [Ryuzo Yamamoto <ryuzo.yamamoto gmail.com>]
+
   *) mod_alias: ensure Redirect issues a valid URL.
      PR 44020 [Håkon Stordahl <hakon stordahl.org>]
 
