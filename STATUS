@@ -98,9 +98,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                drop_privileges hook).
    2.2.x patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
-   FYI, mod_privileges hacked to work with the patch:
-      http://people.apache.org/~niq/patches/2.2mod_privileges.c
    wrowe asks; what is proposed and why two patches here?
+   niq replies: removing the second one, it's FYI only and not part
+                of the backport proposal.  And it needs updating!
    +1: niq
 
  * modules/proxy/proxy_util.c (ap_proxy_initialize_worker): Fix
@@ -116,6 +116,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk version of patch works:
        http://svn.apache.org/viewvc?view=rev&revision=776325
    +1: takashi, rpluem
+
+ * mod_alias: Ensure Redirect emits HTTP-compliant URLs.
+   PR 44020
+   trunk patch:
+     http://svn.apache.org/viewvc?view=rev&rev=785575
+   2.2.x patch:
+     http://people.apache.org/~niq/patches/44020.patch
+   NOTE: I'm recommending different versions because the trunk
+   patch is too strict for a stable line and may "break" broken
+   configs thought by their users to be working.
+   +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
