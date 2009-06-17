@@ -6,6 +6,9 @@ Changes with Apache 2.3.3
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) mod_alias: ensure Redirect issues a valid URL.
+     PR 44020 [Håkon Stordahl <hakon stordahl.org>]
+
   *) mod_dir: add DefaultHandler directive, to enable admin to specify
      an action to happen when a URL maps to no file, without resorting
      to ErrorDocument or mod_rewrite.  PR 47184 [Nick Kew]
