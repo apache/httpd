@@ -11,6 +11,11 @@ Changes with Apache 2.2.12
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) SECURITY: CVE-2009-0023, CVE-2009-1955, CVE-2009-1956 (cve.mitre.org)
+     The bundled copy of the APR-util library has been updated, fixing three
+     different security issues which may affect particular configurations
+     and third-party modules.
+
   *) mod_proxy: Complete ProxyPassReverse to handle balancer URL's.  Given;
        BalancerMember balancer://alias http://example.com/foo
        ProxyPassReverse /bash balancer://alias/bar
