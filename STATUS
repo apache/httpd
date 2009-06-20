@@ -127,6 +127,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    patch is too strict for a stable line and may "break" broken
    configs thought by their users to be working.
    +1: niq
+   rpluem says: Your 2.2.x doesn't compile because it must be
+   APLOG_WARNING instead of APLOG_WARN, but if you take
+   http://people.apache.org/~rpluem/patches/foreign_patches/niq_44020.diff
+   which fixes this I am +1.
 
 PATCHES/ISSUES THAT ARE STALLED
 
