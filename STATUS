@@ -132,6 +132,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    http://people.apache.org/~rpluem/patches/foreign_patches/niq_44020.diff
    which fixes this I am +1.
 
+ * mod_cache: Add CacheIgnoreURLSessionIdentifiers directive to ignore
+              defined session identifiers encoded in the URL when caching.
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=777042&view=rev
+      http://svn.apache.org/viewvc?rev=777091&view=rev
+      http://svn.apache.org/viewvc?rev=778438&view=rev
+      http://svn.apache.org/viewvc?rev=778439&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
