@@ -428,10 +428,8 @@ static const struct {
     { "G",     NID_givenName,              1 },
     { "S",     NID_surname,                1 },
     { "D",     NID_description,            1 },
-#ifdef NID_x500UniqueIdentifier /* new name as of Openssl 0.9.7 */
-    { "UID",   NID_x500UniqueIdentifier,   1 },
-#else /* old name, OpenSSL < 0.9.7 */
-    { "UID",   NID_uniqueIdentifier,       1 },
+#ifdef NID_userId
+    { "UID",   NID_userId,                 1 },
 #endif
     { "Email", NID_pkcs9_emailAddress,     1 },
     { NULL,    0                          }
