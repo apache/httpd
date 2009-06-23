@@ -108,10 +108,10 @@ typedef struct {
 typedef struct {
     ssl_filter_ctx_t *filter_ctx;
     conn_rec *c;
-    apr_bucket_brigade *bb;
-    apr_size_t length;
-    char buffer[AP_IOBUFSIZE];
-    apr_size_t blen;
+    apr_bucket_brigade *bb;    /* Brigade used as a buffer. */
+    apr_size_t length;         /* Number of bytes stored in ->bb brigade. */
+    char buffer[AP_IOBUFSIZE]; /* Fixed-size buffer */
+    apr_size_t blen;           /* Number of bytes of ->buffer used. */
     apr_status_t rc;
 } bio_filter_out_ctx_t;
 
