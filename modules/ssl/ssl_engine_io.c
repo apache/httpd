@@ -261,10 +261,14 @@ static long bio_filter_out_ctrl(BIO *bio, int cmd, long num, void *ptr)
       case BIO_CTRL_SET_CLOSE:
         bio->shutdown = (int)num;
         break;
-      case BIO_CTRL_WPENDING:
+      case BIO_CTRL_PENDING:
+        /* _PENDING is interpreted as "pending to read" - since this
+         * is a *write* buffer, return zero. */
         ret = 0L;
         break;
-      case BIO_CTRL_PENDING:
+      case BIO_CTRL_WPENDING:
+        /* _WPENDING is interpreted as "pending to write" - return the
+         * number of bytes in ->bb plus buffer. */
         ret = (long)(outctx->blen + outctx->length);
         break;
       case BIO_CTRL_FLUSH:
