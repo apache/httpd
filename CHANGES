@@ -5,6 +5,10 @@ Changes with Apache 2.3.3
   *) SECURITY: CVE-2009-1191 (cve.mitre.org)
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
+ 
+  *) mod_ssl: Fix SSL_*_DN_UID variables to use the 'userID' attribute
+     type.  PR 45107.  [Michael Ströder <michael stroeder.com>,
+     Peter Sylvester <peter.sylvester edelweb.fr>]
 
   *) mod_proxy_http: fix case sensitivity checking transfer encoding
      PR 47383 [Ryuzo Yamamoto <ryuzo.yamamoto gmail.com>]
