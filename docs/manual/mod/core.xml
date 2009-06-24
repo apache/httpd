@@ -3137,26 +3137,29 @@ certain events before failing a request</description>
 <contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
-    <p>The <directive>TimeOut</directive> directive currently defines
-    the amount of time Apache will wait for three things:</p>
+    <p>The <directive>TimeOut</directive> directive defines the length
+    of time Apache will wait for I/O in various circumstances:</p>
 
     <ol>
-      <li>The total amount of time it takes to receive a GET
-      request.</li>
+      <li>When reading data from the client, the length of time to
+      wait for a TCP packet to arrive if the read buffer is
+      empty.</li>
 
-      <li>The amount of time between receipt of TCP packets on a
-      POST or PUT request.</li>
+      <li>When writing data to the client, the length of time to wait
+      for an acknowledgement of a packet if the send buffer is
+      full.</li>
 
-      <li>The amount of time between ACKs on transmissions of TCP
-      packets in responses.</li>
+      <li>In <module>mod_cgi</module>, the length of time to wait for
+      output from a CGI script.</li>
+
+      <li>In <module>mod_ext_filter</module>, the length of time to
+      wait for output from a filtering process.</li>
+
+      <li>In <module>mod_proxy</module>, the default timeout value if
+      <directive module="mod_proxy">ProxyTimeout</directive> is not
+      configured.</li>
     </ol>
 
-    <p>We plan on making these separately configurable at some point
-    down the road. The timer used to default to 1200 before 1.2,
-    but has been lowered to 300 which is still far more than
-    necessary in most situations. It is not set any lower by
-    default because there may still be odd places in the code where
-    the timer is not reset when a packet is sent. </p>
 </usage>
 </directivesynopsis>
 
