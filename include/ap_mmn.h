@@ -36,7 +36,7 @@
  * Minor API changes that do not cause binary compatibility problems.
  * Should be reset to 0 when upgrading MODULE_MAGIC_NUMBER_MAJOR.
  *
- * See the MODULE_MAGIC_AT_LEAST macro below for an example.
+ * See the AP_MODULE_MAGIC_AT_LEAST macro below for an example.
  */
 
 /*
