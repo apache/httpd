@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Problèmes liés au DNS avec Apache - Serveur Apache HTTP</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Problèmes liés au DNS avec Apache</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/dns-caveats.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p>Cette page pourrait se résumer ainsi : configurez Apache de façon
+    à ce qu'il n'ait pas besoin de résolution DNS pour interpréter les
+    fichiers de configuration. Si Apache doit effectuer des résolutions
+    DNS pour interpréter les fichiers de configuration, votre serveur
+    pourra présenter des problèmes de fiabilité (en d'autres termes,
+    il est possible qu'il refuse de démarrer), ou d'attaques par déni ou
+    usurpation de service (y compris le détournement d'informations
+    utilisateurs).</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">Un exemple simple</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#denial">Déni de service</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#main">L'adresse du "serveur principal"</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#tips">Conseils pour éviter ce genre de problème</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#appendix">Appendice : orientations pour le futur</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="example" id="example">Un exemple simple</a></h2>
+    
+
+    <div class="example"><p><code>
+      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
+      # de configuration
+      &lt;VirtualHost www.abc.dom&gt; <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </code></p></div>
+
+    <p>Pour fonctionner correctement, Apache a absolument besoin de deux
+    informations à propos de chaque serveur virtuel : le nom du serveur
+    défini par la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>, et au moins une adresse IP à
+    laquelle le serveur va se rattacher et répondre. L'exemple ci-dessus
+    ne comporte pas d'adresse IP, si bien qu'Apache devra utiliser le
+    DNS pour trouver l'adresse IP de <code>www.abc.dom</code>. Si pour
+    une raison quelconque, le DNS n'est pas disponible au moment où
+    votre serveur interprète son fichier de configuration, ce serveur
+    virtuel <strong>ne sera pas pris en compte dans la
+    configuration</strong>. Il sera incapable de
+    répondre à toute requête pour ce serveur virtuel (avec les versions
+    d'Apache antérieures à 1.2, le serveur ne démarrera tout simplement
+    pas).</p>
+
+    <p>Supposons que l'adresse de <code>www.abc.dom</code> soit
+    192.0.2.1, et examinons cet extrait de configuration :</p>
+
+    <div class="example"><p><code>
+      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
+      # de configuration
+      &lt;VirtualHost 192.0.2.1&gt; <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </code></p></div>
+
+    <p>Cette fois, Apache doit effectuer une recherche DNS inverse pour
+    trouver le nom <code>ServerName</code> de ce serveur virtuel. Si
+    cette recherche inverse échoue, le serveur virtuel sera
+    partiellement désactivé (avec les versions d'Apache antérieures à
+    1.2, le serveur ne démarrera tout simplement pas). Si le serveur
+    virtuel est à base de nom, il sera en fait totalement désactivé,
+    mais s'il est à base d'adresse IP, il fonctionnera probablement.
+    Cependant, Apache échouera s'il doit générer une URL complète pour
+    le serveur qui inclut ce nom de serveur.</p>
+
+    <p>Voici un extrait de configuration qui permet d'éviter ces deux
+    types de problèmes :</p>
+
+    <div class="example"><p><code>
+      &lt;VirtualHost 192.0.2.1&gt; <br />
+      ServerName www.abc.dom <br />
+      ServerAdmin webgirl@abc.dom <br />
+      DocumentRoot /www/abc <br />
+      &lt;/VirtualHost&gt;
+    </code></p></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="denial" id="denial">Déni de service</a></h2>
+    
+
+    <p>Il existe (au moins) deux formes possibles de déni de service. Si
+    vous utilisez une version d'Apache antérieure à 1.2, votre serveur
+    ne démarrera pas si une des deux recherches DNS mentionnées
+    ci-dessus échoue pour au moins un de vos serveurs virtuels. Dans
+    certains cas, cette recherche DNS ne sera même pas sous votre
+    contrôle ; par exemple, si <code>abc.dom</code> est un de vos
+    clients et s'il gère son propre DNS, il peut empêcher votre
+    serveur (pre-1.2) de démarrer, simplement en supprimant
+    l'enregistrement <code>www.abc.dom</code>.</p>
+
+    <p>La deuxième forme de déni de service est beaucoup plus subtile.
+    Examinons cet extrait de configuration :</p>
+
+    <div class="example"><p><code>
+      &lt;VirtualHost www.abc.dom&gt;<br />
+      <span class="indent">
+        ServerAdmin webgirl@abc.dom<br />
+        DocumentRoot /www/abc<br />
+      </span>
+      &lt;/VirtualHost&gt;<br />
+      <br />
+      &lt;VirtualHost www.def.dom&gt;<br />
+      <span class="indent">
+        ServerAdmin webguy@def.dom<br />
+        DocumentRoot /www/def<br />
+      </span>
+      &lt;/VirtualHost&gt;
+    </code></p></div>
+
+    <p>Supposons que vous avez assigné 192.0.2.1 à
+    <code>www.abc.dom</code> et 192.0.2.2 à <code>www.def.dom</code>. En
+    outre, supposons que <code>def.dom</code> gère son propre DNS. Avec
+    cette configuration, <code>def.dom</code> sera en mesure de
+    détourner tout trafic destiné à <code>abc.dom</code>. Pour y
+    parvenir, tout ce qu'ils ont à faire consiste à assigner 192.0.2.1 à
+    <code>www.def.dom</code>. Comme ils gèrent leur propre DNS, vous ne
+    pouvez pas les empêcher de faire pointer l'enregistrement
+    <code>www.def.dom</code> vers l'adresse qu'ils veulent.</p>
+
+    <p>Les requêtes à destination de 192.0.2.1 (y compris toutes celles
+    où l'utilisateur à tapé une URL de la forme
+    <code>http://www.abc.dom/quelquepart</code>), seront toutes servies
+    par le serveur virtuel <code>def.dom</code>. Une meilleur
+    compréhension de la raison pour laquelle ceci peut se produire
+    nécessite une discussion plus approfondie à propos de la manière
+    dont Apache associe les requêtes entrantes aux différents serveurs
+    virtuels qui vont les servir. Un document de base décrivant ceci <a href="vhosts/details.html">est disponible</a>.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="main" id="main">L'adresse du "serveur principal"</a></h2>
+    
+
+    <p>L'addition du <a href="vhosts/name-based.html">support des
+    serveurs virtuels à base de nom</a> dans la version 1.1 d'Apache
+    oblige ce dernier à connaître la/les adresse(s) IP de l'hôte sur
+    lequel <code class="program"><a href="./programs/httpd.html">httpd</a></code> s'exécute. Pour obtenir cette
+    adresse, soit il utilise la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> globale (si elle est présente),
+    soit il fait appel à la fonction C <code>gethostname</code> (qui
+    doit renvoyer le même nom que la commande shell "hostname"). Il
+    effectue ensuite une recherche DNS sur cette adresse. Pour le
+    moment, il n'existe aucun moyen d'éviter cette recherche DNS.</p>
+
+    <p>Si vous craignez que cette recherche DNS échoue parce que votre
+    serveur DNS est arrêté, vous pouvez insérer le nom d'hôte dans le
+    fichier <code>/etc/hosts</code> (où il est probablement déjà
+    enregistré afin que la machine démarre correctement). Assurez-vous
+    ensuite que la machine est configurée pour utiliser
+    <code>/etc/hosts</code> dans le cas où la recherche DNS échoue.
+    Suivant le système d'exploitation que vous utilisez, vous y
+    parviendrez en éditant <code>/etc/resolv.conf</code>, ou
+    <code>/etc/nsswitch.conf</code>.</p>
+
+    <p>Si votre serveur n'a aucune autre raison d'effectuer des
+    recherches DNS, vous pouvez définir la variable d'environnement
+    <code>HOSTRESORDER</code> à "local", et vous serez alors en mesure
+    d'exécuter Apache. Tout dépend du système d'exploitation et des
+    bibliothèques de résolution de noms que vous utilisez. Elle affecte
+    aussi les programmes CGI, à moins que vous n'utilisiez
+    <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> pour contrôler l'environnement. Il est
+    conseillé de consulter les pages de manuel ou les FAQs de votre
+    système d'exploitation.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="tips" id="tips">Conseils pour éviter ce genre de problème</a></h2>
+    
+
+    <ul>
+      <li>
+        utilisez des adresses IP au sein des <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>
+      </li>
+
+      <li>
+        utilisez des adresses IP avec la directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+      </li>
+
+      <li>
+        vérifiez que tous les serveurs virtuels possèdent un nom
+	<code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>	explicite
+      </li>
+
+      <li>créez un serveur virtuel <code>&lt;VirtualHost
+      _default_:*&gt;</code> qui n'a aucune page à servir</li>
+    </ul>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="appendix" id="appendix">Appendice : orientations pour le futur</a></h2>
+    
+
+    <p>La situation concernant le DNS apparaît clairement comme non
+    souhaitable. Avec Apache 1.2, nous avons fait en sorte que le
+    serveur puisse au moins démarrer en cas d'échec de recherche DNS,
+    mais ce n'est pas ce que nous pouvons faire de mieux. En tout état
+    de cause, le fait de devoir spécifier des adresses IP explicites
+    dans les fichiers de configuration est fortement non souhaitable
+    avec l'Internet d'aujourd'hui où les changements de numérotation
+    sont une nécessité.</p>
+
+    <p>Il est possible d'éviter les attaques par usurpation de service
+    décrites ci-dessus en effectuant une recherche DNS inverse sur
+    l'adresse IP renvoyée par la recherche DNS directe et en comparant
+    les deux noms -- en cas de non correspondance, le serveur virtuel
+    serait désactivé. Ceci nécessite cependant une configuration
+    correcte du DNS inverse (ce avec quoi les administrateurs sont
+    familiers à cause de l'utilisation courante des doubles recherches
+    DNS inverses par les serveurs FTP et les TCP wrappers).</p>
+
+    <p>En tout état de cause, il ne semble pas envisageable de démarrer
+    de manière fiable un serveur web avec serveurs virtuels losqu'une
+    recherche DNS a échoué, sauf si l'on utilise des adresses IP. Les
+    solutions partielles consistant à désactiver des portions de
+    configuration pourraient s'avérer pires que ne pas démarrer du tout
+    ; tout dépend de ce que le serveur est supposé faire.</p>
+
+    <p>Au fur et à mesure du déploiement de HTTP/1.1, et comme les
+    navigateurs et les mandataires commencent à générer l'en-tête
+    <code>Host</code>, il devient possible d'envisager de se passer
+    complètement des serveurs virtuels à base d'adresses IP. Dans ce
+    cas, un serveur web n'a besoin d'aucune recherche DNS pendant
+    l'interprétation de ses fichiers de configuration. Cependant, au
+    mois de mars 1997, ces fonctionnalités n'ont pas été assez largement
+    déployées pour être utilisées sur des serveurs web critiques.</p>
+  </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./fr/dns-caveats.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
+</body></html>
