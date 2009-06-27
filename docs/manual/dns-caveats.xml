@@ -61,6 +61,7 @@
     Then consider this configuration snippet:</p>
 
     <example>
+      # This is a misconfiguration example, do not use on your server
       &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
