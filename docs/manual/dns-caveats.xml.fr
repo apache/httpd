@@ -41,8 +41,8 @@
     <title>Un exemple simple</title>
 
     <example>
-      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
-      # de configuration
+      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base <br />
+      # de configuration <br />
       &lt;VirtualHost www.abc.dom&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
@@ -68,8 +68,8 @@
     192.0.2.1, et examinons cet extrait de configuration :</p>
 
     <example>
-      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
-      # de configuration
+      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base <br />
+      # de configuration <br />
       &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />

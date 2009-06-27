@@ -45,7 +45,7 @@
     
 
     <div class="example"><p><code>
-      # This is a misconfiguration example, do not use on your server
+      # This is a misconfiguration example, do not use on your server <br />
       &lt;VirtualHost www.abc.dom&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
@@ -68,7 +68,7 @@
     Then consider this configuration snippet:</p>
 
     <div class="example"><p><code>
-      # This is a misconfiguration example, do not use on your server
+      # This is a misconfiguration example, do not use on your server <br />
       &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
