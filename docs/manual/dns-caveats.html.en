@@ -44,6 +44,7 @@
     
 
     <div class="example"><p><code>
+      # This is a misconfiguration example, do not use on your server
       &lt;VirtualHost www.abc.dom&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
@@ -171,8 +172,8 @@
     reason then you might be able to get away with running Apache
     with the <code>HOSTRESORDER</code> environment variable set to
     "local". This all depends on what OS and resolver libraries you
-    are using. It also affects CGIs unless you use 
-    <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> to control the environment. It's best 
+    are using. It also affects CGIs unless you use
+    <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> to control the environment. It's best
     to consult the man pages or FAQs for your OS.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -181,12 +182,12 @@
 
     <ul>
       <li>
-        use IP addresses in 
+        use IP addresses in
         <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>
       </li>
 
       <li>
-        use IP addresses in 
+        use IP addresses in
         <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
       </li>
 
