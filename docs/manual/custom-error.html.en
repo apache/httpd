@@ -20,19 +20,20 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/custom-error.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/custom-error.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Additional functionality allows webmasters to configure the response 
+    <p>Additional functionality allows webmasters to configure the response
     of Apache to some error or problem.</p>
 
-    <p>Customizable responses can be defined to be activated in the event of 
+    <p>Customizable responses can be defined to be activated in the event of
     a server detected error or problem.</p>
 
-    <p>If a script crashes and produces a "500 Server Error" response, 
-    then this response can be replaced with either some friendlier text or by 
+    <p>If a script crashes and produces a "500 Server Error" response,
+    then this response can be replaced with either some friendlier text or by
     a redirection to another URL (local or external).</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">Behavior</a></li>
@@ -47,8 +48,8 @@
     <h3>Old Behavior</h3>
       
 
-      <p>NCSA httpd 1.3 would return some boring old error/problem message 
-      which would often be meaningless to the user, and would provide no 
+      <p>NCSA httpd 1.3 would return some boring old error/problem message
+      which would often be meaningless to the user, and would provide no
       means of logging the symptoms which caused it.</p>
     
 
@@ -58,7 +59,7 @@
       <p>The server can be asked to:</p>
 
       <ol>
-        <li>Display some other text, instead of the NCSA hard coded 
+        <li>Display some other text, instead of the NCSA hard coded
         messages, or</li>
 
         <li>redirect to a local URL, or</li>
@@ -66,17 +67,17 @@
         <li>redirect to an external URL.</li>
       </ol>
 
-      <p>Redirecting to another URL can be useful, but only if some 
-      information can be passed which can then be used to explain and/or log 
+      <p>Redirecting to another URL can be useful, but only if some
+      information can be passed which can then be used to explain and/or log
       the error/problem more clearly.</p>
 
-      <p>To achieve this, Apache will define new CGI-like environment 
+      <p>To achieve this, Apache will define new CGI-like environment
       variables:</p>
 
       <div class="example"><p><code>
-        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap, 
+        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap,
             image/jpeg<br />
-        REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX A.09.05 
+        REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX A.09.05
             9000/712)<br />
         REDIRECT_PATH=.:/bin:/usr/local/bin:/etc<br />
         REDIRECT_QUERY_STRING=<br />
@@ -95,9 +96,9 @@
       new URL (assuming it's a cgi-script or a cgi-include). The
       other variables will exist only if they existed prior to
       the error/problem. <strong>None</strong> of these will be
-      set if your <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> is an 
-      <em>external</em> redirect (anything starting with a 
-      scheme name like <code>http:</code>, even if it refers to the same host 
+      set if your <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> is an
+      <em>external</em> redirect (anything starting with a
+      scheme name like <code>http:</code>, even if it refers to the same host
       as the server).</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -105,9 +106,9 @@
 <h2><a name="configuration" id="configuration">Configuration</a></h2>
     
 
-    <p>Use of <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> is enabled 
-    for .htaccess files when the 
-    <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is set accordingly.</p>
+    <p>Use of <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> is enabled
+    for .htaccess files when the
+    <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is set to FileInfo.</p>
 
     <p>Here are some examples...</p>
 
@@ -195,6 +196,7 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/custom-error.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/custom-error.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
