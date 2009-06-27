@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Messages d'erreur personnalisés - Serveur Apache HTTP</title>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Messages d'erreur personnalisés</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="./en/custom-error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/custom-error.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+    <p>Une fonctionnalité additionnelle permet aux webmasters de
+    configurer la réponse d'Apache à certaines erreurs ou problèmes.</p>
+
+    <p>Il est possible de définir des réponses personnalisables comme
+    devant être activées lorsque le serveur détecte une erreur ou un
+    problème.</p>
+
+    <p>Si un script se crashe et provoque l'envoi d'une réponse "500
+    Server Error", cette dernière peut être remplacée soit par un texte
+    plus convivial, soit par une redirection vers une autre URL (locale
+    ou externe).</p>
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">Comportement</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#configuration">Configuration</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#custom">Messages d'erreur et de redirection personnalisés</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="behavior" id="behavior">Comportement</a></h2>
+    
+
+    <h3>Ancien comportement</h3>
+      
+
+      <p>httpd 1.3 de NCSA renvoyait d'antiques et obscurs messages
+      d'erreur ou de problème qui la plupart du temps n'avaient aucune
+      signification pour l'utilisateur, et ne permettaient pas de
+      journaliser les symptomes qui les avaient causés.</p>
+    
+
+    <h3>Nouveau comportement</h3>
+      
+
+      <p>Il est possible de demander au serveur :</p>
+
+      <ol>
+        <li>d'afficher un autre texte à la place du message NCSA codé en
+	dur, ou</li>
+
+        <li>rediriger vers une URL locale, ou</li>
+
+        <li>rediriger vers une URL externe.</li>
+      </ol>
+
+      <p>La redirection vers une autre URL peut être utile, mais
+      seulement s'il est possible de transmettre certaines informations
+      qui pourront être utilisées pour expliquer et/ou journaliser
+      l'erreur ou le problème plus clairement.</p>
+
+      <p>Pour y parvenir, Apache va définir de nouvelles variables
+      d'environnement de style CGI :</p>
+
+      <div class="example"><p><code>
+        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap,
+            image/jpeg<br />
+        REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX A.09.05
+            9000/712)<br />
+        REDIRECT_PATH=.:/bin:/usr/local/bin:/etc<br />
+        REDIRECT_QUERY_STRING=<br />
+        REDIRECT_REMOTE_ADDR=121.345.78.123<br />
+        REDIRECT_REMOTE_HOST=ooh.ahhh.com<br />
+        REDIRECT_SERVER_NAME=crash.bang.edu<br />
+        REDIRECT_SERVER_PORT=80<br />
+        REDIRECT_SERVER_SOFTWARE=Apache/0.8.15<br />
+        REDIRECT_URL=/cgi-bin/buggy.pl
+      </code></p></div>
+
+      <p>Notez le préfixe <code>REDIRECT_</code>.</p>
+
+      <p>Au minimum <code>REDIRECT_URL</code> et
+      <code>REDIRECT_QUERY_STRING</code> seront transmises à la nouvelle
+      URL (en supposant qu'il s'agit d'une inclusion ou d'un script
+      cgi). Les autres variables ne seront présentes que si elles
+      existaient avant que l'erreur ou le problème ne survienne.
+      <strong>Aucune</strong> d'entre elles ne sera définie si votre
+      directive <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>
+      spécifie une redirection <em>externe</em> (toute URL commençant
+      par un protocole du style <code>http:</code>, même si elle fait
+      référence au même hôte que le serveur).</p>
+    
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="configuration" id="configuration">Configuration</a></h2>
+    
+
+    <p>L'utilisation de la directive <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> est activée pour les
+    fichiers .htaccess si la directive <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> est positionnée dans cette
+    optique.</p>
+
+    <p>Voici quelques exemples...</p>
+
+    <div class="example"><p><code>
+      ErrorDocument 500 /cgi-bin/crash-recover <br />
+      ErrorDocument 500 "Toutes nos excuses, notre script s'est crashé."
+      <br />
+      ErrorDocument 500 http://xxx/ <br />
+      ErrorDocument 404 /Lame_excuses/not_found.html <br />
+      ErrorDocument 401 /Subscription/how_to_subscribe.html
+    </code></p></div>
+
+    <p>La syntaxe est la suivante :</p>
+
+    <div class="example"><p><code>
+      ErrorDocument &lt;code à 3 chiffres&gt; &lt;action&gt;
+    </code></p></div>
+
+    <p>où action peut être :</p>
+
+    <ol>
+      <li>Un texte à afficher. Entourez-le de guillemets (").</li>
+
+      <li>Une URL externe vers laquelle on sera redirigé.</li>
+
+      <li>Une URL locale vers laquelle on sera redirigé.</li>
+    </ol>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="custom" id="custom">Messages d'erreur et de redirection personnalisés</a></h2>
+    
+
+    <p>Lors d'une redirection d'URL, Apache a modifié son comportement
+    et les scripts ou inclusions côté serveur disposent maintenant de
+    variables d'environnement supplémentaires.</p>
+
+    <h3>Ancien comportement</h3>
+      
+
+      <p>Un script vers lequel une requête avait été redirigée
+      avait accès aux variables CGI standards, sans indication sur
+      l'origine de la redirection.</p>
+    
+
+    <h3>Nouveau comportement</h3>
+      
+
+      <p>Un nouveau jeu de variables d'environnement va être initialisé
+      à des fins d'utilisation par un script vers lequel une requête
+      aura été redirigée. Chaque nouvelle variable sera préfixée par
+      <code>REDIRECT_</code>. Les variables d'environnement
+      <code>REDIRECT_</code> sont créées à partir des variables
+      d'environnement CGI existant avant la redirection, et renommées en
+      leur ajoutant le préfixe <code>REDIRECT_</code> ; par exemple,
+      <code>HTTP_USER_AGENT</code> devient
+      <code>REDIRECT_HTTP_USER_AGENT</code>. En plus de ces nouvelles
+      variables, Apache va définir <code>REDIRECT_URL</code> et
+      <code>REDIRECT_STATUS</code> pour aider le script à remonter à
+      l'origine de la redirection. L'URL originale et l'URL de
+      redirection peuvent être enregistrées dans le journal des
+      accès.</p>
+
+      <p>Si la directive ErrorDocument spécifie une redirection locale
+      vers un script CGI, ce dernier doit ajouter un en-tête
+      "<code>Status:</code>" dans sa sortie afin de s'assurer du bon
+      acheminement jusqu'au client de la condition d'erreur qui a
+      provoqué cette redirection. Par exemple, un script Perl spécifié
+      par une directive ErrorDocument pourrait contenir ce qui suit
+      :</p>
+
+      <div class="example"><p><code>
+        ... <br />
+        print  "Content-type: text/html\n"; <br />
+        printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"}; <br />
+        ...
+      </code></p></div>
+
+      <p>Si un script est dédié à la gestion d'une condition d'erreur
+      spécifique, telle que <code>404&nbsp;Not&nbsp;Found</code>, il
+      peut utiliser le code et le texte de l'erreur spécifiques à la
+      place.</p>
+
+      <p>Notez que si la réponse contient un en-tête
+      <code>Location:</code>, le script <em>doit</em> émettre un en-tête
+      <code>Status:</code> approprié (tel que
+      <code>302&nbsp;Found</code>) afin de provoquer une redirection au
+      niveau du client. Dans le cas contraire, l'en-tête
+      <code>Location:</code> risque de n'avoir aucun effet.</p>
+    
+  </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="./en/custom-error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./fr/custom-error.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
+</body></html>
