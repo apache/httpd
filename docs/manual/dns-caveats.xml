@@ -38,6 +38,7 @@
     <title>A Simple Example</title>
 
     <example>
+      # This is a misconfiguration example, do not use on your server
       &lt;VirtualHost www.abc.dom&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
@@ -166,8 +167,8 @@
     reason then you might be able to get away with running Apache
     with the <code>HOSTRESORDER</code> environment variable set to
     "local". This all depends on what OS and resolver libraries you
-    are using. It also affects CGIs unless you use 
-    <module>mod_env</module> to control the environment. It's best 
+    are using. It also affects CGIs unless you use
+    <module>mod_env</module> to control the environment. It's best
     to consult the man pages or FAQs for your OS.</p>
   </section>
 
@@ -176,12 +177,12 @@
 
     <ul>
       <li>
-        use IP addresses in 
+        use IP addresses in
         <directive module="core">VirtualHost</directive>
       </li>
 
       <li>
-        use IP addresses in 
+        use IP addresses in
         <directive module="mpm_common">Listen</directive>
       </li>
 
