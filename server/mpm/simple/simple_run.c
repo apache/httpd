@@ -262,6 +262,9 @@ static int simple_setup_pollcb(simple_core_t * sc)
         /* pqXXXXX: make size of pollcb configrable or dynamic */
         rv = apr_pollcb_create_ex(&sc->pollcb, 512,
                                   sc->pool, APR_POLLSET_NODEFAULT, good_methods[i]);
+        if (!rv) {
+            break;
+        }
     }
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
