@@ -93,11 +93,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * additional (mod_perl test suite) OPT_INCLUDES compatibility
-   trunk: N/A
-   2.2.x patch: http://people.apache.org/~trawick/mod_perl_more_compat.txt
-   +1: trawick, jorton, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

@@ -665,7 +665,12 @@ AP_DECLARE(int) ap_allow_options(request_rec *r)
      * inverted, such that the exposed semantics match that of
      * OPT_INCNOEXEC; i.e., the bit is only enabled if exec= is *not*
      * permitted. */
-    return conf->opts ^ OPT_INC_WITH_EXEC;
+    if (conf->opts & OPT_INCLUDES) {
+        return conf->opts ^ OPT_INC_WITH_EXEC;
+    }
+    else {
+        return conf->opts;
+    }
 }
 
 AP_DECLARE(int) ap_allow_overrides(request_rec *r)
