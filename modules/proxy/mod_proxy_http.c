@@ -427,10 +427,16 @@ static int stream_reqbody_cl(apr_pool_t *p,
     apr_off_t bytes_streamed = 0;
 
     if (old_cl_val) {
+        char *endstr;
+
         add_cl(p, bucket_alloc, header_brigade, old_cl_val);
-        if (APR_SUCCESS != (status = apr_strtoff(&cl_val, old_cl_val, NULL,
-                                                 0))) {
-            return HTTP_INTERNAL_SERVER_ERROR;
+        status = apr_strtoff(&cl_val, old_cl_val, &endstr, 10);
+        
+        if (status || *endstr || endstr == old_cl_val || cl_val < 0) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                          "proxy: could not parse request Content-Length (%s)",
+                          old_cl_val);
+            return HTTP_BAD_REQUEST;
         }
     }
     terminate_headers(bucket_alloc, header_brigade);
@@ -463,8 +469,13 @@ static int stream_reqbody_cl(apr_pool_t *p,
          *
          * Prevents HTTP Response Splitting.
          */
-        if (bytes_streamed > cl_val)
-             continue;
+        if (bytes_streamed > cl_val) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "proxy: read more bytes of request body than expected "
+                          "(got %" APR_OFF_T_FMT ", expected %" APR_OFF_T_FMT ")",
+                          bytes_streamed, cl_val);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
 
         if (header_brigade) {
             /* we never sent the header brigade, so go ahead and
