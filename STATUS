@@ -90,6 +90,18 @@ RELEASE SHOWSTOPPERS:
        http://svn.apache.org/viewvc?view=rev&revision=790587
    +1: rpluem
 
+ * SECURITY: CVE-2009-1891 (cve.mitre.org)
+   Fix a potential Denial-of-Service attack against mod_deflate or
+   other modules, by forcing the server to consume CPU time in
+   compressing a large file after a client disconnects.
+   2.2.x patches:
+     http://people.apache.org/~jorton/CVE-2009-1891.1.diff
+     http://people.apache.org/~jorton/CVE-2009-1891.2.diff
+   Trunk version of patch:
+     #1 folded in during core output filter refactoring
+     #2 http://svn.apache.org/viewvc?view=rev&revision=521681
+   +1: jorton
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
