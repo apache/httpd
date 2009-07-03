@@ -3064,7 +3064,7 @@ static const char *cmd_parseflagfield(apr_pool_t *p, void *cfg, char *key,
 
     endp = key + strlen(key) - 1;
     if (*key != '[' || *endp != ']') {
-        return "RewriteCond: bad flag delimiters";
+        return "bad flag delimiters";
     }
 
     *endp = ','; /* for simpler parsing */
@@ -3127,7 +3127,7 @@ static const char *cmd_rewritecond_setflag(apr_pool_t *p, void *_cfg,
         cfg->flags |= CONDFLAG_NOVARY;
     }
     else {
-        return apr_pstrcat(p, "RewriteCond: unknown flag '", key, "'", NULL);
+        return apr_pstrcat(p, "unknown flag '", key, "'", NULL);
     }
     return NULL;
 }
@@ -3176,7 +3176,7 @@ static const char *cmd_rewritecond(cmd_parms *cmd, void *in_dconf,
     if (a3 != NULL) {
         if ((err = cmd_parseflagfield(cmd->pool, newcond, a3,
                                       cmd_rewritecond_setflag)) != NULL) {
-            return err;
+            return apr_pstrcat(cmd->pool, "RewriteCond: ", err, NULL);
         }
     }
 
@@ -3423,7 +3423,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
                             ap_index_of_response(HTTP_INTERNAL_SERVER_ERROR);
 
                         if (ap_index_of_response(status) == idx) {
-                            return apr_psprintf(p, "RewriteRule: invalid HTTP "
+                            return apr_psprintf(p, "invalid HTTP "
                                                    "response code '%s' for "
                                                    "flag 'R'",
                                                 val);
@@ -3466,7 +3466,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     }
 
     if (error) {
-        return apr_pstrcat(p, "RewriteRule: unknown flag '", --key, "'", NULL);
+        return apr_pstrcat(p, "unknown flag '", --key, "'", NULL);
     }
 
     return NULL;
@@ -3512,7 +3512,7 @@ static const char *cmd_rewriterule(cmd_parms *cmd, void *in_dconf,
     if (a3 != NULL) {
         if ((err = cmd_parseflagfield(cmd->pool, newrule, a3,
                                       cmd_rewriterule_setflag)) != NULL) {
-            return err;
+            return apr_pstrcat(cmd->pool, "RewriteRule: ", err, NULL);
         }
     }
 
