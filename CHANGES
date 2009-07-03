@@ -16,6 +16,11 @@ Changes with Apache 2.2.12
      different security issues which may affect particular configurations
      and third-party modules.
 
+  *) mod_rewrite: Fix the error string returned by RewriteRule.
+     RewriteRule returned "RewriteCond: bad flag delimiters" when the 3rd
+     argument of RewriteRule was not started with "[" or not ended with "]".
+     PR 45082 [Vitaly Polonetsky <m_vitaly topixoft.com>]
+
   *) mod_proxy: Complete ProxyPassReverse to handle balancer URL's.  Given;
        BalancerMember balancer://alias http://example.com/foo
        ProxyPassReverse /bash balancer://alias/bar
