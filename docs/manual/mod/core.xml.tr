@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 773774:780016 (outdated) -->
+<!-- English Revision: 780016 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -1363,7 +1363,12 @@ takdirde uygulanacak yönergeleri barındırır.</description>
         &lt;If "$req{Host} = ''"&gt;
     </example>
 
-    <p>Bir <var>Host:</var> başlığı içermeyen HTTP/1.0 istekleriyle eşleşir.</p>
+    <p>Bir <var>Host:</var> başlığı içermeyen HTTP/1.0 istekleriyle
+      eşleşir.</p>
+
+    <p>İstek başlıklarındaki ($req), yanıt başlıklarındaki  ($resp) yada
+      ortamdaki ($env) herhangi bir değişkenin değerini ifadenizde
+      karşılaştırabilirsiniz.</p>
 </usage>
 
 <seealso>Bir istek alındığında farklı yapılandırma bölümlerinin nasıl bir arada
