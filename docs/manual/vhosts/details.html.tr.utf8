@@ -177,8 +177,6 @@
     <ol>
       <li>Sankon bir <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>
         yönergesi içermiyorsa,
-        <code class="directive"><a href="../mod/core.html#resourceconfig">ResourceConfig</a></code>,
-        <code class="directive"><a href="../mod/core.html#accessconfig">AccessConfig</a></code>,
         <code class="directive"><a href="../mod/core.html#timeout">Timeout</a></code>,
         <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>,
         <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>,
