@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_status.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucu etkinliği ve başarımı hakkında bilgi sağlar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>status_module</td></tr>
@@ -175,13 +174,11 @@ karakterinin mi yoksa son 63 karakterinin mi gösterileceğini belirler.
     <table class="bordered">
       <tr>
         <th>Off (öntanımlı)</th>
-        <td>GET&nbsp;
-        /disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples</td>
       </tr>
       <tr>
         <th>On</th>
-        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;
-        HTTP/1.1</td>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
       </tr>
     </table>
 
