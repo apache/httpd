@@ -105,19 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
- * prefork MPM: simple patch to enable mod_privileges.
-   trunk: N/A (this patch substitutes for the availability of
-               drop_privileges hook).
-   2.2.x patch:
-      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
-   wrowe asks; what is proposed and why two patches here?
-   niq replies: removing the second one, it's FYI only and not part
-                of the backport proposal.  And it needs updating!
-   +1: niq
-
  * modules/proxy/proxy_util.c (ap_proxy_initialize_worker): Fix
    gcc strict-aliasing warning.
    Trunk version of patch works:
@@ -131,6 +118,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk version of patch works:
        http://svn.apache.org/viewvc?view=rev&revision=776325
    +1: takashi, rpluem, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+ * prefork MPM: simple patch to enable mod_privileges.
+   trunk: N/A (this patch substitutes for the availability of
+               drop_privileges hook).
+   2.2.x patch:
+      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
+   wrowe asks; what is proposed and why two patches here?
+   niq replies: removing the second one, it's FYI only and not part
+                of the backport proposal.  And it needs updating!
+   +1: niq
 
  * mod_alias: Ensure Redirect emits HTTP-compliant URLs.
    PR 44020
