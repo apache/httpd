@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 558686 -->
+<!-- English Revision: 788930 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -108,7 +108,7 @@
 
     <p><directive module="core">ErrorDocument</directive> yönergesinin
       <code>.htaccess</code> dosyalarında kullanılması sadece <directive
-      module="core">AllowOverride</directive> yönergesine uygun bir değer
+      module="core">AllowOverride</directive> yönergesine <code>FileInfo</code>
       atanmışsa mümkündür.</p>
 
     <p>Bazı örnekler:</p>

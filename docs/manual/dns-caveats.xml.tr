@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 507346:788933 (outdated) -->
+<!-- English Revision: 788974 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -42,6 +42,7 @@
     <title>Basit Bir Örnek</title>
 
     <example>
+      # Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın. <br />
       &lt;VirtualHost falan.fesmekan.dom&gt;
       <indent>
         ServerAdmin filanca@fesmekan.dom <br />
@@ -65,6 +66,7 @@
       olduğunu varsayarsak yapılandırma şöyle olurdu:</p>
 
     <example>
+      # Bu yetersiz bir yapılandırma örneğidir, sunucunuzda kullanmayın. <br />
       &lt;VirtualHost 192.168.2.1&gt; <br />
       <indent>
         ServerAdmin filanca@fesmekan.dom <br />
