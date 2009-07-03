@@ -7,6 +7,11 @@ Changes with Apache 2.2.12
      [Jonathan Peatfield <j.s.peatfield damtp.cam.ac.uk>, Joe Orton,
       Ruediger Pluem, Jeff Trawick]
 
+  *) SECURITY: CVE-2009-1890 (cve.mitre.org) 
+     Fix a potential Denial-of-Service attack against mod_proxy in a
+     reverse proxy configuration, where a remote attacker can force a
+     proxy process to consume CPU time indefinitely.  [Nick Kew, Joe Orton]
+
   *) SECURITY: CVE-2009-1191 (cve.mitre.org)
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
