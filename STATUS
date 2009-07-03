@@ -97,6 +97,8 @@ RELEASE SHOWSTOPPERS:
    Otherwise we would need to add
    http://svn.apache.org/viewvc?view=rev&revision=568202
    as on trunk to avoid segfaults.
+   trawick responds: if b were NULL, we would have segfaulted earlier
+     when ap_pass_brigade "calls" APR_BRIGADE_LAST(bb)
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
