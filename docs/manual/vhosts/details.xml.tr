@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 421174 -->
+<!-- English Revision: 783470 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -179,8 +179,6 @@
     <ol>
       <li>Sankon bir <directive module="core">ServerAdmin</directive>
         yönergesi içermiyorsa,
-        <directive module="core">ResourceConfig</directive>,
-        <directive module="core">AccessConfig</directive>,
         <directive module="core">Timeout</directive>,
         <directive module="core">KeepAliveTimeout</directive>,
         <directive module="core">KeepAlive</directive>,
