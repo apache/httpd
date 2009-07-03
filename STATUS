@@ -93,6 +93,10 @@ RELEASE SHOWSTOPPERS:
      #1 folded in during core output filter refactoring
      #2 http://svn.apache.org/viewvc?view=rev&revision=521681
    +1: jorton, jim
+   rpluem asks: Are we sure that b is never NULL?
+   Otherwise we would need to add
+   http://svn.apache.org/viewvc?view=rev&revision=568202
+   as on trunk to avoid segfaults.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
