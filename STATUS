@@ -105,12 +105,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * modules/proxy/proxy_util.c (ap_proxy_initialize_worker): Fix
-   gcc strict-aliasing warning.
-   Trunk version of patch works:
-       http://svn.apache.org/viewvc?view=rev&revision=395552
-   +1: takashi, rpluem, jim
-
  * mod_rewrite: Fix the error string returned by RewriteRule.
    RewriteRule returned "RewriteCond: bad flag delimiters"
    when the 3rd argument of RewriteRule  was not started with

@@ -1914,8 +1914,11 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     else
 #endif
     {
+        void *conn;
 
-        rv = connection_constructor((void **)&(worker->cp->conn), worker, worker->cp->pool);
+        rv = connection_constructor(&conn, worker, worker->cp->pool);
+        worker->cp->conn = conn;
+
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
              "proxy: initialized single connection worker %d in child %" APR_PID_T_FMT " for (%s)",
              worker->id, getpid(), worker->hostname);
