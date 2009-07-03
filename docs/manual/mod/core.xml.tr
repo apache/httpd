@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 752891 -->
+<!-- English Revision: 787961 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -3014,25 +3014,26 @@ gerçekleşmesi için sunucunun geçmesini bekleyeceği süre.</description>
 </contextlist>
 
 <usage>
-    <p><directive>TimeOut</directive> yönergesi Apache’nin aşağıdaki üç durum
-      için bekleyeceği süreyi belirler:</p>
+    <p><directive>TimeOut</directive> yönergesi çeşitli durumlarda
+      Apache’nin bekleyeceği süreyi belirler:</p>
 
     <ol>
-      <li>Bir GET isteğini almak için geçecek toplam süre.</li>
+      <li>Veri istemciden okunurken, okuma tamponu boş olduğunda bir TCP
+        paketinin gelmesi için beklenecek süre.</li>
 
-      <li>Bir POST veya PUT isteğinde TCP paketlerinin alımları arasında geçen
-        süre.</li>
+      <li>Veri istemciye yazılırken, gönderim tamponu dolu olduğunda bir
+        paket alındı bilgisi için beklenecek süre.</li>
 
-      <li>Yanıtlarda TCP paketlerinin aktarımı için alındılar arasında geçen
-        süre.</li>
+      <li><module>mod_cgi</module> modülünde bir CGI betiğinin çıktısı için
+        beklenecek süre.</li>
+
+      <li><module>mod_ext_filter</module> modülünde bir süzme işleminin
+        çıktısı için beklenecek süre.</li>
+
+      <li><module>mod_proxy</module> modülünde
+        <directive module="mod_proxy">ProxyTimeout</directive>
+        yapılandırılmamışsa öntanımlı zaman aşımı değeri.</li>
     </ol>
-    <p>Bunları ileride ayrı ayrı yapılandırılabilir kılmayı planlıyoruz. 1.2
-      öncesinde zaman aşımı öntanımlı olarak 1200 saniye idi, fakat çoğu durum
-      için hala gereğinden fazla olsa bile şimdi 300 saniyeye düşürüldü. Kodun
-      içinde, bir paket gönderilmediği takdirde zaman aşımı değerinin
-      sıfırlanmadan kaldığı tuhaf yerler bulunabileceğinden bu değer öntanımlı
-      değerin altına ayarlanmamalıdır.</p>
-
 </usage>
 </directivesynopsis>
 
