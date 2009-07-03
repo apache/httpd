@@ -366,7 +366,8 @@ that are not explicitly mapped</td></tr>
 an imagemap</td></tr>
 <tr class="odd"><td><a href="core.html#include">Include <var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>skd</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucu yapılandırma dosyalarının başka dosyaları içermesini sağlar.
 </td></tr>
-<tr><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert <var>"imlenim ..."</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dizin sayfasının HEAD bölümüne metin yerleştirir.</td></tr>
+<tr><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert <var>"imlenim ..."</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dizin sayfasının HEAD bölümüne metin yerleştirir.
+</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#indexignore">IndexIgnore <var>dosya</var> [<var>dosya</var>] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Dizin içerik listesinden gizlenecek dosyaların listesi belirtilir.
 </td></tr>
 <tr><td><a href="mod_autoindex.html#indexoptions">IndexOptions  [+|-]<var>seçenek</var> [[+|-]<var>seçenek</var>]
