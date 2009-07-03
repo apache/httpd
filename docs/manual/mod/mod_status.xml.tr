@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 668729:779150 (outdated) -->
+<!-- English Revision: 779150 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -165,13 +165,11 @@ karakterinin mi yoksa son 63 karakterinin mi gösterileceğini belirler.
     <table border="1">
       <tr>
         <th>Off (öntanımlı)</th>
-        <td>GET&nbsp;
-        /disk1/storage/apache/htdocs/images/imagestore1/food/fruits</td>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples</td>
       </tr>
       <tr>
         <th>On</th>
-        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;
-        HTTP/1.1</td>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
       </tr>
     </table>
 

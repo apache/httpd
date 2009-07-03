@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 721731:781422 (outdated) -->
+<!-- English Revision: 781422 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -945,12 +945,15 @@ Name|Date|Size|Description</syntax>
 
 <directivesynopsis>
 <name>IndexHeadInsert</name>
-<description>Bir dizin sayfasının HEAD bölümüne metin yerleştirir.</description>
+<description>Bir dizin sayfasının HEAD bölümüne metin yerleştirir.
+</description>
 <syntax>IndexHeadInsert <var>"imlenim ..."</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>Indexes</override>
+<compatibility>Apache 2.2.11 ve sonrasında kullanılabilmektedir.
+</compatibility>
 
 <usage>
     <p><directive>IndexHeadInsert</directive> yönergesi, dizin listesi için
