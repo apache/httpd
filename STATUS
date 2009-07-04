@@ -92,13 +92,16 @@ RELEASE SHOWSTOPPERS:
    Trunk version of patch:
      #1 folded in during core output filter refactoring
      #2 http://svn.apache.org/viewvc?view=rev&revision=521681
-   +1: jorton, jim
+   +1: jorton, jim, rpluem
    rpluem asks: Are we sure that b is never NULL?
    Otherwise we would need to add
    http://svn.apache.org/viewvc?view=rev&revision=568202
    as on trunk to avoid segfaults.
    trawick responds: if b were NULL, we would have segfaulted earlier
      when ap_pass_brigade "calls" APR_BRIGADE_LAST(bb)
+   rpluem: Ahh good point. Meanwhile I had a look at trunk and the
+   event MPM is calling the core output filter directly without
+   ap_pass_brigade. So I am +1.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
