@@ -82,6 +82,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
  * SECURITY: CVE-2009-1891 (cve.mitre.org)
    Fix a potential Denial-of-Service attack against mod_deflate or
    other modules, by forcing the server to consume CPU time in
@@ -102,10 +105,6 @@ RELEASE SHOWSTOPPERS:
    rpluem: Ahh good point. Meanwhile I had a look at trunk and the
    event MPM is calling the core output filter directly without
    ap_pass_brigade. So I am +1.
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
