@@ -144,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_proxy_http: fix case sensitivity checking transfer encoding
    PR 47383
    Patch: http://svn.apache.org/viewvc?view=rev&revision=785661
-   +1: niq
+   +1: niq, rpluem
 
  * mod_dir: add DefaultHandler directive
    PR 47184
@@ -157,17 +157,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR 44729
    patch: http://svn.apache.org/viewvc?view=rev&revision=778942
    +1: niq
+   -0.5: rpluem: There are further revisons in trunk that make this much more
+   complete and sane: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/mappers/mod_alias.c?r1=778942&r2=780699
 
  * mod_proxy_http: fix Host: header for literal IPv6 addresses.
    PR 47177
    patch: http://svn.apache.org/viewvc?view=rev&revision=778531
-   +1: niq
+   +1: niq, rpluem
 
  * mod_rewrite: Remove locking for writing to the rewritelog.
    PR 46942
    trunk patch: http://svn.apache.org/viewvc?view=rev&revision=783734
    2.2.x patch: http://people.apache.org/~niq/patches/46942.patch
    +1: niq
+   rpluem says:
+   http://people.apache.org/~niq/patches/46942.patch returns a 404
 
 PATCHES/ISSUES THAT ARE STALLED
 
