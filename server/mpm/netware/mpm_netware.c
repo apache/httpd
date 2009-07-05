@@ -199,52 +199,60 @@ static void mpm_main_cleanup(void)
     }
 }
 
-AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+static int netware_query(int query_code, int *result, apr_status_t *rv)
 {
+    *rv = APR_SUCCESS;
     switch(query_code){
         case AP_MPMQ_MAX_DAEMON_USED:
             *result = 1;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_IS_THREADED:
             *result = AP_MPMQ_DYNAMIC;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_IS_FORKED:
             *result = AP_MPMQ_NOT_SUPPORTED;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_HARD_LIMIT_DAEMONS:
             *result = HARD_SERVER_LIMIT;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_HARD_LIMIT_THREADS:
             *result = HARD_THREAD_LIMIT;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_THREADS:
             *result = ap_threads_limit;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MIN_SPARE_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MIN_SPARE_THREADS:
             *result = ap_threads_min_free;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_SPARE_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_SPARE_THREADS:
             *result = ap_threads_max_free;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_REQUESTS_DAEMON:
             *result = ap_max_requests_per_child;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MAX_DAEMONS:
             *result = 1;
-            return APR_SUCCESS;
+            break;
         case AP_MPMQ_MPM_STATE:
             *result = mpm_state;
-            return APR_SUCCESS;
+            break;
+        default:
+            *rv = APR_ENOTIMPL;
+            break;
     }
-    return APR_ENOTIMPL;
+    return OK;
 }
 
+static const char *netware_get_name(void)
+{
+    return "NetWare";
+}
 
 /*****************************************************************
  * Connection structures and accounting...
@@ -711,7 +719,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     }
 }
 
-static void display_settings ()
+static void display_settings()
 {
     int status_array[SERVER_NUM_STATUS];
     int i, status, total=0;
@@ -856,7 +864,7 @@ static int shutdown_listeners()
  * Executive routines.
  */
 
-int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
+static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 {
     apr_status_t status=0;
 
@@ -1086,6 +1094,12 @@ static void netware_mpm_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(netware_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_config(netware_check_config, NULL, NULL, APR_HOOK_MIDDLE);
+    //ap_hook_post_config(netware_post_config, NULL, NULL, 0);
+    //ap_hook_child_init(netware_child_init, NULL, NULL, APR_HOOK_MIDDLE);
+    //ap_hook_open_logs(netware_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
+    ap_hook_mpm(netware_run, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_query(netware_query, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_get_name(netware_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 void netware_rewrite_args(process_rec *process)
