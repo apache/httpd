@@ -351,6 +351,16 @@ static int show_server_settings(request_rec * r)
                "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
                ap_get_server_built());
     ap_rprintf(r,
+               "<dt><strong>Apache Portable Runtime Version:</strong> "
+               "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
+               apr_version_string());
+#if APR_MAJOR_VERSION < 2
+    ap_rprintf(r,
+               "<dt><strong>Apache Portable Utility Version:</strong> "
+               "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
+               apu_version_string());
+#endif
+    ap_rprintf(r,
                "<dt><strong>Module Magic Number:</strong> "
                "<tt>%d:%d</tt></dt>\n", MODULE_MAGIC_NUMBER_MAJOR,
                MODULE_MAGIC_NUMBER_MINOR);
