@@ -133,7 +133,6 @@ host</context></contextlist>
     deny this to a few, use the following:</p>
 
     <example>
-      UserDir enabled<br />
       UserDir disabled user4 user5 user6
     </example>
 
