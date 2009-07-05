@@ -156,9 +156,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_alias: Enforce sanity in args to Redirect
    PR 44729
    patch: http://svn.apache.org/viewvc?view=rev&revision=778942
-   +1: niq
-   -0.5: rpluem: There are further revisons in trunk that make this much more
-   complete and sane: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/mappers/mod_alias.c?r1=778942&r2=780699
+          http://svn.apache.org/viewvc?view=rev&revision=780648
+          http://svn.apache.org/viewvc?view=rev&revision=780655
+          http://svn.apache.org/viewvc?view=rev&revision=780692
+          http://svn.apache.org/viewvc?view=rev&revision=780697
+          http://svn.apache.org/viewvc?view=rev&revision=780699
+   +1: niq, rpluem
 
  * mod_proxy_http: fix Host: header for literal IPv6 addresses.
    PR 47177
@@ -169,9 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR 46942
    trunk patch: http://svn.apache.org/viewvc?view=rev&revision=783734
    2.2.x patch: http://people.apache.org/~niq/patches/46942.patch
-   +1: niq
-   rpluem says:
-   http://people.apache.org/~niq/patches/46942.patch returns a 404
+   +1: niq, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
