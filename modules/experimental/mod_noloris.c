@@ -44,6 +44,8 @@
 module AP_MODULE_DECLARE_DATA noloris_module;
 module AP_MODULE_DECLARE_DATA core_module;
 
+#define ADDR_MAX_SIZE 48
+
 static unsigned int default_max_connections;
 static apr_hash_t *trusted;
 static apr_interval_time_t recheck_time;
@@ -71,14 +73,17 @@ static int noloris_conn(conn_rec *conn)
 
     /* check the IP is not banned */
     shm_rec = apr_shm_baseaddr_get(shm);
-    if (strstr(shm_rec, conn->remote_ip)) {
-        apr_socket_t *csd = ap_get_module_config(conn->conn_config, &core_module);
-        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, conn,
-                      "Dropping connection from banned IP %s", conn->remote_ip);
-        //ap_flush_conn(conn); /* just close it */
-        apr_socket_close(csd);
+    while (shm_rec[0] != '\0') {
+        if (!strcmp(shm_rec, conn->remote_ip)) {
+            apr_socket_t *csd = ap_get_module_config(conn->conn_config, &core_module);
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, conn,
+                          "Dropping connection from banned IP %s",
+                          conn->remote_ip);
+            apr_socket_close(csd);
 
-        return DONE;
+            return DONE;
+        }
+        shm_rec += MAX_ADDR_SIZE;
     }
 
     /* store this client IP for the monitor to pick up */
@@ -123,7 +128,7 @@ static int noloris_monitor(apr_pool_t *pool)
     if (connections == NULL) {
         connections = apr_hash_make(pool);
         totals = apr_palloc(pool, server_limit*thread_limit);
-        ip = apr_palloc(pool, 18);
+        ip = apr_palloc(pool, ADDR_MAX_SIZE);
     }
 
     /* Get a per-client count of connections in READ state */
@@ -158,9 +163,8 @@ static int noloris_monitor(apr_pool_t *pool)
                 ap_log_error(APLOG_MARK, APLOG_WARNING, 0, 0,
                        "noloris: banning %s with %d connections in READ state",
                        ip, *n);
-                strcpy(shm_rec++, " ");  /* space == separator */
                 strcpy(shm_rec, ip);
-                shm_rec += strlen(ip);
+                shm_rec += ADDR_MAX_SIZE;
             }
         }
     }
@@ -172,7 +176,7 @@ static int noloris_post(apr_pool_t *pconf, apr_pool_t *ptmp, apr_pool_t *plog,
 {
     apr_status_t rv;
     int max_bans = thread_limit * server_limit / default_max_connections;
-    shm_size = 18 * max_bans;
+    shm_size = ADDR_MAX_SIZE * max_bans;
 
     rv = apr_shm_create(&shm, shm_size, NULL, pconf);
     if (rv != APR_SUCCESS) {
