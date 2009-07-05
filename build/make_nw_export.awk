@@ -23,6 +23,7 @@ BEGIN {
 
 # List of functions that we don't support, yet??
 #/ap_some_name/{next}
+/ap_mpm_pod_/{next}
 
 function add_symbol (sym_name) {
 	if (count) {
