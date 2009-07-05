@@ -179,6 +179,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://cvs.apache.org/viewvc?view=rev&revision=791316
    2.2.x patch: http://people.apache.org/~fuankg/diffs/mod_info.c.diff
    +1: fuankg                
+   -0.9: niq: Please get rid of that ghastly pseudo-HTML <font> crap.
+              It's only valid in "transitional", which has been
+              deprecated legacy stuff since 1997.
+              Without the <font> I'm +1.
+
+ * unixd: set suexec_enabled correctly when httpd is run by non-root
+   PR 42175
+   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
+   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
+   +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
