@@ -15,7 +15,7 @@
  */
 
 /**
- * @file  ap_mpm.h
+ * @file  ap_mmn.h
  * @brief Module Magic Number
  *
  * @defgroup APACHE_CORE_MMN Module Magic Number
