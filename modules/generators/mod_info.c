@@ -44,6 +44,7 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_version.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
