@@ -174,6 +174,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x patch: http://people.apache.org/~niq/patches/46942.patch
    +1: niq, rpluem
 
+ * mod_info: Add apr / apr-util version output
+   trunk patch: http://cvs.apache.org/viewvc?view=rev&revision=791313
+                http://cvs.apache.org/viewvc?view=rev&revision=791316
+   2.2.x patch: http://people.apache.org/~fuankg/diffs/mod_info.c.diff
+   +1: fuankg                
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
