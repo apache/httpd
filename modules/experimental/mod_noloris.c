@@ -40,6 +40,7 @@
 #include "mpm_common.h"
 #include "ap_mpm.h"
 #include "apr_hash.h"
+#include "scoreboard.h"
 
 module AP_MODULE_DECLARE_DATA noloris_module;
 module AP_MODULE_DECLARE_DATA core_module;
@@ -83,7 +84,7 @@ static int noloris_conn(conn_rec *conn)
 
             return DONE;
         }
-        shm_rec += MAX_ADDR_SIZE;
+        shm_rec += ADDR_MAX_SIZE;
     }
 
     /* store this client IP for the monitor to pick up */
@@ -134,7 +135,7 @@ static int noloris_monitor(apr_pool_t *pool)
     /* Get a per-client count of connections in READ state */
     for (i = 0; i < server_limit; ++i) {
         for (j = 0; j < thread_limit; ++j) {
-            ws = ap_get_scoreboard_worker(i, j);
+            ws = ap_get_scoreboard_worker_from_indexes(i, j);
             if (ws->status == SERVER_BUSY_READ) {
                 n = apr_hash_get(connections, ws->client, APR_HASH_KEY_STRING);
                 if (n == NULL) {
@@ -152,7 +153,7 @@ static int noloris_monitor(apr_pool_t *pool)
      * with our prospective readers
      */
     shm_rec = apr_shm_baseaddr_get(shm);
-    memset(shm_rec, NULL, shm_size);
+    memset(shm_rec, 0, shm_size);
 
     /* Now check the hash for clients with too many connections in READ state */
     for (hi = apr_hash_first(NULL, connections); hi; hi = apr_hash_next(hi)) {
