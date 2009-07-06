@@ -1,6 +1,11 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) SECURITY: CVE-2009-1891 (cve.mitre.org)
+     Fix a potential Denial-of-Service attack against mod_deflate or other 
+     modules, by forcing the server to consume CPU time in compressing a 
+     large file after a client disconnects.  [Joe Orton, Ruediger Pluem]
+
   *) SECURITY: CVE-2009-1195 (cve.mitre.org)
      Prevent the "Includes" Option from being enabled in an .htaccess 
      file if the AllowOverride restrictions do not permit it.
