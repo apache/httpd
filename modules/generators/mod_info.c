@@ -353,21 +353,17 @@ static int show_server_settings(request_rec * r)
                ap_get_server_built());
     ap_rprintf(r,
                "<dt><strong>Server loaded APR Version:</strong> "
-               "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
-               apr_version_string());
+               "<tt>%s</tt></dt>\n", apr_version_string());
     ap_rprintf(r,
                "<dt><strong>Compiled with APR Version:</strong> "
-               "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
-               APR_VERSION_STRING);
+               "<tt>%s</tt></dt>\n", APR_VERSION_STRING);
 #if APR_MAJOR_VERSION < 2
     ap_rprintf(r,
                "<dt><strong>Server loaded APU Version:</strong> "
-               "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
-               apu_version_string());
+               "<tt>%s</tt></dt>\n", apu_version_string());
     ap_rprintf(r,
                "<dt><strong>Compiled with APU Version:</strong> "
-               "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
-               APU_VERSION_STRING);
+               "<tt>%s</tt></dt>\n", APU_VERSION_STRING);
 #endif
     ap_rprintf(r,
                "<dt><strong>Module Magic Number:</strong> "
