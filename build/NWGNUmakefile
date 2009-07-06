@@ -25,7 +25,7 @@ nlms :: chkapr $(NWOS)/httpd.imp
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo Generating $(subst /,\,$@)
-	$(AWK) -f make_nw_export.awk nw_export.i | sort >$(NWOS)/httpd.imp
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ | sort >$@
     
 nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
 	@echo Generating $(subst /,\,$@)
@@ -73,4 +73,10 @@ clean ::
 	$(CHK) cc.opt                                       $(DEL) cc.opt
 	$(CHK) NWGNUversion.inc                             $(DEL) NWGNUversion.inc
 
+#
+# Include the 'tail' makefile that has targets that depend on variables defined
+# in this makefile
+#
+
+include $(AP_WORK)\build\NWGNUtail.inc
     
