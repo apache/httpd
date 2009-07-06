@@ -27,6 +27,7 @@ XINCDIRS	+= \
 			$(AP_WORK)/include \
 			$(NWOS) \
 			$(AP_WORK)/modules/arch/netware \
+			$(AP_WORK)/modules/core \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(APR) \
