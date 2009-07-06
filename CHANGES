@@ -27,6 +27,9 @@ Changes with Apache 2.2.12
      different security issues which may affect particular configurations
      and third-party modules.
 
+  *) mod_alias: Ensure Redirect emits HTTP-compliant URLs.
+     PR 44020
+
   *) mod_proxy_http: fix case sensitivity checking transfer encoding
      PR 47383 [Ryuzo Yamamoto <ryuzo.yamamoto gmail.com>]
 
