@@ -32,6 +32,7 @@ XINCDIRS	+= \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
 			$(AP_WORK)/modules/aaa/ \
+			$(AP_WORK)/modules/core \
 			$(AP_WORK)/modules/filters/ \
 			$(AP_WORK)/modules/generators/ \
 			$(AP_WORK)/modules/http/ \
@@ -384,7 +385,7 @@ prebuild :: FORCE
 
 vpath %.c server:modules/arch/netware:modules/http:modules/aaa:modules/mappers
 vpath %.c modules/generators:modules/metadata:modules/filters:modules/loggers
-vpath %.c os/netware:server/mpm/netware:$(PCRESDK)
+vpath %.c modules/core:os/netware:server/mpm/netware:$(PCRESDK)
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
