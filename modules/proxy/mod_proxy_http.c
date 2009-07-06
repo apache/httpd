@@ -944,7 +944,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * encoding has been done by the extensions' handler, and
      * do not modify add_te_chunked's logic
      */
-    if (old_te_val && strcmp(old_te_val, "chunked") != 0) {
+    if (old_te_val && strcasecmp(old_te_val, "chunked") != 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: %s Transfer-Encoding is not supported",
                      old_te_val);
