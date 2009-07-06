@@ -124,7 +124,6 @@
     what users are permitted to use this functionality:</p>
 
     <div class="example"><p><code>
-      UserDir enabled<br />
       UserDir disabled root jro fish
     </code></p></div>
 
