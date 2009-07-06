@@ -329,7 +329,7 @@ nlms :: libs $(TARGET_nlm)
 # Updated this target to create necessary directories and copy files to the
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
-install :: nlms FORCE
+install :: nlms instscripts FORCE
 	-copy $(OBJDIR)\Apache2.nlm     $(INSTALL)\$(BASEDIR)\*.*
 	-copy ABOUT_APACHE              $(INSTALL)\$(BASEDIR)\*.*
 	-copy README                    $(INSTALL)\$(BASEDIR)\*.*
@@ -393,5 +393,7 @@ vpath %.c modules/core:os/netware:server/mpm/netware:$(PCRESDK)
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
+include $(AP_WORK)\build\NWGNUscripts.inc
 
 
