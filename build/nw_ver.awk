@@ -14,8 +14,7 @@
 # limitations under the License.
 
 BEGIN {
-
-  # fetch Apache version numbers from input file and writes them to STDOUT
+  # fetch Apache version numbers from input file and write them to STDOUT
 
   while ((getline < ARGV[1]) > 0) {
     if (match ($0, /^#define AP_SERVER_COPYRIGHT \\/)) {
@@ -41,6 +40,7 @@ BEGIN {
 
   print "VERSION = " ver_nlm "";
   print "VERSION_STR = " ver_str "";
+  print "VERSION_MAJMIN = " ver_major ver_minor "";
   print "COPYRIGHT_STR = " copyright_str "";
 
 }
