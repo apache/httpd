@@ -96,11 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    configs thought by their users to be working.
    +1: niq, rpluem, jim
 
- * mod_proxy_http: fix case sensitivity checking transfer encoding
-   PR 47383
-   Patch: http://svn.apache.org/viewvc?view=rev&revision=785661
-   +1: niq, rpluem, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
