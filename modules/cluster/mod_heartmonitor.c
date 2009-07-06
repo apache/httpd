@@ -25,6 +25,7 @@
 #include "ap_mpm.h"
 #include "scoreboard.h"
 #include "mod_watchdog.h"
+#include "ap_slotmem.h"
 
 
 #ifndef HM_UPDATE_SEC
@@ -35,6 +36,12 @@
 
 #define HM_WATHCHDOG_NAME ("_heartmonitor_")
 
+#define MAXIPSIZE  64
+
+const ap_slotmem_provider_t *storage = NULL;
+static ap_slotmem_instance_t *slotmem = NULL;
+static int maxworkers = 0;
+
 module AP_MODULE_DECLARE_DATA heartmonitor_module;
 
 typedef struct hm_server_t
@@ -44,6 +51,15 @@ typedef struct hm_server_t
     int ready;
     apr_time_t seen;
 } hm_server_t;
+
+typedef struct hm_slot_server_t
+{
+    char ip[MAXIPSIZE];
+    int busy;
+    int ready;
+    apr_time_t seen;
+    int id;
+} hm_slot_server_t;
 
 typedef struct hm_ctx_t
 {
@@ -59,6 +75,11 @@ typedef struct hm_ctx_t
     apr_hash_t *servers;
     server_rec *s;
 } hm_ctx_t;
+
+typedef struct hm_slot_server_ctx_t {
+  hm_server_t *s;
+  int updated;
+} hm_slot_server_ctx_t;
 
 static apr_status_t hm_listen(hm_ctx_t *ctx)
 {
@@ -151,7 +172,50 @@ static void qs_to_table(const char *input, apr_table_t *parms,
 
 #define SEEN_TIMEOUT (30)
 
-static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
+/* Store in the slotmem */
+static apr_status_t hm_update(void* mem, void *data, apr_pool_t *p)
+{
+    hm_slot_server_t *old = (hm_slot_server_t *) mem;
+    hm_slot_server_ctx_t *s = (hm_slot_server_ctx_t *) data;
+    hm_server_t *new = s->s;
+    if (strncmp(old->ip, new->ip, MAXIPSIZE)==0) {
+        s->updated = 1;
+        old->busy = new->busy;
+        old->ready = new->ready;
+        old->seen = new->seen;
+    }
+    return APR_SUCCESS;
+}
+static  apr_status_t  hm_slotmem_update_stat(hm_server_t *s, request_rec *r)
+{
+    /* We call do_all (to try to update) otherwise grab + put */
+    hm_slot_server_ctx_t ctx;
+
+    /* TODO: REMOVE ME BEFORE PRODUCTION (????) */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "Heartmonitor: %s busy=%d ready=%d", s->ip,
+                 s->busy, s->ready);
+
+    ctx.s = s;
+    ctx.updated = 0;
+    storage->doall(slotmem, hm_update, &ctx, r->pool);
+    if (!ctx.updated) {
+        int i;
+        hm_slot_server_t hmserver;
+        memcpy(hmserver.ip, s->ip, MAXIPSIZE);
+        hmserver.busy = s->busy;
+        hmserver.ready = s->ready;
+        hmserver.seen = s->seen;
+        /* XXX locking for grab() / put() */
+        storage->grab(slotmem, &i);
+        hmserver.id = i;
+        storage->put(slotmem, i, (char *)&hmserver, sizeof(hmserver));
+    }
+    return APR_SUCCESS;
+}
+
+/* Store in a file */
+static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
 {
     apr_status_t rv;
     apr_file_t *fp;
@@ -333,7 +397,8 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
             }
         break;
         case AP_WATCHDOG_STATE_RUNNING:
-            hm_update_stats(ctx, pool);
+            /* XXX slotmem, if used by the handler is that looks a bad ideas (we are not the one receiving the information  */
+            hm_file_update_stats(ctx, pool);
             cur = now = apr_time_sec(apr_time_now());
             /* TODO: Insted HN_UPDATE_SEC use
              * the ctx->interval
@@ -386,8 +451,31 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
                           apr_pool_t *ptemp, server_rec *s)
 {
     apr_status_t rv;
+    const char *userdata_key = "mod_heartmonitor_init";
+    void *data;
     hm_ctx_t *ctx = ap_get_module_config(s->module_config,
                                          &heartmonitor_module);
+
+
+    /* Create the slotmem */
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (!data) {
+        /* first call do nothing */
+        apr_pool_userdata_set((const void *)1, userdata_key, apr_pool_cleanup_null, s->process->pool);
+    } else {
+        if (maxworkers) {
+            storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared", "0");
+            if (!storage) {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "ap_lookup_provider %s failed", AP_SLOTMEM_PROVIDER_GROUP);
+                return !OK;
+            }
+            storage->create(&slotmem, "mod_heartmonitor", sizeof(hm_slot_server_t), maxworkers, AP_SLOTMEM_TYPE_PREGRAB, p);
+            if (!slotmem) {
+                ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_EMERG, 0, s, "slotmem_create for status failed");
+                return !OK;
+            }
+        }
+    }
 
     if (!ctx->active) {
         return OK;
@@ -414,7 +502,6 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "Heartmonitor: wd callback %s", HM_WATHCHDOG_NAME);
-
     return OK;
 }
 
@@ -424,6 +511,9 @@ static int hm_handler(request_rec *r)
     apr_size_t len=MAX_MSG_LEN;
     char *buf;
     apr_status_t status;
+    apr_table_t *tbl;
+    hm_server_t hmserver;
+    char *ip;
     hm_ctx_t *ctx = ap_get_module_config(r->server->module_config,
                                          &heartmonitor_module);
 
@@ -440,7 +530,17 @@ static int hm_handler(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     apr_brigade_flatten(input_brigade, buf, &len);
-    hm_processmsg(ctx, r->pool, r->connection->remote_addr, buf, len);
+
+    /* we can't use hm_processmsg because it uses hm_get_server() */
+    buf[len] = '\0';
+    tbl = apr_table_make(r->pool, 10);
+    qs_to_table(buf, tbl, r->pool);
+    apr_sockaddr_ip_get(&ip, r->connection->remote_addr);
+    hmserver.ip = ip;
+    hmserver.busy = atoi(apr_table_get(tbl, "busy"));
+    hmserver.ready = atoi(apr_table_get(tbl, "ready"));
+    hmserver.seen = apr_time_now();
+    hm_slotmem_update_stat(&hmserver, r);
 
     ap_set_content_type(r, "text/plain");
     ap_set_content_length(r, 2);
@@ -541,11 +641,33 @@ static const char *cmd_hm_listen(cmd_parms *cmd,
     return NULL;
 }
 
+static const char *cmd_hm_maxworkers(cmd_parms *cmd,
+                                  void *dconf, const char *data)
+{
+    apr_pool_t *p = cmd->pool;
+    hm_ctx_t *ctx =
+        (hm_ctx_t *) ap_get_module_config(cmd->server->module_config,
+                                          &heartmonitor_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    maxworkers = atoi(data);
+    if (maxworkers < 10)
+        return "HeartbeatMaxServers: Should be bigger than 10"; 
+
+    return NULL;
+}
+
 static const command_rec hm_cmds[] = {
     AP_INIT_TAKE1("HeartbeatListen", cmd_hm_listen, NULL, RSRC_CONF,
                   "Address to listen for heartbeat requests"),
     AP_INIT_TAKE1("HeartbeatStorage", cmd_hm_storage, NULL, RSRC_CONF,
                   "Path to store heartbeat data."),
+    AP_INIT_TAKE1("HeartbeatMaxServers", cmd_hm_maxworkers, NULL, RSRC_CONF,
+                  "Max number of servers when using slotmem (instead file) to store heartbeat data."),
     {NULL}
 };
 

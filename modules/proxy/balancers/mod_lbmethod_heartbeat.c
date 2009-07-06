@@ -19,6 +19,7 @@
 #include "ap_mpm.h"
 #include "apr_version.h"
 #include "apr_hooks.h"
+#include "ap_slotmem.h"
 
 #ifndef LBM_HEARTBEAT_MAX_LASTSEEN
 /* If we haven't seen a heartbeat in the last N seconds, don't count this IP
@@ -29,6 +30,13 @@
 
 module AP_MODULE_DECLARE_DATA lbmethod_heartbeat_module;
 
+const ap_slotmem_provider_t *storage = NULL;
+static ap_slotmem_instance_t *hm_serversmem = NULL;
+
+/*
+ * configuration structure
+ * path: path of the file where the heartbeat information is stored.
+ */
 typedef struct lb_hb_ctx_t
 {
     const char *path;
@@ -39,8 +47,19 @@ typedef struct hb_server_t {
     int busy;
     int ready;
     int seen;
+    int id;
     proxy_worker *worker;
 } hb_server_t;
+
+#define MAXIPSIZE  64
+typedef struct hm_slot_server_t
+{
+    char ip[MAXIPSIZE];
+    int busy;
+    int ready;
+    apr_time_t seen;
+    int id;
+} hm_slot_server_t;
 
 static void
 argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
@@ -70,7 +89,7 @@ argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
     }
 }
 
-static apr_status_t read_heartbeats(const char *path, apr_hash_t *servers,
+static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
                                     apr_pool_t *pool)
 {
     apr_finfo_t fi;
@@ -187,6 +206,35 @@ static apr_status_t read_heartbeats(const char *path, apr_hash_t *servers,
     return APR_SUCCESS;
 }
 
+static apr_status_t hm_read(void* mem, void *data, apr_pool_t *pool)
+{
+    hm_slot_server_t *slotserver = (hm_slot_server_t *) mem;
+    apr_hash_t *servers = (apr_hash_t *) data;
+    hb_server_t *server = apr_hash_get(servers, slotserver->ip, APR_HASH_KEY_STRING);
+    if (server == NULL) {
+        server = apr_pcalloc(pool, sizeof(hb_server_t));
+        server->ip = apr_pstrdup(pool, slotserver->ip);
+        server->seen = -1;
+
+        apr_hash_set(servers, server->ip, APR_HASH_KEY_STRING, server);
+
+    }
+    server->busy = slotserver->busy;
+    server->ready = slotserver->ready;
+    server->seen = slotserver->seen;
+    server->id = slotserver->id;
+    if (server->busy == 0 && server->ready != 0) {
+        server->ready = server->ready / 4;
+    }
+    return APR_SUCCESS;
+}
+static apr_status_t readslot_heartbeats(apr_hash_t *servers,
+                                    apr_pool_t *pool)
+{
+    storage->doall(hm_serversmem, hm_read, servers, pool);
+    return APR_SUCCESS;
+}
+
 /*
  * Finding a random number in a range. 
  *      n' = a + n(b-a+1)/(M+1)
@@ -238,7 +286,10 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
 
     servers = apr_hash_make(tpool);
 
-    rv = read_heartbeats(ctx->path, servers, tpool);
+    if (hm_serversmem)
+        rv = readslot_heartbeats(servers, tpool);
+    else
+        rv = readfile_heartbeats(ctx->path, servers, tpool);
 
     if (rv) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -316,9 +367,43 @@ static const proxy_balancer_method heartbeat =
     &age
 };
 
+static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
+                          apr_pool_t *ptemp, server_rec *s)
+{
+    const char *userdata_key = "mod_lbmethod_heartbeat_init";
+    void *data;
+    apr_size_t size;
+    int num;
+    lb_hb_ctx_t *ctx =
+    (lb_hb_ctx_t *) ap_get_module_config(s->module_config,
+                                         &lbmethod_heartbeat_module);
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (!data) {
+        /* first call do nothing */
+        apr_pool_userdata_set((const void *)1, userdata_key, apr_pool_cleanup_null, s->process->pool);
+        return OK;
+    }
+    storage = ap_lookup_provider(AP_SLOTMEM_PROVIDER_GROUP, "shared", "0");
+    if (!storage) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "ap_lookup_provider %s failed", AP_SLOTMEM_PROVIDER_GROUP);
+        return OK;
+    }
+
+    /* Try to use a slotmem created by mod_heartmonitor */
+    storage->attach(&hm_serversmem, "mod_heartmonitor", &size, &num, p);
+    if (!hm_serversmem) {
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "No slotmem from mod_heartmonitor");
+    } else
+        ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "Using slotmem from mod_heartmonitor");
+
+    return OK;
+}
+
 static void register_hooks(apr_pool_t *p)
 {
+    static const char * const aszPred[]={ "mod_heartmonitor.c", NULL };
     ap_register_provider(p, PROXY_LBMETHOD, "heartbeat", "0", &heartbeat);
+    ap_hook_post_config(lb_hb_init, aszPred, NULL, APR_HOOK_MIDDLE);
 }
 
 static void *lb_hb_create_config(apr_pool_t *p, server_rec *s)
