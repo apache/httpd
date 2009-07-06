@@ -87,15 +87,15 @@ $(AP_WORK)/build/NWGNUversion.inc : $(AP_WORK)/build/nw_ver.awk $(AP_WORK)/inclu
 	@echo Generating $(subst /,\,$@)
 	$(AWK) -f $^ > $@
 
--include $(AP_WORK)\build\NWGNUversion.inc
+-include $(AP_WORK)/build/NWGNUversion.inc
 
 ifneq "$(strip $(VERSION_STR))" ""
-VERSION_INC = $(AP_WORK)\build\NWGNUversion.inc
+VERSION_INC = $(AP_WORK)/build/NWGNUversion.inc
 else
 VERSION		= 2,3,0
 VERSION_STR	= 2.3.0
-endif
 VERSION_MAJMIN	= 23
+endif
 endif
 
 
