@@ -100,7 +100,7 @@ clean :: $(SUBDIRS)
 	-$(DELTREE) $(OBJDIR) 2> NUL
 	$(CHK) *.err $(DEL) *.err
 	$(CHK) *.map $(DEL) *.map
-	$(CHK) *.d $(DEL) *.d
+	$(CHK) *.dep $(DEL) *.dep
 	$(CHK) *.tmp $(DEL) *.tmp
 	$(CHK) xc.bat $(DEL) xc.bat
 	-$(DELTREE) $(OBJDIR) 2> NUL
