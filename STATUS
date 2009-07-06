@@ -107,7 +107,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    NOTE: I'm recommending different versions because the trunk
    patch is too strict for a stable line and may "break" broken
    configs thought by their users to be working.
-   +1: niq, rpluem
+   +1: niq, rpluem, jim
 
  * mod_cache: Add CacheIgnoreURLSessionIdentifiers directive to ignore
               defined session identifiers encoded in the URL when caching.
@@ -123,7 +123,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_proxy_http: fix case sensitivity checking transfer encoding
    PR 47383
    Patch: http://svn.apache.org/viewvc?view=rev&revision=785661
-   +1: niq, rpluem
+   +1: niq, rpluem, jim
 
  * mod_dir: add DefaultHandler directive
    PR 47184
