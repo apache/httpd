@@ -542,6 +542,12 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
     apr_read_type_e eblock = APR_NONBLOCK_READ;
     apr_pool_t *input_pool = b->p;
 
+    /* Fail quickly if the connection has already been aborted. */
+    if (c->aborted) {
+        apr_brigade_cleanup(b);
+        return APR_ECONNABORTED;
+    }
+
     if (ctx == NULL) {
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
         net->out_ctx = ctx;
@@ -909,12 +915,9 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
             /* No need to check for SUCCESS, we did that above. */
             if (!APR_STATUS_IS_EAGAIN(rv)) {
                 c->aborted = 1;
+                return APR_ECONNABORTED;
             }
 
-            /* The client has aborted, but the request was successful. We
-             * will report success, and leave it to the access and error
-             * logs to note that the connection was aborted.
-             */
             return APR_SUCCESS;
         }
 
