@@ -140,7 +140,6 @@ tutorial</a></li>
     deny this to a few, use the following:</p>
 
     <div class="example"><p><code>
-      UserDir enabled<br />
       UserDir disabled user4 user5 user6
     </code></p></div>
 
