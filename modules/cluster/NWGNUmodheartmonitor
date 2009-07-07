@@ -215,6 +215,8 @@ FILES_nlm_Ximports = \
 	@$(APR)/aprlib.imp \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
+	(AP$(VERSION_MAJMIN)) ap_watchdog_get_instance \
+	(AP$(VERSION_MAJMIN)) ap_watchdog_register_callback \
 	$(EOLIST)
 
 #

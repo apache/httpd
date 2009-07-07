@@ -200,7 +200,7 @@ static  apr_status_t  hm_slotmem_update_stat(hm_server_t *s, request_rec *r)
     ctx.updated = 0;
     storage->doall(slotmem, hm_update, &ctx, r->pool);
     if (!ctx.updated) {
-        int i;
+        unsigned int i;
         hm_slot_server_t hmserver;
         memcpy(hmserver.ip, s->ip, MAXIPSIZE);
         hmserver.busy = s->busy;
@@ -209,7 +209,7 @@ static  apr_status_t  hm_slotmem_update_stat(hm_server_t *s, request_rec *r)
         /* XXX locking for grab() / put() */
         storage->grab(slotmem, &i);
         hmserver.id = i;
-        storage->put(slotmem, i, (char *)&hmserver, sizeof(hmserver));
+        storage->put(slotmem, i, (unsigned char *)&hmserver, sizeof(hmserver));
     }
     return APR_SUCCESS;
 }
