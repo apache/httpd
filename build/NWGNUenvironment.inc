@@ -135,7 +135,7 @@ endif
 
 NOVI	= $(NOVELLLIBC)\imports
 
-INCDIRS 	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
+INCDIRS	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
 ifneq "$(LDAPSDK)" ""
 INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
 endif
