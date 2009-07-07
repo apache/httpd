@@ -224,6 +224,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/mod_netware.o \
 	$(OBJDIR)/mod_setenvif.o \
 	$(OBJDIR)/mod_so.o \
+	$(OBJDIR)/mod_watchdog.o \
 	$(OBJDIR)/modules.o \
 	$(OBJDIR)/mpm_common.o \
 	$(OBJDIR)/mpm_netware.o \
@@ -308,6 +309,10 @@ endif
 #
 FILES_nlm_exports = \
 	@$(NWOS)/httpd.imp \
+	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_exit \
+	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_init \
+	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_need \
+	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_step \
 	$(EOLIST)
 
 #
