@@ -42,6 +42,7 @@ cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NW
 	@echo -I..\include >> $@
 	@echo -I..\modules\http >> $@
 	@echo -I..\modules\aaa >> $@
+	@echo -I..\modules\core >> $@
 	@echo -I..\os\netware >> $@
 	@echo -I..\server\mpm\netware >> $@
 	@echo -I$(APR)\include >> $@

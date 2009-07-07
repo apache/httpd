@@ -13,6 +13,7 @@
 #define AP_CORE_DECLARE_NONSTD  AP_CORE_DECLARE_NONSTD
 #define AP_DECLARE_HOOK         AP_DECLARE_HOOK
 #define AP_DECLARE_DATA         AP_DECLARE_DATA
+#define AP_WD_DECLARE           AP_WD_DECLARE
 #undef  APACHE_OS_H
 
 #include "httpd.h"
@@ -50,3 +51,5 @@
 
 #include "mod_core.h"
 #include "mod_auth.h"
+#include "mod_watchdog.h"
+
