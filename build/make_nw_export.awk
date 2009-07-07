@@ -38,8 +38,8 @@ function add_symbol (sym_name) {
 	}
 }
 
-/^[ \t]*AP([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
-    sub("[ \t]*AP([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
+/^[ \t]*AP([RU]|_CORE|_WD)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
+    sub("[ \t]*AP([RU]|_CORE|_WD)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
     sub("[(].*", "")
     sub("([^ ]* (^([ \t]*[(])))+", "")
 
