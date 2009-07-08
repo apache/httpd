@@ -309,12 +309,6 @@ endif
 #
 FILES_nlm_exports = \
 	@$(NWOS)/httpd.imp \
-	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_exit \
-	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_init \
-	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_need \
-	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_step \
-	(AP$(VERSION_MAJMIN)) ap_watchdog_get_instance \
-	(AP$(VERSION_MAJMIN)) ap_watchdog_register_callback \
 	$(EOLIST)
 
 #
