@@ -88,6 +88,7 @@ typedef struct ap_watchdog_t ap_watchdog_t;
 /* Create a set of AP_WD_DECLARE(type), AP_WD_DECLARE_NONSTD(type) and 
  * AP_WD_DECLARE_DATA with appropriate export and import tags for the platform
  */
+#if !defined(AP_WD_DECLARE)
 #if !defined(WIN32)
 #define AP_WD_DECLARE(type)            type
 #define AP_WD_DECLARE_NONSTD(type)     type
@@ -104,6 +105,7 @@ typedef struct ap_watchdog_t ap_watchdog_t;
 #define AP_WD_DECLARE(type)            __declspec(dllimport) type __stdcall
 #define AP_WD_DECLARE_NONSTD(type)     __declspec(dllimport) type
 #define AP_WD_DECLARE_DATA             __declspec(dllimport)
+#endif
 #endif
 
 /**

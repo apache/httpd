@@ -25,24 +25,10 @@ BEGIN {
 #/ap_some_name/{next}
 /ap_mpm_pod_/{next}
 
-function add_symbol (sym_name) {
-	if (count) {
-		found++
-	}
-    gsub (/ /, "", sym_name)
-	line = line sym_name ",\n"
-
-	if (count == 0) {
-		printf(" %s", line)
-		line = ""
-	}
-}
-
 /^[ \t]*AP([RU]|_CORE|_WD)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
     sub("[ \t]*AP([RU]|_CORE|_WD)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
     sub("[(].*", "")
     sub("([^ ]* (^([ \t]*[(])))+", "")
-
     add_symbol($0)
     next
 }
@@ -52,7 +38,17 @@ function add_symbol (sym_name) {
     symbol = args[2]
     sub("^[ \t]+", "", symbol)
     sub("[ \t]+$", "", symbol)
+    add_symbol("ap_hook_" symbol)
+    add_symbol("ap_hook_get_" symbol)
+    add_symbol("ap_run_" symbol)
+    next
+}
 
+/^[ \t]*AP[RU]?_DECLARE_EXTERNAL_HOOK[^(]*[(][^)]*/ {
+    split($0, args, ",")
+    symbol = args[4]
+    sub("^[ \t]+", "", symbol)
+    sub("[ \t]+$", "", symbol)
     add_symbol("ap_hook_" symbol)
     add_symbol("ap_hook_get_" symbol)
     add_symbol("ap_run_" symbol)
@@ -81,12 +77,19 @@ function add_symbol (sym_name) {
 }
 
 /^[ \t]*(extern[ \t]+)?AP[RU]?_DECLARE_DATA .*;$/ {
-       varname = $NF;
-       gsub( /[*;]/, "", varname);
-       gsub( /\[.*\]/, "", varname);
-       add_symbol(varname);
+    gsub(/[*;]/, "", $NF)
+    gsub(/\[.*\]/, "", $NF)
+    add_symbol($NF)
 }
 
 #END {
-#	printf(" %s", line)
+#    printf("\n\n#found: %d symbols.\n", found)
 #}
+
+function add_symbol(sym_name) {
+    found++
+    sub (" ", "", sym_name)
+    printf(" %s,\n", sym_name)
+}
+
+

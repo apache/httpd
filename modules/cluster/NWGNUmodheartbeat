@@ -215,10 +215,6 @@ FILES_nlm_Ximports = \
 	@$(APR)/aprlib.imp \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
-	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_exit \
-	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_init \
-	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_need \
-	(AP$(VERSION_MAJMIN)) ap_hook_watchdog_step \
 	$(EOLIST)
 
 #
