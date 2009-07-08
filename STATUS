@@ -95,9 +95,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                drop_privileges hook).
    2.2.x patch:
       http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
-   wrowe asks; what is proposed and why two patches here?
-   niq replies: removing the second one, it's FYI only and not part
-                of the backport proposal.  And it needs updating!
    +1: niq
 
  * mod_cache: Add CacheIgnoreURLSessionIdentifiers directive to ignore
@@ -117,6 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x patch: http://people.apache.org/~niq/patches/47184.patch
                 (identical but for offsets, but patch failed on trunk version)
    +1: niq
+   -1: wrowe; why 'DefaultHandler' is a bad choice for directive name posted to list
 
  * mod_alias: Enforce sanity in args to Redirect
    PR 44729
@@ -132,6 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR 47177
    patch: http://svn.apache.org/viewvc?view=rev&revision=778531
    +1: niq, rpluem
+   +0; [Would be +1 once ProxyRemote behavior is verified/fixed]
 
  * mod_rewrite: Remove locking for writing to the rewritelog.
    PR 46942
@@ -144,13 +143,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x patch: http://people.apache.org/~fuankg/diffs/mod_info.c.diff
    patch updated: removed font clutter as suggested by niq,
                   added compile-time version output as suggested by wrowe.
-   +1: fuankg                
+   +1: fuankg, wrowe
 
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
    Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
    2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
    +1: niq
+   -0: wrowe; Please refer to man BUGS of access for linux 2.4 vs 2.6 kernels,
+              potentially a suspect test for root.
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
