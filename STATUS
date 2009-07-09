@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewvc?view=rev&revision=780692
           http://svn.apache.org/viewvc?view=rev&revision=780697
           http://svn.apache.org/viewvc?view=rev&revision=780699
-   +1: niq, rpluem
+   +1: niq, rpluem, takashi
 
  * mod_proxy_http: fix Host: header for literal IPv6 addresses.
    PR 47177
@@ -144,6 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    patch updated: removed font clutter as suggested by niq,
                   added compile-time version output as suggested by wrowe.
    +1: fuankg, wrowe
+   -1: takashi; This doesn't compile because it doesn't include apu_version.h
 
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
