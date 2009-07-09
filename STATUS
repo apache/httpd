@@ -139,12 +139,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: niq, rpluem
 
  * mod_info: Add apr / apr-util version output
-   trunk patch: http://cvs.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_info.c?r1=791646&r2=760403
-   2.2.x patch: http://people.apache.org/~fuankg/diffs/mod_info.c.diff
+   trunk patch: http://cvs.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_info.c?r1=792570&r2=760403
+   2.2.x patch: http://people.apache.org/~takashi/patches/2.2-mod_info_apr_version.diff
    patch updated: removed font clutter as suggested by niq,
                   added compile-time version output as suggested by wrowe.
-   +1: fuankg, wrowe
-   -1: takashi; This doesn't compile because it doesn't include apu_version.h
+                  Add the missing include of apu_version.h.
+   +1: takashi
 
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
