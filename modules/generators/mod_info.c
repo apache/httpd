@@ -44,8 +44,6 @@
 #include "apr.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
-#include "apr_version.h"
-#include "apu_version.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
@@ -353,20 +351,6 @@ static int show_server_settings(request_rec * r)
                "<dt><strong>Server Built:</strong> "
                "<font size=\"+1\"><tt>%s</tt></font></dt>\n",
                ap_get_server_built());
-    ap_rprintf(r,
-               "<dt><strong>Server loaded APR Version:</strong> "
-               "<tt>%s</tt></dt>\n", apr_version_string());
-    ap_rprintf(r,
-               "<dt><strong>Compiled with APR Version:</strong> "
-               "<tt>%s</tt></dt>\n", APR_VERSION_STRING);
-#if APR_MAJOR_VERSION < 2
-    ap_rprintf(r,
-               "<dt><strong>Server loaded APU Version:</strong> "
-               "<tt>%s</tt></dt>\n", apu_version_string());
-    ap_rprintf(r,
-               "<dt><strong>Compiled with APU Version:</strong> "
-               "<tt>%s</tt></dt>\n", APU_VERSION_STRING);
-#endif
     ap_rprintf(r,
                "<dt><strong>Module Magic Number:</strong> "
                "<tt>%d:%d</tt></dt>\n", MODULE_MAGIC_NUMBER_MAJOR,
