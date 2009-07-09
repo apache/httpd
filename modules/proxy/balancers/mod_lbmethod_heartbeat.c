@@ -374,9 +374,7 @@ static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
     void *data;
     apr_size_t size;
     int num;
-    lb_hb_ctx_t *ctx =
-    (lb_hb_ctx_t *) ap_get_module_config(s->module_config,
-                                         &lbmethod_heartbeat_module);
+
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
         /* first call do nothing */
