@@ -45,6 +45,9 @@
 #include "apr_strings.h"
 #include "apr_lib.h"
 #include "apr_version.h"
+#if APR_MAJOR_VERSION < 2
+#include "apu_version.h"
+#endif
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
