@@ -85,7 +85,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+ * mod_alias: Enforce sanity in args to Redirect
+   PR 44729
+   patch: http://svn.apache.org/viewvc?view=rev&revision=778942
+          http://svn.apache.org/viewvc?view=rev&revision=780648
+          http://svn.apache.org/viewvc?view=rev&revision=780655
+          http://svn.apache.org/viewvc?view=rev&revision=780692
+          http://svn.apache.org/viewvc?view=rev&revision=780697
+          http://svn.apache.org/viewvc?view=rev&revision=780699
+   +1: niq, rpluem, takashi
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -144,7 +152,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    patch updated: removed font clutter as suggested by niq,
                   added compile-time version output as suggested by wrowe.
                   Add the missing include of apu_version.h.
-   +1: takashi
+   +1: takashi, rpluem
 
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
