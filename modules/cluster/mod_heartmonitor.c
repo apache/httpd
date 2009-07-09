@@ -514,8 +514,6 @@ static int hm_handler(request_rec *r)
     apr_table_t *tbl;
     hm_server_t hmserver;
     char *ip;
-    hm_ctx_t *ctx = ap_get_module_config(r->server->module_config,
-                                         &heartmonitor_module);
 
     if (strcmp(r->handler, "hearthbeat")) {
         return DECLINED;
@@ -546,7 +544,7 @@ static int hm_handler(request_rec *r)
     ap_set_content_length(r, 2);
     ap_rprintf(r, "OK");
     ap_rflush(r);
-    
+
     return OK;
 }
 
@@ -644,10 +642,6 @@ static const char *cmd_hm_listen(cmd_parms *cmd,
 static const char *cmd_hm_maxworkers(cmd_parms *cmd,
                                   void *dconf, const char *data)
 {
-    apr_pool_t *p = cmd->pool;
-    hm_ctx_t *ctx =
-        (hm_ctx_t *) ap_get_module_config(cmd->server->module_config,
-                                          &heartmonitor_module);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
     if (err != NULL) {
