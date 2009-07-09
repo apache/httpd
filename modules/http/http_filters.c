@@ -524,6 +524,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (ctx->state != BODY_NONE) {
         ctx->remaining -= totalread;
+        if (ctx->remaining > 0) {
+            e = APR_BRIGADE_LAST(b);
+            if (APR_BUCKET_IS_EOS(e))
+                return APR_EOF;
+        }
     }
 
     /* If we have no more bytes remaining on a C-L request,

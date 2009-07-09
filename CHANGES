@@ -11,10 +11,13 @@ Changes with Apache 2.3.3
      mod_proxy_ajp: Avoid delivering content from a previous request which
      failed to send a request body. PR 46949 [Ruediger Pluem]
 
+  *) core: Return APR_EOF if request body is shorter than the length announced
+     by the client. PR 33098 [ Stefan Fritsch <sf sfritsch.de>]
+
   *) mod_suexec: correctly set suexec_enabled when httpd is run by a
      non-root user and may have insufficient permissions.
      PR 42175 [Jim Radford <radford blackbean.org>]
- 
+
   *) mod_ssl: Fix SSL_*_DN_UID variables to use the 'userID' attribute
      type.  PR 45107.  [Michael Ströder <michael stroeder.com>,
      Peter Sylvester <peter.sylvester edelweb.fr>]
