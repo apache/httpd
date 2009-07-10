@@ -27,6 +27,9 @@ Changes with Apache 2.2.12
      different security issues which may affect particular configurations
      and third-party modules.
 
+  *) mod_rewrite: Remove locking for writing to the rewritelog.
+     PR 46942
+
   *) mod_alias: Ensure Redirect emits HTTP-compliant URLs.
      PR 44020
 
