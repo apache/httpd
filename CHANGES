@@ -27,6 +27,9 @@ Changes with Apache 2.2.12
      different security issues which may affect particular configurations
      and third-party modules.
 
+  *) mod_proxy_http: fix Host: header for literal IPv6 addresses.
+     PR 47177 [Carlos Garcia Braschi <cgbraschi gmail.com>]
+
   *) mod_rewrite: Remove locking for writing to the rewritelog.
      PR 46942
 
