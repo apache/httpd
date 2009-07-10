@@ -176,21 +176,41 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     alias_server_conf *serverconf = ap_get_module_config(s->module_config,
                                                          &alias_module);
     int status = (int) (long) cmd->info;
+    int grokarg1 = 1;
     ap_regex_t *r = NULL;
     const char *f = arg2;
     const char *url = arg3;
 
-    if (!strcasecmp(arg1, "gone"))
-        status = HTTP_GONE;
-    else if (!strcasecmp(arg1, "permanent"))
+    /*
+     * Logic flow:
+     *   Go ahead and try to grok the 1st arg, in case it is a
+     *   Redirect status. Now if we have 3 args, we expect that
+     *   we were able to understand that 1st argument (it's something
+     *   we expected, so if not, then we bail
+     */
+    if (!strcasecmp(arg1, "permanent"))
         status = HTTP_MOVED_PERMANENTLY;
     else if (!strcasecmp(arg1, "temp"))
         status = HTTP_MOVED_TEMPORARILY;
     else if (!strcasecmp(arg1, "seeother"))
         status = HTTP_SEE_OTHER;
+    else if (!strcasecmp(arg1, "gone"))
+        status = HTTP_GONE;
     else if (apr_isdigit(*arg1))
         status = atoi(arg1);
-    else {
+    else
+        grokarg1 = 0;
+
+    if (arg3 && !grokarg1)
+        return "Redirect: invalid first argument (of three)";
+
+    /*
+     * if we don't have the 3rd arg and we didn't understand the 1st
+     * one, then assume URL-path URL. This also handles case, eg, GONE
+     * we even though we don't have a 3rd arg, we did understand the 1st
+     * one, so we don't want to re-arrange
+     */
+    if (!arg3 && !grokarg1) {
         f = arg1;
         url = arg2;
     }
