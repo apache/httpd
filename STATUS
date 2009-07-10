@@ -95,12 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewvc?view=rev&revision=780699
    +1: niq, rpluem, takashi
 
- * mod_proxy_http: fix Host: header for literal IPv6 addresses.
-   PR 47177
-   patch: http://svn.apache.org/viewvc?view=rev&revision=778531
-   +1: niq, rpluem, jim
-   +0; [Would be +1 once ProxyRemote behavior is verified/fixed]
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

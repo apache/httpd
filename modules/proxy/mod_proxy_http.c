@@ -731,11 +731,20 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     if (conf->preserve_host == 0) {
-        if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
-            buf = apr_pstrcat(p, "Host: ", uri->hostname, ":", uri->port_str,
-                              CRLF, NULL);
+        if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
+            if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
+                buf = apr_pstrcat(p, "Host: [", uri->hostname, "]:", 
+                                  uri->port_str, CRLF, NULL);
+            } else {
+                buf = apr_pstrcat(p, "Host: [", uri->hostname, "]", CRLF, NULL);
+            }
         } else {
-            buf = apr_pstrcat(p, "Host: ", uri->hostname, CRLF, NULL);
+            if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
+                buf = apr_pstrcat(p, "Host: ", uri->hostname, ":", 
+                                  uri->port_str, CRLF, NULL);
+            } else {
+                buf = apr_pstrcat(p, "Host: ", uri->hostname, CRLF, NULL);
+            }
         }
     }
     else {
