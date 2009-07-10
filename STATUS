@@ -124,16 +124,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: niq
    -1: wrowe; why 'DefaultHandler' is a bad choice for directive name posted to list
 
- * mod_alias: Enforce sanity in args to Redirect
-   PR 44729
-   patch: http://svn.apache.org/viewvc?view=rev&revision=778942
-          http://svn.apache.org/viewvc?view=rev&revision=780648
-          http://svn.apache.org/viewvc?view=rev&revision=780655
-          http://svn.apache.org/viewvc?view=rev&revision=780692
-          http://svn.apache.org/viewvc?view=rev&revision=780697
-          http://svn.apache.org/viewvc?view=rev&revision=780699
-   +1: niq, rpluem, takashi
-
  * mod_proxy_http: fix Host: header for literal IPv6 addresses.
    PR 47177
    patch: http://svn.apache.org/viewvc?view=rev&revision=778531
