@@ -107,14 +107,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    2.2.x patch: http://people.apache.org/~niq/patches/46942.patch
    +1: niq, rpluem, jim
 
- * mod_info: Add apr / apr-util version output
-   trunk patch: http://cvs.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_info.c?r1=792570&r2=760403
-   2.2.x patch: http://people.apache.org/~takashi/patches/2.2-mod_info_apr_version.diff
-   patch updated: removed font clutter as suggested by niq,
-                  added compile-time version output as suggested by wrowe.
-                  Add the missing include of apu_version.h.
-   +1: takashi, rpluem, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
