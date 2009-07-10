@@ -114,7 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=778439&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, jim
 
  * mod_dir: add DefaultHandler directive
    PR 47184
@@ -127,14 +127,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_proxy_http: fix Host: header for literal IPv6 addresses.
    PR 47177
    patch: http://svn.apache.org/viewvc?view=rev&revision=778531
-   +1: niq, rpluem
+   +1: niq, rpluem, jim
    +0; [Would be +1 once ProxyRemote behavior is verified/fixed]
 
  * mod_rewrite: Remove locking for writing to the rewritelog.
    PR 46942
    trunk patch: http://svn.apache.org/viewvc?view=rev&revision=783734
    2.2.x patch: http://people.apache.org/~niq/patches/46942.patch
-   +1: niq, rpluem
+   +1: niq, rpluem, jim
 
  * mod_info: Add apr / apr-util version output
    trunk patch: http://cvs.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_info.c?r1=792570&r2=760403
@@ -142,7 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    patch updated: removed font clutter as suggested by niq,
                   added compile-time version output as suggested by wrowe.
                   Add the missing include of apu_version.h.
-   +1: takashi, rpluem
+   +1: takashi, rpluem, jim
 
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
