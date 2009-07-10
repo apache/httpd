@@ -27,6 +27,9 @@ Changes with Apache 2.2.12
      different security issues which may affect particular configurations
      and third-party modules.
 
+  *) mod_alias: check sanity in Redirect arguments.
+     PR 44729 [Sönke Tesch <st kino-fahrplan.de>, Jim Jagielski]
+
   *) mod_proxy_http: fix Host: header for literal IPv6 addresses.
      PR 47177 [Carlos Garcia Braschi <cgbraschi gmail.com>]
 
