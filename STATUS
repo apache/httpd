@@ -101,12 +101,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    +1: niq, rpluem, jim
    +0; [Would be +1 once ProxyRemote behavior is verified/fixed]
 
- * mod_rewrite: Remove locking for writing to the rewritelog.
-   PR 46942
-   trunk patch: http://svn.apache.org/viewvc?view=rev&revision=783734
-   2.2.x patch: http://people.apache.org/~niq/patches/46942.patch
-   +1: niq, rpluem, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
