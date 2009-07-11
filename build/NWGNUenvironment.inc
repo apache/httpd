@@ -38,11 +38,16 @@ endif
 ifndef NOVELLLIBC
 NOVELLLIBC = C:/novell/ndk/libc
 endif
+ifneq "$(wildcard $(NOVELLLIBC)/include/ndkvers.h)" "$(NOVELLLIBC)/include/ndkvers.h"
+$(error NOVELLLIBC does not point to a valid Novell LIBC SDK) 
+endif
 
-# This is a placeholder
-# ifndef LDAPSDK
-# LDAPSDK = C:/novell/ndk/cldapsdk
-# endif
+ifndef LDAPSDK
+LDAPSDK = C:/novell/ndk/cldapsdk/NetWare/libc
+endif
+ifneq "$(wildcard $(LDAPSDK)/inc/ldap.h)" "$(LDAPSDK)/inc/ldap.h"
+$(error LDAPSDK does not point to a valid Novell CLDAP SDK) 
+endif
 
 # This is a placeholder
 # ifndef ZLIBSDK
