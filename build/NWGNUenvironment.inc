@@ -38,20 +38,29 @@ endif
 ifndef NOVELLLIBC
 NOVELLLIBC = C:/novell/ndk/libc
 endif
+ifneq "$(wildcard $(NOVELLLIBC)/include/ndkvers.h)" "$(NOVELLLIBC)/include/ndkvers.h"
+$(error NOVELLLIBC does not point to a valid Novell LIBC SDK) 
+endif
 
-# This is a placeholder
-# ifndef LDAPSDK
-# LDAPSDK = C:/novell/ndk/cldapsdk
-# endif
+ifndef LDAPSDK
+LDAPSDK = C:/novell/ndk/cldapsdk/NetWare/libc
+endif
+ifneq "$(wildcard $(LDAPSDK)/inc/ldap.h)" "$(LDAPSDK)/inc/ldap.h"
+$(error LDAPSDK does not point to a valid Novell CLDAP SDK) 
+endif
+
+ifndef PCRESRC
+ifeq "$(wildcard $(AP_WORK)/srclib/pcre/pcre.in)" "$(AP_WORK)/srclib/pcre/pcre.in"
+PCRESRC = $(AP_WORK)/srclib/pcre
+endif
+endif
+ifneq "$(wildcard $(PCRESRC)/pcre.in)" "$(PCRESRC)/pcre.in"
+$(error PCRESRC does not point to a valid PCRE source tree) 
+endif
 
 # This is a placeholder
 # ifndef ZLIBSDK
 # ZLIBSDK = C:/novell/ndk/zlibsdk
-# endif
-
-# This is a placeholder
-# ifndef PCRESDK
-# PCRESDK = C:/novell/ndk/pcresdk
 # endif
 
 ifndef METROWERKS
@@ -142,8 +151,8 @@ endif
 ifneq "$(ZLIBSDK)" ""
 INCDIRS := $(INCDIRS);$(ZLIBSDK)
 endif
-ifneq "$(PCRESDK)" ""
-INCDIRS := $(INCDIRS);$(PCRESDK)
+ifneq "$(PCRESRC)" ""
+INCDIRS := $(INCDIRS);$(PCRESRC)
 endif
 
 DEFINES	= -DNETWARE 
@@ -317,7 +326,7 @@ APR		= $(APR_WORK)
 APRUTIL		= $(APU_WORK)
 APULDAP		= $(APU_WORK)/ldap
 SUPMOD		= $(AP_WORK)/support
-PCRE		= $(PCRESDK)
+PCRE		= $(PCRESRC)
 APRTEST		= $(APR_WORK)/test
 HTTPD		= $(AP_WORK)/modules/http
 XML		= $(APU_WORK)/xml
