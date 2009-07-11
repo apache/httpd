@@ -14,11 +14,15 @@
 # limitations under the License.
 
 BEGIN {
-
-  # fetch Apache version numbers from input file and writes them to STDOUT
+  # fetch Apache version numbers from input file and write them to STDOUT
 
   while ((getline < ARGV[1]) > 0) {
-    if (match ($0, /^#define AP_SERVER_MAJORVERSION_NUMBER /)) {
+    if (match ($0, /^#define AP_SERVER_COPYRIGHT \\/)) {
+      if (((getline < ARGV[1]) > 0) && (split($0, c, "\"") == 3)) {
+        copyright_str = c[2];
+      }
+    }
+    else if (match ($0, /^#define AP_SERVER_MAJORVERSION_NUMBER /)) {
       ver_major = $3;
     }
     else if (match ($0, /^#define AP_SERVER_MINORVERSION_NUMBER /)) {
@@ -36,6 +40,8 @@ BEGIN {
 
   print "VERSION = " ver_nlm "";
   print "VERSION_STR = " ver_str "";
+  print "VERSION_MAJMIN = " ver_major ver_minor "";
+  print "COPYRIGHT_STR = " copyright_str "";
 
 }
 

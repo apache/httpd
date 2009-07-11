@@ -58,7 +58,7 @@ $(NLM_NAME)_LINKOPT_DEPENDS	= \
 				$(EOLIST)
 
 ifeq "$(words $(strip $(TARGET_lib)))" "1"
-LIB_NAME					= $(basename $(notdir $(TARGET_lib)))
+LIB_NAME			= $(basename $(notdir $(TARGET_lib)))
 $(LIB_NAME)_LIBLST_DEPENDS	= \
 				$(FILES_lib_objs) \
 				$(AP_WORK)\build\NWGNUenvironment.inc \
@@ -82,17 +82,20 @@ endif
 # Generic compiler rules
 #
 
-$(AP_WORK)\build\NWGNUversion.inc : $(AP_WORK)\include\ap_release.h $(AP_WORK)\build\nw_ver.awk
+ifneq ($(MAKECMDGOALS),clean)
+$(AP_WORK)\build\NWGNUversion.inc : $(AP_WORK)\build\nw_ver.awk $(AP_WORK)\include\ap_release.h
 	@echo Generating $(subst /,\,$@)
-	$(AWK) -f $(AP_WORK)\build\nw_ver.awk $(AP_WORK)\include\ap_release.h > $(AP_WORK)\build\NWGNUversion.inc
+	$(AWK) -f $^ > $@
 
 -include $(AP_WORK)\build\NWGNUversion.inc
 
 ifneq "$(strip $(VERSION_STR))" ""
 VERSION_INC = $(AP_WORK)\build\NWGNUversion.inc
 else
-VERSION		= 2,0,0
-VERSION_STR	= 2.0.0
+VERSION		= 2,2,0
+VERSION_STR	= 2.2.0
+VERSION_MAJMIN	= 22
+endif
 endif
 
 
