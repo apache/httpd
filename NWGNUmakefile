@@ -16,7 +16,7 @@ $(error APR_WORK does not point to a valid APR source tree)
 endif
 
 ifndef APU_WORK
-ifeq "$(wildcard $(AP_WORK)/srclib/apr-util)" "$(AP_WORK)/srclib/apr-uril"
+ifeq "$(wildcard $(AP_WORK)/srclib/apr-util)" "$(AP_WORK)/srclib/apr-util"
 export APU_WORK = $(AP_WORK)/srclib/apr-util
 endif
 endif
