@@ -1,4 +1,35 @@
 #
+# Define our required macro's if not already done.
+#
+
+ifndef AP_WORK
+export AP_WORK = $(CURDIR)
+endif
+
+ifndef APR_WORK
+ifeq "$(wildcard $(AP_WORK)/srclib/apr)" "$(AP_WORK)/srclib/apr"
+export APR_WORK = $(AP_WORK)/srclib/apr
+endif
+endif
+ifneq "$(wildcard $(APR_WORK)/include/apr_version.h)" "$(APR_WORK)/include/apr_version.h"
+$(error APR_WORK does not point to a valid APR source tree) 
+endif
+
+ifndef APU_WORK
+ifeq "$(wildcard $(AP_WORK)/srclib/apr-util)" "$(AP_WORK)/srclib/apr-uril"
+export APU_WORK = $(AP_WORK)/srclib/apr-util
+endif
+endif
+ifndef APU_WORK
+ifeq "$(wildcard $(APR_WORK)/include/apu_version.h)" "$(APR_WORK)/include/apu_version.h"
+export APU_WORK = $(APR_WORK)
+endif
+endif
+ifneq "$(wildcard $(APU_WORK)/include/apu_version.h)" "$(APU_WORK)/include/apu_version.h"
+$(error APU_WORK does not point to a valid APU source tree) 
+endif
+
+#
 # Declare the sub-directories to be built here
 #
 
