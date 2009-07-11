@@ -41,7 +41,6 @@ XINCDIRS	+= \
 			$(AP_WORK)/server/mpm/NetWare \
 			$(AP_WORK)/srclib/pcre \
 			$(NWOS) \
-			$(AP_WORK)/modules/ssl \
 			$(EOLIST)
 
 #
@@ -321,7 +320,7 @@ nlms :: libs $(TARGET_nlm)
 # Updated this target to create necessary directories and copy files to the
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
-install :: nlms FORCE
+install :: nlms instscripts FORCE
 	-copy $(OBJDIR)\Apache2.nlm     $(INSTALL)\$(BASEDIR)\*.*
 	-copy ABOUT_APACHE              $(INSTALL)\$(BASEDIR)\*.*
 	-copy README                    $(INSTALL)\$(BASEDIR)\*.*
@@ -385,5 +384,7 @@ vpath %.c os/netware:server/mpm/netware:srclib/pcre
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
+include $(AP_WORK)\build\NWGNUscripts.inc
 
 
