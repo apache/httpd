@@ -807,7 +807,7 @@
           library paths separated by a colon.</dd>
 
         <dt><code>--with-ndbm[=<var>path</var>]</code></dt>
-        <dd>Like <code>--with-gdbm</code>, bur searches for a New DBM
+        <dd>Like <code>--with-gdbm</code>, but searches for a New DBM
           installation.</dd>
 
         <dt><code>--with-berkeley-db[=<var>path</var>]</code></dt>
