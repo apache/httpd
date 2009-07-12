@@ -44,6 +44,14 @@ SUBDIRS += ssl \
 endif
 endif
 
+# If WITH_MOD_LUA and LUASRC have been defined then build the mod_lua module
+ifdef WITH_MOD_LUA
+ifneq "$(LUASRC)" ""
+SUBDIRS += lua \
+	$(EOLIST)
+endif
+endif
+
 #If the mod_edir directory exists then build the mod_edir module
 ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
 SUBDIRS += mod_edir \
