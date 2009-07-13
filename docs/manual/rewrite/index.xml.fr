@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 636374 $ -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Le module Apache mod_rewrite</title>
+
+<summary>
+      <blockquote>
+            <p>``Ce qui est super avec mod_rewrite, c'est qui permet
+	    autant de configuration et de flexibilit&eacute; que Sendmail.
+	    L'inconv&eacute;nient de mod_rewrite, c'est qu'il permet autant de
+	    configuration et de flexibilit&eacute; que Sendmail.''</p>
+
+            <p class="cite">-- <cite>Brian Behlendorf</cite><br />
+            Groupe Apache</p>
+
+      </blockquote>
+
+      <blockquote>
+            <p>``Malgr&eacute; les tonnes d'exemples et de documentations,
+	    mod_rewrite rel&egrave;ve de la magie vaudoue. De la magie vaudoue super
+	    g&eacute;niale, mais de la magie vaudoue.''</p>
+
+            <p class="cite">-- <cite>Brian Moore</cite><br />
+            bem@news.cmc.net</p>
+
+      </blockquote>
+
+      <p>Bienvenue dans mod_rewrite, le couteau suisse de la
+      manipulation d'URL !</p>
+
+      <p>Ce module met en oeuvre un moteur de r&eacute;&eacute;criture &agrave; base de
+      r&egrave;gles (bas&eacute; sur un interpr&eacute;teur d'expressions rationnelles) pour
+      r&eacute;&eacute;crire les URLs issues des requ&ecirc;tes &agrave; la vol&eacute;e. Il fournit un
+      m&eacute;canisme de manipulation d'URL particuli&egrave;rement souple et
+      puissant en supportant un nombre illimit&eacute; de r&egrave;gles et de
+      conditions attach&eacute;es &agrave; chaque r&egrave;gle. Les manipulations d'URLs
+      peuvent d&eacute;pendre de tests vari&eacute;s : par exemple, les URLs peuvent
+      &ecirc;tre finement caract&eacute;ris&eacute;es en fonction de variables du serveur,
+      de variables d'environnement, d'en-t&ecirc;tes HTTP, de rep&egrave;res
+      temporels, ou m&ecirc;me de requ&ecirc;tes vers des bases de donn&eacute;es externes
+      sous diff&eacute;rents formats.</p>
+
+      <p>Ce module agit sur l'ensemble des URLs (la partie chemin
+      incluse) non seulement dans le contexte du serveur principal
+      (<code>httpd.conf</code>), mais aussi dans le contexte des
+      r&eacute;pertoires (fichiers <code>.htaccess</code> et blocs
+      <code>&lt;Directory&gt;</code>), et peut m&ecirc;me g&eacute;n&eacute;rer des cha&icirc;nes
+      de requ&ecirc;te comme r&eacute;sultat. Le r&eacute;sultat r&eacute;&eacute;crit peut conduire &agrave; un
+      traitement secondaire interne, une redirection vers une requ&ecirc;te
+      externe ou m&ecirc;me l'envoi vers un serveur mandataire.</p>
+
+      <p>Mais toutes ces fonctionnalit&eacute;s et cette souplesse ont un
+      inconv&eacute;nient : la complexit&eacute;. N'esp&eacute;rez donc pas comprendre ce
+      module dans les d&eacute;tails en un seul jour.</p>
+
+</summary>
+
+<seealso><a href="../urlmapping.html">Mise en correspondance des URLs
+avec le syst&egrave;me de fichiers</a></seealso>
+<seealso><a href="http://wiki.apache.org/httpd/Rewrite">wiki mod_rewrite
+</a></seealso>
+<seealso><a href="../glossary.html">Glossaire</a></seealso>
+
+<section id="documentation"><title>Documentation</title>
+<ul>
+<li><a href="../mod/mod_rewrite.html">Documentation de r&eacute;f&eacute;rence de
+mod_rewrite</a></li>
+<li><a href="rewrite_intro.html">Introduction</a></li>
+<li><a href="rewrite_flags.html">Drapeaux</a></li>
+<li><a href="rewrite_tech.html">D&eacute;tails techniques</a></li>
+<li><a href="rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples utiles</a></li>
+<li><a href="rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture avanc&eacute; -
+encore plus d'exemples utiles</a></li>
+</ul>
+</section>
+
+</manualpage>
+
+

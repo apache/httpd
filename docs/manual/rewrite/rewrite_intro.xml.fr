@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 653690 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rewrite_intro.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Introduction au module Apache mod_rewrite</title>
+
+<summary>
+<p>Ce document est un compl&eacute;ment &agrave; la <a
+href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du module
+<module>mod_rewrite</module>. Il d&eacute;crit les concepts de base dont la
+connaissance est n&eacute;cessaire pour l'utilisation de
+<module>mod_rewrite</module>. D'autres documents entrent d'avantage dans
+les d&eacute;tails, mais celui-ci devrait aider le d&eacute;butant &agrave; se mouiller les
+pieds.
+</p>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">Documentation du
+module</a></seealso>
+<seealso><a href="rewrite_tech.html">D&eacute;tails techniques</a></seealso>
+<seealso><a href="rewrite_guide.html">Solutions pratiques aux probl&egrave;mes
+courants</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Solutions pratiques aux
+probl&egrave;mes plus complexes</a></seealso>
+
+<section id="introduction"><title>Introduction</title>
+<p>Le module Apache <module>mod_rewrite</module> est un module puissant
+et sophistiqu&eacute; qui permet la r&eacute;&eacute;criture des URLs. Gr&acirc;ce &agrave; lui, vous
+pouvez effectuer quasiment tous les types de r&eacute;&eacute;criture d'URLs dont vous
+avez besoin. Il est cependant assez complexe, et peut para&icirc;tre
+intimidant au d&eacute;butant. Certains ont aussi tendance &agrave; traiter les
+r&egrave;gles de r&eacute;&eacute;criture comme des incantations magiques, et &agrave; les utiliser
+sans vraiment comprendre leur mani&egrave;re d'agir.</p>
+
+<p>Ce document a pour ambition d'&ecirc;tre suffisamment explicite pour
+permettre la compr&eacute;hension, et non la copie en aveugle, de ce qui suit.
+</p>
+
+<p>Gardez &agrave; l'esprit que de nombreuses t&acirc;ches de manipulation d'URLs
+courantes n'ont pas besoin de la puissance et de la complexit&eacute; de
+<module>mod_rewrite</module>. Pour les t&acirc;ches simples, voir
+<module>mod_alias</module> et la documentation sur la <a
+href="../urlmapping.html">Mise en correspondance des URLs avec le
+syst&egrave;me de fichiers</a>.</p>
+
+<p>Enfin, avant de proc&eacute;der, assurez-vous d'avoir configur&eacute; la directive
+<directive module="mod_rewrite">RewriteLog</directive>. Bien que ce
+fichier journal puisse contenir une quantit&eacute; impressionnante d'informations,
+il s'av&egrave;re indispensable pour le d&eacute;bogage des probl&egrave;mes avec la
+configuration de <module>mod_rewrite</module>, car il vous indiquera
+exactement la mani&egrave;re dont chaque r&egrave;gle est trait&eacute;e.</p>
+</section>
+
+<section id="regex"><title>Expressions rationnelles</title>
+
+<p>mod_rewrite utilise le vocabulaire des <a
+href="http://pcre.org/">Expressions rationnelles compatibles Perl</a>.
+Ce document n'a pas pour pr&eacute;tention d'&ecirc;tre une r&eacute;f&eacute;rence d&eacute;taill&eacute;e des
+expressions rationnelles. A cet effet, nous recommandons les <a
+href="http://pcre.org/pcre.txt">pages de manuel de PCRE</a>, la <a
+href="http://perldoc.perl.org/perlre.html">page de manuel des
+expressions rationnelles Perl</a>, et l'ouvrage <a
+href="http://www.oreilly.com/catalog/regex2/index.html">Mastering
+Regular Expressions, by Jeffrey Friedl</a>.</p>
+
+<p>Dans ce document, nous avons pour but de vous fournir suffisamment de
+vocabulaire des expressions rationnelles pour vous mettre le pied &agrave;
+l'&eacute;trier, sans &ecirc;tre d&eacute;pass&eacute;, en esp&eacute;rant que les directives <directive
+module="mod_rewrite">RewriteRule</directive> vous appara&icirc;tront comme des
+formules scientifiques, plut&ocirc;t que comme des incantations magiques.</p>
+
+<section id="regexvocab"><title>Vocabulaire des expressions rationnelles</title>
+
+<p>Vous trouverez dans ce qui suit le minimum &agrave; conna&icirc;tre pour &ecirc;tre en
+mesure d'&eacute;crire des expressions rationnelles et des r&egrave;gles <directive
+module="mod_rewrite">RewriteRule</directive>. Ceci ne repr&eacute;sente
+certainement pas un vocabulaire des expressions rationnelles complet,
+mais constitue un bon point de d&eacute;part, et devrait vous aider &agrave;
+d&eacute;chiffrer les expressions rationnelles simples, et &agrave; &eacute;crire vos propres
+expressions.</p>
+
+<table>
+<tr>
+<th>Motif</th>
+<th>Signification</th>
+<th>Exemple</th>
+</tr>
+
+<tr><td><code>.</code></td><td>Correspond &agrave; tout caract&egrave;re unique
+</td><td><code>c.t</code> correspondra &agrave; <code>cat</code>,
+<code>cot</code>, <code>cut</code>, etc.</td></tr>
+<tr><td><code>+</code></td><td>R&eacute;p&egrave;te le caract&egrave;re de correspondance
+pr&eacute;c&eacute;dent une ou plusieurs fois</td>
+<td><code>a+</code> correspond &agrave; <code>a</code>, <code>aa</code>,
+<code>aaa</code>, etc.</td></tr>
+<tr><td><code>*</code></td><td>R&eacute;p&egrave;te le caract&egrave;re de correspondance
+pr&eacute;c&eacute;dent z&eacute;ro ou plusieurs fois</td>
+<td><code>a*</code> correspond &agrave; tout ce &agrave; quoi correspond
+<code>a+</code>, mais correspond aussi &agrave; la cha&icirc;ne vide.</td></tr>
+<tr><td><code>?</code></td><td>Rend la correspondance optionnelle.</td><td>
+<code>colou?r</code> correspondra &agrave; <code>color</code> et <code>colour</code>.</td>
+</tr>
+<tr><td><code>^</code></td><td>Appel&eacute; ancrage, correspond au d&eacute;but de la
+cha&icirc;ne</td>
+<td><code>^a</code> correspond &agrave; une cha&icirc;ne qui commence par
+<code>a</code></td></tr>
+<tr><td><code>$</code></td><td>L'autre ancrage, correspond &agrave; la fin de
+la cha&icirc;ne.</td>
+<td><code>a$</code> correspond &agrave; une cha&icirc;ne qui se termine par
+<code>a</code>.</td></tr>
+<tr><td><code>( )</code></td><td>Regroupe plusieurs caract&egrave;res en une
+seule entit&eacute;, et conserve une correspondance &agrave; des fins d'utilisation
+dans une r&eacute;f&eacute;rence arri&egrave;re.</td>
+<td><code>(ab)+</code>
+correspond &agrave; <code>ababab</code> - &agrave; savoir, le <code>+</code>
+s'applique au groupe.
+Pour plus de d&eacute;tails sur les r&eacute;f&eacute;rences arri&egrave;res, voir <a
+href="#InternalBackRefs">ci-dessous</a>.</td></tr>
+<tr><td><code>[ ]</code></td><td>Une classe de caract&egrave;res - correspond &agrave;
+un des caract&egrave;res de la classe</td>
+<td><code>c[uoa]t</code> correspond &agrave; <code>cut</code>,
+<code>cot</code> ou <code>cat</code>.</td></tr>
+<tr><td><code>[^ ]</code></td><td>N&eacute;gation de la classe de caract&egrave;res -
+correspond &agrave; tout caract&egrave;re ne faisant pas partie de la classe</td>
+<td><code>c[^/]t</code> correspond &agrave; <code>cat</code> ou
+<code>c=t</code> mais pas &agrave; <code>c/t</code></td></tr>
+</table>
+
+<p>Avec <module>mod_rewrite</module>, le caract&egrave;re <code>!</code> peut
+pr&eacute;fixer une expression rationnelle afin d'en exprimer la n&eacute;gation.
+Autrement dit, une cha&icirc;ne ne correspondra que si elle ne correspond pas
+&agrave; l'expression situ&eacute;e apr&egrave;s le <code>!</code>.</p>
+
+</section>
+
+<section id="InternalBackRefs"><title>Disponibilit&eacute; des r&eacute;f&eacute;rences
+arri&egrave;res dans les expressions rationnelles</title>
+
+      <p>Vous devez vous souvenir d'une chose importante : chaque fois
+      que vous utilisez des parenth&egrave;ses dans un <em>Mod&egrave;le</em> ou dans
+      un des <em>mod&egrave;les de conditions</em>, des r&eacute;f&eacute;rences arri&egrave;res
+      sont cr&eacute;&eacute;es en interne et peuvent &ecirc;tre rappel&eacute;es via les cha&icirc;nes
+      <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
+      r&eacute;f&eacute;rences sont disponibles lors de la cr&eacute;ation des cha&icirc;nes de
+      <em>Substitution</em> et des <em>Cha&icirc;nes de test</em>. La figure 2
+      montre &agrave; quels endroits les r&eacute;f&eacute;rences arri&egrave;res sont suceptibles
+      d'&ecirc;tre d&eacute;velopp&eacute;es.</p>
+
+<p class="figure">
+      <img src="../images/mod_rewrite_fig2.gif" width="381"
+           height="179" alt="[Pas affichable sans support des images]" /><br />
+      <dfn>Figure 2:</dfn> Le cheminement d'une r&eacute;f&eacute;rence arri&egrave;re &agrave;
+      travers une r&egrave;gle.
+</p>
+
+</section>
+</section>
+
+<section id="rewriterule"><title>Les bases des r&egrave;gles de r&eacute;&eacute;criture</title>
+<p>Une r&egrave;gle de r&eacute;&eacute;criture <directive
+module="mod_rewrite">RewriteRule</directive> est constitu&eacute;e de trois
+arguments s&eacute;par&eacute;s par des espaces. Les arguments sont :</p>
+<ol>
+<li><var>Mod&egrave;le</var>: le mod&egrave;le des URLs auxquelles la r&egrave;gle doit
+s'appliquer;</li>
+<li><var>Substitution</var>: vers quoi la requ&ecirc;te correspondante doit &ecirc;tre
+transform&eacute;e;</li>
+<li><var>[drapeaux]</var>: options affectant la requ&ecirc;te r&eacute;&eacute;crite.</li>
+</ol>
+
+<p>Le <var>Mod&egrave;le</var> est toujours une <a href="#regex">expression
+rationnelle</a> compar&eacute;e au chemin de l'URL de la requ&ecirc;te entrante (la
+partie situ&eacute;e apr&egrave;s le nom d'h&ocirc;te mais avant tout point d'interrogation
+qui indique le d&eacute;but d'une cha&icirc;ne de requ&ecirc;te).</p>
+
+<p>La cha&icirc;ne de <var>Substitution</var> peut, quant &agrave; elle, &ecirc;tre de
+trois types :</p>
+
+<dl>
+<dt>Un chemin complet du syst&egrave;me de fichiers vers une ressource</dt>
+<dd>
+<example>
+RewriteRule ^/jeux.* /usr/local/jeux/web
+</example>
+<p>Ceci peut faire correspondre une requ&ecirc;te &agrave; toute localisation voulue de
+votre syst&egrave;me de fichiers, un peu comme la directive <directive
+module="mod_alias">Alias</directive>.</p>
+</dd>
+
+<dt>Un chemin web vers une ressource</dt>
+<dd>
+<example>
+RewriteRule ^/foo$ /bar
+</example>
+<p>Si la directive <directive module="core">DocumentRoot</directive> a
+pour valeur <code>/usr/local/apache2/htdocs</code>, cette r&egrave;gle va faire
+correspondre les requ&ecirc;tes pour <code>http://example.com/foo</code> au
+chemin <code>/usr/local/apache2/htdocs/bar</code>.</p>
+</dd>
+
+<dt>Une URL absolue</dt>
+<dd>
+<example>
+RewriteRule ^/produits/vues$ http://site2.exemple.com/voirproduits.html [R]
+</example>
+<p>Ceci informe le client qu'il doit effectuer une nouvelle requ&ecirc;te vers
+l'URL sp&eacute;cifi&eacute;e.</p>
+</dd>
+</dl>
+
+<p>La cha&icirc;ne de <var>Substitution</var> peut aussi contenir des
+<em>r&eacute;f&eacute;rences arri&egrave;res</em> vers des parties du chemin d'URL entrant
+correspondant au <var>Mod&egrave;le</var>. Consid&eacute;rons ce qui suit :</p>
+<example>
+RewriteRule ^/produits/(.*)/view$ /var/web/produitsdb/$1
+</example>
+<p>La variable <code>$1</code> sera remplac&eacute;e par tout texte
+correspondant &agrave; l'expression situ&eacute;e entre les parenth&egrave;ses dans le
+<var>Mod&egrave;le</var>. Par exemple, une requ&ecirc;te pour
+<code>http://example.com/produits/r14df/vue</code> correspondra au
+chemin <code>/var/web/produitsdb/r14df</code>.</p>
+
+<p>S'il y a plus d'une expression entre parenth&egrave;ses, elle seront
+accessibles selon leur ordre d'apparition via les variables
+<code>$1</code>, <code>$2</code>, <code>$3</code>, etc...</p>
+
+
+</section>
+
+<section id="flags"><title>Drapeaux de r&eacute;&eacute;criture</title>
+<p>Le comportement d'une r&egrave;gle <directive
+module="mod_rewrite">RewriteRule</directive> peut &ecirc;tre modifi&eacute; par la
+pr&eacute;sence d'un ou plusieurs drapeaux en fin de r&egrave;gle. Par exemple, les
+conditions de correspondance d'une r&egrave;gle peuvent &ecirc;tre rendues
+insensibles &agrave; la casse par la pr&eacute;sence du drapeau <code>[NC]</code> :
+</p>
+<example>
+RewriteRule ^puppy.html petitchien.html [NC]
+</example>
+
+<p>Pour une liste des drapeaux disponibles, leurs significations, et des
+exemples, voir le document <a href="rewrite_flags.html">Drapeaux de
+r&eacute;&eacute;criture</a>.</p>
+
+</section>
+
+
+<section id="rewritecond"><title>Conditions de r&eacute;&eacute;criture</title>
+<p>Il est possible d'utiliser une ou plusieurs directives <directive
+module="mod_rewrite">RewriteCond</directive> pour restreindre les types
+de requ&ecirc;tes auxquelles devra s'appliquer la r&egrave;gle <directive
+module="mod_rewrite">RewriteRule</directive> suivante. Le premier
+argument est une variable d&eacute;crivant une caract&eacute;ristique de la requ&ecirc;te,
+le second argument est une <a href="#regex">expression rationnelle</a>
+qui doit correspondre &agrave; la variable, et un troisi&egrave;me argument optionnel
+est une liste de drapeaux qui modifient la mani&egrave;re dont la
+correspondance est &eacute;valu&eacute;e.</p>
+
+<p>Par exemple, pour renvoyer toutes les requ&ecirc;tes en provenance d'une
+certaine tranche d'adresses IP vers un autre serveur, vous pouvez
+utiliser :</p>
+<example>
+RewriteCond %{REMOTE_ADDR} ^10\.2\.<br />
+RewriteRule (.*) http://intranet.exemple.com$1
+</example>
+
+<p>Si vous sp&eacute;cifiez plus d'une directive <directive
+module="mod_rewrite">RewriteCond</directive>, ces directives
+doivent toutes &ecirc;tre satisfaites pour que la r&egrave;gle <directive
+module="mod_rewrite">RewriteRule</directive> suivante s'applique. Par exemple,
+pour interdire les requ&ecirc;tes qui contiennent le mot "hack" dans la cha&icirc;ne
+de requ&ecirc;te, sauf si elles contiennent aussi un cookie contenant le mot
+"go", vous pouvez utiliser :</p>
+<example>
+RewriteCond %{QUERY_STRING} hack<br />
+RewriteCond %{HTTP_COOKIE} !go<br />
+RewriteRule .* - [F]
+</example>
+<p>Notez que le point d'exclamation indique une correspondance n&eacute;gative
+; ainsi, la r&egrave;gle n'est appliqu&eacute;e que si le cookie ne contient pas "go"</p>
+
+<p>Les correspondances dans les expressions rationnelles contenues dans
+les directives <directive module="mod_rewrite">RewriteCond</directive>
+peuvent constituer des parties de la cha&icirc;ne de <var>Substitution</var>
+de la r&egrave;gle <directive module="mod_rewrite">RewriteRule</directive> via
+les variables <code>%1</code>, <code>%2</code>, etc... Par
+exemple, ce qui suit va diriger la requ&ecirc;te vers un r&eacute;pertoire diff&eacute;rent
+en fonction du nom d'h&ocirc;te utilis&eacute; pour acc&eacute;der au site :</p>
+<example>
+RewriteCond %{HTTP_HOST} (.*)<br />
+RewriteRule ^/(.*) /sites/%1/$1
+</example>
+<p>Si la requ&ecirc;te concernait <code>http://example.com/foo/bar</code>,
+alors <code>%1</code> contiendrait <code>example.com</code> et
+<code>$1</code> contiendrait <code>foo/bar</code>.</p>
+
+
+
+</section>
+
+<section id="rewritemap"><title>Tables de r&eacute;&eacute;criture</title>
+<p>Voir la directive
+<directive module="mod_rewrite">RewriteMap</directive>.</p>
+</section>
+
+<section id="htaccess"><title>Fichiers .htaccess</title>
+
+<p>La r&eacute;&eacute;criture est en g&eacute;n&eacute;ral d&eacute;finie au niveau de la configuration du
+serveur principal (en dehors de toute section <directive type="section"
+module="core">Directory</directive>) ou dans une section  <directive
+type="section" module="core">VirtualHost</directive>. Il s'agit l&agrave; de la
+mani&egrave;re la plus simple de mettre en oeuvre la r&eacute;&eacute;criture et nous la
+recommandons. Il est possible, cependant, de mettre en oeuvre la
+r&eacute;&eacute;criture au sein d'une section <directive type="section"
+module="core">Directory</directive> ou d'un fichier <a
+href="../howto/htaccess.html"><code>.htaccess</code></a> ; ce type de
+configuration est cependant plus complexe. Cette technique est appel&eacute;e
+r&eacute;&eacute;criture par r&eacute;pertoire.</p>
+
+<p>La principale diff&eacute;rence avec les r&eacute;&eacute;critures au niveau du serveur r&eacute;side
+dans le fait que le pr&eacute;fixe du chemin du r&eacute;pertoire contenant le fichier
+<code>.htaccess</code> est supprim&eacute; avant la mise en correspondance dans
+la r&egrave;gle <directive module="mod_rewrite">RewriteRule</directive>. De
+plus, on doit utiliser la directive <directive
+module="mod_rewrite">RewriteBase</directive> pour s'assurer que la
+requ&ecirc;te est correctement mise en correspondance.</p>
+
+</section>
+
+</manualpage>
+
