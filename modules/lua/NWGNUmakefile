@@ -24,19 +24,20 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(LUASRC)/src \
 			$(AP_WORK)/include \
 			$(NWOS) \
 			$(AP_WORK)/modules/arch/netware \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(APR) \
-			$(LUASRC)/src \
 			$(EOLIST)
 
 #
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
+			-opt nointrinsics \
 			$(EOLIST)
 
 #
@@ -224,8 +225,6 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	$(EOLIST)
 
-#	@$(LUASRC)/netware/lua.imp \
-
 #
 # Any symbols exported to here
 #
@@ -237,8 +236,10 @@ FILES_nlm_exports = \
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
+UNWANTED = $(LUASRC)/src/lua.c
+
 FILES_lib_objs = \
-	$(patsubst $(LUASRC)/src/%.c,$(OBJDIR)/%.o, $(wildcard $(LUASRC)/src/*.c)) \
+	$(patsubst $(LUASRC)/src/%.c,$(OBJDIR)/%.o, $(filter-out $(UNWANTED), $(wildcard $(LUASRC)/src/*.c))) \
 	$(EOLIST)
 
 #
