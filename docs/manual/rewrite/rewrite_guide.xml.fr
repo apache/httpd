@@ -1,0 +1,863 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 774161 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rewrite_guide.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+  <title>Guide de r&eacute;&eacute;criture des URLs</title>
+
+  <summary>
+
+    <p>Ce document compl&egrave;te la <a
+    href="../mod/mod_rewrite.html">documentation de r&eacute;f&eacute;rence</a> du
+    module <module>mod_rewrite</module>. Il d&eacute;crit de quelle mani&egrave;re on
+    peut utiliser le module Apache <module>mod_rewrite</module> pour
+    r&eacute;soudre les probl&egrave;mes typiques relatifs aux URLs auxquels les
+    webmasters sont souvent confront&eacute;s. La r&eacute;solution de chaque probl&egrave;me
+    par la configuration des jeux de r&egrave;gles de r&eacute;&eacute;criture d'URLs fait
+    l'objet d'une description d&eacute;taill&eacute;e.</p>
+
+    <note type="warning">ATTENTION : l'adaptation des exemples &agrave; votre
+    situation en fonction de la configuration de votre serveur pourra
+    s'av&eacute;rer n&eacute;cessaire, par exemple l'ajout du drapeau
+    <code>[PT]</code> si vous utilisez les modules
+    <module>mod_alias</module>, <module>mod_userdir</module>, etc... Un
+    jeu de r&egrave;gles d&eacute;fini dans le contexte du serveur devra aussi &ecirc;tre
+    adapt&eacute; pour &ecirc;tre utilis&eacute; dans un contexte <code>.htaccess</code>.
+    Efforcez-vous toujours de bien comprendre l'effet produit par un jeu
+    de r&egrave;gles avant de l'utiliser, ce qui pourra vous &eacute;viter bien des
+    probl&egrave;mes.</note>
+
+  </summary>
+<seealso><a href="../mod/mod_rewrite.html">Documentation du module</a></seealso>
+<seealso><a href="rewrite_intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture
+avanc&eacute; - exemples utiles avanc&eacute;s</a></seealso>
+<seealso><a href="rewrite_tech.html">D&eacute;tails techniques</a></seealso>
+
+
+<section id="canonicalurl">
+
+<title>URLs canoniques</title>
+
+<dl>
+ <dt>Description :</dt>
+
+   <dd>
+     <p>Sur certains serveurs web, une ressource peut &ecirc;tre accessible
+     depuis plusieurs URLs. On trouve en g&eacute;n&eacute;ral des URLs canoniques
+     (qui sont r&eacute;ellement utilisables et distribuables), mais aussi des
+     URLs &agrave; usage interne, ou celles qui ne sont que des raccourcis,
+     etc... On souhaite que, quelle que soit l'URL que l'utilisateur
+     a fournie avec sa requ&ecirc;te, il ne doit en voir en fin de compte
+     que la forme canonique.</p>
+   </dd>
+
+   <dt>Solution :</dt>
+
+     <dd>
+       <p>On effectue une redirection HTTP externe pour toutes les URLs
+       non canoniques afin de les rendre compr&eacute;hensibles au navigateur
+       et ceci pour toutes les requ&ecirc;tes sous-jacentes. Dans l'exemple de
+       jeux de r&egrave;gles ci-dessous, <code>/~user</code> est remplac&eacute; par
+       l'expression canonique <code>/u/user</code>, et une &eacute;ventuelle
+       absence du slash &agrave; la fin de <code>/u/user</code> est corrig&eacute;e.</p>
+
+<example><pre>
+RewriteRule   ^/<strong>~</strong>([^/]+)/?(.*)    /<strong>u</strong>/$1/$2  [<strong>R</strong>]
+RewriteRule   ^/u/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong>R</strong>]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+<section id="canonicalhost"><title>Noms d'h&ocirc;tes canoniques</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>Le but de cette r&egrave;gle est de pr&eacute;f&eacute;rer l'utilisation d'un nom
+	d'h&ocirc;te particulier par rapport &agrave; d'autres noms d'h&ocirc;te utilisables
+	pour atteindre le m&ecirc;me site. Par exemple, si vous voulez
+	utiliser <strong>www.example.com</strong> &agrave; la place de
+	<strong>example.com</strong>, vous devez utiliser une solution
+	de ce style.</dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+<p>Pour les sites &eacute;coutant sur un port autre que 80:</p>
+<example><pre>
+RewriteCond %{HTTP_HOST}   !^www\.exemple\.com [NC]
+RewriteCond %{HTTP_HOST}   !^$
+RewriteCond %{SERVER_PORT} !^80$
+RewriteRule ^/?(.*)         http://www.exemple.com:%{SERVER_PORT}/$1
+[L,R,NE]
+</pre></example>
+
+<p>Et pour un site &eacute;coutant sur le port 80</p>
+<example><pre>
+RewriteCond %{HTTP_HOST}   !^www\.exemple\.com [NC]
+RewriteCond %{HTTP_HOST}   !^$
+RewriteRule ^/?(.*)         http://www.exemple.com/$1 [L,R,NE]
+</pre></example>
+	<p>
+	Si vous souhaitez que cette r&egrave;gle s'applique &agrave; tous les noms de
+	domaine - en d'autres termes, si vous voulez rediriger
+	<strong>example.com</strong> vers
+	<strong>www.example.com</strong> pour toutes les valeurs
+	possibles de <strong>example.com</strong>, vous pouvez utiliser
+	le jeu de r&egrave;gles suivants :</p>
+
+<example><pre>
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteCond %{HTTP_HOST} !^$
+RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
+</pre></example>
+	<p>
+	Vous pouvez utiliser ce jeu de r&egrave;gles aussi bien dans le fichier
+	de configuration de votre serveur principal que dans un fichier
+	<code>.htaccess</code> plac&eacute; dans le r&eacute;pertoire d&eacute;fini par la
+	directive <directive
+	module="core">DocumentRoot</directive> du serveur.</p>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="moveddocroot">
+
+      <title><code>DocumentRoot</code>d&eacute;plac&eacute;</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+<p>En g&eacute;n&eacute;ral, la directive <directive
+module="core">DocumentRoot</directive> correspond directement &agrave; l'URL
+"<code>/</code>" du serveur web. Mais souvent, les donn&eacute;es qui s'y
+trouvent ne sont pas de la premi&egrave;re priorit&eacute;. Par exemple, il peut &ecirc;tre
+int&eacute;ressant, pour les visiteurs qui entrent sur le site pour la premi&egrave;re
+fois, d'&ecirc;tre redirig&eacute;s vers un sous-r&eacute;pertoire particulier
+<code>/a-propos-de/</code>. Pour ce faire, on peut utiliser le jeu de
+r&egrave;gles suivant :</p>
+</dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On redirige l'URL <code>/</code> vers
+          <code>/a-propos-de/</code>:
+          </p>
+
+<example><pre>
+RewriteEngine on
+RewriteRule   <strong>^/$</strong>  /a-propos-de/  [<strong>R</strong>]
+</pre></example>
+
+    <p>Notez que le m&ecirc;me effet peut &ecirc;tre obtenu &agrave; l'aide de la directive
+    <directive module="mod_alias">RedirectMatch</directive> :</p>
+
+<example>
+RedirectMatch ^/$ http://exemple.com/apropos/
+</example>
+<p>Notez aussi que cet exemple ne r&eacute;&eacute;crit que l'URL racine. En d'autres
+termes, il r&eacute;&eacute;crit une requ&ecirc;te pour <code>http://example.com/</code>,
+mais ne r&eacute;&eacute;crira pas une requ&ecirc;te pour
+<code>http://example.com/page.html</code>. En fait, si vous avez modifi&eacute;
+la racine de vos documents - c'est &agrave; dire si tous vos contenus se
+trouvent dans ce sous-r&eacute;pertoire, il vaut mieux simplement modifier
+votre directive <directive module="core">DocumentRoot</directive> que de
+proc&eacute;der &agrave; une r&eacute;&eacute;criture d'URLs.</p>
+</dd>
+</dl>
+
+    </section>
+
+    <section id="trailingslash">
+
+      <title>Probl&egrave;me du slash de fin</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+    <dd><p>La plupart des probl&egrave;mes de "slash de fin" peuvent &ecirc;tre
+    r&eacute;solus gr&acirc;ce aux techniques d&eacute;crites dans ce <a
+    href="http://httpd.apache.org/docs/misc/FAQ-E.html#set-servername">sujet
+    de la FAQ</a>. Cependant, dans certaines situations o&ugrave; l'absence de slash de fin
+    peut rendre une URL inop&eacute;rante, l'utilisation de
+    mod_rewrite s'av&egrave;re n&eacute;cessaire. Le cas peut se pr&eacute;senter, par exemple,
+    apr&egrave;s une s&eacute;rie complexe de r&egrave;gles de r&eacute;&eacute;criture.</p>
+    </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>La solution &agrave; ce probl&egrave;me subtil consiste &agrave; laisser le
+	  serveur ajouter le slash de fin automatiquement. Pour y
+	  parvenir, il faut utiliser une redirection externe, afin que
+	  le navigateur demande correctement les images sous-jacentes,
+	  etc... Une r&eacute;&eacute;criture en interne ne fonctionnerait que pour la
+	  page du r&eacute;pertoire, mais &eacute;chouerait pour toute image incluse
+	  dans cette page via des liens relatifs, car le navigateur
+	  demanderait un objet ins&eacute;r&eacute;. Par exemple, une requ&ecirc;te pour
+	  <code>image.gif</code> dans <code>/~quux/foo/index.html</code>
+	  deviendrait <code>/~quux/image.gif</code> sans la redirection
+	  externe !</p>
+
+          <p>Pour y parvenir, on peut utiliser des r&egrave;gles de ce style :</p>
+
+<example><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^foo<strong>$</strong>  foo<strong>/</strong>  [<strong>R</strong>]
+</pre></example>
+
+   <p>Vous pouvez aussi ajouter ce qui suit dans un fichier
+   <code>.htaccess</code> situ&eacute; dans le r&eacute;pertoire contenant la
+   ressource. Notez cependant que cela augmente la charge du processeur.</p>
+
+<example><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteCond    %{REQUEST_FILENAME}  <strong>-d</strong>
+RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="movehomedirs">
+
+      <title>D&eacute;placement des r&eacute;pertoires home vers un autre serveur</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>De nombreux webmasters ont demand&eacute; comment r&eacute;soudre le
+	  probl&egrave;me suivant : ils voudraient tout simplement rediriger
+	  les r&eacute;pertoires home d'un serveur web vers un autre serveur
+	  web. Cette situation se pr&eacute;sente en g&eacute;n&eacute;ral lorsqu'on installe
+	  un nouveau serveur web destin&eacute; &agrave; terme &agrave; en remplacer un autre
+	  plus ancien.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Avec <module>mod_rewrite</module>, la solution est
+	  &eacute;vidente. Sur l'ancien serveur web, on redirige simplement
+	  toutes les URLs du style <code>/~user/chemin</code> vers
+	  <code>http://nouveau-serveur/~user/chemin</code>.</p>
+
+<example><pre>
+RewriteEngine on
+RewriteRule   ^/~(.+)  http://<strong>nouveau-serveur</strong>/~$1  [R,L]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="multipledirs">
+
+      <title>Recherche de pages dans plus d'un r&eacute;pertoire</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Le serveur web doit parfois rechercher des pages dans plus
+	  d'un r&eacute;pertoire. Dans ce cas, les vues multiples ou autres
+	  techniques similaires ne sont d'aucun secours.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On d&eacute;finit explicitement un jeu de r&egrave;gles qui recherche les
+	  fichiers dans les r&eacute;pertoires.</p>
+
+<example><pre>
+RewriteEngine on
+
+#   on cherche tout d'abord dans dir1/...
+#   ... et si on trouve, on est content et on arr&ecirc;te :
+RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f
+RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]
+
+#   on cherche ensuite dans dir2/...
+#   ... et si on trouve, on est content et on arr&ecirc;te :
+RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f
+RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
+
+#   sinon, on continue la recherche avec d'autres directives Alias
+#   ou ScriptAlias, etc...
+RewriteRule   ^(.+)  -  [PT]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="setenvvars">
+
+      <title>D&eacute;finir des variables d'environnement en fonction de
+      certaines parties de l'URL</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment conserver des informations
+	  d'&eacute;tat d'une requ&ecirc;te &agrave; l'autre et utiliser l'URL pour les
+	  encoder, sans utiliser d'encapsulateur CGI
+	  pour toutes les pages pour seulement supprimer ces
+	  informations.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On utilise une r&egrave;gle de r&eacute;&eacute;criture pour supprimer
+	  l'information d'&eacute;tat et l'enregistrer dans une variable
+	  d'environnement dont on pourra plus tard extraire la valeur
+	  dans XSSI ou CGI. De cette fa&ccedil;on, une URL telle que
+	  <code>/foo/S=java/bar/</code> sera traduite en
+	  <code>/foo/bar/</code> et la variable d'environnement
+	  <code>STATUS</code> aura pour valeur "java".</p>
+
+<example><pre>
+RewriteEngine on
+RewriteRule   ^(.*)/<strong>S=([^/]+)</strong>/(.*)    $1/$3 [E=<strong>STATUS:$2</strong>]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="uservhosts">
+
+      <title>H&ocirc;tes virtuels bas&eacute;s sur l'utilisateur</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Supposons que vous vouliez atteindre la page d'accueil des
+	  utilisateurs sur une m&ecirc;me machine au moyen de l'URL
+	  <code>www.<strong>nom-utilisateur</strong>.h&ocirc;te.domaine.com</code>,
+	  en vous basant
+	  seulement sur les enregistrements DNS de type A, et ceci sans qu'aucun
+	  h&ocirc;te virtuel ne soit install&eacute; sur cette machine.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Dans le cas des requ&ecirc;tes HTTP/1.0, il n'y a pas de solution
+	  ; par contre, avec une requ&ecirc;te HTTP/1.1 qui contient un
+	  en-t&ecirc;te HTTP Host:, on peut utiliser le jeu de r&egrave;gles suivant
+	  pour r&eacute;&eacute;crire en interne
+	  <code>http://www.nom-utilisateur.h&ocirc;te.com/chemin</code> vers
+	  <code>/home/nom-utilisateur/chemin</code> :</p>
+
+<example><pre>
+RewriteEngine on
+RewriteCond   %{<strong>HTTP_HOST</strong>}                 ^www\.<strong>([^.]+)</strong>\.host\.com$
+RewriteRule   ^(.*) /home/<strong>%1</strong>$1
+</pre></example>
+<p>Les parenth&egrave;ses utilis&eacute;es dans une directive <directive
+module="mod_rewrite">RewriteCond</directive> sont captur&eacute;es dans les
+r&eacute;f&eacute;rences arri&egrave;res <code>%1</code>, <code>%2</code>, etc..., alors que
+les parenth&egrave;ses utilis&eacute;es dans une directive <directive
+module="mod_rewrite">RewriteRule</directive> sont captur&eacute;es dans les
+r&eacute;f&eacute;rences arri&egrave;res <code>$1</code>, <code>$2</code>, etc...</p>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="redirecthome">
+
+      <title>Redirection des r&eacute;pertoires d'accueil pour les &eacute;trangers</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>On veut rediriger les URLs des r&eacute;pertoires d'accueil vers
+	  un autre serveur <code>www.quelque-part.com</code> lorsque
+	  l'utilisateur demandeur n'appartient pas au domaine local
+	  <code>notre-domaine.com</code>. On rencontre parfois cette
+	  situation dans un contexte d'h&ocirc;tes virtuels.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Juste une condition de r&eacute;&eacute;criture :</p>
+
+<example><pre>
+RewriteEngine on
+RewriteCond   %{REMOTE_HOST}  <strong>!^.+\.notre-domaine\.com$</strong>
+RewriteRule   ^(/~.+)         http://www.quelque-part.com/$1 [R,L]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="redirectanchors">
+
+      <title>Redirection des ancrages</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+        <p>Par d&eacute;faut, la redirection vers un ancrage HTML ne fonctionne
+	pas, car mod_rewrite &eacute;chappe le caract&egrave;re <code>#</code> en le
+	transformant en <code>%23</code>, ce qui rend la redirection
+	inop&eacute;rante.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On utilise le drapeau <code>[NE]</code> dans la r&egrave;gle
+	  <code>RewriteRule</code>. NE signifie "No Escape".
+          </p>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="time-dependent">
+
+      <title>R&eacute;&eacute;criture d&eacute;pendant de l'heure</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Lorsqu'il s'agit de distribuer des contenus dont la nature
+	  d&eacute;pend de l'heure, de nombreux webmasters utilisent encore des
+	  scripts CGI qui redirigent par exemple vers des pages
+	  sp&eacute;cifiques. Comment peut-on y parvenir &agrave; tenir compte de
+	  l'heure &agrave; l'aide de <module>mod_rewrite</module> ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Il existe de nombreuses variables nomm&eacute;es
+	  <code>TIME_xxx</code> utilisables dans les conditions de
+	  r&eacute;&eacute;criture. Utilis&eacute;es en conjonction avec les mod&egrave;les de
+	  comparaison lexicographique sp&eacute;ciaux <code>&lt;STRING</code>,
+	  <code>&gt;STRING</code> et <code>=STRING</code>, elles
+	  permettent d'effectuer des redirections d&eacute;pendant de
+	  l'heure :</p>
+
+<example><pre>
+RewriteEngine on
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
+RewriteRule   ^foo\.html$             foo.jour.html
+RewriteRule   ^foo\.html$             foo.nuit.html
+</pre></example>
+
+          <p>Avec cet exemple, l'URL <code>foo.html</code> renvoie
+	  le contenu de <code>foo.jour.html</code> durant le
+	  cr&eacute;neau horaire <code>07:00-19:00</code>, et le contenu de
+	  <code>foo.nuit.html</code> le reste du temps. Agr&eacute;able
+	  fonctionnalit&eacute; pour une page d'accueil...</p>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="backward-compatibility">
+
+      <title>Compatibilit&eacute; ascendante pour une migration de YYYY vers
+      XXXX</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment conf&eacute;rer une compatibilit&eacute; ascendante aux URLs
+	  (existant encore virtuellement) apr&egrave;s avoir migr&eacute;
+	  <code>document.YYYY</code> vers <code>document.XXXX</code>,
+	  c'est &agrave; dire apr&egrave;s avoir par exemple traduit un lot de
+	  fichiers <code>.html</code> en fichiers <code>.phtml</code>
+	  ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On r&eacute;&eacute;crit simplement le nom du fichier en son nom
+	  de base et v&eacute;rifie s'il existe aussi avec la nouvelle
+	  extension. Si c'est le cas, on utilise ce nom, sinon on
+	  r&eacute;&eacute;crit l'URL sous sa forme originale.</p>
+
+
+<example><pre>
+#   jeu de r&egrave;gles assurant une compatibilit&eacute; ascendante en r&eacute;&eacute;crivant
+#   document.html en document.phtml si et seulement si document.phtml
+#   existe et document.html n'existe plus
+RewriteEngine on
+RewriteBase   /~quux/
+#   r&eacute;&eacute;criture du fichier en son nom de base,
+#   mais garde en m&eacute;moire le fait qu'il s'agit
+#   d'un fichier html
+RewriteRule   ^(.*)\.html$              $1      [C,E=WasHTML:yes]
+#   r&eacute;&eacute;crit vers document.phtml s'il existe
+#   Note : il s'agit d'un exemple de niveau r&eacute;pertoire, si bien que
+#   %{REQUEST_FILENAME} contient le chemin complet du syst&egrave;me de fichier
+#   tel qu'il a &eacute;t&eacute; construit par le serveur.
+RewriteCond   %{REQUEST_FILENAME}.phtml -f
+RewriteRule   ^(.*)$ $1.phtml                   [S=1]
+#   sinon, restauration du nom de fichier complet original
+RewriteCond   %{ENV:WasHTML}            ^yes$
+RewriteRule   ^(.*)$ $1.html
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="old-to-new">
+
+      <title>De l'ancien au nouveau (en interne)</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Supposons que nous ayons r&eacute;cemment renomm&eacute; la page
+	  <code>foo.html</code> en <code>bar.html</code>, et voulions
+	  maintenant que l'ancienne URL soit toujours valide &agrave; des fins
+	  de compatibilit&eacute; ascendante. En fait, on voudrait que le
+	  changement de nom soit transparent aux utilisateurs de
+	  l'ancienne URL.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On r&eacute;&eacute;crit l'ancienne URL en interne vers la nouvelle via
+	  la r&egrave;gle suivante :</p>
+
+<example><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="old-to-new-extern">
+
+      <title>De l'ancien au nouveau (en externe)</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Supposons toujours que nous ayons r&eacute;cemment renomm&eacute; la page
+	  <code>foo.html</code> en <code>bar.html</code>, et voulions
+	  maintenant que l'ancienne URL soit toujours valide &agrave; des fins
+	  de compatibilit&eacute; ascendante. Par contre, nous voulons cette
+	  fois que les utilisateurs de l'ancienne URL soient redirig&eacute;s
+	  vers la nouvelle, c'est &agrave; dire que l'adresse tap&eacute;e
+	  dans leur navigateur doit aussi &ecirc;tre modifi&eacute;e.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On force une redirection HTTP vers la nouvelle URL, ce qui
+	  entra&icirc;ne une modification de celle du navigateur et aussi de ce
+	  que voit l'utilisateur :</p>
+
+<example><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="static-to-dynamic">
+
+      <title>De statique &agrave; dynamique</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment transformer une page statique <code>foo.html</code>
+	  en sa variante dynamique <code>foo.cgi</code> de mani&egrave;re
+	  transparente, c'est &agrave; dire sans en avertir le
+	  navigateur/utilisateur.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On r&eacute;&eacute;crit simplement l'URL en script CGI et force le
+	  gestionnaire de contenu &agrave; <strong>cgi-script</strong> de fa&ccedil;on
+	  &agrave; ce que le script s'ex&eacute;cute en tant que programme CGI.
+	  Ainsi, une requ&ecirc;te vers <code>/~quux/foo.html</code> conduit
+	  en interne &agrave; l'invocation de
+	  <code>/~quux/foo.cgi</code>.</p>
+
+<example><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="blocking-of-robots">
+
+      <title>Blocage des robots</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment emp&ecirc;cher un robot vraiment g&ecirc;nant de collecter les
+	  pages d'une partie sp&eacute;cifique du site web ? Un fichier
+	  <code>/robots.txt</code> comportant les entr&eacute;es du "Protocole
+	  d'Exclusion des Robots" ne suffit g&eacute;n&eacute;ralement pas &agrave; en venir
+	  &agrave; bout.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On utilise un jeu de r&egrave;gles qui interdit les URLs de la
+	  partie du site web concern&eacute;e <code>/~quux/foo/arc/</code>
+	  (peut-&ecirc;tre une partie du serveur avec une arborescence tr&egrave;s
+	  d&eacute;velopp&eacute;e &agrave; travers laquelle le parcours du
+	  robot induirait une charge importante pour le serveur). Nous
+	  devons nous assurer de n'interdire l'acc&egrave;s qu'&agrave; ce robot
+	  particulier, c'est &agrave; dire qu'il ne suffit pas d'interdire
+	  l'acc&egrave;s &agrave; l'h&ocirc;te sur lequel le robot fonctionne, ce qui
+	  bloquerait aussi les utilisateurs de cet h&ocirc;te. Pour y
+	  parvenir, on tient aussi compte des informations contenues
+	  dans l'en-t&ecirc;te HTTP User-Agent.</p>
+
+<example><pre>
+RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>.*
+RewriteCond %{REMOTE_ADDR}       ^<strong>123\.45\.67\.[8-9]</strong>$
+RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="blocked-inline-images">
+
+      <title>Blocage du r&eacute;f&eacute;rencement &agrave; chaud (Hotlinking) d'images</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Cette technique vous permet d'interdire &agrave; d'autres sites
+	  d'inclure directement vos images dans leurs pages. On fait
+	  souvent r&eacute;f&eacute;rence &agrave; cette pratique sous le nom de
+	  r&eacute;f&eacute;rencement &agrave; chaud (Hotlinking) qui entra&icirc;ne l'utilisation
+	  de votre bande passante pour servir des contenus faisant
+	  partie du site de quelqu'un d'autre.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+	<p>Cette technique repose sur la valeur de la variable
+	optionnelle <code>HTTP_REFERER</code>. Certaines personnes
+	pourront donc contourner cette limitation. Pour la plupart des
+	utilisateurs cependant, la requ&ecirc;te &eacute;chouera, en ce sens que
+	l'image ne sera pas affich&eacute;e depuis le site tiers.</p>
+	<p>Il y a plusieurs mani&egrave;res de g&eacute;rer cette situation.</p>
+
+	<p>Dans le premier exemple, nous rejetons tout simplement la
+	requ&ecirc;te si elle ne provenait pas d'une page appartenant &agrave; notre
+	site. Pour les besoins de cet exemple, nous supposons que le nom
+	de votre site est <code>www.example.com</code>.</p>
+
+<example><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
+</pre></example>
+
+	<p>Dans le second exemple, plut&ocirc;t que de rejeter la requ&ecirc;te,
+	nous affichons une autre image &agrave; la place.</p>
+
+<example><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
+</pre></example>
+
+	<p>Dans le troisi&egrave;me exemple, nous redirigeons la requ&ecirc;te vers
+	une image appartenant &agrave; un site tiers.</p>
+
+
+<example><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.site.com/image.gif   [R,NC]
+</pre></example>
+	<p>De tous ces exemples, les deux derniers semblent les plus
+	efficaces pour faire en sorte que les gens arr&ecirc;tent de
+	r&eacute;f&eacute;rencer vos images &agrave; chaud, car il ne verront pas les images
+	qu'ils s'attendent &agrave; voir.</p>
+
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="proxy-deny">
+
+      <title>Interdiction du mandataire</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment interdire l'utilisation du mandataire d'Apache &agrave; un
+	  certain h&ocirc;te, ou m&ecirc;me &agrave; un utilisateur d'un certain h&ocirc;te ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Nous devons tout d'abord nous assurer que
+	  <module>mod_rewrite</module> se situe en dessous (!) de
+	  <module>mod_proxy</module> dans le fichier de configuration
+	  lors de la compilation du serveur web Apache. De cette fa&ccedil;on,
+	  il est appel&eacute; <em>avant</em> <module>mod_proxy</module>. Nous
+	  pouvons alors utiliser la r&egrave;gle suivante pour une interdiction
+	  concernant un h&ocirc;te...</p>
+
+<example><pre>
+RewriteCond %{REMOTE_HOST} <strong>^mauvais-h&ocirc;te\.mon-domaine\.com$</strong>
+RewriteRule !^http://[^/.]\.mon-domaine.com.*  - [F]
+</pre></example>
+
+          <p>...et celle-ci pour une interdiction concernant un
+	  utilisateur d'un certain h&ocirc;te :</p>
+
+<example><pre>
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST}
+<strong>^mauvais-sujet@mauvais-h&ocirc;te\.mon-domaine\.com$</strong>
+RewriteRule !^http://[^/.]\.mon-domaine.com.*  - [F]
+</pre></example>
+        </dd>
+      </dl>
+
+    </section>
+
+    <section id="external-rewriting">
+
+      <title>Moteur de r&eacute;&eacute;criture externe</title>
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Une question de la Faq : comment r&eacute;soudre le probl&egrave;me
+	  FOO/BAR/QUUX/etc. ? <module>mod_rewrite</module> ne semble pas
+	  devoir y apporter de solution...</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Utiliser une <directive module="mod_rewrite"
+          >RewriteMap</directive> ou table de r&eacute;&eacute;criture externe, c'est
+	  &agrave; dire un programme qui agit de la m&ecirc;me fa&ccedil;on qu'une
+	  <directive module="mod_rewrite">RewriteMap</directive>. Il
+	  doit &ecirc;tre lanc&eacute; une fois au d&eacute;marrage d'Apache, recevoir les
+	  URLs des requ&ecirc;tes sur <code>STDIN</code>, et restituer l'URL
+	  r&eacute;sultante (en g&eacute;n&eacute;ral r&eacute;&eacute;crite) sur <code>STDOUT</code> (dans
+	  cet ordre !).</p>
+
+<example><pre>
+RewriteEngine on
+RewriteMap    quux-table       <strong>prg:</strong>/chemin/vers/table.quux.pl
+RewriteRule   ^/~quux/(.*)$  /~quux/<strong>${quux-table:$1}</strong>
+</pre></example>
+
+<example><pre>
+#!/chemin/vers/perl
+
+#   d&eacute;sactive la mise en tampon des entr&eacute;es/sorties, qui risque
+#   de provoquer des bouclages infinis pour le serveur Apache
+$| = 1;
+
+#   lit les URLs (une par ligne) depuis stdin et
+#   g&eacute;n&egrave;re l'URL transform&eacute;e sur stdout
+
+#   read URLs one per line from stdin and
+#   generate substitution URL on stdout
+while (&lt;&gt;) {
+    s|^foo/|bar/|;
+    print $_;
+}
+</pre></example>
+
+          <p>Ceci n'est qu'un exemple de d&eacute;monstration qui ne fait que
+	  r&eacute;&eacute;crire les URLs du style <code>/~quux/foo/...</code> vers
+	  <code>/~quux/bar/...</code>. En fait, vous pouvez programmer
+	  la substitution que vous voulez. Notez cependant que si de
+	  tels programmes peuvent aussi &ecirc;tre <strong>utilis&eacute;s</strong>
+	  par un utilisateur standard, seul l'administrateur du syst&egrave;me
+	  peut les <strong>&eacute;crire</strong>.</p>
+        </dd>
+      </dl>
+
+    </section>
+
+</manualpage>
+
