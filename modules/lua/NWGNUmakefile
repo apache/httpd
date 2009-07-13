@@ -236,7 +236,7 @@ FILES_nlm_exports = \
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
-UNWANTED = $(LUASRC)/src/lua.c $(LUASRC)/src/luac.c
+UNWANTED = $(LUASRC)/src/lua.c $(LUASRC)/src/luac.c $(LUASRC)/src/print.c
 
 FILES_lib_objs = \
 	$(patsubst $(LUASRC)/src/%.c,$(OBJDIR)/%.o, $(filter-out $(UNWANTED), $(wildcard $(LUASRC)/src/*.c))) \
