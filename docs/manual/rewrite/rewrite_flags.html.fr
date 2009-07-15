@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Les drapeaux du module Apache mod_rewrite - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Les drapeaux du module Apache mod_rewrite</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/rewrite/rewrite_flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/rewrite_flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+
+<p>Ce document décrit les drapeaux disponibles dans la directive
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>, en fournissant
+des explications détaillées et des exemples. Vous n'y trouverez pas
+une liste exhaustive de tous les drapeaux disponibles, c'est pourquoi
+vous devez aussi consulter la documentation de référence.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flags">Les drapeaux</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="rewrite_tech.html">Détails techniques</a></li><li><a href="rewrite_guide.html">Guide de réécriture - exemples
+utiles</a></li><li><a href="rewrite_guide_advanced.html">Guide de réécriture
+avancée - exemples utiles avancés</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="introduction" id="introduction">Introduction</a></h2>
+<p>Le comportement des directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> peut être modifié par un ou
+plusieurs drapeaux. Les drapeaux sont situés en fin de règle, entourés
+de crochets, et séparés le cas échéant par des virgules.</p>
+<div class="example"><p><code>
+RewriteRule modèle cible [drapeau1,drapeau2,drapeau3]
+</code></p></div>
+
+<p>Les drapeaux ont tous une forme courte, comme <code>CO</code>, ainsi
+qu'une forme longue, comme <code>cookie</code>. Certains drapeaux
+peuvent avoir un ou plusieurs arguments. Les drapeaux sont insensibles à
+la casse.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flags" id="flags">Les drapeaux</a></h2>
+
+<p>Chaque drapeau possède une forme longue et une forme courte. Bien que
+la forme courte soit la plus couramment utilisée, nous vous recommandons
+de vous familiariser avec les drapeaux sous leur forme longue, afin de
+bien mémoriser ce que chaque drapeau est supposé faire.</p>
+
+<p>Chaque drapeau disponible est présenté ici, avec un exemple
+d'utilisation.</p>
+
+<h3><a name="flag_c" id="flag_c">C|chain</a></h3>
+<p>Le drapeau [C] ou [chain] indique que la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est chaînée avec la
+suivante. Autrement dit, si la règle s'applique, elle est traitée
+normalement et passe le contrôle à la règle suivante. Par contre, si
+elle ne s'applique pas, la règle suivante, ainsi que toutes les règles
+chaînées qui suivent, seront sautées.</p>
+
+
+
+<h3><a name="flag_co" id="flag_co">CO|cookie</a></h3>
+<p>Le drapeau [CO], ou [cookie], vous permet de définir un cookie
+lorsqu'une règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+s'applique. Il possède cinq arguments dont trois sont obligatoires et
+deux optionnels.</p>
+<p>Vous devez déclarer un nom et une valeur pour définir le cookie,
+ainsi que le domaine pour lequel vous souhaitez que le cookie soit
+valide. Vous pouvez aussi définir la durée de vie du cookie, ainsi que
+le chemin pour lequel il doit être renvoyé.</p>
+<p>Par défaut, la durée de vie du cookie correspond à la session du
+navigateur en cours.</p>
+<p>Par défaut, le chemin pour lequel le cookie sera valide est "/" -
+c'est à dire, pour tout le site web.</p>
+<p>Voici un exemple :</p>
+
+<div class="example"><p><code>
+RewriteEngine On<br />
+RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
+</code></p></div>
+
+<p>Cette règle ne réécrit pas la requête (la cible de réécriture "-"
+indique à mod_rewrite de transmettre la requête sans modification), mais
+définit un cookie nommé 'frontdoor' avec une valeur 'yes'. Le cookie est
+valide pour tout hôte situé dans le domaine <code>.apache.org</code>. Sa
+durée de vie est limitée à 1440 minutes (24 heures), et il sera renvoyé
+pour tous les URIs.</p>
+
+
+
+<h3><a name="flag_e" id="flag_e">E|env</a></h3>
+<p>Avec le drapeau [E], ou [env], vous pouvez définir la valeur d'une
+variable d'environnement. Notez que certaines variables d'environnement
+peuvent être définies après le traitement de la règle, annulant par
+la-même ce que vous avez défini. Voir le <a href="../env.html">document
+sur les variables d'environnement</a> pour plus de détails sur le
+fonctionnement des variables d'environnement.</p>
+
+<p>L'exemple suivant définit une variable d'environnement nommée 'image'
+avec une valeur de '1' si l'URI de la requête correspond à un fichier
+image. Cette variable d'environnement est ensuite utilisée pour exclure
+une telle requête du journal des accès.</p>
+
+<div class="example"><p><code>
+RewriteRule \.(png|gif|jpg) - [E=image:1]<br />
+CustomLog logs/access_log combined env=!image
+</code></p></div>
+
+<p>Notez que le même effet peut être obtenu à l'aide de la directive
+<code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. Cette technique
+est présentée à titre d'exemple et non de recommandation.</p>
+
+
+<h3><a name="flag_f" id="flag_f">F|forbidden</a></h3>
+<p>L'utilisation du drapeau [F] permet de faire envoyer par Apache au
+client un code de statut "403 Forbidden". Le même effet peut être obtenu à
+l'aide de la directive <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code>,
+mais ce drapeau offre plus de souplesse dans l'attribution d'un statut
+Forbidden.</p>
+
+<p>La règle suivante va interdire la téléchargement de fichiers
+<code>.exe</code> depuis votre serveur.</p>
+
+<div class="example"><p><code>
+RewriteRule \.exe - [F]
+</code></p></div>
+
+<p>Cet exemple utilise la syntaxe "-" pour la cible de réécriture, ce
+qui signifie que l'URI de la requête n'est pas modifié. Il n'y a aucune
+raison de réécrire un URI, si vous avez l'intention d'interdire la
+requête.</p>
+
+
+
+<h3><a name="flag_g" id="flag_g">G|gone</a></h3>
+<p>Le drapeau [G] permet de faire envoyer par Apache un code de statut
+"410 Gone" avec la réponse. Ce code indique qu'une ressource qui était
+disponible auparavant ne l'est plus actuellement.</p>
+
+<p>Comme dans le cas du drapeau [F], on utilise en général la syntaxe
+"-" pour la cible de réécriture lorsqu'on utilise le drapeau [G] :</p>
+
+<div class="example"><p><code>
+RewriteRule ancienne-ressource - [G,NC]
+</code></p></div>
+
+
+<h3><a name="flag_h" id="flag_h">H|handler</a></h3>
+<p>Force le traitement de la requête résultante par le gestionnaire
+spécifié. Par exemple, on peut utiliser ce drapeau pour forcer
+l'interprétation de tous les fichiers sans extension par le gestionnaire
+php :</p>
+
+<div class="example"><p><code>
+RewriteRule !\. - [H=application/x-httpd-php]
+</code></p></div>
+
+<p>
+L'expression rationnelle ci-dessus - <code>!\.</code> - correspond à
+toute requête qui ne contient pas le caractère <code>.</code>.
+</p>
+<p>On peut aussi utiliser ce drapeau pour forcer l'utilisation d'un
+certain gestionnaire en fonction de certaines conditions. Par exemple,
+l'extrait suivant utilisé dans un contexte de niveau serveur permet de
+faire en sorte que les fichiers <code>.php</code> soient
+<em>affichés</em> par <code>mod_php</code> dans le cas où ils font
+l'objet d'une requête avec l'extension <code>.phps</code> :
+
+<div class="example"><p><code>
+RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
+</code></p></div>
+</p>
+
+<p>L'expression rationnelle ci-dessus -
+<code>^(/source/.+\.php)s$</code> - va correspondre à toute requête qui
+débutera par <code>/source/</code>, continuera par 1 ou n caractères
+puis par <code>.phps</code>. La référence arrière $1 fait référence à la
+correspondance capturée entre parenthèses de l'expression
+rationnelle.</p>
+
+
+
+
+<h3><a name="flag_l" id="flag_l">L|last</a></h3>
+<p>Lorsque le drapeau [L] est présent, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+arrête le traitement du jeu de règles. Cela signifie dans la plupart des
+situations que si la règle s'applique, aucune autre règle ne sera
+traitée.</p>
+
+<p>Si vous utilisez des règles <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dans des fichiers
+<code>.htaccess</code> ou des sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, il est important d'avoir quelques
+notions sur la manière dont les règles sont traitées. Pour simplifier,
+une fois les règles traitées, la requête réécrite est passée à nouveau
+au moteur d'interprétation des URLs afin que ce dernier puisse la
+traiter. Il est possible qu'au cours du traitement de la requête
+réécrite, le fichier <code>.htaccess</code> ou la section <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> soient à nouveau
+rencontrés, entraînant un nouveau traitement du jeu de règles depuis le
+début. Cette situation se présente le plus souvent lorsqu'une des règles
+provoque une redirection - interne ou externe - ce qui réinitialise le
+traitement de la requête.</p>
+
+<p>Si vous utilisez des directives <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> dans un de ces contextes,
+il importe par conséquent de prévoir explicitement des étapes permettant
+d'éviter un bouclage infini sur les règles,
+et de ne pas compter seulement sur
+le drapeau [L] pour terminer l'exécution d'une série de règles, comme
+décrit ci-dessous.</p>
+
+<p>Dans l'exemple donné ici, toute requête est réécrite en
+<code>index.php</code>, la requête originale étant ajoutée comme chaîne
+de requête en argument à <code>index.php</code> ; cependant, la
+directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> permet de s'assurer que si
+la requête concerne déjà <code>index.php</code>, la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sera sautée.</p>
+
+<div class="example"><p><code>
+RewriteCond %{REQUEST_URI} !=index\.php<br />
+RewriteRule ^(.*) index.php?req=$1 [L]
+</code></p></div>
+
+
+<h3><a name="flag_n" id="flag_n">N|next</a></h3>
+<p>Le drapeau [N] provoque un redémarrage du traitement des règles
+depuis le début ; à utiliser avec précautions car il peut provoquer un
+bouclage infini.
+</p>
+<p>
+Le drapeau [Next] peut servir, par exemple,
+à remplacer de manière répétitive
+une chaîne de caractère ou une lettre dans une requête. Dans l'exemple
+suivant, chaque occurence de A sera remplacée par B dans la requête, et
+ceci jusqu'il n'y ait plus de A à remplacer.
+</p>
+
+<div class="example"><p><code>
+RewriteRule (.*)A(.*) $1B$2 [N]
+</code></p></div>
+
+<p>Vous pouvez vous représenter ce traitement comme une boucle
+<code>while</code> : tant que le modèle de la règle correspond (c'est à
+dire, tant que l'URI contient un <code>A</code>),
+effectuer la substitution (c'est à dire, remplacer le <code>A</code> par
+un <code>B</code>).</p>
+
+
+
+<h3><a name="flag_nc" id="flag_nc">NC|nocase</a></h3>
+<p>Avec le drapeau [NC], le modèle de la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est comparé à la requête de
+manière insensible à la casse. C'est à dire que cette comparaison
+s'effectue sans tenir compte des majuscules/minuscules dans l'URI
+comparé.</p>
+
+<p>Dans l'exemple suivant, toute requête pour un fichier image sera
+transmise par Apache à votre serveur d'images dédié. La correspondance est
+insensible à la casse, si bien que par exemple, <code>.jpg</code> aussi
+bien que <code>.JPG</code> seront acceptés.</p>
+
+<div class="example"><p><code>
+RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
+</code></p></div>
+
+
+<h3><a name="flag_ne" id="flag_ne">NE|noescape</a></h3>
+<p>Par défaut, les caractères spéciaux, comme <code>&amp;</code> et
+<code>?</code>, sont convertis en leur équivalent
+hexadécimal. Le drapeau [NE] permet d'éviter cette conversion.
+</p>
+
+<div class="example"><p><code>
+RewriteRule ^/ancre/(.+) /grosse-page.html#$1 [NE,R]
+</code></p></div>
+
+<p>
+Dans l'exemple ci-dessus, <code>/anchor/xyz</code> est réécrit en
+<code>/bigpage.html#xyz</code>. En l'absence du drapeau [NE], le #
+aurait été converti en son équivalent hexadécimal, <code>%23</code>, ce
+qui aurait provoqué un code d'erreur "404 Not Found".
+</p>
+
+
+
+<h3><a name="flag_ns" id="flag_ns">NS|nosubreq</a></h3>
+<p>Le drapeau [NS] empêche la règle de s'appliquer aux sous-requêtes.
+Par exemple, une page incluse au moyen d'une SSI (Server
+Side Include) est une sous-requête, et vous ne voudrez peut-être pas que
+la réécriture s'applique à ces sous-requêtes.</p>
+
+<p>
+Les images, scripts java, ou fichiers css, chargés en tant que partie
+d'une page html, ne sont pas des sous-requêtes - le navigateur les
+appelle sous forme de requêtes HTTP à part entière.
+</p>
+
+
+<h3><a name="flag_p" id="flag_p">P|proxy</a></h3>
+<p>L'utilisation du drapeau [P] entraîne le traitement de la requête par
+le module <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, et ceci via une requête de
+mandataire. Par exemple, si vous voulez que toutes les requêtes d'images
+soient traitées par un serveur d'images annexe, vous pouvez utiliser
+une règle de ce style :</p>
+
+<div class="example"><p><code>
+RewriteRule (.*)\.(jpg|gif|png) http://images.exemple.com$1.$2 [P]
+</code></p></div>
+
+<p>L'utilisation du drapeau [P] provoque aussi l'effet du drapeau [L] -
+autrement dit, la requête est immédiatement envoyée au mandataire, et
+toute règle ultérieure sera ignorée.</p>
+
+
+
+<h3><a name="flag_pt" id="flag_pt">PT|passthrough</a></h3>
+
+<p>
+Par défaut, la cible (ou chaîne de substitution) d'une règle
+RewriteRule est sensée être un chemin de fichier. Avec le drapeau [PT],
+par contre, elle est traitée comme un URI. Autrement dit, avec le
+drapeau [PT], le résultat de la règle  <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est passé à nouveau au
+système de mise en correspondance des URLs avec le système de fichiers,
+de façon à ce que les systèmes de mise en correspondance basés sur les
+chemins de fichiers, comme la directive <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, par exemple, puissent avoir une
+chance d'accomplir leur tâche.
+</p>
+
+<p>
+Si par exemple, vous avez un <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> pour /icons, et une règle  <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> qui renvoie vers /icons,
+vous devez utiliser le drapeau [PT] pour être sûr que l'<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> sera bien évalué.
+</p>
+
+<div class="example"><p><code>
+Alias /icons /usr/local/apache/icons<br />
+RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
+</code></p></div>
+
+<p>
+Dans l'exemple précédent, en l'absence du drapeau [PT], l'Alias aurait
+été ignoré, ce qui aurait provoqué une erreur 'File not found'.
+</p>
+
+
+
+<h3><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a></h3>
+<p>
+Quand l'URI de remplacement contient une chaîne de requête, le
+comportement par défaut de la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est de supprimer la <code>
+query string</code> (il s'agit des paramètres éventuellement passés dans l'URL après le
+caractère <code>?</code>, usuellement pour les formulaires traités par la
+méthode HTTP <code>GET</code>) existante, et de la remplacer par celle nouvellement créée.
+Avec le drapeau [QSA], les chaînes de requête peuvent être combinées.
+</p>
+
+<p>Considérons la règle suivante :</p>
+
+<div class="example"><p><code>
+RewriteRule /pages/(.+) /page.php?page=$1 [QSA]
+</code></p></div>
+
+<p>Avec le drapeau [QSA], une requête pour
+<code>/pages/123?one=two</code> sera réécrite en
+<code>/page.php?page=123&amp;one=two</code>. Sans le drapeau [QSA], la
+même requête sera réécrite en <code>/page.php?page=123</code> -
+autrement dit, la chaîne de requête (<code>query string</code>) existante sera supprimée.
+</p>
+
+
+<h3><a name="flag_r" id="flag_r">R|redirect</a></h3>
+<p>
+L'utilisation du drapeau [R] provoque l'envoi d'une redirection au
+navigateur. Si une URL pleinement qualifiée (FQDN - fully qualified domain name)
+ est spécifiée (c'est à dire incluant <code>http://nom-du-serveur/</code>),
+ une redirection sera effectuée vers cette adresse. Dans le cas contraire,
+ c'est le nom du serveur local qui sera utilisé pour générer l'URL envoyée avec la
+redirection.
+</p>
+
+<p>
+Un code de statut entre 300 et 399 peut être spécifié, le code 302 étant
+utilisé par défaut si aucun code n'est spécifié.
+</p>
+
+<p>
+Vous utiliserez presque toujours [R] en conjonction avec [L] (c'est à
+dire [R,L]), car employé seul, le drapeau [R] préfixe l'URI avec
+<code>http://cet-hôte[:ce-port]</code>, mais passe ensuite cette adresse
+à la règle suivante, ce qui provoquera le plus souvent des
+avertissements 'Invalid URI in request'.
+</p>
+
+
+
+<h3><a name="flag_s" id="flag_s">S|skip</a></h3>
+<p>Le drapeau [S] sert à sauter des règles que vous ne voulez pas voir
+exécuter. Ceci peut s'interpréter comme une instruction
+<code>goto</code>  dans votre jeu de règles de réécriture. Dans
+l'exemple suivant, nous ne voulons exécuter la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> que si l'URI demandé ne
+correspond pas à un fichier existant.</p>
+
+<div class="example"><p><code>
+# La requête concerne-t-elle un fichier qui n'existe pas ?<br />
+RewriteCond %{REQUEST_FILENAME} !-f<br />
+RewriteCond %{REQUEST_FILENAME} !-d<br />
+# Si c'est la cas, on saute les deux règles de réécriture suivantes<br />
+RewriteRule .? - [S=2]<br />
+<br />
+RewriteRule (.*\.gif) images.php?$1<br />
+RewriteRule (.*\.html) docs.php?$1
+</code></p></div>
+
+<p>Cette technique trouve son utilité dans le fait qu'une directive
+<code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> ne s'applique
+qu'à la règle qui la suit immédiatement. Ainsi, si vous voulez
+qu'une directive <code>RewriteCond</code> s'applique à plusieurs règles
+<code>RewriteRule</code>, vous pouvez utiliser le drapeau [Skip].</p>
+
+
+
+<h3><a name="flag_t" id="flag_t">T|type</a></h3>
+<p>Définit le type MIME de la réponse résultante renvoyée. L'effet est
+identique à celui de la directive <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code>.</p>
+
+<p>Par exemple, vous pouvez utiliser la technique suivante pour servir
+du code source Perl en tant que plein texte, s'il est requis d'une
+certaine manière :</p>
+
+<div class="example"><p><code>
+# Sert les fichier .pl en tant que plein texte<br />
+RewriteRule \.pl$ - [T=text/plain]
+</code></p></div>
+
+<p>Ou encore, si vous possédez une caméra qui produit des fichiers
+images jpeg sans extension, vous pouvez forcer le renvoi de ces images
+avec le type MIME correct en se basant sur le nom du fichier :</p>
+
+<div class="example"><p><code>
+# Les fichiers dont le nom contient 'IMG' sont des images jpg.<br />
+RewriteRule IMG - [T=image/jpg]
+</code></p></div>
+
+<p>Notez cependant qu'il s'agit d'un exemple trivial, et que le problème
+aurait pu être résolu en utilisant à la place la directive <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>. Il faut toujours
+envisager la possibilité d'une solution alternative à un problème avant
+d'avoir recours à la réécriture, qui sera toujours moins efficace qu'une
+solution alternative.</p>
+
+
+</div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/rewrite/rewrite_flags.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/rewrite_flags.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>
