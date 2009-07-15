@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 636043 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rewrite_tech.xml.meta">
+<parentdocument href="./">Rewrite</parentdocument>
+
+  <title>D&eacute;tails techniques sur le module Apache mod_rewrite</title>
+
+<summary>
+<p>Ce document passe en revue certains d&eacute;tails techniques &agrave; propos du
+module mod_rewrite et de la mise en correspondance des URLs</p>
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Documentation du module</a></seealso>
+<seealso><a href="rewrite_intro.html">Introduction &agrave; mod_rewrite</a></seealso>
+<seealso><a href="rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples
+utiles</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture
+avanc&eacute;e - exemples utiles avanc&eacute;s</a></seealso>
+
+<section id="Internal"><title>Fonctionnement interne</title>
+
+      <p>Le fonctionnement interne de ce module est tr&egrave;s complexe, mais
+      il est n&eacute;cessaire de l'expliquer, m&ecirc;me &agrave; l'utilisateur "standard",
+      afin d'&eacute;viter les erreurs courantes et de pouvoir exploiter toutes
+      ses fonctionnalit&eacute;s.</p>
+</section>
+
+<section id="InternalAPI"><title>Phases de l'API</title>
+
+      <p>Il faut tout d'abord bien comprendre que le traitement d'une
+      requ&ecirc;te HTTP par Apache s'effectue en plusieurs phases. L'API
+      d'Apache fournit un point d'accroche (hook) pour chacune de ces
+      phases. Mod_rewrite utilise deux de ces hooks : le hook de
+      conversion des URLs en noms de fichiers qui est utilis&eacute; quand la
+      requ&ecirc;te HTTP a &eacute;t&eacute; lue mais avant le d&eacute;marrage de tout processus
+      d'autorisation, et le hook "Fixup" qui est d&eacute;clench&eacute; apr&egrave;s les
+      phases d'autorisation et apr&egrave;s la lecture des fichiers de
+      configuration niveau r&eacute;pertoire (<code>.htaccess</code>), mais
+      avant que le gestionnaire de contenu soit activ&eacute;.</p>
+
+      <p>Donc, lorsqu'une requ&ecirc;te arrive et quand Apache a d&eacute;termin&eacute; le
+      serveur correspondant (ou le serveur virtuel), le moteur de
+      r&eacute;&eacute;criture commence le traitement de toutes les directives de
+      mod_rewrite de la configuration du serveur principal dans la phase
+      de conversion URL vers nom de fichier. Une fois ces &eacute;tapes
+      franchies, lorsque les repertoires de donn&eacute;es finaux ont &eacute;t&eacute;
+      trouv&eacute;s, les directives de configuration de mod_rewrite au niveau
+      r&eacute;pertoire sont &eacute;x&eacute;cut&eacute;es dans la phase Fixup. Dans les deux cas,
+      mod_rewrite r&eacute;&eacute;crit les URLs soit en nouvelles URLs, soit en noms
+      de fichiers, bien que la distinction entre les deux ne soit pas
+      &eacute;vidente. Cette utilisation de l'API n'&eacute;tait pas sens&eacute;e s'op&eacute;rer
+      de cette mani&egrave;re lorsque l'API fut con&ccedil;ue, mais depuis Apache 1.x,
+      c'est le seul mode op&eacute;ratoire possible pour mod_rewrite. Afin de
+      rendre les choses plus claires, souvenez-vous de ces deux points :</p>
+
+      <ol>
+        <li>Bien que mod_rewrite r&eacute;&eacute;crive les URLs en URLs, les URLs en
+	noms de fichiers et m&ecirc;me des noms de fichiers en d'autres noms
+	de fichiers, l'API ne propose actuellement qu'un hook URL vers
+	nom de fichier. Les deux hooks manquants seront ajout&eacute;s dans
+	Apache &agrave; partir de la version 2.0 afin de rendre le processus
+	plus clair. Mais ce point ne pr&eacute;sente pas d'inconv&eacute;nient pour
+	l'utilisateur, il s'agit simplement d'un fait que vous devez
+	garder &agrave; l'esprit : Apache en fait plus avec le hook URL vers
+	nom de fichier que l'API n'a la pr&eacute;tention d'en faire.</li>
+
+        <li>
+          Paradoxalement, mod_rewrite permet la manipulation d'URLs dans
+	  un contexte de r&eacute;pertoire, <em>c'est &agrave; dire</em> dans les
+	  fichiers <code>.htaccess</code>, bien que ces derniers
+	  soient trait&eacute;s bien longtemps apr&egrave;s que les URLs n'aient &eacute;t&eacute;
+	  traduites en noms de fichiers. Les choses doivent se d&eacute;rouler
+	  ainsi car les fichiers <code>.htaccess</code> r&eacute;sident dans le
+	  syst&egrave;me de fichiers, et le traitement a d&eacute;j&agrave; atteint
+	  cette &eacute;tape. Autrement dit, en accord avec les phases de
+	  l'API, &agrave; ce point du traitement, il est trop tard pour
+	  effectuer des manipulations d'URLs. Pour r&eacute;soudre ce probl&egrave;me
+	  d'ant&eacute;riorit&eacute;, mod_rewrite utilise une astuce : pour effectuer
+	  une manipulation URL/nom de fichier dans un contexte de
+	  r&eacute;pertoire, mod_rewrite r&eacute;&eacute;crit tout d'abord le nom de fichier
+	  en son URL d'origine (ce qui est normalement impossible, mais
+	  voir ci-dessous l'astuce utilis&eacute;e par la directive
+	  <code>RewriteBase</code> pour y parvenir), puis
+	  initialise une nouvelle sous-requ&ecirc;te interne avec la nouvelle
+	  URL ; ce qui a pour effet de red&eacute;marrer le processus des
+	  phases de l'API.
+
+          <p>Encore une fois, mod_rewrite fait tout ce qui est en son
+	  pouvoir pour rendre la complexit&eacute; de cette &eacute;tape compl&egrave;tement
+	  transparente &agrave; l'utilisateur, mais vous devez garder ceci &agrave;
+	  l'esprit : alors que les manipulations d'URLs dans le contexte
+	  du serveur sont vraiment rapides et efficaces, les r&eacute;&eacute;critures
+	  dans un contexte de r&eacute;pertoire sont lentes et inefficaces &agrave;
+	  cause du probl&egrave;me d'ant&eacute;riorit&eacute; pr&eacute;cit&eacute;. Cependant, c'est la
+	  seule mani&egrave;re dont mod_rewrite peut proposer des manipulations
+	  d'URLs (limit&eacute;es &agrave; une branche du syst&egrave;me de fichiers) &agrave;
+	  l'utilisateur standard.</p>
+        </li>
+      </ol>
+
+      <p>Ne perdez pas de vue ces deux points!</p>
+</section>
+
+<section id="InternalRuleset"><title>Traitement du jeu de r&egrave;gles</title>
+
+      <p>Maintenant, quand mod_rewrite se lance dans ces deux phases de
+      l'API, il lit le jeu de r&egrave;gles configur&eacute;es depuis la structure
+      contenant sa configuration (qui a &eacute;t&eacute; elle-m&ecirc;me cr&eacute;&eacute;e soit au
+      d&eacute;marrage d'Apache pour le contexte du serveur, soit lors du
+      parcours des r&eacute;pertoires par le noyau d'Apache pour le contexte de
+      r&eacute;pertoire). Puis le moteur de r&eacute;&eacute;criture est d&eacute;marr&eacute; avec le jeu
+      de r&egrave;gles contenu (une ou plusieurs r&egrave;gles associ&eacute;es &agrave; leurs
+      conditions). En lui-m&ecirc;me, le mode op&eacute;ratoire du moteur de
+      r&eacute;&eacute;criture d'URLs est exactement le m&ecirc;me dans les deux contextes
+      de configuration. Seul le traitement du r&eacute;sultat final diff&egrave;re.</p>
+
+      <p>L'ordre dans lequel les r&egrave;gles sont d&eacute;finies est important car
+      le moteur de r&eacute;&eacute;criture les traite selon une chronologie
+      particuli&egrave;re (et pas tr&egrave;s &eacute;vidente). Le principe est le suivant :
+      le moteur de r&eacute;&eacute;criture traite les r&egrave;gles (les directives <directive
+      module="mod_rewrite">RewriteRule</directive>) les unes
+      &agrave; la suite des autres, et lorsqu'une r&egrave;gle s'applique, il parcourt
+      les &eacute;ventuelles conditions (directives
+      <code>RewriteCond</code>directives) associ&eacute;es.
+      Pour des raisons historiques, les
+      conditions pr&eacute;c&egrave;dent les r&egrave;gles, si bien que le d&eacute;roulement du
+      contr&ocirc;le est un peu compliqu&eacute;. Voir la figure 1 pour plus de
+      d&eacute;tails.</p>
+<p class="figure">
+      <img src="../images/mod_rewrite_fig1.gif" width="428"
+           height="385" alt="[N&eacute;cessite le mode graphique pour
+	   l'affichage]" /><br />
+      <dfn>Figure 1:</dfn>D&eacute;roulement du contr&ocirc;le &agrave; travers le jeu de
+      r&egrave;gles de r&eacute;&eacute;criture
+</p>
+      <p>Comme vous pouvez le voir, l'URL est tout d'abord compar&eacute;e au
+      <em>Mod&egrave;le</em> de chaque r&egrave;gle. Lorsqu'une r&egrave;gle ne s'applique
+      pas, mod_rewrite stoppe imm&eacute;diatement le traitement de cette r&egrave;gle
+      et passe &agrave; la r&egrave;gle suivante. Si l'URL correspond au
+      <em>Mod&egrave;le</em>, mod_rewrite recherche la pr&eacute;sence de conditions
+      correspondantes. S'il n'y en a pas, mod_rewrite remplace
+      simplement l'URL par une cha&icirc;ne &eacute;labor&eacute;e &agrave; partir de la cha&icirc;ne de
+      <em>Substitution</em>, puis passe &agrave; la r&egrave;gle suivante. Si des
+      conditions sont pr&eacute;sentes, mod_rewrite lance un bouclage
+      secondaire afin de les traiter selon l'ordre dans lequel elles
+      sont d&eacute;finies. La logique de traitement des conditions est
+      diff&eacute;rente : on ne compare pas l'URL &agrave; un mod&egrave;le. Une cha&icirc;ne de
+      test <em>TestString</em> est tout d'abord &eacute;labor&eacute;e en d&eacute;veloppant
+      des variables, des r&eacute;f&eacute;rences arri&egrave;res, des recherches dans des
+      tables de correspondances, etc..., puis cette cha&icirc;ne de test est
+      compar&eacute;e au mod&egrave;le de condition <em>CondPattern</em>. Si le mod&egrave;le
+      ne correspond pas, les autres conditions du jeu ne sont pas
+      examin&eacute;es et la r&egrave;gle correspondante ne s'applique pas. Si le
+      mod&egrave;le correspond, la condition suivante est examin&eacute;e et ainsi de
+      suite jusqu'&agrave; la derni&egrave;re condition. Si toutes les conditions sont
+      satisfaites, le traitement de la r&egrave;gle en cours se poursuit avec
+      le remplacement de l'URL par la cha&icirc;ne de <em>Substitution</em>.</p>
+
+</section>
+
+
+</manualpage>
+

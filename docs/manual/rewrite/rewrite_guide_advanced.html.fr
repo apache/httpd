@@ -1,0 +1,1379 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Guide de réécriture des URLs - Sujets avancés - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Guide de réécriture des URLs - Sujets avancés</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/rewrite/rewrite_guide_advanced.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/rewrite_guide_advanced.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+
+
+    <p>Ce document complémente la
+    <a href="../mod/mod_rewrite.html">documentation de référence</a> du
+    module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les différentes
+    manières d'utiliser le module d'Apache <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    pour résoudre les problèmes d'URLs typiques auxquels sont souvent
+    confrontés les webmasters. Nous fournissons une description
+    détaillée de la résolution de chaque problème par la configuration
+    d'un jeu de règles de réécriture.</p>
+
+    <div class="warning">ATTENTION: il pourra s'avérer nécessaire de
+    modifier les exemples en fonction de la
+    configuration de votre serveur, par exemple en ajoutant le drapeau
+    <code>[PT]</code> si les modules <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> et
+    <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> sont utilisés, etc... Les jeux de
+    règles devront également être adaptés pour passer d'un contexte de
+    serveur à un contexte de répertoire (fichiers
+    <code>.htaccess</code>). Essayez de toujours bien comprendre ce que
+    fait un jeu de règles avant de l'utiliser, ce qui pourra vous éviter
+    bien des problèmes.</div>
+
+  </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cluster">Accès à une grappe de serveurs via un espace d'adressage
+      compatible</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Répertoires utilisateurs structurés</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#filereorg">Réorganisation du système de fichiers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirect404">Rediriger les URLs erronées vers un autre serveur Web</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#archive-access-multiplexer">Multiplexeur d'accès aux archives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#browser-dependent-content">Contenu dépendant du navigateur</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dynamic-mirror">Miroir dynamique</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#reverse-dynamic-mirror">Miroir dynamique inverse</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#retrieve-missing-data">Récupérer des données manquantes depuis l'Intranet</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Répartition de charge</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#new-mime-type">Nouveau type MIME, nouveau service</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">Régéneration de contenu à la volée</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#autorefresh">Actualisation automatique d'un document</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mass-virtual-hosting">Hébergement virtuel de masse</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Interdiction d'hôtes</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Interdiction du mandataire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#special-authentication">Variante particulière d'authentification</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Redirection basée sur le référent</a></li>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du
+module</a></li><li><a href="rewrite_intro.html">Introduction à
+mod_rewrite</a></li><li><a href="rewrite_guide.html">Guide de réécriture - exemples
+utiles</a></li><li><a href="rewrite_tech.html">Détails techniques</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="cluster" id="cluster">Accès à une grappe de serveurs via un espace d'adressage
+      compatible</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment créer un espace d'adressage homogène et compatible
+	  avec
+	  tous les serveurs WWW d'une grappe de serveurs d'un intranet ?
+	  C'est à dire que toutes les URLs (par définition
+	  locales à un
+	  serveur et dépendant donc de celui-ci) deviennent
+	  véritablement <em>indépendantes</em> du serveur ! Nous voulons
+	  disposer, pour accéder à l'espace de nommage WWW, d'un seul
+	  espace d'adressage compatible : aucune URL ne
+	  doit inclure d'information quelconque à propos du serveur
+	  cible physique. La grappe de serveurs doit elle-même nous
+	  diriger automatiquement vers le bon serveur cible physique,
+	  selon les besoins, et ceci de manière transparente.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Tout d'abord, la connaissance des serveurs cibles est issue
+	  de tables de correspondances externes (distribuées) qui
+	  contiennent des informations sur la localisation de nos
+	  utilisateurs, groupes et entités. Elles se présentent sous la
+	  forme :</p>
+
+<div class="example"><pre>
+utilisateur1  serveur_utilisateur1
+utilisateur2  serveur_utilisateur2
+:      :
+</pre></div>
+
+          <p>On les enregistre sous forme de fichiers
+	  <code>map.xxx-vers-serveur</code>. On doit ensuite faire
+	  rediriger à tous les serveurs les URLs de la forme :</p>
+
+<div class="example"><pre>
+/u/utilisateur/chemin
+/g/groupe/chemin
+/e/entité/chemin
+</pre></div>
+
+          <p>vers</p>
+
+<div class="example"><pre>
+http://serveur-physique/u/utilisateur/chemin
+http://serveur-physique/g/groupe/chemin
+http://serveur-physique/e/entité/chemin
+</pre></div>
+
+          <p>si il n'est pas nécessaire que chaque chemin d'URL être valide sur chaque
+	  serveur. Le jeu
+	  de règles suivant le fait pour nous à l'aide des fichiers de
+	  correspondance (en supposant que serveur0 soit un serveur par
+	  défaut qui sera choisi si l'utilisateur ne possède aucune
+	  entrée dans la table) :</p>
+
+<div class="example"><pre>
+RewriteEngine on
+
+RewriteMap      utilisateur-vers-serveur   txt:/chemin/vers/map.utilisateur-vers-serveur
+RewriteMap     groupe-vers-serveur   txt:/chemin/vers/map.groupe-vers-serveur
+RewriteMap    entité-vers-serveur   txt:/chemin/vers/map.entité-vers-serveur
+
+RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)
+http://<strong>${utilisateur-vers-serveur:$1|serveur0}</strong>/u/$1/$2
+RewriteRule   ^/g/<strong>([^/]+)</strong>/?(.*)
+http://<strong>${groupe-vers-serveur:$1|serveur0}</strong>/g/$1/$2
+RewriteRule   ^/e/<strong>([^/]+)</strong>/?(.*)
+http://<strong>${entité-vers-serveur:$1|serveur0}</strong>/e/$1/$2
+
+RewriteRule   ^/([uge])/([^/]+)/?$          /$1/$2/.www/
+RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="structuredhomedirs" id="structuredhomedirs">Répertoires utilisateurs structurés</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Certains sites possédant des milliers d'utilisateurs
+	  organisent les répertoires home de manière
+	  structurée, <em>c'est à dire</em> que chaque répertoire home
+	  se situe dans un sous-répertoire dont le nom commence (par
+	  exemple) par le premier caractère du nom de l'utilisateur.
+	  Ainsi, <code>/~foo/chemin</code> est dans
+	  <code>/home/<strong>f</strong>/foo/.www/chemin</code>, tandis
+	  que <code>/~bar/chemin</code> est dans
+	  <code>/home/<strong>b</strong>/bar/.www/chemin</code>.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Le jeu de règles suivant permet de développer les URLs avec
+	  tilde selon la représentation ci-dessus.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/.www$3
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="filereorg" id="filereorg">Réorganisation du système de fichiers</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Voici un cas d'espèce : une application très efficace qui
+	  fait un usage intensif de règles <code>RewriteRule</code>
+	  dans le contexte du répertoire pour présenter un aspect
+	  compréhensible sur le Web sans modifier la structure des
+	  données.
+	  Les coulisses de l'affaire : <strong><em>net.sw</em></strong>
+	  rassemble mes archives de paquetages de logiciels Unix
+	  librement accessibles, que j'ai commencé à collectionner en
+	  1992. Pour moi, c'est un passe-temps, mais aussi un travail,
+	  car alors que j'étudie la science informatique, j'ai aussi
+	  travaillé depuis de nombreuses années comme administrateur
+	  système et réseau à mes heures perdues. Chaque semaine j'ai
+	  besoin de tel ou tel logiciel, et j'ai donc créé une
+	  arborescence très ramifiée de répertoires où je stocke les
+	  paquetages :</p>
+
+<div class="example"><pre>
+drwxrwxr-x   2 netsw  users    512 Aug  3 18:39 Audio/
+drwxrwxr-x   2 netsw  users    512 Jul  9 14:37 Benchmark/
+drwxrwxr-x  12 netsw  users    512 Jul  9 00:34 Crypto/
+drwxrwxr-x   5 netsw  users    512 Jul  9 00:41 Database/
+drwxrwxr-x   4 netsw  users    512 Jul 30 19:25 Dicts/
+drwxrwxr-x  10 netsw  users    512 Jul  9 01:54 Graphic/
+drwxrwxr-x   5 netsw  users    512 Jul  9 01:58 Hackers/
+drwxrwxr-x   8 netsw  users    512 Jul  9 03:19 InfoSys/
+drwxrwxr-x   3 netsw  users    512 Jul  9 03:21 Math/
+drwxrwxr-x   3 netsw  users    512 Jul  9 03:24 Misc/
+drwxrwxr-x   9 netsw  users    512 Aug  1 16:33 Network/
+drwxrwxr-x   2 netsw  users    512 Jul  9 05:53 Office/
+drwxrwxr-x   7 netsw  users    512 Jul  9 09:24 SoftEng/
+drwxrwxr-x   7 netsw  users    512 Jul  9 12:17 System/
+drwxrwxr-x  12 netsw  users    512 Aug  3 20:15 Typesetting/
+drwxrwxr-x  10 netsw  users    512 Jul  9 14:08 X11/
+</pre></div>
+
+          <p>J'ai décidé en 1996 de rendre cette archive disponible pour
+	  le monde via une interface web agréable. "Agréable" signifie
+	  que je voulais vous offrir une interface où vous pourriez
+	  naviguer directement à travers la hiérarchie des archives.
+	  Mais "agréable" signifie aussi que je ne voulais rien changer
+	  dans cette hiérarchie - même pas en ajoutant queques scripts
+	  CGI à son sommet. Pourquoi ? Parceque j'avais prévu de rendre
+	  ultérieurement la structure ci-dessus accessible aussi via
+	  FTP, et je ne voulais pas voir de fichiers CGI ou Web à ce
+	  niveau.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>La solution comporte deux parties : la première consiste en
+	  un ensemble de scripts CGI qui créent toutes les pages à tous
+	  les niveaux de répertoires à la volée. Je les ai placés dans
+	  <code>/e/netsw/.www/</code> comme suit :</p>
+
+<div class="example"><pre>
+-rw-r--r--   1 netsw  users    1318 Aug  1 18:10 .wwwacl
+drwxr-xr-x  18 netsw  users     512 Aug  5 15:51 DATA/
+-rw-rw-rw-   1 netsw  users  372982 Aug  5 16:35 LOGFILE
+-rw-r--r--   1 netsw  users     659 Aug  4 09:27 TODO
+-rw-r--r--   1 netsw  users    5697 Aug  1 18:01 netsw-about.html
+-rwxr-xr-x   1 netsw  users     579 Aug  2 10:33 netsw-access.pl
+-rwxr-xr-x   1 netsw  users    1532 Aug  1 17:35 netsw-changes.cgi
+-rwxr-xr-x   1 netsw  users    2866 Aug  5 14:49 netsw-home.cgi
+drwxr-xr-x   2 netsw  users     512 Jul  8 23:47 netsw-img/
+-rwxr-xr-x   1 netsw  users   24050 Aug  5 15:49 netsw-lsdir.cgi
+-rwxr-xr-x   1 netsw  users    1589 Aug  3 18:43 netsw-search.cgi
+-rwxr-xr-x   1 netsw  users    1885 Aug  1 17:41 netsw-tree.cgi
+-rw-r--r--   1 netsw  users     234 Jul 30 16:35 netsw-unlimit.lst
+</pre></div>
+
+          <p>Le sous-répertoire <code>DATA/</code> contient la structure
+	  de répertoires proprement dite mentionnée plus haut, <em>c'est
+	  à dire</em> les véritables ressources
+	  <strong><em>net.sw</em></strong> et est mis à jour
+	  automatiquement via <code>rdist</code> à intervalles de temps
+	  réguliers. Reste la seconde partie du problème : comment
+	  relier ces deux structures selon une arborescence d'URL
+	  facile d'accès ? Il nous faut cacher le répertoire
+	  <code>DATA/</code> à l'utilisateur durant l'exécution des
+	  scripts CGI appropriés aux différentes URLs. Voici comment :
+	  tout d'abord, j'ajoute ces deux règles dans le fichier de
+	  configuration du répertoire racine <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> du serveur afin de
+	  réécrire le chemin d'URL public <code>/net.sw/</code> vers le
+	  chemin interne <code>/e/netsw</code> :</p>
+
+<div class="example"><pre>
+RewriteRule  ^net.sw$       net.sw/        [R]
+RewriteRule  ^net.sw/(.*)$  e/netsw/$1
+</pre></div>
+
+          <p>La première règle concerne les requêtes qui ne comportent
+	  pas de slash de fin ! C'est la seconde règle qui fait le
+	  véritable travail. Et maintenant vient la super configuration
+	  qui se trouve dans le fichier de configuration de répertoire
+	  <code>/e/netsw/.www/.wwwacl</code> :</p>
+
+<div class="example"><pre>
+Options       ExecCGI FollowSymLinks Includes MultiViews
+
+RewriteEngine on
+
+#  l'accès s'effectue via le préfixe /net.sw/
+RewriteBase   /net.sw/
+
+#  tout d'abord, on réécrit le répertoire racine vers
+#  le script CGI qui lui est associé
+RewriteRule   ^$                       netsw-home.cgi     [L]
+RewriteRule   ^index\.html$            netsw-home.cgi     [L]
+
+#  on supprime les sous-répertoires lorsque
+#  le navigateur nous atteint depuis des pages de répertoire
+RewriteRule   ^.+/(netsw-[^/]+/.+)$    $1                 [L]
+
+#  on stoppe maintenant la réécriture pour les fichiers locaux
+RewriteRule   ^netsw-home\.cgi.*       -                  [L]
+RewriteRule   ^netsw-changes\.cgi.*    -                  [L]
+RewriteRule   ^netsw-search\.cgi.*     -                  [L]
+RewriteRule   ^netsw-tree\.cgi$        -                  [L]
+RewriteRule   ^netsw-about\.html$      -                  [L]
+RewriteRule   ^netsw-img/.*$           -                  [L]
+
+#  ce qui reste est un sous-répertoire qui peut être traité
+#  par un autre script CGI
+RewriteRule   !^netsw-lsdir\.cgi.*     -                  [C]
+RewriteRule   (.*)                     netsw-lsdir.cgi/$1
+</pre></div>
+
+          <p>Quelques indices pour l'interprétation :</p>
+
+          <ol>
+            <li>Remarquez le drapeau <code>L</code> (last) et l'absence
+	    de chaîne de substitution ('<code>-</code>') dans la
+	    quatrième partie.</li>
+
+            <li>Remarquez le caractère <code>!</code> (not)  et le
+	    drapeau <code>C</code> (chain) dans la première règle de la
+	    dernière partie.</li>
+
+            <li>Remarquez le modèle qui correspond à tout dans la
+	    dernière règle.</li>
+          </ol>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirect404" id="redirect404">Rediriger les URLs erronées vers un autre serveur Web</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Une question typique de la FAQ à propos de la réécriture
+	  revient souvent : comment rediriger vers un serveur B les
+	  requêtes qui échouent sur un serveur A ? On s'acquitte en
+	  général de cette tâche via des scripts CGI <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> en Perl, mais il
+	  existe aussi une solution avec <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
+	  Notez cependant que les performances sont moindres qu'avec
+	  l'utilisation d'un script CGI <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> !</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>La première solution possède des performances supérieures
+	  mais moins de souplesse, et est moins sure :</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteCond  %{DOCUMENT_ROOT/%{REQUEST_URI}  <strong>!-f</strong>
+RewriteRule   ^(.+)                             http://<strong>serveurB</strong>.dom/$1
+</pre></div>
+
+          <p>Le problème réside dans le fait que seules les pages
+	  situées dans la racine <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> seront redirigées. Mais
+	  même si vous pouvez ajouter des conditions supplémentaires (par
+	  exemple pour traiter aussi les répertoires home, etc...), il
+	  existe une meilleure solution :</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteCond   %{REQUEST_URI} <strong>!-U</strong>
+RewriteRule   ^(.+)          http://<strong>serveurB</strong>.dom/$1
+</pre></div>
+reprendre ici
+          <p>On utilise ici la fonctionnalité de prévision des URLs
+	  futures de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Et cette solution
+	  fonctionne pour tous les types d'URLs et de manière sûre. Par
+	  contre, cette méthode a un impact sur les performances du
+	  serveur web, car chaque requête entraîne le traitement d'une
+	  sous-requête interne supplémentaire. Par conséquent, vous
+	  pouvez l'utiliser si votre serveur web s'exécute sur un CPU
+	  puissant. Dans le cas d'une machine plus lente, utilisez la
+	  première approche, ou mieux, un script CGI <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code>.</p>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="archive-access-multiplexer" id="archive-access-multiplexer">Multiplexeur d'accès aux archives</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Connaissez-vous la grande archive CPAN (Comprehensive Perl Archive
+          Network) située à <a href="http://www.perl.com/CPAN">http://www.perl.com/CPAN</a> ?
+	  CPAN redirige automatiquement les navigateurs vers un des
+	  nombreux serveurs FTP répartis à travers le monde
+	  (généralement un serveur assez proche du client) ; chaque
+	  serveur héberge l'intégralité d'un miroir CPAN. Il s'agit ni
+	  plus ni moins qu'un service d'accès FTP multiplexé. Alors que
+	  le fonctionnement de l'archive CPAN repose sur des scripts
+	  CGI, comment implémenter une approche similaire avec
+	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Premièrement, remarquons que depuis la version 3.0.0,
+	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> accepte aussi le préfixe
+	  "<code>ftp:</code>" dans les redirections. Et deuxièmement,
+	  l'approximation de la localisation peut être effectuée par une
+	  table de correspondances <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, en se basant sur
+	  la racine du domaine du client. Un jeu de règles chaînées
+	  astucieux nous permet d'utiliser cette racine du domaine comme
+	  clé de recherche dans notre table de correspondances de
+	  multiplexage.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteMap    multiplex                txt:/chemin/vers/map.cxan
+RewriteRule   ^/CxAN/(.*)              %{REMOTE_HOST}::$1                 [C]
+RewriteRule   ^.+\.<strong>([a-zA-Z]+)</strong>::(.*)$
+${multiplex:<strong>$1</strong>|ftp.défaut.dom}$2  [R,L]
+</pre></div>
+
+<div class="example"><pre>
+##
+##  map.cxan -- Multiplexing Map for CxAN%{DOCUMENT_ROOT/%{REQUEST_URI}
+##
+
+de        ftp://ftp.cxan.de/CxAN/
+uk        ftp://ftp.cxan.uk/CxAN/
+com       ftp://ftp.cxan.com/CxAN/
+ :
+##EOF##
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="browser-dependent-content" id="browser-dependent-content">Contenu dépendant du navigateur</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Il est parfois nécessaire, au moins pour les pages
+	  principales, de fournir un contenu optimum adapté à chaque
+	  type de navigateur, c'est à dire que l'on doit
+	  fournir une version pour les navigateurs courants, une version
+	  différente pour les navigateurs en mode texte du style de
+	  Lynx, et une autre pour les autres navigateurs.</p>
+        </dd>
+
+        <dt>Solution :</dt>%{DOCUMENT_ROOT/%{REQUEST_URI}
+
+        <dd>
+          <p>On ne peut pas utiliser la négociation de contenu car les
+	  navigateurs ne fournissent pas leur type dans cette forme.
+	  Nous devons nous baser sur l'en-tête HTTP "User-Agent". La
+	  configuration ci-dessous effectue les actions suivantes : si
+	  l'en-tête HTTP "User-Agent" commence par "Mozilla/3", la page
+	  <code>foo.html</code> est réécrite en <code>foo.NS.html</code>
+	  et la réécriture s'arrête. Si le navigateur est "Lynx" ou
+	  "Mozilla" version 1 ou 2, la page
+	  <code>foo.html</code> est réécrite en
+	  <code>foo.20.html</code>. Tous les autres navigateurs
+	  reçoivent la page <code>foo.32.html</code>. Voici le jeu de
+	  règles :</p>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
+RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
+
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>.*         [OR]
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>.*
+RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
+
+RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dynamic-mirror" id="dynamic-mirror">Miroir dynamique</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Supposons que nous voulions intégrer dans notre espace de
+	  nommage de belles pages web situées sur un serveur distant.
+	  Dans le cas d'un serveur FTP, nous aurions utilisé le
+	  programme <code>mirror</code> qui maintient vraiment une copie
+	  des données distantes mise à jour explicitement sur le serveur
+	  local. Pour un serveur web, nous pourrions utiliser le
+	  programme <code>webcopy</code> qui utilise le protocole HTTP.
+	  Ces deux techniques présentent cependant un
+	  inconvénient majeur : la copie locale n'est véritablement à
+	  jour qu'au moment où nous avons lancé le programme. Plutôt qu'
+	  un miroir statique devant être défini explicitement, il serait
+	  préférable d'avoir un miroir dynamique dont le contenu serait
+	  mis à jour automatiquement, à la demande, sur le(s) serveur(s)
+	  distant(s).</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Pour y parvenir, on fait
+	  correspondre la page web ou même l'ensemble du
+	  répertoire web distants à notre espace de nommage en utilisant
+	  la fonctionnalité <dfn>Mandataire</dfn> (drapeau
+	  <code>[P]</code> ou <code>[proxy]</code>) :</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>page-convoitée/</strong>(.*)$  <strong>http://www.tstimpreso.com/page-convoitée/</strong>$1  [<strong>P</strong>]
+</pre></div>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^<strong>usa-news\.html</strong>$   <strong>http://www.quux-corp.com/news/index.html</strong>  [<strong>P</strong>]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="reverse-dynamic-mirror" id="reverse-dynamic-mirror">Miroir dynamique inverse</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>...</dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+<div class="example"><pre>
+RewriteEngine on
+RewriteCond   /miroir/du/site-distant/$1           -U
+RewriteRule   ^http://www\.site-distant\.com/(.*)$ /miroir/du/site-distant/$1
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="retrieve-missing-data" id="retrieve-missing-data">Récupérer des données manquantes depuis l'Intranet</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>C'est une méthode astucieuse permettant de faire
+	  fonctionner virtuellement un serveur web d'entreprise
+	  (<code>www.quux-corp.dom</code>) sur
+	  l'Internet (extérieur à l'entreprise), tout en maintenant et
+	  conservant dans la réalité ses données sur un serveur web
+	  (<code>www2.quux-corp.dom</code>) de l'Intranet (interne à
+	  l'entreprise) protégé par un pare-feu. L'astuce consiste, sur
+	  le serveur web externe, à récupérer à la volée sur le serveur interne
+	  les données demandées.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Tout d'abord, nous devons nous assurer que notre pare-feu
+	  protège bien le serveur web interne, et que seul le serveur
+	  web externe est autorisé à y récupérer des données. Dans le
+	  cas d'un filtrage par paquets, nous pourrions par exemple
+	  définir un jeu de règles du pare-feu du style :</p>
+
+<div class="example"><pre>
+<strong>ALLOW</strong> serveur www.quux-corp.dom Port &gt;1024 --&gt;
+serveur www2.quux-corp.dom Port <strong>80</strong>
+<strong>DENY</strong>  serveur *                 Port *     --&gt;
+serveur www2.quux-corp.dom Port <strong>80</strong>
+</pre></div>
+
+          <p>Il vous suffit d'adapter ces règles à la syntaxe de votre
+	  pare-feu. Nous pouvons maintenant définir les règles de
+	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> qui serviront à récupérer les
+	  données manquantes en arrière-plan via la fonctionnalité de
+	  mandataire :</p>
+
+<div class="example"><pre>
+RewriteRule ^/~([^/]+)/?(.*)          /home/$1/.www/$2 [C]
+# L'utilisation de REQUEST_FILENAME ci dessous est correcte dans cet
+# exemple de contexte au niveau serveur car la règle qui fait référence
+# à REQUEST_FILENAME est chaînée à une règle qui définit
+# REQUEST_FILENAME.
+RewriteCond %{REQUEST_FILENAME}       <strong>!-f</strong>
+RewriteCond %{REQUEST_FILENAME}       <strong>!-d</strong>
+RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom/~$1/pub/$2 [<strong>P</strong>]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="load-balancing" id="load-balancing">Répartition de charge</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Supposons que nous voulions répartir la charge du trafic
+	  vers <code>www.example.com</code> entre les serveurs
+	  <code>www[0-5].example.com</code> (un total de 6 serveurs).
+	  Comment y parvenir ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Il existe de nombreuses solutions à ce problème. Nous
+	  décrirons tout d'abord une variante assez connue basée sur
+	  DNS, puis une autre basée sur <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+	  :</p>
+
+          <ol>
+            <li>
+              <strong>Round-Robin (tourniquet) DNS</strong>
+
+              <p>La méthode de répartition de charge la plus simple
+	      consiste à utiliser le "DNS round-robin"
+	      (rotation d'adresses) de
+	      <code>BIND</code>. Vous devez seulement enregistrer les
+	      serveurs <code>www[0-9].example.com</code> de manière
+	      habituelle dans votre DNS à l'aide d'enregistrements de
+	      type A (adresse), comme suit :</p>
+
+<div class="example"><pre>
+www0   IN  A       1.2.3.1
+www1   IN  A       1.2.3.2
+www2   IN  A       1.2.3.3
+www3   IN  A       1.2.3.4
+www4   IN  A       1.2.3.5
+www5   IN  A       1.2.3.6
+</pre></div>
+
+              <p>Puis vous ajoutez les entrées suivantes :</p>
+
+<div class="example"><pre>
+www   IN  A       1.2.3.1
+www   IN  A       1.2.3.2
+www   IN  A       1.2.3.3
+www   IN  A       1.2.3.4
+www   IN  A       1.2.3.5
+</pre></div>
+
+              <p>Maintenant, lors de la résolution de
+	      <code>www.example.com</code>, <code>BIND</code> renvoie
+	      <code>www0-www5</code> - mais selon une permutation
+	      différente à chaque fois. De cette façon, les clients sont
+	      répartis entre les différents serveurs. Notez cependant
+	      que cette méthode de répartition de charge n'est pas
+	      parfaite, car les résolutions DNS sont mises en cache par
+	      les clients et les autres serveurs DNS du réseau, si
+	      bien que lorsqu'un client s'est vu résoudre
+	      <code>www.example.com</code> en un des
+	      <code>wwwN.example.com</code>, toutes ses requêtes ultérieures
+	      continueront d'aller vers la même adresse IP (et donc le
+	      même serveur), au lieu d'être réparties entre les autres
+	      serveurs. Le résultat est cependant globalement
+	      satisfaisant car les requêtes sont réparties
+	      collectivement entre chacun des serveurs web.</p>
+            </li>
+
+            <li>
+              <strong>Répartition de charge basée sur DNS</strong>
+
+              <p>Une méthode de répartition de charge sophistiquée basée
+	      sur DNS consiste à utiliser le programme
+	      <code>lbnamed</code> que l'on peut trouver à <a href="http://www.stanford.edu/~schemers/docs/lbnamed/lbnamed.html">
+              http://www.stanford.edu/~schemers/docs/lbnamed/lbnamed.html</a>.
+	      Associé à des outils auxiliaires, il s'agit d'un programme
+	      en Perl 5 qui permet d'effectuer une véritable répartition
+	      de charge basée sur DNS.</p>
+            </li>
+
+            <li>
+              <strong>Round-Robin basé sur la fonctionnalité de
+	      mandataire</strong>
+
+              <p>Dans cette variante, nous utilisons
+	      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et sa fonctionnalité de
+	      mandataire. Tout d'abord, nous définissons
+	      <code>www0.example.com</code> comme un autre nom de
+	      <code>www.example.com</code> en ajoutant l'entrée</p>
+
+<div class="example"><pre>
+www    IN  CNAME   www0.example.com.
+</pre></div>
+
+              <p>dans le DNS. Puis nous définissons
+	      <code>www0.example.com</code> comme serveur mandataire
+	      seulement, c'est à dire que nous configurons cette machine
+	      de telle sorte que toutes les URLs qui lui arrivent soient
+	      simplement transmises, via le mandataire interne, vers un
+	      des 5 autres serveurs (<code>www1-www5</code>). Pour y
+	      parvenir, nous définissons tout d'abord un jeu de règles
+	      qui contacte un script de répartition de charge
+	      <code>lb.pl</code> pour toutes les URLs.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteMap    lb      prg:/chemin/vers/lb.pl
+RewriteRule   ^/(.+)$ ${lb:$1}           [P,L]
+</pre></div>
+
+              <p>Puis nous écrivons <code>lb.pl</code> :</p>
+
+<div class="example"><pre>
+#!/chemin/vers/perl
+##
+##  lb.pl -- script de répartition de charge
+##
+
+$| = 1;
+
+$name   = "www";     # la base du nom du serveur
+$first  = 1;         # le premier serveur (pas 0 ici, car 0 correspond à
+		     # moi-même)
+$last   = 5;         # le dernier serveur du tourniquet
+$domain = "foo.dom"; # le nom de domaine
+
+$cnt = 0;
+while (&lt;STDIN&gt;) {
+    $cnt = (($cnt+1) % ($last+1-$first));
+    $server = sprintf("%s%d.%s", $name, $cnt+$first, $domain);
+    print "http://$server/$_";
+}
+
+##EOF##
+</pre></div>
+
+              <div class="note">Une dernière remarque : à quoi cela sert-il ?
+	      <code>www0.example.com</code>, quant à lui, n'est-il pas
+	      toujours surchargé ? La réponse est oui, il est surchargé,
+	      mais seulement avec des requêtes de mandataire ! Tous les
+	      traitements SSI, CGI, ePerl, etc... sont entièrement
+	      effectués sur les autres machines. Ceci peut fonctionner
+	      correctement pour un site complexe. Le plus grand risque
+	      réside ici dans le fait que www0 est un passage obligé et
+	      que s'il est hors service, les autres serveurs deviennent
+	      inaccessibles.</div>
+            </li>
+
+            <li>
+              <strong>Répartiteur de charge dédié</strong>
+
+              <p>Il existe aussi des solutions plus sophistiquées.
+	      Cisco, F5, et de nombreuses autres sociétés proposent
+	      des répartiteurs de charge matériels (utilisés en général
+	      en mode doublé à des fins de redondance), qui offrent une
+	      répartition de charge sophistiquée et des fonctionnalités
+	      de passage automatique en mode de fonctionnement par défaut
+	      en cas de problème. Cependant, des solutions logicielles
+	      offrent aussi des fonctionnalités similaires avec du
+	      matériel standard. Si vos besoins correspondent et si vous
+	      êtes assez riche, vous pouvez envisager ces solutions. La
+	      <a href="http://vegan.net/lb/">liste de diffusion lb-l</a>
+	      est un bon point de départ pour vos recherches.</p>
+            </li>
+          </ol>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="new-mime-type" id="new-mime-type">Nouveau type MIME, nouveau service</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>On trouve de nombreux programmes CGI attractifs sur le
+	  réseau. Mais leur emploi est souvent rébarbatif, si bien que
+	  de nombreux webmasters ne les utilisent pas. Même la
+	  fonctionnalité de gestionnaire Action d'Apache pour les types
+	  MIME ne convient que lorsque les programmes CGI ne nécessitent
+	  pas d'URLs spéciales (réellement <code>PATH_INFO</code> et
+	  <code>QUERY_STRINGS</code>) en entrée. Tout d'abord,
+	  définissons un nouveau type de fichier ayant pour extension
+	  <code>.scgi</code> (pour CGI sécurisé) qui sera associé pour
+	  traitement au programme populaire <code>cgiwrap</code>. Le
+	  problème est le suivant : par exemple, si on utilise un style
+	  d'URL bien défini (voir ci-dessus), un fichier situé dans le
+	  répertoire home de l'utilisateur pourra correspondre à l'URL
+	  <code>/u/user/foo/bar.scgi</code>. Mais <code>cgiwrap</code>
+	  nécessite des URLs de la forme
+	  <code>/~user/foo/bar.scgi/</code>. La règle suivante apporte
+	  la solution :</p>
+
+<div class="example"><pre>
+RewriteRule ^/[uge]/<strong>([^/]+)</strong>/\.www/(.+)\.scgi(.*) ...
+... /interne/cgi/utilisateur/cgiwrap/~<strong>$1</strong>/$2.scgi$3  [NS,<strong>T=application/x-http-cgi</strong>]
+</pre></div>
+
+          <p>Ou considérons ces autres programmes attractifs :
+	  <code>wwwlog</code> (qui affiche le journal des accès
+	  <code>access.log</code> pour un sous répertoire correspondant
+	  à une URL) et <code>wwwidx</code> (qui exécute Glimpse sur un
+	  sous répertoire correspondant à une URL). Nous devons fournir
+	  l'URL correspondante à ces programmes afin qu'ils sachent sur
+	  quel répertoire ils doivent agir. Mais c'est en général
+	  compliqué, car ils peuvent être appelés à nouveau
+	  par la forme d'URL alternative, c'est à dire que typiquement,
+	  nous exécuterions le programme <code>swwidx</code> depuis
+	  <code>/u/user/foo/</code> via un hyperlien vers</p>
+
+<div class="example"><pre>
+/internal/cgi/user/swwidx?i=/u/user/foo/
+</pre></div>
+
+          <p>ce qui n'est pas satisfaisant, car nous devons expliciter
+	  <strong>à la fois</strong> la localisation du répertoire
+	  <strong>et</strong> la localisation du programme CGI dans
+	  l'hyperlien. Si nous devons nous réorganiser, il nous faudra
+	  beaucoup de temps pour modifier tous les hyperliens.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>La solution consiste ici à fournir un nouveau format d'URL
+	  qui redirige automatiquement vers la requête CGI appropriée.
+	  Pour cela, on définit les règles suivantes :</p>
+
+<div class="example"><pre>
+RewriteRule   ^/([uge])/([^/]+)(/?.*)/\*  /interne/cgi/utilisateur/wwwidx?i=/$1/$2$3/
+RewriteRule   ^/([uge])/([^/]+)(/?.*):log /interne/cgi/utilisateur/wwwlog?f=/$1/$2$3
+</pre></div>
+
+          <p>Et maintenant l'hyperlien qui renvoie vers
+	  <code>/u/user/foo/</code> se réduit à</p>
+
+<div class="example"><pre>
+HREF="*"
+</pre></div>
+
+          <p>qui est automatiquement transformé en interne en</p>
+
+<div class="example"><pre>
+/internal/cgi/user/wwwidx?i=/u/user/foo/
+</pre></div>
+
+          <p>Une approche similaire permet d'invoquer le programme CGI
+	  du journal des accès lorsque l'hyperlien <code>:log</code> est
+	  utilisé.</p>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="on-the-fly-content" id="on-the-fly-content">Régéneration de contenu à la volée</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Voici une fonctionnalité vraiment ésotérique : des pages
+	  générées dynamiquement mais servies statiquement, c'est à
+	  dire que les pages doivent être servies comme des pages
+	  purement statiques (lues depuis le système de fichiers et
+	  servies en l'état), mais doivent être générées dynamiquement
+	  par le serveur web si elles sont absentes. Ainsi, vous pouvez
+	  avoir des pages générées par CGI qui sont servies statiquement
+	  à moins qu'un administrateur (ou une tâche de
+	  <code>cron</code>) ne supprime les
+	  contenus statiques. Les contenus sont ensuite actualisés.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          A cet effet, on utilise le jeu de règles suivant :
+
+<div class="example"><pre>
+# Cet exemple n'est valable que dans un contexte de répertoire
+RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong>
+RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
+</pre></div>
+
+          <p>Ainsi, une requête pour <code>page.html</code> entraîne
+	  l'exécution interne de la page <code>page.cgi</code>
+	  correspondante si <code>page.html</code> n'existe pas
+	  ou possède une taille de fichier nulle. L'astuce réside ici
+	  dans le fait que <code>page.cgi</code> est un script CGI
+	  qui (en plus de <code>STDOUT</code>) écrit sa sortie dans le
+	  fichier <code>page.html</code>. Une fois le script exécuté, le
+	  serveur sert la page <code>page.html</code> fraîchement
+	  générée. Si le webmaster
+	  veut actualiser les contenus, il lui suffit de supprimer le
+	  fichier <code>page.html</code> (le plus souvent via une tâche
+	  de <code>cron</code>).</p>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="autorefresh" id="autorefresh">Actualisation automatique d'un document</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Lorsque nous créons une page web complexe, ne serait-il pas
+	  souhaitable que le navigateur web actualise automatiquement la
+	  page chaque fois que nous en sauvegardons une nouvelle version
+	  à partir de notre éditeur ? Impossible ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Non ! Nous allons pour cela combiner la fonctionnalité MIME
+	  multipart, la fonctionnalité NPH du serveur web et la
+	  puissance de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour la manipulation
+	  d'URLs. Tout d'abord, nous définissons une nouvelle
+	  fonctionnalité pour les URLs : l'ajout de
+	  <code>:refresh</code> à toute URL fait que la 'page' est
+	  actualisée chaque fois que la ressource est mise à jour dans
+	  le système de fichiers.</p>
+
+<div class="example"><pre>
+RewriteRule   ^(/[uge]/[^/]+/?.*):refresh  /interne/cgi/apache/nph-refresh?f=$1
+</pre></div>
+
+          <p>Nous appelons maintenant cette URL</p>
+
+<div class="example"><pre>
+/u/foo/bar/page.html:refresh
+</pre></div>
+
+          <p>ce qui entraîne en interne l'invocation de l'URL</p>
+
+<div class="example"><pre>
+/interne/cgi/apache/nph-refresh?f=/u/foo/bar/page.html
+</pre></div>
+
+          <p>Il ne reste plus qu'à écrire le script CGI. Bien que l'on
+	  écrive habituellement dans ces cas "laissé à la charge du
+	  lecteur à titre d'exercice", ;-) je vous l'offre, aussi.</p>
+
+<div class="example"><pre>
+#!/sw/bin/perl
+##
+##  nph-refresh -- script NPH/CGI pour l'actualisation automatique de
+##  pages
+##  Copyright (c) 1997 Ralf S. Engelschall, All Rights Reserved.
+##
+$| = 1;
+
+#   éclate la variable QUERY_STRING
+@pairs = split(/&amp;/, $ENV{'QUERY_STRING'});
+foreach $pair (@pairs) {
+    ($name, $value) = split(/=/, $pair);
+    $name =~ tr/A-Z/a-z/;
+    $name = 'QS_' . $name;
+    $value =~ s/%([a-fA-F0-9][a-fA-F0-9])/pack("C", hex($1))/eg;
+    eval "\$$name = \"$value\"";
+}
+$QS_s = 1 if ($QS_s eq '');
+$QS_n = 3600 if ($QS_n eq '');
+if ($QS_f eq '') {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
+    print "&amp;lt;b&amp;gt;ERREUR&amp;lt;/b&amp;gt;: Aucun fichier fourni\n";
+    exit(0);
+}
+if (! -f $QS_f) {
+    print "HTTP/1.0 200 OK\n";
+    print "Content-type: text/html\n\n";
+    print "&amp;lt;b&amp;gt;ERREUR&amp;lt;/b&amp;gt;: Fichier $QS_f non trouvé\n";
+    exit(0);
+}
+
+sub print_http_headers_multipart_begin {
+    print "HTTP/1.0 200 OK\n";
+    $bound = "ThisRandomString12345";
+    print "Content-type: multipart/x-mixed-replace;boundary=$bound\n";
+    &amp;print_http_headers_multipart_next;
+}
+
+sub print_http_headers_multipart_next {
+    print "\n--$bound\n";
+}
+
+sub print_http_headers_multipart_end {
+    print "\n--$bound--\n";
+}
+
+sub displayhtml {
+    local($buffer) = @_;
+    $len = length($buffer);
+    print "Content-type: text/html\n";
+    print "Content-length: $len\n\n";
+    print $buffer;
+}
+
+sub readfile {
+    local($file) = @_;
+    local(*FP, $size, $buffer, $bytes);
+    ($x, $x, $x, $x, $x, $x, $x, $size) = stat($file);
+    $size = sprintf("%d", $size);
+    open(FP, "&amp;lt;$file");
+    $bytes = sysread(FP, $buffer, $size);
+    close(FP);
+    return $buffer;
+}
+
+$buffer = &amp;readfile($QS_f);
+&amp;print_http_headers_multipart_begin;
+&amp;displayhtml($buffer);
+
+sub mystat {
+    local($file) = $_[0];
+    local($time);
+
+    ($x, $x, $x, $x, $x, $x, $x, $x, $x, $mtime) = stat($file);
+    return $mtime;
+}
+
+$mtimeL = &amp;mystat($QS_f);
+$mtime = $mtime;
+for ($n = 0; $n &amp;lt; $QS_n; $n++) {
+    while (1) {
+        $mtime = &amp;mystat($QS_f);
+        if ($mtime ne $mtimeL) {
+            $mtimeL = $mtime;
+            sleep(2);
+            $buffer = &amp;readfile($QS_f);
+            &amp;print_http_headers_multipart_next;
+            &amp;displayhtml($buffer);
+            sleep(5);
+            $mtimeL = &amp;mystat($QS_f);
+            last;
+        }
+        sleep($QS_s);
+    }
+}
+
+&amp;print_http_headers_multipart_end;
+
+exit(0);
+
+##EOF##
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mass-virtual-hosting" id="mass-virtual-hosting">Hébergement virtuel de masse</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>La fonctionnalité <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> d'Apache est intéressante et
+	  fonctionne de manière satisfaisante jusqu'à quelques
+	  douzaines de serveurs virtuels. Par contre, si vous êtes un
+	  FAI et devez héberger des centaines de serveurs virtuels,
+	  cette méthode n'est pas optimale.</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Pour fournir cette fonctionnalité avec
+	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, on fait correspondre à notre espace de
+	  nommage la page web ou même le répertoire complet distants en
+	  utilisant la fonctionnalité <dfn>Mandataire</dfn>
+	  (drapeau <code>[P]</code>) :</p>
+
+<div class="example"><pre>
+##
+##  vhost.map
+##
+www.vhost1.dom:80  /chemin/vers/racine-doc/vhost1
+www.vhost2.dom:80  /chemin/vers/racine-doc/vhost2
+     :
+www.vhostN.dom:80  /chemin/vers/racine-doc/vhostN
+</pre></div>
+
+<div class="example"><pre>
+##
+##  httpd.conf
+##
+    :
+#   utilisation du nom d'hôte canonique pour les redirections, etc...
+UseCanonicalName on
+
+    :
+#   ajout du serveur virtuel en tête du format CLF
+CustomLog  /chemin/vers/access_log  "%{VHOST}e %h %l %u %t \"%r\" %&gt;s %b"
+    :
+
+#   activation du moteur de réécriture pour le serveur principal
+RewriteEngine on
+
+#   définition de deux tables de correspondances : une première pour
+#   corriger les URLs et une seconde qui associe les serveurs virtuels
+#   disponibles avec leurs racines des documents correspondantes.
+RewriteMap    lowercase    int:tolower
+RewriteMap    vhost        txt:/chemin/vers/vhost.map
+
+#   et enfin sélection proprement dite du serveur virtuel approprié via
+#   une seule règle longue et complexe :
+#
+#   1. on s'assure de ne pas sélectionner un hôte virtuel pour les
+#   adresses communes
+
+RewriteCond   %{REQUEST_URI}  !^/adresse-commune1/.*
+RewriteCond   %{REQUEST_URI}  !^/adresse-commune2/.*
+    :
+RewriteCond   %{REQUEST_URI}  !^/adresse-communeN/.*
+#
+#   2. on vérifie que l'on dispose bien d'un en-tête Host, car
+#   actuellement, cette méthode ne peut faire de l'hébergement virtuel
+#   qu'avec cet en-tête
+RewriteCond   %{HTTP_HOST}  !^$
+#
+#   3. mise en minuscules du nom d'hôte
+RewriteCond   ${lowercase:%{HTTP_HOST}|NONE}  ^(.+)$
+#
+#   4. recherche ce ce nom d'hôte dans vhost.map et
+#      enregistrement de celui-ci seulement s'il s'agit d'un chemin
+#      (et non "NONE" en provenance de la condition précédente)
+RewriteCond   ${vhost:%1}  ^(/.*)$
+#
+#   5. nous pouvons enfin faire correspondre l'URL avec la racine des
+#   documents correspondant au serveur virtuel approprié et enregistrer
+#   ce dernier à des fins de journalisation
+RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
+    :
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="host-deny" id="host-deny">Interdiction d'hôtes</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment interdire l'accès à notre serveur à une liste
+	  d'hôtes ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Pour Apache &gt;= 1.3b6 :</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteMap    hôtes-interdits  txt:/chemin/vers/hôtes-interdits
+RewriteCond   ${hôtes-interdits:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND [OR]
+RewriteCond   ${hôtes-interdits:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND
+RewriteRule   ^/.*  -  [F]
+</pre></div>
+
+          <p>Pour Apache &lt;= 1.3b6 :</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteMap    hôtes-interdits  txt:/chemin/vers/hôtes-interdits
+RewriteRule   ^/(.*)$ ${hôtes-interdits:%{REMOTE_HOST}|NOT-FOUND}/$1
+RewriteRule   !^NOT-FOUND/.* - [F]
+RewriteRule   ^NOT-FOUND/(.*)$ ${hôtes-interdits:%{REMOTE_ADDR}|NOT-FOUND}/$1
+RewriteRule   !^NOT-FOUND/.* - [F]
+RewriteRule   ^NOT-FOUND/(.*)$ /$1
+</pre></div>
+
+<div class="example"><pre>
+##
+##  hosts.deny
+##
+##  ATTENTION! Ceci est une table de correspondances, pas une liste,
+##  même si on l'utilise en tant que telle. mod_rewrite l'interprète
+##  comme un ensemble de paires clé/valeur ; chaque entrée doit donc
+##  au moins posséder une valeur fictive "-".
+##
+
+193.102.180.41 -
+bsdti1.sdm.de  -
+192.76.162.40  -
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="proxy-deny" id="proxy-deny">Interdiction du mandataire</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment interdire l'utilisation du mandataire d'Apache pour
+	  un certain hôte, ou même seulement pour un utilisateur
+	  de cet hôte ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>Nous devons tout d'abord nous assurer que
+	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> arrive après(!)
+	  <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> dans le fichier de configuration
+	  lors de la compilation du serveur web Apache. De cette façon,
+	  il est appelé <em>avant</em> <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Nous
+	  pouvons ensuite définir cette règle pour une interdiction
+	  dépendant de l'hôte :</p>
+
+<div class="example"><pre>
+RewriteCond %{REMOTE_HOST} <strong>^hôte-à-rejeter\.mon-domaine\.com$</strong>
+RewriteRule !^http://[^/.]\.mon-domaine.com.*  - [F]
+</pre></div>
+
+          <p>...et celle-ci pour une interdiction dépendant de
+	  utilisateur@hôte :</p>
+
+<div class="example"><pre>
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST}  <strong>^utilisateur-à-
+rejeter@hôte-à-rejeter\.mon-domaine\.com$</strong>
+RewriteRule !^http://[^/.]\.mon-domaine.com.*  - [F]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="special-authentication" id="special-authentication">Variante particulière d'authentification</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>On a parfois besoin d'une authentification très
+	  particulière, par exemple une authentification qui vérifie la
+	  présence d'un utilisateur dans une liste explicitement
+	  définie. Seuls ceux qui sont présents dans la liste se voient
+	  accorder un accès, et ceci sans avoir à
+	  s'identifier/authentifier (comme c'est le cas avec une
+	  authentification de base via <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>).</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On définit une liste de conditions de réécriture pour
+	  interdire l'accès à tout le monde, sauf aux utilisateurs
+	  autorisés :</p>
+
+<div class="example"><pre>
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^ami1@client1.quux-corp\.com$</strong>
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^ami2</strong>@client2.quux-corp\.com$
+RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^ami3</strong>@client3.quux-corp\.com$
+RewriteRule ^/~quux/seulement-pour-les-amis/      -                                 [F]
+</pre></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="referer-deflector" id="referer-deflector">Redirection basée sur le référent</a></h2>
+
+      
+
+      <dl>
+        <dt>Description :</dt>
+
+        <dd>
+          <p>Comment écrire un programme souple qui redirige certaines
+	  URLs en se basant sur l'en-tête HTTP "Referer", et peut être
+	  configuré avec autant de pages de référence
+	  que l'on veut ?</p>
+        </dd>
+
+        <dt>Solution :</dt>
+
+        <dd>
+          <p>On utilise le jeu de règles vraiment astucieux suivant :</p>
+
+<div class="example"><pre>
+RewriteMap  deflector txt:/chemin/vers/deflector.map
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}} ^-$
+RewriteRule ^.* %{HTTP_REFERER} [R,L]
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
+RewriteRule ^.* ${deflector:%{HTTP_REFERER}} [R,L]
+</pre></div>
+
+          <p>... en association avec la table de réécriture
+	  correspondante :</p>
+
+<div class="example"><pre>
+##
+##  deflector.map
+##
+
+http://www.mauvais-sujets.com/mauvais/index.html    -
+http://www.mauvais-sujets.com/mauvais/index2.html   -
+http://www.mauvais-sujets.com/mauvais/index3.html   http://quelque-part.com/
+</pre></div>
+
+          <p>Les requêtes sont redirigées vers la page de référence
+	  (lorsque la valeur correspondant à la clé extraite de la table
+	  de correspondances est égale à "<code>-</code>"), ou vers une
+	  URL spécifique (lorsqu'une URL est définie dans la table de
+	  correspondances comme second argument).</p>
+        </dd>
+      </dl>
+
+    </div></div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/rewrite/rewrite_guide_advanced.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/rewrite/rewrite_guide_advanced.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>
