@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- LastChangedRevision English document : 420990 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Apache et le Chiffrement SSL/TLS</title>
+
+<summary>
+<p>Le module <module>mod_ssl</module> du serveur HTTP Apache fournit une
+interface avec la biblioth&egrave;que <a
+href="http://www.openssl.org/">OpenSSL</a>, qui permet d'effectuer un
+chiffrement fort en s'appuyant sur les protocoles "Couche Points d'acc&egrave;s
+S&eacute;curis&eacute;s" (Secure Sockets Layer - SSL) et "S&eacute;curit&eacute; de la Couche Transport"
+(Transport Layer Security - TLS). Le module et cette documentation sont bas&eacute;s
+sur le projet mod_ssl de Ralf S. Engelschall.</p>
+</summary>
+
+<section id="documentation"><title>Documentation</title>
+<ul>
+<li><a href="ssl_intro.html">Introduction</a></li>
+<li><a href="ssl_compat.html">Compatibilit&eacute;</a></li>
+<li><a href="ssl_howto.html">Comment faire ... ?</a></li>
+<li><a href="ssl_faq.html">Foire aux questions</a></li>
+<li><a href="../glossary.html">Glossaire</a></li>
+</ul>
+</section>
+
+<section id="mod-ssl"><title>mod_ssl</title>
+<p>La documentation compl&egrave;te sur les directives et les variables
+d'environnement fournies par ce module se trouve dans la
+<a href="../mod/mod_ssl.html">documentation de r&eacute;f&eacute;rence de mod_ssl</a>.
+</p>
+</section>
+
+</manualpage>
+
+
