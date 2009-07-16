@@ -20,6 +20,7 @@
             2.3</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS 暗号化: はじめに</h1>
 <div class="toplang">
 <p><span>言語: </span><a href="../en/ssl/ssl_intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 <div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
@@ -694,6 +695,7 @@ Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.tx
 </div></div>
 <div class="bottomlang">
 <p><span>言語: </span><a href="../en/ssl/ssl_intro.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

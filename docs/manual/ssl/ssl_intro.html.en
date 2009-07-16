@@ -19,6 +19,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">SSL/TLS</a></div><div id="page-content"><div id="preamble"><h1>SSL/TLS Strong Encryption: An Introduction</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
 
@@ -643,6 +644,7 @@ Version 3.0</q>, 1996. See <a href="http://www.netscape.com/eng/ssl3/draft302.tx
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/ssl/ssl_intro.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/ssl/ssl_intro.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/ssl/ssl_intro.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
