@@ -143,7 +143,6 @@ avec le système de fichiers</a></li></ul></div>
     cette fonctionnalité :</p>
 
     <div class="example"><p><code>
-      UserDir enabled<br />
       UserDir disabled root jro fish
     </code></p></div>
 
