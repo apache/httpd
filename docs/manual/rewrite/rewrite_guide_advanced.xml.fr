@@ -469,7 +469,7 @@ com       ftp://ftp.cxan.com/CxAN/
 	  Lynx, et une autre pour les autres navigateurs.</p>
         </dd>
 
-        <dt>Solution :</dt>%{DOCUMENT_ROOT/%{REQUEST_URI}
+        <dt>Solution :</dt>
 
         <dd>
           <p>On ne peut pas utiliser la n&eacute;gociation de contenu car les
