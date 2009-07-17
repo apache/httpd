@@ -67,8 +67,8 @@ endif
 #
 # Set the Release type that you want to build, possible values are:
 #
-#  debug		- full debug switches are set
-#  noopt		- normal switches are set (default)
+#  debug	- full debug switches are set
+#  noopt	- normal switches are set (default)
 #  optimized	- optimization switches are set
 
 ifdef reltype
@@ -132,7 +132,7 @@ endif
 
 NOVI	= $(NOVELLLIBC)\imports
 
-INCDIRS 	= $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
+INCDIRS = $(NOVELLLIBC)\include;$(NOVELLLIBC)\include\nks;$(NOVELLLIBC)\include\winsock;
 ifneq "$(LDAPSDK)" ""
 INCDIRS := $(INCDIRS);$(LDAPSDK)/inc
 endif
