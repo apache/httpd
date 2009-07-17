@@ -27,7 +27,7 @@ nlms :: $(NWOS)/httpd.imp
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo Generating $(subst /,\,$@)
-	$(AWK) -f make_nw_export.awk nw_export.i | sort >$(NWOS)/httpd.imp
+	$(AWK) -v EXPPREFIX=AP$(VERSION_MAJMIN) -f $^ | sort >$@
     
 nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
 	@echo Generating $(subst /,\,$@)
@@ -67,7 +67,6 @@ $(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
 # installation area
 #
 install :: nlms FORCE
-	
 
 clean ::
 	$(CHK) nw_export.i                                  $(DEL) nw_export.i
@@ -77,4 +76,11 @@ clean ::
 	$(CHK) $(subst /,\,$(PCRE))\pcre.h                  $(DEL) $(subst /,\,$(PCRE))\pcre.h
 	$(CHK) $(subst /,\,$(NWOS))\httpd.imp               $(DEL) $(subst /,\,$(NWOS))\httpd.imp
 	$(MAKE) -C $(APR) -f NWGNUmakefile clean
+
+#
+# Include the 'tail' makefile that has targets that depend on variables defined
+# in this makefile
+#
+
+include $(AP_WORK)\build\NWGNUtail.inc
     
