@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English revision : 659902 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="ssl_howto.xml.meta">
+<parentdocument href="./">SSL/TLS</parentdocument>
+
+  <title>Chiffrement fort SSL/TLS : Mode d'emploi</title>
+
+<summary>
+<blockquote>
+<p>La solution &agrave; ce probl&egrave;me est &eacute;vidente et le lecteur la recherchera
+&agrave; titre d'exercice</p>
+
+<p class="cite">-- <cite>Phrase standard des manuels</cite></p>
+</blockquote>
+
+<p>R&eacute;soudre des probl&egrave;mes de s&eacute;curit&eacute; particuliers pour un serveur web
+utilisant SSL n'est pas toujours &eacute;vident &agrave; cause des interactions entre SSL,
+HTTP et la mani&egrave;re dont Apache traite les requ&ecirc;tes. Ce chapitre donne des
+instructions pour r&eacute;soudre certaines situations typiques. Consid&eacute;rez-le
+comme une premi&egrave;re &eacute;tape sur le chemin de la solution d&eacute;finitive, mais
+efforcez-vous toujours de comprendre ce que vous faites pour r&eacute;soudre le
+probl&egrave;me avant d'utiliser la solution. Rien n'est pire que d'utiliser une
+solution de s&eacute;curit&eacute; sans conna&icirc;tre ses restrictions et la mani&egrave;re dont elle
+interagit avec les autres syst&egrave;mes.</p>
+</summary>
+
+<section id="ciphersuites">
+<title>Suites de chiffrement et mise en application de la s&eacute;curit&eacute;
+de haut niveau</title>
+<ul>
+<li><a href="#realssl">Comment cr&eacute;er un v&eacute;ritable serveur
+SSLv2 seulement ?</a></li>
+<li><a href="#onlystrong">Comment cr&eacute;er un serveur SSL
+qui n'accepte que le chiffrement fort ?</a></li>
+<li><a href="#upgradeenc">Comment cr&eacute;er un serveur SSL qui n'accepte que le
+chiffrement fort, mais permet aux navigateurs import&eacute;s des USA
+d'&eacute;voluer vers un chiffrement plus fort ?</a></li>
+<li><a href="#strongurl">Comment cr&eacute;er un serveur qui accepte tous les types de
+chiffrement en g&eacute;n&eacute;ral, mais exige un chiffrement fort pour pouvoir
+acc&eacute;der &agrave; une URL particuli&egrave;re ?</a></li>
+</ul>
+
+<section id="realssl">
+<title>Comment cr&eacute;er un v&eacute;ritable serveur SSLv2 seulement ?</title>
+    <p>Les directives suivantes cr&eacute;ent un serveur SSL qui ne communique que
+    selon le protocole SSLv2 et ses modes de chiffrement.</p>
+
+    <example><title>httpd.conf</title>
+      SSLProtocol -all +SSLv2<br />
+      SSLCipherSuite SSLv2:+HIGH:+MEDIUM:+LOW:+EXP<br />
+    </example>
+</section>
+
+<section id="onlystrong">
+<title>Comment cr&eacute;er un serveur SSL qui n'accepte
+que le chiffrement fort ?</title>
+    <p>Les directives suivantes ne permettent que les
+    chiffrements de plus haut niveau :</p>
+    <example><title>httpd.conf</title>
+      SSLProtocol all<br />
+      SSLCipherSuite HIGH:MEDIUM<br />
+    </example>
+</section>
+
+<section id="upgradeenc">
+<title>Comment cr&eacute;er un serveur SSL qui n'accepte que le
+chiffrement fort, mais permet aux navigateurs import&eacute;s des USA
+d'&eacute;voluer vers un chiffrement plus fort ?</title>
+    <p>Cette fonctionnalit&eacute; se nomme Cryptographie Transf&eacute;r&eacute;e par Serveur
+    (Server Gated Cryptography - SGC) et n&eacute;cessite un certificat de serveur
+    &agrave; identifiant global, sign&eacute; par un certificat de CA sp&eacute;cial de chez
+    Verisign. Ceci permet d'activer le chiffrement fort dans les versions des
+    navigateurs import&eacute;s des US, qui n'en avaient habituellement pas la
+    possibilit&eacute; (&agrave; cause des restrictions &agrave; l'exportation impos&eacute;es par les
+    US).</p>
+    <p>Quand un navigateur se connecte avec un mode de chiffrement import&eacute;
+    des US, le serveur pr&eacute;sente son certificat &agrave; identifiant global. le
+    navigateur le v&eacute;rifie, et peut ensuite faire &eacute;voluer sa suite de
+    chiffrement avant que la communication HTTP ne se mette en place. Le
+    probl&egrave;me consiste &agrave; permettre au navigateur de se mettre &agrave; jour de cette
+    fa&ccedil;on, mais de n&eacute;cessiter encore un chiffrement fort. En d'autres termes,
+    nous voulons que les navigateurs d&eacute;marrent une connexion soit avec
+    chiffrement fort, soit avec une version export du chiffrement mais que
+    dans ce dernier cas, le navigateur fasse &eacute;voluer sa suite de chiffrement
+    vers un chiffrement fort avant de d&eacute;marrer la communication HTTP.</p>
+    <p>Il est possible de parvenir &agrave; ceci de cette fa&ccedil;on:</p>
+    <example><title>httpd.conf</title>
+      # autorise tout mode de chiffrement pour l'&eacute;change de donn&eacute;es
+      initial,<br />
+      # les navigateurs non US peuvent ainsi se mettre &agrave; jour
+      via la fonctionnalit&eacute; SGC<br />
+      SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      <br />
+      &lt;Directory /usr/local/apache2/htdocs&gt;<br />
+      # et enfin interdit l'acc&egrave;s &agrave; tous les navigateurs qui n'ont pas fait
+      &eacute;voluer leur suite de chiffrement<br />
+      SSLRequire %{SSL_CIPHER_USEKEYSIZE} &gt;= 128<br />
+      &lt;/Directory&gt;
+    </example>
+</section>
+
+<section id="strongurl">
+<title>Comment cr&eacute;er un serveur qui accepte tous les types de
+chiffrement en g&eacute;n&eacute;ral, mais exige un chiffrement fort pour pouvoir
+acc&eacute;der &agrave; une URL particuli&egrave;re ?</title>
+    <p>Dans ce cas bien &eacute;videmment, une directive <directive
+    module="mod_ssl">SSLCipherSuite</directive> au niveau du serveur principal
+    qui restreint le choix des suites de chiffrement aux versions les plus
+    fortes ne conviendra pas. <module>mod_ssl</module> peut cependant &ecirc;tre
+    reconfigur&eacute; au sein de blocs <code>Location</code> qui permettent
+    d'adapter la configuration g&eacute;n&eacute;rale &agrave; un r&eacute;pertoire sp&eacute;cifique ;
+    <module>mod_ssl</module> peut alors forcer automatiquement une
+    ren&eacute;gociation des param&egrave;tres SSL pour parvenir au but recherch&eacute;.
+    Cette configuration peut se pr&eacute;senter comme suit :</p>
+    <example>
+      # soyons tr&egrave;s tol&eacute;rant a priori<br />
+      SSLCipherSuite ALL:!ADH:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL<br />
+      <br />
+      &lt;Location /strong/area&gt;<br />
+      # sauf pour https://hostname/strong/area/ et ses sous-r&eacute;pertoires<br />
+      # qui exigent des chiffrements forts<br />
+      SSLCipherSuite HIGH:MEDIUM<br />
+      &lt;/Location&gt;
+    </example>
+</section>
+</section>
+<!-- /ciphersuites -->
+
+<section id="accesscontrol">
+<title>Authentification du client et contr&ocirc;le d'acc&egrave;s</title>
+<ul>
+<li><a href="#allclients">Comment forcer les clients
+&agrave; s'authentifier &agrave; l'aide de certificats ?</a></li>
+<li><a href="#arbitraryclients">Comment forcer les clients
+&agrave; s'authentifier &agrave; l'aide de certificats pour une URL particuli&egrave;re,
+mais autoriser quand-m&ecirc;me tout client anonyme
+&agrave; acc&eacute;der au reste du serveur ?</a></li>
+<li><a href="#certauthenticate">Comment n'autoriser l'acc&egrave;s &agrave; une URL
+particuli&egrave;re qu'aux clients qui poss&egrave;dent des certificats, mais autoriser
+l'acc&egrave;s au reste du serveur &agrave; tous les clients ?</a></li>
+<li><a href="#intranet">Comment imposer HTTPS avec chiffrements forts,
+et soit authentification de base, soit possession de certificats clients,
+pour l'acc&egrave;s &agrave; une partie de l'Intranet, pour les clients en
+provenance de l'Internet ?</a></li>
+</ul>
+
+<section id="allclients">
+<title>Comment forcer les clients
+&agrave; s'authentifier &agrave; l'aide de certificats ?
+</title>
+
+    <p>Lorsque vous connaissez tous vos clients (comme c'est en g&eacute;n&eacute;ral le cas
+    au sein d'un intranet d'entreprise), vous pouvez imposer une
+    authentification bas&eacute;e uniquement sur les certificats. Tout ce dont vous
+    avez besoin pour y parvenir est de cr&eacute;er des certificats clients sign&eacute;s par
+    le certificat de votre propre autorit&eacute; de certification
+    (<code>ca.crt</code>), et d'authentifier les clients &agrave; l'aide de ces
+    certificats.</p>
+    <example><title>httpd.conf</title>
+      # exige un certificat client sign&eacute; par le certificat de votre CA<br />
+      # contenu dans ca.crt<br />
+      SSLVerifyClient require<br />
+      SSLVerifyDepth 1<br />
+      SSLCACertificateFile conf/ssl.crt/ca.crt
+    </example>
+</section>
+
+<section id="arbitraryclients">
+<title>Comment forcer les clients
+&agrave; s'authentifier &agrave; l'aide de certificats pour une URL particuli&egrave;re,
+mais autoriser quand-m&ecirc;me tout client anonyme
+&agrave; acc&eacute;der au reste du serveur ?</title>
+
+<p>Pour forcer les clients &agrave; s'authentifier &agrave; l'aide de certificats pour une
+URL particuli&egrave;re, vous pouvez utiliser les fonctionnalit&eacute;s de reconfiguration
+de <module>mod_ssl</module> en fonction du r&eacute;pertoire :</p>
+
+    <example><title>httpd.conf</title>
+    SSLVerifyClient none<br />
+    SSLCACertificateFile conf/ssl.crt/ca.crt<br />
+    <br />
+    &lt;Location /secure/area&gt;<br />
+    SSLVerifyClient require<br />
+    SSLVerifyDepth 1<br />
+    &lt;/Location&gt;<br />
+    </example>
+</section>
+
+<section id="certauthenticate">
+<title>Comment n'autoriser l'acc&egrave;s &agrave; une URL
+particuli&egrave;re qu'aux clients qui poss&egrave;dent des certificats, mais autoriser
+l'acc&egrave;s au reste du serveur &agrave; tous les clients ?</title>
+
+    <p>La cl&eacute; du probl&egrave;me consiste &agrave; v&eacute;rifier si une partie du certificat
+    client correspond &agrave; ce que vous attendez. Cela signifie en g&eacute;n&eacute;ral
+    consulter tout ou partie du nom distinctif (DN), afin de v&eacute;rifier s'il
+    contient une cha&icirc;ne connue. Il existe deux m&eacute;thodes pour y parvenir ;
+    on utilise soit le module <module>mod_auth_basic</module>, soit la
+    directive <directive module="mod_ssl">SSLRequire</directive>.</p>
+
+    <p>La m&eacute;thode du module <module>mod_auth_basic</module> est en g&eacute;n&eacute;ral
+    incontournable lorsque les certificats ont un contenu arbitraire, ou
+    lorsque leur DN ne contient aucun champ connu
+    (comme l'organisation, etc...). Dans ce cas, vous devez construire une base
+    de donn&eacute;es de mots de passe contenant <em>tous</em> les clients
+    autoris&eacute;s, comme suit :</p>
+
+    <example><title>httpd.conf</title><pre>
+SSLVerifyClient      none
+&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+
+SSLVerifyClient      require
+SSLVerifyDepth       5
+SSLCACertificateFile conf/ssl.crt/ca.crt
+SSLCACertificatePath conf/ssl.crt
+SSLOptions           +FakeBasicAuth
+SSLRequireSSL
+AuthName             "Snake Oil Authentication"
+AuthType             Basic
+AuthBasicProvider    file
+AuthUserFile         /usr/local/apache2/conf/httpd.passwd
+Require              valid-user
+&lt;/Directory&gt;</pre>
+    </example>
+
+    <p>Le mot de passe utilis&eacute; dans cet exemple correspond &agrave; la cha&icirc;ne de
+    caract&egrave;res "password" chiffr&eacute;e en DES. Voir la documentation de la
+    directive <directive module="mod_ssl">SSLOptions</directive> pour
+    plus de d&eacute;tails.</p>
+
+    <example><title>httpd.passwd</title><pre>
+/C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
+/C=US/L=S.F./O=Snake Oil, Ltd./OU=CA/CN=Bar:xxj31ZMTZzkVA
+/C=US/L=L.A./O=Snake Oil, Ltd./OU=Dev/CN=Quux:xxj31ZMTZzkVA</pre>
+    </example>
+
+    <p>Lorsque vos clients font tous partie d'une m&ecirc;me hi&eacute;rarchie, ce qui
+    appara&icirc;t dans le DN, vous pouvez les authentifier plus facilement en
+    utilisant la directive <directive module="mod_ssl"
+    >SSLRequire</directive>, comme suit :</p>
+
+
+    <example><title>httpd.conf</title><pre>
+SSLVerifyClient      none
+&lt;Directory /usr/local/apache2/htdocs/secure/area&gt;
+
+  SSLVerifyClient      require
+  SSLVerifyDepth       5
+  SSLCACertificateFile conf/ssl.crt/ca.crt
+  SSLCACertificatePath conf/ssl.crt
+  SSLOptions           +FakeBasicAuth
+  SSLRequireSSL
+  SSLRequire       %{SSL_CLIENT_S_DN_O}  eq "Snake Oil, Ltd." \
+               and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}
+&lt;/Directory&gt;</pre>
+    </example>
+</section>
+
+<section id="intranet">
+<title>Comment imposer HTTPS avec chiffrements forts,
+et soit authentification de base, soit possession de certificats clients,
+pour l'acc&egrave;s &agrave; une partie de l'Intranet, pour les clients en
+provenance de l'Internet ? Je souhaite quand-m&ecirc;me autoriser l'acc&egrave;s en HTTP
+aux clients de l'intranet.</title>
+
+   <p>On suppose dans ces exemples que les clients de l'intranet ont des
+   adresses IP dans la gamme 192.168.1.0/24, et que la partie de l'intranet
+   &agrave; laquelle vous voulez autoriser l'acc&egrave;s depuis l'Internet est
+   <code>/usr/local/apache2/htdocs/subarea</code>. Ces lignes de configuration
+   doivent se trouver en dehors de votre h&ocirc;te virtuel HTTPS, afin qu'elles
+   s'appliquent &agrave; la fois &agrave; HTTP et HTTPS.</p>
+
+    <example><title>httpd.conf</title><pre>
+SSLCACertificateFile conf/ssl.crt/company-ca.crt
+
+&lt;Directory /usr/local/apache2/htdocs&gt;
+#   En dehors de subarea, seul l'acc&egrave;s depuis l'intranet est autoris&eacute;
+Order                deny,allow
+Deny                 from all
+Allow                from 192.168.1.0/24
+&lt;/Directory&gt;
+
+&lt;Directory /usr/local/apache2/htdocs/subarea&gt;
+#   Dans subarea, tout acc&egrave;s depuis l'intranet est autoris&eacute;
+#   mais depuis l'Internet, seul l'acc&egrave;s par HTTPS + chiffrement fort
+ + Mot de passe
+#   ou HTTPS + chiffrement fort + certificat client n'est autoris&eacute;.
+
+#   Si HTTPS est utilis&eacute;, on s'assure que le niveau de chiffrement est fort.
+#   Autorise en plus les certificats clients comme une alternative &agrave;
+#   l'authentification basique.
+SSLVerifyClient      optional
+SSLVerifyDepth       1
+SSLOptions           +FakeBasicAuth +StrictRequire
+SSLRequire           %{SSL_CIPHER_USEKEYSIZE} &gt;= 128
+
+#   ON oblige les clients venant d'Internet &agrave; utiliser HTTPS
+RewriteEngine        on
+RewriteCond          %{REMOTE_ADDR} !^192\.168\.1\.[0-9]+$
+RewriteCond          %{HTTPS} !=on
+RewriteRule          .* - [F]
+
+#   On permet l'acc&egrave;s soit sur les crit&egrave;res r&eacute;seaux, soit par authentification Basique
+Satisfy              any
+
+#   Contr&ocirc;le d'acc&egrave;s r&eacute;seau
+Order                deny,allow
+Deny                 from all
+Allow                192.168.1.0/24
+
+#   Configuration de l'authentification HTTP Basique
+AuthType             basic
+AuthName             "Protected Intranet Area"
+AuthBasicProvider    file
+AuthUserFile         conf/protected.passwd
+Require              valid-user
+&lt;/Directory&gt;</pre>
+    </example>
+</section>
+</section>
+<!-- /access control -->
+
+</manualpage>
+

@@ -1,0 +1,1133 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English revision : 734692 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="ssl_faq.xml.meta">
+<parentdocument href="./">SSL/TLS</parentdocument>
+
+  <title>Chiffrement SSL/TLS fort: foire aux questions</title>
+
+<summary>
+<blockquote>
+<p>Le sage n'apporte pas de bonnes r&eacute;ponses, il pose les bonnes questions</p>
+<p class="cite">-- <cite>Claude Levi-Strauss</cite></p>
+
+</blockquote>
+<p>Ce chapitre propose une Foire Aux Questions (FAQ) et les r&eacute;ponses
+correspondantes selon la tradition populaire USENET. La plupart des questions
+ont &eacute;t&eacute; pos&eacute;s dans le Newsgroup
+<code><a href="news:comp.infosystems.www.servers.unix"
+>comp.infosystems.www.servers.unix</a></code> ou dans la liste de diffusion du
+support mod_ssl <code><a href="mailto:modssl-users@modssl.org"
+>modssl-users@modssl.org</a></code>. Elles ont &eacute;t&eacute; rassembl&eacute;es ici afin
+de ne pas avoir &agrave; r&eacute;pondre encore et encore aux m&ecirc;mes questions.</p>
+
+<p>Vous &ecirc;tes pri&eacute; de lire ce chapitre au moins une fois avant d'installer
+mod_ssl, ou d'y rechercher la solution &agrave; votre probl&egrave;me avant de le soumettre
+&agrave; l'auteur.</p>
+</summary>
+
+<section id="about"><title>A propos de mod_ssl</title>
+<ul>
+<li><a href="#history">Quel est l'historique de mod_ssl ?</a></li>
+<li><a href="#wassenaar">mod_ssl et l'arrangement Wassenaar</a></li>
+</ul>
+
+<section id="history"><title>Quel est l'historique de mod_ssl ?</title>
+<p>Le paquet mod_ssl version 1 a &eacute;t&eacute; cr&eacute;&eacute; en avril 1998 par <a
+    href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> par portage des
+    patches sources 1.17 du module <a
+    href="http://www.apache-ssl.org/">Apache-SSL</a> de <a
+    href="mailto:ben@algroup.co.uk">Ben Laurie</a> pour Apache 1.2.6 vers
+    Apache 1.3b6. Il fut ensuite enti&egrave;rement r&eacute;assembl&eacute; pour Apache 1.3.0 en
+    fusionnant l'ancien mod_ssl 1.x avec le nouveau Apache-SSL 1.18 pour cause
+    de conflits avec le cycle de d&eacute;veloppement du module de Ben Laurie. Depuis
+    lors, mod_ssl vole de ses propres ailes sous le nom de mod_ssl v2. La
+    premi&egrave;re version distribu&eacute;e au public fut mod_ssl 2.0.0 &agrave; partir du
+    10 ao&ucirc;t 1998. </p>
+
+    <p>Quand les restrictions &agrave; l'exportation des US sur les logiciels de
+    cryptographie furent assouplis, <module>mod_ssl</module> devint partie
+    int&eacute;grante du serveur HTTP Apache &agrave; partir de la distribution de
+    Apache httpd 2.</p>
+</section>
+
+<section id="wassenaar"><title>mod_ssl est-il concern&eacute; par
+l'arrangement Wassenaar ?</title>
+<p>Tout d'abord, examinons en quoi consiste <dfn>Wassenaar</dfn> et son
+<dfn>Arrangement sur le contr&ocirc;le de l'exportation des armes conventionnelles
+et le double usage des biens et des technologies</dfn> : c'est un
+r&egrave;glement international, &eacute;tabli en 1995, qui contr&ocirc;le le commerce des armes
+conventionnelles et le double usage des biens et des technologies. Il
+remplace le r&egrave;glement pr&eacute;c&eacute;dent <dfn>CoCom</dfn>. Pour plus de d&eacute;tails sur
+l'arrangement et ses signataires, se r&eacute;f&eacute;rer &agrave; <a
+    href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>.</p>
+
+    <p>En bref, l'Arrangement Wassenaar a pour but d'emp&ecirc;cher la constitution
+    de puissances militaires qui pourraient menacer la s&eacute;curit&eacute; et la
+    stabilit&eacute; r&eacute;gionales et internationales. L'Arrangement Wassenaar contr&ocirc;le
+    l'exportation de logiciels de cryptographie comme biens &agrave; double usage,
+    c'est &agrave; dire ayant des applications &agrave; la fois militaires et civiles.
+    Cependant, l'Arrangement Wassenaar exempte les logiciels grand public et
+    les logiciels libres du contr&ocirc;le &agrave; l'exportation.</p>
+
+    <p>Dans l'actuelle <cite>List of Dual Use Goods and Technologies And
+    Munitions</cite>, sous <q>GENERAL SOFTWARE NOTE (GSN)</q>, il est &eacute;crit
+    <q>La liste ne prend pas en compte les "logiciels" qui sont soit :
+    1. [...] 2. "dans le domaine public".</q> Et sous
+    <q>DEFINITIONS OF TERMS USED IN THESE LISTS</q>, <q>In the public
+    domain</q> est d&eacute;fini comme <q>"technologie" ou "logiciel" qui a &eacute;t&eacute;
+    fourni sans restrictions &agrave; propos de sa redistribution ult&eacute;rieure. Note:
+    les restrictions de Copyright ne privent pas la "technologie" ou le
+    "logiciel" de leur appartenance au "domaine public".</q></p>
+
+    <p>Ainsi, selon l'Arrangement Wassenaar et sa <q>List of Dual Use Goods and
+    Technologies And Munitions List</q>, mod_ssl et OpenSSL appartiennent au
+    <q>domaine public</q>, et ne sont donc pas concern&eacute;s
+    par les dispositions de l'arrangement.</p>
+
+</section>
+</section>
+<!-- /about -->
+
+<section id="installation"><title>Installation</title>
+<ul>
+<li><a href="#mutex">Pourquoi le d&eacute;marrage d'Apache provoque-t-il des
+erreurs de permission en rapport avec SSLMutex ?</a></li>
+<li><a href="#entropy">Pourquoi mod_ssl s'arr&ecirc;te-t-il avec l'erreur
+"Failed to generate temporary 512 bit RSA private key" au d&eacute;marrage
+d'Apache ?</a></li>
+</ul>
+
+<section id="mutex"><title>Pourquoi le d&eacute;marrage d'Apache provoque-t-il des
+erreurs de permission en rapport avec SSLMutex ?</title>
+    <p>Des erreurs telles que ``<code>mod_ssl: Child could not open
+    SSLMutex lockfile /opt/apache/logs/ssl_mutex.18332 (avec l'erreur
+    syst&egrave;me qui suit) [...] System: Permission denied (errno: 13)</code>''
+    sont souvent provoqu&eacute;es par des permissions trop restrictives sur les
+    r&eacute;pertoires <em>parents</em>. Assurez-vous que tous les r&eacute;pertoires
+    parents (ici <code>/opt</code>, <code>/opt/apache</code> et
+    <code>/opt/apache/logs</code>) ont le bit x positionn&eacute; au moins pour
+    l'UID sous lequel les processus enfants d'Apache s'ex&eacute;cutent (voir la
+    directive <directive module="mpm_common">User</directive>).</p>
+</section>
+
+<section id="entropy"><title>Pourquoi mod_ssl s'arr&ecirc;te-t-il avec l'erreur
+"Failed to generate temporary 512 bit RSA private key" au d&eacute;marrage
+d'Apache ?</title>
+    <p>Pour fonctionner correctement, les logiciels de cryptographie ont
+    besoin d'une source de donn&eacute;es al&eacute;atoires. De nombreux syst&egrave;mes
+    d'exploitation libres proposent un "p&eacute;riph&eacute;rique source d'entropie"
+    qui fournit ce service (il se nomme en g&eacute;n&eacute;ral
+    <code>/dev/random</code>). Sur d'autres syst&egrave;mes, les applications
+    doivent amorcer manuellement
+    le G&eacute;n&eacute;rateur de Nombres Pseudo-Al&eacute;atoires d'OpenSSL
+    (Pseudo Random Number Generator -PRNG) &agrave; l'aide de donn&eacute;es appropri&eacute;es
+    avant de g&eacute;n&eacute;rer des cl&eacute;s ou d'effectuer un chiffrement &agrave; cl&eacute;
+    publique. Depuis la version 0.9.5, les fonctions d'OpenSSL qui n&eacute;cessitent
+    des donn&eacute;es al&eacute;atoires provoquent une erreur si le PRNG n'a pas &eacute;t&eacute; amorc&eacute;
+    avec une source de donn&eacute;es al&eacute;atoires d'au moins 128 bits.</p>
+    <p>Pour &eacute;viter cette erreur, <module>mod_ssl</module> doit fournir
+    suffisamment d'entropie au PRNG pour lui permettre de fonctionner
+    correctement. Ce niveau d'entropie est d&eacute;fini par la directive
+    <directive module="mod_ssl">SSLRandomSeed</directive>.</p>
+</section>
+</section>
+<!-- /installation -->
+
+<section id="aboutconfig"><title>Configuration</title>
+<ul>
+<li><a href="#parallel">Peut-on faire cohabiter HTTP et HTTPS sur le m&ecirc;me
+serveur ?</a></li>
+<li><a href="#ports">Quel port HTTPS utilise-t-il ?</a></li>
+<li><a href="#httpstest">Comment s'exprimer en langage HTTPS &agrave; des fins
+de test ?</a></li>
+<li><a href="#hang">Pourquoi la communication se bloque-t-elle lorsque je
+me connecte &agrave; mon serveur Apache configur&eacute; pour SSL ?</a></li>
+<li><a href="#refused">Pourquoi, lorsque je tente d'acc&eacute;der en HTTPS &agrave; mon
+serveur Apache+mod_ssl fra&icirc;chement install&eacute;, l'erreur ``Connection Refused''
+s'affiche-t-elle ?</a></li>
+<li><a href="#envvars">Pourquoi les variables <code>SSL_XXX</code>
+ne sont-elles pas disponibles dans mes scripts CGI et SSI ?</a></li>
+<li><a href="#relative">Comment puis-je basculer entre les protocoles HTTP et
+HTTPS dans les hyperliens relatifs ?</a></li>
+</ul>
+
+<section id="parallel"><title>Peut-on faire cohabiter HTTP et HTTPS sur le m&ecirc;me
+serveur ?</title>
+    <p>Oui. HTTP et HTTPS utilisent des ports diff&eacute;rents (HTTP &eacute;coute le port
+    80 et HTTPS le port 443), si bien qu'il n'y a pas de conflit direct entre
+    les deux. Vous pouvez soit ex&eacute;cuter deux instances s&eacute;par&eacute;es du serveur,
+    chacune d'entre elles &eacute;coutant l'un de ces ports, soit utiliser l'&eacute;l&eacute;gante
+    fonctionnalit&eacute; d'Apache que constituent les h&ocirc;tes virtuels pour cr&eacute;er
+    deux serveurs virtuels g&eacute;r&eacute;s par la m&ecirc;me instance d'Apache - le
+    premier serveur r&eacute;pondant en HTTP aux requ&ecirc;tes sur le port 80,
+    le second r&eacute;pondant en HTTPS aux requ&ecirc;tes sur le port
+    443.</p>
+</section>
+
+<section id="ports"><title>Quel port HTTPS utilise-t-il ?</title>
+<p>Vous pouvez associer le protocole HTTPS &agrave; n'importe quel port, mais le port
+standard est le port 443, que tout navigateur compatible HTTPS va utiliser par
+d&eacute;faut. Vous pouvez forcer votre navigateur &agrave; utiliser un port diff&eacute;rent en le
+pr&eacute;cisant dans l'URL. Par exemple, si votre serveur est configur&eacute; pour
+servir des pages en HTTPS sur le port 8080, vous pourrez y acc&eacute;der par
+l'adresse <code>https://example.com:8080/</code>.</p>
+</section>
+
+<section id="httpstest"><title>Comment s'exprimer en langage HTTPS &agrave; des fins
+de test ?</title>
+ <p>Alors que vous utilisez simplement</p>
+
+    <example>$ telnet localhost 80<br />
+    GET / HTTP/1.0</example>
+
+    <p>pour tester facilement Apache via HTTP, les choses ne sont pas si
+    simples pour HTTPS &agrave; cause du protocole SSL situ&eacute; entre TCP et HTTP.
+    La commande OpenSSL <code>s_client</code> vous permet cependant
+    d'effectuer un test similaire via HTTPS :</p>
+
+    <example>$ openssl s_client -connect localhost:443 -state -debug<br />
+    GET / HTTP/1.0</example>
+
+    <p>Avant la v&eacute;ritable r&eacute;ponse HTTP, vous recevrez des informations
+    d&eacute;taill&eacute;es &agrave; propos de l'&eacute;tablissement de la connexion SSL. Si vous
+    recherchez un client en ligne de commande &agrave; usage plus g&eacute;n&eacute;ral qui comprend
+    directement HTTP et HTTPS, qui peut effectuer des op&eacute;rations GET et POST,
+    peut utiliser un mandataire, supporte les requ&ecirc;tes portant sur une partie
+    d'un fichier (byte-range), etc..., vous devriez vous tourner vers
+    l'excellent outil <a href="http://curl.haxx.se/">cURL</a>. Gr&acirc;ce &agrave; lui,
+    vous pouvez v&eacute;rifier si Apache r&eacute;pond correctement aux requ&ecirc;tes via
+    HTTP et HTTPS comme suit :</p>
+
+    <example>$ curl http://localhost/<br />
+    $ curl https://localhost/</example>
+</section>
+
+<section id="hang"><title>Pourquoi la communication se bloque-t-elle lorsque je
+me connecte &agrave; mon serveur Apache configur&eacute; pour SSL ?</title>
+<p>Ceci peut arriver si vous vous connectez &agrave; un serveur HTTPS (ou &agrave;
+un serveur virtuel) via HTTP (par exemple, en utilisant
+<code>http://example.com/</code> au lieu de <code>https://example.com</code>).
+Cela peut aussi arriver en essayant de vous connecter via HTTPS &agrave; un
+serveur HTTP (par exemple, en utilisant <code>https://example.com/</code>
+avec un serveur qui ne supporte pas HTTPS, ou le supporte, mais sur un
+port non standard). Assurez-vous que vous vous connectez bien &agrave; un
+serveur (virtuel) qui supporte SSL.</p>
+</section>
+
+<section id="refused"><title>Pourquoi, lorsque je tente d'acc&eacute;der en HTTPS &agrave; mon
+serveur Apache+mod_ssl fra&icirc;chement install&eacute;, l'erreur ``Connection Refused''
+s'affiche-t-elle ?</title>
+<p>Une configuration incorrecte peut provoquer ce type d'erreur.
+Assurez-vous que vos directives <directive module="mpm_common"
+    >Listen</directive> s'accordent avec vos directives
+    <directive type="section" module="core">VirtualHost</directive>. Si
+    l'erreur persiste, recommencez depuis le d&eacute;but en restaurant la
+    configuration par d&eacute;faut fournie par<module>mod_ssl</module>.</p>
+</section>
+
+<section id="envvars"><title>Pourquoi les variables <code>SSL_XXX</code>
+ne sont-elles pas disponibles dans mes scripts CGI et SSI ?</title>
+<p>Assurez-vous que la directive ``<code>SSLOptions +StdEnvVars</code>'' est
+bien pr&eacute;sente dans le contexte de vos requ&ecirc;tes CGI/SSI.</p>
+</section>
+
+<section id="relative">
+<title>Comment puis-je basculer entre les protocoles HTTP et
+HTTPS dans les hyperliens relatifs ?</title>
+<p>Normalement, pour basculer entre HTTP et HTTPS, vous devez utiliser des
+hyperliens pleinement qualifi&eacute;s (car vous devez modifier le sch&eacute;ma de l'URL).
+Cependant, &agrave; l'aide du module <module>mod_rewrite</module>, vous pouvez
+manipuler des hyperliens relatifs, pour obtenir le m&ecirc;me effet.</p>
+    <example>
+    RewriteEngine on<br />
+    RewriteRule   ^/(.*):SSL$   https://%{SERVER_NAME}/$1 [R,L]<br />
+    RewriteRule   ^/(.*):NOSSL$ http://%{SERVER_NAME}/$1  [R,L]
+    </example>
+
+    <p>Ce jeu de r&egrave;gles rewrite vous permet d'utiliser des hyperliens de la
+    forme <code>&lt;a href="document.html:SSL"&gt;</code> pour passer en HTTPS
+    dans les liens relatifs. (Remplacez SSL par NOSSL pour passer en HTTP.)</p>
+</section>
+</section>
+<!-- configuration -->
+
+<section id="aboutcerts"><title>Certificats</title>
+<ul>
+<li><a href="#keyscerts">Qu'est-ce qu'un cl&eacute; priv&eacute;e RSA, un certificat,
+une demande de signature de certificat (CSR) ?</a></li>
+<li><a href="#startup">Y a-t-il une diff&eacute;rence au d&eacute;marrage entre un serveur
+Apache non SSL et un serveur Apache supportant SSL ?</a></li>
+<li><a href="#selfcert">Comment cr&eacute;er un certificat auto-sign&eacute; SSL &agrave; des
+fins de test ?</a></li>
+<li><a href="#realcert">Comment cr&eacute;er un vrai certificat SSL ?</a></li>
+<li><a href="#ownca">Comment cr&eacute;er et utiliser sa propre Autorit&eacute; de
+certification (CA) ?</a></li>
+<li><a href="#passphrase">Comment modifier le mot de passe
+de ma cl&eacute; priv&eacute;e ?</a></li>
+<li><a href="#removepassphrase">Comment d&eacute;marrer Apache sans avoir &agrave; entrer de
+mot de passe ?</a></li>
+<li><a href="#verify">Comment v&eacute;rifier si une cl&eacute; priv&eacute;e correspond bien
+&agrave; son certificat ?</a></li>
+<li><a href="#badcert">Pour quelle raison une connexion &eacute;choue-t-elle avec
+l'erreur "alert bad certificate" ?</a></li>
+<li><a href="#keysize">Pourquoi ma cl&eacute; priv&eacute;e de 2048 bits ne
+fonctionne-t-elle pas ?</a></li>
+<li><a href="#hashsymlinks">Pourquoi l'authentification des clients ne
+fonctionne-t-elle plus apr&egrave;s une mise &agrave; jour de SSLeay version 0.8
+vers la version 0.9 ?</a></li>
+<li><a href="#pemder">Comment convertir un certificat du format PEM
+au format DER ?</a></li>
+<li><a href="#verisign">Pourquoi ne trouve-t-on pas les programmes
+<code>getca</code> ou <code>getverisign</code> mentionn&eacute;s par Verisign
+pour installer un certificat Verisign ?</a></li>
+<li><a href="#sgc">Puis-je utiliser la fonctionnalit&eacute; "Cryptographie Transmise
+par Serveur" (Server Gated Cryptography - SGC), aussi connue sous le nom
+d'Identifiant Global Verisign (Verisign Global ID) avec mod_ssl ?</a></li>
+<li><a href="#gid">Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
+v&eacute;rifier mon certificat de serveur Verisign Global ID ?</a></li>
+</ul>
+
+<section id="keyscerts"><title>Qu'est-ce qu'un cl&eacute; priv&eacute;e RSA, un certificat,
+une demande de signature de certificat (CSR) ?</title>
+<p>Un fichier de cl&eacute; priv&eacute;e RSA est un fichier num&eacute;rique que vous pouvez
+utiliser pour d&eacute;chiffrer des messages que l'on vous a envoy&eacute;s. Il a son
+pendant &agrave; caract&egrave;re public que vous pouvez distribuer (par le biais de votre
+certificat), ce qui permet aux utilisateurs de chiffrer les messages qu'ils
+vous envoient.</p>
+    <p>Une Demande de Signature de Certificat (CSR) est un fichier num&eacute;rique
+    qui contient votre cl&eacute; publique et votre nom. La CSR doit &ecirc;tre envoy&eacute;e &agrave;
+    une Autorit&eacute; de Certification (CA), qui va la convertir en vrai certificat
+    en la signant.</p>
+    <p>Un certificat contient votre cl&eacute; publique RSA, votre nom, le nom
+    de la CA, et est sign&eacute; num&eacute;riquement par cette derni&egrave;re. Les navigateurs
+    qui reconnaissent la CA peuvent v&eacute;rifier la signature du certificat, et
+    ainsi en extraire votre cl&eacute; publique RSA. Ceci leur permet de vous envoyer
+    des messages chiffr&eacute;s que vous seul pourrez d&eacute;chiffrer.</p>
+    <p>Se r&eacute;f&eacute;rer au chapitre <a href="ssl_intro.html">Introduction</a>
+    pour une description g&eacute;n&eacute;rale du protocole SSL.</p>
+</section>
+
+<section id="startup"><title>Y a-t-il une diff&eacute;rence au d&eacute;marrage entre un serveur
+Apache non SSL et un serveur Apache supportant SSL ?</title>
+<p>Oui. En g&eacute;n&eacute;ral, avec ou sans <module>mod_ssl</module> int&eacute;gr&eacute;, le d&eacute;marrage
+d'Apache ne pr&eacute;sente pas de diff&eacute;rences. Cependant, si votre fichier de cl&eacute;
+priv&eacute;e SSL poss&egrave;de un mot de passe, vous devrez le taper au d&eacute;marrage
+d'Apache.</p>
+
+    <p>Devoir entrer manuellement le mot de passe au d&eacute;marrage du serveur peut
+    poser quelques probl&egrave;mes - par exemple, quand le serveur est d&eacute;marr&eacute; au
+    moyen de scripts au lancement du syst&egrave;me. Dans ce cas, vous pouvez suivre
+    les &eacute;tapes <a href="#removepassphrase">ci-dessous</a> pour supprimer le
+    mot de passe de votre cl&eacute; priv&eacute;e. Gardez &agrave; l'esprit qu'agir ainsi augmente
+    les risques de s&eacute;curit&eacute; - agissez avec pr&eacute;caution !</p>
+</section>
+
+<section id="selfcert"><title>Comment cr&eacute;er un certificat auto-sign&eacute; SSL &agrave; des
+fins de test ?</title>
+    <ol>
+    <li>V&eacute;rifiez qu'OpenSSL est install&eacute; et l'ex&eacute;cutable openssl dans votre
+    <code>PATH</code>.<br />
+    <br />
+    </li>
+    <li>Ex&eacute;cuter la commande suivante pour cr&eacute;er les fichiers
+    <code>server.key</code> et <code>server.crt</code> :<br />
+	<code><strong>$ openssl req -new -x509 -nodes -out server.crt
+			-keyout server.key</strong></code><br />
+	Ces fichiers seront utilis&eacute;s comme suit dans votre
+	<code>httpd.conf</code> :
+        <pre>
+             SSLCertificateFile    /chemin/vers/server.crt
+             SSLCertificateKeyFile /chemin/vers/server.key
+	</pre>
+    </li>
+    <li>Il est important de savoir que le fichier <code>server.key</code> n'a
+    <em>pas</em> de mot de passe. Pour ajouter un mot de passe &agrave; la cl&eacute;, vous
+    devez ex&eacute;cuter la commande suivante et confirmer le mot de passe comme
+    demand&eacute;.<br />
+	<p><code><strong>$ openssl rsa -des3 -in server.key -out
+	server.key.new</strong></code><br />
+	<code><strong>$ mv server.key.new server.key</strong></code><br /></p>
+	Sauvegardez le fichier <code>server.key</code> ainsi que son mot de
+	passe en lieu s&ucirc;r.
+    </li>
+    </ol>
+</section>
+
+<section id="realcert"><title>Comment cr&eacute;er un vrai certificat SSL ?</title>
+<p>Voici la marche &agrave; suivre pas &agrave; pas :</p>
+    <ol>
+    <li>Assurez-vous qu'OpenSSL est bien install&eacute; et dans votre <code>PATH</code>.
+    <br />
+    <br />
+    </li>
+    <li>Cr&eacute;ez une cl&eacute; priv&eacute;e RSA pour votre serveur Apache
+    	(elle sera au format PEM et chiffr&eacute;e en Triple-DES):<br />
+       <br />
+       <code><strong>$ openssl genrsa -des3 -out server.key 1024</strong></code><br />
+       <br />
+       Enregistrez le fichier <code>server.key</code> et le mot de passe
+       &eacute;ventuellement d&eacute;fini en lieu s&ucirc;r.
+       Vous pouvez afficher les d&eacute;tails de cette cl&eacute; priv&eacute;e RSA &agrave; l'aide de la
+       commande :<br />
+
+       <br />
+       <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
+       <br />
+       Si n&eacute;cessaire, vous pouvez aussi cr&eacute;er une version PEM non chiffr&eacute;e
+       (non recommand&eacute;) de cl&eacute; priv&eacute;e RSA avec :<br />
+       <br />
+       <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br />
+       <br />
+
+    </li>
+    <li>Cr&eacute;ez une Demande de signature de Certificat (CSR) &agrave; l'aide de la
+    cl&eacute; priv&eacute;e pr&eacute;c&eacute;demment g&eacute;n&eacute;r&eacute;e (la sortie sera au format PEM):<br />
+       <br />
+       <code><strong>$ openssl req -new -key server.key -out server.csr</strong></code><br />
+       <br />
+       Vous devez entrer le Nom de Domaine Pleinement Qualifi&eacute;
+       ("Fully Qualified Domain Name" ou FQDN) de votre serveur lorsqu'OpenSSL
+       vous demande le "CommonName", c'est &agrave; dire que si vous g&eacute;n&eacute;rez une CSR
+       pour un site web auquel on acc&egrave;dera par l'URL
+       <code>https://www.foo.dom/</code>, le FQDN sera "www.foo.dom". Vous
+       pouvez afficher les d&eacute;tails de ce CSR avec :<br />
+
+       <br />
+       <code><strong>$ openssl req -noout -text -in server.csr</strong></code><br />
+       <br />
+    </li>
+    <li>Vous devez maintenant envoyer la CSR &agrave; une Autorit&eacute; de Certification
+    (CA), afin que cette derni&egrave;re puisse la signer. Une fois la CSR sign&eacute;e,
+    vous disposerez d'un v&eacute;ritable certificat que vous pourrez utiliser avec
+    Apache. Vous pouvez faire signer votre CSR par une CA commerciale ou par
+    votre propre CA.<br />
+       Les CAs commerciales vous demandent en g&eacute;n&eacute;ral de leur envoyer la CSR
+       par l'interm&eacute;diaire d'un formulaire web, de r&eacute;gler le montant de la
+       signature, puis vous envoient un certificat sign&eacute; que vous pouvez
+       enregistrer dans un fichier server.crt.
+
+       Pour plus de d&eacute;tails sur la mani&egrave;re de cr&eacute;er sa propre CA, et de
+       l'utiliser pour signer une CSR, voir <a href="#ownca">ci-dessous</a>.<br />
+
+       Une fois la CSR sign&eacute;e, vous pouvez afficher les d&eacute;tails du certificat
+       comme suit :<br />
+       <br />
+       <code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br />
+
+    </li>
+    <li>Vous devez maintenant disposer de deux fichiers :
+    <code>server.key</code> et <code>server.crt</code>. Ils sont pr&eacute;cis&eacute;s dans
+    votre fichier <code>httpd.conf</code> comme suit :
+       <pre>
+       SSLCertificateFile    /chemin/vers/server.crt
+       SSLCertificateKeyFile /chemin vers/server.key
+       </pre>
+       Le fichier <code>server.csr</code> n'est plus n&eacute;cessaire.
+    </li>
+
+    </ol>
+</section>
+
+<section id="ownca"><title>Comment cr&eacute;er et utiliser sa propre Autorit&eacute; de
+certification (CA) ?</title>
+    <p>La solution la plus simple consiste &agrave; utiliser les scripts
+    <code>CA.sh</code> ou <code>CA.pl</code> fournis avec OpenSSL. De
+    pr&eacute;f&eacute;rence, utilisez cette solution, &agrave; moins que vous ayez de bonnes
+    raisons de ne pas le faire. Dans ce dernier cas, vous pouvez cr&eacute;er un
+    certificat auto-sign&eacute; comme suit :</p>
+
+    <ol>
+    <li>Cr&eacute;ez une cl&eacute; priv&eacute;e RSA pour votre serveur
+    	(elle sera au format PEM et chiffr&eacute;e en Triple-DES) :<br />
+       <br />
+       <code><strong>$ openssl genrsa -des3 -out server.key 1024</strong></code><br />
+       <br />
+       Sauvegardez le fichier <code>host.key</code> et le mot de passe
+       &eacute;ventuellement d&eacute;fini en lieu s&ucirc;r.
+       Vous pouvez afficher les d&eacute;tails de cette cl&eacute; priv&eacute;e RSA &agrave; l'aide de la
+       commande :<br />
+       <code><strong>$ openssl rsa -noout -text -in server.key</strong></code><br />
+       <br />
+       Si n&eacute;cessaire, vous pouvez aussi cr&eacute;er une version PEM non chiffr&eacute;e
+       (non recommand&eacute;) de cette cl&eacute; priv&eacute;e RSA	 avec :<br />
+       <br />
+       <code><strong>$ openssl rsa -in server.key -out server.key.unsecure</strong></code><br />
+       <br />
+    </li>
+    <li>Cr&eacute;ez un certificat auto-sign&eacute; (structure X509) &agrave; l'aide de la cl&eacute; RSA
+    que vous venez de g&eacute;n&eacute;rer (la sortie sera au format PEM) :<br />
+       <br />
+       <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365
+		       -key server.key -out server.crt</strong></code><br />
+       <br />
+       Cette commande signe le certificat du serveur et produit un fichier
+       <code>server.crt</code>. Vous pouvez afficher les d&eacute;tails de ce
+       certificat avec :<br />
+       <br />
+       <code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br />
+       <br />
+    </li>
+    </ol>
+</section>
+
+<section id="passphrase"><title>Comment modifier le mot de passe
+de ma cl&eacute; priv&eacute;e ?</title>
+<p>Vous devez simplement lire la cl&eacute; avec l'ancien mot de passe et la
+r&eacute;&eacute;crire en sp&eacute;cifiant le nouveau mot de passe. Pour cela, vous pouvez
+utiliser les commandes suivantes :</p>
+
+
+    <p><code><strong>$ openssl rsa -des3 -in server.key -out server.key.new</strong></code><br />
+    <code><strong>$ mv server.key.new server.key</strong></code><br /></p>
+
+    <p>La premi&egrave;re fois qu'il vous est demand&eacute; un mot de passe PEM, vous
+    devez entrer l'ancien mot de passe. Ensuite, on vous demandera d'entrer
+    encore un mot de passe - cette fois, entrez le nouveau mot de passe. Si on
+    vous demande de v&eacute;rifier le mot de passe, vous devrez entrer le nouveau
+    mot de passe une seconde fois.</p>
+</section>
+
+<section id="removepassphrase"><title>Comment d&eacute;marrer Apache sans avoir &agrave; entrer de
+mot de passe ?</title>
+<p>L'apparition de ce dialogue au d&eacute;marrage et &agrave; chaque red&eacute;marrage provient
+du fait que la cl&eacute; priv&eacute;e RSA contenue dans votre fichier server.key est
+enregistr&eacute;e sous forme chiffr&eacute;e pour des raisons de s&eacute;curit&eacute;. Le
+d&eacute;chiffrement de ce fichier n&eacute;cessite un mot de passe, afin de pouvoir &ecirc;tre
+lu et interpr&eacute;t&eacute;. Cependant, La suppression du mot de passe diminue le niveau de
+s&eacute;curit&eacute; du serveur - agissez avec pr&eacute;cautions !</p>
+    <ol>
+    <li>Supprimer le chiffrement de la cl&eacute; priv&eacute;e RSA (tout en conservant une
+    copie de sauvegarde du fichier original) :<br />
+       <br />
+       <code><strong>$ cp server.key server.key.org</strong></code><br />
+       <code><strong>$ openssl rsa -in server.key.org -out server.key</strong></code><br />
+
+       <br />
+    </li>
+    <li>Assurez-vous que le fichier server.key n'est lisible que par root :<br />
+       <br />
+       <code><strong>$ chmod 400 server.key</strong></code><br />
+       <br />
+    </li>
+    </ol>
+
+    <p>Maintenant, <code>server.key</code> contient une copie non chiffr&eacute;e de
+    la cl&eacute;. Si vous utilisez ce fichier pour votre serveur, il ne vous
+    demandera plus de mot de passe. CEPENDANT, si quelqu'un arrive &agrave; obtenir
+    cette cl&eacute;, il sera en mesure d'usurper votre identit&eacute; sur le r&eacute;seau.
+    Vous DEVEZ par cons&eacute;quent vous assurer que seuls root ou le serveur web
+    peuvent lire ce fichier (de pr&eacute;f&eacute;rence, d&eacute;marrez le serveur web sous
+    root et faites le s'ex&eacute;cuter sous un autre utilisateur, en n'autorisant
+    la lecture de la cl&eacute; que par root).</p>
+
+    <p>Une autre alternative consiste &agrave; utiliser la directive
+    ``<code>SSLPassPhraseDialog exec:/chemin/vers/programme</code>''. Gardez
+    cependant &agrave; l'esprit que ce n'est bien entendu ni plus ni moins
+    s&eacute;curis&eacute;.</p>
+</section>
+
+<section id="verify"><title>Comment v&eacute;rifier si une cl&eacute; priv&eacute;e correspond bien
+&agrave; son certificat ?</title>
+<p>Une cl&eacute; priv&eacute;e contient une s&eacute;rie de nombres. Deux de ces nombres forment la
+"cl&eacute; publique", les autres appartiennent &agrave; la "cl&eacute; priv&eacute;e". Les bits de la
+"cl&eacute; publique" sont inclus quand vous g&eacute;n&eacute;rez une CSR, et font par
+cons&eacute;quent partie du certificat associ&eacute;.</p>
+    <p>Pour v&eacute;rifier que la cl&eacute; publique contenue dans votre certificat
+    correspond bien &agrave; la partie publique de votre cl&eacute; priv&eacute;e, il vous suffit
+    de comparer ces nombres. Pour afficher le certificat et la cl&eacute;,
+    utilisez cette commande :</p>
+
+    <p><code><strong>$ openssl x509 -noout -text -in server.crt</strong></code><br />
+    <code><strong>$ openssl rsa -noout -text -in server.key</strong></code></p>
+
+    <p>Les parties `modulus' et `public exponent' doivent &ecirc;tre identiques dans
+    la cl&eacute; et le certificat. Comme le `public exponent' est habituellement
+    65537, et comme il est difficile de v&eacute;rifier visuellement que les nombreux
+    nombres du `modulus' sont identiques, vous pouvez utiliser l'approche
+    suivante :</p>
+
+    <p><code><strong>$ openssl x509 -noout -modulus -in server.crt | openssl md5</strong></code><br />
+    <code><strong>$ openssl rsa -noout -modulus -in server.key | openssl md5</strong></code></p>
+
+    <p>Il ne vous reste ainsi que deux nombres relativement courts &agrave; comparer.
+    Il est possible, en th&eacute;orie que ces deux nombres soient les m&ecirc;mes, sans que
+    les nombres du modulus soient identiques, mais les chances en sont infimes.</p>
+    <p>Si vous souhaitez v&eacute;rifier &agrave; quelle cl&eacute; ou certificat appartient une CSR
+    particuli&egrave;re, vous pouvez effectuer le m&ecirc;me calcul
+    sur la CSR comme suit :</p>
+
+    <p><code><strong>$ openssl req -noout -modulus -in server.csr | openssl md5</strong></code></p>
+</section>
+
+<section id="badcert"><title>>Pour quelle raison une connexion &eacute;choue-t-elle avec
+l'erreur "alert bad certificate" ?</title>
+<p>Les erreurs du type <code>OpenSSL: error:14094412: SSL
+    routines:SSL3_READ_BYTES:sslv3 alert bad certificate</code> dans le fichier
+    journal de SSL sont souvent caus&eacute;es par un navigateur qui ne sait pas
+    manipuler le certificat ou la cl&eacute; priv&eacute;e du serveur. Par exemple,
+    Netscape Navigator 3.x ne reconna&icirc;t pas une cl&eacute; RSA dont la longueur
+    est diff&eacute;rente de 1024 bits.</p>
+</section>
+
+<section id="keysize"><title>Pourquoi ma cl&eacute; priv&eacute;e de 2048 bits ne
+fonctionne-t-elle pas ?</title>
+<p>La longueur des cl&eacute;s priv&eacute;es pour SSL doit &ecirc;tre de 512 ou 1024 bits, pour
+des raison de compatibilit&eacute; avec certains navigateurs. Une longueur de 1024
+bits est recommand&eacute;e car des cl&eacute;s d'une longueur sup&eacute;rieure sont incompatibles
+avec certaines versions de Netscape Navigator et Microsoft Internet Explorer,
+ainsi qu'avec d'autres navigateurs qui utilisent le kit de chiffrement
+BSAFE de RSA.</p>
+</section>
+
+<section id="hashsymlinks"><title>Pourquoi l'authentification des clients ne
+fonctionne-t-elle plus apr&egrave;s une mise &agrave; jour de SSLeay version 0.8
+vers la version 0.9 ?</title>
+<p>Les certificats de CA situ&eacute;s dans le chemin que vous avez
+d&eacute;fini &agrave; l'aide de <code>SSLCACertificatePath</code> sont localis&eacute;s par
+SSLeay au moyen de liens symboliques repr&eacute;sentant l'empreinte du certificat
+(hash symlinks). Ces empreintes sont g&eacute;n&eacute;r&eacute;es &agrave; l'aide de la commande
+`<code>openssl x509 -noout -hash</code>'. Cependant, SSLeay 0.8 et 0.9
+utilisent des algorithmes diff&eacute;rents pour calculer l'empreinte d'un
+certificat. Vous devrez supprimer les anciens liens symboliques et en cr&eacute;er
+de nouveau apr&egrave;s la mise &agrave; jour. Utilisez le <code>Makefile</code> fourni par
+<module>mod_ssl</module>.</p>
+</section>
+
+<section id="pemder"><title>Comment convertir un certificat du format PEM
+au format DER ?</title>
+<p>Le format des certificats par d&eacute;faut pour SSLeay/OpenSSL est le format PEM,
+qui est tout simplement un format DER cod&eacute; en Base64, avec des lignes
+d'en-t&ecirc;tes et des annotations. Certaines applications, comme
+Microsoft Internet Explorer, ont besoin d'un certificat au format DER de base.
+Vous pouvez convertir un fichier PEM <code>cert.pem</code> en son &eacute;quivalent
+au format DER <code>cert.der</code> &agrave; l'aide de la commande suivante :
+<code><strong>$ openssl x509 -in cert.pem -out cert.der
+-outform DER</strong></code></p>
+</section>
+
+<section id="verisign"><title>Pourquoi ne trouve-t-on pas les programmes
+<code>getca</code> ou <code>getverisign</code> mentionn&eacute;s par Verisign
+pour installer un certificat Verisign ?</title>
+<p>Verisign n'a jamais fourni d'instructions sp&eacute;cifiques &agrave; Apache+mod_ssl.
+Les instructions fournies concernent Stronghold de C2Net (un serveur
+commercial bas&eacute; sur Apache avec support SSL).</p>
+<p>Pour installer votre certificat, il vous suffit d'enregistrer le
+certificat dans un fichier, et de fournir le nom de ce fichier &agrave; la directive
+<directive module="mod_ssl">SSLCertificateFile</directive>. Vous devez aussi
+fournir le nom du fichier contenant la cl&eacute; priv&eacute;e. Pour plus de d&eacute;tails, voir
+la directive <directive module="mod_ssl">SSLCertificateKeyFile</directive>.</p>
+</section>
+
+<section id="sgc"><title>Puis-je utiliser la fonctionnalit&eacute; "Cryptographie Transmise
+par Serveur" (Server Gated Cryptography - SGC), aussi connue sous le nom
+d'Identifiant Global Verisign (Verisign Global ID) avec mod_ssl ?</title>
+<p>Oui. <module>mod_ssl</module> supporte SGC depuis la version 2.1. Aucune
+configuration sp&eacute;cifique n'est n&eacute;cessaire - utilisez simplement le
+Global ID comme certificat de serveur. La <em>mise &agrave; niveau</em> des clients
+est g&eacute;r&eacute;e automatiquement par <module>mod_ssl</module> &agrave; l'ex&eacute;cution.</p>
+</section>
+
+<section id="gid"><title>Pourquoi les navigateurs se plaignent-ils de ne pas pouvoir
+v&eacute;rifier mon certificat de serveur Verisign Global ID ?</title>
+<p>Verisign utilise un certificat de CA interm&eacute;diaire entre le certificat
+de CA racine (install&eacute; dans les navigateurs) et le certificat du serveur (que
+vous avez install&eacute; sur le serveur). Verisign a d&ucirc; vous envoyer ce certificat
+de CA additionnel. Dans la n&eacute;gative, r&eacute;clamez-le. Ensuite, installez ce
+certificat &agrave; l'aide de la directive
+<directive module="mod_ssl">SSLCertificateChainFile</directive>. Ceci assure
+que le certificat de CA interm&eacute;diaire est bien envoy&eacute; au navigateur, ce qui
+comble le vide dans la cha&icirc;ne de certification.</p>
+</section>
+</section>
+<!-- /certs -->
+
+<section id="aboutssl"><title>Le protocole SSL</title>
+<ul>
+<li><a href="#random">Pourquoi de nombreuses et al&eacute;atoires erreurs de
+protocole SSL apparaissent-elles en cas de forte charge du serveur ?</a></li>
+<li><a href="#load">Pourquoi la charge de mon serveur est-elle plus
+importante depuis qu'il sert des ressources chiffr&eacute;es en SSL ?</a></li>
+<li><a href="#establishing">Pourquoi les connexions en HTTPS &agrave; mon serveur
+prennent-elles parfois jusqu'&agrave; 30 secondes pour s'&eacute;tablir ?</a></li>
+<li><a href="#ciphers">Quels sont les algorithmes de chiffrement
+support&eacute;s par mod_ssl ?</a></li>
+<li><a href="#adh">Pourquoi une erreur ``no shared cipher'' appara&icirc;t-elle
+quand j'essaie d'utiliser un algorithme de chiffrement
+Diffie-Hellman anonyme (ADH) ?</a></li>
+<li><a href="#sharedciphers">Pourquoi une erreur ``no shared cipher''
+appara&icirc;t-elle lorsqu'on se connecte &agrave; mon serveur
+fra&icirc;chement install&eacute; ?</a></li>
+<li><a href="#vhosts">Pourquoi ne peut-on pas utiliser SSL avec des h&ocirc;tes
+virtuels identifi&eacute;s par un nom et non par une adresse IP ?</a></li>
+<li><a href="#vhosts2">Pourquoi n'est-il pas possible d'utiliser
+l'h&eacute;bergement virtuel bas&eacute; sur le nom d'h&ocirc;te
+pour diff&eacute;rencier plusieurs h&ocirc;tes virtuels ?</a></li>
+<li><a href="#comp">Comment mettre en oeuvre la compression SSL ?</a></li>
+<li><a href="#lockicon">Lorsque j'utilise l'authentification de base sur HTTPS,
+l'ic&ocirc;ne de verrouillage des navigateurs Netscape reste ouverte quand la bo&icirc;te
+de dialogue d'authentification appara&icirc;t. Cela signifie-t-il que les utilisateur
+et mot de passe sont envoy&eacute;s en clair ?</a></li>
+<li><a href="#msie">Pourquoi des erreurs d'entr&eacute;e/sortie apparaissent-elles
+lorsqu'on se connecte &agrave; un serveur Apache+mod_ssl avec
+Microsoft Internet Explorer (MSIE) ?</a></li>
+<li><a href="#nn">Pourquoi des erreurs d'entr&eacute;e/sortie apparaissent-elles, ou
+le message "Netscape a re&ccedil;u des donn&eacute;es erron&eacute;es du serveur" s'affiche-t-il,
+lorsqu'on se connecte &agrave; un serveur Apache+mod_ssl
+avec Netscape Navigator ?</a></li>
+</ul>
+
+<section id="random"><title>Pourquoi de nombreuses et al&eacute;atoires erreurs de
+protocole SSL apparaissent-elles en cas de forte charge du serveur ?</title>
+<p>Ce probl&egrave;me peut avoir plusieurs causes, mais la principale r&eacute;side dans le
+cache de session SSL d&eacute;fini par la directive
+<directive module="mod_ssl">SSLSessionCache</directive>. Le cache de session
+DBM est souvent &agrave; la source du probl&egrave;me qui peut &ecirc;tre r&eacute;solu en utilisant le
+cache de session SHM (ou en n'utilisant tout simplement pas de cache).</p>
+</section>
+
+<section id="load"><title>Pourquoi la charge de mon serveur est-elle plus
+importante depuis qu'il sert des ressources chiffr&eacute;es en SSL ?</title>
+<p>SSL utilise un proc&eacute;d&eacute; de chiffrement fort qui n&eacute;cessite la manipulation
+d'une quantit&eacute; tr&egrave;s importante de nombres. Lorsque vous effectuez une requ&ecirc;te
+pour une page web via HTTPS, tout (m&ecirc;me les images) est chiffr&eacute; avant d'&ecirc;tre
+transmis. C'est pourquoi un accroissement du traffic HTTPS entra&icirc;ne une
+augmentation de la charge.</p>
+</section>
+
+<section id="establishing"><title>Pourquoi les connexions en HTTPS &agrave; mon serveur
+prennent-elles parfois jusqu'&agrave; 30 secondes pour s'&eacute;tablir ?</title>
+<p>Ce probl&egrave;me provient en g&eacute;n&eacute;ral d'un p&eacute;riph&eacute;rique <code>/dev/random</code>
+qui bloque l'appel syst&egrave;me read(2) jusqu'&agrave; ce que suffisamment d'entropie
+soit disponible pour servir la requ&ecirc;te. Pour plus d'information, se r&eacute;f&eacute;rer au
+manuel de r&eacute;f&eacute;rence de la directive
+<directive module="mod_ssl">SSLRandomSeed</directive>.</p>
+</section>
+
+<section id="ciphers"><title>Quels sont les algorithmes de chiffrement
+support&eacute;s par mod_ssl ?</title>
+<p>En g&eacute;n&eacute;ral, tous les algorithmes de chiffrement support&eacute;s par la version
+d'OpenSSL install&eacute;e, le sont aussi par <module>mod_ssl</module>. La liste des
+algorithmes disponibles peut d&eacute;pendre de la mani&egrave;re dont vous avez install&eacute;
+OpenSSL. Typiquement, au moins les algorithmes suivants sont support&eacute;s :</p>
+
+    <ol>
+    <li>RC4 avec MD5</li>
+    <li>RC4 avec MD5 (version d'exportation limit&eacute;e &agrave; une cl&eacute; de 40 bits)</li>
+    <li>RC2 avec MD5</li>
+    <li>RC2 avec MD5 (version d'exportation limit&eacute;e &agrave; une cl&eacute; de 40 bits)</li>
+    <li>IDEA avec MD5</li>
+    <li>DES avec MD5</li>
+    <li>Triple-DES avec MD5</li>
+    </ol>
+
+    <p>Pour d&eacute;terminer la liste r&eacute;elle des algorithmes disponibles, vous
+    pouvez utiliser la commande suivante :</p>
+    <example>$ openssl ciphers -v</example>
+</section>
+
+<section id="adh"><title>Pourquoi une erreur ``no shared cipher'' appara&icirc;t-elle
+quand j'essaie d'utiliser un algorithme de chiffrement
+Diffie-Hellman anonyme (ADH) ?</title>
+<p>Par d&eacute;faut et pour des raisons de s&eacute;curit&eacute;, OpenSSl ne permet <em>pas</em>
+l'utilisation des algorithmes de chiffrements ADH. Veuillez vous informer
+sur les effets pervers potentiels si vous choisissez d'activer le support
+de ces algorithmes de chiffrements.</p>
+<p>Pour pouvoir utiliser les algorithmes de chiffrements Diffie-Hellman
+anonymes (ADH), vous devez compiler OpenSSL avec
+``<code>-DSSL_ALLOW_ADH</code>'', puis ajouter ``<code>ADH</code>'' &agrave; votre
+directive <directive module="mod_ssl">SSLCipherSuite</directive>.</p>
+</section>
+
+<section id="sharedciphers"><title>Pourquoi une erreur ``no shared cipher''
+appara&icirc;t-elle lorsqu'on se connecte &agrave; mon serveur
+fra&icirc;chement install&eacute; ?</title>
+<p>Soit vous avez fait une erreur en d&eacute;finissant votre directive
+<directive module="mod_ssl">SSLCipherSuite</directive> (comparez-la avec
+l'exemple pr&eacute;configur&eacute; dans <code>httpd.conf-dist</code>), soit vous avez
+choisi d'utiliser des algorithmes DSA/DH au lieu de RSA lorsque vous avez
+g&eacute;n&eacute;r&eacute; votre cl&eacute; priv&eacute;e, et avez ignor&eacute; ou &ecirc;tes pass&eacute; outre les
+avertissements. Si vous avez choisi DSA/DH, votre serveur est incapable de
+communiquer en utilisant des algorithmes de chiffrements SSL bas&eacute;s sur RSA
+(du moins tant que vous n'aurez pas configur&eacute; une paire cl&eacute;/certificat RSA
+additionnelle). Les navigateurs modernes tels que NS ou IE ne peuvent
+communiquer par SSL qu'avec des algorithmes RSA. C'est ce qui provoque l'erreur
+"no shared ciphers". Pour la corriger, g&eacute;n&eacute;rez une nouvelle paire
+cl&eacute;/certificat pour le serveur en utilisant un algorithme de chiffrement
+RSA.</p>
+</section>
+
+<section id="vhosts"><title>Pourquoi ne peut-on pas utiliser SSL avec des h&ocirc;tes
+virtuels identifi&eacute;s par un nom et non par une adresse IP ?</title>
+<p>La raison est tr&egrave;s technique, et s'apparente au probl&egrave;me de la primaut&eacute; de
+l'oeuf ou de la poule. La couche du protocole SSL se trouve en dessous de la
+couche de protocole HTTP qu'elle encapsule. Lors de l'&eacute;tablissement d'une
+connexion SSL (HTTPS), Apache/mod_ssl doit n&eacute;gocier les param&egrave;tres du
+protocole SSL avec le client. Pour cela, mod_ssl doit consulter la
+configuration du serveur virtuel (par exemple, il doit acc&eacute;der &agrave; la la suite
+d'algorithmes de chiffrement, au certificat du serveur, etc...). Mais afin de
+s&eacute;lectionner le bon serveur virtuel, Apache doit conna&icirc;tre le contenu du champ
+d'en-t&ecirc;te HTTP <code>Host</code>. Pour cela, il doit lire l'en-t&ecirc;te de la
+requ&ecirc;te HTTP. Mais il ne peut le faire tant que la n&eacute;gociation SSL n'est pas
+termin&eacute;e, or, la phase de n&eacute;gociation SSL a besoin du nom d'h&ocirc;te contenu
+dans l'en-t&ecirc;te de la requ&ecirc;te. Bingo !</p>
+</section>
+
+<section id="vhosts2"><title>Pourquoi n'est-il pas possible d'utiliser
+l'h&eacute;bergement virtuel bas&eacute; sur le nom d'h&ocirc;te
+pour diff&eacute;rencier plusieurs h&ocirc;tes virtuels ?</title>
+    <p>L'h&eacute;bergement virtuel bas&eacute; sur le nom est une m&eacute;thode tr&egrave;s populaire
+    d'identification des diff&eacute;rents h&ocirc;tes virtuels. Il permet d'utiliser la
+    m&ecirc;me adresse IP et le m&ecirc;me num&eacute;ro de port pour de nombreux sites
+    diff&eacute;rents. Lorsqu'on se tourne vers SSL, il semble tout naturel de penser
+    que l'on peut appliquer la m&ecirc;me m&eacute;thode pour g&eacute;rer plusieurs h&ocirc;tes
+    virtuels SSL sur le m&ecirc;me serveur.</p>
+
+    <p>Et l&agrave;, on re&ccedil;oit un choc en apprenant que ce n'est pas possible.</p>
+
+    <p>La raison en est que le protocole SSL constitue une couche s&eacute;par&eacute;e qui
+    encapsule le protocole HTTP. Aini, la session SSL n&eacute;cessite une
+    transaction s&eacute;par&eacute;e qui prend place avant que la session HTTP n'ait d&eacute;but&eacute;.
+    Le serveur re&ccedil;oit une requ&ecirc;te SSL sur l'adresse IP X et le port Y
+    (habituellement 443). Comme la requ&ecirc;te SSL ne contient aucun champ relatif
+    &agrave; l'h&ocirc;te, le serveur n'a aucun moyen de d&eacute;terminer quel h&ocirc;te virtuel SSL il
+    doit utiliser. En g&eacute;n&eacute;ral, il utilisera le premier qu'il trouve et qui
+    correspond &agrave; l'adresse IP et au port sp&eacute;cifi&eacute;s.</p>
+
+    <p>Bien entendu, vous pouvez utiliser l'h&eacute;bergement virtuel bas&eacute; sur le nom
+    pour identifier de nombreux h&ocirc;tes virtuels non-SSL
+    (tous sur le port 80 par exemple), et ne g&eacute;rer qu'un seul h&ocirc;te virtuel SSL
+    (sur le port 443). Mais dans ce cas, vous devez d&eacute;finir le num&eacute;ro de port
+    non-SSL &agrave; l'aide de la directive NameVirtualHost dans ce style :</p>
+
+    <example>
+      NameVirtualHost 192.168.1.1:80
+    </example>
+
+    <p>il existe d'autres solutions alternatives comme :</p>
+
+    <p>Utiliser des adresses IP diff&eacute;rentes pour chaque h&ocirc;te SSL.
+    Utiliser des num&eacute;ros de port diff&eacute;rents pour chaque h&ocirc;te SSL.</p>
+</section>
+
+<section id="comp"><title>Comment mettre en oeuvre la compression SSL ?</title>
+<p>Bien que la n&eacute;gociation pour la compression SSL ait &eacute;t&eacute; d&eacute;finie dans la
+sp&eacute;cification de SSLv2 et TLS, ce n'est qu'en mai 2004 que la RFC 3749 a
+d&eacute;fini DEFLATE comme une m&eacute;thode de compression standard n&eacute;gociable.
+</p>
+<p>Depuis la version 0.9.8, OpenSSL supporte cette compression par d&eacute;faut
+lorsqu'il est compil&eacute; avec l'option <code>zlib</code>. Si le client et le
+serveur supportent la compression, elle sera utilis&eacute;e. Cependant, la
+plupart des clients essaient encore de se connecter avec un Hello SSLv2.
+Comme SSLv2 ne comportait pas de table des algorithmes de compression pr&eacute;f&eacute;r&eacute;s
+dans sa n&eacute;gociation, la compression ne peut pas &ecirc;tre n&eacute;goci&eacute;e avec ces clients.
+Si le client d&eacute;sactive le support SSLv2, un Hello SSLv3 ou TLS peut &ecirc;tre
+envoy&eacute;, selon la biblioth&egrave;que SSL utilis&eacute;e, et la compression peut &ecirc;tre mise
+en oeuvre. Vous pouvez v&eacute;rifier si un client utilise la compression SSL en
+journalisant la variable <code>%{SSL_COMPRESS_METHOD}x</code>.
+</p>
+</section>
+
+<section id="lockicon"><title>Lorsque j'utilise l'authentification de base sur HTTPS,
+l'ic&ocirc;ne de verrouillage des navigateurs Netscape reste ouverte quand la bo&icirc;te
+de dialogue d'authentification appara&icirc;t. Cela signifie-t-il que les utilisateur
+et mot de passe sont envoy&eacute;s en clair ?</title>
+<p>Non, le couple utilisateur/mot de passe est transmis sous forme chiffr&eacute;e.
+	L'ic&ocirc;ne de chiffrement dans les navigateurs Netscape n'est pas vraiment
+	synchronis&eacute; avec la couche SSL/TLS. Il ne passe &agrave; l'&eacute;tat verrouill&eacute;
+	qu'au moment o&ugrave; la premi&egrave;re partie des donn&eacute;es relatives &agrave; la page web
+	proprement dite sont transf&eacute;r&eacute;es, ce qui peut pr&ecirc;ter &agrave; confusion. Le
+	dispositif d'authentification de base appartient &agrave; la couche HTTP, qui
+	est situ&eacute;e au dessus de la couche SSL/TLS dans HTTPS. Avant tout
+	transfert de donn&eacute;es HTTP sous HTTPS, la couche SSL/TLS a d&eacute;j&agrave; achev&eacute;
+	sa phase de n&eacute;gociation et bascul&eacute; dans le mode de communication
+	chiffr&eacute;e. Ne vous laissez donc pas abuser par l'&eacute;tat de cet ic&ocirc;ne.</p>
+</section>
+
+<section id="msie"><title>Pourquoi des erreurs d'entr&eacute;e/sortie apparaissent-elles
+lorsqu'on se connecte &agrave; un serveur Apache+mod_ssl avec
+Microsoft Internet Explorer (MSIE) ?</title>
+<p>La premi&egrave;re raison en est la pr&eacute;sence dans l'impl&eacute;mentation SSL de
+certaines versions de MSIE de bogues subtils en rapport avec le
+dispositif de "maintien en vie" (keep-alive) HTTP, et les alertes de
+notification de fermeture de session SSL en cas de coupure de la
+connexion au point d'entr&eacute;e (socket). De plus, l'interaction entre
+SSL et les fonctionnalit&eacute;s HTTP/1.1 pose probl&egrave;me avec certaines
+versions de MSIE. Vous pouvez contourner ces probl&egrave;mes en interdisant
+&agrave; Apache l'utilisation de HTTP/1.1, les connexions avec maintien en vie
+ou l'envoi de messages de notification de fermeture de session SSL aux
+clients MSIE. Pour cela, vous pouvez utiliser la directive suivante
+dans votre section d'h&ocirc;te virtuel avec support SSL :</p>
+    <example>
+    SetEnvIf User-Agent ".*MSIE.*" \<br />
+             nokeepalive ssl-unclean-shutdown \<br />
+             downgrade-1.0 force-response-1.0
+    </example>
+    <p>En outre, certaines versions de MSIE ont des probl&egrave;mes avec des
+    algorithmes de chiffrement particuliers. H&eacute;las, il n'est pas
+    possible d'apporter une solution sp&eacute;cifique &agrave; MSIE pour ces
+    probl&egrave;mes, car les algorithmes de chiffrement sont utilis&eacute;s d&egrave;s la
+    phase de n&eacute;gociation SSL. Ainsi, une directive
+    <directive module="mod_setenvif">SetEnvIf</directive> sp&eacute;cifique
+    &agrave; MSIE ne peut &ecirc;tre d'aucun secours. Par contre, vous devrez
+    ajuster les param&egrave;tres g&eacute;n&eacute;raux de mani&egrave;re drastique. Avant de
+    vous d&eacute;cider, soyez s&ucirc;r que vos clients rencontrent vraiment des
+    probl&egrave;mes. Dans la n&eacute;gative, n'effectuez pas ces ajustements car
+    ils affecteront <em>tous</em> vos clients, ceux utilisant MSIE,
+    mais aussi les autres.</p>
+
+    <p>Un autre probl&egrave;me vient du fait que les versions d'exportation
+    56 bits de MSIE 5.x pr&eacute;sentent une mauvaise impl&eacute;mentation de
+    SSLv3, qui interagit de mani&egrave;re inappropri&eacute;e avec les versions
+    d'OpenSSL sup&eacute;rieures &agrave; 0.9.4. Vous pouvez ignorer ce probl&egrave;me et
+    demander &agrave; vos clients de mettre &agrave; jour leurs navigateurs, vous
+    pouvez revenir &agrave; OpenSSL 0.9.4 (non recommand&eacute;), ou vous pouvez
+    contourner le probl&egrave;me, en sachant que vos modifications
+    affecteront tous les types de navigateurs :</p>
+    <example>SSLProtocol all -SSLv3</example>
+    <p>va d&eacute;sactiver compl&egrave;tement le protocole SSLv3 et ainsi permettre
+    aux navigateurs concern&eacute;s de fonctionner. Une meilleure solution
+    consiste &agrave; ne d&eacute;sactiver que les algorithmes de chiffrement qui
+    posent probl&egrave;me.</p>
+    <example><p><code>SSLCipherSuite
+    ALL:!ADH:<strong>!EXPORT56</strong>:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP</code>
+    </p></example>
+
+    <p>Ceci permet aussi aux versions de MSIE incrimin&eacute;es de
+    fonctionner, mais n'enl&egrave;ve que le support des derniers algorithmes
+    de chiffrement TLS 56 bits.</p>
+
+    <p>Autre probl&egrave;me avec les clients MSIE 5.x : ils refusent de se
+    connecter &agrave; des URLs de la forme <code>https://12.34.56.78/</code>
+    (o&ugrave; une adresse IP est utilis&eacute;e &agrave; la place d'un nom d'h&ocirc;te), si le
+    serveur utilise le dispositif de cryptographie transmise par le
+    serveur (SGC). Le probl&egrave;me ne peut &ecirc;tre contourn&eacute; qu'en utilisant
+    le nom de domaine pleinement qualifi&eacute; (FQDN) du site web dans les
+    hyperliens &agrave; la place de l'adresse IP, car MSIE 5.x g&egrave;re la
+    n&eacute;gociation SGC de mani&egrave;re inappropri&eacute;e.</p>
+
+    <p>Enfin, pour certaines versions de MSIE, il semble n&eacute;cessaire
+    qu'une session SSL puisse &ecirc;tre r&eacute;utilis&eacute;e (un comportement tout &agrave;
+    fait non conforme aux standard, bien entendu). Les connections avec
+    ces versions de MSIE ne fonctionnent que si un cache de session SSL
+    est mis en oeuvre. Ainsi, pour contourner le probl&egrave;me, assurez-vous
+    d'utiliser un cache de session (voir la directive
+    <directive module="mod_ssl">SSLSessionCache</directive>).</p>
+</section>
+
+<section id="nn"><title>Pourquoi des erreurs d'entr&eacute;e/sortie apparaissent-elles, ou
+le message "Netscape a re&ccedil;u des donn&eacute;es erron&eacute;es du serveur" s'affiche-t-il,
+lorsqu'on se connecte &agrave; un serveur Apache+mod_ssl
+avec Netscape Navigator ?</title>
+<p>
+    Ceci arrive en g&eacute;n&eacute;ral quand vous avez cr&eacute;&eacute; un nouveau certificat
+    de serveur pour un domaine donn&eacute;, mais aviez auparavant configur&eacute;
+    votre navigateur pour toujours accepter l'ancien certificat du
+    serveur. Si vous supprimez de votre navigateur l'entr&eacute;e
+    correspondant &agrave; l'ancien certificat, tout devrait rentrer dans
+    l'ordre. L'impl&eacute;mentation de SSL dans Netscape &eacute;tant correcte, les
+    erreurs d'entr&eacute;es/sorties avec Netscape Navigator sont en g&eacute;n&eacute;ral
+    caus&eacute;es par les certificats install&eacute;s.</p>
+</section>
+</section>
+<!-- /aboutssl -->
+
+<section id="support"><title>Support de mod_ssl</title>
+<ul>
+<li><a href="#resources">Quelles sont les sources d'informations
+disponibles en cas de probl&egrave;me avec mod_ssl ?</a></li>
+<li><a href="#contact">Qui peut-on contacter pour un support en cas de
+probl&egrave;me avec mod_ssl ?</a></li>
+<li><a href="#reportdetails">Quelles informations dois-je fournir lors
+de l'&eacute;criture d'un rapport de bogue ?</a></li>
+<li><a href="#coredumphelp">Un vidage m&eacute;moire s'est produit,
+pouvez-vous m'aider ?</a></li>
+<li><a href="#backtrace">Comment puis-je obtenir une journalisation de
+ce qui s'est pass&eacute;, pour m'aider &agrave; trouver la raison de ce vidage
+m&eacute;moire ?</a></li>
+</ul>
+
+<section id="resources"><title>Quelles sont les sources d'informations
+disponibles en cas de probl&egrave;me avec mod_ssl ?</title>
+<p>Voici les sources d'informations disponibles ; vous devez chercher
+ici en cas de probl&egrave;me.</p>
+
+    <dl>
+    <dt>Vous trouverez des r&eacute;ponses dans la Foire Aux Questions du
+    manuel utilisateur (ce document)</dt>
+    <dd><a href="http://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html">
+    	http://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html</a><br />
+	Cherchez tout d'abord dans la foire aux questions
+	(ce document). Si votre question est courante, on a d&eacute;j&agrave; d&ucirc; y
+	r&eacute;pondre de nombreuses fois, et elle fait probablement partie
+	de ce document.
+    </dd>
+    <dt>Les archives de la liste de diffusion de support modssl-users
+    	<a href="http://www.modssl.org/support/"
+        >http://www.modssl.org/support/</a></dt>
+    <dd>Vous pouvez chercher la solution &agrave; votre probl&egrave;me dans les
+    archives de la liste de diffusion modssl-users. Vous n'&ecirc;tes
+    probablement pas la premi&egrave;re personne &agrave; rencontrer ce probl&egrave;me !
+    </dd>
+    </dl>
+</section>
+
+<section id="contact"><title>Qui peut-on contacter pour un support en cas de
+probl&egrave;me avec mod_ssl ?</title>
+ <p>Voici toutes les possibilit&eacute;s de support pour mod_ssl, par ordre
+ de pr&eacute;f&eacute;rence. Merci d'utiliser ces possibilit&eacute;s
+ <em>dans cet ordre</em> - ne vous pr&eacute;cipitez pas sur celle qui vous
+ para&icirc;t la plus all&eacute;chante. </p>
+    <ol>
+    <li><em>Envoyez un rapport de probl&egrave;me &agrave; la liste de diffusion de
+    support modssl-users</em><br />
+        <a href="mailto:modssl-users@modssl.org">
+        modssl-users@modssl.org</a><br />
+        C'est la mani&egrave;re la plus efficace de soumettre votre rapport de
+	probl&egrave;me, car ainsi, les autres en sont inform&eacute;s, et pourront
+	b&eacute;n&eacute;ficier des r&eacute;ponses apport&eacute;es. Vous devez tout d'abord vous
+	abonner &agrave; la liste, mais vous pourrez ensuite discuter
+	facilement de votre probl&egrave;me avec l'auteur et l'ensemble de la
+	communaut&eacute; d'utilisateurs de mod_ssl.
+        </li>
+
+    <li><em>Envoyez un rapport de probl&egrave;me &agrave; la liste de diffusion de
+    support des utilisateurs d'Apache httpd</em><br />
+        <a href="mailto:users@httpd.apache.org">
+        users@httpd.apache.org</a><br />
+        C'est la deuxi&egrave;me mani&egrave;re de soumettre votre rapport de
+	probl&egrave;me. Ici aussi, vous devez d'abord vous abonner &agrave; la
+	liste, mais vous pourrez ensuite discuter facilement de votre
+	probl&egrave;me avec l'ensemble de la communaut&eacute; d'utilisateurs
+	d'Apache httpd.
+    </li>
+
+    <li><em>Ecrire un rapport de probl&egrave;me dans la base de donn&eacute;es des
+    bogues</em><br />
+	<a href="http://httpd.apache.org/bug_report.html">
+	http://httpd.apache.org/bug_report.html</a><br />
+        C'est la derni&egrave;re mani&egrave;re de soumettre votre rapport de
+	probl&egrave;me. Vous ne devez utiliser cette solution que si vous
+	avez d&eacute;j&agrave; &eacute;crit aux listes de diffusion, et n'avez pas trouv&eacute;
+	de solution. Merci de suivre les instructions de la page
+	mentionn&eacute;e ci-dessus <em>avec soin</em>.
+    </li>
+    </ol>
+</section>
+
+<section id="reportdetails"><title>Quelles informations dois-je fournir lors
+de l'&eacute;criture d'un rapport de bogue ?</title>
+<p>Vous devez toujours fournir au moins les informations
+suivantes :</p>
+
+    <dl>
+    <dt>Les versions d'Apache et OpenSSL install&eacute;es</dt>
+    <dd>La version d'Apache peut &ecirc;tre d&eacute;termin&eacute;e en ex&eacute;cutant
+    <code>httpd -v</code>. La version d'OpenSSL peut &ecirc;tre d&eacute;termin&eacute;e
+    en ex&eacute;cutant <code>openssl version</code>. Si Lynx est install&eacute;,
+    vous pouvez aussi ex&eacute;cuter la commande<code>lynx -mime_header
+    http://localhost/ | grep Server</code> et ainsi obtenir ces
+    informations en une seule fois.
+    </dd>
+
+    <dt>Les d&eacute;tails de votre installation d'Apache+mod_ssl+OpenSSL</dt>
+    <dd>A cet effet, vous pouvez fournir un fichier journal de votre
+    session de terminal qui montre les &eacute;tapes de la configuration et
+    de l'installation. En cas d'impossibilit&eacute;, vous devez au moins
+    fournir la ligne de commande <program>configure</program> que
+    vous avez utilis&eacute;e.
+    </dd>
+
+    <dt>En cas de vidage m&eacute;moire, inclure une trace de ce qui s'est
+    pass&eacute;</dt>
+    <dd>Si votre serveur Apache+mod_ssl+OpenSSL fait un vidage de sa
+    m&eacute;moire, merci de fournir en pi&egrave;ce jointe un fichier contenant
+    une trace de la zone d&eacute;di&eacute;e &agrave; la pile (voir
+    <a href="#backtrace">ci-dessous</a> pour des informations sur la mani&egrave;re
+    de l'obtenir). Il est n&eacute;cessaire de disposer de ces informations
+    afin de pouvoir d&eacute;terminer la raison de votre vidage m&eacute;moire.
+    </dd>
+
+    <dt>Une description d&eacute;taill&eacute;e de votre probl&egrave;me</dt>
+
+    <dd>Ne riez pas, nous sommes s&eacute;rieux ! De nombreux rapports
+    n'incluent pas de description de la v&eacute;ritable nature du probl&egrave;me.
+    Sans ces informations, il est tr&egrave;s difficile pour quiconque de
+    vous aider. Donc, et c'est votre propre int&eacute;r&ecirc;t (vous souhaitez
+    que le probl&egrave;me soit r&eacute;solu, n'est-ce pas ?), fournissez, s'il vous
+    plait, le maximum de d&eacute;tails possible. Bien entendu, vous devez
+    aussi inclure tout ce qui a &eacute;t&eacute; dit pr&eacute;c&eacute;demment.
+    </dd>
+    </dl>
+</section>
+
+<section id="coredumphelp"><title>Un vidage m&eacute;moire s'est produit,
+pouvez-vous m'aider ?</title>
+<p>En g&eacute;n&eacute;ral non, du moins tant que vous n'aurez pas fourni plus de
+d&eacute;tails &agrave; propos de la localisation dans le code o&ugrave; Apache a effectu&eacute;
+son vidage m&eacute;moire. Ce dont nous avons en g&eacute;n&eacute;ral besoin pour vous
+aider est une trace de ce qui s'est pass&eacute; (voir la question suivante).
+Sans cette information, il est pratiquement impossible de d&eacute;terminer
+la nature du probl&egrave;me et de vous aider &agrave; le r&eacute;soudre.</p>
+</section>
+
+<section id="backtrace"><title>Comment puis-je obtenir une journalisation de
+ce qui s'est pass&eacute;, pour m'aider &agrave; trouver la raison de ce vidage
+m&eacute;moire ?</title>
+<p>Vous trouverez ci-dessous les diff&eacute;rentes &eacute;tapes permettant
+d'obtenir une journalisation des &eacute;v&egrave;nements (backtrace) :</p>
+    <ol>
+    <li>Assurez-vous que les symboles de d&eacute;bogage sont disponibles, au
+    moins pour Apache. Pour cela, sur les plates-formes o&ugrave; GCC/GDB est
+    utilis&eacute;, vous devez compiler Apache+mod_ssl avec l'option
+    ``<code>OPTIM="-g -ggdb3"</code>''. Sur les autres plates-formes,
+    l'option ``<code>OPTIM="-g"</code>'' est un minimum.
+    </li>
+
+    <li>D&eacute;marrez le serveur et essayez de reproduire le vidage m&eacute;moire.
+    A cet effet, vous pouvez utiliser une directive du style
+    ``<code>CoreDumpDirectory /tmp</code>'' pour &ecirc;tre s&ucirc;r que le
+    fichier de vidage m&eacute;moire puisse bien &ecirc;tre &eacute;crit. Vous devriez
+    obtenir un fichier <code>/tmp/core</code> ou
+    <code>/tmp/httpd.core</code>. Si ce n'est pas le cas, essayez de
+    lancer votre serveur sous un UID autre que root.
+    Pour des raisons de s&eacute;curit&eacute;, de nombreux
+    noyaux modernes de permettent pas &agrave; un processus de vider sa
+    m&eacute;moire une fois qu'il a accompli un <code>setuid()</code> (&agrave; moins
+    qu'il effectue un <code>exec()</code>) car des informations d'un
+    niveau privil&eacute;gi&eacute; pourraient &ecirc;tre transmises en m&eacute;moire. Si
+    n&eacute;cessaire, vous pouvez ex&eacute;cuter <code>/chemin/vers/httpd -X</code>
+    manuellement afin de ne pas permettre &agrave; Apache de se cl&ocirc;ner (fork).
+    </li>
+
+    <li>Analysez le vidage m&eacute;moire. Pour cela, ex&eacute;cutez
+    <code>gdb /path/to/httpd /tmp/httpd.core</code> ou une commande
+    similaire. Dans GDB, tout ce que vous avez &agrave; faire est d'entrer
+    <code>bt</code>, et voila, vous obtenez la backtrace. Pour les
+    d&eacute;bogueurs autres que GDB consulter le manuel correspondant.
+    </li>
+    </ol>
+</section>
+</section>
+</manualpage>
