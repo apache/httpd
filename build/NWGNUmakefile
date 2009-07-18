@@ -17,11 +17,12 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # build this level's files
 
 FILES_prebuild_headers = \
+	$(NWOS)/test_char.h \
 	$(PCRE)/config.h \
 	$(PCRE)/pcre.h \
 	$(EOLIST) 
     
-nlms :: chkapr $(NWOS)/httpd.imp
+nlms :: chkapr $(NWOS)/httpd.imp $(NWOS)/chartables.c
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo Generating $(subst /,\,$@)
@@ -53,6 +54,36 @@ $(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
 	@echo Creating $(subst /,\,$@)
 	copy $< $(subst /,\,$(PCRE))\$(@F)
 
+ifneq "$(BUILDTOOL_AS_NLM)" "1"
+
+$(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c $(FILES_prebuild_headers)
+	@echo Creating $(subst /,\,$@)
+	@$< $@
+
+%.exe: $(PCRE)/%.c
+	@echo Creating Build Helper $@
+	@$(WIN_CC) $(WIN_CFLAGS) $< -o $@
+
+$(NWOS)/test_char.h: gen_test_char.exe $(AP_WORK)/server/gen_test_char.c
+	@echo Creating $(subst /,\,$@)
+	@$< > $@
+
+%.exe: $(AP_WORK)/server/%.c
+	@echo Creating Build Helper $@
+	@$(WIN_CC) $(WIN_CFLAGS) -DCROSS_COMPILE $< -o $@
+
+else
+
+ifneq "$(wildcard $(NWOS)/chartables.c)" "$(NWOS)/chartables.c"
+$(error Error: required source $(abspath $(NWOS)/chartables.c) not found!)
+endif
+
+ifneq "$(wildcard $(NWOS)/test_char.h)" "$(NWOS)/test_char.h"
+$(error Error: required header $(abspath $(NWOS)/test_char.h) not found!)
+endif
+
+endif
+
 #
 # Check for minimum APR version
 #
@@ -67,12 +98,18 @@ chkapr: $(APR)\build\nw_ver.awk $(APR)\include\apr_version.h
 install :: nlms FORCE
 
 clean ::
-	$(CHK) $(subst /,\,$(PCRE))\config.h                $(DEL) $(subst /,\,$(PCRE))\config.h
-	$(CHK) $(subst /,\,$(PCRE))\pcre.h                  $(DEL) $(subst /,\,$(PCRE))\pcre.h
-	$(CHK) $(subst /,\,$(NWOS))\httpd.imp               $(DEL) $(subst /,\,$(NWOS))\httpd.imp
-	$(CHK) nw_export.i                                  $(DEL) nw_export.i
-	$(CHK) cc.opt                                       $(DEL) cc.opt
-	$(CHK) NWGNUversion.inc                             $(DEL) NWGNUversion.inc
+	$(CHK) $(subst /,\,$(PCRE))\config.h               $(DEL) $(subst /,\,$(PCRE))\config.h
+	$(CHK) $(subst /,\,$(PCRE))\pcre.h                 $(DEL) $(subst /,\,$(PCRE))\pcre.h
+	$(CHK) $(subst /,\,$(NWOS))\httpd.imp              $(DEL) $(subst /,\,$(NWOS))\httpd.imp
+	$(CHK) nw_export.i                                 $(DEL) nw_export.i
+	$(CHK) cc.opt                                      $(DEL) cc.opt
+	$(CHK) NWGNUversion.inc                            $(DEL) NWGNUversion.inc
+ifneq "$(BUILDTOOL_AS_NLM)" "1"
+	$(CHK) $(subst /,\,$(NWOS))\chartables.c           $(DEL) $(subst /,\,$(NWOS))\chartables.c
+	$(CHK) $(subst /,\,$(NWOS))\test_char.h            $(DEL) $(subst /,\,$(NWOS))\test_char.h
+	$(CHK) dftables.exe                                $(DEL) dftables.exe
+	$(CHK) gen_test_char.exe                           $(DEL) gen_test_char.exe
+endif
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
