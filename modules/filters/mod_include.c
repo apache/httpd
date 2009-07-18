@@ -611,7 +611,7 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
                 idx, r->filename);
             return NULL;
         }
-        else if (re->match[idx]rm_so == re->match[idx].rm_eo) {
+        else if (re->match[idx].rm_so == re->match[idx].rm_eo) {
             return NULL;
         }
         else if (re->match[idx].rm_so < 0 || re->match[idx].rm_eo < 0) {
