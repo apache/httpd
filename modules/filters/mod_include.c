@@ -605,25 +605,30 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
          * The choice of returning NULL strings on not-found,
          * v.s. empty strings on an empty match is deliberate.
          */
-        if (!re) {
+        if (!re || !re->have_match) {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                 "regex capture $%" APR_SIZE_T_FMT " refers to no regex in %s",
                 idx, r->filename);
             return NULL;
         }
+        else if (re->match[idx]rm_so == re->match[idx].rm_eo) {
+            return NULL;
+        }
+        else if (re->match[idx].rm_so < 0 || re->match[idx].rm_eo < 0) {
+            /* I don't think this can happen if have_match is true.
+             * But let's not risk a regression by dropping this
+             */
+            return NULL;
+        }
+        else if (re->nsub < idx || idx >= AP_MAX_REG_MATCH) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "regex capture $%" APR_SIZE_T_FMT
+                          " is out of range (last regex was: '%s') in %s",
+                          idx, re->rexp, r->filename);
+            return NULL;
+        }
+
         else {
-            if (re->nsub < idx || idx >= AP_MAX_REG_MATCH) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
-                              "regex capture $%" APR_SIZE_T_FMT
-                              " is out of range (last regex was: '%s') in %s",
-                              idx, re->rexp, r->filename);
-                return NULL;
-            }
-
-            if (re->match[idx].rm_so < 0 || re->match[idx].rm_eo < 0) {
-                return NULL;
-            }
-
             val = apr_pstrmemdup(ctx->dpool, re->source + re->match[idx].rm_so,
                                  re->match[idx].rm_eo - re->match[idx].rm_so);
         }

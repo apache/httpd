@@ -265,7 +265,6 @@ static APR_INLINE int re_check(request_rec *r, const char *string,
 {
     ap_regex_t *compiled;
     backref_t *re = reptr ? *reptr : NULL;
-    int rc;
 
     compiled = ap_pregcomp(r->pool, rexp, AP_REG_EXTENDED);
     if (!compiled) {
@@ -284,10 +283,11 @@ static APR_INLINE int re_check(request_rec *r, const char *string,
     re->source = apr_pstrdup(r->pool, string);
     re->rexp = apr_pstrdup(r->pool, rexp);
     re->nsub = compiled->re_nsub;
-    rc = !ap_regexec(compiled, string, AP_MAX_REG_MATCH, re->match, 0);
+    re->have_match = !ap_regexec(compiled, string, AP_MAX_REG_MATCH,
+                                 re->match, 0);
 
     ap_pregfree(r->pool, compiled);
-    return rc;
+    return re->have_match;
 }
 
 static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token,
