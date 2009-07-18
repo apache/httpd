@@ -107,13 +107,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
    +1: rpluem, jim
 
- * mod_dir: add DefaultHandler directive
+ * mod_dir: add DefaultMapping directive
    PR 47184
    Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=785425
+                http://svn.apache.org/viewvc?view=rev&revision=795450
    2.2.x patch: http://people.apache.org/~niq/patches/47184.patch
                 (identical but for offsets, but patch failed on trunk version)
+                plus docs patch from r795450
    +1: niq
-   -1: wrowe; why 'DefaultHandler' is a bad choice for directive name posted to list
 
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
