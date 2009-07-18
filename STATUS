@@ -130,6 +130,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
    +1: fuankg
 
+ * mod_include: fix potential segfault in get_include_var
+   http://markmail.org/message/jlc7t5edsjujbe37
+   Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=795445
+                http://svn.apache.org/viewvc?view=rev&revision=795446
+   2.2.x patch: http://people.apache.org/~niq/patches/mod_include_get_include_var.patch
+   +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
