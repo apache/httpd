@@ -73,6 +73,7 @@ typedef struct {
     const char *rexp;
     apr_size_t  nsub;
     ap_regmatch_t match[AP_MAX_REG_MATCH];
+    int have_match;
 } backref_t;
 
 typedef const char *(*string_func_t)(request_rec*, const char*);
