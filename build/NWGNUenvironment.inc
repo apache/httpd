@@ -176,9 +176,10 @@ MATH3S	=
 PLIB3S	= $(METROWERKS)\Novell Support\Metrowerks Support\Libraries\MSL C++\MWCPP.lib
 
 # MetroWerks Win32 build flags to create build tool
+MWCW_MSL   = "$(METROWERKS)/MSL"
+MWCW_W32   = "$(METROWERKS)/Win32-x86 Support"
 WIN_CFLAGS =  -O2 -gccinc -nodefaults -proc 586 -w off
-WIN_CFLAGS += -ir "$(METROWERKS)/MSL" -ir "$(METROWERKS)/Win32-x86 Support"
-WIN_CFLAGS += -lr "$(METROWERKS)/MSL" -lr "$(METROWERKS)/Win32-x86 Support"
+WIN_CFLAGS += -ir $(MWCW_MSL) -ir $(MWCW_W32) -lr $(MWCW_MSL) -lr $(MWCW_W32)
 WIN_CFLAGS += -lMSL_All_x86.lib -lkernel32.lib -luser32.lib
 
 # Base compile flags
