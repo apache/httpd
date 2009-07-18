@@ -156,5 +156,25 @@ a directory</description>
     </note>
 </usage>
 </directivesynopsis>
+<directivesynopsis>
+<name>DefaultMapping</name>
+<description>Define a default URL for requests that don't map to a file</description>
+<syntax>DefaultMapping <var>local-url</var></syntax>
+<default>None - httpd will return 404 (Not Found)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<usage>
+    <p>Use this to set a handler for any URL that doesn't map to anything
+    in your filesystem, and would otherwise return HTTP 404 (Not Found).
+    For example</p>
+    <example>
+        <code>DefaultMapping default.php</code>
+    </example>
+    <p>will cause requests for non-existent files to be handled by
+    <code>default.php</code>, while requests for files that exist
+    are unaffected.</p>
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>

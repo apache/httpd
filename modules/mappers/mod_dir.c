@@ -83,7 +83,7 @@ static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
 
 static const command_rec dir_cmds[] =
 {
-    AP_INIT_TAKE1("DefaultHandler", ap_set_string_slot,
+    AP_INIT_TAKE1("DefaultMapping", ap_set_string_slot,
                   (void*)APR_OFFSETOF(dir_config_rec, dflt),
                   DIR_CMD_PERMS, "Set a default handler"),
     AP_INIT_RAW_ARGS("DirectoryIndex", add_index, NULL, DIR_CMD_PERMS,
