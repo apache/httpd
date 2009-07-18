@@ -16,13 +16,9 @@
 
 #ifdef CROSS_COMPILE
 
-/** @see isalnum */
 #define apr_isalnum(c) (isalnum(((unsigned char)(c))))
-/** @see isalpha */
 #define apr_isalpha(c) (isalpha(((unsigned char)(c))))
-/** @see iscntrl */
 #define apr_iscntrl(c) (iscntrl(((unsigned char)(c))))
-/** @see isprint */
 #define apr_isprint(c) (isprint(((unsigned char)(c))))
 #include <ctype.h>
 #define APR_HAVE_STDIO_H 1
