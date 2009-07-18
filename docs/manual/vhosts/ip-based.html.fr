@@ -24,13 +24,11 @@
 <a href="../ko/vhosts/ip-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/ip-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Système requis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#howto">Comment configurer Apache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multiple">Configuration de processus multiples</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#single">Configuration d'un unique processus 
+<li><img alt="" src="../images/down.gif" /> <a href="#single">Configuration d'un unique processus
 résident pour des serveurs virtuels</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li>
 <a href="name-based.html">Support Apache des serveurs virtuels par nom</a>
@@ -39,58 +37,58 @@ résident pour des serveurs virtuels</a></li>
 <div class="section">
 <h2><a name="requirements" id="requirements">Système requis</a></h2>
 
-    <p>Comme l'indique le terme <cite>par IP</cite>, le serveur 
-    <strong>doit disposer de différentes adresses IP pour chaque 
-    serveur virtuel par IP</strong>. La machine peut posséder 
-    plusieurs connexions physiques au réseau, ou utiliser des 
-    interfaces virtuelles qui sont supportées par la plupart des 
-    systèmes d'exploitation modernes (Consultez la documentation des 
-    systèmes d'exploitation pour plus de détails, notamment les "alias 
+    <p>Comme l'indique le terme <cite>par IP</cite>, le serveur
+    <strong>doit disposer de différentes adresses IP pour chaque
+    serveur virtuel par IP</strong>. La machine peut posséder
+    plusieurs connexions physiques au réseau, ou utiliser des
+    interfaces virtuelles qui sont supportées par la plupart des
+    systèmes d'exploitation modernes (Consultez la documentation des
+    systèmes d'exploitation pour plus de détails, notamment les "alias
     IP" et la commande "ifconfig" pour les activer).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="howto" id="howto">Comment configurer Apache</a></h2>
 
-    <p>Il y a deux manières de configurer Apache pour le support de 
-    multiples serveurs virtuels. Il suffit soit de faire tourner un 
-    processus résident <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour chaque nom de 
-    domaine, soit de faire tourner un unique processus résident qui 
+    <p>Il y a deux manières de configurer Apache pour le support de
+    multiples serveurs virtuels. Il suffit soit de faire tourner un
+    processus résident <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour chaque nom de
+    domaine, soit de faire tourner un unique processus résident qui
     gère tous les serveurs virtuels.</p>
 
     <p>Utilisez des processus résidents multiples lorsque&nbsp;:</p>
 
     <ul>
-      <li>il y a des problèmes de répartition de sécurité, tels 
-      qu'une entreprise1 ne souhaite que personne d'une entreprise2 
-      ne puisse lire ses données excepté via le Web. Dans ce cas, 
-      vous aurez besoin de deux processus résidents, chacun fonctionnant 
-      avec des paramètres <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>, 
-      <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>, 
-      <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, et 
+      <li>il y a des problèmes de répartition de sécurité, tels
+      qu'une entreprise1 ne souhaite que personne d'une entreprise2
+      ne puisse lire ses données excepté via le Web. Dans ce cas,
+      vous aurez besoin de deux processus résidents, chacun fonctionnant
+      avec des paramètres <code class="directive"><a href="../mod/mpm_common.html#user">User</a></code>,
+      <code class="directive"><a href="../mod/mpm_common.html#group">Group</a></code>,
+      <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, et
       <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> différents.</li>
 
-      <li>vous disposez suffisamment de mémoire et de 
-      <a href="../misc/descriptors.html">descripteurs de fichiers</a> 
-      pour l'écoute de chaque alias IP de la machine. Il est seulement 
-      possible d'appliquer la directive 
-      <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, soit sur toutes 
-      les adresses avec le joker "*", soit uniquement sur des adresses 
-      spécifiques. Donc, si vous avez besoin d'écouter une adresse 
-      en particulier, vous devrez le faire pour l'ensemble des 
-      autres adresses (Bien qu'il soit plus simple de lancer un 
-      processus <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour écouter N-1 adresses, 
+      <li>vous disposez suffisamment de mémoire et de
+      <a href="../misc/descriptors.html">descripteurs de fichiers</a>
+      pour l'écoute de chaque alias IP de la machine. Il est seulement
+      possible d'appliquer la directive
+      <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>, soit sur toutes
+      les adresses avec le joker "*", soit uniquement sur des adresses
+      spécifiques. Donc, si vous avez besoin d'écouter une adresse
+      en particulier, vous devrez le faire pour l'ensemble des
+      autres adresses (Bien qu'il soit plus simple de lancer un
+      processus <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour écouter N-1 adresses,
       et un autre pour l'adresse restante).</li>
     </ul>
 
     <p>Utilisez un unique processus résident lorsque&nbsp;:</p>
 
     <ul>
-      <li>le partage de la configuration httpd entre les serveurs 
+      <li>le partage de la configuration httpd entre les serveurs
       virtuels est acceptable.</li>
 
-      <li>la machine assume déjà une grande quantité de requêtes, et 
-      que l'ajout de processus résidents supplémentaires en affecterait 
+      <li>la machine assume déjà une grande quantité de requêtes, et
+      que l'ajout de processus résidents supplémentaires en affecterait
       les performances.</li>
     </ul>
 
@@ -98,41 +96,41 @@ résident pour des serveurs virtuels</a></li>
 <div class="section">
 <h2><a name="multiple" id="multiple">Configuration de processus multiples</a></h2>
 
-    <p>Créez une installation indépendante du programme 
-    <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour chaque serveur virtuel. Pour 
-    chacune d'elle, utilisez la directive 
-    <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> dans le fichier 
-    de configuration pour définir l'adresse IP (ou serveur virtuel) 
+    <p>Créez une installation indépendante du programme
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> pour chaque serveur virtuel. Pour
+    chacune d'elle, utilisez la directive
+    <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> dans le fichier
+    de configuration pour définir l'adresse IP (ou serveur virtuel)
     que le processus résident doit gérer. Par exemple&nbsp;:</p>
 
     <div class="example"><p><code>
     Listen www.smallco.com:80
     </code></p></div>
 
-    <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom 
-    de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS 
+    <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
+    de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS
     avec Apache</a>).</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="single" id="single">Configuration d'un unique processus 
+<h2><a name="single" id="single">Configuration d'un unique processus
 résident pour des serveurs virtuels</a></h2>
 
-    <p>Dans ce cas, un unique processus httpd va gérer les requêtes 
-    pour le serveur principal et tous les serveurs virtuels. Dans le 
-    fichier de configuration, la directive 
-    <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> va servir à 
-    définir les autres directives 
-    <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>, 
-    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>, 
-    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>, 
-    <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> et 
-    <code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code> ou 
-    <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> avec des 
+    <p>Dans ce cas, un unique processus httpd va gérer les requêtes
+    pour le serveur principal et tous les serveurs virtuels. Dans le
+    fichier de configuration, la directive
+    <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> va servir à
+    définir les autres directives
+    <code class="directive"><a href="../mod/core.html#serveradmin">ServerAdmin</a></code>,
+    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>,
+    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>,
+    <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> et
+    <code class="directive"><a href="../mod/mod_log_config.html#transferlog">TransferLog</a></code> ou
+    <code class="directive"><a href="../mod/mod_log_config.html#customlog">CustomLog</a></code> avec des
     valeurs différentes pour chaque serveur virtuel. Par exemple&nbsp;:</p>
 
     <div class="example"><p><code>
-    &lt;VirtualHost www.smallco.com&gt;<br />
+    &lt;VirtualHost 172.20.30.40:80&gt;<br />
     ServerAdmin webmaster@mail.smallco.com<br />
     DocumentRoot /groups/smallco/www<br />
     ServerName www.smallco.com<br />
@@ -140,7 +138,7 @@ résident pour des serveurs virtuels</a></h2>
     TransferLog /groups/smallco/logs/access_log<br />
     &lt;/VirtualHost&gt;<br />
     <br />
-    &lt;VirtualHost www.baygroup.org&gt;<br />
+    &lt;VirtualHost 172.20.30.50:80&gt;<br />
     ServerAdmin webmaster@mail.baygroup.org<br />
     DocumentRoot /groups/baygroup/www<br />
     ServerName www.baygroup.org<br />
@@ -149,16 +147,17 @@ résident pour des serveurs virtuels</a></h2>
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom 
-    de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS 
+    <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom
+    de domaine comme argument à la directive &lt;VirtualHost&gt;
+     (consultez <a href="../dns-caveats.html">Problèmes DNS
     avec Apache</a>).</p>
 
-    <p>Presque <strong>toutes</strong> les directives de configuration 
-    peuvent être employées dans une directive VirtualHost, à l'exception 
-    des directives qui contrôlent la création du processus et de 
-    quelques autres. Pour connaître celles utilisables dans une 
-    directive VirtualHost, vérifiez leur 
-    <a href="../mod/directive-dict.html#Context">Contexte</a> en utilisant 
+    <p>Presque <strong>toutes</strong> les directives de configuration
+    peuvent être employées dans une directive VirtualHost, à l'exception
+    des directives qui contrôlent la création du processus et de
+    quelques autres. Pour connaître celles utilisables dans une
+    directive VirtualHost, vérifiez leur
+    <a href="../mod/directive-dict.html#Context">Contexte</a> en utilisant
     l'<a href="../mod/directives.html">Index des directives</a>.</p>
 
 
@@ -166,11 +165,11 @@ résident pour des serveurs virtuels</a></h2>
     utilisées à l'intérieur d'une directive VirtualHost si l'exécution se fait
     sous suEXEC. (Voir <a href="../suexec.html">suEXEC</a>).</p>
 
-    <p><em>SÉCURITÉ&nbsp;:</em> lorsque vous spécifiez où écrire les 
-    fichiers journaux, soyez attentif aux risques si quelqu'un d'autre 
-    que celui qui a démarré Apache dispose des droits d'écriture 
-    sur l'emplacement de ces fichiers. Consultez les 
-    <a href="../misc/security_tips.html">Conseils sur la sécurité</a> 
+    <p><em>SÉCURITÉ&nbsp;:</em> lorsque vous spécifiez où écrire les
+    fichiers journaux, soyez attentif aux risques si quelqu'un d'autre
+    que celui qui a démarré Apache dispose des droits d'écriture
+    sur l'emplacement de ces fichiers. Consultez les
+    <a href="../misc/security_tips.html">Conseils sur la sécurité</a>
     pour plus de détails.</p>
 
 </div></div>
