@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 659902:791344 (outdated) -->
+<!-- English Revision: 791344 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -149,7 +149,6 @@
       kullanıcılara yasaklayabilirsiniz:</p>
 
     <example>
-      UserDir enabled<br />
       UserDir disabled root ahmet mustafa
     </example>
 
