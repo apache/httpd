@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 698483:791344 (outdated) -->
+<!-- English Revision: 791344 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -133,7 +133,6 @@ host</context></contextlist>
       dizinlerini etkin kılmak için şunu yapabilirsiniz:</p>
 
     <example>
-      UserDir enabled<br />
       UserDir disabled birey4 birey5 birey6
     </example>
 

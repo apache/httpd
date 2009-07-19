@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 713462 -->
+<!-- English Revision: 795450 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -158,6 +158,26 @@
       <strong>Fakat bölü çizgisi ile bitmeyen bir istek dizin içeriğinin
       listelenmesi ile sonuçlanırdı.</strong></p>
     </note>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>DefaultMapping</name>
+<description>Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
+</description>
+<syntax>DefaultMapping <var>yerel-url</var></syntax>
+<default>None - httpd 404 döndürecektir (Yok)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<usage>
+    <p>Dosya sisteminde bulunmayan bir dosya için istek yapıldığında HTTP'nin
+      404 (Yok) hatasını döndürmemesi için sunulacak dosyanın yolunu tanımlar.
+      Örnek:</p>
+    <example>
+        <code>DefaultMapping default.php</code>
+    </example>
+    <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
+      yerine <code>default.php</code> dosyası sunulacaktır..</p>
 </usage>
 </directivesynopsis>
 
