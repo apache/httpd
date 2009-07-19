@@ -23,7 +23,6 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Çok kullanıcılı sistemlerde, <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> yönergesi ile her kullanıcının kendi ev dizininde
     bir sitesi olması sağlanabilir.
@@ -126,7 +125,6 @@
       kullanıcılara yasaklayabilirsiniz:</p>
 
     <div class="example"><p><code>
-      UserDir enabled<br />
       UserDir disabled root ahmet mustafa
     </code></p></div>
 
