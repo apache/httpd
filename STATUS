@@ -129,7 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    platform unless CROSS_COMPILE is defined. 
    Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=795438
    2.2.x patch: http://people.apache.org/~fuankg/diffs/gen_test_char.c.diff
-   +1: fuankg
+   +1: fuankg, niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
