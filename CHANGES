@@ -1,6 +1,9 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.12
 
+  *) mod_include: fix potential segfault when handling back references
+     on an empty SSI variable. [Ruediger Pluem, Lars Eilebrecht, Nick Kew]
+
   *) SECURITY: CVE-2009-1891 (cve.mitre.org)
      Fix a potential Denial-of-Service attack against mod_deflate or other 
      modules, by forcing the server to consume CPU time in compressing a 
