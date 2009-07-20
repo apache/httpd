@@ -158,6 +158,7 @@ typedef struct {
     const char *rexp;
     apr_size_t  nsub;
     ap_regmatch_t match[AP_MAX_REG_MATCH];
+    int         have_match;
 } backref_t;
 
 typedef struct {
@@ -648,25 +649,26 @@ static const char *get_include_var(const char *var, include_ctx_t *ctx)
          * The choice of returning NULL strings on not-found,
          * v.s. empty strings on an empty match is deliberate.
          */
-        if (!re) {
+        if (!re || !re->have_match) {
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                 "regex capture $%" APR_SIZE_T_FMT " refers to no regex in %s",
                 idx, r->filename);
             return NULL;
         }
+        else if (re->nsub < idx || idx >= AP_MAX_REG_MATCH) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "regex capture $%" APR_SIZE_T_FMT
+                          " is out of range (last regex was: '%s') in %s",
+                          idx, re->rexp, r->filename);
+            return NULL;
+        }
+        else if (re->match[idx].rm_so < 0 || re->match[idx].rm_eo < 0) {
+            /* I don't think this can happen if have_match is true.
+             * But let's not risk a regression by dropping this
+             */
+            return NULL;
+        }
         else {
-            if (re->nsub < idx || idx >= AP_MAX_REG_MATCH) {
-                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
-                              "regex capture $%" APR_SIZE_T_FMT
-                              " is out of range (last regex was: '%s') in %s",
-                              idx, re->rexp, r->filename);
-                return NULL;
-            }
-
-            if (re->match[idx].rm_so < 0 || re->match[idx].rm_eo < 0) {
-                return NULL;
-            }
-
             val = apr_pstrmemdup(ctx->dpool, re->source + re->match[idx].rm_so,
                                  re->match[idx].rm_eo - re->match[idx].rm_so);
         }
@@ -914,7 +916,6 @@ static APR_INLINE int re_check(include_ctx_t *ctx, const char *string,
 {
     ap_regex_t *compiled;
     backref_t *re = ctx->intern->re;
-    int rc;
 
     compiled = ap_pregcomp(ctx->dpool, rexp, AP_REG_EXTENDED);
     if (!compiled) {
@@ -930,10 +931,11 @@ static APR_INLINE int re_check(include_ctx_t *ctx, const char *string,
     re->source = apr_pstrdup(ctx->pool, string);
     re->rexp = apr_pstrdup(ctx->pool, rexp);
     re->nsub = compiled->re_nsub;
-    rc = !ap_regexec(compiled, string, AP_MAX_REG_MATCH, re->match, 0);
+    re->have_match = !ap_regexec(compiled, string, AP_MAX_REG_MATCH, 
+                                 re->match, 0);
 
     ap_pregfree(ctx->dpool, compiled);
-    return rc;
+    return re->have_match;
 }
 
 static int get_ptoken(include_ctx_t *ctx, const char **parse, token_t *token, token_t *previous)
