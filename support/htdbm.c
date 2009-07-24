@@ -219,7 +219,7 @@ static apr_status_t htdbm_del(htdbm_t *htdbm)
 static apr_status_t htdbm_verify(htdbm_t *htdbm)
 {
     apr_datum_t key, val;
-    char pwd[MAX_STRING_LEN] = {0};
+    char *pwd;
     char *rec, *cmnt;
 
     key.dptr = htdbm->username;
@@ -231,9 +231,9 @@ static apr_status_t htdbm_verify(htdbm_t *htdbm)
     rec = apr_pstrndup(htdbm->pool, val.dptr, val.dsize);
     cmnt = strchr(rec, ':');
     if (cmnt)
-        strncpy(pwd, rec, cmnt - rec);
+        pwd = apr_pstrndup(htdbm->pool, rec, cmnt - rec);
     else
-        strcpy(pwd, rec);
+        pwd = apr_pstrdup(htdbm->pool, rec);
     return apr_password_validate(htdbm->userpass, pwd);
 }
 
@@ -242,7 +242,7 @@ static apr_status_t htdbm_list(htdbm_t *htdbm)
     apr_status_t rv;
     apr_datum_t key, val;
     char *rec, *cmnt;
-    char kb[MAX_STRING_LEN];
+    char *kb;
     int i = 0;
 
     rv = apr_dbm_firstkey(htdbm->dbm, &key);
@@ -250,8 +250,6 @@ static apr_status_t htdbm_list(htdbm_t *htdbm)
         fprintf(stderr, "Empty database -- %s\n", htdbm->filename);
         return APR_ENOENT;
     }
-    rec = apr_pcalloc(htdbm->pool, HUGE_STRING_LEN);
-
     fprintf(stderr, "Dumping records from database -- %s\n", htdbm->filename);
     fprintf(stderr, "    %-32sComment\n", "Username");
     while (key.dptr != NULL) {
@@ -260,11 +258,9 @@ static apr_status_t htdbm_list(htdbm_t *htdbm)
             fprintf(stderr, "Failed getting data from %s\n", htdbm->filename);
             return APR_EGENERAL;
         }
-        strncpy(kb, key.dptr, key.dsize);
-        kb[key.dsize] = '\0';
+        kb = apr_pstrndup(htdbm->pool, key.dptr, key.dsize);
         fprintf(stderr, "    %-32s", kb);
-        strncpy(rec, val.dptr, val.dsize);
-        rec[val.dsize] = '\0';
+        rec = apr_pstrndup(htdbm->pool, val.dptr, val.dsize);
         cmnt = strchr(rec, ':');
         if (cmnt)
             fprintf(stderr, "%s", cmnt + 1);
