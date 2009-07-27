@@ -1,0 +1,205 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 795450 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_dir.xml.meta">
+<name>mod_dir</name>
+<description>Permet la redirection des adresses se terminant par un
+r&eacute;pertoire sans slash de fin et la mise &agrave; disposition des fichiers index
+de r&eacute;pertoire</description>
+<status>Base</status>
+<sourcefile>mod_dir.c</sourcefile>
+<identifier>dir_module</identifier>
+
+<summary>
+    <p>L'index d'un r&eacute;pertoire peut provenir de deux sources :</p>
+
+    <ul>
+      <li>Un fichier &eacute;crit par l'utilisateur, dont le nom, en g&eacute;n&eacute;ral
+      appel&eacute; <code>index.html</code>, peut &ecirc;tre d&eacute;fini &agrave; l'aide de la
+      directive <directive module="mod_dir">DirectoryIndex</directive>
+      fournie par le module <module>mod_dir</module>.</li>
+
+      <li>Un listing g&eacute;n&eacute;r&eacute; par le serveur, par l'interm&eacute;diaire du
+      module <module>mod_autoindex</module>.</li>
+    </ul>
+    <p>Les deux fonctions sont bien distinctes, si bien que vous pouvez
+    supprimer (ou remplacer) la g&eacute;n&eacute;ration automatique d'index, si vous
+    le souhaitez.</p>
+
+    <p>Une redirection "slash de fin" est effectu&eacute;e lorsque le serveur
+    re&ccedil;oit une requ&ecirc;te pour une URL du style
+    <code>http://nom-serveur/foo/nom-rep</code> o&ugrave; <code>nom-rep</code>
+    est le nom d'un r&eacute;pertoire. Comme les r&eacute;pertoires n&eacute;cessitent un slash de
+    fin, <module>mod_dir</module> effectue une redirection vers
+    <code>http://nom-serveur/foo/nom-rep/</code>.</p>
+</summary>
+
+<directivesynopsis>
+<name>DirectoryIndex</name>
+<description>Liste des fichiers ressources &agrave; rechercher lorsque le
+client envoie une requ&ecirc;te pour un r&eacute;pertoire</description>
+<syntax>DirectoryIndex
+    disabled | <var>url locale</var> [<var>url locale</var>] ...</syntax>
+<default>DirectoryIndex index.html</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+
+<usage>
+    <p>La directive <directive>DirectoryIndex</directive> permet de
+    d&eacute;finir une liste de fichiers ressources &agrave; rechercher lorsqu'un
+    client envoie une requ&ecirc;te pour l'index d'un r&eacute;pertoire, en ajoutant
+    un '/' &agrave; la fin du nom de ce dernier. <var>url locale</var> est
+    l'URL (cod&eacute;e avec caract&egrave;res '%') d'un document du serveur, relative
+    au r&eacute;pertoire faisant l'objet de la requ&ecirc;te ; il s'agit en g&eacute;n&eacute;ral
+    du nom d'un fichier situ&eacute; dans le r&eacute;pertoire. Si plusieurs URLs sont
+    fournies, le serveur renverra la premi&egrave;re d'entre elles qui
+    correspond &agrave; une ressource existante. Si aucune ressource ne
+    correspond &agrave; la liste des URLs sp&eacute;cifi&eacute;es, et si l'option
+    <code>Indexes</code> est d&eacute;finie, le serveur g&eacute;n&eacute;rera son propre
+    listing du r&eacute;pertoire.</p>
+
+    <example><title>Exemple</title>
+      DirectoryIndex index.html
+    </example>
+
+    <p>Avec cette configuration, une requ&ecirc;te pour l'URL
+    <code>http://mon-serveur/docs/</code> renverrait au client la
+    ressource <code>http://mon-serveur/docs/index.html</code> si elle
+    existe, ou provoquerait la g&eacute;n&eacute;ration du listing du r&eacute;pertoire si la
+    ressource n'existe pas.</p>
+
+    <p>Notez qu'il n'est pas n&eacute;cessaire que les documents soient
+    relatifs au r&eacute;pertoire ;</p>
+
+    <example>
+      DirectoryIndex index.html index.txt  /cgi-bin/index.pl
+    </example>
+
+    <p>provoquerait l'ex&eacute;cution du script CGI
+    <code>/cgi-bin/index.pl</code> si aucun des fichiers
+    <code>index.html</code> ou <code>index.txt</code> n'existe dans le
+    r&eacute;pertoire consid&eacute;r&eacute;.</p>
+
+    <p>La sp&eacute;cification du seul argument "disabled" emp&ecirc;che
+    <module>mod_dir</module> de rechercher un index. Un argument
+    "disabled" sera interpr&eacute;t&eacute; de mani&egrave;re litt&eacute;rale si d'autres
+    arguments sont pr&eacute;sents avant ou apr&egrave;s lui, m&ecirc;me s'ils sont
+    eux-m&ecirc;mes des arguments "disabled".</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>DirectorySlash</name>
+<description>Activation/D&eacute;sactivation de la redirection "slash de
+fin"</description>
+<syntax>DirectorySlash On|Off</syntax>
+<default>DirectorySlash On</default>
+<contextlist><context>server config</context><context>virtual
+host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<compatibility>Disponible depuis le version 2.0.51
+d'Apache</compatibility>
+
+<usage>
+    <p>La directive <directive>DirectorySlash</directive> permet de
+    d&eacute;terminer si <module>mod_dir</module> doit corriger ou non les URLs
+    pointant vers un r&eacute;pertoire.</p>
+
+    <p>En g&eacute;n&eacute;ral, si un utilisateur envoie une requ&ecirc;te pour une
+    ressource sans slash de fin, cette ressource repr&eacute;sentant un
+    r&eacute;pertoire, <module>mod_dir</module> le redirige vers la m&ecirc;me
+    ressource, mais <em>en ajoutant</em> un slash de fin, et ceci pour
+    plusieurs bonnes raisons :</p>
+
+    <ul>
+    <li>La requ&ecirc;te de l'utilisateur contiendra finalement l'URL
+    canonique de la ressource</li>
+    <li><module>mod_autoindex</module> fonctionnera correctement. Comme
+    il n'indique pas le chemin dans le lien, le chemin de l'URL serait
+    incorrect.</li>
+    <li>La directive <directive
+    module="mod_dir">DirectoryIndex</directive> n'est &eacute;valu&eacute;e
+    <em>que</em> pour les r&eacute;pertoires se terminant par un slash.</li>
+    <li>Les r&eacute;f&eacute;rences &agrave; des URLs relatives dans les pages html
+    fonctionneront alors correctement.</li>
+    </ul>
+
+    <p>Donc, si vous ne souhaitez pas voir ces effets, <em>et</em> si
+    les raisons &eacute;voqu&eacute;es ci-dessus ne s'appliquent pas &agrave; vous, vous
+    pouvez d&eacute;sactiver la redirection de la mani&egrave;re suivante :</p>
+
+    <example>
+        # voir l'avertissement de s&eacute;curit&eacute; ci-dessous !<br />
+        &lt;Location /un/chemin&gt;<br />
+        <indent>
+            DirectorySlash Off<br />
+            SetHandler un-gestionnaire<br />
+        </indent>
+        &lt;/Location&gt;
+    </example>
+
+    <note type="warning"><title>Avertissement de s&eacute;curit&eacute;</title>
+    <p>La d&eacute;sactivation de la redirection "slash de fin" peut entra&icirc;ner
+    la divulgation d'informations. Consid&eacute;rons la situation o&ugrave;
+    <module>mod_autoindex</module> est actif (<code>Options
+    +Indexes</code>), o&ugrave; la directive <directive module="mod_dir"
+    >DirectoryIndex</directive> a pour valeur une ressource valide (par
+    exemple <code>index.html</code>), et o&ugrave; aucun gestionnaire
+    particulier n'a &eacute;t&eacute; d&eacute;fini pour cette URL. Dans ce cas, une requ&ecirc;te
+    avec slash de fin afficherait le contenu du fichier
+    <code>index.html</code> ; <strong>par contre, une requ&ecirc;te sans slash
+    de fin afficherait un listing du contenu du
+    r&eacute;pertoire</strong>.</p>
+    </note>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+<name>DefaultMapping</name>
+<description>D&eacute;finit une URL par d&eacute;faut pour les requ&ecirc;tes qui ne ciblent
+aucun fichier</description>
+<syntax>DefaultMapping <var>url-locale</var></syntax>
+<default>Aucune - httpd renvoie un code d'erreur 404 (Not Found)</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Indexes</override>
+<usage>
+    <p>Cette directive permet de d&eacute;finir un traitement pour toute URL
+    qui ne correspond &agrave; aucune ressource de votre syst&egrave;me de fichiers,
+    et qui provoquerait sans cela l'envoi d'un code d'erreur HTTP 404
+    (Not Found).
+    Par exemple</p>
+    <example>
+        <code>DefaultMapping default.php</code>
+    </example>
+    <p>fait en sorte que les requ&ecirc;tes ne correspondant &agrave; aucun fichier
+    soient trait&eacute;es par <code>default.php</code>, sans affecter les
+    requ&ecirc;tes pour des fichiers existants.</p>
+</usage>
+</directivesynopsis>
+
+
+</modulesynopsis>
