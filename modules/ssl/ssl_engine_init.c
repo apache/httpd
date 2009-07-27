@@ -576,7 +576,7 @@ static void ssl_init_ctx_verify(server_rec *s,
             ssl_die();
         }
 
-        SSL_CTX_set_client_CA_list(ctx, (STACK_OF(X509_NAME) *)ca_list);
+        SSL_CTX_set_client_CA_list(ctx, ca_list);
     }
 
     /*
