@@ -33,7 +33,11 @@
 extern "C" {
 #endif
 
-#define MAXIPSIZE  64
+/*
+ * Worse Case: IPv4-Mapped IPv6 Address
+ * 0000:0000:0000:0000:0000:FFFF:255.255.255.255
+ */
+#define MAXIPSIZE  46
 typedef struct hm_slot_server_t
 {
     char ip[MAXIPSIZE];
