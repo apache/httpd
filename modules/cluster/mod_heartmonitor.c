@@ -26,6 +26,7 @@
 #include "scoreboard.h"
 #include "mod_watchdog.h"
 #include "ap_slotmem.h"
+#include "heartbeat.h"
 
 
 #ifndef HM_UPDATE_SEC
@@ -35,8 +36,6 @@
 #endif
 
 #define HM_WATHCHDOG_NAME ("_heartmonitor_")
-
-#define MAXIPSIZE  64
 
 const ap_slotmem_provider_t *storage = NULL;
 static ap_slotmem_instance_t *slotmem = NULL;
@@ -51,15 +50,6 @@ typedef struct hm_server_t
     int ready;
     apr_time_t seen;
 } hm_server_t;
-
-typedef struct hm_slot_server_t
-{
-    char ip[MAXIPSIZE];
-    int busy;
-    int ready;
-    apr_time_t seen;
-    int id;
-} hm_slot_server_t;
 
 typedef struct hm_ctx_t
 {
