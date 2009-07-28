@@ -628,7 +628,7 @@ static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var)
     ssl_var_lookup_ssl_cipher_bits(ssl, &usekeysize, &algkeysize);
 
     if (ssl && strEQ(var, "")) {
-        const SSL_CIPHER *cipher = SSL_get_current_cipher(ssl);
+        SSL_CIPHER *cipher = SSL_get_current_cipher(ssl);
         result = (cipher != NULL ? (char *)SSL_CIPHER_get_name(cipher) : NULL);
     }
     else if (strcEQ(var, "_EXPORT"))
@@ -649,7 +649,7 @@ static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var)
 
 static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize)
 {
-    const SSL_CIPHER *cipher;
+    SSL_CIPHER *cipher;
 
     *usekeysize = 0;
     *algkeysize = 0;
