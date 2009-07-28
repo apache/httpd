@@ -20,6 +20,7 @@
 #include "apr_version.h"
 #include "apr_hooks.h"
 #include "ap_slotmem.h"
+#include "heartbeat.h"
 
 #ifndef LBM_HEARTBEAT_MAX_LASTSEEN
 /* If we haven't seen a heartbeat in the last N seconds, don't count this IP
@@ -50,16 +51,6 @@ typedef struct hb_server_t {
     int id;
     proxy_worker *worker;
 } hb_server_t;
-
-#define MAXIPSIZE  64
-typedef struct hm_slot_server_t
-{
-    char ip[MAXIPSIZE];
-    int busy;
-    int ready;
-    apr_time_t seen;
-    int id;
-} hm_slot_server_t;
 
 static void
 argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
