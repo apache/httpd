@@ -364,7 +364,7 @@ static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
     const char *userdata_key = "mod_lbmethod_heartbeat_init";
     void *data;
     apr_size_t size;
-    int num;
+    unsigned int num;
 
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
