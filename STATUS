@@ -128,6 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk patches: http://svn.apache.org/viewvc?view=rev&revision=748396
                   http://svn.apache.org/viewvc?view=rev&revision=749466
                   http://svn.apache.org/viewvc?view=rev&revision=798274
+                  http://svn.apache.org/viewvc?view=rev&revision=798989
    2.2.x patch:   http://people.apache.org/~fuankg/diffs/openssl-1.x-2.2.x.diff
    +1: fuankg
 
