@@ -1548,7 +1548,8 @@ static void read_connection(struct connection * c)
 static void test(void)
 {
     apr_time_t stoptime;
-    apr_int16_t rv;
+    apr_int16_t rtnev;
+    apr_status_t rv;
     int i;
     apr_status_t status;
     int snprintf_res = 0;
@@ -1719,7 +1720,7 @@ static void test(void)
             if (c->state == STATE_UNCONNECTED)
                 continue;
 
-            rv = next_fd->rtnevents;
+            rtnev = next_fd->rtnevents;
 
 #ifdef USE_SSL
             if (c->state == STATE_CONNECTED && c->ssl && SSL_in_init(c->ssl)) {
@@ -1740,9 +1741,9 @@ static void test(void)
              * connection is done and we loop here endlessly calling
              * apr_poll().
              */
-            if ((rv & APR_POLLIN) || (rv & APR_POLLPRI) || (rv & APR_POLLHUP))
+            if ((rtnev & APR_POLLIN) || (rtnev & APR_POLLPRI) || (rtnev & APR_POLLHUP))
                 read_connection(c);
-            if ((rv & APR_POLLERR) || (rv & APR_POLLNVAL)) {
+            if ((rtnev & APR_POLLERR) || (rtnev & APR_POLLNVAL)) {
                 bad++;
                 err_except++;
                 /* avoid apr_poll/EINPROGRESS loop on HP-UX, let recv discover ECONNREFUSED */
@@ -1754,7 +1755,7 @@ static void test(void)
                 }
                 continue;
             }
-            if (rv & APR_POLLOUT) {
+            if (rtnev & APR_POLLOUT) {
                 if (c->state == STATE_CONNECTING) {
                     rv = apr_socket_connect(c->aprsock, destsa);
                     if (rv != APR_SUCCESS) {
