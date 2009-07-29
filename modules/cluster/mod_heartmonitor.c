@@ -37,7 +37,7 @@
 
 #define HM_WATHCHDOG_NAME ("_heartmonitor_")
 
-const ap_slotmem_provider_t *storage = NULL;
+static const ap_slotmem_provider_t *storage = NULL;
 static ap_slotmem_instance_t *slotmem = NULL;
 static int maxworkers = 0;
 

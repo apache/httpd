@@ -31,7 +31,7 @@
 
 module AP_MODULE_DECLARE_DATA lbmethod_heartbeat_module;
 
-const ap_slotmem_provider_t *storage = NULL;
+static const ap_slotmem_provider_t *storage = NULL;
 static ap_slotmem_instance_t *hm_serversmem = NULL;
 
 /*
