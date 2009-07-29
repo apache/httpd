@@ -585,6 +585,42 @@ Package=<4>
 
 ###############################################################################
 
+Project: "apr_dbm_db"=".\srclib\apr-util\dbm\apr_dbm_db.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "apr_dbm_gdbm"=".\srclib\apr-util\dbm\apr_dbm_gdbm.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "apr_ldap"=".\srclib\apr-util\ldap\apr_ldap.dsp" - Package Owner=<4>
 
 Package=<5>
