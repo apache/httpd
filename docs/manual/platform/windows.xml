@@ -460,9 +460,8 @@
     <title>Running Apache as a Console Application</title>
 
     <p>Running Apache as a service is usually the recommended way to
-    use it, but it is sometimes easier to work from the command line
-    (on Windows 9x running Apache from the command line is the
-    recommended way due to the lack of reliable service support.)</p>
+    use it, but it is sometimes easier to work from the command line,
+    especially during initial configuration and testing.</p>
 
     <p>To run Apache from the command line as a console application,
     use the following command:</p>
