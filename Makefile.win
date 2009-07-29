@@ -28,6 +28,12 @@
 #
 #     DBD_LIST="sqlite3 pgsql oracle mysql freetds"
 #
+# Provide a DBM_LIST argument after configuring LIB and INCLUDE with
+# the SDK paths of the corresponding client support libraries.
+# The sdbm driver is always built in.
+#
+#     DBM_LIST="db gdbm"
+#
 # For example;
 #
 #   nmake -f Makefile.win PORT=80 INSTDIR="d:\Program Files\Apache" installr
@@ -167,19 +173,27 @@ _trylua:
 !ENDIF
 
 
-_trydbd:
+_trydb:
 !IF $(USEMAK) == 1
 	cd srclib\apr-util\dbd
 	for %d in (odbc $(DBD_LIST)) do \
 	  $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\dbm
+	for %d in ($(DBM_LIST)) do \
+	  $(MAKE) $(MAKEOPT) -f apr_dbm_%d.mak CFG="apr_dbm_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 !ELSEIF $(USESLN) == 1
 	for %d in (odbc $(DBD_LIST)) do \
 	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbd_%d
+	for %d in ($(DBM_LIST)) do \
+	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbm_%d
 !ELSE
 	@for %d in (odbc $(DBD_LIST)) do \
 	  msdev Apache.dsw /USEENV /MAKE \
 		"apr_dbd_%d - Win32 $(LONG)" /NORECURSE $(CTARGET)
+	@for %d in ($(DBM_LIST)) do \
+	  msdev Apache.dsw /USEENV /MAKE \
+		"apr_dbm_%d - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 
@@ -295,6 +309,10 @@ _build:
 	cd dbd
 	  for %d in (odbc $(DBD_LIST)) do \
 	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak   CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..
+	cd dbm
+	  for %d in ($(DBM_LIST)) do \
+	    $(MAKE) $(MAKEOPT) -f apr_dbm_%d.mak   CFG="apr_dbm_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	cd ..\..
 	cd server
@@ -560,6 +578,9 @@ _copybin:
 	copy srclib\apr-util\ldap\$(LONG)\apr_ldap-1.$(src_dll) "$(inst_dll)" <.y
 	for %d in (odbc $(DBD_LIST)) do ( \
 	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
+	)
+	for %d in ($(DBM_LIST)) do ( \
+	  copy srclib\apr-util\dbm\$(LONG)\apr_dbm_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
 	copy srclib\pcre\pcre.$(src_dll)			"$(inst_dll)" <.y
 	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
