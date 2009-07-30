@@ -107,15 +107,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch works
    +1: rpluem, jim
 
- * mod_dir: add DefaultMapping directive
-   PR 47184
-   Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=785425
-                http://svn.apache.org/viewvc?view=rev&revision=795450
-   2.2.x patch: http://people.apache.org/~niq/patches/47184.patch
-                (identical but for offsets, but patch failed on trunk version)
-                plus docs patch from r795450
-   +1: niq
-
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
    Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
@@ -203,3 +194,13 @@ PATCHES/ISSUES THAT ARE STALLED
               need to be added to this. See also
               http://mail-archives.apache.org/mod_mbox/httpd-dev/200607.mbox/%3c20060723093125.GA19423@redhat.com%3e
               and follow ups for more details.
+
+ * mod_dir: add DefaultMapping directive
+   PR 47184
+   Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=785425
+                http://svn.apache.org/viewvc?view=rev&revision=795450
+   2.2.x patch: http://people.apache.org/~niq/patches/47184.patch
+                (identical but for offsets, but patch failed on trunk version)
+                plus docs patch from r795450
+   +1: niq
+   -1: wrowe;  See Message-ID: <4A64D3CA.4050300@rowe-clan.net>
