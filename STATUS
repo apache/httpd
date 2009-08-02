@@ -123,6 +123,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x patch:   http://people.apache.org/~fuankg/diffs/openssl-1.x-2.2.x.diff
    +1: fuankg
 
+ * mod_cgid: Do not add an empty argument when calling the CGI script.
+   PR 46380 (fixes a regression of r682475 (trunk) / r686392 (2.2.x).
+   Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=726636&view=rev
+   Backport version for 2.2.x of patch:
+      Trunk version of patch works
+   +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
