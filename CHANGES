@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.13
 
+  *) mod_cgid: Do not add an empty argument when calling the CGI script.
+     PR 46380 [Ruediger Pluem]
+
   *) Fix potential segfaults with use of the legacy ap_rputs() etc
      interfaces, in cases where an output filter fails.  PR 36780.
      [Joe Orton]
