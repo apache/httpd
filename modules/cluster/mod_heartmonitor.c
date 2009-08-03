@@ -236,7 +236,6 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
     apr_status_t rv;
     apr_file_t *fp;
     apr_file_t *fpin;
-    apr_hash_index_t *hi;
     apr_time_t now;
     unsigned int fage;
     apr_finfo_t fi;
@@ -314,15 +313,21 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                 argstr_to_table(pool, apr_pstrdup(pool, t), hbt);
                 if (apr_table_get(hbt, "busy")) {
                     node.busy = atoi(apr_table_get(hbt, "busy"));
+                } else {
+                    node.busy = 0;
                 }
 
                 if (apr_table_get(hbt, "ready")) {
                     node.ready = atoi(apr_table_get(hbt, "ready"));
+                } else {
+                    node.ready = 0;
                 }
 
                 if (apr_table_get(hbt, "lastseen")) {
                     node.seen = atoi(apr_table_get(hbt, "lastseen"));
-                } 
+                } else {
+                    node.seen = SEEN_TIMEOUT; 
+                }
                 seen = fage + node.seen;
                 apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u\n",
                                 ip, node.ready, node.busy, (unsigned int) seen);
