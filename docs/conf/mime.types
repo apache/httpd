@@ -116,7 +116,7 @@ application/news-transmission
 application/nss
 application/ocsp-request
 application/ocsp-response
-application/octet-stream bin dms lha lrf lzh so iso dmg dist distz pkg bpk dump elc
+application/octet-stream bin dms lha lrf lzh so iso dmg dist distz pkg bpk dump elc deploy
 application/oda					oda
 application/oebps-package+xml			opf
 application/ogg					ogx
@@ -240,7 +240,7 @@ application/vnd.cirpack.isdn-ext
 application/vnd.claymore			cla
 application/vnd.clonk.c4group			c4g c4d c4f c4p c4u
 application/vnd.commerce-battelle
-application/vnd.commonspace			csp cst
+application/vnd.commonspace			csp
 application/vnd.contact.cmsg			cdbcmsg
 application/vnd.cosmocaller			cmc
 application/vnd.crick.clicker			clkx
@@ -464,7 +464,7 @@ application/vnd.motorola.flexsuite.wem
 application/vnd.motorola.iprm
 application/vnd.mozilla.xul+xml			xul
 application/vnd.ms-artgalry			cil
-application/vnd.ms-asf				asf
+application/vnd.ms-asf
 application/vnd.ms-cab-compressed		cab
 application/vnd.ms-excel			xls xlm xla xlc xlt xlw
 application/vnd.ms-excel.addin.macroenabled.12		xlam
@@ -805,8 +805,10 @@ application/x-hdf				hdf
 application/x-java-jnlp-file			jnlp
 application/x-latex				latex
 application/x-mobipocket-ebook			prc mobi
+application/x-ms-application			application
 application/x-ms-wmd				wmd
 application/x-ms-wmz				wmz
+application/x-ms-xbap				xbap
 application/x-msaccess				mdb
 application/x-msbinder				obd
 application/x-mscardfile			crd
@@ -827,6 +829,7 @@ application/x-rar-compressed			rar
 application/x-sh				sh
 application/x-shar				shar
 application/x-shockwave-flash			swf
+application/x-silverlight-app			xap
 application/x-stuffit				sit
 application/x-stuffitx				sitx
 application/x-sv4cpio				sv4cpio
@@ -981,7 +984,6 @@ audio/vnd.sealedmedia.softseal.mpeg
 audio/vnd.vmx.cvsd
 audio/vorbis
 audio/vorbis-config
-audio/wav					wav
 audio/x-aac					aac
 audio/x-aiff					aif aiff aifc
 audio/x-mpegurl					m3u
@@ -995,7 +997,7 @@ chemical/x-cif					cif
 chemical/x-cmdf					cmdf
 chemical/x-cml					cml
 chemical/x-csml					csml
-chemical/x-pdb					pdb
+chemical/x-pdb
 chemical/x-xyz					xyz
 image/bmp					bmp
 image/cgm					cgm
