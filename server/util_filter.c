@@ -578,8 +578,18 @@ AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,
                                                 void *ctx)
 {
     ap_filter_t *f = ctx;
+    apr_status_t rv;
 
-    return ap_pass_brigade(f, bb);
+    rv = ap_pass_brigade(f, bb);
+
+    /* Before invocation of the flush callback, apr_brigade_write et
+     * al may place transient buckets in the brigade, which will fall
+     * out of scope after returning.  Empty the brigade here, to avoid
+     * issues with leaving such buckets in the brigade if some filter
+     * fails and leaves a non-empty brigade. */
+    apr_brigade_cleanup(bb);
+
+    return rv;
 }
 
 AP_DECLARE(apr_status_t) ap_fflush(ap_filter_t *f, apr_bucket_brigade *bb)

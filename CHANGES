@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.13
 
+  *) Fix potential segfaults with use of the legacy ap_rputs() etc
+     interfaces, in cases where an output filter fails.  PR 36780.
+     [Joe Orton]
 
 Changes with Apache 2.2.12
 
