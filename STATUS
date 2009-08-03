@@ -127,7 +127,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=rev&revision=798274
                   http://svn.apache.org/viewvc?view=rev&revision=798989
    2.2.x patch:   http://people.apache.org/~fuankg/diffs/openssl-1.x-2.2.x.diff
-   +1: fuankg
+   +1: fuankg, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
