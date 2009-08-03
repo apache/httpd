@@ -55,6 +55,7 @@ done
 should_exit=0
 apr_found=0
 apu_found=0
+apr_major_version=2
 
 for dir in $apr_src_dir
 do
