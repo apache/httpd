@@ -203,7 +203,7 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
     char *w;
     int idx = 0;
 
-    if (ap_strchr_c(args, '=')) {
+    if (!(*args) || ap_strchr_c(args, '=')) {
         numwords = 0;
     }
     else {
