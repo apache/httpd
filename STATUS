@@ -136,7 +136,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=726636&view=rev
    Backport version for 2.2.x of patch:
       Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
