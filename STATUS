@@ -84,15 +84,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Fix potential segfaults with transient buckets and use of
-    ap_r* interfaces.  PR 36780
-   Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=583817&view=rev
-      http://svn.apache.org/viewvc?rev=583830&view=rev
-   Backport version for 2.2.x of patch:
-      https://issues.apache.org/bugzilla/attachment.cgi?id=24087
-   +1: jorton, minfrin, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
