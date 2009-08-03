@@ -138,7 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=583830&view=rev
    Backport version for 2.2.x of patch:
       https://issues.apache.org/bugzilla/attachment.cgi?id=24087
-   +1: jorton,
+   +1: jorton, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
