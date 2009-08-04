@@ -331,7 +331,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/httpd/modules
 # everything but mod_ssl.so:
 %{_libdir}/httpd/modules/mod_[a-r]*.so
-%{_libdir}/httpd/modules/mod_s[opetu]*.so
+%{_libdir}/httpd/modules/mod_s[lopetu]*.so
 %{_libdir}/httpd/modules/mod_[t-z]*.so
 
 %dir %{contentdir}
