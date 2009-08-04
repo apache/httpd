@@ -13,7 +13,7 @@ Version: APACHE_VERSION
 Release: APACHE_RELEASE
 URL: http://httpd.apache.org/
 Vendor: Apache Software Foundation
-Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.gz
+Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-root
