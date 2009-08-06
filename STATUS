@@ -25,8 +25,9 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
-    2.2.13  : In development
-    2.2.12  : Tagged July 20, 2009.
+    2.2.14  : In development
+    2.2.13  : Tagged August 6, 2009.
+    2.2.12  : Released July 28, 2009.
     2.2.11  : Released December 14, 2008.
     2.2.10  : Released October 14, 2008.
     2.2.9   : Released June 14, 2008.
@@ -85,14 +86,6 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
-
- * mod_ssl / ab: backport support for OpenSSL 1.0.0 from HEAD.
-   Trunk patches: http://svn.apache.org/viewvc?view=rev&revision=748396
-                  http://svn.apache.org/viewvc?view=rev&revision=749466
-                  http://svn.apache.org/viewvc?view=rev&revision=798274
-                  http://svn.apache.org/viewvc?view=rev&revision=798989
-   2.2.x patch:   http://people.apache.org/~fuankg/diffs/openssl-1.x-2.2.x.diff
-   +1: fuankg, rpluem, wrowe
 
 
 
