@@ -1,5 +1,14 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.13
+
+  *) SECURITY: CVE-2009-2412 (cve.mitre.org)
+     Distributed with APR 1.3.8 and APR-util 1.3.9 to fix potential overflow
+     in pools and rmm, where size alignment was taking place.
+     [Matt Lewis <mattlewis@google.com>, Sander Striker]
+
+  *) mod_ssl, ab: improve compatibility with OpenSSL 1.0.0 betas.  Report
+     warnings compiling mod_ssl against OpenSSL to the httpd developers.
+     [Guenter Knauf]
 
   *) mod_cgid: Do not add an empty argument when calling the CGI script.
      PR 46380 [Ruediger Pluem]
