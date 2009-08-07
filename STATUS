@@ -115,8 +115,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
    2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
    +1: niq
-   -0: wrowe; Please refer to man BUGS of access for linux 2.4 vs 2.6 kernels,
-              potentially a suspect test for root.
+   -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
+              vs 2.6 kernels, potentially a suspect test for root.
 
 PATCHES/ISSUES THAT ARE STALLED
 
