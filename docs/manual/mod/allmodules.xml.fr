@@ -2,7 +2,7 @@
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
 <modulefilelist>
-  <modulefile>core.xml</modulefile>
+  <modulefile>core.xml.fr</modulefile>
   <modulefile>mod_access_compat.xml</modulefile>
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>
@@ -35,7 +35,7 @@
   <modulefile>mod_dav_lock.xml</modulefile>
   <modulefile>mod_dbd.xml</modulefile>
   <modulefile>mod_deflate.xml</modulefile>
-  <modulefile>mod_dir.xml</modulefile>
+  <modulefile>mod_dir.xml.fr</modulefile>
   <modulefile>mod_disk_cache.xml</modulefile>
   <modulefile>mod_dumpio.xml</modulefile>
   <modulefile>mod_echo.xml</modulefile>

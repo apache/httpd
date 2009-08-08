@@ -149,6 +149,7 @@ dbdpreparesql	mod/mod_dbd.html#dbdpreparesql
 dbdriver	mod/mod_dbd.html#dbdriver
 defaulticon	mod/mod_autoindex.html#defaulticon
 defaultlanguage	mod/mod_mime.html#defaultlanguage
+defaultmapping	mod/mod_dir.html#defaultmapping
 defaulttype	mod/core.html#defaulttype
 define	mod/core.html#define
 deflatebuffersize	mod/mod_deflate.html#deflatebuffersize
