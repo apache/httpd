@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Using Apache with Microsoft Windows - Apache HTTP Server</title>
+<title>Using Apache HTTP Server on Microsoft Windows - Apache HTTP Server</title>
 <link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,36 +16,24 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache with Microsoft Windows</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache HTTP Server on Microsoft Windows</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/windows.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
-
     <p>This document explains how to install, configure and run
-    Apache 2.0 under Microsoft Windows. If you find any bugs, or
-    wish to contribute in other ways, please use our <a href="http://httpd.apache.org/bug_report.html">bug reporting
-    page</a>.</p>
+    Apache 2.3 under Microsoft Windows.  If you have questions after
+    reviewing the documentation (and any event and error logs), you
+    should consult the peer-supported 
+    <a href="http://httpd.apache.org/userslist.html">users' mailing
+    list</a>.</p>
 
     <p>This document assumes that you are installing a binary
     distribution of Apache. If you want to compile Apache yourself
     (possibly to help with development or tracking down bugs),
     see <a href="win_compiling.html">Compiling Apache for Microsoft
     Windows</a>.</p>
-
-    <p><strong>Because of the current versioning policies on Microsoft
-    Windows operating system families, this document assumes the
-    following:</strong></p>
-    <ul>
-      <li><strong>Windows NT:</strong> This means all versions of
-      Windows that are based on the Windows NT kernel. Includes Windows
-      NT, Windows 2000, Windows XP and Windows .Net Server 2003.</li>
-      <li><strong>Windows 9x:</strong> This means older,
-      consumer-oriented versions of Windows. Includes Windows 95 (also
-      OSR2), Windows 98 and Windows ME.</li>
-    </ul>
-
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#req">Operating System Requirements</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#down">Downloading Apache for Windows</a></li>
@@ -60,21 +48,13 @@
 <h2><a name="req" id="req">Operating System Requirements</a></h2>
     
 
-    <p>The primary Windows platform for running Apache 2.0 is Windows
-    NT. The binary installer only works with the x86 family of
-    processors, such as Intel and AMD processors. Running Apache on
-    Windows 9x is not thoroughly tested, and it is never recommended on
-    production systems.
-    </p>
+    <p>The primary Windows platform for running Apache 2.3 is Windows
+    2000 or later.  The binary installer only works with the x86 family
+    of processors, such as Intel and AMD processors.  Always obtain and
+    install the current service pack to avoid operating system bugs.</p>
 
-    <p>On all operating systems, TCP/IP networking must be installed
-    and working. If running on Windows 95, the Winsock 2 upgrade must
-    be installed. Winsock 2 for Windows 95 can be downloaded from <a href="http://www.microsoft.com/windows95/downloads/contents/WUAdminTools/S_WUNetworkingTools/W95Sockets2/Default.asp">here</a>.
-    </p>
-
-    <p>On Windows NT 4.0, installing Service Pack 6 is strongly
-    recommended, as Service Pack 4 created known issues with TCP/IP
-    and Winsock integrity that were resolved in later Service Packs.</p>
+    <div class="note">Apache HTTP Server versions later than 2.2 will not run on any
+    operating system earlier than Windows 2000.</div>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="down" id="down">Downloading Apache for Windows</a></h2>
@@ -91,26 +71,23 @@
     <p>For Windows installations you should download the version of
     Apache for Windows with the <code>.msi</code> extension. This is a
     single Microsoft Installer file, which contains a ready-to-run
-    version of Apache. There is a separate <code>.zip</code> file,
-    which contains only the source code. You can compile Apache
-    yourself with the Microsoft Visual C++ (Visual Studio) tools.</p>
+    build of Apache.  There is a separate <code>.zip</code> file,
+    which contains only the source code, see the summary above.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="inst" id="inst">Installing Apache for Windows</a></h2>
     
 
-    <p>You need Microsoft Installer 1.2 or above for the installation
-    to work. On Windows 9x you can update your Microsoft Installer to
-    version 2.0 <a href="http://www.microsoft.com/downloads/release.asp?ReleaseID=32831">here</a>
-    and on Windows NT 4.0 and 2000 the version 2.0 update can be found
-    <a href="http://www.microsoft.com/downloads/release.asp?ReleaseID=32832">here</a>.
-    Windows XP does not need this update.</p>
+    <p>You need Microsoft Installer 2.0 or above for the installation
+    to work.  For Windows NT 4.0 and 2000 refer to Microsoft's article
+    <a href="http://support.microsoft.com/kb/292539/">KB 292539</a>.
+    Windows XP and later do not require this update.</p>
 
-    <p>Note that you cannot install two versions of Apache 2.0 on the
+    <p>Note that you cannot install two versions of Apache 2.3 on the
     same computer with the binary installer. You can, however, install
     a version of the 1.3 series <strong>and</strong> a version of the
-    2.0 series on the same computer without problems. If you need to
-    have two different 2.0 versions on the same computer, you have to
+    2.3 series on the same computer without problems. If you need to
+    have two different 2.3 versions on the same computer, you have to
     <a href="win_compiling.html">compile and install Apache from the
     source</a>.</p>
 
@@ -194,7 +171,7 @@
     <p>The main differences in Apache for Windows are:</p>
     <ul>
       <li><p>Because Apache for Windows is multithreaded, it does not
-      use a separate process for each request, as Apache does on Unix.
+      use a separate process for each request, as Apache can on Unix.
       Instead there are usually only two Apache processes running: a
       parent process, and a child which handles the requests. Within
       the child process each request is handled by a separate thread.
@@ -203,12 +180,12 @@
       <p>The process management directives are also different:</p>
 
       <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>:
-      Like the Unix directive, this controls how many requests a single
-      child process will serve before exiting. However, unlike on Unix,
-      a single process serves all the requests at once, not just one.
-      If this is set, it is recommended that a very high number is
-      used. The recommended default, <code>MaxRequestsPerChild 0</code>,
-      causes the child process to never exit.</p>
+      Like the Unix directive, this controls how many requests (actually,
+      connections) which a single child process will serve before exiting.
+      However, unlike on Unix, a replacement process is not instantly
+      available.  Use the default <code>MaxRequestsPerChild 0</code>,
+      unless instructed to change the behavior to overcome a memory leak
+      in third party modules or in-process applications.</p>
 
       <div class="warning"><strong>Warning: The server configuration
       file is reread when a new child process is started. If you have
@@ -220,13 +197,17 @@
       should use. This is the maximum number of connections the server
       can handle at once, so be sure to set this number high enough for
       your site if you get a lot of hits. The recommended default is
-      <code>ThreadsPerChild 50</code>.</p></li>
+      <code>ThreadsPerChild 150</code>, but this mut be adjusted to
+      reflect the greatest anticipated number of simultanious
+      connections to accept.</p></li>
 
       <li><p>The directives that accept filenames as arguments must use
       Windows filenames instead of Unix ones. However, because Apache
-      uses Unix-style names internally, you must use forward slashes,
-      not backslashes. Drive letters can be used; if omitted, the drive
-      with the Apache executable will be assumed.</p></li>
+      may interpret backslashes as an "escape character" sequence, you
+      should consistently use forward slashes in path names, not 
+      backslashes.  Drive letters can be used; if omitted, the drive
+      of the SystemRoot direcive (or -d command line option) becomes
+      the default.</p></li>
 
       <li><p>While filenames are generally case-insensitive on
       Windows, URLs are still treated internally as case-sensitive
@@ -247,6 +228,16 @@
       RewriteRule (.*) ${lowercase:$1} [R,L]
       </code></p></div></li>
 
+      <li><p>When running, Apache needs write access only to the logs
+      directory and any configured cache directory tree.  Due to the
+      issue of case insensitive and short 8.3 format names, Apache must
+      validate all path names given.  This means that each directory
+      which Apache evaluates, from the drive root up to the directory
+      leaf, must have read, list and traverse directory permissions.
+      If Apache2.3 is installed at C:\Program Files, then the root
+      directory, Program Files and Apache2.3 must all be visible
+      to Apache.</p></li>
+
       <li><p>Apache for Windows contains the ability to load modules at
       runtime, without recompiling the server. If Apache is compiled
       normally, it will install a number of optional modules in the
@@ -264,11 +255,11 @@
       loadable modules</a> is also available.</p></li>
 
       <li><p>Apache can also load ISAPI (Internet Server Application
-      Programming Interface) extensions (i.e. internet server
-      applications), such as those used by Microsoft IIS and other
-      Windows servers. <a href="../mod/mod_isapi.html">More information
-      is available</a>. Note that Apache <strong>cannot</strong> load
-      ISAPI Filters.</p></li>
+      Programming Interface) extensions such as those used by Microsoft
+      IIS and other Windows servers. <a href="../mod/mod_isapi.html">More
+      information is available</a>. Note that Apache <strong>cannot</strong>
+      load ISAPI Filters, and ISAPI Handlers with some Microsoft feature
+      extensions will not work.</p></li>
 
       <li><p>When running CGI scripts, the method Apache uses to find
       the interpreter for the script is configurable using the
@@ -283,24 +274,17 @@
 
       <li><p>Any errors during Apache startup are logged into the
       Windows event log when running on Windows NT. This mechanism
-      acts as a backup for those situations where Apache cannot even
-      access the normally used <code>error.log</code> file. You can
-      view the Windows event log by using the Event Viewer application
-      on Windows NT 4.0, and the Event Viewer MMC snap-in on newer
-      versions of Windows.</p>
-
-      <div class="note"><strong>Note that there is no startup error logging on
-      Windows 9x because no Windows event log exists on those operating
-      systems.</strong></div></li>
+      acts as a backup for those situations where Apache is not yet
+      prepared to use the <code>error.log</code> file. You can
+      review the Windows Applicat Event Log by using the Event Viewer,
+      e.g. Start - Settings - Control Panel - Administrative Tools
+      - Event Viewer.</p></li>
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="winsvc" id="winsvc">Running Apache as a Service</a></h2>
     
-
-    <p>Apache can be run as a service on Windows NT. There is some
-    highly experimental support for similar behavior on Windows 9x.</p>
 
     <p>You can install Apache as a service automatically during the
     installation. If you chose to install for all users, the
@@ -340,7 +324,7 @@
     </code></p></div>
 
     <p>If you use the first command without any special parameters except
-    <code>-k install</code>, the service will be called <code>Apache2</code>
+    <code>-k install</code>, the service will be called <code>Apache2.3</code>
     and the configuration will be assumed to be <code>conf\httpd.conf</code>.
     </p>
 
@@ -358,8 +342,8 @@
 
     <p>Normal starting, restarting and shutting down of an Apache
     service is usually done via the Apache Service Monitor, by using
-    commands like <code>NET START Apache2</code> and <code>NET STOP
-    Apache2</code> or via normal Windows service management. Before
+    commands like <code>NET START Apache2.3</code> and <code>NET STOP
+    Apache2.3</code> or via normal Windows service management. Before
     starting Apache as a service by any means, you should test the
     service's configuration file by using:</p>
 
@@ -406,9 +390,9 @@
     to access network resources, create a separate account for Apache as
     noted below.</strong></div>
 
-    <p>You may want to create a separate account for running Apache
-    service(s). Especially, if you have to access network resources
-    via Apache, this is strongly recommended.</p>
+    <p>It is recommended that users create a separate account for running
+    Apache service(s). If you have to access network resources via Apache,
+    this is required.</p>
 
     <ol>
       <li>Create a normal domain user account, and be sure to
@@ -437,13 +421,13 @@
     </ol>
 
     <div class="note">It is usually a good practice to grant the user the Apache
-    service runs as read and execute (RX) access to the whole Apache2
+    service runs as read and execute (RX) access to the whole Apache2.3
     directory, except the <code>logs</code> subdirectory, where the
     user has to have at least change (RWXD) rights.</div>
 
     <p>If you allow the account to log in as a user and as a service,
-    then you can log on with that account and test that the account has the
-    privileges to execute the scripts, read the web pages, and that
+    then you can log on with that account and test that the account has
+    the privileges to execute the scripts, read the web pages, and that
     you can start Apache in a console window. If this works, and you
     have followed the steps above, Apache should execute as a service
     with no problems.</p>
@@ -460,7 +444,7 @@
     Windows Control Panel, you may get the following message:</p>
 
     <div class="example"><p><code>
-      Could not start the Apache2 service on \\COMPUTER <br />
+      Could not start the Apache2.3 service on \\COMPUTER <br />
       Error 1067; The process terminated unexpectedly.
     </code></p></div>
 
@@ -469,63 +453,18 @@
     the problem you should follow the instructions for Running Apache
     for Windows from the Command Prompt.</p>
 
-    <p>There is some support for Apache on Windows 9x to behave in a
-    similar manner as a service on Windows NT. It is <strong>highly
-    experimental</strong>. It is not of production-class reliability,
-    and its future is not guaranteed. It can be mostly regarded as
-    a risky thing to play with - proceed with caution!</p>
-
-    <p>There are some differences between the two kinds of services
-    you should be aware of:</p>
-
-    <ul>
-      <li><p>Apache will attempt to start and if successful it will run
-      in the background. If you run the command</p>
-
-      <div class="example"><p><code>
-        httpd.exe -n "MyServiceName" -k start
-      </code></p></div>
-
-      <p>via a shortcut on your desktop, for example, then if the
-      service starts successfully, a console window will flash up but
-      it immediately disappears. If Apache detects any errors on startup
-      such as incorrect entries in the httpd.conf configuration file,
-      the console window will remain visible. This will display an error
-      message which will be useful in tracking down the cause of the
-      problem.</p></li>
-
-      <li><p>Windows 9x does not support <code>NET START</code> or
-      <code>NET STOP</code> commands. You must control the Apache
-      service on the command prompt via the <code>-k</code> switches.
-      </p></li>
-
-      <li><p>Apache and Windows 9x offer no support for running Apache
-      as a specific user with network privileges. In fact, Windows 9x
-      offers no security on the local machine, either. This is the
-      simple reason because of which the Apache Software Foundation
-      never endorses use of a Windows 9x -based system as a public
-      Apache server. The primitive support for Windows 9x exists only
-      to assist the user in developing web content and learning the
-      Apache server, and perhaps as an intranet server on a secured,
-      private network.</p></li>
-
-    </ul>
-
-    <p>Once you have confirmed that Apache runs correctly as a
-    console application you can install, control and uninstall the
-    pseudo-service with the same commands as on Windows NT. You can
-    also use the Apache Service Monitor to manage Windows 9x
-    pseudo-services.</p>
-
+    <p>If you are having problems with the service, it is suggested
+    you follow the instructions below to try starting httpd.exe from
+    a console window, and work out the errors before struggling to
+    start it as a service again.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="wincons" id="wincons">Running Apache as a Console Application</a></h2>
     
 
     <p>Running Apache as a service is usually the recommended way to
-    use it, but it is sometimes easier to work from the command line
-    (on Windows 9x running Apache from the command line is the
-    recommended way due to the lack of reliable service support.)</p>
+    use it, but it is sometimes easier to work from the command line,
+    especially during initial configuration and testing.</p>
 
     <p>To run Apache from the command line as a console application,
     use the following command:</p>
@@ -539,7 +478,7 @@
 
     <p>You can also run Apache via the shortcut Start Apache in Console
     placed to <code>Start Menu --&gt; Programs --&gt; Apache HTTP Server
-    2.0.xx --&gt; Control Apache Server</code> during the installation.
+    2.3.xx --&gt; Control Apache Server</code> during the installation.
     This will open a console window and start Apache inside it. If you
     don't have Apache installed as a service, the window will remain
     visible until you stop Apache by pressing Control-C in the console
@@ -668,7 +607,7 @@
     </p>
 
     <div class="example"><p><code>
-      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Apache\2.3.2
+      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Apache\2.2.2
     </code></p></div>
 
     <p>Correspondingly, if you chose to install Apache for the current
@@ -677,7 +616,7 @@
     logged on:</p>
 
     <div class="example"><p><code>
-      HKEY_CURRENT_USER\SOFTWARE\Apache Software Foundation\Apache\2.3.2
+      HKEY_CURRENT_USER\SOFTWARE\Apache Software Foundation\Apache\2.2.2
     </code></p></div>
 
     <p>This key is compiled into the server and can enable you to test
@@ -702,7 +641,6 @@
     location it is vital that you update the
     <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> directive in the
     <code>httpd.conf</code> file to reflect the new location.</p>
-
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="test" id="test">Testing the Installation</a></h2>
@@ -746,9 +684,9 @@
     <p>Because Apache <strong>cannot</strong> share the same port with
     another TCP/IP application, you may need to stop, uninstall or reconfigure
     certain other services before running Apache. These conflicting
-    services include other WWW servers and some firewall implementations.
-    </p>
-
+    services include other WWW servers, some firewall implementations,
+    and even some client applications (such as Skype) which will use port
+    80 to attempt to bypass firewall issues.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/platform/windows.html" title="English">&nbsp;en&nbsp;</a> |

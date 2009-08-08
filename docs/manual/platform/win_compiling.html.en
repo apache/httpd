@@ -31,7 +31,9 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#requirements">Requirements</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#commandbuild">Command-Line Build</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#workspacebuild">Developer Studio Workspace IDE Build</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#projectcomponents">Project Components</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#workspacebuild">Exporting command-line .mak files</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#installation">Installation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#projectcomponents-warn">Warning about building Apache from the development tree</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -45,9 +47,10 @@
     <ul>
       <li>
         <p>Disk Space</p>
-        <p>Make sure you have at least 180 MB of free disk space
+
+        <p>Make sure you have at least 200 MB of free disk space
         available. After installation Apache requires approximately
-        70 MB of disk space, plus space for log and cache files,
+        80 MB of disk space, plus space for log and cache files,
         which can grow rapidly. The actual disk space requirements
         will vary considerably based on your chosen configuration and
         any third-party modules or libraries, especially when OpenSSL
@@ -57,67 +60,85 @@
       </li>
 
       <li>
-        <p>Microsoft Visual C++ (Microsoft Visual Studio) 6.0 or higher.</p>
+        <p>Appropriate Patches</p>
+
+        <p>The httpd binary is built with the help of several patches to
+        third party packages, which ensure the released code is buildable
+        and debuggable.  These patches are available and distributed from <a href="http://www.apache.org/dist/httpd/binaries/win32/patches_applied/">http://www.apache.org/dist/httpd/binaries/win32/patches_applied/</a>
+        and are recommended to be applied to obtain identical results as the
+        "official" ASF distributed binaries.</p>
+      </li>
+
+      <li>
+        <p>Microsoft Visual C++ 6.0 (Visual Studio 97) or later.</p>
 
         <p>Apache can be built using the command line tools, or from
         within the Visual Studio IDE Workbench.  The command line
         build requires the environment to reflect the <code>PATH</code>,
         <code>INCLUDE</code>, <code>LIB</code> and other variables
-        that can be configured with the <code>vcvars32.bat</code> file:</p>
+        that can be configured with the <code>vcvars32.bat</code> script.</p>
 
-        <div class="example"><p><code>
-          "c:\Program Files\Microsoft Visual Studio\VC98\Bin\VCVARS32"
-        </code></p></div>
+        <div class="note">You may want the Visual Studio Processor Pack for your older
+        version of Visual Studio, or a full (not Express) version of newer
+        Visual Studio editions, for the ml.exe assembler.  This will allow
+        you to build OpenSSL, if desired, using the more efficient assembly
+        code implementation.</div>
+
+        <div class="note">Only the Microsoft compiler tool chain is actively supported by
+        the active httpd contributors.  Although the project regularly accepts
+        patches to ensure MinGW and other alternative builds work and improve
+        upon them, they are not actively maintained and are often broken in
+        the course of normal development.</div>
       </li>
 
       <li>
-        <p>The Windows Platform SDK for Visual C++ 6.0 (97) or 7.0 (.NET)</p>
+        <p>Updated Microsoft Windows Platform SDK, February 2003 or later.</p>
 
-        <p>Apache's APR and APR-util builds require an updated Microsoft
-        Windows Platform SDK, from Feb 2003 or later, included in the
-        Visual C++ 7.1 (Studio 2003) and later.  For command line builds with 
-        Visual C++ 6.0 or 7.0, the Platform SDK environment is prepared by 
-        the <code>setenv.bat</code> file:</p>
+        <p>An appropriate Windows Platform SDK is included by default in the
+        full (not express/lite) versions  of Visual C++ 7.1 (Visual Studio 2002)
+        and later, these users can ignore these steps unless explicitly choosing
+        a newer or different version of the Platform SDK.</p>
+
+        <p>To use Visual C++ 6.0 or 7.0 (Studio 2000 .NET), the Platform SDK
+        environment must be prepared using the <code>setenv.bat</code> 
+        script (installed by the Platform SDK) before starting the command
+        line build or launching the msdev/devenv GUI environment.  Installing
+        the Platform SDK for Visual Studio Express versions (2003 and later)
+        should adjust the default environment appropriately.</p>
+
         <div class="example"><p><code>
+          "c:\Program Files\Microsoft Visual Studio\VC98\Bin\VCVARS32"<br />
           "c:\Program Files\Platform SDK\setenv.bat"
         </code></p></div>
-
-        <p>The Platform SDK files distributed with Visual C++ 6.0 and
-        Visual Studio .NET (2000) are no longer sufficient and cause many
-        compilation warnings and linkage errors.  Users of Visual C++ 7.1
-        (Studio 2003) and later versions (of the full product, not the 
-        'Visual Studio Express' flavor) may skip this requirement.</p>
-
-        <p>If using the GUI, either start msdev or devenv with the /setenv
-        flag (after invoking setenv.bat), or ensure the paths are correct
-        under the Tools -&gt; Options -&gt; (Projects -&gt;) Directories 
-        menu option.  The Platform SDK installer will generally help you
-        configure this.</p>
       </li>
 
       <li>
-        <p>The awk utility (awk, gawk or similar).</p>
+        <p>Perl and awk</p>
+
+        <p>Several steps recommended here require a perl interpreter during
+        the build preparation process, but it is otherwise not required.</p>
+ 
         <p>To install Apache within the build system, several files are
         modified using the <code>awk.exe</code> utility. awk was chosen since
         it is a very small download (compared with Perl or WSH/VB) and
         accomplishes the task of modifying configuration files upon
         installation.  Brian Kernighan's
-        <a href="http://cm.bell-labs.com/cm/cs/who/bwk/">http://cm.bell-labs.com/cm/cs/who/bwk/</a>
+        <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/">http://www.cs.princeton.edu/~bwk/btl.mirror/</a>
         site has a compiled native Win32 binary,
-        <a href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe">http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a> which
-        you must save with the name <code>awk.exe</code> rather than
-        <code>awk95.exe</code>.</p>
+        <a href="http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe">http://www.cs.princeton.edu/~bwk/btl.mirror/awk95.exe</a> which
+        you must save with the name <code>awk.exe</code> (rather than
+        <code>awk95.exe</code>).</p>
 
         <div class="note">If awk.exe is not found, Makefile.win's install target
         will not perform substitutions in the installed .conf files.
-        The installed .conf files must then be modified by hand for
-        this situation.</div>
+        You must manually modify the installed .conf files to allow
+        the server to start.  Search and replace all "@token@" tags
+        as appropriate.</div>
 
-        <p>Note that Developer Studio IDE will only find
-        <code>awk.exe</code> from the Executable path specified in the menu 
-        option Tools -&gt; Options -&gt; (Projects -&gt;) Directories.
-        Add the path for <code>awk.exe</code> to this list, and your 
-        system <code>PATH</code> environment variable, as needed.</p>
+        <div class="note">The Visual Studio IDE will only find <code>awk.exe</code>
+        from the PATH, or executable path specified in the menu option
+        Tools -&gt; Options -&gt; (Projects -&gt;) Directories.  Ensure
+        awk.exe is in your system path.</div>
 
         <div class="note">Also note that if you are using Cygwin tools
         (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>) 
@@ -133,6 +154,7 @@
 
       <li>
         <p>[Optional] zlib library (for <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>)</p>
+
         <p>Zlib must be installed into a <code>srclib</code> subdirectory named
         <code>zlib</code>.  This must be built in-place.  Zlib can be obtained 
         from <a href="http://www.zlib.net/">http://www.zlib.net/</a> -- the
@@ -148,40 +170,80 @@
       <li>
         <p>[Optional] OpenSSL libraries (for <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
         and <code>ab.exe</code> with ssl support)</p>
-        <p><strong>Caution: there are significant restrictions and
-        prohibitions on the use and distribution of strong cryptography
-        and patented intellectual property throughout the world.</strong>
-        OpenSSL includes strong cryptography controlled by both export
-        regulations and domestic law, as well as intellectual property
-        protected by patent, in the United States and elsewhere.  Neither
-        the Apache Software Foundation nor the OpenSSL project can provide
-        legal advise regarding possession, use, or distribution of the code
-        provided by the OpenSSL project. <strong>Consult your own legal
-        counsel, you are responsible for your own actions.</strong></p>
+
+        <div class="note">The OpenSSL library is cryptographic software.  The country
+        in which you currently reside may have restrictions on the import,
+        possession, use, and/or re-export to another country, of encryption
+        software.  BEFORE using any encryption software, please check your
+        country's laws, regulations and policies concerning the import,
+        possession, or use, and re-export of encryption software, to see
+        if this is permitted.  See 
+        <a href="http://www.wassenaar.org/">http://www.wassenaar.org/</a>
+        for more information.</div>
+
+        <p>Configuring and building OpenSSL requires perl to be installed.</p>
 
         <p>OpenSSL must be installed into a <code>srclib</code> subdirectory 
         named <code>openssl</code>, obtained from 
         <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>, in order to compile 
-        <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> or the abs project (<code>ab.exe</code> 
-        enabled with SSL support.) To prepare OpenSSL for both 
-        <code>release</code> and <code>debug</code> builds of Apache,
-        disable the patent encumbered features in OpenSSL, using zlib
-        as compiled above you might use the following build commands:</p>
+        <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> or the <code>abs.exe</code> project, which
+        is ab.c with SSL support enabled.  To prepare OpenSSL to be linked 
+        to Apache mod_ssl or abs.exe, and disable patent encumbered features
+        in OpenSSL,  you might use the following build commands:</p>
 
         <div class="example"><p><code>
-          perl Configure no-rc5 no-idea enable-zlib VC-WIN32 -Ipath/to/srclib/zlib<br />
+          perl Configure no-rc5 no-idea enable-mdc2 enable-zlib VC-WIN32 
+               -Ipath/to/srclib/zlib -Lpath/to/srclib/zlib<br />
           ms\do_masm.bat<br />
           nmake -f ms\ntdll.mak
         </code></p></div>
 
-        <p>Note: It is not advisable to use zlib-dynamic, as that could
-        pose a thread race condition.  If building zlib on win32, be sure
-        to adjust the resulting ms\ntdll.mak file to link to the full
-        path of srclib\zlib\zdll.lib rather than zlib1.lib (that error in
-        configuration of OpenSSL through 0.9.8h and earlier reflects older 
-        zlib 1.1 versions.)</p>
+        <div class="note">It is not advisable to use zlib-dynamic, as that transfers
+        the cost of deflating SSL streams to the first request which must
+        load the zlib dll.  Note the suggested patch enables the -L flag to
+        work with windows builds, corrects the name of zdll.lib and ensures
+        .pdb files are generated for troubleshooting.  If the assembler is
+        not installed, you would add no-asm above and use ms\do_ms.bat 
+        instead of the ms\do_masm.bat script.</div>
       </li>
 
+      <li>
+        <p>[Optional] Database libraries (for <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>
+        and <code class="module"><a href="../mod/mod_dbm.html">mod_dbm</a></code>)</p>
+
+        <p>The apr-util library exposes dbm (keyed database) and dbd (query
+        oriented database) client functionality to the httpd server and its
+        modules, such as authentication and authorization.  The sdbm dbm and
+        odbc dbd providers are compiled unconditionally.</p>
+
+        <p>The dbd support includes the Oracle instantclient package, MySQL,
+        PostgreSQL and sqlite.  To build these all, for example, set up the
+        LIB to include the library path, INCLUDE to include the headers path,
+        and PATH to include the dll bin path of all four SDK's, and set the
+        DBD_LIST environment variable to inform the build which client driver
+        SDKs are installed correctly, e.g.;</p>
+
+        <div class="example"><p><code>
+          set DBD_LIST=sqlite3 pgsql oracle mysql
+        </code></p></div>
+
+        <p>Similarly, the dbm support can be extended with DBM_LIST to
+        build a Berkeley DB provider (db) and/or gdbm provider, by similarly
+        configuring LIB, INCLUDE and PATH first to ensure the client library
+        libs and headers are available.</p>
+
+        <div class="example"><p><code>
+          set DBM_LIST=db gdbm
+        </code></p></div>
+
+        <div class="note">Depending on the choice of database distributions, it may be
+        necessary to change the actual link target name (e.g. gdbm.lib vs.
+        libgdb.lib) that are listed in the corresponding .dsp/.mak files
+        within the directories srclib\apr-util\dbd or ...\dbm.</div>
+
+        <p>See the README-win32.txt file for more hints on obtaining the
+        various database driver SDKs.</p>
+      </li>
     </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -190,31 +252,24 @@
 
     
 
-    <p>First, unpack the Apache distribution into an appropriate
-    directory. Open a command-line prompt and <code>cd</code> to that
-    directory.</p>
+    <p><code>Makefile.win</code> is the top level Apache makefile.
+    To compile Apache on Windows, simply use one of the following commands
+    to build the <code>release</code> or <code>debug</code> flavor:</p>
 
-    <p>The master Apache makefile instructions are contained in the
-    <code>Makefile.win</code> file. To compile Apache on Windows
-    NT, simply use one of the following commands to compiled the
-    <code>release</code> or <code>debug</code> build, respectively:</p>
-
-    <div class="example"><pre>
-nmake /f Makefile.win _apacher
-
-nmake /f Makefile.win _apached
-    </pre></div>
+    <div class="example"><p><code>
+      nmake /f Makefile.win _apacher<br /><br />
+      nmake /f Makefile.win _apached
+    </code></p></div>
 
     <p>Either command will compile Apache. The latter will disable
     optimization of the resulting files, making it easier to single
     step the code to find bugs and track down problems.</p>
 
-    <p>You can add your apr-util dbd provider choices with the additional
-    make variable DBD_LIST, e.g. DBD_LIST="mysql oracle pgsql sqlite3"
-    to build these four providers.  However it's necessary to have 
-    the include headers in the INCLUDE path list, db client libraries 
-    in the LIB path list, and the db client dll files in the PATH.  The
-    specifics for each provider are an exercise left to the reader.</p>
+    <p>You can add your apr-util dbd and dbm provider choices with the
+    additional make (environment) variables DBD_LIST and DBM_LIST, 
+    see the comments about [Optional] Database libraries, above.
+    Review the initial comments in Makefile.win for additional options
+    that can be provided when invoking the build.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -240,48 +295,56 @@ nmake /f Makefile.win _apached
     <code>/Apache2</code> directory. If you only want a test compile (without
     installing) you may build the <code>BuildBin</code> project instead.</p>
 
-    <p>The <code>.dsp</code> project files are distributed in Visual
-    C++ 6.0 format. Visual C++ 5.0 (97) will recognize them. Visual C++
-    7.0 (.net) must convert <code>Apache.dsw</code> plus the <code>.dsp</code>
-    files into an <code>Apache.sln</code> plus <code>.msproj</code> files,
-    be sure you reconvert the <code>.msproj</code> file if any of the source
-    <code>.dsp</code> files change! This is really trivial, just open
-    <code>Apache.dsw</code> in the VC++ 7.0 IDE once again.</p>
+    <p>The <code>.dsp</code> project files are distributed in Visual Studio 6.0
+    (98) format. Visual C++ 5.0 (97) will recognize them. Visual Studio
+    2002 (.NET) and later users must convert <code>Apache.dsw</code> plus
+    the <code>.dsp</code> files into an <code>Apache.sln</code> plus
+    <code>.msproj</code> files.  Be sure you reconvert the <code>.msproj</code>
+    file again if its source <code>.dsp</code> file changes! This is really
+    trivial, just open <code>Apache.dsw</code> in the VC++ 7.0 IDE once again
+    and reconvert.</p>
 
-    <div class="note">There is a flaw in the .vcproj conversion of .dsp through 
-    Visual Studio 2005 SP1; devenv.exe will mis-parse the /D flag for RC 
-    flags containing long quoted /D'efines containing spaces.  The command:
+    <div class="note">There is a flaw in the .vcproj conversion of .dsp files.  devenv.exe
+    will mis-parse the /D flag for RC flags containing long quoted /D'efines
+    which contain spaces.  The command:
     <div class="example"><p><code>
       perl srclib\apr\build\cvtdsp.pl -2005
     </code></p></div>
     will convert the /D flags for RC flags to use an alternate, parseable
     syntax; unfortunately this syntax isn't supported by Visual Studio 97
-    or it's exported .mak files.  These /D flags are used to pass the long
-    description of the mod_apachemodule.so files to their .rc resource
-    version-identifier compilations, and replace the use of awk for generating
-    .rc files formerly used for Apache 2.0.</div>
+    or its exported .mak files.  These /D flags are used to pass the long
+    description of the mod_apachemodule.so files to the shared .rc resource
+    version-identifier build.</div>
 
-    <p>Visual C++ 7.0 (.net) users should also use the Build
+    <p>Visual Studio 2002 (.NET) and later users should also use the Build
     menu, Configuration Manager dialog to uncheck both the <code>Debug</code>
-    and <code>Release</code> Solution modules abs, <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
-    and <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.
-    These modules are built by invoking <code>nmake</code> or the IDE directly
-    with the <code>BinBuild</code> target to build those modules conditionally
+    and <code>Release</code> Solution modules <code>abs</code>, 
+    <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> and <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> components, as
+    well as every component starting with <code>apr_db*</code>.  These modules
+    are built by invoking <code>nmake</code>, or the IDE directly with the
+    <code>BinBuild</code> target, which builds those modules conditionally
     if the <code>srclib</code> directories <code>openssl</code> and/or
-    <code>zlib</code> exist.</p>
+    <code>zlib</code> exist, and based on the setting of <code>DBD_LIST</code>
+    and <code>DBM_LIST</code> environment variables.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="workspacebuild" id="workspacebuild">Exporting command-line .mak files</a></h2>
+
+    
 
     <p>Exported <code>.mak</code> files pose a greater hassle, but they are
     required for Visual C++ 5.0 users to build <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>,
     abs (<code class="program"><a href="../programs/ab.html">ab</a></code> with SSL support) and/or
-    <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.  VC++ 7.0 (Visual Studio .NET) users 
-    also benefit, <code>nmake</code> builds were faster than 
-    <code>binenv</code> builds until the parallel compilation features
-    introduced in Visual Studio 2005.  Build the entire project from within 
-    the VC++ 5.0 or 6.0 IDE, preferably with mod_deflate, mod_ssl and abs,
-    then use the Project Menu Export for all makefiles (preferably, with 
-    dependencies.)  You must build the projects first in order to create 
-    all dynamic auto-generated targets, so that dependencies can be parsed
-    correctly. Run the following command to fix the paths so they will build 
+    <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.  The .mak files also support a broader
+    range of C++ tool chain distributions, such as Visual Studio Express.</p>
+
+    <p>You must first build all projects in order to create all dynamic 
+    auto-generated targets, so that dependencies can be parsed correctly. 
+    Build the entire project from within the Visual Studio 6.0 (98) IDE,
+    using the <code>BuildAll</code> target, then use the Project Menu Export
+    for all makefiles (checking on "with dependencies".)  Run the following
+    command to correct absolute paths into relative paths so they will build
     anywhere:</p>
 
     <div class="example"><p><code>
@@ -294,71 +357,25 @@ nmake /f Makefile.win _apached
     the current directory and below will be corrected, and the
     timestamps adjusted to reflect the <code>.dsp</code>.</p>
 
+    <p>Always review the generated <code>.mak</code> and <code>.dep</code>
+    files for Platform SDK or other local, machine specific file paths.
+    The <code>DevStudio\Common\MSDev98\bin\</code> (VC6) directory contains
+    a <code>sysincl.dat</code> file, which lists all exceptions.  Update
+    this file (including both forward and backslashed paths, such as both
+    <code>sys/time.h</code> and <code>sys\time.h</code>) to ignore such
+    newer dependencies.  Including local-install paths in a distributed 
+    <code>.mak</code> file will cause the build to fail completely.</p>
+
     <p>If you contribute back a patch that revises project files, we
     must commit project files in Visual Studio 6.0 format. Changes
     should be simple, with minimal compilation and linkage flags that
-    will be recognized by all VC++ 5.0 through 7.0 environments.</p>
+    can be recognized by all Visual Studio environments.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="projectcomponents" id="projectcomponents">Project Components</a></h2>
+<h2><a name="installation" id="installation">Installation</a></h2>
 
     
-
-    <p>The <code>Apache.dsw</code> workspace and <code>makefile.win</code>
-    <code>nmake</code> script both build the <code>.dsp</code> projects
-    of the Apache server in the following sequence:</p>
-
-    <ol>
-      <li><code>srclib\apr\apr.dsp</code></li>
-
-      <li><code>srclib\apr\libapr.dsp</code></li>
-
-      <li><code>srclib\apr-util\uri\gen_uri_delims.dsp</code></li>
-
-      <li><code>srclib\apr-util\xml\expat\lib\xml.dsp</code></li>
-
-      <li><code>srclib\apr-util\aprutil.dsp</code></li>
-
-      <li><code>srclib\apr-util\libaprutil.dsp</code></li>
-
-      <li><code>srclib\pcre\dftables.dsp</code></li>
-
-      <li><code>srclib\pcre\pcre.dsp</code></li>
-
-      <li><code>srclib\pcre\pcreposix.dsp</code></li>
-
-      <li><code>server\gen_test_char.dsp</code></li>
-
-      <li><code>libhttpd.dsp</code></li>
-
-      <li><code>Apache.dsp</code></li>
-    </ol>
-
-    <p>In addition, the <code>modules\</code> subdirectory tree contains
-    project files for the majority of the modules.</p>
-
-    <p>The <code>support\</code> directory contains project files for
-    additional programs that are not part of the Apache runtime,
-    but are used by the administrator to test Apache and maintain
-    password and log files. Windows-specific support projects are
-    broken out in the <code>support\win32\</code> directory.</p>
-
-    <ol>
-      <li><code>support\ab.dsp</code></li>
-
-      <li><code>support\htdigest.dsp</code></li>
-
-      <li><code>support\htpasswd.dsp</code></li>
-
-      <li><code>support\logresolve.dsp</code></li>
-
-      <li><code>support\rotatelogs.dsp</code></li>
-
-      <li><code>support\win32\ApacheMonitor.dsp</code></li>
-
-      <li><code>support\win32\wintty.dsp</code></li>
-    </ol>
 
     <p>Once Apache has been compiled, it needs to be installed in
     its server root directory. The default is the
@@ -368,100 +385,29 @@ nmake /f Makefile.win _apached
     <em>dir</em> automatically, use one of the following
     <code>nmake</code> commands:</p>
 
-    <div class="example"><pre>
-nmake /f Makefile.win installr INSTDIR=<em>dir</em>
+    <div class="example"><p><code>
+      nmake /f Makefile.win installr INSTDIR=<em>dir</em><br />
+      nmake /f Makefile.win installd INSTDIR=<em>dir</em>
+    </code></p></div>
 
-nmake /f Makefile.win installd INSTDIR=<em>dir</em>
-    </pre></div>
-
-    <p>The <em>dir</em> argument to <code>INSTDIR</code> gives
+    <p>The <em>dir</em> argument to <code>INSTDIR</code> provides
     the installation directory; it can be omitted if Apache is
-    to be installed into <code>\Apache2</code>.</p>
+    to be installed into <code>\Apache22</code> (of the current
+    drive).</p>
 
-    <p>This will install the following:</p>
-
-    <ul>
-      <li><code><em>dir</em>\bin\httpd.exe</code> - Apache
-      executable</li>
-
-      <li><code><em>dir</em>\bin\ApacheMonitor.exe</code> - Service
-      monitor taskbar icon utility</li>
-
-      <li><code><em>dir</em>\bin\htdigest.exe</code> - Digest auth
-      password file utility</li>
-
-      <li><code><em>dir</em>\bin\htdbm.exe</code> - SDBM auth
-      database password file utility</li>
-
-      <li><code><em>dir</em>\bin\htpasswd.exe</code> - Basic auth
-      password file utility</li>
-
-      <li><code><em>dir</em>\bin\logresolve.exe</code> - Log file
-      dns name lookup utility</li>
-
-      <li><code><em>dir</em>\bin\rotatelogs.exe</code> - Log file
-      cycling utility</li>
-
-      <li><code><em>dir</em>\bin\wintty.exe</code> - Console window
-      utility</li>
-
-      <li><code><em>dir</em>\bin\libapr.dll</code> - Apache
-      Portable Runtime shared library</li>
-
-      <li><code><em>dir</em>\bin\libaprutil.dll</code> - Apache
-      Utility Runtime shared library</li>
-
-      <li><code><em>dir</em>\bin\libhttpd.dll</code> - Apache Core
-      library</li>
-
-      <li><code><em>dir</em>\modules\mod_*.so</code> - Loadable
-      Apache modules</li>
-
-      <li><code><em>dir</em>\conf</code> - Configuration
-      directory</li>
-
-      <li><code><em>dir</em>\logs</code> - Empty logging
-      directory</li>
-
-      <li><code><em>dir</em>\include</code> - C language header
-      files</li>
-
-      <li><code><em>dir</em>\lib</code> - Link library files</li>
-    </ul>
-
-    <h3><a name="projectcomponents-warn" id="projectcomponents-warn">Warning about building Apache from the development tree</a></h3>
-
-      
-
-      <div class="note">Note only the <code>.dsp</code> files are maintained between <code>release</code>
-      builds. The <code>.mak</code> files are NOT regenerated, due to the tremendous
-      waste of reviewer's time. Therefore, you cannot rely on the <code>NMAKE</code>
-      commands above to build revised <code>.dsp</code> project files unless you
-      then export all <code>.mak</code> files yourself from the project. This is
-      unnecessary if you build from within the Microsoft
-      Developer Studio environment.</div>
-
-      <div class="note">Also note it is very worthwhile to build the <code>BuildBin</code>
-      target project (or the command line <code>_apacher</code> or
-      <code>_apached</code> target) prior to exporting the make files.
-      Many files are autogenerated in the build process. Only a full
-      build provides all of the dependent files required to build proper
-      dependency trees for correct build behavior.</div>
-
-      <p>In order to create distribution <code>.mak</code> files, always 
-      review the generated <code>.mak</code> (or <code>.dep</code>) 
-      dependencies for Platform SDK or other garbage, machine specific
-      includes.  The <code>DevStudio\SharedIDE\bin\</code> (VC5) or 
-      <code>DevStudio\Common\MSDev98\bin\</code> (VC6) directory contains
-      the <code>sysincl.dat</code> file, which must list all exceptions. 
-      Update this file (including both forward and backslashed paths, such 
-      as both <code>sys/time.h</code> and <code>sys\time.h</code>) to ignore 
-      such dependencies.  Including local-install paths in a distributed 
-      <code>.mak</code> file will cause the build to fail completely. And 
-      don't forget to run <code>srclib/apr/build/fixwin32mak.pl</code> in 
-      order to fix absolute paths within the <code>.mak</code> files.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="projectcomponents-warn" id="projectcomponents-warn">Warning about building Apache from the development tree</a></h2>
 
     
+
+    <div class="note">Note only the <code>.dsp</code> files are maintained between <code>release</code>
+    builds. The <code>.mak</code> files are NOT regenerated, due to the tremendous
+    waste of reviewer's time. Therefore, you cannot rely on the <code>NMAKE</code>
+    commands above to build revised <code>.dsp</code> project files unless you
+    then export all <code>.mak</code> files yourself from the project. This is
+    unnecessary if you build from within the Microsoft
+    Developer Studio environment.</div>
 
   </div></div>
 <div class="bottomlang">
