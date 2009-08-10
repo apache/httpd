@@ -167,10 +167,6 @@ WIN_CFLAGS =  -O2 -gccinc -nodefaults -proc 586 -w off
 WIN_CFLAGS += -ir $(MWCW_MSL) -ir $(MWCW_W32) -lr $(MWCW_MSL) -lr $(MWCW_W32)
 WIN_CFLAGS += -lMSL_All_x86.lib -lkernel32.lib -luser32.lib
 
-ifndef BUILDTOOL_AS_NLM
-BUILDTOOL_AS_NLM = 1
-endif
-
 # Base compile flags
 # and prefix or precompiled header added here.
 
