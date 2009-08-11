@@ -179,19 +179,19 @@ _trydb:
 	for %d in (odbc $(DBD_LIST)) do \
 	  $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\dbm
-	for %d in ($(DBM_LIST)) do \
+	for %d in ($(DBM_LIST) x) do if not %d == x \
 	  $(MAKE) $(MAKEOPT) -f apr_dbm_%d.mak CFG="apr_dbm_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
 !ELSEIF $(USESLN) == 1
 	for %d in (odbc $(DBD_LIST)) do \
 	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbd_%d
-	for %d in ($(DBM_LIST)) do \
+	for %d in ($(DBM_LIST) x) do if not %d == x \
 	  devenv Apache.sln /useenv $(CTARGET) $(LONG) /project apr_dbm_%d
 !ELSE
 	@for %d in (odbc $(DBD_LIST)) do \
 	  msdev Apache.dsw /USEENV /MAKE \
 		"apr_dbd_%d - Win32 $(LONG)" /NORECURSE $(CTARGET)
-	@for %d in ($(DBM_LIST)) do \
+	@for %d in ($(DBM_LIST) x) do if not %d == x \
 	  msdev Apache.dsw /USEENV /MAKE \
 		"apr_dbm_%d - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
@@ -311,7 +311,7 @@ _build:
 	    $(MAKE) $(MAKEOPT) -f apr_dbd_%d.mak   CFG="apr_dbd_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	cd dbm
-	  for %d in ($(DBM_LIST)) do \
+	  for %d in ($(DBM_LIST) x) do if not %d == x \
 	    $(MAKE) $(MAKEOPT) -f apr_dbm_%d.mak   CFG="apr_dbm_%d - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 	cd ..\..
@@ -579,7 +579,7 @@ _copybin:
 	for %d in (odbc $(DBD_LIST)) do ( \
 	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
-	for %d in ($(DBM_LIST)) do ( \
+	for %d in ($(DBM_LIST) x) do if not %d == x ( \
 	  copy srclib\apr-util\dbm\$(LONG)\apr_dbm_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
 	copy srclib\pcre\pcre.$(src_dll)			"$(inst_dll)" <.y
