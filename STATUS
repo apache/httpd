@@ -121,7 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_ssl: backport of r630858. Mentioned by Peter Sylvester.
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=630858
    2.2.x Patch: trunk patch applies (with offset -22 lines).
-   +1: fuankg
+   +1: fuankg, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
