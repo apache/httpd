@@ -18,7 +18,9 @@
 <IfModule !mpm_simple_module>
 <IfModule !mpm_winnt_module>
 <IfModule !mpm_netware_module>
+<IfModule !mpm_mpmt_os2_module>
 LockFile "@rel_logfiledir@/accept.lock"
+</IfModule>
 </IfModule>
 </IfModule>
 </IfModule>
@@ -86,6 +88,19 @@ LockFile "@rel_logfiledir@/accept.lock"
     MaxThreads            1000
     MaxRequestsPerChild      0
     MaxMemFree             100
+</IfModule>
+
+# OS/2 MPM
+# StartServers: Number of server processes to maintain
+# MinSpareThreads: Minimum number of idle threads per process, 
+#                  to handle request spikes
+# MaxSpareThreads: Maximum number of idle threads per process
+# MaxRequestsPerChild: Maximum number of connections per server process
+<IfModule mpm_mpmt_os2_module>
+    StartServers           2
+    MinSpareThreads        5
+    MaxSpareThreads       10
+    MaxRequestsPerChild    0
 </IfModule>
 
 # WinNT MPM
