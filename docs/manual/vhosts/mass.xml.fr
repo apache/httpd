@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 659902 -->
+<!-- French translation : Lucien GENTIS -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="mass.xml.meta">
+<parentdocument href="./">H&eacute;bergement virtuel</parentdocument>
+   <title>H&eacute;bergement virtuel de masse configur&eacute; dynamiquement</title>
+
+<summary>
+
+    <p>Ce document propose une m&eacute;thode performante pour servir un nombre
+    quelconque d'h&ocirc;tes virtuels avec le serveur web httpd Apache.
+    </p>
+
+</summary>
+
+<section id="motivation"><title>A qui ce document est-il destin&eacute; ?</title>
+
+    <p>Les techniques d&eacute;crites ici vous concernent si votre
+    <code>httpd.conf</code> contient de nombreuses sections
+    <code>&lt;VirtualHost&gt;</code> tr&egrave;s semblables,
+    dans le style :</p>
+
+<example>
+NameVirtualHost 111.22.33.44<br />
+&lt;VirtualHost 111.22.33.44&gt;<br />
+<indent>
+    ServerName                 www.customer-1.com<br />
+    DocumentRoot        /www/hosts/www.customer-1.com/docs<br />
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-1.com/cgi-bin<br />
+</indent>
+&lt;/VirtualHost&gt;<br />
+&lt;VirtualHost 111.22.33.44&gt;<br />
+<indent>
+    ServerName                 www.customer-2.com<br />
+    DocumentRoot        /www/hosts/www.customer-2.com/docs<br />
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-2.com/cgi-bin<br />
+</indent>
+&lt;/VirtualHost&gt;<br />
+# bla bla bla<br />
+&lt;VirtualHost 111.22.33.44&gt;<br />
+<indent>
+    ServerName                 www.customer-N.com<br />
+    DocumentRoot        /www/hosts/www.customer-N.com/docs<br />
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-N.com/cgi-bin<br />
+</indent>
+&lt;/VirtualHost&gt;
+</example>
+
+    <p>L'id&eacute;e de base consiste &agrave; remplacer toutes les configurations
+    <code>&lt;VirtualHost&gt;</code> par un m&eacute;canisme qui les g&eacute;n&egrave;re
+    dynamiquement. Ceci pr&eacute;sente certains avantages :</p>
+
+    <ol>
+      <li>Votre fichier de configuration est plus petit, ainsi Apache
+      d&eacute;marre plus rapidement et consomme moins de m&eacute;moire.</li>
+
+      <li>Pour ajouter des serveurs virtuels, il suffit de cr&eacute;er les
+      r&eacute;pertoires appropri&eacute;s dans le syst&egrave;me de fichiers et les entr&eacute;es
+      dans le DNS - il n'est plus n&eacute;cessaire de reconfigurer ou de
+      red&eacute;marrer Apache.</li>
+    </ol>
+
+    <p>Le principal d&eacute;savantage r&eacute;side dans le fait que vous ne pouvez
+    pas d&eacute;finir un fichier journal diff&eacute;rent pour chaque serveur
+    virtuel. De toute fa&ccedil;on, ce serait une mauvaise id&eacute;e si vous avez de
+    nombreux serveurs virtuels, car cela n&eacute;cessiterait un nombre
+    important de descripteurs de fichiers. Il est pr&eacute;f&eacute;rable de
+    rediriger les journaux via un pipe ou une pile fifo vers un
+    programme, et faire en sorte que ce dernier distribue les journaux
+    les concernant aux diff&eacute;rents clients (Ce qui peut aussi servir &agrave;
+    accumuler des donn&eacute;es &agrave; des fins de statistiques, etc...).</p>
+
+</section>
+
+<section id="overview"><title>Vue d'ensemble</title>
+
+    <p>Un serveur virtuel peut &ecirc;tre d&eacute;fini par deux informations : son
+    adresse IP, et le contenu de l'en-t&ecirc;te <code>Host:</code> de la
+    requ&ecirc;te HTTP. La technique d'h&eacute;bergement virtuel dynamique de masse
+    utilis&eacute;e ici consiste &agrave; ins&eacute;rer automatiquement ces informations
+    dans le chemin du fichier &agrave; utiliser pour r&eacute;pondre &agrave; la requ&ecirc;te. On
+    peut y parvenir assez facilement en utilisant
+    <module>mod_vhost_alias</module> avec Apache 2.0, mais on peut aussi
+    utiliser <module>mod_rewrite</module>. Par d&eacute;faut, ces deux modules
+    sont d&eacute;sactiv&eacute;s ; vous devez activer l'un d'eux lors de la
+    compilation et de la configuration d'Apache si vous voulez utiliser
+    cette technique.</p>
+
+    <p>Certains param&egrave;tres doivent &ecirc;tre adapt&eacute;s pour que le serveur
+    dynamique se pr&eacute;sente comme un serveur dynamique normal. Le plus
+    important est le nom du serveur, qu'Apache utilise pour g&eacute;n&eacute;rer des
+    URLs d'auto-r&eacute;f&eacute;rencement, etc... Il est d&eacute;fini via la directive
+    <code>ServerName</code>, et les CGIs peuvent s'y r&eacute;f&eacute;rer via la
+    variable d'environnement <code>SERVER_NAME</code>. Sa v&eacute;ritable
+    valeur utilis&eacute;e &agrave; l'ex&eacute;cution est contr&ocirc;l&eacute;e par la d&eacute;finition de la
+    directive
+    <directive module="core">UseCanonicalName</directive>. Avec
+    <code>UseCanonicalName Off</code>, le nom du serveur correspond au
+    contenu de l'en-t&ecirc;te <code>Host:</code> de la requ&ecirc;te. Avec
+    <code>UseCanonicalName DNS</code>, il est extrait d'une recherche
+    DNS inverse sur l'adresse IP du serveur virtuel. La premi&egrave;re
+    configuration est utilis&eacute;e pour l'h&eacute;bergement virtuel dynamique par
+    nom, et la deuxi&egrave;me pour l'h&eacute;bergement virtuel dynamique par IP. Si
+    Apache ne peut pas d&eacute;terminer le nom du serveur, soit parce qu'il
+    n'y a pas d'en-t&ecirc;te <code>Host:</code>, soit parce que la recherche
+    DNS a &eacute;chou&eacute;, il prend en compte la valeur d&eacute;finie par la directive
+    <code>ServerName</code>.</p>
+
+    <p>L'autre param&egrave;tre &agrave; adapter est la racine des documents (d&eacute;finie
+    via la directive <code>DocumentRoot</code> et disponible pour les
+    CGIs via la variable d'environnement <code>DOCUMENT_ROOT</code>).
+    Dans une configuration classique, il est utilis&eacute; par le module core
+    pour faire correspondre les URIs aux noms de fichiers, mais lorsque
+    la configuration du serveur comporte des serveurs virtuels, ce
+    traitement doit &ecirc;tre pris en charge par un autre module (soit
+    <code>mod_vhost_alias</code>, soit <code>mod_rewrite</code>), qui
+    utilise un m&eacute;thode de correspondance diff&eacute;rente. Aucun de ces
+    modules ne se chargeant de d&eacute;finir la variable d'environnement
+    <code>DOCUMENT_ROOT</code>, si des CGIs ou des documents SSI
+    doivent en faire usage, ils obtiendront une valeur erron&eacute;e.</p>
+
+</section>
+
+<section id="simple"><title>M&eacute;thode simple d'h&eacute;bergement virtuel
+dynamique</title>
+
+    <p>Cet extrait de fichier <code>httpd.conf</code> impl&eacute;mente
+    l'h&eacute;bergement virtuel d&eacute;crit dans la section <a
+    href="#motivation">&Agrave; qui ce document est-il destin&eacute; ?</a> ci-dessus,
+    mais selon une m&eacute;thode g&eacute;n&eacute;rique utilisant
+    <code>mod_vhost_alias</code>.</p>
+
+<example>
+# extrait le nom du serveur de l'en-t&ecirc;te Host:<br />
+UseCanonicalName Off<br />
+<br />
+# ce format de journal peut &ecirc;tre &eacute;clat&eacute; en journaux par serveur virtuel
+# &agrave; l'aide du premier champ<br />
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
+CustomLog logs/access_log vcommon<br />
+<br />
+# inclut le nom du serveur dans les noms de fichiers ressources
+# n&eacute;cessaires aux traitements des requ&ecirc;tes<br />
+VirtualDocumentRoot /www/hosts/%0/docs<br />
+VirtualScriptAlias  /www/hosts/%0/cgi-bin
+</example>
+
+    <p>Pour changer cette configuration en solution de serveur virtuel
+    par IP, il suffit de remplacer <code>UseCanonicalName
+    Off</code> par <code>UseCanonicalName DNS</code>. Le nom du serveur
+    ins&eacute;r&eacute; dans le nom de fichier sera alors d&eacute;duit de l'adresse IP du
+    serveur virtuel.</p>
+
+</section>
+
+<section id="homepages"><title>Un syst&egrave;me de pages d'accueil h&eacute;berg&eacute;es
+virtuellement</title>
+
+    <p>Il s'agit d'une adaptation du syst&egrave;me ci-dessus, ajust&eacute; pour un
+    serveur de pages d'accueil de FAI. Avec une configuration un peu
+    plus compliqu&eacute;e, on peut extraire des sous-cha&icirc;nes de caract&egrave;res du
+    nom du serveur pour les utiliser dans le nom de fichier afin, par
+    exemple, de d&eacute;finir <code>/home/user/</code> comme emplacement des
+    documents pour <code>www.user.isp.com</code>. Un seul r&eacute;pertoire
+    <code>cgi-bin</code> suffit pour l'ensemble des
+    serveurs virtuels.</p>
+
+<example>
+# les directives pr&eacute;liminaires sont identiques &agrave; celles de l'exemple
+# ci-dessus ; il vient ensuite :<br />
+<br />
+# insertion d'une partie du nom du serveur dans les noms de fichiers<br />
+VirtualDocumentRoot /www/hosts/%2/docs<br />
+<br />
+# r&eacute;pertoire cgi-bin unique<br />
+ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
+</example>
+
+    <p>Vous trouverez des exemples plus &eacute;labor&eacute;s d'utilisation de la
+    directive <code>VirtualDocumentRoot</code> dans la documentation du
+    module <module>mod_vhost_alias</module>.</p>
+
+</section>
+
+<section id="combinations"><title>Utiliser plusieurs syst&egrave;mes
+d'h&eacute;bergement virtuel sur le m&ecirc;me serveur</title>
+
+    <p>Moyennant une configuration un peu plus compliqu&eacute;e, vous pouvez
+    contr&ocirc;ler la port&eacute;e des diff&eacute;rentes configurations d'h&eacute;bergement
+    virtuel &agrave; l'aide des directives <code>&lt;VirtualHost&gt;</code>
+    normales d'Apache. Par exemple, on peut associer une adresse IP pour
+    les pages d'accueil des clients en g&eacute;n&eacute;ral, et une autre pour les
+    clients commerciaux avec la configuration suivante. Cette
+    configuration peut bien entendu &ecirc;tre combin&eacute;e avec les sections
+    <code>&lt;VirtualHost&gt;</code> conventionnelles.</p>
+
+<example>
+UseCanonicalName Off<br />
+<br />
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
+<br />
+&lt;Directory /www/commercial&gt;<br />
+<indent>
+    Options FollowSymLinks<br />
+    AllowOverride All<br />
+</indent>
+&lt;/Directory&gt;<br />
+<br />
+&lt;Directory /www/homepages&gt;<br />
+<indent>
+    Options FollowSymLinks<br />
+    AllowOverride None<br />
+</indent>
+&lt;/Directory&gt;<br />
+<br />
+&lt;VirtualHost 111.22.33.44&gt;<br />
+<indent>
+    ServerName www.commercial.isp.com<br />
+    <br />
+    CustomLog logs/access_log.commercial vcommon<br />
+    <br />
+    VirtualDocumentRoot /www/commercial/%0/docs<br />
+    VirtualScriptAlias  /www/commercial/%0/cgi-bin<br />
+</indent>
+&lt;/VirtualHost&gt;<br />
+<br />
+&lt;VirtualHost 111.22.33.45&gt;<br />
+<indent>
+    ServerName www.homepages.isp.com<br />
+    <br />
+    CustomLog logs/access_log.homepages vcommon<br />
+    <br />
+    VirtualDocumentRoot /www/homepages/%0/docs<br />
+    ScriptAlias         /cgi-bin/ /www/std-cgi/<br />
+</indent>
+&lt;/VirtualHost&gt;
+</example>
+
+<note>
+	<title>Note</title>
+	<p>Si le premier bloc VirtualHost ne comporte <em>pas</em> de
+	directive <directive module="core">ServerName</directive>, c'est
+	le nom issu d'une recherche DNS inverse &agrave; partir de l'adresse IP
+	du serveur virtuel qui sera utilis&eacute;. Si ce nom ne correspond pas
+	&agrave; celui que vous voulez utiliser, vous pouvez ajouter une entr&eacute;e
+	de remplacement (<code>ServerName
+	none.example.com</code>) pour &eacute;viter ce comportement.</p>
+</note>
+
+</section>
+
+<section id="ipbased"><title>Pour un h&eacute;bergement virtuel par IP plus
+efficace</title>
+
+    <p>Les changements de configuration sugg&eacute;r&eacute;s pour transformer <a
+    href="#simple">le premier exemple</a> en h&eacute;bergement virtuel par IP
+    conduisent &agrave; une configuration peu efficace. Chaque requ&ecirc;te
+    n&eacute;cessite une nouvelle recherche DNS. Pour &eacute;viter cette surcharge de
+    travail, le syst&egrave;me de fichiers peut &ecirc;tre organis&eacute; pour correspondre
+    aux adresses IP, plut&ocirc;t qu'aux noms de serveurs, supprimant par
+    la-m&ecirc;me la n&eacute;cessit&eacute; d'une recherche DNS. La journalisation doit
+    aussi &ecirc;tre adapt&eacute;e pour fonctionner sur un tel syst&egrave;me.</p>
+
+<example>
+# obtention du nom du serveur par recherche DNS inverse
+# sur l'adresse IP<br />
+UseCanonicalName DNS<br />
+<br />
+# insertion de l'adresse IP dans les journaux afin de pouvoir les
+# &eacute;clater<br />
+LogFormat "%A %h %l %u %t \"%r\" %s %b" vcommon<br />
+CustomLog logs/access_log vcommon<br />
+<br />
+# insertion de l'adresse IP dans les noms de fichiers<br />
+VirtualDocumentRootIP /www/hosts/%0/docs<br />
+VirtualScriptAliasIP  /www/hosts/%0/cgi-bin<br />
+</example>
+
+</section>
+
+<section id="simple.rewrite"><title>Configuration de base pour un
+h&eacute;bergement virtuel dynamique utilisant
+<module>mod_rewrite</module></title>
+
+    <p>Cet extrait de <code>httpd.conf</code> fournit le m&ecirc;me service
+    que le <a href="#simple">premier exemple</a>. La premi&egrave;re moiti&eacute; est
+    tr&egrave;s similaire &agrave; sa contre-partie du <a href="#simple">premier
+    exemple</a>, mis &agrave; part quelques changements &agrave; des fins de
+    compatibilit&eacute; ascendante et n&eacute;cessaires au bon fonctionnement de la
+    partie concernant <code>mod_rewrite</code> ; la seconde moiti&eacute;
+    configure <code>mod_rewrite</code> pour l'accomplissement du travail
+    proprement dit.</p>
+
+    <p>Cet exemple comporte quelques astuces assez sp&eacute;ciales : par
+    d&eacute;faut, <code>mod_rewrite</code> effectue son traitement avant les
+    autres modules de transformation d'URI (<code>mod_alias</code>
+    etc...) - ainsi, si vous voulez utiliser ces modules, il faut en
+    tenir compte dans la configuration de <code>mod_rewrite</code>. De
+    m&ecirc;me, l'impl&eacute;mentation d'un serveur virtuel dynamique &eacute;quivalent &agrave;
+    <code>ScriptAlias</code> demande une certaine manipulation.</p>
+
+<example>
+# obtention du nom du serveur par la valeur de l'en-t&ecirc;te Host:<br />
+UseCanonicalName Off<br />
+<br />
+# journaux pouvant &ecirc;tre &eacute;clat&eacute;s en journaux par serveurs virtuels<br />
+LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon<br />
+CustomLog logs/access_log vcommon<br />
+<br />
+&lt;Directory /www/hosts&gt;<br />
+<indent>
+    # ExecCGI est ici n&eacute;cessaire car nous ne pouvons pas forcer
+    # l'ex&eacute;cution des CGI de la mani&egrave;re dont ScriptAlias le fait<br />
+    Options FollowSymLinks ExecCGI<br />
+</indent>
+&lt;/Directory&gt;<br />
+<br />
+# et maintenant, nous entrons dans le vif du sujet<br />
+<br />
+RewriteEngine On<br />
+<br />
+# un nom de serveur d&eacute;duit de l'en-t&ecirc;te Host: dans pratiquement tous les
+# cas<br />
+RewriteMap  lowercase  int:tolower<br />
+<br />
+## traitement des documents normaux en premier:<br />
+# permet le fonctionnement de "Alias /icons/" - &agrave; r&eacute;p&eacute;ter pour les
+# autres aliases<br />
+RewriteCond  %{REQUEST_URI}  !^/icons/<br />
+# permet le fonctionnement des CGIs<br />
+RewriteCond  %{REQUEST_URI}  !^/cgi-bin/<br />
+# la petite manipulation magique<br />
+RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1<br />
+<br />
+## on s'occupe maintenant des CGIs - on doit imposer l'utilisation d'un
+# gestionnaire<br />
+RewriteCond  %{REQUEST_URI}  ^/cgi-bin/<br />
+RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]<br />
+<br />
+# c'est tout !
+</example>
+
+</section>
+
+<section id="homepages.rewrite"><title>Un syst&egrave;me de pages d'accueil qui
+utilise<code>mod_rewrite</code></title>
+
+    <p>Il s'agit d'une variante qui permet d'obtenir le m&ecirc;me r&eacute;sultat
+    que le <a href="#homepages">deuxi&egrave;me exemple</a>.</p>
+
+<example>
+RewriteEngine on<br />
+<br />
+RewriteMap   lowercase  int:tolower<br />
+<br />
+# permet l'ex&eacute;cution des CGIs<br />
+RewriteCond  %{REQUEST_URI}  !^/cgi-bin/<br />
+<br />
+# v&eacute;rifie la validit&eacute; du nom du serveur pour le bon fonctionnement de la
+# r&egrave;gle RewriteRule<br />
+RewriteCond  ${lowercase:%{SERVER_NAME}}  ^www\.[a-z-]+\.isp\.com$<br />
+<br />
+# ajoute le nom du serveur virtuel comme pr&eacute;fixe &agrave; l'URI<br />
+# le drapeau [C] signifie que la r&eacute;&eacute;criture suivante doit &ecirc;tre effectu&eacute;e
+# sur le r&eacute;sultat de la r&egrave;gle courante<br />
+RewriteRule  ^(.+)  ${lowercase:%{SERVER_NAME}}$1  [C]<br />
+<br />
+# et maintenant, on cr&eacute;e le v&eacute;ritable nom de fichier<br />
+RewriteRule  ^www\.([a-z-]+)\.isp\.com/(.*) /home/$1/$2<br />
+<br />
+# d&eacute;finition du r&eacute;pertoire des CGIs global<br />
+ScriptAlias  /cgi-bin/  /www/std-cgi/
+</example>
+
+</section>
+
+<section id="xtra-conf"><title>Utilisation d'un fichier de configuration
+s&eacute;par&eacute; pour les serveurs virtuels</title>
+
+    <p>Cette m&eacute;thode utilise des fonctionnalit&eacute;s de
+    <module>mod_rewrite</module> plus avanc&eacute;es pour venir &agrave; bout de la
+    traduction d'un serveur virtuel en une racine de documents, &agrave; partir
+    d'un fichier de configuration s&eacute;par&eacute;. Elle procure d'avantage de
+    souplesse, mais n&eacute;cessite une configuration
+    un peu plus compliqu&eacute;e.</p>
+
+    <p>Le fichier <code>vhost.map</code> doit se pr&eacute;senter sous cette
+    forme :</p>
+
+<example>
+www.customer-1.com  /www/customers/1<br />
+www.customer-2.com  /www/customers/2<br />
+# ...<br />
+www.customer-N.com  /www/customers/N<br />
+</example>
+
+    <p>Le fichier <code>httpd.conf</code> doit contenir les lignes
+    suivantes :</p>
+
+<example>
+RewriteEngine on<br />
+<br />
+RewriteMap   lowercase  int:tolower<br />
+<br />
+# d&eacute;finition du fichier de correspondances<br />
+RewriteMap   vhost      txt:/www/conf/vhost.map<br />
+<br />
+# traite les alias comme pr&eacute;c&eacute;demment<br />
+RewriteCond  %{REQUEST_URI}               !^/icons/<br />
+RewriteCond  %{REQUEST_URI}               !^/cgi-bin/<br />
+RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
+# une nouvelle mise en correspondance par fichier<br />
+RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
+RewriteRule  ^/(.*)$                      %1/docs/$1<br />
+<br />
+RewriteCond  %{REQUEST_URI}               ^/cgi-bin/<br />
+RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
+RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
+RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]
+</example>
+
+</section>
+</manualpage>

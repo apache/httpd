@@ -26,7 +26,7 @@
 <a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Ce document décrit quand et comment utiliser des serveurs
+    <p>Ce document décrit quand et comment utiliser des serveurs 
     virtuels par nom.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">Serveurs virtuels par nom vs. par IP</a></li>
@@ -37,43 +37,43 @@
 <div class="section">
 <h2><a name="namevip" id="namevip">Serveurs virtuels par nom vs. par IP</a></h2>
 
-    <p>Les hébergements virtuels par IP utilisent l'adresse IP
-    de la connexion afin de déterminer quel serveur virtuel doit
-    répondre. Par conséquent, vous devez disposer d'adresses IP
-    différentes pour chaque nom de domaine complet (FQDN) que vous hébergez.
-    Avec un hébergement
-    virtuel par nom, le serveur s'appuit sur les informations
-    transmises par le client dans les en-têtes HTTP de ses requêtes.
-    La technique présentée ici vous permet de disposer de serveurs
+    <p>Les hébergements virtuels par IP utilisent l'adresse IP 
+    de la connexion afin de déterminer quel serveur virtuel doit 
+    répondre. Par conséquent, vous devez disposer d'adresses IP 
+    différentes pour chaque serveur. 
+    Avec un hébergement 
+    virtuel par nom, le serveur s'appuit sur les informations 
+    transmises par le client dans les en-têtes HTTP de ses requêtes. 
+    La technique présentée ici vous permet de disposer de serveurs 
     virtuels différents partagés sur une même adresse IP.</p>
 
-    <p>L'hébergement virtuel par nom est habituellement plus simple,
-    car il vous suffit de configurer votre serveur DNS pour que
-    chaque domaine pointe sur l'adresse IP dont vous disposez, et de
-    configurer votre serveur Apache HTTP afin qu'il reconnaisse
-    ces domaines. Il réduit aussi la pénurie en adresses IP. Par
-    conséquent, vous devriez utiliser l'hébergement virtuel par
-    nom à moins d'avoir une raison spécifique de préférer
-    l'hébergement virtuel par IP. Certaines de ces raisons vous
+    <p>L'hébergement virtuel par nom est habituellement plus simple, 
+    car il vous suffit de configurer votre serveur DNS pour que 
+    chaque domaine pointe sur l'adresse IP dont vous disposez, et de 
+    configurer votre serveur Apache HTTP afin qu'il reconnaisse 
+    ces domaines. Il réduit aussi la pénurie en adresses IP. Par 
+    conséquent, vous devriez utiliser l'hébergement virtuel par 
+    nom à moins d'avoir une raison spécifique de préférer 
+    l'hébergement virtuel par IP. Certaines de ces raisons vous 
     sont exposées ci-après&nbsp;:</p>
 
     <ul>
-        <li>Certains anciens navigateurs ne sont pas compatibles
-        avec les serveurs virtuels par nom, car pour fonctionner,
-        un client doit transmettre un champ d'en-tête HTTP Host.
-        Cet en-tête est exigé pour HTTP/1.1, et peut être implémenté
-        sur des navigateurs modernes HTTP/1.0 grâce à une extension.
-        Si vous devez maintenir des clients obsolètes tout en
-        utilisant l'hébergement virtuel par nom, il existe une
+        <li>Certains anciens navigateurs ne sont pas compatibles 
+        avec les serveurs virtuels par nom, car pour fonctionner, 
+        un client doit transmettre un champ d'en-tête HTTP Host. 
+        Cet en-tête est exigé pour HTTP/1.1, et peut être implémenté 
+        sur des navigateurs modernes HTTP/1.0 grâce à une extension. 
+        Si vous devez maintenir des clients obsolètes tout en 
+        utilisant l'hébergement virtuel par nom, il existe une 
         technique qui est traitée à la fin de ce document.</li>
 
-        <li>L'hébergement virtuel par nom ne peut pas être utilisé
-        avec des serveurs sécurisés SSL à cause de la nature même
+        <li>L'hébergement virtuel par nom ne peut pas être utilisé 
+        avec des serveurs sécurisés SSL à cause de la nature même 
         du protocole SSL.</li>
 
-        <li>Certains systèmes d'exploitation et équipements réseaux
-        emploient des techniques de gestion de la bande passante
-        qui ne peuvent pas différencier des domaines autrement que
+        <li>Certains systèmes d'exploitation et équipements réseaux 
+        emploient des techniques de gestion de la bande passante 
+        qui ne peuvent pas différencier des domaines autrement que 
         par des adresses IP séparées.</li>
     </ul>
 
@@ -83,57 +83,58 @@
 
 <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
-    <p>Pour utiliser des serveurs virtuels par nom, vous devez
-    désigner l'adresse IP (et si possible le port) sur le serveur
-    devant accepter les requêtes pour des domaines. Cette
-    configuration utilise la directive
-    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. Dans un
-    cas normal où n'importe quelle adresse IP peut être utilisée,
-    vous pouvez ajouter <code>*</code> comme argument de la directive
-    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. Si vous
-    prévoyez d'utiliser de multiples ports (comme l'emploi de SSL),
-    vous devriez ajouter le port à cet argument tel que
-    <code>*:80</code>. Notez que la simple mention d'une adresse
-    IP dans une directive
-    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> ne suffit
-    pas à faire écouter le serveur sur cette IP. Consultez
-    <a href="../bind.html">la page sur les liaisons</a> pour plus
-    de détails. Par ailleurs, chaque adresse IP spécifiée ici doit
+    <p>Pour utiliser des serveurs virtuels par nom, vous devez 
+    désigner l'adresse IP (et si possible le port) sur le serveur 
+    devant accepter les requêtes pour des domaines. Cette 
+    configuration utilise la directive 
+    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. Dans un 
+    cas normal où n'importe quelle adresse IP peut être utilisée, 
+    vous pouvez ajouter <code>*</code> comme argument de la directive 
+    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. Si vous 
+    prévoyez d'utiliser de multiples ports (comme l'emploi de SSL), 
+    vous devriez ajouter le port à cet argument tel que 
+    <code>*:80</code>. Notez que la simple mention d'une adresse 
+    IP dans une directive 
+    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> ne suffit 
+    pas à faire écouter le serveur sur cette IP. Consultez 
+    <a href="../bind.html">Définition des adresses et ports qu'utilise
+    Apache</a> pour plus 
+    de détails. Par ailleurs, chaque adresse IP spécifiée ici doit 
     être associée avec une interface réseau sur le serveur.</p>
 
-    <p>L'étape suivante est la création d'une section
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    pour chacun des serveurs à créer. L'argument de la directive
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    doit correspondre à celui d'une directive
-    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>
-    (dans la plupart des cas, il s'agit de "*:80"). Dans chaque section
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>,
-    vous devez définir au minimum une directive
-    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> pour désigner
-    le serveur concerné et une directive
-    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> pour préciser
+    <p>L'étape suivante est la création d'une section 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+    pour chacun des serveurs à créer. L'argument de la directive 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+    doit être le même que celui de la directive 
+    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> 
+    (dans le cas présent "*:80"). Dans chaque section 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>, 
+    vous devez définir au minimum une directive 
+    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> pour désigner 
+    le serveur concerné et une directive 
+    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> pour préciser 
     l'emplacement sur le système de fichiers du contenu de ce serveur.</p>
 
     <div class="note"><h3>Le serveur principal disparaît</h3>
-        <p>Si vous ajoutez des serveurs virtuels à un serveur Web
-        existant, vous devez également créer une section
-        <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-        redéfinissant ce serveur existant. Les directives
-        <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et
-        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> incluses
-        dans ce serveur virtuel doivent être les mêmes que pour
-        les directives globales
-        <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et
-        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Positionnez
-        ce serveur virtuel en premier dans le fichier de configuration
+        <p>Si vous ajoutez des serveurs virtuels à un serveur Web 
+        existant, vous devez également créer une section 
+        <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+        redéfinissant ce serveur existant. Les directives 
+        <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et 
+        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> incluses 
+        dans ce serveur virtuel doivent être les mêmes que pour 
+        les directives globales 
+        <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> et 
+        <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Positionnez 
+        ce serveur virtuel en premier dans le fichier de configuration 
         pour en faire le serveur par défaut.</p>
     </div>
 
-    <p>Par exemple, supposez que vous hébergez le domaine
-    <code>www.domain.tld</code> et que vous souhaitez ajouter le
-    serveur virtuel <code>www.otherdomain.tld</code> qui pointe sur
-    la même adresse IP. Il vous suffit d'ajouter la configuration
+    <p>Par exemple, supposez que vous hébergez le domaine 
+    <code>www.domain.tld</code> et que vous souhaitez ajouter le 
+    serveur virtuel <code>www.otherdomain.tld</code> qui pointe sur 
+    la même adresse IP. Il vous suffit d'ajouter la configuration 
     suivante à <code>httpd.conf</code>&nbsp;:</p>
 
     <div class="example"><p><code>
@@ -154,98 +155,98 @@
         &lt;/VirtualHost&gt;<br />
     </code></p></div>
 
-    <p>Autrement, vous pouvez spécifiez une adresse IP explicite
-    à la place de <code>*</code> dans les deux directives
-    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> et
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.
-    Par exemple, cette méthode est utile si vous souhaitez faire
-    tourner quelques serveurs virtuels par nom sur une même adresse
-    IP, et d'autres, soit par IP, soit basés sur un autre jeu de
+    <p>Autrement, vous pouvez spécifiez une adresse IP explicite 
+    à la place de <code>*</code> dans les deux directives 
+    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> et 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. 
+    Par exemple, cette méthode est utile si vous souhaitez faire 
+    tourner quelques serveurs virtuels par nom sur une même adresse 
+    IP, et d'autres, soit par IP, soit basés sur un autre jeu de 
     serveurs virtuels par nom sur une autre adresse IP.</p>
 
-    <p>Plusieurs serveurs sont accessibles par plus d'un nom. Il
-    suffit de placer la directive
-    <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> dans une section
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.
-    Par exemple, dans la première section
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    ci-dessus, la directive <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>
-    indique aux utilisateurs les autres noms permis pour accéder au
+    <p>Plusieurs serveurs sont accessibles par plus d'un nom. Il 
+    suffit de placer la directive 
+    <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> dans une section 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. 
+    Par exemple, dans la première section 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+    ci-dessus, la directive <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> 
+    indique aux utilisateurs les autres noms permis pour accéder au 
     même site Web&nbsp;:</p>
 
     <div class="example"><p><code>
         ServerAlias domain.tld *.domain.tld
     </code></p></div>
 
-    <p>ainsi, toutes les requêtes portant sur un domaine
-    <code>domain.tld</code> seront servies par le serveur virtuel
-    <code>www.domain.tld</code>. Les caractères joker <code>*</code>
-    et <code>?</code> peuvent être utilisés pour les correspondances.
-    Bien entendu, vous ne pouvez pas inventer des noms et les placer
-    dans une directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
-    ou <code>ServerAlias</code>. Tout d'abord, votre serveur DNS
-    doit être correctement configuré pour lier ces noms à une
+    <p>ainsi, toutes les requêtes portant sur un domaine 
+    <code>domain.tld</code> seront servies par le serveur virtuel 
+    <code>www.domain.tld</code>. Les caractères joker <code>*</code> 
+    et <code>?</code> peuvent être utilisés pour les correspondances. 
+    Bien entendu, vous ne pouvez pas inventer des noms et les placer 
+    dans une directive <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> 
+    ou <code>ServerAlias</code>. Tout d'abord, votre serveur DNS 
+    doit être correctement configuré pour lier ces noms à une 
     adresse IP associée avec votre serveur.</p>
 
-    <p>Finalement, vous pouvez affiner la configuration des serveurs
-    virtuels en plaçant d'autres directives à l'intérieur des sections
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>.
-    La plupart des directives peut être placée dans ces sections en
-    y changeant seulement la configuration du serveur virtuel associé.
-    Pour déterminer si une directive particulière est permise,
-    consultez <a href="../mod/directive-dict.html#Context">la page de
-    contexte</a>. Le jeu de directives configurées dans le contexte
-    du <em>serveur principal</em> (en dehors de toutes sections
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>)
-    sera utilisé seulement s'il n'y a pas de configuration contraire
+    <p>Finalement, vous pouvez affiner la configuration des serveurs 
+    virtuels en plaçant d'autres directives à l'intérieur des sections 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. 
+    La plupart des directives peut être placée dans ces sections en 
+    y changeant seulement la configuration du serveur virtuel associé. 
+    Pour déterminer si une directive particulière est permise, 
+    consultez le <a href="../mod/directive-dict.html#Context">contexte</a> de la
+    directive. Le jeu de directives configurées dans le contexte 
+    du <em>serveur principal</em> (en dehors de toutes sections 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>) 
+    sera utilisé seulement s'il n'y a pas de configuration contraire 
     par un serveur virtuel.</p>
 
-    <p>Maintenant, lorsqu'une requête arrive, le serveur va d'abord
-    tester si elle utilise une adresse IP qui correspond à
-    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. Si c'est
-    le cas, il regardera chaque section
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-    avec l'adresse correspondante et essaiera d'en trouver une où
-    le nom de domaine requis correspond à
-    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ou
-    <code>ServerAlias</code>. S'il en trouve une, il utilisera
-    sa configuration pour le serveur. Si aucun serveur virtuel ne
-    correspond, alors <em>le premier serveur virtuel listé</em>
+    <p>Maintenant, lorsqu'une requête arrive, le serveur va d'abord 
+    tester si elle utilise une adresse IP qui correspond à 
+    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. Si c'est 
+    le cas, il regardera chaque section 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
+    avec l'adresse correspondante et essaiera d'en trouver une où 
+    le nom de domaine requis correspond à 
+    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ou 
+    <code>ServerAlias</code>. S'il en trouve une, il utilisera 
+    sa configuration pour le serveur. Si aucun serveur virtuel ne 
+    correspond, alors <em>le premier serveur virtuel listé</em> 
     dont l'adresse IP correspond sera employé.</p>
 
-    <p>En conséquence, le premier serveur virtuel listé est le
-    serveur virtuel <em>default</em>. La directive
-    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> du
-    <em>serveur principal</em> <strong>ne</strong> sera
-    <strong>jamais</strong> employée lorsqu'une adresse IP
-    correspond dans une directive
-    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. Si vous
-    ne voulez pas avoir de configuration spéciale pour les requêtes
-    qui ne sont pas attachées à un serveur virtuel en particulier,
-    mettez cette configuration dans une section
-    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+    <p>En conséquence, le premier serveur virtuel listé est le 
+    serveur virtuel <em>par défaut</em>. La directive 
+    <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> du 
+    <em>serveur principal</em> <strong>ne</strong> sera 
+    <strong>jamais</strong> employée lorsqu'une adresse IP 
+    correspond à la directive 
+    <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>. Si vous 
+    souhaiter avoir une configuration spéciale pour les requêtes 
+    qui ne correspondent pas à un serveur virtuel en particulier, 
+    mettez cette configuration dans une section 
+    <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
     que vous placerez en premier dans le fichier de configuration.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compat" id="compat">Compatibilité avec les navigateurs anciens</a></h2>
 
-    <p>Comme mentionné plus tôt, certains clients ne transmettent
-    pas les données nécessaires pour le bon fonctionnement des
-    serveurs virtuels. Ces clients recevront toujours les pages
-    du premier serveur virtuel listé pour cette adresse IP (le
+    <p>Comme mentionné plus tôt, certains clients ne transmettent 
+    pas les données nécessaires pour le bon fonctionnement des 
+    serveurs virtuels par nom. Ces clients recevront toujours les pages
+    du premier serveur virtuel listé pour cette adresse IP (le 
     serveur virtuel par nom <cite>primaire</cite>).</p>
 
     <div class="note"><h3>De combien plus anciens&nbsp;?</h3>
-    <p>Veuillez noter que quand nous disons plus anciens, nous
-    disons vraiment plus anciens. Vous seriez malchanceux de rencontrer
-    de tels navigateurs encore utilisés de nos jours. Toutes les
-    versions actuelles des navigateurs transmettent leur en-tête
+    <p>Veuillez noter que quand nous disons plus anciens, nous 
+    disons vraiment plus anciens. Vous avez peu de chances de rencontrer 
+    de tels navigateurs encore utilisés de nos jours. Toutes les 
+    versions actuelles des navigateurs transmettent leur en-tête 
     <code>Host</code> comme exigé par les serveurs virtuels par nom.</p>
     </div>
 
-    <p>Il existe une solution avec la directive
-    <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>, bien que
+    <p>Il existe une solution avec la directive 
+    <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>, bien que 
     légèrement complexe&nbsp;:</p>
 
     <p>Exemple de configuration&nbsp;:</p>
@@ -262,27 +263,27 @@
         &lt;/VirtualHost&gt;<br />
     </code></p></div>
 
-    <p>Qu'est-ce que cela signifie&nbsp;? Il signifie qu'une requête
-    pour tout URI qui commence par "<code>/domain</code>" sera
-    servie par le serveur virtuel <code>www.domain.tld</code>.
-    Ainsi, les pages sont accessibles à
-    <code>http://www.domain.tld/domain/</code> pour tous les
-    clients, bien que ceux qui transmettent un en-tête
-    <code>Host:</code> peuvent également y accéder à
+    <p>Qu'est-ce que cela signifie&nbsp;? Il signifie qu'une requête 
+    pour tout URI qui commence par "<code>/domain</code>" sera 
+    servie par le serveur virtuel <code>www.domain.tld</code>. 
+    Ainsi, les pages sont accessibles à 
+    <code>http://www.domain.tld/domain/</code> pour tous les 
+    clients, bien que ceux qui transmettent un en-tête 
+    <code>Host:</code> peuvent également y accéder à 
     <code>http://www.domain.tld/</code>.</p>
 
-    <p>Pour rendre cette technique fonctionnelle, mettez un lien
-    dans votre serveur virtuel primaire vers
-    <code>http://www.domain.tld/domain/</code>. Ensuite, dans les
-    pages de ce serveur virtuel, assurez vous ne n'utiliser que
-    des liens relatifs (<em>par exemple</em>, "<code>file.html</code>"
-    ou "<code>../icons/image.gif</code>") ou des liens contenant
-    le préfixe <code>/domain/</code> (<em>par exemple</em>,
-    "<code>http://www.domain.tld/domain/misc/file.html</code>"
+    <p>Pour rendre cette technique fonctionnelle, mettez un lien 
+    dans votre serveur virtuel primaire vers 
+    <code>http://www.domain.tld/domain/</code>. Ensuite, dans les 
+    pages de ce serveur virtuel, assurez vous ne n'utiliser que 
+    des liens relatifs (<em>par exemple</em>, "<code>file.html</code>" 
+    ou "<code>../icons/image.gif</code>") ou des liens contenant 
+    le préfixe <code>/domain/</code> (<em>par exemple</em>, 
+    "<code>http://www.domain.tld/domain/misc/file.html</code>" 
     ou "<code>/domain/misc/file.html</code>").</p>
 
-    <p>Cela requiert un peu de discipline, mais si vous suivez
-    cette ligne de conduite, vous serez assuré que vos pages
+    <p>Cela requiert un peu de discipline, mais si vous suivez 
+    cette ligne de conduite, vous serez assuré que vos pages 
     s'afficheront dans tous les navigateurs, nouveaux et anciens.</p>
 
 </div></div>

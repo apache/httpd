@@ -8,6 +8,7 @@
 
   <variants>
     <variant>en</variant>
+    <variant>fr</variant>
     <variant outdated="yes">ko</variant>
     <variant>tr</variant>
   </variants>
