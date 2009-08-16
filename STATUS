@@ -87,6 +87,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_ssl: backport of r630858. Mentioned by Peter Sylvester.
+   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=630858
+   2.2.x Patch: trunk patch applies (with offset -22 lines).
+   +1: fuankg, rpluem, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -117,11 +121,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: niq
    -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
               vs 2.6 kernels, potentially a suspect test for root.
-
- * mod_ssl: backport of r630858. Mentioned by Peter Sylvester.
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=630858
-   2.2.x Patch: trunk patch applies (with offset -22 lines).
-   +1: fuankg, rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
