@@ -432,7 +432,8 @@
       <a href="../mpm.html">Multi-Processing Modules</a> (MPMs).
       When building Apache, you must choose an MPM to use.  There
       are platform-specific MPMs for some platforms:
-      <module>mpm_netware</module> and <module>mpm_winnt</module>.  For
+      <module>mpm_netware</module>,
+      <module>mpmt_os2</module>, and <module>mpm_winnt</module>.  For
       general Unix-type systems, there are several MPMs from which
       to choose.  The choice of MPM can affect the speed and scalability
       of the httpd:</p>
