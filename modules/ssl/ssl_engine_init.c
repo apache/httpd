@@ -1213,7 +1213,7 @@ STACK_OF(X509_NAME) *ssl_init_FindCAList(server_rec *s,
     /*
      * Cleanup
      */
-    sk_X509_NAME_set_cmp_func(ca_list, NULL);
+    (void) sk_X509_NAME_set_cmp_func(ca_list, NULL);
 
     return ca_list;
 }
