@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) Various modules: Do better checking of pollset operations in order to
+     avoid segmentation faults if they fail. PR 46467
+     [Stefan Fritsch <sf sfritsch.de>]
+
   *) mod_autoindex: Correctly create an empty cell if the description
      for a file is missing. PR 47682 [Peter Poeml <poeml suse.de>]
 

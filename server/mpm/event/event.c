@@ -2444,7 +2444,8 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                          "Couldn't create a Thread Safe Pollset. "
-                         "Is it supported on your platform?");
+                         "Is it supported on your platform?"
+                         "Also check system or user limits!");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
         apr_pollset_destroy(event_pollset);
