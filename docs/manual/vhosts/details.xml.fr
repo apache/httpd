@@ -3,6 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
 <!-- English Revision: 420990 -->
 <!-- French translation by Vincent Deffontaines, review by alain B -->
+<!-- Updated by Lucien Gentis -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -221,7 +222,7 @@ de configuration</title>
     <p>Dans le cas où le serveur principal n'a pas de <code>ServerName</code>
     à ce stade, le nom de la machine sur laquelle tourne le programme
     <program>httpd</program> est utilisé à sa place. Nous appellerons
-    <em>jeu d'adresses du serveur principal</em>, les adresses IP
+    <em>jeu d'adresses du serveur principal</em> les adresses IP
     renvoyées par une résolution DNS sur le <code>ServerName</code>
     du serveur principal.</p>
 
@@ -255,7 +256,7 @@ de configuration</title>
     <p>Si l'adresse IP n'est pas trouvée dans la table de hash, la
     recherche du numéro de port peut aussi se terminer par une
     correspondance à un <code>NameVirtualHost *</code> qui est géré
-    ensuite comme les autres serveur virtuels par noms.</p>
+    ensuite comme les autres serveurs virtuels par noms.</p>
 
     <p>Si une liste est bien trouvée dans la table pour l'adresse
     IP recherchée, l'étape suivante est de déterminer s'il s'agit
@@ -280,8 +281,9 @@ de configuration</title>
     dans le fichier de configuration.</p>
 
     <p>Le premier serveur virtuel de cette liste (donc, le premier
-    serveur virtuel attribué à une adresse IP donnée dans le fichier
-    de configuration) se voit attribuer la plus grande priorité, ce
+    serveur virtuel du fichier de configuration
+    attribué à l'adresse IP spécifiée)
+    se voit attribuer la plus grande priorité, ce
     qui signifie que c'est lui qui traite les requêtes présentant un
     nom de serveur invalide ou ne présentant pas de champ
     <code>Host:</code> dans l'en-tête.</p>
@@ -295,7 +297,7 @@ de configuration</title>
     port sur lequel il a effectivement reçu la requête.</p>
 
     <p>Dans le cas où le client a envoyé une requête en HTTP/1.0 sans
-    un champ d'en-tête <code>Host:</code>, il est impossible de
+    champ d'en-tête <code>Host:</code>, il est impossible de
     déterminer le serveur auquel le client veut se connecter&nbsp;; l'URI
     de la requête est recherché dans tous les <code>ServerPath</code>
     existants. Le premier chemin trouvé est utilisé et la requête est
@@ -337,8 +339,8 @@ de configuration</title>
     <ul>
       <li>Les serveurs virtuels par nom et par IP n'interfèrent
       jamais entre eux. Les serveurs virtuels par IP ne sont joignables
-      qu'au travers de leur(s) adresse(s) IP propre(s), en aucun
-      cas par aucune autre adresse. Les serveurs virtuels par nom
+      qu'au travers de leur(s) adresse(s) IP propre(s), et en aucun
+      cas par une autre adresse. Les serveurs virtuels par nom
       ne sont accessibles que par leur(s) adresse(s) IP qui ne peuvent
       être définies qu'au moyen de la directive
       <code>NameVirtualHost</code>.</li>
@@ -386,7 +388,7 @@ de configuration</title>
       est également applicable aux serveurs virtuels
       <code>NameVirtualHost *</code>.</li>
 
-      <li>Le serveur principal ne sert à servir les requêtes que
+      <li>Le serveur principal ne sert les requêtes que
       lorsque l'adresse IP et le port demandés par le client ne
       correspondent à aucun serveur virtuel (y compris un serveur
       virtuel <code>_default_</code>). En d'autres termes, le serveur
@@ -396,7 +398,7 @@ de configuration</title>
 
       <li>Ni les serveurs virtuels <code>_default_</code>, ni le
       serveur principal ne sont utilisés pour traiter une requête
-      avec un champ d'en-tête <code>Host:</code> manquant ou vide
+      avec un champ d'en-tête <code>Host:</code> inconnu ou manquant
       lorsque l'adresse (et le port) de connexion correspondent à
       des serveurs virtuels par nom, par exemple, dans une directive
       <code>NameVirtualHost</code>.</li>
@@ -430,11 +432,12 @@ de configuration</title>
       -- la manière dont la configuration est interprétée après la
       lecture des fichiers ne met pas en évidence le fait que les
       définitions positionnées avant et surtout après les serveurs
-      virtuels peuvent impacter le fonctionnement des serveurs virtuels.)</li>
+      virtuels peuvent impacter le fonctionnement de tous les
+      serveurs virtuels.)</li>
 
       <li>Toujours regrouper les définitions <code>NameVirtualHost</code>
-      et <code>VirtualHost</code> dans la configuration pour une
-      meilleure lisibilité.</li>
+      et <code>VirtualHost</code> correspondantes
+      dans la configuration pour une meilleure lisibilité.</li>
 
       <li>Éviter les <code>ServerPaths</code> qui sont préfixes
       d'autres <code>ServerPaths</code>. Si cela ne peut être évité,

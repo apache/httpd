@@ -40,8 +40,8 @@
 
     <p>Apache a été le précurseur des serveurs proposant cette 
     méthode de serveurs virtuels basés sur les adresses IP. Ses 
-    versions 1.1 et suivantes ont toujours proposées ces deux 
-    méthodes de serveurs virtuels par-IP et par-nom. Cette 
+    versions 1.1 et suivantes proposent les deux 
+    méthodes de serveurs virtuels : par-IP et par-nom. Cette 
     deuxième méthode est parfois également appelée <em>host-based</em> 
     ou <em>serveur virtuel non-IP</em>.</p>
 
