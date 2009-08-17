@@ -117,6 +117,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
               vs 2.6 kernels, potentially a suspect test for root.
 
+ * mod_autoindex: Correctly create an empty cell if the description for a
+                  file is missing (PR 47682).
+   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=803704
+   2.2.x Patch: Trunk version of patch works (offset 24 lines)
+   +1: fuankg
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
