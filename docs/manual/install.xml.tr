@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 527129 -->
+<!-- English Revision: 804977  -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -128,7 +128,7 @@
       <dd>Bir ANSI-C derleyicinin kurulu olduğundan emin olunuz. <a
         href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
         tarafından dağıtılan <a
-        href="http://www.gnu.org/software/gcc/gcc.html">GNU C derleyicisini
+        href="http://gcc.gnu.org/">GNU C derleyicisini
         (GCC)</a> kullanmanız önerilir. GCC yoksa en azından satıcınızın
         derleyicisinin ANSI uyumlu olduğundan emin olunuz. Ayrıca,
         <code>PATH</code> ortam değişkeninizin içerdiği yollarda

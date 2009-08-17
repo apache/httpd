@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 759957 -->
+<!-- English Revision: 804678 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -220,8 +220,8 @@
 <syntax>PidFile <var>dosya</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_winnt</module><module>prefork</module>
-<module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module><module>mpmt_os2</module>
+<module>prefork</module><module>worker</module></modulelist>
 
 <usage>
     <p><directive>PidFile</directive> yönergesi, sunucunun artalan sürecinin
@@ -346,7 +346,8 @@
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>prefork</module><module>worker</module></modulelist>
+<module>mpmt_os2</module><module>prefork</module><module>worker</module>
+</modulelist>
 
 <usage>
     <p>Bekleyen bağlantılar kuyruğunun azami uzunluğu. Genellikle bu ayar ne
@@ -467,8 +468,9 @@
 <syntax>MaxRequestsPerChild <var>sayı</var></syntax>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>prefork</module><module>worker</module></modulelist>
+<modulelist><module>mpm_netware</module><module>mpmt_os2</module>
+<module>mpm_winnt</module><module>prefork</module><module>worker</module>
+</modulelist>
 
 <usage>
     <p><directive>MaxRequestsPerChild</directive> yönergesi, tek bir çocuk
@@ -500,8 +502,8 @@
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>mpm_netware</module><module>worker</module>
-</modulelist>
+<modulelist><module>mpm_netware</module><module>mpmt_os2</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Boştaki azami evre sayısı. Her MPM bu yönerge karşısında farklı
@@ -515,6 +517,10 @@
     <p><module>mpm_netware</module> için <code>MaxSpareThreads 100</code>
       öntanımlıdır. Bu MPM tek bir süreç olarak çalıştığından boştaki evre
       sayısı aynı zamanda sunucu genelinde boştaki evre sayısıdır.</p>
+    
+    <p><module>mpmt_os2</module> modülü <module>mpm_netware</module> modülü
+      gibi çalışır. <module>mpmt_os2</module> için öntanımlı değer
+      <code>10</code>'dur.</p>
 
     <note><title>Kısıtlamalar</title>
       <p><directive>MaxSpareThreads</directive> için değer aralığı sınırlıdır.
@@ -544,8 +550,8 @@
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
-<module>mpm_netware</module><module>worker</module>
-</modulelist>
+<module>mpm_netware</module><module>mpmt_os2</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
@@ -560,6 +566,11 @@
     <p><module>mpm_netware</module> için <code>MinSpareThreads 10</code>
       öntanımlıdır ve tek süreç kendisi olduğundan izleme sunucu genelinde
       yapılır.</p>
+
+    <p><module>mpmt_os2</module> modülü <module>mpm_netware</module> modülü
+      gibi çalışır. <module>mpmt_os2</module> için öntanımlı değer
+      <code>5</code>'tir.</p>
+
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -607,7 +618,8 @@
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>mpm_netware</module><module>mpm_winnt</module>
-<module>prefork</module><module>worker</module></modulelist>
+<module>mpmt_os2</module><module>prefork</module><module>worker</module>
+</modulelist>
 
 <usage>
     <p>Sunucu TCP alım tamponu boyunu <var>bayt-sayısı</var> ile belirtilen
@@ -626,7 +638,8 @@
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>prefork</module><module>worker</module></modulelist>
+<module>mpmt_os2</module><module>prefork</module><module>worker</module>
+</modulelist>
 
 <usage>
     <p>Sunucu TCP gönderim tamponu boyunu <var>bayt-sayısı</var> ile
@@ -702,8 +715,8 @@
 <syntax>StartServers <var>sayı</var></syntax>
 <default>Ayrıntılar için aşağıdaki açıklamaya bakınız.</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>prefork</module><module>worker</module>
-</modulelist>
+<modulelist><module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p><directive>StartServers</directive> yönergesi, sunucunun başlatılması
@@ -713,7 +726,8 @@
 
     <p>Öntanımlı değer MPM’den MPM’e fark eder. Öntanımlı değer
       <module>worker</module> için <code>3</code> iken
-      <module>prefork</module> için <code>5</code>'tir.</p>
+      <module>prefork</module> için <code>5</code>,
+      <module>mpmt_os2</module> için <code>2</code>'dir.</p>
 </usage>
 </directivesynopsis>
 
