@@ -385,7 +385,7 @@
     connection. The default <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code> of <code>5</code>
     seconds attempts to minimize this effect. The tradeoff here is
     between network bandwidth and server resources. In no event
-    should you raise this above about <code>60</code> seconds, as <a href="http://www.research.digital.com/wrl/techreports/abstracts/95.4.html">
+    should you raise this above about <code>60</code> seconds, as <a href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
     most of the benefits are lost</a>.</p>
 
     

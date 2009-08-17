@@ -209,7 +209,7 @@
 
       <li>
         <p>[Optional] Database libraries (for <code class="module"><a href="../mod/mod_dbd.html">mod_dbd</a></code>
-        and <code class="module"><a href="../mod/mod_dbm.html">mod_dbm</a></code>)</p>
+        and <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>)</p>
 
         <p>The apr-util library exposes dbm (keyed database) and dbd (query
         oriented database) client functionality to the httpd server and its

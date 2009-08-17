@@ -117,7 +117,7 @@
     <dd>A standard definition for an interface between a web server and an
       external program that allows the external program to service requests.
       The interface was originally defined by <a href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a> but there
-      is also an <a href="http://cgi-spec.golux.com/">RFC project</a>.<br />
+      is also an <a href="http://www.w3.org/CGI/">RFC project</a>.<br />
       See: <a href="howto/cgi.html">Dynamic Content with CGI</a>
     </dd>
 
