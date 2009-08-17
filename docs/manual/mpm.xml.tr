@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 758899 -->
+<!-- English Revision: 804678 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -103,6 +103,7 @@
     <table>
       <columnspec><column width=".2"/><column width=".2"/></columnspec>
       <tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
+      <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
       <tr><td>Unix</td><td><module>prefork</module></td></tr>
       <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
     </table>

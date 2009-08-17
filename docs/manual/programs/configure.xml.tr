@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 758913 -->
+<!-- English Revision: 804977 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -324,7 +324,7 @@
           HTTP başlıklı dosya türü desteğini iptal eder.</dd>
 
         <dt><code>--disable-auth</code></dt>
-        <dd><module>mod_auth</module> modülü tarafından sağlanan kullanıcıya
+        <dd><module>mod_authn_file</module> modülü tarafından sağlanan kullanıcıya
           dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı isminin ve
           parolasının salt metin dosyalarda saklandığı Temel HTTP Kimlik
           Doğrulaması için kullanılır.</dd>
@@ -334,7 +334,7 @@
           içerik listelemesini iptal eder.</dd>
 
         <dt><code>--disable-access</code></dt>
-        <dd><module>mod_access</module> modülü tarafından sağlanan konağa
+        <dd><module>mod_authz_host</module> modülü tarafından sağlanan konağa
           dayalı erişim denetimi iptal edilir.</dd>
 
         <dt><code>--disable-cgi</code></dt>
