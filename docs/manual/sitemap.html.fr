@@ -175,6 +175,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mpm_common.html">Apache MPM : Directives Communes</a></li>
 <li><a href="mod/event.html">Apache MPM event</a></li>
 <li><a href="mod/mpm_netware.html">Apache MPM netware</a></li>
+<li><a href="mod/mpmt_os2.html">Apache MPM os2</a></li>
 <li><a href="mod/prefork.html">Apache MPM prefork</a></li>
 <li><a href="mod/mpm_winnt.html">Apache MPM winnt</a></li>
 <li><a href="mod/worker.html">Apache MPM worker</a></li>
