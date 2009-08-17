@@ -52,7 +52,7 @@
 
     <ul>
       <li>prove the feasibility of porting <a
-      href="http://dev.apache.org/">the Apache HTTP server</a> to
+      href="http://httpd.apache.org/">the Apache HTTP server</a> to
       this platform</li>
 
       <li>find a "worthy and capable" successor for the venerable

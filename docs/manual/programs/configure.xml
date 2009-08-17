@@ -309,7 +309,7 @@
 
         <dt><code>--disable-auth</code></dt>
         <dd>Disable user-based access control provided  by
-          <module>mod_auth</module>. This module provides for HTTP Basic
+          <module>mod_authn_file</module>. This module provides for HTTP Basic
           Authentication, where the usernames and passwords are stored in
           plain text files.</dd>
 
@@ -319,7 +319,7 @@
 
         <dt><code>--disable-access</code></dt>
         <dd>Disable host-based access control provided by
-          <module>mod_access</module>.</dd>
+          <module>mod_authz_host</module>.</dd>
 
         <dt><code>--disable-cgi</code></dt>
         <dd><module>mod_cgi</module>, which provides support for CGI scripts,

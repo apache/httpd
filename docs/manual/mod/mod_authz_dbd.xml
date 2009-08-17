@@ -153,7 +153,7 @@ DBDExptime 300
     <li>When used with a <code>Require dbd-group</code> directive,
     it specifies a query to look up groups for the current user.  This is
     the standard functionality of other authorization modules such as
-    <module>mod_authz_file</module> and <module>mod_authz_dbm</module>.
+    <module>mod_authz_groupfile</module> and <module>mod_authz_dbm</module>.
     The first column value of each row returned by the query statement
     should be a string containing a group name.  Zero, one, or more rows
     may be returned.
