@@ -175,10 +175,6 @@
         across threads. If <code>strtok()</code> and
         <code>gethostbyname()</code> are thread-safe on your OS, c-client
         <em>may</em> be thread-safe.</td></tr>
-    <tr><td><a href="http://www.fastio.com/">cpdflib</a></td>
-        <td> </td>
-        <td>?</td>
-        <td> </td></tr>
     <tr><td><a href="http://www.ijg.org/files/">libcrypt</a></td>
         <td> </td>
         <td>?</td>
