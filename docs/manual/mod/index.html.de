@@ -54,6 +54,7 @@ Servers</dd>
 of consuming threads only for connections with active processing</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
+<dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implementiert einen im Voraus forkenden Webserver ohne
   Thread-Unterstützung</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd> Das Multi-Processing-Modul ist optimiert für

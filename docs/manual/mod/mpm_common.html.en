@@ -233,7 +233,7 @@ listens to</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Required directive since Apache 2.0<br />
 The <var>protocol</var> argument was added in 2.1.5</td></tr>
 </table>
@@ -314,7 +314,7 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ListenBacklog 511</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The maximum length of the queue of pending connections.
     Generally no tuning is needed or desired, however on some
@@ -427,7 +427,7 @@ will handle during its life</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MaxRequestsPerChild 10000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">MaxRequestsPerChild</code> directive sets
     the limit on the number of requests that an individual child
@@ -461,7 +461,7 @@ will handle during its life</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>Maximum number of idle threads. Different MPMs deal with this
     directive differently.</p>
@@ -475,6 +475,10 @@ will handle during its life</td></tr>
     <p>For <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> the default is
     <code>MaxSpareThreads 100</code>. Since this MPM runs a
     single-process, the spare thread count is also server-wide.</p>
+
+    <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> works
+    similar to <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>. For
+    <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> the default value is <code>10</code>.</p>
 
     <div class="note"><h3>Restrictions</h3>
       <p>The range of the <code class="directive">MaxSpareThreads</code> value
@@ -505,7 +509,7 @@ spikes</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>Minimum number of idle threads to handle request spikes.
     Different MPMs deal with this directive
@@ -520,6 +524,10 @@ spikes</td></tr>
     <p><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> uses a default of
     <code>MinSpareThreads 10</code> and, since it is a single-process
     MPM, tracks this on a server-wide bases.</p>
+
+    <p><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> works
+    similar to <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>.  For
+    <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> the default value is <code>5</code>.</p>
 
 <h3>See also</h3>
 <ul>
@@ -536,7 +544,7 @@ of the daemon</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>PidFile logs/httpd.pid</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">PidFile</code> directive sets the file to
     which the server records the process id of the daemon. If the
@@ -569,7 +577,7 @@ of the daemon</td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ReceiveBufferSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The server will set the TCP receive buffer size to the number of
     bytes specified.</p>
@@ -623,7 +631,7 @@ Apache</a></li>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SendBufferSize 0</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The server will set the TCP send buffer size to the number of bytes
     specified. Very useful to increase past standard OS defaults on
@@ -691,7 +699,7 @@ Apache</a></li>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for details</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p>The <code class="directive">StartServers</code> directive sets the
     number of child server processes created on startup. As the number
@@ -700,7 +708,8 @@ Apache</a></li>
 
     <p>The default value differs from MPM to MPM. <code class="module"><a href="../mod/worker.html">worker</a></code>
     defaults to <code>StartServers 3</code>; <code class="module"><a href="../mod/prefork.html">prefork</a></code> 
-    defaults to <code>5</code>.</p>
+    defaults to <code>5</code>; <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> defaults to
+    <code>2</code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -210,9 +210,9 @@
 <tr class="odd"><td><a href="http://www.imagemagick.org/">ImageMagick</a></td>
         <td>5.2.2</td>
         <td>Yes</td>
-        <td>ImageMagick docs claim it is thread safe since version 5.2.2 (see <a href="http://www.cise.ufl.edu/depot/www/ImageMagick/www/Changelog.html">Change log</a>).
+        <td>ImageMagick docs claim it is thread safe since version 5.2.2 (see <a href="http://www.imagemagick.com/www/changelog.html">Change log</a>).
         </td></tr>
-<tr><td><a href="http://www.enlightenment.org/pages/imlib2.html">Imlib2</a></td>
+<tr><td><a href="http://www.enlightenment.org/p.php?p=about/efl&amp;l=en">Imlib2</a></td>
         <td> </td>
         <td>?</td>
         <td> </td></tr>
@@ -224,7 +224,7 @@
         <td> </td>
         <td>Yes</td>
         <td>Use mysqlclient_r library variant to ensure thread-safety.  For
-            more information, please read <a href="http://www.mysql.com/doc/en/Threaded_clients.html">http://www.mysql.com/doc/en/Threaded_clients.html</a>.</td></tr>
+            more information, please read <a href="http://dev.mysql.com/doc/mysql/en/Threaded_clients.html">http://dev.mysql.com/doc/mysql/en/Threaded_clients.html</a>.</td></tr>
 <tr class="odd"><td><a href="http://www.opaque.net/ming/">Ming</a></td>
         <td>0.2a</td>
         <td>?</td>
@@ -252,7 +252,7 @@
         <td>5.0.x</td>
         <td>Yes</td>
         <td>PDFLib docs claim it is thread safe; changes.txt indicates it
-            has been partially thread-safe since V1.91: <a href="http://www.pdflib.com/products/pdflib/index.html">http://www.pdflib.com/products/pdflib/index.html</a>.</td></tr>
+            has been partially thread-safe since V1.91: <a href="http://www.pdflib.com/products/pdflib-family/pdflib/">http://www.pdflib.com/products/pdflib-family/pdflib/</a>.</td></tr>
 <tr class="odd"><td><a href="http://www.libpng.org/pub/png/libpng.html">libpng</a></td>
         <td>1.0.x</td>
         <td>?</td>
@@ -261,8 +261,8 @@
         <td>1.2.x</td>
         <td>?</td>
         <td> </td></tr>
-<tr class="odd"><td><a href="http://www.postgresql.org/idocs/index.php?libpq-threading.html">libpq (PostgreSQL)</a></td>
-        <td>7.x</td>
+<tr class="odd"><td><a href="http://www.postgresql.org/docs/8.4/static/libpq-threading.html">libpq (PostgreSQL)</a></td>
+        <td>8.x</td>
         <td>Yes</td>
         <td>Don't share connections across threads and watch out for
         <code>crypt()</code> calls</td></tr>

@@ -132,7 +132,7 @@
       configuration options and any third-party modules.</dd>
 
       <dt>ANSI-C Compiler and Build System</dt>
-      <dd>Make sure you have an ANSI-C compiler installed. The <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
+      <dd>Make sure you have an ANSI-C compiler installed. The <a href="http://gcc.gnu.org/">GNU C
       compiler (GCC)</a> from the <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
       is recommended. If you don't have GCC
       then at least make sure your vendor's compiler is ANSI

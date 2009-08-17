@@ -132,7 +132,7 @@
 
       <dt>ANSI-C Derleyici ve Derleme Sistemi</dt>
       <dd>Bir ANSI-C derleyicinin kurulu olduğundan emin olunuz. <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
-        tarafından dağıtılan <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C derleyicisini
+        tarafından dağıtılan <a href="http://gcc.gnu.org/">GNU C derleyicisini
         (GCC)</a> kullanmanız önerilir. GCC yoksa en azından satıcınızın
         derleyicisinin ANSI uyumlu olduğundan emin olunuz. Ayrıca,
         <code>PATH</code> ortam değişkeninizin içerdiği yollarda

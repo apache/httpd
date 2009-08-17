@@ -318,7 +318,7 @@
           HTTP başlıklı dosya türü desteğini iptal eder.</dd>
 
         <dt><code>--disable-auth</code></dt>
-        <dd><code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code> modülü tarafından sağlanan kullanıcıya
+        <dd><code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> modülü tarafından sağlanan kullanıcıya
           dayalı erişim denetimi iptal edilir. Bu modül, kullanıcı isminin ve
           parolasının salt metin dosyalarda saklandığı Temel HTTP Kimlik
           Doğrulaması için kullanılır.</dd>
@@ -328,7 +328,7 @@
           içerik listelemesini iptal eder.</dd>
 
         <dt><code>--disable-access</code></dt>
-        <dd><code class="module"><a href="../mod/mod_access.html">mod_access</a></code> modülü tarafından sağlanan konağa
+        <dd><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> modülü tarafından sağlanan konağa
           dayalı erişim denetimi iptal edilir.</dd>
 
         <dt><code>--disable-cgi</code></dt>

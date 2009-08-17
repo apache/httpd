@@ -422,7 +422,8 @@
         (MPM) adı verilen eklemlenebilir çok görevlilik modellerini
         destekler. Apache’yi derlerken bu MPM’lerden birini seçmeniz
         gerekir. MPM’lerden bazıları platformlara özeldir:
-        <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> ve <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>. Unix
+        <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> ve
+        <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>. Unix
         benzeri sistemler için ise seçebileceğiniz modül sayısı birden
         fazladır. MPM seçiminin httpd’nin hızında ve ölçeklenebilirliğinde
         bazı etkileri olabilir:</p>

@@ -26,6 +26,8 @@
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit ce qu'est un Module Multi-Processus, ainsi
 que la manière dont ces modules sont utilisés par le serveur HTTP Apache.</p>
