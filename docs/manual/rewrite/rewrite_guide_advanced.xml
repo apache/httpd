@@ -654,7 +654,7 @@ www   IN  A       1.2.3.5
               <code>lbnamed</code> which can be found at <a
               href="http://www.stanford.edu/~riepel/lbnamed/">
               http://www.stanford.edu/~riepel/lbnamed/</a>.
-              It is a Perl 5 program which, in conjunction with auxilliary
+              It is a Perl 5 program which, in conjunction with auxiliary
               tools, provides real load-balancing via
               DNS.</p>
             </li>

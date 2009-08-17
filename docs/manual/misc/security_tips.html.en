@@ -247,7 +247,7 @@
     <a href="../suexec.html">suEXEC</a> which is included with Apache as of
     1.2 and is called from special hooks in the Apache server code. Another
     popular way of doing this is with
-    <a href="http://cgiwrap.unixtools.org/">CGIWrap</a>.</p>
+    <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

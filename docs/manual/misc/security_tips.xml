@@ -243,7 +243,7 @@
     <a href="../suexec.html">suEXEC</a> which is included with Apache as of
     1.2 and is called from special hooks in the Apache server code. Another
     popular way of doing this is with
-    <a href="http://cgiwrap.unixtools.org/">CGIWrap</a>.</p>
+    <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </section>
 
