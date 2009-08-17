@@ -330,7 +330,7 @@
 
   </section>
 
-  <section id="workspacebuild">
+  <section id="exportingmakfiles">
 
     <title>Exporting command-line .mak files</title>
 
