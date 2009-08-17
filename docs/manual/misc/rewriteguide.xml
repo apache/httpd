@@ -1302,9 +1302,9 @@ www   IN  A       1.2.3.5
               <p>A sophisticated DNS-based method for
               load-balancing is to use the program
               <code>lbnamed</code> which can be found at <a
-              href="http://www.stanford.edu/~schemers/docs/lbnamed/lbnamed.html">
-              http://www.stanford.edu/~schemers/docs/lbnamed/lbnamed.html</a>.
-              It is a Perl 5 program in conjunction with auxilliary
+              href="http://www.stanford.edu/~riepel/lbnamed/">
+              http://www.stanford.edu/~riepel/lbnamed/</a>.
+              It is a Perl 5 program in conjunction with auxiliary
               tools which provides a real load-balancing for
               DNS.</p>
             </li>
