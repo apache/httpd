@@ -114,6 +114,43 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     or to provide their own directives and use <code>ap_dbd_prepare</code>.</p>
 </section>
 
+<section id="security">
+<title>SECURITY WARNING</title>
+    <p>Any web/database application needs to secure itself against SQL
+    injection attacks.  In most cases, Apache DBD is safe, because
+    applications use prepared statements, and untrusted inputs are
+    only ever used as data.  Of course, if you use it via third-party
+    modules, you should ascertain what precautions they may require.</p>
+    <p>However, the <var>FreeTDS</var> driver is inherently
+    <strong>unsafe</strong>.  The underlying library doesn't support
+    prepared statements, so the driver emulates them, and the
+    untrusted input is merged into the SQL statement.</p>
+    <p>It can be made safe by <em>untainting</em> all inputs:
+    a process inspired by Perl's taint checking.  Each input
+    is matched against a regexp, and only the match is used,
+    according to the Perl idiom:</p>
+    <example>
+        <pre><code>  $untrusted =~ /([a-z]+)/;
+  $trusted = $1;</code></pre>
+    </example>
+    <p>To use this, the untainting regexps must be included in the
+    prepared statements configured.  The regexp follows immediately
+    after the % in the prepared statement, and is enclosed in
+    curly brackets {}.  For example, if your application expects
+    alphanumeric input, you can use:</p>
+    <example>
+       <code>"SELECT foo FROM bar WHERE input = %s"</code>
+    </example>
+    <p>with other drivers, and suffer nothing worse than a failed query.
+    But with FreeTDS you'd need:</p>
+    <example>
+       <code>"SELECT foo FROM bar WHERE input = %{([A-Za-z0-9]+)}s"</code>
+    </example>
+    <p>Now anything that doesn't match the regexp's $1 match is
+    discarded, so the statement is safe.</p>
+    <p>An alternative to this may be the third-party ODBC driver,
+    which offers the security of genuine prepared statements.</p>
+</section>
 <directivesynopsis>
 <name>DBDriver</name>
 <description>Specify an SQL driver</description>
@@ -143,8 +180,12 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     password, database name, hostname and port number for connection.</p>
     <p>Connection string parameters for current drivers include:</p>
     <dl>
+    <dt>FreeTDS (for MSSQL and SyBase - see SECURITY note)</dt>
+    <dd>username, password, appname, dbname, host, charset, lang, server</dd>
     <dt>MySQL</dt>
-    <dd>host, port, user, pass, dbname, sock</dd> 
+    <dd>host, port, user, pass, dbname, sock, flags, fldsz, group, reconnect</dd> 
+    <dt>ODBC</dt>
+    <dd>datasource, user, password, connect, ctimeout, stimeout, access, txmode, bufsize</dd>
     <dt>Oracle</dt>
     <dd>user, pass, dbname, server</dd> 
     <dt>PostgreSQL</dt>
