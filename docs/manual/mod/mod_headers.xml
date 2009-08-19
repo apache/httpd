@@ -388,7 +388,8 @@ headers</description>
     <tr><td><code>%D</code></td>
         <td>The time from when the request was received to the time the
         headers are sent on the wire. This is a measure of the duration
-        of the request. The value is preceded by <code>D=</code>.</td></tr>
+        of the request. The value is preceded by <code>D=</code>.
+        The value is measured in microseconds.</td></tr>
 
     <tr><td><code>%{FOOBAR}e</code></td>
         <td>The contents of the <a href="../env.html">environment
