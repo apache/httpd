@@ -34,6 +34,7 @@
 extern "C" {
 #endif
 
+typedef struct ap_slave_t ap_slave_t;
 typedef struct ap_listen_rec ap_listen_rec;
 typedef apr_status_t (*accept_function)(void **csd, ap_listen_rec *lr, apr_pool_t *ptrans);
 
@@ -68,6 +69,8 @@ struct ap_listen_rec {
      * The default protocol for this listening socket.
      */
     const char* protocol;
+
+    ap_slave_t *slave;
 };
 
 /**
@@ -92,6 +95,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s);
  * Loop through the global ap_listen_rec list and close each of the sockets.
  */
 AP_DECLARE_NONSTD(void) ap_close_listeners(void);
+AP_DECLARE_NONSTD(int) ap_close_listeners_selected(ap_slave_t*);
 
 /* Although these functions are exported from libmain, they are not really
  * public functions.  These functions are actually called while parsing the

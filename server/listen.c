@@ -234,7 +234,8 @@ static apr_status_t close_listeners_on_exec(void *v)
 }
 
 static const char *alloc_listener(process_rec *process, char *addr,
-                                  apr_port_t port, const char* proto)
+                                  apr_port_t port, const char* proto,
+                                  void *dummy)
 {
     ap_listen_rec **walk, *last;
     apr_status_t status;
@@ -269,6 +270,9 @@ static const char *alloc_listener(process_rec *process, char *addr,
     }
 
     if (found_listener) {
+        if (ap_listeners->slave != dummy) {
+            return "Cannot define a slave on the same IP:port as a Listener";
+        }
         return NULL;
     }
 
@@ -326,6 +330,7 @@ static const char *alloc_listener(process_rec *process, char *addr,
             last->next = new;
             last = new;
         }
+        new->slave = dummy;
     }
 
     return NULL;
@@ -581,6 +586,22 @@ AP_DECLARE_NONSTD(void) ap_close_listeners(void)
         lr->active = 0;
     }
 }
+AP_DECLARE_NONSTD(int) ap_close_selected_listeners(ap_slave_t *slave)
+{
+    ap_listen_rec *lr;
+    int n = 0;
+
+    for (lr = ap_listeners; lr; lr = lr->next) {
+        if (lr->slave != slave) {
+            apr_socket_close(lr->sd);
+            lr->active = 0;
+        }
+        else {
+            ++n;
+        }
+    }
+    return n;
+}
 
 AP_DECLARE(void) ap_listen_pre_config(void)
 {
@@ -589,7 +610,10 @@ AP_DECLARE(void) ap_listen_pre_config(void)
     ap_listenbacklog = DEFAULT_LISTENBACKLOG;
 }
 
-
+/* Hack: populate an extra field
+ * When this gets called from a Listen directive, dummy is null.
+ * So we can use non-null dummy to pass a data pointer without conflict
+ */
 AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
                                                 int argc, char *const argv[])
 {
@@ -636,7 +660,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_listener(cmd_parms *cmd, void *dummy,
         ap_str_tolower(proto);
     }
 
-    return alloc_listener(cmd->server->process, host, port, proto);
+    return alloc_listener(cmd->server->process, host, port, proto, dummy);
 }
 
 AP_DECLARE_NONSTD(const char *) ap_set_listenbacklog(cmd_parms *cmd,
