@@ -95,7 +95,11 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s);
  * Loop through the global ap_listen_rec list and close each of the sockets.
  */
 AP_DECLARE_NONSTD(void) ap_close_listeners(void);
-AP_DECLARE_NONSTD(int) ap_close_listeners_selected(ap_slave_t*);
+
+/**
+ * FIXMEDOC
+ */
+AP_DECLARE_NONSTD(int) ap_close_selected_listeners(ap_slave_t *);
 
 /* Although these functions are exported from libmain, they are not really
  * public functions.  These functions are actually called while parsing the
