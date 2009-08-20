@@ -40,7 +40,12 @@
     Windows</a>.</p>
   </summary>
 
-  <section id="req">
+
+    
+    Running Apache on Windows 9x is ignored by the developers, and
++    is strongly discouraged.  On Windows NT 4.0, installing Service
++    Pack 6 is required.  Apache HTTP Server versions later than 2.2 will
++    not run on any operating system earlier than Windows 2000.  <section id="req">
     <title>Operating System Requirements</title>
 
     <p>The primary Windows platform for running Apache 2.2 is Windows
@@ -196,7 +201,7 @@
       should use. This is the maximum number of connections the server
       can handle at once, so be sure to set this number high enough for
       your site if you get a lot of hits. The recommended default is
-      <code>ThreadsPerChild 150</code>, but this mut be adjusted to
+      <code>ThreadsPerChild 150</code>, but this must be adjusted to
       reflect the greatest anticipated number of simultanious
       connections to accept.</p></li>
 
@@ -205,7 +210,7 @@
       may interpret backslashes as an "escape character" sequence, you
       should consistently use forward slashes in path names, not 
       backslashes.  Drive letters can be used; if omitted, the drive
-      of the SystemRoot direcive (or -d command line option) becomes
+      of the SystemRoot directive (or -d command line option) becomes
       the default.</p></li>
 
       <li><p>While filenames are generally case-insensitive on
