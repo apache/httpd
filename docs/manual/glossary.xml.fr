@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!--English Revision : 664361 -->
+<!--English Revision : 805049 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -345,7 +345,7 @@ Interface commune avec les programmes externes
       L'interface a &eacute;t&eacute; initialement d&eacute;finie par <a
       href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a> mais il
       existe aussi le projet
-      <a href="http://cgi-spec.golux.com/">RFC project</a>.<br />
+      <a href="http://www.w3.org/CGI/">RFC project</a>.<br />
       Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
     </dd>
 

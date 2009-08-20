@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 758944 -->
+<!-- English Revision : 805049 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -444,7 +444,7 @@
     minimiser cet effet. Il faut trouver le bon compromis entre la bande
     passante r&eacute;seau et les ressources du serveur. En aucun cas vous ne devez
     choisir une valeur sup&eacute;rieure &agrave; <code>60</code> seconds, car
-    <a href="http://www.research.digital.com/wrl/techreports/abstracts/95.4.html">
+    <a href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
     la plupart des b&eacute;n&eacute;fices sont alors perdus</a>.</p>
 
     </section>
@@ -463,7 +463,7 @@
       <a href="../mpm.html">Modules Multi-Processus</a> (MPMs). Vous devez
       choisir un MPM au moment de la construction d'Apache. Certaines
       plateformes ont des modules MPM sp&eacute;cifiques : 
-      <module>mpm_netware</module>, et
+      <module>mpm_netware</module>, <module>mpmt_os2</module> et
       <module>mpm_winnt</module>. Sur les syst&egrave;mes de type Unix, vous avez le
       choix entre un grand nombre de modules MPM. Le choix du MPM peut affecter
       la vitesse et l'&eacute;volutivit&eacute; du d&eacute;mon httpd :</p>
@@ -780,7 +780,7 @@
 	  uid que le serveur web d'effectuer une attaque par d&eacute;ni de service
 	  (c'est &agrave; dire <em>tous</em> les CGIs, &agrave; moins que vous n'utilisiez
 	  un programme comme <program>suexec</program> ou
-	  <code>cgiwrapper</code>)..</p>
+	  <code>cgiwrapper</code>).</p>
         </dd>
 
         <dt><code>AcceptMutex pthread</code></dt>

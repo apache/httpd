@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 686267 -->
+<!-- English revision : 805049 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -263,7 +263,7 @@
     programme est inclus dans la distribution d'Apache depuis la version 1.2
     et est appel&eacute; &agrave; partir de certaines portions de code du serveur Apache. Une
     autre m&eacute;thode plus connue est l'utilisation de
-    <a href="http://cgiwrap.unixtools.org/">CGIWrap</a>.</p>
+    <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </section>
 
