@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 527129:804977 (outdated) -->
+<!-- English Revision: 804977 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -128,7 +128,7 @@
 
       <dt>Compilateur ANSI-C et syst&egrave;me de construction</dt>
       <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a
-      href="http://www.gnu.org/software/gcc/gcc.html">GNU C
+      href="http://gcc.gnu.org/">GNU C
        (GCC)</a> de la <a
       href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
       est recommand&eacute;. Si vous ne poss&eacute;dez pas GCC,
