@@ -160,6 +160,7 @@ static void ap_dbd_sql_init(server_rec *s, const char *query)
 
 static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
 {
+    apr_status_t rv;
     const apr_dbd_driver_t *driver = NULL;
     svr_cfg *svr = ap_get_module_config(cmd->server->module_config,
                                         &dbd_module);
@@ -172,10 +173,11 @@ static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
          * best done at server startup.  This also guarantees that
          * we won't return an error later.
          */
-        switch (apr_dbd_get_driver(cmd->pool, cfg->name, &driver)) {
-        case APR_ENOTIMPL:
+        rv = apr_dbd_get_driver(cmd->pool, cfg->name, &driver);
+        if (APR_STATUS_IS_ENOTIMPL(rv)) {
             return apr_psprintf(cmd->pool, "DBD: No driver for %s", cfg->name);
-        case APR_EDSOOPEN:
+        }
+        else if (APR_STATUS_IS_EDSOOPEN(rv)) {
             return apr_psprintf(cmd->pool,
 #ifdef NETWARE
                                 "DBD: Can't load driver file dbd%s.nlm",
@@ -183,7 +185,8 @@ static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
                                 "DBD: Can't load driver file apr_dbd_%s.so",
 #endif
                                 cfg->name);
-        case APR_ESYMNOTFOUND:
+        }
+        else if (APR_STATUS_IS_ESYMNOTFOUND(rv)) {
             return apr_psprintf(cmd->pool,
                                 "DBD: Failed to load driver apr_dbd_%s_driver",
                                 cfg->name);
@@ -535,26 +538,23 @@ static apr_status_t dbd_construct(void **data_ptr,
      */
     rv = apr_dbd_get_driver(rec->pool, cfg->name, &rec->driver);
     if (rv != APR_SUCCESS) {
-        switch (rv) {
-        case APR_ENOTIMPL:
+        if (APR_STATUS_IS_ENOTIMPL(rv)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cfg->server,
                          "DBD: driver for %s not available", cfg->name);
-            break;
-        case APR_EDSOOPEN:
+        }
+        else if (APR_STATUS_IS_EDSOOPEN(rv)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cfg->server,
                          "DBD: can't find driver for %s", cfg->name);
-            break;
-        case APR_ESYMNOTFOUND:
+        }
+        else if (APR_STATUS_IS_ESYMNOTFOUND(rv)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cfg->server,
                          "DBD: driver for %s is invalid or corrupted",
                          cfg->name);
-            break;
-        default:
+        }
+        else {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, cfg->server,
                          "DBD: mod_dbd not compatible with APR in get_driver");
-            break;
         }
-
         apr_pool_destroy(rec->pool);
         return rv;
     }
