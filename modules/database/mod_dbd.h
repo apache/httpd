@@ -116,7 +116,7 @@ APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_cacquire, (conn_rec*));
 APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const char*));
 
 APR_DECLARE_EXTERNAL_HOOK(dbd, DBD, apr_status_t, post_connect,
-                          (apr_pool_t *, dbd_cfg_t *, ap_dbd_t *));
+                          (apr_pool_t *, dbd_cfg_t *, ap_dbd_t *))
 
 #endif
 /** @} */
