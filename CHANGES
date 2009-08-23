@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) Preserve Port information over internal redirects
+     PR 35999 [Jonas Ringh <jonas.ringh cixit.se>]
+
   *) Proxy: unable to connect to a backend is SERVICE_UNAVAILABLE,
      rather than BAD_GATEWAY or (especially) NOT_FOUND.
      PR 46971 [evanc nortel.com]
