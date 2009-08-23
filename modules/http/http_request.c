@@ -412,6 +412,8 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->method_number   = r->method_number;
     new->allowed_methods = ap_make_method_list(new->pool, 2);
     ap_parse_uri(new, new_uri);
+    new->parsed_uri.port_str = r->parsed_uri.port_str;
+    new->parsed_uri.port = r->parsed_uri.port;
 
     new->request_config = ap_create_request_config(r->pool);
 
