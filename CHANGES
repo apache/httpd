@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) Proxy: unable to connect to a backend is SERVICE_UNAVAILABLE,
+     rather than BAD_GATEWAY or (especially) NOT_FOUND.
+     PR 46971 [evanc nortel.com]
+
   *) Various modules: Do better checking of pollset operations in order to
      avoid segmentation faults if they fail. PR 46467
      [Stefan Fritsch <sf sfritsch.de>]
