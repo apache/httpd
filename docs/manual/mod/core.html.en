@@ -885,10 +885,10 @@ Locations</a></li>
     <ul>
     <li>On some multiprocessor systems, memory-mapping can reduce the
     performance of the <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</li>
-    <li>With an NFS-mounted <code class="directive"><a href="#documentroot">DocumentRoot</a></code>,
-    the <code class="program"><a href="../programs/httpd.html">httpd</a></code> may crash due to a segmentation fault if a file
-    is deleted or truncated while the <code class="program"><a href="../programs/httpd.html">httpd</a></code> has it
-    memory-mapped.</li>
+    <li>Deleting or truncating a file while <code class="program"><a href="../programs/httpd.html">httpd</a></code>
+      has it memory-mapped can cause <code class="program"><a href="../programs/httpd.html">httpd</a></code> to
+      crash with a segmentation fault.
+    </li>
     </ul>
 
     <p>For server configurations that are vulnerable to these problems,
