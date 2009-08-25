@@ -843,10 +843,10 @@ Locations</a></seealso>
     <ul>
     <li>On some multiprocessor systems, memory-mapping can reduce the
     performance of the <program>httpd</program>.</li>
-    <li>With an NFS-mounted <directive module="core">DocumentRoot</directive>,
-    the <program>httpd</program> may crash due to a segmentation fault if a file
-    is deleted or truncated while the <program>httpd</program> has it
-    memory-mapped.</li>
+    <li>Deleting or truncating a file while <program>httpd</program>
+      has it memory-mapped can cause <program>httpd</program> to
+      crash with a segmentation fault.
+    </li>
     </ul>
 
     <p>For server configurations that are vulnerable to these problems,
