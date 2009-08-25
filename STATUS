@@ -82,7 +82,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-
+* Wait on the next APR release that fixes PR47645
+  (https://issues.apache.org/bugzilla/show_bug.cgi?id=47645) which can cause
+  httpd to hang on Solaris 10 when using event ports.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
