@@ -1080,7 +1080,7 @@ in case of an error</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location where the server will log errors</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
