@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR: 47672
    Trunk Patch: n/a, mod_mem_cache is not in trunk
    2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24124
-   +1: poirier
+   +1: poirier, minfrin
 
  * mod_ssl: Map the _UID variable to NID_userId, where defined by OpenSSL.
             (PR: 45107)
