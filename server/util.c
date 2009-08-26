@@ -71,7 +71,7 @@
  */
 #define TEST_CHAR(c, f)        (test_char_table[(unsigned)(c)] & (f))
 
-/* Win32/NetWare need to check for both forward and back slashes
+/* Win32/NetWare/OS2 need to check for both forward and back slashes
  * in ap_getparents() and ap_escape_url.
  */
 #ifdef CASE_BLIND_FILESYSTEM
@@ -910,11 +910,11 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
         return status;
 
     if (finfo.filetype != APR_REG &&
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || defined(OS2) || defined(NETWARE)
         strcasecmp(apr_filepath_name_get(name), "nul") != 0) {
 #else
         strcmp(name, "/dev/null") != 0) {
-#endif /* WIN32 */
+#endif /* WIN32 || OS2 */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                      "Access to file %s denied by server: not a regular file",
                      name);
@@ -1489,9 +1489,9 @@ AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
     s = (const unsigned char *)str;
     for (; *s; ++s) {
 
-#if defined(WIN32)
+#if defined(OS2) || defined(WIN32)
         /*
-         * Newlines to Win32 CreateProcess() are ill advised.
+         * Newlines to Win32/OS2 CreateProcess() are ill advised.
          * Convert them to spaces since they are effectively white
          * space to most applications
          */

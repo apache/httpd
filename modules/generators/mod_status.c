@@ -425,8 +425,10 @@ static int status_handler(request_rec *r)
                        count, kbcount);
 
 #ifdef HAVE_TIMES
-            ap_rprintf(r, "CPULoad: %g\n",
-                       (tu + ts + tcu + tcs) / tick / up_time * 100.);
+            /* Allow for OS/2 not having CPU stats */
+            if (ts || tu || tcu || tcs)
+                ap_rprintf(r, "CPULoad: %g\n",
+                           (tu + ts + tcu + tcs) / tick / up_time * 100.);
 #endif
 
             ap_rprintf(r, "Uptime: %ld\n", (long) (up_time));
@@ -447,11 +449,13 @@ static int status_handler(request_rec *r)
             ap_rputs("</dt>\n", r);
 
 #ifdef HAVE_TIMES
+            /* Allow for OS/2 not having CPU stats */
             ap_rprintf(r, "<dt>CPU Usage: u%g s%g cu%g cs%g",
                        tu / tick, ts / tick, tcu / tick, tcs / tick);
 
-            ap_rprintf(r, " - %.3g%% CPU load</dt>\n",
-                       (tu + ts + tcu + tcs) / tick / up_time * 100.);
+            if (ts || tu || tcu || tcs)
+                ap_rprintf(r, " - %.3g%% CPU load</dt>\n",
+                           (tu + ts + tcu + tcs) / tick / up_time * 100.);
 #endif
 
             if (up_time > 0) {

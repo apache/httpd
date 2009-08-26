@@ -3055,7 +3055,7 @@ static int include_fixup(request_rec *r)
         r->handler = "default-handler";
     }
     else
-#if defined(WIN32) || defined(NETWARE)
+#if defined(OS2) || defined(WIN32) || defined(NETWARE)
     /* These OS's don't support xbithack. This is being worked on. */
     {
         return DECLINED;
