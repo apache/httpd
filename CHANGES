@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_cache: Introduce the thundering herd lock, a mechanism to keep
+     the flood of requests at bay that strike a backend webserver as
+     a cached entity goes stale. [Graham Leggett]
+
   *) mod_auth_digest: Fix usage of shared memory and re-enable it.
      PR 16057 [Dan Poirier]
 

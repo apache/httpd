@@ -24,7 +24,7 @@
  */
 
 #ifndef MOD_CACHE_H
-#define MOD_CACHE_H 
+#define MOD_CACHE_H
 
 #include "apr_hooks.h"
 #include "apr.h"
@@ -85,8 +85,12 @@
 #define DEFAULT_CACHE_MINEXPIRE 0
 #define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR  (0.1)
+#define DEFAULT_CACHE_MAXAGE    5
+#define DEFAULT_CACHE_LOCKPATH "/mod_cache-lock"
+#define CACHE_LOCKNAME_KEY "mod_cache-lockname"
+#define CACHE_LOCKFILE_KEY "mod_cache-lockfile"
 
-/* Create a set of CACHE_DECLARE(type), CACHE_DECLARE_NONSTD(type) and 
+/* Create a set of CACHE_DECLARE(type), CACHE_DECLARE_NONSTD(type) and
  * CACHE_DECLARE_DATA with appropriate export and import tags for the platform
  */
 #if !defined(WIN32)
@@ -133,7 +137,7 @@ typedef struct {
     int factor_set;
     /** ignore the last-modified header when deciding to cache this request */
     int no_last_mod_ignore_set;
-    int no_last_mod_ignore; 
+    int no_last_mod_ignore;
     /** ignore client's requests for uncached responses */
     int ignorecachecontrol;
     int ignorecachecontrol_set;
@@ -161,21 +165,28 @@ typedef struct {
     #define CACHE_IGNORE_SESSION_ID_SET   1
     #define CACHE_IGNORE_SESSION_ID_UNSET 0
     int ignore_session_id_set;
+    /* thundering herd lock */
+    int lock;
+    int lock_set;
+    const char *lockpath;
+    int lockpath_set;
+    apr_time_t lockmaxage;
+    int lockmaxage_set;
 } cache_server_conf;
 
 /* cache info information */
 typedef struct cache_info cache_info;
 struct cache_info {
-    /** 
-     * HTTP status code of the cached entity. Though not neccessarily the
-     * status code finally issued to the request. 
+    /**
+     * HTTP status code of the cached entity. Though not necessarily the
+     * status code finally issued to the request.
      */
-    int status; 
-    /** 
-     * the original time corresponding to the 'Date:' header of the request 
-     * served 
+    int status;
+    /**
+     * the original time corresponding to the 'Date:' header of the request
+     * served
      */
-    apr_time_t date; 
+    apr_time_t date;
     /** a time when the cached entity is due to expire */
     apr_time_t expire;
     /** r->request_time from the same request */
@@ -186,11 +197,11 @@ struct cache_info {
 
 /* cache handle information */
 
-/* XXX TODO On the next structure change/MMN bump, 
+/* XXX TODO On the next structure change/MMN bump,
  * count must become an apr_off_t, representing
  * the potential size of disk cached objects.
  * Then dig for
- * "XXX Bad Temporary Cast - see cache_object_t notes" 
+ * "XXX Bad Temporary Cast - see cache_object_t notes"
  */
 typedef struct cache_object cache_object_t;
 struct cache_object {
@@ -219,7 +230,7 @@ typedef struct {
     apr_status_t (*store_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
     apr_status_t (*store_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
     apr_status_t (*recall_headers) (cache_handle_t *h, request_rec *r);
-    apr_status_t (*recall_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
+    apr_status_t (*recall_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
     int (*create_entity) (cache_handle_t *h, request_rec *r,
                            const char *urlkey, apr_off_t len);
     int (*open_entity) (cache_handle_t *h, request_rec *r,
@@ -273,6 +284,45 @@ CACHE_DECLARE(apr_time_t) ap_cache_current_age(cache_info *info, const apr_time_
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h, request_rec *r);
 
 /**
+ * Try obtain a cache wide lock on the given cache key.
+ *
+ * If we return APR_SUCCESS, we obtained the lock, and we are clear to
+ * proceed to the backend. If we return APR_EEXISTS, the the lock is
+ * already locked, someone else has gone to refresh the backend data
+ * already, so we must return stale data with a warning in the mean
+ * time. If we return anything else, then something has gone pear
+ * shaped, and we allow the request through to the backend regardless.
+ *
+ * This lock is created from the request pool, meaning that should
+ * something go wrong and the lock isn't deleted on return of the
+ * request headers from the backend for whatever reason, at worst the
+ * lock will be cleaned up when the request is dies or finishes.
+ *
+ * If something goes truly bananas and the lock isn't deleted when the
+ * request dies, the lock will be trashed when its max-age is reached,
+ * or when a request arrives containing a Cache-Control: no-cache. At
+ * no point is it possible for this lock to permanently deny access to
+ * the backend.
+ */
+CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
+		request_rec *r, char *key);
+
+/**
+ * Remove the cache lock, if present.
+ *
+ * First, try to close the file handle, whose delete-on-close should
+ * kill the file. Otherwise, just delete the file by name.
+ *
+ * If no lock name has yet been calculated, do the calculation of the
+ * lock name first before trying to delete the file.
+ *
+ * If an optional bucket brigade is passed, the lock will only be
+ * removed if the bucket brigade contains an EOS bucket.
+ */
+CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
+		request_rec *r, char *key, apr_bucket_brigade *bb);
+
+/**
  * Merge in cached headers into the response
  * @param h cache_handle_t
  * @param r request_rec
@@ -284,15 +334,15 @@ CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r,
 
 CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x);
 CACHE_DECLARE(void) ap_cache_usec2hex(apr_time_t j, char *y);
-CACHE_DECLARE(char *) ap_cache_generate_name(apr_pool_t *p, int dirlevels, 
-                                             int dirlength, 
+CACHE_DECLARE(char *) ap_cache_generate_name(apr_pool_t *p, int dirlevels,
+                                             int dirlength,
                                              const char *name);
 CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r, cache_server_conf *conf, apr_uri_t uri);
 CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                                     const char *key, char **val);
 CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
 
-/* Create a new table consisting of those elements from an 
+/* Create a new table consisting of those elements from an
  * headers table that are allowed to be stored in a cache.
  */
 CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
@@ -340,8 +390,8 @@ apr_status_t cache_recall_entity_body(cache_handle_t *h, apr_pool_t *p, apr_buck
 
 /* hooks */
 
-APR_DECLARE_OPTIONAL_FN(apr_status_t, 
-                        ap_cache_generate_key, 
+APR_DECLARE_OPTIONAL_FN(apr_status_t,
+                        ap_cache_generate_key,
                         (request_rec *r, apr_pool_t*p, char**key ));
 
 

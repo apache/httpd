@@ -35,7 +35,7 @@ int cache_remove_url(cache_request_rec *cache, apr_pool_t *p)
 
     /* Remove the stale cache entry if present. If not, we're
      * being called from outside of a request; remove the
-     * non-stalle handle.
+     * non-stale handle.
      */
     h = cache->stale_handle ? cache->stale_handle : cache->handle;
     if (!h) {
