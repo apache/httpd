@@ -168,7 +168,7 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
  * Try obtain a cache wide lock on the given cache key.
  *
  * If we return APR_SUCCESS, we obtained the lock, and we are clear to
- * proceed to the backend. If we return APR_EEXISTS, the the lock is
+ * proceed to the backend. If we return APR_EEXISTS, then the lock is
  * already locked, someone else has gone to refresh the backend data
  * already, so we must return stale data with a warning in the mean
  * time. If we return anything else, then something has gone pear
@@ -177,7 +177,7 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
  * This lock is created from the request pool, meaning that should
  * something go wrong and the lock isn't deleted on return of the
  * request headers from the backend for whatever reason, at worst the
- * lock will be cleaned up when the request is dies or finishes.
+ * lock will be cleaned up when the request dies or finishes.
  *
  * If something goes truly bananas and the lock isn't deleted when the
  * request dies, the lock will be trashed when its max-age is reached,
