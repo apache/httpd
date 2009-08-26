@@ -193,7 +193,7 @@ AP_DECLARE(gid_t) ap_gname2id(const char *name)
 #ifndef HAVE_INITGROUPS
 int initgroups(const char *name, gid_t basegid)
 {
-#if defined(_OSD_POSIX) || defined(WIN32) || defined(NETWARE)
+#if defined(_OSD_POSIX) || defined(OS2) || defined(WIN32) || defined(NETWARE)
     return 0;
 #else
     gid_t groups[NGROUPS_MAX];

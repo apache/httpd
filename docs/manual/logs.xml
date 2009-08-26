@@ -73,7 +73,7 @@
 
     <p>The error log is usually written to a file (typically
     <code>error_log</code> on Unix systems and
-    <code>error.log</code> on Windows). On Unix systems it
+    <code>error.log</code> on Windows and OS/2). On Unix systems it
     is also possible to have the server send errors to
     <code>syslog</code> or <a href="#piped">pipe them to a
     program</a>.</p>

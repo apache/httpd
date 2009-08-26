@@ -231,3 +231,5 @@ suexec:
 
 x-local-distclean:
 	@rm -rf autom4te.cache
+
+include $(top_srcdir)/os/os2/core.mk

@@ -390,7 +390,12 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
 #endif
 
 #ifdef DEBUG_CGI
+#ifdef OS2
+    /* Under OS/2 need to use device con. */
+    FILE *dbg = fopen("con", "w");
+#else
     FILE *dbg = fopen("/dev/tty", "w");
+#endif
     int i;
 #endif
 

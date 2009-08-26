@@ -1,6 +1,10 @@
 AC_MSG_CHECKING(for target platform)
 
 case $host in
+*pc-os2-emx*)
+  OS="os2"
+  OS_DIR=$OS
+  ;;
 bs2000*)
   OS="unix"
   OS_DIR=$OS

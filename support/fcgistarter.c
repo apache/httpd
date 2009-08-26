@@ -148,7 +148,7 @@ int main(int argc, const char * const argv[])
         exit_error(rv, "apr_proc_detach");
     }
 
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || defined(OS2) || defined(NETWARE)
 
 #error "Please implement me."
 
