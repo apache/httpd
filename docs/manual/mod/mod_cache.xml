@@ -96,6 +96,70 @@
     </example>
 </section>
 
+<section id="thunderingherd"><title>Avoiding the Thundering Herd</title>
+  <p>When a cached entry becomes stale, <module>mod_cache</module> will submit
+  a conditional request to the backend, which is expected to confirm whether the
+  cached entry is still fresh, and send an updated entity if not.</p>
+  <p>A small but finite amount of time exists between the time the cached entity
+  becomes stale, and the time the stale entity is fully refreshed. On a busy
+  server, a significant number of requests might arrive during this time, and
+  cause a <strong>thundering herd</strong> of requests to strike the backend
+  suddenly and unpredicably.</p>
+  <p>To keep the thundering herd at bay, the <directive>CacheLock</directive>
+  directive can be used to define a directory in which locks are created for
+  URLs <strong>in flight</strong>. The lock is used as a <strong>hint</strong>
+  by other requests to either suppress an attempt to cache (someone else has
+  gone to fetch the entity), or to indicate that a stale entry is being refreshed
+  (stale content will be returned in the mean time).
+  </p>
+  <section>
+    <title>Initial caching of an entry</title>
+    <p>When an entity is cached for the first time, a lock will be created for the
+    entity until the response has been fully cached. During the lifetime of the
+    lock, the cache will suppress the second and subsequent attempt to cache the
+    same entity. While this doesn't hold back the thundering herd, it does stop
+    the cache attempting to cache the same entity multiple times simultaneously.
+    </p>
+  </section>
+  <section>
+    <title>Refreshment of a stale entry</title>
+    <p>When an entity reaches its freshness lifetime and becomes stale, a lock
+    will be created for the entity until the response has either been confirmed as
+    still fresh, or replaced by the backend. During the lifetime of the lock, the
+    second and subsequent incoming request will cause stale data to be returned,
+    and the thundering herd is kept at bay.</p>
+  </section>
+  <section>
+    <title>Locks and Cache-Control: no-cache</title>
+    <p>Locks are used as a <strong>hint only</strong> to enable the cache to be
+    more gentle on backend servers, however the lock can be overridden if necessary.
+    If the client sends a request with a Cache-Control header forcing a reload, any
+    lock that may be present will be ignored, and the client's request will be
+    honoured immediately and the cached entry refreshed.</p>
+    <p>As a further safety mechanism, locks have a configurable maximum age.
+    Once this age has been reached, the lock is removed, and a new request is
+    given the opportunity to create a new lock. This maximum age can be set using
+    the <directive>CacheLockMaxAge</directive> directive, and defaults to 5
+    seconds.
+    </p>
+  </section>
+  <section>
+    <title>Example configuration</title>
+    <example><title>Enabling the cache lock</title>
+      #<br />
+      # Enable the cache lock<br />
+      #<br />
+      &lt;IfModule mod_cache.c&gt;<br />
+      <indent>
+        CacheLock on<br />
+        CacheLockPath /tmp/mod_cache-lock<br />
+        CacheLockMaxAge 5<br />
+      </indent>
+      &lt;/IfModule&gt;
+    </example>
+  </section>
+</section>
+
 <directivesynopsis>
 <name>CacheEnable</name>
 <description>Enable caching of specified URLs using a specified storage
@@ -493,4 +557,66 @@ LastModified date.</description>
 <seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
 <seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLock</name>
+<description>Enable the thundering herd lock.</description>
+<syntax>CacheLock <var>on|off</var></syntax>
+<default>CacheLock off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+  <p>The <directive>CacheLock</directive> directive enables the thundering herd lock
+  for the given URL space.</p>
+  
+  <p>In a minimal configuration the following directive is all that is needed to
+  enable the thundering herd lock in the default system temp directory.</p>
+
+  <example>
+    # Enable chache lock<br />
+    CacheLock on<br /><br />
+  </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheLockPath</name>
+<description>Set the lock path directory.</description>
+<syntax>CacheLockPath <var>directory</var></syntax>
+<default>CacheLockPath /tmp/mod_cache-lock</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+    
+<usage>
+  <p>The <directive>CacheLockPath</directive> directive allows you to specify the
+  directory in which the locks are created. By default, the system's temporary
+  folder is used. Locks consist of empty files that only exist for stale URLs
+  in flight, so is significantly less resource intensive than the traditional
+  disk cache.</p>
+
+</usage>
+</directivesynopsis>
+  
+<directivesynopsis>
+<name>CacheLockMaxAge</name>
+<description>Set the maximum possible age of a cache lock.</description>
+<syntax>CacheLockMaxAge <var>integer</var></syntax>
+<default>CacheLockMaxAge 5</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+    
+<usage>
+  <p>The <directive>CacheLockMaxAge</directive> directive specifies the maximum
+  age of any cache lock.</p>
+  
+  <p>A lock older than this value in seconds will be ignored, and the next
+  incoming request will be given the opportunity to re-establish the lock.
+  This mechanism prevents a slow client taking an excessively long time to refresh
+  an entity.</p>
+  
+</usage>
+</directivesynopsis>
+  
 </modulesynopsis>

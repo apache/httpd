@@ -111,41 +111,58 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
+                char *key = NULL;
 
-                /*
-                 * Add cache_save filter to cache this request. Choose
-                 * the correct filter by checking if we are a subrequest
-                 * or not.
+                /* try to obtain a cache lock at this point. if we succeed,
+                 * we are the first to try and cache this url. if we fail,
+                 * it means someone else is already trying to cache this
+                 * url, and we should just let the request through to the
+                 * backend without any attempt to cache. this stops
+                 * duplicated simultaneous attempts to cache an entity.
                  */
-                if (r->main) {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                                 r->server,
-                                 "Adding CACHE_SAVE_SUBREQ filter for %s",
-                                 r->uri);
-                    ap_add_output_filter_handle(cache_save_subreq_filter_handle,
-                                                NULL, r, r->connection);
+                rv = ap_cache_try_lock(conf, r, NULL);
+                if (APR_SUCCESS == rv) {
+
+                    /*
+                     * Add cache_save filter to cache this request. Choose
+                     * the correct filter by checking if we are a subrequest
+                     * or not.
+                     */
+                    if (r->main) {
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                                r->server,
+                                "Adding CACHE_SAVE_SUBREQ filter for %s",
+                                r->uri);
+                        ap_add_output_filter_handle(cache_save_subreq_filter_handle,
+                                NULL, r, r->connection);
+                    }
+                    else {
+                        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                                r->server, "Adding CACHE_SAVE filter for %s",
+                                r->uri);
+                        ap_add_output_filter_handle(cache_save_filter_handle,
+                                NULL, r, r->connection);
+                    }
+
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                            "Adding CACHE_REMOVE_URL filter for %s",
+                            r->uri);
+
+                    /* Add cache_remove_url filter to this request to remove a
+                     * stale cache entry if needed. Also put the current cache
+                     * request rec in the filter context, as the request that
+                     * is available later during running the filter maybe
+                     * different due to an internal redirect.
+                     */
+                    cache->remove_url_filter =
+                        ap_add_output_filter_handle(cache_remove_url_filter_handle,
+                                cache, r, r->connection);
                 }
                 else {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
-                                 r->server, "Adding CACHE_SAVE filter for %s",
-                                 r->uri);
-                    ap_add_output_filter_handle(cache_save_filter_handle,
-                                                NULL, r, r->connection);
+                                 r->server, "Cache locked for url, not caching "
+                                 "response: %s", r->uri);
                 }
-
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
-                             "Adding CACHE_REMOVE_URL filter for %s",
-                             r->uri);
-
-                /* Add cache_remove_url filter to this request to remove a
-                 * stale cache entry if needed. Also put the current cache
-                 * request rec in the filter context, as the request that
-                 * is available later during running the filter maybe
-                 * different due to an internal redirect.
-                 */
-                cache->remove_url_filter =
-                    ap_add_output_filter_handle(cache_remove_url_filter_handle,
-                                                cache, r, r->connection);
             }
             else {
                 if (cache->stale_headers) {
@@ -164,7 +181,7 @@ static int cache_url_handler(request_rec *r, int lookup)
             /* error */
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "cache: error returned while checking for cached "
-                         "file by %s cache", cache->provider_name);
+                         "file by '%s' cache", cache->provider_name);
         }
         return DECLINED;
     }
@@ -311,6 +328,10 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
  *        Check to see if we *can* save this particular response.
  *        If we can, call cache_create_entity() and save the headers and body
  *   Finally, pass the data to the next filter (the network or whatever)
+ *
+ * After the various failure cases, the cache lock is proactively removed, so
+ * that another request is given the opportunity to attempt to cache without
+ * waiting for a potentially slow client to acknowledge the failure.
  */
 
 static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
@@ -326,6 +347,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache_info *info = NULL;
     char *reason;
     apr_pool_t *p;
+    apr_bucket *e;
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
@@ -368,7 +390,24 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                          "cache: Cache provider's store_body failed!");
             ap_remove_output_filter(f);
+
+            /* give someone else the chance to cache the file */
+            ap_cache_remove_lock(conf, r, cache->handle ?
+                    (char *)cache->handle->cache_obj->key : NULL, in);
         }
+
+        /* proactively remove the lock as soon as we see the eos bucket */
+        for (e = APR_BRIGADE_FIRST(in);
+             e != APR_BRIGADE_SENTINEL(in);
+             e = APR_BUCKET_NEXT(e))
+        {
+            if (APR_BUCKET_IS_EOS(e)) {
+                ap_cache_remove_lock(conf, r, cache->handle ?
+                        (char *)cache->handle->cache_obj->key : NULL, in);
+                break;
+            }
+        }
+
         return ap_pass_brigade(f->next, in);
     }
 
@@ -439,17 +478,17 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * telling us to serve the cached copy.
          */
         if (exps != NULL || cc_out != NULL) {
-            /* We are also allowed to cache any response given that it has a 
-             * valid Expires or Cache Control header. If we find a either of 
-             * those here,  we pass request through the rest of the tests. From 
+            /* We are also allowed to cache any response given that it has a
+             * valid Expires or Cache Control header. If we find a either of
+             * those here,  we pass request through the rest of the tests. From
              * the RFC:
              *
-             * A response received with any other status code (e.g. status 
-             * codes 302 and 307) MUST NOT be returned in a reply to a 
-             * subsequent request unless there are cache-control directives or 
-             * another header(s) that explicitly allow it. For example, these 
-             * include the following: an Expires header (section 14.21); a 
-             * "max-age", "s-maxage",  "must-revalidate", "proxy-revalidate", 
+             * A response received with any other status code (e.g. status
+             * codes 302 and 307) MUST NOT be returned in a reply to a
+             * subsequent request unless there are cache-control directives or
+             * another header(s) that explicitly allow it. For example, these
+             * include the following: an Expires header (section 14.21); a
+             * "max-age", "s-maxage",  "must-revalidate", "proxy-revalidate",
              * "public" or "private" cache-control directive (section 14.9).
              */
         }
@@ -538,7 +577,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                               "*", NULL)) {
         reason = "Vary header contains '*'";
     }
-    else if (apr_table_get(r->subprocess_env, "no-cache") != NULL) { 
+    else if (apr_table_get(r->subprocess_env, "no-cache") != NULL) {
         reason = "environment variable 'no-cache' is set";
     }
     else if (r->no_cache) {
@@ -553,6 +592,10 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
         /* remove this filter from the chain */
         ap_remove_output_filter(f);
+
+        /* remove the lock file unconditionally */
+        ap_cache_remove_lock(conf, r, cache->handle ?
+                (char *)cache->handle->cache_obj->key : NULL, in);
 
         /* ship the data up the stack */
         return ap_pass_brigade(f->next, in);
@@ -578,7 +621,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if we don't get the content-length, see if we have all the
          * buckets and use their length to calculate the size
          */
-        apr_bucket *e;
         int all_buckets_here=0;
         int unresolved_length = 0;
         size=0;
@@ -655,6 +697,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     if (rv != OK) {
         /* Caching layer declined the opportunity to cache the response */
         ap_remove_output_filter(f);
+        ap_cache_remove_lock(conf, r, cache->handle ?
+                (char *)cache->handle->cache_obj->key : NULL, in);
         return ap_pass_brigade(f->next, in);
     }
 
@@ -845,16 +889,23 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "cache: attempt to remove url from cache unsuccessful.");
             }
+
         }
+
+        /* let someone else attempt to cache */
+        ap_cache_remove_lock(conf, r, cache->handle ?
+                (char *)cache->handle->cache_obj->key : NULL, in);
 
         return ap_pass_brigade(f->next, bb);
     }
 
-    if(rv != APR_SUCCESS) {
+    if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "cache: store_headers failed");
-        ap_remove_output_filter(f);
 
+        ap_remove_output_filter(f);
+        ap_cache_remove_lock(conf, r, cache->handle ?
+                (char *)cache->handle->cache_obj->key : NULL, in);
         return ap_pass_brigade(f->next, in);
     }
 
@@ -863,6 +914,21 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "cache: store_body failed");
         ap_remove_output_filter(f);
+        ap_cache_remove_lock(conf, r, cache->handle ?
+                (char *)cache->handle->cache_obj->key : NULL, in);
+        return ap_pass_brigade(f->next, in);
+    }
+
+    /* proactively remove the lock as soon as we see the eos bucket */
+    for (e = APR_BRIGADE_FIRST(in);
+         e != APR_BRIGADE_SENTINEL(in);
+         e = APR_BUCKET_NEXT(e))
+    {
+        if (APR_BUCKET_IS_EOS(e)) {
+            ap_cache_remove_lock(conf, r, cache->handle ?
+                    (char *)cache->handle->cache_obj->key : NULL, in);
+            break;
+        }
     }
 
     return ap_pass_brigade(f->next, in);
@@ -908,6 +974,7 @@ static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }
+
     /* Now remove this cache entry from the cache */
     cache_remove_url(cache, r->pool);
 
@@ -921,6 +988,7 @@ static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
 static void * create_cache_config(apr_pool_t *p, server_rec *s)
 {
+    const char *tmppath;
     cache_server_conf *ps = apr_pcalloc(p, sizeof(cache_server_conf));
 
     /* array of URL prefixes for which caching is enabled */
@@ -955,6 +1023,13 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     /* array of identifiers that should not be used for key calculation */
     ps->ignore_session_id = apr_array_make(p, 10, sizeof(char *));
     ps->ignore_session_id_set = CACHE_IGNORE_SESSION_ID_UNSET;
+    ps->lock = 0; /* thundering herd lock defaults to off */
+    ps->lock_set = 0;
+    apr_temp_dir_get(&tmppath, p);
+    if (tmppath) {
+        ps->lockpath = apr_pstrcat(p, tmppath, DEFAULT_CACHE_LOCKPATH, NULL);
+    }
+    ps->lockmaxage = apr_time_from_sec(DEFAULT_CACHE_MAXAGE);
     return ps;
 }
 
@@ -1009,6 +1084,18 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->ignore_session_id_set == CACHE_IGNORE_SESSION_ID_UNSET)
         ? base->ignore_session_id
         : overrides->ignore_session_id;
+    ps->lock =
+        (overrides->lock_set == 0)
+        ? base->lock
+        : overrides->lock;
+    ps->lockpath =
+        (overrides->lockpath_set == 0)
+        ? base->lockpath
+        : overrides->lockpath;
+    ps->lockmaxage =
+        (overrides->lockmaxage_set == 0)
+        ? base->lockmaxage
+        : overrides->lockmaxage;
     return ps;
 }
 static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
@@ -1241,6 +1328,55 @@ static const char *set_cache_ignore_querystring(cmd_parms *parms, void *dummy,
     return NULL;
 }
 
+static const char *set_cache_lock(cmd_parms *parms, void *dummy,
+                                                int flag)
+{
+    cache_server_conf *conf;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    conf->lock = flag;
+    conf->lock_set = 1;
+    return NULL;
+}
+
+static const char *set_cache_lock_path(cmd_parms *parms, void *dummy,
+                                    const char *arg)
+{
+    cache_server_conf *conf;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+
+    conf->lockpath = ap_server_root_relative(parms->pool, arg);
+    if (!conf->lockpath) {
+        return apr_pstrcat(parms->pool, "Invalid CacheLockPath path ",
+                           arg, NULL);
+    }
+    conf->lockpath_set = 1;
+    return NULL;
+}
+
+static const char *set_cache_lock_maxage(cmd_parms *parms, void *dummy,
+                                    const char *arg)
+{
+    cache_server_conf *conf;
+    apr_int64_t seconds;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    seconds = apr_atoi64(arg);
+    if (seconds <= 0) {
+        return "CacheLockMaxAge value must be a non-zero positive integer";
+    }
+    conf->lockmaxage = apr_time_from_sec(seconds);
+    conf->lockmaxage_set = 1;
+    return NULL;
+}
+
 static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
@@ -1302,6 +1438,15 @@ static const command_rec cache_cmds[] =
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
                   "The factor used to estimate Expires date from "
                   "LastModified date"),
+    AP_INIT_FLAG("CacheLock", set_cache_lock,
+                 NULL, RSRC_CONF,
+                 "Enable or disable the thundering herd lock."),
+    AP_INIT_TAKE1("CacheLockPath", set_cache_lock_path, NULL, RSRC_CONF,
+                  "The thundering herd lock path. Defaults to the '"
+                  DEFAULT_CACHE_LOCKPATH "' directory in the system "
+                  "temp directory."),
+    AP_INIT_TAKE1("CacheLockMaxAge", set_cache_lock_maxage, NULL, RSRC_CONF,
+                  "Maximum age of any thundering herd lock."),
     {NULL}
 };
 
