@@ -181,6 +181,7 @@ INSTALL_HEADERS = \
 	include/*.h \
 	$(srcdir)/include/*.h \
 	$(srcdir)/os/$(OS_DIR)/os.h \
+	$(srcdir)/modules/arch/unix/mod_unixd.h \
 	$(srcdir)/modules/core/mod_so.h \
 	$(srcdir)/modules/core/mod_watchdog.h \
 	$(srcdir)/modules/cache/mod_cache.h \
