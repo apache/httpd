@@ -958,7 +958,12 @@ expressions</description>
     <p>will cause a local request for
     <code>http://example.com/foo/bar.gif</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
-
+    <note><title>Note</title>
+      The URL argument must be parsable as a URL <em>before</em> regexp
+      substitutions (as well as after).  This limits the matches you can use.
+      See <a href="https://issues.apache.org/bugzilla/show_bug.cgi">PR 46665</a>
+      for details and workaround ideas.
+    </note>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
 </usage>
