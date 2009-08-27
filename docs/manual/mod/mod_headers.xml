@@ -181,6 +181,12 @@ headers</description>
           Cache-Control: no-cache, no-cache, no-store
         </example>
       </li>
+      <li>
+        Set a test cookie if and only if the client didn't send us a cookie
+        <example>
+          Header set Set-Cookie testcookie !$req{Cookie}
+        </example>
+      </li>
     </ol>
 </section>
 
@@ -258,15 +264,20 @@ headers</description>
     replacement string respectively.</p>
 
     <p>The <directive>RequestHeader</directive> directive may be followed by
-    an additional argument, which may be used to specify conditions under
-    which the action will be taken, or may be the keyword <code>early</code>
-    to specify <a href="#early">early processing</a>. If the
-    <a href="../env.html">environment
-    variable</a> specified in the <code>env=<var>...</var></code> argument
-    exists (or if the environment variable does not exist and
-    <code>env=!<var>...</var></code> is specified) then the action specified
-    by the <directive>RequestHeader</directive> directive will take effect.
-    Otherwise, the directive will have no effect on the request.</p>
+    an additional argument, which may be any of:</p>
+    <dl>
+    <dt><code>early</code></dt>
+    <dd>Specifies <a href="#early">early processing</a>.</dd>
+    <dt><code>env=[!]varname</code></dt>
+    <dd>The directive is applied if and only if the <a href="../env.html"
+        >environment variable</a> <code>varname</code> exists.
+        A <code>!</code> in front of <code>varname</code> reverses the test,
+        so the directive applies only if <code>varname</code> is unset.</dd>
+    <dt><code>expr</code></dt>
+    <dd>An string that matches neither of the above is parsed as an
+        expression.  Details of expression syntax and evaluation are
+        currently best documented on the <module>mod_filter</module> page.</dd>
+    </dl>
 
     <p>Except in <a href="#early">early</a> mode, the
     <directive>RequestHeader</directive> directive is processed
@@ -404,16 +415,21 @@ headers</description>
     which is a <glossary ref="regex">regular expression</glossary>,
     and an additional <var>replacement</var> string.</p>
 
-    <p>The <directive>Header</directive> directive may be followed by an
-    an additional argument, which may be used to specify conditions under
-    which the action will be taken, or may be the keyword <code>early</code>
-    to specify <a href="#early">early processing</a>. If the
-    <a href="../env.html">environment variable</a> specified in the
-    <code>env=<var>...</var></code> argument exists (or if the environment
-    variable does not exist and <code>env=!<var>...</var></code> is specified)
-    then the action specified by the <directive>Header</directive> directive
-    will take effect. Otherwise, the directive will have no effect
-    on the request.</p>
+    <p>The <directive>Header</directive> directive may be followed by
+    an additional argument, which may be any of:</p>
+    <dl>
+    <dt><code>early</code></dt>
+    <dd>Specifies <a href="#early">early processing</a>.</dd>
+    <dt><code>env=[!]varname</code></dt>
+    <dd>The directive is applied if and only if the <a href="../env.html"
+        >environment variable</a> <code>varname</code> exists.
+        A <code>!</code> in front of <code>varname</code> reverses the test,
+        so the directive applies only if <code>varname</code> is unset.</dd>
+    <dt><code>expr</code></dt>
+    <dd>An string that matches neither of the above is parsed as an
+        expression.  Details of expression syntax and evaluation are
+        currently best documented on the <module>mod_filter</module> page.</dd>
+    </dl>
 
     <p>Except in <a href="#early">early</a> mode, the
     <directive>Header</directive> directives are processed just

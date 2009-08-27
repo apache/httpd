@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_headers: generalise the envclause to support expression
+     evaluation with ap_expr parser [Nick Kew]
+
   *) mod_cache: Introduce the thundering herd lock, a mechanism to keep
      the flood of requests at bay that strike a backend webserver as
      a cached entity goes stale. [Graham Leggett]
