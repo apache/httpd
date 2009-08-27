@@ -81,6 +81,7 @@
 #include "http_log.h"
 #include "util_filter.h"
 #include "http_protocol.h"
+#include "ap_expr.h"
 
 #include "mod_ssl.h" /* for the ssl_var_lookup optional function defn */
 
@@ -125,6 +126,7 @@ typedef struct {
     ap_regex_t *regex;
     const char *condition_var;
     const char *subs;
+    ap_parse_node_t *expr;
 } header_entry;
 
 /* echo_do is used for Header echo to iterate through the request headers*/
@@ -391,6 +393,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
     const char *condition_var = NULL;
     const char *colon;
     header_entry *new;
+    ap_parse_node_t *expr = NULL;
 
     apr_array_header_t *fixup = (cmd->info == &hdr_in)
         ? dirconf->fixup_in   : (cmd->info == &hdr_err)
@@ -472,16 +475,20 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
         if (strcasecmp(envclause, "early") == 0) {
             condition_var = condition_early;
         }
-        else {
-            if (strncasecmp(envclause, "env=", 4) != 0) {
-                return "error: envclause should be in the form env=envar";
-            }
+        else if (strncasecmp(envclause, "env=", 4) == 0) {
             if ((envclause[4] == '\0')
                 || ((envclause[4] == '!') && (envclause[5] == '\0'))) {
                 return "error: missing environment variable name. "
                     "envclause should be in the form env=envar ";
             }
             condition_var = envclause + 4;
+        }
+        else {
+            int err = 0;
+            expr = ap_expr_parse(cmd->pool, envclause, &err);
+            if (err) {
+                return "Can't parse envclause/expression";
+            }
         }
     }
 
@@ -491,6 +498,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
 
     new->header = hdr;
     new->condition_var = condition_var;
+    new->expr = expr;
 
     return parse_format_string(cmd->pool, new, value);
 }
@@ -619,6 +627,19 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
         /* ignore late headers in early calls */
         else if (early && (envar != condition_early)) {
             continue;
+        }
+        /* Do we have an expression to evaluate? */
+        else if (hdr->expr != NULL) {
+            int err = 0;
+            int eval = ap_expr_eval(r, hdr->expr, &err, NULL,
+                                    ap_expr_string, NULL);
+            if (err) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Failed to evaluate expression - ignoring");
+            }
+            else if (!eval) {
+                continue;
+            }
         }
         /* Have any conditional envar-controlled Header processing to do? */
         else if (envar && !early) {
