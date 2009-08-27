@@ -951,9 +951,9 @@ expressions</description>
       <example>
         ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1
       </example>
-      <p>in our previous example, it would fail.  This is a bug
-      (PR 46665 in the ASF bugzilla), and the workaround is to
-      reformulate the match, so the above will work if expressed as</p>
+      <p>in our previous example, it would fail with a syntax error
+      at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
+      and the workaround is to reformulate the match:</p>
       <example>
         ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1
       </example>
