@@ -101,7 +101,7 @@ static void dumpit(ap_filter_t *f, apr_bucket *b, dumpio_conf_t *ptr)
                 ap_log_error(APLOG_MARK | APLOG_NOERRNO, ptr->loglevel, 0, c->base_server,
                              "mod_dumpio:  %s (%s-%s): %.*s", f->frec->name,
                              (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
-                             b->type->name, logbytes, buf);
+                             b->type->name, (int)logbytes, buf);
 #endif
             }
         } else {
