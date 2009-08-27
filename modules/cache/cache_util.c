@@ -349,6 +349,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     char *val;
     apr_time_t age_c = 0;
     cache_info *info = &(h->cache_obj->info);
+    const char *warn_head;
     cache_server_conf *conf =
       (cache_server_conf *)ap_get_module_config(r->server->module_config,
                                                 &cache_module);
@@ -511,7 +512,6 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
         ((smaxage == -1) && (maxage == -1) &&
          (info->expire != APR_DATE_BAD) &&
          (age < (apr_time_sec(info->expire - info->date) + maxstale - minfresh)))) {
-        const char *warn_head;
 
         warn_head = apr_table_get(h->resp_hdrs, "Warning");
 
@@ -598,8 +598,15 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
                      "Cache already locked for stale cached URL, "
                      "pretend it is fresh: %s",
                      r->unparsed_uri);
-        apr_table_merge(h->resp_hdrs, "Warning",
+
+        /* make sure we don't stomp on a previous warning */
+        warn_head = apr_table_get(h->resp_hdrs, "Warning");
+        if ((warn_head == NULL) ||
+            ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
+            apr_table_merge(h->resp_hdrs, "Warning",
                         "110 Response is stale");
+        }
+
         return 1;
     }
     else {
