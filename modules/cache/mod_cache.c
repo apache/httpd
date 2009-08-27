@@ -159,7 +159,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                                 cache, r, r->connection);
                 }
                 else {
-                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, rv,
                                  r->server, "Cache locked for url, not caching "
                                  "response: %s", r->uri);
                 }
