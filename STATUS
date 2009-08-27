@@ -95,6 +95,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    2.2.x Patch: Trunk version of patch works (offset 24 lines)
    +1: fuankg, poirier, rpluem
 
+ * mod_mem_cache: fix seg fault under load due to pool concurrency problem
+   PR: 47672
+   Trunk Patch: n/a, mod_mem_cache is not in trunk
+   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24124
+   +1: poirier, minfrin, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -123,12 +129,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: niq
    -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
               vs 2.6 kernels, potentially a suspect test for root.
-
- * mod_mem_cache: fix seg fault under load due to pool concurrency problem
-   PR: 47672
-   Trunk Patch: n/a, mod_mem_cache is not in trunk
-   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24124
-   +1: poirier, minfrin
 
  * mod_ssl: Map the _UID variable to NID_userId, where defined by OpenSSL.
             (PR: 45107)
