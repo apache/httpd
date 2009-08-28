@@ -26,8 +26,6 @@
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/mpm.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document décrit ce qu'est un Module Multi-Processus, ainsi
 que la manière dont ces modules sont utilisés par le serveur HTTP Apache.</p>
@@ -113,6 +111,7 @@ pas un choix différent à la compilation.</p>
 <table>
 
 <tr><td>Netware</td><td><code class="module"><a href="./mod/mpm_netware.html">mpm_netware</a></code></td></tr>
+<tr><td>OS/2</td><td><code class="module"><a href="./mod/mpmt_os2.html">mpmt_os2</a></code></td></tr>
 <tr><td>Unix</td><td><code class="module"><a href="./mod/prefork.html">prefork</a></code></td></tr>
 <tr><td>Windows</td><td><code class="module"><a href="./mod/mpm_winnt.html">mpm_winnt</a></code></td></tr>
 </table>

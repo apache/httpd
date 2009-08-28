@@ -330,7 +330,7 @@ Interface commune avec les programmes externes
     programme externe pour permettre à ce dernier de traiter des requêtes.
       L'interface a été initialement définie par <a href="http://hoohoo.ncsa.uiuc.edu/cgi/overview.html">NCSA</a> mais il
       existe aussi le projet
-      <a href="http://cgi-spec.golux.com/">RFC project</a>.<br />
+      <a href="http://www.w3.org/CGI/">RFC project</a>.<br />
       Voir : <a href="howto/cgi.html">Contenu dynamique avec CGI</a>
     </dd>
 
