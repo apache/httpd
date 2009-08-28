@@ -26,8 +26,6 @@
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/install.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 
     <p>Ce document couvre l'installation et la compilation d'Apache
@@ -136,7 +134,7 @@
       de configuration et de la présence éventuelle de modules tiers.</dd>
 
       <dt>Compilateur ANSI-C et système de construction</dt>
-      <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
+      <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a href="http://gcc.gnu.org/">GNU C
        (GCC)</a> de la <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
       est recommandé. Si vous ne possédez pas GCC,
       assurez-vous au moins que votre compilateur soit compatible ANSI.

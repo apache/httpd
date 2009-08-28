@@ -267,7 +267,7 @@
     programme est inclus dans la distribution d'Apache depuis la version 1.2
     et est appelé à partir de certaines portions de code du serveur Apache. Une
     autre méthode plus connue est l'utilisation de
-    <a href="http://cgiwrap.unixtools.org/">CGIWrap</a>.</p>
+    <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a>.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

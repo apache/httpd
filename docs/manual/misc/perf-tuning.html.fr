@@ -428,7 +428,7 @@
     minimiser cet effet. Il faut trouver le bon compromis entre la bande
     passante réseau et les ressources du serveur. En aucun cas vous ne devez
     choisir une valeur supérieure à <code>60</code> seconds, car
-    <a href="http://www.research.digital.com/wrl/techreports/abstracts/95.4.html">
+    <a href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
     la plupart des bénéfices sont alors perdus</a>.</p>
 
     
@@ -447,7 +447,7 @@
       <a href="../mpm.html">Modules Multi-Processus</a> (MPMs). Vous devez
       choisir un MPM au moment de la construction d'Apache. Certaines
       plateformes ont des modules MPM spécifiques : 
-      <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, et
+      <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code> et
       <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>. Sur les systèmes de type Unix, vous avez le
       choix entre un grand nombre de modules MPM. Le choix du MPM peut affecter
       la vitesse et l'évolutivité du démon httpd :</p>
@@ -764,7 +764,7 @@
 	  uid que le serveur web d'effectuer une attaque par déni de service
 	  (c'est à dire <em>tous</em> les CGIs, à moins que vous n'utilisiez
 	  un programme comme <code class="program"><a href="../programs/suexec.html">suexec</a></code> ou
-	  <code>cgiwrapper</code>)..</p>
+	  <code>cgiwrapper</code>).</p>
         </dd>
 
         <dt><code>AcceptMutex pthread</code></dt>

@@ -110,6 +110,9 @@ cacheignorenolastmod	mod/mod_cache.html#cacheignorenolastmod
 cacheignorequerystring	mod/mod_cache.html#cacheignorequerystring
 cacheignoreurlsessionidentifiers	mod/mod_cache.html#cacheignoreurlsessionidentifiers
 cachelastmodifiedfactor	mod/mod_cache.html#cachelastmodifiedfactor
+cachelock	mod/mod_cache.html#cachelock
+cachelockmaxage	mod/mod_cache.html#cachelockmaxage
+cachelockpath	mod/mod_cache.html#cachelockpath
 cachemaxexpire	mod/mod_cache.html#cachemaxexpire
 cachemaxfilesize	mod/mod_disk_cache.html#cachemaxfilesize
 cacheminexpire	mod/mod_cache.html#cacheminexpire
