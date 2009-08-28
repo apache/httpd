@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 686269 -->
+<!-- English Revision: 805050 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -168,7 +168,7 @@
       ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
       çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a
       href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
-      da <a href="http://cgiwrap.unixtools.org/">CGIWrap</a> kullanmaktır.</p>
+      da <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
 
   </section>
 
