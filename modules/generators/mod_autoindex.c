@@ -1762,9 +1762,9 @@ static void output_directories(struct ent **ar, int n,
                                                         desc_width), NULL);
                     }
                 }
-            }
-            else {
-                ap_rputs("</td><td>&nbsp;", r);
+                else {
+                    ap_rputs("</td><td>&nbsp;", r);
+                }
             }
             ap_rputs("</td></tr>\n", r);
         }
