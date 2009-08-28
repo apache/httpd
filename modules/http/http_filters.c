@@ -874,6 +874,7 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
 {
     char *date;
     const char *server;
+    const char *us = ap_get_server_banner();
     header_struct h;
     struct iovec vec[4];
 
@@ -930,19 +931,25 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
         if (server) {
             form_header_field(&h, "Server", server);
         } else {
-            form_header_field(&h, "Server", ap_get_server_banner());
+            if (*us) {
+                form_header_field(&h, "Server", ap_get_server_banner());
+            }
         }
     }
     else {
         date = apr_palloc(r->pool, APR_RFC822_DATE_LEN);
         ap_recent_rfc822_date(date, r->request_time);
         form_header_field(&h, "Date", date);
-        form_header_field(&h, "Server", ap_get_server_banner());
+        if (*us) {
+            form_header_field(&h, "Server", ap_get_server_banner());
+        }
     }
 
     /* unset so we don't send them again */
     apr_table_unset(r->headers_out, "Date");        /* Avoid bogosity */
-    apr_table_unset(r->headers_out, "Server");
+    if (*us) {
+        apr_table_unset(r->headers_out, "Server");
+    }
 }
 
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)

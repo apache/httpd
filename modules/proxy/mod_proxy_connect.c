@@ -229,7 +229,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                   "CONNECT %s HTTP/1.0" CRLF, r->uri);
         apr_socket_send(sock, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-                  "Proxy-agent: %s" CRLF CRLF, ap_get_server_banner());
+                  "Proxy-agent: %s" CRLF CRLF, ap_get_server_description());
         apr_socket_send(sock, buffer, &nbytes);
     }
     else {

@@ -1774,7 +1774,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 
     apr_rfc822_date(dates, r->request_time);
     apr_table_setn(r->headers_out, "Date", dates);
-    apr_table_setn(r->headers_out, "Server", ap_get_server_banner());
+    apr_table_setn(r->headers_out, "Server", ap_get_server_description());
 
     /* set content-type */
     if (dirlisting) {
