@@ -193,6 +193,12 @@ headers</td></tr>
           Cache-Control: no-cache, no-cache, no-store
         </code></p></div>
       </li>
+      <li>
+        Set a test cookie if and only if the client didn't send us a cookie
+        <div class="example"><p><code>
+          Header set Set-Cookie testcookie !$req{Cookie}
+        </code></p></div>
+      </li>
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -316,16 +322,20 @@ headers</td></tr>
     which is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>,
     and an additional <var>replacement</var> string.</p>
 
-    <p>The <code class="directive">Header</code> directive may be followed by an
-    an additional argument, which may be used to specify conditions under
-    which the action will be taken, or may be the keyword <code>early</code>
-    to specify <a href="#early">early processing</a>. If the
-    <a href="../env.html">environment variable</a> specified in the
-    <code>env=<var>...</var></code> argument exists (or if the environment
-    variable does not exist and <code>env=!<var>...</var></code> is specified)
-    then the action specified by the <code class="directive">Header</code> directive
-    will take effect. Otherwise, the directive will have no effect
-    on the request.</p>
+    <p>The <code class="directive">Header</code> directive may be followed by
+    an additional argument, which may be any of:</p>
+    <dl>
+    <dt><code>early</code></dt>
+    <dd>Specifies <a href="#early">early processing</a>.</dd>
+    <dt><code>env=[!]varname</code></dt>
+    <dd>The directive is applied if and only if the <a href="../env.html">environment variable</a> <code>varname</code> exists.
+        A <code>!</code> in front of <code>varname</code> reverses the test,
+        so the directive applies only if <code>varname</code> is unset.</dd>
+    <dt><code>expr</code></dt>
+    <dd>An string that matches neither of the above is parsed as an
+        expression.  Details of expression syntax and evaluation are
+        currently best documented on the <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> page.</dd>
+    </dl>
 
     <p>Except in <a href="#early">early</a> mode, the
     <code class="directive">Header</code> directives are processed just
@@ -408,15 +418,19 @@ headers</td></tr>
     replacement string respectively.</p>
 
     <p>The <code class="directive">RequestHeader</code> directive may be followed by
-    an additional argument, which may be used to specify conditions under
-    which the action will be taken, or may be the keyword <code>early</code>
-    to specify <a href="#early">early processing</a>. If the
-    <a href="../env.html">environment
-    variable</a> specified in the <code>env=<var>...</var></code> argument
-    exists (or if the environment variable does not exist and
-    <code>env=!<var>...</var></code> is specified) then the action specified
-    by the <code class="directive">RequestHeader</code> directive will take effect.
-    Otherwise, the directive will have no effect on the request.</p>
+    an additional argument, which may be any of:</p>
+    <dl>
+    <dt><code>early</code></dt>
+    <dd>Specifies <a href="#early">early processing</a>.</dd>
+    <dt><code>env=[!]varname</code></dt>
+    <dd>The directive is applied if and only if the <a href="../env.html">environment variable</a> <code>varname</code> exists.
+        A <code>!</code> in front of <code>varname</code> reverses the test,
+        so the directive applies only if <code>varname</code> is unset.</dd>
+    <dt><code>expr</code></dt>
+    <dd>An string that matches neither of the above is parsed as an
+        expression.  Details of expression syntax and evaluation are
+        currently best documented on the <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> page.</dd>
+    </dl>
 
     <p>Except in <a href="#early">early</a> mode, the
     <code class="directive">RequestHeader</code> directive is processed
