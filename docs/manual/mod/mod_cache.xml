@@ -415,6 +415,43 @@ LastModified date.</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheIgnoreURLSessionIdentifiers</name>
+<description>Ignore defined session identifiers encoded in the URL when caching
+</description>
+<syntax>CacheIgnoreURLSessionIdentifiers <var>identifier</var> [<var>identifier</var>] ...</syntax>
+<default>CacheIgnoreURLSessionIdentifiers None</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Sometimes applications encode the session identifier into the URL like in the following
+    Examples:
+    </p>
+    <ul>
+      <li><code>/someapplication/image.gif;jsessionid=123456789</code></li>
+      <li><code>/someapplication/image.gif?PHPSESSIONID=12345678</code></li>
+    </ul>
+    <p>This causes cachable resources to be stored separately for each session, which
+    is often not desired. <directive>CacheIgnoreURLSessionIdentifiers</directive> lets
+    define a list of identifiers that are removed from the key that is used to identify
+    an entity in the cache, such that cachable resources are not stored separately for
+    each session.
+    </p>
+    <p><code>CacheIgnoreURLSessionIdentifiers None</code> clears the list of ignored
+    identifiers. Otherwise, each identifier is added to the list.</p>
+
+    <example><title>Example 1</title>
+      CacheIgnoreURLSessionIdentifiers jsessionid
+    </example>
+
+    <example><title>Example 2</title>
+      CacheIgnoreURLSessionIdentifiers None
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheStorePrivate</name>
 <description>Attempt to cache responses that the server has marked as private</description>
 <syntax>CacheStorePrivate On|Off</syntax>

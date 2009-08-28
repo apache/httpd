@@ -357,6 +357,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
     char *port_str, *hn, *lcs;
     const char *hostname, *scheme;
     int i;
+    char *path, *querystring;
 
     cache = (cache_request_rec *) ap_get_module_config(r->request_config,
                                                        &cache_module);
@@ -474,14 +475,65 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         port_str = apr_psprintf(p, ":%u", ap_get_server_port(r));
     }
 
+    /*
+     * Check if we need to ignore session identifiers in the URL and do so
+     * if needed.
+     */
+    path = r->parsed_uri.path;
+    querystring = r->parsed_uri.query;
+    if (conf->ignore_session_id->nelts) {
+        int i;
+        char **identifier;
+
+        identifier = (char **)conf->ignore_session_id->elts;
+        for (i = 0; i < conf->ignore_session_id->nelts; i++, identifier++) {
+            int len;
+            char *param;
+
+            len = strlen(*identifier);
+            /*
+             * Check that we have a parameter separator in the last segment
+             * of the path and that the parameter matches our identifier
+             */
+            if ((param = strrchr(path, ';'))
+                && !strncmp(param + 1, *identifier, len)
+                && (*(param + len + 1) == '=')
+                && !strchr(param + len + 2, '/')) {
+                path = apr_pstrndup(p, path, param - path);
+                break;
+            }
+            /*
+             * Check if the identifier is in the querystring and cut it out.
+             */
+            if (querystring
+                && (param = strstr(querystring, *identifier))
+                && (*(param + len) == '=')
+                ) {
+                char *amp;
+
+                if (querystring != param) {
+                    querystring = apr_pstrndup(p, querystring,
+                                               param - querystring);
+                }
+                else {
+                    querystring = "";
+                }
+                if ((amp = strchr(param + len + 1, '&'))) {
+                    querystring = apr_pstrcat(p, querystring, amp + 1, NULL);
+                }
+                break;
+            }
+        }
+    }
+
     /* Key format is a URI, optionally without the query-string */
     if (conf->ignorequerystring) {
         *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
-                           r->parsed_uri.path, "?", NULL);
+                           path, "?", NULL);
     }
     else {
         *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
-                           r->parsed_uri.path, "?", r->parsed_uri.query, NULL);
+                           path, "?", querystring, NULL);
     }
 
     /*
@@ -493,6 +545,9 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * handler during following requests.
      */
     cache->key = apr_pstrdup(r->pool, *key);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+                 "cache: Key for entity %s?%s is %s", r->parsed_uri.path,
+                 r->parsed_uri.query, *key);
 
     return APR_SUCCESS;
 }
