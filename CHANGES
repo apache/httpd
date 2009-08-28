@@ -3,8 +3,9 @@
 Changes with Apache 2.3.3
 
   *) ServerTokens now accepts 'Off' which disables sending of
-     Server: header and sets SERVER_SOFTWARE to empty.
-     [Jim Jagielski]
+     Server: header and sets SERVER_SOFTWARE to empty. It also accepts
+     'Set' which allows the user to specify any string as the Server:
+     name.  [Jim Jagielski]
 
   *) mod_headers: generalise the envclause to support expression
      evaluation with ap_expr parser [Nick Kew]
