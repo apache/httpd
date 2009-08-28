@@ -60,6 +60,7 @@ typedef enum {
 
 typedef struct mem_cache_object {
     apr_pool_t *pool;
+    apr_thread_mutex_t *lock;  /* pools aren't thread-safe; use this lock when accessing this pool */
     cache_type_e type;
     apr_table_t *header_out;
     apr_table_t *req_hdrs; /* for Vary negotiation */
@@ -90,6 +91,8 @@ typedef struct {
     apr_off_t max_streaming_buffer_size;
 } mem_cache_conf;
 static mem_cache_conf *sconf;
+
+static int threaded_mpm;
 
 #define DEFAULT_MAX_CACHE_SIZE 100*1024
 #define DEFAULT_MIN_CACHE_OBJECT_SIZE 1
@@ -216,9 +219,8 @@ static void cleanup_cache_object(cache_object_t *obj)
             close(mobj->fd);
 #endif
         }
+        apr_pool_destroy(mobj->pool);
     }
-
-    apr_pool_destroy(mobj->pool);
 }
 static apr_status_t decrement_refcount(void *arg)
 {
@@ -358,6 +360,10 @@ static int create_entity(cache_handle_t *h, cache_type_e type_e,
     /* Allocate and init mem_cache_object_t */
     mobj = apr_pcalloc(pool, sizeof(*mobj));
     mobj->pool = pool;
+
+    if (threaded_mpm) {
+        apr_thread_mutex_create(&mobj->lock, APR_THREAD_MUTEX_DEFAULT, pool);
+    }
 
     /* Finish initing the cache object */
     apr_atomic_set32(&obj->refcount, 1);
@@ -601,7 +607,13 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
      * - The original response headers (for returning with a cached response)
      * - The body of the message
      */
+    if (mobj->lock) {
+        apr_thread_mutex_lock(mobj->lock);
+    }
     mobj->req_hdrs = deep_table_copy(mobj->pool, r->headers_in);
+    if (mobj->lock) {
+        apr_thread_mutex_unlock(mobj->lock);
+    }
 
     /* Precompute how much storage we need to hold the headers */
     headers_out = apr_table_overlay(r->pool, r->headers_out,
@@ -622,7 +634,13 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                        r->content_encoding);
     }
 
+    if (mobj->lock) {
+        apr_thread_mutex_lock(mobj->lock);
+    }
     mobj->header_out = deep_table_copy(mobj->pool, headers_out);
+    if (mobj->lock) {
+        apr_thread_mutex_unlock(mobj->lock);
+    }
 
     /* Init the info struct */
     obj->info.status = info->status;
@@ -815,8 +833,6 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
 static int mem_cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
-    int threaded_mpm;
-
     /* Sanity check the cache configuration */
     if (sconf->min_cache_object_size >= sconf->max_cache_object_size) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,

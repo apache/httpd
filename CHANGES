@@ -1,6 +1,9 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.14
 
+  *) mod_mem_cache: fix seg fault under load due to pool concurrency problem
+     PR: 47672 [Dan Poirier <poirier pobox.com>]
+
   *) mod_autoindex: Correctly create an empty cell if the description
      for a file is missing. PR 47682 [Peter Poeml <poeml suse.de>]
 
