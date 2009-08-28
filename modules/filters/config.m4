@@ -76,4 +76,6 @@ APACHE_MODULE(deflate, Deflate transfer encoding support, , , most, [
   fi
 ])
 
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 APACHE_MODPATH_FINISH

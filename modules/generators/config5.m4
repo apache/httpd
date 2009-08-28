@@ -61,4 +61,6 @@ else
     APACHE_MODULE(cgid, CGI scripts, , , no)
 fi
 
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 APACHE_MODPATH_FINISH

@@ -30,5 +30,7 @@ APACHE_MODULE(session_crypto, session crypto module, , , no, [
 APACHE_MODULE(session_dbd, session dbd module, , , $session_mods_enable)
 dnl APACHE_MODULE(session_ldap, session ldap module, , , $session_mods_enable)
 
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 APACHE_MODPATH_FINISH
 

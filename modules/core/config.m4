@@ -61,4 +61,6 @@ APACHE_MODULE(watchdog, Watchdog module, , , $enable_watchdog, [
     fi
 ])
 
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 APACHE_MODPATH_FINISH
