@@ -56,6 +56,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#pooling">Connection Pooling</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#API">Apache DBD API</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#prepared">SQL Prepared Statements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#security">SECURITY WARNING</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="../misc/password_encryptions.html">Password Formats</a></li>
@@ -129,6 +130,42 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <p>It is up to dbd user modules to use the prepared statements
     and document what statements can be specified in httpd.conf,
     or to provide their own directives and use <code>ap_dbd_prepare</code>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="security" id="security">SECURITY WARNING</a></h2>
+
+    <p>Any web/database application needs to secure itself against SQL
+    injection attacks.  In most cases, Apache DBD is safe, because
+    applications use prepared statements, and untrusted inputs are
+    only ever used as data.  Of course, if you use it via third-party
+    modules, you should ascertain what precautions they may require.</p>
+    <p>However, the <var>FreeTDS</var> driver is inherently
+    <strong>unsafe</strong>.  The underlying library doesn't support
+    prepared statements, so the driver emulates them, and the
+    untrusted input is merged into the SQL statement.</p>
+    <p>It can be made safe by <em>untainting</em> all inputs:
+    a process inspired by Perl's taint checking.  Each input
+    is matched against a regexp, and only the match is used,
+    according to the Perl idiom:</p>
+    <div class="example"><pre><code>  $untrusted =~ /([a-z]+)/;
+  $trusted = $1;</code></pre></div>
+    <p>To use this, the untainting regexps must be included in the
+    prepared statements configured.  The regexp follows immediately
+    after the % in the prepared statement, and is enclosed in
+    curly brackets {}.  For example, if your application expects
+    alphanumeric input, you can use:</p>
+    <div class="example"><p><code>
+       <code>"SELECT foo FROM bar WHERE input = %s"</code>
+    </code></p></div>
+    <p>with other drivers, and suffer nothing worse than a failed query.
+    But with FreeTDS you'd need:</p>
+    <div class="example"><p><code>
+       <code>"SELECT foo FROM bar WHERE input = %{([A-Za-z0-9]+)}s"</code>
+    </code></p></div>
+    <p>Now anything that doesn't match the regexp's $1 match is
+    discarded, so the statement is safe.</p>
+    <p>An alternative to this may be the third-party ODBC driver,
+    which offers the security of genuine prepared statements.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DBDExptime" id="DBDExptime">DBDExptime</a> <a name="dbdexptime" id="dbdexptime">Directive</a></h2>
@@ -203,8 +240,12 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     password, database name, hostname and port number for connection.</p>
     <p>Connection string parameters for current drivers include:</p>
     <dl>
+    <dt>FreeTDS (for MSSQL and SyBase - see SECURITY note)</dt>
+    <dd>username, password, appname, dbname, host, charset, lang, server</dd>
     <dt>MySQL</dt>
-    <dd>host, port, user, pass, dbname, sock</dd> 
+    <dd>host, port, user, pass, dbname, sock, flags, fldsz, group, reconnect</dd> 
+    <dt>ODBC</dt>
+    <dd>datasource, user, password, connect, ctimeout, stimeout, access, txmode, bufsize</dd>
     <dt>Oracle</dt>
     <dd>user, pass, dbname, server</dd> 
     <dt>PostgreSQL</dt>

@@ -22,6 +22,8 @@
 <a href="../ja/howto/cgi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>

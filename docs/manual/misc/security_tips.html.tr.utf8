@@ -171,7 +171,7 @@
       bir betik yazıp B’nin CGI veritabanını silebilir. Bu gibi durumların
       ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
       çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
-      da <a href="http://cgiwrap.unixtools.org/">CGIWrap</a> kullanmaktır.</p>
+      da <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
