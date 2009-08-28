@@ -246,8 +246,8 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
                      lockname);
         return status;
     }
-    if (APR_SUCCESS == status && ((now - finfo.mtime) > conf->lockmaxage)
-            || (now < finfo.mtime)) {
+    if ((status == APR_SUCCESS) && (((now - finfo.mtime) > conf->lockmaxage)
+                                  || (now < finfo.mtime))) {
         ap_log_error(APLOG_MARK, APLOG_INFO, status, r->server,
                      "Cache lock file for '%s' too old, removing: %s",
                      r->uri, lockname);
@@ -311,7 +311,6 @@ CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
     apr_pool_userdata_get(&dummy, CACHE_LOCKNAME_KEY, r->pool);
     lockname = (const char *)dummy;
     if (!lockname) {
-        const char *path;
         char dir[5];
 
         /* create the key if it doesn't exist */
