@@ -2873,6 +2873,11 @@ header</description>
     information about compiled-in modules.</p>
 
     <dl>
+      <dt><code>ServerTokens Off</code></dt>
+
+      <dd>Server sends no <code>Server:</code> header
+      (and <code>SERVER_SOFTWARE</code> is blank)</dd>
+
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
 
       <dd>Server sends (<em>e.g.</em>): <code>Server:

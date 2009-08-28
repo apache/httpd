@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) ServerTokens now accepts 'Off' which disables sending of
+     Server: header and sets SERVER_SOFTWARE to empty.
+     [Jim Jagielski]
+
   *) mod_headers: generalise the envclause to support expression
      evaluation with ap_expr parser [Nick Kew]
 

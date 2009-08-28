@@ -2679,12 +2679,13 @@ static int banner_locked = 0;
 static char *server_description = NULL;
 
 enum server_token_type {
-    SrvTk_MAJOR,        /* eg: Apache/2 */
-    SrvTk_MINOR,        /* eg. Apache/2.0 */
-    SrvTk_MINIMAL,      /* eg: Apache/2.0.41 */
-    SrvTk_OS,           /* eg: Apache/2.0.41 (UNIX) */
-    SrvTk_FULL,         /* eg: Apache/2.0.41 (UNIX) PHP/4.2.2 FooBar/1.2b */
-    SrvTk_PRODUCT_ONLY  /* eg: Apache */
+    SrvTk_MAJOR,         /* eg: Apache/2 */
+    SrvTk_MINOR,         /* eg. Apache/2.0 */
+    SrvTk_MINIMAL,       /* eg: Apache/2.0.41 */
+    SrvTk_OS,            /* eg: Apache/2.0.41 (UNIX) */
+    SrvTk_FULL,          /* eg: Apache/2.0.41 (UNIX) PHP/4.2.2 FooBar/1.2b */
+    SrvTk_PRODUCT_ONLY,  /* eg: Apache */
+    SrvTk_OFF            /* eg: <blank> */
 };
 static enum server_token_type ap_server_tokens = SrvTk_FULL;
 
@@ -2748,7 +2749,10 @@ AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *compone
  */
 static void set_banner(apr_pool_t *pconf)
 {
-    if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
+    if (ap_server_tokens == SrvTk_OFF) {
+        ap_add_version_component(pconf, "");
+    }
+    else if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
         ap_add_version_component(pconf, AP_SERVER_BASEPRODUCT);
     }
     else if (ap_server_tokens == SrvTk_MINIMAL) {
@@ -2783,7 +2787,10 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    if (!strcasecmp(arg, "OS")) {
+    if (!strcasecmp(arg, "Off")) {
+        ap_server_tokens = SrvTk_OFF;
+    }
+    else if (!strcasecmp(arg, "OS")) {
         ap_server_tokens = SrvTk_OS;
     }
     else if (!strcasecmp(arg, "Min") || !strcasecmp(arg, "Minimal")) {
@@ -3304,7 +3311,7 @@ AP_INIT_TAKE1("LogLevel", set_loglevel, NULL, RSRC_CONF,
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
   "A numeric IP address:port, or the name of a host"),
 AP_INIT_TAKE1("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
-  "Determine tokens displayed in the Server: header - Min(imal), OS or Full"),
+  "Determine tokens displayed in the Server: header - Min(imal), Major, Minor, Prod, OS, Off or Full"),
 AP_INIT_TAKE1("LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF,
   "Limit on maximum size of an HTTP request line"),
 AP_INIT_TAKE1("LimitRequestFieldsize", set_limit_req_fieldsize, NULL,
