@@ -950,6 +950,9 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     /* flag indicating that query-string should be ignored when caching */
     ps->ignorequerystring = 0;
     ps->ignorequerystring_set = 0;
+    /* array of identifiers that should not be used for key calculation */
+    ps->ignore_session_id = apr_array_make(p, 10, sizeof(char *));
+    ps->ignore_session_id_set = CACHE_IGNORE_SESSION_ID_UNSET;
     return ps;
 }
 
@@ -999,6 +1002,10 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->ignorequerystring_set == 0)
         ? base->ignorequerystring
         : overrides->ignorequerystring;
+    ps->ignore_session_id =
+        (overrides->ignore_session_id_set == CACHE_IGNORE_SESSION_ID_UNSET)
+        ? base->ignore_session_id
+        : overrides->ignore_session_id;
     return ps;
 }
 static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
@@ -1079,6 +1086,34 @@ static const char *add_ignore_header(cmd_parms *parms, void *dummy,
         }
     }
     conf->ignore_headers_set = CACHE_IGNORE_HEADERS_SET;
+    return NULL;
+}
+
+static const char *add_ignore_session_id(cmd_parms *parms, void *dummy,
+                                         const char *identifier)
+{
+    cache_server_conf *conf;
+    char **new;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    if (!strncasecmp(identifier, "None", 4)) {
+        /* if identifier None is listed clear array */
+        conf->ignore_session_id->nelts = 0;
+    }
+    else {
+        if ((conf->ignore_session_id_set == CACHE_IGNORE_SESSION_ID_UNSET) ||
+            (conf->ignore_session_id->nelts)) {
+            /*
+             * Only add identifier if no "None" has been found in identifier
+             * list so far.
+             */
+            new = (char **)apr_array_push(conf->ignore_session_id);
+            (*new) = (char *)identifier;
+        }
+    }
+    conf->ignore_session_id_set = CACHE_IGNORE_SESSION_ID_SET;
     return NULL;
 }
 
@@ -1242,6 +1277,10 @@ static const command_rec cache_cmds[] =
     AP_INIT_FLAG("CacheIgnoreQueryString", set_cache_ignore_querystring,
                  NULL, RSRC_CONF,
                  "Ignore query-string when caching"),
+    AP_INIT_ITERATE("CacheIgnoreURLSessionIdentifiers", add_ignore_session_id,
+                    NULL, RSRC_CONF, "A space separated list of session "
+                    "identifiers that should be ignored for creating the key "
+                    "of the cached entity."),
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
                   "The factor used to estimate Expires date from "
                   "LastModified date"),
