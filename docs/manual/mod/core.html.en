@@ -2932,6 +2932,14 @@ header</td></tr>
       <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.0.41
       (Unix)</code></dd>
 
+      <dt><code>ServerTokens Set <em>"String"</em></code></dt>
+
+      <dd>Server sends user specified string
+      (<em>e.g.</em>): <code>Server: MyWebServer/8.6</code><br />
+      <strong>Note:</strong> The string must be in quotes if
+      there are any embedded spaces.
+      </dd>
+
       <dt><code>ServerTokens Full</code> (or not specified)</dt>
 
       <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.0.41
