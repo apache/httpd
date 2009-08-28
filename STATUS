@@ -101,16 +101,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24124
    +1: poirier, minfrin, covener, jim
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
- * prefork MPM: simple patch to enable mod_privileges.
-   trunk: N/A (this patch substitutes for the availability of
-               drop_privileges hook).
-   2.2.x patch:
-      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
-   +1: niq
-
  * mod_cache: Add CacheIgnoreURLSessionIdentifiers directive to ignore
               defined session identifiers encoded in the URL when caching.
    Trunk version of patch:
@@ -121,6 +111,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
       Trunk version of patch works
    +1: rpluem, jim, minfrin
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+ * prefork MPM: simple patch to enable mod_privileges.
+   trunk: N/A (this patch substitutes for the availability of
+               drop_privileges hook).
+   2.2.x patch:
+      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
+   +1: niq
 
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
