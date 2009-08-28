@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_autoindex: Correctly create an empty cell if the description for a
-                  file is missing (PR 47682).
-   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=803704
-   2.2.x Patch: Trunk version of patch works (offset 24 lines)
-   +1: fuankg, poirier, rpluem, jim
-
  * mod_mem_cache: fix seg fault under load due to pool concurrency problem
    PR: 47672
    Trunk Patch: n/a, mod_mem_cache is not in trunk
