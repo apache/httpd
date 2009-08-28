@@ -40,12 +40,7 @@
     Windows</a>.</p>
   </summary>
 
-
-    
-    Running Apache on Windows 9x is ignored by the developers, and
-+    is strongly discouraged.  On Windows NT 4.0, installing Service
-+    Pack 6 is required.  Apache HTTP Server versions later than 2.2 will
-+    not run on any operating system earlier than Windows 2000.  <section id="req">
+  <section id="req">
     <title>Operating System Requirements</title>
 
     <p>The primary Windows platform for running Apache 2.2 is Windows
