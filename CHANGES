@@ -1,6 +1,9 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.14
 
+  *) mod_cache: Added CacheIgnoreURLSessionIdentifiers directive to ignore
+     defined session identifiers encoded in the URL when caching.
+
   *) mod_mem_cache: fix seg fault under load due to pool concurrency problem
      PR: 47672 [Dan Poirier <poirier pobox.com>]
 
