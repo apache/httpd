@@ -111,7 +111,6 @@ static int cache_url_handler(request_rec *r, int lookup)
     if (rv != OK) {
         if (rv == DECLINED) {
             if (!lookup) {
-                char *key = NULL;
 
                 /* try to obtain a cache lock at this point. if we succeed,
                  * we are the first to try and cache this url. if we fail,
