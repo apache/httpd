@@ -30,7 +30,7 @@
 #endif
 
 
-apr_table_t *check_apr_table(lua_State *L, int index)
+AP_LUA_DECLARE(apr_table_t*) ap_lua_check_apr_table(lua_State *L, int index)
 {
     apr_table_t *t;
     luaL_checkudata(L, index, "Apr.Table");
@@ -48,7 +48,7 @@ AP_LUA_DECLARE(void) ap_lua_push_apr_table(lua_State *L, apr_table_t *t)
 
 static int lua_table_set(lua_State *L)
 {
-    apr_table_t *t = check_apr_table(L, 1);
+    apr_table_t *t = ap_lua_check_apr_table(L, 1);
     const char *key = luaL_checkstring(L, 2);
     const char *val = luaL_checkstring(L, 3);
 
@@ -58,7 +58,7 @@ static int lua_table_set(lua_State *L)
 
 static int lua_table_get(lua_State *L)
 {
-    apr_table_t *t = check_apr_table(L, 1);
+    apr_table_t *t = ap_lua_check_apr_table(L, 1);
     const char *key = luaL_checkstring(L, 2);
     const char *val = apr_table_get(t, key);
     lua_pushstring(L, val);
