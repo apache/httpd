@@ -614,7 +614,7 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
 
 }
 
-void ap_lua_push_connection(lua_State *L, conn_rec *c)
+AP_LUA_DECLARE(void) ap_lua_push_connection(lua_State *L, conn_rec *c)
 {
     lua_boxpointer(L, c);
     luaL_getmetatable(L, "Apache2.Connection");
@@ -631,7 +631,7 @@ void ap_lua_push_connection(lua_State *L, conn_rec *c)
 }
 
 
-void ap_lua_push_server(lua_State *L, server_rec *s)
+AP_LUA_DECLARE(void) ap_lua_push_server(lua_State *L, server_rec *s)
 {
     lua_boxpointer(L, s);
     luaL_getmetatable(L, "Apache2.Server");
