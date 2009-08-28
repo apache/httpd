@@ -92,6 +92,7 @@ APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
     CHECK_SERF
 ])
 
-APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current/../generators])
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 APACHE_MODPATH_FINISH
 

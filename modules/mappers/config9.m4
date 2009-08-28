@@ -14,4 +14,6 @@ APACHE_MODULE(userdir, mapping of requests to user-specific directories, , , yes
 APACHE_MODULE(alias, mapping of requests to different filesystem parts, , , yes)
 APACHE_MODULE(rewrite, rule based URL manipulation, , , most)
 
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 APACHE_MODPATH_FINISH

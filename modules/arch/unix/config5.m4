@@ -18,5 +18,7 @@ APACHE_MODULE(privileges, Per-virtualhost Unix UserIDs and enhanced security for
   fi
 ])
 
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 APACHE_MODPATH_FINISH
 

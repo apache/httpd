@@ -65,4 +65,6 @@ APACHE_MODULE(auth_digest, RFC2617 Digest authentication, , , most, [
   fi
 ])
 
+APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
+
 APACHE_MODPATH_FINISH
