@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 780016 -->
+<!-- English Revision : 808965 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -920,17 +920,16 @@ host</context>
     <li>Sur certains syst&egrave;mes multi-processeurs, la projection en
     m&eacute;moire peut d&eacute;grader les performances du programme
     <program>httpd</program>.</li>
-    <li>Avec un <directive module="core">DocumentRoot</directive> mont&eacute;
-    sur NFS, le programme <program>httpd</program> peut s'arr&ecirc;ter suite
-    &agrave; une erreur de segmentation si un fichier est supprim&eacute; ou tronqu&eacute;
-    alors qu'il fait l'objet d'une projection en m&eacute;moire pour
-    <program>httpd</program>.</li>
+    
     </ul>
 
     <p>Pour les configurations de serveur sujettes &agrave; ce genre de
     probl&egrave;me, il est pr&eacute;f&eacute;rable de d&eacute;sactiver la projection en m&eacute;moire
     des fichiers servis en sp&eacute;cifiant :</p>
-
+    <li>S'il fait l'objet d'une projection en m&eacute;moire par
+    <program>httpd</program>, la suppression ou la troncature d'un
+    fichier peut provoquer un crash de <program>httpd</program> avec une
+    erreur de segmentation.</li>
     <example>
       EnableMMAP Off
     </example>
@@ -1143,7 +1142,7 @@ personnalisation des r&eacute;ponses</a></seealso>
 <name>ErrorLog</name>
 <description>D&eacute;finition du chemin du journal des erreurs</description>
 <syntax> ErrorLog <var>chemin fichier</var>|syslog[:<var>facility</var>]</syntax>
-<default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows)</default>
+<default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</default>
 <contextlist><context>server config</context><context>virtual
 host</context>
 </contextlist>
@@ -3137,6 +3136,12 @@ HTTP</description>
     serveur.</p>
 
     <dl>
+    	<dt><code>ServerTokens Off</code></dt>
+
+      <dd>Le serveur n'envoie aucun en-t&ecirc;te <code>Server:</code> (et
+      <code>SERVER_SOFTWARE</code> est vide)</dd>
+
+
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
@@ -3161,6 +3166,14 @@ HTTP</description>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
       Apache/2.0.41 (Unix)</code></dd>
+
+      <dt><code>ServerTokens Set <em>"Cha&icirc;ne"</em></code></dt>
+
+      <dd>Le serveur envoie la cha&icirc;ne sp&eacute;cifi&eacute;e au client (par
+      exemple, <code>Serveur: MonServeurWeb/8.6</code>)<br/>
+      <strong>Note:</strong> La cha&icirc;ne doit &ecirc;tre
+      entour&eacute;e de guillemets si elle contient des espaces.
+      </dd>
 
       <dt><code>ServerTokens Full</code> (valeur par d&eacute;faut)</dt>
 

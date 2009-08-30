@@ -574,7 +574,7 @@ LastModified date.</description>
   enable the thundering herd lock in the default system temp directory.</p>
 
   <example>
-    # Enable chache lock<br />
+    # Enable cache lock<br />
     CacheLock on<br /><br />
   </example>
 
