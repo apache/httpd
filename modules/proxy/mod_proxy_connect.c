@@ -201,7 +201,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
             return DECLINED;
         }
         else {
-            return HTTP_BAD_GATEWAY;
+            return HTTP_SERVICE_UNAVAILABLE;
         }
     }
 
@@ -270,7 +270,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     if ((rv = apr_pollset_create(&pollset, 2, r->pool, 0)) != APR_SUCCESS) {
         apr_socket_close(sock);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-            "proxy: CONNECT: error apr_pollset_create()");
+            "proxy: CONNECT: error apr_pollset_create();"
+            " check system or user limits");
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
@@ -280,11 +281,23 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     pollfd.reqevents = APR_POLLIN;
     pollfd.desc.s = client_socket;
     pollfd.client_data = NULL;
-    apr_pollset_add(pollset, &pollfd);
+    rv = apr_pollset_add(pollset, &pollfd);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                     "proxy: CONNECT: error apr_pollset_add();"
+                     " check system or user limits");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
 
     /* Add the server side to the poll */
     pollfd.desc.s = sock;
-    apr_pollset_add(pollset, &pollfd);
+    rv = apr_pollset_add(pollset, &pollfd);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                     "proxy: CONNECT: error apr_pollset_add();"
+                     " check system or user limits");
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
         if ((rv = apr_pollset_poll(pollset, -1, &pollcnt, &signalled)) != APR_SUCCESS) {
