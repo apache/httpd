@@ -193,9 +193,10 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
     char dir[5];
     apr_time_t now = apr_time_now();
     apr_finfo_t finfo;
-    finfo.mtime = 0;
     apr_file_t *lockfile;
     void *dummy;
+
+    finfo.mtime = 0;
 
     if (!conf || !conf->lock || !conf->lockpath) {
         /* no locks configured, leave */
@@ -205,7 +206,7 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
     /* lock already obtained earlier? if so, success */
     apr_pool_userdata_get(&dummy, CACHE_LOCKFILE_KEY, r->pool);
     if (dummy) {
-    	return APR_SUCCESS;
+        return APR_SUCCESS;
     }
 
     /* create the key if it doesn't exist */
