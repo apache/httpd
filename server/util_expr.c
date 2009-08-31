@@ -24,6 +24,7 @@
 
 #include "httpd.h"
 #include "http_log.h"
+#include "http_core.h"
 
 #include "ap_expr.h"
 #if 1
@@ -900,6 +901,8 @@ AP_DECLARE_NONSTD(const char*) ap_expr_string(request_rec *r,
     /* a default string evaluator: support headers and env */
     const char *ret = str;
     ap_regmatch_t match[3];
+    char *p;
+
     ap_assert(isvar != NULL);
     if (ap_regexec(isvar, str, 3, match, 0) == 0) {
         apr_table_t *table = NULL;
@@ -928,6 +931,293 @@ AP_DECLARE_NONSTD(const char*) ap_expr_string(request_rec *r,
             ret = r->content_type;
         }
     }
+
+    /* copy wholesale from mod_rewrite to support its %{varname} vars */
+    else if ((str[0] == '%') && (str[1] == '{')
+             && (p = ap_strchr(str, '}'), p != NULL)) {
+        char *var;
+        apr_time_exp_t tm;
+
+        var = apr_pstrndup(r->pool, str+2, p-str-3);
+        for (p = var; *p; ++p) {
+            *p = apr_toupper(*p);
+        }
+
+        switch (strlen(var)) {
+        case  4:
+            if (!strcmp(var, "TIME")) {
+                apr_time_exp_lt(&tm, apr_time_now());
+                ret = apr_psprintf(r->pool, "%04d%02d%02d%02d%02d%02d",
+                                      tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
+                                      tm.tm_hour, tm.tm_min, tm.tm_sec);
+                return (char *)ret;
+            }
+            else if (!strcmp(var, "IPV6")) {
+                int flag = FALSE;
+#if APR_HAVE_IPV6
+                apr_sockaddr_t *addr = r->connection->remote_addr;
+                flag = (addr->family == AF_INET6 &&
+                        !IN6_IS_ADDR_V4MAPPED((struct in6_addr *)addr->ipaddr_ptr));
+#endif
+                ret = (flag ? "on" : "off");
+            }
+            break;
+
+#if FIXME
+        case  5:
+            if (!strcmp(var, "HTTPS")) {
+                int flag = rewrite_is_https && rewrite_is_https(r->connection);
+                return apr_pstrdup(r->pool, flag ? "on" : "off");
+            }
+            break;
+#endif
+        case  8:
+            switch (var[6]) {
+            case 'A':
+                if (!strcmp(var, "TIME_DAY")) {
+                    apr_time_exp_lt(&tm, apr_time_now());
+                    return apr_psprintf(r->pool, "%02d", tm.tm_mday);
+                }
+                break;
+
+            case 'E':
+                if (!strcmp(var, "TIME_SEC")) {
+                    apr_time_exp_lt(&tm, apr_time_now());
+                    return apr_psprintf(r->pool, "%02d", tm.tm_sec);
+                }
+                break;
+
+            case 'I':
+                if (!strcmp(var, "TIME_MIN")) {
+                    apr_time_exp_lt(&tm, apr_time_now());
+                    return apr_psprintf(r->pool, "%02d", tm.tm_min);
+                }
+                break;
+
+            case 'O':
+                if (!strcmp(var, "TIME_MON")) {
+                    apr_time_exp_lt(&tm, apr_time_now());
+                    return apr_psprintf(r->pool, "%02d", tm.tm_mon+1);
+                }
+                break;
+            }
+            break;
+
+        case  9:
+            switch (var[7]) {
+            case 'A':
+                if (var[8] == 'Y' && !strcmp(var, "TIME_WDAY")) {
+                    apr_time_exp_lt(&tm, apr_time_now());
+                    return apr_psprintf(r->pool, "%d", tm.tm_wday);
+                }
+                else if (!strcmp(var, "TIME_YEAR")) {
+                    apr_time_exp_lt(&tm, apr_time_now());
+                    return apr_psprintf(r->pool, "%04d", tm.tm_year+1900);
+                }
+                break;
+
+            case 'E':
+                if (!strcmp(var, "IS_SUBREQ")) {
+                    ret = (r->main ? "true" : "false");
+                }
+                break;
+
+            case 'F':
+                if (!strcmp(var, "PATH_INFO")) {
+                    ret = r->path_info;
+                }
+                break;
+
+            case 'P':
+                if (!strcmp(var, "AUTH_TYPE")) {
+                    ret = r->ap_auth_type;
+                }
+                break;
+
+            case 'S':
+                if (!strcmp(var, "HTTP_HOST")) {
+                    ret = apr_table_get(r->headers_in, "Host");
+                }
+                break;
+
+            case 'U':
+                if (!strcmp(var, "TIME_HOUR")) {
+                    apr_time_exp_lt(&tm, apr_time_now());
+                    return apr_psprintf(r->pool, "%02d", tm.tm_hour);
+                }
+                break;
+            }
+            break;
+
+        case 11:
+            switch (var[8]) {
+            case 'A':
+                if (!strcmp(var, "SERVER_NAME")) {
+                    ret = ap_get_server_name(r);
+                }
+                break;
+
+            case 'D':
+                if (*var == 'R' && !strcmp(var, "REMOTE_ADDR")) {
+                    ret = r->connection->remote_ip;
+                }
+                else if (!strcmp(var, "SERVER_ADDR")) {
+                    ret = r->connection->local_ip;
+                }
+                break;
+
+            case 'E':
+                if (*var == 'H' && !strcmp(var, "HTTP_ACCEPT")) {
+                    ret = apr_table_get(r->headers_in, "Accept");
+                }
+                else if (!strcmp(var, "THE_REQUEST")) {
+                    ret = r->the_request;
+                }
+                break;
+
+            case 'I':
+                if (!strcmp(var, "API_VERSION")) {
+                    return apr_psprintf(r->pool, "%d:%d",
+                                        MODULE_MAGIC_NUMBER_MAJOR,
+                                        MODULE_MAGIC_NUMBER_MINOR);
+                }
+                break;
+
+            case 'K':
+                if (!strcmp(var, "HTTP_COOKIE")) {
+                    ret = apr_table_get(r->headers_in, "Cookie");
+                }
+                break;
+
+            case 'O':
+                if (*var == 'S' && !strcmp(var, "SERVER_PORT")) {
+                    return apr_psprintf(r->pool, "%u", ap_get_server_port(r));
+                }
+                else if (var[7] == 'H' && !strcmp(var, "REMOTE_HOST")) {
+                    ret = ap_get_remote_host(r->connection,r->per_dir_config,
+                                                REMOTE_NAME, NULL);
+                }
+                else if (!strcmp(var, "REMOTE_PORT")) {
+                    return apr_itoa(r->pool, r->connection->remote_addr->port);
+                }
+                break;
+
+            case 'S':
+                if (*var == 'R' && !strcmp(var, "REMOTE_USER")) {
+                    ret = r->user;
+                }
+                else if (!strcmp(var, "SCRIPT_USER")) {
+                    ret = "<unknown>";
+                    if (r->finfo.valid & APR_FINFO_USER) {
+                        apr_uid_name_get((char **)&ret, r->finfo.user,
+                                         r->pool);
+                    }
+                }
+                break;
+
+            case 'U':
+                if (!strcmp(var, "REQUEST_URI")) {
+                    ret = r->uri;
+                }
+                break;
+            }
+            break;
+
+        case 12:
+            switch (var[3]) {
+            case 'I':
+                if (!strcmp(var, "SCRIPT_GROUP")) {
+                    ret = "<unknown>";
+                    if (r->finfo.valid & APR_FINFO_GROUP) {
+                        apr_gid_name_get((char **)&ret, r->finfo.group,
+                                         r->pool);
+                    }
+                }
+                break;
+
+            case 'O':
+                if (!strcmp(var, "REMOTE_IDENT")) {
+                    ret = ap_get_remote_logname(r);
+                }
+                break;
+
+            case 'P':
+                if (!strcmp(var, "HTTP_REFERER")) {
+                    ret = apr_table_get(r->headers_in, "Referer");
+                }
+                break;
+
+            case 'R':
+                if (!strcmp(var, "QUERY_STRING")) {
+                    ret = r->args;
+                }
+                break;
+
+            case 'V':
+                if (!strcmp(var, "SERVER_ADMIN")) {
+                    ret = r->server->server_admin;
+                }
+                break;
+            }
+            break;
+
+        case 13:
+            if (!strcmp(var, "DOCUMENT_ROOT")) {
+                ret = ap_document_root(r);
+            }
+            break;
+
+        case 14:
+            if (*var == 'H' && !strcmp(var, "HTTP_FORWARDED")) {
+                ret = apr_table_get(r->headers_in, "Forwarded");
+            }
+            else if (!strcmp(var, "REQUEST_METHOD")) {
+                ret = r->method;
+            }
+            break;
+
+        case 15:
+            switch (var[7]) {
+            case 'E':
+                if (!strcmp(var, "HTTP_USER_AGENT")) {
+                    ret = apr_table_get(r->headers_in, "User-Agent");
+                }
+                break;
+
+            case 'F':
+                if (!strcmp(var, "SCRIPT_FILENAME")) {
+                    ret = r->filename; /* same as request_filename (16) */
+                }
+                break;
+
+            case 'P':
+                if (!strcmp(var, "SERVER_PROTOCOL")) {
+                    ret = r->protocol;
+                }
+                break;
+
+            case 'S':
+                if (!strcmp(var, "SERVER_SOFTWARE")) {
+                    ret = ap_get_server_banner();
+                }
+                break;
+            }
+            break;
+
+        case 16:
+            if (!strcmp(var, "REQUEST_FILENAME")) {
+                ret = r->filename; /* same as script_filename (15) */
+            }
+            break;
+
+        case 21:
+            if (!strcmp(var, "HTTP_PROXY_CONNECTION")) {
+                ret = apr_table_get(r->headers_in, "Proxy-Connection");
+            }
+            break;
+        }
+    }
+
     /* TODO: provide a hook so modules can interpret other patterns */
     /* OhBugger, where's the regexp for backreferences ? */
     if (!ret) {
