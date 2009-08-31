@@ -241,7 +241,7 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
     /* is an existing lock file too old? */
     status = apr_stat(&finfo, lockname,
                 APR_FINFO_MTIME | APR_FINFO_NLINK, r->pool);
-    if (!APR_STATUS_IS_ENOENT(status) && APR_SUCCESS != status) {
+    if (!(APR_STATUS_IS_ENOENT(status)) && APR_SUCCESS != status) {
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_EEXIST, r->server,
                      "Could not stat a cache lock file: %s",
                      lockname);
