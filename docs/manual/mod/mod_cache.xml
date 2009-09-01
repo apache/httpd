@@ -198,7 +198,7 @@ manager</description>
 
     <p> The <code>no-cache</code> environment variable can be set to 
     disable caching on a finer grained set of resources in versions
-    after 2.2.11.</p>
+    2.2.12 and later.</p>
 
 </usage>
 <seealso><a href="../env.html">Environment Variables in Apache</a></seealso>
@@ -222,7 +222,7 @@ manager</description>
 
     <p> The <code>no-cache</code> environment variable can be set to 
     disable caching on a finer grained set of resources in versions
-    after 2.2.11.</p>
+    2.2.12 and later.</p>
 
 </usage>
 <seealso><a href="../env.html">Environment Variables in Apache</a></seealso>
