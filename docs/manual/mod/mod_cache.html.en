@@ -214,7 +214,7 @@
 
     <p> The <code>no-cache</code> environment variable can be set to 
     disable caching on a finer grained set of resources in versions
-    after 2.2.11.</p>
+    2.2.12 and later.</p>
 
 
 <h3>See also</h3>
@@ -261,7 +261,7 @@ manager</td></tr>
 
     <p> The <code>no-cache</code> environment variable can be set to 
     disable caching on a finer grained set of resources in versions
-    after 2.2.11.</p>
+    2.2.12 and later.</p>
 
 
 <h3>See also</h3>
@@ -497,7 +497,7 @@ LastModified date.</td></tr>
   enable the thundering herd lock in the default system temp directory.</p>
 
   <div class="example"><p><code>
-    # Enable chache lock<br />
+    # Enable cache lock<br />
     CacheLock on<br /><br />
   </code></p></div>
 
