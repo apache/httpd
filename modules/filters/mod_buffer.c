@@ -140,6 +140,11 @@ static apr_status_t buffer_out_filter(ap_filter_t *f, apr_bucket_brigade *bb) {
 
             /* pass what we have down the chain */
             rv = ap_pass_brigade(f->next, ctx->bb);
+            if (rv) {
+                /* should break out of the loop, since our write to the client 
+                 * failed in some way. */
+                continue;
+            }
         }
 
         /* at this point we are ready to buffer.
