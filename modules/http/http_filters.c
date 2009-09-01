@@ -102,7 +102,7 @@ static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
     apr_off_t brigade_length;
     apr_bucket *e;
     const char *lineend;
-    apr_size_t len;
+    apr_size_t len = 0;
 
     /*
      * As the brigade b should have been requested in mode AP_MODE_GETLINE
