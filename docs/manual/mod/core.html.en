@@ -2890,7 +2890,7 @@ is accessed by an incompatible browser</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the <code>Server</code> HTTP response
 header</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full|Off|Set</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ServerTokens Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -2902,10 +2902,10 @@ header</td></tr>
     information about compiled-in modules.</p>
 
     <dl>
-      <dt><code>ServerTokens Off</code></dt>
+      <dt><code>ServerTokens Full</code> (or not specified)</dt>
 
-      <dd>Server sends no <code>Server:</code> header
-      (and <code>SERVER_SOFTWARE</code> is blank)</dd>
+      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.0.41
+      (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
 
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
 
@@ -2940,10 +2940,11 @@ header</td></tr>
       there are any embedded spaces.
       </dd>
 
-      <dt><code>ServerTokens Full</code> (or not specified)</dt>
+      <dt><code>ServerTokens Off</code></dt>
 
-      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.0.41
-      (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
+      <dd>Server sends no <code>Server:</code> header
+      (and <code>SERVER_SOFTWARE</code> is blank)</dd>
+
     </dl>
 
     <p>This setting applies to the entire server, and cannot be
@@ -2951,6 +2952,14 @@ header</td></tr>
 
     <p>After version 2.0.44, this directive also controls the
     information presented by the <code class="directive"><a href="#serversignature">ServerSignature</a></code> directive.</p>
+    
+    <div class="note">Setting <code class="directive">ServerTokens</code> to less than
+    <code>minimal</code> is not recommended because it makes it more
+    difficult to debug interoperational problems. Also note that
+    disabling the Server: header does nothing at all to make your
+    server more secure; the idea of "security through obscurity"
+    is a myth and leads to a false sense of safety.</div>
+
 
 <h3>See also</h3>
 <ul>

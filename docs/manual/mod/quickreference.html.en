@@ -696,7 +696,7 @@ itself</td></tr>
 is accessed by an incompatible browser</td></tr>
 <tr class="odd"><td><a href="core.html#serverroot">ServerRoot <var>directory-path</var></a></td><td> /usr/local/apache </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Base directory for the server installation</td></tr>
 <tr><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures the footer on server-generated documents</td></tr>
-<tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the <code>Server</code> HTTP response
+<tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full|Off|Set</a></td><td> Full </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the <code>Server</code> HTTP response
 header</td></tr>
 <tr><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables a session for the current directory or location</td></tr>
 <tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session</td></tr>

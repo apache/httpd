@@ -1136,10 +1136,18 @@ through</td></tr>
     <code>http://example.com/foo/bar.gif</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
     <div class="note"><h3>Note</h3>
-      The URL argument must be parsable as a URL <em>before</em> regexp
+      <p>The URL argument must be parsable as a URL <em>before</em> regexp
       substitutions (as well as after).  This limits the matches you can use.
-      See <a href="https://issues.apache.org/bugzilla/show_bug.cgi">PR 46665</a>
-      for details and workaround ideas.
+      For instance, if we had used</p>
+      <div class="example"><p><code>
+        ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1
+      </code></p></div>
+      <p>in our previous example, it would fail with a syntax error
+      at server startup.  This is a bug (PR 46665 in the ASF bugzilla),
+      and the workaround is to reformulate the match:</p>
+      <div class="example"><p><code>
+        ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1
+      </code></p></div>
     </div>
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory.</p>
