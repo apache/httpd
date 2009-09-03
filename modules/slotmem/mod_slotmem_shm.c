@@ -153,6 +153,7 @@ static void store_slotmem(ap_slotmem_instance_t *slotmem)
     apr_file_close(fp);
 }
 
+/* should be apr_status_t really */
 static void restore_slotmem(void *ptr, const char *name, apr_size_t size,
                             apr_pool_t *pool)
 {
@@ -318,6 +319,10 @@ static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr + sizeof(desc);
         memset(ptr, 0, dsize);
+        /*
+         * TODO: Error check the below... What error makes
+         * sense if the restore fails? Any?
+         */
         if (type & AP_SLOTMEM_TYPE_PERSIST)
             restore_slotmem(ptr, fname, dsize, pool);
     }
