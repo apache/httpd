@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 619699 -->
+<!-- English Revision : 810464 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 <!-- $LastChangedRevision: 2008072101 $ -->
@@ -95,7 +95,7 @@
       diffusion des utilisateurs</a></p>
 
       <p>Les utilisateurs peuvent aussi soumettre leurs probl&egrave;mes &agrave; <a
-      href="irc://irc.freenode.net/#apache">#apache</a> sur <a
+      href="irc://irc.freenode.net/#httpd">#httpd</a> sur <a
       href="http://freenode.net">Freenode IRC</a>.</p>
       </dd>
 
