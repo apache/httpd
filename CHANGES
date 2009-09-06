@@ -1,6 +1,10 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.14
 
+  *) mod_ssl: Fix SSL_*_DN_UID variables to use the 'userID' attribute
+     type.  PR 45107.  [Michael Ströder <michael stroeder.com>,
+     Peter Sylvester <peter.sylvester edelweb.fr>]
+
   *) mod_cache: Add CacheIgnoreURLSessionIdentifiers directive to ignore
      defined session identifiers encoded in the URL when caching.
      [Ruediger Pluem]
