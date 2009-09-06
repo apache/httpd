@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             (PR: 45107)
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=787683
    2.2.x Patch: http://people.apache.org/~fuankg/diffs/backport_r787683.diff
-   +1: fuankg, rpluem
+   +1: fuankg, rpluem, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
