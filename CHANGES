@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_auth_digest: Fix null pointer when qop=none. [Dan Poirier]
+
   *) Add support for HTTP PUT to ab. [Jeff Barnes <jbarnesweb yahoo.com>]
 
   *) ServerTokens now accepts 'Off' which disables sending of
