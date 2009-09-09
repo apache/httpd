@@ -115,6 +115,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/ssl_engine_pphrase.diff
    +1: minfrin
 
+ * ab: Add support for HTTP PUT to ab.
+   Trunk Patch: http://svn.apache.org/viewvc?rev=811806&view=rev
+                http://svn.apache.org/viewvc?rev=811869&view=rev
+   2.2.x Patch: http://people.apache.org/~minfrin/ab.diff
+   +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
