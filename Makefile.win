@@ -742,10 +742,6 @@ _install:
 	-mkdir "$(INSTDIR)\lib"
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
-	-mkdir "$(INSTDIR)\symbols"
-	-mkdir "$(INSTDIR)\symbols\exe"
-	-mkdir "$(INSTDIR)\symbols\dll"
-	-mkdir "$(INSTDIR)\symbols\so"
 	copy ABOUT_APACHE "$(INSTDIR)\ABOUT_APACHE.txt" <.y
 	copy CHANGES      "$(INSTDIR)\CHANGES.txt" <.y
 	copy INSTALL      "$(INSTDIR)\INSTALL.txt" <.y
