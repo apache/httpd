@@ -68,6 +68,16 @@
     single Microsoft Installer file, which contains a ready-to-run
     build of Apache.  There is a separate <code>.zip</code> file,
     which contains only the source code, see the summary above.</p>
+
+    <p>There is a choice between an *-openssl-*.msi flavor and
+    a *-no_ssl.msi flavor.  The *-openssl-*.msi flavor is distributed
+    by the Apache Software Foundation under ECCN 5D002 pursuant to 
+    US Export Law license exception TSU.  This law may or may not
+    apply to your circumstance, please review the httpd README as
+    well as the <a href="http://www.apache.org/licenses/exports/">ASF
+    Export Classifications and Source Links</a> page.  The project
+    provides no further guidance to third parties in resolving the
+    legal circumstances which apply in each circumstance.</p>
   </section>
 
   <section id="inst">
@@ -154,6 +164,62 @@
     should work as installed.</p>
   </section>
 
+  <section id="advinst">
+    <title>Advanced Installation Topics</title>
+
+    <p>One feature of the installer, "Build Headers and Libraries", can be
+    ignored by most users, but should be installed if compiling third party
+    modules.  The "APR Iconv Code Pages" can similarly be omitted by most
+    users, unless using <module>mod_charset_lite</module> or a third party
+    module which relies on APR internationalization features.</p>
+
+    <p>There are requests to ship a .zip file from time to time.  There is
+    no point in the ASF consuming additional storage, mirroring and bandwidth
+    for this purpose, because the .msi installer allows the installation
+    artifacts to all be unpacked using the <code>msiexec /a</code> network
+    installation option.  Using this command against any .msi will result
+    in an exploded tree of all of the individual files and components.</p>
+
+    <p>The installation options above can be customized by users familiar
+    with msiexec.exe options and silent installation.  The actual installer
+    sources are available in the httpd/httpd/win32-msi/ tree of the httpd 
+    project subversion respository.  For reference, some of the more common
+    variables which may be modified are;</p>
+
+    <ul>
+      <li><code>AgreeToLicense</code> (toggle to "Yes")</li>
+      <li><code>ALLUSERS</code> (choose between Null and "1")</li>
+      <li><code>ApplicationUsers</code> (toggle to "OnlyCurrentUser")</li>
+      <li><code>EXISTING_APACHE_SERVICE_PATH</code></li>
+      <li><code>INSTALLDIR</code> (default "ProgramFilesFolder\Apache Software Foundation\Apache2.2\")</li>
+      <li><code>INSTALLLEVEL</code> (default "100", refer to list below)</li>
+      <li><code>RESOLVED_WINSOCK2</code> (toggle to "1")</li>
+      <li><code>SERVERADMIN</code></li>
+      <li><code>SERVERDOMAIN</code></li>
+      <li><code>SERVERNAME</code></li>
+      <li><code>SERVERPORT</code> (default "80")</li>
+      <li><code>SERVERSSLPORT</code> (default "443")</row>
+      <li><code>SERVICEINTERNALNAME</code> (default "Apache2.2", no spaces!)</li>
+      <li><code>SERVICENAME</code> (default "Apache2.2", include spaces)</li>
+      <li><code>SetupType</code> (default "Typical")</li>
+    </ul>
+
+    <p>The installation level of various features, which may be individually 
+    toggled, include;</p>
+
+    <ul>
+      <li>Apache (1, base Apache HTTP Server 2.2 feature)</li>
+      <li>ApacheDocs (11, Apache Documentation)</li>
+      <li>ApacheMonitoring (41, Apache Service Taskbar Icon)</li>
+      <li>ApacheRuntime (1, Apache Runtime)</li>
+      <li>BuildFiles (101, Build Headers and Libraries)</li>
+      <li>Iconv (21, APR Iconv Code Pages)</li>
+      <li>OpensslBin (31, OpenSSL Runtime)</li>
+      <li>SslBin (41, Ssl Binaries)</li>
+    </ul>
+
+
+  </section>
   <section id="cust">
     <title>Customizing Apache for Windows</title>
 
