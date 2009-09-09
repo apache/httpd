@@ -1436,6 +1436,20 @@ static int check_nc(const request_rec *r, const digest_header_rec *resp,
         return OK;
     }
 
+    if ((conf->qop_list != NULL)
+        &&(conf->qop_list[0] != NULL)
+        &&!strcasecmp(conf->qop_list[0], "none")) {
+        /* qop is none, client must not send a nonce count */
+        if (snc != NULL) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "Digest: invalid nc %s received - no nonce count allowed when qop=none",
+                          snc);
+            return !OK;
+        }
+        /* qop is none, cannot check nonce count */
+        return OK;
+    }
+
     nc = strtol(snc, &endptr, 16);
     if (endptr < (snc+strlen(snc)) && !apr_isspace(*endptr)) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
