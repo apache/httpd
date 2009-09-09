@@ -198,7 +198,7 @@
       <li><code>SERVERDOMAIN</code></li>
       <li><code>SERVERNAME</code></li>
       <li><code>SERVERPORT</code> (default "80")</li>
-      <li><code>SERVERSSLPORT</code> (default "443")</row>
+      <li><code>SERVERSSLPORT</code> (default "443")</li>
       <li><code>SERVICEINTERNALNAME</code> (default "Apache2.2", no spaces!)</li>
       <li><code>SERVICENAME</code> (default "Apache2.2", include spaces)</li>
       <li><code>SetupType</code> (default "Typical")</li>
