@@ -432,7 +432,7 @@ static const struct {
     { "UID",   NID_userId,                 1 },
 #endif
     { "Email", NID_pkcs9_emailAddress,     1 },
-    { NULL,    0                          }
+    { NULL,    0,                          0 }
 };
 
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var)
