@@ -2,6 +2,12 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_proxy_connect: The connect method doesn't work if the client is
+     connecting to the apache proxy through an ssl socket. Fixed.
+     PR29744. [Brad Boyer, Mark Cave-Ayland, Julian Gilbey, Fabrice Durand,
+     David Gence, Tim Dodge, Per Gunnar Hans, Emmanuel Elango,
+     Kevin Croft, Rudolf Cardinal]
+
   *) mod_ssl: The error message when SSLCertificateFile is missing should
      at least give the name or position of the problematic virtual host
      definition. [Stefan Fritsch sf sfritsch.de]
