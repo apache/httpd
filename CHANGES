@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_ssl: The error message when SSLCertificateFile is missing should
+     at least give the name or position of the problematic virtual host
+     definition. [Stefan Fritsch sf sfritsch.de]
+
   *) mod_auth_digest: Fix null pointer when qop=none. [Dan Poirier]
 
   *) Add support for HTTP PUT to ab. [Jeff Barnes <jbarnesweb yahoo.com>]
