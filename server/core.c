@@ -2677,7 +2677,6 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
 static char *server_banner = NULL;
 static int banner_locked = 0;
 static char *server_description = NULL;
-static char *user_server_banner = NULL;
 
 enum server_token_type {
     SrvTk_MAJOR,         /* eg: Apache/2 */
@@ -2685,9 +2684,7 @@ enum server_token_type {
     SrvTk_MINIMAL,       /* eg: Apache/2.0.41 */
     SrvTk_OS,            /* eg: Apache/2.0.41 (UNIX) */
     SrvTk_FULL,          /* eg: Apache/2.0.41 (UNIX) PHP/4.2.2 FooBar/1.2b */
-    SrvTk_PRODUCT_ONLY,  /* eg: Apache */
-    SrvTk_OFF,           /* eg: <blank> */
-    SrvTk_SET
+    SrvTk_PRODUCT_ONLY  /* eg: Apache */
 };
 static enum server_token_type ap_server_tokens = SrvTk_FULL;
 
@@ -2751,13 +2748,7 @@ AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *compone
  */
 static void set_banner(apr_pool_t *pconf)
 {
-    if (ap_server_tokens == SrvTk_SET) {
-        ap_add_version_component(pconf, user_server_banner);
-    }
-    else if (ap_server_tokens == SrvTk_OFF) {
-        ap_add_version_component(pconf, "");
-    }
-    else if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
+    if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
         ap_add_version_component(pconf, AP_SERVER_BASEPRODUCT);
     }
     else if (ap_server_tokens == SrvTk_MINIMAL) {
@@ -2792,14 +2783,7 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    if (!strcasecmp(arg1, "Set")) {
-        ap_server_tokens = SrvTk_SET;
-        user_server_banner = (arg2 ? apr_pstrdup(cmd->pool, arg2) : "");
-    }
-    else if (!strcasecmp(arg1, "Off")) {
-        ap_server_tokens = SrvTk_OFF;
-    }
-    else if (!strcasecmp(arg1, "OS")) {
+    if (!strcasecmp(arg1, "OS")) {
         ap_server_tokens = SrvTk_OS;
     }
     else if (!strcasecmp(arg1, "Min") || !strcasecmp(arg1, "Minimal")) {
@@ -3321,7 +3305,7 @@ AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
   "A numeric IP address:port, or the name of a host"),
 AP_INIT_TAKE12("ServerTokens", set_serv_tokens, NULL, RSRC_CONF,
   "Determine tokens displayed in the Server: header - Min(imal), "
-  "Major, Minor, Prod, OS, Off, Set or Full"),
+  "Major, Minor, Prod, OS or Full"),
 AP_INIT_TAKE1("LimitRequestLine", set_limit_req_line, NULL, RSRC_CONF,
   "Limit on maximum size of an HTTP request line"),
 AP_INIT_TAKE1("LimitRequestFieldsize", set_limit_req_fieldsize, NULL,
