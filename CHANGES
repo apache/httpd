@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_auth_digest: Fail server start when nonce count checking
+     is configured without shared memory, or md5-sess algorithm is
+     configured. [Dan Poirier]
+
   *) mod_proxy_connect: The connect method doesn't work if the client is
      connecting to the apache proxy through an ssl socket. Fixed.
      PR29744. [Brad Boyer, Mark Cave-Ayland, Julian Gilbey, Fabrice Durand,

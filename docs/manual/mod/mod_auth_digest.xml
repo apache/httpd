@@ -88,6 +88,8 @@
     support digest authentication. Since digest authentication is not as
     widely implemented as basic authentication, you should use it only
     in environments where all users will have supporting browsers.</p>
+    <p><module>mod_auth_digest</module> only works properly on platforms
+      where APR supports shared memory.</p>
     </note>
 </section>
 
@@ -329,7 +331,7 @@ of clients</description>
     server.</p>
 
     <p>The <var>size</var> is normally expressed in Bytes, but you
-    may let the number follow a <code>K</code> or an <code>M</code> to
+    may follow the number with a <code>K</code> or an <code>M</code> to
     express your value as KBytes or MBytes. For example, the following
     directives are all equivalent:</p>
 
