@@ -128,7 +128,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     apr_status_t err, rv;
-    apr_size_t i, o, nbytes;
+    apr_size_t nbytes;
     char buffer[HUGE_STRING_LEN];
     apr_socket_t *client_socket = ap_get_module_config(c->conn_config, &core_module);
     int failed, rc;
