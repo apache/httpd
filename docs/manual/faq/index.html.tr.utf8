@@ -22,6 +22,7 @@
 <a href="../fr/faq/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/faq/" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Bu belge geleneksel bir SSS’ten çok Apache HTTP Sunucusu ile ilgili sorunlarla karşılaştığınızda ne yapacağınızı gösteren bir rehber niteliğindedir.</p>
