@@ -24,8 +24,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -81,7 +79,7 @@
 
     <p>Le journal des erreurs est habituellement enregistré dans un fichier
     (en général <code>error_log</code> sur les systèmes de type Unix et
-    <code>error.log</code> sur Windows). Sur les systèmes de type Unix,
+    <code>error.log</code> sur Windows et OS/2). Sur les systèmes de type Unix,
     le serveur peut aussi enregistrer ses erreurs dans
     <code>syslog</code> ou les
     <a href="#piped">rediriger vers un programme</a> par l'intermédiaire d'un

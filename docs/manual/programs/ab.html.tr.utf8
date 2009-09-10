@@ -22,6 +22,7 @@
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>ab</strong></code> Apache Hiper Metin Aktarım Protokolü
       (HTTP) sunucunuzun başarımını ölçmek amacıyla kullanabileceğiniz bir

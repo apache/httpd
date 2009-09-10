@@ -90,7 +90,7 @@
       <p><a href="http://httpd.apache.org/userslist.html">Liste de
       diffusion des utilisateurs</a></p>
 
-      <p>Les utilisateurs peuvent aussi soumettre leurs problèmes à <a href="irc://irc.freenode.net/#apache">#apache</a> sur <a href="http://freenode.net">Freenode IRC</a>.</p>
+      <p>Les utilisateurs peuvent aussi soumettre leurs problèmes à <a href="irc://irc.freenode.net/#httpd">#httpd</a> sur <a href="http://freenode.net">Freenode IRC</a>.</p>
       </dd>
 
       <dt>Merci d'utiliser la base de données des bogues pour les bogues

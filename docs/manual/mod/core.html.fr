@@ -928,17 +928,16 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     <li>Sur certains systèmes multi-processeurs, la projection en
     mémoire peut dégrader les performances du programme
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</li>
-    <li>Avec un <code class="directive"><a href="#documentroot">DocumentRoot</a></code> monté
-    sur NFS, le programme <code class="program"><a href="../programs/httpd.html">httpd</a></code> peut s'arrêter suite
-    à une erreur de segmentation si un fichier est supprimé ou tronqué
-    alors qu'il fait l'objet d'une projection en mémoire pour
-    <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</li>
+    
     </ul>
 
     <p>Pour les configurations de serveur sujettes à ce genre de
     problème, il est préférable de désactiver la projection en mémoire
     des fichiers servis en spécifiant :</p>
-
+    <li>S'il fait l'objet d'une projection en mémoire par
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>, la suppression ou la troncature d'un
+    fichier peut provoquer un crash de <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec une
+    erreur de segmentation.</li>
     <div class="example"><p><code>
       EnableMMAP Off
     </code></p></div>
@@ -1145,7 +1144,7 @@ personnalisation des réponses</a></li>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définition du chemin du journal des erreurs</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> ErrorLog <var>chemin fichier</var>|syslog[:<var>facility</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows and OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -3070,7 +3069,7 @@ serveur</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure l'en-tête <code>Server</code> de la réponse
 HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full|Off|Set</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ServerTokens Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
@@ -3083,6 +3082,14 @@ HTTP</td></tr>
     serveur.</p>
 
     <dl>
+	<dt><code>ServerTokens Full</code> (ou non spècifiè)</dt>
+
+	<dd>Le serveur envoie par exemple : <code>Server: Apache/2.0.41
+	(Unix) PHP/4.2.2 MyMod/1.2</code></dd>
+
+    	
+
+
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
@@ -3108,10 +3115,20 @@ HTTP</td></tr>
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
       Apache/2.0.41 (Unix)</code></dd>
 
-      <dt><code>ServerTokens Full</code> (valeur par défaut)</dt>
+      <dt><code>ServerTokens Set <em>"Chaîne"</em></code></dt>
 
-      <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.0.41 (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
+      <dd>Le serveur envoie la chaîne spécifiée au client (par
+      exemple, <code>Serveur: MonServeurWeb/8.6</code>)<br />
+      <strong>Note:</strong> La chaîne doit être
+      entourée de guillemets si elle contient des espaces.
+      </dd>
+
+      <dt><code>ServerTokens Off</code></dt>
+
+      <dd>Le serveur n'envoie aucun en-tête <code>Server:</code> (et
+      <code>SERVER_SOFTWARE</code> est vide)</dd>
+
+      
     </dl>
 
     <p>Cette définition s'applique à l'ensemble du serveur et ne peut
@@ -3119,6 +3136,18 @@ HTTP</td></tr>
 
     <p>Dans les versions postérieures à 2.0.44, cette directive contrôle
     aussi les informations fournies par la directive <code class="directive"><a href="#serversignature">ServerSignature</a></code>.</p>
+
+    <div class="note">Définir <code class="directive">ServerTokens</code> à une
+    valeur inférieure à <code>minimal</code> n'est pas
+    recommandé car le débogage des problèmes
+    interopérationnels n'en sera alors que plus difficile. Notez
+    aussi que la désactivation de l'en-tête Server:
+    n'améliore en rien la sécurité de votre
+    serveur ; le concept de "sécurité par
+    l'obscurité" est un mythe et conduit à
+    une mauvaise perception de ce qu'est la sécurité.</div>
+
+
 
 <h3>Voir aussi</h3>
 <ul>

@@ -2890,7 +2890,7 @@ is accessed by an incompatible browser</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures the <code>Server</code> HTTP response
 header</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full|Off|Set</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ServerTokens Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
@@ -2931,19 +2931,6 @@ header</td></tr>
 
       <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.0.41
       (Unix)</code></dd>
-
-      <dt><code>ServerTokens Set <em>"String"</em></code></dt>
-
-      <dd>Server sends user specified string
-      (<em>e.g.</em>): <code>Server: MyWebServer/8.6</code><br />
-      <strong>Note:</strong> The string must be in quotes if
-      there are any embedded spaces.
-      </dd>
-
-      <dt><code>ServerTokens Off</code></dt>
-
-      <dd>Server sends no <code>Server:</code> header
-      (and <code>SERVER_SOFTWARE</code> is blank)</dd>
 
     </dl>
 
