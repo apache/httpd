@@ -133,7 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR: 30586
    Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=797563
    2.2.x patch: http://people.apache.org/~poirier/patch-2.2.x-PR30586.txt
-   +1: poirier
+   +1: poirier, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
