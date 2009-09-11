@@ -60,7 +60,6 @@ also be found at http://httpd.apache.org/docs/.
 %package -n mod_ssl
 Group: System Environment/Daemons
 Summary: SSL/TLS module for the Apache HTTP server
-Serial: 1
 BuildPrereq: openssl-devel
 Prereq: openssl, dev, /bin/cat
 Requires: httpd, make, httpd-mmn = %{mmn}
