@@ -129,6 +129,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/ssl-env.diff
    +1: minfrin
 
+ * htdbm: Avoid buffer overflows.
+   PR: 30586
+   Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=797563
+   2.2.x patch: http://people.apache.org/~poirier/patch-2.2.x-PR30586.txt
+   +1: poirier
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
