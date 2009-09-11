@@ -218,7 +218,10 @@ mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 install -m755 ./build/rpm/httpd.init \
 	$RPM_BUILD_ROOT/etc/rc.d/init.d/httpd
 %{__perl} -pi -e "s:\@docdir\@:%{_docdir}/%{name}-%{version}:g" \
-	$RPM_BUILD_ROOT/etc/rc.d/init.d/httpd	
+	$RPM_BUILD_ROOT/etc/rc.d/init.d/httpd
+install -m755 ./build/rpm/htcacheclean.init \
+        $RPM_BUILD_ROOT/etc/rc.d/init.d/htcacheclean
+mkdir -p $RPM_BUILD_ROOT/var/cache/httpd/cache-root
 
 # install log rotation stuff
 mkdir -p $RPM_BUILD_ROOT/etc/logrotate.d
@@ -313,6 +316,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %config %{_sysconfdir}/logrotate.d/httpd
 %config %{_sysconfdir}/rc.d/init.d/httpd
+%config %{_sysconfdir}/rc.d/init.d/htcacheclean
 
 %{_sbindir}/ab
 %{_sbindir}/htcacheclean
@@ -348,6 +352,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0700,root,root) %dir %{_localstatedir}/log/httpd
 
 %attr(0700,apache,apache) %dir %{_localstatedir}/lib/dav
+%attr(0700,apache,apache) %dir %{_localstatedir}/cache/httpd/cache-root
 
 %{_mandir}/man1/*
 %{_mandir}/man8/ab*
