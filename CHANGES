@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.3
 
+  *) htcacheclean: 19 ways to fail, 1 error message. Fixed. [Graham Leggett]
+
   *) mod_auth_digest: Fail server start when nonce count checking
      is configured without shared memory, or md5-sess algorithm is
      configured. [Dan Poirier]

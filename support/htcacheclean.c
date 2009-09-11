@@ -701,9 +701,12 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
  * usage info
  */
 #define NL APR_EOL_STR
-static void usage(void)
+static void usage(const char *error)
 {
-    apr_file_printf(errfile,
+    if (error) {
+    	apr_file_printf(errfile, "%s error: %s\n", shortname, error);
+    }
+	apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
     "Usage: %s [-Dvtrn] -pPATH -lLIMIT"                                      NL
     "       %s [-nti] -dINTERVAL -pPATH -lLIMIT"                             NL
@@ -776,6 +779,7 @@ int main(int argc, const char * const argv[])
     intelligent = 0;
     previous = 0; /* avoid compiler warning */
     proxypath = NULL;
+    char errmsg[1024];
 
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
         return 1;
@@ -802,48 +806,48 @@ int main(int argc, const char * const argv[])
             break;
         }
         else if (status != APR_SUCCESS) {
-            usage();
+            usage(NULL);
         }
         else {
             switch (opt) {
             case 'i':
                 if (intelligent) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 intelligent = 1;
                 break;
 
             case 'D':
                 if (dryrun) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 dryrun = 1;
                 break;
 
             case 'n':
                 if (benice) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 benice = 1;
                 break;
 
             case 't':
                 if (deldirs) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 deldirs = 1;
                 break;
 
             case 'v':
                 if (verbose) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 verbose = 1;
                 break;
 
             case 'r':
                 if (realclean) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 realclean = 1;
                 deldirs = 1;
@@ -851,7 +855,7 @@ int main(int argc, const char * const argv[])
 
             case 'd':
                 if (isdaemon) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 isdaemon = 1;
                 repeat = apr_atoi64(arg);
@@ -861,7 +865,7 @@ int main(int argc, const char * const argv[])
 
             case 'l':
                 if (limit_found) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 limit_found = 1;
 
@@ -886,44 +890,57 @@ int main(int argc, const char * const argv[])
                         }
                     }
                     if (rv != APR_SUCCESS) {
-                        apr_file_printf(errfile, "Invalid limit: %s"
-                                                 APR_EOL_STR APR_EOL_STR, arg);
-                        usage();
+                        usage(apr_psprintf(pool, "Invalid limit: %s"
+                                                 APR_EOL_STR APR_EOL_STR, arg));
                     }
                 } while(0);
                 break;
 
             case 'p':
                 if (proxypath) {
-                    usage();
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
                 }
                 proxypath = apr_pstrdup(pool, arg);
-                if (apr_filepath_set(proxypath, pool) != APR_SUCCESS) {
-                    usage();
+                if ((status = apr_filepath_set(proxypath, pool)) != APR_SUCCESS) {
+                    usage(apr_psprintf(pool, "Could not set filepath to '%s': %s",
+                    		proxypath, apr_strerror(status, errmsg, sizeof errmsg)));
                 }
                 break;
             } /* switch */
         } /* else */
     } /* while */
 
-    if (o->ind != argc) {
-         usage();
+    if (argc <= 1) {
+    	usage(NULL);
     }
 
-    if (isdaemon && (repeat <= 0 || verbose || realclean || dryrun)) {
-         usage();
+    if (o->ind != argc) {
+         usage("Additional parameters specified on the command line, aborting");
+    }
+
+    if (isdaemon && repeat <= 0) {
+         usage("Option -d must be greater than zero");
+    }
+
+    if (isdaemon && (verbose || realclean || dryrun)) {
+         usage("Option -d cannot be used with -v, -r or -D");
     }
 
     if (!isdaemon && intelligent) {
-         usage();
+         usage("Option -i cannot be used without -d");
     }
 
-    if (!proxypath || max <= 0) {
-         usage();
+    if (!proxypath) {
+         usage("Option -p must be specified");
+    }
+
+    if (max <= 0) {
+         usage("Option -l must be greater than zero");
     }
 
     if (apr_filepath_get(&path, 0, pool) != APR_SUCCESS) {
-        usage();
+        usage(apr_psprintf(pool, "Could not get the filepath: %s",
+        		apr_strerror(status, errmsg, sizeof errmsg)));
     }
     baselen = strlen(path);
 
