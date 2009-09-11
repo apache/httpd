@@ -80,9 +80,6 @@ if test x${vmmn} != x%{mmn}; then
    exit 1
 fi
 
-# regenerate configure scripts
-./buildconf
-
 # Before configure; fix location of build dir in generated apxs
 %{__perl} -pi -e "s:\@exp_installbuilddir\@:%{_libdir}/httpd/build:g" \
 	support/apxs.in
