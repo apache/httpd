@@ -140,6 +140,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814048
    +1: wrowe
 
+ * htcacheclean: 19 ways to fail, 1 error message. Fixed.
+   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
+   +1: minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
