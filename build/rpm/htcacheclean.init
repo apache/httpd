@@ -1,0 +1,96 @@
+#!/bin/bash
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# htcacheclean    Startup script for the Apache cache cleaner
+#
+# chkconfig: - 85 15
+# description: The Apache htcacheclean daemon maintains and prunes the
+#              size of the mod_disk_cache cache directory.
+# processname: htcacheclean
+# pidfile: /var/log/httpd/htcacheclean.pid
+# config: /etc/sysconfig/htcacheclean
+#
+### BEGIN INIT INFO
+# Provides: htcacheclean
+# Required-Start: $local_fs $remote_fs $network
+# Required-Stop: $local_fs $remote_fs $network
+# Should-Start: httpd
+# Short-Description: start and stop Apache htcacheclean
+# Description: The Apache htcacheclean daemon maintains a mod_disk_cache
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+if [ -f /etc/sysconfig/htcacheclean ]; then
+        . /etc/sysconfig/htcacheclean
+fi
+
+# Path to the apachectl script, server binary, and short-form for messages.
+htcacheclean=${HTTPD-/usr/sbin/htcacheclean}
+prog=htcacheclean
+lockfile=${LOCKFILE-/var/lock/subsys/htcacheclean}
+interval=${INTERVAL-10}
+cachepath=${CACHEPATH-/var/cache/httpd/cache-root}
+limit=${LIMIT-100M}
+RETVAL=0
+
+start() {
+        echo -n $"Starting $prog: "
+        daemon $htcacheclean -d "$interval" -p "$cachepath" -l "$limit" $OPTIONS
+        RETVAL=$?
+        echo
+        [ $RETVAL = 0 ] && touch ${lockfile}
+        return $RETVAL
+}
+stop() {
+	echo -n $"Stopping $prog: "
+	killproc $htcacheclean
+	RETVAL=$?
+	echo
+	[ $RETVAL = 0 ] && rm -f ${lockfile}
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+        status $htcacheclean
+	RETVAL=$?
+	;;
+  restart)
+	stop
+	start
+	;;
+  condrestart)
+	if status $htcacheclean >&/dev/null; then
+		stop
+		start
+	fi
+	;;
+  *)
+	echo $"Usage: $prog {start|stop|restart|condrestart|status|help}"
+	exit 1
+esac
+
+exit $RETVAL
