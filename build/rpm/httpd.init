@@ -16,14 +16,24 @@
 # limitations under the License.
 #
 #
-# Startup script for the Apache Web Server
+# httpd        Startup script for the Apache Web Server
 #
 # chkconfig: - 85 15
-# description: Apache is a World Wide Web server.  It is used to serve \
-#	       HTML files and CGI.
+# description: The Apache HTTP Server is an efficient and extensible  \
+#             server implementing the current HTTP standards.
 # processname: httpd
-# pidfile: /var/run/httpd.pid
-# config: /etc/httpd/conf/httpd.conf
+# pidfile: /var/log/httpd/httpd.pid
+# config: /etc/sysconfig/httpd
+#
+### BEGIN INIT INFO
+# Provides: httpd
+# Required-Start: $local_fs $remote_fs $network $named
+# Required-Stop: $local_fs $remote_fs $network
+# Should-Start: distcache
+# Short-Description: start and stop Apache HTTP Server
+# Description: The Apache HTTP Server is an extensible server 
+#  implementing the current HTTP standards.
+### END INIT INFO
 
 # Source function library.
 . /etc/rc.d/init.d/functions
@@ -44,6 +54,8 @@ INITLOG_ARGS=""
 apachectl=/usr/sbin/apachectl
 httpd=${HTTPD-/usr/sbin/httpd}
 prog=httpd
+pidfile=${PIDFILE-/var/log/httpd/httpd.pid}
+lockfile=${LOCKFILE-/var/lock/subsys/httpd}
 RETVAL=0
 
 # check for 1.3 configuration
@@ -69,23 +81,23 @@ check13 () {
 start() {
         echo -n $"Starting $prog: "
         check13 || exit 1
-        daemon $httpd $OPTIONS
+        daemon --pidfile=${pidfile} $httpd $OPTIONS
         RETVAL=$?
         echo
-        [ $RETVAL = 0 ] && touch /var/lock/subsys/httpd
+        [ $RETVAL = 0 ] && touch ${lockfile}
         return $RETVAL
 }
 stop() {
 	echo -n $"Stopping $prog: "
-	killproc $httpd
+	killproc -p ${pidfile} $httpd
 	RETVAL=$?
 	echo
-	[ $RETVAL = 0 ] && rm -f /var/lock/subsys/httpd /var/run/httpd.pid
+	[ $RETVAL = 0 ] && rm -f ${lockfile} ${pidfile}
 }
 reload() {
 	echo -n $"Reloading $prog: "
 	check13 || exit 1
-	killproc $httpd -HUP
+	killproc -p ${pidfile} $httpd -HUP
 	RETVAL=$?
 	echo
 }
@@ -99,7 +111,7 @@ case "$1" in
 	stop
 	;;
   status)
-        status $httpd
+        status -p ${pidfile} $httpd
 	RETVAL=$?
 	;;
   restart)
@@ -107,7 +119,7 @@ case "$1" in
 	start
 	;;
   condrestart)
-	if [ -f /var/run/httpd.pid ] ; then
+	if status -p ${pidfile} $httpd >&/dev/null; then
 		stop
 		start
 	fi
