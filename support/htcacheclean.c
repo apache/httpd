@@ -704,9 +704,9 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
 static void usage(const char *error)
 {
     if (error) {
-    	apr_file_printf(errfile, "%s error: %s\n", shortname, error);
+        apr_file_printf(errfile, "%s error: %s\n", shortname, error);
     }
-	apr_file_printf(errfile,
+    apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
     "Usage: %s [-Dvtrn] -pPATH -lLIMIT"                                      NL
     "       %s [-nti] -dINTERVAL -pPATH -lLIMIT"                             NL
