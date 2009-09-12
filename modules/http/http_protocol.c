@@ -1017,7 +1017,7 @@ static const char *get_canned_error_string(int status,
                      "<p>The expectation given in the Expect request-header\n"
                      "field could not be met by this server.\n"
                      "The client sent<pre>\n    Expect: ",
-                     ap_escape_html(r->pool, s1), "\n</pre>\n"
+                     ap_escape_html(r->pool, s1), "\n</pre>\n",
                      NULL);
         else
             s1 = "<p>No expectation was seen, the Expect request-header \n"
