@@ -87,7 +87,7 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
 
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
-        
+
         /* fail fast if the content length exceeds keep body */
         lenp = apr_table_get(f->r->headers_in, "Content-Length");
         if (lenp) {
@@ -129,7 +129,7 @@ static apr_status_t keep_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
     if (rv == APR_SUCCESS) {
         rv = apr_brigade_length(b, 1, &len);
     }
-        
+
     /* does the length take us over the limit? */
     if (APR_SUCCESS == rv && len > ctx->remaining) {
         if (f->r->kept_body) {
@@ -173,7 +173,7 @@ typedef struct kept_body_filter_ctx {
 
 /**
  * Initialisation of filter to handle a kept body on subrequests.
- * 
+ *
  * If a body is to be reinserted into a subrequest, any chunking will have
  * been removed from the body during storage. We need to change the request
  * from Transfer-Encoding: chunked to an explicit Content-Length.
@@ -194,12 +194,12 @@ static int kept_body_filter_init(ap_filter_t *f) {
 
 /**
  * Filter to handle a kept body on subrequests.
- * 
+ *
  * If a body has been previously kept by the request, and if a subrequest wants
  * to re-insert the body into the request, this input filter makes it happen.
  */
 static apr_status_t kept_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                                     ap_input_mode_t mode, 
+                                     ap_input_mode_t mode,
                                      apr_read_type_e block,
                                      apr_off_t readbytes)
 {
@@ -242,7 +242,7 @@ static apr_status_t kept_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
                       "apr_brigade_partition() failed on kept_body at %" APR_OFF_T_FMT, ctx->offset + readbytes);
         return rv;
     }
- 
+
     do {
         apr_bucket *foo;
         const char *str;
@@ -302,15 +302,15 @@ typedef enum {
  * return HTTP_REQUEST_ENTITY_TOO_LARGE. If this value is negative,
  * no limit is imposed, and the number of parameters is in turn
  * constrained by the size parameter above.
- * 
+ *
  * This function honours any kept_body configuration, and the
  * original raw request body will be saved to the kept_body brigade
  * if so configured, just as ap_discard_request_body does.
- * 
+ *
  * NOTE: File upload is not yet supported, but can be without change
  * to the function call.
  */
-static int ap_parse_request_form(request_rec * r, ap_filter_t * f, 
+static int ap_parse_request_form(request_rec * r, ap_filter_t * f,
                                  apr_array_header_t ** ptr,
                                  apr_size_t num, apr_size_t size)
 {
@@ -493,13 +493,13 @@ static int request_is_filter_present(request_rec * r, ap_filter_rec_t *fn)
 
 /**
  * Insert filter hook.
- * 
+ *
  * Add the KEEP_BODY filter to the request, if the admin wants to keep
  * the body using the KeptBodySize directive.
- * 
+ *
  * As a precaution, any pre-existing instances of either the kept_body or
  * keep_body filters will be removed before the filter is added.
- * 
+ *
  * @param r The request
  */
 static void ap_request_insert_filter(request_rec * r)
