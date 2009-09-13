@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_request: Make sure the KeptBodySize directive rejects values
+     that aren't valid numbers. [Graham Leggett]
+
   *) mod_session_crypto: Sanity check should the potentially encrypted
      session cookie be too short. [Graham Leggett]
 

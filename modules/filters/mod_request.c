@@ -564,10 +564,11 @@ static const char *set_kept_body_size(cmd_parms *cmd, void *dconf,
                                       const char *arg)
 {
     request_dir_conf *conf = dconf;
+    char *end = NULL;
 
-    if (APR_SUCCESS != apr_strtoff(&(conf->keep_body), arg, NULL, 0)
-        || conf->keep_body < 0) {
-        return "KeptBodySize must be a size in bytes, or zero.";
+    if (APR_SUCCESS != apr_strtoff(&(conf->keep_body), arg, &end, 0)
+            || conf->keep_body < 0 || end) {
+        return "KeptBodySize must be a valid size in bytes, or zero.";
     }
     conf->keep_body_set = 1;
 
