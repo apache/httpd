@@ -45,7 +45,12 @@
     <note><title>Note</title>In most cases <module>mod_disk_cache</module>
     should be the preferred choice. This is explained further in the <a
     href="../caching.html#inmemory">Caching Guide</a>.  In particular,
-    this module's cache is <em>per-process</em>.</note>
+    this module's cache is <em>per-process</em>, which can be partially
+    mitigated by configuring threaded MPMS to use fewer child processes
+    via configuration of larger values for <directive 
+    module="mpm_common">ThreadsPerChild</directive>.  This module's cache is 
+    also limited to storing a single variant (see HTTP Vary: header) of each 
+    resource in the cache.</note>
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_disk_cache</module></seealso>
