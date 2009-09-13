@@ -1,11 +1,7 @@
 %define contentdir /var/www
 %define suexec_caller apache
 %define mmn APACHE_MMN
-
-%ifarch ia64
-# disable debuginfo on IA64
-%define debug_package %{nil}
-%endif
+%define mpms worker event
 
 Summary: Apache HTTP Server
 Name: httpd
@@ -16,10 +12,10 @@ Vendor: Apache Software Foundation
 Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.gz
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
-BuildRoot: %{_tmppath}/%{name}-root
-BuildPrereq: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildPrereq: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, pcre-devel >= 5.0
 BuildPrereq: /usr/bin/apr-1-config, /usr/bin/apu-1-config
-Requires: apr >= 1.2.0, apr-util >= 1.2.0, gawk, /usr/share/magic.mime, /usr/bin/find, openldap
+Requires: apr >= 1.2.0, apr-util >= 1.2.0, pcre >= 5.0, gawk, /usr/share/magic.mime, /usr/bin/find, openldap
 Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
 Prereq: sh-utils, textutils, /usr/sbin/useradd
 Provides: webserver
@@ -73,42 +69,31 @@ Security (TLS) protocols.
 %setup -q
 
 # Safety check: prevent build if defined MMN does not equal upstream MMN.
-vmmn=`echo MODULE_MAGIC_NUMBER_MAJOR | cpp -include \`pwd\`/include/ap_mmn.h | grep -e '^[0-9]'`
-if test x${vmmn} != x%{mmn}; then
+vmmn=`echo MODULE_MAGIC_NUMBER_MAJOR | cpp -include include/ap_mmn.h | sed -n '
+/^2/p'`
+if test "x${vmmn}" != "x%{mmn}"; then
    : Error: Upstream MMN is now ${vmmn}, packaged MMN is %{mmn}.
    : Update the mmn macro and rebuild.
    exit 1
 fi
 
+%build
+# forcibly prevent use of bundled apr, apr-util, pcre
+rm -rf srclib/{apr,apr-util,pcre}
+
 # Before configure; fix location of build dir in generated apxs
 %{__perl} -pi -e "s:\@exp_installbuilddir\@:%{_libdir}/httpd/build:g" \
 	support/apxs.in
-
-%build
-
-if pkg-config openssl ; then
-	# configure -C barfs with trailing spaces in CFLAGS
-	CFLAGS="$RPM_OPT_FLAGS `pkg-config --cflags openssl | sed 's/ *$//'`"
-	AP_LIBS="$AP_LIBS `pkg-config --libs openssl`"
-else
-	CFLAGS="$RPM_OPT_FLAGS"
-	AP_LIBS="-lssl -lcrypto"
-fi
-export CFLAGS
-export AP_LIBS
 
 function mpmbuild()
 {
 mpm=$1; shift
 mkdir $mpm; pushd $mpm
-cat > config.cache <<EOF
-ac_cv_func_pthread_mutexattr_setpshared=no
-ac_cv_func_sem_open=no
-EOF
-../configure -C \
+../configure \
  	--prefix=%{_sysconfdir}/httpd \
         --with-apr=/usr/bin/apr-1-config \
         --with-apr-util=/usr/bin/apu-1-config \
+        --with-pcre=/usr/bin/pcre-config \
         --exec-prefix=%{_prefix} \
  	--bindir=%{_bindir} \
  	--sbindir=%{_sbindir} \
@@ -118,6 +103,7 @@ EOF
 	--includedir=%{_includedir}/httpd \
 	--libexecdir=%{_libdir}/httpd/modules \
 	--datadir=%{contentdir} \
+        --with-installbuilddir=%{_libdir}/httpd/build \
 	--with-mpm=$mpm \
 	--enable-suexec --with-suexec \
 	--with-suexec-caller=%{suexec_caller} \
@@ -125,33 +111,32 @@ EOF
 	--with-suexec-logfile=%{_localstatedir}/log/httpd/suexec.log \
 	--with-suexec-bin=%{_sbindir}/suexec \
 	--with-suexec-uidmin=500 --with-suexec-gidmin=500 \
-        --with-devrandom \
-        --with-ldap --enable-ldap --enable-authnz-ldap \
-        --enable-cache --enable-disk-cache --enable-mem-cache --enable-file-cache \
-	--enable-ssl --with-ssl \
-	--enable-deflate --enable-cgid \
-	--enable-proxy --enable-proxy-connect \
-	--enable-proxy-http --enable-proxy-ftp \
+	--enable-pie \
+	--with-pcre \
 	$*
 
 make %{?_smp_mflags}
 popd
 }
 
-# Only bother enabling optional modules for main build.
-mpmbuild prefork --enable-mods-shared=all
+ # Build everything and the kitchen sink with the prefork build
+mpmbuild prefork \
+        --enable-mods-shared=all \
+        --enable-ssl --with-ssl --enable-distcache \
+        --enable-proxy \
+        --enable-cache \
+        --enable-disk-cache \
+        --enable-ldap --enable-authnz-ldap \
+        --enable-cgid \
+        --enable-authn-anon --enable-authn-alias \
+        --enable-session --enable-session-cookie \
+        --enable-session-dbd \
+        --disable-imagemap
 
-# To prevent most modules being built statically into httpd.worker, 
-# easiest way seems to be enable them shared.
-mpmbuild worker --enable-mods-shared=all
-
-# Verify that the same modules were built into the two httpd binaries
-./prefork/httpd -l | grep -v prefork > prefork.mods
-./worker/httpd -l | grep -v worker > worker.mods
-if ! diff -u prefork.mods worker.mods; then
-  : Different modules built into httpd binaries, will not proceed
-  exit 1
-fi
+# For the other MPMs, just build httpd and no optional modules
+for f in %{mpms}; do
+   mpmbuild $f --enable-mods-shared=all
+done
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -159,20 +144,11 @@ rm -rf $RPM_BUILD_ROOT
 pushd prefork
 make DESTDIR=$RPM_BUILD_ROOT install
 popd
-# install worker binary
-install -m 755 worker/httpd $RPM_BUILD_ROOT%{_sbindir}/httpd.worker
 
-# mod_ssl bits
-for suffix in crl crt csr key prm; do
-   mkdir $RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf/ssl.${suffix}
+# install alternative MPMs
+for f in %{mpms}; do
+  install -m 755 ${f}/httpd $RPM_BUILD_ROOT%{_sbindir}/httpd.${f}
 done
-
-# Makefiles for certificate management
-#for ext in crt crl; do 
-#  install -m 644 ./build/rpm/mod_ssl-Makefile.${ext} \
-#	$RPM_BUILD_ROOT%{_sysconfdir}/httpd/conf/ssl.${ext}/Makefile.${ext}
-#done
-#ln -s ../../../usr/share/ssl/certs/Makefile $RPM_BUILD_ROOT/etc/httpd/conf
 
 # for holding mod_dav lock database
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/dav
@@ -184,41 +160,28 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/cache/mod_ssl/scache.{dir,pag,sem}
 # move the build directory to within the library directory
 mv $RPM_BUILD_ROOT%{contentdir}/build $RPM_BUILD_ROOT%{_libdir}/httpd/build
 
-# fix up config_vars file: relocate the build directory into libdir;
-# reference correct libtool from apr; remove references to RPM build root.
-sed -e "s|%{contentdir}/build|%{_libdir}/httpd/build|g" \
-    -e "/AP_LIBS/d" -e "/abs_srcdir/d" \
-    -e "/^LIBTOOL/s|/[^ ]*/libtool|`/usr/bin/apr-1-config --apr-libtool`|" \
-    -e "/^EXTRA_INCLUDES/s|-I$RPM_BUILD_DIR[^ ]* ||g" \
-  < prefork/build/config_vars.mk \
-  > $RPM_BUILD_ROOT%{_libdir}/httpd/build/config_vars.mk
-
 # Make the MMN accessible to module packages
 echo %{mmn} > $RPM_BUILD_ROOT%{_includedir}/httpd/.mmn
 
 # docroot
 mkdir $RPM_BUILD_ROOT%{contentdir}/html
-rm -r $RPM_BUILD_ROOT%{contentdir}/manual/style
 
-# logs
+# Set up /var directories
 rmdir $RPM_BUILD_ROOT%{_sysconfdir}/httpd/logs
 mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/httpd
+mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/cache/httpd/cache-root
 
 # symlinks for /etc/httpd
 ln -s ../..%{_localstatedir}/log/httpd $RPM_BUILD_ROOT/etc/httpd/logs
 ln -s ../..%{_localstatedir}/run $RPM_BUILD_ROOT/etc/httpd/run
 ln -s ../..%{_libdir}/httpd/modules $RPM_BUILD_ROOT/etc/httpd/modules
-ln -s ../..%{_libdir}/httpd/build $RPM_BUILD_ROOT/etc/httpd/build
 
 # install SYSV init stuff
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
 install -m755 ./build/rpm/httpd.init \
 	$RPM_BUILD_ROOT/etc/rc.d/init.d/httpd
-%{__perl} -pi -e "s:\@docdir\@:%{_docdir}/%{name}-%{version}:g" \
-	$RPM_BUILD_ROOT/etc/rc.d/init.d/httpd
 install -m755 ./build/rpm/htcacheclean.init \
         $RPM_BUILD_ROOT/etc/rc.d/init.d/htcacheclean
-mkdir -p $RPM_BUILD_ROOT/var/cache/httpd/cache-root
 
 # install log rotation stuff
 mkdir -p $RPM_BUILD_ROOT/etc/logrotate.d
@@ -230,26 +193,28 @@ rm -rf $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.exp \
        $RPM_BUILD_ROOT%{contentdir}/htdocs/* \
        $RPM_BUILD_ROOT%{contentdir}/cgi-bin/* 
 
+# Make suexec a+rw so it can be stripped.  %%files lists real permissions
+chmod 755 $RPM_BUILD_ROOT%{_sbindir}/suexec
+
 %pre
 # Add the "apache" user
 /usr/sbin/useradd -c "Apache" -u 48 \
 	-s /sbin/nologin -r -d %{contentdir} apache 2> /dev/null || :
 
-%triggerpostun -- apache < 2.0
-/sbin/chkconfig --add httpd
-
 %post
 # Register the httpd service
 /sbin/chkconfig --add httpd
+/sbin/chkconfig --add htcacheclean
 
 %preun
 if [ $1 = 0 ]; then
 	/sbin/service httpd stop > /dev/null 2>&1
+        /sbin/service htcacheclean stop > /dev/null 2>&1
 	/sbin/chkconfig --del httpd
+        /sbin/chkconfig --del htcacheclean
 fi
 
 %post -n mod_ssl
-/sbin/ldconfig ### is this needed?
 umask 077
 
 if [ ! -f %{_sysconfdir}/httpd/conf/ssl.key/server.key ] ; then
@@ -272,6 +237,23 @@ ${FQDN}
 root@${FQDN}
 EOF
 fi
+
+%check
+# Check the built modules are all PIC
+if readelf -d $RPM_BUILD_ROOT%{_libdir}/httpd/modules/*.so | grep TEXTREL; then
+   : modules contain non-relocatable code
+   exit 1
+fi
+
+# Verify that the same modules were built into the httpd binaries
+./prefork/httpd -l | grep -v prefork > prefork.mods
+for mpm in %{mpms}; do
+  ./${mpm}/httpd -l | grep -v ${mpm} > ${mpm}.mods
+  if ! diff -u prefork.mods ${mpm}.mods; then
+    : Different modules built into httpd binaries, will not proceed
+    exit 1
+  fi
+done
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -323,6 +305,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/logresolve
 %{_sbindir}/httpd
 %{_sbindir}/httpd.worker
+%{_sbindir}/httpd.event
 %{_sbindir}/httxt2dbm
 %{_sbindir}/apachectl
 %{_sbindir}/rotatelogs
@@ -368,13 +351,6 @@ rm -rf $RPM_BUILD_ROOT
 %files -n mod_ssl
 %defattr(-,root,root)
 %{_libdir}/httpd/modules/mod_ssl.so
-%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.crl
-%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.crt
-%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.csr
-%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.key
-%attr(0700,root,root) %dir %{_sysconfdir}/httpd/conf/ssl.prm
-#%config %{_sysconfdir}/httpd/conf/Makefile
-#%dir %{_sysconfdir}/httpd/conf/ssl.*
 %config(noreplace) %{_sysconfdir}/httpd/conf/original/extra/httpd-ssl.conf
 %config(noreplace) %{_sysconfdir}/httpd/conf/extra/httpd-ssl.conf
 %attr(0700,apache,root) %dir %{_localstatedir}/cache/mod_ssl
@@ -385,7 +361,6 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(-,root,root)
 %{_includedir}/httpd
-%{_sysconfdir}/httpd/build
 %{_sbindir}/apxs
 %{_sbindir}/checkgid
 %{_sbindir}/dbmmanage
