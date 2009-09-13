@@ -146,6 +146,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
    +1: minfrin
 
+ * mod_ldap: hints in usage for LDAPCacheEntries and LDAPOpCacheEntries
+   updated to match manual and code (0 or -1 to disable)
+   PR 40948
+   Trunk Patch: http://svn.apache.org/viewvc?rev=814441&view=rev
+   2.2.x patch: Trunk works. 
+   +1 covener
+   
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
