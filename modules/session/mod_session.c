@@ -99,7 +99,7 @@ static int ap_session_load(request_rec * r, session_rec ** z)
     int rv = 0;
 
     /* is the session enabled? */
-    if (!dconf->enabled) {
+    if (!dconf || !dconf->enabled) {
         return APR_SUCCESS;
     }
 

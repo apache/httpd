@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_session.c: Prevent a segfault when session is added but not
+     configured. [Graham Leggett]
+
   *) htcacheclean: 19 ways to fail, 1 error message. Fixed. [Graham Leggett]
 
   *) mod_auth_digest: Fail server start when nonce count checking
