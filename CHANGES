@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_session_crypto: Sanity check should the potentially encrypted
+     session cookie be too short. [Graham Leggett]
+
   *) mod_session.c: Prevent a segfault when session is added but not
      configured. [Graham Leggett]
 
