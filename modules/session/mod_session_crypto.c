@@ -225,6 +225,13 @@ static apr_status_t decrypt_string(request_rec * r, const apr_crypto_driver_t *d
         return res;
     }
 
+    /* sanity check - decoded too short? */
+    if (decodedlen < (sizeof(apr_uuid_t) + ivSize)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r, LOG_PREFIX
+                "too short to decrypt, skipping");
+        return APR_ECRYPT;
+    }
+
     /* bypass the salt at the start of the decoded block */
     decoded += sizeof(apr_uuid_t);
     decodedlen -= sizeof(apr_uuid_t);
