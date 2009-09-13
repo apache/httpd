@@ -129,8 +129,6 @@ mpmbuild prefork \
         --enable-ldap --enable-authnz-ldap \
         --enable-cgid \
         --enable-authn-anon --enable-authn-alias \
-        --enable-session --enable-session-cookie \
-        --enable-session-dbd \
         --disable-imagemap
 
 # For the other MPMs, just build httpd and no optional modules
