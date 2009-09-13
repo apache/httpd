@@ -42,7 +42,11 @@
     
     <div class="note"><h3>Note</h3>In most cases <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>
     should be the preferred choice. This is explained further in the <a href="../caching.html#inmemory">Caching Guide</a>.  In particular,
-    this module's cache is <em>per-process</em>.</div>
+    this module's cache is <em>per-process</em>, which can be partially
+    mitigated by configuring threaded MPMS to use fewer child processes
+    via configuration of larger values for <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code>.  This module's cache is 
+    also limited to storing a single variant (see HTTP Vary: header) of each 
+    resource in the cache.</div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
