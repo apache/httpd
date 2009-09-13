@@ -392,7 +392,7 @@ static int session_identity_decode(request_rec * r, session_rec * z)
  * request to be present, and each request might have a session
  * defined. We need to go through each session in turn, and save each
  * one.
- * 
+ *
  * The same session might appear in more than one request. The first
  * attempt to save the session will be called
  */
@@ -456,10 +456,10 @@ static void session_insert_output_filter(request_rec * r)
  *
  * Load the session within a fixup - this ensures that the session is
  * properly loaded prior to the handler being called.
- * 
+ *
  * The fixup is also responsible for injecting the session into the CGI
  * environment, should the admin have configured it so.
- * 
+ *
  * @param r The request
  */
 static int session_fixups(request_rec * r)
