@@ -119,7 +119,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk Patch: http://svn.apache.org/viewvc?rev=811806&view=rev
                 http://svn.apache.org/viewvc?rev=811869&view=rev
    2.2.x Patch: http://people.apache.org/~minfrin/ab.diff
-   +1: minfrin, covener
+   +1: minfrin, covener, poirier
 
  * mod_ssl: Improve environment variable extraction to be more
    efficient and to correctly handle DNs with duplicate tags.
@@ -144,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
  * htcacheclean: 19 ways to fail, 1 error message. Fixed.
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
-   +1: minfrin, covener
+   +1: minfrin, covener, poirier
 
  * mod_ldap: hints in usage for LDAPCacheEntries and LDAPOpCacheEntries
    updated to match manual and code (0 or -1 to disable)
@@ -160,7 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR 45946
    Trunk patch: n/a due to authz refactoring (no provider called without require-ments)
    2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup-2.diff
-   +1: covener
+   +1: covener, poirier
 
    
 PATCHES/ISSUES THAT ARE STALLED
