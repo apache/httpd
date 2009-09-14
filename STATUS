@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    when the AuthLDAPURL has been defined at a very high level.
    PR 45946
    Trunk patch: n/a due to authz refactoring (no provider called without require-ments)
-   2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup.diff
+   2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup-2.diff
    +1: covener
 
    
