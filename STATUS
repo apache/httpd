@@ -94,14 +94,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    +1: covener, poirier
    +1: minfrin (with r814779 for compiler warning fix)
 
- * htdbm: Avoid buffer overflows.
-   PR: 30586
-   Trunk patches: http://svn.apache.org/viewvc?view=rev&revision=797563
-                  http://svn.apache.org/viewvc?view=rev&revision=814781
-                  http://svn.apache.org/viewvc?view=rev&revision=814792
-   2.2.x patch: http://people.apache.org/~poirier/patch3-2.2.x-PR30586.txt
-   +1: poirier, minfrin, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

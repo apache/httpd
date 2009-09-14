@@ -7,6 +7,9 @@ Changes with Apache 2.2.14
   *) CVE-2009-3094: mod_proxy_ftp NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) htdbm: Fix possible buffer overflow if dbm database has very
+     long values.  PR 30586 [Dan Poirier]
+
   *) Add support for HTTP PUT to ab. [Jeff Barnes <jbarnesweb yahoo.com>]
 
   *) mod_ssl: Fix SSL_*_DN_UID variables to use the 'userID' attribute
