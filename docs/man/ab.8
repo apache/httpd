@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 8 "2008-10-23" "Apache HTTP Server" "ab"
+.TH "AB" 8 "2009-09-14" "Apache HTTP Server" "ab"
 
 .SH NAME
 ab \- Apache HTTP server benchmarking tool
@@ -27,7 +27,7 @@ ab \- Apache HTTP server benchmarking tool
 .SH "SYNOPSIS"
  
 .PP
-\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR
+\fBab\fR [ -\fBA\fR \fIauth-username\fR:\fIpassword\fR ] [ -\fBb\fR \fIwindowsize\fR ] [ -\fBc\fR \fIconcurrency\fR ] [ -\fBC\fR \fIcookie-name\fR=\fIvalue\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-file\fR ] [ -\fBf\fR \fIprotocol\fR ] [ -\fBg\fR \fIgnuplot-file\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIcustom-header\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIrequests\fR ] [ -\fBp\fR \fIPOST-file\fR ] [ -\fBP\fR \fIproxy-auth-username\fR:\fIpassword\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR ] [ -\fBS\fR ] [ -\fBt\fR \fItimelimit\fR ] [ -\fBT\fR \fIcontent-type\fR ] [ -\fBu\fR \fIPUT-file\fR ] [ -\fBv\fR \fIverbosity\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-attributes\fR ] [ -\fBX\fR \fIproxy\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-attributes\fR ] [ -\fBz\fR \fI<td>-attributes\fR ] [ -\fBZ\fR \fIciphersuite\fR ] [http[s]://]\fIhostname\fR[:\fIport\fR]/\fIpath\fR
  
 
 .SH "SUMMARY"
@@ -101,7 +101,10 @@ Do not display the median and standard deviation values, nor display the warning
 Maximum number of seconds to spend for benchmarking\&. This implies a -n 50000 internally\&. Use this to benchmark the server within a fixed total amount of time\&. Per default there is no timelimit\&.  
 .TP
 -T \fIcontent-type\fR
-Content-type header to use for POST data, eg\&. application/x-www-form-urlencoded\&. Default: text/plain\&.  
+Content-type header to use for POST/PUT data, eg\&. application/x-www-form-urlencoded\&. Default: text/plain\&.  
+.TP
+-u \fIPUT-file\fR
+File containing data to PUT\&. Remember to also set -T\&.  
 .TP
 -v \fIverbosity\fR
 Set verbosity level - 4 and above prints information on headers, 3 and above prints response codes (404, 200, etc\&.), 2 and above prints warnings and info\&.  
