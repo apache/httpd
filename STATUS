@@ -89,12 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * ab: Add support for HTTP PUT to ab.
-   Trunk Patch: http://svn.apache.org/viewvc?rev=811806&view=rev
-                http://svn.apache.org/viewvc?rev=811869&view=rev
-   2.2.x Patch: http://people.apache.org/~minfrin/ab.diff
-   +1: minfrin, covener, poirier
-
  * htcacheclean: 19 ways to fail, 1 error message. Fixed.
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
    +1: covener, poirier
