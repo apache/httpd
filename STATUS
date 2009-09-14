@@ -139,8 +139,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=rev&revision=814781
    2.2.x patch: http://people.apache.org/~poirier/patch2-2.2.x-PR30586.txt
    +1: poirier
-   -1: trawick (Memory use for dumping the database is now unbounded; it
-                doesn't even look difficult to avoid allocating/copying.)
 
  * mod_ldap: hints in usage for LDAPCacheEntries and LDAPOpCacheEntries
    updated to match manual and code (0 or -1 to disable)
