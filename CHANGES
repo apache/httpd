@@ -2,11 +2,11 @@
 Changes with Apache 2.2.14
 
   *) SECURITY: CVE-2009-3095 (cve.mitre.org)
-     mod_proxy_ftp sanity check authn credentials.
+     mod_proxy_ftp: sanity check authn credentials.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
   *) SECURITY: CVE-2009-3094 (cve.mitre.org)
-     mod_proxy_ftp NULL pointer dereference on error paths.
+     mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
   *) htdbm: Fix possible buffer overflow if dbm database has very
