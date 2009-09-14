@@ -683,6 +683,31 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+/* Parse EPSV reply and return port, or zero on error.  Modifies
+ * 'reply'. */
+static apr_port_t parse_epsv_reply(char *reply)
+{
+    char *p, *ep;
+    long port;
+
+    /* Reply syntax per RFC 2428: "229 blah blah (|||port|)" where '|'
+     * can be any character in ASCII from 33-126, obscurely.  Verify
+     * the syntax. */
+    p = ap_strchr(reply, '(');
+    if (p == NULL || !p[0] || !p[1] || p[1] != p[2] || p[1] != p[3]
+        || p[4] == p[1]) {
+        return 0;
+    }
+
+    errno = 0;
+    port = strtol(p + 4, &ep, 10);
+    if (errno || port < 1 || port > 65535 || ep[0] != p[1] || ep[1] != ')') {
+        return 0;
+    }
+
+    return (apr_port_t)port;
+}
+
 /*
  * Generic "send FTP command to server" routine, using the control socket.
  * Returns the FTP returncode (3 digit code)
@@ -1296,26 +1321,11 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             return ftp_proxyerror(r, backend, HTTP_BAD_GATEWAY, ftpmessage);
         }
         else if (rc == 229) {
-            char *pstr;
-            char *tok_cntx;
+            /* Parse the port out of the EPSV reply. */
+            data_port = parse_epsv_reply(ftpmessage);
 
-            pstr = ftpmessage;
-            pstr = apr_strtok(pstr, " ", &tok_cntx);    /* separate result code */
-            if (pstr != NULL) {
-                if (*(pstr + strlen(pstr) + 1) == '=') {
-                    pstr += strlen(pstr) + 2;
-                }
-                else {
-                    pstr = apr_strtok(NULL, "(", &tok_cntx);    /* separate address &
-                                                                 * port params */
-                    if (pstr != NULL)
-                        pstr = apr_strtok(NULL, ")", &tok_cntx);
-                }
-            }
-
-            if (pstr) {
+            if (data_port) {
                 apr_sockaddr_t *epsv_addr;
-                data_port = atoi(pstr + 3);
 
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                        "proxy: FTP: EPSV contacting remote host on port %d",
@@ -1355,10 +1365,6 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 else {
                     connect = 1;
                 }
-            }
-            else {
-                /* and try the regular way */
-                apr_socket_close(data_sock);
             }
         }
     }
@@ -1445,10 +1451,6 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 else {
                     connect = 1;
                 }
-            }
-            else {
-                /* and try the regular way */
-                apr_socket_close(data_sock);
             }
         }
     }
@@ -1929,7 +1931,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                  * for a slow client to eat these bytes
                  */
                 ap_flush_conn(data);
-                apr_socket_close(data_sock);
+                if (data_sock) {
+                    apr_socket_close(data_sock);
+                }
                 data_sock = NULL;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "proxy: FTP: data connection closed");
