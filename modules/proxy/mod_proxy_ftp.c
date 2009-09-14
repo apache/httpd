@@ -683,18 +683,18 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
-/* Parse EPSV reply and return port, or zero on error.  Modifies
- * 'reply'. */
-static apr_port_t parse_epsv_reply(char *reply)
+/* Parse EPSV reply and return port, or zero on error. */
+static apr_port_t parse_epsv_reply(const char *reply)
 {
-    char *p, *ep;
+    const char *p;
+    char *ep;
     long port;
 
     /* Reply syntax per RFC 2428: "229 blah blah (|||port|)" where '|'
      * can be any character in ASCII from 33-126, obscurely.  Verify
      * the syntax. */
-    p = ap_strchr(reply, '(');
-    if (p == NULL || !p[0] || !p[1] || p[1] != p[2] || p[1] != p[3]
+    p = ap_strchr_c(reply, '(');
+    if (p == NULL || !p[1] || p[1] != p[2] || p[1] != p[3]
         || p[4] == p[1]) {
         return 0;
     }
