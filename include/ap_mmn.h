@@ -194,6 +194,8 @@
  *                         ap_my_generation, etc.  ap_mpm_query() can't be called
  *                         until after the register-hooks phase.
  * 20090401.1 (2.3.3-dev)  Protected log.c internals, http_log.h changes
+ * 20090401.2 (2.3.3-dev)  Added tmp_flush_bb to core_output_filter_ctx_t
+ *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -201,7 +203,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20090401
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

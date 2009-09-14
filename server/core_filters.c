@@ -396,6 +396,12 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         if (rv != APR_SUCCESS) {
             return rv;
         }
+        /*
+         * Need to create tmp brigade with correct lifetime. Passing
+         * NULL to apr_brigade_split_ex would result in a brigade
+         * allocated from bb->pool which might be wrong.
+         */
+        ctx->tmp_flush_bb = apr_brigade_create(c->pool, c->bucket_alloc);
     }
 
     if (new_bb != NULL) {
@@ -468,7 +474,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
          bucket = next) {
         next = APR_BUCKET_NEXT(bucket);
         if (APR_BUCKET_IS_FLUSH(bucket)) {
-            apr_bucket_brigade *remainder = apr_brigade_split(bb, next);
+            ctx->tmp_flush_bb = apr_brigade_split_ex(bb, next, ctx->tmp_flush_bb);
             apr_status_t rv = send_brigade_blocking(net->client_socket, bb,
                                                     &(ctx->bytes_written), c);
             if (rv != APR_SUCCESS) {
@@ -476,7 +482,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
                 c->aborted = 1;
                 return rv;
             }
-            bb = remainder;
+            APR_BRIGADE_CONCAT(bb, ctx->tmp_flush_bb);
             next = APR_BRIGADE_FIRST(bb);
             bytes_in_brigade = 0;
             non_file_bytes_in_brigade = 0;
