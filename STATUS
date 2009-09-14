@@ -92,12 +92,12 @@ RELEASE SHOWSTOPPERS:
       http://svn.apache.org/viewvc?view=rev&revision=814785
     2.2.x patch:
       http://people.apache.org/~jorton/CVE-2009-3094.diff
-    +1: jorton, rpluem
+    +1: jorton, rpluem, minfrin
 
   * CVE-2009-3095: mod_proxy_ftp sanity check authn credentials
     Trunk/2.2.x patch:
       http://svn.apache.org/viewvc?view=rev&revision=814045
-    +1: jorton, rpluem
+    +1: jorton, rpluem, minfrin
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
