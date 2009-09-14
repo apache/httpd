@@ -146,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=rev&revision=814781
                   http://svn.apache.org/viewvc?view=rev&revision=814792
    2.2.x patch: http://people.apache.org/~poirier/patch3-2.2.x-PR30586.txt
-   +1: poirier
+   +1: poirier, minfrin
 
  * mod_ldap: hints in usage for LDAPCacheEntries and LDAPOpCacheEntries
    updated to match manual and code (0 or -1 to disable)
