@@ -59,6 +59,8 @@
 
 #include "mod_dav.h"
 
+#include "ap_provider.h"
+
 
 /* ### what is the best way to set this? */
 #define DAV_DEFAULT_PROVIDER    "filesystem"
@@ -1575,6 +1577,9 @@ static int dav_method_options(request_rec *r)
     const apr_xml_elem *elem;
     dav_error *err;
 
+    apr_array_header_t *extensions;
+    ap_list_provider_names_t *entry;
+
     /* resolve the resource */
     err = dav_get_resource(r, 0 /* label_allowed */, 0 /* use_checked_in */,
                            &resource);
@@ -1602,6 +1607,23 @@ static int dav_method_options(request_rec *r)
 
     if (binding_hooks != NULL)
         dav_level = apr_pstrcat(r->pool, dav_level, ",bindings", NULL);
+
+    /* DAV header additions registered by external modules */
+    extensions = ap_list_provider_names(r->pool, DAV_OPTIONS_EXTENSION_GROUP, "0");
+    entry = (ap_list_provider_names_t *)extensions->elts;
+	
+    for (i = 0; i < extensions->nelts; i++, entry++) {
+	const dav_options_provider *options = 
+	    dav_get_options_providers(entry->provider_name);
+	
+	if (options && options->dav_header) {
+	    apr_text_header hoptions = { 0 };
+	    
+	    options->dav_header(r, resource, &hoptions);
+	    for (t = hoptions.first; t && t->text; t = t->next)
+		dav_level = apr_pstrcat(r->pool, dav_level, ",", t->text, NULL);
+	}   
+    }
 
     /* ###
      * MSFT Web Folders chokes if length of DAV header value > 63 characters!
@@ -1744,6 +1766,23 @@ static int dav_method_options(request_rec *r)
     /* If there is a search provider, set SEARCH in option */
     if (search_hooks != NULL) {
         apr_table_addn(methods, "SEARCH", "");
+    }
+
+    /* additional methods registered by external modules */
+    extensions = ap_list_provider_names(r->pool, DAV_OPTIONS_EXTENSION_GROUP, "0");
+    entry = (ap_list_provider_names_t *)extensions->elts;
+    
+    for (i = 0; i < extensions->nelts; i++, entry++) {
+	const dav_options_provider *options = 
+	    dav_get_options_providers(entry->provider_name);
+	
+	if (options && options->dav_method) {
+	    apr_text_header hoptions = { 0 };
+	    
+	    options->dav_method(r, resource, &hoptions);
+	    for (t = hoptions.first; t && t->text; t = t->next)
+		apr_table_addn(methods, t->text, "");
+	}    
     }
 
     /* Generate the Allow header */

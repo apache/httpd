@@ -195,6 +195,7 @@
  *                         until after the register-hooks phase.
  * 20090401.1 (2.3.3-dev)  Protected log.c internals, http_log.h changes
  * 20090401.2 (2.3.3-dev)  Added tmp_flush_bb to core_output_filter_ctx_t
+ * 20090401.3 (2.3.3-dev)  Added DAV options provider to mod_dav.h
  *
  */
 

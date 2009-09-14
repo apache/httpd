@@ -2419,6 +2419,31 @@ typedef struct {
     const dav_hooks_liveprop *provider;  /* the provider defining this prop */
 } dav_elem_private;    
 
+/* --------------------------------------------------------------------
+**
+** DAV OPTIONS
+*/
+#define DAV_OPTIONS_EXTENSION_GROUP "dav_options"
+
+typedef struct dav_options_provider
+{
+    dav_error* (*dav_header)(request_rec *r,
+                             const dav_resource *resource,
+                             apr_text_header *phdr);
+    
+    dav_error* (*dav_method)(request_rec *r,
+                             const dav_resource *resource,
+                             apr_text_header *phdr);
+    
+    void *ctx;                              
+} dav_options_provider;
+
+extern DAV_DECLARE(const dav_options_provider *) dav_get_options_providers(const char *name);
+
+extern DAV_DECLARE(void) dav_options_provider_register(apr_pool_t *p, 
+						       const char *name,
+						       const dav_options_provider *provider);
+
 #ifdef __cplusplus
 }
 #endif
