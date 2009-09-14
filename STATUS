@@ -97,7 +97,8 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
  * htcacheclean: 19 ways to fail, 1 error message. Fixed.
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
-   +1: minfrin, covener, poirier
+   +1: covener, poirier
+   +1: minfrin (with r814779 for compiler warning fix)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
