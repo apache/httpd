@@ -1005,16 +1005,19 @@ static const char *get_canned_error_string(int status,
                "request-header field overlap the current extent\n"
                "of the selected resource.</p>\n");
     case HTTP_EXPECTATION_FAILED:
-        return(apr_pstrcat(p,
-                           "<p>The expectation given in the Expect "
-                           "request-header"
-                           "\nfield could not be met by this server.</p>\n"
-                           "<p>The client sent<pre>\n    Expect: ",
-                           ap_escape_html(r->pool, apr_table_get(r->headers_in, "Expect")),
-                           "\n</pre>\n"
-                           "but we only allow the 100-continue "
-                           "expectation.</p>\n",
-                           NULL));
+        s1 = apr_table_get(r->headers_in, "Expect");
+        if (s1)
+            s1 = apr_pstrcat(p,
+                     "<p>The expectation given in the Expect request-header\n"
+                     "field could not be met by this server.\n"
+                     "The client sent<pre>\n    Expect: ",
+                     ap_escape_html(r->pool, s1), "\n</pre>\n",
+                     NULL);
+        else
+            s1 = "<p>No expectation was seen, the Expect request-header \n"
+                 "field was not presented by the client.\n";
+        return add_optional_notes(r, s1, "error-notes", "</p>"
+                   "<p>Only the 100-continue expectation is supported.</p>\n");
     case HTTP_UNPROCESSABLE_ENTITY:
         return("<p>The server understands the media type of the\n"
                "request entity, but was unable to process the\n"
