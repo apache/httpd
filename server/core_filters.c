@@ -76,26 +76,6 @@ do { \
 } while (0)
 
 
-/**
- * Split the contents of a brigade after bucket 'e' to an existing brigade
- *
- * XXXX: Should this function be added to APR-Util?
- */
-static void brigade_move(apr_bucket_brigade *b, apr_bucket_brigade *a,
-                         apr_bucket *e)
-{
-    apr_bucket *f;
-
-    if (e != APR_BRIGADE_SENTINEL(b)) {
-        f = APR_RING_LAST(&b->list);
-        APR_RING_UNSPLICE(e, f, link);
-        APR_RING_SPLICE_HEAD(&a->list, e, f, apr_bucket, link);
-    }
-
-    APR_BRIGADE_CHECK_CONSISTENCY(a);
-    APR_BRIGADE_CHECK_CONSISTENCY(b);
-}
-
 int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                          ap_input_mode_t mode, apr_read_type_e block,
                          apr_off_t readbytes)
@@ -307,7 +287,7 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         }
 
         /* Must do move before CONCAT */
-        brigade_move(ctx->b, ctx->tmpbb, e);
+        ctx->tmpbb = apr_brigade_split_ex(ctx->b, e, ctx->tmpbb);
 
         if (mode == AP_MODE_READBYTES) {
             APR_BRIGADE_CONCAT(b, ctx->b);
