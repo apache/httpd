@@ -312,6 +312,12 @@ static const char *multiviews_match(cmd_parms *cmd, void *m_,
                                     const char *include)
 {
     mime_dir_config *m = (mime_dir_config *) m_;
+    const char *errmsg;
+
+    errmsg = ap_check_cmd_context(cmd, NOT_IN_LOCATION);
+    if (errmsg != NULL) {
+        return errmsg;
+    }
 
     if (strcasecmp(include, "Any") == 0) {
         if (m->multimatch && (m->multimatch & ~MULTIMATCH_ANY)) {
