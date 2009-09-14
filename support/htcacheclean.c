@@ -765,6 +765,7 @@ int main(int argc, const char * const argv[])
     char opt;
     const char *arg;
     char *proxypath, *path;
+    char errmsg[1024];
 
     interrupted = 0;
     repeat = 0;
@@ -779,7 +780,6 @@ int main(int argc, const char * const argv[])
     intelligent = 0;
     previous = 0; /* avoid compiler warning */
     proxypath = NULL;
-    char errmsg[1024];
 
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
         return 1;
