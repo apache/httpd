@@ -31,3 +31,16 @@ DAV_DECLARE(const dav_provider *) dav_lookup_provider(const char *name)
 {
     return ap_lookup_provider(DAV_PROVIDER_GROUP, name, "0");
 }
+
+DAV_DECLARE(void) dav_options_provider_register(apr_pool_t *p, 
+						const char *name,
+						const dav_options_provider *provider)
+{
+    ap_register_provider(p, DAV_OPTIONS_EXTENSION_GROUP, name, "0", provider);
+}
+
+DAV_DECLARE(const dav_options_provider *) dav_get_options_providers(const char *name)
+{
+    return ap_lookup_provider(DAV_OPTIONS_EXTENSION_GROUP, name, "0");
+}
+

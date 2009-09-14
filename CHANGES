@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) mod_dav: Allow other modules to add things to the DAV or Allow headers
+     of an OPTIONS request. [Brian France <brian brianfrance.com>]
+
   *) core: Lower memory usage of core output filter.
      [Stefan Fritsch <sf sfritsch.de>]
 
