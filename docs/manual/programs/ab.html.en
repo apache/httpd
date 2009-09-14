@@ -58,6 +58,7 @@
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>timelimit</var> ]
     [ -<strong>T</strong> <var>content-type</var> ]
+    [ -<strong>u</strong> <var>PUT-file</var> ]
     [ -<strong>v</strong> <var>verbosity</var>]
     [ -<strong>V</strong> ]
     [ -<strong>w</strong> ]
@@ -164,9 +165,12 @@
     fixed total amount of time. Per default there is no timelimit.</dd>
 
     <dt><code>-T <var>content-type</var></code></dt>
-    <dd>Content-type header to use for POST data, eg.
+    <dd>Content-type header to use for POST/PUT data, eg.
     <code>application/x-www-form-urlencoded</code>.
     Default: <code>text/plain</code>.</dd>
+
+    <dt><code>-u <var>PUT-file</var></code></dt>
+    <dd>File containing data to PUT.  Remember to also set <code>-T</code>.</dd>
 
     <dt><code>-v <var>verbosity</var></code></dt>
     <dd>Set verbosity level - <code>4</code> and above prints information on
