@@ -119,7 +119,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk Patch: http://svn.apache.org/viewvc?rev=811806&view=rev
                 http://svn.apache.org/viewvc?rev=811869&view=rev
    2.2.x Patch: http://people.apache.org/~minfrin/ab.diff
-   +1: minfrin
+   +1: minfrin, covener
 
  * mod_ssl: Improve environment variable extraction to be more
    efficient and to correctly handle DNs with duplicate tags.
@@ -140,11 +140,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814048
    +1: wrowe
    rpluem says: Need to add r814114 to make it compile.
-   +1: minfrin (with r814114)
+   +1: minfrin, covener (with r814114)
 
  * htcacheclean: 19 ways to fail, 1 error message. Fixed.
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
-   +1: minfrin
+   +1: minfrin, covener
 
  * mod_ldap: hints in usage for LDAPCacheEntries and LDAPOpCacheEntries
    updated to match manual and code (0 or -1 to disable)
