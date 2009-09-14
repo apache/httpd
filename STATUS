@@ -92,12 +92,12 @@ RELEASE SHOWSTOPPERS:
       http://svn.apache.org/viewvc?view=rev&revision=814785
     2.2.x patch:
       http://people.apache.org/~jorton/CVE-2009-3094.diff
-    +1: jorton
+    +1: jorton, rpluem
 
   * CVE-2009-3095: mod_proxy_ftp sanity check authn credentials
     Trunk/2.2.x patch:
       http://svn.apache.org/viewvc?view=rev&revision=814045
-    +1: jorton
+    +1: jorton, rpluem
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -130,7 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    definition.
    Trunk Patch: http://svn.apache.org/viewvc?rev=813105&view=rev
    2.2.x Patch: http://people.apache.org/~minfrin/ssl_engine_pphrase.diff
-   +1: minfrin
+   +1: minfrin, rpluem
 
  * mod_ssl: Improve environment variable extraction to be more
    efficient and to correctly handle DNs with duplicate tags.
@@ -146,14 +146,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?view=rev&revision=814781
                   http://svn.apache.org/viewvc?view=rev&revision=814792
    2.2.x patch: http://people.apache.org/~poirier/patch3-2.2.x-PR30586.txt
-   +1: poirier, minfrin
+   +1: poirier, minfrin, rpluem
 
  * mod_ldap: hints in usage for LDAPCacheEntries and LDAPOpCacheEntries
    updated to match manual and code (0 or -1 to disable)
    PR 40948
    Trunk Patch: http://svn.apache.org/viewvc?rev=814441&view=rev
    2.2.x patch: Trunk works. 
-   +1: covener
+   +1: covener, rpluem
 
  * mod_ldap: Pre-scan the requirements array before doing any LDAP lookups,
    for cases where an LDAP URL is configured but non-LDAP authn/authz is in 
