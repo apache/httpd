@@ -137,7 +137,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR: 30586
    Trunk patches: http://svn.apache.org/viewvc?view=rev&revision=797563
                   http://svn.apache.org/viewvc?view=rev&revision=814781
-   2.2.x patch: http://people.apache.org/~poirier/patch2-2.2.x-PR30586.txt
+                  http://svn.apache.org/viewvc?view=rev&revision=814792
+   2.2.x patch: http://people.apache.org/~poirier/patch3-2.2.x-PR30586.txt
    +1: poirier
 
  * mod_ldap: hints in usage for LDAPCacheEntries and LDAPOpCacheEntries
