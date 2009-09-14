@@ -258,10 +258,10 @@ static apr_status_t htdbm_list(htdbm_t *htdbm)
             return APR_EGENERAL;
         }
         /* Note: we don't store \0-terminators on our dbm data */
-        fprintf(stderr, "    %-32.*s", key.dsize, key.dptr);
+        fprintf(stderr, "    %-32.*s", (int)key.dsize, key.dptr);
         cmnt = memchr(val.dptr, ':', val.dsize);
         if (cmnt)
-            fprintf(stderr, " %.*s", val.dptr+val.dsize - (cmnt+1), cmnt + 1);
+            fprintf(stderr, " %.*s", (int)(val.dptr+val.dsize - (cmnt+1)), cmnt + 1);
         fprintf(stderr, "\n");
         rv = apr_dbm_nextkey(htdbm->dbm, &key);
         if (rv != APR_SUCCESS)
