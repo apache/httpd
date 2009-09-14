@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.3
 
+  *) core: Lower memory usage of core output filter.
+     [Stefan Fritsch <sf sfritsch.de>]
+
   *) mod_mime: Detect invalid use of MultiviewsMatch inside Location and
      LocationMatch sections.  PR47754. [Dan Poirier]
 

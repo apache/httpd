@@ -1241,6 +1241,7 @@ typedef struct core_output_filter_ctx {
     apr_bucket_brigade *buffered_bb;
     apr_size_t bytes_in;
     apr_size_t bytes_written;
+    apr_bucket_brigade *tmp_flush_bb;
 } core_output_filter_ctx_t;
  
 typedef struct core_filter_ctx {
