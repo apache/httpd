@@ -142,7 +142,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk patch: n/a due to authz refactoring (no provider called without require-ments)
    2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup-2.diff
    +1: covener, poirier
-
+   trawick: The code for "FIXME: dead code?" is indeed dead, as is the
+            conditional setting of reqs_array within the declarations.  The hook won't
+            be called if ap_requires() returns NULL.  (See calls to ap_some_auth_required()
+            before calls to ap_run_auth_checker().)
    
 PATCHES/ISSUES THAT ARE STALLED
 
