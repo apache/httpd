@@ -157,9 +157,9 @@ a directory</description>
 </usage>
 </directivesynopsis>
 <directivesynopsis>
-<name>DefaultMapping</name>
+<name>Fallback</name>
 <description>Define a default URL for requests that don't map to a file</description>
-<syntax>DefaultMapping <var>local-url</var></syntax>
+<syntax>Fallback <var>local-url</var></syntax>
 <default>None - httpd will return 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -169,10 +169,10 @@ a directory</description>
     in your filesystem, and would otherwise return HTTP 404 (Not Found).
     For example</p>
     <example>
-        <code>DefaultMapping default.php</code>
+        <code>Fallback not-404.php</code>
     </example>
     <p>will cause requests for non-existent files to be handled by
-    <code>default.php</code>, while requests for files that exist
+    <code>not-404.php</code>, while requests for files that exist
     are unaffected.</p>
 </usage>
 </directivesynopsis>
