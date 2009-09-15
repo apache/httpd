@@ -901,7 +901,7 @@ AP_DECLARE_NONSTD(const char*) ap_expr_string(request_rec *r,
     /* a default string evaluator: support headers and env */
     const char *ret = str;
     ap_regmatch_t match[3];
-    char *p;
+    const char *p;
 
     ap_assert(isvar != NULL);
     if (ap_regexec(isvar, str, 3, match, 0) == 0) {
@@ -934,13 +934,13 @@ AP_DECLARE_NONSTD(const char*) ap_expr_string(request_rec *r,
 
     /* copy wholesale from mod_rewrite to support its %{varname} vars */
     else if ((str[0] == '%') && (str[1] == '{')
-             && (p = ap_strchr(str, '}'), p != NULL)) {
-        char *var;
+             && (p = ap_strchr_c(str, '}'), p != NULL)) {
+        char *ch, *var;
         apr_time_exp_t tm;
 
         var = apr_pstrndup(r->pool, str+2, p-str-3);
-        for (p = var; *p; ++p) {
-            *p = apr_toupper(*p);
+        for (ch = var; *ch; ++ch) {
+            *ch = apr_toupper(*ch);
         }
 
         switch (strlen(var)) {
