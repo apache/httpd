@@ -83,7 +83,7 @@ static const char *configure_slash(cmd_parms *cmd, void *d_, int arg)
 
 static const command_rec dir_cmds[] =
 {
-    AP_INIT_TAKE1("Fallback", ap_set_string_slot,
+    AP_INIT_TAKE1("FallbackResource", ap_set_string_slot,
                   (void*)APR_OFFSETOF(dir_config_rec, dflt),
                   DIR_CMD_PERMS, "Set a default handler"),
     AP_INIT_RAW_ARGS("DirectoryIndex", add_index, NULL, DIR_CMD_PERMS,
@@ -128,7 +128,7 @@ static int fixup_dflt(request_rec *r)
     if (name_ptr == NULL) {
         return DECLINED;
     }
-    /* XXX: if Fallback points to something that doesn't exist,
+    /* XXX: if FallbackResource points to something that doesn't exist,
      * this may recurse until it hits the limit for internal redirects
      * before returning an Internal Server Error.
      */
