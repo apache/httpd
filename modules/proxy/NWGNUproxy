@@ -223,16 +223,7 @@ endif
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	proxy_module \
-	proxy_hook_scheme_handler \
-	proxy_hook_canon_handler \
-	proxy_hook_pre_request \
-	proxy_hook_post_request \
-	ap_proxy_ssl_enable \
-	ap_proxy_ssl_disable \
-	ap_proxy_conn_is_https \
-	ap_proxy_ssl_val \
-	proxy_run_fixups \
+	@$(OBJDIR)/mod_proxy.imp \
 	$(EOLIST)
 
 #
@@ -248,7 +239,7 @@ FILES_lib_objs = \
 
 libs :: $(OBJDIR) $(TARGET_lib)
 
-nlms :: libs $(TARGET_nlm)
+nlms :: libs $(OBJDIR)/mod_proxy.imp $(TARGET_nlm)
 
 #
 # Updated this target to create necessary directories and copy files to the
@@ -261,6 +252,20 @@ install :: nlms FORCE
 #
 
 vpath %.c ../arch/netware
+
+$(OBJDIR)/mod_proxy.imp:
+	@echo Creating $@
+	@echo # Exports of mod_proxy > $@
+	@echo   proxy_module, >> $@
+	@echo   proxy_hook_canon_handler, >> $@
+	@echo   proxy_hook_post_request, >> $@
+	@echo   proxy_hook_pre_request, >> $@
+	@echo   proxy_hook_scheme_handler, >> $@
+	@echo   proxy_run_fixups, >> $@
+	@echo   ap_proxy_conn_is_https, >> $@
+	@echo   ap_proxy_ssl_enable, >> $@
+	@echo   ap_proxy_ssl_disable, >> $@
+	@echo   ap_proxy_ssl_val >> $@
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined

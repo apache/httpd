@@ -209,12 +209,8 @@ FILE_nlm_copyright =
 FILES_nlm_Ximports = \
 	@$(APR)/aprlib.imp \
 	@$(NWOS)/httpd.imp \
+	@$(OBJDIR)/mod_proxy.imp \
 	@libc.imp \
-	proxy_module \
-	proxy_hook_scheme_handler \
-	proxy_hook_canon_handler \
-	ap_proxy_ssl_enable \
-	ap_proxy_ssl_disable \
 	$(EOLIST)
 
 # Don't link with Winsock if standard sockets are being used
