@@ -750,6 +750,12 @@ static void usage(const char *error)
 }
 #undef NL
 
+static void usage_repeated_arg(apr_pool_t *pool, char option) {
+    usage(apr_psprintf(pool, 
+                       "The option '%c' cannot be specified more than once",
+                       option));
+}
+
 /*
  * main
  */
@@ -812,42 +818,42 @@ int main(int argc, const char * const argv[])
             switch (opt) {
             case 'i':
                 if (intelligent) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 intelligent = 1;
                 break;
 
             case 'D':
                 if (dryrun) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 dryrun = 1;
                 break;
 
             case 'n':
                 if (benice) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 benice = 1;
                 break;
 
             case 't':
                 if (deldirs) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 deldirs = 1;
                 break;
 
             case 'v':
                 if (verbose) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 verbose = 1;
                 break;
 
             case 'r':
                 if (realclean) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 realclean = 1;
                 deldirs = 1;
@@ -855,7 +861,7 @@ int main(int argc, const char * const argv[])
 
             case 'd':
                 if (isdaemon) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 isdaemon = 1;
                 repeat = apr_atoi64(arg);
@@ -865,7 +871,7 @@ int main(int argc, const char * const argv[])
 
             case 'l':
                 if (limit_found) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 limit_found = 1;
 
@@ -898,7 +904,7 @@ int main(int argc, const char * const argv[])
 
             case 'p':
                 if (proxypath) {
-                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                    usage_repeated_arg(pool, opt);
                 }
                 proxypath = apr_pstrdup(pool, arg);
                 if ((status = apr_filepath_set(proxypath, pool)) != APR_SUCCESS) {
