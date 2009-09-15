@@ -359,6 +359,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     apr_bucket_brigade *bb;
     apr_bucket *bucket, *next;
     apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
+    apr_status_t rv;
 
     /* Fail quickly if the connection has already been aborted. */
     if (c->aborted) {
@@ -369,7 +370,6 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     }
 
     if (ctx == NULL) {
-        apr_status_t rv;
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
         net->out_ctx = (core_output_filter_ctx_t *)ctx;
         rv = apr_socket_opt_set(net->client_socket, APR_SO_NONBLOCK, 1);
@@ -435,8 +435,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
      */
 
     if (new_bb == NULL) {
-        apr_status_t rv = send_brigade_nonblocking(net->client_socket, bb,
-                                                   &(ctx->bytes_written), c);
+        rv = send_brigade_nonblocking(net->client_socket, bb,
+                                      &(ctx->bytes_written), c);
         if (APR_STATUS_IS_EAGAIN(rv)) {
             rv = APR_SUCCESS;
         }
@@ -455,8 +455,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         next = APR_BUCKET_NEXT(bucket);
         if (APR_BUCKET_IS_FLUSH(bucket)) {
             ctx->tmp_flush_bb = apr_brigade_split_ex(bb, next, ctx->tmp_flush_bb);
-            apr_status_t rv = send_brigade_blocking(net->client_socket, bb,
-                                                    &(ctx->bytes_written), c);
+            rv = send_brigade_blocking(net->client_socket, bb,
+                                       &(ctx->bytes_written), c);
             if (rv != APR_SUCCESS) {
                 /* The client has aborted the connection */
                 c->aborted = 1;
@@ -472,8 +472,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
                 const char *data;
                 apr_size_t length;
                 /* XXX support nonblocking read here? */
-                apr_status_t rv =
-                    apr_bucket_read(bucket, &data, &length, APR_BLOCK_READ);
+                rv = apr_bucket_read(bucket, &data, &length, APR_BLOCK_READ);
                 if (rv != APR_SUCCESS) {
                     return rv;
                 }
@@ -491,8 +490,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         /* ### Writing the entire brigade may be excessive; we really just
          * ### need to send enough data to be under THRESHOLD_MAX_BUFFER.
          */
-        apr_status_t rv = send_brigade_blocking(net->client_socket, bb,
-                                                &(ctx->bytes_written), c);
+        rv = send_brigade_blocking(net->client_socket, bb,
+                                   &(ctx->bytes_written), c);
         if (rv != APR_SUCCESS) {
             /* The client has aborted the connection */
             c->aborted = 1;
@@ -500,8 +499,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         }
     }
     else if (bytes_in_brigade >= THRESHOLD_MIN_WRITE) {
-        apr_status_t rv = send_brigade_nonblocking(net->client_socket, bb,
-                                                   &(ctx->bytes_written), c);
+        rv = send_brigade_nonblocking(net->client_socket, bb,
+                                      &(ctx->bytes_written), c);
         if ((rv != APR_SUCCESS) && (!APR_STATUS_IS_EAGAIN(rv))) {
             /* The client has aborted the connection */
             c->aborted = 1;
