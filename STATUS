@@ -228,3 +228,4 @@ PATCHES/ISSUES THAT ARE STALLED
                 plus docs patch from r795450
    +1: niq
    -1: wrowe;  See Message-ID: <4A64D3CA.4050300@rowe-clan.net>
+   +1: rbowen - Not terribly concerned about the name, but FallbackHandler works for me.
