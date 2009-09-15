@@ -208,10 +208,8 @@ FILE_nlm_copyright =
 FILES_nlm_Ximports = \
 	@$(APR)/aprlib.imp \
 	@$(NWOS)/httpd.imp \
+	@$(OBJDIR)/mod_proxy.imp \
 	@libc.imp \
-	proxy_module \
-	proxy_hook_scheme_handler \
-	proxy_hook_canon_handler \
 	$(EOLIST)
 
 #
