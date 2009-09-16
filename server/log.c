@@ -160,8 +160,6 @@ struct piped_log {
     apr_pool_t *p;
     /** The pipe between the server and the logging process */
     apr_file_t *read_fd, *write_fd;
-    /* XXX - an #ifdef that needs to be eliminated from public view. Shouldn't
-     * be hard */
 #ifdef AP_HAVE_RELIABLE_PIPED_LOGS
     /** The name of the program the logging process is running */
     char *program;
