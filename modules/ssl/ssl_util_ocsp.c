@@ -82,7 +82,6 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
     for (; sa; sa = sa->next) {
         rv = apr_socket_create(&sd, sa->family, SOCK_STREAM, APR_PROTO_TCP, p);
         if (rv == APR_SUCCESS) {
-            /* Inherit the default I/O timeout. */
             apr_socket_timeout_set(sd, timeout);
 
             rv = apr_socket_connect(sd, sa);
