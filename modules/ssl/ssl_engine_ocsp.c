@@ -141,6 +141,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
     request = create_request(ctx, cert, &certID, s, pool);
     if (request) {
+        /* Use default I/O timeout for the server. */
         response = modssl_dispatch_ocsp_request(ruri, 
                                                 mySrvFromConn(c)->timeout,
                                                 request, c, pool);
