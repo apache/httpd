@@ -57,6 +57,7 @@ static BIO *serialize_request(OCSP_REQUEST *req, const apr_uri_t *uri)
  * responder at given server given by URI.  Returns socket object or
  * NULL on error. */
 static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri, 
+                                  apr_interval_time_t timeout,
                                   conn_rec *c, apr_pool_t *p)
 {
     apr_status_t rv;
@@ -82,7 +83,7 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
         rv = apr_socket_create(&sd, sa->family, SOCK_STREAM, APR_PROTO_TCP, p);
         if (rv == APR_SUCCESS) {
             /* Inherit the default I/O timeout. */
-            apr_socket_timeout_set(sd, mySrvFromConn(c)->timeout);
+            apr_socket_timeout_set(sd, timeout);
 
             rv = apr_socket_connect(sd, sa);
             if (rv == APR_SUCCESS) {
@@ -270,7 +271,8 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
     return response;
 }
 
-OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri, 
+OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
+                                            apr_interval_time_t timeout,
                                             OCSP_REQUEST *request,
                                             conn_rec *c, apr_pool_t *p) 
 {
@@ -286,7 +288,7 @@ OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
         return NULL;
     }
     
-    sd = send_request(bio, uri, c, p);
+    sd = send_request(bio, uri, timeout, c, p);
     if (sd == NULL) {
         /* Errors already logged. */
         BIO_free(bio);
