@@ -94,6 +94,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    +1: covener, poirier
    +1: minfrin (with r814779 for compiler warning fix)
 
+ * mod_ssl: The error message when SSLCertificateFile is missing should
+   at least give the name or position of the problematic virtual host
+   definition.
+   Trunk Patch: http://svn.apache.org/viewvc?rev=813105&view=rev
+   2.2.x Patch: http://people.apache.org/~minfrin/ssl_engine_pphrase.diff
+   +1: minfrin, rpluem, pquerna
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -111,13 +118,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: niq
    -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
               vs 2.6 kernels, potentially a suspect test for root.
-
- * mod_ssl: The error message when SSLCertificateFile is missing should
-   at least give the name or position of the problematic virtual host
-   definition.
-   Trunk Patch: http://svn.apache.org/viewvc?rev=813105&view=rev
-   2.2.x Patch: http://people.apache.org/~minfrin/ssl_engine_pphrase.diff
-   +1: minfrin, rpluem
 
  * mod_ssl: Improve environment variable extraction to be more
    efficient and to correctly handle DNs with duplicate tags.
