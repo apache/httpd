@@ -94,13 +94,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    +1: covener, poirier
    +1: minfrin (with r814779 for compiler warning fix)
 
- * mod_ldap: hints in usage for LDAPCacheEntries and LDAPOpCacheEntries
-   updated to match manual and code (0 or -1 to disable)
-   PR 40948
-   Trunk Patch: http://svn.apache.org/viewvc?rev=814441&view=rev
-   2.2.x patch: Trunk works.
-   +1: covener, rpluem, minfrin
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

@@ -2075,9 +2075,9 @@ static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPCacheEntries", util_ldap_set_cache_entries,
                   NULL, RSRC_CONF,
                   "Set the maximum number of entries that are possible in the "
-                  "LDAP search cache. Use 0 for no limit. "
-                  "-1 disables the cache. (default: 1024)"),
-
+                  "LDAP search cache. Use 0 or -1 to disable the search cache " 
+                  "(default: 1024)"),
+                  
     AP_INIT_TAKE1("LDAPCacheTTL", util_ldap_set_cache_ttl,
                   NULL, RSRC_CONF,
                   "Set the maximum time (in seconds) that an item can be "
@@ -2087,8 +2087,8 @@ static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPOpCacheEntries", util_ldap_set_opcache_entries,
                   NULL, RSRC_CONF,
                   "Set the maximum number of entries that are possible "
-                  "in the LDAP compare cache. Use 0 for no limit. "
-                  "Use -1 to disable the cache. (default: 1024)"),
+                  "in the LDAP compare cache. Use 0 or -1 to disable the compare cache " 
+                  "(default: 1024)"),
 
     AP_INIT_TAKE1("LDAPOpCacheTTL", util_ldap_set_opcache_ttl,
                   NULL, RSRC_CONF,
