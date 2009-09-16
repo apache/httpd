@@ -58,34 +58,12 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#defaultmapping">DefaultMapping</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultMapping" id="DefaultMapping">DefaultMapping</a> <a name="defaultmapping" id="defaultmapping">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a default URL for requests that don't map to a file</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DefaultMapping <var>local-url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None - httpd will return 404 (Not Found)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
-</table>
-    <p>Use this to set a handler for any URL that doesn't map to anything
-    in your filesystem, and would otherwise return HTTP 404 (Not Found).
-    For example</p>
-    <div class="example"><p><code>
-        <code>DefaultMapping default.php</code>
-    </code></p></div>
-    <p>will cause requests for non-existent files to be handled by
-    <code>default.php</code>, while requests for files that exist
-    are unaffected.</p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Directive</a></h2>
 <table class="directive">
@@ -187,6 +165,41 @@ a directory</td></tr>
     <code>index.html</code> file. <strong>But a request without trailing slash
     would list the directory contents</strong>.</p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a name="fallbackresource" id="fallbackresource">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define a default URL for requests that don't map to a file</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FallbackResource <var>local-url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None - httpd will return 404 (Not Found)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+</table>
+    <p>Use this to set a handler for any URL that doesn't map to anything
+    in your filesystem, and would otherwise return HTTP 404 (Not Found).
+    For example</p>
+    <div class="example"><p><code>
+        <code>FallbackResource not-404.php</code>
+    </code></p></div>
+    <p>will cause requests for non-existent files to be handled by
+    <code>not-404.php</code>, while requests for files that exist
+    are unaffected.</p>
+    <p>It is frequently desirable to have a single file or resource
+    handle all requests to a particular directory, except those requests
+    that correspond to an existing file or script. This is often
+    referred to as a 'front controller.'</p>
+    <p>In earlier versions of httpd, this effect typically required
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, and the use of the <code>-f</code> and
+    <code>-d</code> tests for file and directory existence. This now
+    requires only one line of configuration.</p>
+    <div class="example"><p><code>
+        <code>FallbackResource index.php</code>
+    </code></p></div>
+    <p>Existing files, such as images, css files, and so on, will be
+    served normally.</p>
 
 </div>
 </div>
