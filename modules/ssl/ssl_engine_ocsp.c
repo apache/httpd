@@ -141,7 +141,9 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
 
     request = create_request(ctx, cert, &certID, s, pool);
     if (request) {
-        response = modssl_dispatch_ocsp_request(ruri, request, c, pool);
+        response = modssl_dispatch_ocsp_request(ruri, 
+                                                mySrvFromConn(c)->timeout,
+                                                request, c, pool);
     }
 
     if (!request || !response) {

@@ -708,7 +708,8 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
  * responder at the given URI.  Returns the decoded OCSP response
  * object, or NULL on error (in which case, errors will have been
  * logged).  Pool 'p' is used for temporary allocations. */
-OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri, 
+OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri,
+                                            apr_interval_time_t timeout,
                                             OCSP_REQUEST *request,
                                             conn_rec *c, apr_pool_t *p);
 #endif
