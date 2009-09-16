@@ -9,6 +9,10 @@ Changes with Apache 2.2.14
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_ssl: The error message when SSLCertificateFile is missing should
+     at least give the name or position of the problematic virtual host
+     definition. [Stefan Fritsch sf sfritsch.de]
+
   *) htdbm: Fix possible buffer overflow if dbm database has very
      long values.  PR 30586 [Dan Poirier]
 
