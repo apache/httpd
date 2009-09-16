@@ -595,6 +595,29 @@ static void dummy_signal_handler(int sig)
      */
 }
 
+static void accept_mutex_error(char *func, apr_status_t rv, int process_slot)
+{
+    int level = APLOG_EMERG;
+
+    if (ap_scoreboard_image->parent[process_slot].generation !=
+        ap_scoreboard_image->global->running_generation) {
+        level = APLOG_DEBUG; /* common to get these at restart time */
+    } 
+    else if (requests_this_child == INT_MAX  
+        || ((requests_this_child == ap_max_requests_per_child)
+            && ap_max_requests_per_child)) { 
+        ap_log_error(APLOG_MARK, level, rv, ap_server_conf,
+                     "apr_proc_mutex_%s failed "
+                     "before this child process served any requests.",
+                     func);
+        clean_child_exit(APEXIT_CHILDSICK); 
+    }
+    ap_log_error(APLOG_MARK, level, rv, ap_server_conf,
+                 "apr_proc_mutex_%s failed. Attempting to "
+                 "shutdown process gracefully.", func);
+    signal_threads(ST_GRACEFUL);
+}
+
 static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
@@ -678,19 +701,10 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
 
         if ((rv = SAFE_ACCEPT(apr_proc_mutex_lock(accept_mutex)))
             != APR_SUCCESS) {
-            int level = APLOG_EMERG;
 
-            if (listener_may_exit) {
-                break;
+            if (!listener_may_exit) {
+                accept_mutex_error("lock", rv, process_slot);
             }
-            if (ap_scoreboard_image->parent[process_slot].generation !=
-                ap_scoreboard_image->global->running_generation) {
-                level = APLOG_DEBUG; /* common to get these at restart time */
-            }
-            ap_log_error(APLOG_MARK, level, rv, ap_server_conf,
-                         "apr_proc_mutex_lock failed. Attempting to shutdown "
-                         "process gracefully.");
-            signal_threads(ST_GRACEFUL);
             break;                    /* skip the lock release */
         }
 
@@ -769,19 +783,11 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
             }
             if ((rv = SAFE_ACCEPT(apr_proc_mutex_unlock(accept_mutex)))
                 != APR_SUCCESS) {
-                int level = APLOG_EMERG;
 
                 if (listener_may_exit) {
                     break;
                 }
-                if (ap_scoreboard_image->parent[process_slot].generation !=
-                    ap_scoreboard_image->global->running_generation) {
-                    level = APLOG_DEBUG; /* common to get these at restart time */
-                }
-                ap_log_error(APLOG_MARK, level, rv, ap_server_conf,
-                             "apr_proc_mutex_unlock failed. Attempting to "
-                             "shutdown process gracefully.");
-                signal_threads(ST_GRACEFUL);
+                accept_mutex_error("unlock", rv, process_slot);
             }
             if (csd != NULL) {
                 rv = ap_queue_push(worker_queue, csd, ptrans);
