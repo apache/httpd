@@ -89,10 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * htcacheclean: 19 ways to fail, 1 error message. Fixed.
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
-   +1: covener, poirier
-   +1: minfrin (with r814779 for compiler warning fix)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -132,7 +128,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             conditional setting of reqs_array within the declarations.  The hook won't
             be called if ap_requires() returns NULL.  (See calls to ap_some_auth_required()
             before calls to ap_run_auth_checker().)
-   
+
+ * htcacheclean: 19 ways to fail, 1 error message. Fixed.
+   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
+                http://svn.apache.org/viewvc?view=rev&revision=814779
+                http://svn.apache.org/viewvc?rev=815448&view=rev
+   +1: minfrin
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
