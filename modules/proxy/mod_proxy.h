@@ -30,16 +30,6 @@
 
    Also note numerous FIXMEs and CHECKMEs which should be eliminated.
 
-   This code is once again experimental!
-
-   Things to do:
-
-   1. Make it completely work (for FTP too)
-
-   2. HTTP/1.1
-
-   Chuck Murcko <chuck@topsail.org> 02-06-01
-
  */
 
 #include "apr_hooks.h"
