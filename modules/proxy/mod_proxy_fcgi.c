@@ -139,7 +139,7 @@ static void fill_in_header(fcgi_header *header,
                            apr_uint16_t content_len,
                            unsigned char padding_len)
 {
-    header->version = 1;
+    header->version = FCGI_VERSION;
 
     header->type = type;
 
