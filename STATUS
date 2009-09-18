@@ -133,8 +133,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
                 http://svn.apache.org/viewvc?view=rev&revision=814779
                 http://svn.apache.org/viewvc?rev=815448&view=rev
-   +1: minfrin
-   +1: poirier with http://svn.apache.org/viewvc?view=rev&revision=816701 to fix tabs.
+                http://svn.apache.org/viewvc?view=rev&revision=816701
+   +1: minfrin, poirier
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
