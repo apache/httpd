@@ -59,6 +59,7 @@
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>saniye</var> ]
     [ -<strong>T</strong> <var>içerik-türü</var> ]
+    [ -<strong>u</strong> <var>PUT-dosyası</var> ]
     [ -<strong>v</strong> <var>ayrıntı-düzeyi</var>]
     [ -<strong>V</strong> ]
     [ -<strong>w</strong> ]
@@ -177,9 +178,13 @@
       Öntanımlı olarak bir süre kısıtlaması yoktur.</dd>
 
     <dt><code><strong>-T</strong> <var>içerik-türü</var></code></dt>
-    <dd>POST verisi için kullanılacak içerik türü belirtilir. Örnek:
+    <dd>POST/PUT verisi için kullanılacak içerik türü belirtilir. Örnek:
       <code>application/x-www-form-urlencoded</code>.
       Öntanımlı değer: <code>text/plain</code>.</dd>
+
+    <dt><code>-u <var>PUT-dosyası</var></code></dt>
+    <dd>PUT verisini içeren dosya.  Ayrıca, <code>-T</code> seçeneğini
+      belirtmeyi de unutmayın.</dd>
 
     <dt><code><strong>-v</strong> <var>ayrıntı-düzeyi</var></code></dt>
     <dd>Çıktının ayrıntı düzeyi belirtilir.  <code>4</code> ve üstü ile
