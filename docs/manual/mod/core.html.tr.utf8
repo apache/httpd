@@ -922,10 +922,9 @@ kullanımı önerilmemektedir.</td></tr>
     <ul>
     <li>Bazı çok işlemcili sistemlerde bellek eşleme
       <code class="program"><a href="../programs/httpd.html">httpd</a></code>’nin başarımını düşürebilmektedir.</li>
-    <li><code class="directive"><a href="#documentroot">DocumentRoot</a></code> NFS gibi bir ağ
-      dosya sistemi üzerinde ise ağ kopması sonucunda, bir dosyanın silinmesi
-      veya dosya okuma işleminin  kesilmesi durumunda
-      <code class="program"><a href="../programs/httpd.html">httpd</a></code> parçalama arızası vererek çökebilir.</li>
+    <li><code class="program"><a href="../programs/httpd.html">httpd</a></code> bellek eşlemli çalışırken bir dosyanın silinmesi veya
+      boyutunun küçültülmesi <code class="program"><a href="../programs/httpd.html">httpd</a></code>'nin parçalama arızası vererek
+      çökmesine yol açabilir.</li>
     </ul>
 
     <p>Bu tür sorunlardan dolayı zarar görülebilecek sunucu
