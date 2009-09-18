@@ -22,7 +22,6 @@
 <a href="../ko/programs/ab.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/ab.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>ab</strong></code> Apache Hiper Metin Aktarım Protokolü
       (HTTP) sunucunuzun başarımını ölçmek amacıyla kullanabileceğiniz bir
@@ -60,6 +59,7 @@
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>saniye</var> ]
     [ -<strong>T</strong> <var>içerik-türü</var> ]
+    [ -<strong>u</strong> <var>PUT-dosyası</var> ]
     [ -<strong>v</strong> <var>ayrıntı-düzeyi</var>]
     [ -<strong>V</strong> ]
     [ -<strong>w</strong> ]
@@ -178,7 +178,7 @@
       Öntanımlı olarak bir süre kısıtlaması yoktur.</dd>
 
     <dt><code><strong>-T</strong> <var>içerik-türü</var></code></dt>
-    <dd>POST verisi için kullanılacak içerik türü belirtilir. Örnek:
+    <dd>POST/PUT verisi için kullanılacak içerik türü belirtilir. Örnek:
       <code>application/x-www-form-urlencoded</code>.
       Öntanımlı değer: <code>text/plain</code>.</dd>
 
@@ -187,6 +187,10 @@
       başlıklar hakkında bilgi, <code>3</code> ve üstü ile yanıt kodları
       (404, 200, vb.), <code>2</code> ve üstü ile ise uyarı ve bilgi
       iletileri gösterilir.</dd>
+
+    <dt><code>-u <var>PUT-dosyası</var></code></dt>
+    <dd>PUT verisini içeren dosya.  Ayrıca, <code>-T</code> seçeneğini
+      belirtmeyi de unutmayın.</dd>
 
     <dt><code><strong>-V</strong></code></dt>
     <dd>Sürüm bilgilerini gösterir ve çıkar.</dd>

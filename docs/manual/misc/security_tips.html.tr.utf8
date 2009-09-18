@@ -23,7 +23,6 @@
 <a href="../ko/misc/security_tips.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/security_tips.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bir HTTP Sunucusunu ayarlarken dikkat edilmesi gerekenler ve bazı
     ipuçları.  Öneriler kısmen Apache’ye özel kısmen de genel olacaktır.</p>
@@ -240,7 +239,7 @@
       bir betik yazıp B’nin CGI veritabanını silebilir. Bu gibi durumların
       ortaya çıkmaması için betiklerin farklı kullanıcıların aidiyetlerinde
       çalışmasını sağlayan ve 1.2 sürümünden beri Apache ile dağıtılan <a href="../suexec.html">suEXEC</a> diye bir program vardır. Başka bir yol
-      da <a href="http://cgiwrap.unixtools.org/">CGIWrap</a> kullanmaktır.</p>
+      da <a href="http://cgiwrap.sourceforge.net/">CGIWrap</a> kullanmaktır.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

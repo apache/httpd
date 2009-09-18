@@ -926,10 +926,10 @@ host</context>
     <p>Pour les configurations de serveur sujettes &agrave; ce genre de
     probl&egrave;me, il est pr&eacute;f&eacute;rable de d&eacute;sactiver la projection en m&eacute;moire
     des fichiers servis en sp&eacute;cifiant :</p>
-    <li>S'il fait l'objet d'une projection en m&eacute;moire par
+    <ul><li>S'il fait l'objet d'une projection en m&eacute;moire par
     <program>httpd</program>, la suppression ou la troncature d'un
     fichier peut provoquer un crash de <program>httpd</program> avec une
-    erreur de segmentation.</li>
+    erreur de segmentation.</li></ul>
     <example>
       EnableMMAP Off
     </example>

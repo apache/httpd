@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 804678:805049 (outdated) -->
+<!-- English Revision: 805049 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -435,7 +435,7 @@
         süredir. Burada ağ band genişliği ile sunucu kaynaklarının kullanımı
         arasında bir seçim yapmak söz konusudur. Hiçbir şey umurunuzda
         değilse <a
-        href="http://www.research.digital.com/wrl/techreports/abstracts/95.4.html">
+        href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
         çoğu ayrıcalığın yitirilmesi pahasına</a> bu değeri rahatça
         <code>60</code> saniyenin üzerine çıkarabilirsiniz.</p>
 

@@ -24,7 +24,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bir HTTP sunucusunu verimli şekilde yönetebilmek için oluşabilecek
       sorunlardan başka sunucunun başarımı ve etkinliği hakkında da bazı geri
@@ -72,7 +71,7 @@
       düzeltileceği ile ilgili ayrıntıları da içerir.</p>
 
     <p>Hata günlüğü normal olarak bir dosyaya yazılır (genellikle, dosyanın
-      ismi Unix sistemlerinde <code>error_log</code>, Windows’ta ise
+      ismi Unix sistemlerinde <code>error_log</code>, OS/2 ve Windows’ta ise
       <code>error.log</code>’dur). Ayrıca, Unix sistemlerinde sunucunun
       hataları <code>syslog</code>’a veya <a href="#piped">borulamak suretiyle
       bir programa</a> aktarması da mümkündür.</p>

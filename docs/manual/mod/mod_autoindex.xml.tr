@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 758929:807930 (outdated) -->
+<!-- English Revision: 807930 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -776,7 +776,7 @@ belirler.</description>
         <code>Last-Modified</code> ve <code>ETag</code> alanlarının dönmesini
         sağlar. Sadece işletim sistemi veya dosya sistemi uygun stat()
         sonuçlarını döndürüyorsa bu geçerlidir. Bazı Unix sistemleri ve
-        Win32’nin NTFS’i böyledir. Ancak Win32 FAT dosya
+        OS/2'nin JFS'si ile Win32’nin NTFS’i böyledir. Ancak OS/2 ve Win32 FAT dosya
         sistemleri böyle değildir. Bu özellik etkin kılındığında istemci veya
         vekil <code>HEAD</code> istekleriyle dosya listesindeki değişiklikleri
         izleyebilirler. Yalnız, bazı işletim sistemlerinin yeni ve silinmiş

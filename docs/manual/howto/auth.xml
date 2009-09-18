@@ -39,14 +39,14 @@ authorization process.  You will usually need to choose at least one
 module from each group.</p>
 
 <ul>
-  <li>Authentication type (see the 
+  <li>Authentication type (see the
       <directive module="mod_authn_core">AuthType</directive> directive)
     <ul>
       <li><module>mod_auth_basic</module></li>
       <li><module>mod_auth_digest</module></li>
     </ul>
   </li>
-  <li>Authentication provider (see the 
+  <li>Authentication provider (see the
   <directive module="mod_auth_basic">AuthBasicProvider</directive> and
   <directive module="mod_auth_digest">AuthDigestProvider</directive> directives)
 
@@ -58,7 +58,7 @@ module from each group.</p>
       <li><module>mod_authnz_ldap</module></li>
     </ul>
   </li>
-  <li>Authorization (see the 
+  <li>Authorization (see the
       <directive module="mod_authz_core">Require</directive> directive)
     <ul>
       <li><module>mod_authnz_ldap</module></li>
@@ -72,17 +72,17 @@ module from each group.</p>
   </li>
 </ul>
 
-  <p>In addition to these modules, there are also 
-  <module>mod_authn_core</module> and 
+  <p>In addition to these modules, there are also
+  <module>mod_authn_core</module> and
   <module>mod_authz_core</module>.  These module implement core
   directives that are core to all auth modules.</p>
 
   <p>The module <module>mod_authnz_ldap</module> is both an
-  authentication and authorization provider.  The module 
+  authentication and authorization provider.  The module
   <module>mod_authz_host</module> provides authorization
   and access control based on hostname, IP address or characteristics
   of the request, but is not part of the authentication provider
-  system. For backwards compatibility with the mod_access, there is 
+  system. For backwards compatibility with the mod_access, there is
   a new module <module>mod_access_compat</module>.</p>
 
   <p>You probably also want to take a look at the <a
@@ -136,11 +136,11 @@ module from each group.</p>
     kept. This should not be terribly difficult, and I'll try to
     make this clear when we come to that point.</p>
 
-    <p>You will also need to make sure that the modules 
-    <module>mod_authn_core</module> and <module>mod_authz_core</module> 
-    have either been built into the httpd binary or loaded by the 
-    httpd.conf configuration file. Both of these modules provide core 
-    directives and functionality that are critical to the configuration 
+    <p>You will also need to make sure that the modules
+    <module>mod_authn_core</module> and <module>mod_authz_core</module>
+    have either been built into the httpd binary or loaded by the
+    httpd.conf configuration file. Both of these modules provide core
+    directives and functionality that are critical to the configuration
     and use of authentication and authorization in the web server.</p>
 </section>
 
@@ -164,7 +164,7 @@ module from each group.</p>
     came with Apache. This will be located in the <code>bin</code> directory
     of wherever you installed Apache. If you have installed Apache from
     a third-party package, it may be in your execution path.</p>
-    
+
     <p>To create the file, type:</p>
 
     <example>
@@ -385,10 +385,10 @@ person in</title>
 <section id="multprovider"><title>Using multiple providers</title>
 
     <p>With the introduction of the new provider based authentication and
-    authorization architecture, you are no longer locked into a single 
-    authentication or authorization method. In fact any number of the 
-    providers can be mixed and matched to provide you with exactly the 
-    scheme that meets your needs. In the following example, both the 
+    authorization architecture, you are no longer locked into a single
+    authentication or authorization method. In fact any number of the
+    providers can be mixed and matched to provide you with exactly the
+    scheme that meets your needs. In the following example, both the
     file and LDAP based authentication providers are being used.</p>
 
     <example>
@@ -442,22 +442,22 @@ person in</title>
 
 <section id="beyond"><title>Beyond just authorization</title>
 
-    <p>The way that authorization can be apply is now much more flexible 
+    <p>The way that authorization can be apply is now much more flexible
     than just a single check against a single data store. Ordering, logic
     and choosing how authorization will be done is now possible.</p>
 
     <section id="authandororder"><title>Applying logic and ordering</title>
         <p>Controling how and in what order authorization will be applied
         has been a bit of a mystery in the past. In Apache 2.2 a provider-based
-        authentication mechanism was introduced to decouple the actual 
+        authentication mechanism was introduced to decouple the actual
         authentication process from authorization and supporting functionality.
         One of the side benefits was that authentication providers could be
-        configured and called in a specific order which didn't depend on the 
-        load order of the auth module itself. This same provider based mechanism 
-        has been brought forward into authorization as well. What this means is 
+        configured and called in a specific order which didn't depend on the
+        load order of the auth module itself. This same provider based mechanism
+        has been brought forward into authorization as well. What this means is
         that the <directive module="mod_authz_core">Require</directive> directive
-        not only specifies which authorization methods should be used, it also 
-        specifies the order in which they are called. Multiple authorization 
+        not only specifies which authorization methods should be used, it also
+        specifies the order in which they are called. Multiple authorization
         methods are called in the same order in which the
         <directive module="mod_authz_core">Require</directive> directives
         appear in the configuration.</p>
@@ -465,21 +465,21 @@ person in</title>
         <p>With the introduction of authorization container directives
         such as
         <directive module="mod_authz_core" type="section">RequireAll</directive>
-        and 
+        and
         <directive module="mod_authz_core" type="section">RequireAny</directive>,
         the configuration also has control over when the
-        authorization methods are called and what criteria determines when 
+        authorization methods are called and what criteria determines when
         access is granted.  See
         <a href="../mod/mod_authz_core.html#logic">Authorization Containers</a>
         for an example of how they may be used to express complex
         authorization logic.</p>
 
         <p>By default all
-        <directive module="mod_authz_core">Require</directive> 
+        <directive module="mod_authz_core">Require</directive>
         directives are handled as though contained within a
         <directive module="mod_authz_core" type="section">RequireAny</directive>
-        container directive.  In other words, if 
-        any of the specified authorization methods succeed, then authorization 
+        container directive.  In other words, if
+        any of the specified authorization methods succeed, then authorization
         is granted.</p>
 
     </section>
@@ -489,40 +489,40 @@ person in</title>
         story. Frequently you want to let people in based on something
         other than who they are. Something such as where they are
         coming from.</p>
-    
+
         <p>The authorization providers <directive module="mod_authz_host">
         all</directive>, <directive module="mod_authz_host">
         env</directive>, <directive module="mod_authz_host">
         host</directive> and <directive module="mod_authz_host">
         ip</directive> let you allow or deny access based other host based
-        criteria such as host name or ip address of the machine requesting 
-        a document.</p> 
+        criteria such as host name or ip address of the machine requesting
+        a document.</p>
 
-        <p>The usage of these providers is specified through the 
+        <p>The usage of these providers is specified through the
         <directive module="mod_authz_core">Require</directive> directive.
         This directive registers the authorization providers
         that will be called during the authorization stage of the request
         processing. For example:</p>
-    
+
         <example>
           Require ip <var>address</var>
         </example>
-    
+
         <p>where <var>address</var> is an IP address (or a partial IP
         address) or:</p>
-    
+
         <example>
           Require host <var>domain_name</var>
         </example>
-    
-        <p>where <var>domain_name</var> is a fully qualified domain name 
-        (or a partial domain name); you may provide multiple addresses or 
+
+        <p>where <var>domain_name</var> is a fully qualified domain name
+        (or a partial domain name); you may provide multiple addresses or
         domain names, if desired.</p>
-    
+
         <p>For example, if you have someone spamming your message
         board, and you want to keep them out, you could do the
         following:</p>
-    
+
         <example>
           &lt;RequireAll&gt;
           <indent>
@@ -531,11 +531,11 @@ person in</title>
           </indent>
           &lt;/RequireAll&gt;
         </example>
-    
+
         <p>Visitors coming from that address will not be able to see
         the content covered by this directive. If, instead, you have a
         machine name, rather than an IP address, you can use that.</p>
-    
+
         <example>
           &lt;RequireAll&gt;
           <indent>
@@ -544,10 +544,10 @@ person in</title>
           </indent>
           &lt;/RequireAll&gt;
         </example>
-    
+
         <p>And, if you'd like to block access from an entire domain,
         you can specify just part of an address or domain name:</p>
-    
+
         <example>
           &lt;RequireAll&gt;
           <indent>
@@ -562,24 +562,24 @@ person in</title>
           </indent>
           &lt;/RequireAll&gt;
         </example>
-    
+
         <p>The above example uses the <directive module="mod_authz_core"
         type="section">RequireNone</directive> directive
-        to make sure that none of the 
+        to make sure that none of the
         <directive module="mod_authz_core">Require</directive> directives
         contained within it
         match their parameters before granting access.</p>
-    
+
     </section>
 
     <section id="filesystem"><title>Access Control backwards compatibility</title>
-        <p>One of the side effects of adopting a provider based mechanism for 
+        <p>One of the side effects of adopting a provider based mechanism for
         authentication is that the need for the previous access control directives
         <directive module="mod_access_compat">Order</directive>,
         <directive module="mod_access_compat">Allow</directive>,
-        <directive module="mod_access_compat">Deny</directive> and 
-        <directive module="mod_access_compat">Satisfy</directive> are no longer needed. 
-        However to provide backwards compatibility for older configurations, these 
+        <directive module="mod_access_compat">Deny</directive> and
+        <directive module="mod_access_compat">Satisfy</directive> are no longer needed.
+        However to provide backwards compatibility for older configurations, these
         directives have been moved to the <module>mod_access_compat</module> module.</p>
     </section>
 
@@ -589,13 +589,13 @@ person in</title>
     <p>You should also read the documentation for
     <module>mod_auth_basic</module> and <module>mod_authz_host</module> which
     contain some more information about how this all works.
-    The directive <directive module="mod_authn_core">&lt;AuthnProviderAlias&gt;</directive> 
+    The directive <directive module="mod_authn_core">&lt;AuthnProviderAlias&gt;</directive>
     can also help in simplifying certain authentication configurations.</p>
-    
+
     <p>The various ciphers supported by Apache for authentication data are
     explained in <a href="../misc/password_encryptions.html">Password
     Encryptions</a>.</p>
-    
+
     <p>And you may want to look at the <a href="access.html">Access
     Control</a> howto, which discusses a number of related topics.</p>
 
