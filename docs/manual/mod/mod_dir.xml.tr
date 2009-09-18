@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 795450 -->
+<!-- English Revision: 815782 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -161,10 +161,10 @@
 </usage>
 </directivesynopsis>
 <directivesynopsis>
-<name>DefaultMapping</name>
+<name>FallbackResource</name>
 <description>Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
 </description>
-<syntax>DefaultMapping <var>yerel-url</var></syntax>
+<syntax>FallbackResource <var>yerel-url</var></syntax>
 <default>None - httpd 404 döndürecektir (Yok)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -173,11 +173,28 @@
     <p>Dosya sisteminde bulunmayan bir dosya için istek yapıldığında HTTP'nin
       404 (Yok) hatasını döndürmemesi için sunulacak dosyanın yolunu tanımlar.
       Örnek:</p>
+
     <example>
-        <code>DefaultMapping default.php</code>
+        <code>FallbackResource not-404.php</code>
     </example>
+
     <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
-      yerine <code>default.php</code> dosyası sunulacaktır..</p>
+      yerine <code>not-404.php</code> dosyası sunulacaktır.</p>
+
+    <p>Belli bir dizindeki mevcut bir dosya veya betik için yapılanlar dışındaki
+      tüm isteklerin tek bir dosya veya özkaynakla yerine getirilmesi sıkça istenen
+      bir durum olup bu mekanizmaya 'ön denetleyici' adı verilir.</p>
+
+    <p>httpd'nin önceki sürümlerinde bir dosya veya dizinin varlığının sınanması
+      için genellikle <module>mod_rewrite</module> modülü ve <code>-f</code> ve
+      <code>-d</code> kullanımı gerekirdi. Bunun için şimdi tek satırlık bir
+      yapılandırma yeterli olmaktadır.</p>
+
+    <example>
+        <code>FallbackResource index.php</code>
+    </example>
+
+    <p>Resim, CSS dosyaları gibi mevcut dosyalar normal olarak sunulur.</p>
 </usage>
 </directivesynopsis>
 

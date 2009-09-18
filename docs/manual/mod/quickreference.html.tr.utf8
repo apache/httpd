@@ -308,58 +308,58 @@ belirler.</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
 header field for all resources in the current context that have not been
 assigned a language-tag by some other means.</td></tr>
-<tr><td><a href="mod_dir.html#defaultmapping">DefaultMapping <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
-</td></tr>
-<tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>ortam-türü</var>|none</a></td><td> none </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
+<tr><td><a href="core.html#defaulttype">DefaultType <var>ortam-türü</var>|none</a></td><td> none </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Değeri <code>none</code> olduğu takdirde, bu yönergenin bir
 uyarı vermekten başka bir etkisi yoktur. Önceki sürümlerde, bu yönerge,
 sunucunun ortam türünü saptayamadığı durumda göndereceği öntanımlı ortam
 türünü belirlerdi.</td></tr>
-<tr><td><a href="core.html#define">Define <var>değişken-ismi</var></a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir değişkenin mevcudiyetini betimler.</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
-<tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
-<tr><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Zlib compression window size</td></tr>
-<tr><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
-[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts are denied access to the
+<tr class="odd"><td><a href="core.html#define">Define <var>değişken-ismi</var></a></td><td></td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir değişkenin mevcudiyetini betimler.</td></tr>
+<tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
+<tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
+<tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Zlib compression window size</td></tr>
+<tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
-<tr class="odd"><td><a href="core.html#directory">&lt;Directory <var>dizin-yolu</var>&gt;
-... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
+<tr><td><a href="core.html#directory">&lt;Directory <var>dizin-yolu</var>&gt;
+... &lt;/Directory&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sadece ismi belirtilen dosya sistemi dizininde ve bunun
   altdizinlerinde uygulanacak bir yönerge grubunu sarmalar.</td></tr>
-<tr><td><a href="mod_dir.html#directoryindex">DirectoryIndex
-    disabled | <var>yerel-url</var> [<var>yerel-url</var>] ...</a></td><td> index.html </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">İstemci bir dizin istediğinde dizin içeriğini listeler.
+<tr class="odd"><td><a href="mod_dir.html#directoryindex">DirectoryIndex
+    disabled | <var>yerel-url</var> [<var>yerel-url</var>] ...</a></td><td> index.html </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İstemci bir dizin istediğinde dizin içeriğini listeler.
 </td></tr>
-<tr class="odd"><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>düzifd</var>&gt;
-... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir düzenli ifade ile eşleşen dosya sistemi dizininde ve bunun
+<tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>düzifd</var>&gt;
+... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir düzenli ifade ile eşleşen dosya sistemi dizininde ve bunun
   altdizinlerinde uygulanacak bir yönerge grubunu sarmalar.</td></tr>
-<tr><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</td></tr>
-<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>dizin-yolu</var></a></td><td> /usr/local/apache/h +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
-<tr><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
-<tr class="odd"><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
-<tr><td><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel <var>level</var></a></td><td> debug </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the logging level of the DumpIO output</td></tr>
-<tr class="odd"><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
-<tr><td><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Bir çöküş sonrası olağandışılık eylemcilerini çalıştıracak
+<tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bölü çizgisi ile biten yönlendirmeleri açar/kapar.</td></tr>
+<tr><td><a href="core.html#documentroot">DocumentRoot <var>dizin-yolu</var></a></td><td> /usr/local/apache/h +</td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstemciye görünür olan ana belge ağacının kök dizinini belirler.</td></tr>
+<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
+<tr><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
+<tr class="odd"><td><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel <var>level</var></a></td><td> debug </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the logging level of the DumpIO output</td></tr>
+<tr><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bir çöküş sonrası olağandışılık eylemcilerini çalıştıracak
   kancayı etkin kılar.</td></tr>
-<tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Teslimat sırasında okunacak dosyalar için bellek eşlemeyi etkin
+<tr><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Teslimat sırasında okunacak dosyalar için bellek eşlemeyi etkin
   kılar.</td></tr>
-<tr><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Dosyaların istemciye tesliminde çekirdeğin dosya gönderme
+<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosyaların istemciye tesliminde çekirdeğin dosya gönderme
   desteğinin kullanımını etkin kılar.</td></tr>
-<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>hata-kodu</var> <var>belge</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Bir hata durumunda sunucunun istemciye ne döndüreceğini
+<tr><td><a href="core.html#errordocument">ErrorDocument <var>hata-kodu</var> <var>belge</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Bir hata durumunda sunucunun istemciye ne döndüreceğini
   belirler.</td></tr>
-<tr><td><a href="core.html#errorlog"> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</a></td><td> logs/error_log (Uni +</td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
-<tr class="odd"><td><a href="mod_example.html#example">Example</a></td><td></td><td>skdh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
+<tr class="odd"><td><a href="core.html#errorlog"> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</a></td><td> logs/error_log (Uni +</td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
+<tr><td><a href="mod_example.html#example">Example</a></td><td></td><td>skdh</td><td>D</td></tr><tr><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
 API</td></tr>
-<tr><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables generation of <code>Expires</code>
+<tr class="odd"><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables generation of <code>Expires</code>
 headers</td></tr>
-<tr class="odd"><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
-<var>&lt;code&gt;seconds</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
+<tr><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
+<var>&lt;code&gt;seconds</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
 by MIME type</td></tr>
-<tr><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
-<tr class="odd"><td><a href="mod_status.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Her istekte ek durum bilgisinin toplanmasını sağlar.
+<tr class="odd"><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
+<tr><td><a href="mod_status.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">Her istekte ek durum bilgisinin toplanmasını sağlar.
 </td></tr>
-<tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an external filter</td></tr>
-<tr class="odd"><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoLogS +</td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
-<tr><td><a href="core.html#fileetag" id="F" name="F">FileETag <var>bileşen</var> ...</a></td><td> INode MTime Size </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak
+<tr class="odd"><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an external filter</td></tr>
+<tr><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoLogS +</td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
+<tr class="odd"><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource <var>yerel-url</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
+</td></tr>
+<tr><td><a href="core.html#fileetag">FileETag <var>bileşen</var> ...</a></td><td> INode MTime Size </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak
   dosya özniteliklerini belirler.</td></tr>
 <tr class="odd"><td><a href="core.html#files">&lt;Files <var>dosya-adı</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Dosya isimleriyle eşleşme halinde uygulanacak yönergeleri
   içerir.</td></tr>

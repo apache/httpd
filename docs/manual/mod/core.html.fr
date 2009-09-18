@@ -934,10 +934,10 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     <p>Pour les configurations de serveur sujettes à ce genre de
     problème, il est préférable de désactiver la projection en mémoire
     des fichiers servis en spécifiant :</p>
-    <li>S'il fait l'objet d'une projection en mémoire par
+    <ul><li>S'il fait l'objet d'une projection en mémoire par
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>, la suppression ou la troncature d'un
     fichier peut provoquer un crash de <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec une
-    erreur de segmentation.</li>
+    erreur de segmentation.</li></ul>
     <div class="example"><p><code>
       EnableMMAP Off
     </code></p></div>

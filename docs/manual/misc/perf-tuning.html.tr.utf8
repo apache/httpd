@@ -23,7 +23,6 @@
 <a href="../ko/misc/perf-tuning.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/misc/perf-tuning.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Apache 2.x, esneklik, taşınabilirlik ve başarım arasında bir denge
@@ -406,7 +405,7 @@
         değeri <code>5</code> saniye olup bu etkiyi en aza indirmeye yönelik
         süredir. Burada ağ band genişliği ile sunucu kaynaklarının kullanımı
         arasında bir seçim yapmak söz konusudur. Hiçbir şey umurunuzda
-        değilse <a href="http://www.research.digital.com/wrl/techreports/abstracts/95.4.html">
+        değilse <a href="http://www.hpl.hp.com/techreports/Compaq-DEC/WRL-95-4.html">
         çoğu ayrıcalığın yitirilmesi pahasına</a> bu değeri rahatça
         <code>60</code> saniyenin üzerine çıkarabilirsiniz.</p>
 

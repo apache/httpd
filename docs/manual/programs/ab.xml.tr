@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 706880:811869 (outdated) -->
+<!-- English Revision: 811869 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -62,6 +62,7 @@
     [ -<strong>S</strong> ]
     [ -<strong>t</strong> <var>saniye</var> ]
     [ -<strong>T</strong> <var>içerik-türü</var> ]
+    [ -<strong>u</strong> <var>PUT-dosyası</var> ]
     [ -<strong>v</strong> <var>ayrıntı-düzeyi</var>]
     [ -<strong>V</strong> ]
     [ -<strong>w</strong> ]
@@ -180,7 +181,7 @@
       Öntanımlı olarak bir süre kısıtlaması yoktur.</dd>
 
     <dt><code><strong>-T</strong> <var>içerik-türü</var></code></dt>
-    <dd>POST verisi için kullanılacak içerik türü belirtilir. Örnek:
+    <dd>POST/PUT verisi için kullanılacak içerik türü belirtilir. Örnek:
       <code>application/x-www-form-urlencoded</code>.
       Öntanımlı değer: <code>text/plain</code>.</dd>
 
@@ -189,6 +190,10 @@
       başlıklar hakkında bilgi, <code>3</code> ve üstü ile yanıt kodları
       (404, 200, vb.), <code>2</code> ve üstü ile ise uyarı ve bilgi
       iletileri gösterilir.</dd>
+
+    <dt><code>-u <var>PUT-dosyası</var></code></dt>
+    <dd>PUT verisini içeren dosya.  Ayrıca, <code>-T</code> seçeneğini
+      belirtmeyi de unutmayın.</dd>
 
     <dt><code><strong>-V</strong></code></dt>
     <dd>Sürüm bilgilerini gösterir ve çıkar.</dd>

@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_autoindex.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_autoindex.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Unix <code>ls</code> veya Win32 <code>dir</code> kabuk komutunun
 yaptığı gibi dizin içeriğini listeler.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -737,7 +736,7 @@ belirler.</td></tr>
         <code>Last-Modified</code> ve <code>ETag</code> alanlarının dönmesini
         sağlar. Sadece işletim sistemi veya dosya sistemi uygun stat()
         sonuçlarını döndürüyorsa bu geçerlidir. Bazı Unix sistemleri ve
-        Win32’nin NTFS’i böyledir. Ancak Win32 FAT dosya
+        OS/2'nin JFS'si ile Win32’nin NTFS’i böyledir. Ancak OS/2 ve Win32 FAT dosya
         sistemleri böyle değildir. Bu özellik etkin kılındığında istemci veya
         vekil <code>HEAD</code> istekleriyle dosya listesindeki değişiklikleri
         izleyebilirler. Yalnız, bazı işletim sistemlerinin yeni ve silinmiş

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 780016:813376 (outdated) -->
+<!-- English Revision: 813376 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -853,10 +853,9 @@ edilmiştir.</compatibility>
     <ul>
     <li>Bazı çok işlemcili sistemlerde bellek eşleme
       <program>httpd</program>’nin başarımını düşürebilmektedir.</li>
-    <li><directive module="core">DocumentRoot</directive> NFS gibi bir ağ
-      dosya sistemi üzerinde ise ağ kopması sonucunda, bir dosyanın silinmesi
-      veya dosya okuma işleminin  kesilmesi durumunda
-      <program>httpd</program> parçalama arızası vererek çökebilir.</li>
+    <li><program>httpd</program> bellek eşlemli çalışırken bir dosyanın silinmesi veya
+      boyutunun küçültülmesi <program>httpd</program>'nin parçalama arızası vererek
+      çökmesine yol açabilir.</li>
     </ul>
 
     <p>Bu tür sorunlardan dolayı zarar görülebilecek sunucu
@@ -1052,7 +1051,7 @@ edilmiştir.</compatibility>
 <name>ErrorLog</name>
 <description>Sunucunun hata günlüğünü tutacağı yeri belirler.</description>
 <syntax> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</syntax>
-<default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows)</default>
+<default>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows ve OS/2)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -2825,35 +2824,30 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       bilgi verilip verilmeyeceğini belirler.</p>
 
     <dl>
-      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
+      <dt><code>ServerTokens Full</code> (veya belirtilmezse)</dt>
+      <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.0.41
+        (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
 
+      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
       Apache</code></dd>
 
       <dt><code>ServerTokens Major</code></dt>
-
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
       Apache/2</code></dd>
 
       <dt><code>ServerTokens Minor</code></dt>
-
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
       Apache/2.0</code></dd>
 
       <dt><code>ServerTokens Min[imal]</code></dt>
-
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
       Apache/2.0.41</code></dd>
 
       <dt><code>ServerTokens OS</code></dt>
-
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.0.41
       (Unix)</code></dd>
 
-      <dt><code>ServerTokens Full</code> (ya da belirtilmezse)</dt>
-
-      <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.0.41
-      (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
     </dl>
 
     <p>Bu ayarlama sunucunun tamamını etkiler ve her sanal konak için
@@ -2862,6 +2856,14 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
     <p>2.0.44 sürümünden itibaren bu yönerge <directive
       module="core">ServerSignature</directive> yönergesi tarafından sunulan
       bilgiyi de etkilemektedir.</p>
+
+    <note><directive>ServerTokens</directive> yönergesinde
+    <code>minimal</code>'den azının belirtilmesi önerilmez. Bunun sebebi ara
+    işlemlerle ilgili hata ayıklamasını zorlaştırmasıdır. Ayrıca,
+    <code>Server:</code> başlığının iptal edilmesinin sunucunuzu daha güvenli
+    yapmayacağına dikkat ediniz; "çapraşıklıkla sağlanan güvenlik" düşüncesi
+    gerçekle bağdaşmaz ve güvenliği olumsuz etkiler.</note>
+
 </usage>
 <seealso><directive module="core">ServerSignature</directive></seealso>
 </directivesynopsis>

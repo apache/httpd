@@ -27,7 +27,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -909,10 +908,9 @@ edilmiştir.</td></tr>
     <ul>
     <li>Bazı çok işlemcili sistemlerde bellek eşleme
       <code class="program"><a href="../programs/httpd.html">httpd</a></code>’nin başarımını düşürebilmektedir.</li>
-    <li><code class="directive"><a href="#documentroot">DocumentRoot</a></code> NFS gibi bir ağ
-      dosya sistemi üzerinde ise ağ kopması sonucunda, bir dosyanın silinmesi
-      veya dosya okuma işleminin  kesilmesi durumunda
-      <code class="program"><a href="../programs/httpd.html">httpd</a></code> parçalama arızası vererek çökebilir.</li>
+    <li><code class="program"><a href="../programs/httpd.html">httpd</a></code> bellek eşlemli çalışırken bir dosyanın silinmesi veya
+      boyutunun küçültülmesi <code class="program"><a href="../programs/httpd.html">httpd</a></code>'nin parçalama arızası vererek
+      çökmesine yol açabilir.</li>
     </ul>
 
     <p>Bu tür sorunlardan dolayı zarar görülebilecek sunucu
@@ -1105,7 +1103,7 @@ edilmiştir.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Sunucunun hata günlüğünü tutacağı yeri belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code> ErrorLog <var>dosya-yolu</var>|syslog[:<var>oluşum</var>]</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows)</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>ErrorLog logs/error_log (Unix) ErrorLog logs/error.log (Windows ve OS/2)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
@@ -2871,35 +2869,30 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
       bilgi verilip verilmeyeceğini belirler.</p>
 
     <dl>
-      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
+      <dt><code>ServerTokens Full</code> (veya belirtilmezse)</dt>
+      <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.0.41
+        (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
 
+      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
       Apache</code></dd>
 
       <dt><code>ServerTokens Major</code></dt>
-
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
       Apache/2</code></dd>
 
       <dt><code>ServerTokens Minor</code></dt>
-
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
       Apache/2.0</code></dd>
 
       <dt><code>ServerTokens Min[imal]</code></dt>
-
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server:
       Apache/2.0.41</code></dd>
 
       <dt><code>ServerTokens OS</code></dt>
-
       <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.0.41
       (Unix)</code></dd>
 
-      <dt><code>ServerTokens Full</code> (ya da belirtilmezse)</dt>
-
-      <dd>Sunucu şunu gönderir (<em>örnek</em>): <code>Server: Apache/2.0.41
-      (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
     </dl>
 
     <p>Bu ayarlama sunucunun tamamını etkiler ve her sanal konak için
@@ -2907,6 +2900,14 @@ kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 
     <p>2.0.44 sürümünden itibaren bu yönerge <code class="directive"><a href="#serversignature">ServerSignature</a></code> yönergesi tarafından sunulan
       bilgiyi de etkilemektedir.</p>
+
+    <div class="note"><code class="directive">ServerTokens</code> yönergesinde
+    <code>minimal</code>'den azının belirtilmesi önerilmez. Bunun sebebi ara
+    işlemlerle ilgili hata ayıklamasını zorlaştırmasıdır. Ayrıca,
+    <code>Server:</code> başlığının iptal edilmesinin sunucunuzu daha güvenli
+    yapmayacağına dikkat ediniz; "çapraşıklıkla sağlanan güvenlik" düşüncesi
+    gerçekle bağdaşmaz ve güvenliği olumsuz etkiler.</div>
+
 
 <h3>Ayrıca bakınız:</h3>
 <ul>

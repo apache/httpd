@@ -56,34 +56,12 @@
 </div>
 <div id="quickview"><h3 class="directives">Yönergeler</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#defaultmapping">DefaultMapping</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultMapping" id="DefaultMapping">DefaultMapping</a> <a name="defaultmapping" id="defaultmapping">Yönergesi</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
-</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>DefaultMapping <var>yerel-url</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>None - httpd 404 döndürecektir (Yok)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
-<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
-</table>
-    <p>Dosya sisteminde bulunmayan bir dosya için istek yapıldığında HTTP'nin
-      404 (Yok) hatasını döndürmemesi için sunulacak dosyanın yolunu tanımlar.
-      Örnek:</p>
-    <div class="example"><p><code>
-        <code>DefaultMapping default.php</code>
-    </code></p></div>
-    <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
-      yerine <code>default.php</code> dosyası sunulacaktır..</p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Yönergesi</a></h2>
 <table class="directive">
@@ -187,6 +165,45 @@
       <strong>Fakat bölü çizgisi ile bitmeyen bir istek dizin içeriğinin
       listelenmesi ile sonuçlanırdı.</strong></p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a name="fallbackresource" id="fallbackresource">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dosya ile eşleşmeyen istekler için öntanımlı URL tanımlar
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FallbackResource <var>yerel-url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>None - httpd 404 döndürecektir (Yok)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
+</table>
+    <p>Dosya sisteminde bulunmayan bir dosya için istek yapıldığında HTTP'nin
+      404 (Yok) hatasını döndürmemesi için sunulacak dosyanın yolunu tanımlar.
+      Örnek:</p>
+
+    <div class="example"><p><code>
+        <code>FallbackResource not-404.php</code>
+    </code></p></div>
+
+    <p>Bu satırla, (mevcut dosyaları etkilemeden) mevcut olmayan dosyaların
+      yerine <code>not-404.php</code> dosyası sunulacaktır.</p>
+
+    <p>Belli bir dizindeki mevcut bir dosya veya betik için yapılanlar dışındaki
+      tüm isteklerin tek bir dosya veya özkaynakla yerine getirilmesi sıkça istenen
+      bir durum olup bu mekanizmaya 'ön denetleyici' adı verilir.</p>
+
+    <p>httpd'nin önceki sürümlerinde bir dosya veya dizinin varlığının sınanması
+      için genellikle <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> modülü ve <code>-f</code> ve
+      <code>-d</code> kullanımı gerekirdi. Bunun için şimdi tek satırlık bir
+      yapılandırma yeterli olmaktadır.</p>
+
+    <div class="example"><p><code>
+        <code>FallbackResource index.php</code>
+    </code></p></div>
+
+    <p>Resim, CSS dosyaları gibi mevcut dosyalar normal olarak sunulur.</p>
 
 </div>
 </div>

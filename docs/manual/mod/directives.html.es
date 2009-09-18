@@ -190,7 +190,6 @@
 <li><a href="mod_dbd.html#dbdriver">DBDriver</a></li>
 <li><a href="mod_autoindex.html#defaulticon">DefaultIcon</a></li>
 <li><a href="mod_mime.html#defaultlanguage">DefaultLanguage</a></li>
-<li><a href="mod_dir.html#defaultmapping">DefaultMapping</a></li>
 <li><a href="core.html#defaulttype">DefaultType</a></li>
 <li><a href="core.html#define">Define</a></li>
 <li><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize</a></li>
@@ -220,7 +219,8 @@
 <li><a href="mod_status.html#extendedstatus">ExtendedStatus</a></li>
 <li><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></li>
 <li><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></li>
-<li><a href="core.html#fileetag" id="F" name="F">FileETag</a></li>
+<li><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource</a></li>
+<li><a href="core.html#fileetag">FileETag</a></li>
 <li><a href="core.html#files">&lt;Files&gt;</a></li>
 <li><a href="core.html#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><a href="mod_filter.html#filterchain">FilterChain</a></li>
