@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 787961:814629 (outdated) -->
+<!-- English Revision: 814629 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -867,10 +867,9 @@ kullanımı önerilmemektedir.</compatibility>
     <ul>
     <li>Bazı çok işlemcili sistemlerde bellek eşleme
       <program>httpd</program>’nin başarımını düşürebilmektedir.</li>
-    <li><directive module="core">DocumentRoot</directive> NFS gibi bir ağ
-      dosya sistemi üzerinde ise ağ kopması sonucunda, bir dosyanın silinmesi
-      veya dosya okuma işleminin  kesilmesi durumunda
-      <program>httpd</program> parçalama arızası vererek çökebilir.</li>
+    <li><program>httpd</program> bellek eşlemli çalışırken bir dosyanın silinmesi veya
+      boyutunun küçültülmesi <program>httpd</program>'nin parçalama arızası vererek
+      çökmesine yol açabilir.</li>
     </ul>
 
     <p>Bu tür sorunlardan dolayı zarar görülebilecek sunucu

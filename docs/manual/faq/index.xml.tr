@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 619703:810467 (outdated) -->
+<!-- English Revision: 810467 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -87,7 +87,7 @@
 
       <p>Kullanıcı desteği ile ilgili olarak <a
         href="http://freenode.net">Freenode IRC</a> üzerindeki <a
-        href="irc://irc.freenode.net/#apache">#apache</a> kanalı da
+        href="irc://irc.freenode.net/#httpd">#httpd</a> kanalı da
         kullanılabilir.</p>
       </dd>
 
