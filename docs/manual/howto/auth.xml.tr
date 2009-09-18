@@ -1,0 +1,394 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 582400 -->
+<!-- =====================================================
+ Translated by: Umut Samuk <umut belgeler.org>
+   Reviewed by: Nilgün Belma Bugüner <nilgun belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="auth.xml.meta">
+  <parentdocument href="./">Nasıllar ve Öğreticiler</parentdocument>
+
+  <title>Kimlik Doğrulama, Yetkilendirme ve Erişim Denetimi</title>
+
+  <summary>
+    <p>Kimlik Doğrulama istediğiniz kişileri teyid etme işlemidir.
+    Yetkilendirme ise kişilerin nereye gireceklerine ve hangi bilgiye
+    ulaşacaklarına müsaade edilmesi işlemidir.</p>
+  </summary>
+
+  <section id="related"><title>İlgili modüller ve Yönergeler</title>
+
+    <p>Kimlik Doğrulama ve yetkilendirme işlemi ile ilgili üç tür modül
+    vardır. Genellikle her bir gruptan en az bir modül seçeceksiniz.</p>
+
+    <ul>
+      <li>Kimlik Doğrulama türü (bkz. <directive module="core"
+      >AuthType</directive> yönergesi)
+        <ul>
+          <li><module>mod_auth_basic</module></li>
+          <li><module>mod_auth_digest</module></li>
+        </ul>
+      </li>
+
+      <li>Kimlik Doğrulayıcı
+        <ul>
+          <li><module>mod_authn_alias</module></li>                                                                           <li><module>mod_authn_anon</module></li>
+          <li><module>mod_authn_dbd</module></li>
+          <li><module>mod_authn_dbm</module></li>
+          <li><module>mod_authn_default</module></li>
+          <li><module>mod_authn_file</module></li>
+          <li><module>mod_authnz_ldap</module></li>
+        </ul>
+      </li>
+      <li>Yetkilendirme (bkz.
+          <directive module="core">Require</directive> yönergesi)
+        <ul>
+          <li><module>mod_authnz_ldap</module></li>
+          <li><module>mod_authz_dbm</module></li>
+          <li><module>mod_authz_default</module></li>
+          <li><module>mod_authz_groupfile</module></li>
+          <li><module>mod_authz_owner</module></li>
+          <li><module>mod_authz_user</module></li>
+        </ul>
+      </li>
+    </ul>
+
+    <p><module>mod_authnz_ldap</module> modülü kimlik doğrulama ve
+    yetkilendirme işlemlerinin ikisini birden gerçekleştirir.
+    <module>mod_authn_alias</module> modülü bir kimlik doğrulama 
+    tedarikçisi olmadığı halde diğer kimlik doğrulama tedarikçilerinin
+    yapılandırılabilmesini mümkün kılmak gibi bir esnekliğe sahiptir.</p>
+
+    <p><module>mod_authz_host</module> modülü bu işlemleri sunucu adına, IP
+    adresine ve isteğin karekteristiğine bağlı olarak gerçekleştirir.
+    Ancak kimlik doğrulama sisteminin bir parçası değildir.</p>
+
+    <p>Muhtemelen göz atmak isteyeceğiniz <a href="access.html">Erişim
+    Denetimi</a> nasıl belgesi, sunucuya erişimlerin çeşitli yollarından
+    bahsetmektedir.</p>
+  </section>
+
+  <section id="introduction"><title>Giriş</title>
+    <p>Sitenizde sadece küçük bir grup insana hitap eden ya da hassas
+    bilgileriniz varsa, bu makaledeki teknikleri kullanarak dilediğiniz
+    kişilerin sadece dilediğiniz sayfaları görüntülemesini
+    sağlayabilirsiniz.</p>
+
+    <p>Bu makale sitenizin bazı parçalarını korumak için kullanacağınız
+    "standart" yolları içermektedir.</p>
+
+    <note><title>Bilginize:</title>
+      <p>Eğer bilgileriniz gerçekten gizliliğe ihtiyaç duyuyorsa kimlik
+      doğrulamasına ilaveten <module>mod_ssl</module> modülünü de
+      kullanabilirsiniz.</p>
+    </note>
+
+  </section>
+
+  <section id="theprerequisites">
+    <title>Ön gereksinimler</title>
+    <p>Bu makalede bahsi geçen yönergeler ya ana sunucu yapılandırma
+    dosyasında (genellikle <directive module="core"
+    type="section">Directory</directive> bölümünde) ya da dizin içi
+    yapılandırma dosyalarında (<code>.htaccess</code> dosyaları)
+    bulunmak zorundadır.</p>
+
+    <p>Eğer <code>.htaccess</code> dosyalarını kullanmayı
+    tasarlıyorsanız, kimlik doğrulama yönergelerine bu dosyaların içine
+    koymaya izin veren sunucu yapılandırmasına ihtiyacınız olacaktır.
+    Bunun için, dizin içi yapılandırma dosyalarının içine hangi
+    yönergelerin konacağını belirleyen <directive module="core"
+    >AllowOverride</directive> yönergesi kullanılır.</p>
+
+    <p>Kimlik doğrulamadan sözettiğimize göre, aşağıda gösterilen
+    şekilde bir <directive module="core"
+    >AllowOverride</directive> yönergesine ihtiyacınız olacaktır:</p>
+
+    <example>
+      AllowOverride AuthConfig
+    </example>
+
+    <p>Yönergeleri doğrudan ana sunucunun yapılandırma dosyasına
+    koyacaksanız bu dosyaya yazma izniniz olmalıdır.</p>
+
+    <p>Bazı dosyaların nerede saklandığını bilmek için sunucunun dizin
+    yapısı hakkında biraz bilgi sahibi olmanız gerekmektedir. Bu çok da
+    zor olmamakla birlikte bu noktaya gelindiğinde konuyu
+    netleştireceğiz.</p>
+
+  </section>
+
+  <section id="gettingitworking"><title>Çalışmaya Başlama</title>
+    <p>Burada, sunucu üzerindeki bir dizini parolayla korumak için
+    gereken temel bilgiler verilecektir.</p>
+
+    <p>İlk olarak bir parola dosyası oluşturmalısınız. Bunu nasıl
+    yapacağınız, özellikle, seçtiğiniz kimlik doğrulayıcıya göre
+    değişiklik gösterir. Bunun üzerinde ileride daha fazla duracağız.
+    Başlangıç için parolaları bir metin dosyasında tutacağız.</p>
+
+    <p>Bu dosya belge kök dizini altında olmamalıdır. Böylece başkaları
+    parola dosyasını indiremezler. Örneğin belgeleriniz
+    <code>/usr/local/apache/htdocs</code> üzerinden sunuluyorsa parola
+    dosyanızı <code>/usr/local/apache/passwd</code> dizininde
+    tutabilirsiniz.</p>
+
+    <p>Dosyayı oluşturmak için Apache ile gelen
+    <program>htpasswd</program> uygulamasını kullanacağız. Bu uygulama
+    Apache'nin kurulumunda belirtilen  <code>bin</code> dizininde
+    bulunur. Eğer Apache'yi üçüncü parti paketlerden  kurduysanız,
+    çalıştırılabilir dosyaların bulunduğu yollar üzerinde olmalıdır.</p>
+
+    <p>Bir dosya oluşturmak için şunları yazın:</p>
+
+    <example>
+      htpasswd -c /usr/local/apache/passwd/passwords umut
+    </example>
+
+    <p><program>htpasswd</program> size parola soracaktır arkasından da
+    teyit etmek için parolayı tekrar girmenizi isteyecektir:</p>
+
+    <example>
+      # htpasswd -c /usr/local/apache/passwd/passwords umut<br />
+      New password: parolam<br />
+      Re-type new password: parolam<br />
+      Adding password for user umut
+    </example>
+
+    <p>Eğer <program>htpasswd</program> normal yollar üzerinde değilse
+    çalıştırmak için dosyanın bulunduğu tam yeri belirtmeniz
+    gerekecektir. Dosyanın öntanımlı kurulum yeri:
+    <code>/usr/local/apache2/bin/htpasswd</code></p>
+
+    <p>Bundan sonra, sunucuyu, parola sorması için ve kimlerin erişim
+    izni olacağını belirlemek için yapılandıracaksınız. Bu işlemi
+    <code>httpd.conf</code>dosyasını düzenleyerek ya da bir
+    <code>.htaccess</code> dosyası kullanarak yapabilirsiniz. Örneğin,
+    <code>/usr/local/apache/htdocs/secret</code> dizinini korumayı
+    amaçlıyorsanız, şu yönergeleri kullanabilirsiniz. Bu yönergeleri
+    <code>/usr/local/apache/htdocs/secret/.htaccess</code> dosyası içine
+    veya <code>httpd.conf</code> içindeki &lt;Directory
+    /usr/local/apache/htdocs/secret&gt; bölümüne koyabilirsiniz.</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "Gizli Dosyalar"<br />
+      # (Aşağıdaki satırın kullanımı isteğe bağlıdır)<br />
+      AuthBasicProvider file<br />
+      AuthUserFile /usr/local/apache/passwd/passwords<br />
+      Require user umut
+    </example>
+
+    <p>Bu yönergeleri tek tek inceleyelim.
+    <directive module="core">AuthType</directive> yönergesi
+    kullanıcının kimliğini doğrulamakta kullanılacak yöntemi seçer. En
+    çok kullanılan yöntem <code>Basic</code>'tir ve bu yöntem
+    <module>mod_auth_basic</module> modülüyle gerçeklenmiştir. Temel
+    (<code>Basic</code>) kimlik doğrulamasıyla gönderilen parolanın
+    şifrelenmeyeceğini unutmayın. Bu yöntem, bu sebepten dolayı
+    <module>mod_ssl</module> eşliğinde kullanılmadığı sürece yüksek
+    hassasiyete sahip bilgiler için kullanılmamalıdır. Apache bir başka
+    kimlik doğrulama yöntemini daha destekler: <code>AuthType
+    Digest</code>. Bu yöntem <module>mod_auth_digest</module> tarafından
+    gerçeklenmiştir ve çok daha güvenlidir. Güncel tarayıcılar, Özet
+    (<code>Digest</code>) kimlik doğrulama yöntemini
+    desteklemektedir.</p>
+
+    <p><directive module="core">AuthName</directive> yönergesi
+    ile kimlik doğrulamada kullanılacak <dfn>Saha</dfn> da
+    belirtilebilir. Saha kullanımının, başlıca iki işlevi vardır.
+    Birincisi, istemci sıklıkla bu bilgiyi kullanıcıya parola diyalog
+    kutusunun bir parçası olarak sunar. İkincisi, belirtilen kimlik
+    doğrulamalı alan için gönderilecek parolayı belirlerken istemci
+    tarafından kullanılır.</p>
+
+    <p>Örneğin, bir istemcinin <code>"Gizli Dosyalar"</code> alanında
+    kimliği doğrulanmış olsun. Aynı sunucu üzerinde <code>"Gizli
+    Dosyalar"</code> Sahası olarak belirlenmiş alanlarda aynı parola
+    özdevinimli olarak yinelenecektir. Böylece parola bir kere girilerek
+    aynı Sahayı paylaşan çok sayıda kısıtlanmış alana ulaşırken oluşacak
+    gecikmeden kullanıcı korunmuş olur. Güvenlik gerekçelerinden dolayı,
+    her sunucu adı değiştirilişinde istemcinin parolayı yeniden sorması
+    gerekir.</p>
+
+    <p><directive module="mod_auth_basic">AuthBasicProvider</directive>
+    yönergesinin öntanımlı değeri <code>file</code> olduğundan, bu
+    durumda, bu yönergenin kullanımı isteğe bağlıdır. Ancak, eğer kimlik
+    doğrulaması için  <module>mod_authn_dbm</module> ya da
+    <module>mod_authn_dbd</module> gibi farklı bir kaynak seçecekseniz
+    bu yönergeyi kullanmanız gerekecektir.</p>
+
+    <p><directive module="mod_authn_file">AuthUserFile</directive>
+    yönergesi <program>htpasswd</program> ile oluşturduğumuz parola
+    dosyasının yerini belirtmek için kullanılır. Eğer çok sayıda
+    kullanıcınız varsa her bir kullanıcıyı her kimlik doğrulama isteği
+    için kimlik bilgilerini bir metin dosyasında aramak gayet yavaş
+    olacaktır. Apache, kullanıcı bilgilerini hızlı bir veritabanı
+    dosyasında depolama özelliğine de sahiptir. Bu amaçla,
+    <module>mod_authn_dbm</module> modülünün
+    <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
+    yönergesi kullanılabilir. Bu dosyalar <program>dbmmanage</program>
+    programı ile oluşturulabilir ve değiştirilebilir.  <a
+    href="http://modules.apache.org/">Apache modülleri
+    Veritabanı</a> içindeki üçüncü parti modüllerinde çok sayıda
+    başka kimlik doğrulama türü de vardır.</p>
+
+    <p>Son olarak <directive module="core">Require</directive>
+    yönergesi, sunucunun bu bölgesine erişimine izin verilen
+    kullanıcıları ayarlama işleminin kimlik doğrulamasıyla ilgili
+    kısmını sağlar. Bir sonraki bölümde <directive
+    module="core">Require</directive> yönergesini kullanmanın
+    çeşitli yoları üzerinde duracağız.</p>
+  </section>
+
+  <section id="lettingmorethanonepersonin">
+    <title>Birden çok kişiye izin vermek</title>
+    <p>Yukarıdaki yönergelerle bir dizinde sadece bir kişiye
+    (<code>umut</code> adlı kullanıcıya) izin verir. Çoğunlukla birden
+    çok kişiye izin verilmesi istenir. Bu durumda <directive
+    module="mod_authz_groupfile">AuthGroupFile</directive> yönergesi
+    devreye girer.</p>
+
+    <p>Eğer birden çok kişiye izin vermek istiyorsanız içinde kullanıcı
+    isimlerinin olduğu bir grup dosyası oluşturmalısınız. Bu dosyanın
+    biçemi gayet basittir ve bunu herhangi bir metin düzenleyici ile
+    oluşturabilirsiniz. Bu dosyanın içeriği aşağıdaki gibi
+    görünecektir:</p>
+
+    <example>
+     GroupName: umut samet engin kubilay
+    </example>
+
+    <p>Dosya, sadece, boşluklarla birbirinden ayrılmış gurup üyelerinin
+    isimlerinden oluşan uzun bir liste içerir.</p>
+
+    <p>Varolan parola dosyasına bir kullanıcı eklemek için şunu
+    yazın:</p>
+
+    <example>
+      htpasswd /usr/local/apache/passwd/passwords birey
+    </example>
+
+    <p>Evvelce almış olduğunuz yanıtı yine alacaksınız ama bu sefer yeni
+    bir dosya oluşturulmak yerine var olan bir dosyaya eklenecektir.
+    (Yeni bir parola dosyası oluşturmak için <code>-c</code> seçeneği
+    kullanılır).</p>
+
+    <p>Şimdi, <code>.htaccess</code> dosyanızı aşağıda görüldüğü şekilde
+    değiştirebilirsiniz:</p>
+
+    <example>
+      AuthType Basic<br />
+      AuthName "Davete Binaen"<br />
+      # Satır isteğe bağlıdır:<br />
+      AuthBasicProvider file<br />
+      AuthUserFile /usr/local/apache/passwd/passwords<br />
+      AuthGroupFile /usr/local/apache/passwd/groups<br />
+      Require group Grupismi
+    </example>
+
+    <p>Artık, <code>Grupismi</code> gurubunda listelenmiş ve
+    <code>password</code> dosyasında kaydı olan kişiye, parolayı doğru
+    yazdığı takdirde izin verilecektir.</p>
+
+    <p>Çoklu kullanıcıya izin veren biraz daha az kullanılan başka bir
+    yol daha mevcuttur. Bir gurup dosyası oluşturmaktansa, şu yönergeyi
+    kullanabilirsiniz:</p>
+
+    <example>
+      Require valid-user
+    </example>
+
+    <p><code>Require user umut</code> satırı ile parola dosyasında
+    listelenmiş ve parolayı doğru olarak giren herhangi bir kişiye izin
+    vermektense, her grup için ayrı bir parola dosyası tutarak grup
+    davranışını taklit edebilirsiniz. Bu yaklaşımın getirisi:
+    Apache iki dosya yerine sadece bir dosyaya bakar.
+    Götürüsü ise parola dosyalarından oluşan bir dosya demeti sağlamak
+    ve <directive module="mod_authn_file">AuthUserFile</directive>
+    yönergesinde doğru dosyayı belirtmeyi unutmamak zorunda
+    kalmanızdır.</p>
+
+  </section>
+
+  <section id="possibleproblems"><title>Olası Sorunlar</title>
+    <p>Temel kimlik doğrulama yolu belirtildiği için, sunucuya
+    yaptığınız her belge istediğinde kullanıcı adınızın ve parolanızın
+    doğrulanması gerekir. Hatta aynı sayfayı yeniden yüklerken ya da
+    sayfadaki her bir resim için bu yapılmalıdır (şayet korunmakta olan
+    bir dizinden geliyorsa). Bu işlem hızı azaltacaktır. Yavaşlama
+    miktarı parola dosyanızın büyüklüğü ile orantılı olacaktır, çünkü bu
+    işlem sırasında dosya açılacak ve kullanıcıların arasında isminiz
+    bulunana kadar liste aşağı doğru taranacaktır. Bu işlem sayfa her
+    yüklenişinde tekrar edilecektir.</p>
+
+    <p>Buradan çıkacak sonuç, bir parola dosyasına konulan kullanıcı
+    sayısında bir üst sınır olması gerekliliğidir. Bu sınır sunucunuzun
+    başarımına bağlı olarak değişiklik gösterir. Bir kaç yüz kayıtın
+    üstünde giriş yaptığınızda hız düşüşünü gözlemlebilirsiniz İşte bu
+    anda kimlik doğrulama için başka bir yöntem aramaya başlarsınız.</p>
+
+  </section>
+
+  <section id="dbmdbd">
+    <title>Diğer parola depolama yöntemleri</title>
+    <p>Parolaları basit bir metin dosyasında depolamak yukarıda
+    bahsedilen sorunlara yol açtığından parolaları başka bir yerde
+    depolamayı düşünebilirsiniz; örneğin bir veritabanında.</p>
+
+    <p><module>mod_authn_dbm</module> ve <module>mod_authn_dbd</module>
+    modülleri bunu mümkün kılan iki modüldür. Depolama yönemi olarak
+    <code><directive module="mod_auth_basic"
+    >AuthBasicProvider</directive> file</code> yerine, <code>dbm</code>
+    veya <code>dbd</code> kullanabilirsiniz.</p>
+
+    <p>Bir metin dosyası yerine bir dbd dosyası kullanım örneği:</p>
+
+    <example>
+    &lt;Directory /www/docs/private&gt;<br />
+    AuthName "Private"<br />
+    AuthType Basic<br />
+    AuthBasicProvider dbm<br />
+    AuthDBMUserFile /www/passwords/passwd.dbm<br />
+    Require valid-user<br />
+    &lt;/Directory&gt;
+    </example>
+
+    <p>Başka seçenekler de mümkündür. Ayrınılar için
+    <module>mod_authn_dbm</module> belgesine başvurun.</p>
+
+  </section>
+
+  <section id="moreinformation"><title>Daha fazla bilgi</title>
+    <p>Daha fazla bilgi için <module>mod_auth_basic</module> ve
+    <module>mod_authz_host</module> modüllerinin belgelerine bakınız.
+    <module>mod_authn_alias</module> modülü ile
+    bazı yapılandırmalarınızı basitleştirebilirsiniz.</p>
+
+    <p>Apache tarafından desteklenen şifrelerle ilgili bilgi için <a
+    href="../misc/password_encryptions.html">Parola Biçemleri</a>
+    belgesine bakınız.</p>
+
+    <p><a href="access.html">Erişim Denetimi</a> nasıl belgesinden de
+    bazı bilgiler edinebilirsiniz.</p>
+  </section>
+</manualpage>
