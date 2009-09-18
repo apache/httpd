@@ -909,7 +909,7 @@ int main(int argc, const char * const argv[])
                 proxypath = apr_pstrdup(pool, arg);
                 if ((status = apr_filepath_set(proxypath, pool)) != APR_SUCCESS) {
                     usage(apr_psprintf(pool, "Could not set filepath to '%s': %s",
-                    		proxypath, apr_strerror(status, errmsg, sizeof errmsg)));
+                                       proxypath, apr_strerror(status, errmsg, sizeof errmsg)));
                 }
                 break;
             } /* switch */
@@ -917,7 +917,7 @@ int main(int argc, const char * const argv[])
     } /* while */
 
     if (argc <= 1) {
-    	usage(NULL);
+        usage(NULL);
     }
 
     if (o->ind != argc) {
@@ -946,7 +946,7 @@ int main(int argc, const char * const argv[])
 
     if (apr_filepath_get(&path, 0, pool) != APR_SUCCESS) {
         usage(apr_psprintf(pool, "Could not get the filepath: %s",
-        		apr_strerror(status, errmsg, sizeof errmsg)));
+                           apr_strerror(status, errmsg, sizeof errmsg)));
     }
     baselen = strlen(path);
 
