@@ -89,6 +89,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * htcacheclean: 19 ways to fail, 1 error message. Fixed.
+   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
+                http://svn.apache.org/viewvc?view=rev&revision=814779
+                http://svn.apache.org/viewvc?rev=815448&view=rev
+                http://svn.apache.org/viewvc?view=rev&revision=816701
+   +1: minfrin, poirier, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -122,20 +128,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    when the AuthLDAPURL has been defined at a very high level.
    PR 45946
    Trunk patch: n/a due to authz refactoring (no provider called without require-ments)
-   2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup-2.diff
-   +1: covener, poirier
-   trawick: The code for "FIXME: dead code?" is indeed dead, as is the
-            conditional setting of reqs_array within the declarations.  The hook won't
-            be called if ap_requires() returns NULL.  (See calls to ap_some_auth_required()
-            before calls to ap_run_auth_checker().)
-
- * htcacheclean: 19 ways to fail, 1 error message. Fixed.
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
-                http://svn.apache.org/viewvc?view=rev&revision=814779
-                http://svn.apache.org/viewvc?rev=815448&view=rev
-                http://svn.apache.org/viewvc?view=rev&revision=816701
-   +1: minfrin, poirier
-
+   2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup-3.diff
+   +1: covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
