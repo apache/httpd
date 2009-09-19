@@ -22,6 +22,7 @@
 <!-- ==================================================================== -->
 <project name="lang-targets">
 
+<target name="check-man"><if><not><available type="dir" file="../../man"/></not><then><property value="yes" name="skip-man"/></then></if></target>
 <target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, pt-br, ru, tr"/>
 <target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru, zip-tr"/>
 <target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru, war-tr"/>
@@ -72,7 +73,7 @@
 <target description="- builds the English CHM file" name="chm-en">
     <chm.generic lang="en"/>
 </target>
-<target description="- builds the English nroff files" name="man-en">
+<target description="- builds the English nroff files" unless="skip-man" depends="check-man" name="man-en">
     <nroff.generic lang="en"/>
 </target>
 <target description="- builds the English latex file" name="latex-en">
@@ -230,7 +231,7 @@
 <target description="- builds the Turkish CHM file" name="chm-tr">
     <chm.generic lang="tr"/>
 </target>
-<target description="- builds the Turkish nroff files" name="man-tr">
+<target description="- builds the Turkish nroff files" unless="skip-man" depends="check-man" name="man-tr">
     <nroff.generic lang="tr"/>
 </target>
 
