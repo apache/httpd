@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR 45946
    Trunk patch: n/a due to authz refactoring (no provider called without require-ments)
    2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup-3.diff
-   +1: covener
+   +1: covener, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
