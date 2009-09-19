@@ -17,6 +17,7 @@
 #include "httpd.h"
 #include "util_xml.h"
 #include "apr_strings.h"
+#include "ap_provider.h"
 
 #include "mod_dav.h"
 
@@ -59,7 +60,7 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
                                             int propid, dav_prop_insert what,
                                             apr_text_header *phdr)
 {
-    const char *value;
+    const char *value = NULL;
     const char *s;
     apr_pool_t *p = resource->pool;
     const dav_liveprop_spec *info;
@@ -68,32 +69,63 @@ static dav_prop_insert dav_core_insert_prop(const dav_resource *resource,
     switch (propid)
     {
     case DAV_PROPID_resourcetype:
+        { /* additional type info provided by external modules ? */
+            int i;
+
+            apr_array_header_t *extensions =
+                ap_list_provider_names(p, DAV_RESOURCE_TYPE_GROUP, "0");
+            ap_list_provider_names_t *entry =
+                (ap_list_provider_names_t *)extensions->elts;
+
+            for (i = 0; i < extensions->nelts; i++, entry++) {
+                const dav_resource_type_provider *res_hooks =
+                    dav_get_resource_type_providers(entry->provider_name);
+                const char *name = NULL, *uri = NULL;
+
+                if (!res_hooks || !res_hooks->get_resource_type)
+                    continue;
+
+                if (!res_hooks->get_resource_type(resource, &name, &uri) &&
+            name) {
+
+                    if (!uri || !strcasecmp(uri, "DAV:"))
+                        value = apr_pstrcat(p, value ? value : "",
+                        "<D:", name, "/>", NULL);
+            else
+                        value = apr_pstrcat(p, value ? value : "",
+                        "<x:", name,
+                        " xmlns:x=\"", uri,
+                        "\"/>", NULL);
+                }
+        }
+        }
         switch (resource->type) {
         case DAV_RESOURCE_TYPE_VERSION:
             if (resource->baselined) {
-                value = "<D:baseline/>";
+                value = apr_pstrcat(p, value ? value : "", "<D:baseline/>", NULL);
                 break;
             }
             /* fall through */
         case DAV_RESOURCE_TYPE_REGULAR:
         case DAV_RESOURCE_TYPE_WORKING:
             if (resource->collection) {
-                value = "<D:collection/>";
+                value = apr_pstrcat(p, value ? value : "", "<D:collection/>", NULL);
             }
             else {
                 /* ### should we denote lock-null resources? */
-
+                if (value == NULL) {
                 value = "";        /* becomes: <D:resourcetype/> */
+            }
             }
             break;
         case DAV_RESOURCE_TYPE_HISTORY:
-            value = "<D:version-history/>";
+            value = apr_pstrcat(p, value ? value : "", "<D:version-history/>", NULL);
             break;
         case DAV_RESOURCE_TYPE_WORKSPACE:
-            value = "<D:collection/>";
+            value = apr_pstrcat(p, value ? value : "", "<D:collection/>", NULL);
             break;
         case DAV_RESOURCE_TYPE_ACTIVITY:
-            value = "<D:activity/>";
+            value = apr_pstrcat(p, value ? value : "", "<D:activity/>", NULL);
             break;
 
         default:
