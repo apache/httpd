@@ -89,13 +89,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * htcacheclean: 19 ways to fail, 1 error message. Fixed.
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=814091
-                http://svn.apache.org/viewvc?view=rev&revision=814779
-                http://svn.apache.org/viewvc?rev=815448&view=rev
-                http://svn.apache.org/viewvc?view=rev&revision=816701
-   +1: minfrin, poirier, covener
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
