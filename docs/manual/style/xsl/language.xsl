@@ -133,6 +133,14 @@
 <project name="lang-targets">
     &lf;&lf;
 
+    <!-- Test for existence of man page directory -->
+    <target name="check-man">
+        <if><not><available file="../../man" type="dir" /></not><then>
+            <property name="skip-man" value="yes" />
+        </then></if>
+    </target>
+    &lf;
+
     <!-- build *-all targets -->
     <!-- =================== -->
     <target name="all"
@@ -237,6 +245,8 @@
 
             <xsl:if test="$file/man">
                 <target name="man-{.}"
+                        depends="check-man"
+                        unless="skip-man"
                         description="- builds the {$file/name} nroff files">&lf;
                     <xsl:text>    </xsl:text>
                     <nroff.generic lang="{.}" />&lf;
