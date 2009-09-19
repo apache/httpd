@@ -10,6 +10,10 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_dav: Allow other modules to become providers and add resource types
+     to the DAV response. [Jari Urpalainen <jari.urpalainen nokia.com>,
+     Brian France <brian brianfrance.com>]
+
   *) mod_dav: Allow other modules to add things to the DAV or Allow headers
      of an OPTIONS request. [Jari Urpalainen <jari.urpalainen nokia.com>,
      Brian France <brian brianfrance.com>]
