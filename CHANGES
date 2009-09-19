@@ -9,6 +9,8 @@ Changes with Apache 2.2.14
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) htcacheclean: 19 ways to fail, 1 error message. Fixed. [Graham Leggett]
+
   *) mod_ldap: Bring the LDAPCacheEntries and LDAPOpCacheEntries
      usage() in synch with the manual and the implementation (0 and -1
      both disable the cache). [Eric Covener]
