@@ -92,13 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
- * prefork MPM: simple patch to enable mod_privileges.
-   trunk: N/A (this patch substitutes for the availability of
-               drop_privileges hook).
-   2.2.x patch:
-      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
-   +1: niq
-
  * unixd: set suexec_enabled correctly when httpd is run by non-root
    PR 42175
    Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
@@ -206,3 +199,11 @@ PATCHES/ISSUES THAT ARE STALLED
    +1: niq
    -1: wrowe;  See Message-ID: <4A64D3CA.4050300@rowe-clan.net>
    +1: rbowen - After much debate on IRC, we've agreed on FallbackResource as being the right name for this.
+
+ * prefork MPM: simple patch to enable mod_privileges.
+   trunk: N/A (this patch substitutes for the availability of
+               drop_privileges hook).
+   2.2.x patch:
+      http://people.apache.org/~niq/patches/2.2mod_privileges-core-patch
+   +1: niq
+
