@@ -152,7 +152,6 @@ dbdpreparesql	mod/mod_dbd.html#dbdpreparesql
 dbdriver	mod/mod_dbd.html#dbdriver
 defaulticon	mod/mod_autoindex.html#defaulticon
 defaultlanguage	mod/mod_mime.html#defaultlanguage
-defaultmapping	mod/mod_dir.html#defaultmapping
 defaulttype	mod/core.html#defaulttype
 define	mod/core.html#define
 deflatebuffersize	mod/mod_deflate.html#deflatebuffersize
@@ -182,6 +181,7 @@ expiresdefault	mod/mod_expires.html#expiresdefault
 extendedstatus	mod/mod_status.html#extendedstatus
 extfilterdefine	mod/mod_ext_filter.html#extfilterdefine
 extfilteroptions	mod/mod_ext_filter.html#extfilteroptions
+fallbackresource	mod/mod_dir.html#fallbackresource
 fileetag	mod/core.html#fileetag
 files	mod/core.html#files
 filesmatch	mod/core.html#filesmatch
