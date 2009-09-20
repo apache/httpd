@@ -109,6 +109,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/ssl-env.diff
    +1: minfrin
 
+ * mod_proxy_scgi: Drop in as-is from trunk. Works like a charm for years
+   now in production: trunk/modules/proxy/mod_proxy_scgi.c
+   +1: nd
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
