@@ -89,6 +89,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_ldap: Pre-scan the requirements array before doing any LDAP lookups,
+   for cases where an LDAP URL is configured but non-LDAP authn/authz is in 
+   effect. This stops us from trying to resolve file-based userids to a DN
+   when the AuthLDAPURL has been defined at a very high level.
+   PR 45946
+   Trunk patch: n/a due to authz refactoring (no provider called without require-ments)
+   2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup-3.diff
+   +1: covener, minfrin, jim
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -107,15 +117,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?view=rev&revision=813165
    2.2.x Patch: http://people.apache.org/~minfrin/ssl-env.diff
    +1: minfrin
-
- * mod_ldap: Pre-scan the requirements array before doing any LDAP lookups,
-   for cases where an LDAP URL is configured but non-LDAP authn/authz is in 
-   effect. This stops us from trying to resolve file-based userids to a DN
-   when the AuthLDAPURL has been defined at a very high level.
-   PR 45946
-   Trunk patch: n/a due to authz refactoring (no provider called without require-ments)
-   2.2.x version of patch: http://people.apache.org/~covener/httpd-2.2.x-authnz_ldap-skipdnloookup-3.diff
-   +1: covener, minfrin, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
