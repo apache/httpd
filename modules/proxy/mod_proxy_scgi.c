@@ -508,8 +508,7 @@ static int scgi_handler(request_rec *r, proxy_worker *worker,
                       "proxy: " PROXY_FUNCTION ": declining URL %s", url);
         return DECLINED;
     }
-    url += sizeof(SCHEME); /* keep the slashes */
-    
+
     /* Create space for state information */
     status = ap_proxy_acquire_connection(PROXY_FUNCTION, &backend, worker,
                                          r->server);
