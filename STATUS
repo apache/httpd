@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_proxy_scgi: Drop in as-is from trunk. Works like a charm for years
    now in production: trunk/modules/proxy/mod_proxy_scgi.c
    +1: nd
-
+   minfrin: Does the module have docs?
 
 PATCHES/ISSUES THAT ARE STALLED
 
