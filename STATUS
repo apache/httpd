@@ -113,7 +113,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    now in production.
    source: trunk/modules/proxy/mod_proxy_scgi.c
    docs: trunk/docs/manual/mod/mod_proxy_scgi.xml
-   +1: nd
+   +1: nd, jim
    minfrin: Does the module have docs?
    nd: yep. http://httpd.apache.org/docs/trunk/mod/mod_proxy_scgi.html
 
