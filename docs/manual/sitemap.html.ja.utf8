@@ -221,6 +221,7 @@
 <li><a href="mod/mod_proxy_connect.html">Apache モジュール mod_proxy_connect</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache モジュール mod_proxy_ftp</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache モジュール mod_proxy_http</a></li>
+<li><a href="mod/mod_proxy_scgi.html">Apache モジュール mod_proxy_scgi</a></li>
 <li><a href="mod/mod_rewrite.html">Apache モジュール mod_rewrite</a></li>
 <li><a href="mod/mod_setenvif.html">Apache モジュール mod_setenvif</a></li>
 <li><a href="mod/mod_so.html">Apache モジュール mod_so</a></li>
