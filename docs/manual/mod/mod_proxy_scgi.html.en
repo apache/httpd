@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_proxy_scgi - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_proxy_scgi</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_scgi.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>proxy_scgi_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_proxy_scgi.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the
+    <a href="http://python.ca/scgi/protocol.txt">SCGI protocol, version
+    1</a>.</p>
+
+    <p>Thus, in order to get the ability of handling the SCGI protocol,
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> have to
+    be present in the server.</p>
+
+    <div class="warning"><h3>Warning</h3>
+      <p>Do not enable proxying until you have <a href="mod_proxy.html#access">secured your server</a>. Open proxy
+      servers are dangerous both to your network and to the Internet at
+      large.</p>
+    </div>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyscgiinternalredirect">ProxySCGIInternalRedirect</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyscgisendfile">ProxySCGISendfile</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
+<li><code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+    <p>Remember, in order to make the following examples work, you have to
+    enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code>.</p>
+
+    <div class="example"><h3>Simple gateway</h3><p><code>
+      ProxyPass /scgi-bin/ scgi://localhost:4000/
+    </code></p></div>
+
+    <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> in
+    addition to the already mentioned proxy modules.</p>
+
+    <div class="example"><h3>Balanced gateway</h3><p><code>
+    ProxyPass /scgi-bin/ balancer://somecluster/<br />
+    &lt;Proxy balancer://somecluster/&gt;<br />
+    <span class="indent">
+        BalancerMember scgi://localhost:4000/<br />
+        BalancerMember scgi://localhost:4001/<br />
+    </span>
+    &lt;/Proxy&gt;
+    </code></p></div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxySCGIInternalRedirect" id="ProxySCGIInternalRedirect">ProxySCGIInternalRedirect</a> <a name="proxyscgiinternalredirect" id="proxyscgiinternalredirect">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable or disable internal redirect responses from the
+backend</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxySCGIInternalRedirect On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxySCGIInternalRedirect On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
+</table>
+    <p>The <code class="directive">ProxySCGIInternalRedirect</code> enables the backend
+    to internally redirect the gateway to a different URL. This feature
+    origins in <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, which internally redirects the
+    response, if the response status is <code>OK</code> (<code>200</code>) and
+    the response contains a <code>Location</code> header and its value starts
+    with a slash (<code>/</code>). This value is interpreted as a new local
+    URL the apache internally redirects to.</p>
+
+    <p><code class="module"><a href="../mod/mod_proxy_scgi.html">mod_proxy_scgi</a></code> does the same as
+    <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> in this regard, except that you can turn off the
+    feature.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+    ProxySCGIInternalRedirect Off
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxySCGISendfile" id="ProxySCGISendfile">ProxySCGISendfile</a> <a name="proxyscgisendfile" id="proxyscgisendfile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable evaluation of <var>X-Sendfile</var> pseudo response
+header</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxySCGISendfile On|Off|<var>Headername</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxySCGISendfile Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_scgi</td></tr>
+</table>
+    <p>The <code class="directive">ProxySCGISendfile</code> directive enables the
+    SCGI backend to let files serve directly by the gateway. This is useful
+    performance purposes -- the httpd can use <code>sendfile</code> or other
+    optimizations, which are not possible if the file comes over the backend
+    socket.</p>
+    <p>The <code class="directive">ProxySCGISendfile</code> argument determines the
+    gateway behaviour:</p>
+    <dl>
+    <dt><code>Off</code></dt>
+    <dd>No special handling takes place.</dd>
+
+    <dt><code>On</code></dt>
+    <dd>The gateway looks for a backend response header called
+    <code>X-Sendfile</code> and interprets the value as filename to serve. The
+    header is removed from the final response headers. This is equivalent to
+    <code>ProxySCGIRequest X-Sendfile</code>.</dd>
+
+    <dt>anything else</dt>
+    <dd>Similar to <code>On</code>, but instead of the hardcoded header name
+    the argument is applied as header name.</dd>
+    </dl>
+
+    <div class="example"><h3>Example</h3><p><code>
+    # Use the default header (X-Sendfile)<br />
+    ProxySCGISendfile On<br />
+    <br />
+    # Use a different header<br />
+    ProxySCGISendfile X-Send-Static
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_proxy_scgi.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
