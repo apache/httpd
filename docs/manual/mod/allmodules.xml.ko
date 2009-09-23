@@ -63,6 +63,7 @@
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
+  <modulefile>mod_proxy_scgi.xml</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
   <modulefile>mod_setenvif.xml.ko</modulefile>
   <modulefile>mod_so.xml.ko</modulefile>
