@@ -138,6 +138,7 @@
  * 20051115.22 (2.2.12) Add ap_escape_html2 API, with additional option
  * 20051115.23 (2.2.12) Add ap_open_piped_log_ex API, with cmdtype option,
  *                      and conditional cmdtype member of piped_log struct
+ * 20051115.24 (2.2.14) Add mod_proxy_scgi
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -145,7 +146,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 23                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 24                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
