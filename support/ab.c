@@ -580,7 +580,6 @@ static void ssl_print_info(struct connection *c)
         for (i=1; i<count; i++) {
             cert = (X509 *)SK_VALUE(sk, i);
             ssl_print_cert_info(bio_out, cert);
-            X509_free(cert);
     }
     }
     cert = SSL_get_peer_certificate(c->ssl);
