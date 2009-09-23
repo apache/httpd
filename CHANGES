@@ -1,6 +1,11 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.14
 
+  *) SECURITY: CVE-2009-2699 (cve.mitre.org)
+     Fixed in APR 1.3.9.  Faulty error handling in the Solaris pollset support
+     (Event Port backend) which could trigger hangs in the prefork and event
+     MPMs on that platform.  PR 47645.  [Jeff Trawick]
+
   *) SECURITY: CVE-2009-3095 (cve.mitre.org)
      mod_proxy_ftp: sanity check authn credentials.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
