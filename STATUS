@@ -117,6 +117,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    minfrin: Does the module have docs?
    nd: yep. http://httpd.apache.org/docs/trunk/mod/mod_proxy_scgi.html
 
+ * mod_mime: Detect invalid use of MultiviewsMatch inside Location and
+   LocationMatch sections.  
+   PR47754.
+   Trunk Patch: https://svn.apache.org/viewcvs.cgi?view=rev&rev=814728
+   2.2.x Patch: http://people.apache.org/~poirier/PR47754-2.2.x-patch.txt
+   +1: poirier
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
