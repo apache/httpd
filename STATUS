@@ -106,12 +106,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/ssl-env.diff
    +1: minfrin
 
- * mod_proxy_scgi: Drop in as-is from trunk. Works like a charm for years
-   now in production.
-   source: trunk/modules/proxy/mod_proxy_scgi.c
-   docs: trunk/docs/manual/mod/mod_proxy_scgi.xml
-   +1: nd, jim, minfrin
-
  * mod_mime: Detect invalid use of MultiviewsMatch inside Location and
    LocationMatch sections.  
    PR47754.

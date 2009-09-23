@@ -9,6 +9,8 @@ Changes with Apache 2.2.14
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_proxy_scgi: Backport from trunk. [André Malo]
+
   *) mod_ldap: Don't try to resolve file-based user ids to a DN when AuthLDAPURL
      has been defined at a very high level.  PR 45946.  [Eric Covener]
 
