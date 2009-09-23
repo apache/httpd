@@ -141,6 +141,7 @@ by other LDAP modules</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
+<dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_rewrite.html" id="R" name="R">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
 <dt><a href="mod_setenvif.html" id="S" name="S">mod_setenvif</a></dt><dd>요청의 성격에 따라 환경변수 설정을 변경한다</dd>
