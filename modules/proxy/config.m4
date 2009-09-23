@@ -16,6 +16,7 @@ APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , $proxy_mods_enable)
 proxy_connect_objs="mod_proxy_connect.lo"
 proxy_ftp_objs="mod_proxy_ftp.lo"
 proxy_http_objs="mod_proxy_http.lo"
+proxy_scgi_objs="mod_proxy_scgi.lo"
 proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo ajp_utils.lo"
 proxy_balancer_objs="mod_proxy_balancer.lo"
 
@@ -26,6 +27,7 @@ case "$host" in
     proxy_connect_objs="$proxy_connect_objs mod_proxy.la"
     proxy_ftp_objs="$proxy_ftp_objs mod_proxy.la"
     proxy_http_objs="$proxy_http_objs mod_proxy.la"
+    proxy_scgi_objs="$proxy_scgi_objs mod_proxy.la"
     proxy_ajp_objs="$proxy_ajp_objs mod_proxy.la"
     proxy_balancer_objs="$proxy_balancer_objs mod_proxy.la"
     ;;
@@ -34,6 +36,7 @@ esac
 APACHE_MODULE(proxy_connect, Apache proxy CONNECT module, $proxy_connect_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_ftp, Apache proxy FTP module, $proxy_ftp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_http, Apache proxy HTTP module, $proxy_http_objs, , $proxy_mods_enable)
+APACHE_MODULE(proxy_scgi, Apache proxy SCGI module, $proxy_scgi_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_ajp, Apache proxy AJP module, $proxy_ajp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module, $proxy_balancer_objs, , $proxy_mods_enable)
 
