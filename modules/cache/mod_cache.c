@@ -77,6 +77,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                                                        &cache_module);
     if (!cache) {
         cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
+        cache->size = -1;
         ap_set_module_config(r->request_config, &cache_module, cache);
     }
 
@@ -312,6 +313,100 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     return ap_pass_brigade(f->next, bb);
 }
 
+/* Find out the size of the cached response body.
+   Returns -1 if unable to do so.
+ */
+static apr_off_t get_cached_response_body_size(cache_request_rec *cache, request_rec *r)
+{
+    cache_handle_t *h = cache->handle;
+    apr_off_t size = -1;
+    apr_bucket_brigade *bb;
+    apr_status_t rv;
+
+    /* There's not an API to ask the cache provider for the size
+       directly, so retrieve it and count the bytes.
+
+       But it's not as inefficient as it might look.  mod_disk_cache
+       will just create a file bucket and set its length to the file
+       size, and we'll access that length here without ever having to
+       read the cached file.
+
+       If there's some other cache provider that has to read the whole
+       cached body to fill in the brigade, though, that would make
+       this rather expensive.
+
+       XXX Add a standard cache provider API to get the size of the
+       cached data.
+    */
+
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    rv = cache->provider->recall_body(h, r->pool, bb);
+    if (rv != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                      "cache: error recalling body");
+        /* try to remove cache entry, it's probably messed up */
+        cache->provider->remove_url(h, r->pool);
+    }
+    else {
+        int all_buckets_here = 0;
+        apr_bucket *e;
+
+        size=0;
+        for (e = APR_BRIGADE_FIRST(bb);
+             e != APR_BRIGADE_SENTINEL(bb);
+             e = APR_BUCKET_NEXT(e)) {
+            if (APR_BUCKET_IS_EOS(e)) {
+                all_buckets_here=1;
+                break;
+            }
+            if (APR_BUCKET_IS_FLUSH(e)) {
+                continue;
+            }
+            if (e->length == (apr_size_t)-1) {
+                break;
+            }
+            size += e->length;
+        }
+        if (!all_buckets_here) {
+            size = -1;
+        }
+    }
+    apr_brigade_destroy(bb);
+    return size;
+}
+
+/* Check that the response body we cached has the same length 
+ * as the Content-Length header, if available.  If not, cancel
+ * caching this response.
+ */
+static int validate_content_length(ap_filter_t *f, cache_request_rec *cache, request_rec *r)
+{
+    int rv = OK;
+
+    if (cache->size != -1) { /* We have a content-length to check */
+        apr_off_t actual_len = get_cached_response_body_size(cache, r);
+        if ((actual_len != -1) && (cache->size != actual_len)) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "cache: Content-Length header was %"APR_OFF_T_FMT" "
+                          "but response body size was %"APR_OFF_T_FMT
+                          ", removing url from cache: %s",
+                          cache->size, actual_len,
+                          r->unparsed_uri
+                          );
+            ap_remove_output_filter(f);
+            rv = cache->provider->remove_url(cache->handle, r->pool);
+            if (rv != OK) {
+                /* Probably a mod_disk_cache cache area has been (re)mounted
+                 * read-only, or that there is a permissions problem.
+                 */
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                             "cache: attempt to remove url from cache unsuccessful.");
+            }
+        }
+    }
+    return rv;
+}
+
 
 /*
  * CACHE_SAVE filter
@@ -342,7 +437,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     const char *cc_out, *cl;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
-    apr_off_t size;
+    apr_off_t size = -1;
     cache_info *info = NULL;
     char *reason;
     apr_pool_t *p;
@@ -360,6 +455,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          */
         cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
         ap_set_module_config(r->request_config, &cache_module, cache);
+        cache->size = -1;
     }
 
     reason = NULL;
@@ -400,6 +496,11 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             ap_cache_remove_lock(conf, r, cache->handle ?
                     (char *)cache->handle->cache_obj->key : NULL, in);
 
+        }
+
+        /* Was this the final bucket? If yes, perform sanity checks. */
+        if ((rv == APR_SUCCESS) && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(in))) {
+            rv = validate_content_length(f, cache, r);
         }
 
         return ap_pass_brigade(f->next, in);
@@ -639,6 +740,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             size = -1;
         }
     }
+
+    /* remember content length to check response size against later */
+    cache->size = size;
 
     /* It's safe to cache the response.
      *
@@ -916,6 +1020,11 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /* proactively remove the lock as soon as we see the eos bucket */
     ap_cache_remove_lock(conf, r, cache->handle ?
             (char *)cache->handle->cache_obj->key : NULL, in);
+
+    /* Was this the final bucket? If yes, perform sanity checks. */
+    if ((rv == APR_SUCCESS) && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(in))) {
+        rv = validate_content_length(f, cache, r);
+    }
 
     return ap_pass_brigade(f->next, in);
 }
