@@ -267,6 +267,7 @@ typedef struct {
     char *key;                          /* The cache key created for this
                                          * request
                                          */
+    apr_off_t size;                     /* the content length from the headers, or -1 */
 } cache_request_rec;
 
 

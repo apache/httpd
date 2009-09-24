@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_cache: don't cache incomplete responses, per RFC 2616, 13.8.
+     PR15866.  [Dan Poirier]
+
   *) ab: ab segfaults in verbose mode on https sites
      PR46393.  [Ryan Niebur]
 
