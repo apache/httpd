@@ -158,6 +158,7 @@ TARGET_nlm = \
 	$(OBJDIR)/proxyhtp.nlm \
 	$(OBJDIR)/proxybalancer.nlm \
 	$(OBJDIR)/proxyajp.nlm \
+	$(OBJDIR)/proxyscgi.nlm \
 	$(EOLIST)
 
 #
