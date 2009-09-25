@@ -114,6 +114,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~poirier/PR47754-2.2.x-patch.txt
    +1: poirier
 
+ * mod_rewrite: Add scgi scheme detection. /me completely forgot, that
+   mod_rewrite was extended for this as well...
+   Trunk Patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/mappers/mod_rewrite.c?r1=728220&r2=729538
+   (applies with 40 lines offset in 2.2)
+   +1: nd
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
