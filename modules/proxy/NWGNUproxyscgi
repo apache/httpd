@@ -1,29 +1,28 @@
 #
-# Declare the sub-directories to be built here
-#
-
-SUBDIRS = \
-	$(EOLIST)
-
-#
-# Get the 'head' of the build environment.  This includes default targets and
-# paths to tools
-#
-
-include $(AP_WORK)\build\NWGNUhead.inc
-
-#
-# build this level's files
-
-#
 # Make sure all needed macro's are defined
 #
+
+#
+# Get the 'head' of the build environment if necessary.  This includes default
+# targets and paths to tools
+#
+
+ifndef EnvironmentDefined
+include $(AP_WORK)\build\NWGNUhead.inc
+endif
 
 #
 # These directories will be at the beginning of the include list, followed by
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(AP_WORK)/include \
+			$(NWOS) \
+			$(AP_WORK)/modules/http \
+			$(AP_WORK)/modules/arch/netware \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(APR) \
 			$(EOLIST)
 
 #
@@ -95,22 +94,22 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	=
+NLM_NAME	= proxyscg
 
 #
-# This is used by the link '-desc ' directive.
+# This is used by the link '-desc ' directive. 
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	=
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Proxy SCGI Sub-Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	=
+NLM_THREAD_NAME	= Proxy SCGI Module
 
 #
-# If this is specified, it will override VERSION value in
+# If this is specified, it will override VERSION value in 
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
 NLM_VERSION	=
@@ -118,18 +117,18 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	=
+NLM_STACK_SIZE	= 8192
 
 
 #
 # If this is specified it will be used by the link '-entry' directive
 #
-NLM_ENTRY_SYM	=
+NLM_ENTRY_SYM	= _LibCPrelude
 
 #
 # If this is specified it will be used by the link '-exit' directive
 #
-NLM_EXIT_SYM	=
+NLM_EXIT_SYM	= _LibCPostlude
 
 #
 # If this is specified it will be used by the link '-check' directive
@@ -139,30 +138,21 @@ NLM_CHECK_SYM	=
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS	=
+NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
 
 #
-# If this is specified it will be linked in with the XDCData option in the def
+# If this is specified it will be linked in with the XDCData option in the def 
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA		=
+XDCDATA		= 
 
 #
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/proxy.nlm \
-	$(OBJDIR)/proxycon.nlm \
-	$(OBJDIR)/proxyftp.nlm \
-	$(OBJDIR)/proxyhtp.nlm \
-	$(OBJDIR)/proxybalancer.nlm \
-	$(OBJDIR)/proxyajp.nlm \
 	$(OBJDIR)/proxyscgi.nlm \
 	$(EOLIST)
-
-#This needs to be added to the above list once it builds for netware.
-#	$(OBJDIR)/proxyfcgi.nlm \
 
 #
 # If there is an LIB target, put it here
@@ -175,6 +165,9 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/mod_proxy_scgi.o \
+	$(OBJDIR)/proxy_util.o \
+	$(OBJDIR)/libprews.o \
 	$(EOLIST)
 
 #
@@ -182,6 +175,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -189,13 +183,16 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
+	aprlib \
+	libc \
+	proxy \
 	$(EOLIST)
 
 #
 # If the nlm has a msg file, put it's path here
 #
 FILE_nlm_msg =
-
+ 
 #
 # If the nlm has a hlp file put it's path here
 #
@@ -210,15 +207,26 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
+	@$(APR)/aprlib.imp \
+	@$(NWOS)/httpd.imp \
+	@$(OBJDIR)/mod_proxy.imp \
+	@libc.imp \
 	$(EOLIST)
-
-#
+ 
+# Don't link with Winsock if standard sockets are being used
+ifndef USE_STDSOCKETS
+FILES_nlm_Ximports += @ws2nlm.imp \
+	$(EOLIST)
+endif
+ 
+#   
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
+	proxy_scgi_module \
 	$(EOLIST)
 
-#
+#   
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
@@ -234,15 +242,16 @@ libs :: $(OBJDIR) $(TARGET_lib)
 nlms :: libs $(TARGET_nlm)
 
 #
-# Updated this target to create necessary directories and copy files to the
+# Updated this target to create necessary directories and copy files to the 
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\*.nlm $(INSTALL)\$(BASEDIR)\modules\*.*
 
 #
 # Any specialized rules here
 #
+
+vpath %.c ../arch/netware
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
