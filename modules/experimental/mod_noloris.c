@@ -98,7 +98,7 @@ static int noloris_conn(conn_rec *conn)
 
     return DECLINED;
 }
-static int noloris_monitor(apr_pool_t *pool)
+static int noloris_monitor(apr_pool_t *pool, server_rec *s)
 {
     static apr_hash_t *connections = NULL;
     static apr_time_t last_check = 0;

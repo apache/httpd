@@ -1399,7 +1399,7 @@ static int x_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
  * 
  * This is a RUN_ALL hook. 
  */
-static int x_monitor(apr_pool_t *p)
+static int x_monitor(apr_pool_t *p, server_rec *s)
 {
     trace_nocontext(p, __FILE__, __LINE__, "x_monitor()");
     return DECLINED;

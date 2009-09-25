@@ -196,6 +196,8 @@
  * 20090401.1 (2.3.3-dev)  Protected log.c internals, http_log.h changes
  * 20090401.2 (2.3.3-dev)  Added tmp_flush_bb to core_output_filter_ctx_t
  * 20090401.3 (2.3.3-dev)  Added DAV options provider to mod_dav.h
+ * 20090925.0 (2.3.3-dev)  Added server_rec::context and added *server_rec
+ *                         param to ap_wait_or_timeout()
  *
  */
 

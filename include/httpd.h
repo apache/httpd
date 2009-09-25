@@ -1235,6 +1235,9 @@ struct server_rec {
 
     /** The server request scheme for redirect responses */
     const char *server_scheme;
+
+    /** Opaque storage location */
+    void *context;
 };
 
 typedef struct core_output_filter_ctx {

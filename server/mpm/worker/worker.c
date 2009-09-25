@@ -1604,7 +1604,7 @@ static void server_main_loop(int remaining_children_to_start)
     int i;
 
     while (!restart_pending && !shutdown_pending) {
-        ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
+        ap_wait_or_timeout(&exitwhy, &status, &pid, pconf, ap_server_conf);
 
         if (pid.pid != -1) {
             processed_status = ap_process_child_status(&pid, exitwhy, status);
