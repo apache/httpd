@@ -198,6 +198,7 @@ rm -rf autom4te*.cache
 if [ -f `which cut` ]; then
   echo rebuilding rpm spec file
   ( VMMN=`build/get-version.sh mmn include/ap_mmn.h MODULE_MAGIC_NUMBER`
+    EPOCH=`build/get-version.sh epoch include/ap_release.h AP_SERVER`
     REVISION=`build/get-version.sh all include/ap_release.h AP_SERVER`
     VERSION=`echo $REVISION | cut -d- -s -f1`
     RELEASE=`echo $REVISION | cut -d- -s -f2`
@@ -209,6 +210,7 @@ if [ -f `which cut` ]; then
     sed -e "s/APACHE_VERSION/$VERSION/" \
         -e "s/APACHE_RELEASE/$RELEASE/" \
         -e "s/APACHE_MMN/$VMMN/" \
+        -e "s/APACHE_EPOCH/$EPOCH/" \
     > httpd.spec )
 fi
 
