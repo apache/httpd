@@ -379,7 +379,7 @@ static apr_status_t dbd_remove(request_rec * r, const char *key)
  * The monitor hook doesn't help us that much, as we have no handle into the
  * server, and so we need to come up with a way to do this safely.
  */
-static apr_status_t dbd_clean(apr_pool_t *p)
+static apr_status_t dbd_clean(apr_pool_t *p, server_rec *s)
 {
 
     return APR_ENOTIMPL;
@@ -471,10 +471,10 @@ static int session_dbd_save(request_rec * r, session_rec * z)
  * This function performs housekeeping on the database, deleting expired
  * sessions.
  */
-static int session_dbd_monitor(apr_pool_t *p)
+static int session_dbd_monitor(apr_pool_t *p, server_rec *s)
 {
     /* TODO handle housekeeping */
-    dbd_clean(p);
+    dbd_clean(p, s);
     return OK;
 }
 

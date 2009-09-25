@@ -1002,7 +1002,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         /* this is a memory leak, but I'll fix it later. */
         apr_proc_t pid;
 
-        ap_wait_or_timeout(&exitwhy, &status, &pid, pconf);
+        ap_wait_or_timeout(&exitwhy, &status, &pid, pconf, ap_server_conf);
 
         /* XXX: if it takes longer than 1 second for all our children
          * to start up and get into IDLE state then we may spawn an

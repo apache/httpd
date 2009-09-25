@@ -145,9 +145,10 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig);
  * @param status The return code if a process has died
  * @param ret The process id of the process that died
  * @param p The pool to allocate out of
+ * @param s The server_rec to pass
  */
 void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret, 
-                        apr_pool_t *p);
+                        apr_pool_t *p, server_rec *s);
 
 /**
  * Log why a child died to the error log, if the child died without the
