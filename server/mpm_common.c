@@ -81,7 +81,7 @@ APR_HOOK_STRUCT(
 )
 #endif
 AP_IMPLEMENT_HOOK_RUN_ALL(int, monitor,
-                          (apr_pool_t *p), (p), OK, DECLINED)
+                          (apr_pool_t *p, server_rec *s), (p, s), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int, drop_privileges,
                           (apr_pool_t * pchild, server_rec * s),
                           (pchild, s), OK, DECLINED)

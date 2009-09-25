@@ -315,7 +315,7 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
 
 AP_DECLARE(apr_status_t) ap_mpm_note_child_killed(int childnum);
 
-AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p, server_rec * s))
+AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p, server_rec *s))
 
 /* register modules that undertake to manage system security */
 AP_DECLARE(int) ap_sys_privileges_handlers(int inc);
