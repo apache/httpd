@@ -94,7 +94,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= proxyscg
+NLM_NAME	= proxyscgi
 
 #
 # This is used by the link '-desc ' directive. 
