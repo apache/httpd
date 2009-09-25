@@ -7,13 +7,14 @@ Summary: Apache HTTP Server
 Name: httpd
 Version: APACHE_VERSION
 Release: APACHE_RELEASE
+Epoch: APACHE_EPOCH00%{release}
 URL: http://httpd.apache.org/
 Vendor: Apache Software Foundation
 Source0: http://www.apache.org/dist/httpd/httpd-%{version}.tar.bz2
 License: Apache License, Version 2.0
 Group: System Environment/Daemons
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
-BuildPrereq: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0
+BuildPrereq: apr-devel, apr-util-devel, openldap-devel, db4-devel, expat-devel, findutils, perl, pkgconfig, zlib-devel, pcre-devel >= 5.0, distcache-devel >= 1.4
 BuildPrereq: /usr/bin/apr-1-config, /usr/bin/apu-1-config
 Requires: apr >= 1.4.0, apr-util >= 1.4.0, pcre-devel >= 5.0, gawk, /usr/share/magic.mime, /usr/bin/find, openldap
 Prereq: /sbin/chkconfig, /bin/mktemp, /bin/rm, /bin/mv
@@ -32,7 +33,7 @@ Internet.
 Group: Development/Libraries
 Summary: Development tools for the Apache HTTP server.
 Obsoletes: secureweb-devel, apache-devel
-Requires: libtool, httpd = %{version}
+Requires: libtool, httpd = %{epoch}:%{version}-%{release}
 Requires: apr-devel >= 1.4.0, apr-util-devel >= 1.4.0
 
 %description devel

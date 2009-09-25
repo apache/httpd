@@ -48,6 +48,8 @@ elif test "$1" = "major"; then
   echo ${major}
 elif test "$1" = "mmn"; then
   echo ${mmn}
+elif test "$1" = "epoch"; then
+  printf "%03d" ${major} ${minor} ${patch}
 elif test "$1" = "libtool"; then
   # Yes, ${minor}:${patch}:${minor} is correct due to libtool idiocy.
   echo ${minor}:${patch}:${minor}
