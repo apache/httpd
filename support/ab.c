@@ -189,6 +189,19 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 
 #endif
 
+#if defined(USE_SSL)
+#if (OPENSSL_VERSION_NUMBER >= 0x00909000)
+#define AB_SSL_METHOD_CONST const
+#else
+#define AB_SSL_METHOD_CONST
+#endif
+#if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
+#define AB_SSL_CIPHER_CONST const
+#else
+#define AB_SSL_CIPHER_CONST
+#endif
+#endif
+
 #include <math.h>
 #if APR_HAVE_CTYPE_H
 #include <ctype.h>
@@ -525,7 +538,7 @@ static void ssl_rand_seed(void)
 
 static int ssl_print_connection_info(BIO *bio, SSL *ssl)
 {
-    const SSL_CIPHER *c;
+    AB_SSL_CIPHER_CONST SSL_CIPHER *c;
     int alg_bits,bits;
 
     c = SSL_get_current_cipher(ssl);
@@ -609,7 +622,7 @@ static void ssl_proceed_handshake(struct connection *c)
             if (verbosity >= 2)
                 ssl_print_info(c);
             if (ssl_info == NULL) {
-                const SSL_CIPHER *ci;
+                AB_SSL_CIPHER_CONST SSL_CIPHER *ci;
                 X509 *cert;
                 int sk_bits, pk_bits, swork;
 
@@ -1995,11 +2008,7 @@ int main(int argc, const char * const argv[])
     const char *optarg;
     char c;
 #ifdef USE_SSL
-#if OPENSSL_VERSION_NUMBER >= 0x00909000
-    const SSL_METHOD *meth = SSLv23_client_method();
-#else
-    SSL_METHOD *meth = SSLv23_client_method();
-#endif
+    AB_SSL_METHOD_CONST SSL_METHOD *meth = SSLv23_client_method();
 #endif
 
     /* table defaults  */
