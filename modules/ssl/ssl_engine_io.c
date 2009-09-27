@@ -1632,7 +1632,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
     }
     else {
         /* Split a line into the passed-in brigade. */
-        rv = apr_brigade_split_line(bb, ctx->bb, mode, bytes);
+        rv = apr_brigade_split_line(bb, ctx->bb, block, bytes);
 
         if (rv) {
             ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, f->c,
