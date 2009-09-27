@@ -1255,7 +1255,7 @@ static const char *add_ignore_header(cmd_parms *parms, void *dummy,
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
-    if (!strncasecmp(header, "None", 4)) {
+    if (!strcasecmp(header, "None")) {
         /* if header None is listed clear array */
         conf->ignore_headers->nelts = 0;
     }
@@ -1283,7 +1283,7 @@ static const char *add_ignore_session_id(cmd_parms *parms, void *dummy,
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
                                                   &cache_module);
-    if (!strncasecmp(identifier, "None", 4)) {
+    if (!strcasecmp(identifier, "None")) {
         /* if identifier None is listed clear array */
         conf->ignore_session_id->nelts = 0;
     }
