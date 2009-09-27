@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR47754.
    Trunk Patch: https://svn.apache.org/viewcvs.cgi?view=rev&rev=814728
    2.2.x Patch: http://people.apache.org/~poirier/PR47754-2.2.x-patch.txt
-   +1: poirier
+   +1: poirier, rpluem
 
  * mod_rewrite: Add scgi scheme detection. /me completely forgot, that
    mod_rewrite was extended for this as well...
@@ -123,7 +123,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * ab, mod_ssl: restore compatibility with OpenSSL < 0.9.7g which we broke
    with r801527 (backport r819242, r819245). Reported on the list by Jie Gao.
    2.2.x Patch: http://people.apache.org/~fuankg/diffs/openssl-0.9.7g-compat-2.2.x.diff
-   +1: fuankg
+   +1: fuankg, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
