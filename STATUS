@@ -87,6 +87,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_mime: Detect invalid use of MultiviewsMatch inside Location and
+   LocationMatch sections.  
+   PR47754.
+   Trunk Patch: https://svn.apache.org/viewcvs.cgi?view=rev&rev=814728
+   2.2.x Patch: http://people.apache.org/~poirier/PR47754-2.2.x-patch.txt
+   +1: poirier, rpluem, minfrin
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -106,13 +112,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?view=rev&revision=813165
    2.2.x Patch: http://people.apache.org/~minfrin/ssl-env.diff
    +1: minfrin
-
- * mod_mime: Detect invalid use of MultiviewsMatch inside Location and
-   LocationMatch sections.  
-   PR47754.
-   Trunk Patch: https://svn.apache.org/viewcvs.cgi?view=rev&rev=814728
-   2.2.x Patch: http://people.apache.org/~poirier/PR47754-2.2.x-patch.txt
-   +1: poirier, rpluem
 
  * mod_rewrite: Add scgi scheme detection. /me completely forgot, that
    mod_rewrite was extended for this as well...
