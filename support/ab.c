@@ -280,7 +280,10 @@ struct data {
 
 int verbosity = 0;      /* no verbosity by default */
 int recverrok = 0;      /* ok to proceed after socket receive errors */
-int posting = 0;        /* GET by default */
+enum {NO_METH = 0, GET, HEAD, PUT, POST} method = NO_METH;
+const char *method_str[] = {"bug", "GET", "HEAD", "PUT", "POST"};
+const char *method_str_pasttense[] = {"bug", "bug", "bug", "PUT", "POSTed"};
+int send_body = 0;      /* non-zero if sending body with request */
 int requests = 1;       /* Number of requests to make */
 int heartbeatres = 100; /* How often do we say we're alive */
 int concurrency = 1;    /* Number of multiple requests to make */
@@ -683,7 +686,7 @@ static void write_request(struct connection * c)
             c->connect = tnow;
             c->rwrote = 0;
             c->rwrite = reqlen;
-            if (posting > 0)
+            if (send_body)
                 c->rwrite += postlen;
         }
         else if (tnow > c->connect + aprtimeout) {
@@ -801,9 +804,11 @@ static void output_results(int sig)
     if (keepalive)
         printf("Keep-Alive requests:    %d\n", doneka);
     printf("Total transferred:      %" APR_INT64_T_FMT " bytes\n", totalread);
-    if (posting > 0)
-        printf("Total %s           %" APR_INT64_T_FMT "\n",
-               posting == 1 ? "POSTed:" : "PUT:   ",
+    if (send_body)
+        printf("Total %s:%*s          %" APR_INT64_T_FMT "\n",
+               method_str_pasttense[method],
+               7 - strlen(method_str_pasttense[method]),
+               " ",
                totalposted);
     printf("HTML transferred:       %" APR_INT64_T_FMT " bytes\n", totalbread);
 
@@ -817,7 +822,7 @@ static void output_results(int sig)
                (double) timetaken * 1000 / done);
         printf("Transfer rate:          %.2f [Kbytes/sec] received\n",
                (double) totalread / 1024 / timetaken);
-        if (posting > 0) {
+        if (send_body) {
             printf("                        %.2f kb/s sent\n",
                (double) totalposted / timetaken / 1024);
             printf("                        %.2f kb/s total\n",
@@ -1088,11 +1093,11 @@ static void output_html_results(void)
     printf("<tr %s><th colspan=2 %s>Total transferred:</th>"
        "<td colspan=2 %s>%" APR_INT64_T_FMT " bytes</td></tr>\n",
        trstring, tdstring, tdstring, totalread);
-    if (posting > 0)
+    if (send_body)
         printf("<tr %s><th colspan=2 %s>Total %s:</th>"
            "<td colspan=2 %s>%" APR_INT64_T_FMT "</td></tr>\n",
            trstring, tdstring,
-           posting == 1 ? "POSTed" : "PUT",
+           method_str_pasttense[method],
            tdstring, totalposted);
     printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
        "<td colspan=2 %s>%" APR_INT64_T_FMT " bytes</td></tr>\n",
@@ -1106,7 +1111,7 @@ static void output_html_results(void)
         printf("<tr %s><th colspan=2 %s>Transfer rate:</th>"
            "<td colspan=2 %s>%.2f kb/s received</td></tr>\n",
            trstring, tdstring, tdstring, (double) totalread / timetaken);
-        if (posting > 0) {
+        if (send_body) {
             printf("<tr %s><td colspan=2 %s>&nbsp;</td>"
                "<td colspan=2 %s>%.2f kb/s sent</td></tr>\n",
                trstring, tdstring, tdstring,
@@ -1503,7 +1508,7 @@ static void read_connection(struct connection * c)
                 if (cl) {
                     c->keepalive = 1;
                     /* response to HEAD doesn't have entity body */
-                    c->length = posting >= 0 ? atoi(cl + 16) : 0;
+                    c->length = method != HEAD ? atoi(cl + 16) : 0;
                 }
                 /* The response may not have a Content-Length header */
                 if (!cl) {
@@ -1626,12 +1631,12 @@ static void test(void)
     }
 
     /* setup request */
-    if (posting <= 0) {
+    if (!send_body) {
         snprintf_res = apr_snprintf(request, sizeof(_request),
             "%s %s HTTP/1.0\r\n"
             "%s" "%s" "%s"
             "%s" "\r\n",
-            (posting == 0) ? "GET" : "HEAD",
+            method_str[method],
             (isproxy) ? fullurl : path,
             keepalive ? "Connection: Keep-Alive\r\n" : "",
             cookie, auth, hdrs);
@@ -1644,7 +1649,7 @@ static void test(void)
             "Content-type: %s\r\n"
             "%s"
             "\r\n",
-            (posting == 1) ? "POST" : "PUT",
+            method_str[method],
             (isproxy) ? fullurl : path,
             keepalive ? "Connection: Keep-Alive\r\n" : "",
             cookie, auth,
@@ -1657,14 +1662,14 @@ static void test(void)
 
     if (verbosity >= 2)
         printf("INFO: %s header == \n---\n%s\n---\n", 
-                (posting == 2) ? "PUT" : "POST", request); /* FIXME for GET and HEAD */
+               method_str[method], request);
 
     reqlen = strlen(request);
 
     /*
      * Combine headers and (optional) post file into one continuous buffer
      */
-    if (posting > 0) {
+    if (send_body) {
         char *buff = malloc(postlen + reqlen + 1);
         if (!buff) {
             fprintf(stderr, "error creating request buffer: out of memory\n");
@@ -2068,9 +2073,9 @@ int main(int argc, const char * const argv[])
                 windowsize = atoi(optarg);
                 break;
             case 'i':
-                if (posting > 0)
-                err("Cannot mix POST/PUT and HEAD\n");
-                posting = -1;
+                if (method != NO_METH)
+                    err("Cannot mix HEAD with other methods\n");
+                method = HEAD;
                 break;
             case 'g':
                 gnuplot = strdup(optarg);
@@ -2085,20 +2090,22 @@ int main(int argc, const char * const argv[])
                 confidence = 0;
                 break;
             case 'p':
-                if (posting != 0)
-                    err("Cannot mix POST and HEAD\n");
+                if (method != NO_METH)
+                    err("Cannot mix POST with other methods\n");
                 if ((status = open_postfile(optarg)) != APR_SUCCESS) {
                     exit(1);
                 }
-                posting = 1;
+                method = POST;
+                send_body = 1;
                 break;
             case 'u':
-                if (posting != 0)
-                    err("Cannot mix PUT and HEAD\n");
+                if (method != NO_METH)
+                    err("Cannot mix PUT with other methods\n");
                 if ((status = open_postfile(optarg)) != APR_SUCCESS) {
                     exit(1);
                 }
-                posting = 2;
+                method = PUT;
+                send_body = 1;
                 break;
             case 'r':
                 recverrok = 1;
@@ -2223,6 +2230,10 @@ int main(int argc, const char * const argv[])
     if (opt->ind != argc - 1) {
         fprintf(stderr, "%s: wrong number of arguments\n", argv[0]);
         usage(argv[0]);
+    }
+
+    if (method == NO_METH) {
+        method = GET;
     }
 
     if (parse_url(apr_pstrdup(cntxt, opt->argv[opt->ind++]))) {
