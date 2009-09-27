@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 810477 -->
+<!-- English Revision : 808965 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -3124,7 +3124,7 @@ host</context>
 <name>ServerTokens</name>
 <description>Configure l'en-t&ecirc;te <code>Server</code> de la r&eacute;ponse
 HTTP</description>
-<syntax>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full|Off|Set</syntax>
+<syntax>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</syntax>
 <default>ServerTokens Full</default>
 <contextlist><context>server config</context></contextlist>
 
@@ -3136,12 +3136,10 @@ HTTP</description>
     serveur.</p>
 
     <dl>
-	<dt><code>ServerTokens Full</code> (ou non sp&egrave;cifi&egrave;)</dt>
+    	<dt><code>ServerTokens Off</code></dt>
 
-	<dd>Le serveur envoie par exemple : <code>Server: Apache/2.0.41
-	(Unix) PHP/4.2.2 MyMod/1.2</code></dd>
-
-    	
+      <dd>Le serveur n'envoie aucun en-t&ecirc;te <code>Server:</code> (et
+      <code>SERVER_SOFTWARE</code> est vide)</dd>
 
 
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
@@ -3177,12 +3175,10 @@ HTTP</description>
       entour&eacute;e de guillemets si elle contient des espaces.
       </dd>
 
-      <dt><code>ServerTokens Off</code></dt>
+      <dt><code>ServerTokens Full</code> (valeur par d&eacute;faut)</dt>
 
-      <dd>Le serveur n'envoie aucun en-t&ecirc;te <code>Server:</code> (et
-      <code>SERVER_SOFTWARE</code> est vide)</dd>
-
-      
+      <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
+      Apache/2.0.41 (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
     </dl>
 
     <p>Cette d&eacute;finition s'applique &agrave; l'ensemble du serveur et ne peut
@@ -3191,18 +3187,6 @@ HTTP</description>
     <p>Dans les versions post&eacute;rieures &agrave; 2.0.44, cette directive contr&ocirc;le
     aussi les informations fournies par la directive <directive
     module="core">ServerSignature</directive>.</p>
-
-    <note>Définir <directive>ServerTokens</directive> &agrave; une
-    valeur inf&eacute;rieure &agrave; <code>minimal</code> n'est pas
-    recommand&eacute; car le d&eacute;bogage des probl&egrave;mes
-    interop&eacute;rationnels n'en sera alors que plus difficile. Notez
-    aussi que la d&eacute;sactivation de l'en-t&ecirc;te Server:
-    n'am&eacute;liore en rien la s&eacute;curit&eacute; de votre
-    serveur ; le concept de "s&eacute;curit&eacute; par
-    l'obscurit&eacute;" est un mythe et conduit &agrave;
-    une mauvaise perception de ce qu'est la s&eacute;curit&eacute;.</note>
-
-
 </usage>
 <seealso><directive module="core">ServerSignature</directive></seealso>
 </directivesynopsis>
