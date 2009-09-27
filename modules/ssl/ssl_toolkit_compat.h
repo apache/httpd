@@ -93,8 +93,10 @@
 /** ...shifting sands of openssl... */
 #if (OPENSSL_VERSION_NUMBER >= 0x0090707f)
 # define MODSSL_D2I_SSL_SESSION_CONST    const
+# define MODSSL_SSL_CIPHER_CONST         const
 #else
 # define MODSSL_D2I_SSL_SESSION_CONST
+# define MODSSL_SSL_CIPHER_CONST
 #endif
 
 #if (OPENSSL_VERSION_NUMBER >= 0x00908000)

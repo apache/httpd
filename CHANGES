@@ -1,6 +1,9 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.15
 
+  *) ab, mod_ssl: restore compatibility with OpenSSL < 0.9.7g which we broke
+     with r801527 (backport r819242, r819245). Reported on the list by Jie
+     Gao. [Guenter Knauf]
 
 Changes with Apache 2.2.14
 
