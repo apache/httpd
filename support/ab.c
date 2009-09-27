@@ -670,7 +670,7 @@ static void write_request(struct connection * c)
             c->connect = tnow;
             c->rwrote = 0;
             c->rwrite = reqlen;
-            if (posting)
+            if (posting > 0)
                 c->rwrite += postlen;
         }
         else if (tnow > c->connect + aprtimeout) {
@@ -788,10 +788,10 @@ static void output_results(int sig)
     if (keepalive)
         printf("Keep-Alive requests:    %d\n", doneka);
     printf("Total transferred:      %" APR_INT64_T_FMT " bytes\n", totalread);
-    if (posting == 1)
-        printf("Total POSTed:           %" APR_INT64_T_FMT "\n", totalposted);
-    if (posting == 2)
-        printf("Total PUT:              %" APR_INT64_T_FMT "\n", totalposted);
+    if (posting > 0)
+        printf("Total %s           %" APR_INT64_T_FMT "\n",
+               posting == 1 ? "POSTed:" : "PUT:   ",
+               totalposted);
     printf("HTML transferred:       %" APR_INT64_T_FMT " bytes\n", totalbread);
 
     /* avoid divide by zero */
@@ -1075,14 +1075,12 @@ static void output_html_results(void)
     printf("<tr %s><th colspan=2 %s>Total transferred:</th>"
        "<td colspan=2 %s>%" APR_INT64_T_FMT " bytes</td></tr>\n",
        trstring, tdstring, tdstring, totalread);
-    if (posting == 1)
-        printf("<tr %s><th colspan=2 %s>Total POSTed:</th>"
+    if (posting > 0)
+        printf("<tr %s><th colspan=2 %s>Total %s:</th>"
            "<td colspan=2 %s>%" APR_INT64_T_FMT "</td></tr>\n",
-           trstring, tdstring, tdstring, totalposted);
-    if (posting == 2)
-        printf("<tr %s><th colspan=2 %s>Total PUT:</th>"
-           "<td colspan=2 %s>%" APR_INT64_T_FMT "</td></tr>\n",
-           trstring, tdstring, tdstring, totalposted);
+           trstring, tdstring,
+           posting == 1 ? "POSTed" : "PUT",
+           tdstring, totalposted);
     printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
        "<td colspan=2 %s>%" APR_INT64_T_FMT " bytes</td></tr>\n",
        trstring, tdstring, tdstring, totalbread);
@@ -1646,14 +1644,14 @@ static void test(void)
 
     if (verbosity >= 2)
         printf("INFO: %s header == \n---\n%s\n---\n", 
-                (posting == 2) ? "PUT" : "POST", request);
+                (posting == 2) ? "PUT" : "POST", request); /* FIXME for GET and HEAD */
 
     reqlen = strlen(request);
 
     /*
-     * Combine headers and (optional) post file into one contineous buffer
+     * Combine headers and (optional) post file into one continuous buffer
      */
-    if (posting >= 1) {
+    if (posting > 0) {
         char *buff = malloc(postlen + reqlen + 1);
         if (!buff) {
             fprintf(stderr, "error creating request buffer: out of memory\n");
@@ -1947,9 +1945,9 @@ static int parse_url(char *url)
 
 /* ------------------------------------------------------- */
 
-/* read data to POST from file, save contents and length */
+/* read data to POST/PUT from file, save contents and length */
 
-static int open_postfile(const char *pfile)
+static apr_status_t open_postfile(const char *pfile)
 {
     apr_file_t *postfd;
     apr_finfo_t finfo;
@@ -1982,7 +1980,7 @@ static int open_postfile(const char *pfile)
         return rv;
     }
     apr_file_close(postfd);
-    return 0;
+    return APR_SUCCESS;
 }
 
 /* ------------------------------------------------------- */
@@ -1990,7 +1988,7 @@ static int open_postfile(const char *pfile)
 /* sort out command-line args and call test */
 int main(int argc, const char * const argv[])
 {
-    int r, l;
+    int l;
     char tmp[1024];
     apr_status_t status;
     apr_getopt_t *opt;
@@ -2080,22 +2078,18 @@ int main(int argc, const char * const argv[])
             case 'p':
                 if (posting != 0)
                     err("Cannot mix POST and HEAD\n");
-                if (0 == (r = open_postfile(optarg))) {
-                    posting = 1;
+                if ((status = open_postfile(optarg)) != APR_SUCCESS) {
+                    exit(1);
                 }
-                else if (postdata) {
-                    exit(r);
-                }
+                posting = 1;
                 break;
             case 'u':
                 if (posting != 0)
                     err("Cannot mix PUT and HEAD\n");
-                if (0 == (r = open_postfile(optarg))) {
-                    posting = 2;
+                if ((status = open_postfile(optarg)) != APR_SUCCESS) {
+                    exit(1);
                 }
-                else if (postdata) {
-                    exit(r);
-                }
+                posting = 2;
                 break;
             case 'r':
                 recverrok = 1;
