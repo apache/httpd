@@ -120,6 +120,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    (applies with 40 lines offset in 2.2)
    +1: nd
 
+ * ab, mod_ssl: restore compatibility with OpenSSL < 0.9.7g which we broke
+   with r801527 (backport r819242, r819245). Reported on the list by Jie Gao.
+   2.2.x Patch: http://people.apache.org/~fuankg/diffs/openssl-0.9.7g-compat-2.2.x.diff
+   +1: fuankg
 
 PATCHES/ISSUES THAT ARE STALLED
 
