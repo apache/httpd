@@ -117,6 +117,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?view=rev&revision=813165
    2.2.x Patch: http://people.apache.org/~minfrin/ssl-env.diff
    +1: minfrin
+   fuankg: after applying the patch the vars SSL_SERVER_I_DN and
+   SSL_SERVER_S_DN are missing - I think we must fix this first;
+   otherwise I'm +1.
 
  * mod_rewrite: Add scgi scheme detection. /me completely forgot, that
    mod_rewrite was extended for this as well...
