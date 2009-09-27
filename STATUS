@@ -111,7 +111,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    mod_rewrite was extended for this as well...
    Trunk Patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/mappers/mod_rewrite.c?r1=728220&r2=729538
    (applies with 40 lines offset in 2.2)
-   +1: nd
+   +1: nd, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
