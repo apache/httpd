@@ -598,6 +598,11 @@ a matching file with MultiViews</description>
     <example>
       MultiviewsMatch Handlers Filters
     </example>
+
+    <p><directive>MultiviewsMatch</directive> is not allowed in a
+    <directive type="section" module="core">Location</directive> or <directive
+    type="section" module="core">LocationMatch</directive> section.</p>
+
 </usage>
 <seealso><directive module="core">Options</directive></seealso>
 <seealso><module>mod_negotiation</module></seealso>
