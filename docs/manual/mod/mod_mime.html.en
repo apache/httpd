@@ -681,6 +681,10 @@ a matching file with MultiViews</td></tr>
       MultiviewsMatch Handlers Filters
     </code></p></div>
 
+    <p><code class="directive">MultiviewsMatch</code> is not allowed in a
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> section.</p>
+
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="../mod/core.html#options">Options</a></code></li>
