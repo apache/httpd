@@ -641,6 +641,15 @@ static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
     return rv;
 }
 
+static void dbd_child_init(apr_pool_t *p, server_rec *s)
+{
+  apr_status_t rv = dbd_setup_init(p, s);
+  if (rv) {
+    ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                 "DBD: child init failed!");
+  }
+}
+
 #if APR_HAS_THREADS
 static apr_status_t dbd_setup_lock(server_rec *s, dbd_group_t *group)
 {
@@ -895,7 +904,7 @@ static void dbd_hooks(apr_pool_t *pool)
 {
     ap_hook_pre_config(dbd_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(dbd_post_config, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_child_init((void*)dbd_setup_init, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_child_init(dbd_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 
     APR_REGISTER_OPTIONAL_FN(ap_dbd_prepare);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_open);

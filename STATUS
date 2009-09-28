@@ -87,12 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_dbd: Backport r708820 from trunk to avoid compiler warnings with
-   strict compilers like Sun Studio.  Mentioned on the list by Jie Gao.
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=708820
-   2.2.x Patch: trunk patch works with offset -6 / -9 lines.
-   +1: fuankg, trawick, rpluem
-
  * mod_ssl: Backport of r819373 from trunk; fix wrong 3rd parameter passed
    to to apr_brigade_split_line().  Mentioned on the list by Jie Gao.
    Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=819373
