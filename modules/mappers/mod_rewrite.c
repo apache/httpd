@@ -606,6 +606,13 @@ static unsigned is_absolute_uri(char *uri)
             return 7;
         }
         break;
+
+    case 's':
+    case 'S':
+        if (!strncasecmp(uri, "cgi://", 6)) {       /* scgi://   */
+            return 7;
+        }
+        break;
     }
 
     return 0;
