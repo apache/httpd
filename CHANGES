@@ -1,6 +1,10 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.15
 
+  *) mod_dbd: Backport of r708820 from trunk to avoid compiler warnings with
+     strict compilers like Sun Studio. Reported on the list by Jie Gao.
+     [Guenter Knauf]
+
   *) mod_mime: Detect invalid use of MultiviewsMatch inside Location and
      LocationMatch sections.  PR47754. [Dan Poirier]
 
