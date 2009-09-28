@@ -282,7 +282,6 @@ int verbosity = 0;      /* no verbosity by default */
 int recverrok = 0;      /* ok to proceed after socket receive errors */
 enum {NO_METH = 0, GET, HEAD, PUT, POST} method = NO_METH;
 const char *method_str[] = {"bug", "GET", "HEAD", "PUT", "POST"};
-const char *method_str_pasttense[] = {"bug", "bug", "bug", "PUT", "POSTed"};
 int send_body = 0;      /* non-zero if sending body with request */
 int requests = 1;       /* Number of requests to make */
 int heartbeatres = 100; /* How often do we say we're alive */
@@ -805,10 +804,7 @@ static void output_results(int sig)
         printf("Keep-Alive requests:    %d\n", doneka);
     printf("Total transferred:      %" APR_INT64_T_FMT " bytes\n", totalread);
     if (send_body)
-        printf("Total %s:%*s          %" APR_INT64_T_FMT "\n",
-               method_str_pasttense[method],
-               (int)(7 - strlen(method_str_pasttense[method])),
-               " ",
+        printf("Total body sent:        %" APR_INT64_T_FMT "\n",
                totalposted);
     printf("HTML transferred:       %" APR_INT64_T_FMT " bytes\n", totalbread);
 
@@ -1094,10 +1090,9 @@ static void output_html_results(void)
        "<td colspan=2 %s>%" APR_INT64_T_FMT " bytes</td></tr>\n",
        trstring, tdstring, tdstring, totalread);
     if (send_body)
-        printf("<tr %s><th colspan=2 %s>Total %s:</th>"
+        printf("<tr %s><th colspan=2 %s>Total body sent:</th>"
            "<td colspan=2 %s>%" APR_INT64_T_FMT "</td></tr>\n",
            trstring, tdstring,
-           method_str_pasttense[method],
            tdstring, totalposted);
     printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
        "<td colspan=2 %s>%" APR_INT64_T_FMT " bytes</td></tr>\n",
