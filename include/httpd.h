@@ -180,7 +180,7 @@ extern "C" {
  *
  * Internal buffer sizes are two bytes more than the DEFAULT_LIMIT_REQUEST_LINE
  * and DEFAULT_LIMIT_REQUEST_FIELDSIZE below, which explains the 8190.
- * These two limits can be lowered (but not raised) by the server config
+ * These two limits can be lowered or raised by the server config
  * directives LimitRequestLine and LimitRequestFieldsize, respectively.
  *
  * DEFAULT_LIMIT_REQUEST_FIELDS can be modified or disabled (set = 0) by
