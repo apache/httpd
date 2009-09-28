@@ -807,7 +807,7 @@ static void output_results(int sig)
     if (send_body)
         printf("Total %s:%*s          %" APR_INT64_T_FMT "\n",
                method_str_pasttense[method],
-               7 - strlen(method_str_pasttense[method]),
+               (int)(7 - strlen(method_str_pasttense[method])),
                " ",
                totalposted);
     printf("HTML transferred:       %" APR_INT64_T_FMT " bytes\n", totalbread);
