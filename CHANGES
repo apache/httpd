@@ -1,6 +1,9 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.15
 
+  *) mod_ssl: fixed wrong 3rd parameter passed to to apr_brigade_split_line().
+     Reported on the list by Jie Gao. [Guenter Knauf]
+
   *) mod_dbd: Backport of r708820 from trunk to avoid compiler warnings with
      strict compilers like Sun Studio. Reported on the list by Jie Gao.
      [Guenter Knauf]
