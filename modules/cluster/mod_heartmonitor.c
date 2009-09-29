@@ -68,7 +68,8 @@ typedef struct hm_ctx_t
 
 typedef struct hm_slot_server_ctx_t {
   hm_server_t *s;
-  int updated;
+  int found;
+  unsigned int item_id;
 } hm_slot_server_ctx_t;
 
 static apr_status_t hm_listen(hm_ctx_t *ctx)
@@ -170,27 +171,34 @@ static apr_status_t hm_update(void* mem, void *data, apr_pool_t *p)
     hm_slot_server_ctx_t *s = (hm_slot_server_ctx_t *) data;
     hm_server_t *new = s->s;
     if (strncmp(old->ip, new->ip, MAXIPSIZE)==0) {
-        s->updated = 1;
+        s->found = 1;
         old->busy = new->busy;
         old->ready = new->ready;
         old->seen = new->seen;
     }
     return APR_SUCCESS;
 }
-static  apr_status_t  hm_slotmem_update_stat(hm_server_t *s, request_rec *r)
+/* Read the id corresponding to the entry in the slotmem */
+static apr_status_t hm_readid(void* mem, void *data, apr_pool_t *p)
+{
+    hm_slot_server_t *old = (hm_slot_server_t *) mem;
+    hm_slot_server_ctx_t *s = (hm_slot_server_ctx_t *) data;
+    hm_server_t *new = s->s;
+    if (strncmp(old->ip, new->ip, MAXIPSIZE)==0) {
+        s->found = 1;
+        s->item_id = old->id;
+    }
+    return APR_SUCCESS;
+}
+/* update the entry or create it if not existing */
+static  apr_status_t  hm_slotmem_update_stat(hm_server_t *s, apr_pool_t *pool)
 {
     /* We call do_all (to try to update) otherwise grab + put */
     hm_slot_server_ctx_t ctx;
-
-    /* TODO: REMOVE ME BEFORE PRODUCTION (????) */
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "Heartmonitor: %s busy=%d ready=%d", s->ip,
-                 s->busy, s->ready);
-
     ctx.s = s;
-    ctx.updated = 0;
-    storage->doall(slotmem, hm_update, &ctx, r->pool);
-    if (!ctx.updated) {
+    ctx.found = 0;
+    storage->doall(slotmem, hm_update, &ctx, pool);
+    if (!ctx.found) {
         unsigned int i;
         hm_slot_server_t hmserver;
         memcpy(hmserver.ip, s->ip, MAXIPSIZE);
@@ -201,6 +209,17 @@ static  apr_status_t  hm_slotmem_update_stat(hm_server_t *s, request_rec *r)
         storage->grab(slotmem, &i);
         hmserver.id = i;
         storage->put(slotmem, i, (unsigned char *)&hmserver, sizeof(hmserver));
+    }
+    return APR_SUCCESS;
+}
+static  apr_status_t  hm_slotmem_remove_stat(hm_server_t *s, apr_pool_t *pool)
+{
+    hm_slot_server_ctx_t ctx;
+    ctx.s = s;
+    ctx.found = 0;
+    storage->doall(slotmem, hm_readid, &ctx, pool);
+    if (ctx.found) {
+        storage->release(slotmem, ctx.item_id);
     }
     return APR_SUCCESS;
 }
@@ -356,12 +375,12 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
 
     return APR_SUCCESS;
 }
-static  apr_status_t  hm_update_stat(hm_ctx_t *ctx, hm_server_t *s, request_rec *r)
+static  apr_status_t  hm_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_t *pool)
 {
     if (slotmem)
-        return hm_slotmem_update_stat(s, r);
+        return hm_slotmem_update_stat(s, pool);
     else
-        return hm_file_update_stat(ctx, s, r->pool);
+        return hm_file_update_stat(ctx, s, pool);
 }
 
 /* Store in a file */
@@ -434,6 +453,39 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
     }
 
     return APR_SUCCESS;
+}
+/* Store in a slotmem */
+static apr_status_t hm_slotmem_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
+{
+    apr_status_t rv;
+    apr_time_t now;
+    apr_hash_index_t *hi;
+    now = apr_time_now();
+    for (hi = apr_hash_first(p, ctx->servers);
+         hi != NULL; hi = apr_hash_next(hi)) {
+        hm_server_t *s = NULL;
+        apr_time_t seen;
+        apr_hash_this(hi, NULL, NULL, (void **) &s);
+        seen = apr_time_sec(now - s->seen);
+        if (seen > SEEN_TIMEOUT) {
+            /* remove it */
+            rv = hm_slotmem_remove_stat(s, p);
+        } else {
+            /* update it */
+            rv = hm_slotmem_update_stat(s, p);
+        }
+        if (rv !=APR_SUCCESS)
+            return rv;
+    }
+    return APR_SUCCESS;
+}
+/* Store/update the stats */
+static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
+{
+    if (slotmem)
+        return hm_slotmem_update_stats(ctx, p);
+    else
+        return hm_file_update_stats(ctx, p);
 }
 
 static hm_server_t *hm_get_server(hm_ctx_t *ctx, const char *ip)
@@ -547,8 +599,8 @@ static apr_status_t hm_watchdog_callback(int state, void *data,
             }
         break;
         case AP_WATCHDOG_STATE_RUNNING:
-            /* XXX slotmem, if used by the handler is that looks a bad ideas (we are not the one receiving the information  */
-            hm_file_update_stats(ctx, pool);
+            /* store in the slotmem or in the file depending on configuration */
+            hm_update_stats(ctx, pool);
             cur = now = apr_time_sec(apr_time_now());
             /* TODO: Insted HN_UPDATE_SEC use
              * the ctx->interval
@@ -690,7 +742,7 @@ static int hm_handler(request_rec *r)
     hmserver.busy = atoi(apr_table_get(tbl, "busy"));
     hmserver.ready = atoi(apr_table_get(tbl, "ready"));
     hmserver.seen = apr_time_now();
-    hm_update_stat(ctx, &hmserver, r);
+    hm_update_stat(ctx, &hmserver, r->pool);
 
     ap_set_content_type(r, "text/plain");
     ap_set_content_length(r, 2);
