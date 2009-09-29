@@ -315,7 +315,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
 
     if (openslots > 0) {
         apr_uint32_t c = 0;
-        apr_uint32_t pick = 0;;
+        apr_uint32_t pick = 0;
 
         rv = random_pick(&pick, 0, openslots);
 
