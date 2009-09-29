@@ -2203,7 +2203,7 @@ AP_DECLARE(apr_status_t) ap_timeout_parameter_parse(
         break;
     case 'm':
         switch (*(++time_str)) {
-        /* Time is in miliseconds */
+        /* Time is in milliseconds */
         case 's':
             *timeout = (apr_interval_time_t) tout * 1000;
             break;
