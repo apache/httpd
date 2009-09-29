@@ -397,10 +397,39 @@ static apr_status_t setup_request(serf_request_t *request,
     return APR_SUCCESS;
 }
 
+/*
+ * Finding a random number in a range. 
+ *      n' = a + n(b-a+1)/(M+1)
+ * where:
+ *      n' = random number in range
+ *      a  = low end of range
+ *      b  = high end of range
+ *      n  = random number of 0..M
+ *      M  = maxint
+ * Algorithm 'borrowed' from PHP's rand() function. (See mod_lbmethod_heartbeat.c).
+ */
+#define RAND_RANGE(__n, __min, __max, __tmax) \
+(__n) = (__min) + (long) ((double) ((__max) - (__min) + 1.0) * ((__n) / ((__tmax) + 1.0)))
+
+static apr_status_t random_pick(apr_uint32_t *number,
+                                apr_uint32_t min,
+                                apr_uint32_t max)
+{
+    apr_status_t rv = 
+        apr_generate_random_bytes((void*)number, sizeof(apr_uint32_t));
+
+    if (rv) {
+        return rv;
+    }
+
+    RAND_RANGE(*number, min, max, APR_UINT32_MAX);
+
+    return APR_SUCCESS;
+}
 /* TOOD: rewrite drive_serf to make it async */
 static int drive_serf(request_rec *r, serf_config_t *conf)
 {
-    apr_status_t rv;
+    apr_status_t rv = 0;
     apr_pool_t *pool;
     apr_sockaddr_t *address;
     s_baton_t *baton = apr_palloc(r->pool, sizeof(s_baton_t));
@@ -422,6 +451,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         ap_serf_cluster_provider_t *cp;
         serf_cluster_t *cluster;
         apr_array_header_t *servers = NULL;
+        apr_uint32_t pick = 0;
         ap_serf_server_t *choice;
 
         /* TODO: could this be optimized in post-config to pre-setup the 
@@ -468,7 +498,9 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
         }
 
         /* TOOD: restructure try all servers in the array !! */
-        choice = APR_ARRAY_IDX(servers, 0, ap_serf_server_t *);
+        if (random_pick(&pick, 0, servers->nelts-1) != APR_SUCCESS)
+            pick = 0;
+        choice = APR_ARRAY_IDX(servers, pick, ap_serf_server_t *);
 
         rv = apr_sockaddr_info_get(&address, choice->ip,
                                    APR_UNSPEC, choice->port, 0,
@@ -576,7 +608,7 @@ static int drive_serf(request_rec *r, serf_config_t *conf)
             }
             
             if (rv != APR_SUCCESS) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "serf_context_run()");
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "serf_context_run() for %pI", address);
                 return HTTP_INTERNAL_SERVER_ERROR;       
             }
             
