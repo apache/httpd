@@ -59,7 +59,7 @@ static int proxy_ajp_canon(request_rec *r, char *url)
 
     /*
      * now parse path/search args, according to rfc1738:
-     * process the path. With proxy-noncanon set (by
+     * process the path. With proxy-nocanon set (by
      * mod_proxy) we use the raw, unparsed uri
      */
     if (apr_table_get(r->notes, "proxy-nocanon")) {
