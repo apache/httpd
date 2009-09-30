@@ -110,7 +110,7 @@ typedef struct ap_watchdog_t ap_watchdog_t;
 
 /**
  * Callback function used for watchdog.
- * @param state Watchdog state function. See AP_WATCHODG_STATE_ .
+ * @param state Watchdog state function. See AP_WATCHDOG_STATE_ .
  * @param data is what was passed to @ap_watchdog_register_callback function.
  * @param pool Temporary callback pool destroyed after the call.
  * @return APR_SUCCESS to continue calling this callback.
@@ -122,8 +122,8 @@ typedef apr_status_t ap_watchdog_callback_fn_t(int state, void *data,
  * Get watchdog instance.
  * @param watchdog Storage for watchdog instance.
  * @param name Watchdog name.
- * @param parent Non zero to get the parent process watchdog instance.
- * @param singleton Non zero to get the singleton watchdog instance.
+ * @param parent Non-zero to get the parent process watchdog instance.
+ * @param singleton Non-zero to get the singleton watchdog instance.
  * @param pool The pool use.
  * @return APR_SUCCESS if all went well
  * @remark Use @AP_WATCHDOG_DEFAULT to get default watchdog instance.
@@ -166,13 +166,13 @@ AP_WD_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
 /**
  * Watchdog require hook.
  * @param name Watchdog name.
- * @param parent Non zero to indicate the parent process watchdog mode.
- * @param singleton Non zero to indicate the singleton watchdog mode.
+ * @param parent Non-zero to indicate the parent process watchdog mode.
+ * @param singleton Non-zero to indicate the singleton watchdog mode.
  * @param pool The pool used to create the watchdog.
  * @return OK to enable notifications from this watchdog, DECLINED otherwise.
  * @remark This is called in post config phase for all watchdog instances
  *         that have no callbacks registered. Modules using this hook
- *         should ensure their post_config hook is called after watchdog
+ *         should ensure that their post_config hook is called after watchdog
  *         post_config.
  */
 APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_need, (server_rec *s,
@@ -182,7 +182,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_need, (server_rec *s,
 
 /**
  * Watchdog initialize hook.
- * It is called after the watchog thread is initialized.
+ * It is called after the watchdog thread is initialized.
  * @param name Watchdog name.
  * @param pool The pool used to create the watchdog.
  */
@@ -193,7 +193,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_init, (
 
 /**
  * Watchdog terminate hook.
- * It is called when the watchog thread is terminated.
+ * It is called when the watchdog thread is terminated.
  * @param name Watchdog name.
  * @param pool The pool used to create the watchdog.
  */
