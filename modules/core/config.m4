@@ -49,10 +49,12 @@ APACHE_MODULE(so, DSO capability, , , $enable_so)
 
 APR_CHECK_APR_DEFINE(APR_HAS_THREADS)
 
-if test $ac_cv_define_APR_HAS_THREADS = "no"; then
-    enable_watchdog="no"
-else
-    enable_watchdog="most"
+if test -z "$enable_watchdog"; then
+    if test $ac_cv_define_APR_HAS_THREADS = "no"; then
+        enable_watchdog="no"
+    else
+        enable_watchdog="most"
+    fi
 fi
 
 APACHE_MODULE(watchdog, Watchdog module, , , $enable_watchdog, [
