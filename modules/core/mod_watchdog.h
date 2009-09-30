@@ -37,6 +37,7 @@
 #include "apr_shm.h"
 #include "apr_hash.h"
 #include "apr_hooks.h"
+#include "apr_optional.h"
 #include "apr_file_io.h"
 #include "apr_time.h"
 #include "apr_thread_proc.h"
@@ -131,11 +132,9 @@ typedef apr_status_t ap_watchdog_callback_fn_t(int state, void *data,
  *         and function will create a new watchdog instance.
  *         Note that default client process watchdog works in singleton mode.
  */
-AP_WD_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
-                                                  const char *name,
-                                                  int parent,
-                                                  int singleton,
-                                                  apr_pool_t *p);
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_watchdog_get_instance,
+                        (ap_watchdog_t **watchdog, const char *name, int parent,
+                         int singleton, apr_pool_t *p));
 
 /**
  * Register watchdog callback.
@@ -145,10 +144,9 @@ AP_WD_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
  * @param data The data to pass to the callback function.
  * @return APR_SUCCESS if all went well. APR_EEXIST if already registered.
  */
-AP_WD_DECLARE(apr_status_t) ap_watchdog_register_callback(ap_watchdog_t *watchdog,
-                            apr_interval_time_t interval,
-                            const void *data,
-                            ap_watchdog_callback_fn_t *callback);
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_watchdog_register_callback,
+                        (ap_watchdog_t *watchdog, apr_interval_time_t interval,
+                         const void *data, ap_watchdog_callback_fn_t *callback));
 
 /**
  * Update registered watchdog callback interval.
@@ -158,10 +156,9 @@ AP_WD_DECLARE(apr_status_t) ap_watchdog_register_callback(ap_watchdog_t *watchdo
  * @param data The data to pass to the callback function.
  * @return APR_SUCCESS if all went well. APR_EOF if callback was not found.
  */
-AP_WD_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
-                            apr_interval_time_t interval,
-                            const void *data,
-                            ap_watchdog_callback_fn_t *callback);
+APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_watchdog_set_callback_interval,
+                        (ap_watchdog_t *w, apr_interval_time_t interval,
+                         const void *data, ap_watchdog_callback_fn_t *callback));
 
 /**
  * Watchdog require hook.

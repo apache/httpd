@@ -669,7 +669,16 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
     void *data;
     hm_ctx_t *ctx = ap_get_module_config(s->module_config,
                                          &heartmonitor_module);
+    APR_OPTIONAL_FN_TYPE(ap_watchdog_get_instance) *hm_watchdog_get_instance;
+    APR_OPTIONAL_FN_TYPE(ap_watchdog_register_callback) *hm_watchdog_register_callback;
 
+    hm_watchdog_get_instance = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_get_instance);
+    hm_watchdog_register_callback = APR_RETRIEVE_OPTIONAL_FN(ap_watchdog_register_callback);
+    if (!hm_watchdog_get_instance || !hm_watchdog_register_callback) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, 0, s,
+                     "Heartmonitor: mod_watchdog is required");
+        return !OK;
+    }
 
     /* Create the slotmem */
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
@@ -694,7 +703,7 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
     if (!ctx->active) {
         return OK;
     }
-    rv = ap_watchdog_get_instance(&ctx->watchdog,
+    rv = hm_watchdog_get_instance(&ctx->watchdog,
                                   HM_WATHCHDOG_NAME,
                                   0, 1, p);
     if (rv) {
@@ -704,7 +713,7 @@ static int hm_post_config(apr_pool_t *p, apr_pool_t *plog,
         return !OK;
     }
     /* Register a callback with zero interval. */
-    rv = ap_watchdog_register_callback(ctx->watchdog,
+    rv = hm_watchdog_register_callback(ctx->watchdog,
                                        0,
                                        ctx,
                                        hm_watchdog_callback);
