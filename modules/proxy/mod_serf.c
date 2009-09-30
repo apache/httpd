@@ -835,6 +835,7 @@ typedef struct hb_server_t {
     int busy;
     int ready;
     int seen;
+    unsigned int port;
 } hb_server_t;
 
 static void
@@ -913,6 +914,7 @@ static apr_status_t read_heartbeats(const char *path,
             t++;
             server = apr_pcalloc(pool, sizeof(hb_server_t));
             server->ip = ip;
+            server->port = 80;
             server->seen = -1;
             apr_table_clear(hbt);
             
@@ -928,6 +930,10 @@ static apr_status_t read_heartbeats(const char *path,
             
             if (apr_table_get(hbt, "lastseen")) {
                 server->seen = atoi(apr_table_get(hbt, "lastseen"));
+            }
+            
+            if (apr_table_get(hbt, "port")) {
+                server->port = atoi(apr_table_get(hbt, "port"));
             }
             
             if (server->busy == 0 && server->ready != 0) {
@@ -1002,8 +1008,7 @@ static int hb_list_servers(void *baton,
         if (hbs->ready > 0) {
             x = apr_palloc(r->pool, sizeof(ap_serf_server_t));
             x->ip = apr_pstrdup(r->pool, hbs->ip);
-            /* TODO: expand multicast format to support ports? */
-            x->port = 80;
+            x->port = hbs->port;
             APR_ARRAY_PUSH(servers, ap_serf_server_t *) = x;
         }
     }
