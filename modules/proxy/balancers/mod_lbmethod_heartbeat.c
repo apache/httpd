@@ -232,6 +232,18 @@ static apr_status_t readslot_heartbeats(apr_hash_t *servers,
     return APR_SUCCESS;
 }
 
+
+static apr_status_t read_heartbeats(const char *path, apr_hash_t *servers,
+                                        apr_pool_t *pool)
+{
+    apr_status_t rv;
+    if (hm_serversmem)
+        rv = readslot_heartbeats(servers, pool);
+    else
+        rv = readfile_heartbeats(path, servers, pool);
+    return rv;
+}
+
 /*
  * Finding a random number in a range. 
  *      n' = a + n(b-a+1)/(M+1)
@@ -283,10 +295,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
 
     servers = apr_hash_make(tpool);
 
-    if (hm_serversmem)
-        rv = readslot_heartbeats(servers, tpool);
-    else
-        rv = readfile_heartbeats(ctx->path, servers, tpool);
+    rv = read_heartbeats(ctx->path, servers, tpool);
 
     if (rv) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -371,7 +380,9 @@ static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
     void *data;
     apr_size_t size;
     unsigned int num;
-
+    lb_hb_ctx_t *ctx = ap_get_module_config(s->module_config,
+                                            &lbmethod_heartbeat_module);
+    
     apr_pool_userdata_get(&data, userdata_key, s->process->pool);
     if (!data) {
         /* first call do nothing */
@@ -390,6 +401,9 @@ static int lb_hb_init(apr_pool_t *p, apr_pool_t *plog,
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "No slotmem from mod_heartmonitor");
     } else
         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_NOTICE, 0, s, "Using slotmem from mod_heartmonitor");
+
+    if (hm_serversmem)
+        ctx->path = "(slotmem)";
 
     return OK;
 }
