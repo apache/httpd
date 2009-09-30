@@ -48,6 +48,7 @@ typedef struct hb_server_t {
     int busy;
     int ready;
     int seen;
+    int port;
     int id;
     proxy_worker *worker;
 } hb_server_t;
@@ -161,6 +162,7 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
             if (server == NULL) {
                 server = apr_pcalloc(pool, sizeof(hb_server_t));
                 server->ip = ip;
+                server->port = 80;
                 server->seen = -1;
 
                 apr_hash_set(servers, server->ip, APR_HASH_KEY_STRING, server);
@@ -180,6 +182,10 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
 
             if (apr_table_get(hbt, "lastseen")) {
                 server->seen = atoi(apr_table_get(hbt, "lastseen"));
+            }
+
+            if (apr_table_get(hbt, "port")) {
+                server->port = atoi(apr_table_get(hbt, "port"));
             }
 
             if (server->busy == 0 && server->ready != 0) {

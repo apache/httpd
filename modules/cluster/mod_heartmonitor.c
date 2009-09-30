@@ -48,6 +48,7 @@ typedef struct hm_server_t
     const char *ip;
     int busy;
     int ready;
+    unsigned int port;
     apr_time_t seen;
 } hm_server_t;
 
@@ -321,13 +322,19 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                     node.seen = SEEN_TIMEOUT; 
                 }
                 seen = fage + node.seen;
-                apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u\n",
-                                ip, node.ready, node.busy, (unsigned int) seen);
+
+                if (apr_table_get(hbt, "port")) {
+                    node.port = atoi(apr_table_get(hbt, "port"));
+                } else {
+                    node.port = 80; 
+                }
+                apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u&port=%u\n",
+                                ip, node.ready, node.busy, (unsigned int) seen, node.port);
             } else {
                 apr_time_t seen;
                 seen = apr_time_sec(now - s->seen);
-                apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u\n",
-                                s->ip, s->ready, s->busy, (unsigned int) seen);
+                apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u&port=%u\n",
+                                s->ip, s->ready, s->busy, (unsigned int) seen, s->port);
                 updated = 1;
             }
         } while (1);
@@ -336,8 +343,8 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
     if (!updated) {
         apr_time_t seen;
         seen = apr_time_sec(now - s->seen);
-        apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u\n",
-                        s->ip, s->ready, s->busy, (unsigned int) seen);
+        apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u&port=%u\n",
+                        s->ip, s->ready, s->busy, (unsigned int) seen, s->port);
     }
 
     rv = apr_file_flush(fp);
@@ -414,8 +421,8 @@ static apr_status_t hm_file_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
              */
         }
         else {
-            apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u\n",
-                            s->ip, s->ready, s->busy, (unsigned int) seen);
+            apr_file_printf(fp, "%s &ready=%u&busy=%u&lastseen=%u&port=%u\n",
+                            s->ip, s->ready, s->busy, (unsigned int) seen, s->port);
         }
     }
 
@@ -488,7 +495,7 @@ static apr_status_t hm_update_stats(hm_ctx_t *ctx, apr_pool_t *p)
         return hm_file_update_stats(ctx, p);
 }
 
-static hm_server_t *hm_get_server(hm_ctx_t *ctx, const char *ip)
+static hm_server_t *hm_get_server(hm_ctx_t *ctx, const char *ip, const int port)
 {
     hm_server_t *s;
 
@@ -497,6 +504,7 @@ static hm_server_t *hm_get_server(hm_ctx_t *ctx, const char *ip)
     if (s == NULL) {
         s = apr_palloc(ctx->p, sizeof(hm_server_t));
         s->ip = apr_pstrdup(ctx->p, ip);
+        s->port = port;
         s->ready = 0;
         s->busy = 0;
         s->seen = 0;
@@ -506,7 +514,7 @@ static hm_server_t *hm_get_server(hm_ctx_t *ctx, const char *ip)
     return s;
 }
 
-/* Process a message receive from a backend node */
+/* Process a message received from a backend node */
 static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
                                   apr_sockaddr_t *from, char *buf, int len)
 {
@@ -522,6 +530,7 @@ static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
         apr_table_get(tbl, "busy") != NULL &&
         apr_table_get(tbl, "ready") != NULL) {
         char *ip;
+        int port = 80;
         hm_server_t *s;
         /* TODO: REMOVE ME BEFORE PRODUCTION (????) */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ctx->s,
@@ -530,7 +539,10 @@ static void hm_processmsg(hm_ctx_t *ctx, apr_pool_t *p,
 
         apr_sockaddr_ip_get(&ip, from);
 
-        s = hm_get_server(ctx, ip);
+        if (apr_table_get(tbl, "port") != NULL)
+            port = atoi(apr_table_get(tbl, "port"));
+           
+        s = hm_get_server(ctx, ip, port);
 
         s->busy = atoi(apr_table_get(tbl, "busy"));
         s->ready = atoi(apr_table_get(tbl, "ready"));
@@ -739,6 +751,9 @@ static int hm_handler(request_rec *r)
     qs_to_table(buf, tbl, r->pool);
     apr_sockaddr_ip_get(&ip, r->connection->remote_addr);
     hmserver.ip = ip;
+    hmserver.port = 80;
+    if (apr_table_get(tbl, "port") != NULL)
+        hmserver.port = atoi(apr_table_get(tbl, "port"));
     hmserver.busy = atoi(apr_table_get(tbl, "busy"));
     hmserver.ready = atoi(apr_table_get(tbl, "ready"));
     hmserver.seen = apr_time_now();
