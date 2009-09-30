@@ -122,6 +122,7 @@ static void closed_connection(serf_connection_t *conn,
         ap_mpm_register_timed_callback(apr_time_from_msec(1),
                                        timed_cleanup_callback, ctx);
     }
+    ctx->keep_reading = 0;
 }
 
 static serf_bucket_t* conn_setup(apr_socket_t *sock,
@@ -267,6 +268,11 @@ static apr_status_t handle_response(serf_request_t *request,
     const char *data;
     apr_size_t len;
     serf_status_line sl;
+
+    if (response == NULL) {
+        ctx->rstatus = HTTP_INTERNAL_SERVER_ERROR;
+        return APR_EGENERAL;
+    }
 
     /* XXXXXXX: Create better error message. */
     rv = serf_bucket_response_status(response, &sl);
