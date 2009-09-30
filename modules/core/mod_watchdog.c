@@ -300,11 +300,11 @@ static apr_status_t wd_startup(ap_watchdog_t *w, apr_pool_t *p)
     return rc;
 }
 
-AP_WD_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
-                                                     const char *name,
-                                                     int parent,
-                                                     int singleton,
-                                                     apr_pool_t *p)
+static apr_status_t ap_watchdog_get_instance(ap_watchdog_t **watchdog,
+                                             const char *name,
+                                             int parent,
+                                             int singleton,
+                                             apr_pool_t *p)
 {
     ap_watchdog_t *w;
     const char *pver = parent ? AP_WATCHODG_PVERSION : AP_WATCHODG_CVERSION;
@@ -330,10 +330,10 @@ AP_WD_DECLARE(apr_status_t) ap_watchdog_get_instance(ap_watchdog_t **watchdog,
                                 pver, *watchdog);
 }
 
-AP_WD_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
-                                apr_interval_time_t interval,
-                                const void *data,
-                                ap_watchdog_callback_fn_t *callback)
+static apr_status_t ap_watchdog_set_callback_interval(ap_watchdog_t *w,
+                                                      apr_interval_time_t interval,
+                                                      const void *data,
+                                                      ap_watchdog_callback_fn_t *callback)
 {
     watchdog_list_t *c = w->callbacks;
     apr_status_t rv = APR_EOF;
@@ -355,10 +355,10 @@ AP_WD_DECLARE(apr_status_t) ap_watchdog_set_callback_interval(ap_watchdog_t *w,
     return rv;
 }
 
-AP_WD_DECLARE(apr_status_t) ap_watchdog_register_callback(ap_watchdog_t *w,
-                                apr_interval_time_t interval,
-                                const void *data,
-                                ap_watchdog_callback_fn_t *callback)
+static apr_status_t ap_watchdog_register_callback(ap_watchdog_t *w,
+                                                  apr_interval_time_t interval,
+                                                  const void *data,
+                                                  ap_watchdog_callback_fn_t *callback)
 {
     watchdog_list_t *c = w->callbacks;
 
@@ -718,6 +718,9 @@ static void wd_register_hooks(apr_pool_t *p)
                        NULL,
                        APR_HOOK_MIDDLE);
 
+    APR_REGISTER_OPTIONAL_FN(ap_watchdog_get_instance);
+    APR_REGISTER_OPTIONAL_FN(ap_watchdog_register_callback);
+    APR_REGISTER_OPTIONAL_FN(ap_watchdog_set_callback_interval);
 }
 
 /*--------------------------------------------------------------------------*/
