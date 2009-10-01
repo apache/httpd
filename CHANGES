@@ -10,6 +10,11 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) core: Treat timeout reading request as 408 error, not 400.
+     Log 408 errors in access log as was done in Apache 1.3.x.
+     PR 39785 [Nobutaka Mantani <nobutaka nobutaka.org>, 
+     Stefan Fritsch <sf fritsch.de>, Dan Poirier]
+
   *) mod_ssl: Reintroduce SSL_CLIENT_S_DN, SSL_CLIENT_I_DN, SSL_SERVER_S_DN,
      SSL_SERVER_I_DN back to the environment variables to be set by mod_ssl.
      [Peter Sylvester <peter.sylvester edelweb.fr>]
