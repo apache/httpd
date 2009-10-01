@@ -23,7 +23,9 @@
 
 #include "httpd.h"
 #include "http_config.h"
+#if !defined(WIN32) && !defined(NETWARE)
 #include "ap_config_auto.h"
+#endif
 #ifdef HAVE_SERF_H
 #include "serf.h"
 #ifndef AP_HAS_SERF
