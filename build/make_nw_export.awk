@@ -25,8 +25,8 @@ BEGIN {
 #/ap_some_name/{next}
 /ap_mpm_pod_/{next}
 
-/^[ \t]*AP([RU]|_CORE|_WD)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
-    sub("[ \t]*AP([RU]|_CORE|_WD)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
+/^[ \t]*AP([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)]([^ ]* )*[^(]+[(]/ {
+    sub("[ \t]*AP([RU]|_CORE)?_DECLARE[^(]*[(][^)]*[)][ \t]*", "")
     sub("[(].*", "")
     sub("([^ ]* (^([ \t]*[(])))+", "")
     add_symbol($0)
@@ -80,6 +80,14 @@ BEGIN {
     gsub(/[*;]/, "", $NF)
     gsub(/\[.*\]/, "", $NF)
     add_symbol($NF)
+}
+
+/^[ \t]*AP[RU]?_DECLARE_OPTIONAL_FN[^(]*[(][^)]*/ {
+    split($0, args, ",")
+    symbol = args[2]
+    sub("^[ \t]+", "", symbol)
+    add_symbol(symbol)
+    next
 }
 
 #END {
