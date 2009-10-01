@@ -43,6 +43,8 @@ static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_f
     unsigned int i;
     void *ptr;
     char *inuse;
+    apr_status_t retval = APR_SUCCESS;
+    
 
     if (!mem)
         return APR_ENOSHMAVAIL;
@@ -52,11 +54,13 @@ static apr_status_t slotmem_do(ap_slotmem_instance_t *mem, ap_slotmem_callback_f
     for (i = 0; i < mem->num; i++, inuse++) {
         if (!AP_SLOTMEM_IS_PREGRAB(mem) ||
            (AP_SLOTMEM_IS_PREGRAB(mem) && *inuse)) {
-            func((void *) ptr, data, pool);
+            retval = func((void *) ptr, data, pool);
+            if (retval != APR_SUCCESS)
+                break;
         }
         ptr += mem->size;
     }
-    return APR_SUCCESS;
+    return retval;
 }
 
 static apr_status_t slotmem_create(ap_slotmem_instance_t **new, const char *name, apr_size_t item_size, unsigned int item_num, ap_slotmem_type_t type, apr_pool_t *pool)
