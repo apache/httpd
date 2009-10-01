@@ -70,6 +70,12 @@ SUBDIRS += debugging \
 	$(EOLIST)
 endif
 
+# Allow the test modules to be built if TEST is defined
+ifdef TEST
+SUBDIRS += test \
+	$(EOLIST)
+endif
+
 
 #
 # Get the 'head' of the build environment.  This includes default targets and
