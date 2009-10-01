@@ -207,6 +207,7 @@ static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem,
     unsigned int i;
     void *ptr;
     char *inuse;
+    apr_status_t retval = APR_SUCCESS;
 
     if (!mem) {
         return APR_ENOSHMAVAIL;
@@ -217,11 +218,13 @@ static apr_status_t slotmem_doall(ap_slotmem_instance_t *mem,
     for (i = 0; i < mem->desc.num; i++, inuse++) {
         if (!AP_SLOTMEM_IS_PREGRAB(mem) ||
            (AP_SLOTMEM_IS_PREGRAB(mem) && *inuse)) {
-            func((void *) ptr, data, pool);
+            retval = func((void *) ptr, data, pool);
+            if (retval != APR_SUCCESS)
+                break;
         }
         ptr += mem->desc.size;
     }
-    return APR_SUCCESS;
+    return retval;
 }
 
 static apr_status_t slotmem_create(ap_slotmem_instance_t **new,
