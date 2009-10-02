@@ -10,6 +10,10 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_cache: Introduce the option to run the cache from within the
+     normal request handler, and to allow fine grained control over
+     where in the filter chain content is cached. [Graham Leggett]
+
   *) core: Treat timeout reading request as 408 error, not 400.
      Log 408 errors in access log as was done in Apache 1.3.x.
      PR 39785 [Nobutaka Mantani <nobutaka nobutaka.org>, 

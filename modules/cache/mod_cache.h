@@ -172,6 +172,9 @@ typedef struct {
     int lockpath_set;
     apr_time_t lockmaxage;
     int lockmaxage_set;
+    /** run within the quick handler */
+    int quick;
+    int quick_set;
 } cache_server_conf;
 
 /* cache info information */
