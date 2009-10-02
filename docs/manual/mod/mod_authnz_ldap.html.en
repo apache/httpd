@@ -109,7 +109,6 @@ for HTTP Basic authentication.</td></tr>
         <a href="#requiredirectives">The Require Directives</a> 
 
         <ul>
-          <li><a href="#reqvaliduser">Require valid-user</a></li>
           <li><a href="#requser">Require ldap-user</a></li>
           <li><a href="#reqgroup">Require ldap-group</a></li>
           <li><a href="#reqdn">Require ldap-dn</a></li>
@@ -261,9 +260,9 @@ for HTTP Basic authentication.</td></tr>
     was set to <code>off</code>. </p>
 
     <ul>
-        <li>Grant access if there is a <a href="#requser"><code>Require
-        valid-user</code></a> directive. (requires 
-        <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>)</li>
+        <li>Grant access to all successfully authenticated users if 
+        there is a <a href="#requser"><code>Require valid-user</code></a> 
+        directive. (requires <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>)</li>
 
         <li>Grant access if there is a <a href="#reqgroup"><code>Require group</code></a> directive, and
         <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> has been loaded with the 
@@ -322,14 +321,6 @@ for HTTP Basic authentication.</td></tr>
     <code>ldap-group</code>, <code>ldap-attribute</code> and 
     <code>ldap-filter</code>.  Other authorization types may also be 
     used but may require that additional authorization modules be loaded.</p>
-
-<h3><a name="reqvaliduser" id="reqvaliduser">Require valid-user</a></h3>
-
-    <p>If this directive exists, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> grants
-    access to any user that has successfully authenticated during the
-    search/bind phase.  Requires that <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> be 
-    loaded.</p>
-
 
 <h3><a name="requser" id="requser">Require ldap-user</a></h3>
 
