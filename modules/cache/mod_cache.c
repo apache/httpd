@@ -25,6 +25,7 @@ APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 /* Handles for cache filters, resolved at startup to eliminate
  * a name-to-function mapping on each request
  */
+static ap_filter_rec_t *cache_filter_handle;
 static ap_filter_rec_t *cache_save_filter_handle;
 static ap_filter_rec_t *cache_save_subreq_filter_handle;
 static ap_filter_rec_t *cache_out_filter_handle;
@@ -44,18 +45,31 @@ static ap_filter_rec_t *cache_remove_url_filter_handle;
  *     add CACHE_SAVE filter
  *   If No:
  *     oh well.
+ *
+ * By default, the cache handler runs in the quick handler, bypassing
+ * virtually all server processing and offering the cache its optimal
+ * performance. In this mode, the cache bolts onto the front of the
+ * server, and behaves as a discrete RFC2616 caching proxy
+ * implementation.
+ *
+ * Under certain circumstances, an admin might want to run the cache as
+ * a normal handler instead of a quick handler, allowing the cache to
+ * run after the authorisation hooks, or by allowing fine control over
+ * the placement of the cache in the filter chain. This option comes at
+ * a performance penalty, and should only be used to achieve specific
+ * caching goals where the admin understands what they are doing.
  */
 
-static int cache_url_handler(request_rec *r, int lookup)
+static int cache_quick_handler(request_rec *r, int lookup)
 {
     apr_status_t rv;
     const char *auth;
     cache_provider_list *providers;
     cache_request_rec *cache;
-    cache_server_conf *conf;
     apr_bucket_brigade *out;
     ap_filter_t *next;
     ap_filter_rec_t *cache_out_handle;
+    cache_server_conf *conf;
 
     /* Delay initialization until we know we are handling a GET */
     if (r->method_number != M_GET) {
@@ -64,6 +78,11 @@ static int cache_url_handler(request_rec *r, int lookup)
 
     conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
                                                       &cache_module);
+
+    /* only run if the quick handler is enabled */
+    if (!conf->quick) {
+        return DECLINED;
+    }
 
     /*
      * Which cache module (if any) should handle this request?
@@ -151,7 +170,7 @@ static int cache_url_handler(request_rec *r, int lookup)
                     /* Add cache_remove_url filter to this request to remove a
                      * stale cache entry if needed. Also put the current cache
                      * request rec in the filter context, as the request that
-                     * is available later during running the filter maybe
+                     * is available later during running the filter may be
                      * different due to an internal redirect.
                      */
                     cache->remove_url_filter =
@@ -236,6 +255,245 @@ static int cache_url_handler(request_rec *r, int lookup)
         cache_out_handle = cache_out_filter_handle;
     }
     ap_add_output_filter_handle(cache_out_handle, NULL, r, r->connection);
+
+    /*
+     * Remove all filters that are before the cache_out filter. This ensures
+     * that we kick off the filter stack with our cache_out filter being the
+     * first in the chain. This make sense because we want to restore things
+     * in the same manner as we saved them.
+     * There may be filters before our cache_out filter, because
+     *
+     * 1. We call ap_set_content_type during cache_select. This causes
+     *    Content-Type specific filters to be added.
+     * 2. We call the insert_filter hook. This causes filters e.g. like
+     *    the ones set with SetOutputFilter to be added.
+     */
+    next = r->output_filters;
+    while (next && (next->frec != cache_out_handle)) {
+        ap_remove_output_filter(next);
+        next = next->next;
+    }
+
+    /* kick off the filter stack */
+    out = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    rv = ap_pass_brigade(r->output_filters, out);
+    if (rv != APR_SUCCESS) {
+        if (rv != AP_FILTER_ERROR) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "cache: error returned while trying to return %s "
+                         "cached data",
+                         cache->provider_name);
+        }
+        return rv;
+    }
+
+    return OK;
+}
+
+/**
+ * If the two filter handles are present within the filter chain, replace
+ * the last instance of the first filter with the last instance of the
+ * second filter, and return true. If the second filter is not present at
+ * all, the first filter is removed, and false is returned. If neither
+ * filter is present, false is returned and this function does nothing.
+ */
+static int cache_replace_filter(ap_filter_t *next, ap_filter_rec_t *from,
+        ap_filter_rec_t *to) {
+    ap_filter_t *ffrom = NULL, *fto = NULL;
+    while (next) {
+        if (next->frec == from && !next->ctx) {
+            ffrom = next;
+        }
+        if (next->frec == to && !next->ctx) {
+            fto = next;
+        }
+        next = next->next;
+    }
+    if (ffrom && fto) {
+        ffrom->frec = fto->frec;
+        ffrom->ctx = fto->ctx;
+        ap_remove_output_filter(fto);
+        return 1;
+    }
+    if (fto) {
+        ap_remove_output_filter(fto);
+    }
+    return 0;
+}
+
+/**
+ * The cache handler is functionally similar to the cache_quick_hander,
+ * however a number of steps that are required by the quick handler are
+ * not required here, as the normal httpd processing has already handled
+ * these steps.
+ */
+static int cache_handler(request_rec *r)
+{
+    apr_status_t rv;
+    const char *auth;
+    cache_provider_list *providers;
+    cache_request_rec *cache;
+    apr_bucket_brigade *out;
+    ap_filter_t *next;
+    ap_filter_rec_t *cache_out_handle;
+    ap_filter_rec_t *cache_save_handle;
+    cache_server_conf *conf;
+
+    /* Delay initialization until we know we are handling a GET */
+    if (r->method_number != M_GET) {
+        return DECLINED;
+    }
+
+    conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &cache_module);
+
+    /* only run if the quick handler is disabled */
+    if (conf->quick) {
+        return DECLINED;
+    }
+
+    /*
+     * Which cache module (if any) should handle this request?
+     */
+    if (!(providers = ap_cache_get_providers(r, conf, r->parsed_uri))) {
+        return DECLINED;
+    }
+
+    /* make space for the per request config */
+    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
+                                                       &cache_module);
+    if (!cache) {
+        cache = apr_pcalloc(r->pool, sizeof(cache_request_rec));
+        ap_set_module_config(r->request_config, &cache_module, cache);
+    }
+
+    /* save away the possible providers */
+    cache->providers = providers;
+
+    /*
+     * Try to serve this request from the cache.
+     *
+     * If no existing cache file (DECLINED)
+     *   add cache_save filter
+     * If cached file (OK)
+     *   clear filter stack
+     *   add cache_out filter
+     *   return OK
+     */
+    rv = cache_select(r);
+    if (rv != OK) {
+        if (rv == DECLINED) {
+
+            /* try to obtain a cache lock at this point. if we succeed,
+             * we are the first to try and cache this url. if we fail,
+             * it means someone else is already trying to cache this
+             * url, and we should just let the request through to the
+             * backend without any attempt to cache. this stops
+             * duplicated simultaneous attempts to cache an entity.
+             */
+            rv = ap_cache_try_lock(conf, r, NULL);
+            if (APR_SUCCESS == rv) {
+
+                /*
+                 * Add cache_save filter to cache this request. Choose
+                 * the correct filter by checking if we are a subrequest
+                 * or not.
+                 */
+                if (r->main) {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r->server,
+                            "Adding CACHE_SAVE_SUBREQ filter for %s",
+                            r->uri);
+                    cache_save_handle = cache_save_subreq_filter_handle;
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r->server, "Adding CACHE_SAVE filter for %s",
+                            r->uri);
+                    cache_save_handle = cache_save_filter_handle;
+                }
+                ap_add_output_filter_handle(cache_save_handle,
+                        NULL, r, r->connection);
+
+                /*
+                 * Did the user indicate the precise location of the
+                 * CACHE_SAVE filter by inserting the CACHE filter as a
+                 * marker?
+                 *
+                 * If so, we get cunning and replace CACHE with the
+                 * CACHE_SAVE filter. This has the effect of inserting
+                 * the CACHE_SAVE filter at the precise location where
+                 * the admin wants to cache the content. All filters that
+                 * lie before and after the original location of the CACHE
+                 * filter will remain in place.
+                 */
+                if (cache_replace_filter(r->output_filters,
+                        cache_filter_handle, cache_save_handle)) {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                            r->server, "Replacing CACHE with CACHE_SAVE "
+                            "filter for %s", r->uri);
+                }
+
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS, r->server,
+                        "Adding CACHE_REMOVE_URL filter for %s",
+                        r->uri);
+
+                /* Add cache_remove_url filter to this request to remove a
+                 * stale cache entry if needed. Also put the current cache
+                 * request rec in the filter context, as the request that
+                 * is available later during running the filter may be
+                 * different due to an internal redirect.
+                 */
+                cache->remove_url_filter =
+                    ap_add_output_filter_handle(cache_remove_url_filter_handle,
+                            cache, r, r->connection);
+
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv,
+                             r->server, "Cache locked for url, not caching "
+                             "response: %s", r->uri);
+            }
+        }
+        else {
+            /* error */
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "cache: error returned while checking for cached "
+                         "file by %s cache", cache->provider_name);
+        }
+        return DECLINED;
+    }
+
+    /* Serve up the content */
+
+    /*
+     * Add cache_out filter to serve this request. Choose
+     * the correct filter by checking if we are a subrequest
+     * or not.
+     */
+    if (r->main) {
+        cache_out_handle = cache_out_subreq_filter_handle;
+    }
+    else {
+        cache_out_handle = cache_out_filter_handle;
+    }
+    ap_add_output_filter_handle(cache_out_handle, NULL, r, r->connection);
+
+    /*
+     * Did the user indicate the precise location of the CACHE_OUT filter by
+     * inserting the CACHE filter as a marker?
+     *
+     * If so, we get cunning and replace CACHE with the CACHE_OUT filters.
+     * This has the effect of inserting the CACHE_OUT filter at the precise
+     * location where the admin wants to cache the content. All filters that
+     * lie *after* the original location of the CACHE filter will remain in
+     * place.
+     */
+    if (cache_replace_filter(r->output_filters, cache_filter_handle, cache_out_handle)) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, APR_SUCCESS,
+                r->server, "Replacing CACHE with CACHE_OUT filter for %s",
+                r->uri);
+    }
 
     /*
      * Remove all filters that are before the cache_out filter. This ensures
@@ -492,7 +750,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         }
         else {
 
-        	/* proactively remove the lock as soon as we see the eos bucket */
+            /* proactively remove the lock as soon as we see the eos bucket */
             ap_cache_remove_lock(conf, r, cache->handle ?
                     (char *)cache->handle->cache_obj->key : NULL, in);
 
@@ -1031,7 +1289,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
 /*
  * CACHE_REMOVE_URL filter
- * ---------------
+ * -----------------------
  *
  * This filter gets added in the quick handler every time the CACHE_SAVE filter
  * gets inserted. Its purpose is to remove a confirmed stale cache entry from
@@ -1078,6 +1336,33 @@ static int cache_remove_url_filter(ap_filter_t *f, apr_bucket_brigade *in)
     return ap_pass_brigade(f->next, in);
 }
 
+/*
+ * CACHE filter
+ * ------------
+ *
+ * This filter can be optionally inserted into the filter chain by the admin as
+ * a marker representing the precise location within the filter chain where
+ * caching is to be performed.
+ *
+ * When the filter chain is set up in the non-quick version of the URL handler,
+ * the CACHE filter is replaced by the CACHE_OUT or CACHE_SAVE filter,
+ * effectively inserting the caching filters at the point indicated by the
+ * admin. The CACHE filter is then removed.
+ *
+ * This allows caching to be performed before the content is passed to the
+ * INCLUDES filter, or to a filter that might perform transformations unique
+ * to the specific request and that would otherwise be non-cacheable.
+ */
+static int cache_filter(ap_filter_t *f, apr_bucket_brigade *in)
+{
+    /* we are just a marker, so let's just remove ourselves */
+    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, f->r->server,
+                 "cache: CACHE filter was added twice, or was added in quick "
+    		     "handler mode and will be ignored.");
+    ap_remove_output_filter(f);
+    return ap_pass_brigade(f->next, in);
+}
+
 /* -------------------------------------------------------------- */
 /* Setup configurable data */
 
@@ -1115,6 +1400,9 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     /* flag indicating that query-string should be ignored when caching */
     ps->ignorequerystring = 0;
     ps->ignorequerystring_set = 0;
+    /* by default, run in the quick handler */
+    ps->quick = 1;
+    ps->quick_set = 0;
     /* array of identifiers that should not be used for key calculation */
     ps->ignore_session_id = apr_array_make(p, 10, sizeof(char *));
     ps->ignore_session_id_set = CACHE_IGNORE_SESSION_ID_UNSET;
@@ -1191,8 +1479,28 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->lockmaxage_set == 0)
         ? base->lockmaxage
         : overrides->lockmaxage;
+    ps->quick =
+        (overrides->quick_set == 0)
+        ? base->quick
+        : overrides->quick;
     return ps;
 }
+
+static const char *set_cache_quick_handler(cmd_parms *parms, void *dummy,
+                                           int flag)
+{
+    cache_server_conf *conf;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config
+,
+                                                  &cache_module);
+    conf->quick = flag;
+    conf->quick_set = 1;
+    return NULL;
+
+}
+
 static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
                                                 int flag)
 {
@@ -1508,6 +1816,9 @@ static const command_rec cache_cmds[] =
                   "The minimum time in seconds to cache a document"),
     AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
                   "The default time in seconds to cache a document"),
+    AP_INIT_FLAG("CacheQuickHandler", set_cache_quick_handler, NULL,
+                 RSRC_CONF,
+                 "Run the cache in the quick handler, default on"),
     AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL,
                  RSRC_CONF,
                  "Ignore Responses where there is no Last Modified Header"),
@@ -1548,8 +1859,10 @@ static const command_rec cache_cmds[] =
 static void register_hooks(apr_pool_t *p)
 {
     /* cache initializer */
+    /* cache quick handler */
+    ap_hook_quick_handler(cache_quick_handler, NULL, NULL, APR_HOOK_FIRST);
     /* cache handler */
-    ap_hook_quick_handler(cache_url_handler, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_handler(cache_handler, NULL, NULL, APR_HOOK_REALLY_FIRST);
     /* cache filters
      * XXX The cache filters need to run right after the handlers and before
      * any other filters. Consider creating AP_FTYPE_CACHE for this purpose.
@@ -1562,6 +1875,18 @@ static void register_hooks(apr_pool_t *p)
      * cache_save_subreq_filter_handle / cache_out_subreq_filter_handle
      * to be run by subrequest
      */
+    /*
+     * CACHE is placed into the filter chain at an admin specified location,
+     * and when the cache_handler is run, the CACHE filter is swapped with
+     * the CACHE_OUT filter, or CACHE_SAVE filter as appropriate. This has
+     * the effect of offering optional fine control of where the cache is
+     * inserted into the filter chain.
+     */
+    cache_filter_handle =
+        ap_register_output_filter("CACHE",
+                                  cache_filter,
+                                  NULL,
+                                  AP_FTYPE_RESOURCE);
     /*
      * CACHE_SAVE must go into the filter chain after a possible DEFLATE
      * filter to ensure that the compressed content is stored.

@@ -29,12 +29,13 @@
 <identifier>cache_module</identifier>
 
 <summary>
-    <note type="warning">This module should be used with care and
-    can be used to circumvent <directive 
+    <note type="warning">This module should be used with care, as when the
+    <directive module="mod_cache">CacheQuickHandler</directive> directive is
+    in its default value of <strong>on</strong>, the <directive 
     module="mod_authz_host">Allow</directive> and <directive 
-    module="mod_authz_host">Deny</directive> directives. You 
-    should not enable caching for any content to which you wish
-    to limit access by client host name, address or environment
+    module="mod_authz_host">Deny</directive> directives will be circumvented.
+    You should not enable quick handler caching for any content to which you
+    wish to limit access by client host name, address or environment
     variable.</note>  
 
     <p><module>mod_cache</module> implements an <a
@@ -158,6 +159,71 @@
       &lt;/IfModule&gt;
     </example>
   </section>
+</section>
+
+<section id="finecontrol"><title>Fine Control with the CACHE Filter</title>
+  <p>Under the default mode of cache operation, the cache runs as a quick handler,
+  short circuiting the majority of server processing and offering the highest
+  cache performance available.</p>
+  
+  <p>In this mode, the cache <strong>bolts onto</strong> the front of the server,
+  acting as if a free standing RFC2616 caching proxy had been placed in front of
+  the server.</p>
+  
+  <p>While this mode offers the best performance, the administrator may find that
+  under certain circumstances they may want to perform further processing on the
+  request after the request is cached, such as to inject personalisation into the
+  cached page, or to apply authorisation restrictions to the content. Under these
+  circumstances, an administrator is often forced to place independent reverse
+  proxy servers either behind or in front of the caching server to achieve this.</p>
+
+  <p>To solve this problem the <directive module="mod_cache">CacheQuickHandler
+  </directive> directive can be set to <strong>off</strong>, and the server will
+  process all phases normally handled by a non cached request, including the
+  <strong>authentication and authorisation</strong> phases.</p>
+
+  <p>In addition, the administrator may optionally specify the <strong>precise point
+  within the filter chain</strong> where caching is to take place by adding the
+  <strong>CACHE</strong> filter to the output filter chain.</p>
+
+  <p>For example, to cache content before applying compression to the response,
+  place the <strong>CACHE</strong> filter before the <strong>DEFLATE</strong>
+  filter as in the example below:</p>
+
+  <example>
+    # Cache content before optional compression<br />
+    CacheQuickHandler off<br />
+    AddOutputFilterByType CACHE;DEFLATE text/plain<br /><br />
+  </example>
+
+  <p>Another option is to have content cached before personalisation is applied
+  by <module>mod_include</module> (or another content processing filter). In this
+  example templates containing tags understood by
+  <module>mod_include</module> are cached before being parsed:</p>
+
+  <example>
+    # Cache content before mod_include and mod_deflate<br />
+    CacheQuickHandler off<br />
+    AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
+  </example>
+
+  <p>You may place the <strong>CACHE</strong> filter anywhere you wish within the
+  filter chain. In this example, content is cached after being parsed by
+  <module>mod_include</module>, but before being processed by
+  <module>mod_deflate</module>:</p>
+
+  <example>
+    # Cache content between mod_include and mod_deflate<br />
+    CacheQuickHandler off<br />
+    AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html<br /><br />
+  </example>
+
+  <note type="warning"><title>Warning:</title>If the location of the
+  <strong>CACHE</strong> filter in the filter chain is changed for any reason,
+  you may need to <strong>flush your cache</strong> to ensure that your data
+  served remains consistent. <module>mod_cache</module> is not in a position
+  to enforce this for you.</note>
+
 </section>
 
 <directivesynopsis>
@@ -598,7 +664,7 @@ LastModified date.</description>
 
 </usage>
 </directivesynopsis>
-  
+
 <directivesynopsis>
 <name>CacheLockMaxAge</name>
 <description>Set the maximum possible age of a cache lock.</description>
@@ -617,6 +683,51 @@ LastModified date.</description>
   an entity.</p>
   
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+  <name>CacheQuickHandler</name>
+  <description>Run the cache from the quick handler.</description>
+  <syntax>CacheQuickHandler <var>on|off</var></syntax>
+  <default>CacheQuickHandler on</default>
+  <contextlist><context>server config</context><context>virtual host</context>
+  </contextlist>
+
+  <usage>
+    <p>The <directive module="mod_cache">CacheQuickHandler</directive> directive
+    controls the phase in which the cache is handled.</p>
+
+    <p>In the default enabled configuration, the cache operates within the quick
+    handler phase. This phase short circuits the majority of server processing,
+    and represents the most performant mode of operation for a typical server.
+    The cache <strong>bolts onto</strong> the front of the server, and the
+    majority of server processing is avoided.</p>
+
+    <p>When disabled, the cache operates as a normal handler, and is subject to
+    the full set of phases when handling a server request. While this mode is
+    slower than the default, it allows the cache to be used in cases where full
+    processing is required, such as when content is subject to authorisation.</p>
+
+    <example>
+      # Run cache as a normal handler<br />
+      CacheQuickHandler off<br /><br />
+    </example>
+
+    <p>It is also possible, when the quick handler is disabled, for the
+    administrator to choose the precise location within the filter chain where
+    caching is to be performed, by adding the <strong>CACHE</strong> filter to
+    the chain.</p>
+
+    <example>
+      # Cache content before mod_include and mod_deflate<br />
+      CacheQuickHandler off<br />
+      AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
+    </example>
+
+    <p>If the CACHE filter is specified more than once, the last instance will
+    apply.</p>
+
+  </usage>
 </directivesynopsis>
   
 </modulesynopsis>
