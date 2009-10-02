@@ -31,10 +31,11 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_cache.c</td></tr></table>
 <h3>Summary</h3>
 
-    <div class="warning">This module should be used with care and
-    can be used to circumvent <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directives. You 
-    should not enable caching for any content to which you wish
-    to limit access by client host name, address or environment
+    <div class="warning">This module should be used with care, as when the
+    <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> directive is
+    in its default value of <strong>on</strong>, the <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directives will be circumvented.
+    You should not enable quick handler caching for any content to which you
+    wish to limit access by client host name, address or environment
     variable.</div>  
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> implements an <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> compliant HTTP
@@ -68,6 +69,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelockpath">CacheLockPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheminexpire">CacheMinExpire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachequickhandler">CacheQuickHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestorenostore">CacheStoreNoStore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestoreprivate">CacheStorePrivate</a></li>
 </ul>
@@ -76,6 +78,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Sample Configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#thunderingherd">Avoiding the Thundering Herd</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#finecontrol">Fine Control with the CACHE Filter</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="../caching.html">Caching Guide</a></li>
@@ -174,6 +177,71 @@
       &lt;/IfModule&gt;
     </code></p></div>
   
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="finecontrol" id="finecontrol">Fine Control with the CACHE Filter</a></h2>
+  <p>Under the default mode of cache operation, the cache runs as a quick handler,
+  short circuiting the majority of server processing and offering the highest
+  cache performance available.</p>
+  
+  <p>In this mode, the cache <strong>bolts onto</strong> the front of the server,
+  acting as if a free standing RFC2616 caching proxy had been placed in front of
+  the server.</p>
+  
+  <p>While this mode offers the best performance, the administrator may find that
+  under certain circumstances they may want to perform further processing on the
+  request after the request is cached, such as to inject personalisation into the
+  cached page, or to apply authorisation restrictions to the content. Under these
+  circumstances, an administrator is often forced to place independent reverse
+  proxy servers either behind or in front of the caching server to achieve this.</p>
+
+  <p>To solve this problem the <code class="directive"><a href="#cachequickhandler&#10;  ">CacheQuickHandler
+  </a></code> directive can be set to <strong>off</strong>, and the server will
+  process all phases normally handled by a non cached request, including the
+  <strong>authentication and authorisation</strong> phases.</p>
+
+  <p>In addition, the administrator may optionally specify the <strong>precise point
+  within the filter chain</strong> where caching is to take place by adding the
+  <strong>CACHE</strong> filter to the output filter chain.</p>
+
+  <p>For example, to cache content before applying compression to the response,
+  place the <strong>CACHE</strong> filter before the <strong>DEFLATE</strong>
+  filter as in the example below:</p>
+
+  <div class="example"><p><code>
+    # Cache content before optional compression<br />
+    CacheQuickHandler off<br />
+    AddOutputFilterByType CACHE;DEFLATE text/plain<br /><br />
+  </code></p></div>
+
+  <p>Another option is to have content cached before personalisation is applied
+  by <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> (or another content processing filter). In this
+  example templates containing tags understood by
+  <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> are cached before being parsed:</p>
+
+  <div class="example"><p><code>
+    # Cache content before mod_include and mod_deflate<br />
+    CacheQuickHandler off<br />
+    AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
+  </code></p></div>
+
+  <p>You may place the <strong>CACHE</strong> filter anywhere you wish within the
+  filter chain. In this example, content is cached after being parsed by
+  <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>, but before being processed by
+  <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>:</p>
+
+  <div class="example"><p><code>
+    # Cache content between mod_include and mod_deflate<br />
+    CacheQuickHandler off<br />
+    AddOutputFilterByType INCLUDES;CACHE;DEFLATE text/html<br /><br />
+  </code></p></div>
+
+  <div class="warning"><h3>Warning:</h3>If the location of the
+  <strong>CACHE</strong> filter in the filter chain is changed for any reason,
+  you may need to <strong>flush your cache</strong> to ensure that your data
+  served remains consistent. <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> is not in a position
+  to enforce this for you.</div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheDefaultExpire" id="CacheDefaultExpire">CacheDefaultExpire</a> <a name="cachedefaultexpire" id="cachedefaultexpire">Directive</a></h2>
@@ -580,6 +648,51 @@ LastModified date.</td></tr>
       CacheMinExpire 3600
     </code></p></div>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheQuickHandler" id="CacheQuickHandler">CacheQuickHandler</a> <a name="cachequickhandler" id="cachequickhandler">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Run the cache from the quick handler.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheQuickHandler <var>on|off</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheQuickHandler on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>The <code class="directive"><a href="#cachequickhandler">CacheQuickHandler</a></code> directive
+    controls the phase in which the cache is handled.</p>
+
+    <p>In the default enabled configuration, the cache operates within the quick
+    handler phase. This phase short circuits the majority of server processing,
+    and represents the most performant mode of operation for a typical server.
+    The cache <strong>bolts onto</strong> the front of the server, and the
+    majority of server processing is avoided.</p>
+
+    <p>When disabled, the cache operates as a normal handler, and is subject to
+    the full set of phases when handling a server request. While this mode is
+    slower than the default, it allows the cache to be used in cases where full
+    processing is required, such as when content is subject to authorisation.</p>
+
+    <div class="example"><p><code>
+      # Run cache as a normal handler<br />
+      CacheQuickHandler off<br /><br />
+    </code></p></div>
+
+    <p>It is also possible, when the quick handler is disabled, for the
+    administrator to choose the precise location within the filter chain where
+    caching is to be performed, by adding the <strong>CACHE</strong> filter to
+    the chain.</p>
+
+    <div class="example"><p><code>
+      # Cache content before mod_include and mod_deflate<br />
+      CacheQuickHandler off<br />
+      AddOutputFilterByType CACHE;INCLUDES;DEFLATE text/html<br /><br />
+    </code></p></div>
+
+    <p>If the CACHE filter is specified more than once, the last instance will
+    apply.</p>
+
+  
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheStoreNoStore" id="CacheStoreNoStore">CacheStoreNoStore</a> <a name="cachestorenostore" id="cachestorenostore">Directive</a></h2>
