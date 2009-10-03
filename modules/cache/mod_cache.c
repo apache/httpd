@@ -330,7 +330,6 @@ static int cache_replace_filter(ap_filter_t *next, ap_filter_rec_t *from,
 static int cache_handler(request_rec *r)
 {
     apr_status_t rv;
-    const char *auth;
     cache_provider_list *providers;
     cache_request_rec *cache;
     apr_bucket_brigade *out;
