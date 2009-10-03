@@ -46,6 +46,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <fcntl.h>
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>
@@ -575,17 +576,16 @@ int main(int argc, char *argv[])
 #endif /* AP_SUEXEC_UMASK */
 
     /*
-     * Be sure to close the log file so the CGI can't
-     * mess with it.  If the exec fails, it will be reopened
-     * automatically when log_err is called.  Note that the log
-     * might not actually be open if AP_LOG_EXEC isn't defined.
-     * However, the "log" cell isn't ifdef'd so let's be defensive
-     * and assume someone might have done something with it
-     * outside an ifdef'd AP_LOG_EXEC block.
+     * ask fcntl(2) to set the FD_CLOEXEC flag on the log file,
+     * so it'll be automagically closed if the exec() call succeeds.
      */
     if (log != NULL) {
-        fclose(log);
-        log = NULL;
+        fflush(log);
+        setbuf(log,NULL);
+        if ((fcntl(fileno(log), F_SETFD, FD_CLOEXEC) == -1)) {
+            log_err("error: can't set close-on-exec flag");
+            exit(122);
+        }
     }
 
     /*
