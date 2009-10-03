@@ -427,19 +427,16 @@ static void copy_request(char *rbuf, apr_size_t rbuflen, request_rec *r)
     }
 }
 
-AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
-                                                    int thread_num,
-                                                    int status,
-                                                    request_rec *r)
+static int update_child_status_internal(int child_num,
+                                        int thread_num,
+                                        int status,
+                                        conn_rec *c,
+                                        request_rec *r)
 {
     int old_status;
     worker_score *ws;
     process_score *ps;
     int mpm_generation;
-
-    if (child_num < 0) {
-        return -1;
-    }
 
     ws = &ap_scoreboard_image->servers[child_num][thread_num];
     old_status = ws->status;
@@ -468,7 +465,6 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
             ws->conn_bytes = 0;
         }
         if (r) {
-            conn_rec *c = r->connection;
             apr_cpystrn(ws->client, ap_get_remote_host(c, r->per_dir_config,
                         REMOTE_NOLOOKUP, NULL), sizeof(ws->client));
             copy_request(ws->request, sizeof(ws->request), r);
@@ -477,9 +473,27 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
                             sizeof(ws->vhost));
             }
         }
+        else if (c) {
+            apr_cpystrn(ws->client, ap_get_remote_host(c, NULL,
+                        REMOTE_NOLOOKUP, NULL), sizeof(ws->client));
+        }
     }
 
     return old_status;
+}
+
+AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
+                                                    int thread_num,
+                                                    int status,
+                                                    request_rec *r)
+{
+    if (child_num < 0) {
+        return -1;
+    }
+
+    return update_child_status_internal(child_num, thread_num, status,
+                                        r ? r->connection : NULL,
+                                        r);
 }
 
 AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status,
@@ -488,8 +502,10 @@ AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status,
     if (!sbh)
         return -1;
 
-    return ap_update_child_status_from_indexes(sbh->child_num, sbh->thread_num,
-                                               status, r);
+    return update_child_status_internal(sbh->child_num, sbh->thread_num,
+                                        status,
+                                        r ? r->connection : NULL,
+                                        r);
 }
 
 AP_DECLARE(int) ap_update_child_status_from_conn(ap_sb_handle_t *sbh, int status,
@@ -498,11 +514,8 @@ AP_DECLARE(int) ap_update_child_status_from_conn(ap_sb_handle_t *sbh, int status
     if (!sbh)
         return -1;
     
-    request_rec fake_rec;
-    fake_rec.connection = c;
-            
-    return ap_update_child_status_from_indexes(sbh->child_num, sbh->thread_num,
-                                               status, &fake_rec);
+    return update_child_status_internal(sbh->child_num, sbh->thread_num,
+                                        status, c, NULL);
 }
 
 AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status)
