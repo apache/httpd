@@ -472,8 +472,10 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
             apr_cpystrn(ws->client, ap_get_remote_host(c, r->per_dir_config,
                         REMOTE_NOLOOKUP, NULL), sizeof(ws->client));
             copy_request(ws->request, sizeof(ws->request), r);
-            apr_cpystrn(ws->vhost, r->server->server_hostname,
-                        sizeof(ws->vhost));
+            if (r->server) {
+            	apr_cpystrn(ws->vhost, r->server->server_hostname,
+                            sizeof(ws->vhost));
+            }
         }
     }
 
@@ -488,6 +490,19 @@ AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status,
 
     return ap_update_child_status_from_indexes(sbh->child_num, sbh->thread_num,
                                                status, r);
+}
+
+AP_DECLARE(int) ap_update_child_status_from_conn(ap_sb_handle_t *sbh, int status,
+                                       conn_rec *c)
+{
+    if (!sbh)
+        return -1;
+    
+    request_rec fake_rec;
+    fake_rec.connection = c;
+            
+    return ap_update_child_status_from_indexes(sbh->child_num, sbh->thread_num,
+                                               status, &fake_rec);
 }
 
 AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status)

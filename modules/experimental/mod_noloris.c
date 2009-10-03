@@ -57,17 +57,9 @@ static int thread_limit;
 
 static int noloris_conn(conn_rec *conn)
 {
-    /*** FIXME
-     * This is evil: we're assuming info that's private to the scoreboard
-     * We need to do that because there's no API to update the scoreboard
-     * on a connection, only with a request (or NULL to say not processing
-     * any request).  We need a version of ap_update_child_status that
-     * accepts a conn_rec.
-     */
     struct { int child_num; int thread_num; } *sbh = conn->sbh;
 
     char *shm_rec;
-    worker_score *ws;
     if (shm == NULL) {
         return DECLINED;  /* we're disabled */
     }
@@ -88,13 +80,8 @@ static int noloris_conn(conn_rec *conn)
     }
 
     /* store this client IP for the monitor to pick up */
-    /* under traditional scoreboard, none of this happens until
-     * there's a request_rec.  This is where we use the illegally-
-     * obtained private info from the scoreboard.
-     */
-
-    ws = &ap_scoreboard_image->servers[sbh->child_num][sbh->thread_num];
-    strcpy(ws->client, conn->remote_ip);
+ 
+    ap_update_child_status_from_conn(conn->sbh, SERVER_READY, conn);
 
     return DECLINED;
 }
