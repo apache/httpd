@@ -10,6 +10,10 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_cache: Fix uri_meets_conditions() so that CacheEnable will
+     match by scheme, or by a wildcarded hostname. PR 40169
+     [Ryan Pendergast <rpender us.ibm.com>, Graham Leggett]
+
   *) suxec: Allow to log an error if exec fails by setting FD_CLOEXEC
      on the log file instead of closing it. PR 10744. [Nicolas Rachinsky]
 

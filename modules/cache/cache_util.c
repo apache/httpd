@@ -26,42 +26,79 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
 
 /* Determine if "url" matches the hostname, scheme and port and path
  * in "filter". All but the path comparisons are case-insensitive.
+ * Note: the 's' parameters is not used currently, but needed for
+ * logging during debugging.
  */
-static int uri_meets_conditions(apr_uri_t filter, int pathlen, apr_uri_t url)
-{
-    /* Compare the hostnames */
-    if(filter.hostname) {
-        if (!url.hostname) {
-            return 0;
-        }
-        else if (strcasecmp(filter.hostname, url.hostname)) {
-            return 0;
-        }
-    }
+static int uri_meets_conditions(const server_rec * const s,
+        const apr_uri_t filter, const int pathlen, const apr_uri_t url) {
+    (void) s;
 
-    /* Compare the schemes */
-    if(filter.scheme) {
-        if (!url.scheme) {
-            return 0;
-        }
-        else if (strcasecmp(filter.scheme, url.scheme)) {
-            return 0;
-        }
-    }
+    /* Scheme, hostname port and local part. The filter URI and the
+     * URI we test may have the following shapes:
+     *   /<path>
+     *   <scheme>[:://<hostname>[:<port>][/<path>]]
+     * That is, if there is no scheme then there must be only the path,
+     * and we check only the path; if there is a scheme, we check the
+     * scheme for equality, and then if present we match the hostname,
+     * and then if present match the port, and finally the path if any.
+     *
+     * Note that this means that "/<path>" only matches local paths,
+     * and to match proxied paths one *must* specify the scheme.
+     */
 
-    /* Compare the ports */
-    if(filter.port_str) {
-        if (url.port_str && filter.port != url.port) {
+    /* Is the filter is just for a local path or a proxy URI? */
+    if (!filter.scheme) {
+        if (url.scheme || url.hostname) {
             return 0;
         }
-        /* NOTE:  ap_port_of_scheme will return 0 if given NULL input */
-        else if (filter.port != apr_uri_port_of_scheme(url.scheme)) {
+    } else {
+        /* The URI scheme must be present and identical except for case. */
+        if (!url.scheme || strcasecmp(filter.scheme, url.scheme)) {
             return 0;
         }
-    }
-    else if(url.port_str && filter.scheme) {
-        if (apr_uri_port_of_scheme(filter.scheme) == url.port) {
-            return 0;
+
+        /* If the filter hostname is null or empty it matches any hostname,
+         * if it begins with a "*" it matches the _end_ of the URI hostname
+         * excluding the "*", if it begins with a "." it matches the _end_
+         * of the URI * hostname including the ".", otherwise it must match
+         * the URI hostname exactly. */
+
+        if (filter.hostname && filter.hostname[0]) {
+            if (filter.hostname[0] == '.') {
+                const size_t fhostlen = strlen(filter.hostname);
+                const size_t uhostlen = url.hostname ? strlen(url.hostname) : 0;
+
+                if (fhostlen > uhostlen || strcasecmp(filter.hostname,
+                        url.hostname + uhostlen - fhostlen)) {
+                    return 0;
+                }
+            } else if (filter.hostname[0] == '*') {
+                const size_t fhostlen = strlen(filter.hostname + 1);
+                const size_t uhostlen = url.hostname ? strlen(url.hostname) : 0;
+
+                if (fhostlen > uhostlen || strcasecmp(filter.hostname + 1,
+                        url.hostname + uhostlen - fhostlen)) {
+                    return 0;
+                }
+            } else if (!url.hostname || strcasecmp(filter.hostname, url.hostname)) {
+                return 0;
+            }
+        }
+
+        /* If the filter port is empty it matches any URL port.
+         * If the filter or URL port are missing, or the URL port is
+         * empty, they default to the port for their scheme. */
+
+        if (!(filter.port_str && !filter.port_str[0])) {
+            /* NOTE:  ap_port_of_scheme will return 0 if given NULL input */
+            const unsigned fport = filter.port_str ? filter.port
+                    : apr_uri_port_of_scheme(filter.scheme);
+            const unsigned uport = (url.port_str && url.port_str[0])
+                    ? url.port : apr_uri_port_of_scheme(url.scheme);
+
+            if (fport != uport) {
+                return 0;
+            }
         }
     }
 
@@ -71,8 +108,7 @@ static int uri_meets_conditions(apr_uri_t filter, int pathlen, apr_uri_t url)
     if (!url.path) {
         if (*filter.path == '/' && pathlen == 1) {
             return 1;
-        }
-        else {
+        } else {
             return 0;
         }
     }
@@ -94,7 +130,7 @@ CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
     for (i = 0; i < conf->cacheenable->nelts; i++) {
         struct cache_enable *ent =
                                 (struct cache_enable *)conf->cacheenable->elts;
-        if (uri_meets_conditions(ent[i].url, ent[i].pathlen, uri)) {
+        if (uri_meets_conditions(r->server,ent[i].url, ent[i].pathlen, uri)) {
             /* Fetch from global config and add to the list. */
             cache_provider *provider;
             provider = ap_lookup_provider(CACHE_PROVIDER_GROUP, ent[i].type,
@@ -131,7 +167,7 @@ CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent =
                                (struct cache_disable *)conf->cachedisable->elts;
-        if (uri_meets_conditions(ent[i].url, ent[i].pathlen, uri)) {
+        if (uri_meets_conditions(r->server,ent[i].url, ent[i].pathlen, uri)) {
             /* Stop searching now. */
             return NULL;
         }

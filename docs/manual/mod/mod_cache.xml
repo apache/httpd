@@ -262,6 +262,17 @@ manager</description>
       CacheEnable  disk  http://www.apache.org/<br />
     </example>
 
+    <p>A hostname starting with a <strong>"*"</strong> matches all hostnames with
+    that suffix. A hostname starting with <strong>"."</strong> matches all
+    hostnames containing the domain components that follow.</p>
+
+    <example>
+      # Match www.apache.org, and fooapache.org<br />
+      CacheEnable  disk  http://*apache.org/<br />
+      # Match www.apache.org, but not fooapache.org<br />
+      CacheEnable  disk  http://.apache.org/<br />
+    </example>
+
     <p> The <code>no-cache</code> environment variable can be set to 
     disable caching on a finer grained set of resources in versions
     2.2.12 and later.</p>
