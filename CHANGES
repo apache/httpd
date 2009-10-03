@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) suxec: Allow to log an error if exec fails by setting FD_CLOEXEC
+     on the log file instead of closing it. PR 10744. [Nicolas Rachinsky]
+
   *) mod_mime: Make RemoveType override the info from TypesConfig.
      PR 38330. [Stefan Fritsch]
 
