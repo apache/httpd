@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR 33098.
    Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=792409
    2.2.x Patch: trunk patch works
-   +1: sf
+   +1: sf, minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
