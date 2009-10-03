@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_mime: Make RemoveType override the info from TypesConfig.
+     PR 38330. [Stefan Fritsch]
+
   *) mod_cache: Introduce the option to run the cache from within the
      normal request handler, and to allow fine grained control over
      where in the filter chain content is cached. [Graham Leggett]

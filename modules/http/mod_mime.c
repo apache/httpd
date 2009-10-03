@@ -274,6 +274,16 @@ static const char *add_extension_info(cmd_parms *cmd, void *m_,
 }
 
 /*
+ * As RemoveType should also override the info from TypesConfig, we add an
+ * empty string as type instead of actually removing the type.
+ */
+static const char *remove_extension_type(cmd_parms *cmd, void *m_,
+                                         const char *ext)
+{
+    return add_extension_info(cmd, m_, "", ext);
+}
+
+/*
  * Note handler names are un-added with each per_dir_config merge.
  * This keeps the association from being inherited, but not
  * from being re-added at a subordinate level.
@@ -403,7 +413,7 @@ static const command_rec mime_cmds[] =
     AP_INIT_ITERATE("RemoveOutputFilter", remove_extension_info,
         (void *)APR_OFFSETOF(extension_info, output_filters), OR_FILEINFO,
         "one or more file extensions"),
-    AP_INIT_ITERATE("RemoveType", remove_extension_info,
+    AP_INIT_ITERATE("RemoveType", remove_extension_type,
         (void *)APR_OFFSETOF(extension_info, forced_type), OR_FILEINFO,
         "one or more file extensions"),
     AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
@@ -819,7 +829,8 @@ static int find_ct(request_rec *r)
 
         if (exinfo != NULL) {
 
-            if (exinfo->forced_type) {
+            /* empty string is treated as special case for RemoveType */
+            if (exinfo->forced_type && *exinfo->forced_type) {
                 ap_set_content_type(r, exinfo->forced_type);
                 found = 1;
             }
