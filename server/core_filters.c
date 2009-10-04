@@ -316,7 +316,7 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
 static void setaside_remaining_output(ap_filter_t *f,
                                       core_output_filter_ctx_t *ctx,
                                       apr_bucket_brigade *bb,
-                                      int make_a_copy, conn_rec *c);
+                                      conn_rec *c);
 
 static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                                              apr_bucket_brigade *bb,
@@ -392,19 +392,21 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         }
     }
 
+    if (new_bb != NULL) {
+        bb = new_bb;
+    }
+    
     if ((ctx->buffered_bb != NULL) &&
         !APR_BRIGADE_EMPTY(ctx->buffered_bb)) {
-        bb = ctx->buffered_bb;
-        ctx->buffered_bb = NULL;
         if (new_bb != NULL) {
-            APR_BRIGADE_CONCAT(bb, new_bb);
+            APR_BRIGADE_PREPEND(bb, ctx->buffered_bb);
+        }
+        else {
+            bb = ctx->buffered_bb;
         }
         c->data_in_output_filters = 0;
     }
-    else if (new_bb != NULL) {
-        bb = new_bb;
-    }
-    else {
+    else if (new_bb == NULL) {
         return APR_SUCCESS;
     }
 
@@ -444,7 +446,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
             /* The client has aborted the connection */
             c->aborted = 1;
         }
-        setaside_remaining_output(f, ctx, bb, 0, c);
+        setaside_remaining_output(f, ctx, bb, c);
         return rv;
     }
 
@@ -508,14 +510,14 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         }
     }
 
-    setaside_remaining_output(f, ctx, bb, 1, c);
+    setaside_remaining_output(f, ctx, bb, c);
     return APR_SUCCESS;
 }
 
 static void setaside_remaining_output(ap_filter_t *f,
                                       core_output_filter_ctx_t *ctx,
                                       apr_bucket_brigade *bb,
-                                      int make_a_copy, conn_rec *c)
+                                      conn_rec *c)
 {
     if (bb == NULL) {
         return;
@@ -523,19 +525,13 @@ static void setaside_remaining_output(ap_filter_t *f,
     remove_empty_buckets(bb);
     if (!APR_BRIGADE_EMPTY(bb)) {
         c->data_in_output_filters = 1;
-        if (make_a_copy) {
+        if (bb != ctx->buffered_bb) {
             /* XXX should this use a separate deferred write pool, like
              * the original ap_core_output_filter?
              */
             ap_save_brigade(f, &(ctx->buffered_bb), &bb, c->pool);
-            apr_brigade_destroy(bb);
+            apr_brigade_cleanup(bb);
         }
-        else {
-            ctx->buffered_bb = bb;
-        }
-    }
-    else {
-        apr_brigade_destroy(bb);
     }
 }
 
