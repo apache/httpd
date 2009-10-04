@@ -463,6 +463,11 @@ static int cache_handler(request_rec *r)
         return DECLINED;
     }
 
+    rv = ap_meets_conditions(r);
+    if (rv != OK) {
+        return rv;
+    }
+
     /* Serve up the content */
 
     /*
