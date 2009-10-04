@@ -101,19 +101,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	= ratelimit
+NLM_NAME	= reqtimeout
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	= Apache $(VERSION_STR) Rate Limit Module
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Request Timeout Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= ratelimit
+NLM_THREAD_NAME	= $(NLM_NAME)
 
 #
 # If this is specified, it will override VERSION value in
@@ -158,7 +158,7 @@ XDCDATA		=
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/ratelimit.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
@@ -172,7 +172,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
-	$(OBJDIR)/mod_ratelimit.o \
+	$(OBJDIR)/mod_reqtimeout.o \
 	$(EOLIST)
 
 #
@@ -220,7 +220,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	ratelimit_module \
+	reqtimeout_module \
 	$(EOLIST)
 
 #
