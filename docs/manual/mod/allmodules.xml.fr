@@ -73,7 +73,7 @@
   <modulefile>mod_proxy_fcgi.xml</modulefile>
   <modulefile>mod_proxy_fdpass.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>
-  <modulefile>mod_proxy_http.xml</modulefile>
+  <modulefile>mod_proxy_http.xml.fr</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
   <modulefile>mod_remoteip.xml</modulefile>
   <modulefile>mod_request.xml</modulefile>
