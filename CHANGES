@@ -10,6 +10,10 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) core: Fix potential memory leaks by making sure to not destroy
+     bucket brigades that have been created by earlier filters.
+     [Stefan Fritsch]
+
   *) core, mod_deflate, mod_sed: Reduce memory usage by reusing bucket
      brigades in several places. [Stefan Fritsch]
 
