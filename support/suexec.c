@@ -46,7 +46,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#if APR_HAVE_FCNTL_H
 #include <fcntl.h>
+#endif
 
 #ifdef HAVE_PWD_H
 #include <pwd.h>
@@ -575,17 +577,27 @@ int main(int argc, char *argv[])
     umask(AP_SUEXEC_UMASK);
 #endif /* AP_SUEXEC_UMASK */
 
-    /*
-     * ask fcntl(2) to set the FD_CLOEXEC flag on the log file,
-     * so it'll be automagically closed if the exec() call succeeds.
-     */
+    /* Be sure to close the log file so the CGI can't mess with it. */
     if (log != NULL) {
+#if APR_HAVE_FCNTL_H
+        /*
+         * ask fcntl(2) to set the FD_CLOEXEC flag on the log file,
+         * so it'll be automagically closed if the exec() call succeeds.
+         */
         fflush(log);
-        setbuf(log,NULL);
+        setbuf(log, NULL);
         if ((fcntl(fileno(log), F_SETFD, FD_CLOEXEC) == -1)) {
             log_err("error: can't set close-on-exec flag");
             exit(122);
         }
+#else
+        /*
+         * In this case, exec() errors won't be logged because we have already
+         * dropped privileges and won't be able to reopen the log file.
+         */
+        fclose(log);
+        log = NULL;
+#endif
     }
 
     /*
