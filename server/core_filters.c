@@ -390,9 +390,6 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
                 ctx->bytes_in += bucket->length;
             }
         }
-    }
-
-    if (new_bb != NULL) {
         bb = new_bb;
     }
     
