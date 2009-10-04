@@ -3069,7 +3069,7 @@ serveur</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure l'en-tête <code>Server</code> de la réponse
 HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full|Off|Set</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ServerTokens Full</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
@@ -3082,12 +3082,10 @@ HTTP</td></tr>
     serveur.</p>
 
     <dl>
-	<dt><code>ServerTokens Full</code> (ou non spècifiè)</dt>
+    	<dt><code>ServerTokens Off</code></dt>
 
-	<dd>Le serveur envoie par exemple : <code>Server: Apache/2.0.41
-	(Unix) PHP/4.2.2 MyMod/1.2</code></dd>
-
-    	
+      <dd>Le serveur n'envoie aucun en-tête <code>Server:</code> (et
+      <code>SERVER_SOFTWARE</code> est vide)</dd>
 
 
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
@@ -3123,12 +3121,10 @@ HTTP</td></tr>
       entourée de guillemets si elle contient des espaces.
       </dd>
 
-      <dt><code>ServerTokens Off</code></dt>
+      <dt><code>ServerTokens Full</code> (valeur par défaut)</dt>
 
-      <dd>Le serveur n'envoie aucun en-tête <code>Server:</code> (et
-      <code>SERVER_SOFTWARE</code> est vide)</dd>
-
-      
+      <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
+      Apache/2.0.41 (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
     </dl>
 
     <p>Cette définition s'applique à l'ensemble du serveur et ne peut
@@ -3136,18 +3132,6 @@ HTTP</td></tr>
 
     <p>Dans les versions postérieures à 2.0.44, cette directive contrôle
     aussi les informations fournies par la directive <code class="directive"><a href="#serversignature">ServerSignature</a></code>.</p>
-
-    <div class="note">Définir <code class="directive">ServerTokens</code> à une
-    valeur inférieure à <code>minimal</code> n'est pas
-    recommandé car le débogage des problèmes
-    interopérationnels n'en sera alors que plus difficile. Notez
-    aussi que la désactivation de l'en-tête Server:
-    n'améliore en rien la sécurité de votre
-    serveur ; le concept de "sécurité par
-    l'obscurité" est un mythe et conduit à
-    une mauvaise perception de ce qu'est la sécurité.</div>
-
-
 
 <h3>Voir aussi</h3>
 <ul>
