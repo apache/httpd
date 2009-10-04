@@ -57,71 +57,71 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(Mutex, TAKE1, AP_ALL_AVAILABLE_MUTEXES_STRING)
     SSL_CMD_SRV(PassPhraseDialog, TAKE1,
                 "SSL dialog mechanism for the pass phrase query "
-                "(`builtin', `|/path/to/pipe_program`, "
-                "or `exec:/path/to/cgi_program')")
+                "('builtin', '|/path/to/pipe_program', "
+                "or 'exec:/path/to/cgi_program')")
     SSL_CMD_SRV(SessionCache, TAKE1,
                 "SSL Session Cache storage "
-                "(`none', `nonenotnull', `dbm:/path/to/file')")
+                "('none', 'nonenotnull', 'dbm:/path/to/file')")
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     SSL_CMD_SRV(CryptoDevice, TAKE1,
                 "SSL external Crypto Device usage "
-                "(`builtin', `...')")
+                "('builtin', '...')")
 #endif
     SSL_CMD_SRV(RandomSeed, TAKE23,
                 "SSL Pseudo Random Number Generator (PRNG) seeding source "
-                "(`startup|connect builtin|file:/path|exec:/path [bytes]')")
+                "('startup|connect builtin|file:/path|exec:/path [bytes]')")
 
     /*
      * Per-server context configuration directives
      */
     SSL_CMD_SRV(Engine, TAKE1,
                 "SSL switch for the protocol engine "
-                "(`on', `off')")
+                "('on', 'off')")
     SSL_CMD_ALL(CipherSuite, TAKE1,
                 "Colon-delimited list of permitted SSL Ciphers "
-                "(`XXX:...:XXX' - see manual)")
+                "('XXX:...:XXX' - see manual)")
     SSL_CMD_SRV(CertificateFile, TAKE1,
                 "SSL Server Certificate file "
-                "(`/path/to/file' - PEM or DER encoded)")
+                "('/path/to/file' - PEM or DER encoded)")
     SSL_CMD_SRV(CertificateKeyFile, TAKE1,
                 "SSL Server Private Key file "
-                "(`/path/to/file' - PEM or DER encoded)")
+                "('/path/to/file' - PEM or DER encoded)")
     SSL_CMD_SRV(CertificateChainFile, TAKE1,
                 "SSL Server CA Certificate Chain file "
-                "(`/path/to/file' - PEM encoded)")
+                "('/path/to/file' - PEM encoded)")
     SSL_CMD_SRV(PKCS7CertificateFile, TAKE1,
                 "PKCS#7 file containing server certificate and chain"
-                " certificates (`/path/to/file' - PEM encoded)")
+                " certificates ('/path/to/file' - PEM encoded)")
     SSL_CMD_ALL(CACertificatePath, TAKE1,
                 "SSL CA Certificate path "
-                "(`/path/to/dir' - contains PEM encoded files)")
+                "('/path/to/dir' - contains PEM encoded files)")
     SSL_CMD_ALL(CACertificateFile, TAKE1,
                 "SSL CA Certificate file "
-                "(`/path/to/file' - PEM encoded)")
+                "('/path/to/file' - PEM encoded)")
     SSL_CMD_SRV(CADNRequestPath, TAKE1,
                 "SSL CA Distinguished Name path "
-                "(`/path/to/dir' - symlink hashes to PEM of acceptable CA names to request)")
+                "('/path/to/dir' - symlink hashes to PEM of acceptable CA names to request)")
     SSL_CMD_SRV(CADNRequestFile, TAKE1,
                 "SSL CA Distinguished Name file "
-                "(`/path/to/file' - PEM encoded to derive acceptable CA names to request)")
+                "('/path/to/file' - PEM encoded to derive acceptable CA names to request)")
     SSL_CMD_SRV(CARevocationPath, TAKE1,
                 "SSL CA Certificate Revocation List (CRL) path "
-                "(`/path/to/dir' - contains PEM encoded files)")
+                "('/path/to/dir' - contains PEM encoded files)")
     SSL_CMD_SRV(CARevocationFile, TAKE1,
                 "SSL CA Certificate Revocation List (CRL) file "
-                "(`/path/to/file' - PEM encoded)")
+                "('/path/to/file' - PEM encoded)")
     SSL_CMD_ALL(VerifyClient, TAKE1,
                 "SSL Client verify type "
-                "(`none', `optional', `require', `optional_no_ca')")
+                "('none', 'optional', 'require', 'optional_no_ca')")
     SSL_CMD_ALL(VerifyDepth, TAKE1,
                 "SSL Client verify depth "
-                "(`N' - number of intermediate certificates)")
+                "('N' - number of intermediate certificates)")
     SSL_CMD_SRV(SessionCacheTimeout, TAKE1,
                 "SSL Session Cache object lifetime "
-                "(`N' - number of seconds)")
+                "('N' - number of seconds)")
     SSL_CMD_SRV(Protocol, RAW_ARGS,
                 "Enable or disable various SSL protocols"
-                "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
+                "('[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
     SSL_CMD_SRV(HonorCipherOrder, FLAG,
                 "Use the server's cipher ordering preference")
     SSL_CMD_ALL(UserName, TAKE1,
@@ -137,37 +137,37 @@ static const command_rec ssl_config_cmds[] = {
      */
     SSL_CMD_SRV(ProxyEngine, FLAG,
                 "SSL switch for the proxy protocol engine "
-                "(`on', `off')")
+                "('on', 'off')")
     SSL_CMD_SRV(ProxyProtocol, RAW_ARGS,
                "SSL Proxy: enable or disable SSL protocol flavors "
-               "(`[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
+               "('[+-][SSLv2|SSLv3|TLSv1] ...' - see manual)")
     SSL_CMD_SRV(ProxyCipherSuite, TAKE1,
                "SSL Proxy: colon-delimited list of permitted SSL ciphers "
-               "(`XXX:...:XXX' - see manual)")
+               "('XXX:...:XXX' - see manual)")
     SSL_CMD_SRV(ProxyVerify, TAKE1,
                "SSL Proxy: whether to verify the remote certificate "
-               "(`on' or `off')")
+               "('on' or 'off')")
     SSL_CMD_SRV(ProxyVerifyDepth, TAKE1,
                "SSL Proxy: maximum certificate verification depth "
-               "(`N' - number of intermediate certificates)")
+               "('N' - number of intermediate certificates)")
     SSL_CMD_SRV(ProxyCACertificateFile, TAKE1,
                "SSL Proxy: file containing server certificates "
-               "(`/path/to/file' - PEM encoded certificates)")
+               "('/path/to/file' - PEM encoded certificates)")
     SSL_CMD_SRV(ProxyCACertificatePath, TAKE1,
                "SSL Proxy: directory containing server certificates "
-               "(`/path/to/dir' - contains PEM encoded certificates)")
+               "('/path/to/dir' - contains PEM encoded certificates)")
     SSL_CMD_SRV(ProxyCARevocationPath, TAKE1,
                 "SSL Proxy: CA Certificate Revocation List (CRL) path "
-                "(`/path/to/dir' - contains PEM encoded files)")
+                "('/path/to/dir' - contains PEM encoded files)")
     SSL_CMD_SRV(ProxyCARevocationFile, TAKE1,
                 "SSL Proxy: CA Certificate Revocation List (CRL) file "
-                "(`/path/to/file' - PEM encoded)")
+                "('/path/to/file' - PEM encoded)")
     SSL_CMD_SRV(ProxyMachineCertificateFile, TAKE1,
                "SSL Proxy: file containing client certificates "
-               "(`/path/to/file' - PEM encoded certificates)")
+               "('/path/to/file' - PEM encoded certificates)")
     SSL_CMD_SRV(ProxyMachineCertificatePath, TAKE1,
                "SSL Proxy: directory containing client certificates "
-               "(`/path/to/dir' - contains PEM encoded certificates)")
+               "('/path/to/dir' - contains PEM encoded certificates)")
     SSL_CMD_SRV(ProxyCheckPeerExpire, FLAG,
                 "SSL Proxy: check the peers certificate expiration date")
     SSL_CMD_SRV(ProxyCheckPeerCN, FLAG,
@@ -178,7 +178,7 @@ static const command_rec ssl_config_cmds[] = {
      */
     SSL_CMD_DIR(Options, OPTIONS, RAW_ARGS,
                "Set one or more options to configure the SSL engine"
-               "(`[+-]option[=value] ...' - see manual)")
+               "('[+-]option[=value] ...' - see manual)")
     SSL_CMD_DIR(RequireSSL, AUTHCFG, NO_ARGS,
                "Require the SSL protocol for the per-directory context "
                "(no arguments)")
@@ -191,11 +191,11 @@ static const command_rec ssl_config_cmds[] = {
                 "changed access control requirements")
 
     SSL_CMD_SRV(OCSPEnable, FLAG,
-               "Enable use of OCSP to verify certificate revocation (`on', `off')")
+               "Enable use of OCSP to verify certificate revocation ('on', 'off')")
     SSL_CMD_SRV(OCSPDefaultResponder, TAKE1,
                "URL of the default OCSP Responder")
     SSL_CMD_SRV(OCSPOverrideResponder, FLAG,
-               "Force use of the default responder URL (`on', `off')")
+               "Force use of the default responder URL ('on', 'off')")
 
     /* Deprecated directives. */
     AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL,
@@ -392,7 +392,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
                                     APR_MD5_DIGESTSIZE*2))
     {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
-                      "Unable to set session id context to `%s'", vhost_md5);
+                      "Unable to set session id context to '%s'", vhost_md5);
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, server);
 
         c->aborted = 1;
