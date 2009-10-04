@@ -1011,14 +1011,11 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     }
 
     if (!APR_BRIGADE_EMPTY(ctx->proc_bb)) {
-        apr_bucket_brigade *newbb;
-
         /* May return APR_INCOMPLETE which is fine by us. */
         apr_brigade_partition(ctx->proc_bb, readbytes, &bkt);
 
-        newbb = apr_brigade_split(ctx->proc_bb, bkt);
         APR_BRIGADE_CONCAT(bb, ctx->proc_bb);
-        APR_BRIGADE_CONCAT(ctx->proc_bb, newbb);
+        apr_brigade_split_ex(bb, bkt, ctx->proc_bb);
     }
 
     return APR_SUCCESS;

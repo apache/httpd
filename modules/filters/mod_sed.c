@@ -48,6 +48,7 @@ typedef struct sed_filter_ctxt
     ap_filter_t *f;
     request_rec *r;
     apr_bucket_brigade *bb;
+    apr_bucket_brigade *bbinp;
     char *outbuf;
     char *curoutbuf;
     int bufsize;
@@ -392,6 +393,7 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
                                            &sed_module);
     sed_filter_ctxt *ctx = f->ctx;
     apr_status_t status;
+    apr_bucket_brigade *bbinp;
     sed_expr_config *sed_cfg = &cfg->input;
 
     if (mode != AP_MODE_READBYTES) {
@@ -413,8 +415,11 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
         if (status != APR_SUCCESS)
              return status;
         ctx = f->ctx;
-        ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        ctx->bb    = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        ctx->bbinp = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
     }
+
+    bbinp = ctx->bbinp;
 
     /* Here is the logic :
      * Read the readbytes data from next level fiter into bbinp. Loop through
@@ -435,11 +440,10 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
      * the question is where to add it?
      */
     while (APR_BRIGADE_EMPTY(ctx->bb)) {
-        apr_bucket_brigade *bbinp;
         apr_bucket *b;
 
         /* read the bytes from next level filter */
-        bbinp = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        apr_brigade_cleanup(bbinp);
         status = ap_get_brigade(f->next, bbinp, mode, block, readbytes);
         if (status != APR_SUCCESS) {
             return status;
@@ -469,20 +473,16 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
                 flush_output_buffer(ctx);
             }
         }
-        apr_brigade_cleanup(bbinp);
-        apr_brigade_destroy(bbinp);
     }
 
     if (!APR_BRIGADE_EMPTY(ctx->bb)) {
-        apr_bucket_brigade *newbb = NULL;
         apr_bucket *b = NULL;
 
         /* This may return APR_INCOMPLETE which should be fine */
         apr_brigade_partition(ctx->bb, readbytes, &b);
 
-        newbb = apr_brigade_split(ctx->bb, b);
         APR_BRIGADE_CONCAT(bb, ctx->bb);
-        APR_BRIGADE_CONCAT(ctx->bb, newbb);
+        apr_brigade_split_ex(bb, b, ctx->bb);
     }
     return APR_SUCCESS;
 }
