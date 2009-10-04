@@ -154,6 +154,7 @@
 <li><a href="mod_cache.html#cacheminexpire">CacheMinExpire</a></li>
 <li><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></li>
 <li><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
+<li><a href="mod_cache.html#cachequickhandler">CacheQuickHandler</a></li>
 <li><a href="mod_disk_cache.html#cacheroot">CacheRoot</a></li>
 <li><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore</a></li>
 <li><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate</a></li>
