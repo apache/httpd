@@ -6,6 +6,7 @@ APACHE_MODPATH_INIT(filters)
 
 APACHE_MODULE(buffer, Filter Buffering, , , yes)
 APACHE_MODULE(ratelimit, Output Bandwidth Limiting, , , yes)
+APACHE_MODULE(reqtimeout, Limit time waiting for request from client, , , yes)
 APACHE_MODULE(ext_filter, external filter module, , , most)
 APACHE_MODULE(request, Request Body Filtering, , , yes)
 APACHE_MODULE(include, Server Side Includes, , , yes)
