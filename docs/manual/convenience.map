@@ -118,6 +118,7 @@ cachemaxfilesize	mod/mod_disk_cache.html#cachemaxfilesize
 cacheminexpire	mod/mod_cache.html#cacheminexpire
 cacheminfilesize	mod/mod_disk_cache.html#cacheminfilesize
 cachenegotiateddocs	mod/mod_negotiation.html#cachenegotiateddocs
+cachequickhandler	mod/mod_cache.html#cachequickhandler
 cacheroot	mod/mod_disk_cache.html#cacheroot
 cachestorenostore	mod/mod_cache.html#cachestorenostore
 cachestoreprivate	mod/mod_cache.html#cachestoreprivate

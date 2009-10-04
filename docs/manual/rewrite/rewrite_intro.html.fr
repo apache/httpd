@@ -68,6 +68,12 @@ fichier journal puisse contenir une quantité impressionnante d'informations,
 il s'avère indispensable pour le débogage des problèmes avec la
 configuration de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, car il vous indiquera
 exactement la manière dont chaque règle est traitée.</p>
+
+<div class="note">
+<p>On ne peut pas utiliser la directive RewriteLog dans les fichiers
+.htaccess, car elle doit être définie au niveau du fichier
+de configuration du serveur principal.</p>
+</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="regex" id="regex">Expressions rationnelles</a></h2>
