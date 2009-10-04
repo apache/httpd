@@ -1310,6 +1310,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
                     if (rv != APR_SUCCESS || f->c->aborted) {
                         return rv;
                     }
+                    apr_brigade_cleanup(b);
                     APR_BRIGADE_CONCAT(b, ctx->tmpbb);
                     e = APR_BRIGADE_FIRST(b);
 
