@@ -1302,8 +1302,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
                  * do a blocking read on the next batch.
                  */
                 if (e != APR_BRIGADE_FIRST(b)) {
+                    apr_bucket *flush;
                     apr_brigade_split_ex(b, e, ctx->tmpbb);
-                    apr_bucket *flush = apr_bucket_flush_create(r->connection->bucket_alloc);
+                    flush = apr_bucket_flush_create(r->connection->bucket_alloc);
 
                     APR_BRIGADE_INSERT_TAIL(b, flush);
                     rv = ap_pass_brigade(f->next, b);
