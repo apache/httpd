@@ -1251,6 +1251,7 @@ struct content_length_ctx {
                      * least one bucket on to the next output filter
                      * for this request
                      */
+    apr_bucket_brigade *tmpbb;
 };
 
 /* This filter computes the content length, but it also computes the number
@@ -1271,6 +1272,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
     if (!ctx) {
         f->ctx = ctx = apr_palloc(r->pool, sizeof(*ctx));
         ctx->data_sent = 0;
+        ctx->tmpbb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     }
 
     /* Loop through this set of buckets to compute their length
@@ -1300,16 +1302,15 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
                  * do a blocking read on the next batch.
                  */
                 if (e != APR_BRIGADE_FIRST(b)) {
-                    apr_bucket_brigade *split = apr_brigade_split(b, e);
+                    apr_brigade_split_ex(b, e, ctx->tmpbb);
                     apr_bucket *flush = apr_bucket_flush_create(r->connection->bucket_alloc);
 
                     APR_BRIGADE_INSERT_TAIL(b, flush);
                     rv = ap_pass_brigade(f->next, b);
                     if (rv != APR_SUCCESS || f->c->aborted) {
-                        apr_brigade_destroy(split);
                         return rv;
                     }
-                    b = split;
+                    APR_BRIGADE_CONCAT(b, ctx->tmpbb);
                     e = APR_BRIGADE_FIRST(b);
 
                     ctx->data_sent = 1;
@@ -1402,6 +1403,7 @@ AP_DECLARE(size_t) ap_send_mmap(apr_mmap_t *mm, request_rec *r, size_t offset,
 
 typedef struct {
     apr_bucket_brigade *bb;
+    apr_bucket_brigade *tmpbb;
 } old_write_filter_ctx;
 
 AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
@@ -1422,15 +1424,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
     return ap_pass_brigade(f->next, bb);
 }
 
-static apr_status_t buffer_output(request_rec *r,
-                                  const char *str, apr_size_t len)
+static ap_filter_t *insert_old_write_filter(request_rec *r)
 {
-    conn_rec *c = r->connection;
     ap_filter_t *f;
     old_write_filter_ctx *ctx;
-
-    if (len == 0)
-        return APR_SUCCESS;
 
     /* future optimization: record some flags in the request_rec to
      * say whether we've added our filter, and whether it is first.
@@ -1445,23 +1442,40 @@ static apr_status_t buffer_output(request_rec *r,
     if (f == NULL) {
         /* our filter hasn't been added yet */
         ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+        ctx->tmpbb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+
         ap_add_output_filter("OLD_WRITE", ctx, r, r->connection);
         f = r->output_filters;
     }
+
+    return f;
+}
+
+static apr_status_t buffer_output(request_rec *r,
+                                  const char *str, apr_size_t len)
+{
+    conn_rec *c = r->connection;
+    ap_filter_t *f;
+    old_write_filter_ctx *ctx;
+
+    if (len == 0)
+        return APR_SUCCESS;
+
+    f = insert_old_write_filter(r);
+    ctx = f->ctx;
 
     /* if the first filter is not our buffering filter, then we have to
      * deliver the content through the normal filter chain
      */
     if (f != r->output_filters) {
-        apr_bucket_brigade *bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        apr_status_t rv;
         apr_bucket *b = apr_bucket_transient_create(str, len, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
+        APR_BRIGADE_INSERT_TAIL(ctx->tmpbb, b);
 
-        return ap_pass_brigade(r->output_filters, bb);
+        rv = ap_pass_brigade(r->output_filters, ctx->tmpbb);
+        apr_brigade_cleanup(ctx->tmpbb);
+        return rv;
     }
-
-    /* grab the context from our filter */
-    ctx = r->output_filters->ctx;
 
     if (ctx->bb == NULL) {
         ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -1617,13 +1631,20 @@ AP_DECLARE_NONSTD(int) ap_rvputs(request_rec *r, ...)
 AP_DECLARE(int) ap_rflush(request_rec *r)
 {
     conn_rec *c = r->connection;
-    apr_bucket_brigade *bb;
     apr_bucket *b;
+    ap_filter_t *f;
+    old_write_filter_ctx *ctx;
+    apr_status_t rv;
 
-    bb = apr_brigade_create(r->pool, c->bucket_alloc);
+    f = insert_old_write_filter(r);
+    ctx = f->ctx;
+
     b = apr_bucket_flush_create(c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
-    if (ap_pass_brigade(r->output_filters, bb) != APR_SUCCESS)
+    APR_BRIGADE_INSERT_TAIL(ctx->tmpbb, b);
+
+    rv = ap_pass_brigade(r->output_filters, ctx->tmpbb);
+    apr_brigade_cleanup(ctx->tmpbb);
+    if (rv != APR_SUCCESS)
         return -1;
 
     return 0;

@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) core, mod_deflate, mod_sed: Reduce memory usage by reusing bucket
+     brigades in several places. [Stefan Fritsch]
+
   *) mod_cache: Fix uri_meets_conditions() so that CacheEnable will
      match by scheme, or by a wildcarded hostname. PR 40169
      [Ryan Pendergast <rpender us.ibm.com>, Graham Leggett]
