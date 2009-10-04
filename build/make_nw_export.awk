@@ -82,14 +82,6 @@ BEGIN {
     add_symbol($NF)
 }
 
-/^[ \t]*AP[RU]?_DECLARE_OPTIONAL_FN[^(]*[(][^)]*/ {
-    split($0, args, ",")
-    symbol = args[2]
-    sub("^[ \t]+", "", symbol)
-    add_symbol(symbol)
-    next
-}
-
 #END {
 #    printf("\n\n#found: %d symbols.\n", found)
 #}
