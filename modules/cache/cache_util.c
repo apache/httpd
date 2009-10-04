@@ -48,7 +48,8 @@ static int uri_meets_conditions(const apr_uri_t filter, const int pathlen,
         if (url.scheme || url.hostname) {
             return 0;
         }
-    } else {
+    }
+    else {
         /* The URI scheme must be present and identical except for case. */
         if (!url.scheme || strcasecmp(filter.scheme, url.scheme)) {
             return 0;
@@ -69,7 +70,8 @@ static int uri_meets_conditions(const apr_uri_t filter, const int pathlen,
                         url.hostname + uhostlen - fhostlen)) {
                     return 0;
                 }
-            } else if (filter.hostname[0] == '*') {
+            }
+            else if (filter.hostname[0] == '*') {
                 const size_t fhostlen = strlen(filter.hostname + 1);
                 const size_t uhostlen = url.hostname ? strlen(url.hostname) : 0;
 
@@ -77,7 +79,8 @@ static int uri_meets_conditions(const apr_uri_t filter, const int pathlen,
                         url.hostname + uhostlen - fhostlen)) {
                     return 0;
                 }
-            } else if (!url.hostname || strcasecmp(filter.hostname, url.hostname)) {
+            }
+            else if (!url.hostname || strcasecmp(filter.hostname, url.hostname)) {
                 return 0;
             }
         }
@@ -105,7 +108,8 @@ static int uri_meets_conditions(const apr_uri_t filter, const int pathlen,
     if (!url.path) {
         if (*filter.path == '/' && pathlen == 1) {
             return 1;
-        } else {
+        }
+        else {
             return 0;
         }
     }
