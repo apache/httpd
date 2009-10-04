@@ -26,12 +26,9 @@ extern module AP_MODULE_DECLARE_DATA cache_module;
 
 /* Determine if "url" matches the hostname, scheme and port and path
  * in "filter". All but the path comparisons are case-insensitive.
- * Note: the 's' parameters is not used currently, but needed for
- * logging during debugging.
  */
-static int uri_meets_conditions(const server_rec * const s,
-        const apr_uri_t filter, const int pathlen, const apr_uri_t url) {
-    (void) s;
+static int uri_meets_conditions(const apr_uri_t filter, const int pathlen,
+        const apr_uri_t url) {
 
     /* Scheme, hostname port and local part. The filter URI and the
      * URI we test may have the following shapes:
@@ -130,7 +127,7 @@ CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
     for (i = 0; i < conf->cacheenable->nelts; i++) {
         struct cache_enable *ent =
                                 (struct cache_enable *)conf->cacheenable->elts;
-        if (uri_meets_conditions(r->server,ent[i].url, ent[i].pathlen, uri)) {
+        if (uri_meets_conditions(ent[i].url, ent[i].pathlen, uri)) {
             /* Fetch from global config and add to the list. */
             cache_provider *provider;
             provider = ap_lookup_provider(CACHE_PROVIDER_GROUP, ent[i].type,
@@ -167,7 +164,7 @@ CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
     for (i = 0; i < conf->cachedisable->nelts; i++) {
         struct cache_disable *ent =
                                (struct cache_disable *)conf->cachedisable->elts;
-        if (uri_meets_conditions(r->server,ent[i].url, ent[i].pathlen, uri)) {
+        if (uri_meets_conditions(ent[i].url, ent[i].pathlen, uri)) {
             /* Stop searching now. */
             return NULL;
         }
