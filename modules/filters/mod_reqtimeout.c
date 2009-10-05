@@ -21,17 +21,19 @@
 #include "http_protocol.h"
 #include "http_log.h"
 #include "util_filter.h"
+#define APR_WANT_STRFUNC
+#include "apr_strings.h"
 
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
 typedef struct
 {
-    int header_timeout;
-    int header_max_timeout;
-    int header_min_rate;
-    int body_timeout;
-    int body_max_timeout;
-    int body_min_rate;
+    int header_timeout;     /* timeout for reading the req hdrs in secs */
+    int header_max_timeout; /* max timeout for req hdrs in secs */
+    int header_min_rate;    /* min rate for reading req hdrs in bytes/s */
+    int body_timeout;       /* timeout for reading the req body in secs */
+    int body_max_timeout;   /* max timeout for req body in secs */
+    int body_min_rate;      /* timeout for reading the req body in secs */
 } reqtimeout_srv_cfg;
 
 typedef struct
@@ -280,70 +282,71 @@ static const char *parse_int(const char *arg, int *val) {
     return NULL;
 }
 
-static const char *parse_timeouts(const char *arg1, int *val1,
-                                  const char *arg2, int *val2)
+static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
+                                      apr_pool_t *p,
+                                      const char *key,
+                                      const char *val)
 {
-    const char *errstr;
-
-    errstr = parse_int(arg1, val1);
-    if (errstr) {
-        return errstr;
+    const char *ret = NULL;
+    if (!strcasecmp(key, "headerinit")) {
+        ret = parse_int(val, &conf->header_timeout);
     }
-
-    if (arg2 != NULL) {
-        errstr = parse_int(arg2, val2);
-        if (errstr) {
-            return errstr;
-        }
-        if (*val2 != 0 &&
-            *val2 <= *val1) {
-            return "Max timeout must be larger than initial timeout";
+    else if (!strcasecmp(key, "headermax")) {
+        ret = parse_int(val, &conf->header_max_timeout);
+        if (!ret && conf->header_max_timeout > conf->header_timeout) {
+            ret = "Max timeout must be larger than initial timeout";
         }
     }
+    else if (!strcasecmp(key, "bodyinit")) {
+        ret = parse_int(val, &conf->body_timeout);
+    }
+    else if (!strcasecmp(key, "bodymax")) {
+        ret = parse_int(val, &conf->body_max_timeout);
+        if (!ret && conf->body_max_timeout > conf->body_timeout) {
+            ret = "Max timeout must be larger than initial timeout";
+        }
+    }
+    else if (!strcasecmp(key, "headerminrate")) {
+        ret = parse_int(val, &conf->header_min_rate);
+    }
+    else if (!strcasecmp(key, "bodyminrate")) {
+        ret = parse_int(val, &conf->body_min_rate);
+    }
+    else {
+        ret = "unknown ReqTimeout parameter";
+    }
+    return ret;
+    
+}
 
+static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
+                                   const char *arg)
+{
+    reqtimeout_srv_cfg *conf =
+    ap_get_module_config(cmd->server->module_config,
+                         &reqtimeout_module);
+    
+    while (*arg) {
+        char *word, *val;
+        const char *err;
+        
+        word = ap_getword_conf(cmd->pool, &arg);
+        val = strchr(word, '=');
+        if (!val) {
+            return "Invalid ReqTimeout parameter. Parameter must be "
+            "in the form 'key=value'";
+        }
+        else
+            *val++ = '\0';
+
+        err = set_reqtimeout_param(conf, cmd->pool, word, val);
+        
+        if (err)
+            return apr_pstrcat(cmd->temp_pool, "ReqTimeout: ", err, " ", word, "=", val, "; ", NULL);
+    }
+    
     return NULL;
-}
-
-static const char *headertimeout_cmd(cmd_parms *parms, void *mconfig,
-                                     const char *arg1, const char *arg2)
-{
-    reqtimeout_srv_cfg *conf =
-        ap_get_module_config(parms->server->module_config,
-                             &reqtimeout_module);
-
-    return parse_timeouts(arg1, &conf->header_timeout,
-                          arg2, &conf->header_max_timeout);
-}
-
-static const char *headerminrate_cmd(cmd_parms *parms, void *mconfig,
-                                   const char *arg)
-{
-    reqtimeout_srv_cfg *conf =
-        ap_get_module_config(parms->server->module_config,
-                             &reqtimeout_module);
-
-    return parse_int(arg, &conf->header_min_rate);
-}
-
-static const char *bodytimeout_cmd(cmd_parms *parms, void *mconfig,
-                                   const char *arg1, const char *arg2)
-{
-    reqtimeout_srv_cfg *conf =
-        ap_get_module_config(parms->server->module_config,
-                             &reqtimeout_module);
-
-    return parse_timeouts(arg1, &conf->body_timeout,
-                          arg2, &conf->body_max_timeout);
-}
-
-static const char *bodyminrate_cmd(cmd_parms *parms, void *mconfig,
-                                   const char *arg)
-{
-    reqtimeout_srv_cfg *conf =
-        ap_get_module_config(parms->server->module_config,
-                             &reqtimeout_module);
-
-    return parse_int(arg, &conf->body_min_rate);
+    
 }
 
 static void reqtimeout_hooks(apr_pool_t *pool)
@@ -363,14 +366,8 @@ static void reqtimeout_hooks(apr_pool_t *pool)
 }
 
 static const command_rec reqtimeout_cmds[] = {
-    AP_INIT_TAKE12("RequestHeaderTimeout", headertimeout_cmd, NULL, RSRC_CONF,
-                   "Initial (and maximal) timeouts for reading the request headers in seconds"),
-    AP_INIT_TAKE1("RequestHeaderMinRate", headerminrate_cmd, NULL, RSRC_CONF,
-                  "Minimal transfer rate for reading the request headers in bytes/s"),
-    AP_INIT_TAKE12("RequestBodyTimeout", bodytimeout_cmd, NULL, RSRC_CONF,
-                   "Initial (and maximal) timeouts for reading the request body in seconds"),
-    AP_INIT_TAKE1("RequestBodyMinRate", bodyminrate_cmd, NULL, RSRC_CONF,
-                  "Minimal transfer rate for reading the request body in bytes/s"),
+    AP_INIT_RAW_ARGS("ReqTimeout", set_reqtimeouts, NULL, RSRC_CONF,
+                     "Adjust various Request Timeout parameters"),
     {NULL}
 };
 
