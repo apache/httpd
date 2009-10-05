@@ -31,9 +31,11 @@ typedef struct
     int header_timeout;     /* timeout for reading the req hdrs in secs */
     int header_max_timeout; /* max timeout for req hdrs in secs */
     int header_min_rate;    /* min rate for reading req hdrs in bytes/s */
+    apr_time_t header_rate_factor;
     int body_timeout;       /* timeout for reading the req body in secs */
     int body_max_timeout;   /* max timeout for req body in secs */
     int body_min_rate;      /* timeout for reading the req body in secs */
+    apr_time_t body_rate_factor;
 } reqtimeout_srv_cfg;
 
 typedef struct
@@ -45,6 +47,7 @@ typedef struct
     int new_max_timeout;
     int in_keep_alive;
     char *type;
+    apr_time_t rate_factor;
 } reqtimeout_con_cfg;
 
 typedef struct
@@ -62,7 +65,7 @@ static void extend_timeout(reqtimeout_con_cfg *ccfg, apr_bucket_brigade *bb)
     if (apr_brigade_length(bb, 0, &len) != APR_SUCCESS || len <= 0)
         return;
 
-    new_timeout_at = ccfg->timeout_at + len * apr_time_from_sec(1) / ccfg->min_rate;
+    new_timeout_at = ccfg->timeout_at + len * ccfg->rate_factor;
     if (ccfg->max_timeout_at > 0 && new_timeout_at > ccfg->max_timeout_at) {
         ccfg->timeout_at = ccfg->max_timeout_at;
     }
@@ -181,6 +184,7 @@ static int reqtimeout_pre_conn(conn_rec *c, void *csd)
     ccfg->new_max_timeout = cfg->header_max_timeout;
     ccfg->type = "header";
     ccfg->min_rate = cfg->header_min_rate;
+    ccfg->rate_factor = cfg->header_rate_factor;
     ap_set_module_config(c->conn_config, &reqtimeout_module, ccfg);
 
     ap_add_input_filter("reqtimeout", ctx, NULL, c);
@@ -207,6 +211,7 @@ static int reqtimeout_after_headers(request_rec *r)
     ccfg->new_timeout = cfg->body_timeout;
     ccfg->new_max_timeout = cfg->body_max_timeout;
     ccfg->min_rate = cfg->body_min_rate;
+    ccfg->rate_factor = cfg->body_rate_factor;
     ccfg->type = "body";
 
     return OK;
@@ -233,6 +238,8 @@ static int reqtimeout_after_body(request_rec *r)
     ccfg->new_timeout = cfg->header_timeout;
     ccfg->new_max_timeout = cfg->header_max_timeout;
     ccfg->min_rate = cfg->header_min_rate;
+    ccfg->rate_factor = cfg->header_rate_factor;
+    
     ccfg->type = "header";
 
     return OK;
@@ -255,18 +262,23 @@ static void *reqtimeout_create_srv_config(apr_pool_t *p, server_rec *s)
 #define MERGE_INT(cfg, b, a, val) cfg->val = (a->val == -1) ? b->val : a->val;
 static void *reqtimeout_merge_srv_config(apr_pool_t *p, void *base_, void *add_)
 {
-   reqtimeout_srv_cfg *base = base_;
-   reqtimeout_srv_cfg *add  = add_;
-   reqtimeout_srv_cfg *cfg  = apr_pcalloc(p, sizeof(reqtimeout_srv_cfg));
+    reqtimeout_srv_cfg *base = base_;
+    reqtimeout_srv_cfg *add  = add_;
+    reqtimeout_srv_cfg *cfg  = apr_pcalloc(p, sizeof(reqtimeout_srv_cfg));
 
-   MERGE_INT(cfg, base, add, header_timeout);
-   MERGE_INT(cfg, base, add, header_max_timeout);
-   MERGE_INT(cfg, base, add, header_min_rate);
-   MERGE_INT(cfg, base, add, body_timeout);
-   MERGE_INT(cfg, base, add, body_max_timeout);
-   MERGE_INT(cfg, base, add, body_min_rate);
+    MERGE_INT(cfg, base, add, header_timeout);
+    MERGE_INT(cfg, base, add, header_max_timeout);
+    MERGE_INT(cfg, base, add, header_min_rate);
+    MERGE_INT(cfg, base, add, body_timeout);
+    MERGE_INT(cfg, base, add, body_max_timeout);
+    MERGE_INT(cfg, base, add, body_min_rate);
 
-   return cfg;
+    cfg->header_rate_factor = (cfg->header_min_rate == -1) ? base->header_rate_factor :
+                              add->header_rate_factor;
+    cfg->body_rate_factor = (cfg->body_min_rate == -1) ? base->body_rate_factor :
+    			     add->body_rate_factor;
+
+    return cfg;
 }
 
 static const char *parse_int(const char *arg, int *val) {
@@ -308,9 +320,15 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
     }
     else if (!strcasecmp(key, "headerminrate")) {
         ret = parse_int(val, &conf->header_min_rate);
+        if (!ret) {
+            conf->header_rate_factor = apr_time_from_sec(1) / conf->header_min_rate;
+        }
     }
     else if (!strcasecmp(key, "bodyminrate")) {
         ret = parse_int(val, &conf->body_min_rate);
+        if (!ret) {
+            conf->body_rate_factor = apr_time_from_sec(1) / conf->body_min_rate;
+        }
     }
     else {
         ret = "unknown ReqTimeout parameter";
