@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_rewrite: Make sure that a hostname:port isn't fully qualified if
+     the request is a CONNECT request. [Bill Zajac <billz consultla.com>]
+
   *) mod_cache: Teach CacheEnable and CacheDisable to work from within a
      Location section, in line with how ProxyPass works. [Graham Leggett]
 
