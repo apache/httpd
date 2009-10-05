@@ -267,7 +267,7 @@
 <div class="directive-section"><h2><a name="CacheDisable" id="CacheDisable">CacheDisable</a> <a name="cachedisable" id="cachedisable">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Disable caching of specified URLs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDisable <var> url-string</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDisable <var>url-string</var> | <var>on</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
@@ -278,6 +278,16 @@
 
     <div class="example"><h3>Example</h3><p><code>
       CacheDisable /local_files
+    </code></p></div>
+
+    <p>If used in a <code class="directive">&lt;Location&gt;</code> directive,
+    the path needs to be specified below the Location, or if the word "on"
+    is used, caching for the whole location will be disabled.</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      &lt;Location /foo&gt;<br />
+        CacheDisable on<br />
+      &lt;/Location&gt;<br />
     </code></p></div>
 
     <p> The <code>no-cache</code> environment variable can be set to 
@@ -303,7 +313,9 @@ manager</td></tr>
     <p>The <code class="directive">CacheEnable</code> directive instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to cache urls at or below
     <var>url-string</var>. The cache storage manager is specified with the
-    <var>cache_type</var> argument. 
+    <var>cache_type</var> argument. If the <code class="directive">CacheEnable</code>
+    directive is placed inside a <code class="directive">&lt;Location&gt;</code>
+    directive, the <var>url-string</var> becomes optional.
     <var>cache_type</var> <code>disk</code> instructs
     <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> to use the disk based storage manager
     implemented by <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>.</p>
