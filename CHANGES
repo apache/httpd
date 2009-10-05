@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_cache: Teach CacheEnable and CacheDisable to work from within a
+     Location section, in line with how ProxyPass works. [Graham Leggett]
+
   *) mod_reqtimeout: New module to set timeouts and minimum data rates for
      receiving requests from the client. [Stefan Fritsch]
 

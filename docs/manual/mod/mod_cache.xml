@@ -238,7 +238,9 @@ manager</description>
     <p>The <directive>CacheEnable</directive> directive instructs
     <module>mod_cache</module> to cache urls at or below
     <var>url-string</var>. The cache storage manager is specified with the
-    <var>cache_type</var> argument. 
+    <var>cache_type</var> argument. If the <directive>CacheEnable</directive>
+    directive is placed inside a <directive type="section">Location</directive>
+    directive, the <var>url-string</var> becomes optional.
     <var>cache_type</var> <code>disk</code> instructs
     <module>mod_cache</module> to use the disk based storage manager
     implemented by <module>mod_disk_cache</module>.</p>
@@ -284,7 +286,7 @@ manager</description>
 <directivesynopsis>
 <name>CacheDisable</name>
 <description>Disable caching of specified URLs</description>
-<syntax>CacheDisable <var> url-string</var></syntax>
+<syntax>CacheDisable <var>url-string</var> | <var>on</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -295,6 +297,16 @@ manager</description>
 
     <example><title>Example</title>
       CacheDisable /local_files
+    </example>
+
+    <p>If used in a <directive type="section">Location</directive> directive,
+    the path needs to be specified below the Location, or if the word "on"
+    is used, caching for the whole location will be disabled.</p>
+
+    <example><title>Example</title>
+      &lt;Location /foo&gt;<br />
+        CacheDisable on<br />
+      &lt;/Location&gt;<br />
     </example>
 
     <p> The <code>no-cache</code> environment variable can be set to 
