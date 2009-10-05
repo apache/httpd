@@ -1516,10 +1516,28 @@ static const char *add_cache_enable(cmd_parms *parms, void *dummy,
     cache_server_conf *conf;
     struct cache_enable *new;
 
+    const char *err = ap_check_cmd_context(parms,
+                                           NOT_IN_DIRECTORY|NOT_IN_LIMIT|NOT_IN_FILES);
+    if (err != NULL) {
+        return err;
+    }
+
     if (*type == '/') {
         return apr_psprintf(parms->pool,
           "provider (%s) starts with a '/'.  Are url and provider switched?",
           type);
+    }
+
+    if (!url) {
+        url = parms->path;
+    }
+    if (!url) {
+        return apr_psprintf(parms->pool,
+          "CacheEnable provider (%s) is missing an URL.", type);
+    }
+    if (parms->path && strncmp(parms->path, url, strlen(parms->path))) {
+        return "When in a Location, CacheEnable must specify a path or an URL below "
+        "that location.";
     }
 
     conf =
@@ -1544,6 +1562,25 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
 {
     cache_server_conf *conf;
     struct cache_disable *new;
+
+    const char *err = ap_check_cmd_context(parms,
+                                           NOT_IN_DIRECTORY|NOT_IN_LIMIT|NOT_IN_FILES);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (parms->path && !strcmp(url, "on")) {
+        url = parms->path;
+    }
+    if (url[0] != '/' && !strchr(url, ':')) {
+        return "CacheDisable must specify a path or an URL, or when in a Location, "
+            "the word 'on'.";
+    }
+
+    if (parms->path && strncmp(parms->path, url, strlen(parms->path))) {
+        return "When in a Location, CacheDisable must specify a path or an URL below "
+        "that location.";
+    }
 
     conf =
         (cache_server_conf *)ap_get_module_config(parms->server->module_config,
@@ -1704,10 +1741,10 @@ static const command_rec cache_cmds[] =
      * This is more intuitive that requiring a LoadModule directive.
      */
 
-    AP_INIT_TAKE2("CacheEnable", add_cache_enable, NULL, RSRC_CONF,
-                  "A cache type and partial URL prefix below which "
-                  "caching is enabled"),
-    AP_INIT_TAKE1("CacheDisable", add_cache_disable, NULL, RSRC_CONF,
+    AP_INIT_TAKE12("CacheEnable", add_cache_enable, NULL, RSRC_CONF|ACCESS_CONF,
+                   "A cache type and partial URL prefix below which "
+                   "caching is enabled"),
+    AP_INIT_TAKE1("CacheDisable", add_cache_disable, NULL, RSRC_CONF|ACCESS_CONF,
                   "A partial URL prefix below which caching is disabled"),
     AP_INIT_TAKE1("CacheMaxExpire", set_cache_maxex, NULL, RSRC_CONF,
                   "The maximum time in seconds to cache a document"),
