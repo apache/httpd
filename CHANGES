@@ -43,7 +43,7 @@ Changes with Apache 2.3.3
      SSL_SERVER_I_DN back to the environment variables to be set by mod_ssl.
      [Peter Sylvester <peter.sylvester edelweb.fr>]
 
-  *) mod_cache: don't cache incomplete responses, per RFC 2616, 13.8.
+  *) mod_disk_cache: don't cache incomplete responses, per RFC 2616, 13.8.
      PR15866.  [Dan Poirier]
 
   *) ab: ab segfaults in verbose mode on https sites
