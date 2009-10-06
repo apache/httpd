@@ -76,6 +76,7 @@
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
   <modulefile>mod_remoteip.xml</modulefile>
+  <modulefile>mod_reqtimeout.xml</modulefile>
   <modulefile>mod_request.xml.tr</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
   <modulefile>mod_sed.xml</modulefile>
