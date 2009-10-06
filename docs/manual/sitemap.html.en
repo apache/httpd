@@ -240,6 +240,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache Module mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Apache Module mod_proxy_scgi</a></li>
 <li><a href="mod/mod_remoteip.html">Apache Module mod_remoteip</a></li>
+<li><a href="mod/mod_reqtimeout.html">Apache Module mod_reqtimeout</a></li>
 <li><a href="mod/mod_request.html">Apache Module mod_request</a></li>
 <li><a href="mod/mod_rewrite.html">Apache Module mod_rewrite</a></li>
 <li><a href="mod/mod_sed.html">Apache Module mod_sed</a></li>
