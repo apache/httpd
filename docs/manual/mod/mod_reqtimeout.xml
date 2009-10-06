@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 1 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_reqtimeout.xml.meta">
+
+<name>mod_reqtimeout</name>
+<description>Set timeout and minimum data rate for receiving requests
+</description>
+<status>Experimental</status>
+<sourcefile>mod_reqtimeout.c</sourcefile>
+<identifier>reqtimeout_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
+
+<section id="examples"><title>Examples</title>
+
+    <ol>
+      <li>
+        Allow 10 seconds to receive the request including the headers and
+        30 seconds for receiving the request body:
+
+        <example>
+          ReqTimeout headerinit=10 bodyinit=30
+        </example>
+      </li>
+
+      <li>
+        Allow at least 10 seconds to receive the request including the headers.
+        If the client sends data, increase the timeout by 1 second for every
+        500 bytes received. But do not allow more than 30 seconds for the
+        request including the headers:
+
+        <example>
+          ReqTimeout headerinit=10 headerminrate=500 headermax=30
+        </example>
+      </li>
+
+      <li>
+        Allow at least 10 seconds to receive the request body.
+        If the client sends data, increase the timeout by 1 second for every
+        1000 bytes received, with no upper limit for the timeout (exept for
+        the limit given indirectly by
+        <directive module="core">LimitRequestBody</directive>):
+
+        <example>
+          ReqTimeout bodyinit=10 bodyminrate=1000
+        </example>
+      </li>
+
+    </ol>
+</section>
+
+<directivesynopsis>
+<name>ReqTimeout</name>
+<description>Set timeout values for receiving request headers and body from client.
+</description>
+<syntax>ReqTimeout
+[headerinit=<var>time</var>
+[headerminrate=<var>rate</var> [headermax=<var>time</var>]]]
+[bodyinit=<var>time</var>
+[bodyminrate=<var>rate</var> [bodymax=<var>time</var>]]]
+</syntax>
+<default>Unset; all values 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>This directive can set various timeouts for receiving the request headers
+    and the request body from the client. If the client fails to send headers or
+    body within the configured time, a <code>408 REQUEST TIME OUT</code> error
+    is sent.</p>
+
+    <p>For SSL virtual hosts, the header timeout values include the time needed
+    to do the SSL handshake.</p>
+
+    <p>When an <directive module="core">AcceptFilter</directive> is in use
+    (usually the case on Linux and FreeBSD), the socket is not sent to the
+    server process before at least one byte (or the whole request for
+    <code>httpready</code>) is received. The header timeout configured with
+    <code>ReqTimeout</code> is only effective after the server process has
+    received the socket.</p>
+
+    <dl>
+
+    <dt><code>headerinit</code></dt>
+    <dd>The initial timeout for receiving the request headers in seconds. 
+    Also the timout for receiving the first byte of the request. If
+    <code>headerminrate</code> is not set, the request line and all headers
+    must be received within this time.</dd>
+
+    <dt><code>headerminrate</code></dt>
+    <dd>The minumum data rate for receiving the request headers in
+    bytes/second. Whenever data is received, the timeout is increased
+    according to this data rate.</dd>
+
+    <dt><code>headermax</code></dt>
+    <dd>The maximum timeout for receiving the request headers in seconds.
+    The timeout cannot be increased above this value by
+    <code>headerminrate</code>.</dd>
+
+    <dt><code>bodyinit</code></dt>
+    <dd>The initial timeout for receiving the request body in seconds. 
+    Also the timout for receiving the first byte of the request body. If
+    <code>bodyminrate</code> is not set, the complete request body must be
+    received within this time.</dd>
+
+    <dt><code>bodyminrate</code></dt>
+    <dd>The minumum data rate for receiving the request body in
+    bytes/second. Whenever data is received, the timeout is increased
+    according to this data rate.</dd>
+
+    <dt><code>bodymax</code></dt>
+    <dd>The maximum timeout for receiving the request body in seconds.
+    The timeout cannot be increased above this value by
+    <code>bodyminrate</code></dd>
+
+    </dl>
+
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>
