@@ -2402,7 +2402,7 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, st->pool);
 #endif
 
-    st->cache_bytes = 100000;
+    st->cache_bytes = 500000;
     st->search_cache_ttl = 600000000;
     st->search_cache_size = 1024;
     st->compare_cache_ttl = 600000000;

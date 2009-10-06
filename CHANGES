@@ -10,6 +10,12 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_ldap: If LDAPSharedCacheSize is too small, try harder to purge
+     some cache entries and log a warning. Also increase the default
+     LDAPSharedCacheSize to 500000. This is a more realistic size suitable
+     for the default values of 1024 for LdapCacheEntries/LdapOpCacheEntries.
+     PR 46749. [Stefan Fritsch]
+
   *) mod_rewrite: Make sure that a hostname:port isn't fully qualified if
      the request is a CONNECT request. [Bill Zajac <billz consultla.com>]
 
