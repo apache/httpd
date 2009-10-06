@@ -127,6 +127,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
    +1: minfrin
 
+ * mod_rewrite: don't fully qualify hostname:port if the request is a CONNECT
+                request
+   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=822004
+   2.2.x Patch: trunk patch works
+   +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
