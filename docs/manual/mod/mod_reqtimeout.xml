@@ -89,7 +89,8 @@
     is sent.</p>
 
     <p>For SSL virtual hosts, the header timeout values include the time needed
-    to do the SSL handshake.</p>
+    to do the initial SSL handshake. The body timeout values include the time
+    needed for SSL renegotiation (if necessary).</p>
 
     <p>When an <directive module="core">AcceptFilter</directive> is in use
     (usually the case on Linux and FreeBSD), the socket is not sent to the
