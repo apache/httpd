@@ -95,8 +95,8 @@ typedef struct ap_filter_t ap_filter_t;
  * @name Filter callbacks
  *
  * This function type is used for filter callbacks. It will be passed a
- * pointer to "this" filter, and a "bucket" containing the content to be
- * filtered.
+ * pointer to "this" filter, and a "bucket brigade" containing the content
+ * to be filtered.
  *
  * In filter->ctx, the callback will find its context. This context is
  * provided here, so that a filter may be installed multiple times, each
@@ -112,10 +112,15 @@ typedef struct ap_filter_t ap_filter_t;
  * or output filter chains and before any data is generated to allow the
  * filter to prepare for processing.
  *
- * The *bucket structure (and all those referenced by ->next and ->prev)
- * should be considered "const". The filter is allowed to modify the
- * next/prev to insert/remove/replace elements in the bucket list, but
- * the types and values of the individual buckets should not be altered.
+ * The bucket brigade always belongs to the caller, but the filter
+ * is free to use the buckets within it as it sees fit. Normally,
+ * the brigade will be returned empty. Buckets *may not* be retained
+ * between successive calls to the filter unless they have been
+ * "set aside" with a call apr_bucket_setaside. Typically this will
+ * be done with ap_save_brigade(). Buckets removed from the brigade
+ * become the responsibility of the filter, which must arrange for
+ * them to be deleted, either by doing so directly or by inserting
+ * them in a brigade which will subsequently be destroyed.
  *
  * For the input and output filters, the return value of a filter should be
  * an APR status value.  For the init function, the return value should
@@ -293,9 +298,13 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *filter,
  * Pass the current bucket brigade down to the next filter on the filter
  * stack.  The filter returns an apr_status_t value.  If the bottom-most 
  * filter doesn't write to the network, then ::AP_NOBODY_WROTE is returned.
- * The caller relinquishes ownership of the brigade.
  * @param filter The next filter in the chain
  * @param bucket The current bucket brigade
+ *
+ * @remark Ownership of the brigade is retained by the caller. On return,
+ *         the contents of the brigade are UNDEFINED, and the caller must
+ *         either call apr_brigade_cleanup or apr_brigade_destroy on
+ *         the brigade.
  */
 AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *filter,
                                          apr_bucket_brigade *bucket);
