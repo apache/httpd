@@ -53,6 +53,11 @@ typedef struct hb_server_t {
     proxy_worker *worker;
 } hb_server_t;
 
+typedef struct ctx_servers {
+    apr_time_t now;
+    apr_hash_t *servers;
+} ctx_servers_t;
+
 static void
 argstr_to_table(apr_pool_t *p, char *str, apr_table_t *parms)
 {
@@ -206,7 +211,8 @@ static apr_status_t readfile_heartbeats(const char *path, apr_hash_t *servers,
 static apr_status_t hm_read(void* mem, void *data, apr_pool_t *pool)
 {
     hm_slot_server_t *slotserver = (hm_slot_server_t *) mem;
-    apr_hash_t *servers = (apr_hash_t *) data;
+    ctx_servers_t *ctx = (ctx_servers_t *) data;
+    apr_hash_t *servers = (apr_hash_t *) ctx->servers;
     hb_server_t *server = apr_hash_get(servers, slotserver->ip, APR_HASH_KEY_STRING);
     if (server == NULL) {
         server = apr_pcalloc(pool, sizeof(hb_server_t));
@@ -218,17 +224,17 @@ static apr_status_t hm_read(void* mem, void *data, apr_pool_t *pool)
     }
     server->busy = slotserver->busy;
     server->ready = slotserver->ready;
-    server->seen = slotserver->seen;
+    server->seen = apr_time_sec(ctx->now - slotserver->seen);
     server->id = slotserver->id;
     if (server->busy == 0 && server->ready != 0) {
         server->ready = server->ready / 4;
     }
     return APR_SUCCESS;
 }
-static apr_status_t readslot_heartbeats(apr_hash_t *servers,
+static apr_status_t readslot_heartbeats(ctx_servers_t *ctx,
                                     apr_pool_t *pool)
 {
-    storage->doall(hm_serversmem, hm_read, servers, pool);
+    storage->doall(hm_serversmem, hm_read, ctx, pool);
     return APR_SUCCESS;
 }
 
@@ -237,9 +243,12 @@ static apr_status_t read_heartbeats(const char *path, apr_hash_t *servers,
                                         apr_pool_t *pool)
 {
     apr_status_t rv;
-    if (hm_serversmem)
-        rv = readslot_heartbeats(servers, pool);
-    else
+    if (hm_serversmem) {
+        ctx_servers_t ctx;
+        ctx.now = apr_time_now();
+        ctx.servers = servers;
+        rv = readslot_heartbeats(&ctx, pool);
+    } else
         rv = readfile_heartbeats(path, servers, pool);
     return rv;
 }
@@ -312,6 +321,8 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
         server = apr_hash_get(servers, (*worker)->hostname, APR_HASH_KEY_STRING);
 
         if (!server) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                      "lb_heartbeat: No server for worker %s", (*worker)->name);
             continue;
         }
 
