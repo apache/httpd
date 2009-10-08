@@ -646,6 +646,8 @@ APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_out,
 APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_in,
                         (conn_rec *c, apr_off_t bytes));
 
+APR_DECLARE_OPTIONAL_FN(apr_off_t, ap_logio_get_last_bytes, (conn_rec *c));
+
 /* ----------------------------------------------------------------------
  *
  * ident lookups with mod_ident

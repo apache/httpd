@@ -53,6 +53,7 @@ static const char logio_filter_name[] = "LOG_INPUT_OUTPUT";
 typedef struct logio_config_t {
     apr_off_t bytes_in;
     apr_off_t bytes_out;
+    apr_off_t bytes_last_request;
 } logio_config_t;
 
 /*
@@ -73,6 +74,18 @@ static void ap_logio_add_bytes_in(conn_rec *c, apr_off_t bytes){
     logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
 
     cf->bytes_in += bytes;
+}
+
+/*
+ * Optional function to get total byte count of last request for
+ * ap_increment_counts.
+ */
+
+static apr_off_t ap_logio_get_last_bytes(conn_rec *c)
+{
+    logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
+
+    return cf->bytes_last_request;
 }
 
 /*
@@ -104,6 +117,8 @@ static int logio_transaction(request_rec *r)
     logio_config_t *cf = ap_get_module_config(r->connection->conn_config,
                                               &logio_module);
 
+    /* need to save byte count of last request for ap_increment_counts */
+    cf->bytes_last_request = cf->bytes_in + cf->bytes_out;
     cf->bytes_in = cf->bytes_out = 0;
 
     return OK;
@@ -173,6 +188,7 @@ static void register_hooks(apr_pool_t *p)
 
     APR_REGISTER_OPTIONAL_FN(ap_logio_add_bytes_out);
     APR_REGISTER_OPTIONAL_FN(ap_logio_add_bytes_in);
+    APR_REGISTER_OPTIONAL_FN(ap_logio_get_last_bytes);
 }
 
 module AP_MODULE_DECLARE_DATA logio_module =
