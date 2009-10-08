@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_logio/core: Report more accurate byte counts in mod_status if
+     mod_logio is loaded. PR 25656. [Stefan Fritsch]
+
   *) mod_ldap: If LDAPSharedCacheSize is too small, try harder to purge
      some cache entries and log a warning. Also increase the default
      LDAPSharedCacheSize to 500000. This is a more realistic size suitable

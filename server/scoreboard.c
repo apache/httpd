@@ -64,6 +64,8 @@ static APR_OPTIONAL_FN_TYPE(ap_proxy_lb_workers)
                                 *pfn_proxy_lb_workers;
 static APR_OPTIONAL_FN_TYPE(ap_proxy_lb_worker_size)
                                 *pfn_proxy_lb_worker_size;
+static APR_OPTIONAL_FN_TYPE(ap_logio_get_last_bytes)
+                                *pfn_ap_logio_get_last_bytes;
 
 struct ap_sb_handle_t {
     int child_num;
@@ -115,6 +117,8 @@ AP_DECLARE(int) ap_calc_scoreboard_size(void)
     scoreboard_size += sizeof(worker_score) * server_limit * thread_limit;
     if (lb_limit && lb_size)
         scoreboard_size += lb_size * lb_limit;
+
+    pfn_ap_logio_get_last_bytes = APR_RETRIEVE_OPTIONAL_FN(ap_logio_get_last_bytes);
 
     return scoreboard_size;
 }
@@ -350,11 +354,21 @@ AP_DECLARE(int) ap_exists_scoreboard_image(void)
 AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sb, request_rec *r)
 {
     worker_score *ws;
+    apr_off_t bytes;
 
     if (!sb)
         return;
 
     ws = &ap_scoreboard_image->servers[sb->child_num][sb->thread_num];
+    if (pfn_ap_logio_get_last_bytes != NULL) {
+        bytes = pfn_ap_logio_get_last_bytes(r->connection);
+    }
+    else if (r->method_number == M_GET && r->method[0] == 'H') {
+        bytes = 0;
+    }
+    else {
+        bytes = r->bytes_sent;
+    }
 
 #ifdef HAVE_TIMES
     times(&ws->times);
@@ -362,9 +376,9 @@ AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sb, request_rec *r)
     ws->access_count++;
     ws->my_access_count++;
     ws->conn_count++;
-    ws->bytes_served += r->bytes_sent;
-    ws->my_bytes_served += r->bytes_sent;
-    ws->conn_bytes += r->bytes_sent;
+    ws->bytes_served += bytes;
+    ws->my_bytes_served += bytes;
+    ws->conn_bytes += bytes;
 }
 
 AP_DECLARE(int) ap_find_child_by_pid(apr_proc_t *pid)
