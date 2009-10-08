@@ -354,7 +354,7 @@ static proxy_worker *find_best_hb(proxy_balancer *balancer,
 
         for (i = 0; i < up_servers->nelts; i++) {
             server = APR_ARRAY_IDX(up_servers, i, hb_server_t *);
-            if (pick > c && pick <= c + server->ready) {
+            if (pick >= c && pick <= c + server->ready) {
                 mycandidate = server->worker;
             }
 
