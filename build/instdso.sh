@@ -49,7 +49,8 @@ then
     $CMD || exit $?
 fi
 
-CMD="$SH_LIBTOOL --mode=install cp $DSOARCHIVE $TARGETDIR/"
+type install >/dev/null 2>&1 && INSTALL_CMD=install || INSTALL_CMD=cp
+CMD="$SH_LIBTOOL --mode=install $INSTALL_CMD $DSOARCHIVE $TARGETDIR/"
 echo $CMD
 $CMD || exit $?
 
