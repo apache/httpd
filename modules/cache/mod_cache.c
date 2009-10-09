@@ -767,7 +767,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         reason = "Expires header already expired, not cacheable";
     }
     else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL &&
-             !ap_cache_liststr(NULL, cc_out, "max-age", NULL)) {
+             !ap_cache_liststr(NULL, cc_out, "max-age", NULL) &&
+             !ap_cache_liststr(NULL, cc_out, "s-maxage", NULL)) {
         /* if a query string is present but no explicit expiration time,
          * don't cache it (RFC 2616/13.9 & 13.2.1)
          */
@@ -781,14 +782,17 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         reason = "HTTP Status 304 Not Modified";
     }
     else if (r->status == HTTP_OK && lastmods == NULL && etag == NULL
-             && (exps == NULL) && (conf->no_last_mod_ignore ==0)) {
+             && (exps == NULL) && (conf->no_last_mod_ignore ==0) &&
+             !ap_cache_liststr(NULL, cc_out, "max-age", NULL) &&
+             !ap_cache_liststr(NULL, cc_out, "s-maxage", NULL)) {
         /* 200 OK response from HTTP/1.0 and up without Last-Modified,
-         * Etag, or Expires headers.
+         * Etag, Expires, Cache-Control:max-age, or Cache-Control:s-maxage
+         * headers.
          */
         /* Note: mod-include clears last_modified/expires/etags - this
          * is why we have an optional function for a key-gen ;-)
          */
-        reason = "No Last-Modified, Etag, or Expires headers";
+        reason = "No Last-Modified, Etag, Expires, Cache-Control:max-age or Cache-Control:s-maxage headers";
     }
     else if (r->header_only && !cache->stale_handle) {
         /* Forbid HEAD requests unless we have it cached already */
