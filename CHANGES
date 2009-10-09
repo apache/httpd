@@ -11,7 +11,7 @@ Changes with Apache 2.3.3
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
   *) Build: Use install instead of cp if available on installing
-     modules to avoid segmentation fault.  [hirose31 gmail.com]
+     modules to avoid segmentation fault. PR 47951. [hirose31 gmail.com]
 
   *) mod_cache: correctly consider s-maxage in cacheability
      decisions.  [Dan Poirier]
