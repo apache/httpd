@@ -46,6 +46,7 @@ struct dav_resource_private {
     apr_pool_t *pool;        /* memory storage pool associated with request */
     const char *pathname;   /* full pathname to resource */
     apr_finfo_t finfo;       /* filesystem info */
+    request_rec *r;
 };
 
 /* private context for doing a filesystem walk */
@@ -210,6 +211,11 @@ static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
 **
 ** PRIVATE REPOSITORY FUNCTIONS
 */
+request_rec *dav_fs_get_request_rec(const dav_resource *resource)
+{
+    return resource->info->r;
+}
+
 apr_pool_t *dav_fs_pool(const dav_resource *resource)
 {
     return resource->info->pool;
@@ -648,6 +654,7 @@ static dav_error * dav_fs_get_resource(
     /* Create private resource context descriptor */
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
     ctx->finfo = r->finfo;
+    ctx->r = r;
 
     /* ### this should go away */
     ctx->pool = r->pool;
@@ -1816,6 +1823,9 @@ static const dav_hooks_repository dav_hooks_repository_fs =
     dav_fs_remove_resource,
     dav_fs_walk,
     dav_fs_getetag,
+    dav_fs_get_request_rec,
+    dav_fs_pathname,
+    NULL
 };
 
 static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
