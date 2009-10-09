@@ -10,6 +10,10 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_dav: Provide a mechanism to obtain the request_rec and pathname
+     from the dav_resource. [Jari Urpalainen <jari.urpalainen nokia.com>,
+     Brian France <brian brianfrance.com>]
+
   *) Build: Use install instead of cp if available on installing
      modules to avoid segmentation fault. PR 47951. [hirose31 gmail.com]
 

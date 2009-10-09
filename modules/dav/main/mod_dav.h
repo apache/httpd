@@ -1940,6 +1940,12 @@ struct dav_hooks_repository
     ** then this field may be used. In most cases, it will just be NULL.
     */
     void *ctx;
+
+    /* return request record */
+    request_rec * (*get_request_rec)(const dav_resource *resource);
+
+    /* return path */
+    const char * (*get_pathname)(const dav_resource *resource);
 };
 
 
