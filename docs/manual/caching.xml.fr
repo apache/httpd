@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 766324 -->
+<!-- English Revision : 823563 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -278,14 +278,18 @@
 	contenir une option "s-maxage", "must-revalidate" ou "public"
 	dans l'en-t&ecirc;te "Cache-Control:".</li>
 
-        <li>Si l'URL contenait une requ&ecirc;te sous forme de cha&icirc;ne de caract&egrave;res
+        <li>Si l'URL contient une cha&icirc;ne de requ&ecirc;te
 	(provenant par exemple d'une m&eacute;thode GET de formulaire HTML), elle ne
-	sera pas mise en cache &agrave; moins que la r&eacute;ponse ne contienne un en-t&ecirc;te
-        "Expires:", comme pr&eacute;cis&eacute; dans la RFC2616 section 13.9.</li>
+	sera pas mise en cache, &agrave; moins que la r&eacute;ponse ne
+	sp&eacute;cifie explicitement un d&eacute;lai d'expiration via un
+	en-t&ecirc;te "Expires:" ou une directive max-age ou s-maxage de
+	l'en-t&ecirc;te "Cache-Control:" comme indiqu&eacute; dans les
+	sections 13.2.1. et 13.9 de la RFC2616.</li>
 
         <li>Si la r&eacute;ponse a un statut de 200 (OK), elle doit aussi contenir
 	au moins un des en-t&ecirc;tes "Etag", "Last-Modified" ou
-        "Expires", &agrave; moins que la directive
+        "Expires", ou une directive max-age ou s-maxage de
+	l'en-t&ecirc;te "Cache-Control:", &agrave; moins que la directive
         <directive module="mod_cache">CacheIgnoreNoLastMod</directive>
         ne pr&eacute;cise d'autres contraintes.</li>
 

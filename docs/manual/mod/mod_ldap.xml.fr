@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 695883 -->
+<!-- English Revision : 822458 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -74,7 +74,7 @@ d'Apache</compatibility>
       # Remplacez "votre-domaine.exemple.com" par le nom de votre<br />
       # domaine.<br />
       <br />
-      LDAPSharedCacheSize 200000<br />
+      LDAPSharedCacheSize 500000<br />
       LDAPCacheEntries 1024<br />
       LDAPCacheTTL 600<br />
       LDAPOpCacheEntries 1024<br />
@@ -452,12 +452,13 @@ d'Apache</compatibility>
 <name>LDAPSharedCacheSize</name>
 <description>Taille en octets du cache en m&eacute;moire partag&eacute;e</description>
 <syntax>LDAPSharedCacheSize <var>octets</var></syntax>
-<default>LDAPSharedCacheSize 102400</default>
+<default>LDAPSharedCacheSize 500000</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>Cette directive permet de sp&eacute;cifier le nombre d'octets &agrave; allouer
-    pour le cache en m&eacute;moire partag&eacute;e. La valeur par d&eacute;faut est 100kb.
+    pour le cache en m&eacute;moire partag&eacute;e. La valeur par
+    d&eacute;faut est 500kb.
     Si elle est d&eacute;finie &agrave; 0, le cache en m&eacute;moire partag&eacute;e ne sera pas
     utilis&eacute;.</p>
 </usage>
