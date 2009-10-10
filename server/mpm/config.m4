@@ -43,7 +43,7 @@ dnl APACHE_MPM_SUPPORTED(name, supports-shared, is_threaded)
 AC_DEFUN(APACHE_MPM_SUPPORTED,[
     SUPPORTED_MPMS="$SUPPORTED_MPMS $1 "
     if test "$3" = "yes"; then
-        THREADED_MPMS="$THREADED_MPMS $1"
+        THREADED_MPMS="$THREADED_MPMS $1 "
     fi
 ])dnl
 
