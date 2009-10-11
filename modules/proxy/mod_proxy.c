@@ -1103,8 +1103,6 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->maxfwd_set = 0;
     ps->error_override = 0;
     ps->error_override_set = 0;
-    ps->preserve_host_set = 0;
-    ps->preserve_host = 0;
     ps->timeout = 0;
     ps->timeout_set = 0;
     ps->badopt = bad_error;
@@ -1144,8 +1142,6 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->maxfwd_set = overrides->maxfwd_set || base->maxfwd_set;
     ps->error_override = (overrides->error_override_set == 0) ? base->error_override : overrides->error_override;
     ps->error_override_set = overrides->error_override_set || base->error_override_set;
-    ps->preserve_host = (overrides->preserve_host_set == 0) ? base->preserve_host : overrides->preserve_host;
-    ps->preserve_host_set = overrides->preserve_host_set || base->preserve_host_set;
     ps->timeout= (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
     ps->timeout_set = overrides->timeout_set || base->timeout_set;
     ps->badopt = (overrides->badopt_set == 0) ? base->badopt : overrides->badopt;
@@ -1169,6 +1165,8 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
     new->cookie_path_str = apr_strmatch_precompile(p, "path=", 0);
     new->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0);
+    new->preserve_host_set = 0;
+    new->preserve_host = 0;
     new->interpolate_env = -1; /* unset */
 
     return (void *) new;
@@ -1197,6 +1195,9 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->ftp_directory_charset = add->ftp_directory_charset ?
                                  add->ftp_directory_charset :
                                  base->ftp_directory_charset;
+    new->preserve_host = (add->preserve_host_set == 0) ? base->preserve_host
+                                                        : add->preserve_host;
+    new->preserve_host_set = add->preserve_host_set || base->preserve_host_set;
     return new;
 }
 
@@ -1612,13 +1613,12 @@ static const char *
     return NULL;
 }
 static const char *
-    set_preserve_host(cmd_parms *parms, void *dummy, int flag)
+    set_preserve_host(cmd_parms *parms, void *dconf, int flag)
 {
-    proxy_server_conf *psf =
-    ap_get_module_config(parms->server->module_config, &proxy_module);
+    proxy_dir_conf *conf = dconf;
 
-    psf->preserve_host = flag;
-    psf->preserve_host_set = 1;
+    conf->preserve_host = flag;
+    conf->preserve_host_set = 1;
     return NULL;
 }
 
@@ -2115,7 +2115,7 @@ static const command_rec proxy_cmds[] =
      "Configure Via: proxy header header to one of: on | off | block | full"),
     AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF,
      "use our error handling pages instead of the servers' we are proxying"),
-    AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF,
+    AP_INIT_FLAG("ProxyPreserveHost", set_preserve_host, NULL, RSRC_CONF|ACCESS_CONF,
      "on if we should preserve host header while proxying"),
     AP_INIT_TAKE1("ProxyTimeout", set_proxy_timeout, NULL, RSRC_CONF,
      "Set the timeout (in seconds) for a proxied connection. "

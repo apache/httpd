@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) Allow ProxyPreserveHost to work in <Proxy> sections. PR 34901.
+     [Stefan Fritsch]
+
   *) configure: Fix THREADED_MPMS so that mod_cgid is enabled again 
      for worker MPM. [Takashi Sato]
 

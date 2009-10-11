@@ -200,15 +200,17 @@
  *                         param to ap_wait_or_timeout()
  * 20090925.1 (2.3.3-dev)  Add optional function ap_logio_get_last_bytes() to
  *                         mod_logio
+ * 20091011.0 (2.3.3-dev)  Move preserve_host{,_set} from proxy_server_conf to
+ *                         proxy_dir_conf
  *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20090925
+#define MODULE_MAGIC_NUMBER_MAJOR 20091011
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
