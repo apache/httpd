@@ -693,7 +693,9 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     apr_off_t bytes;
     int force10, rv;
     apr_table_t *headers_in_copy;
+    proxy_dir_conf *dconf;
 
+    dconf = ap_get_module_config(r->per_dir_config, &proxy_module);
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
 
     /*
@@ -723,7 +725,7 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     ap_xlate_proto_to_ascii(buf, strlen(buf));
     e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
-    if (conf->preserve_host == 0) {
+    if (dconf->preserve_host == 0) {
         if (ap_strchr_c(uri->hostname, ':')) { /* if literal IPv6 address */
             if (uri->port_str && uri->port != DEFAULT_HTTP_PORT) {
                 buf = apr_pstrcat(p, "Host: [", uri->hostname, "]:", 

@@ -160,8 +160,6 @@ typedef struct {
      */
     int error_override;
     int error_override_set;
-    int preserve_host;
-    int preserve_host_set;
     apr_interval_time_t timeout;
     char timeout_set;
     enum {
@@ -203,6 +201,8 @@ typedef struct {
     const apr_strmatch_pattern* cookie_domain_str;
     const char *ftp_directory_charset;
     int interpolate_env;
+    int preserve_host;
+    int preserve_host_set;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request

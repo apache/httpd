@@ -412,6 +412,7 @@ request</description>
 <syntax>ProxyPreserveHost On|Off</syntax>
 <default>ProxyPreserveHost Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 <compatibility>Available in Apache 2.0.31 and later.</compatibility>
 
