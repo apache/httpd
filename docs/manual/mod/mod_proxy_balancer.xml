@@ -67,7 +67,7 @@
 </section>
 
 <section id="example">
-    <title>Example of a balancer configuration</title>
+    <title>Examples of a balancer configuration</title>
     <p>Before we dive into the technical details, here's an example of
     how you might use <module>mod_proxy_balancer</module> to provide
     load balancing between two back-end servers:
@@ -77,6 +77,22 @@
     &lt;Proxy balancer://mycluster&gt;<br />
         BalancerMember http://192.168.1.50:80<br />
         BalancerMember http://192.168.1.51:80<br />
+    &lt;/Proxy&gt;<br />
+    ProxyPass /test balancer://mycluster/
+    </example>
+
+    <p>Another example of how to provide load balancing with stickyness
+    using <module>mod_headers</module>, even if the backend server does
+    not set a suitable session cookie:
+    </p>
+
+    <example>
+    Header add Set-Cookie: "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/"
+           env=BALANCER_ROUTE_CHANGED<br />
+    &lt;Proxy balancer://mycluster&gt;<br />
+    BalancerMember http://192.168.1.50:80 route=1<br />
+    BalancerMember http://192.168.1.51:80 route=2<br />
+    ProxySet stickysession=ROUTEID<br />
     &lt;/Proxy&gt;<br />
     ProxyPass /test balancer://mycluster/
     </example>
