@@ -1473,7 +1473,12 @@ the proxy does not guarantee that the SSL connection to the backend
 server is "secure" beyond the fact that the certificate is signed by
 one of the CAs configured using the
 <directive>SSLProxyCACertificatePath</directive> and/or
-<directive>SSLProxyCACertificateFile</directive> directives.</p>
+<directive>SSLProxyCACertificateFile</directive> directives.
+In order to get this check done please have a look at
+<directive>SSLProxyCheckPeerCN</directive> and
+<directive>SSLProxyCheckPeerExpire</directive> directives which are off by
+default.
+</p>
 </note>
 
 <p>
