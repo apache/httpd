@@ -133,6 +133,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: trunk patch works
    +1: sf, minfrin
 
+ * mod_cache: treat s-maxage as an explicit expiration in cacheability
+              decisions, per RFC 2616
+   Trunk Patch: http://svn.apache.org/viewvc?rev=823536&view=rev
+                http://svn.apache.org/viewvc?rev=823563&view=rev
+   2.2.x Patch: http://people.apache.org/~poirier/smaxage.patch
+                (trunk patch works, except for CHANGES)
+   +1: poirier
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
