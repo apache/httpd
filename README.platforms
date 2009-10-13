@@ -56,6 +56,12 @@
    This is a known issue and will be fixed in a later version of the
    autoconf suite. These errors can be safely ignored.
 
+   With Darwin 10, the default C compiler (gcc) will try to build
+   multi-architecture bundles. This causes problems with APR, which
+   needs to know various data-type sizes which it assumes are universal
+   for platforms. Until this is fully fixed, we recommend using the
+   '-arch i386' gcc option when building both Apache and APR.
+   
 ==========
   FreeBSD:
    autoconf 2.52 creates scripts that are incompatible with the Posix
