@@ -32,7 +32,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#reqtimeout">ReqTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requesttimeout">RequestTimeout</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
@@ -48,7 +48,7 @@
         30 seconds for receiving the request body:
 
         <div class="example"><p><code>
-          ReqTimeout headerinit=10 bodyinit=30
+          RequestTimeout headerinit=10 bodyinit=30
         </code></p></div>
       </li>
 
@@ -59,7 +59,7 @@
         request including the headers:
 
         <div class="example"><p><code>
-          ReqTimeout headerinit=10 headerminrate=500 headermax=30
+          RequestTimeout headerinit=10 headerminrate=500 headermax=30
         </code></p></div>
       </li>
 
@@ -71,18 +71,18 @@
         <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>):
 
         <div class="example"><p><code>
-          ReqTimeout bodyinit=10 bodyminrate=1000
+          RequestTimeout bodyinit=10 bodyminrate=1000
         </code></p></div>
       </li>
 
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ReqTimeout" id="ReqTimeout">ReqTimeout</a> <a name="reqtimeout" id="reqtimeout">Directive</a></h2>
+<div class="directive-section"><h2><a name="RequestTimeout" id="RequestTimeout">RequestTimeout</a> <a name="requesttimeout" id="requesttimeout">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set timeout values for receiving request headers and body from client.
 </td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ReqTimeout
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestTimeout
 [headerinit=<var>time</var>
 [headerminrate=<var>rate</var> [headermax=<var>time</var>]]]
 [bodyinit=<var>time</var>
@@ -99,14 +99,17 @@
     is sent.</p>
 
     <p>For SSL virtual hosts, the header timeout values include the time needed
-    to do the SSL handshake.</p>
+    to do the initial SSL handshake. The body timeout values include the time
+    needed for SSL renegotiation (if necessary).</p>
 
     <p>When an <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> is in use
     (usually the case on Linux and FreeBSD), the socket is not sent to the
     server process before at least one byte (or the whole request for
     <code>httpready</code>) is received. The header timeout configured with
-    <code>ReqTimeout</code> is only effective after the server process has
+    <code>RequestTimeout</code> is only effective after the server process has
     received the socket.</p>
+
+    <p>For the timeout parameters, the value 0 means no limit.</p>
 
     <dl>
 

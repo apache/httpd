@@ -1261,7 +1261,7 @@ string in <code>Set-Cookie</code> headers.</p>
 request</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPreserveHost On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyPreserveHost Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.31 and later.</td></tr>

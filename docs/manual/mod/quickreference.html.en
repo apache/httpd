@@ -569,7 +569,7 @@ proxied server</td></tr>
 <tr><td><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath <var>internal-path</var>
 <var>public-path</var> [<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Adjusts the Path string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use incoming Host HTTP request header for proxy
+<tr class="odd"><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use incoming Host HTTP request header for proxy
 request</td></tr>
 <tr><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Network buffer size for proxied HTTP and FTP
 connections</td></tr>
@@ -626,15 +626,15 @@ extensions</td></tr>
 <tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
 ...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content type associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_reqtimeout.html#reqtimeout">ReqTimeout
+<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|merge|set|unset <var>header</var>
+[<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
+<tr><td><a href="mod_reqtimeout.html#requesttimeout">RequestTimeout
 [headerinit=<var>time</var>
 [headerminrate=<var>rate</var> [headermax=<var>time</var>]]]
 [bodyinit=<var>time</var>
 [bodyminrate=<var>rate</var> [bodymax=<var>time</var>]]]
-</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
+</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
 </td></tr>
-<tr><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|merge|set|unset <var>header</var>
-[<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
 <tr class="odd"><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
     [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
 an authorization provider.</td></tr>

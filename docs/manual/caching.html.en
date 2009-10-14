@@ -232,12 +232,15 @@
         in the "Cache-Control:" header.</li>
 
         <li>If the URL included a query string (e.g. from a HTML form GET
-        method) it will not be cached unless the response includes an
-        "Expires:" header, as per RFC2616 section 13.9.</li>
+        method) it will not be cached unless the response specifies an
+        explicit expiration by including an "Expires:" header or the max-age
+        or s-maxage directive of the "Cache-Control:" header, as per RFC2616
+        sections 13.9 and 13.2.1.</li>
 
         <li>If the response has a status of 200 (OK), the response must
         also include at least one of the "Etag", "Last-Modified" or
-        the "Expires" headers, unless the 
+        the "Expires" headers, or the max-age or s-maxage directive of
+        the "Cache-Control:" header, unless the 
         <code class="directive"><a href="./mod/mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></code> 
         directive has been used to require otherwise.</li>
 
