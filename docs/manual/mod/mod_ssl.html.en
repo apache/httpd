@@ -1297,18 +1297,6 @@ proxy. In per-directory context it forces a SSL renegotation with the
 reconfigured remote server verification level after the HTTP request
 was read but before the HTTP response is sent.</p>
 
-<div class="warning">
-<p>Note that even when certificate verification is enabled,
-<code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> does <strong>not</strong> check whether the
-<code>commonName</code> (hostname) attribute of the server certificate
-matches the hostname used to connect to the server.  In other words,
-the proxy does not guarantee that the SSL connection to the backend
-server is "secure" beyond the fact that the certificate is signed by
-one of the CAs configured using the
-<code class="directive">SSLProxyCACertificatePath</code> and/or
-<code class="directive">SSLProxyCACertificateFile</code> directives.</p>
-</div>
-
 <p>
 The following levels are available for <em>level</em>:</p>
 <ul>

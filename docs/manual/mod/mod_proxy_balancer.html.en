@@ -59,7 +59,7 @@
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#scheduler">Load balancer scheduler algorithm</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#example">Example of a balancer configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Examples of a balancer configuration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#environment">Exported Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Balancer Manager Support</a></li>
 </ul><h3>See also</h3>
@@ -78,7 +78,7 @@
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="example" id="example">Example of a balancer configuration</a></h2>
+<h2><a name="example" id="example">Examples of a balancer configuration</a></h2>
     
     <p>Before we dive into the technical details, here's an example of
     how you might use <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> to provide
@@ -89,6 +89,22 @@
     &lt;Proxy balancer://mycluster&gt;<br />
         BalancerMember http://192.168.1.50:80<br />
         BalancerMember http://192.168.1.51:80<br />
+    &lt;/Proxy&gt;<br />
+    ProxyPass /test balancer://mycluster/
+    </code></p></div>
+
+    <p>Another example of how to provide load balancing with stickyness
+    using <code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code>, even if the backend server does
+    not set a suitable session cookie:
+    </p>
+
+    <div class="example"><p><code>
+    Header add Set-Cookie: "ROUTEID=.%{BALANCER_WORKER_ROUTE}e; path=/"
+           env=BALANCER_ROUTE_CHANGED<br />
+    &lt;Proxy balancer://mycluster&gt;<br />
+    BalancerMember http://192.168.1.50:80 route=1<br />
+    BalancerMember http://192.168.1.51:80 route=2<br />
+    ProxySet stickysession=ROUTEID<br />
     &lt;/Proxy&gt;<br />
     ProxyPass /test balancer://mycluster/
     </code></p></div>
