@@ -38,7 +38,7 @@
         30 seconds for receiving the request body:
 
         <example>
-          ReqTimeout headerinit=10 bodyinit=30
+          RequestTimeout headerinit=10 bodyinit=30
         </example>
       </li>
 
@@ -49,7 +49,7 @@
         request including the headers:
 
         <example>
-          ReqTimeout headerinit=10 headerminrate=500 headermax=30
+          RequestTimeout headerinit=10 headerminrate=500 headermax=30
         </example>
       </li>
 
@@ -61,7 +61,7 @@
         <directive module="core">LimitRequestBody</directive>):
 
         <example>
-          ReqTimeout bodyinit=10 bodyminrate=1000
+          RequestTimeout bodyinit=10 bodyminrate=1000
         </example>
       </li>
 
@@ -69,10 +69,10 @@
 </section>
 
 <directivesynopsis>
-<name>ReqTimeout</name>
+<name>RequestTimeout</name>
 <description>Set timeout values for receiving request headers and body from client.
 </description>
-<syntax>ReqTimeout
+<syntax>RequestTimeout
 [headerinit=<var>time</var>
 [headerminrate=<var>rate</var> [headermax=<var>time</var>]]]
 [bodyinit=<var>time</var>
@@ -96,8 +96,10 @@
     (usually the case on Linux and FreeBSD), the socket is not sent to the
     server process before at least one byte (or the whole request for
     <code>httpready</code>) is received. The header timeout configured with
-    <code>ReqTimeout</code> is only effective after the server process has
+    <code>RequestTimeout</code> is only effective after the server process has
     received the socket.</p>
+
+    <p>For the timeout parameters, the value 0 means no limit.</p>
 
     <dl>
 

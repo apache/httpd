@@ -331,7 +331,7 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
         }
     }
     else {
-        ret = "unknown ReqTimeout parameter";
+        ret = "unknown RequestTimeout parameter";
     }
     return ret;
     
@@ -351,7 +351,7 @@ static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
         word = ap_getword_conf(cmd->pool, &arg);
         val = strchr(word, '=');
         if (!val) {
-            return "Invalid ReqTimeout parameter. Parameter must be "
+            return "Invalid RequestTimeout parameter. Parameter must be "
             "in the form 'key=value'";
         }
         else
@@ -360,7 +360,8 @@ static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
         err = set_reqtimeout_param(conf, cmd->pool, word, val);
         
         if (err)
-            return apr_pstrcat(cmd->temp_pool, "ReqTimeout: ", err, " ", word, "=", val, "; ", NULL);
+            return apr_pstrcat(cmd->temp_pool, "RequestTimeout: ", err, " ",
+                               word, "=", val, "; ", NULL);
     }
     
     return NULL;
@@ -384,7 +385,7 @@ static void reqtimeout_hooks(apr_pool_t *pool)
 }
 
 static const command_rec reqtimeout_cmds[] = {
-    AP_INIT_RAW_ARGS("ReqTimeout", set_reqtimeouts, NULL, RSRC_CONF,
+    AP_INIT_RAW_ARGS("RequestTimeout", set_reqtimeouts, NULL, RSRC_CONF,
                      "Adjust various Request Timeout parameters"),
     {NULL}
 };
