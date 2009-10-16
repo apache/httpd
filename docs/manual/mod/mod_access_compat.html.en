@@ -414,6 +414,26 @@ later</td></tr>
       Satisfy Any
     </code></p></div>
 
+    <p>
+    Another frequent use of the <code class="directive">Satisfy</code> directive
+    is to relax access restrictions for a subdirectory:
+    </p>
+
+    <div class="example"><p><code>
+      &lt;Directory /var/www/private&gt;<br />
+        Require valid-user<br /> 
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /var/www/private/public&gt;<br />
+        Allow from all<br />
+        Satisfy Any<br />
+      &lt;/Directory&gt;
+    </code></p></div>
+
+    <p>In the above example, authentication will be required for the
+    <code>/var/www/private</code> directory, but will not be required
+    for the <code>/var/www/private/public</code> directory.</p>
+
     <p>Since version 2.0.51 <code class="directive">Satisfy</code> directives can
     be restricted to particular methods by <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> and <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> sections.</p>
 
