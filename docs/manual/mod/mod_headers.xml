@@ -298,12 +298,13 @@ headers</description>
     and output filters are run, allowing outgoing headers to be
     modified.</p>
 
-    <p>The optional <var>condition</var> can be either <code>onsuccess</code>
-    or <code>always</code>. It determines, which internal header table should be
-    operated on. <code>onsuccess</code> stands for <code>2<var>xx</var></code>
-    status codes and <code>always</code> for all status codes (including
-    <code>2<var>xx</var></code>). Especially if you want to unset headers
-    set by certain modules, you should try out, which table is affected.</p>
+    <p>By default, this directive only affects successful responses (responses
+    in the <code>2<var>xx</var></code> range).  The optional <var>condition</var>
+    can be either <code>onsuccess</code> (default) or <code>always</code> (all
+    status codes, including successful responses).  A value of <code>always</code>
+    may be needed to influence headers set by some internal modules even for
+    successful responses, and is always needed to affect non-<code>2<var>xx</var></code> 
+    responses such as redirects or client errors</p>.
 
     <p>The action it performs is determined by the second
     argument. This can be one of the following values:</p>
