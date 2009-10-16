@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 635137 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_user.xml.meta">
+
+<name>mod_authz_user</name>
+<description>Autorisation bas&eacute;e sur l'utilisateur</description>
+<status>Base</status>
+<sourcefile>mod_authz_user.c</sourcefile>
+<identifier>authz_user_module</identifier>
+<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet d'accorder ou de refuser l'acc&egrave;s &agrave; certaines
+    zones du site web aux utilisateurs authentifi&eacute;s.
+    <module>mod_authz_user</module> accorde l'acc&egrave;s si l'utilisateur
+    authentifi&eacute; fait partie de la liste sp&eacute;cifi&eacute;e par une directive
+    <code>Require user</code>. On peut aussi utiliser la directive
+    <code>Require valid-user</code> pour accorder l'acc&egrave;s &agrave; tous les
+    utilisateurs qui ont &eacute;t&eacute; authentifi&eacute;s avec succ&egrave;s.</p>
+</summary>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+</modulesynopsis>

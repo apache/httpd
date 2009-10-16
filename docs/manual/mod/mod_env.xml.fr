@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 420990 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_env.xml.meta">
+
+<name>mod_env</name>
+<description>Modifie l'environnement transmis aux scripts CGI et aux
+pages SSI</description>
+<status>Base</status>
+<sourcefile>mod_env.c</sourcefile>
+<identifier>env_module</identifier>
+<summary>
+    <p>Ce module permet de contr&ocirc;ler l'environnement transmis aux
+    scripts CGI et aux pages SSI. Les variables d'environnement peuvent
+    &ecirc;tre transmises depuis le shell qui a lanc&eacute; le processus
+    <program>httpd</program>. Elles peuvent &eacute;galement &ecirc;tre d&eacute;finies ou
+    supprim&eacute;es au cours du processus de configuration.</p>
+</summary>
+<seealso><a href="../env.html">Variables d'environnement</a></seealso>
+
+<directivesynopsis>
+<name>PassEnv</name>
+<description>Transmet des variables d'environnement depuis le
+shell</description>
+<syntax>PassEnv <var>var-env</var> [<var>var-env</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Sp&eacute;cifie une ou plusieurs variables d'environnement &agrave; transmettre
+    aux scripts CGI et aux pages SSI depuis l'environnement du shell qui
+    a lanc&eacute; le processus <program>httpd</program>.</p>
+
+    <example><title>Exemple</title>
+      PassEnv LD_LIBRARY_PATH
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnv</name>
+<description>D&eacute;finit des variables d'environnement</description>
+<syntax>SetEnv <var>var-env</var> <var>valeur</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>D&eacute;finit une variable d'environnement, cette derni&egrave;re &eacute;tant
+    ensuite transmise aux scripts CGI et aux pages SSI.</p>
+
+    <example><title>Exemple</title>
+      SetEnv SPECIAL_PATH /foo/bin
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UnsetEnv</name>
+<description>Supprime des variables de l'environnement</description>
+<syntax>UnsetEnv <var>var-env</var> [<var>var-env</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Supprime une ou plusieurs variables d'environnement parmi celles
+    qui sont transmises aux scripts CGI et aux pages SSI.</p>
+
+    <example><title>Exemple</title>
+      UnsetEnv LD_LIBRARY_PATH
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

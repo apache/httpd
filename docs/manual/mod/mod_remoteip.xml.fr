@@ -1,0 +1,301 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 784558 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_remoteip.xml.meta">
+
+<name>mod_remoteip</name>
+<description>Remplace l'adresse IP et le nom d'h&ocirc;te apparents du client
+pour la requ&ecirc;te par l'adresse IP pr&eacute;sent&eacute;e par un mandataire ou un
+r&eacute;partiteur de charge via les en-t&ecirc;tes de la requ&ecirc;te.
+</description>
+
+<status>Base</status>
+<sourcefile>mod_remoteip.c</sourcefile>
+<identifier>remoteip_module</identifier>
+
+<summary>
+    <p>Ce module permet de traiter l'h&ocirc;te distant qui a initi&eacute; la
+    requ&ecirc;te en tant qu'h&ocirc;te distant original du point de vue de httpd &agrave;
+    des fins d'autorisation et de connexion, m&ecirc;me si cet h&ocirc;te distant se
+    trouve derri&egrave;re un r&eacute;partiteur de charge, un serveur frontal, ou un
+    serveur mandataire.</p>
+
+    <p>Le module remplace les adresse IP et nom d'h&ocirc;te apparents
+    distants (du client) pour la requ&ecirc;te par l'adresse IP indiqu&eacute;e dans
+    l'en-t&ecirc;te de requ&ecirc;te configur&eacute; via la directive
+    <directive>RemoteIPHeader</directive>.</p>
+
+    <p>Une fois remplac&eacute;e comme indiqu&eacute;, cette adresse IP apparente est
+    utilis&eacute;e pour les fonctionnalit&eacute;s <directive module="mod_authz_host"
+    type="section">Require host</directive> et <directive
+    module="mod_authz_host" type="section">Require ip</directive> de
+    <module>mod_authz_host</module> ; elle est aussi affich&eacute;e par
+    <module>mod_status</module>, et enregistr&eacute;e via les directives
+    <code>%a</code> et <code>%h</code> du module
+    <module>mod_log_config</module>. Elle permet aussi d'identifier la
+    machine en essayant de lui attribuer une identit&eacute; inetd via le
+    module <module>mod_ident</module> et en fonction de la configuration
+    de la directive <directive
+    module="mod_ident">IdentityCheck</directive>.</p>
+
+    <note type="warning">Il est essentiel de n'activer cette
+    fonctionnalit&eacute; que pour les requ&ecirc;tes en provenance des serveurs
+    interm&eacute;diaires (mandataires, etc...) auxquels le serveur peut faire
+    confiance, car il est trivial pour le client distant d'usurper
+    l'identit&eacute; d'un autre client.</note>
+</summary>
+
+<seealso><module>mod_authz_host</module></seealso>
+<seealso><module>mod_status</module></seealso>
+<seealso><module>mod_log_config</module></seealso>
+<seealso><module>mod_ident</module></seealso>
+
+<section id="processing"><title>Traitement des adresses distantes</title>
+
+    <p>Apache identifie le client par la valeur remote_ip de la
+    connexion, et de cette valeur d&eacute;coulent les valeurs remote_host et
+    remote_logname de la connexion. Ces champs jouent un r&ocirc;le
+    dans l'authentification, l'autorisation et la connexion, ainsi que
+    dans d'autres traitements effectu&eacute;s par d'autres modules
+    chargeables.</p>
+
+    <p>mod_remoteip remplace la v&eacute;ritable remote_ip par la remote_ip
+    indiqu&eacute;e par exemple par un mandataire chaque fois que le serveur
+    effectue une &eacute;valuation du client, et r&eacute;initialise les valeurs de
+    remote_host et remote_logname afin de d&eacute;clencher une nouvelle
+    requ&ecirc;te dns ou ident sur l'adresse IP distante.</p>
+
+    <p>Lorsque la valeur de l'en-t&ecirc;te comporte plusieurs adresses IP
+    distantes s&eacute;par&eacute;es par des virgules, celles-ci sont trait&eacute;es de la
+    droite vers la gauche. Le traitement s'arr&ecirc;te lorsque l'adresse IP
+    distante courante n'est pas digne de confiance pour pr&eacute;senter
+    l'adresse IP pr&eacute;c&eacute;dente. Le champ d'en-t&ecirc;te est alors mis &agrave; jour de
+    fa&ccedil;on &agrave; ne contenir que cette liste d'adresses non confirm&eacute;es, ou
+    bien, si toutes les adresses IP sont dignes de confiance, cet
+    en-t&ecirc;te est tout bonnement supprim&eacute; de la requ&ecirc;te.</p>
+
+    <p>Lors du remplacement de l'adresse IP distante, le module stocke
+    la liste des h&ocirc;tes interm&eacute;diaires dans un m&eacute;mo
+    remoteip-proxy-ip-list, que l'on peut faire enregistrer par
+    <module>mod_log_config</module> en utilisant le symbole de format
+    <code>%{remoteip-proxy-ip-list}n</code>. Si l'administrateur doit
+    stocker ceci dans un en-t&ecirc;te additionnel, la m&ecirc;me valeur peut aussi
+    &ecirc;tre enregistr&eacute;e sous la forme d'un en-t&ecirc;te en utilisant la
+    directive <directive>RemoteIPProxiesHeader</directive>.</p>
+
+    <note><title>Adresses IPv4 converties au format IPv6</title>
+    Avec httpd, d'une mani&egrave;re g&eacute;n&eacute;rale, toute adresse IPv4 convertie au
+    format IPv6 est enregistr&eacute;e sous sa forme IPv4.</note>
+
+    <note><title>Adresses internes (priv&eacute;es)</title>
+    Tous les blocs d'adresses internes 10/8, 172.16/12, 192.168/16,
+    169.254/16 and 127/8 (ainsi que les adresses IPv6 en dehors du bloc
+    public 2000::/3 block) ne sont &eacute;valu&eacute;es par mod_remoteip que lorsque
+    des mandataires internes (intranet)
+    <directive>RemoteIPInternalProxy</directive> sont enregistr&eacute;s.</note>
+
+</section>
+
+<directivesynopsis>
+<name>RemoteIPHeader</name>
+<description>D&eacute;finit le champ d'en-t&ecirc;te qui contiendra les adresses IP
+du client</description>
+<syntax>RemoteIPHeader <var>en-t&ecirc;te</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>La directive <directive>RemoteIPHeader</directive> indique &agrave;
+    <module>mod_remoteip</module> de traiter la valeur de
+    l'<var>en-t&ecirc;te</var> sp&eacute;cifi&eacute; comme l'adresse IP du client, ou comme
+    une liste d'adresses IP clients interm&eacute;diaires, en fonction de la
+    configuration des directives
+    <directive>RemoteIPInternalProxy</directive> et
+    <directive>RemoteIPTrustedProxy</directive>. Si ces deux derni&egrave;res
+    directives ne sont pas utilis&eacute;es, <module>mod_remoteip</module>
+    traitera tout h&ocirc;te pr&eacute;sentant une valeur d'IP
+    <directive>RemoteIPHeader</directive> comme h&ocirc;te de confiance.</p>
+
+    <example><title>Exemple &agrave; usage interne (r&eacute;partiteur de
+    charge)</title>
+        RemoteIPHeader X-Client-IP
+    </example>
+
+    <example><title>Exemple dans le cas d'un mandataire</title>
+        RemoteIPHeader X-Forwarded-For
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPInternalProxy</name>
+<description>D&eacute;clare les adresses IP intranet clients comme dignes de
+confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
+<syntax>RemoteIPInternalProxy
+<var>ip-mandataire</var>|<var>ip-mandataire/sous-r&eacute;seau</var>|<var>nom-h&ocirc;te</var> ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>La directive <directive>RemoteIPInternalProxy</directive> permet
+    d'ajouter une ou plusieurs adresses (ou blocs d'adresses) auxquelles
+    on peut faire confiance pour pr&eacute;senter une valeur RemoteIPHeader
+    valide de l'adresse IP du client. A la diff&eacute;rence de la directive
+    <directive>RemoteIPTrustedProxy</directive>, toute adresse IP
+    pr&eacute;sent&eacute;e dans cet en-t&ecirc;te, y comprises les adresses intranet
+    priv&eacute;es, sont consid&eacute;r&eacute;es comme dignes de confiance lorsqu'elles
+    sont indiqu&eacute;es par ces mandataires.</p>
+
+    <example><title>Exemple &agrave; usage interne (r&eacute;partiteur de
+    charge)</title>
+        RemoteIPHeader X-Client-IP<br/>
+        RemoteIPTrustedProxy 10.0.2.0/24<br/>
+        RemoteIPTrustedProxy passerelle.domaine-local
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPInternalProxyList</name>
+<description>D&eacute;clare les adresses IP intranet clients comme dignes de
+confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
+<syntax>RemoteIPInternalProxyList <var>nom-fichier</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>La directive <directive>RemoteIPInternalProxyList</directive>
+    permet de sp&eacute;cifier un fichier parcouru au d&eacute;marrage du serveur pour
+    construire une liste d'adresses (ou blocs d'adresses), auxquelles
+    on peut faire confiance pour pr&eacute;senter une valeur RemoteIPHeader
+    valide de l'adresse IP du client.</p>
+
+    <p>Le caract&egrave;re '<code>#</code>' indique une ligne de commentaires,
+    sinon, toutes les lignes s&eacute;par&eacute;es par un caract&egrave;re <code>nouvelle
+    ligne</code> ou
+    tous les &eacute;l&eacute;ments d'une ligne s&eacute;par&eacute;s par un espace sont trait&eacute;s de
+    la m&ecirc;me fa&ccedil;on qu'avec la directive
+    <directive>RemoteIPInternalProxy</directive>.</p>
+
+    <example><title>Exemple &agrave; usage interne (r&eacute;partiteur de
+    charge)</title>
+        RemoteIPHeader X-Client-IP<br/>
+        RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
+    </example>
+
+    <example><title>contenu de conf/mandataires-de-confiance.lst</title>
+         # Nos mandataires internes de confiance<br/>
+         10.0.2.0/24         # Tout le monde dans le groupe de test<br/>
+         passerelle.domaine-local # Le frontal r&eacute;partiteur de charge
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPProxiesHeader</name>
+<description>D&eacute;clare le champ d'en-t&ecirc;te qui contiendra toutes les
+adresses IP interm&eacute;diaires</description>
+<syntax>RemoteIPProxiesHeader <var>Nom_en-t&ecirc;te</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>La directive <directive>RemoteIPProxiesHeader</directive> permet
+    de sp&eacute;cifier l'en-t&ecirc;te dans lequel <module>mod_remoteip</module> va
+    collecter une liste de toutes les adresses IP clients interm&eacute;diaires
+    auxquelles on pourra faire confiance pour r&eacute;soudre la v&eacute;ritable
+    adresse IP distante. Notez que les adresses interm&eacute;diaires
+    <directive>RemoteIPTrustedProxy</directive> sont enregistr&eacute;es dans
+    cet en-t&ecirc;te, alors que toute adresse interm&eacute;diaire
+    <directive>RemoteIPInternalProxy</directive> est omise.</p>
+
+    <example><title>Exemple</title>
+        RemoteIPHeader X-Forwarded-For<br/>
+        RemoteIPProxiesHeader X-Forwarded-By
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPTrustedProxy</name>
+<description>D&eacute;clare les adresses IP intranet clients comme dignes de
+confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
+<syntax>RemoteIPTrustedProxy
+<var>ip-mandataire</var>|<var>ip-mandataire/sous-r&eacute;seau</var>|<var>nom-h&ocirc;te</var> ...</syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>La directive <directive>RemoteIPTrustedProxy</directive> permet
+    d'ajouter une ou plusieurs adresses, ou blocs d'adresses, auxquelles
+    on peut faire confiance pour pr&eacute;senter une valeur RemoteIPHeader
+    valide de l'adresse IP du client. A la diff&eacute;rence de la directive
+    <directive>RemoteIPInternalProxy</directive>, toutes les adresses IP
+    intranet ou priv&eacute;es indiqu&eacute;es par de tels mandataires, y compris les
+    blocs d'adresses 10/8, 172.16/12, 192.168/16, 169.254/16 et 127/8
+    (ou situ&eacute;e en dehors du bloc IPv6 public 2000::/3), ne sont pas
+    dignes de confiance en tant qu'adresses IP distantes, et se situent
+    &agrave; gauche dans le contenu de l'en-t&ecirc;te
+    <directive>RemoteIPHeader</directive>.</p>
+
+    <example><title>Exemple d'adresse de confiance (r&eacute;partiteur de
+    charge</title>
+        RemoteIPHeader X-Forwarded-For<br/>
+        RemoteIPTrustedProxy 10.0.2.16/28<br/>
+        RemoteIPTrustedProxy proxy.example.com
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>RemoteIPTrustedProxyList</name>
+<description>D&eacute;clare les adresses IP intranet clients comme dignes de
+confiance pour pr&eacute;senter la valeur RemoteIPHeader</description>
+<syntax>RemoteIPTrustedProxyList <var>nom-fichier</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
+
+<usage>
+    <p>La directive <directive>RemoteIPTrustedProxyList</directive>
+    permet de sp&eacute;cifier un fichier parcouru au d&eacute;marrage du serveur pour
+    construire une liste d'adresses (ou blocs d'adresses), auxquelles
+    on peut faire confiance pour pr&eacute;senter une valeur RemoteIPHeader
+    valide de l'adresse IP du client.</p>
+
+    <p>Le caract&egrave;re '<code>#</code>' indique une ligne de commentaires,
+    sinon, toutes les lignes s&eacute;par&eacute;es par un caract&egrave;re nouvelle ligne ou
+    tous les &eacute;l&eacute;ments d'une ligne s&eacute;par&eacute;s par un espace sont trait&eacute;s de
+    la m&ecirc;me fa&ccedil;on qu'avec la directive
+    <directive>RemoteIPTrustedProxy</directive>.</p>
+
+    <example><title>Exemple d'adresse de confiance (r&eacute;partiteur de
+    charge</title>
+        RemoteIPHeader X-Forwarded-For<br/>
+        RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
+    </example>
+
+    <example><title>conf/mandataires-de-confiance.lst contents</title>
+       # Mandataires externes identifi&eacute;s<br/>
+       192.0.2.16/28         #groupe wap phone de mandataires<br/>
+       proxy.isp.example.com #un FAI bien connu
+    </example>
+</usage>
+</directivesynopsis>
+
+
+</modulesynopsis>

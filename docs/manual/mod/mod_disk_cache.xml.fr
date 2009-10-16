@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 746668 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_disk_cache.xml.meta">
+
+<name>mod_disk_cache</name>
+<description>Gestionnaire de stockage du cache de contenu &agrave; base
+d'URIs</description>
+<status>Extension</status>
+<sourcefile>mod_disk_cache.c</sourcefile>
+<identifier>disk_cache_module</identifier>
+
+<summary>
+    <p><module>mod_disk_cache</module> impl&eacute;mente un gestionnaire de
+    stockage sur disque. Il s'utilise principalement avec
+    <module>mod_cache</module>.</p>
+
+    <p>Les contenus sont stock&eacute;s dans le cache et extraits de ce dernier
+    en utilisant des cl&eacute;s &agrave; base d'URIs. Les contenus dont l'acc&egrave;s est
+    prot&eacute;g&eacute; ne sont pas mis en cache.</p>
+
+    <p>Le programme <program>htcacheclean</program> permet de maintenir
+    la taille du cache &agrave; un niveau maximum.</p>
+
+    <note><title>Note :</title>
+      <p><module>mod_cache</module> doit &ecirc;tre charg&eacute; pour que
+      <module>mod_disk_cache</module> puisse fonctionner.</p>
+    </note>
+    <p>Lorsque la plate-forme la supporte, et si elle est activ&eacute;e via la
+    directive <directive module="core">EnableSendfile</directive>,
+    <module>mod_disk_cache</module> utilise la fonctionnalit&eacute; sendfile
+    pour servir les fichiers &agrave; partir du cache. Cependant,
+    <module>mod_disk_cache</module> ignore la configuration de la
+    directive <directive module="core">EnableSendfile</directive> dans
+    un contexte de r&eacute;pertoire ou de fichier .htaccess, car le module ne
+    dispose pas des d&eacute;finitions correspondantes lorsque la requ&ecirc;te est
+    servie depuis le cache.</p>
+</summary>
+
+<directivesynopsis>
+<name>CacheRoot</name>
+<description>La racine du r&eacute;pertoire dans lequel les fichiers du cache
+seront stock&eacute;s</description>
+<syntax>CacheRoot <var>r&eacute;pertoire</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheRoot</directive> permet de d&eacute;finir
+    le nom du r&eacute;pertoire sur disque qui contiendra les fichiers du
+    cache. Si le module <module>mod_disk_cache</module> a &eacute;t&eacute; charg&eacute; ou
+    compil&eacute; dans le serveur Apache, cette directive <em>doit</em> &ecirc;tre
+    d&eacute;finie. L'absence de d&eacute;finition de la directive
+    <directive>CacheRoot</directive> provoquera une erreur de traitement
+    du fichier de configuration. Les directives <directive
+    module="mod_disk_cache">CacheDirLevels</directive> et <directive
+    module="mod_disk_cache">CacheDirLength</directive> permettent de
+    d&eacute;finir la structure des sous-r&eacute;pertoires du r&eacute;pertoire racine
+    sp&eacute;cifi&eacute;.</p>
+
+    <example>
+      CacheRoot c:/cacheroot
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLevels</name>
+<description>Le nombre de niveaux de sous-r&eacute;pertoires que comportera le
+cache.</description>
+<syntax>CacheDirLevels <var>niveaux</var></syntax>
+<default>CacheDirLevels 2</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheDirLevels</directive> permet de
+    d&eacute;finir le nombre de niveaux de sous-r&eacute;pertoires que comportera le
+    cache. Les donn&eacute;es du cache seront stok&eacute;es au niveau correspondant
+    par rapport au r&eacute;pertoire <directive module="mod_disk_cache"
+    >CacheRoot</directive>.</p>
+    <p>Une valeur haute pour <directive>CacheDirLevels</directive>
+    combin&eacute;e avec une valeur basse pour
+    <directive>CacheDirLength</directive> g&eacute;n&eacute;rera une arborescence
+    tr&egrave;s d&eacute;velopp&eacute;e, avec un petit nombre de sous-r&eacute;pertoires &agrave; chaque
+    niveau.</p>
+
+    <note>
+      <p>La valeur du produit <directive>CacheDirLevels</directive> *
+      <directive module="mod_disk_cache">CacheDirLength</directive> ne
+      doit pas d&eacute;passer 20.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheDirLength</name>
+<description>Le nombre de caract&egrave;res des noms des
+sous-r&eacute;pertoires</description>
+<syntax>CacheDirLength <var>longueur</var></syntax>
+<default>CacheDirLength 2</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>la directive <directive>CacheDirLength</directive> permet de
+    d&eacute;finir le nombre de caract&egrave;res que comportera chaque nom de
+    sous-r&eacute;pertoire de la hi&eacute;rarchie du cache. On peut l'utiliser en
+    conjonction avec <directive>CacheDirLevels</directive> pour
+    d&eacute;terminer une structure approximative de la hi&eacute;rarchie de
+    cache.</p>
+    <p>Une valeur haute pour <directive>CacheDirLength</directive>
+    combin&eacute;e avec une valeur basse pour
+    <directive>CacheDirLevels</directive> g&eacute;n&eacute;rera une hi&eacute;rarchie
+    relativement peu profonde, avec un grand nombre de sous-r&eacute;pertoires
+    &agrave; chaque niveau.</p>
+
+    <note>
+      <p>La valeur du produit <directive>CacheDirLevels</directive> *
+      <directive module="mod_disk_cache">CacheDirLength</directive> ne
+      doit pas d&eacute;passer 20.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMinFileSize</name>
+<description>La taille minimale (en octets) d'un document pour pouvoir
+&ecirc;tre stock&eacute; dans le cache</description>
+<syntax>CacheMinFileSize <var>octets</var></syntax>
+<default>CacheMinFileSize 1</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheMinFileSize</directive> permet de
+    d&eacute;finir la taille minimale d'un document, en octets, pour que
+    celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
+
+    <example>
+      CacheMinFileSize 64
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>CacheMaxFileSize</name>
+<description>>La taille maximale (en octets) d'un document pour pouvoir
+&ecirc;tre stock&eacute; dans le cache</description>
+<syntax>CacheMaxFileSize <var>octets</var></syntax>
+<default>CacheMaxFileSize 1000000</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>CacheMaxFileSize</directive> permet de
+    d&eacute;finir la taille maximale d'un document, en octets, pour que
+    celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
+
+    <example>
+      CacheMaxFileSize 64000
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

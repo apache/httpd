@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_auth_basic - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_auth_basic</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_basic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_auth_basic.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_auth_basic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_auth_basic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification de base</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_basic_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_auth_basic.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.1 d'Apache</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Ce module permet d'utiliser l'authentification basique HTTP pour
+    restreindre l'accès en recherchant les utilisateurs dans les
+    fournisseurs d'authentification spécifiés. Il est en général
+    combiné avec au moins un module d'authentification comme
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> et un module d'autorisation comme
+    <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>. L'authentification HTTP à
+    base de condensé (digest), quant à elle, est fournie par le module
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>. </p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authbasicauthoritative">AuthBasicAuthoritative</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authbasicprovider">AuthBasicProvider</a></li>
+</ul>
+<h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code></li>
+<li><a href="../howto/auth.html">Mode d'emploi de
+l'authentification</a></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthBasicAuthoritative" id="AuthBasicAuthoritative">AuthBasicAuthoritative</a> <a name="authbasicauthoritative" id="authbasicauthoritative">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit si les processus d'autorisation et
+d'authentification peuvent être confiés à des modules de plus bas
+niveau</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthBasicAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthBasicAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
+</table>
+    <p>Normalement, chaque module d'autorisation énuméré dans la
+    directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code> va tenter de
+    vérifier l'utilisateur, et si ce dernier n'est trouvé dans aucun des
+    fournisseurs, l'accès sera refusé. Définir explicitement la
+    directive <code class="directive">AuthBasicAuthoritative</code> à
+    <code>Off</code> permet de confier l'autorisation et
+    l'authentification à d'autres modules non basés sur les fournisseurs
+    si <strong>aucun identifiant utilisateur</strong> ou aucune
+    <strong>règle</strong> ne correspondent à l'identifiant utilisateur
+    spécifié. Ceci ne peut s'avérer nécessaire que lorsque
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> est combiné avec des modules tiers
+    qui n'ont pas été configurés à l'aide de la directive <code class="directive"><a href="#authbasicprovider">AuthBasicProvider</a></code>. Lorsqu'on
+    utilise de tels modules, l'ordre dans lequel s'effectue le
+    traitement est défini dans le code source des modules et n'est pas
+    configurable.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthBasicProvider" id="AuthBasicProvider">AuthBasicProvider</a> <a name="authbasicprovider" id="authbasicprovider">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(les) fournisseur(s) d'authentification pour
+cette zone du site web</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthBasicProvider <var>nom fournisseur</var>
+[<var>nom fournisseur</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthBasicProvider file</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_basic</td></tr>
+</table>
+    <p>La directive <code class="directive">AuthBasicProvider</code> permet de
+    définir le fournisseur utilisé pour authentifier les utilisateurs
+    pour la zone du site web concernée. Le fournisseur par défaut
+    <code>file</code> est implémenté par le module
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Assurez-vous que le module
+    implémentant le fournisseur choisi soit bien présent dans le
+    serveur.</p>
+
+    <div class="example"><h3>Exemple</h3><p><code>
+      &lt;Location /secure&gt;<br />
+      <span class="indent">
+        AuthType basic<br />
+        AuthName "private area"<br />
+        AuthBasicProvider  dbm<br />
+        AuthDBMType        SDBM<br />
+        AuthDBMUserFile    /www/etc/dbmpasswd<br />
+        Require            valid-user<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+
+    <p>Les fournisseurs sont sollicités dans l'ordre jusqu'à ce que l'un
+    d'entre eux trouve une correspondance pour le nom d'utilisateur de
+    la requête ; alors, ce dernier fournisseur sera le seul à vérifier
+    le mot de passe. Un échec dans la vérification du mot de passe
+    n'entraîne pas le passage du contrôle au fournisseur suivant.</p>
+
+    <p>Les différents fournisseurs disponibles sont implémentés par les
+    modules <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>,
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>, et
+    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_basic.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_auth_basic.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_auth_basic.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_auth_basic.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>

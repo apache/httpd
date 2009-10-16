@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_remoteip - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_remoteip</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_remoteip.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_remoteip.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Remplace l'adresse IP et le nom d'hôte apparents du client
+pour la requête par l'adresse IP présentée par un mandataire ou un
+répartiteur de charge via les en-têtes de la requête.
+</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>remoteip_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_remoteip.c</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Ce module permet de traiter l'hôte distant qui a initié la
+    requête en tant qu'hôte distant original du point de vue de httpd à
+    des fins d'autorisation et de connexion, même si cet hôte distant se
+    trouve derrière un répartiteur de charge, un serveur frontal, ou un
+    serveur mandataire.</p>
+
+    <p>Le module remplace les adresse IP et nom d'hôte apparents
+    distants (du client) pour la requête par l'adresse IP indiquée dans
+    l'en-tête de requête configuré via la directive
+    <code class="directive">RemoteIPHeader</code>.</p>
+
+    <p>Une fois remplacée comme indiqué, cette adresse IP apparente est
+    utilisée pour les fonctionnalités <code class="directive"><a href="../mod/mod_authz_host.html#require host">&lt;Require host&gt;</a></code> et <code class="directive"><a href="../mod/mod_authz_host.html#require ip">&lt;Require ip&gt;</a></code> de
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> ; elle est aussi affichée par
+    <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>, et enregistrée via les directives
+    <code>%a</code> et <code>%h</code> du module
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>. Elle permet aussi d'identifier la
+    machine en essayant de lui attribuer une identité inetd via le
+    module <code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code> et en fonction de la configuration
+    de la directive <code class="directive"><a href="../mod/mod_ident.html#identitycheck">IdentityCheck</a></code>.</p>
+
+    <div class="warning">Il est essentiel de n'activer cette
+    fonctionnalité que pour les requêtes en provenance des serveurs
+    intermédiaires (mandataires, etc...) auxquels le serveur peut faire
+    confiance, car il est trivial pour le client distant d'usurper
+    l'identité d'un autre client.</div>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipheader">RemoteIPHeader</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipinternalproxy">RemoteIPInternalProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipinternalproxylist">RemoteIPInternalProxyList</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteipproxiesheader">RemoteIPProxiesHeader</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxy">RemoteIPTrustedProxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#remoteiptrustedproxylist">RemoteIPTrustedProxyList</a></li>
+</ul>
+<h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#processing">Traitement des adresses distantes</a></li>
+</ul><h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
+<li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li>
+<li><code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code></li>
+<li><code class="module"><a href="../mod/mod_ident.html">mod_ident</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="processing" id="processing">Traitement des adresses distantes</a></h2>
+
+    <p>Apache identifie le client par la valeur remote_ip de la
+    connexion, et de cette valeur découlent les valeurs remote_host et
+    remote_logname de la connexion. Ces champs jouent un rôle
+    dans l'authentification, l'autorisation et la connexion, ainsi que
+    dans d'autres traitements effectués par d'autres modules
+    chargeables.</p>
+
+    <p>mod_remoteip remplace la véritable remote_ip par la remote_ip
+    indiquée par exemple par un mandataire chaque fois que le serveur
+    effectue une évaluation du client, et réinitialise les valeurs de
+    remote_host et remote_logname afin de déclencher une nouvelle
+    requête dns ou ident sur l'adresse IP distante.</p>
+
+    <p>Lorsque la valeur de l'en-tête comporte plusieurs adresses IP
+    distantes séparées par des virgules, celles-ci sont traitées de la
+    droite vers la gauche. Le traitement s'arrête lorsque l'adresse IP
+    distante courante n'est pas digne de confiance pour présenter
+    l'adresse IP précédente. Le champ d'en-tête est alors mis à jour de
+    façon à ne contenir que cette liste d'adresses non confirmées, ou
+    bien, si toutes les adresses IP sont dignes de confiance, cet
+    en-tête est tout bonnement supprimé de la requête.</p>
+
+    <p>Lors du remplacement de l'adresse IP distante, le module stocke
+    la liste des hôtes intermédiaires dans un mémo
+    remoteip-proxy-ip-list, que l'on peut faire enregistrer par
+    <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code> en utilisant le symbole de format
+    <code>%{remoteip-proxy-ip-list}n</code>. Si l'administrateur doit
+    stocker ceci dans un en-tête additionnel, la même valeur peut aussi
+    être enregistrée sous la forme d'un en-tête en utilisant la
+    directive <code class="directive">RemoteIPProxiesHeader</code>.</p>
+
+    <div class="note"><h3>Adresses IPv4 converties au format IPv6</h3>
+    Avec httpd, d'une manière générale, toute adresse IPv4 convertie au
+    format IPv6 est enregistrée sous sa forme IPv4.</div>
+
+    <div class="note"><h3>Adresses internes (privées)</h3>
+    Tous les blocs d'adresses internes 10/8, 172.16/12, 192.168/16,
+    169.254/16 and 127/8 (ainsi que les adresses IPv6 en dehors du bloc
+    public 2000::/3 block) ne sont évaluées par mod_remoteip que lorsque
+    des mandataires internes (intranet)
+    <code class="directive">RemoteIPInternalProxy</code> sont enregistrés.</div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPHeader" id="RemoteIPHeader">RemoteIPHeader</a> <a name="remoteipheader" id="remoteipheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le champ d'en-tête qui contiendra les adresses IP
+du client</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPHeader <var>en-tête</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>La directive <code class="directive">RemoteIPHeader</code> indique à
+    <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> de traiter la valeur de
+    l'<var>en-tête</var> spécifié comme l'adresse IP du client, ou comme
+    une liste d'adresses IP clients intermédiaires, en fonction de la
+    configuration des directives
+    <code class="directive">RemoteIPInternalProxy</code> et
+    <code class="directive">RemoteIPTrustedProxy</code>. Si ces deux dernières
+    directives ne sont pas utilisées, <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code>
+    traitera tout hôte présentant une valeur d'IP
+    <code class="directive">RemoteIPHeader</code> comme hôte de confiance.</p>
+
+    <div class="example"><h3>Exemple à usage interne (répartiteur de
+    charge)</h3><p><code>
+        RemoteIPHeader X-Client-IP
+    </code></p></div>
+
+    <div class="example"><h3>Exemple dans le cas d'un mandataire</h3><p><code>
+        RemoteIPHeader X-Forwarded-For
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPInternalProxy" id="RemoteIPInternalProxy">RemoteIPInternalProxy</a> <a name="remoteipinternalproxy" id="remoteipinternalproxy">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
+confiance pour présenter la valeur RemoteIPHeader</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPInternalProxy
+<var>ip-mandataire</var>|<var>ip-mandataire/sous-réseau</var>|<var>nom-hôte</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>La directive <code class="directive">RemoteIPInternalProxy</code> permet
+    d'ajouter une ou plusieurs adresses (ou blocs d'adresses) auxquelles
+    on peut faire confiance pour présenter une valeur RemoteIPHeader
+    valide de l'adresse IP du client. A la différence de la directive
+    <code class="directive">RemoteIPTrustedProxy</code>, toute adresse IP
+    présentée dans cet en-tête, y comprises les adresses intranet
+    privées, sont considérées comme dignes de confiance lorsqu'elles
+    sont indiquées par ces mandataires.</p>
+
+    <div class="example"><h3>Exemple à usage interne (répartiteur de
+    charge)</h3><p><code>
+        RemoteIPHeader X-Client-IP<br />
+        RemoteIPTrustedProxy 10.0.2.0/24<br />
+        RemoteIPTrustedProxy passerelle.domaine-local
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPInternalProxyList" id="RemoteIPInternalProxyList">RemoteIPInternalProxyList</a> <a name="remoteipinternalproxylist" id="remoteipinternalproxylist">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
+confiance pour présenter la valeur RemoteIPHeader</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPInternalProxyList <var>nom-fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>La directive <code class="directive">RemoteIPInternalProxyList</code>
+    permet de spécifier un fichier parcouru au démarrage du serveur pour
+    construire une liste d'adresses (ou blocs d'adresses), auxquelles
+    on peut faire confiance pour présenter une valeur RemoteIPHeader
+    valide de l'adresse IP du client.</p>
+
+    <p>Le caractère '<code>#</code>' indique une ligne de commentaires,
+    sinon, toutes les lignes séparées par un caractère <code>nouvelle
+    ligne</code> ou
+    tous les éléments d'une ligne séparés par un espace sont traités de
+    la même façon qu'avec la directive
+    <code class="directive">RemoteIPInternalProxy</code>.</p>
+
+    <div class="example"><h3>Exemple à usage interne (répartiteur de
+    charge)</h3><p><code>
+        RemoteIPHeader X-Client-IP<br />
+        RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
+    </code></p></div>
+
+    <div class="example"><h3>contenu de conf/mandataires-de-confiance.lst</h3><p><code>
+         # Nos mandataires internes de confiance<br />
+         10.0.2.0/24         # Tout le monde dans le groupe de test<br />
+         passerelle.domaine-local # Le frontal répartiteur de charge
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPProxiesHeader" id="RemoteIPProxiesHeader">RemoteIPProxiesHeader</a> <a name="remoteipproxiesheader" id="remoteipproxiesheader">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare le champ d'en-tête qui contiendra toutes les
+adresses IP intermédiaires</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPProxiesHeader <var>Nom_en-tête</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>La directive <code class="directive">RemoteIPProxiesHeader</code> permet
+    de spécifier l'en-tête dans lequel <code class="module"><a href="../mod/mod_remoteip.html">mod_remoteip</a></code> va
+    collecter une liste de toutes les adresses IP clients intermédiaires
+    auxquelles on pourra faire confiance pour résoudre la véritable
+    adresse IP distante. Notez que les adresses intermédiaires
+    <code class="directive">RemoteIPTrustedProxy</code> sont enregistrées dans
+    cet en-tête, alors que toute adresse intermédiaire
+    <code class="directive">RemoteIPInternalProxy</code> est omise.</p>
+
+    <div class="example"><h3>Exemple</h3><p><code>
+        RemoteIPHeader X-Forwarded-For<br />
+        RemoteIPProxiesHeader X-Forwarded-By
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPTrustedProxy" id="RemoteIPTrustedProxy">RemoteIPTrustedProxy</a> <a name="remoteiptrustedproxy" id="remoteiptrustedproxy">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
+confiance pour présenter la valeur RemoteIPHeader</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPTrustedProxy
+<var>ip-mandataire</var>|<var>ip-mandataire/sous-réseau</var>|<var>nom-hôte</var> ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>La directive <code class="directive">RemoteIPTrustedProxy</code> permet
+    d'ajouter une ou plusieurs adresses, ou blocs d'adresses, auxquelles
+    on peut faire confiance pour présenter une valeur RemoteIPHeader
+    valide de l'adresse IP du client. A la différence de la directive
+    <code class="directive">RemoteIPInternalProxy</code>, toutes les adresses IP
+    intranet ou privées indiquées par de tels mandataires, y compris les
+    blocs d'adresses 10/8, 172.16/12, 192.168/16, 169.254/16 et 127/8
+    (ou située en dehors du bloc IPv6 public 2000::/3), ne sont pas
+    dignes de confiance en tant qu'adresses IP distantes, et se situent
+    à gauche dans le contenu de l'en-tête
+    <code class="directive">RemoteIPHeader</code>.</p>
+
+    <div class="example"><h3>Exemple d'adresse de confiance (répartiteur de
+    charge</h3><p><code>
+        RemoteIPHeader X-Forwarded-For<br />
+        RemoteIPTrustedProxy 10.0.2.16/28<br />
+        RemoteIPTrustedProxy proxy.example.com
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RemoteIPTrustedProxyList" id="RemoteIPTrustedProxyList">RemoteIPTrustedProxyList</a> <a name="remoteiptrustedproxylist" id="remoteiptrustedproxylist">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Déclare les adresses IP intranet clients comme dignes de
+confiance pour présenter la valeur RemoteIPHeader</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RemoteIPTrustedProxyList <var>nom-fichier</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_remoteip</td></tr>
+</table>
+    <p>La directive <code class="directive">RemoteIPTrustedProxyList</code>
+    permet de spécifier un fichier parcouru au démarrage du serveur pour
+    construire une liste d'adresses (ou blocs d'adresses), auxquelles
+    on peut faire confiance pour présenter une valeur RemoteIPHeader
+    valide de l'adresse IP du client.</p>
+
+    <p>Le caractère '<code>#</code>' indique une ligne de commentaires,
+    sinon, toutes les lignes séparées par un caractère nouvelle ligne ou
+    tous les éléments d'une ligne séparés par un espace sont traités de
+    la même façon qu'avec la directive
+    <code class="directive">RemoteIPTrustedProxy</code>.</p>
+
+    <div class="example"><h3>Exemple d'adresse de confiance (répartiteur de
+    charge</h3><p><code>
+        RemoteIPHeader X-Forwarded-For<br />
+        RemoteIPTrustedProxyList conf/mandataires-de-confiance.lst
+    </code></p></div>
+
+    <div class="example"><h3>conf/mandataires-de-confiance.lst contents</h3><p><code>
+       # Mandataires externes identifiés<br />
+       192.0.2.16/28         #groupe wap phone de mandataires<br />
+       proxy.isp.example.com #un FAI bien connu
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_remoteip.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_remoteip.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>

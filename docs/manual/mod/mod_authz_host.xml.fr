@@ -1,0 +1,224 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 709841 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_host.xml.meta">
+
+<name>mod_authz_host</name>
+<description>Autorisations de groupe bas&eacute;es sur l'h&ocirc;te (nom ou adresse
+IP)</description>
+<status>Base</status>
+<sourcefile>mod_authz_host.c</sourcefile>
+<identifier>authz_host_module</identifier>
+<compatibility>Disponible depuis les versions 2.3 et sup&eacute;rieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Les fournisseurs d'autorisation impl&eacute;ment&eacute;s par le module
+    <module>mod_authz_host</module> sont enregistr&eacute;s &agrave; l'aide des
+    directives <directive module="mod_authz_core">Require</directive> ou
+    <directive module="mod_authz_core">Match</directive>. On peut
+    utiliser ces directives &agrave; l'int&eacute;rieur de sections <directive
+    module="core" type="section">Directory</directive>, <directive
+    module="core" type="section">Files</directive>, ou <directive
+    module="core" type="section">Location</directive> ou de fichiers
+    <code><a href="core.html#accessfilename">.htaccess</a> </code> pour
+    contr&ocirc;ler l'acc&egrave;s &agrave; certaines zones du serveur. Le contr&ocirc;le d'acc&egrave;s
+    peut &ecirc;tre effectu&eacute; en fonction du nom d'h&ocirc;te, de l'adresse IP, ou
+    d'autres caract&eacute;ristiques de la requ&ecirc;te client, telles qu'elles sont
+    enregistr&eacute;es dans des <a href="../env.html">variables
+    d'environnement</a>.</p>
+
+    <p>En g&eacute;n&eacute;ral, les directives de restriction d'acc&egrave;s s'appliquent &agrave;
+    toutes les m&eacute;thodes d'acc&egrave;s (<code>GET</code>, <code>PUT</code>,
+    <code>POST</code>, etc...). C'est d'ailleurs ce que l'on souhaite
+    dans la plupart des cas. Il est cependant possible de ne restreindre
+    l'acc&egrave;s que pour certaines m&eacute;thodes, tout en laissant les autres
+    m&eacute;thodes sans protection, en pla&ccedil;ant les directives dans une section
+    <directive module="core" type="section">Limit</directive>.</p>
+</summary>
+
+<seealso><a href="../howto/auth.html">Authentification, autorisation et
+contr&ocirc;le d'acc&egrave;s</a></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><directive module="mod_authz_core">Match</directive></seealso>
+
+<section id="requiredirectives"><title>Les directives Require</title>
+
+    <p>Les directives d'Apache <directive
+    module="mod_authz_core">Require</directive> et <directive
+    module="mod_authz_core">Match</directive> sont utilis&eacute;es au cours de
+    la phase d'autorisation pour v&eacute;rifier si un utilisateur se voit
+    accorder ou refuser l'acc&egrave;s &agrave; une ressource. mod_authz_host fournit
+    les types d'autorisation <code>env</code>, <code>ip</code>,
+    <code>host</code> et <code>all</code>. D'autres types d'autorisation
+    sont aussi disponibles, mais n&eacute;cessitent le chargement des modules
+    d'autorisation appropri&eacute;s.</p>
+
+    <p>Ces fournisseurs d'autorisation permettent de d&eacute;terminer quels
+    h&ocirc;tes peuvent acc&eacute;der &agrave; une zone du serveur. On peut contr&ocirc;ler
+    l'acc&egrave;s en fonction du nom d'h&ocirc;te, de l'adresse IP, d'un intervalle
+    d'adresses IP, ou d'autres caract&eacute;ristiques de la requ&ecirc;te client
+    enregistr&eacute;es dans des variables d'environnement.</p>
+
+<section id="reqenv"><title>Require env</title>
+
+    <p>Le fournisseur <code>env</code> permet de contr&ocirc;ler l'acc&egrave;s au
+    serveur en fonction de l'existence d'une <a
+    href="../env.html">variable d'environnement</a>. Lorsque
+    <code>Require env <var>env-var</var></code> est sp&eacute;cifi&eacute;, la
+    requ&ecirc;te est autoris&eacute;e si la variable d'environnement
+    <var>env-var</var> existe. Le serveur fournit la possibilit&eacute;
+    de d&eacute;finir des variables d'environnement avec une grande souplesse
+    en fonction des caract&eacute;ristiques de la requ&ecirc;te client &agrave; l'aide des
+    directives fournies par le module <module>mod_setenvif</module>. On
+    peut ainsi utiliser cette directive pour contr&ocirc;ler l'acc&egrave;s en
+    fonction de certains en-t&ecirc;tes comme <code>User-Agent</code> (type de
+    navigateur), <code>Referer</code>, etc...</p>
+
+    <example><title>Exemple :</title>
+      SetEnvIf User-Agent ^KnockKnock/2\.0 laisse_moi_entrer<br />
+      &lt;Directory /docroot&gt;<br />
+      <indent>
+        Require env laisse_moi_entrer<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>Dans cet exemple, les navigateurs dont la cha&icirc;ne de description
+    de l'en-t&ecirc;te user-agent commence par <code>KnockKnock/2.0</code> se
+    verront accorder l'acc&egrave;s, alors que tous les autres se le verront
+    refuser.</p>
+
+</section>
+
+<section id="reqip"><title>Require ip</title>
+
+    <p>Le fournisseur <code>ip</code> permet de contr&ocirc;ler l'acc&egrave;s au
+    serveur en fonction de l'adresse IP du client distant. Lorsque
+    <code>Require ip <var>adresse-ip</var></code> est sp&eacute;cifi&eacute;, la
+    requ&ecirc;te est autoris&eacute;e si l'adresse IP du client distant correspond
+    &agrave;</p>
+
+    <p>Une adresse IP compl&egrave;te :</p>
+
+    <example>
+      Require ip 10.1.2.3<br />
+      Require ip 192.168.1.104 192.168.1.205
+    </example>
+
+    <p>L'adresse IP d'un h&ocirc;te pour qui l'acc&egrave;s est accord&eacute;</p>
+
+    <p>Une adresse IP partielle :</p>
+
+    <example>
+      Require ip 10.1<br />
+      Require ip 10 172.20 192.168.2
+    </example>
+    <p>Les 1 &agrave; 3 premiers octets d'une adresse IP, pour une restriction
+    &agrave; un sous-r&eacute;seau.</p>
+
+    <p>Une paire r&eacute;seau/masque de sous-r&eacute;seau :</p>
+
+    <example>
+      Require ip 10.1.0.0/255.255.0.0
+    </example>
+    <p>Un r&eacute;seau a.b.c.d, et un masque de sous-r&eacute;seau w.x.y.z. pour une
+    restriction de sous-r&eacute;seau plus fine.</p>
+
+    <p>Une sp&eacute;cification CIDR r&eacute;seau/nnn :</p>
+
+    <example>
+      Require ip 10.1.0.0/16
+    </example>
+    <p>Identique au cas pr&eacute;c&eacute;dent, except&eacute; que le masque de sous-r&eacute;seau
+    repr&eacute;sente les nnn premiers bits de poids fort.</p>
+
+    <p>Notez que les trois derniers exemples correspondent exectement au
+    m&ecirc;me ensemble d'h&ocirc;tes.</p>
+
+    <p>On peut sp&eacute;cifier des adresses et des sous-r&eacute;seaux IPv6 comme
+    suit :</p>
+
+    <example>
+     Require ip 2001:db8::a00:20ff:fea7:ccea<br />
+     Require ip 2001:db8::a00:20ff:fea7:ccea/10
+    </example>
+
+
+</section>
+
+<section id="reqhost"><title>Require host</title>
+
+    <p>Le fournisseur <code>host</code> permet de contr&ocirc;ler l'acc&egrave;s au
+    serveur en fonction du nom d'h&ocirc;te du client distant. Lorsque
+    <code>Require host <var>nom-h&ocirc;te</var></code> est sp&eacute;cifi&eacute;, la
+    requ&ecirc;te est autoris&eacute;e si le nom d'h&ocirc;te correspond &agrave;</p>
+
+    <p>Un nom de domaine (&eacute;ventuellement partiel)</p>
+
+    <example>
+    Require host apache.org<br />
+    Require host .net example.edu
+    </example>
+
+    <p>Les h&ocirc;tes dont les noms correspondent ou se terminent par la
+    cha&icirc;ne sp&eacute;cifi&eacute;e se voient accorder l'acc&egrave;s. Seuls les &eacute;l&eacute;ment de
+    nom de domaine complets sont mis en correspondance ; ainsi,
+    l'exemple ci-dessus correspondra &agrave; <code>foo.apache.org</code>, mais
+    ne correspondra pas &agrave; <code>fooapache.org</code>. Avec cette
+    configuration, Apache va effectuer une double recherche DNS sur
+    l'adresse IP du client, sans tenir compte de la d&eacute;finition de la
+    directive  <directive module="core">HostnameLookups</directive>. Il
+    va effectuer une recherche DNS inverse sur l'adresse IP pour trouver
+    le nom d'h&ocirc;te associ&eacute;, puis une recherche DNS directe sur le nom
+    d'h&ocirc;te pour v&eacute;rifier qu'il correspond bien &agrave; l'adresse IP originale.
+    L'acc&egrave;s ne sera accord&eacute; que si le nom d'h&ocirc;te correspond et si les
+    recherches DNS inverse et directe sont coh&eacute;rentes.</p>
+
+</section>
+
+<section id="reqall"><title>Require all</title>
+
+    <p>Le fournisseur <code>all</code> imite la fonctionnalit&eacute;
+    pr&eacute;c&eacute;demment fournie par les directives 'Allow from all' et 'Deny
+    from all'. Le fournisseur accepte un des deux arguments 'granted' ou
+    'denied'. Dans les exemples suivants, le premier
+    accorde l'acc&egrave;s &agrave; toutes les requ&ecirc;tes, alors que le second le
+    refuse.</p>
+
+    <example>
+    Require all granted<br />
+    </example>
+
+    <example>
+    Require all denied<br />
+    </example>
+
+</section>
+
+
+</section>
+
+
+</modulesynopsis>

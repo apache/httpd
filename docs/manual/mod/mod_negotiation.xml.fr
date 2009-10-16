@@ -1,0 +1,307 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 774533 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_negotiation.xml.meta">
+
+<name>mod_negotiation</name>
+<description>Effectue la <a
+href="../content-negotiation.html">n&eacute;gociation de
+contenu</a></description>
+<status>Base</status>
+<sourcefile>mod_negotiation.c</sourcefile>
+<identifier>negotiation_module</identifier>
+
+<summary>
+    <p>La n&eacute;gociation de contenu, ou plus pr&eacute;cis&eacute;ment la s&eacute;lection de
+    contenu, est la s&eacute;lection parmi plusieurs documents disponibles, du
+    document qui "colle" au plus pr&egrave;s des possibilit&eacute;s du client. Pour y
+    parvenir, deux m&eacute;thodes sont employ&eacute;es.</p>
+
+    <ul>
+      <li>Une table de correspondances de types (un fichier associ&eacute; au
+      gestionnaire <code>type-map</code>) qui contient une liste
+      explicite des fichiers contenant les diff&eacute;rentes variantes.</li>
+
+      <li>Une recherche multivues (Multiviews) (activ&eacute;e par l'<directive
+      module="core">Options</directive> <code>Multiviews</code>), o&ugrave; le
+      serveur effectue une recherche de correspondance de mod&egrave;le de nom
+      de fichier implicite, et fait son choix parmi les r&eacute;sultats.</li>
+    </ul>
+</summary>
+<seealso><directive module="core">Options</directive></seealso>
+<seealso><module>mod_mime</module></seealso>
+<seealso><a href="../content-negotiation.html">N&eacute;gociation de
+contenu</a></seealso>
+<seealso><a href="../env.html">Variables d'environnement</a></seealso>
+
+<section id="typemaps"><title>Tables de correspondances de types</title>
+    <p>Une table de correspondances de types poss&egrave;de un format similaire
+    &agrave; celui des en-t&ecirc;tes de messagerie RFC822. Elle contient des
+    descriptions de documents s&eacute;par&eacute;es par des lignes vides, toute ligne
+    commen&ccedil;ant par un di&egrave;se ('#') &eacute;tant consid&eacute;r&eacute;e comme un
+    commentaire. Une description de document comporte plusieurs
+    enregistrements d'en-t&ecirc;tes ; chaque enregistrement peut &ecirc;tre r&eacute;parti
+    sur plusieurs lignes &agrave; condition que les lignes suppl&eacute;mentaires
+    commencent par un ou plusieurs espaces. Lors du traitement, les
+    espaces de d&eacute;but de ligne seront supprim&eacute;s et les lignes
+    concat&eacute;n&eacute;es. L'enregistrement d'un en-t&ecirc;te comprend un mot-cl&eacute; qui
+    se termine toujours par un caract&egrave;re "deux-points" ':', suivi d'une
+    valeur. Les espaces sont autoris&eacute;s entre le nom d'en-t&ecirc;te et sa
+    valeur, ainsi qu'entre les diff&eacute;rents &eacute;l&eacute;ments de la valeur. Les
+    en-t&ecirc;tes autoris&eacute;s sont :</p>
+
+    <dl>
+      <dt><code>Content-Encoding:</code></dt>
+      <dd>Le codage du fichier. Apache ne reconna&icirc;t que les codages
+      d&eacute;finis par une directive <directive
+      module="mod_mime">AddEncoding</directive>. Sont normalement inclus
+      les codages <code>x-compress</code> pour les fichiers compress&eacute;s
+      avec compress, et <code>x-gzip</code> pour les fichiers compress&eacute;s
+      avec gzip. Le pr&eacute;fixe <code>x-</code> est ignor&eacute; lors des
+      comparaisons de codages.</dd>
+
+      <dt><code>Content-Language:</code></dt>
+      <dd>Le(s) langage(s) de la variante, sous la forme d'un symbole de
+      langage Internet standard (<a
+      href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>). Par
+      exemple, <code>en</code> correspond &agrave; l'anglais. Si la variante
+      contient plusieurs langages, ils sont s&eacute;par&eacute;s par des
+      virgules.</dd>
+
+      <dt><code>Content-Length:</code></dt>
+      <dd>La taille du fichier en octets. Si cet en-t&ecirc;te n'est pas
+      pr&eacute;sent, c'est la taille r&eacute;elle du fichier qui est utilis&eacute;e.</dd>
+
+      <dt><code>Content-Type:</code></dt>
+
+      <dd>
+        Le <glossary ref="mime-type">type MIME</glossary> du document
+	avec des param&egrave;tres optionnels. Les param&egrave;tres sont s&eacute;par&eacute;s du
+	type de m&eacute;dium ainsi qu'entre eux par un point-virgule, et
+	poss&egrave;dent la syntaxe <code>nom=valeur</code>. Les param&egrave;tres
+	courants sont :
+
+        <dl>
+          <dt><code>level</code></dt>
+          <dd>un entier sp&eacute;cifiant la version du type de m&eacute;dia. Pour
+	  <code>text/html</code>, la valeur par d&eacute;faut est 2, sinon
+	  0.</dd>
+
+          <dt><code>qs</code></dt>
+          <dd>un nombre en virgule flottante de 0.0 &agrave; 1.0, indiquant la
+	  "qualit&eacute;" relative de la variante courante par rapport aux
+	  autres variantes disponibles, ind&eacute;pendamment des possibilit&eacute;s
+	  du client. Par exemple, un fichier jpeg est en g&eacute;n&eacute;ral une
+	  source de qualit&eacute; sup&eacute;rieure &agrave; un fichier ascii s'il est cens&eacute;
+	  repr&eacute;senter une image. Cependant, si la ressource repr&eacute;sent&eacute;e
+	  est une image ascii, un fichier ascii poss&egrave;dera une qualit&eacute;
+	  sup&eacute;rieure &agrave; un fichier jpeg. Toutes les valeurs de
+	  <code>qs</code> sont donc sp&eacute;cifiques &agrave; une certaine
+	  ressource.</dd>
+        </dl>
+
+        <example><title>Exemple</title>
+          Content-Type: image/jpeg; qs=0.8
+        </example>
+      </dd>
+
+      <dt><code>URI:</code></dt>
+      <dd>l'URI du fichier contenant la variante (du type de m&eacute;dium
+      donn&eacute;, cod&eacute; selon le codage de contenu donn&eacute;). Cet URI est
+      consid&eacute;r&eacute; comme relatif au fichier de correspondances ; il doit
+      &ecirc;tre situ&eacute; sur le m&ecirc;me serveur (!), et doit faire r&eacute;f&eacute;rence au
+      fichier auquel le client se verrait accorder l'acc&egrave;s s'il &eacute;tait
+      requis directement.</dd>
+
+      <dt><code>Body:</code></dt>
+      <dd>une nouveaut&eacute; d'Apache 2.0 : le contenu r&eacute;el de la ressource
+      peut &ecirc;tre inclus dans la table de correspondances en utilisant
+      l'en-t&ecirc;te Body. Cet en-t&ecirc;te doit contenir une cha&icirc;ne d&eacute;signant un
+      d&eacute;limiteur pour le contenu du corps. Les lignes suivantes du
+      fichier de correspondances de types seront alors consid&eacute;r&eacute;es comme
+      parties du corps de la ressource jusqu'&agrave; ce que le d&eacute;limiteur soit
+      d&eacute;tect&eacute;.
+
+      <example><title>Exemple:</title>
+        Body:----xyz----<br />
+        &lt;html&gt;<br />
+        &lt;body&gt;<br />
+        &lt;p&gt;Contenu de la page.&lt;/p&gt;<br />
+        &lt;/body&gt;<br />
+        &lt;/html&gt;<br />
+        ----xyz----
+      </example>
+      </dd>
+    </dl>
+</section>
+
+<section id="multiviews"><title>Multivues</title>
+    <p>Une recherche Multivues est activ&eacute;e par l'<directive
+    module="core">Options</directive> <code>Multiviews</code>. Si le
+    serveur re&ccedil;oit une requ&ecirc;te pour <code>/un/r&eacute;pertoire/foo</code>, et
+    si <code>/un/r&eacute;pertoire/foo</code> n'existe pas, le serveur parcourt
+    le r&eacute;pertoire &agrave; la recherche de tous les fichiers de nom
+    <code>foo.*</code>, et simule v&eacute;ritablement une correspondance de
+    type qui nomme tous ces fichiers en leur assignant les m&ecirc;mes type
+    de m&eacute;dia et codage de contenu qu'ils auraient eus si le client avait
+    requis l'un d'entre eux avec son nom complet. Il choisit ensuite le
+    fichier qui correspond le mieux au profile du client, puis renvoie
+    le document.</p>
+
+    <p>La directive <directive
+    module="mod_mime">MultiviewsMatch</directive> d&eacute;finit si Apache doit
+    prendre en compte les fichiers qui ne comportent pas de m&eacute;tadonn&eacute;es
+    de n&eacute;gociation de contenu lors du choix du fichier &agrave; servir.</p>
+</section>
+
+<directivesynopsis>
+<name>CacheNegotiatedDocs</name>
+<description>Permet la mise en cache au niveau des serveurs mandataires
+des documents dont le contenu a &eacute;t&eacute; n&eacute;goci&eacute;</description>
+<syntax>CacheNegotiatedDocs On|Off</syntax>
+<default>CacheNegotiatedDocs Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>La syntaxe a &eacute;t&eacute; modifi&eacute;e dans la version
+2.0.</compatibility>
+
+<usage>
+    <p>Si elle est d&eacute;finie &agrave; "on", cette directive permet la mise en
+    cache au niveau des serveurs mandataires des documents dont le
+    contenu a &eacute;t&eacute; n&eacute;goci&eacute;. Le processus de mise en cache sera alors plus
+    efficace, mais des clients se trouvant derri&egrave;re le mandataire
+    seront alors susceptibles de se voir servir des versions de
+    documents qui ne correspondent pas forc&eacute;ment &agrave; leurs attentes.</p>
+
+    <p>Cette directive ne s'applique qu'aux requ&ecirc;tes en provenance de
+    navigateurs HTTP/1.0. HTTP/1.1 fournit un bien meilleur contr&ocirc;le de
+    la mise en cache des documents au contenu n&eacute;goci&eacute;, et cette
+    directive n'a aucun effet sur les r&eacute;ponses aux requ&ecirc;tes
+    HTTP/1.1.</p>
+
+    <p>Avant la version 2.0, la directive
+    <directive>CacheNegotiatedDocs</directive> n'acceptait aucun
+    argument ; la seule pr&eacute;sence de la directive suffisait &agrave; la d&eacute;finir
+    &agrave; "on".</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ForceLanguagePriority</name>
+<description>Action &agrave; entreprendre si un document acceptable unique
+n'est pas trouv&eacute;</description>
+<syntax>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</syntax>
+<default>ForceLanguagePriority Prefer</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Disponible depuis la version 2.0.30</compatibility>
+
+<usage>
+    <p>La directive <directive>ForceLanguagePriority</directive> utilise
+    le langage d&eacute;fini par la directive <directive
+    module="mod_negotiation">LanguagePriority</directive> pour terminer
+    la n&eacute;gociation lorsque le serveur n'est pas en mesure de trouver une
+    solution satisfaisante unique.</p>
+
+    <p><code>ForceLanguagePriority Prefer</code> utilise la directive
+    <code>LanguagePriority</code> pour servir le r&eacute;sultat d'un choix
+    unique, au lieu de renvoyer un r&eacute;sultat HTTP 300 (MULTIPLE CHOICES),
+    lorsque que plusieurs choix &eacute;quivalents sont disponibles. Par
+    exemple, avec les deux directives ci-dessous, si l'en-t&ecirc;te
+    <code>Accept-Language</code> de l'utilisateur assigne &agrave;
+    <code>en</code> et <code>de</code> une qualit&eacute; de <code>.500</code>
+    (les deux langages sont &eacute;galement acceptables), alors c'est la
+    premi&egrave;re variante acceptable de langue <code>en</code> qui sera
+    servie.</p>
+
+    <example>
+      LanguagePriority en fr de<br />
+      ForceLanguagePriority Prefer
+    </example>
+
+    <p><code>ForceLanguagePriority Fallback</code> utilise la directive
+    <directive module="mod_negotiation">LanguagePriority</directive>
+    pour servir un r&eacute;sultat valide, au lieu de renvoyer un r&eacute;sultat HTTP
+    406 (NOT ACCEPTABLE). Avec les deux directives ci-dessous, si
+    l'en-t&ecirc;te <code>Accept-Language</code> de l'utilisateur ne mentionne
+    que les r&eacute;ponses de langage <code>es</code>, et si aucune variante
+    dans cette langue n'est trouv&eacute;e, c'est la premi&egrave;re variante de la
+    liste d&eacute;finie par la directive <directive module="mod_negotiation"
+    >LanguagePriority</directive> qui sera servie.</p>
+
+    <example>
+      LanguagePriority en fr de<br />
+      ForceLanguagePriority Fallback
+    </example>
+
+    <p>Les deux options, <code>Prefer</code> et <code>Fallback</code>,
+    peuvent &ecirc;tre sp&eacute;cifi&eacute;es, de fa&ccedil;on &agrave; ce que la variante servie soit
+    la premi&egrave;re variante qui convient d&eacute;finie par la directive
+    <directive module="mod_negotiation">LanguagePriority</directive> si
+    plusieurs variantes sont &eacute;galement acceptables, ou le premier
+    document disponible si aucune variante ne convient &agrave; la liste de
+    langages acceptables fournie par le client.</p>
+</usage>
+<seealso><directive module="mod_mime">AddLanguage</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LanguagePriority</name>
+<description>L'ordre de priorit&eacute; des variantes de langages pour les
+cas o&ugrave; le client n'a pas formul&eacute; de pr&eacute;f&eacute;rences</description>
+<syntax>LanguagePriority <var>langage-MIME</var> [<var>langage-MIME</var>]
+...</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>La directive <directive>LanguagePriority</directive> permet de
+    d&eacute;finir, au cours du traitement d'une requ&ecirc;te Multivues, l'ordre de
+    priorit&eacute; des variantes de langages pour les cas
+    o&ugrave; le client n'a pas formul&eacute; de pr&eacute;f&eacute;rences. La liste &eacute;num&egrave;re les
+    <var>langages-MIME</var> dans un ordre de pr&eacute;f&eacute;rences
+    d&eacute;croissantes.</p>
+
+    <example><title>Exemple:</title>
+      LanguagePriority en fr de
+    </example>
+
+    <p>Dans le cas d'une requ&ecirc;te pour <code>foo.html</code>, si
+    <code>foo.html.fr</code> et <code>foo.html.de</code> existent, et si
+    le client n'a pas formul&eacute; de pr&eacute;f&eacute;rences, c'est le fichier
+    <code>foo.html.fr</code> qui sera renvoy&eacute;.</p>
+
+    <p>Notez que cette directive n'a d'effet que si le 'meilleur'
+    langage n'a pas pu &ecirc;tre d&eacute;termin&eacute; d'une autre mani&egrave;re ou si la
+    valeur de la directive  <directive
+    module="mod_negotiation">ForceLanguagePriority</directive> est
+    diff&eacute;rente de <code>None</code>. En g&eacute;n&eacute;ral, c'est le client qui
+    d&eacute;termine le langage pr&eacute;f&eacute;r&eacute;, non le serveur.</p>
+</usage>
+<seealso><directive module="mod_mime">AddLanguage</directive></seealso>
+</directivesynopsis>
+
+</modulesynopsis>

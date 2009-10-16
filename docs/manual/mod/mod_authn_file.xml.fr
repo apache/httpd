@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 420990 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_file.xml.meta">
+
+<name>mod_authn_file</name>
+<description>Authentification utilisateur &agrave; l'aide de fichiers
+texte</description>
+<status>Base</status>
+<sourcefile>mod_authn_file.c</sourcefile>
+<identifier>authn_file_module</identifier>
+<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet aux frontaux d'authentification comme
+    <module>mod_auth_digest</module> et <module>mod_auth_basic</module>
+    d'authentifier les utilisateurs en les recherchant dans des fichiers
+    de mots de passe au format texte. <module>mod_authn_dbm</module>
+    fournit une fonctionnalit&eacute; similaire.</p>
+
+    <p>Lorsqu'on utilise <module>mod_auth_basic</module> ou
+    <module>mod_auth_digest</module>, ce module peut &ecirc;tre invoqu&eacute; en
+    affectant la valeur <code>file</code> &agrave; la directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> ou <directive
+    module="mod_auth_digest">AuthDigestProvider</directive>.</p>
+</summary>
+<seealso>
+  <directive module="mod_auth_basic">AuthBasicProvider</directive>
+</seealso>
+<seealso>
+  <directive module="mod_auth_digest">AuthDigestProvider</directive>
+</seealso>
+<seealso><program>htpasswd</program></seealso>
+<seealso><program>htdigest</program></seealso>
+
+<directivesynopsis>
+<name>AuthUserFile</name>
+<description>D&eacute;finit le nom d'un fichier texte pour l'authentification
+contenant la liste des utilisateurs et de leurs mots de
+passe</description>
+<syntax>AuthUserFile <var>chemin-fichier</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthUserFile</directive> permet de
+    d&eacute;finir le nom d'un fichier texte pour l'authentification contenant
+    la liste des utilisateurs et de leurs mots de passe.
+    <var>chemin-fichier</var> est le chemin vers le fichier
+    des utilisateurs. S'il n'est pas absolu, il est consid&eacute;r&eacute; comme
+    relatif au r&eacute;pertoire d&eacute;fini par la directive <directive
+    module="core">ServerRoot</directive>.</p>
+
+    <p>Chaque ligne du fichier des utilisateurs se compose du nom de
+    l'utilisateur, du caract&egrave;re ':' et du mot de passe chiffr&eacute;. Si le
+    m&ecirc;me identifiant utilisateur est r&eacute;f&eacute;renc&eacute; plusieurs fois,
+    <module>mod_authn_file</module> utilisera la premi&egrave;re occurence pour
+    v&eacute;rifier le mot de passe.</p>
+
+    <p>Pour l'<em>Authentification de base HTTP</em>, on utilise
+    l'utilitaire <program>htpasswd</program>, install&eacute; avec la
+    distribution binaire ou se trouvant dans <code>src/support</code>,
+    pour maintenir le fichier des mots de passe. Voir sa <a
+    href="../programs/htpasswd.html">page de manuel</a> pour plus de
+    d&eacute;tails. En bref :</p>
+
+    <p>On cr&eacute;e un fichier de mots de passe <code>nom-fichier</code> avec
+    <code>nom-utilisateur</code> comme identifiant initial. Le mot de
+    passe correspondant sera alors demand&eacute; :</p>
+
+    <example>
+      htpasswd -c nom-fichier nom-utilisateur
+    </example>
+
+    <p>Pour ajouter ou modifier <code>nom-utilisateur2</code> dans le
+    fichier de mots de passe <code>nom-fichier</code> :</p>
+
+    <example>
+      htpasswd nom-fichier nom-utilisateur2
+    </example>
+
+    <p>Noter qu'une recherche dans de grands fichiers texte peut &ecirc;tre
+    tr&egrave;s longue ; dans ce cas, il vaut mieux utiliser les fichiers DBM
+    avec la directive <directive
+    module="mod_authn_dbm">AuthDBMUserFile</directive>.</p>
+
+    <p>Si vous utilisez l'<em>Authentification HTTP &agrave; base de
+    condens&eacute;</em>, l'utilitaire <program>htpasswd</program> ne convient
+    pas. Vous devez utiliser <program>htdigest</program> &agrave; la place.
+    Notez que vous ne pouvez pas m&eacute;langer des donn&eacute;es utilisateur pour
+    l'Authentification HTTP &agrave; base de condens&eacute; et des donn&eacute;es pour
+    l'Authentification de Base dans le m&ecirc;me fichier.</p>
+
+    <note type="warning"><title>S&eacute;curit&eacute;</title>
+      <p>Assurez-vous que le fichier <directive>AuthUserFile</directive>
+      soit bien stock&eacute; en dehors de l'arborescence des documents du
+      serveur web. Ne placez <strong>pas</strong> ce fichier dans le
+      r&eacute;pertoire qu'il prot&egrave;ge. Dans le cas contraire, les clients
+      seraient en mesure de t&eacute;l&eacute;charger le fichier des mots de passe.</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

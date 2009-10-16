@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 718086 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_buffer.xml.meta">
+
+<name>mod_buffer</name>
+<description>Support de la mise en tampon des requ&ecirc;tes</description>
+<status>Extension</status>
+<sourcefile>mod_buffer.c</sourcefile>
+<identifier>buffer_module</identifier>
+<compatibility>Disponible depuis les versions 2.3 et sup&eacute;rieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module fournit la possibilit&eacute; de mettre en tampon les piles
+    des filtres en entr&eacute;e et sortie.</p>
+
+    <p>Dans certaines situations, les g&eacute;n&eacute;rateurs de contenu cr&eacute;ent des
+    contenus compos&eacute;s de petits tron&ccedil;ons. Afin de permettre la
+    r&eacute;utilisation de la m&eacute;moire, les &eacute;l&eacute;ments de m&eacute;moire attribu&eacute;s aux
+    tron&ccedil;ons ont toujours une taille de 8k, quelle que soit la taille du
+    tron&ccedil;on lui-m&ecirc;me. Lorsqu'une requ&ecirc;te g&eacute;n&egrave;re de nombreux petits
+    tron&ccedil;ons, une grande quantit&eacute; de m&eacute;moire peut &ecirc;tre mobilis&eacute;e par le
+    traitement de la requ&ecirc;te, et une grande quantit&eacute; de donn&eacute;es
+    transmises sans n&eacute;cessit&eacute;. Pour y rem&eacute;dier, l'utilisation d'un
+    tampon rassemble la r&eacute;ponse en un nombre de tron&ccedil;ons le plus petit
+    possible.</p>
+
+    <p>Lorsque httpd est utilis&eacute; comme frontal d'un g&eacute;n&eacute;rateur de
+    contenu consommant beaucoup de ressources, la mise en tampon de la
+    r&eacute;ponse peut permettre &agrave; ce dernier d'effectuer le traitement et de
+    lib&eacute;rer les ressources plus ou moins rapidement, en fonction de la
+    mani&egrave;re dont il a &eacute;t&eacute; con&ccedil;u.</p>
+
+    <p>Le filtre de mise en tampon peut &ecirc;tre ajout&eacute; aux piles des
+    filtres en entr&eacute;e ou en sortie, selon les besoins, &agrave; l'aide des
+    directives <directive module="core">SetInputFilter</directive>,
+    <directive module="core">SetOutputFilter</directive>, <directive
+    module="mod_mime">AddOutputFilter</directive> ou <directive
+    module="core">AddOutputFilterByType</directive>.</p>
+
+      <example><title>Utilisation d'un tampon avec mod_include</title>
+        AddOutputFilterByType INCLUDES;BUFFER text/html<br />
+      </example>
+
+    <note type="warning">Les filtres de mise en tampon lisent la
+    requ&ecirc;te/r&eacute;ponse en RAM, puis la reconditionnent sous la forme d'un
+    nombre d'&eacute;l&eacute;ments m&eacute;moire le plus petit possible, au prix d'une
+    consommation de temps CPU. Lorsque la requ&ecirc;te/r&eacute;ponse est d&eacute;j&agrave;
+    conditionn&eacute;e de mani&egrave;re satisfaisante, sa mise en tampon pourrait
+    s'av&eacute;rer encore plus lente qu'en l'absence d'utilisation de tampon.
+    C'est pourquoi ces filtres doivent &ecirc;tre utilis&eacute;s avec pr&eacute;cautions,
+    et seulement si n&eacute;cessaire.</note>
+
+</summary>
+<seealso><a href="../filter.html">Les filtres</a></seealso>
+
+<directivesynopsis>
+<name>BufferSize</name>
+<description>Taille maximale en octets du filtre par tampon</description>
+<syntax>BufferSize entier</syntax>
+<default>BufferSize 131072</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive
+    module="mod_buffer">BufferSize</directive> permet de sp&eacute;cifier la
+    quantit&eacute; de donn&eacute;es en octets qui sera mise en tampon avant d'&ecirc;tre
+    lue depuis ou &eacute;crite vers chaque requ&ecirc;te. La valeur par d&eacute;faut est
+    128 ko.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

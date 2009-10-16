@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_disk_cache - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_disk_cache</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_disk_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_disk_cache.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_disk_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Gestionnaire de stockage du cache de contenu à base
+d'URIs</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>disk_cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_disk_cache.c</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> implémente un gestionnaire de
+    stockage sur disque. Il s'utilise principalement avec
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
+
+    <p>Les contenus sont stockés dans le cache et extraits de ce dernier
+    en utilisant des clés à base d'URIs. Les contenus dont l'accès est
+    protégé ne sont pas mis en cache.</p>
+
+    <p>Le programme <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> permet de maintenir
+    la taille du cache à un niveau maximum.</p>
+
+    <div class="note"><h3>Note :</h3>
+      <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> doit être chargé pour que
+      <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> puisse fonctionner.</p>
+    </div>
+    <p>Lorsque la plate-forme la supporte, et si elle est activée via la
+    directive <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code>,
+    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> utilise la fonctionnalité sendfile
+    pour servir les fichiers à partir du cache. Cependant,
+    <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> ignore la configuration de la
+    directive <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> dans
+    un contexte de répertoire ou de fichier .htaccess, car le module ne
+    dispose pas des définitions correspondantes lorsque la requête est
+    servie depuis le cache.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#cachedirlength">CacheDirLength</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachedirlevels">CacheDirLevels</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachemaxfilesize">CacheMaxFileSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheminfilesize">CacheMinFileSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheroot">CacheRoot</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre de caractères des noms des
+sous-répertoires</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDirLength <var>longueur</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheDirLength 2</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>la directive <code class="directive">CacheDirLength</code> permet de
+    définir le nombre de caractères que comportera chaque nom de
+    sous-répertoire de la hiérarchie du cache. On peut l'utiliser en
+    conjonction avec <code class="directive">CacheDirLevels</code> pour
+    déterminer une structure approximative de la hiérarchie de
+    cache.</p>
+    <p>Une valeur haute pour <code class="directive">CacheDirLength</code>
+    combinée avec une valeur basse pour
+    <code class="directive">CacheDirLevels</code> générera une hiérarchie
+    relativement peu profonde, avec un grand nombre de sous-répertoires
+    à chaque niveau.</p>
+
+    <div class="note">
+      <p>La valeur du produit <code class="directive">CacheDirLevels</code> *
+      <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> ne
+      doit pas dépasser 20.</p>
+    </div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a> <a name="cachedirlevels" id="cachedirlevels">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Le nombre de niveaux de sous-répertoires que comportera le
+cache.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheDirLevels <var>niveaux</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheDirLevels 2</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>La directive <code class="directive">CacheDirLevels</code> permet de
+    définir le nombre de niveaux de sous-répertoires que comportera le
+    cache. Les données du cache seront stokées au niveau correspondant
+    par rapport au répertoire <code class="directive"><a href="#cacheroot">CacheRoot</a></code>.</p>
+    <p>Une valeur haute pour <code class="directive">CacheDirLevels</code>
+    combinée avec une valeur basse pour
+    <code class="directive">CacheDirLength</code> générera une arborescence
+    très développée, avec un petit nombre de sous-répertoires à chaque
+    niveau.</p>
+
+    <div class="note">
+      <p>La valeur du produit <code class="directive">CacheDirLevels</code> *
+      <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> ne
+      doit pas dépasser 20.</p>
+    </div>
+
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a> <a name="cachemaxfilesize" id="cachemaxfilesize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>&gt;La taille maximale (en octets) d'un document pour pouvoir
+être stocké dans le cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMaxFileSize <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>La directive <code class="directive">CacheMaxFileSize</code> permet de
+    définir la taille maximale d'un document, en octets, pour que
+    celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
+
+    <div class="example"><p><code>
+      CacheMaxFileSize 64000
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a> <a name="cacheminfilesize" id="cacheminfilesize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La taille minimale (en octets) d'un document pour pouvoir
+être stocké dans le cache</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheMinFileSize <var>octets</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>La directive <code class="directive">CacheMinFileSize</code> permet de
+    définir la taille minimale d'un document, en octets, pour que
+    celui-ci puisse faire l'objet d'un stockage dans le cache.</p>
+
+    <div class="example"><p><code>
+      CacheMinFileSize 64
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La racine du répertoire dans lequel les fichiers du cache
+seront stockés</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>CacheRoot <var>répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p>La directive <code class="directive">CacheRoot</code> permet de définir
+    le nom du répertoire sur disque qui contiendra les fichiers du
+    cache. Si le module <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> a été chargé ou
+    compilé dans le serveur Apache, cette directive <em>doit</em> être
+    définie. L'absence de définition de la directive
+    <code class="directive">CacheRoot</code> provoquera une erreur de traitement
+    du fichier de configuration. Les directives <code class="directive"><a href="#cachedirlevels">CacheDirLevels</a></code> et <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> permettent de
+    définir la structure des sous-répertoires du répertoire racine
+    spécifié.</p>
+
+    <div class="example"><p><code>
+      CacheRoot c:/cacheroot
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_disk_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_disk_cache.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_disk_cache.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>

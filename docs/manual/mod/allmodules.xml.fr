@@ -5,26 +5,26 @@
   <modulefile>core.xml.fr</modulefile>
   <modulefile>mod_access_compat.xml</modulefile>
   <modulefile>mod_actions.xml</modulefile>
-  <modulefile>mod_alias.xml</modulefile>
+  <modulefile>mod_alias.xml.fr</modulefile>
   <modulefile>mod_asis.xml</modulefile>
-  <modulefile>mod_auth_basic.xml</modulefile>
+  <modulefile>mod_auth_basic.xml.fr</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
   <modulefile>mod_auth_form.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
   <modulefile>mod_authn_core.xml</modulefile>
   <modulefile>mod_authn_dbd.xml</modulefile>
   <modulefile>mod_authn_dbm.xml</modulefile>
-  <modulefile>mod_authn_file.xml</modulefile>
+  <modulefile>mod_authn_file.xml.fr</modulefile>
   <modulefile>mod_authnz_ldap.xml</modulefile>
   <modulefile>mod_authz_core.xml</modulefile>
   <modulefile>mod_authz_dbd.xml</modulefile>
   <modulefile>mod_authz_dbm.xml</modulefile>
   <modulefile>mod_authz_groupfile.xml</modulefile>
-  <modulefile>mod_authz_host.xml</modulefile>
-  <modulefile>mod_authz_owner.xml</modulefile>
-  <modulefile>mod_authz_user.xml</modulefile>
+  <modulefile>mod_authz_host.xml.fr</modulefile>
+  <modulefile>mod_authz_owner.xml.fr</modulefile>
+  <modulefile>mod_authz_user.xml.fr</modulefile>
   <modulefile>mod_autoindex.xml.fr</modulefile>
-  <modulefile>mod_buffer.xml</modulefile>
+  <modulefile>mod_buffer.xml.fr</modulefile>
   <modulefile>mod_cache.xml</modulefile>
   <modulefile>mod_cern_meta.xml</modulefile>
   <modulefile>mod_cgi.xml</modulefile>
@@ -36,10 +36,10 @@
   <modulefile>mod_dbd.xml</modulefile>
   <modulefile>mod_deflate.xml</modulefile>
   <modulefile>mod_dir.xml.fr</modulefile>
-  <modulefile>mod_disk_cache.xml</modulefile>
+  <modulefile>mod_disk_cache.xml.fr</modulefile>
   <modulefile>mod_dumpio.xml</modulefile>
-  <modulefile>mod_echo.xml</modulefile>
-  <modulefile>mod_env.xml</modulefile>
+  <modulefile>mod_echo.xml.fr</modulefile>
+  <modulefile>mod_env.xml.fr</modulefile>
   <modulefile>mod_example.xml</modulefile>
   <modulefile>mod_expires.xml</modulefile>
   <modulefile>mod_ext_filter.xml</modulefile>
@@ -48,10 +48,10 @@
   <modulefile>mod_headers.xml</modulefile>
   <modulefile>mod_heartbeat.xml</modulefile>
   <modulefile>mod_heartmonitor.xml</modulefile>
-  <modulefile>mod_ident.xml</modulefile>
+  <modulefile>mod_ident.xml.fr</modulefile>
   <modulefile>mod_imagemap.xml</modulefile>
   <modulefile>mod_include.xml</modulefile>
-  <modulefile>mod_info.xml</modulefile>
+  <modulefile>mod_info.xml.fr</modulefile>
   <modulefile>mod_isapi.xml</modulefile>
   <modulefile>mod_lbmethod_bybusyness.xml</modulefile>
   <modulefile>mod_lbmethod_byrequests.xml</modulefile>
@@ -63,7 +63,7 @@
   <modulefile>mod_logio.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
-  <modulefile>mod_negotiation.xml</modulefile>
+  <modulefile>mod_negotiation.xml.fr</modulefile>
   <modulefile>mod_nw_ssl.xml</modulefile>
   <modulefile>mod_privileges.xml</modulefile>
   <modulefile>mod_proxy.xml.fr</modulefile>
@@ -75,7 +75,7 @@
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml.fr</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
-  <modulefile>mod_remoteip.xml</modulefile>
+  <modulefile>mod_remoteip.xml.fr</modulefile>
   <modulefile>mod_reqtimeout.xml</modulefile>
   <modulefile>mod_request.xml</modulefile>
   <modulefile>mod_rewrite.xml.fr</modulefile>
@@ -87,10 +87,10 @@
   <modulefile>mod_setenvif.xml</modulefile>
   <modulefile>mod_slotmem_plain.xml</modulefile>
   <modulefile>mod_slotmem_shm.xml</modulefile>
-  <modulefile>mod_so.xml</modulefile>
+  <modulefile>mod_so.xml.fr</modulefile>
   <modulefile>mod_speling.xml</modulefile>
   <modulefile>mod_ssl.xml</modulefile>
-  <modulefile>mod_status.xml</modulefile>
+  <modulefile>mod_status.xml.fr</modulefile>
   <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml</modulefile>
   <modulefile>mod_unique_id.xml</modulefile>
