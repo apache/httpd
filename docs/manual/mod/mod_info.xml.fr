@@ -1,0 +1,188 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 804977 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_info.xml.meta">
+
+<name>mod_info</name>
+<description>Affiche une pr&eacute;sentation compl&egrave;te de la configuration du
+serveur</description>
+<status>Extension</status>
+<sourcefile>mod_info.c</sourcefile>
+<identifier>info_module</identifier>
+
+<summary>
+    <p>Pour activer <module>mod_info</module>, ajoutez les lignes
+    suivantes &agrave; votre fichier <code>httpd.conf</code>.</p>
+
+    <example>
+      &lt;Location /infos-serveur&gt;<br />
+      <indent>
+        SetHandler server-info<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <p>Il est recommand&eacute; d'utiliser <module>mod_access</module> &agrave;
+    l'int&eacute;rieur de la section <directive type="section"
+    module="core">Location</directive> afin de restreindre l'acc&egrave;s aux
+    informations de configuration de votre serveur :</p>
+
+    <example>
+      &lt;Location /infos-serveur&gt;<br />
+      <indent>
+        SetHandler server-info<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from votre-entreprise.com<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <p>Une fois cette configuration effectu&eacute;e, les informations du
+    serveur sont disponibles &agrave; l'adresse
+    <code>http://votre-serveur.com/infos-serveur</code>.</p>
+</summary>
+
+<section id="security"><title>Probl&egrave;mes li&eacute;s &agrave; la s&eacute;curit&eacute;</title>
+    <p>Une fois <module>mod_info</module> charg&eacute; dans le serveur, sa
+    fonctionnalit&eacute; de gestionnaire est disponible dans <em>tous</em> les
+    fichiers de configuration, y compris les fichiers de configuration
+    des r&eacute;pertoires (par exemple <code>.htaccess</code>). Ceci peut
+    avoir des r&eacute;percutions en mati&egrave;re de s&eacute;curit&eacute; pour votre site.</p>
+
+    <p>En particulier, l'utilisation de ce module peut conduire &agrave; la
+    divulgation d'informations sensibles &agrave; partir des directives de
+    configuration d'autres modules Apache comme des chemins syst&egrave;mes,
+    des couples nom d'utilisateur/mot de passe, des noms de bases de
+    donn&eacute;es, etc... C'est pourquoi ce module ne doit &ecirc;tre utilis&eacute;
+    <strong>que</strong> dans un environnement sous contr&ocirc;le et toujours
+    avec les plus grandes pr&eacute;cautions.</p>
+
+    <p>Il est recommand&eacute; d'utiliser <module>mod_authz_host</module> pour
+    restreindre l'acc&egrave;s aux informations de configuration de votre
+    serveur.</p>
+
+    <example><title>Contr&ocirc;le d'acc&egrave;s</title>
+      &lt;Location /infos-serveur&gt;<br />
+      <indent>
+        SetHandler server-info<br />
+        Order allow,deny<br />
+        # Autorisation d'acc&egrave;s depuis le serveur lui-m&ecirc;me<br />
+        Allow from 127.0.0.1<br />
+        # Autorisation d'acc&egrave;s depuis une station de travail du r&eacute;seau
+	# local<br />
+        Allow from 192.168.1.17<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+</section>
+
+<section id="queries"><title>Filtrage des informations affich&eacute;es</title>
+    <p>Par d&eacute;faut, les informations affich&eacute;es comprennent une liste de
+    tous les modules activ&eacute;s, et pour chaque module, une description des
+    directives qu'il accepte, les branchements (hooks) qu'il
+    impl&eacute;mente, ainsi que les directives concern&eacute;es dans la
+    configuration courante.</p>
+
+    <p>Il est possible d'afficher d'autres vues de la configuration en
+    ajoutant un argument &agrave; la requ&ecirc;te <code>infos-serveur</code>. Par
+    exemple, <code>http://votre-serveur.com/infos-serveur?config</code>
+    affichera toutes les directives de configuration.</p>
+
+    <dl>
+        <dt><code>?&lt;module-name&gt;</code></dt>
+            <dd>Uniquement les informations relatives au module
+	    sp&eacute;cifi&eacute;</dd>
+        <dt><code>?config</code></dt>
+            <dd>Uniquement les directives de configuration, non tri&eacute;es
+	    par module</dd>
+        <dt><code>?hooks</code></dt>
+            <dd>Uniquement la liste des branchements (hooks)
+	    auxquels le module est attach&eacute;</dd>
+        <dt><code>?list</code></dt>
+            <dd>Une simple liste des modules activ&eacute;s</dd>
+        <dt><code>?server</code></dt>
+            <dd>Uniquement des informations de base sur le serveur</dd>
+    </dl>
+</section>
+
+<section id="limitations"><title>Limitations connues</title>
+    <p><module>mod_info</module> tire ses informations de
+    la configuration interpr&eacute;t&eacute;e, et non du fichier de configuration
+    original. La mani&egrave;re dont l'arbre de configuration interpr&eacute;t&eacute; est
+    cr&eacute;&eacute; induit quelques limitations :</p>
+    <ul>
+      <li>Les directives qui sont trait&eacute;es imm&eacute;diatement sans &ecirc;tre
+      enregistr&eacute;es dans l'arbre de configuration interpr&eacute;t&eacute; ne sont pas
+      prises en compte. Celles-ci comprennent <directive
+      module="core">ServerRoot</directive>, <directive
+      module="mod_so">LoadModule</directive> et <directive
+      module="mod_so">LoadFile</directive>.</li>
+      <li>Les directives qui contr&ocirc;lent le fichier de configuration
+      lui-m&ecirc;me, comme <directive module="core">Include</directive>,
+      <directive module="core">&lt;IfModule&gt;</directive> et
+      <directive module="core">&lt;IfDefine&gt;</directive> ne sont pas
+      prises en compte, mais les directives de configuration incluses le
+      sont.</li>
+      <li>Les commentaires ne sont pas pris en compte (Ce qui peut &ecirc;tre
+      consid&eacute;r&eacute; comme une fonctionnalit&eacute;).</li>
+      <li>Les directives de configuration des fichiers
+      <code>.htaccess</code> ne sont pas prises en compte (car elles ne
+      font pas partie de la configuration permanente du serveur).</li>
+      <li>Les directives de conteneur comme <directive
+      module="core">&lt;Directory&gt;</directive> sont affich&eacute;es
+      normalement, mais <module>mod_info</module> est incapable de
+      d&eacute;terminer le num&eacute;ro de ligne de la balise fermante <directive
+      module="core">&lt;/Directory&gt;</directive>.</li>
+      <li>Les directives g&eacute;n&eacute;r&eacute;es par des modules tiers comme
+      <a href="http://perl.apache.org">mod_perl</a> peuvent ne pas &ecirc;tre
+      prises en compte.</li>
+    </ul>
+</section>
+
+<directivesynopsis>
+<name>AddModuleInfo</name>
+<description>Ajoute des donn&eacute;es suppl&eacute;mentaires aux informations de
+module affich&eacute;es par le gestionnaire server-info</description>
+<syntax>AddModuleInfo <var>nom-module</var> <var>cha&icirc;ne</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+<compatibility>Disponible depuis la version 1.3 d'Apache</compatibility>
+
+<usage>
+    <p>Cette directive permet d'afficher le contenu de <var>cha&icirc;ne</var>
+    en tant qu'<strong>Information suppl&eacute;mentaire</strong> interpr&eacute;t&eacute;e
+    en HTML pour le module <var>nom-module</var>. Exemple :</p>
+
+    <example>
+      AddModuleInfo mod_deflate.c 'Voir &lt;a \<br />
+      <indent>
+        href="http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html"&gt;\<br />
+        http://www.apache.org/docs/&httpd.docs;/mod/mod_deflate.html&lt;/a&gt;'
+      </indent>
+    </example>
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>

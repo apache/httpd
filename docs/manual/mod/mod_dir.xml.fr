@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 795450 -->
+<!-- English Revision : 815782 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -178,10 +178,10 @@ d'Apache</compatibility>
 </usage>
 </directivesynopsis>
 <directivesynopsis>
-<name>DefaultMapping</name>
+<name>FallbackResource</name>
 <description>D&eacute;finit une URL par d&eacute;faut pour les requ&ecirc;tes qui ne ciblent
 aucun fichier</description>
-<syntax>DefaultMapping <var>url-locale</var></syntax>
+<syntax>FallbackResource <var>url-locale</var></syntax>
 <default>Aucune - httpd renvoie un code d'erreur 404 (Not Found)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -193,11 +193,26 @@ aucun fichier</description>
     (Not Found).
     Par exemple</p>
     <example>
-        <code>DefaultMapping default.php</code>
+        <code>FallbackResource non-404.php</code>
     </example>
     <p>fait en sorte que les requ&ecirc;tes ne correspondant &agrave; aucun fichier
-    soient trait&eacute;es par <code>default.php</code>, sans affecter les
+    soient trait&eacute;es par <code>non-404.php</code>, sans affecter les
     requ&ecirc;tes pour des fichiers existants.</p>
+    <p>Il est souvent souhaitable qu'un seul fichier ou ressource traite
+    toutes les requ&ecirc;tes &agrave; destination d'un r&eacute;pertoire
+    particulier, sauf pour les requ&ecirc;tes qui correspondent &agrave; un fichier
+    ou script existant. On y fait souvent r&eacute;f&eacute;rence sous le terme
+    'contr&ocirc;leur frontal'.</p>
+    <p>Dans les versions plus anciennes de httpd, cet effet n&eacute;cessitait
+    en g&eacute;n&eacute;ral <module>mod_rewrite</module>, et l'utilisation des tests
+    conditionnels <code>-f</code> et <code>-d</code> pour v&eacute;rifier
+    l'existence des fichiers et r&eacute;pertoires. Maintenant, une seule ligne
+    de configuration est n&eacute;cessaire.</p>
+    <example>
+        <code>FallbackResource index.php</code>
+    </example>
+    <p>Les fichiers existants comme des images, des fichiers css, etc...
+    seront trait&eacute;s normalement.</p>
 </usage>
 </directivesynopsis>
 

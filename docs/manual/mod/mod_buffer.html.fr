@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_buffer - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_buffer</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_buffer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Support de la mise en tampon des requêtes</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>buffer_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_buffer.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.3 et supérieures
+d'Apache</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Ce module fournit la possibilité de mettre en tampon les piles
+    des filtres en entrée et sortie.</p>
+
+    <p>Dans certaines situations, les générateurs de contenu créent des
+    contenus composés de petits tronçons. Afin de permettre la
+    réutilisation de la mémoire, les éléments de mémoire attribués aux
+    tronçons ont toujours une taille de 8k, quelle que soit la taille du
+    tronçon lui-même. Lorsqu'une requête génère de nombreux petits
+    tronçons, une grande quantité de mémoire peut être mobilisée par le
+    traitement de la requête, et une grande quantité de données
+    transmises sans nécessité. Pour y remédier, l'utilisation d'un
+    tampon rassemble la réponse en un nombre de tronçons le plus petit
+    possible.</p>
+
+    <p>Lorsque httpd est utilisé comme frontal d'un générateur de
+    contenu consommant beaucoup de ressources, la mise en tampon de la
+    réponse peut permettre à ce dernier d'effectuer le traitement et de
+    libérer les ressources plus ou moins rapidement, en fonction de la
+    manière dont il a été conçu.</p>
+
+    <p>Le filtre de mise en tampon peut être ajouté aux piles des
+    filtres en entrée ou en sortie, selon les besoins, à l'aide des
+    directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>,
+    <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
+
+      <div class="example"><h3>Utilisation d'un tampon avec mod_include</h3><p><code>
+        AddOutputFilterByType INCLUDES;BUFFER text/html<br />
+      </code></p></div>
+
+    <div class="warning">Les filtres de mise en tampon lisent la
+    requête/réponse en RAM, puis la reconditionnent sous la forme d'un
+    nombre d'éléments mémoire le plus petit possible, au prix d'une
+    consommation de temps CPU. Lorsque la requête/réponse est déjà
+    conditionnée de manière satisfaisante, sa mise en tampon pourrait
+    s'avérer encore plus lente qu'en l'absence d'utilisation de tampon.
+    C'est pourquoi ces filtres doivent être utilisés avec précautions,
+    et seulement si nécessaire.</div>
+
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#buffersize">BufferSize</a></li>
+</ul>
+<h3>Voir aussi</h3>
+<ul class="seealso">
+<li><a href="../filter.html">Les filtres</a></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BufferSize" id="BufferSize">BufferSize</a> <a name="buffersize" id="buffersize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille maximale en octets du filtre par tampon</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>BufferSize entier</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>BufferSize 131072</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_buffer</td></tr>
+</table>
+    <p>La directive <code class="directive"><a href="#buffersize">BufferSize</a></code> permet de spécifier la
+    quantité de données en octets qui sera mise en tampon avant d'être
+    lue depuis ou écrite vers chaque requête. La valeur par défaut est
+    128 ko.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_buffer.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_buffer.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>

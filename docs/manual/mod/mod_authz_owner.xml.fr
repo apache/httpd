@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 574882 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_owner.xml.meta">
+
+<name>mod_authz_owner</name>
+<description>Autorisation bas&eacute;e sur l'appartenance des
+fichiers</description>
+<status>Extension</status>
+<sourcefile>mod_authz_owner.c</sourcefile>
+<identifier>authz_owner_module</identifier>
+<compatibility>Disponible depuis les versions 2.1 et sup&eacute;rieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet de contr&ocirc;ler l'acc&egrave;s aux fichiers en comparant
+    l'identifiant utilisateur ayant servi &agrave; l'authentification HTTP
+    (l'identifiant utilisateur web) avec le propri&eacute;taire ou le groupe
+    du fichier demand&eacute; du point de vue du syst&egrave;me de fichiers. Le nom
+    d'utilisateur et le mot de passe doivent d&eacute;j&agrave; avoir &eacute;t&eacute; v&eacute;rifi&eacute;s par
+    un module d'authentification comme <module>mod_auth_basic</module>
+    ou <module>mod_auth_digest</module>.
+    <module>mod_authz_owner</module> reconna&icirc;t deux arguments pour la
+    directive <directive module="core">Require</directive> :
+    <code>file-owner</code> et <code>file-group</code> :</p>
+
+    <dl>
+      <dt><code>file-owner</code></dt>
+      <dd>Le nom d'utilisateur web utilis&eacute; pour l'authentification doit
+      correspondre au nom syst&egrave;me du propri&eacute;taire du fichier demand&eacute;. En
+      d'autres termes, si le syst&egrave;me indique <code>jones</code> comme
+      propri&eacute;taire du fichier demand&eacute;, le nom d'utilisateur fourni pour
+      l'authentification HTTP doit aussi &ecirc;tre <code>jones</code>.</dd>
+
+      <dt><code>file-group</code></dt>
+      <dd>Le nom du groupe syst&egrave;me du fichier demand&eacute; doit &ecirc;tre pr&eacute;sent
+      dans une base de donn&eacute;es de groupes fournie, par exemple, par
+      <module>mod_authz_groupfile</module> ou
+      <module>mod_authz_dbm</module>, et le nom d'utilisateur web fourni
+      pour l'authentification doit &ecirc;tre un membre de ce groupe. Par
+      exemple, si le syst&egrave;me indique que le groupe (syst&egrave;me) du fichier
+      demand&eacute; est <code>accounts</code>, le groupe <code>accounts</code>
+      doit appara&icirc;tre dans la base de donn&eacute;es des groupes, et le nom
+      d'utilisateur web utilis&eacute; pour l'authentification doit &ecirc;tre un
+      membre de ce groupe.</dd>
+    </dl>
+
+    <note><title>Note</title>
+      <p>Si le module <module>mod_authz_owner</module> est utilis&eacute; pour
+      v&eacute;rifier l'autorisation d'acc&egrave;s &agrave; une ressource qui n'est pas
+      vraiment pr&eacute;sente dans le syst&egrave;me de fichiers (en d'autres termes
+      une ressource virtuelle), il refusera l'acc&egrave;s.</p>
+
+      <p>En particulier, il n'accordera jamais l'acc&egrave;s &agrave; une ressource
+      du type <a href="../content-negotiation.html#multiviews">"Vues
+      multiples" (MultiViews) d'un contenu n&eacute;goci&eacute;</a>.</p>
+    </note>
+</summary>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+
+<section id="examples"><title>Exemples de configuration</title>
+
+    <section id="examples.file-owner"><title>Require file-owner</title>
+      <p>Consid&eacute;rons un serveur Web Apache fonctionnant sous un syst&egrave;me
+      multi-utilisateurs, o&ugrave; les fichiers de chaque utilisateur sont
+      stock&eacute;s dans <code>~/public_html/private</code>. En supposant
+      qu'il n'existe qu'une seule base de donn&eacute;es contenant les noms
+      d'utilisateurs web, et que ces noms d'utilisateurs correspondent
+      aux noms d'utilisateurs syst&egrave;me qui sont les propri&eacute;taires
+      effectifs des fichiers, la configuration de l'exemple suivant
+      n'accordera l'autorisation d'acc&egrave;s aux fichiers qu'&agrave; leur
+      propri&eacute;taire. L'utilisateur <code>jones</code> ne sera pas
+      autoris&eacute; &agrave; acc&eacute;der aux fichiers situ&eacute;s dans
+      <code>/home/smith/public_html/private</code>, &agrave; moins que leur
+      propri&eacute;taire ne soit <code>jones</code> au lieu de
+      <code>smith</code>.</p>
+
+      <example>
+        &lt;Directory /home/*/public_html/private&gt;<br />
+        <indent>
+          AuthType Basic<br />
+          AuthName mes-fichiers-prive<br />
+          AuthBasicProvider dbm<br />
+          AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
+          Require file-owner<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
+    </section>
+
+    <section id="examples.file-group"><title>Require file-group</title>
+      <p>Consid&eacute;rons un syst&egrave;me similaire &agrave; celui d&eacute;crit ci-dessus, mais
+      o&ugrave; certains utilisateurs partagent leurs fichiers de projets dans
+      <code>~/public_html/project-foo</code>. Le groupe syst&egrave;me des
+      fichiers est <code>foo</code>, et il n'existe qu'une seule base de
+      donn&eacute;es <directive
+      module="mod_authz_dbm">AuthDBMGroupFile</directive> qui contient
+      tous les noms d'utilisateurs web et leurs groupes d'appartenance.
+      Ces noms d'utilisateurs web doivent alors appartenir au moins au
+      groupe <code>foo</code>. En d'autres termes, si <code>jones</code>
+      et <code>smith</code> sont tous deux membres du groupe
+      <code>foo</code>, ils seront autoris&eacute;s &agrave; acc&eacute;der aux
+      r&eacute;pertoires <code>project-foo</code> de chacun d'entre eux.</p>
+
+      <example>
+        &lt;Directory /home/*/public_html/project-foo&gt;<br />
+        <indent>
+          AuthType Basic<br />
+          AuthName "Project Foo Files"<br />
+          AuthBasicProvider dbm<br />
+          <br />
+          # combined user/group database<br />
+          AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all<br />
+          AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all<br />
+          <br />
+          Satisfy All<br />
+          Require file-group<br />
+        </indent>
+        &lt;/Directory&gt;
+      </example>
+    </section>
+</section>
+
+</modulesynopsis>

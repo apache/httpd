@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 779139 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_status.xml.meta">
+
+<name>mod_status</name>
+<description>Fournit des informations sur les performances et l'activit&eacute;
+du serveur</description>
+<status>Base</status>
+<sourcefile>mod_status.c</sourcefile>
+<identifier>status_module</identifier>
+
+
+<summary>
+    <p>Le module Status permet &agrave; un administrateur de d&eacute;terminer le
+    niveau de performances de son serveur. Les statistiques instantan&eacute;es
+    du serveur sont pr&eacute;sent&eacute;es dans une page HTML sous une forme
+    ais&eacute;ment lisible. Si n&eacute;cessaire, cette page peut &ecirc;tre configur&eacute;e
+    pour &ecirc;tre automatiquement actualis&eacute;e (sous r&eacute;serve de
+    compatibilit&eacute; du navigateur). Une autre page fournit l'&eacute;tat
+    instantan&eacute; du serveur sous la forme d'une simple liste lisible par
+    une machine.</p>
+
+    <p>Les d&eacute;tails fournis sont :</p>
+
+    <ul>
+      <li>Le nombre de processus servant les requ&ecirc;tes</li>
+
+      <li>Le nombre de processus inactifs</li>
+
+      <li>L'&eacute;tat de chaque processus, le nombre de requ&ecirc;tes qu'il a
+      trait&eacute;es et le nombre total d'octets qu'il a servis (*)</li>
+
+      <li>Le nombre total d'acc&egrave;s effectu&eacute;s et d'octets servis (*)</li>
+
+      <li>Le moment o&ugrave; le serveur a &eacute;t&eacute; d&eacute;marr&eacute;/red&eacute;marr&eacute; et le temps
+      &eacute;coul&eacute; depuis</li>
+
+      <li>Les valeurs moyennes du nombre de requ&ecirc;tes par seconde, du
+      nombre d'octets servis par seconde et du nombre d'octets par
+      requ&ecirc;te (*)</li>
+
+      <li>Le pourcentage CPU instantan&eacute; utilis&eacute; par chaque processus et
+      par Apache tout entier (*)</li>
+
+      <li>Les h&ocirc;tes et requ&ecirc;tes actuellement en cours de traitement
+      (*)</li>
+    </ul>
+
+    <p>Les lignes se terminant par "(*)" ne sont disponibles que si la
+    directive <directive module="mod_status">ExtendedStatus</directive>
+    est d&eacute;finie &agrave; <code>On</code>.</p>
+</summary>
+
+<section id="enable">
+    <title>Activation du rapport d'&eacute;tat</title>
+
+    <p>Pour n'activer les rapports d'&eacute;tat que pour les navigateurs
+    appartenent au domaine exemple.com, ajoutez ces lignes &agrave; votre
+    fichier de configuration <code>httpd.conf</code> :</p>
+<example>
+    &lt;Location /etat-serveur&gt;<br />
+    SetHandler server-status<br />
+<br />
+    Order Deny,Allow<br />
+    Deny from all<br />
+    Allow from .exemple.com<br />
+    &lt;/Location&gt;
+</example>
+
+    <p>Il est alors possible d'obtenir les statistiques du serveur en
+    utilisant un navigateur web et en acc&eacute;dant &agrave; la page
+    <code>http://votre.serveur/etat-serveur</code>.</p>
+</section>
+
+<section id="autoupdate">
+
+    <title>Actualisation automatique</title>
+    <p>Vous pouvez faire en sorte que cette page d'&eacute;tat s'actualise
+    elle-m&ecirc;me automatiquement si votre navigateur supporte "refresh".
+    Pour ce faire, acc&eacute;dez &agrave; la page
+    <code>http://votre.serveur/etat-serveur?refresh=N</code>, pour que
+    cette derni&egrave;re soit actualis&eacute;e toutes les N secondes.</p>
+
+</section>
+
+<section id="machinereadable">
+
+    <title>Fichier d'&eacute;tat lisible par une machine</title>
+    <p>La page <code>http://votre.serveur/etat-serveur?auto</code>
+    permet d'obtenir une version du fichier d'&eacute;tat lisible par une
+    machine. Ceci s'av&egrave;re int&eacute;ressant dans le cadre d'une ex&eacute;cution
+    automatique : voir le programme en Perl
+    <code>log_server_status</code>situ&eacute; dans le r&eacute;pertoire
+    <code>/support</code> de la distribution d'Apache.</p>
+
+    <note>
+      <strong>Veuillez noter que si <module>mod_status</module> a &eacute;t&eacute;
+      compil&eacute; dans le serveur, son gestionnaire sera disponible dans
+      <em>tous</em> les fichiers de configuration, y compris les
+      fichiers de configuration de <em>niveau r&eacute;pertoire</em> (par
+      exemple <code>.htaccess</code>), ce qui peut avoir des
+      r&eacute;percutions quant &agrave; la s&eacute;curit&eacute; de votre site.</strong>
+    </note>
+
+</section>
+
+<directivesynopsis>
+
+<name>ExtendedStatus</name>
+<description>Extrait des informations d'&eacute;tat &eacute;tendues pour chaque
+requ&ecirc;te</description>
+<syntax>ExtendedStatus On|Off</syntax>
+<default>ExtendedStatus Off</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Cette directive s'applique au serveur dans son ensemble, et ne
+    peut pas &ecirc;tre activ&eacute;e/d&eacute;sactiv&eacute;e pour un serveur virtuel
+    particulier. Notez que l'extraction des informations d'&eacute;tat &eacute;tendues
+    peut ralentir le serveur.</p>
+</usage>
+
+</directivesynopsis>
+<directivesynopsis>
+
+<name>SeeRequestTail</name>
+<description>D&eacute;termine si mod_status affiche les 63 premiers caract&egrave;res
+d'une requ&ecirc;te ou les 63 derniers, en supposant que la requ&ecirc;te
+elle-m&ecirc;me poss&egrave;de plus de 63 caract&egrave;res.</description>
+<syntax>SeeRequestTail On|Off</syntax>
+<default>SeeRequestTail Off</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Disponible depuis la version 2.2.7
+d'Apache.</compatibility>
+
+<usage>
+    <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
+    v&eacute;ritable requ&ecirc;te en cours de traitement. Pour des raisons
+    historiques, seuls 63 caract&egrave;res de la requ&ecirc;te sont r&eacute;ellement
+    stock&eacute;s &agrave; des fins d'affichage. Cette directive permet de d&eacute;terminer
+    si ce sont les 63 premiers caract&egrave;res qui seront stock&eacute;s (c'est le
+    comportement par d&eacute;faut et celui des versions ant&eacute;rieures &agrave; 2.2.7),
+    ou si ce sont les 63 derniers. Ceci ne s'applique bien entendu que
+    si la taille de la requ&ecirc;te est de 64 caract&egrave;res ou plus.</p>
+
+    <p>Si Apache traite la requ&ecirc;te <code
+    >GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
+    , l'affichage de la requ&ecirc;te par mod_status se pr&eacute;sentera comme suit :
+    </p>
+
+    <table border="1">
+      <tr>
+        <th>Off (d&eacute;faut)</th>
+        <td>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourritu</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</td>
+      </tr>
+    </table>
+
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>
+

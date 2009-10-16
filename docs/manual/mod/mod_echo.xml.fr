@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 654507 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_echo.xml.meta">
+
+<name>mod_echo</name>
+<description>Un simple serveur d'&eacute;cho pour illustrer les modules de
+protocole</description>
+<status>Experimental</status>
+<sourcefile>mod_echo.c</sourcefile>
+<identifier>echo_module</identifier>
+<compatibility>Disponible depuis la version 2.0 d'Apache</compatibility>
+
+<summary>
+    <p>Ce module est un module de protocole exemple permettant d'en
+    illustrer le concept. Il fournit un simple serveur d'&eacute;cho. Envoyez
+    lui une phrase par telnet, et il vous la renverra.</p>
+</summary>
+
+<directivesynopsis>
+
+<name>ProtocolEcho</name>
+<description>Active ou d&eacute;sactive le serveur d'&eacute;cho</description>
+<syntax>ProtocolEcho On|Off</syntax>
+<default>ProtocolEcho Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>ProtocolEcho est disponible depuis la version 2.0
+d'Apache.</compatibility>
+
+<usage>
+    <p>La directive <directive>ProtocolEcho</directive> permet d'activer
+    ou de d&eacute;sactiver le serveur d'&eacute;cho.</p>
+
+    <example><title>Exemple</title>
+      ProtocolEcho On
+    </example>
+</usage>
+
+</directivesynopsis>
+</modulesynopsis>
+

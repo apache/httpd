@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 738841 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_auth_basic.xml.meta">
+
+<name>mod_auth_basic</name>
+<description>Authentification de base</description>
+<status>Base</status>
+<sourcefile>mod_auth_basic.c</sourcefile>
+<identifier>auth_basic_module</identifier>
+<compatibility>Disponible depuis la version 2.1 d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet d'utiliser l'authentification basique HTTP pour
+    restreindre l'acc&egrave;s en recherchant les utilisateurs dans les
+    fournisseurs d'authentification sp&eacute;cifi&eacute;s. Il est en g&eacute;n&eacute;ral
+    combin&eacute; avec au moins un module d'authentification comme
+    <module>mod_authn_file</module> et un module d'autorisation comme
+    <module>mod_authz_user</module>. L'authentification HTTP &agrave;
+    base de condens&eacute; (digest), quant &agrave; elle, est fournie par le module
+    <module>mod_auth_digest</module>. </p>
+</summary>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><directive module="mod_authz_core">Match</directive></seealso>
+<seealso><a href="../howto/auth.html">Mode d'emploi de
+l'authentification</a></seealso>
+
+<directivesynopsis>
+<name>AuthBasicProvider</name>
+<description>D&eacute;finit le(les) fournisseur(s) d'authentification pour
+cette zone du site web</description>
+<syntax>AuthBasicProvider <var>nom fournisseur</var>
+[<var>nom fournisseur</var>] ...</syntax>
+<default>AuthBasicProvider file</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthBasicProvider</directive> permet de
+    d&eacute;finir le fournisseur utilis&eacute; pour authentifier les utilisateurs
+    pour la zone du site web concern&eacute;e. Le fournisseur par d&eacute;faut
+    <code>file</code> est impl&eacute;ment&eacute; par le module
+    <module>mod_authn_file</module>. Assurez-vous que le module
+    impl&eacute;mentant le fournisseur choisi soit bien pr&eacute;sent dans le
+    serveur.</p>
+
+    <example><title>Exemple</title>
+      &lt;Location /secure&gt;<br />
+      <indent>
+        AuthType basic<br />
+        AuthName "private area"<br />
+        AuthBasicProvider  dbm<br />
+        AuthDBMType        SDBM<br />
+        AuthDBMUserFile    /www/etc/dbmpasswd<br />
+        Require            valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <p>Les fournisseurs sont sollicit&eacute;s dans l'ordre jusqu'&agrave; ce que l'un
+    d'entre eux trouve une correspondance pour le nom d'utilisateur de
+    la requ&ecirc;te ; alors, ce dernier fournisseur sera le seul &agrave; v&eacute;rifier
+    le mot de passe. Un &eacute;chec dans la v&eacute;rification du mot de passe
+    n'entra&icirc;ne pas le passage du contr&ocirc;le au fournisseur suivant.</p>
+
+    <p>Les diff&eacute;rents fournisseurs disponibles sont impl&eacute;ment&eacute;s par les
+    modules <module>mod_authn_dbm</module>,
+    <module>mod_authn_file</module>, <module>mod_authn_dbd</module>, et
+    <module>mod_authnz_ldap</module>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthBasicAuthoritative</name>
+<description>D&eacute;finit si les processus d'autorisation et
+d'authentification peuvent &ecirc;tre confi&eacute;s &agrave; des modules de plus bas
+niveau</description>
+<syntax>AuthBasicAuthoritative On|Off</syntax>
+<default>AuthBasicAuthoritative On</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Normalement, chaque module d'autorisation &eacute;num&eacute;r&eacute; dans la
+    directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> va tenter de
+    v&eacute;rifier l'utilisateur, et si ce dernier n'est trouv&eacute; dans aucun des
+    fournisseurs, l'acc&egrave;s sera refus&eacute;. D&eacute;finir explicitement la
+    directive <directive>AuthBasicAuthoritative</directive> &agrave;
+    <code>Off</code> permet de confier l'autorisation et
+    l'authentification &agrave; d'autres modules non bas&eacute;s sur les fournisseurs
+    si <strong>aucun identifiant utilisateur</strong> ou aucune
+    <strong>r&egrave;gle</strong> ne correspondent &agrave; l'identifiant utilisateur
+    sp&eacute;cifi&eacute;. Ceci ne peut s'av&eacute;rer n&eacute;cessaire que lorsque
+    <module>mod_auth_basic</module> est combin&eacute; avec des modules tiers
+    qui n'ont pas &eacute;t&eacute; configur&eacute;s &agrave; l'aide de la directive <directive
+    module="mod_auth_basic">AuthBasicProvider</directive>. Lorsqu'on
+    utilise de tels modules, l'ordre dans lequel s'effectue le
+    traitement est d&eacute;fini dans le code source des modules et n'est pas
+    configurable.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

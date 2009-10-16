@@ -59,37 +59,12 @@ de répertoire</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#defaultmapping">DefaultMapping</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DefaultMapping" id="DefaultMapping">DefaultMapping</a> <a name="defaultmapping" id="defaultmapping">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une URL par défaut pour les requêtes qui ne ciblent
-aucun fichier</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>DefaultMapping <var>url-locale</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Aucune - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Indexes</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
-</table>
-    <p>Cette directive permet de définir un traitement pour toute URL
-    qui ne correspond à aucune ressource de votre système de fichiers,
-    et qui provoquerait sans cela l'envoi d'un code d'erreur HTTP 404
-    (Not Found).
-    Par exemple</p>
-    <div class="example"><p><code>
-        <code>DefaultMapping default.php</code>
-    </code></p></div>
-    <p>fait en sorte que les requêtes ne correspondant à aucun fichier
-    soient traitées par <code>default.php</code>, sans affecter les
-    requêtes pour des fichiers existants.</p>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DirectoryIndex" id="DirectoryIndex">DirectoryIndex</a> <a name="directoryindex" id="directoryindex">Directive</a></h2>
 <table class="directive">
@@ -208,6 +183,46 @@ d'Apache</td></tr>
     de fin afficherait un listing du contenu du
     répertoire</strong>.</p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a name="fallbackresource" id="fallbackresource">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit une URL par défaut pour les requêtes qui ne ciblent
+aucun fichier</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FallbackResource <var>url-locale</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Aucune - httpd renvoie un code d'erreur 404 (Not Found)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dir</td></tr>
+</table>
+    <p>Cette directive permet de définir un traitement pour toute URL
+    qui ne correspond à aucune ressource de votre système de fichiers,
+    et qui provoquerait sans cela l'envoi d'un code d'erreur HTTP 404
+    (Not Found).
+    Par exemple</p>
+    <div class="example"><p><code>
+        <code>FallbackResource non-404.php</code>
+    </code></p></div>
+    <p>fait en sorte que les requêtes ne correspondant à aucun fichier
+    soient traitées par <code>non-404.php</code>, sans affecter les
+    requêtes pour des fichiers existants.</p>
+    <p>Il est souvent souhaitable qu'un seul fichier ou ressource traite
+    toutes les requêtes à destination d'un répertoire
+    particulier, sauf pour les requêtes qui correspondent à un fichier
+    ou script existant. On y fait souvent référence sous le terme
+    'contrôleur frontal'.</p>
+    <p>Dans les versions plus anciennes de httpd, cet effet nécessitait
+    en général <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, et l'utilisation des tests
+    conditionnels <code>-f</code> et <code>-d</code> pour vérifier
+    l'existence des fichiers et répertoires. Maintenant, une seule ligne
+    de configuration est nécessaire.</p>
+    <div class="example"><p><code>
+        <code>FallbackResource index.php</code>
+    </code></p></div>
+    <p>Les fichiers existants comme des images, des fichiers css, etc...
+    seront traités normalement.</p>
 
 </div>
 </div>

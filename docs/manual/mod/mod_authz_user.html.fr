@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authz_user - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_authz_user</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_user.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_authz_user.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_authz_user.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_authz_user.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisation basée sur l'utilisateur</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>authz_user_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_authz_user.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis les versions 2.1 et supérieures
+d'Apache</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Ce module permet d'accorder ou de refuser l'accès à certaines
+    zones du site web aux utilisateurs authentifiés.
+    <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> accorde l'accès si l'utilisateur
+    authentifié fait partie de la liste spécifiée par une directive
+    <code>Require user</code>. On peut aussi utiliser la directive
+    <code>Require valid-user</code> pour accorder l'accès à tous les
+    utilisateurs qui ont été authentifiés avec succès.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<p>Ce module ne fournit aucune directive.</p>
+<h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
+</ul></div>
+
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_authz_user.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_authz_user.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_authz_user.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_authz_user.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>
