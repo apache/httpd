@@ -259,14 +259,18 @@
 	contenir une option "s-maxage", "must-revalidate" ou "public"
 	dans l'en-tête "Cache-Control:".</li>
 
-        <li>Si l'URL contenait une requête sous forme de chaîne de caractères
+        <li>Si l'URL contient une chaîne de requête
 	(provenant par exemple d'une méthode GET de formulaire HTML), elle ne
-	sera pas mise en cache à moins que la réponse ne contienne un en-tête
-        "Expires:", comme précisé dans la RFC2616 section 13.9.</li>
+	sera pas mise en cache, à moins que la réponse ne
+	spécifie explicitement un délai d'expiration via un
+	en-tête "Expires:" ou une directive max-age ou s-maxage de
+	l'en-tête "Cache-Control:" comme indiqué dans les
+	sections 13.2.1. et 13.9 de la RFC2616.</li>
 
         <li>Si la réponse a un statut de 200 (OK), elle doit aussi contenir
 	au moins un des en-têtes "Etag", "Last-Modified" ou
-        "Expires", à moins que la directive
+        "Expires", ou une directive max-age ou s-maxage de
+	l'en-tête "Cache-Control:", à moins que la directive
         <code class="directive"><a href="./mod/mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></code>
         ne précise d'autres contraintes.</li>
 

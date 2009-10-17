@@ -22,6 +22,7 @@
 <div id="preamble"><h1>Apache Modülü mod_status</h1>
 <div class="toplang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_status.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
@@ -187,6 +188,7 @@ karakterinin mi yoksa son 63 karakterinin mi gösterileceğini belirler.
 </div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="../en/mod/mod_status.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_status.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../ja/mod/mod_status.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_status.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_status.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
