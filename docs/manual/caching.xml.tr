@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="style/manual.tr.xsl"?>
-<!-- English Revision: 766324:823563 (outdated) -->
+<!-- English Revision: 823563 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -255,13 +255,15 @@
 
         <li>Eğer URL (GET yöntemi kullanan bir HTML formunun yaptığı gibi) bir
           sorgu dizgesi içeriyorsa  yanıt, RFC2616’nın 13.9. bölümünde
-          açıklandığı gibi bir "Expires:" başlığı içermedikçe yanıt içeriği
+          açıklandığı gibi bir "Expires:" başlığı içermedikçe veya "Cache-Control:"
+          başlığının max-age veya max-age yönergesini içermedikçe yanıt içeriği
           önbelleğe alınmayacaktır.</li>
 
         <li><directive module="mod_cache">CacheIgnoreNoLastMod</directive>
           yönergesinin kullanımını gerektiren bir durum olmadıkça 200 durum
           koduna sahip bir yanıtın "Etag", "Last-Modified" ve "Expires"
-          başlıklarından en az birini içermesi gerekir.</li>
+          başlıklarından birini veya "Cache-Control:" başlığının max-age veya
+          max-age yönergelerinden birini (en azından) içermesi gerekir.</li>
 
         <li><directive module="mod_cache">CacheStorePrivate</directive>
           yönergesinin kullanımını gerektiren bir durum olmadıkça yanıt
