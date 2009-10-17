@@ -93,7 +93,7 @@ d'Apache</td></tr></table>
       # Remplacez "votre-domaine.exemple.com" par le nom de votre<br />
       # domaine.<br />
       <br />
-      LDAPSharedCacheSize 200000<br />
+      LDAPSharedCacheSize 500000<br />
       LDAPCacheEntries 1024<br />
       LDAPCacheTTL 600<br />
       LDAPOpCacheEntries 1024<br />
@@ -614,13 +614,14 @@ partagée</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Taille en octets du cache en mémoire partagée</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LDAPSharedCacheSize <var>octets</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPSharedCacheSize 102400</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LDAPSharedCacheSize 500000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Cette directive permet de spécifier le nombre d'octets à allouer
-    pour le cache en mémoire partagée. La valeur par défaut est 100kb.
+    pour le cache en mémoire partagée. La valeur par
+    défaut est 500kb.
     Si elle est définie à 0, le cache en mémoire partagée ne sera pas
     utilisé.</p>
 

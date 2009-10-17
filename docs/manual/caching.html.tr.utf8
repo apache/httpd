@@ -237,13 +237,15 @@
 
         <li>Eğer URL (GET yöntemi kullanan bir HTML formunun yaptığı gibi) bir
           sorgu dizgesi içeriyorsa  yanıt, RFC2616’nın 13.9. bölümünde
-          açıklandığı gibi bir "Expires:" başlığı içermedikçe yanıt içeriği
+          açıklandığı gibi bir "Expires:" başlığı içermedikçe veya "Cache-Control:"
+          başlığının max-age veya max-age yönergesini içermedikçe yanıt içeriği
           önbelleğe alınmayacaktır.</li>
 
         <li><code class="directive"><a href="./mod/mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></code>
           yönergesinin kullanımını gerektiren bir durum olmadıkça 200 durum
           koduna sahip bir yanıtın "Etag", "Last-Modified" ve "Expires"
-          başlıklarından en az birini içermesi gerekir.</li>
+          başlıklarından birini veya "Cache-Control:" başlığının max-age veya
+          max-age yönergelerinden birini (en azından) içermesi gerekir.</li>
 
         <li><code class="directive"><a href="./mod/mod_cache.html#cachestoreprivate">CacheStorePrivate</a></code>
           yönergesinin kullanımını gerektiren bir durum olmadıkça yanıt
