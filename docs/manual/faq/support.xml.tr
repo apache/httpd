@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE faq SYSTEM "../style/faq.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 421174:810469 (outdated) -->
+<!-- English Revision: 810469 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -78,6 +78,9 @@
 
       <p><a href="http://httpd.apache.org/userslist.html">Apache kullanıcıları
         eposta listesi</a></p>
+
+      <p>Kullanıcılara destek için <a href="http://freenode.net">Freenode IRC</a>'nin
+      <a href="irc://irc.freenode.net/#httpd">#httpd</a> kanalı</p>
 
       <p>USENET haber öbekleri:</p>
 
