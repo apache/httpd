@@ -256,7 +256,7 @@ endif
 # Add support for building IPV6 alongside
 ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
-INCDIRS := $(NOVELLLIBC)\include\winsock\IPV6;$(INCDIRS)
+# INCDIRS := $(NOVELLLIBC)\include\winsock\IPV6;$(INCDIRS)
 
 ifneq "$(findstring IPV6,$(OBJDIR))" "IPV6"
 OBJDIR := $(OBJDIR)_IPV6
