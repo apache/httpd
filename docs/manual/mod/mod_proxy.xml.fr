@@ -336,7 +336,7 @@
 <description>Conteneur de directives s'appliquant &agrave; des ressources
 mandat&eacute;es</description>
 <syntax>&lt;Proxy <var>url-avec-jokers</var>&gt; ...&lt;/Proxy&gt;</syntax>
-<contextlist><context>configuration du serveur</context><context>serveur virtuel</context>
+<contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
@@ -1097,8 +1097,8 @@ du serveur local en utilisant des expressions rationnelles</description>
 par un serveur mandat&eacute; en inverse</description>
 <syntax>ProxyPassReverse [<var>chemin</var>] <var>url</var>
 [<var>interpolate</var>]</syntax>
-<contextlist><context>configuration du serveur</context><context>serveur virtuel</context>
-<context>r&eacute;pertoire</context>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
 
 <usage>
