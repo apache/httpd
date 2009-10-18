@@ -334,6 +334,7 @@ removelanguage	mod/mod_mime.html#removelanguage
 removeoutputfilter	mod/mod_mime.html#removeoutputfilter
 removetype	mod/mod_mime.html#removetype
 requestheader	mod/mod_headers.html#requestheader
+requesttimeout	mod/mod_reqtimeout.html#requesttimeout
 require	mod/mod_authz_core.html#require
 requireall	mod/mod_authz_core.html#requireall
 requireany	mod/mod_authz_core.html#requireany
