@@ -255,7 +255,7 @@ int main(int argc, const char * const argv[])
     apr_cpystrn(realm, argv[2], sizeof(realm));
 
     found = 0;
-    while (!(get_line(line, MAX_STRING_LEN, f))) {
+    while (!(get_line(line, sizeof(line), f))) {
         if (found || (line[0] == '#') || (!line[0])) {
             putline(tfp, line);
             continue;
