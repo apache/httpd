@@ -222,8 +222,8 @@ int main(int argc, const char * const argv[])
                     apr_strerror(rv, errmsg, sizeof errmsg));
             exit(1);
         }
-	apr_cpystrn(user, argv[4], sizeof(user));
-	apr_cpystrn(realm, argv[3], sizeof(realm));
+        apr_cpystrn(user, argv[4], sizeof(user));
+        apr_cpystrn(realm, argv[3], sizeof(realm));
         apr_file_printf(errfile, "Adding password for %s in realm %s.\n",
                     user, realm);
         add_password(user, realm, f);
