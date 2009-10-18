@@ -490,6 +490,8 @@ static int update_child_status_internal(int child_num,
         else if (c) {
             apr_cpystrn(ws->client, ap_get_remote_host(c, NULL,
                         REMOTE_NOLOOKUP, NULL), sizeof(ws->client));
+            ws->request[0]='\0';
+            ws->vhost[0]='\0';
         }
     }
 

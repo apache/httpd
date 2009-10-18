@@ -135,7 +135,7 @@ static int ap_process_http_async_connection(conn_rec *c)
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
 
     while (cs->state == CONN_STATE_READ_REQUEST_LINE) {
-        ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
+        ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
 
         if ((r = ap_read_request(c))) {
 
@@ -182,7 +182,7 @@ static int ap_process_http_sync_connection(conn_rec *c)
      * until no requests are left or we decide to close.
      */
 
-    ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
+    ap_update_child_status_from_conn(c->sbh, SERVER_BUSY_READ, c);
     while ((r = ap_read_request(c)) != NULL) {
 
         c->keepalive = AP_CONN_UNKNOWN;
