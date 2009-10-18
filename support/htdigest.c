@@ -124,7 +124,7 @@ static void add_password(const char *user, const char *realm, apr_file_t *f)
     char *pw;
     apr_md5_ctx_t context;
     unsigned char digest[16];
-    char string[MAX_STRING_LEN];
+    char string[3 * MAX_STRING_LEN];
     char pwin[MAX_STRING_LEN];
     char pwv[MAX_STRING_LEN];
     unsigned int i;
@@ -188,8 +188,8 @@ int main(int argc, const char * const argv[])
     char *dirname;
     char user[MAX_STRING_LEN];
     char realm[MAX_STRING_LEN];
-    char line[MAX_STRING_LEN];
-    char l[MAX_STRING_LEN];
+    char line[3 * MAX_STRING_LEN];
+    char l[3 * MAX_STRING_LEN];
     char w[MAX_STRING_LEN];
     char x[MAX_STRING_LEN];
     int found;
