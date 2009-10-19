@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_sed: Reduce memory consumption when processing very long lines.
+     PR 48024 [Basant Kumar Kukreja <basant.kukreja sun.com>]
+
   *) ab: Fix segfault in case the argument for -n is a very large number.
      PR 47178. [Philipp Hagemeister <oss phihag.de>]
 
