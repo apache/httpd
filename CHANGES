@@ -10,6 +10,8 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) htpasswd: Improve out of disk space handling. PR 30877. [Stefan Fritsch]
+
   *) htpasswd: Use MD5 hash by default on all platforms. [Stefan Fritsch]
 
   *) mod_sed: Reduce memory consumption when processing very long lines.
