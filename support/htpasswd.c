@@ -243,14 +243,9 @@ static void usage(void)
     apr_file_printf(errfile, " -n  Don't update file; display results on "
                     "stdout." NL);
     apr_file_printf(errfile, " -m  Force MD5 encryption of the password"
-#if defined(WIN32) || defined(NETWARE)
         " (default)"
-#endif
         "." NL);
     apr_file_printf(errfile, " -d  Force CRYPT encryption of the password"
-#if (!(defined(WIN32) || defined(NETWARE)))
-            " (default)"
-#endif
             "." NL);
     apr_file_printf(errfile, " -p  Do not encrypt the password (plaintext)." NL);
     apr_file_printf(errfile, " -s  Force SHA encryption of the password." NL);
@@ -258,10 +253,11 @@ static void usage(void)
             "rather than prompting for it." NL);
     apr_file_printf(errfile, " -D  Delete the specified user." NL);
     apr_file_printf(errfile,
-            "On Windows and NetWare systems the '-m' flag is used by "
-            "default." NL);
+            "On other systems than Windows and NetWare the '-p' flag will "
+            "probably not work." NL);
     apr_file_printf(errfile,
-            "On all other systems, the '-p' flag will probably not work." NL);
+            "The SHA algorithm does not use a salt and is less secure than "
+            "the MD5 algorithm." NL);
     exit(ERR_SYNTAX);
 }
 
@@ -428,7 +424,7 @@ int main(int argc, const char * const argv[])
     char *scratch, cp[MAX_STRING_LEN];
     int found = 0;
     int i;
-    int alg = ALG_CRYPT;
+    int alg = ALG_APMD5;
     int mask = 0;
     apr_pool_t *pool;
     int existing_file = 0;
