@@ -87,6 +87,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * http_filter: return an errror when request body is shorter than announced
+   by the client.
+   PR 33098.
+   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=792409
+   2.2.x Patch: trunk patch works
+   +1: sf, minfrin, poirier
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -106,13 +113,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?view=rev&revision=820401
    2.2.x Patch: http://people.apache.org/~minfrin/ssl-env2.diff
    +1: minfrin, fuankg
-
- * http_filter: return an errror when request body is shorter than announced
-   by the client.
-   PR 33098.
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=792409
-   2.2.x Patch: trunk patch works
-   +1: sf, minfrin
 
  * mod_cache: Introduce the thundering herd lock, a mechanism to keep
               the flood of requests at bay that strike a backend webserver as
