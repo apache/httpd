@@ -1,0 +1,1253 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 824049 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authnz_ldap.xml.meta">
+
+<name>mod_authnz_ldap</name>
+<description>Permet d'utiliser un annuaire LDAP pour l'authentification
+HTTP de base.</description>
+<status>Extension</status>
+<sourcefile>mod_authnz_ldap.c</sourcefile>
+<identifier>authnz_ldap_module</identifier>
+<compatibility>Dosponible depuis les versions 2.1 et sup&eacute;rieures
+d'Apache</compatibility>
+
+<summary>
+    <p>Ce module permet aux frontaux d'authentification comme
+    <module>mod_auth_basic</module> d'authentifier les utilisateurs via
+    un annuaire ldap.</p>
+
+    <p><module>mod_authnz_ldap</module> supporte les fonctionnalit&eacute;s
+    suivantes :</p>
+
+    <ul>
+      <li>Support v&eacute;rifi&eacute; du <a
+      href="http://www.openldap.org/">OpenLDAP SDK</a> (versions 1.x et
+      2.x), du <a href="http://developer.novell.com/ndk/cldap.htm">
+      Novell LDAP SDK</a> et du SDK <a
+      href="http://www.iplanet.com/downloads/developer/">iPlanet
+      (Netscape)</a>.</li>
+
+      <li>Impl&eacute;mentation de politiques d'autorisation complexes en les
+      d&eacute;finissant via des filtres LDAP.</li>
+
+      <li>Mise en oeuvre d'une mise en cache des op&eacute;rations LDAP
+      &eacute;labor&eacute;e via <a href="mod_ldap.html">mod_ldap</a>.</li>
+
+      <li>Support de LDAP via SSL (n&eacute;cessite le SDK Netscape) ou TLS
+      (n&eacute;cessite le SDK OpenLDAP 2.x ou le SDK LDAP Novell).</li>
+    </ul>
+
+    <p>Lorsqu'on utilise <module>mod_auth_basic</module>, ce module est
+    invoqu&eacute; en affectant la valeur <code>ldap</code> &agrave; la directive
+    <directive module="mod_auth_basic">AuthBasicProvider</directive>.</p>
+</summary>
+
+<seealso><module>mod_ldap</module></seealso>
+<seealso><module>mod_auth_basic</module></seealso>
+<seealso><module>mod_authz_user</module></seealso>
+<seealso><module>mod_authz_groupfile</module></seealso>
+
+<section id="contents"><title>Sommaire</title>
+
+    <ul>
+      <li>
+        <a href="#operation">Mode op&eacute;ratoire</a>
+
+        <ul>
+          <li><a href="#authenphase">La phase
+	  d'authentification</a></li>
+
+          <li><a href="#authorphase">La phase d'autorisation</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="#requiredirectives">Les directives requises</a>
+
+        <ul>
+          <li><a href="#requser">Require ldap-user</a></li>
+          <li><a href="#reqgroup">Require ldap-group</a></li>
+          <li><a href="#reqdn">Require ldap-dn</a></li>
+          <li><a href="#reqattribute">Require ldap-attribute</a></li>
+          <li><a href="#reqfilter">Require ldap-filter</a></li>
+        </ul>
+      </li>
+
+      <li><a href="#examples">Exemples</a></li>
+      <li><a href="#usingtls">Utilisation de TLS</a></li>
+      <li><a href="#usingssl">Utilisation de SSL</a></li>
+      <li><a href="#exposed">Mise &agrave; disposition des informations de
+      connexion</a></li>
+      <li><a href="#activedirectory">Utilisation d'Active Directory</a></li>
+      <li>
+        <a href="#frontpage">Utilisation de Microsoft FrontPage avec
+        <module>mod_authnz_ldap</module></a>
+
+        <ul>
+          <li><a href="#howitworks">Comment &ccedil;a marche</a></li>
+          <li><a href="#fpcaveats">Mises en garde</a></li>
+        </ul>
+      </li>
+    </ul>
+</section>
+
+<section id="operation"><title>Mode op&eacute;ratoire</title>
+
+    <p>L'utilisateur se voit accorder l'acc&egrave;s selon un processus en deux
+    phases. La premi&egrave;re phase est l'authentification, au cours de
+    laquelle le fournisseur d'authentification
+    <module>mod_authnz_ldap</module> v&eacute;rifie que les informations de
+    connexion de l'utilisateur sont valides. Elle est aussi connue sous
+    le nom de phase de <em>recherche/connexion</em> (NdT : en anglais ou
+    dans le code source : <em>search/bind</em>). La deuxi&egrave;me
+    phase est l'autorisation, au cours de laquelle
+    <module>mod_authnz_ldap</module> d&eacute;termine si l'utilisateur
+    authentifi&eacute; a la permission d'acc&eacute;der &agrave; la ressource consid&eacute;r&eacute;e.
+    Elle est aussi connue sous le nom de phase de
+    <em>comparaison</em> (<em>compare</em>).</p>
+
+    <p><module>mod_authnz_ldap</module> comporte un fournisseur
+    d'authentification authn_ldap et un gestionnaire d'autorisation
+    authz_ldap. Le fournisseur d'authentification authn_ldap peut &ecirc;tre
+    invoqu&eacute; en affectant la valeur <code>ldap</code> &agrave; la directive
+    <directive module="mod_auth_basic">AuthBasicProvider</directive>. Le
+    gestionnaire d'autorisation authz_ldap enrichit la liste des types
+    d'autorisations de la directive <directive
+    module="mod_authz_core">Require</directive> en y ajoutant les
+    valeurs <code>ldap-user</code>, <code>ldap-dn</code> et
+    <code>ldap-group</code>.</p>
+
+<section id="authenphase"><title>La phase d'authentification</title>
+
+    <p>Au cours de la phase d'authentification,
+    <module>mod_authnz_ldap</module> recherche une entr&eacute;e de l'annuaire
+    LDAP qui correspond au nom d'utilisateur fourni par le client HTTP.
+    Si une correspondance unique est trouv&eacute;e,
+    <module>mod_authnz_ldap</module> tente de se connecter au serveur
+    h&eacute;bergeant l'annuaire LDAP en utilisant le DN de l'entr&eacute;e et le mot
+    de passe fourni par le client HTTP. Comme ce processus effectue tout
+    d'abord une recherche, puis une connexion, il est aussi connu sous
+    le nom de phase de recherche/connexion. Voici le d&eacute;tail des &eacute;tapes
+    constituant la phase de recherche/connexion :</p>
+
+    <ol>
+      <li>Confection d'un filtre de recherche en combinant les attribut
+      et filtre d&eacute;finis par la directive <directive module="mod_authnz_ldap"
+      >AuthLDAPURL</directive> avec le nom d'utilisateur et le mot de
+      passe fournis par le client HTTP.</li>
+
+      <li>Recherche dans l'annuaire LDAP en utilisant le filtre
+      confectionn&eacute; pr&eacute;c&eacute;demment. Si le r&eacute;sultat de la recherche est
+      n&eacute;gatif ou comporte plusieurs entr&eacute;es, refus ou restriction de
+      l'acc&egrave;s.</li>
+
+      <li>Extraction du DN (distinguished name) de l'entr&eacute;e issue du
+      r&eacute;sultat de la recherche, et tentative de connexion au serveur
+      LDAP en utilisant ce DN et le mot de passe fournis par le client
+      HTTP. Si la connexion &eacute;choue, refus ou restriction de
+      l'acc&egrave;s.</li>
+    </ol>
+
+    <p>Les directives utilis&eacute;es durant la phase de recherche/connexion
+    sont les suivantes :</p>
+
+    <table>
+      <columnspec><column width=".3"/><column width=".7"/></columnspec>
+      <tr>
+        <td><directive
+	module="mod_authnz_ldap">AuthLDAPURL</directive></td>
+
+        <td>Sp&eacute;cifie le serveur LDAP, le DN de base, l'attribut &agrave;
+	utiliser pour la recherche, ainsi que les filtres de recherche
+	suppl&eacute;mentaires.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+	module="mod_authnz_ldap">AuthLDAPBindDN</directive></td>
+
+        <td>Un DN optionnel pour se connecter durant la phase de
+	recherche.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_authnz_ldap">AuthLDAPBindPassword</directive></td>
+
+        <td>Un mot de passe optionnel pour se connecter durant la phase
+	de recherche.</td>
+      </tr>
+    </table>
+</section>
+
+<section id="authorphase"><title>La phase d'autorisation</title>
+
+    <p>Au cours de la phase d'autorisation,
+    <module>mod_authnz_ldap</module> tente de d&eacute;terminer si
+    l'utilisateur est autoris&eacute; &agrave; acc&eacute;der &agrave; la ressource consid&eacute;r&eacute;e. Une
+    grande partie de cette v&eacute;rification consiste pour
+    <module>mod_authnz_ldap</module> en des op&eacute;rations de comparaison au
+    niveau du serveur LDAP. C'est pourquoi cette phase est aussi connue
+    sous le nom de phase de comparaison.
+    <module>mod_authnz_ldap</module> accepte les directives <directive
+    module="mod_authz_core">Require</directive> suivantes pour
+    d&eacute;terminer si les informations de connexion permettent d'accorder
+    l'acc&egrave;s &agrave; l'utilisateur :</p>
+
+    <ul>
+      <li>Avec la directive <a
+      href="#reqgroup"><code>Require ldap-user</code></a>,
+      l'autorisation d'acc&egrave;s est accord&eacute;e si le nom d'utilisateur
+      sp&eacute;cifi&eacute; par la directive correspond au nom d'utilisateur fourni
+      par le client.</li>
+
+      <li>Avec la directive <a href="#reqdn"><code>Require
+      ldap-dn</code></a>, l'autorisation d'acc&egrave;s est accord&eacute;e si le DN
+      sp&eacute;cifi&eacute; par la directive correspond au DN extrait du r&eacute;sultat de
+      la recherche dans l'annuaire LDAP.</li>
+
+      <li>Avec la directive <a
+      href="#reqgroup"><code>Require ldap-group</code></a>,
+      l'autorisation d'acc&egrave;s est accord&eacute;e si le DN extrait du r&eacute;sultat de
+      la recherche dans l'annuaire LDAP (ou le nom d'utilisateur fourni
+      par le client) appartient au groupe LDAP sp&eacute;cifi&eacute; par la
+      directive, ou &eacute;ventuellement &agrave; un de ses sous-groupes.</li>
+
+      <li>Avec la directive <a href="#reqattribute">
+      <code>Require ldap-attribute</code></a>, l'autorisation d'acc&egrave;s
+      est accord&eacute;e si la valeur de l'attribut extraite de la recherche
+      dans l'annuaire LDAP correspond &agrave; la valeur sp&eacute;cifi&eacute;e par la
+      directive.</li>
+
+      <li>Avec la directive <a href="#reqfilter">
+      <code>Require ldap-filter</code></a>, l'autorisation d'acc&egrave;s
+      est accord&eacute;e si le filtre de recherche renvoie un objet
+      utilisateur unique qui corresponde au DN de l'utilisateur
+      authentifi&eacute;.</li>
+
+      <li>dans tous les autres cas, refus ou restriction de
+      l'acc&egrave;s.</li>
+    </ul>
+
+    <p>Sous r&eacute;serve du chargement de modules d'autorisation
+    suppl&eacute;mentaires, d'autres valeurs de la directive <directive
+    module="mod_authz_core">Require</directive> peuvent &ecirc;tre
+    sp&eacute;cifi&eacute;es.</p>
+
+    <ul>
+        <li>L'acc&egrave;s est accord&eacute; &agrave; tous les utilisateurs authentifi&eacute;s si
+	une directive <a href="#requser"><code>Require
+	valid-user</code></a> est pr&eacute;sente (n&eacute;cessite le module
+	<module>mod_authz_user</module>).</li>
+
+        <li>Avec la directive <a
+        href="#reqgroup"><code>Require group</code></a>, l'autorisation
+	d'acc&egrave;s est accord&eacute;e si le module
+	<module>mod_authz_groupfile</module> a &eacute;t&eacute; charg&eacute; et si la
+	directive <directive
+	module="mod_authz_groupfile">AuthGroupFile</directive> a &eacute;t&eacute;
+	d&eacute;finie.</li>
+
+        <li>etc...</li>
+     </ul>
+
+
+    <p>Durant la phase de comparaison, <module>mod_authnz_ldap</module>
+    utilise les directives suivantes :</p>
+
+    <table>
+      <columnspec><column width=".4"/><column width=".6"/></columnspec>
+      <tr>
+        <td><directive module="mod_authnz_ldap">AuthLDAPURL</directive>
+	</td>
+
+        <td>On utilise l'attribut sp&eacute;cifi&eacute; dans l'URL pour les
+	op&eacute;rations de comparaison initi&eacute;es par la directive
+	<code>Require ldap-user</code>.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_authnz_ldap">AuthLDAPCompareDNOnServer</directive></td>
+
+        <td>D&eacute;termine le comportement de la directive <code>Require
+	ldap-dn</code>.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_authnz_ldap">AuthLDAPGroupAttribute</directive></td>
+
+        <td>D&eacute;termine l'attribut utilis&eacute; pour les op&eacute;rations de
+	comparaison initi&eacute;es par la directive <code>Require
+	ldap-group</code>.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_authnz_ldap">AuthLDAPGroupAttributeIsDN</directive></td>
+
+        <td>Sp&eacute;cifie si l'on doit utiliser le DN ou le nom de
+	l'utilisateur lors des op&eacute;rations de comparaison initi&eacute;es par la
+	directive <code>Require ldap-group</code>.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_authnz_ldap">AuthLDAPMaxSubGroupDepth</directive></td>
+
+        <td>D&eacute;termine la profondeur maximale de l'arborescence des
+	sous-groupes qui seront &eacute;valu&eacute;s au cours des op&eacute;rations de
+	comparaisons initi&eacute;es par la directive <code>Require
+	ldap-group</code>.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_authnz_ldap">AuthLDAPSubGroupAttribute</directive></td>
+
+        <td>D&eacute;termine l'attribut &agrave; utiliser lors de l'extraction de
+	membres de sous-groupes du groupe courant au cours des
+	op&eacute;rations de comparaison initi&eacute;es par la directive
+	<code>Require ldap-group</code>.</td>
+      </tr>
+
+      <tr>
+        <td><directive
+        module="mod_authnz_ldap">AuthLDAPSubGroupClass</directive></td>
+
+        <td>Sp&eacute;cifie les valeurs de classe d'objet LDAP &agrave; utiliser pour
+	d&eacute;terminer si les objets extraits de l'annuaire sont bien des
+	objets de type groupe (et non des objets de type utilisateur),
+	au cours du traitement des sous-groupes initi&eacute; par la directive
+	<code>Require ldap-group</code>.</td>
+      </tr>
+    </table>
+</section>
+</section>
+
+<section id="requiredirectives"><title>Les directives requises</title>
+
+    <p>Les directives <directive
+    module="mod_authz_core">Require</directive> d'Apache sont utilis&eacute;es
+    au cours de la phase d'autorisation afin de s'assurer que
+    l'utilisateur est autoris&eacute; &agrave; acc&eacute;der &agrave; une ressource.
+    mod_authnz_ldap enrichit la liste des types d'autorisations avec les
+    valeurs <code>ldap-user</code>, <code>ldap-dn</code>,
+    <code>ldap-group</code>, <code>ldap-attribute</code> et
+    <code>ldap-filter</code>. D'autres types d'autorisations sont
+    disponibles, sous r&eacute;serve du chargement de modules d'autorisation
+    suppl&eacute;mentaires.</p>
+
+<section id="requser"><title>Require ldap-user</title>
+
+    <p>La directive <code>Require ldap-user</code> permet de sp&eacute;cifier
+    les noms des utilisateurs autoris&eacute;s &agrave; acc&eacute;der &agrave; la ressource.
+    Lorsque <module>mod_authnz_ldap</module> a extrait un DN unique de
+    l'annuaire LDAP, il effectue une op&eacute;ration de comparaison LDAP en
+    utilisant le nom d'utilisateur sp&eacute;cifi&eacute; par la directive
+    <code>Require ldap-user</code>, pour v&eacute;rifier si ce nom
+    d'utilisateur correspond &agrave; l'entr&eacute;e LDAP extraite. On peut accorder
+    l'acc&egrave;s &agrave; plusieurs utilisateurs en pla&ccedil;ant plusieurs nom
+    d'utilisateurs sur la m&ecirc;me ligne s&eacute;par&eacute;s par des espaces. Si un nom
+    d'utilisateur contient des espaces, il doit &ecirc;tre entour&eacute; de
+    guillemets. On peut aussi accorder l'acc&egrave;s &agrave; plusieurs utilisateurs
+    en utilisant une directive <code>Require ldap-user</code> par
+    utilisateur. Par exemple, avec la directive <directive
+    module="mod_authnz_ldap">AuthLDAPURL</directive> d&eacute;finie &agrave;
+    <code>ldap://ldap/o=Airius?cn</code> (sp&eacute;cifiant donc que l'attribut
+    <code>cn</code> sera utilis&eacute; pour les recherches), on pourra
+    utiliser les directives Require suivantes pour restreindre l'acc&egrave;s
+    :</p>
+<example>
+Require ldap-user "Barbara Jenson"<br />
+Require ldap-user "Fred User"<br />
+Require ldap-user "Joe Manager"<br />
+</example>
+
+    <p>De par la mani&egrave;re dont <module>mod_authnz_ldap</module> traite
+    cette directive, Barbara Jenson peut s'authentifier comme
+    <em>Barbara Jenson</em>, <em>Babs Jenson</em> ou tout autre
+    <code>cn</code> sous lequel elle est enregistr&eacute;e dans l'annuaire
+    LDAP. Une seule ligne <code>Require ldap-user</code> suffit pour
+    toutes les valeurs de l'attribut dans l'entr&eacute;e LDAP de
+    l'utilisateur.</p>
+
+    <p>Si l'attribut <code>uid</code> avait &eacute;t&eacute; sp&eacute;cifi&eacute; &agrave; la place de
+    l'attribut <code>cn</code> dans l'URL pr&eacute;c&eacute;dente, les trois lignes
+    ci-dessus auraient p&ucirc; &ecirc;tre condens&eacute;es en une seule ligne :</p>
+<example>Require ldap-user bjenson fuser jmanager</example>
+</section>
+
+<section id="reqgroup"><title>Require ldap-group</title>
+
+    <p>Cette directive permet de sp&eacute;cifier un groupe LDAP dont les
+    membres auront l'autorisation d'acc&egrave;s. Elle prend comme argument le
+    DN du groupe LDAP. Note : n'entourez pas le nom du groupe avec des
+    guillemets. Par exemple, supposons que l'entr&eacute;e suivante existe dans
+    l'annuaire LDAP :</p>
+<example>
+dn: cn=Administrators, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Barbara Jenson, o=Airius<br />
+uniqueMember: cn=Fred User, o=Airius<br />
+</example>
+
+    <p>La directive suivante autoriserait alors l'acc&egrave;s &agrave; Fred et
+    Barbara :</p>
+<example>Require ldap-group cn=Administrators, o=Airius</example>
+
+    <p>Les membres peuvent aussi se trouver dans les sous-groupes du
+    groupe LDAP sp&eacute;cifi&eacute; si la directive <directive
+    module="mod_authnz_ldap">AuthLDAPMaxSubGroupDepth</directive> a &eacute;t&eacute;
+    d&eacute;finie &agrave; une valeur sup&eacute;rieure &agrave; 0. Par exemple, supposons que les
+    entr&eacute;es suivantes existent dans l'annuaire LDAP :</p>
+<example>
+dn: cn=Employees, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Managers, o=Airius<br />
+uniqueMember: cn=Administrators, o=Airius<br />
+uniqueMember: cn=Users, o=Airius<br />
+<br />
+dn: cn=Managers, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Bob Ellis, o=Airius<br />
+uniqueMember: cn=Tom Jackson, o=Airius<br />
+<br />
+dn: cn=Administrators, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Barbara Jenson, o=Airius<br />
+uniqueMember: cn=Fred User, o=Airius<br />
+<br />
+dn: cn=Users, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Allan Jefferson, o=Airius<br />
+uniqueMember: cn=Paul Tilley, o=Airius<br />
+uniqueMember: cn=Temporary Employees, o=Airius<br />
+<br />
+dn: cn=Temporary Employees, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Jim Swenson, o=Airius<br />
+uniqueMember: cn=Elliot Rhodes, o=Airius<br />
+</example>
+
+    <p>Les directives suivantes autoriseraient alors l'acc&egrave;s &agrave; Bob
+    Ellis, Tom Jackson, Barbara Jensen, Fred User, Allan Jefferson, et
+    Paul Tilley, mais l'interdiraient &agrave; Jim Swenson, ou Elliot Rhodes
+    (car ils sont situ&eacute;s dans un sous-groupe de niveau de profondeur 2)
+    :</p>
+<example>
+Require ldap-group cn=Employees, o-Airius<br />
+AuthLDAPSubGroupDepth 1<br />
+</example>
+
+    <p>Le comportement de cette directive est modifi&eacute; par les directives
+    <directive
+    module="mod_authnz_ldap">AuthLDAPGroupAttribute</directive>,
+    <directive
+    module="mod_authnz_ldap">AuthLDAPGroupAttributeIsDN</directive>,
+    <directive
+    module="mod_authnz_ldap">AuthLDAPMaxSubGroupDepth</directive>,
+    <directive
+    module="mod_authnz_ldap">AuthLDAPSubGroupAttribute</directive>, et
+    <directive
+    module="mod_authnz_ldap">AuthLDAPSubGroupClass</directive>.</p>
+</section>
+
+<section id="reqdn"><title>Require ldap-dn</title>
+
+    <p>La directive <code>Require ldap-dn</code> permet &agrave;
+    l'administrateur d'accorder l'utorisation d'acc&egrave;s en fonction du DN.
+    Elle permet de sp&eacute;cifier un DN pour lequel l'acc&egrave;s est autoris&eacute;. Si
+    le DN extrait de
+    l'annuaire correspond au DN sp&eacute;cifi&eacute; par la directive <code>Require
+    ldap-dn</code>, l'autorisation d'acc&egrave;s est accord&eacute;e. Note :
+    n'entourez pas Le DN de guillemets.</p>
+
+    <p>La directive suivante accorderait l'acc&egrave;s &agrave; un DN sp&eacute;cifique
+    :</p>
+<example>Require ldap-dn cn=Barbara Jenson, o=Airius</example>
+
+    <p>Le comportement ce cette directive est modifi&eacute; par la directive
+    <directive
+    module="mod_authnz_ldap">AuthLDAPCompareDNOnServer</directive>.</p>
+</section>
+
+<section id="reqattribute"><title>Require ldap-attribute</title>
+
+    <p>La directive <code>Require ldap-attribute</code> permet &agrave;
+    l'administrateur d'accorder l'autorisation d'acc&egrave;s en fonction des
+    attributs de l'utilisateur authentifi&eacute; dans l'annuaire LDAP. Si la
+    valeur de l'attribut dans l'annuaire correspond &agrave; la valeur
+    sp&eacute;cifi&eacute;e par la directive, l'autorisation d'acc&egrave;s est accord&eacute;e.</p>
+
+    <p>La directive suivante accorderait l'autorisation d'acc&egrave;s &agrave; tout
+    utilisateur dont l'attribut employeeType a pour valeur "actif" :</p>
+
+    <example>Require ldap-attribute employeeType=actif</example>
+
+    <p>Plusieurs paires attribut/valeur peuvent &ecirc;tre sp&eacute;cifi&eacute;es par une
+    m&ecirc;me directive en les s&eacute;parant par des espaces, ou en d&eacute;finissant
+    plusieurs directives <code>Require ldap-attribute</code>. La logique
+    sous-jacente &agrave; une liste de paires attribut/valeur est une op&eacute;ration
+    OU. L'autorisation d'acc&egrave;s sera accord&eacute;e si au moins une paire
+    attribut/valeur de la liste sp&eacute;cifi&eacute;e correspond &agrave; la paire
+    attribut/valeur de l'utilisateur authentifi&eacute;. Si elle contient des
+    espaces, la valeur, et seulement la valeur, doit &ecirc;tre entour&eacute;e de
+    guillemets.</p>
+
+    <p>La directive suivante accorderait l'autorisation d'acc&egrave;s &agrave; tout
+    utilisateur dont l'attribut city aurait pour valeur "San Jose", ou
+    donc l'attribut status aurait pour valeur "actif" :</p>
+
+    <example>Require ldap-attribute city="San Jose" status=actif</example>
+
+</section>
+
+<section id="reqfilter"><title>Require ldap-filter</title>
+
+    <p>La directive <code>Require ldap-filter</code> permet &agrave;
+    l'administrateur d'accorder l'autorisation d'acc&egrave;s en fonction d'un
+    filtre de recherche LDAP complexe. L'autorisation d'acc&egrave;s est
+    accord&eacute;e si le DN renvoy&eacute; par le filtre de recherche correspond au
+    DN de l'utilisateur authentifi&eacute;.</p>
+
+    <p>La directive suivante accorderait l'autorisation d'acc&egrave;s &agrave; tout
+    utilisateur poss&eacute;dant un t&eacute;l&eacute;phone cellulaire et faisant partie du
+    d&eacute;partement "marketing" :</p>
+
+    <example>Require ldap-filter &amp;(cell=*)(department=marketing)</example>
+
+    <p>Alors que la directive <code>Require ldap-attribute</code> se
+    contente d'une simple comparaison d'attributs, la directive
+    <code>Require ldap-filter</code> effectue une op&eacute;ration de recherche
+    dans l'annuaire LDAP en utilisant le filtre de recherche sp&eacute;cifi&eacute;.
+    Si une simple comparaison d'attributs suffit, l'op&eacute;ration de
+    comparaison effectu&eacute;e par <code>ldap-attribute</code> sera plus
+    rapide que l'op&eacute;ration de recherche effectu&eacute;e par
+    <code>ldap-filter</code>, en particulier dans le cas d'un annuaire
+    LDAP de grande taille.</p>
+
+</section>
+
+</section>
+
+<section id="examples"><title>Exemples</title>
+
+    <ul>
+      <li>
+        Accorde l'autorisation d'acc&egrave;s &agrave; tout utilisateur pr&eacute;sent dans
+	l'annuaire LDAP, en utilisant son UID pour effectuer la
+	recherche :
+<example>
+AuthLDAPURL "ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)"<br />
+Require valid-user
+</example>
+      </li>
+
+      <li>
+        L'exemple suivant est similaire au pr&eacute;c&eacute;dent, mais les champs
+	dont les valeurs par d&eacute;faut conviennent sont omis. Notez aussi
+	la pr&eacute;sence d'un annuaire LDAP redondant :
+<example>AuthLDAPURL "ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius"<br />
+Require valid-user
+</example>
+      </li>
+
+      <li>
+        Encore un exemple similaire aux pr&eacute;c&eacute;dents, mais cette fois,
+	c'est l'attribut cn qui est utilis&eacute; pour la recherche &agrave; la place
+	de l'UID. Notez que ceci peut poser probl&egrave;me si plusieurs
+	utilisateurs de l'annuaire partagent le m&ecirc;me <code>cn</code>,
+	car une recherche sur le <code>cn</code> <strong>doit</strong>
+	retourner une entr&eacute;e et une seule. C'est pourquoi cette
+	approche n'est pas recommand&eacute;e : il est pr&eacute;f&eacute;rable de choisir un
+	attribut de votre annuaire dont l'unicit&eacute; soit garantie, comme
+	<code>uid</code>.
+<example>
+AuthLDAPURL "ldap://ldap.airius.com/ou=People, o=Airius?cn"<br />
+Require valid-user
+</example>
+      </li>
+
+      <li>
+        Accorde l'autorisation d'acc&egrave;s &agrave; tout utilisateur appartenant au
+	groupe Administrateurs. Les utilisateurs doivent s'authentifier
+	en utilisant leur UID :
+<example>
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
+Require ldap-group cn=Administrators, o=Airius
+</example>
+      </li>
+
+      <li>
+        Pour l'exemple suivant, on suppose que tout utilisateur de chez
+	Airius qui dispose d'un bippeur alphanum&eacute;rique poss&egrave;dera un
+	attribut LDAP <code>qpagePagerID</code>. Seuls ces utilisateurs
+	(authentifi&eacute;s via leur UID) se verront accorder l'autorisation
+	d'acc&egrave;s :
+<example>
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
+Require valid-user
+</example>
+      </li>
+
+      <li>
+        <p>L'exemple suivant illustre la puissance des filtres pour
+	effectuer des requ&ecirc;tes complexes. Sans les filtres, il aurait
+	&eacute;t&eacute; n&eacute;cessaire de cr&eacute;er un nouveau groupe LDAP et de s'assurer
+	de la synchronisation des membres du groupe avec les
+	utilisateurs poss&eacute;dant un bippeur. Tout devient limpide avec les
+	filtres. Nous avons pour but d'accorder l'autorisation d'acc&egrave;s &agrave;
+	tout utilisateur disposant d'un bippeur ainsi qu'&agrave; Joe Manager
+	qui ne poss&egrave;de pas de bippeur, mais doit tout de m&ecirc;me pouvoir
+	acc&eacute;der &agrave; la ressource :</p>
+<example>
+AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
+Require valid-user
+</example>
+
+        <p>Ce dernier exemple peut sembler confus au premier abord ; en
+	fait, il permet de mieux comprendre &agrave; quoi doit ressembler le
+	filtre en fonction de l'utilisateur qui se connecte. Si Fred
+	User se connecte en tant que <code>fuser</code>, le filtre devra
+	ressembler &agrave; :</p>
+
+        <example>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=fuser))</example>
+
+        <p>Un recherche avec le filtre ci-dessus ne retournera un
+	r&eacute;sultat positif que si <em>fuser</em> dispose d'un bippeur. Si
+	Joe Manager se connecte en tant que <em>jmanager</em>, le filtre
+	devra ressembler &agrave; :</p>
+
+        <example>(&amp;(|(qpagePagerID=*)(uid=jmanager))(uid=jmanager))</example>
+
+        <p>Un recherche avec le filtre ci-dessus retournera un
+	r&eacute;sultat positif que <em>jmanager</em> dispose d'un
+	bippeur ou non</p>
+      </li>
+    </ul>
+</section>
+
+<section id="usingtls"><title>Utilisation de TLS</title>
+
+    <p>Pour l'utilisation de TLS, voir les directives du module
+    <module>mod_ldap</module> <directive
+    module="mod_ldap">LDAPTrustedClientCert</directive>, <directive
+    module="mod_ldap">LDAPTrustedGlobalCert</directive> et <directive
+    module="mod_ldap">LDAPTrustedMode</directive>.</p>
+
+    <p>Un second param&egrave;tre optionnel peut &ecirc;tre ajout&eacute; &agrave; la directive
+    <directive module="mod_authnz_ldap">AuthLDAPURL</directive> pour
+    remplacer le type de connexion par d&eacute;faut d&eacute;fini par la directive
+    <directive module="mod_ldap">LDAPTrustedMode</directive>. Ceci
+    permettra de promouvoir la connexion &eacute;tablie via une URL du type
+    <em>ldap://</em> au statut de connection s&eacute;curis&eacute;e sur le m&ecirc;me
+    port.</p>
+</section>
+
+<section id="usingssl"><title>Utilisation de SSL</title>
+
+    <p>Pour l'utilisation de SSL, voir les directives du module
+    <module>mod_ldap</module> <directive
+    module="mod_ldap">LDAPTrustedClientCert</directive>, <directive
+    module="mod_ldap">LDAPTrustedGlobalCert</directive> et <directive
+    module="mod_ldap">LDAPTrustedMode</directive>.</p>
+
+    <p>Pour sp&eacute;cifier un serveur LDAP s&eacute;curis&eacute;, utilisez
+    <em>ldaps://</em> au lieu de
+    <em>ldap://</em> dans la directive <directive
+    module="mod_authnz_ldap">AuthLDAPURL</directive>.</p>
+</section>
+
+<section id="exposed"><title>Mise &agrave; disposition des informations de
+connexion</title>
+
+    <p>Au cours du processus d'authentification, les attributs LDAP
+    sp&eacute;cifi&eacute;s par la directive <directive
+    module="mod_authnz_ldap">AuthLDAPUrl</directive> sont enregistr&eacute;s
+    dans des variables d'environnement pr&eacute;fix&eacute;es par la cha&icirc;ne
+    "AUTHENTICATE_".</p>
+
+    <p>Si les champs attribut contiennent le nom, le CN et le num&eacute;ro de
+    t&eacute;l&eacute;phone d'un utilisateur, un programme CGI pourra acc&eacute;der &agrave; ces
+    informations sans devoir effectuer une autre requ&ecirc;te LDAP pour
+    les extraire de l'annuaire.</p>
+
+    <p>Ceci a pour effet de simplifier consid&eacute;rablement le code et la
+    configuration n&eacute;cessaire de certaines applications web.</p>
+
+</section>
+
+<section id="activedirectory"><title>Utilisation d'Active
+Directory</title>
+
+    <p>Active Directory peut supporter plusieurs domaines &agrave; la fois.
+    Pour faire la distinction entre les utilisateurs de plusieurs
+    domaines, on peut ajouter &agrave; l'entr&eacute;e de l'utilisateur dans
+    l'annuaire un identifiant appel&eacute; Nom
+    Principal d'Utilisateur (User Principle Name ou UPN). Cet UPN se
+    compose en g&eacute;n&eacute;ral du nom de compte de l'utilisateur, suivi du nom
+    du domaine consid&eacute;r&eacute;, par exemple <em>untel@nz.exemple.com</em>.</p>
+
+    <p>Vous voudrez probablement configurer le module
+    <module>mod_authnz_ldap</module> afin de pouvoir authentifier les
+    utilisateurs de n'importe quel domaine de la for&ecirc;t Active Directory.
+    Ainsi, <em>untel@nz.exemple.com</em> et
+    <em>untel@au.exemple.com</em> pourront &ecirc;tre authentifi&eacute;s en une
+    seule fois par la m&ecirc;me requ&ecirc;te.</p>
+
+    <p>Pour y parvenir, on utilise le concept de Catalogue Global
+    d'Active Directory. Ce Catalogue Global est une copie en lecture
+    seule des attributs s&eacute;lectionn&eacute;s de tous les serveurs de la for&ecirc;t
+    Active Directory. Une requ&ecirc;te vers le
+    Catalogue Global permet donc d'atteindre tous les domaines en une
+    seule fois, sans avoir &agrave; se connecter aux diff&eacute;rents serveurs, via
+    des liaisons dont certaines peuvent &ecirc;tre lentes.</p>
+
+    <p>Lorsqu'il est activ&eacute;, la Catalogue Global est un serveur
+    d'annuaire ind&eacute;pendant accessible sur le port 3268 (3269 pour SSL).
+    Pour rechercher un utilisateur, effectuez une recherche sur
+    l'attribut <em>userPrincipalName</em>, avec une base de recherche
+    vide, comme suit :</p>
+
+<example>
+AuthLDAPBindDN apache@exemple.com<br />
+AuthLDAPBindPassword password<br />
+AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
+</example>
+
+    <p>Les utilisateurs devront s'authentifier en entrant leur UPN, de
+    la forme<em>untel@nz.exemple.com</em>.</p>
+
+</section>
+
+<section id="frontpage"><title>Utilisation de Microsoft
+    FrontPage avec mod_authnz_ldap</title>
+
+    <p>Normalement, FrontPage utilise des fichiers utilisateur/groupe
+    sp&eacute;cifiques &agrave; FrontPage-web (c'est &agrave; dire les modules
+    <module>mod_authn_file</module> et
+    <module>mod_authz_groupfile</module>) pour effectuer toute
+    l'authentification. Malheureusement, il ne suffit pas de modifier
+    l'authentification LDAP en ajoutant les directives appropri&eacute;es, car
+    ceci corromprait les formulaires de <em>Permissions</em> dans le
+    client FrontPage, qui sont cens&eacute;s modifier les fichiers
+    d'autorisation standards au format texte.</p>
+
+    <p>Lorsqu'un site web FrontPage a &eacute;t&eacute; cr&eacute;&eacute;, lui adjoindre
+    l'authentification LDAP consiste &agrave; ajouter les directives suivantes
+    &agrave; <em>chaque</em> fichier <code>.htaccess</code> qui sera cr&eacute;&eacute; dans
+    le site web :</p>
+<example><pre>
+AuthLDAPURL            "l'url"
+AuthGroupFile <em>mon-fichier-de-groupes</em>
+Require group <em>mon-fichier-de-groupes</em>
+</pre></example>
+
+<section id="howitworks"><title>Comment &ccedil;a marche</title>
+
+    <p>FrontPage restreint l'acc&egrave;s &agrave; un site web en ajoutant la
+    directive <code>Require valid-user</code> aux fichiers
+    <code>.htaccess</code>. La directive <code>Require valid-user</code>
+    permettra l'acc&egrave;s &agrave; tout utilisateur valide <em>du point de vue
+    LDAP</em>. Cela signifie que tout utilisateur poss&eacute;dant une entr&eacute;e
+    dans l'annuaire LDAP sera consid&eacute;r&eacute; comme valide, alors que
+    FrontPage ne consid&egrave;re comme valides que les utilisateurs
+    enregistr&eacute;s dans le fichier des utilisateurs local. En rempla&ccedil;ant
+    l'autorisation par groupe LDAP par une autorisation par fichier de
+    groupe, Apache sera en mesure de consulter le fichier des
+    utilisateurs local (g&eacute;r&eacute; par FrontPage) - au lieu de l'annuaire LDAP
+    - lors du processus d'autorisation des utilisateurs.</p>
+
+    <p>Une fois les directives ajout&eacute;es selon ce qui pr&eacute;c&egrave;de, les
+    utilisateurs FrontPage pourront effectuer toutes les op&eacute;rations de
+    gestion &agrave; partir du client FrontPage.</p>
+</section>
+
+<section id="fpcaveats"><title>Avertissements</title>
+
+    <ul>
+      <li>Lors du choix de l'URL LDAP, l'attribut &agrave; utiliser pour
+      l'authentification doit aussi &ecirc;tre valide pour le fichier des
+      utilisateurs de <module>mod_authn_file</module>. A cette fin,
+      l'UID est id&eacute;al.</li>
+
+      <li>Lorsqu'ils ajoutent des utilisateurs via FrontPage, les
+      administrateurs de FrontPage doivent choisir des noms
+      d'utilisateurs qui existent d&eacute;j&agrave; dans l'annuaire LDAP (pour des
+      raisons &eacute;videntes). De m&ecirc;me, le mot de passe que l'administrateur
+      entre dans le formulaire est ignor&eacute;, car pour l'authentification,
+      Apache utilise le mot de passe de l'annuaire LDAP, et non le mot
+      de passe enregistr&eacute; dans le fichier des utilisateurs, ce qui peut
+      semer la confusion parmi les administrateurs web.</li>
+
+      <!-- XXX is that true? was mod_auth before the aaa change -->
+      <li>Pour supporter FrontPage, Apache doit &ecirc;tre compil&eacute; avec
+      <module>mod_auth_basic</module>, <module>mod_authn_file</module>
+      et <module>mod_authz_groupfile</module>. Ceci est d&ucirc; au fait
+      qu'Apache doit utiliser le fichier de groupes de
+      <module>mod_authz_groupfile</module> pour d&eacute;terminer le niveau
+      d'acc&egrave;s d'un utilisateur au site web FrontPage.</li>
+
+      <li>Les directives doivent &ecirc;tre plac&eacute;es dans les fichiers
+      <code>.htaccess</code>. Elles ne fonctionneront pas si vous les
+      placez dans une section <directive module="core"
+      type="section">Location</directive> ou <directive module="core"
+      type="section">Directory</directive>. Ceci est d&ucirc; au fait que pour savoir
+      o&ugrave; se trouve la liste des utilisateurs valides,
+      <module>mod_authnz_ldap</module> doit &ecirc;tre en mesure d'atteindre
+      la directive <directive
+      module="mod_authn_file">AuthGroupFile</directive> qui se trouve
+      dans les fichiers <code>.htaccess</code> de FrontPage. Si les directives
+      de <module>mod_authnz_ldap</module> ne sont pas situ&eacute;es dans le
+      m&ecirc;me fichier <code>.htaccess</code> que les directives FrontPage,
+      la configuration ne fonctionnera pas, car
+      <module>mod_authnz_ldap</module> ne sera jamais en mesure de
+      traiter le fichier <code>.htaccess</code>, et par cons&eacute;quent ne
+      pourra jamais trouver le fichier des utilisateurs g&eacute;r&eacute; par
+      FrontPage.</li>
+    </ul>
+</section>
+</section>
+
+<directivesynopsis>
+<name>AuthLDAPBindDN</name>
+<description>Un DN optionnel pour se connecter au serveur
+LDAP</description>
+<syntax>AuthLDAPBindDN <em>dn</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir un DN optionnel pour se
+    connecter au serveur afin d'y rechercher des entr&eacute;es. Si aucun DN
+    n'est sp&eacute;cifi&eacute;, <module>mod_authnz_ldap</module> tentera une
+    connexion anonyme.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPBindPassword</name>
+<description>Mot de passe &agrave; utiliser en conjonction avec le DN de
+connexion</description>
+<syntax>AuthLDAPBindPassword <em>mot-de-passe</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier un mot de passe &agrave; utiliser en
+    conjonction avec le DN de connexion. Notez que ce mot de passe
+    constitue en g&eacute;n&eacute;ral une donn&eacute;e sensible, et doit donc &ecirc;tre prot&eacute;g&eacute;
+    de mani&egrave;re appropri&eacute;e. Vous ne devez utiliser les directives
+    <directive
+    module="mod_authnz_ldap">AuthLDAPBindDN</directive> et <directive
+    module="mod_authnz_ldap">AuthLDAPBindPassword</directive> que si
+    vous en avez vraiment besoin pour effectuer une recherche dans
+    l'annuaire.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPCharsetConfig</name>
+<description>Chemin du fichier de configuration de la correspondance
+langage/jeu de caract&egrave;res</description>
+<syntax>AuthLDAPCharsetConfig <em>chemin-fichier</em></syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>AuthLDAPCharsetConfig</directive> permet
+    de d&eacute;finir le chemin du fichier de configuration de la
+    correspondance langage/jeu de caract&egrave;res. <var>chemin-fichier</var>
+    est un chemin relatif au r&eacute;pertoire d&eacute;fini par la directive
+    <directive
+    module="core">ServerRoot</directive>. Ce fichier contient une liste
+    de correspondances extension de langage/jeu de caract&egrave;res. La
+    plupart des administrateurs utilisent le fichier
+    <code>charset.conv</code> fourni qui associe les extensions de
+    langage courantes &agrave; leurs jeux de caract&egrave;res.</p>
+
+    <p>Le fichier contient des lignes au format suivant :</p>
+
+    <example>
+      <var>extension de langage</var> <var>jeu de caract&egrave;res</var>
+      [<var>Nom du langage</var>] ...
+    </example>
+
+    <p>L'extension est insensible &agrave; la casse. Les lignes vides et les
+    lignes commen&ccedil;ant par un di&egrave;se (<code>#</code>) sont ignor&eacute;es.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPCompareDNOnServer</name>
+<description>Utilise le serveur LDAP pour comparer les DNs</description>
+<syntax>AuthLDAPCompareDNOnServer on|off</syntax>
+<default>AuthLDAPCompareDNOnServer on</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Lorsque cette directive est d&eacute;finie &agrave; on,
+    <module>mod_authnz_ldap</module> utilise le serveur LDAP pour
+    comparer les DNs. Il s'agit de la seule m&eacute;thode infaillible pour
+    comparer les DNs. <module>mod_authnz_ldap</module> va rechercher
+    dans l'annuaire le DN sp&eacute;cifi&eacute; par la directive <a
+    href="#reqdn"><code>Require dn</code></a>, puis extraire ce DN et le
+    comparer avec le DN extrait de l'entr&eacute;e de l'utilisateur. Si cette
+    directive est &agrave; off, <module>mod_authnz_ldap</module> effectue une
+    simple comparaison de cha&icirc;nes. Cette derni&egrave;re approche peut produire
+    des faux n&eacute;gatifs, mais elle est beaucoup plus rapide. Notez
+    cependant que le cache de <module>mod_ldap</module> peut acc&eacute;l&eacute;rer
+    la comparaison de DNs dans la plupart des situations.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPDereferenceAliases</name>
+<description>&Agrave; quel moment le module va d&eacute;r&eacute;f&eacute;rencer les
+alias</description>
+<syntax>AuthLDAPDereferenceAliases never|searching|finding|always</syntax>
+<default>AuthLDAPDereferenceAliases always</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier &agrave; quel moment
+    <module>mod_authnz_ldap</module> va d&eacute;r&eacute;f&eacute;rencer les alias au cours
+    des op&eacute;rations li&eacute;es &agrave; LDAP. La valeur par d&eacute;faut est
+    <code>always</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPGroupAttribute</name>
+<description>L'attribut LDAP utilis&eacute; pour v&eacute;rifier l'appartenance d'un
+utilisateur &agrave; un groupe.</description>
+<syntax>AuthLDAPGroupAttribute <em>attribut</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Cette directive permet de sp&eacute;cifier quel attribut LDAP est
+    utilis&eacute; pour v&eacute;rifier l'appartenance d'un utilisateur &agrave; un
+    groupe. On peut sp&eacute;cifier plusieurs attributs en r&eacute;p&eacute;tant cette
+    directive plusieurs fois. Si la directive n'est pas d&eacute;finie,
+    <module>mod_authnz_ldap</module> utilise les attributs
+    <code>member</code> et <code>uniquemember</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPGroupAttributeIsDN</name>
+<description>Utilise le DN de l'utilisateur pour v&eacute;rifier son
+appartenance &agrave; un groupe</description>
+<syntax>AuthLDAPGroupAttributeIsDN on|off</syntax>
+<default>AuthLDAPGroupAttributeIsDN on</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Lorsqu'elle est d&eacute;finie &agrave; <code>on</code>, cette directive
+    indique que c'est le DN de l'utilisateur qui doit &ecirc;tre utilis&eacute; pour
+    v&eacute;rifier son appartenance &agrave; un groupe. Dans le cas contraire, c'est
+    le nom de l'utilisateur qui sera utilis&eacute;. Par exemple, supposons que
+    le client envoie le nom d'utilisateur <code>bjenson</code>, qui
+    correspond au DN LDAP <code>cn=Babs Jenson,o=Airius</code>. Si la
+    directive est &agrave; <code>on</code>, <module>mod_authnz_ldap</module> va
+    v&eacute;rifier si <code>cn=Babs Jenson, o=Airius</code> est un membre du
+    groupe. Dans le cas contraire, <module>mod_authnz_ldap</module>
+    v&eacute;rifiera si <code>bjenson</code> est un membre du groupe.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPMaxSubGroupDepth</name>
+<description>Sp&eacute;cifie la profondeur d'imbrication des sous-groupes
+maximale prise en compte avant l'abandon de la recherche de
+l'utilisateur.</description>
+<syntax>AuthLDAPMaxSubGroupDepth <var>Nombre</var></syntax>
+<default>AuthLDAPMaxSubGroupDepth 10</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+   <p>Lorsque cette directive est d&eacute;finie &agrave; une valeur <code>X</code>
+   non nulle, en combinaison avec l'utilisation de la directive
+   <code>Require ldap-group DN-groupe</code>, les donn&eacute;es de connexion
+   fournies seront utilis&eacute;es pour v&eacute;rifier l'appartenance de
+   l'utilisateur &agrave; l'objet de l'annuaire <code>DN-groupe</code> ou &agrave;
+   tout sous-groupe du groupe courant en tenant compte de la profondeur
+   d'imbrication maximale <code>X</code> sp&eacute;cifi&eacute;e par la directive.</p>
+   <p>Se r&eacute;f&eacute;rer &agrave; la section <a href="#reqgroup"><code>Require
+   ldap-group</code></a> pour un exemple plus d&eacute;taill&eacute;.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPRemoteUserAttribute</name>
+<description>Sp&eacute;cifie l'attribut dont la valeur renvoy&eacute;e au cours de la
+requ&ecirc;te de l'utilisateur sera utilis&eacute;e pour d&eacute;finir la variable
+d'environnement REMOTE_USER</description>
+<syntax>AuthLDAPRemoteUserAttribute uid</syntax>
+<default>none</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Lorsque cette directive est d&eacute;finie, la variable d'environnement
+    <code>REMOTE_USER</code> sera d&eacute;finie &agrave; la valeur de l'attribut
+    sp&eacute;cifi&eacute;. Assurez-vous que cet attribut soit bien inclus dans la
+    liste d'attributs sp&eacute;cifi&eacute;s dans la d&eacute;finition de AuthLDAPUrl ; dans
+    le cas contraire, cette directive n'aurait aucun effet. Si elle est
+    pr&eacute;sente, cette directive l'emporte sur AuthLDAPRemoteUserIsDN. Elle
+    peut s'av&eacute;rer utile par exemple, si vous souhaitez que les
+    utilisateurs se connectent &agrave; un site web en utilisant leur adresse
+    email, alors qu'une application sous-jacente n&eacute;cessite un nom
+    d'utilisateur comme identifiant.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPRemoteUserIsDN</name>
+<description>Utilise le DN de l'utilisateur pour d&eacute;finir la variable
+d'environnement REMOTE_USER</description>
+<syntax>AuthLDAPRemoteUserIsDN on|off</syntax>
+<default>AuthLDAPRemoteUserIsDN off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Lorsque cette directive est &agrave; on, la variable d'environnement
+    <code>REMOTE_USER</code> sera d&eacute;finie avec la valeur du DN complet
+    de l'utilisateur authentifi&eacute;, et non plus avec simplement le nom
+    d'utilisateur fourni par le client. Elle est d&eacute;finie &agrave; off par
+    d&eacute;faut.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPSubGroupAttribute</name>
+<description>Sp&eacute;cifie les noms d'attribut, un par directive, utilis&eacute;s
+pour diff&eacute;rencier les membres du groupe courant qui sont eux-m&ecirc;mes des
+groupes.</description>
+<syntax>AuthLDAPSubGroupAttribute <em>attribut</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Un objet groupe LDAP peut contenir des membres qui sont des
+    utilisateurs et des membres qui sont eux-m&ecirc;mes des groupes (appel&eacute;s
+    sous-groupes ou groupes imbriqu&eacute;s). La directive
+    <code>AuthLDAPSubGroupAttribute</code> sp&eacute;cifie l'attribut utilis&eacute;
+    pour identifier les groupes, alors que la directive
+    <code>AuthLDAPGroupAttribute</code> sp&eacute;cifie l'attribut utilis&eacute;
+    pour identifier les utilisateurs. On peut sp&eacute;cifier plusieurs
+    attributs en r&eacute;p&eacute;tant la directive plusieurs fois. Si elle n'est pas
+    d&eacute;finie, <module>mod_authnz_ldap</module> utilise les attributs
+    <code>member</code> et <code>uniqueMember</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPSubGroupClass</name>
+<description>Sp&eacute;cifie quelles valeurs d'objectClass LDAP identifient les
+objets de l'annuaire qui sont des groupes au cours du traitement des
+sous-groupes.</description>
+<syntax>AuthLDAPSubGroupClass <em>ObjectClass-LDAP</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Un objet groupe LDAP peut contenir des membres qui sont des
+    utilisateurs et des membres qui sont eux-m&ecirc;mes des groupes (appel&eacute;s
+    sous-groupes ou groupes imbriqu&eacute;s). La directive
+    <code>AuthLDAPSubGroupAttribute</code> permet d'identifier les
+    membres qui sont des sous-groupes du groupe courant (&agrave; l'oppos&eacute; des
+    membres utilisateurs). La directive
+    <code>AuthLDAPSubGroupClass</code> permet de sp&eacute;cifier les valeurs
+    d'objectClass LDAP utilis&eacute;es pour v&eacute;rifier que certains membres sont
+    en fait des objets groupe. Les sous-groupes ainsi identifi&eacute;s peuvent
+    alors faire l'objet d'une recherche d'autres membres utilisateurs ou
+    sous-groupes. On peut sp&eacute;cifier plusieurs attributs en r&eacute;p&eacute;tant
+    cette directive plusieurs fois. Si cette directive n'est pas
+    d&eacute;finie, <module>mod_authnz_ldap</module> utilise les attributs
+    <code>groupOfNames</code> et <code>groupOfUniqueNames</code>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPUrl</name>
+<description>L'URL permettant de sp&eacute;cifier les param&egrave;tres de la
+recherche LDAP</description>
+<syntax>AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Une URL conforme &agrave; la RFC 2255 qui permet de sp&eacute;cifier les
+    param&egrave;tres &agrave; utiliser pour la recherche dans l'annuaire LDAP. La
+    syntaxe de l'URL est :</p>
+<example>ldap://h&ocirc;te:port/DN-de-base?attribut?port&eacute;e?filtre</example>
+    <p>Si vous souhaitez mettre &agrave; la disposition d'Apache plusieurs URLs
+    LDAP, la syntaxe sera :</p>
+<example>AuthLDAPUrl "ldap://ldap1.exemple.com
+ldap2.exemple.com/dc=..."</example>
+<p><em><strong>Mise en garde : </strong>Si vous sp&eacute;cifiez plusieurs
+serveurs, vous devez en entourer la liste avec des guillemets ; dans le
+cas contraire, vous g&eacute;n&eacute;rerez une erreur : "AuthLDAPURL takes one
+argument, URL to define LDAP connection..".</em> Vous pouvez bien
+entendu ajouter des param&egrave;tres de recherche &agrave; chacun des serveurs
+sp&eacute;cifi&eacute;s.</p>
+
+<dl>
+<dt>ldap</dt>
+
+        <dd>Pour ldap non s&eacute;curis&eacute;, utilisez la cha&icirc;ne
+	<code>ldap</code>. Pour ldap s&eacute;curis&eacute;, utilisez &agrave; la place la
+	cha&icirc;ne <code>ldaps</code>. LDAP s&eacute;curis&eacute; n'est disponible que si
+	Apache a &eacute;t&eacute; li&eacute; avec une biblioth&egrave;que LDAP supportant SSL.</dd>
+
+<dt>h&ocirc;te:port</dt>
+
+        <dd>
+          <p>Il s'agit du nom/port du serveur ldap
+	  (dont la valeur par d&eacute;faut est
+	  <code>localhost:389</code> pour <code>ldap</code>, et
+	  <code>localhost:636</code> pour <code>ldaps</code>). Pour
+	  sp&eacute;cifier plusieurs serveurs LDAP redondants, indiquez
+	  simplement leur liste en les s&eacute;parant par des espaces.
+	  <module>mod_authnz_ldap</module> tentera alors de se connecter
+	  &agrave; chacun des serveurs jusqu'&agrave; ce qu'il parvienne &agrave; se
+	  connecter avec succ&egrave;s. Notez qu'en cas de multiples serveurs
+	  LDAP, l'ensemble de l'URL LDAP doit &ecirc;tre entour&eacute;e de
+	  guillemets.</p>
+
+          <p>lorsqu'une connection a &eacute;t&eacute; &eacute;tablie avec un serveur, elle
+	  reste active pendant toute la dur&eacute;e de vie du processus
+	  <program>httpd</program>, ou jusqu'&agrave; ce que le serveur LDAP
+	  cesse de fonctionner.</p>
+
+          <p>Si le serveur LDAP cesse de fonctionner, et ainsi
+	  interrompt une
+	  connexion existante, <module>mod_authnz_ldap</module> tentera
+	  de se reconnecter en commen&ccedil;ant par le premier serveur de la
+	  liste, et ainsi de suite avec les serveurs redondants
+	  suivants. Notez que ce processus n'a rien &agrave; voir avec une
+	  v&eacute;ritable recherche de type round-robin.</p>
+        </dd>
+
+<dt>DN-de-base</dt>
+        <dd>Le DN de la branche de l'annuaire &agrave; partir de laquelle
+	toutes les recherches seront lanc&eacute;es. Il doit au moins
+	correspondre &agrave; la racine de votre annuaire, mais vous pouvez
+	aussi indiquer une branche plus sp&eacute;cifique.</dd>
+
+<dt>attribut</dt>
+
+        <dd>Il s'agit de l'attribut &agrave; utiliser pour la recherche.
+	Bien que la RFC
+	2255 autorise une liste d'attributs s&eacute;par&eacute;s par des virgules,
+	seul le premier sera retenu, sans tenir compte des autres
+	attributs fournis. Si aucun attribut n'est fourni, l'attribut
+	par d&eacute;faut est <code>uid</code>. Il est judicieux de choisir un
+	attribut dont la valeur sera unique parmi toutes les entr&eacute;es de
+	la branche de l'annuaire que vous aurez d&eacute;finie. Tous les
+	attributs sp&eacute;cifi&eacute;s seront enregistr&eacute;s dans des variables
+	d'environnement avec le pr&eacute;fixe AUTHENTICATE_, afin de pouvoir
+	&ecirc;tre utilis&eacute;s par d'autres modules.</dd>
+
+<dt>port&eacute;e</dt>
+
+        <dd>Il s'agit de la port&eacute;e de la recherche. Elle peut prendre
+	les valeurs <code>one</code> ou <code>sub</code>. Notez que la
+	RFC 2255 supporte aussi une port&eacute;e de valeur <code>base</code>,
+	mais cette derni&egrave;re n'est pas support&eacute;e par le module. Si la
+	port&eacute;e n'est pas d&eacute;finie, ou si elle est d&eacute;finie &agrave;
+	<code>base</code>, c'est la valeur de port&eacute;e par d&eacute;faut
+	<code>sub</code> qui sera utilis&eacute;e.</dd>
+
+<dt>filtre</dt>
+
+        <dd>Il s'agit d'un filtre de recherche LDAP valide. Si aucun
+	filtre n'est sp&eacute;cifi&eacute;, le filtre par d&eacute;faut
+	<code>(objectClass=*)</code> sera utilis&eacute;, ce qui corrspond &agrave;
+	une recherche de tous les types d'objets de l'arborescence. La
+	taille des filtres est limit&eacute;e &agrave; environ 8000 caract&egrave;res (valeur
+	de la macro <code>MAX_STRING_LEN</code> dans le code source
+	d'Apache), ce qui s'av&egrave;re plus que suffisant pour la plupart des
+	applications.</dd>
+</dl>
+
+    <p>Pour une recherche, les attribut, filtre et nom d'utilisateur
+    fournis par le client HTTP sont combin&eacute;s pour cr&eacute;er un filtre de
+    recherche du style :
+    <code>(&amp;(<em>filtre</em>)(<em>attribut</em>
+    =<em>nom-utilisateur</em>))</code>.</p>
+
+    <p>Par exemple, consid&eacute;rons l'URL
+    <code>ldap://ldap.airius.com/o=Airius?cn?sub?(posixid=*)</code>.
+    Lorsqu'un client tentera de se connecter en utilisant le nom
+    d'utilisateur <code>Babs Jenson</code>, le filtre de recherche sera
+    : <code>(&amp;(posixid=*)(cn=Babs Jenson))</code>.</p>
+
+    <p>On peut encore ajouter un param&egrave;tre optionnel pour permettre &agrave;
+    l'URL LDAP de surcharger le type de connexion. Ce param&egrave;tre peut
+    prendre l'une des valeurs suivantes :</p>
+
+<dl>
+    <dt>NONE</dt>
+        <dd>&Eacute;tablit une connexion non s&eacute;curis&eacute;e sur le port LDAP par
+	d&eacute;faut, ce qui est &eacute;quivalent &agrave; <code>ldap://</code> sur le port
+	389.</dd>
+    <dt>SSL</dt>
+        <dd>&Eacute;tablit une connexion s&eacute;curis&eacute;e sur le port LDAP s&eacute;curis&eacute;
+	par d&eacute;faut, ce qui est &eacute;quivalent &agrave; <code>ldaps://</code>.</dd>
+    <dt>TLS | STARTTLS</dt>
+        <dd>&Eacute;tablit une connexion s&eacute;curis&eacute;e par &eacute;l&eacute;vation de niveau sur
+	le port LDAP par d&eacute;faut. Cette connexion sera initialis&eacute;e sur le
+	port 389 par d&eacute;faut, puis &eacute;lev&eacute;e &agrave; un niveau de connexion
+	s&eacute;curis&eacute;e sur le m&ecirc;me port.</dd>
+</dl>
+
+    <p>Voir plus haut pour des exemples d'URLs d&eacute;finies par la directive
+    <directive module="mod_authnz_ldap">AuthLDAPURL</directive>.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
