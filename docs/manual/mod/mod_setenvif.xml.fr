@@ -1,0 +1,303 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 658546 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_setenvif.xml.meta">
+
+<name>mod_setenvif</name>
+<description>Permet de d&eacute;finir des variables d'environnement en fonction
+de caract&eacute;ristiques de la requ&ecirc;te</description>
+<status>Base</status>
+<sourcefile>mod_setenvif.c</sourcefile>
+<identifier>setenvif_module</identifier>
+
+<summary>
+
+    <p>Le module <module>mod_setenvif</module> vous permet de d&eacute;finir
+    des variables d'environnement en fonction du fait que telle ou telle
+    caract&eacute;ristique de la requ&ecirc;te correspond ou non aux expressions
+    rationnelles que vous sp&eacute;cifiez. Ces variables d'environnement
+    peuvent &ecirc;tre utilis&eacute;es par d'autres parties du serveur pour prendre
+    des d&eacute;cisions quant aux actions &agrave; entreprendre.</p>
+
+    <p>Les directives sont interpr&eacute;t&eacute;es selon l'ordre dans lequel elles
+    appara&icirc;ssent dans les fichiers de configuration. Ainsi, des
+    s&eacute;quences plus complexes peuvent &ecirc;tre utilis&eacute;es, comme dans cet
+    exemple qui d&eacute;finit netscape si le navigateur est Mozilla et non
+    MSIE.</p>
+
+<example>
+  BrowserMatch ^Mozilla netscape<br />
+  BrowserMatch MSIE !netscape<br />
+</example>
+</summary>
+
+<seealso><a href="../env.html">Les variables d'environnement dans
+Apache</a></seealso>
+
+<directivesynopsis>
+<name>BrowserMatch</name>
+<description>D&eacute;finit des variables d'environnement en fonction du
+contenu de l'en-t&ecirc;te HTTP User-Agent</description>
+<syntax>BrowserMatch <em>regex [!]env-variable</em>[=<em>valeur</em>]
+[[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+  <p>La directive <directive>BrowserMatch</directive> est un cas
+  particulier de la directive <directive
+  module="mod_setenvif">SetEnvIf</directive>, qui d&eacute;finit des variables
+  d'environnement en fonction du contenu de l'en-t&ecirc;te de requ&ecirc;te HTTP
+  <code>User-Agent</code>. Les deux lignes suivantes produisent le m&ecirc;me
+  effet :</p>
+<example>
+   BrowserMatchNoCase Robot est_un_robot<br />
+   SetEnvIfNoCase User-Agent Robot est_un_robot<br />
+</example>
+
+    <p>Quelques exemples suppl&eacute;mentaires :</p>
+<example>
+    BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
+    BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
+    BrowserMatch MSIE !javascript<br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>BrowserMatchNoCase</name>
+<description>D&eacute;finit des variables d'environnement en fonction du
+contenu de l'en-t&ecirc;te HTTP User-Agent sans tenir compte de la
+casse</description>
+<syntax>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Versions 1.2 d'Apache et sup&eacute;rieures (dans Apache 1.2,
+cette directive se trouvait dans le module mod_browser devenu depuis
+obsol&egrave;te)</compatibility>
+
+<usage>
+
+    <p>La directive <directive>BrowserMatchNoCase</directive> est
+    identique sur le plan s&eacute;mantique &agrave; la directive <directive
+    module="mod_setenvif">BrowserMatch</directive>. Elle permet
+    cependant une comparaison insensible &agrave; la casse. Par exemple :</p>
+<example>
+    BrowserMatchNoCase mac platform=macintosh<br />
+    BrowserMatchNoCase win platform=windows<br />
+</example>
+
+    <p>Les directives <directive>BrowserMatch</directive> et
+    <directive>BrowserMatchNoCase</directive> sont des cas particuliers
+    des directives <directive module="mod_setenvif">SetEnvIf</directive>
+    et <directive module="mod_setenvif">SetEnvIfNoCase</directive>.
+    Ainsi, les deux lignes suivantes produisent le m&ecirc;me effet :</p>
+<example>
+   BrowserMatchNoCase Robot est_un_robot<br />
+   SetEnvIfNoCase User-Agent Robot est_un_robot<br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnvIf</name>
+<description>D&eacute;finit des variables d'environnement en fonction des
+attributs de la requ&ecirc;te</description>
+<syntax>SetEnvIf <em>attribut
+    regex [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>La directive <directive>SetEnvIf</directive> permet de d&eacute;finir
+    des variables d'environnement en fonction des attributs de la
+    requ&ecirc;te. L'<em>attribut</em> sp&eacute;cifi&eacute; comme premier argument peut
+    se pr&eacute;senter sous l'une des quatre formes suivantes :</p>
+
+<ol>
+<li>Un champ d'en-t&ecirc;te de requ&ecirc;te HTTP (voir la <a
+    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC2616</a> pour
+    plus d'information &agrave; leur propos) ; par exemple : <code>Host</code>,
+    <code>User-Agent</code>, <code>Referer</code>, ou
+    <code>Accept-Language</code>. Il est possible d'utiliser une
+    expression rationnelle pour sp&eacute;cifier un jeu d'en-t&ecirc;tes de
+    requ&ecirc;te.</li>
+
+<li>Une des caract&eacute;ristiques de la requ&ecirc;te suivantes :
+    <ul>
+      <li><code>Remote_Host</code> - le nom d'h&ocirc;te (s'il est disponible)
+      du client qui effectue la requ&ecirc;te</li>
+
+      <li><code>Remote_Addr</code> - l'adresse IP du client qui effectue
+      la requ&ecirc;te</li>
+
+      <li><code>Server_Addr</code> - l'adresse IP du serveur qui a re&ccedil;u
+      la requ&ecirc;te (uniquement &agrave; partir des versions sup&eacute;rieures &agrave;
+      2.0.43)</li>
+
+      <li><code>Request_Method</code> - Le nom de la m&eacute;thode HTTP
+      utilis&eacute;e (<code>GET</code>, <code>POST</code>, <em>et
+      cetera...</em>)</li>
+
+      <li><code>Request_Protocol</code> - le nom et la version du
+      protocole utilis&eacute; pour la requ&ecirc;te (par exemple "HTTP/0.9",
+      "HTTP/1.1", <em>etc...</em>)</li>
+
+      <li><code>Request_URI</code> - la ressource demand&eacute;e dans la ligne
+      de requ&ecirc;te HTTP -- en g&eacute;n&eacute;ral la partie de l'URL suivant le
+      protocole et le nom du serveur, sans la cha&icirc;ne d'arguments. Voir
+      la directive <directive
+      module="mod_rewrite">RewriteCond</directive> du module
+      <module>mod_rewrite</module> pour plus d'informations sur la
+      mani&egrave;re de mettre en correspondance votre cha&icirc;ne d'arguments.</li>
+    </ul>
+</li>
+
+<li>Le nom d'une variable d'environnement parmi la liste de celles qui
+sont associ&eacute;es &agrave; la requ&ecirc;te. Ceci permet &agrave; la directive
+<directive>SetEnvIf</directive> d'effectuer des tests en fonction du
+r&eacute;sultat de comparaisons pr&eacute;c&eacute;dentes. Seules les variables
+d'environnement d&eacute;finies par des directives
+<code>SetEnvIf[NoCase]</code> pr&eacute;c&eacute;dentes sont disponibles pour
+effectuer des tests de cette mani&egrave;re. 'Pr&eacute;c&eacute;dentes' signifie qu'elles se
+trouvent &agrave; un niveau plus global de la configuration (par exemple au
+niveau du serveur principal), ou plus haut chronologiquement dans le
+contexte de la directive. Les variables d'environnement ne seront prises
+en compte que si aucune correspondance n'a &eacute;t&eacute; trouv&eacute;e parmi les
+caract&eacute;ristiques de la requ&ecirc;te, et si <em>attribut</em> n'a pas &eacute;t&eacute;
+sp&eacute;cifi&eacute; sous la forme d'une expression rationnelle.</li>
+
+<li>La r&eacute;f&eacute;rence &agrave; une extension d'un certificat client SSL, localis&eacute;
+par son identifiant objet <em>oid</em>. Dans le cas d'une requ&ecirc;te non
+SSL, ou en l'absence d'<em>oid</em> configur&eacute;, aucune variable ne sera
+d&eacute;finie. Si l'<em>oid</em> est trouv&eacute; plusieurs fois, les cha&icirc;nes
+individuelles seront concat&eacute;n&eacute;es, en les s&eacute;parant par des virgules
+<code>','</code>. L'<em>oid</em> doit faire r&eacute;f&eacute;rence &agrave; une extension
+sous forme de cha&icirc;ne.
+</li>
+</ol>
+
+<p>Le second argument (<em>regex</em>) est une <glossary
+ref="regex">expression rationnelle</glossary>. Si  <em>regex</em>
+correspond &agrave; l'<em>attribut</em>, les arguments suivants sont &eacute;valu&eacute;s.</p>
+
+<p>Le reste des arguments constitue les noms des variables &agrave; d&eacute;finir,
+ainsi que les valeurs optionnelles qui doivent leur &ecirc;tre affect&eacute;es. Ils
+peuvent se pr&eacute;senter sous les formes suivantes :</p>
+
+    <ol>
+      <li><code><em>nom-variable</em></code>, or</li>
+
+      <li><code>!<em>nom-variable</em></code>, or</li>
+
+      <li><code><em>nom-variable</em>=<em>valeur</em></code></li>
+    </ol>
+
+    <p>Dans la premi&egrave;re forme, la valeur sera d&eacute;finie &agrave; "1". Dans la
+    seconde forme, la variable sera supprim&eacute;e si elle a &eacute;t&eacute; d&eacute;finie au
+    pr&eacute;alable, et dans la troisi&egrave;me forme, la variable sera d&eacute;finie &agrave; la
+    valeur litt&eacute;rale sp&eacute;cifi&eacute;e par <code><em>valeur</em></code>. Depuis
+    la version 2.0.51, Apache reconna&icirc;t les occurrences de variables
+    <code>$1</code>..<code>$9</code> &agrave; l'int&eacute;rieur de
+    <code><em>valeur</em></code>, et les remplace par les
+    sous-expressions entre parenth&egrave;ses correspondantes de
+    <var>regex</var>.</p>
+
+<example>
+<title>Example:</title>
+   SetEnvIf Request_URI "\.gif$" objet_est_une_image=gif<br />
+   SetEnvIf Request_URI "\.jpg$" objet_est_une_image=jpg<br />
+   SetEnvIf Request_URI "\.xbm$" objet_est_une_image=xbm<br />
+        :<br />
+   SetEnvIf Referer www\.mon-domaine\.exemple\.com r&eacute;f&eacute;rant_intra_site<br />
+        :<br />
+   SetEnvIf objet_est_une_image xbm XBIT_PROCESSING=1<br />
+        :<br />
+   SetEnvIf OID("2.16.840.1.113730.1.13") "(.*)" commentaire-netscape=$1<br />
+        :<br />
+   SetEnvIf ^TS*  ^[a-z].*  HAVE_TS<br />
+</example>
+
+    <p>Les trois premi&egrave;res lignes d&eacute;finissent la variable
+    d'environnement <code>objet_est_une_image</code> si l'objet de la
+    requ&ecirc;te est un fichier image, et la quatri&egrave;me d&eacute;finit la variable
+    <code>r&eacute;f&eacute;rant_intra_site</code> si la page r&eacute;f&eacute;rante se trouve
+    quelque part dans le site web
+    <code>www.mon-domaine.exemple.com</code>.</p>
+
+    <p>La sixi&egrave;me ligne d&eacute;finit la variable d'environnement
+    <code>commentaire-netscape</code> avec la cha&icirc;ne trouv&eacute;e dans le
+    champ du certificat client SSL correspondant.</p>
+
+    <p>La derni&egrave;re ligne d&eacute;finit la variable d'environnement
+    <code>HAVE_TS</code> si la requ&ecirc;te contient un en-t&ecirc;te dont le nom
+    commence par "TS" et dont la valeur commence par tout caract&egrave;re du
+    jeu [a-z].</p>
+</usage>
+
+<seealso><a href="../env.html">Les variables d'environnement dans
+Apache</a> pour des exemples suppl&eacute;mentaires.
+</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SetEnvIfNoCase</name>
+<description>D&eacute;finit des variables d'environnement en fonction des
+attributs de la requ&ecirc;te sans tenir compte de la casse</description>
+<syntax>SetEnvIfNoCase <em>attribut regex
+        [!]env-variable</em>[=<em>valeur</em>]
+    [[!]<em>env-variable</em>[=<em>valeur</em>]] ...</syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+<compatibility>Versions 1.3 d'Apache et sup&eacute;rieures</compatibility>
+
+<usage>
+
+    <p>La directive <directive>SetEnvIfNoCase</directive> est identique
+    d'un point de vue s&eacute;mantique &agrave; la directive <directive
+    module="mod_setenvif">SetEnvIf</directive>, et ne s'en distingue que
+    par le fait que la comparaison des expressions rationnelles est
+    effectu&eacute;e sans tenir compte de la casse. Par exemple :</p>
+<example>
+   SetEnvIfNoCase Host Apache\.Org site=apache
+</example>
+
+    <p>Cette ligne va d&eacute;finir la variable d'environnement
+    <code>site</code> avec la valeur "<code>apache</code>" si le champ
+    d'en-t&ecirc;te de requ&ecirc;te HTTP <code>Host:</code> est pr&eacute;sent et contient
+    <code>Apache.Org</code>, <code>apache.org</code>, ou une autre
+    combinaison des m&ecirc;mes caract&egrave;res, sans tenir compte de la casse.</p>
+</usage>
+</directivesynopsis>
+</modulesynopsis>
