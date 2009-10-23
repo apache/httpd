@@ -97,6 +97,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: niq
    -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
               vs 2.6 kernels, potentially a suspect test for root.
+   sf:        Couldn't the linux 2.4 bug be worked around by calling access
+              twice? Once with R_OK and once with X_OK.
 
  * mod_ssl: Improve environment variable extraction to be more
    efficient and to correctly handle DNs with duplicate tags.
@@ -132,7 +134,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?rev=823563&view=rev
    2.2.x Patch: http://people.apache.org/~poirier/smaxage.patch
                 (trunk patch works, except for CHANGES)
-   +1: poirier
+   +1: poirier, sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
