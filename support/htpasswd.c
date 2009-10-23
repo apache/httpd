@@ -186,6 +186,10 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         pw = pwin;
         memset(pwv, '\0', sizeof(pwin));
     }
+    if (alg == ALG_CRYPT && strlen(pw) > 8) {
+        apr_file_printf(errfile, "Warning: Password truncated to 8 characters "
+                        "by CRYPT algorithm." NL);
+    }
     switch (alg) {
 
     case ALG_APSHA:
