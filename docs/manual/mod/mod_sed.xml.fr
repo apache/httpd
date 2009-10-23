@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 734331 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_sed.xml.meta">
+
+<name>mod_sed</name>
+<description>Filtre les contenus en entr&eacute;e (requ&ecirc;tes) et en sortie
+(r&eacute;ponses) en utilisant la syntaxe de <code>sed</code></description>
+<status>Exp&eacute;rimental</status>
+<sourcefile>mod_sed.c sed0.c sed1.c regexp.c regexp.h sed.h</sourcefile>
+<identifier>sed_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
+
+<summary>
+<p><module>mod_sed</module> est un filtre de contenu "in-process". Le
+filtre <module>mod_sed</module> fournit les commandes d'&eacute;dition de
+<code>sed</code> impl&eacute;ment&eacute;es par le programme <code>sed</code> de
+Solaris 10 comme d&eacute;crit dans la <a
+href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">page de
+manuel</a>. Cependant, &agrave; la diff&eacute;rence de <code>sed</code>,
+<module>mod_sed</module> ne re&ccedil;oit pas de donn&eacute;es sur son entr&eacute;e
+standard. Au lieu de cela, le filtre agit sur les donn&eacute;es &eacute;chang&eacute;es
+entre le client et le serveur. <module>mod_sed</module> peut &ecirc;tre
+utilis&eacute; comme filtre en entr&eacute;e ou en sortie. <module>mod_sed</module>
+est un filtre de contenu, ce qui signifie qu'on ne peut pas l'utiliser
+pour modifier les en-t&ecirc;tes http du client ou du serveur.
+</p>
+<p>
+Le filtre en sortie <module>mod_sed</module> accepte un tron&ccedil;on de
+donn&eacute;es, ex&eacute;cute le script <code>sed</code> sur ces donn&eacute;es, puis g&eacute;n&egrave;re
+une sortie qui est transmise au filtre suivant dans la cha&icirc;ne.
+</p>
+
+<p>
+Le filtre en entr&eacute;e <module>mod_sed</module> re&ccedil;oit des donn&eacute;es en
+provenance du filtre suivant dans la cha&icirc;ne, ex&eacute;cute les scripts
+<code>sed</code>, et renvoie les donn&eacute;es g&eacute;n&eacute;r&eacute;es au filtre appelant
+dans la cha&icirc;ne de filtrage.
+</p>
+
+<p>
+Les filtres en entr&eacute;e ou en sortie ne traitent les donn&eacute;es que si des
+caract&egrave;res newline sont d&eacute;tect&eacute;s dans le contenu &agrave; filtrer. A la fin des
+donn&eacute;es, ce qui reste est trait&eacute; comme la derni&egrave;re ligne.
+</p>
+
+<p>Vous trouverez sur le <a
+href="http://blogs.sun.com/basant/entry/using_mod_sed_to_filter">blog de
+l'auteur</a> un article en forme de tutoriel, ainsi que les raisons pour
+lesquelles ce filtre est plus puissant qu'une simple
+recherche/remplacement de cha&icirc;ne ou d'expression rationnelle.</p>
+
+</summary>
+
+<section id="sampleconf"><title>Exemple de configuration</title>
+    <example><title>Ajout d'un filtre en sortie</title>
+         # Dans l'exemple suivant, le filtre sed va remplacer la cha&icirc;ne
+	 # "monday" par "MON" et la cha&icirc;ne "sunday" par "SUN" dans les
+	 # documents html avant de les envoyer au client.<br />
+        <indent>
+        &lt;Directory "/var/www/docs/sed"&gt; <br />
+           <indent>
+           AddOutputFilter Sed html <br />
+           OutputSed "s/monday/MON/g" <br />
+           OutputSed "s/sunday/SUN/g" <br />
+           </indent>
+        &lt;/Directory&gt; <br />
+        </indent>
+    </example>
+
+    <example><title>Ajout d'un filtre en entr&eacute;e</title>
+         # Dans l'exemple suivant, le filtre sed va remplacer la cha&icirc;ne
+	 # "monday" par "MON" et la cha&icirc;ne "sunday" par "SUN" dans les
+	 # donn&eacute;es POST envoy&eacute;es &agrave; PHP.<br />
+        <indent>
+        &lt;Directory "/var/www/docs/sed"&gt; <br />
+           <indent>
+           AddInputFilter Sed php <br />
+           InputSed "s/monday/MON/g" <br />
+           InputSed "s/sunday/SUN/g" <br />
+           </indent>
+        &lt;/Directory&gt; <br />
+        </indent>
+    </example>
+</section>
+<section id="sed_commands"><title>Commandes sed</title>
+    <p>
+    Vous trouverez tous les d&eacute;tails &agrave; propos de la commande
+    <code>sed</code> dans sa <a
+    href="http://docs.sun.com/app/docs/doc/816-5165/sed-1b?a=view">page
+    de manuel</a>.
+    </p>
+    <dl>
+        <dt><code>b</code></dt>
+        <dd>Saut vers le label sp&eacute;cifi&eacute; (similaire &agrave; goto).</dd>
+        <dt><code>h</code></dt>
+        <dd>Copie la ligne courante dans le tampon.</dd>
+        <dt><code>H</code></dt>
+        <dd>Ajoute la ligne courante au tampon.</dd>
+        <dt><code>g</code></dt>
+        <dd>Copie le contenu du tampon dans la ligne courante.</dd>
+        <dt><code>G</code></dt>
+        <dd>Ajoute le contenu du tampon &agrave; la ligne courante.</dd>
+        <dt><code>x</code></dt>
+        <dd>Echange les contenus du tampon et de la ligne courante.</dd>
+    </dl>
+</section>
+
+<directivesynopsis>
+<name>OutputSed</name>
+<description>Commande sed pour le filtrage des contenus de type
+r&eacute;ponse</description>
+<syntax>OutputSed <var>commande-sed</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>OutputSed</directive> permet de sp&eacute;cifier
+    la commande <code>sed</code> &agrave; ex&eacute;cuter dans le cadre du traitement
+    d'une r&eacute;ponse.
+    </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>InputSed</name>
+<description>Commande sed &agrave; ex&eacute;cuter pour le filtrage des donn&eacute;es d'une
+requ&ecirc;te (en g&eacute;n&eacute;ral des donn&eacute;es <code>POST</code>)</description>
+<syntax>InputSed <var>commande-sed</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+
+<usage>
+    <p>La directive <directive>InputSed</directive> permet de sp&eacute;cifier
+    la commande sed &agrave; ex&eacute;cuter pour le filtrage des donn&eacute;es (en g&eacute;n&eacute;ral
+    des donn&eacute;es <code>POST</code>) d'une requ&ecirc;te.
+    </p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
