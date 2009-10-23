@@ -10,6 +10,10 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_socache_shmcb: Only parse cache size in parens at the end of the
+     string. Fixes SSLSessionCache directive mis-parsing parens in pathname.
+     PR 47945. [Stefan Fritsch]
+
   *) htpasswd: Improve out of disk space handling. PR 30877. [Stefan Fritsch]
 
   *) htpasswd: Use MD5 hash by default on all platforms. [Stefan Fritsch]

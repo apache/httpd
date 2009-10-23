@@ -278,15 +278,11 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
     
     ctx->data_file = path = ap_server_root_relative(p, arg);
 
-    cp = strchr(path, '(');
-    if (cp) {
+    cp = strrchr(path, '(');
+    cp2 = path + strlen(path) - 1;
+    if (cp && (*cp2 == ')')) {
         *cp++ = '\0';
-
-        if (!(cp2 = strchr(cp, ')'))) {
-            return "Invalid argument: no closing parenthesis";
-        }
-            
-        *cp2 = '\0';
+        *cp2  = '\0';
         
         ctx->shm_size = atoi(cp);
         
