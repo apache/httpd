@@ -41,7 +41,7 @@
   <modulefile>mod_echo.xml.fr</modulefile>
   <modulefile>mod_env.xml.fr</modulefile>
   <modulefile>mod_example.xml</modulefile>
-  <modulefile>mod_expires.xml</modulefile>
+  <modulefile>mod_expires.xml.fr</modulefile>
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_filter.xml</modulefile>
