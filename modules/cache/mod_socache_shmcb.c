@@ -280,11 +280,20 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
 
     cp = strrchr(path, '(');
     cp2 = path + strlen(path) - 1;
-    if (cp && (*cp2 == ')')) {
+    if (cp) {
+        char *endptr;
+        if (*cp2 != ')') {
+            return "Invalid argument: no closing parenthesis or cache size "
+                   "missing after pathname with parenthesis";
+        }
         *cp++ = '\0';
         *cp2  = '\0';
         
-        ctx->shm_size = atoi(cp);
+        
+        ctx->shm_size = strtol(cp, &endptr, 10);
+        if (endptr != cp2) {
+            return "Invalid argument: cache size not numerical";
+        }
         
         if (ctx->shm_size < 8192) {
             return "Invalid argument: size has to be >= 8192 bytes";
@@ -298,6 +307,9 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
                                 SHMCB_MAX_SIZE);
             
         }
+    }
+    else if (cp2 >= path && *cp2 == ')') {
+        return "Invalid argument: no opening parenthesis";
     }
 
     return NULL;
