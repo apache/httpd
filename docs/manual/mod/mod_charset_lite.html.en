@@ -120,6 +120,13 @@
       &lt;/Directory&gt;
     </code></p></div>
 
+     <div class="note">
+     Specifying the same charset for both <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
+     and <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code> disables translation. The charset
+     need not match the charset of the response, but it must be a valid charset on the system.
+     </div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CharsetOptions" id="CharsetOptions">CharsetOptions</a> <a name="charsetoptions" id="charsetoptions">Directive</a></h2>
@@ -198,6 +205,13 @@
 
     <p>The character set names in this example work with the iconv
     translation support in Solaris 8.</p>
+ 
+     <div class="note">
+     Specifying the same charset for both <code class="directive"><a href="#charsetsourceenc">CharsetSourceEnc</a></code>
+     and <code class="directive"><a href="#charsetdefault">CharsetDefault</a></code> disables translation. The charset
+     need not match the charset of the response, but it must be a valid charset on the system.
+     </div>
+
 
 </div>
 </div>
