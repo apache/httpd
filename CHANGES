@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_charset_lite: Honor 'CharsetOptions NoImplicitAdd'.
+     [Eric Covener]
+
   *) mod_ssl: Add support for OCSP Stapling.  PR 43822.  
      [Dr Stephen Henson <shenson oss-institute.org>]
 

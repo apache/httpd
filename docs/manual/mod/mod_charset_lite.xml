@@ -150,7 +150,7 @@
 <name>CharsetOptions</name>
 <description>Configures charset translation behavior</description>
 <syntax>CharsetOptions <var>option</var> [<var>option</var>] ...</syntax>
-<default>CharsetOptions DebugLevel=0 NoImplicitAdd</default>
+<default>CharsetOptions DebugLevel=0 ImplicitAdd</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context>
