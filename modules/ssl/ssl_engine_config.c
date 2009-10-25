@@ -73,6 +73,13 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     mc->szCryptoDevice         = NULL;
 #endif
+#ifdef HAVE_OCSP_STAPLING
+    mc->stapling_cache                  = NULL;
+    mc->stapling_mutex_mode             = SSL_MUTEXMODE_UNSET;
+    mc->stapling_mutex_mech             = APR_LOCK_DEFAULT;
+    mc->stapling_mutex_file            = NULL;
+    mc->stapling_mutex                 = NULL;
+#endif
 
     memset(mc->pTmpKeys, 0, sizeof(mc->pTmpKeys));
 
@@ -129,6 +136,18 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->ocsp_enabled        = FALSE;
     mctx->ocsp_force_default  = FALSE;
     mctx->ocsp_responder      = NULL;
+
+#ifdef HAVE_OCSP_STAPLING
+    mctx->stapling_enabled                   = UNSET;
+    mctx->stapling_resptime_skew      = UNSET;
+    mctx->stapling_resp_maxage        = UNSET;
+    mctx->stapling_cache_timeout  = UNSET;
+    mctx->stapling_return_errors = UNSET;
+    mctx->stapling_fake_trylater          = UNSET;
+    mctx->stapling_errcache_timeout     = UNSET;
+    mctx->stapling_responder_timeout      = UNSET;
+    mctx->stapling_force_url   		= NULL;
+#endif
 }
 
 static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
@@ -227,6 +246,17 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
     cfgMergeBool(ocsp_enabled);
     cfgMergeBool(ocsp_force_default);
     cfgMerge(ocsp_responder, NULL);
+#ifdef HAVE_OCSP_STAPLING
+    cfgMergeBool(stapling_enabled);
+    cfgMergeInt(stapling_resptime_skew);
+    cfgMergeInt(stapling_resp_maxage);
+    cfgMergeInt(stapling_cache_timeout);
+    cfgMergeBool(stapling_return_errors);
+    cfgMergeBool(stapling_fake_trylater);
+    cfgMergeInt(stapling_errcache_timeout);
+    cfgMergeInt(stapling_responder_timeout);
+    cfgMerge(stapling_force_url, NULL);
+#endif
 }
 
 static void modssl_ctx_cfg_merge_proxy(modssl_ctx_t *base,
@@ -1460,6 +1490,188 @@ const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag
            "documentation, and build a compatible version of OpenSSL.";
 #endif
 }
+
+#ifdef HAVE_OCSP_STAPLING
+
+const char *ssl_cmd_SSLStaplingCache(cmd_parms *cmd,
+                                    void *dcfg,
+                                    const char *arg)
+{
+    SSLModConfigRec *mc = myModConfig(cmd->server);
+    const char *err, *sep, *name;
+
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+
+    /* Argument is of form 'name:args' or just 'name'. */
+    sep = ap_strchr_c(arg, ':');
+    if (sep) {
+        name = apr_pstrmemdup(cmd->pool, arg, sep - arg);
+        sep++;
+    }
+    else {
+        name = arg;
+    }
+
+    /* Find the provider of given name. */
+    mc->stapling_cache = ap_lookup_provider(AP_SOCACHE_PROVIDER_GROUP,
+                                            name,
+                                            AP_SOCACHE_PROVIDER_VERSION);
+    if (mc->stapling_cache) {
+        /* Cache found; create it, passing anything beyond the colon. */
+        err = mc->stapling_cache->create(&mc->stapling_cache_context,
+                                         sep, cmd->temp_pool, 
+                                         cmd->pool);
+    }
+    else {
+        apr_array_header_t *name_list;
+        const char *all_names;
+        
+        /* Build a comma-separated list of all registered provider
+         * names: */
+        name_list = ap_list_provider_names(cmd->pool, 
+                                           AP_SOCACHE_PROVIDER_GROUP,
+                                           AP_SOCACHE_PROVIDER_VERSION);
+        all_names = apr_array_pstrcat(cmd->pool, name_list, ',');
+        
+        err = apr_psprintf(cmd->pool, "'%s' stapling cache not supported "
+                           "(known names: %s)", name, all_names);
+    }
+
+    if (err) {
+        return apr_psprintf(cmd->pool, "SSLStaplingCache: %s", err);
+    }
+    
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingMutex(cmd_parms *cmd,
+                                     void *dcfg,
+                                     const char *arg_)
+{
+    apr_status_t rv;
+    const char *err;
+    SSLModConfigRec *mc = myModConfig(cmd->server);
+
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+
+    if (ssl_config_global_isfixed(mc)) {
+        return NULL;
+    }
+
+    rv = ap_parse_mutex(arg_, cmd->server->process->pool,
+                        &mc->stapling_mutex_mech, &mc->stapling_mutex_file);
+
+    if (rv == APR_ENOLOCK) {
+        mc->stapling_mutex_mode  = SSL_MUTEXMODE_NONE;
+        return NULL;
+    } 
+    else if (rv == APR_ENOTIMPL) {
+        return apr_pstrcat(cmd->pool, "Invalid SSLStaplingMutex argument ",
+                           arg_,
+                           " (" AP_ALL_AVAILABLE_MUTEXES_STRING ")", NULL);
+    } 
+    else if (rv == APR_BADARG) {
+        return apr_pstrcat(cmd->pool, "Invalid SSLStaplingMutex filepath ",
+                           arg_, NULL);
+    }
+
+    mc->stapling_mutex_mode  = SSL_MUTEXMODE_USED;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLUseStapling(cmd_parms *cmd, void *dcfg, int flag)
+{   
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_enabled = flag ? TRUE : FALSE;
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingResponseTimeSkew(cmd_parms *cmd, void *dcfg,
+                                                    const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_resptime_skew = atoi(arg);
+    if (sc->server->stapling_resptime_skew < 0) {
+        return "SSLstapling_resptime_skew: invalid argument";
+    }
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingResponseMaxAge(cmd_parms *cmd, void *dcfg,
+                                                    const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_resp_maxage = atoi(arg);
+    if (sc->server->stapling_resp_maxage < 0) {
+        return "SSLstapling_resp_maxage: invalid argument";
+    }
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingStandardCacheTimeout(cmd_parms *cmd, void *dcfg,
+                                                    const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_cache_timeout = atoi(arg);
+    if (sc->server->stapling_cache_timeout < 0) {
+        return "SSLstapling_cache_timeout: invalid argument";
+    }
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingErrorCacheTimeout(cmd_parms *cmd, void *dcfg,
+                                                 const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_errcache_timeout = atoi(arg);
+    if (sc->server->stapling_errcache_timeout < 0) {
+        return "SSLstapling_errcache_timeout: invalid argument";
+    }
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingReturnResponderErrors(cmd_parms *cmd,
+                                                     void *dcfg, int flag)
+{   
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_return_errors = flag ? TRUE : FALSE;
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingFakeTryLater(cmd_parms *cmd,
+                                            void *dcfg, int flag)
+{   
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_fake_trylater = flag ? TRUE : FALSE;
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingResponderTimeout(cmd_parms *cmd, void *dcfg,
+                                                const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_responder_timeout = atoi(arg);
+    sc->server->stapling_responder_timeout *= APR_USEC_PER_SEC;
+    if (sc->server->stapling_responder_timeout < 0) {
+        return "SSLstapling_responder_timeout: invalid argument";
+    }
+    return NULL;
+}
+
+const char *ssl_cmd_SSLStaplingForceURL(cmd_parms *cmd, void *dcfg,
+                                        const char *arg)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->server->stapling_force_url = arg;
+    return NULL;
+}
+
+#endif /* HAVE_OCSP_STAPLING */
 
 void ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s)
 {

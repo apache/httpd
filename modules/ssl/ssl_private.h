@@ -391,6 +391,16 @@ typedef struct {
 #if defined(HAVE_OPENSSL_ENGINE_H) && defined(HAVE_ENGINE_INIT)
     const char     *szCryptoDevice;
 #endif
+
+#ifdef HAVE_OCSP_STAPLING
+    const ap_socache_provider_t *stapling_cache;
+    ap_socache_instance_t *stapling_cache_context;
+    ssl_mutexmode_t stapling_mutex_mode;
+    apr_lockmech_e  stapling_mutex_mech;
+    const char     *stapling_mutex_file;
+    apr_global_mutex_t   *stapling_mutex;
+#endif
+
     struct {
         void *pV1, *pV2, *pV3, *pV4, *pV5, *pV6, *pV7, *pV8, *pV9, *pV10;
     } rCtx;
@@ -456,6 +466,19 @@ typedef struct {
     const char  *crl_path;
     const char  *crl_file;
     X509_STORE  *crl;
+
+#ifdef HAVE_OCSP_STAPLING
+    /** OCSP stapling options */
+    BOOL        stapling_enabled;
+    long        stapling_resptime_skew;
+    long        stapling_resp_maxage;
+    int         stapling_cache_timeout;
+    BOOL        stapling_return_errors;
+    BOOL        stapling_fake_trylater;
+    int         stapling_errcache_timeout;
+    apr_interval_time_t stapling_responder_timeout;
+    const char *stapling_force_url;
+#endif
 
     modssl_auth_ctx_t auth;
 
@@ -614,6 +637,24 @@ void         ssl_scache_remove(server_rec *, UCHAR *, int,
 int ssl_proxy_enable(conn_rec *c);
 int ssl_engine_disable(conn_rec *c);
 
+/** OCSP Stapling Support */
+#ifdef HAVE_OCSP_STAPLING
+const char *ssl_cmd_SSLStaplingMutex(cmd_parms *, void *, const char *);
+const char *ssl_cmd_SSLStaplingCache(cmd_parms *, void *, const char *);
+const char *ssl_cmd_SSLUseStapling(cmd_parms *, void *, int);
+const char *ssl_cmd_SSLStaplingResponseTimeSkew(cmd_parms *, void *, const char *);
+const char *ssl_cmd_SSLStaplingResponseMaxAge(cmd_parms *, void *, const char *);
+const char *ssl_cmd_SSLStaplingStandardCacheTimeout(cmd_parms *, void *, const char *);
+const char *ssl_cmd_SSLStaplingErrorCacheTimeout(cmd_parms *, void *, const char *);
+const char *ssl_cmd_SSLStaplingReturnResponderErrors(cmd_parms *, void *, int);
+const char *ssl_cmd_SSLStaplingFakeTryLater(cmd_parms *, void *, int);
+const char *ssl_cmd_SSLStaplingResponderTimeout(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLStaplingForceURL(cmd_parms *, void *, const char *);
+void         modssl_init_stapling(server_rec *, apr_pool_t *, apr_pool_t *, modssl_ctx_t *);
+void         ssl_stapling_ex_init(void);
+int          ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x);
+#endif
+
 /**  I/O  */
 void         ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
@@ -669,6 +710,9 @@ int          ssl_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_mutex_reinit(server_rec *, apr_pool_t *);
 int          ssl_mutex_on(server_rec *);
 int          ssl_mutex_off(server_rec *);
+
+int          ssl_stapling_mutex_init(server_rec *, apr_pool_t *);
+int          ssl_stapling_mutex_reinit(server_rec *, apr_pool_t *);
 
 /**  Logfile Support  */
 void         ssl_die(void);

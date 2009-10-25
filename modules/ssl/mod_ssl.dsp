@@ -210,6 +210,10 @@ SOURCE=.\ssl_scache.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ssl_util_stapling.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\ssl_util.c
 # End Source File
 # Begin Source File

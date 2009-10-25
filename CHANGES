@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_ssl: Add support for OCSP Stapling.  PR 43822.  
+     [Dr Stephen Henson <shenson oss-institute.org>]
+
   *) mod_socache_shmcb: Allow parens in file name if cache size is given.
      Fixes SSLSessionCache directive mis-parsing parens in pathname.
      PR 47945. [Stefan Fritsch]
