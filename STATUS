@@ -136,6 +136,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
    +1: minfrin
 
+  * mod_charset_lite: Start honoring the 'NoImplicitAdd' CharsetOption, and document
+    behavior correctly.
+
+    Trunk Patch:  http://svn.apache.org/viewvc?rev=829657&view=rev
+                  http://svn.apache.org/viewvc?rev=829664&view=rev
+                  http://svn.apache.org/viewvc?rev=829667&view=rev
+
+    2.2.x Patch:  http://people.apache.org/~covener/2.2.x-xlate_lite-noimplicitadd.diff (no code conflicts)
+    +1: covener     
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
