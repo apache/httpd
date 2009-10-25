@@ -112,6 +112,13 @@
 
     <p>The character set names in this example work with the iconv
     translation support in Solaris 8.</p>
+ 
+     <note>
+     Specifying the same charset for both <directive module="mod_charset_lite">CharsetSourceEnc</directive>
+     and <directive module="mod_charset_lite">CharsetDefault</directive> disables translation. The charset
+     need not match the charset of the response, but it must be a valid charset on the system.
+     </note>
+
 </usage>
 </directivesynopsis>
 
@@ -143,6 +150,13 @@
       </indent>
       &lt;/Directory&gt;
     </example>
+
+     <note>
+     Specifying the same charset for both <directive module="mod_charset_lite">CharsetSourceEnc</directive>
+     and <directive module="mod_charset_lite">CharsetDefault</directive> disables translation. The charset
+     need not match the charset of the response, but it must be a valid charset on the system.
+     </note>
+
 </usage>
 </directivesynopsis>
 
