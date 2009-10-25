@@ -22,7 +22,7 @@
 
 <modulesynopsis metafile="mod_rewrite.xml.meta">
 
-<name>mod_rewrite</name> 
+<name>mod_rewrite</name>
 
 <description>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</description>
@@ -134,7 +134,7 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
-<usage>       
+<usage>
 
       <p>The <directive>RewriteEngine</directive> directive enables or
       disables the runtime rewriting engine. If it is set to
@@ -172,7 +172,7 @@ later</compatibility>
 
       <p>The <directive>RewriteOptions</directive> directive sets some
       special options for the current per-server or per-directory
-      configuration. The <em>Option</em> string can currently 
+      configuration. The <em>Option</em> string can currently
       only be one of the following:</p>
 
       <dl>
@@ -350,7 +350,7 @@ Apache 2.0.41 and later</compatibility>
         <li>
           <strong>Standard Plain Text</strong><br />
            MapType: <code>txt</code>, MapSource: Unix filesystem
-          path to valid regular file 
+          path to valid regular file
 
           <p>This is the standard rewriting map feature where the
           <em>MapSource</em> is a plain ASCII file containing
@@ -382,7 +382,7 @@ RewriteMap real-to-user txt:/path/to/file/map.txt
         <li>
           <strong>Randomized Plain Text</strong><br />
            MapType: <code>rnd</code>, MapSource: Unix filesystem
-          path to valid regular file 
+          path to valid regular file
 
           <p>This is identical to the Standard Plain Text variant
           above but with a special post-processing feature: After
@@ -441,7 +441,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
         <li>
           <strong>Internal Function</strong><br />
            MapType: <code>int</code>, MapSource: Internal Apache
-          function 
+          function
 
           <p>Here, the source is an internal Apache function.
           Currently you cannot create your own, but the following
@@ -467,7 +467,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
         <li>
           <strong>External Rewriting Program</strong><br />
            MapType: <code>prg</code>, MapSource: Unix filesystem
-          path to valid regular file 
+          path to valid regular file
 
           <p>Here the source is a program, not a map file. To
           create it you can use a language of your choice, but
@@ -490,7 +490,7 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
           <p>External rewriting programs are not started if they're defined in a
           context that does not have <directive>RewriteEngine</directive> set to
           <code>on</code></p>.
-          
+
           <p>A trivial program which will implement a 1:1 map (<em>i.e.</em>,
           key == value) could be:</p>
 
@@ -509,7 +509,7 @@ while (&lt;STDIN&gt;) {
 
           <ol>
             <li>``<em>Keep it simple, stupid</em>'' (KISS).
-            If this program hangs, it will cause Apache to hang 
+            If this program hangs, it will cause Apache to hang
             when trying to use the relevant rewrite rule.</li>
 
             <li>A common mistake is to use buffered I/O on
@@ -517,8 +517,8 @@ while (&lt;STDIN&gt;) {
             ``<code>$|=1</code>'' is used above, to prevent this.</li>
 
             <li>The <directive
-            module="mod_rewrite">RewriteLock</directive> directive can 
-            be used to define a lockfile which mod_rewrite can use to synchronize 
+            module="mod_rewrite">RewriteLock</directive> directive can
+            be used to define a lockfile which mod_rewrite can use to synchronize
             communication with the mapping program. By default no such
             synchronization takes place.</li>
           </ol>
@@ -578,7 +578,7 @@ once!
       can be used in per-directory config files
       (<code>.htaccess</code>). In such a case, it will act locally,
       stripping the local directory prefix before processing, and applying
-      rewrite rules only to the remainder. When processing is complete, the 
+      rewrite rules only to the remainder. When processing is complete, the
       prefix is automatically added back to the
       path. The default setting is; <directive>RewriteBase</directive> <em>physical-directory-path</em></p>
 
@@ -588,7 +588,7 @@ once!
       or URL-base is. By default this prefix is the corresponding
       filepath itself. <strong>However, for most websites, URLs are NOT
       directly related to physical filename paths, so this
-      assumption will often be wrong!</strong> Therefore, you can 
+      assumption will often be wrong!</strong> Therefore, you can
       use the <code>RewriteBase</code> directive to specify the
       correct URL-prefix.</p>
 
@@ -648,10 +648,10 @@ Result:
               were a new request. (See <a
               href="../rewrite/rewrite_tech.html">mod_rewrite technical
               details</a>.)
-              This is not the serious overhead it may seem to be - 
-              this re-injection is completely internal to the 
-              Apache server (and the same procedure is used by 
-              many other operations within Apache).</p> 
+              This is not the serious overhead it may seem to be -
+              this re-injection is completely internal to the
+              Apache server (and the same procedure is used by
+              many other operations within Apache).</p>
 </note>
 
 </usage>
@@ -671,7 +671,7 @@ Result:
 <usage>
       <p>The <directive>RewriteCond</directive> directive defines a
       rule condition. One or more <directive>RewriteCond</directive>
-      can precede a <directive module="mod_rewrite">RewriteRule</directive> 
+      can precede a <directive module="mod_rewrite">RewriteRule</directive>
       directive. The following rule is then only used if both
       the current state of the URI matches its pattern, <strong
       >and</strong> if these conditions are met.</p>
@@ -685,7 +685,7 @@ Result:
           backreferences of the form <strong><code>$N</code></strong>
           (0 &lt;= N &lt;= 9), which provide access to the grouped
           parts (in parentheses) of the pattern, from the
-          <code>RewriteRule</code> which is subject to the current 
+          <code>RewriteRule</code> which is subject to the current
           set of <code>RewriteCond</code> conditions.
         </li>
         <li>
@@ -705,11 +705,11 @@ Result:
         </li>
         <li>
           <strong>Server-Variables</strong>: These are variables of
-          the form 
+          the form
             <strong><code>%{</code> <em>NAME_OF_VARIABLE</em>
             <code>}</code></strong>
           where <em>NAME_OF_VARIABLE</em> can be a string taken
-          from the following list: 
+          from the following list:
 
           <table>
           <columnspec><column width=".3"/><column width=".3"/>
@@ -867,7 +867,7 @@ Result:
 
         <li>
         <code>%{ENV:variable}</code>, where <em>variable</em> can be
-        any environment variable, is also available. 
+        any environment variable, is also available.
         This is looked-up via internal
         Apache structures and (if not found there) via
         <code>getenv()</code> from the Apache server process.</li>
@@ -901,7 +901,7 @@ Result:
         <code>%{LA-U:variable}</code> can be used for look-aheads which perform
         an internal (URL-based) sub-request to determine the final
         value of <em>variable</em>. This can be used to access
-        variable for rewriting which is not available at the current 
+        variable for rewriting which is not available at the current
         stage, but will be set in a later phase.
         <p>For instance, to rewrite according to the
         <code>REMOTE_USER</code> variable from within the
@@ -941,10 +941,10 @@ Result:
         <li>
           There are some special variants of <em>CondPatterns</em>.
           Instead of real regular expression strings you can also
-          use one of the following: 
+          use one of the following:
 
           <ul>
-            <li>'<strong>&lt;CondPattern</strong>' (lexicographically 
+            <li>'<strong>&lt;CondPattern</strong>' (lexicographically
             precedes)<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
@@ -992,8 +992,8 @@ Result:
             <li>'<strong>-x</strong>' (has e<strong>x</strong>ecutable
             permissions)<br />
             Treats the <em>TestString</em> as a pathname and tests
-            whether or not it exists, and has executable permissions. 
-            These permissions are determined according to 
+            whether or not it exists, and has executable permissions.
+            These permissions are determined according to
             the underlying OS.</li>
 
             <li>'<strong>-F</strong>' (is existing file, via
@@ -1009,7 +1009,7 @@ Result:
             Checks whether or not <em>TestString</em> is a valid URL,
             accessible via all the server's currently-configured
             access controls for that path. This uses an internal
-            subrequest to do the check, so use it with care - 
+            subrequest to do the check, so use it with care -
             it can impact your server's performance!</li>
           </ul>
 
@@ -1030,7 +1030,7 @@ Result:
       <ul>
         <li>'<strong><code>nocase|NC</code></strong>'
         (<strong>n</strong>o <strong>c</strong>ase)<br />
-        This makes the test case-insensitive - differences 
+        This makes the test case-insensitive - differences
         between 'A-Z' and 'a-z' are ignored, both in the
         expanded <em>TestString</em> and the <em>CondPattern</em>.
         This flag is effective only for comparisons between
@@ -1041,7 +1041,7 @@ Result:
           '<strong><code>ornext|OR</code></strong>'
           (<strong>or</strong> next condition)<br />
           Use this to combine rule conditions with a local OR
-          instead of the implicit AND. Typical example: 
+          instead of the implicit AND. Typical example:
 
 <example>
 <pre>
@@ -1087,12 +1087,12 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 </pre>
 </example>
 
-        <p>Explanation: If you use a browser which identifies itself 
+        <p>Explanation: If you use a browser which identifies itself
         as 'Mozilla' (including Netscape Navigator, Mozilla etc), then you
         get the max homepage (which could include frames, or other special
         features).
         If you use the Lynx browser (which is terminal-based), then
-        you get the min homepage (which could be a version designed for 
+        you get the min homepage (which could be a version designed for
         easy, text-only browsing).
         If neither of these conditions apply (you use any other browser,
         or your browser identifies itself as something non-standard), you get
@@ -1113,7 +1113,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
 <usage>
       <p>The <directive>RewriteRule</directive> directive is the real
-      rewriting workhorse. The directive can occur more than once, 
+      rewriting workhorse. The directive can occur more than once,
       with each instance defining a single rewrite rule. The
       order in which these rules are defined is important - this is the order
       in which they will be applied at run-time.</p>
@@ -1140,7 +1140,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       Introduction</a>.</p>
 
       <p>In mod_rewrite, the NOT character
-      ('<code>!</code>') is also available as a possible pattern 
+      ('<code>!</code>') is also available as a possible pattern
       prefix. This enables you to negate a pattern; to say, for instance:
       ``<em>if the current URL does <strong>NOT</strong> match this
       pattern</em>''. This can be used for exceptional cases, where
@@ -1148,9 +1148,9 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       default rule.</p>
 
 <note><title>Note</title>
-When using the NOT character to negate a pattern, you cannot include 
-grouped wildcard parts in that pattern. This is because, when the 
-pattern does NOT match (ie, the negation matches), there are no 
+When using the NOT character to negate a pattern, you cannot include
+grouped wildcard parts in that pattern. This is because, when the
+pattern does NOT match (ie, the negation matches), there are no
 contents for the groups. Thus, if negated patterns are used, you
 cannot use <code>$N</code> in the substitution string!
 </note>
@@ -1167,7 +1167,7 @@ cannot use <code>$N</code> in the substitution string!
         <dd>Designates the location on the file-system of the resource
         to be delivered to the client.</dd>
 
-        <dt>URL-path</dt> 
+        <dt>URL-path</dt>
 
         <dd>A <directive
         module="core">DocumentRoot</directive>-relative path to the
@@ -1220,7 +1220,7 @@ cannot use <code>$N</code> in the substitution string!
         (<code>${mapname:key|default}</code>)</li>
       </ol>
 
-      <p>Back-references are identifiers of the form 
+      <p>Back-references are identifiers of the form
       <code>$</code><strong>N</strong>
       (<strong>N</strong>=0..9), which will be replaced
       by the contents of the <strong>N</strong>th group of the
@@ -1231,7 +1231,7 @@ cannot use <code>$N</code> in the substitution string!
       These three types of variables are expanded in the order above.</p>
 
       <p>As already mentioned, all rewrite rules are
-      applied to the <em>Substitution</em> (in the order in which 
+      applied to the <em>Substitution</em> (in the order in which
       they are defined
       in the config file). The URL is <strong>completely
       replaced</strong> by the <em>Substitution</em> and the
@@ -1247,16 +1247,16 @@ cannot use <code>$N</code> in the substitution string!
       be re-injected into the query string. When you want to erase an
       existing query string, end the substitution string with just a
       question mark. To combine new and old query strings, use the
-      <code>[QSA]</code> flag.</p> 
+      <code>[QSA]</code> flag.</p>
      </note>
 
 
 
       <p>Additionally you can set special <a name="rewriteflags"
-      id="rewriteflags">actions</a> to be performed by 
+      id="rewriteflags">actions</a> to be performed by
       appending <strong><code>[</code><em>flags</em><code>]</code></strong>
       as the third argument to the <code>RewriteRule</code>
-      directive. <em>Flags</em> is a comma-separated list, surround by square 
+      directive. <em>Flags</em> is a comma-separated list, surround by square
       brackets, of any of the following flags: </p>
 
       <dl>
@@ -1282,7 +1282,7 @@ cannot use <code>$N</code> in the substitution string!
          This flag chains the current rule with the next rule
         (which itself can be chained with the following rule,
         and so on). This has the following effect: if a rule
-        matches, then processing continues as usual - 
+        matches, then processing continues as usual -
         the flag has no effect. If the rule does
         <strong>not</strong> match, then all following chained
         rules are skipped. For instance, it can be used to remove the
@@ -1306,29 +1306,30 @@ cannot use <code>$N</code> in the substitution string!
 
         <dt>'<code>discardpathinfo|DPI'
         (discard PATH_INFO)</code></dt><dd>
+	<p>This flag is available from 2.2.12</p>
         <p>In per-directory context, the URI each <directive>RewriteRule</directive>
-        compares against is the concatenation of the current values of the URI 
-        and PATH_INFO.</p>  
+        compares against is the concatenation of the current values of the URI
+        and PATH_INFO.</p>
 
         <p>The current URI can be the initial URI as requested by the client, the
         result of a previous round of mod_rewrite processing, or the result of
         a prior rule in the current round of mod_rewrite processing.</p>
 
-        <p>In contrast, the PATH_INFO that is appended to the URI before each 
-        rule reflects only the value of PATH_INFO before this round of 
+        <p>In contrast, the PATH_INFO that is appended to the URI before each
+        rule reflects only the value of PATH_INFO before this round of
         mod_rewrite processing. As a consequence, if large portions
         of the URI are matched and copied into a substitution in multiple
         <directive>RewriteRule</directive> directives, without regard for
-        which parts of the URI came from the current PATH_INFO, the final 
+        which parts of the URI came from the current PATH_INFO, the final
         URI may have multiple copies of PATH_INFO appended to it.</p>
 
         <p>Use this flag on any substitution where the PATH_INFO that resulted
-        from the previous mapping of this request to the filesystem is not of 
-        interest.  This flag permanently forgets the PATH_INFO established 
-        before this round of mod_rewrite processing began. PATH_INFO will 
+        from the previous mapping of this request to the filesystem is not of
+        interest.  This flag permanently forgets the PATH_INFO established
+        before this round of mod_rewrite processing began. PATH_INFO will
         not be recalculated until the current round of mod_rewrite processing
-        completes.  Subsequent rules during this round of processing will see 
-        only the direct result of substitutions, without any PATH_INFO 
+        completes.  Subsequent rules during this round of processing will see
+        only the direct result of substitutions, without any PATH_INFO
         appended.</p></dd>
 
         <dt>
@@ -1341,15 +1342,15 @@ cannot use <code>$N</code> in the substitution string!
         flag more than once, to set more than one variable. The
         variables can later be dereferenced in many situations, most commonly
         from within XSSI (via <code>&lt;!--#echo
-        var="VAR"--&gt;</code>) or CGI (<code>$ENV{'VAR'}</code>). 
+        var="VAR"--&gt;</code>) or CGI (<code>$ENV{'VAR'}</code>).
         You can also dereference the variable in a later RewriteCond pattern, using
-        <code>%{ENV:VAR}</code>. Use this to strip 
+        <code>%{ENV:VAR}</code>. Use this to strip
         information from URLs, while maintaining a record of that information.</dd>
 
         <dt>'<code>forbidden|F</code>' (force URL
         to be forbidden)</dt><dd>
-        This forces the current URL to be forbidden - it immediately 
-        sends back a HTTP response of 403 (FORBIDDEN). 
+        This forces the current URL to be forbidden - it immediately
+        sends back a HTTP response of 403 (FORBIDDEN).
         Use this flag in conjunction with
         appropriate RewriteConds to conditionally block some
         URLs.</dd>
@@ -1366,7 +1367,7 @@ cannot use <code>$N</code> in the substitution string!
          Force the Content-handler of the target file to be
         <em>Content-handler</em>. For instance, this can be used to
         simulate the <module>mod_alias</module> directive
-        <directive module="mod_alias">ScriptAlias</directive>, 
+        <directive module="mod_alias">ScriptAlias</directive>,
         which internally forces all files
         inside the mapped directory to have a handler of
         ``<code>cgi-script</code>''.<br />
@@ -1417,12 +1418,12 @@ cannot use <code>$N</code> in the substitution string!
           will be escaped into their hexcode equivalents ('%25',
           '%24', and '%3B', respectively); this flag prevents this
           from happening. This allows percent symbols to appear in
-          the output, as in 
+          the output, as in
 <example>
     RewriteRule ^/foo/(.*) /bar?arg=P1\%3d$1 [R,NE]
 </example>
           which would turn '<code>/foo/zed</code>' into a safe
-          request for '<code>/bar?arg=P1=zed</code>'. 
+          request for '<code>/bar?arg=P1=zed</code>'.
         </dd>
 
         <dt>
@@ -1440,7 +1441,7 @@ cannot use <code>$N</code> in the substitution string!
           exclude some rules.</p>
           <p>To decide whether or not to use this rule: if you
           prefix URLs with CGI-scripts, to force them to be
-          processed by the CGI-script, it's likely that you 
+          processed by the CGI-script, it's likely that you
           will run into problems (or significant overhead) on
           sub-requests. In these cases, use this flag.</p>
         </dd>
@@ -1449,7 +1450,7 @@ cannot use <code>$N</code> in the substitution string!
           '<code>proxy|P</code>' (force
           proxy)</dt><dd>
           This flag forces the substitution part to be internally
-          sent as a proxy request and immediately (rewrite 
+          sent as a proxy request and immediately (rewrite
           processing stops here) put through the <a
           href="mod_proxy.html">proxy module</a>. You must make
           sure that the substitution string is a valid URI
@@ -1460,7 +1461,7 @@ cannot use <code>$N</code> in the substitution string!
           more powerful implementation of the <a
           href="mod_proxy.html#proxypass">ProxyPass</a> directive,
           to map remote content into the namespace of the local
-          server. 
+          server.
 
           <p>Note: <module>mod_proxy</module> must be enabled in order
           to use this flag.</p>
@@ -1482,18 +1483,18 @@ cannot use <code>$N</code> in the substitution string!
           <code>/abc</code> to <code>/def</code> using
           <module>mod_rewrite</module>, and then
           <code>/def</code> to <code>/ghi</code> using
-          <module>mod_alias</module>: 
+          <module>mod_alias</module>:
 <example>
     RewriteRule ^/abc(.*)  /def$1 [PT]<br />
     Alias       /def       /ghi
 </example>
           If you omit the <code>PT</code> flag,
-          <code>mod_rewrite</code> will rewrite 
+          <code>mod_rewrite</code> will rewrite
           <code>uri=/abc/...</code> to
           <code>filename=/def/...</code> as a full API-compliant
           URI-to-filename translator should do. Then
           <code>mod_alias</code> will try to do a
-          URI-to-filename transition, which will fail. 
+          URI-to-filename transition, which will fail.
 
           <p>Note: <strong>You must use this flag if you want to
           mix directives from different modules which allow
@@ -1569,7 +1570,7 @@ cannot use <code>$N</code> in the substitution string!
 <note><title>Home directory expansion</title>
 <p> When the substitution string begins with a string
 resembling "/~user" (via explicit text or backreferences), mod_rewrite performs
-home directory expansion independent of the presence or configuration 
+home directory expansion independent of the presence or configuration
 of <module>mod_userdir</module>.</p>
 
 <p> This expansion does not occur when the <em>PT</em>
@@ -1578,7 +1579,7 @@ directive.</p>
 </note>
 
 <note><title>Per-directory Rewrites</title>
- 
+
 <p>The rewrite engine may be used in <a
 href="../howto/htaccess.html">.htaccess</a> files.  To enable the
 rewrite engine for these files you need to set
@@ -1664,7 +1665,7 @@ should never be necessary and is unsupported.</p>
        (<code>/physical/path/to/somepath/.htacccess</code>, with
       <code>RewriteBase /somepath</code>)<br />
        for request ``<code>GET
-      /somepath/localpath/pathinfo</code>'':</strong><br /> 
+      /somepath/localpath/pathinfo</code>'':</strong><br />
      </p>
 
 <note><pre>
