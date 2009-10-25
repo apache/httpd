@@ -197,6 +197,36 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(OCSPOverrideResponder, FLAG,
                "Force use of the default responder URL ('on', 'off')")
 
+#ifdef HAVE_OCSP_STAPLING
+    /*
+     * OCSP Stapling options
+     */
+    SSL_CMD_SRV(StaplingMutex, TAKE1, AP_ALL_AVAILABLE_MUTEXES_STRING)
+    SSL_CMD_SRV(StaplingCache, TAKE1,
+                "SSL Stapling Response Cache storage "
+                "(`dbm:/path/to/file')")
+    SSL_CMD_SRV(UseStapling, FLAG,
+                "SSL switch for the OCSP Stapling protocol " "(`on', `off')")
+    SSL_CMD_SRV(StaplingResponseTimeSkew, TAKE1,
+                "SSL stapling option for maximum time difference in OCSP responses")
+    SSL_CMD_SRV(StaplingResponderTimeout, TAKE1,
+                "SSL stapling option for OCSP responder timeout")
+    SSL_CMD_SRV(StaplingResponseMaxAge, TAKE1,
+                "SSL stapling option for maximum age of OCSP responses")
+    SSL_CMD_SRV(StaplingStandardCacheTimeout, TAKE1,
+                "SSL stapling option for normal OCSP Response Cache Lifetime")
+    SSL_CMD_SRV(StaplingReturnResponderErrors, FLAG,
+                "SSL stapling switch to return Status Errors Back to Client"
+		"(`on', `off')")
+    SSL_CMD_SRV(StaplingFakeTryLater, FLAG,
+                "SSL stapling switch to send tryLater response to client on error "
+		"(`on', `off')")
+    SSL_CMD_SRV(StaplingErrorCacheTimeout, TAKE1,
+                "SSL stapling option for OCSP Response Error Cache Lifetime")
+    SSL_CMD_SRV(StaplingForceURL, TAKE1,
+                "SSL stapling option to Force the OCSP Stapling URL")
+#endif
+
     /* Deprecated directives. */
     AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL,
       "SSLLog directive is no longer supported - use ErrorLog."),

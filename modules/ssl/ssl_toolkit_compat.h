@@ -147,6 +147,12 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 
 #define HAVE_SSL_X509V3_EXT_d2i
 
+#if (OPENSSL_VERSION_NUMBER >= 0x00908080)
+#ifndef OPENSSL_NO_TLSEXT
+#define HAVE_OCSP_STAPLING
+#endif
+#endif
+
 #ifndef PEM_F_DEF_CALLBACK
 #ifdef PEM_F_PEM_DEF_CALLBACK
 /** In OpenSSL 0.9.8 PEM_F_DEF_CALLBACK was renamed */

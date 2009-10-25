@@ -57,6 +57,22 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         return;
     }
 
+#ifdef HAVE_OCSP_STAPLING
+    if (mc->stapling_cache) {
+        memset(&hints, 0, sizeof hints);
+        hints.avg_obj_size = 1500;
+        hints.avg_id_len = 20;
+        hints.expiry_interval = 300;
+    
+        rv = mc->stapling_cache->init(mc->stapling_cache_context,
+                                     "mod_ssl-stapling", &hints, s, p);
+        if (rv) {
+            /* ABORT ABORT etc. */
+            ssl_die();
+        }
+    }
+#endif
+
     /*
      * Warn the user that he should use the session cache.
      * But we can operate without it, of course.
@@ -73,7 +89,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
     hints.avg_id_len = 30;
     hints.expiry_interval = 30;
     
-    rv = mc->sesscache->init(mc->sesscache_context, "mod_ssl", &hints, s, p);
+    rv = mc->sesscache->init(mc->sesscache_context, "mod_ssl-session", &hints, s, p);
     if (rv) {
         /* ABORT ABORT etc. */
         ssl_die();
@@ -87,6 +103,13 @@ void ssl_scache_kill(server_rec *s)
     if (mc->sesscache) {
         mc->sesscache->destroy(mc->sesscache_context, s);
     }
+
+#ifdef HAVE_OCSP_STAPLING
+    if (mc->stapling_cache) {
+        mc->stapling_cache->destroy(mc->stapling_cache_context, s);
+    }
+#endif
+
 }
 
 BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,

@@ -40,6 +40,7 @@ ssl_expr_eval.lo dnl
 ssl_expr_parse.lo dnl
 ssl_expr_scan.lo dnl
 ssl_scache.lo dnl
+ssl_util_stapling.lo dnl
 ssl_util.lo dnl
 ssl_util_ssl.lo dnl
 ssl_engine_ocsp.lo dnl

@@ -249,6 +249,13 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     if (!ssl_mutex_init(base_server, p)) {
         return HTTP_INTERNAL_SERVER_ERROR;
     }
+#ifdef HAVE_OCSP_STAPLING
+    if (!ssl_stapling_mutex_init(base_server, p)) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    ssl_stapling_ex_init();
+#endif
 
     /*
      * initialize session caching
@@ -382,6 +389,15 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
+
+#ifdef HAVE_OCSP_STAPLING
+    /*
+     * OCSP Stapling support, status_request extension
+     */
+    if ((mctx->pkp == FALSE) && (mctx->stapling_enabled == TRUE)) {
+        modssl_init_stapling(s, p, ptemp, mctx);
+    }
+#endif
 }
 #endif
 
@@ -773,6 +789,15 @@ static int ssl_server_import_cert(server_rec *s,
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
+  
+#ifdef HAVE_OCSP_STAPLING
+    if ((mctx->pkp == FALSE) && (mctx->stapling_enabled == TRUE)) {
+        if (!ssl_stapling_init_cert(s, mctx, cert)) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                         "Unable to configure server certificate for stapling");
+        }
+    }
+#endif
 
     mctx->pks->certs[idx] = cert;
 
@@ -1246,6 +1271,9 @@ void ssl_init_Child(apr_pool_t *p, server_rec *s)
 
     /* open the mutex lockfile */
     ssl_mutex_reinit(s, p);
+#ifdef HAVE_OCSP_STAPLING
+    ssl_stapling_mutex_reinit(s, p);
+#endif
 }
 
 #define MODSSL_CFG_ITEM_FREE(func, item) \
