@@ -181,7 +181,7 @@ static const char *add_charset_options(cmd_parms *cmd, void *in_dc,
     else if (!strcasecmp(flag, "NoImplicitAdd")) {
         dc->implicit_add = IA_NOIMPADD;
     }
-    if (!strcasecmp(flag, "TranslateAllMimeTypes")) {
+    else if (!strcasecmp(flag, "TranslateAllMimeTypes")) {
         dc->force_xlate = FX_FORCE;
     }
     else if (!strcasecmp(flag, "NoTranslateAllMimeTypes")) {
