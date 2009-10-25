@@ -87,6 +87,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_cache: treat s-maxage as an explicit expiration in cacheability
+              decisions, per RFC 2616
+   Trunk Patch: http://svn.apache.org/viewvc?rev=823536&view=rev
+                http://svn.apache.org/viewvc?rev=823563&view=rev
+   2.2.x Patch: http://people.apache.org/~poirier/smaxage.patch
+                (trunk patch works, except for CHANGES)
+   +1: poirier, sf, covener
+
+ * mod_rewrite: don't fully qualify hostname:port if the request is a CONNECT
+                request
+   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=822004
+   2.2.x Patch: trunk patch works
+   +1: sf, minfrin, covener
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -121,20 +135,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?rev=809665&view=rev
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
    +1: minfrin
-
- * mod_rewrite: don't fully qualify hostname:port if the request is a CONNECT
-                request
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=822004
-   2.2.x Patch: trunk patch works
-   +1: sf, minfrin
-
- * mod_cache: treat s-maxage as an explicit expiration in cacheability
-              decisions, per RFC 2616
-   Trunk Patch: http://svn.apache.org/viewvc?rev=823536&view=rev
-                http://svn.apache.org/viewvc?rev=823563&view=rev
-   2.2.x Patch: http://people.apache.org/~poirier/smaxage.patch
-                (trunk patch works, except for CHANGES)
-   +1: poirier, sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
