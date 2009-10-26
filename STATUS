@@ -144,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?rev=829667&view=rev
 
     2.2.x Patch:  http://people.apache.org/~covener/2.2.x-xlate_lite-noimplicitadd.diff (no code conflicts)
-    +1: covener     
+    +1: covener, trawick (without unrelated generated html)
 
 PATCHES/ISSUES THAT ARE STALLED
 
