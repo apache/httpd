@@ -211,7 +211,7 @@ static dav_error * dav_fs_internal_walk(const dav_walk_params *params,
 **
 ** PRIVATE REPOSITORY FUNCTIONS
 */
-request_rec *dav_fs_get_request_rec(const dav_resource *resource)
+static request_rec *dav_fs_get_request_rec(const dav_resource *resource)
 {
     return resource->info->r;
 }
@@ -1823,9 +1823,9 @@ static const dav_hooks_repository dav_hooks_repository_fs =
     dav_fs_remove_resource,
     dav_fs_walk,
     dav_fs_getetag,
+    NULL,
     dav_fs_get_request_rec,
-    dav_fs_pathname,
-    NULL
+    dav_fs_pathname
 };
 
 static dav_prop_insert dav_fs_insert_prop(const dav_resource *resource,
