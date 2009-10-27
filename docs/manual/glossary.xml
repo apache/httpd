@@ -400,6 +400,17 @@
       See: <a href="ssl/">SSL/TLS Encryption</a>
     </dd>
 
+    <dt><a name="servernameindication" id="servernameindication">Server Name
+        Indication</a> <a name="sni" id="sni">(SNI)</a></dt>
+    <dd>An SSL function that allows passing the desired server
+      hostname in the initial SSL handshake message, so that the web
+      server can select the correct virtual host configuration to use
+      in processing the SSL handshake.  It was added to SSL starting
+      with the TLS extensions, RFC 3546.  <br />
+      See: <a href="ssl/ssl_faq.html">the SSL FAQ</a>
+      and <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
+    </dd>
+
     <dt><a name="serversideincludes" id="serversideincludes">Server Side
         Includes</a> <a name="ssi" id="ssi">(SSI)</a></dt>
     <dd>A technique for embedding processing directives inside HTML files.<br />
