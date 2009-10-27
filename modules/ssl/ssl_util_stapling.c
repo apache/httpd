@@ -114,13 +114,13 @@ int ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x)
     cinf  = X509_get_ex_data(x, stapling_ex_idx);
     if (cinf) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                        "ssl_stapling_init_cert: certificate already initialized!");
+                     "ssl_stapling_init_cert: certificate already initialized!");
         return 0;
     }
     cinf = OPENSSL_malloc(sizeof(certinfo));
     if (!cinf) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                        "ssl_stapling_init_cert: error allocating memory!");
+                     "ssl_stapling_init_cert: error allocating memory!");
         return 0;
     }
     cinf->cid = NULL;
@@ -131,7 +131,7 @@ int ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x)
 
     if (issuer == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                    "ssl_stapling_init_cert: Can't retrieve issuer certificate!");
+                     "ssl_stapling_init_cert: Can't retrieve issuer certificate!");
         return 0;
     }
 
@@ -146,7 +146,7 @@ int ssl_stapling_init_cert(server_rec *s, modssl_ctx_t *mctx, X509 *x)
         cinf->uri = sk_pop(aia);
     if (!cinf->uri && !mctx->stapling_force_url) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                         "ssl_stapling_init_cert: no responder URL");
+                     "ssl_stapling_init_cert: no responder URL");
     }
     if (aia)
         X509_email_free(aia);
@@ -161,7 +161,7 @@ static certinfo *stapling_get_cert_info(server_rec *s, modssl_ctx_t *mctx,
     x = SSL_get_certificate(ssl);
     if (x == NULL)
         return NULL;
-    cinf  = X509_get_ex_data(x, stapling_ex_idx);
+    cinf = X509_get_ex_data(x, stapling_ex_idx);
     if (cinf && cinf->cid)
         return cinf;
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
@@ -670,7 +670,7 @@ void modssl_init_stapling(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
 
     if (mc->stapling_cache == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                 "SSLStapling: no stapling cache available");
+                     "SSLStapling: no stapling cache available");
         ssl_die();
     }
     /* Set some default values for parameters if they are not set */
