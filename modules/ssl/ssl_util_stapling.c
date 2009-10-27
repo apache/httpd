@@ -24,7 +24,7 @@
  *  OCSP Stapling Support
  */
                              /* ``Where's the spoons?
-                                  Where's the spoons? 
+                                  Where's the spoons?
                                   Where's the bloody spoons?''
                                             -- Alexei Sayle          */
 
@@ -87,7 +87,7 @@ static X509 *stapling_get_issuer(modssl_ctx_t *mctx, X509 *x)
     X509_STORE_CTX inctx;
 
     for (i = 0; i < sk_X509_num(mctx->ssl_ctx->extra_certs); i++) {
-	issuer = sk_X509_value(mctx->ssl_ctx->extra_certs, i);
+        issuer = sk_X509_value(mctx->ssl_ctx->extra_certs, i);
         if (X509_check_issued(issuer, x) == X509_V_OK) {
             CRYPTO_add(&issuer->references, 1, CRYPTO_LOCK_X509);
             return issuer;
@@ -97,7 +97,7 @@ static X509 *stapling_get_issuer(modssl_ctx_t *mctx, X509 *x)
     if (!X509_STORE_CTX_init(&inctx, st, NULL, NULL))
         return 0;
     if (X509_STORE_CTX_get1_issuer(&issuer, &inctx, x) <= 0)
-	issuer = NULL;
+        issuer = NULL;
     X509_STORE_CTX_cleanup(&inctx);
     return issuer;
 
@@ -227,7 +227,7 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
                      "stapling_cache_response: OCSP response session store error!");
         return FALSE;
     }
-    
+
     return TRUE;
 }
 
@@ -274,7 +274,7 @@ static BOOL stapling_get_cached_response(server_rec *s, OCSP_RESPONSE **prsp,
                  "stapling_get_cached_response: cache hit");
 
     *prsp = rsp;
-    
+
     return TRUE;
 }
 
@@ -308,7 +308,7 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
     if (response_status != OCSP_RESPONSE_STATUS_SUCCESSFUL) {
         if (mctx->stapling_return_errors)
             return SSL_TLSEXT_ERR_OK;
-        else 
+        else
             return SSL_TLSEXT_ERR_NOACK;
     }
 
@@ -331,9 +331,9 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
                                 mctx->stapling_resp_maxage)) {
             if (pok)
                 *pok = TRUE;
-        } 
+        }
         else {
-            /* If pok is not NULL response was direct from a responder and 
+            /* If pok is not NULL response was direct from a responder and
              * the times should be valide. If pok is NULL the response was
              * retrieved from cache and it is expected to subsequently expire
              */
@@ -344,13 +344,13 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                              "stapling_check_response: cached response expired");
             }
- 
-            OCSP_BASICRESP_free(bs); 
+
+            OCSP_BASICRESP_free(bs);
             return SSL_TLSEXT_ERR_NOACK;
         }
     }
- 
-    OCSP_BASICRESP_free(bs); 
+
+    OCSP_BASICRESP_free(bs);
 
     return SSL_TLSEXT_ERR_OK;
 }
@@ -396,7 +396,7 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         ocspuri = mctx->stapling_force_url;
     else
         ocspuri = cinf->uri;
-    
+
     /* Create a temporary pool to constrain memory use */
     apr_pool_create(&vpool, conn->pool);
 
@@ -405,26 +405,26 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "stapling_renew_response: Error parsing uri %s",
                       ocspuri);
-	rv = FALSE;
-	goto done;
+        rv = FALSE;
+        goto done;
     } else if (strcmp(uri.scheme, "http")) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "stapling_renew_response: Unsupported uri %s", ocspuri);
-	rv = FALSE;
-	goto done;
+        rv = FALSE;
+        goto done;
     }
 
     *prsp = modssl_dispatch_ocsp_request(&uri, mctx->stapling_responder_timeout,
                                          req, conn, vpool);
- 
+
     apr_pool_destroy(vpool);
 
     if (!*prsp) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "stapling_renew_response: responder error");
-        if (mctx->stapling_fake_trylater) { 
+        if (mctx->stapling_fake_trylater) {
             *prsp = OCSP_response_create(OCSP_RESPONSE_STATUS_TRYLATER, NULL);
-        } 
+        }
         else {
             goto done;
         }
@@ -612,7 +612,7 @@ static int stapling_cb(SSL *ssl, void *arg)
             OCSP_RESPONSE_free(rsp);
             stapling_mutex_off(s);
             return SSL_TLSEXT_ERR_ALERT_FATAL;
-        } 
+        }
         else if (rv == SSL_TLSEXT_ERR_NOACK) {
             /* Error in response. If this error was not present when it was
              * stored (i.e. response no longer valid) then it can be
@@ -662,7 +662,7 @@ static int stapling_cb(SSL *ssl, void *arg)
 
 }
 
-void modssl_init_stapling(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp, 
+void modssl_init_stapling(server_rec *s, apr_pool_t *p, apr_pool_t *ptemp,
                           modssl_ctx_t *mctx)
 {
     SSL_CTX *ctx = mctx->ssl_ctx;
