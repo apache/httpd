@@ -663,7 +663,7 @@ trying to use Anonymous Diffie-Hellman (ADH) ciphers?</a></li>
 error when connecting to my newly installed server?</a></li>
 <li><a href="#vhosts">Why can't I use SSL with name-based/non-IP-based 
 virtual hosts?</a></li>
-<li><a href="#vhosts2">Why is it not possible to use Name-Based Virtual
+<li><a href="#vhosts2">Is it possible to use Name-Based Virtual
 Hosting to identify different SSL virtual hosts?</a></li>
 <li><a href="#comp">How do I get SSL compression working?</a></li>
 <li><a href="#lockicon">When I use Basic Authentication over HTTPS
@@ -774,16 +774,24 @@ Virtual Hosting to identify different SSL virtual hosts?</title>
     SSL, it seems natural to assume that the same method can be used to have
     lots of different SSL virtual hosts on the same server.</p>
 
-    <p>It comes as rather a shock to learn that it is impossible.</p> 
+    <p>It is possible, but only if using a 2.2.12 or later web server,
+    built with 0.9.8j or later OpenSSL.  This is because it requires a
+    feature that only the most recent revisions of the SSL
+    specification added, called Server Name Indication (SNI).</p>
 
     <p>The reason is that the SSL protocol is a separate layer which
     encapsulates the HTTP protocol. So the SSL session is a separate 
     transaction, that takes place before the HTTP session has begun. 
     The server receives an SSL request on IP address X and port Y 
-    (usually 443). Since the SSL request does not contain any Host: 
-    field, the server has no way to decide which SSL virtual host to use.
-    Usually, it will just use the first one it finds, which matches the 
-    port and IP address specified.</p> 
+    (usually 443). Since the SSL request did not contain any Host: 
+    field, the server had no way to decide which SSL virtual host to use.
+    Usually, it just used the first one it found which matched the 
+    port and IP address specified.</p>
+
+    <p>If you are using a version of the web server and OpenSSL that
+    support SNI, though, and the client's browser also supports SNI,
+    then the hostname is included in the original SSL request, and the
+    web server can select the correct SSL virtual host.</p>
 
     <p>You can, of course, use Name-Based Virtual Hosting to identify many
     non-SSL virtual hosts (all on port 80, for example) and then 
