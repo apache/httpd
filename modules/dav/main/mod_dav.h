@@ -1941,10 +1941,10 @@ struct dav_hooks_repository
     */
     void *ctx;
 
-    /* return request record */
+    /* Get the request rec for a resource */
     request_rec * (*get_request_rec)(const dav_resource *resource);
 
-    /* return path */
+    /* Get the pathname for a resource */
     const char * (*get_pathname)(const dav_resource *resource);
 };
 
