@@ -74,6 +74,10 @@ HTTP server.</p>
     and white space occurring before a directive are ignored, so
     you may indent directives for clarity.</p>
 
+    <p>The maximum length of a line in the configuration file,
+    after joining any continued lines and removing leading and
+    trailing white space, is 8192 characters.</p>
+
     <p>You can check your configuration files for syntax errors
     without starting the server by using <code>apachectl
     configtest</code> or the <code>-t</code> command line
