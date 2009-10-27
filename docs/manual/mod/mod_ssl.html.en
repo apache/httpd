@@ -827,13 +827,6 @@ The available <em>option</em>s are:</p>
     rather expensive operation. So one usually enables this option for
     CGI and SSI requests only.</p>
 </li>
-<li><code>CompatEnvVars</code>
-    <p>
-    When this option is enabled, additional CGI/SSI environment variables are
-    created for backward compatibility to other Apache SSL solutions. Look in
-    the <a href="../ssl/ssl_compat.html">Compatibility</a> chapter for details
-    on the particular variables generated.</p>
-</li>
 <li><code>ExportCertData</code>
     <p>
     When this option is enabled, additional CGI/SSI environment variables are
@@ -890,7 +883,7 @@ The available <em>option</em>s are:</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLOptions +FakeBasicAuth -StrictRequire<br />
 &lt;Files ~ "\.(cgi|shtml)$"&gt;<br />
-    SSLOptions +StdEnvVars +CompatEnvVars -ExportCertData<br />
+    SSLOptions +StdEnvVars -ExportCertData<br />
 &lt;Files&gt;
 </code></p></div>
 
