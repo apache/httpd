@@ -113,10 +113,11 @@ AP_DECLARE(int) ap_scan_script_header_err_brigade(request_rec *r,
  *               error, the string that cause the error is stored here. 
  * @param termch Pointer to the last character parsed.
  * @param termarg Pointer to an int to capture the last argument parsed.
- * @param args   String arguments to parse consecutively for headers, 
- *               a NULL argument terminates the list.
+ * 
+ * The varargs are string arguments to parse consecutively for headers, 
+ * with a NULL argument to terminate the list.
+ *
  * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
- * @fn int ap_scan_script_header_err_core(request_rec *r, char *buffer, int (*getsfunc)(char *, int, void *), void *getsfunc_data)
  */ 
 AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
                                                       char *buffer, 
@@ -134,7 +135,6 @@ AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
                    act like gets()
  * @param getsfunc_data The place to read from
  * @return HTTP_OK on success, HTTP_INTERNAL_SERVER_ERROR otherwise
- * @fn int ap_scan_script_header_err_core(request_rec *r, char *buffer, int (*getsfunc)(char *, int, void *), void *getsfunc_data)
  */ 
 AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),

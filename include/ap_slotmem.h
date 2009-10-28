@@ -20,7 +20,7 @@
 /* Memory handler for a shared memory divided in slot.
  */
 /**
- * @file  slotmem.h
+ * @file  ap_slotmem.h
  * @brief Memory Slot Extension Storage Module for Apache
  *
  * @defgroup MEM mem

@@ -98,11 +98,9 @@ void* cache_hash_get(cache_hash_t *ht, const void *key,
 /**
  * Start iterating over the entries in a hash table.
  * @param ht The hash table
- * @example
- */
-/**
- * <PRE>
- * 
+ *
+ * Here is an example of using this:
+ * @code
  *     int sum_values(cache_hash_t *ht)
  *     {
  *         cache_hash_index_t *hi;
@@ -114,12 +112,12 @@ void* cache_hash_get(cache_hash_t *ht, const void *key,
  * 	   }
  * 	   return sum;
  *     }
- * 
+ * @endcode
+ *
  * There is no restriction on adding or deleting hash entries during an
  * iteration (although the results may be unpredictable unless all you do
  * is delete the current entry) and multiple iterations can be in
  * progress at the same time.
- * </PRE>
   */
 cache_hash_index_t* cache_hash_first(cache_hash_t *ht);
 

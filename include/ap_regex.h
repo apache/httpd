@@ -112,7 +112,7 @@ AP_DECLARE(int) ap_regcomp(ap_regex_t *preg, const char *regex, int cflags);
  * @param nmatch Provide information regarding the location of any matches
  * @param pmatch Provide information regarding the location of any matches
  * @param eflags Bitwise OR of any of AP_REG_* flags 
- * @return 0 for successful match, #REG_NOMATCH otherwise
+ * @return 0 for successful match, \p REG_NOMATCH otherwise
  */ 
 AP_DECLARE(int) ap_regexec(const ap_regex_t *preg, const char *string,
                            apr_size_t nmatch, ap_regmatch_t *pmatch, int eflags);

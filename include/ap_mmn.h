@@ -215,20 +215,22 @@
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
  * specified value.
- * <pre>
+ *
  * Useful for testing for features.
  * For example, suppose you wish to use the apr_table_overlap
  *    function.  You can do this:
  *
+ * \code
  * #if AP_MODULE_MAGIC_AT_LEAST(19980812,2)
  *     ... use apr_table_overlap()
  * #else
  *     ... alternative code which doesn't use apr_table_overlap()
  * #endif
- * </pre>
+ * \endcode
+ *
  * @param major The major module magic number
  * @param minor The minor module magic number
- * @fn AP_MODULE_MAGIC_AT_LEAST(int major, int minor)
+ * @def AP_MODULE_MAGIC_AT_LEAST(int major, int minor)
  */
 #define AP_MODULE_MAGIC_AT_LEAST(major,minor)           \
     ((major) < MODULE_MAGIC_NUMBER_MAJOR                \

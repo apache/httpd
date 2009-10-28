@@ -1518,7 +1518,7 @@ AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partia
  * Escape an html string
  * @param p The pool to allocate from
  * @param s The html to escape
- * @param toasc Whether to escape all non-ASCII chars to &#nnn;
+ * @param toasc Whether to escape all non-ASCII chars to \&\#nnn;
  * @return The escaped string
  */
 AP_DECLARE(char *) ap_escape_html2(apr_pool_t *p, const char *s, int toasc);
@@ -1741,9 +1741,9 @@ AP_DECLARE(int) ap_ind(const char *str, char c);	/* Sigh... */
 AP_DECLARE(int) ap_rind(const char *str, char c);
 
 /**
- * Given a string, replace any bare " with \" .
+ * Given a string, replace any bare &quot; with \\&quot; .
  * @param p The pool to allocate memory from
- * @param instring The string to search for "
+ * @param instring The string to search for &quot;
  * @return A copy of the string with escaped quotes 
  */
 AP_DECLARE(char *) ap_escape_quotes(apr_pool_t *p, const char *instring);

@@ -65,7 +65,7 @@ AP_DECLARE_DATA extern apr_array_header_t *ap_server_config_defines;
  * @param status The exit status after sending signal
  * @param pool Memory pool to allocate from
  */
-APR_DECLARE_OPTIONAL_FN(int, ap_signal_server, (int *, apr_pool_t *));
+APR_DECLARE_OPTIONAL_FN(int, ap_signal_server, (int *status, apr_pool_t *pool));
 
 #ifdef __cplusplus
 }

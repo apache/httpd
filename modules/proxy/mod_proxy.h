@@ -593,7 +593,7 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
  * Add the worker to the balancer
  * @param pool     memory pool for adding worker 
  * @param balancer balancer to add to
- * @param balancer worker to add
+ * @param worker worker to add
  * @note Single worker can be added to multiple balancers.
  */
 PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer(apr_pool_t *pool,
@@ -632,7 +632,8 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
 
 /**
  * Request status function
- * @param status   status of proxy request
+ * @param status   status of proxy request (result)
+ * @param r        the request to obtain the status for
  * @return         OK or DECLINED
  */
  PROXY_DECLARE(int) ap_proxy_request_status(int *status, request_rec *r);
@@ -662,10 +663,10 @@ PROXY_DECLARE(int) ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                                  apr_port_t proxyport,
                                                  char *server_portstr,
                                                  int server_portstr_size);
+
 /**
  * Mark a worker for retry
  * @param proxy_function calling proxy scheme (http, ajp, ...)
- * @param conf    current proxy server configuration
  * @param worker  worker used for retrying
  * @param s       current server record
  * @return        OK if marked for retry, DECLINED otherwise

@@ -438,7 +438,7 @@ typedef struct ap_conf_vector_t ap_conf_vector_t;
 /**
  * Generic accessors for other modules to get at their own module-specific
  * data
- * @param conf_vector The vector in which the modules configuration is stored.
+ * @param cv The vector in which the modules configuration is stored.
  *        usually r->per_dir_config or s->module_config
  * @param m The module to get the data for.
  * @return The module-specific data
@@ -449,7 +449,7 @@ AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
 /**
  * Generic accessors for other modules to set at their own module-specific
  * data
- * @param conf_vector The vector in which the modules configuration is stored.
+ * @param cv The vector in which the modules configuration is stored.
  *        usually r->per_dir_config or s->module_config
  * @param m The module to set the data for.
  * @param val The module-specific data to set
@@ -538,11 +538,11 @@ AP_DECLARE_NONSTD(const char *) ap_set_file_slot(cmd_parms *cmd,
  * @param struct_ptr pointer into a given type
  * @param arg The argument to the directive
  * @return The cmd->help value as the error string
- * @tip This allows simple declarations such as;
- * <pre>
+ * @note This allows simple declarations such as:
+ * @code
  *     AP_INIT_RAW_ARGS("Foo", ap_set_deprecated, NULL, OR_ALL, 
  *         "The Foo directive is no longer supported, use Bar"),
- * </pre>
+ * @endcode
  */
 AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd, 
                                                   void *struct_ptr, 
@@ -575,13 +575,13 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p);
 AP_DECLARE(void) ap_remove_module(module *m);
 /**
  * Add a module to the chained modules list and the list of loaded modules
- * @param m The module structure of the module to add
+ * @param mod The module structure of the module to add
  * @param p The pool with the same lifetime as the module
  */
 AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p);
 /**
  * Remove a module fromthe chained modules list and the list of loaded modules
- * @param m the module structure of the module to remove
+ * @param mod the module structure of the module to remove
  */
 AP_DECLARE(void) ap_remove_loaded_module(module *mod);
 /**
@@ -862,15 +862,17 @@ AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_conn_config(apr_pool_t *p);
 
 /**
  * parse an htaccess file
- * @param resulting htaccess_result
+ * @param result htaccess_result
  * @param r The request currently being served
  * @param override Which overrides are active
+ * @param override_opts Which allow-override-opts bits are set
  * @param path The path to the htaccess file
  * @param access_name The list of possible names for .htaccess files
  * int The status of the current request
  */
 AP_CORE_DECLARE(int) ap_parse_htaccess(ap_conf_vector_t **result, 
-                                       request_rec *r, int override,
+                                       request_rec *r,
+                                       int override,
                                        int override_opts,
                                        const char *path, 
                                        const char *access_name);
@@ -894,7 +896,7 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
  * @param fname The name of the config file
  * @param conftree The root node of the created config tree
  * @param p Pool for general allocation
- * @param ptem Pool for temporary allocation
+ * @param ptemp Pool for temporary allocation
  */
 AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
                                                     const char *fname,
@@ -918,7 +920,7 @@ AP_DECLARE(int) ap_process_config_tree(server_rec *s,
 /**
  * Store data which will be retained across unload/load of modules
  * @param key The unique key associated with this module's retained data
- * @param Size in bytes of the retained data (to be allocated)
+ * @param size in bytes of the retained data (to be allocated)
  * @return Address of new retained data structure, initially cleared
  */
 AP_DECLARE(void *) ap_retained_data_create(const char *key, apr_size_t size);
@@ -999,6 +1001,7 @@ AP_DECLARE_HOOK(int,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,
  * @param pconf The config pool
  * @param plog The logging streams pool
  * @param ptemp The temporary pool
+ * @param s the server to operate upon
  * @return OK or DECLINED on success anything else is a error
  */
 AP_DECLARE_HOOK(int,check_config,(apr_pool_t *pconf, apr_pool_t *plog,
