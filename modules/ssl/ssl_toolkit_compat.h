@@ -39,7 +39,8 @@
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
 
-#ifdef HAVE_OCSP
+#if OPENSSL_VERSION_NUMBER >= 0x00907000
+#define HAVE_OCSP
 #include <openssl/x509_vfy.h>
 #include <openssl/ocsp.h>
 #endif
