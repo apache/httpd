@@ -573,8 +573,7 @@ static int stapling_mutex_off(server_rec *s)
 static int stapling_cb(SSL *ssl, void *arg)
 {
     conn_rec *conn      = (conn_rec *)SSL_get_app_data(ssl);
-    server_rec *s       = conn->base_server;
-
+    server_rec *s       = mySrvFromConn(conn);
     SSLSrvConfigRec *sc = mySrvConfig(s);
     SSLConnRec *sslconn = myConnConfig(conn);
     modssl_ctx_t *mctx  = myCtxConfig(sslconn, sc);
