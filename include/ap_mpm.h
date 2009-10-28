@@ -95,7 +95,7 @@ AP_DECLARE_HOOK(int, mpm, (apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
  * @param r The request_rec of the current request
  * @param newproc The resulting process handle.
  * @param progname The program to run 
- * @param const_args the arguments to pass to the new program.  The first 
+ * @param args the arguments to pass to the new program.  The first 
  *                   one should be the program name.
  * @param env The new environment apr_table_t for the new process.  This 
  *            should be a list of NULL-terminated strings.

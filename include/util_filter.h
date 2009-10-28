@@ -424,6 +424,7 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
  * (as returned by ap_register_output_filter()) rather than a filter name
  *
  * @param f The filter handle to add
+ * @param ctx Context data to set in the filter
  * @param r The request to add this filter for (or NULL if it isn't associated with a request)
  * @param c The connection to add the filter for
  * @note If adding a connection-level output filter (i.e. where the type

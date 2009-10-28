@@ -86,10 +86,11 @@ extern "C" {
  * @param terminate Either 1 or 0.  If 1, send the child processes SIGTERM
  *        each time through the loop.  If 0, give the process time to die
  *        on its own before signalling it.
- * @tip This function requires that a hook is implemented by the MPM: <pre>
+ * @note This function requires that a hook is implemented by the MPM: <pre>
  *  mpm_note_child_killed -- Note the child died in the scoreboard
  * </pre>
- * @tip The MPM child processes which are reclaimed are those listed
+ *
+ * @note The MPM child processes which are reclaimed are those listed
  * in the scoreboard as well as those currently registered via
  * ap_register_extra_mpm_process().
  */
@@ -98,10 +99,12 @@ void ap_reclaim_child_processes(int terminate);
 /**
  * Catch any child processes that have been spawned by the parent process
  * which have exited. This includes processes registered as "other_children".
- * @tip This function requires that a hook is implemented by the MPM: <pre>
+ *
+ * @note This function requires that a hook is implemented by the MPM: <pre>
  *  mpm_note_child_killed -- Note the child died in the scoreboard
  * </pre>
- * @tip The MPM child processes which are relieved are those listed
+ *
+ * @note The MPM child processes which are relieved are those listed
  * in the scoreboard as well as those currently registered via
  * ap_register_extra_mpm_process().
  */
@@ -112,7 +115,8 @@ void ap_relieve_child_processes(void);
  * an MPM child process which has no entry in the scoreboard.
  * @param pid The process id of an MPM child process which should be
  * reclaimed when ap_reclaim_child_processes() is called.
- * @tip If an extra MPM child process terminates prior to calling
+ *
+ * @note If an extra MPM child process terminates prior to calling
  * ap_reclaim_child_processes(), remove it from the list of such processes
  * by calling ap_unregister_extra_mpm_process().
  */
@@ -143,6 +147,8 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig);
  * this process sleeps for the amount of time specified by the MPM defined
  * macro SCOREBOARD_MAINTENANCE_INTERVAL.
  * @param status The return code if a process has died
+ * @param exitcode The returned exit status of the child, if a child process 
+ *                 dies, or the signal that caused the child to die.
  * @param ret The process id of the process that died
  * @param p The pool to allocate out of
  * @param s The server_rec to pass
@@ -154,6 +160,7 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
  * Log why a child died to the error log, if the child died without the
  * parent signalling it.
  * @param pid The child that has died
+ * @param why The return code of the child process
  * @param status The status returned from ap_wait_or_timeout
  * @return 0 on success, APEXIT_CHILDFATAL if MPM should terminate
  */
@@ -204,6 +211,7 @@ struct ap_pod_t {
  * Open the pipe-of-death.  The pipe of death is used to tell all child
  * processes that it is time to die gracefully.
  * @param p The pool to use for allocating the pipe
+ * @param pod the pipe-of-death that is created.
  */
 AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod);
 
@@ -214,20 +222,22 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_check(ap_pod_t *pod);
 
 /**
  * Close the pipe-of-death
+ *
+ * @param pod the pipe-of-death to close.
  */
 AP_DECLARE(apr_status_t) ap_mpm_pod_close(ap_pod_t *pod);
 
 /**
  * Write data to the pipe-of-death, signalling that one child process
  * should die.
- * @param p The pool to use when allocating any required structures.
+ * @param pod the pipe-of-death to write to.
  */
 AP_DECLARE(apr_status_t) ap_mpm_pod_signal(ap_pod_t *pod);
 
 /**
  * Write data to the pipe-of-death, signalling that all child process
  * should die.
- * @param p The pool to use when allocating any required structures.
+ * @param pod The pipe-of-death to write to.
  * @param num The number of child processes to kill
  */
 AP_DECLARE(void) ap_mpm_pod_killpg(ap_pod_t *pod, int num);

@@ -70,7 +70,7 @@ typedef void (*cache_pqueue_print_entry)(FILE *out, void *a);
  * @param get the callback function to get the current element's position
  * @param set the callback function to set the current element's position
  *
- * @Return the handle or NULL for insufficent memory
+ * @return the handle or NULL for insufficent memory
  */
 cache_pqueue_t *cache_pq_init(apr_ssize_t n,
                               cache_pqueue_get_priority pri,
@@ -108,15 +108,14 @@ void cache_pq_change_priority(cache_pqueue_t *q,
 
 /**
  * pop the highest-ranking item from the queue.
- * @param p the queue
- * @param d where to copy the entry to
+ * @param q the queue
  * @return NULL on error, otherwise the entry
  */
 void *cache_pq_pop(cache_pqueue_t *q);
 
 /**
  * remove an item from the queue.
- * @param p the queue
+ * @param q the queue
  * @param d the entry
  * @return APR_SUCCESS on success
  */
@@ -125,7 +124,6 @@ apr_status_t cache_pq_remove(cache_pqueue_t *q, void *d);
 /**
  * access highest-ranking item without removing it.
  * @param q the queue
- * @param d the entry
  * @return NULL on error, otherwise the entry
  */
 void *cache_pq_peek(cache_pqueue_t *q);
@@ -136,7 +134,7 @@ void *cache_pq_peek(cache_pqueue_t *q);
  * DEBUG function only
  * @param q the queue
  * @param out the output handle
- * @param the callback function to print the entry
+ * @param print the callback function to print the entry
  */
 void cache_pq_print(cache_pqueue_t *q, 
                     FILE *out, 
@@ -148,7 +146,7 @@ void cache_pq_print(cache_pqueue_t *q,
  * debug function only
  * @param q the queue
  * @param out the output handle
- * @param the callback function to print the entry
+ * @param print the callback function to print the entry
  */
 void cache_pq_dump(cache_pqueue_t *q, 
                    FILE *out,

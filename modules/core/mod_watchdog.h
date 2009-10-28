@@ -111,8 +111,8 @@ typedef struct ap_watchdog_t ap_watchdog_t;
 
 /**
  * Callback function used for watchdog.
- * @param state Watchdog state function. See AP_WATCHDOG_STATE_ .
- * @param data is what was passed to @ap_watchdog_register_callback function.
+ * @param state Watchdog state function. See @p AP_WATCHDOG_STATE_ .
+ * @param data is what was passed to @p ap_watchdog_register_callback function.
  * @param pool Temporary callback pool destroyed after the call.
  * @return APR_SUCCESS to continue calling this callback.
  */
@@ -125,9 +125,9 @@ typedef apr_status_t ap_watchdog_callback_fn_t(int state, void *data,
  * @param name Watchdog name.
  * @param parent Non-zero to get the parent process watchdog instance.
  * @param singleton Non-zero to get the singleton watchdog instance.
- * @param pool The pool use.
+ * @param p The pool to use.
  * @return APR_SUCCESS if all went well
- * @remark Use @AP_WATCHDOG_DEFAULT to get default watchdog instance.
+ * @remark Use @p AP_WATCHDOG_DEFAULT to get default watchdog instance.
  *         If separate watchdog thread is needed provide unique name
  *         and function will create a new watchdog instance.
  *         Note that default client process watchdog works in singleton mode.
@@ -150,7 +150,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_watchdog_register_callback,
 
 /**
  * Update registered watchdog callback interval.
- * @param watchdog Watchdog to use
+ * @param w Watchdog to use
  * @param interval New interval on which the callback function will execute.
  * @param callback  The function to call on watchdog event.
  * @param data The data to pass to the callback function.
@@ -201,7 +201,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_exit, (
 
 /**
  * Fixed interval watchdog hook.
- * It is called regulary on @AP_WD_TM_INTERVAL interval.
+ * It is called regularly on @p AP_WD_TM_INTERVAL interval.
  * @param name Watchdog name.
  * @param pool Temporary pool destroyed after the call.
  */

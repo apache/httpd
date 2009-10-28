@@ -75,7 +75,7 @@ AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
 /**
  * Send an appropriate response to an http TRACE request.
  * @param r The current request
- * @tip returns DONE or the HTTP status error if it handles the TRACE,
+ * @note returns DONE or the HTTP status error if it handles the TRACE,
  * or DECLINED if the request was not for TRACE.
  * request method was not TRACE.
  */

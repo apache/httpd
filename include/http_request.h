@@ -313,18 +313,18 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
  * the response to the client
  * @param r The current request
  */
-void ap_process_request(request_rec *);
+void ap_process_request(request_rec *r);
 
 /* For post-processing after a handler has finished with a request. (Commonly used after it was suspended) */
 void ap_process_request_after_handler(request_rec *r);
 
-    /**
+/**
  * Process a top-level request from a client, allowing some or all of
  * the response to remain buffered in the core output filter for later,
  * asynchronous write completion
  * @param r The current request
  */
-void ap_process_async_request(request_rec *);
+void ap_process_async_request(request_rec *r);
 
 /**
  * Kill the current request

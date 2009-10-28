@@ -91,7 +91,7 @@ AP_DECLARE(apr_status_t) ap_regkey_close(ap_regkey_t *key);
 
 /**
  * Win32 Only: Remove the given registry key.
- * @param parentkey The open registry key of the parent, or one of
+ * @param parent The open registry key of the parent, or one of
  * <PRE>
  *           AP_REGKEY_CLASSES_ROOT
  *           AP_REGKEY_CURRENT_CONFIG
@@ -145,6 +145,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
  * Win32 Only: Retrieve a raw byte value from an open key.
  * @param result The raw bytes value retrieved 
  * @param resultsize Pointer to a variable to store the number raw bytes retrieved 
+ * @param resulttype Pointer to a variable to store the registry type of the value retrieved
  * @param key The registry key to retrieve the value from
  * @param valuename The named value to retrieve (pass "" for the default)
  * @param pool The pool used to store the result
