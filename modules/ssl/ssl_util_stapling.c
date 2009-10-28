@@ -210,7 +210,8 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
     if (ok == TRUE) {
         *p++ = 1;
         timeout = mctx->stapling_cache_timeout;
-    } else {
+    } 
+    else {
         *p++ = 0;
         timeout = mctx->stapling_errcache_timeout;
     }
@@ -325,7 +326,8 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
         /* If ID not present just pass back to client */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "stapling_check_response: certificate ID not present in response!");
-    } else {
+    } 
+    else {
         if (OCSP_check_validity(thisupd, nextupd,
                                 mctx->stapling_resptime_skew,
                                 mctx->stapling_resp_maxage)) {
@@ -340,7 +342,8 @@ static int stapling_check_response(server_rec *s, modssl_ctx_t *mctx,
             if (pok) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                              "stapling_check_response: response times invalid");
-            } else {
+            } 
+            else {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                              "stapling_check_response: cached response expired");
             }
@@ -407,7 +410,8 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
                       ocspuri);
         rv = FALSE;
         goto done;
-    } else if (strcmp(uri.scheme, "http")) {
+    } 
+    else if (strcmp(uri.scheme, "http")) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "stapling_renew_response: Unsupported uri %s", ocspuri);
         rv = FALSE;
@@ -428,7 +432,8 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         else {
             goto done;
         }
-    } else {
+    } 
+    else {
         int response_status = OCSP_response_status(*prsp);
 
         if (response_status == OCSP_RESPONSE_STATUS_SUCCESSFUL) {
@@ -439,7 +444,8 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                              "stapling_renew_response: error in retreived response!");
             }
-        } else {
+        } 
+        else {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "stapling_renew_response: responder error %s",
                          OCSP_response_status_str(response_status));
