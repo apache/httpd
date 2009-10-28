@@ -147,10 +147,9 @@ typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
 
 #define HAVE_SSL_X509V3_EXT_d2i
 
-#if (OPENSSL_VERSION_NUMBER >= 0x00908080)
-#ifndef OPENSSL_NO_TLSEXT
+#if OPENSSL_VERSION_NUMBER >= 0x00908080 && defined(HAVE_OCSP) \
+    && !defined(OPENSSL_NO_TLSEXT)
 #define HAVE_OCSP_STAPLING
-#endif
 #endif
 
 #ifndef PEM_F_DEF_CALLBACK
