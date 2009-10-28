@@ -216,7 +216,7 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
         timeout = mctx->stapling_errcache_timeout;
     }
 
-    timeout += time(NULL);
+    timeout += apr_time_sec(apr_time_now());
 
     i2d_OCSP_RESPONSE(rsp, &p);
 
