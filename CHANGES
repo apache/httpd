@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.15
 
+  *) mod_cache: correctly consider s-maxage in cacheability
+     decisions.  [Dan Poirier]
+
   *) core: Return APR_EOF if request body is shorter than the length announced
      by the client. PR 33098 [ Stefan Fritsch <sf sfritsch.de>]
 
