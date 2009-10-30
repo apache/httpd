@@ -54,6 +54,14 @@
 #define APR_LDAP_SIZELIMIT -1
 #endif
 
+#ifdef LDAP_OPT_DEBUG_LEVEL
+#define AP_LDAP_OPT_DEBUG LDAP_OPT_DEBUG_LEVEL
+#else
+#ifdef LDAP_OPT_DEBUG
+#define AP_LDAP_OPT_DEBUG LDAP_OPT_DEBUG
+#endif
+#endif
+
 module AP_MODULE_DECLARE_DATA ldap_module;
 
 #define LDAP_CACHE_LOCK() do {                                  \
@@ -2361,6 +2369,26 @@ static const char *util_ldap_set_chase_referrals(cmd_parms *cmd,
     return(NULL);
 }
 
+static const char *util_ldap_set_debug_level(cmd_parms *cmd,
+                                             void *config,
+                                             const char *arg) { 
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                                  &ldap_module);
+
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+#ifndef AP_LDAP_OPT_DEBUG
+    return "This directive is not supported with the currently linked LDAP library";
+#endif
+
+    st->debug_level = atoi(arg);
+    return NULL;
+} 
+
 static const char *util_ldap_set_referral_hop_limit(cmd_parms *cmd,
                                                     void *config,
                                                     const char *hop_limit)
@@ -2462,6 +2490,7 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
         is being enforced on this setting as well. */
     st->connectionTimeout = base->connectionTimeout;
     st->verify_svr_cert = base->verify_svr_cert;
+    st->debug_level = base->debug_level;
 
     return st;
 }
@@ -2626,6 +2655,15 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     /* Initialize the rebind callback's cross reference list. */
     apr_ldap_rebind_init (p);
 
+    if (st->debug_level > 0) { 
+        result = ldap_set_option(NULL, AP_LDAP_OPT_DEBUG, &st->debug_level);
+        if (result != LDAP_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                    "LDAP: Could not set the LDAP library debug level to %d:(%d) %s", 
+                    st->debug_level, result, ldap_err2string(result));
+        }
+    }
+
     return(OK);
 }
 
@@ -2727,6 +2765,10 @@ static const command_rec util_ldap_cmds[] = {
                   NULL, OR_AUTHCFG,
                   "Limit the number of referral hops that LDAP can follow. "
                   "(Integer value, default=" AP_LDAP_DEFAULT_HOPLIMIT_STR ")"),
+
+    AP_INIT_TAKE1("LDAPLibraryDebug", util_ldap_set_debug_level,
+                  NULL, RSRC_CONF,
+                  "Enable debugging in LDAP SDK (Default: off, values: SDK specific"),
 
     {NULL}
 };

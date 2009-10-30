@@ -60,6 +60,7 @@ by other LDAP modules</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapcachettl">LDAPCacheTTL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapconnectiontimeout">LDAPConnectionTimeout</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldaplibrarydebug">LDAPLibraryDebug</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapreferralhoplimit">LDAPReferralHopLimit</a></li>
@@ -476,6 +477,34 @@ by other LDAP modules</td></tr>
     successful with the timeout period, either an error will be 
     returned or the module will attempt to connect to a secondary LDAP 
     server if one is specified. The default is 10 seconds.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPLibraryDebug" id="LDAPLibraryDebug">LDAPLibraryDebug</a> <a name="ldaplibrarydebug" id="ldaplibrarydebug">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable debugging in the LDAP SDK</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPLibraryDebug <var>7</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>disabled</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>Turns on SDK-specific LDAP debug options that generally cause the LDAP 
+    SDK to log verbose trace information to the main Apache error log.  
+    The trace messages from the LDAP SDK provide gory details that
+    can be useful during debugging of connectivity problems with backeld LDAP servers</p>
+
+    <p>This option is only configurable when Apache HTTP Server is linked with 
+    an LDAP SDK that implements <code>LDAP_OPT_DEBUG</code> or 
+    <code>LDAP_OPT_DEBUG_LEVEL</code>, such as OpenLDAP (a value of 7 is verbose) 
+    or Tivoli Directory Server (a value of 65535 is verbose).</p>
+
+    <div class="warning">
+    <p>The logged information will likely contain plaintext credentials being used or 
+    validated by LDAP authentication, so care should be taken in protecting and purging
+    the error log when this directive is used.</p>
+    </div>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
