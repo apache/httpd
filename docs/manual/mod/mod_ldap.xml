@@ -649,4 +649,32 @@ connection client certificates.</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>LDAPLibraryDebug</name>
+<description>Enable debugging in the LDAP SDK</description>
+<syntax>LDAPLibraryDebug <var>7</var></syntax>
+<default>disabled</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Turns on SDK-specific LDAP debug options that generally cause the LDAP 
+    SDK to log verbose trace information to the main Apache error log.  
+    The trace messages from the LDAP SDK provide gory details that
+    can be useful during debugging of connectivity problems with backeld LDAP servers</p>
+
+    <p>This option is only configurable when Apache HTTP Server is linked with 
+    an LDAP SDK that implements <code>LDAP_OPT_DEBUG</code> or 
+    <code>LDAP_OPT_DEBUG_LEVEL</code>, such as OpenLDAP (a value of 7 is verbose) 
+    or Tivoli Directory Server (a value of 65535 is verbose).</p>
+
+    <note type="warning">
+    <p>The logged information will likely contain plaintext credentials being used or 
+    validated by LDAP authentication, so care should be taken in protecting and purging
+    the error log when this directive is used.</p>
+    </note>
+    
+</usage>
+</directivesynopsis>
+
+
 </modulesynopsis>
