@@ -492,7 +492,7 @@ by other LDAP modules</td></tr>
     <p>Turns on SDK-specific LDAP debug options that generally cause the LDAP 
     SDK to log verbose trace information to the main Apache error log.  
     The trace messages from the LDAP SDK provide gory details that
-    can be useful during debugging of connectivity problems with backeld LDAP servers</p>
+    can be useful during debugging of connectivity problems with backend LDAP servers</p>
 
     <p>This option is only configurable when Apache HTTP Server is linked with 
     an LDAP SDK that implements <code>LDAP_OPT_DEBUG</code> or 
