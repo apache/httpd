@@ -62,6 +62,10 @@
 #endif
 #endif
 
+#define AP_LDAP_HOPLIMIT_UNSET -1 
+#define AP_LDAP_CHASEREFERRALS_OFF 0
+#define AP_LDAP_CHASEREFERRALS_ON 1
+
 module AP_MODULE_DECLARE_DATA ldap_module;
 
 #define LDAP_CACHE_LOCK() do {                                  \
@@ -384,8 +388,8 @@ static int uldap_connection_init(request_rec *r,
         return(result->rc);
     }
 
-    if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
-        /* Referral hop limit - only if referrals are enabled */
+    if ((ldc->ReferralHopLimit != AP_LDAP_HOPLIMIT_UNSET) && ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
+        /* Referral hop limit - only if referrals are enabled and a hop limit is explicitly requested */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "Setting referral hop limit to %d.",
                      ldc->ReferralHopLimit);
@@ -2410,7 +2414,7 @@ static void *util_ldap_create_dir_config(apr_pool_t *p, char *d) {
 
    /* defaults are AP_LDAP_CHASEREFERRALS_ON and AP_LDAP_DEFAULT_HOPLIMIT */
    dc->ChaseReferrals = AP_LDAP_CHASEREFERRALS_ON;
-   dc->ReferralHopLimit = AP_LDAP_DEFAULT_HOPLIMIT;
+   dc->ReferralHopLimit = AP_LDAP_HOPLIMIT_UNSET;
 
    return dc;
 }
@@ -2764,7 +2768,7 @@ static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPReferralHopLimit", util_ldap_set_referral_hop_limit,
                   NULL, OR_AUTHCFG,
                   "Limit the number of referral hops that LDAP can follow. "
-                  "(Integer value, default=" AP_LDAP_DEFAULT_HOPLIMIT_STR ")"),
+                  "(Integer value, Consult LDAP SDK documentation for applicability and defaults"),
 
     AP_INIT_TAKE1("LDAPLibraryDebug", util_ldap_set_debug_level,
                   NULL, RSRC_CONF,

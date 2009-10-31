@@ -10,6 +10,11 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_ldap: Avoid 500 errors with "Unable to set LDAP_OPT_REFHOPLIMIT option to 5"
+     when built against openldap by using SDK LDAP_OPT_REFHOPLIMIT defaults unless
+     LDAPReferralHopLimit is explicitly configured.
+     [Eric Covener]
+
   *) mod_charset_lite: Honor 'CharsetOptions NoImplicitAdd'.
      [Eric Covener]
 
