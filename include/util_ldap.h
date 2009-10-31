@@ -93,11 +93,6 @@ typedef enum {
     always=LDAP_DEREF_ALWAYS
 } deref_options;
 
-#define AP_LDAP_DEFAULT_HOPLIMIT      5    /* make sure these two stay    */
-#define AP_LDAP_DEFAULT_HOPLIMIT_STR "5"   /*   in synch with each other! */
-#define AP_LDAP_CHASEREFERRALS_OFF 0
-#define AP_LDAP_CHASEREFERRALS_ON 1
-
 /* Structure representing an LDAP connection */
 typedef struct util_ldap_connection_t {
     LDAP *ldap;
