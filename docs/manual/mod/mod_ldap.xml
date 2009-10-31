@@ -497,7 +497,7 @@ valid</description>
 <name>LDAPReferralHopLimit</name>
 <description>The maximum number of referral hops to chase before terminating an LDAP query.</description>
 <syntax>LDAPReferralHopLimit <var>number</var></syntax>
-<default>LDAPReferralHopLimit 5</default>
+<default>SDK dependent, typically between 5 and 10</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
 <override>AuthConfig</override>
 
@@ -505,6 +505,10 @@ valid</description>
     <p>This directive, if enabled by the <code>LDAPReferrals</code> directive,
     limits the number of referral hops that are followed before terminating an
     LDAP query.</p>
+
+<note type="warning">
+<p> Support for this tunable is uncommon in LDAP SDKs.</p>
+</note>
 </usage>
 </directivesynopsis>
 
