@@ -72,6 +72,16 @@ SSI pages</description>
     <example><title>Example</title>
       SetEnv SPECIAL_PATH /foo/bin
     </example>
+
+    <note><p>The internal environment variables set by this directive are set
+    <em>after</em> most early request processing directives are run, such as access
+    control and URI-to-filename mapping.  If the environment variable you're
+    setting is meant as input into this early phase of processing such as the
+    <directive module="mod_rerite">RewriteRule</directive> directive, you should 
+    instead set the environment variable with
+    <directive module="mod_setenvif"> SetEnvIf</directive>.</p>
+    </note>
+     
 </usage>
 </directivesynopsis>
 
