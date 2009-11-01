@@ -87,6 +87,16 @@ SSI pages</td></tr>
       SetEnv SPECIAL_PATH /foo/bin
     </code></p></div>
 
+    <div class="note"><p>The internal environment variables set by this directive are set
+    <em>after</em> most early request processing directives are run, such as access
+    control and URI-to-filename mapping.  If the environment variable you're
+    setting is meant as input into this early phase of processing such as the
+    <code class="directive"><a href="../mod/mod_rerite.html#rewriterule">RewriteRule</a></code> directive, you should 
+    instead set the environment variable with
+    <code class="directive"><a href="../mod/mod_setenvif.html# setenvif"> SetEnvIf</a></code>.</p>
+    </div>
+     
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UnsetEnv" id="UnsetEnv">UnsetEnv</a> <a name="unsetenv" id="unsetenv">Directive</a></h2>
