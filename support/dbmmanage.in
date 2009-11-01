@@ -53,9 +53,9 @@ sub need_sha1_crypt {
         print STDERR <<SHAERR;
 dbmmanage SHA1 passwords require the interface or the module Digest::SHA1
 available from CPAN:
- 
+
     http://www.cpan.org/modules/by-module/Digest/Digest-MD5-2.12.tar.gz
- 
+
 Please install Digest::SHA1 and try again, or use a different crypt option:
 
 SHAERR
@@ -67,9 +67,9 @@ sub need_md5_crypt {
     if (!eval ('require "Crypt/PasswdMD5.pm";')) {
         print STDERR <<MD5ERR;
 dbmmanage MD5 passwords require the module Crypt::PasswdMD5 available from CPAN
- 
+
     http://www.cpan.org/modules/by-module/Crypt/Crypt-PasswdMD5-1.1.tar.gz
- 
+
 Please install Crypt::PasswdMD5 and try again, or use a different crypt option:
 
 MD5ERR
@@ -111,7 +111,7 @@ if ($crypt_not_supported) {
 if (@ARGV[0] eq "-d") {
     shift @ARGV;
     if ($crypt_not_supported) {
-        print STDERR 
+        print STDERR
               "Warning: Apache/$^O does not support crypt()ed passwords!\n\n";
     }
     $crypt_method = "crypt";
@@ -125,7 +125,7 @@ if (@ARGV[0] eq "-m") {
 if (@ARGV[0] eq "-p") {
     shift @ARGV;
     if (!$crypt_not_supported) {
-        print STDERR 
+        print STDERR
               "Warning: Apache/$^O does not support plaintext passwords!\n\n";
     }
     $crypt_method = "plain";
@@ -152,7 +152,7 @@ $file =~ s/\.($chop)$//;
 my $is_update = $command eq "update";
 my %DB = ();
 my @range = ();
-my($mode, $flags) = $command =~ 
+my($mode, $flags) = $command =~
     /^(?:view|check)$/ ? (0644, O_RDONLY) : (0644, O_RDWR|O_CREAT);
 
 tie (%DB, "AnyDBM_File", $file, $flags, $mode) || die "Can't tie $file: $!";
@@ -164,11 +164,11 @@ my $x;
 sub genseed {
     my $psf;
     if ($not_unix) {
-	srand (time ^ $$ or time ^ ($$ + ($$ << 15)));
+        srand (time ^ $$ or time ^ ($$ + ($$ << 15)));
     }
     else {
-        for (qw(-xlwwa -le)) { 
-	    `ps $_ 2>/dev/null`;
+        for (qw(-xlwwa -le)) {
+            `ps $_ 2>/dev/null`;
             $psf = $_, last unless $?;
         }
         srand (time ^ $$ ^ unpack("%L*", `ps $psf | gzip -f`));
@@ -177,14 +177,14 @@ sub genseed {
     $x = int scalar @range;
 }
 
-sub randchar { 
+sub randchar {
     join '', map $range[rand $x], 1..shift||1;
 }
 
 sub saltpw_crypt {
-    genseed() unless @range; 
-    return $newstyle_salt ? 
-	join '', "_", randchar, "a..", randchar(4) :
+    genseed() unless @range;
+    return $newstyle_salt ?
+        join '', "_", randchar, "a..", randchar(4) :
         randchar(2);
 }
 
@@ -195,7 +195,7 @@ sub cryptpw_crypt {
 }
 
 sub saltpw_md5 {
-    genseed() unless @range; 
+    genseed() unless @range;
     randchar(8);
 }
 
@@ -224,15 +224,15 @@ sub cryptpw {
 sub getpass {
     my $prompt = shift || "Enter password:";
 
-    unless($not_unix) { 
-	open STDIN, "/dev/tty" or warn "couldn't open /dev/tty $!\n";
-	system "stty -echo;";
+    unless($not_unix) {
+        open STDIN, "/dev/tty" or warn "couldn't open /dev/tty $!\n";
+        system "stty -echo;";
     }
 
     my($c,$pwd);
     print STDERR $prompt;
     while (($c = getc(STDIN)) ne '' and $c ne "\n" and $c ne "\r") {
-	$pwd .= $c;
+        $pwd .= $c;
     }
 
     system "stty echo" unless $not_unix;
@@ -257,7 +257,7 @@ sub dbmc::update {
 sub dbmc::add {
     die "Can't use empty password!\n" unless $crypted_pwd;
     unless($is_update) {
-	die "Sorry, user `$key' already exists!\n" if $DB{$key};
+        die "Sorry, user `$key' already exists!\n" if $DB{$key};
     }
     $groups = '' if $groups eq '-';
     $comment = '' if $comment eq '-';
@@ -299,14 +299,14 @@ sub dbmc::check {
     } else {
         $crypt_method = "plain";
     }
-    print $crypt_method . (cryptpw($testpass, $chkpass) eq $chkpass 
+    print $crypt_method . (cryptpw($testpass, $chkpass) eq $chkpass
                            ? " password ok\n" : " password mismatch\n");
 }
 
 sub dbmc::import {
     while(defined($_ = <STDIN>) and chomp) {
-	($key,$crypted_pwd,$groups,$comment) = split /:/, $_, 4;
-	dbmc->add;
+        ($key,$crypted_pwd,$groups,$comment) = split /:/, $_, 4;
+        dbmc->add;
     }
 }
 
