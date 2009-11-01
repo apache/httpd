@@ -3,15 +3,15 @@
 
 <modulefilelist>
   <modulefile>core.xml.fr</modulefile>
-  <modulefile>mod_access_compat.xml</modulefile>
-  <modulefile>mod_actions.xml</modulefile>
+  <modulefile>mod_access_compat.xml.fr</modulefile>
+  <modulefile>mod_actions.xml.fr</modulefile>
   <modulefile>mod_alias.xml.fr</modulefile>
-  <modulefile>mod_asis.xml</modulefile>
+  <modulefile>mod_asis.xml.fr</modulefile>
   <modulefile>mod_auth_basic.xml.fr</modulefile>
-  <modulefile>mod_auth_digest.xml</modulefile>
+  <modulefile>mod_auth_digest.xml.fr</modulefile>
   <modulefile>mod_auth_form.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
-  <modulefile>mod_authn_core.xml</modulefile>
+  <modulefile>mod_authn_core.xml.fr</modulefile>
   <modulefile>mod_authn_dbd.xml</modulefile>
   <modulefile>mod_authn_dbm.xml</modulefile>
   <modulefile>mod_authn_file.xml.fr</modulefile>
@@ -45,7 +45,7 @@
   <modulefile>mod_ext_filter.xml</modulefile>
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_filter.xml</modulefile>
-  <modulefile>mod_headers.xml</modulefile>
+  <modulefile>mod_headers.xml.fr</modulefile>
   <modulefile>mod_heartbeat.xml</modulefile>
   <modulefile>mod_heartmonitor.xml</modulefile>
   <modulefile>mod_ident.xml.fr</modulefile>
@@ -93,14 +93,14 @@
   <modulefile>mod_status.xml.fr</modulefile>
   <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml</modulefile>
-  <modulefile>mod_unique_id.xml</modulefile>
+  <modulefile>mod_unique_id.xml.fr</modulefile>
   <modulefile>mod_unixd.xml</modulefile>
   <modulefile>mod_userdir.xml</modulefile>
   <modulefile>mod_usertrack.xml</modulefile>
   <modulefile>mod_version.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
   <modulefile>mpm_common.xml</modulefile>
-  <modulefile>event.xml</modulefile>
+  <modulefile>event.xml.fr</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
   <modulefile>mpmt_os2.xml</modulefile>
   <modulefile>prefork.xml</modulefile>

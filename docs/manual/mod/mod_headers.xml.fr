@@ -1,0 +1,491 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 826164 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_headers.xml.meta">
+
+<name>mod_headers</name>
+<description>Personnalisation des en-t&ecirc;tes de requ&ecirc;tes et de r&eacute;ponses
+HTTP</description>
+<status>Extension</status>
+<sourcefile>mod_headers.c</sourcefile>
+<identifier>headers_module</identifier>
+
+<summary>
+    <p>Ce module fournit des directives permettant de contr&ocirc;ler et
+    modifier les en-t&ecirc;tes de requ&ecirc;tes et de r&eacute;ponses HTTP. Les en-t&ecirc;tes
+    peuvent &ecirc;tre fusionn&eacute;s, remplac&eacute;s ou supprim&eacute;s.</p>
+</summary>
+
+<section id="order"><title>Chronologie du traitement</title>
+
+    <p>Les directives fournies par <module>mod_headers</module> peuvent
+    s'ins&eacute;rer presque partout dans la configuration du serveur, et on
+    peut limiter leur port&eacute;e en les pla&ccedil;ant dans des <a
+    href="../sections.html">sections de configuration</a>.</p>
+
+    <p>La chronologie du traitement est importante et est affect&eacute;e par
+    l'ordre d'apparition des directives dans le fichier de configuration
+    et par leur placement dans les <a
+    href="../sections.html#mergin">sections de configuration</a>. Ainsi,
+    ces deux directives ont un effet diff&eacute;rent si leur ordre est invers&eacute;
+    :</p>
+
+    <example>
+      RequestHeader append MirrorID "mirror 12"<br />
+      RequestHeader unset MirrorID
+    </example>
+
+    <p>Dans cet ordre, l'en-t&ecirc;te <code>MirrorID</code> n'est pas d&eacute;fini.
+    Si l'ordre des directives &eacute;tait invers&eacute;, l'en-t&ecirc;te
+    <code>MirrorID</code> serait d&eacute;fini &agrave; "mirror 12".</p>
+</section>
+
+<section id="early"><title>Traitement pr&eacute;coce et traitement
+tardif</title>
+    <p><module>mod_headers</module> peut agir soir pr&eacute;cocement, soit
+    tardivement au niveau de la requ&ecirc;te. Le mode normal est le mode
+    tardif, lorsque les en-t&ecirc;tes de requ&ecirc;te sont d&eacute;finis, imm&eacute;diatement
+    avant l'ex&eacute;cution du g&eacute;n&eacute;rateur de contenu, et pour les en-t&ecirc;tes de
+    r&eacute;ponse, juste au moment o&ugrave; la r&eacute;ponse est envoy&eacute;e sur le r&eacute;seau.
+    Utilisez toujours le mode tardif sur un serveur en production.</p>
+
+    <p>Le mode pr&eacute;coce a &eacute;t&eacute; con&ccedil;u &agrave; des fins d'aide aux tests et au
+    d&eacute;bogage pour les d&eacute;veloppeurs. Les directives d&eacute;finies en utilisant
+    le mot-cl&eacute; <code>early</code> sont cens&eacute;es agir au tout d&eacute;but du
+    traitement de la requ&ecirc;te. Cela signifie que l'on peut les utiliser
+    pour simuler diff&eacute;rentes requ&ecirc;tes et d&eacute;finir des situations de test,
+    tout en gardant &agrave; l'esprit que les en-t&ecirc;tes peuvent &ecirc;tre modifi&eacute;s &agrave;
+    tout moment par d'autres modules avant que le r&eacute;ponse ne soit
+    g&eacute;n&eacute;r&eacute;e.</p>
+
+    <p>Comme les directives pr&eacute;coces sont trait&eacute;es avant que le
+    chemin de la requ&ecirc;te ne soit parcouru, les en-t&ecirc;tes
+    pr&eacute;coces ne peuvent &ecirc;tre d&eacute;finis que dans un contexte de serveur
+    principal ou de serveur virtuel. Les directives pr&eacute;coces ne peuvent
+    pas d&eacute;pendre d'un chemin de requ&ecirc;te, si bien qu'elles &eacute;choueront
+    dans des contextes tels que <code>&lt;Directory&gt;</code> ou
+    <code>&lt;Location&gt;</code>.</p>
+</section>
+
+<section id="examples"><title>Exemples</title>
+
+    <ol>
+      <li>
+        Copie tous les en-t&ecirc;tes de requ&ecirc;te qui commencent par "TS" vers
+	les en-t&ecirc;tes de la r&eacute;ponse :
+
+        <example>
+          Header echo ^TS
+        </example>
+      </li>
+
+      <li>
+        Ajoute &agrave; la r&eacute;ponse un en-t&ecirc;te, <code>mon-en-t&ecirc;te</code>, qui
+	contient un horodatage permettant de d&eacute;terminer le moment o&ugrave; la
+	requ&ecirc;te a &eacute;t&eacute; re&ccedil;ue, et le temps qui s'est &eacute;coul&eacute; jusqu'&agrave; ce que
+	la requ&ecirc;te ait commenc&eacute; &agrave; &ecirc;tre servie. Cet en-t&ecirc;te peut &ecirc;tre
+	utilis&eacute; par le client pour estimer la charge du serveur ou
+	isoler les goulets d'&eacute;tranglement entre le client et le
+	serveur.
+
+        <example>
+          Header set mon-en-t&ecirc;te "%D %t"
+        </example>
+
+        <p>le r&eacute;sultat est l'ajout &agrave; la r&eacute;ponse d'un en-t&ecirc;te du type :</p>
+
+        <example>
+          mon-en-t&ecirc;te: D=3775428 t=991424704447256
+        </example>
+      </li>
+
+      <li>
+        Dit Bonjour &agrave; Joe
+
+        <example>
+          Header set mon-en-t&ecirc;te "Bonjour Joe. Il a fallu %D microsecondes \<br />
+          &agrave; Apache pour servir cette requ&ecirc;te."
+        </example>
+
+        <p>le r&eacute;sultat est l'ajout &agrave; la r&eacute;ponse d'un en-t&ecirc;te du type :</p>
+
+        <example>
+          mon-en-t&ecirc;te: Bonjour Joe. Il a fallu D=3775428 microsecondes &agrave; Apache
+          pour servir cette requ&ecirc;te.
+        </example>
+      </li>
+
+      <li>
+        Ajoute l'en-t&ecirc;te <code>mon-en-t&ecirc;te</code> &agrave; la r&eacute;ponse si et
+	seulement si l'en-t&ecirc;te <code>mon-en-t&ecirc;te-requ&ecirc;te</code> est
+	pr&eacute;sent dans la requ&ecirc;te. Ceci peut s'av&eacute;rer utile pour g&eacute;n&eacute;rer
+	des en-t&ecirc;tes de r&eacute;ponse "&agrave; la t&ecirc;te du client". Notez que cet
+	exemple n&eacute;cessite les services du module
+	<module>mod_setenvif</module>.
+
+        <example>
+          SetEnvIf mon-en-t&ecirc;te-requ&ecirc;te mavaleur HAVE_MyRequestHeader<br />
+          Header set mon-en-t&ecirc;te "%D %t montexte" env=HAVE_MyRequestHeader
+        </example>
+
+        <p>Si l'en-t&ecirc;te <code>mon-en-t&ecirc;te-requ&ecirc;te: mavaleur</code> est
+	pr&eacute;sent dans la requ&ecirc;te HTTP, la r&eacute;ponse contiendra un en-t&ecirc;te
+	du type :</p>
+
+        <example>
+          mon-en-t&ecirc;te: D=3775428 t=991424704447256 montexte
+        </example>
+      </li>
+
+      <li>
+        Permet &agrave; DAV de fonctionner avec Apache sur SSL (voir la <a
+	href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">description
+	du probl&egrave;me</a>) en rempla&ccedil;ant <var>https:</var> par
+	<var>http:</var> dans l'en-t&ecirc;te <var>Destination</var> :
+
+        <example>
+          RequestHeader edit Destination ^https: http: early
+        </example>
+      </li>
+
+      <li>
+        D&eacute;finit la valeur d'un m&ecirc;me en-t&ecirc;te sous de multiples conditions
+	non exclusives, mais ne duplique pas une valeur d&eacute;j&agrave; d&eacute;finie
+	dans l'en-t&ecirc;te qui en r&eacute;sulte. Si toutes les conditions
+	suivantes sont satisfaites pour une requ&ecirc;te (en d'autres termes,
+	si les trois variables d'environnement <code>CGI</code>,
+	<code>NO_CACHE</code> et <code>NO_STORE</code> existent pour la
+	requ&ecirc;te) :
+
+        <example>
+          Header merge Cache-Control no-cache env=CGI<br />
+          Header merge Cache-Control no-cache env=NO_CACHE<br />
+          Header merge Cache-Control no-store env=NO_STORE
+        </example>
+
+        <p>alors, la r&eacute;ponse contiendra l'en-t&ecirc;te suivant :</p>
+
+        <example>
+          Cache-Control: no-cache, no-store
+        </example>
+
+        <p>Si <code>append</code> avait &eacute;t&eacute; utilis&eacute; &agrave; la place de
+	<code>merge</code>, la r&eacute;ponse aurait contenu l'en-t&ecirc;te suivant
+	:</p>
+
+        <example>
+          Cache-Control: no-cache, no-cache, no-store
+        </example>
+      </li>
+      <li>
+        D&eacute;finit un cookie de test si et seulement si le client n'envoie
+	pas de cookie
+        <example>
+          Header set Set-Cookie testcookie !$req{Cookie}
+        </example>
+      </li>
+    </ol>
+</section>
+
+<directivesynopsis>
+<name>RequestHeader</name>
+<description>Configure les en-t&ecirc;tes d'une requ&ecirc;te HTTP</description>
+<syntax>RequestHeader add|append|edit|merge|set|unset <var>en-t&ecirc;te</var>
+[<var>valeur</var>] [<var>remplacement</var>] [early|env=[!]<var>variable</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Cette directive permet de remplacer, fusionner, modifier ou
+    supprimer des en-t&ecirc;tes de requ&ecirc;te HTTP. L'en-t&ecirc;te est modifi&eacute; juste
+    avant que le gestionnaire de contenu ne s'ex&eacute;cute, ce qui permet la
+    modification des en-t&ecirc;tes entrants. L'action effectu&eacute;e est
+    d&eacute;termin&eacute;e par le premier argument. Ce dernier accepte les valeurs
+    suivantes :</p>
+
+    <dl>
+
+    <dt><code>add</code></dt>
+    <dd>L'en-t&ecirc;te est ajout&eacute; au jeu d'en-t&ecirc;tes pr&eacute;existant, m&ecirc;me s'il
+    existe d&eacute;j&agrave;. Ceci peut conduire &agrave; la pr&eacute;sence de deux (ou plusieurs)
+    en-t&ecirc;tes poss&egrave;dant le m&ecirc;me nom et donc induire des cons&eacute;quences
+    impr&eacute;vues ; en g&eacute;n&eacute;ral, il est pr&eacute;f&eacute;rable d'utiliser
+    <code>set</code>, <code>append</code> ou <code>merge</code>.</dd>
+
+    <dt><code>append</code></dt>
+    <dd>La valeur d'en-t&ecirc;te est ajout&eacute;e &agrave; tout en-t&ecirc;te existant de m&ecirc;me
+    nom. Lorsqu'une nouvelle valeur est ainsi ajout&eacute;e, elle est s&eacute;par&eacute;e
+    de celles qui sont d&eacute;j&agrave; pr&eacute;sentes par une virgule. Il s'agit de la
+    m&eacute;thode HTTP standard permettant d'affecter plusieurs valeurs &agrave; un
+    en-t&ecirc;te.</dd>
+
+    <dt><code>edit</code></dt>
+    <dd>Si l'en-t&ecirc;te existe, sa valeur est modifi&eacute;e en fonction d'une
+    <glossary ref="regex">expression rationnelle</glossary> de type
+    recherche/remplacement. L'argument <var>valeur</var> est une
+    <glossary ref="regex">expression rationnelle</glossary>, et
+    l'argument <var>remplacement</var> une cha&icirc;ne de caract&egrave;res de
+    remplacement qui peut contenir des r&eacute;f&eacute;rences arri&egrave;res.</dd>
+
+    <dt><code>merge</code></dt>
+    <dd>La valeur d'en-t&ecirc;te est ajout&eacute;e &agrave; tout en-t&ecirc;te de m&ecirc;me nom, sauf
+    si elle appara&icirc;t d&eacute;j&agrave; dans la liste des valeurs pr&eacute;existantes de
+    l'en-t&ecirc;te s&eacute;par&eacute;es par des virgules. Lorsqu'une nouvelle valeur est
+    ainsi ajout&eacute;e, elle est s&eacute;par&eacute;e de celles qui sont d&eacute;j&agrave; pr&eacute;sentes
+    par une virgule. Il s'agit de la m&eacute;thode HTTP standard permettant
+    d'affecter plusieurs valeurs &agrave; un en-t&ecirc;te. Les valeurs sont
+    compar&eacute;es en tenant compte de la casse, et apr&egrave;s le traitement de
+    tous les sp&eacute;cificateurs de format. Une valeur entour&eacute;e de guillemets
+    est consid&eacute;r&eacute;e comme diff&eacute;rente de la m&ecirc;me valeur mais sans
+    guillemets.</dd>
+
+    <dt><code>set</code></dt>
+    <dd>L'en-t&ecirc;te est d&eacute;fini, rempla&ccedil;ant tout en-t&ecirc;te pr&eacute;existant avec
+    le m&ecirc;me nom.</dd>
+
+    <dt><code>unset</code></dt>
+    <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
+    poss&egrave;dent le m&ecirc;me nom, ils seront tous supprim&eacute;s. L'argument
+    <var>value</var> ne doit pas appara&icirc;tre.</dd>
+    </dl>
+
+    <p>Cet argument est suivi d'un nom d'en-t&ecirc;te qui peut se terminer
+    par un caract&egrave;re ':', mais ce n'est pas obligatoire. La casse est
+    ignor&eacute;e. Avec <code>set</code>, <code>append</code>,
+    <code>merge</code> et <code>add</code>, une <var>valeur</var> est
+    fournie en troisi&egrave;me argument. Si une <var>valeur</var> contient des
+    espaces, elle doit &ecirc;tre entour&eacute;e de guillemets. Avec
+    <code>unset</code>, aucune <var>valeur</var> ne doit appara&icirc;tre.
+    <var>valeur</var> peut &ecirc;tre une cha&icirc;ne de caract&egrave;res, une cha&icirc;ne
+    contenant des sp&eacute;cificateurs de format, ou une combinaison des deux.
+    Les sp&eacute;cificateurs de format support&eacute;s sont les m&ecirc;mes que ceux de la
+    directive <directive module="mod_headers">Header</directive>, &agrave;
+    laquelle vous pouvez vous reporter pour plus de d&eacute;tails. Avec
+    <code>edit</code>, les deux arguments <var>valeur</var> et
+    <var>remplacement</var> sont obligatoires, et correspondent
+    respectivement &agrave; une <glossary ref="regex">expression
+    rationnelle</glossary> et &agrave; une cha&icirc;ne de remplacement.</p>
+
+    <p>La directive <directive>RequestHeader</directive> peut &ecirc;tre
+    suivie d'un argument suppl&eacute;mentaire, qui pourra prendre les valeurs
+    suivantes :</p>
+    <dl>
+    <dt><code>early</code></dt>
+    <dd>Sp&eacute;cifie <a href="#early">traitement pr&eacute;alable</a>.</dd>
+    <dt><code>env=[!]variable</code></dt>
+    <dd>La directive est appliqu&eacute;e si et seulement si la <a
+    href="../env.html">variable d'environnement</a>
+    <code>variable</code> existe. Un <code>!</code> devant
+    <code>variable</code> inverse le test, et la directive ne
+    s'appliquera alors que si <code>variable</code> n'est pas d&eacute;finie.</dd>
+    <dt><code>expr</code></dt>
+    <dd>Une cha&icirc;ne qui correspond &agrave; toute valeur ci-dessus est
+    interpr&eacute;t&eacute;e comme une expression. Les d&eacute;tails &agrave; propos de la syntaxe
+    des expressions et leur &eacute;valuation sont pour l'instant mieux
+    document&eacute;s dans la page de <module>mod_filter</module>.</dd>
+    </dl>
+
+    <p>Except&eacute; le cas du mode <a href="#early">pr&eacute;coce</a>, la directive
+    <directive>RequestHeader</directive> est trait&eacute;e juste avant la
+    prise en compte de la requ&ecirc;te par son gestionnaire, au cours de la
+    phase de v&eacute;rification. Ceci permet la modification des en-t&ecirc;tes
+    g&eacute;n&eacute;r&eacute;s par le navigateur, ou par les filtres en entr&eacute;e
+    d'Apache.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Header</name>
+<description>Configure les en-t&ecirc;tes d'une r&eacute;ponse HTTP</description>
+<syntax>Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
+<var>en-t&ecirc;te</var> [<var>valeur</var>] [early|env=[!]<var>variable</var>]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>Cette directive permet de remplacer, fusionner, ou
+    supprimer des en-t&ecirc;tes de r&eacute;ponse HTTP. L'en-t&ecirc;te est modifi&eacute; juste
+    apr&egrave;s que le gestionnaire de contenu et les filtres en sortie ne
+    s'ex&eacute;cutent, ce qui permet la modification des en-t&ecirc;tes
+    sortants.</p>
+
+    <p>Par d&eacute;faut, cette directive n'affecte que les r&eacute;ponses positives
+    (r&eacute;ponses dont le code de statut est dans la gamme
+    <code>2<var>xx</var></code>). Le param&egrave;tre optionnel
+    <var>condition</var> peut prendre pour valeur soit
+    <code>onsuccess</code> (valeur par d&eacute;faut), soit <code>always</code>
+    (tous les codes de statut, y compris les r&eacute;ponses positives).
+    D&eacute;finir cette valeur &agrave; <code>always</code> permet d'affecter des
+    en-t&ecirc;tes d&eacute;finis par certains modules internes, y compris dans le
+    cas d'une r&eacute;ponse positive, et s'av&egrave;re m&ecirc;me n&eacute;cessaire pour affecter
+    des en-t&ecirc;tes de r&eacute;ponses dont le code de statut n'est pas dans la
+    gamme <code>2<var>xx</var></code> comme les redirections ou les
+    erreurs client.</p>
+
+    <p>L'action que cette directive provoque est d&eacute;termin&eacute;e par le
+    second argument. Il peut prendre une des valeurs suivantes :</p>
+
+    <dl>
+    <dt><code>add</code></dt>
+    <dd>L'en-t&ecirc;te est ajout&eacute; au jeu d'en-t&ecirc;tes pr&eacute;existant, m&ecirc;me s'il
+    existe d&eacute;j&agrave;. Ceci peut conduire &agrave; la pr&eacute;sence de deux (ou plusieurs)
+    en-t&ecirc;tes poss&egrave;dant le m&ecirc;me nom et donc induire des cons&eacute;quences
+    impr&eacute;vues ; en g&eacute;n&eacute;ral, il est pr&eacute;f&eacute;rable d'utiliser
+    <code>set</code>, <code>append</code> ou <code>merge</code>.</dd>
+
+    <dt><code>append</code></dt>
+    <dd>La valeur d'en-t&ecirc;te est ajout&eacute;e &agrave; tout en-t&ecirc;te existant de m&ecirc;me
+    nom. Lorsqu'une nouvelle valeur est ainsi ajout&eacute;e, elle est s&eacute;par&eacute;e
+    de celles qui sont d&eacute;j&agrave; pr&eacute;sentes par une virgule. Il s'agit de la
+    m&eacute;thode HTTP standard permettant d'affecter plusieurs valeurs &agrave; un
+    en-t&ecirc;te.</dd>
+
+    <dt><code>echo</code></dt>
+    <dd>Les en-t&ecirc;tes de la requ&ecirc;te poss&eacute;dant le nom sp&eacute;cifi&eacute; sont
+    recopi&eacute;s vers les en-t&ecirc;tes de la r&eacute;ponse. <var>en-t&ecirc;te</var> peut
+    &ecirc;tre une <glossary ref="regex">expression rationnelle</glossary>, et
+    <var>valeur</var> ne doit pas &ecirc;tre pr&eacute;sent.</dd>
+
+    <dt><code>edit</code></dt>
+    <dd>Si l'en-t&ecirc;te existe, sa valeur est modifi&eacute;e en fonction d'une
+    <glossary ref="regex">expression rationnelle</glossary> de type
+    recherche/remplacement. L'argument <var>valeur</var> est une
+    <glossary ref="regex">expression rationnelle</glossary>, et
+    l'argument <var>remplacement</var> une cha&icirc;ne de caract&egrave;res de
+    remplacement qui peut contenir des r&eacute;f&eacute;rences arri&egrave;res.</dd>
+
+    <dt><code>merge</code></dt>
+    <dd>La valeur d'en-t&ecirc;te est ajout&eacute;e &agrave; tout en-t&ecirc;te de m&ecirc;me nom, sauf
+    si elle appara&icirc;t d&eacute;j&agrave; dans la liste des valeurs pr&eacute;existantes de
+    l'en-t&ecirc;te s&eacute;par&eacute;es par des virgules. Lorsqu'une nouvelle valeur est
+    ainsi ajout&eacute;e, elle est s&eacute;par&eacute;e de celles qui sont d&eacute;j&agrave; pr&eacute;sentes
+    par une virgule. Il s'agit de la m&eacute;thode HTTP standard permettant
+    d'affecter plusieurs valeurs &agrave; un en-t&ecirc;te. Les valeurs sont
+    compar&eacute;es en tenant compte de la casse, et apr&egrave;s le traitement de
+    tous les sp&eacute;cificateurs de format. Une valeur entour&eacute;e de guillemets
+    est consid&eacute;r&eacute;e comme diff&eacute;rente de la m&ecirc;me valeur mais sans
+    guillemets.</dd>
+
+    <dt><code>set</code></dt>
+    <dd>L'en-t&ecirc;te est d&eacute;fini, rempla&ccedil;ant tout en-t&ecirc;te pr&eacute;existant avec
+    le m&ecirc;me nom. L'argument <var>valeur</var> peut &ecirc;tre une cha&icirc;ne de
+    formatage.</dd>
+
+    <dt><code>unset</code></dt>
+    <dd>L'en-t&ecirc;te est supprim&eacute; s'il existe. Si plusieurs en-t&ecirc;tes
+    poss&egrave;dent le m&ecirc;me nom, ils seront tous supprim&eacute;s. L'argument
+    <var>value</var> ne doit pas appara&icirc;tre.</dd>
+    </dl>
+
+    <p>Cet argument est suivi d'un nom d'<var>en-t&ecirc;te</var> qui peut se
+    terminer par un caract&egrave;re ':', mais ce n'est pas obligatoire. La
+    casse est ignor&eacute;e avec <code>set</code>, <code>append</code>,
+    <code>merge</code>, <code>add</code>, <code>unset</code> et
+    <code>edit</code>. Le nom d'<var>en-t&ecirc;te</var> est sensible &agrave; la
+    casse pour <code>echo</code> et peut &ecirc;tre une <glossary
+    ref="regex">expression rationnelle</glossary>.</p>
+
+    <p>Avec <code>set</code>, <code>append</code>, <code>merge</code> et
+    <code>add</code>, une <var>valeur</var> est sp&eacute;cifi&eacute;e comme
+    troisi&egrave;me argument. Si <var>valeur</var> contient des espaces, elle
+    doit &ecirc;tre entour&eacute;e de guillemets. <var>valeur</var> peut &ecirc;tre une
+    cha&icirc;ne de caract&egrave;res, une cha&icirc;ne contenant des sp&eacute;cificateurs de
+    format, ou une combinaison des deux. <var>valeur</var> supporte les
+    sp&eacute;cificateurs de format suivants :</p>
+
+    <table border="1" style="zebra">
+    <columnspec><column width=".25"/><column width=".75"/></columnspec>
+    <tr><th>Format</th><th>Description</th></tr>
+    <tr><td><code>%%</code></td>
+        <td>Le caract&egrave;re pourcentage</td></tr>
+
+    <tr><td><code>%t</code></td>
+        <td>Le moment de r&eacute;ception de la requ&ecirc;te en temps
+	universel coordonn&eacute; depuis le temps epoch (Jan. 1, 1970) et
+	exprim&eacute; en microsecondes. La valeur est pr&eacute;c&eacute;d&eacute;e de
+	<code>t=</code>.</td></tr>
+
+    <tr><td><code>%D</code></td>
+        <td>Le temps &eacute;coul&eacute; entre la r&eacute;ception de la requ&ecirc;te et l'envoi
+	des en-t&ecirc;tes sur le r&eacute;seau. Il s'agit de la dur&eacute;e de traitement
+	de la requ&ecirc;te. La valeur est pr&eacute;c&eacute;d&eacute;e de <code>D=</code>. La
+	valeur est exprim&eacute;e en microsecondes.</td></tr>
+
+    <tr><td><code>%{NOM_VARIABLE}e</code></td>
+        <td>Le contenu de la <a href="../env.html">variable
+	d'environnement</a> <code>NOM_VARIABLE</code>.</td></tr>
+
+    <tr><td><code>%{NOM_VARIABLE}s</code></td>
+        <td>Le contenu de la <a href="../env.html">variable
+	d'environnement SSL</a> <code>NOM_VARIABLE</code>, si
+	<module>mod_ssl</module> est activ&eacute;.</td></tr>
+
+    </table>
+
+    <note><title>Note</title>
+      <p>Le sp&eacute;cificateur de format <code>%s</code> est disponible
+      depuis la version 2.1 d'Apache ; il peut &ecirc;tre utilis&eacute; &agrave; la place
+      de <code>%e</code> pour &eacute;viter de devoir sp&eacute;cifier
+      <code>SSLOptions +StdEnvVars</code>. Cependant, si
+      <code>SSLOptions +StdEnvVars</code> doit tout de m&ecirc;me &ecirc;tre
+      sp&eacute;cifi&eacute; pour une raison quelconque, <code>%e</code> sera plus
+      efficace que <code>%s</code>.</p>
+    </note>
+
+    <p><code>edit</code>n&eacute;cessite les deux arguments
+    <var>valeur</var>, qui est une <glossary ref="regex">expression
+    rationnelle</glossary>, et une cha&icirc;ne additionnelle
+    <var>remplacement</var>.</p>
+
+    <p>La directive <directive>Header</directive> peut &ecirc;tre suivie d'un
+    argument additionnel qui peut prendre les valeurs suivantes :</p>
+
+    <dl>
+    <dt><code>early</code></dt>
+    <dd>Sp&eacute;cifie <a href="#early">traitement pr&eacute;alable</a>.</dd>
+    <dt><code>env=[!]variable</code></dt>
+    <dd>La directive est appliqu&eacute;e si et seulement si la <a
+    href="../env.html">variable d'environnement</a>
+    <code>variable</code> existe. Un <code>!</code> devant
+    <code>variable</code> inverse le test, et la directive ne
+    s'appliquera alors que si <code>variable</code> n'est pas d&eacute;finie.</dd>
+    <dt><code>expr</code></dt>
+    <dd>Une cha&icirc;ne qui correspond &agrave; toute valeur ci-dessus est
+    interpr&eacute;t&eacute;e comme une expression. Les d&eacute;tails &agrave; propos de la syntaxe
+    des expressions et leur &eacute;valuation sont pour l'instant mieux
+    document&eacute;s dans la page de <module>mod_filter</module>.</dd>
+    </dl>
+
+    <p>Except&eacute; le cas du mode <a href="#early">pr&eacute;coce</a>, les
+    directives <directive>Header</directive> sont trait&eacute;es juste avant
+    l'envoi de la r&eacute;ponse sur le r&eacute;seau. Cela signifie qu'il est
+    possible de d&eacute;finir et/ou modifier la plupart des en-t&ecirc;tes, &agrave;
+    l'exception de ceux qui sont ajout&eacute;s par le filtre d'en-t&ecirc;te.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

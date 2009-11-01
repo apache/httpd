@@ -1,0 +1,386 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 813396 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_auth_digest.xml.meta">
+
+<name>mod_auth_digest</name>
+<description>Authentification utilisateur utilisant les condens&eacute;s
+MD5</description>
+<status>Extension</status>
+<sourcefile>mod_auth_digest.c</sourcefile>
+<identifier>auth_digest_module</identifier>
+
+<summary>
+    <p>Ce module impl&eacute;mente l'authentification HTTP bas&eacute;e sur les
+    condens&eacute;s MD5 (<a
+    href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), et
+    fournit une alternative &agrave; <module>mod_auth_basic</module> plus
+    s&eacute;curis&eacute;e.</p>
+</summary>
+
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><directive module="mod_authz_core">Match</directive></seealso>
+<seealso><a href="../howto/auth.html">Mode d'emploi de
+l'authentification</a></seealso>
+
+<section id="using"><title>Utilisation de l'authentification &agrave; base de
+condens&eacute;s</title>
+
+    <p>Pour utiliser l'authentification &agrave; base de condens&eacute;s MD5, vous
+    devez simplement remplacer <code>AuthType Basic</code> et <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> respectivement
+    par <code>AuthType Digest</code> et <directive
+    module="mod_auth_digest">AuthDigestProvider</directive> lorsque vous
+    configurez l'authentification, puis ajouter une directive <directive
+    module="mod_auth_digest">AuthDigestDomain</directive> contenant au
+    moins la(les) URI(s) racine(s) de la zone &agrave; prot&eacute;ger.</p>
+
+    <p>On peut cr&eacute;er les fichiers utilisateur appropri&eacute;s (au format
+    texte) &agrave; l'aide de l'outil <program>htdigest</program>.</p>
+
+    <example><title>Exemple :</title>
+      &lt;Location /private/&gt;<br />
+      <indent>
+        AuthType Digest<br />
+        AuthName "private area"<br />
+        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
+        <br />
+        AuthDigestProvider file<br />
+        AuthUserFile /web/auth/.digest_pw<br />
+        Require valid-user<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+
+    <note><title>Note</title>
+    <p>L'authentification &agrave; base de condens&eacute;s MD5 est plus s&eacute;curis&eacute;e que
+    l'authentification Basic, mais ne fonctionne qu'avec les navigateurs
+    qui la supportent. En septembre 2004, les principaux navigateurs
+    supportant l'authentification &agrave; base de condens&eacute;s MD5 incluaient <a
+    href="http://www.w3.org/Amaya/">Amaya</a>, <a
+    href="http://konqueror.kde.org/">Konqueror</a>, <a
+    href="http://www.microsoft.com/windows/ie/">MS Internet Explorer</a>
+    pour Mac OS X et Windows (bien que la version Windows &eacute;choue lorsque
+    la requ&ecirc;te comporte une cha&icirc;ne d'arguments -- voir plus loin "<a
+    href="#msie">Travailler avec MS Internet Explorer</a>" pour
+    contourner ce probl&egrave;me), <a
+    href="http://www.mozilla.org">Mozilla</a>, <a
+    href="http://channels.netscape.com/ns/browsers/download.jsp">
+    Netscape</a> 7, <a href="http://www.opera.com/">Opera</a>, et <a
+    href="http://www.apple.com/safari/">Safari</a>. <a
+    href="http://lynx.isc.org/">lynx</a> ne supporte
+    <strong>pas</strong> l'authentification &agrave; base de condens&eacute;s MD5.
+    Comme l'authentification &agrave; base de condens&eacute;s MD5 est moins r&eacute;pandue
+    que l'authentification Basic, vous ne devez l'utiliser que dans des
+    environnements o&ugrave; tous les utilisateurs disposeront d'un navigateur
+    la supportant.</p>
+    <p><module>mod_auth_digest</module> ne fonctionne correctement que
+    sur les plates-formes o&ugrave; APR supporte la m&eacute;moire partag&eacute;e.</p>
+    </note>
+</section>
+
+<section id="msie"><title>Travailler avec MS Internet Explorer</title>
+    <p>L'impl&eacute;mentation de l'authentification &agrave; base de condens&eacute; dans
+    les versions pr&eacute;c&eacute;dentes d'Internet Explorer pour Windows (5 et 6)
+    posait probl&egrave;me, car les requ&ecirc;tes de type <code>GET</code>
+    comportant une cha&icirc;ne d'arguments (query string) ne respectaient pas les RFC. Il y
+    a plusieurs mani&egrave;res de contourner ce probl&egrave;me.</p>
+
+    <p>
+    La premi&egrave;re m&eacute;thode consiste &agrave; utiliser des requ&ecirc;tes de type
+    <code>POST</code> plut&ocirc;t que <code>GET</code> pour transmettre les
+    donn&eacute;es &agrave; votre programme. Cette m&eacute;thode constitue l'approche la
+    plus simple dans le cas o&ugrave; votre application peut fonctionner avec
+    cette limitation.
+    </p>
+
+    <p>Depuis la version 2.0.51, Apache propose aussi de contourner le
+    probl&egrave;me &agrave; l'aide de la variable d'environnement
+    <code>AuthDigestEnableQueryStringHack</code>. Si
+    <code>AuthDigestEnableQueryStringHack</code> est d&eacute;finie pour la
+    requ&ecirc;te, Apache va prendre des mesures pour contourner la bogue MSIE
+    et en particulier va exclure la cha&icirc;ne d'arguments de la comparaison
+    des condens&eacute;s. L'utilisation de cette m&eacute;thode peut se traduire par
+    ceci :</p>
+
+    <example><title>Utilisation de l'authentification &agrave; base de condens&eacute;
+    avec MSIE :</title>
+    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </example>
+
+    <p>Cette correction n'est pas n&eacute;cessaire avec MSIE 7, bien que son
+    activation ne pose pas de probl&egrave;me de compatibilit&eacute; ou de surcharge
+    significative.</p>
+
+    <p>Voir la directive <directive
+    module="mod_setenvif">BrowserMatch</directive> pour plus de d&eacute;tails
+    &agrave; propos de la d&eacute;finition conditionnelle des variables
+    d'environnement.</p>
+</section>
+
+
+<directivesynopsis>
+<name>AuthDigestProvider</name>
+<description>D&eacute;finit le(s) fournisseurs(s) d'authentification pour la
+zone du site web concern&eacute;e</description>
+<syntax>AuthDigestProvider <var>nom fournisseur</var>
+[<var>nom fournisseur</var>] ...</syntax>
+<default>AuthDigestProvider file</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthDigestProvider</directive> permet de
+    d&eacute;finir quel fournisseur d'authentification sera utilis&eacute; pour
+    authentifier les utilisateurs pour la zone du site web concern&eacute;e.
+    Assurez-vous que le module impl&eacute;mentant le fournisseur
+    d'authentification choisi soit bien pr&eacute;sent dans le serveur. Le
+    fournisseur par d&eacute;faut <code>file</code> est impl&eacute;ment&eacute; par le
+    module <module>mod_authn_file</module>.</p>
+
+    <p>Voir <module>mod_authn_dbm</module>,
+    <module>mod_authn_file</module>, et <module>mod_authn_dbd</module>
+    pour la liste des fournisseurs disponibles.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestQop</name>
+<description>D&eacute;termine le niveau de protection fourni par
+l'authentification &agrave; base de condens&eacute;</description>
+<syntax>AuthDigestQop none|auth|auth-int [auth|auth-int]</syntax>
+<default>AuthDigestQop auth</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthDigestQop</directive> permet de
+    d&eacute;finir le <dfn>niveau de protection</dfn> fourni. <code>auth</code>
+    ne fournit que l'authentification (nom utilisateur/mot de passe) ;
+    <code>auth-int</code> fournit l'authentification plus un contr&ocirc;le
+    d'int&eacute;grit&eacute; (un condens&eacute; MD5 de l'entit&eacute; est aussi calcul&eacute; et
+    v&eacute;rifi&eacute;) ; avec <code>none</code>, le module va utiliser l'ancien
+    algorithme de condens&eacute;s RFC-2069 (qui n'effectue pas de contr&ocirc;le
+    d'int&eacute;grit&eacute;). On peut sp&eacute;cifier &agrave; la fois <code>auth</code> et
+    <code>auth-int</code>, auquel cas c'est le navigateur qui va choisir
+    lequel des deux utiliser. <code>none</code> ne doit &ecirc;tre utilis&eacute; que
+    dans le cas o&ugrave; le navigateur ne serait pas &agrave; m&ecirc;me (pour une raison
+    ou pour une autre) de relever le d&eacute;fit qu'il recevrait si un autre
+    niveau de protection &eacute;tait d&eacute;fini.</p>
+
+    <note>
+      <code>auth-int</code> n'est pas encore impl&eacute;ment&eacute;.
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestNonceLifetime</name>
+<description>Dur&eacute;e de validit&eacute; du nombre &agrave; valeur unique du
+serveur (nonce)</description>
+<syntax>AuthDigestNonceLifetime <var>secondes</var></syntax>
+<default>AuthDigestNonceLifetime 300</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthDigestNonceLifetime</directive>
+    permet de contr&ocirc;ler la dur&eacute;e de validit&eacute; du nombre &agrave; valeur unique
+    du serveur (nonce). Lorsque le client contacte le serveur en
+    utilisant un nonce dont la validit&eacute; a expir&eacute;, le serveur renvoie un
+    code d'erreur 401 avec <code>stale=true</code>. Si
+    <var>secondes</var> est sup&eacute;rieur &agrave; 0, il sp&eacute;cifie la dur&eacute;e de
+    validit&eacute; du nonce ; il est en g&eacute;n&eacute;ral d&eacute;conseill&eacute; d'affecter &agrave; cet
+    argument une valeur inf&eacute;rieure &agrave; 10 secondes. Si
+    <var>secondes</var> est inf&eacute;rieur &agrave; 0, le nonce n'expire jamais.
+    <!-- Pas encore impl&eacute;ment&eacute; : si <var>secondes</var> est &eacute;gal &agrave; 0, le
+    client ne doit utiliser le nonce qu'une seule fois. Notez que si les
+    nonces &agrave; usage unique assurent une s&eacute;curit&eacute; accrue contre les
+    attaques &agrave; base de rejeu, il ont aussi d'importantes implications en
+    mati&egrave;re de performances, car le navigateur ne peut plus alors
+    effectuer de requ&ecirc;tes en parall&eacute;le (pipelining) ou utiliser
+    plusieurs connexions pour une m&ecirc;me requ&ecirc;te. Comme il n'est pas ais&eacute;
+    pour les navigateurs de d&eacute;tecter l'utilisation de nonces &agrave; usage
+    unique, on peut aboutir &agrave; la situation o&ugrave; le navigateur va tenter
+    d'effectuer des requ&ecirc;tes en parall&egrave;le et recevoir des codes d'erreur
+    401 pour toutes les requ&ecirc;tes sauf la premi&egrave;re, ce qui aura pour
+    effet de lui faire renvoyer les requ&ecirc;tes. Notez aussi que la
+    protection contre les attaques &agrave; base de rejeu n'a de sens que dans
+    le cas de contenus g&eacute;n&eacute;r&eacute;s dynamiquement ou de requ&ecirc;tes de type
+    POST ; dans le cas des contenus statiques, l'attaquant poss&egrave;de d&eacute;j&agrave;
+    probablement la r&eacute;ponse compl&egrave;te, et les nonces &agrave; usage unique sont
+    ici sans objet.  -->
+    </p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestNonceFormat</name>
+<description>D&eacute;termine la mani&egrave;re dont le nombre &agrave; valeur unique du
+serveur (nonce) est g&eacute;n&eacute;r&eacute;</description>
+<syntax>AuthDigestNonceFormat <var>format</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <note>Non encore impl&eacute;ment&eacute;.</note>
+    <!-- La directive AuthDigestNonceFormat permet de d&eacute;terminer la
+    mani&egrave;re dont le nombre &agrave; valeur unique du serveur (nonce) est
+    g&eacute;n&eacute;r&eacute;. -->
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestNcCheck</name>
+<description>Active ou d&eacute;sactive la v&eacute;rification du nombre d'envois du
+nombre &agrave; valeur unique (nonce) par le serveur</description>
+<syntax>AuthDigestNcCheck On|Off</syntax>
+<default>AuthDigestNcCheck Off</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <note>
+      Non encore impl&eacute;ment&eacute;.
+    </note>
+    <!--
+    <p>La directive AuthDigestNcCheck permet d'activer ou de d&eacute;sactiver
+    la v&eacute;rification du nombre d'envois du nombre &agrave; valeur unique (nonce)
+    par le serveur.</p>
+
+    <p>Bien que la d&eacute;finition de cette directive &agrave; On soit recommand&eacute;e
+    du point de vue de la s&eacute;curit&eacute;, elle a des cons&eacute;quences importantes sur
+    les performances du serveur.  Pour v&eacute;rifier le nombre d'envois du nonce,
+    *toutes* les requ&ecirc;tes (du moins toutes celles qui poss&egrave;dent un
+    en-t&ecirc;te d'autorisation, qu'elles requi&egrave;rent ou non une
+    authentification &agrave; base de condens&eacute;) doivent &ecirc;tre s&eacute;rialis&eacute;es au
+    travers d'une section critique. Si le serveur traite un grand nombre
+    de requ&ecirc;tes qui poss&egrave;dent un en-t&ecirc;te d'autorisation, l'impact sur
+    les performances pourra se montrer sensible.</p>
+     -->
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestAlgorithm</name>
+<description>S&eacute;lectionne l'algorithme utilis&eacute; pour calculer les
+condens&eacute;s du d&eacute;fit et de sa r&eacute;ponse</description>
+<syntax>AuthDigestAlgorithm MD5|MD5-sess</syntax>
+<default>AuthDigestAlgorithm MD5</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthDigestAlgorithm</directive> permet de
+    s&eacute;lectionner l'algorithme utilis&eacute; pour calculer les condens&eacute;s du
+    d&eacute;fit et de sa r&eacute;ponse.</p>
+
+    <note>
+      <code>MD5-sess</code> n'est pas encore correctement impl&eacute;ment&eacute;.
+    </note>
+    <!--
+    <p>Pour pouvoir utiliser <code>MD5-sess</code>, vous devez tout
+    d'abord &eacute;diter le code de la fonction <code>get_userpw_hash()</code>
+    dans <code>mod_auth_digest.c</code>.</p>
+    -->
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestDomain</name>
+<description>Les URIs qui se trouvent dans le m&ecirc;me espace de protection
+concernant l'authentification &agrave; base de condens&eacute;s</description>
+<syntax>AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>La directive <directive>AuthDigestDomain</directive> vous permet
+    de sp&eacute;cifier un ou plusieurs URIs se trouvant dans le m&ecirc;me
+    espace de protection (c'est &agrave; dire utilisant le m&ecirc;me utilisateur/mot
+    de passe et se trouvant dans le m&ecirc;me domaine). Les URIs sp&eacute;cifi&eacute;s
+    sont des pr&eacute;fixes ; le client doit savoir que tous les URIs situ&eacute;s
+    sous ces pr&eacute;fixes seront prot&eacute;g&eacute;s par le m&ecirc;me utilisateur/mot de
+    passe. Les URIs peuvent &ecirc;tre soit des URIs absolus (c'est &agrave; dire
+    avec protocole, nom serveur, port, etc...), soit des URIs
+    relatifs.</p>
+
+    <p>Cette directive doit toujours &ecirc;tre pr&eacute;sente et contenir au moins
+    le(s) URI(s) racine(s) pour cet espace. Dans le cas contraire, le
+    client va envoyer un en-t&ecirc;te d'autorisation avec <em>chaque
+    requ&ecirc;te</em> &agrave; destination de ce serveur. Outre une augmentation de
+    la taille de la requ&ecirc;te, les performances vont s'en trouver
+    affect&eacute;es si la directive <directive
+    module="mod_auth_digest">AuthDigestNcCheck</directive> est d&eacute;finie &agrave;
+    On.</p>
+
+    <p>Les URIs sp&eacute;cifi&eacute;s peuvent aussi r&eacute;f&eacute;rencer diff&eacute;rents serveurs,
+    auquel cas les clients (qui sont &agrave; m&ecirc;me de le comprendre) vont
+    partager l'utilisateur/mot de passe entre plusieurs serveurs sans le
+    demander &agrave; l'utilisateur &agrave; chaque fois.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthDigestShmemSize</name>
+<description>La quantit&eacute; de m&eacute;moire partag&eacute;e &agrave; allouer afin de conserver
+les informations &agrave; propos des clients</description>
+<syntax>AuthDigestShmemSize <var>taille</var></syntax>
+<default>AuthDigestShmemSize 1000</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>La directive <directive>AuthDigestShmemSize</directive> permet de
+    d&eacute;finir la quantit&eacute; de m&eacute;moire partag&eacute;e &agrave; allouer au d&eacute;marrage du
+    serveur afin de conserver les informations &agrave; propos des clients.
+    Notez que le segment de m&eacute;moire partag&eacute;e ne peut pas &ecirc;tre d&eacute;fini &agrave;
+    une taille inf&eacute;rieure &agrave; l'espace n&eacute;cessaire pour conserver les
+    informations &agrave; propos d'<em>un</em> client. Cette valeur d&eacute;pend de
+    votre syst&egrave;me. Si vous voulez en d&eacute;terminer la valeur exacte, vous
+    pouvez simplement d&eacute;finir <directive>AuthDigestShmemSize</directive>
+    &agrave; <code>0</code> et consulter le message d'erreur que renverra le
+    serveur lorsqu'on essaiera de le d&eacute;marrer.</p>
+
+    <p>L'argument <var>size</var> s'exprime par d&eacute;faut en octets, mais
+    vous pouvez suffixer le nombre par un <code>K</code> ou un
+    <code>M</code> pour sp&eacute;cifier respectivement des KiloOctets ou des
+    M&eacute;gaOctets. Par exemple, les directives qui suivent sont toutes
+    &eacute;quivalentes :</p>
+
+    <example>
+      AuthDigestShmemSize 1048576<br />
+      AuthDigestShmemSize 1024K<br />
+      AuthDigestShmemSize 1M
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_asis - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_asis</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_asis.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_asis.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_asis.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_asis.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Envoie des fichiers contenant leurs propres en-têtes
+HTTP</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>asis_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_asis.c</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Ce module fournit le gestionnaire <code>send-as-is</code> qui
+    permet à Apache d'envoyer le document sans ajouter la plupart des
+    en-têtes HTTP habituels.</p>
+
+    <p>On peut l'utiliser pour envoyer tous types de données en
+    provenance du serveur, y compris les redirections et autres réponses
+    HTTP spéciales, sans devoir faire appel à un script CGI ou nph.</p>
+
+    <p>Pour des raisons historiques, ce module traitera aussi tout
+    fichier dont le type MIME est <code>httpd/send-as-is</code>.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<p>Ce module ne fournit aucune directive.</p>
+<h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#usage">Mode d'emploi</a></li>
+</ul><h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code></li>
+<li><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code></li>
+<li><a href="../handler.html">Utilisation des gestionnaires
+d'Apache</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="usage" id="usage">Mode d'emploi</a></h2>
+
+    <p>Dans le fichier de configuration, associez les fichiers asis au
+    gestionnaire <code>send-as-is</code> comme ceci :</p>
+
+    <div class="example"><p><code>AddHandler send-as-is asis</code></p></div>
+
+    <p>Le contenu de tout fichier possédant l'extension
+    <code>.asis</code> sera envoyé par Apache au client pratiquement tel
+    quel. En particulier, les en-têtes HTTP seront déduits du fichier
+    lui-même selon les règles du module <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, si
+    bien qu'un fichier asis doit inclure des en-têtes valides, et
+    utiliser l'en-tête CGI Status: pour déterminer le code de réponse
+    HTTP.</p>
+
+    <p>Voici un exemple de fichier dont le contenu est envoyé <em>tel
+    quel</em> pour informer un client qu'un fichier a été déplacé.</p>
+
+
+    <div class="example"><p><code>
+      Status: 301 Ou se trouve cette URL maintenant<br />
+      Location: http://xyz.abc.com/foo/bar.html<br />
+      Content-type: text/html<br />
+      <br />
+      &lt;html&gt;<br />
+      &lt;head&gt;<br />
+      &lt;title&gt;Mauvaises excuses&lt;/title&gt;<br />
+      &lt;/head&gt;<br />
+      &lt;body&gt;<br />
+      &lt;h1&gt;La merveilleuse page de Fred a été déplacée vers<br />
+      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;le site de
+      Joe&lt;/a&gt;.<br />
+      &lt;/h1&gt;<br />
+      &lt;/body&gt;<br />
+      &lt;/html&gt;
+    </code></p></div>
+
+    <div class="note"><h3>Notes :</h3>
+    <p>Le serveur ajoute systématiquement les en-têtes
+    <code>Date:</code> et <code>Server:</code> aux données qu'il envoie
+    au client, si bien qu'ils n'ont pas besoin d'être inclus dans le
+    fichier. Le serveur n'ajoute <em>pas</em> d'en-tête
+    <code>Last-Modified</code>, ce qu'il devrait probablement faire.</p>
+    </div>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_asis.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_asis.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_asis.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_asis.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>

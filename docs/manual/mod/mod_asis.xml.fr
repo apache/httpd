@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 420990 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_asis.xml.meta">
+
+<name>mod_asis</name>
+<description>Envoie des fichiers contenant leurs propres en-t&ecirc;tes
+HTTP</description>
+<status>Base</status>
+<sourcefile>mod_asis.c</sourcefile>
+<identifier>asis_module</identifier>
+
+<summary>
+    <p>Ce module fournit le gestionnaire <code>send-as-is</code> qui
+    permet &agrave; Apache d'envoyer le document sans ajouter la plupart des
+    en-t&ecirc;tes HTTP habituels.</p>
+
+    <p>On peut l'utiliser pour envoyer tous types de donn&eacute;es en
+    provenance du serveur, y compris les redirections et autres r&eacute;ponses
+    HTTP sp&eacute;ciales, sans devoir faire appel &agrave; un script CGI ou nph.</p>
+
+    <p>Pour des raisons historiques, ce module traitera aussi tout
+    fichier dont le type MIME est <code>httpd/send-as-is</code>.</p>
+</summary>
+
+<seealso><module>mod_headers</module></seealso>
+<seealso><module>mod_cern_meta</module></seealso>
+<seealso><a href="../handler.html">Utilisation des gestionnaires
+d'Apache</a></seealso>
+
+<section id="usage"><title>Mode d'emploi</title>
+
+    <p>Dans le fichier de configuration, associez les fichiers asis au
+    gestionnaire <code>send-as-is</code> comme ceci :</p>
+
+    <example>AddHandler send-as-is asis</example>
+
+    <p>Le contenu de tout fichier poss&eacute;dant l'extension
+    <code>.asis</code> sera envoy&eacute; par Apache au client pratiquement tel
+    quel. En particulier, les en-t&ecirc;tes HTTP seront d&eacute;duits du fichier
+    lui-m&ecirc;me selon les r&egrave;gles du module <module>mod_cgi</module>, si
+    bien qu'un fichier asis doit inclure des en-t&ecirc;tes valides, et
+    utiliser l'en-t&ecirc;te CGI Status: pour d&eacute;terminer le code de r&eacute;ponse
+    HTTP.</p>
+
+    <p>Voici un exemple de fichier dont le contenu est envoy&eacute; <em>tel
+    quel</em> pour informer un client qu'un fichier a &eacute;t&eacute; d&eacute;plac&eacute;.</p>
+
+
+    <example>
+      Status: 301 Ou se trouve cette URL maintenant<br />
+      Location: http://xyz.abc.com/foo/bar.html<br />
+      Content-type: text/html<br />
+      <br />
+      &lt;html&gt;<br />
+      &lt;head&gt;<br />
+      &lt;title&gt;Mauvaises excuses&lt;/title&gt;<br />
+      &lt;/head&gt;<br />
+      &lt;body&gt;<br />
+      &lt;h1&gt;La merveilleuse page de Fred a &eacute;t&eacute; d&eacute;plac&eacute;e vers<br />
+      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;le site de
+      Joe&lt;/a&gt;.<br />
+      &lt;/h1&gt;<br />
+      &lt;/body&gt;<br />
+      &lt;/html&gt;
+    </example>
+
+    <note><title>Notes :</title>
+    <p>Le serveur ajoute syst&eacute;matiquement les en-t&ecirc;tes
+    <code>Date:</code> et <code>Server:</code> aux donn&eacute;es qu'il envoie
+    au client, si bien qu'ils n'ont pas besoin d'&ecirc;tre inclus dans le
+    fichier. Le serveur n'ajoute <em>pas</em> d'en-t&ecirc;te
+    <code>Last-Modified</code>, ce qu'il devrait probablement faire.</p>
+    </note>
+</section>
+
+</modulesynopsis>

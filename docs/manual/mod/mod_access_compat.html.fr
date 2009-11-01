@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_access_compat - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_access_compat</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_access_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_access_compat.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_access_compat.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Autorisations de groupe à base de nom d'hôte (nom ou
+adresse IP)</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>access_compat_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_access_compat.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache 2.3 à des fins de compatibilité
+avec les précédentes versions d'Apache 2.x. Les directives fournies par
+ce module sont devenues obsolètes depuis la refonte d'authz. Voir
+<code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Les directives fournies par le module
+    <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> s'utilisent dans les sections
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>,
+    <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> et
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>, ainsi
+    que dans les fichiers <code><a href="core.html#accessfilename">.htaccess</a></code> et permettent
+    de contrôler l'accès à certaines parties du serveur. On peut
+    contrôler cet accès en fonction du nom d'hôte du client, de son
+    adresse IP ou d'autres caractéristiques de la requête, telles
+    qu'elles sont enregistrées dans les <a href="../env.html">variables
+    d'environnement</a>. Les directives <code class="directive"><a href="#allow">Allow</a></code> et <code class="directive"><a href="#deny">Deny</a></code> permettent de spécifier
+    quels clients sont ou ne sont pas autorisés à accéder au serveur,
+    alors que la directive <code class="directive"><a href="#order">Order</a></code> définit le statut
+    d'accès par défaut, et détermine la manière dont les directives
+    <code class="directive"><a href="#allow">Allow</a></code> et
+    <code class="directive"><a href="#deny">Deny</a></code> interagissent
+    entre elles.</p>
+
+    <p>Les restrictions d'accès à base de nom d'hôte et
+    l'authentification à base de mot de passe peuvent être implémentées
+    simultanément. Dans ce cas, on utilise la directive <code class="directive"><a href="#satisfy">Satisfy</a></code> pour déterminer la
+    manière dont ces deux modes de restrictions interagissent.</p>
+
+    <div class="warning"><h3>Note</h3>
+      <p>Les directives fournies par le module
+      <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> sont devenues obsolètes depuis
+      la refonte d'authz. Voir <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
+    </div>
+
+    <p>En général, les directives de restriction d'accès s'appliquent à
+    toutes les méthodes d'accès (<code>GET</code>, <code>PUT</code>,
+    <code>POST</code>, etc...). C'est d'ailleurs ce que l'on souhaite
+    dans la plupart des cas. Il est cependant possible de restreindre
+    certaines méthodes, alors que les autres méthodes ne se verront
+    imposée aucune restriction, en regroupant les directives à
+    l'intérieur d'une section <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#allow">Allow</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#deny">Deny</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#order">Order</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#satisfy">Satisfy</a></li>
+</ul>
+<h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
+<li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
+<li><code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Allow" id="Allow">Allow</a> <a name="allow" id="allow">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Spécifie quels hôtes peuvent accéder à une certaine zone du
+serveur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> Allow from all|<var>hôte</var>|env=[!]<var>variable
+d'environnement</var>
+[<var>hôte</var>|env=[!]<var>variable d'environnement</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Limit</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
+</table>
+    <p>La directive <code class="directive">Allow</code> permet de définir quels
+    hôtes ont le droit d'accéder à une certaine partie du serveur. On
+    peut contrôler l'accès par nom d'hôte, adresse IP, intervalle
+    d'adresses IP, ou toute autre caractéristique de la requête client
+    enregistrée dans les variables d'environnement.</p>
+
+    <p>Le premier argument de cette directive est toujours
+    <code>from</code>. Les arguments suivants peuvent prendre trois
+    formes différentes. Si <code>Allow from all</code> est spécifié,
+    tout hôte se voit accordé l'accès, en tenant compte des directives
+    <code class="directive"><a href="#deny">Deny</a></code> et <code class="directive"><a href="#order">Order</a></code> comme décrit plus loin.
+    Pour ne permettre l'accès au serveur qu'à un hôte ou un groupe
+    d'hôtes particuliers, on peut spécifier un <em>nom d'hôte</em> sous
+    une des formes suivantes :</p>
+
+    <dl>
+      <dt>Un nom de domaine (partiel)</dt>
+
+      <dd>
+      <div class="example"><h3>Exemple :</h3><p><code>
+        Allow from apache.org<br />
+        Allow from .net example.edu
+      </code></p></div>
+      <p>Les hôtes dont les noms correspondent ou se terminent par la
+      chaîne spécifiée ont l'autorisation d'accès. Seules les
+      composantes entières du nom d'hôte doivent correspondre ; ainsi,
+      dans l'exemple ci-dessus, <code>foo.apache.org</code>
+      correspondra, mais <code>fooapache.org</code> ne conviendra pas.
+      Avec cette configuration, Apache va effectuer une double recherche
+      DNS sur l'adresse IP du client, sans tenir compte de la
+      définition de la directive <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>. Tout d'abord, une
+      recherche DNS inverse sur l'adresse IP est effectuée pour
+      déterminer le nom d'hôte associé, puis une recherche directe sur
+      le nom d'hôte est effectuée afin de s'assurer qu'il correspond
+      bien à l'adresse IP originale. L'accès ne sera accordé que si le
+      nom d'hôte correspond et si les recherches DNS inverse et directe
+      concordent.</p></dd>
+
+      <dt>Une adresse IP complète</dt>
+
+      <dd>
+      <div class="example"><h3>Exemple :</h3><p><code>
+        Allow from 10.1.2.3<br />
+        Allow from 192.168.1.104 192.168.1.205
+      </code></p></div>
+      <p>L'adresse IP d'un hôte auquel on a accordé l'accès</p></dd>
+
+      <dt>Une adresse IP partielle</dt>
+
+      <dd>
+      <div class="example"><h3>Exemple :</h3><p><code>
+        Allow from 10.1<br />
+        Allow from 10 172.20 192.168.2
+      </code></p></div>
+      <p>De un à trois des premiers octets d'une adresse IP, afin de
+      restreindre l'accès à un sous-réseau.</p></dd>
+
+      <dt>Une paire réseau/masque de sous-réseau</dt>
+
+      <dd>
+      <div class="example"><h3>Exemple :</h3><p><code>
+        Allow from 10.1.0.0/255.255.0.0
+      </code></p></div>
+      <p>Un réseau a.b.c.d, et un masque de sous-réseau w.x.y.z, pour
+      une définition plus précise de la restriction d'accès imposée à un
+      sous-réseau.</p></dd>
+
+      <dt>Une spécification CIDR réseau/nnn</dt>
+
+      <dd>
+      <div class="example"><h3>Exemple :</h3><p><code>
+        Allow from 10.1.0.0/16
+      </code></p></div>
+      <p>Identique au cas précédent, mis à part que le masque est
+      constitué des nnn bits de poids fort.</p></dd>
+    </dl>
+
+    <p>Notez que les trois derniers exemples désignent le même ensemble
+    d'hôtes.</p>
+
+    <p>On peut spécifier des adresses et sous-réseaux IPv6 de la manière
+    suivante :</p>
+
+    <div class="example"><p><code>
+       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
+       Allow from 2001:db8::a00:20ff:fea7:ccea/10
+    </code></p></div>
+
+    <p>Le troisième format d'argument de la directive
+    <code class="directive">Allow</code> permet de contrôler l'accès au serveur
+    en fonction de l'existence d'une <a href="../env.html">variable d'environnement</a>. Lorsque <code>Allow
+    from env=<var>variable d'environnement</var></code> est spécifié, la
+    requête est autorisée si la variable d'environnement <var>variable
+    d'environnement</var> existe. En revanche, lorsque <code>Allow from
+    env=!<var>env-variable</var></code> est spécifié, la
+    requête est autorisée si la variable d'environnement <var>variable
+    d'environnement</var> n'existe pas. Le serveur permet de définir
+    avec souplesse des variables d'environnement en se basant sur les
+    caractéristiques de la requête client et en utilisant les directives
+    fournies par le module <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code>. Ainsi, on peut
+    utiliser la directive <code class="directive">Allow</code> pour permettre
+    l'accès en fonction de paramètres comme le <code>User-Agent</code>
+    (type de navigateur) des clients, le <code>Referer</code>, ou
+    d'autres champs d'en-tête de la requête HTTP.</p>
+
+    <div class="example"><h3>Exemple :</h3><p><code>
+      SetEnvIf User-Agent ^KnockKnock/2\.0 laissez_moi_entrer<br />
+      &lt;Directory /docroot&gt;<br />
+      <span class="indent">
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from env=laissez_moi_entrer<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+
+    <p>Dans cet exemple, les navigateurs dont la chaîne user-agent
+    commence par <code>KnockKnock/2.0</code> se verront accorder
+    l'accès, alors que tous les autres seront rejetés.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Deny" id="Deny">Deny</a> <a name="deny" id="deny">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit quels hôtes ne sont pas autorisés à accéder au
+serveur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> Deny from all|<var>hôte</var>|env=[!]<var>variable
+d'environnement</var>
+[<var>hôte</var>|env=[!]<var>variable d'environnement</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Limit</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
+</table>
+    <p>Cette directive permet de restreindre l'accès au serveur en
+    fonction du nom d'hôte, de l'adresse IP ou de variables
+    d'environnement. Les arguments de la directive
+    <code class="directive">Deny</code> sont identiques aux arguments de la
+    directive <code class="directive"><a href="#allow">Allow</a></code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Order" id="Order">Order</a> <a name="order" id="order">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le statut d'accès par défaut et l'ordre dans lequel
+les directives <code class="directive">Allow</code> et
+<code class="directive">Deny</code> sont évaluées.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code> Order <var>ordre</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Order Deny,Allow</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>Limit</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
+</table>
+
+    <p>La directive <code class="directive">Order</code>, associée aux
+    directives <code class="directive"><a href="#allow">Allow</a></code>
+    et <code class="directive"><a href="#deny">Deny</a></code>,
+    implémente un système de contrôle d'accès en trois passes. Au cours
+    de la première passe, ce sont soit toutes les directives <code class="directive"><a href="#allow">Allow</a></code>, soit toutes les
+    directives <code class="directive"><a href="#deny">Deny</a></code> qui sont traitées, selon
+    la définition de la directive <code class="directive"><a href="#order">Order</a></code>. Le reste des
+    directives (<code class="directive"><a href="#deny">Deny</a></code>
+    ou <code class="directive"><a href="#allow">Allow</a></code>) est
+    traité au cours de la seconde passe. La troisième passe s'applique à
+    toutes les requêtes qui ne sont concernées par aucune des deux
+    premières passes.</p>
+
+    <p>Notez que toutes les directives <code class="directive"><a href="#allow">Allow</a></code> et <code class="directive"><a href="#deny">Deny</a></code> sont traitées, à la
+    différence d'un pare-feu classique où seule la première règle qui
+    correspond est utilisée. La dernière directive qui correspond
+    s'applique ( à la différence là encore d'un pare-feu classique). De
+    plus, l'ordre dans lequel les lignes apparaissent dans le fichier de
+    configuration n'a pas d'incidence -- toutes les lignes <code class="directive"><a href="#allow">Allow</a></code> sont considérées comme
+    un groupe, toutes les lignes <code class="directive"><a href="#deny">Deny</a></code> comme un autre, et le
+    statut par défaut a son existence propre.</p>
+
+    <p><em>Ordre</em> peut être :</p>
+
+    <dl>
+      <dt><code>Allow,Deny</code></dt>
+
+      <dd>Dans un premier temps, toutes les directives <code class="directive"><a href="#allow">Allow</a></code> sont évaluées ; au
+      moins une d'entre elles doit correspondre, sinon la requête est
+      rejetée. Ensuite, toutes les directives <code class="directive"><a href="#deny">Deny</a></code> sont évaluées. Si au
+      moins l'une d'entre elles correspond, la requête est rejetée.
+      Enfin, toute requête qui ne correspond à aucune directive
+      <code class="directive"><a href="#allow">Allow</a></code> ou
+      <code class="directive"><a href="#deny">Deny</a></code> est rejetée
+      par défaut.</dd>
+
+      <dt><code>Deny,Allow</code></dt>
+
+      <dd>Dans un premier temps, toutes les directives <code class="directive"><a href="#deny">Deny</a></code> sont évaluées ; Si au
+      moins une d'entre elles correspond, la requête est rejetée,
+      <strong>à moins</strong> qu'elle corresponde aussi à une directive
+      <code class="directive"><a href="#allow">Allow</a></code>. Toute
+      requête qui ne correspond à aucune directive <code class="directive"><a href="#allow">Allow</a></code> ou <code class="directive"><a href="#deny">Deny</a></code> est autorisée.</dd>
+
+      <dt><code>Mutual-failure</code></dt>
+
+      <dd>Cet argument a le même effet que <code>Allow,Deny</code> et
+      est devenu de ce fait obsolète.</dd>
+    </dl>
+
+    <p>Les mots-clés ne peuvent être séparés que par des virgules ;
+    <em>aucun espace</em> ne doit s'intercaler entre eux.</p>
+
+    <table class="bordered">
+      <tr>
+        <th>Match</th>
+        <th>Résultat Allow,Deny</th>
+        <th>Résultat Deny,Allow</th>
+      </tr><tr>
+        <th>Correspond à Allow seulement</th>
+        <td>Requête autorisée</td>
+        <td>Requête autorisée</td>
+      </tr><tr>
+        <th>Correspond à Deny seulement</th>
+        <td>Requête rejetée</td>
+        <td>Requête rejetée</td>
+      </tr><tr>
+        <th>Aucune correspondance</th>
+        <td>Par défaut la seconde directive : rejet</td>
+        <td>Par défaut la seconde directive : autorisation</td>
+      </tr><tr>
+        <th>Correspond à Allow &amp; Deny</th>
+        <td>La dernière correspondance l'emporte : rejet</td>
+        <td>La dernière correspondance l'emporte : autorisation</td>
+      </tr>
+    </table>
+
+    <p>Dans cet exemple, tous les hôtes du domaine apache.org ont
+    l'autorisation d'accès ; tous les autres voient leur accès
+    refusé.</p>
+
+    <div class="example"><p><code>
+      Order Deny,Allow<br />
+      Deny from all<br />
+      Allow from apache.org
+    </code></p></div>
+
+    <p>Dans l'exemple suivant, tous les hôtes du domaine apache.org ont
+    l'autorisation d'accès, sauf ceux du sous-domaine foo.apache.org qui
+    voient leur accès refusé. Tous les hôtes qui ne sont pas dans le
+    domaine apache.org sont rejetés car le statut par défaut est positionné
+    sur <code class="directive"><a href="#deny">Deny</a></code>, et consiste donc en un
+    refus d'accès.</p>
+
+    <div class="example"><p><code>
+      Order Allow,Deny<br />
+      Allow from apache.org<br />
+      Deny from foo.apache.org
+    </code></p></div>
+
+    <p>Par contre, si la valeur de la directive
+    <code class="directive">Order</code>, dans l'exemple précédent, est
+    <code>Deny,Allow</code>, tout le monde a l'autorisation d'accès.
+    Ceci est dû au fait que <code>Allow from apache.org</code> sera
+    évalué en dernier, sans tenir compte de l'ordre réel dans lequel les
+    directives apparaissent dans le fichier de configuration, et va
+    l'emporter sur <code>Deny from foo.apache.org</code>. Tout hôte qui
+    n'est pas dans le domaine <code>apache.org</code> aura aussi
+    l'autorisation d'accès car le statut par défaut est positionné sur
+    <code class="directive"><a href="#allow">Allow</a></code> et constitue donc une
+    autorisation d'accès.</p>
+
+    <p>La présence d'une directive <code class="directive">Order</code> peut
+    affecter le contrôle d'accès à une partie du serveur même en
+    l'abscence de directives <code class="directive"><a href="#allow">Allow</a></code> et <code class="directive"><a href="#deny">Deny</a></code> associées, à cause de
+    son influence sur le statut par défaut. Par exemple,</p>
+
+    <div class="example"><p><code>
+      &lt;Directory /www&gt;<br />
+      <span class="indent">
+        Order Allow,Deny<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+
+    <p>va interdire tout accès au répertoire <code>/www</code> à cause
+    du statut d'accès par défaut qui est défini à <code class="directive"><a href="#deny">Deny</a></code>.</p>
+
+    <p>La directive <code class="directive">Order</code> ne contrôle l'ordre
+    dans lequel sont traitées les directives d'accès qu'au cours de
+    chaque phase du traitement de la configuration du serveur. Ceci
+    implique, par exemple, qu'une directive <code class="directive"><a href="#allow">Allow</a></code> ou <code class="directive"><a href="#deny">Deny</a></code> située dans une section
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sera
+    toujours évaluée après une directive <code class="directive"><a href="#allow">Allow</a></code> ou <code class="directive"><a href="#deny">Deny</a></code> située dans une section
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> ou un
+    fichier <code>.htaccess</code>, sans tenir compte de la
+    définition de la directive <code class="directive">Order</code>. Pour plus
+    de détails à propos de la fusion des sections de configuration, voir
+    le document <a href="../sections.html">Comment fonctionnent les sections Directory,
+    Location et Files</a>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Satisfy" id="Satisfy">Satisfy</a> <a name="satisfy" id="satisfy">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Interaction entre le contrôle d'accès en fonction de l'hôte
+et l'authentification utilisateur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Satisfy Any|All</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Satisfy All</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access_compat</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Affecté par <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> à partir de la version
+2.0.51</td></tr>
+</table>
+    <p>Politique d'accès dans le cas où on utilise à la fois <code class="directive"><a href="#allow">Allow</a></code> et <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>. L'argument est soit
+    <code>All</code>, soit <code>Any</code>. L'utilisation de cette
+    directive n'a de sens que si l'accès à une zone particulière du
+    serveur est restreinte par utilisateur/mot de passe et en fonction
+    de l'adresse IP de l'hôte client. Dans ce cas, par
+    défaut (<code>All</code>), le client doit satisfaire à la
+    restriction d'adresse, <em>et</em> fournir un couple
+    utilisateur/mot de passe valide. Avec l'argument <code>Any</code>,
+    le client se verra accorder l'accès s'il satisfait à la restriction
+    d'adresse ou fournit un couple utilisateur/mot de passe valide. On
+    peut utiliser cette dernière définition pour restreindre l'accès à
+    une zone par mot de passe, mais accorder l'accès aux clients
+    possédant certaines adresses IP sans qu'ils aient à fournir de mot
+    de passe.</p>
+
+    <p>Par exemple, si vous souhaitez que les utilisateurs de votre
+    réseau accèdent à une zone de votre site web sans restriction, mais
+    que l'accès à cette zone nécessite un mot de passe pour les autres
+    utilisateurs, vous pouvez utiliser une configuration du style :</p>
+
+    <div class="example"><p><code>
+      Require valid-user<br />
+      Allow from 192.168.1<br />
+      Satisfy Any
+    </code></p></div>
+
+    <p>
+    Une autre utilisation fréquente de la directive
+    <code class="directive">Satisfy</code> est l'allègement des restrictions
+    d'accès à un sous-répertoire par rapport aux restrictions d'accès au
+    répertoire parent :
+    </p>
+
+    <div class="example"><p><code>
+      &lt;Directory /var/www/private&gt;<br />
+        Require valid-user<br />
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /var/www/private/public&gt;<br />
+        Allow from all<br />
+        Satisfy Any<br />
+      &lt;/Directory&gt;
+    </code></p></div>
+
+    <p>Dans l'exemple ci-dessus, l'accès au répertoire
+    <code>/var/www/private</code> nécessitera une authentification,
+    alors que l'accès au répertoire <code>/var/www/private/public</code>
+    sera accordé sans restriction.</p>
+
+
+    <p>Depuis la version 2.0.51, les directives
+    <code class="directive">Satisfy</code> peuvent être restreintes à certaines
+    méthodes particulières à l'aide des sections <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> et <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code>.</p>
+
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#allow">Allow</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
+</ul>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_access_compat.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_access_compat.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/mod/mod_access_compat.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>
