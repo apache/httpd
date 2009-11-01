@@ -1,0 +1,164 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 420990 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_actions.xml.meta">
+
+<name>mod_actions</name>
+
+<description>Ce module permet l'ex&eacute;cution des scripts CGI en fonction du
+type de m&eacute;dia ou de la m&eacute;thode de requ&ecirc;te.</description>
+
+<status>Base</status>
+<sourcefile>mod_actions.c</sourcefile>
+<identifier>actions_module</identifier>
+
+<summary>
+    <p>Ce module poss&egrave;de deux directives. La directive <directive
+    module="mod_actions">Action</directive> vous permet de lancer
+    l'ex&eacute;cution de scripts CGI chaque fois qu'un fichier poss&eacute;dant un
+    certain <glossary ref="mime-type">type de contenu MIME</glossary>
+    fait l'objet d'une requ&ecirc;te. La directive <directive
+    module="mod_actions">Script</directive> vous permet de lancer
+    l'ex&eacute;cution de scripts CGI chaque fois que la requ&ecirc;te utilise une
+    m&eacute;thode particuli&egrave;re. Ceci facilite grandement l'ex&eacute;cution de
+    scripts qui traitent des fichiers.</p> </summary>
+
+<seealso><module>mod_cgi</module></seealso>
+<seealso><a href="../howto/cgi.html">Contenu dynamique avec CGI</a></seealso>
+<seealso><a href="../handler.html">Utilisation des gestionnaires
+d'Apache</a></seealso>
+
+<directivesynopsis>
+<name>Action</name>
+<description>Active un script CGI pour un gestionnaire ou un type de
+contenu particulier</description>
+<syntax>Action <var>type d'action</var> <var>script cgi</var>
+[virtual]</syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>FileInfo</override>
+<compatibility>Le modificateur <code>virtual</code> et le passage de
+gestionnaire ont &eacute;t&eacute; introduits dans Apache 2.1</compatibility>
+
+<usage>
+    <p>Cette directive ajoute une action qui va activer <var>script
+    cgi</var> lorsque <var>type d'action</var> est d&eacute;clench&eacute; par la
+    requ&ecirc;te. <var>script cgi</var> est un chemin URL vers une ressource
+    qui a &eacute;t&eacute; d&eacute;sign&eacute;e comme script CGI &agrave; l'aide des directives
+    <directive module="mod_alias">ScriptAlias</directive> ou <directive
+    module="mod_mime">AddHandler</directive>. <var>type d'action</var>
+    peut &ecirc;tre soit un <a href="../handler.html">gestionnaire</a>, soit
+    un <glossary ref="mime-type">type de contenu MIME</glossary>. L'URL
+    et le chemin du document correspondant sont envoy&eacute;s en utilisant
+    les variables d'environnement CGI standards <code>PATH_INFO</code>
+    et <code>PATH_TRANSLATED</code>. Le gestionnaire utilis&eacute; pour cette
+    requ&ecirc;te particuli&egrave;re est transmis &agrave; l'aide de la variable
+    <code>REDIRECT_HANDLER</code>.</p>
+
+    <example><title>Exemples</title>
+      # Requ&ecirc;tes concernant des fichiers poss&eacute;dant un type de contenu
+      # MIME particulier :<br />
+      Action image/gif /cgi-bin/images.cgi<br />
+      <br />
+      # Fichiers poss&eacute;dant une extension particuli&egrave;re<br />
+      AddHandler mon-type-de-fichier .xyz<br />
+      Action mon-type-de-fichier /cgi-bin/programme.cgi<br />
+    </example>
+
+    <p>Dans le premier exemple, les requ&ecirc;tes pour des fichiers poss&eacute;dant
+    le type de contenu MIME <code>image/gif</code> seront trait&eacute;es par
+    le script CGI <code>/cgi-bin/images.cgi</code>.</p>
+
+    <p>Dans le second exemple, les requ&ecirc;tes pour des fichiers poss&eacute;dant
+    l'extension <code>.xyz</code> seront trait&eacute;es par
+    le script CGI <code>/cgi-bin/programme.cgi</code>.</p>
+
+    <p>Le modificateur optionnel <code>virtual</code> permet de
+    d&eacute;sactiver la v&eacute;rification de l'existence du fichier demand&eacute;. Ceci
+    peut s'av&eacute;rer utile, par exemple, si vous voulez utiliser la
+    directive <directive>Action</directive> pour des localisations
+    virtuelles.</p>
+
+    <example><title>Exemple</title>
+      &lt;Location /news&gt;<br />
+      <indent>
+        SetHandler news-handler<br />
+        Action news-handler /cgi-bin/news.cgi virtual<br />
+      </indent>
+      &lt;/Location&gt;
+    </example>
+</usage>
+
+<seealso><directive module="mod_mime">AddHandler</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Script</name>
+<description>Active un script CGI dans le cas d'une m&eacute;thode de requ&ecirc;te
+particuli&egrave;re.</description>
+<syntax>Script <var>m&eacute;thode</var> <var>script cgi</var></syntax>
+<contextlist>
+<context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+<usage>
+    <p>Cette directive ajoute une action qui va activer <var>script
+    cgi</var> lorsqu'un fichier est demand&eacute; en utilisant la m&eacute;thode
+    <var>m&eacute;thode</var>. <var>script cgi</var> est le chemin URL d'une
+    ressource qui a &eacute;t&eacute; d&eacute;sign&eacute;e comme script CGI en utilisant les
+    directives <directive
+    module="mod_alias">ScriptAlias</directive> ou <directive
+    module="mod_mime">AddHandler</directive>. L'URL et le chemin du
+    document demand&eacute; sont envoy&eacute;s en utilisant les variables
+    d'environnement CGI standards <code>PATH_INFO</code> et
+    <code>PATH_TRANSLATED</code>.</p>
+
+    <note>
+      Tous les noms de m&eacute;thode peuvent &ecirc;tre utilis&eacute;s. <strong>Les noms
+      de m&eacute;thode sont sensibles &agrave; la casse</strong>, si bien que
+      <code>Script PUT</code> et <code>Script put</code> ont des effets
+      totalement diff&eacute;rents.
+    </note>
+
+    <p>Notez que la commande <directive>Script</directive> ne d&eacute;finit
+    que des actions par d&eacute;faut. Si un script CGI est appel&eacute;, ou toute
+    autre ressource capable de g&eacute;rer la m&eacute;thode de la requ&ecirc;te en
+    interne, il agira en cons&eacute;quence. Notez aussi que
+    <directive>Script</directive> avec une m&eacute;thode <code>GET</code> ne
+    sera appel&eacute; que si la requ&ecirc;te poss&egrave;de des arguments (par exemple
+    foo.html?hi). Dans le cas contraire, la requ&ecirc;te sera trait&eacute;e
+    normalement.</p>
+
+    <example><title>Exemples</title>
+      # Pour une recherche du style &lt;ISINDEX&gt;<br />
+      Script GET /cgi-bin/search<br />
+      <br />
+      # Un gestionnaire CGI pour la m&eacute;thode PUT<br />
+      Script PUT /~bob/put.cgi<br />
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>

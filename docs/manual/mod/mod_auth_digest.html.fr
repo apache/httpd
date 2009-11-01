@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_auth_digest - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Module Apache mod_auth_digest</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_digest.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_auth_digest.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Authentification utilisateur utilisant les condensés
+MD5</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>auth_digest_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_auth_digest.c</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Ce module implémente l'authentification HTTP basée sur les
+    condensés MD5 (<a href="http://www.faqs.org/rfcs/rfc2617.html">RFC2617</a>), et
+    fournit une alternative à <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> plus
+    sécurisée.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestalgorithm">AuthDigestAlgorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestdomain">AuthDigestDomain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestnccheck">AuthDigestNcCheck</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestnonceformat">AuthDigestNonceFormat</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestnoncelifetime">AuthDigestNonceLifetime</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestprovider">AuthDigestProvider</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestqop">AuthDigestQop</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authdigestshmemsize">AuthDigestShmemSize</a></li>
+</ul>
+<h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#using">Utilisation de l'authentification à base de
+condensés</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#msie">Travailler avec MS Internet Explorer</a></li>
+</ul><h3>Voir aussi</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code></li>
+<li><a href="../howto/auth.html">Mode d'emploi de
+l'authentification</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="using" id="using">Utilisation de l'authentification à base de
+condensés</a></h2>
+
+    <p>Pour utiliser l'authentification à base de condensés MD5, vous
+    devez simplement remplacer <code>AuthType Basic</code> et <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> respectivement
+    par <code>AuthType Digest</code> et <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code> lorsque vous
+    configurez l'authentification, puis ajouter une directive <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> contenant au
+    moins la(les) URI(s) racine(s) de la zone à protéger.</p>
+
+    <p>On peut créer les fichiers utilisateur appropriés (au format
+    texte) à l'aide de l'outil <code class="program"><a href="../programs/htdigest.html">htdigest</a></code>.</p>
+
+    <div class="example"><h3>Exemple :</h3><p><code>
+      &lt;Location /private/&gt;<br />
+      <span class="indent">
+        AuthType Digest<br />
+        AuthName "private area"<br />
+        AuthDigestDomain /private/ http://mirror.my.dom/private2/<br />
+        <br />
+        AuthDigestProvider file<br />
+        AuthUserFile /web/auth/.digest_pw<br />
+        Require valid-user<br />
+      </span>
+      &lt;/Location&gt;
+    </code></p></div>
+
+    <div class="note"><h3>Note</h3>
+    <p>L'authentification à base de condensés MD5 est plus sécurisée que
+    l'authentification Basic, mais ne fonctionne qu'avec les navigateurs
+    qui la supportent. En septembre 2004, les principaux navigateurs
+    supportant l'authentification à base de condensés MD5 incluaient <a href="http://www.w3.org/Amaya/">Amaya</a>, <a href="http://konqueror.kde.org/">Konqueror</a>, <a href="http://www.microsoft.com/windows/ie/">MS Internet Explorer</a>
+    pour Mac OS X et Windows (bien que la version Windows échoue lorsque
+    la requête comporte une chaîne d'arguments -- voir plus loin "<a href="#msie">Travailler avec MS Internet Explorer</a>" pour
+    contourner ce problème), <a href="http://www.mozilla.org">Mozilla</a>, <a href="http://channels.netscape.com/ns/browsers/download.jsp">
+    Netscape</a> 7, <a href="http://www.opera.com/">Opera</a>, et <a href="http://www.apple.com/safari/">Safari</a>. <a href="http://lynx.isc.org/">lynx</a> ne supporte
+    <strong>pas</strong> l'authentification à base de condensés MD5.
+    Comme l'authentification à base de condensés MD5 est moins répandue
+    que l'authentification Basic, vous ne devez l'utiliser que dans des
+    environnements où tous les utilisateurs disposeront d'un navigateur
+    la supportant.</p>
+    <p><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> ne fonctionne correctement que
+    sur les plates-formes où APR supporte la mémoire partagée.</p>
+    </div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="msie" id="msie">Travailler avec MS Internet Explorer</a></h2>
+    <p>L'implémentation de l'authentification à base de condensé dans
+    les versions précédentes d'Internet Explorer pour Windows (5 et 6)
+    posait problème, car les requêtes de type <code>GET</code>
+    comportant une chaîne d'arguments (query string) ne respectaient pas les RFC. Il y
+    a plusieurs manières de contourner ce problème.</p>
+
+    <p>
+    La première méthode consiste à utiliser des requêtes de type
+    <code>POST</code> plutôt que <code>GET</code> pour transmettre les
+    données à votre programme. Cette méthode constitue l'approche la
+    plus simple dans le cas où votre application peut fonctionner avec
+    cette limitation.
+    </p>
+
+    <p>Depuis la version 2.0.51, Apache propose aussi de contourner le
+    problème à l'aide de la variable d'environnement
+    <code>AuthDigestEnableQueryStringHack</code>. Si
+    <code>AuthDigestEnableQueryStringHack</code> est définie pour la
+    requête, Apache va prendre des mesures pour contourner la bogue MSIE
+    et en particulier va exclure la chaîne d'arguments de la comparaison
+    des condensés. L'utilisation de cette méthode peut se traduire par
+    ceci :</p>
+
+    <div class="example"><h3>Utilisation de l'authentification à base de condensé
+    avec MSIE :</h3><p><code>
+    BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
+    </code></p></div>
+
+    <p>Cette correction n'est pas nécessaire avec MSIE 7, bien que son
+    activation ne pose pas de problème de compatibilité ou de surcharge
+    significative.</p>
+
+    <p>Voir la directive <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code> pour plus de détails
+    à propos de la définition conditionnelle des variables
+    d'environnement.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestAlgorithm" id="AuthDigestAlgorithm">AuthDigestAlgorithm</a> <a name="authdigestalgorithm" id="authdigestalgorithm">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sélectionne l'algorithme utilisé pour calculer les
+condensés du défit et de sa réponse</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestAlgorithm MD5|MD5-sess</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthDigestAlgorithm MD5</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p>La directive <code class="directive">AuthDigestAlgorithm</code> permet de
+    sélectionner l'algorithme utilisé pour calculer les condensés du
+    défit et de sa réponse.</p>
+
+    <div class="note">
+      <code>MD5-sess</code> n'est pas encore correctement implémenté.
+    </div>
+    
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestDomain" id="AuthDigestDomain">AuthDigestDomain</a> <a name="authdigestdomain" id="authdigestdomain">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Les URIs qui se trouvent dans le même espace de protection
+concernant l'authentification à base de condensés</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p>La directive <code class="directive">AuthDigestDomain</code> vous permet
+    de spécifier un ou plusieurs URIs se trouvant dans le même
+    espace de protection (c'est à dire utilisant le même utilisateur/mot
+    de passe et se trouvant dans le même domaine). Les URIs spécifiés
+    sont des préfixes ; le client doit savoir que tous les URIs situés
+    sous ces préfixes seront protégés par le même utilisateur/mot de
+    passe. Les URIs peuvent être soit des URIs absolus (c'est à dire
+    avec protocole, nom serveur, port, etc...), soit des URIs
+    relatifs.</p>
+
+    <p>Cette directive doit toujours être présente et contenir au moins
+    le(s) URI(s) racine(s) pour cet espace. Dans le cas contraire, le
+    client va envoyer un en-tête d'autorisation avec <em>chaque
+    requête</em> à destination de ce serveur. Outre une augmentation de
+    la taille de la requête, les performances vont s'en trouver
+    affectées si la directive <code class="directive"><a href="#authdigestnccheck">AuthDigestNcCheck</a></code> est définie à
+    On.</p>
+
+    <p>Les URIs spécifiés peuvent aussi référencer différents serveurs,
+    auquel cas les clients (qui sont à même de le comprendre) vont
+    partager l'utilisateur/mot de passe entre plusieurs serveurs sans le
+    demander à l'utilisateur à chaque fois.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestNcCheck" id="AuthDigestNcCheck">AuthDigestNcCheck</a> <a name="authdigestnccheck" id="authdigestnccheck">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Active ou désactive la vérification du nombre d'envois du
+nombre à valeur unique (nonce) par le serveur</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestNcCheck On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthDigestNcCheck Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <div class="note">
+      Non encore implémenté.
+    </div>
+    
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestNonceFormat" id="AuthDigestNonceFormat">AuthDigestNonceFormat</a> <a name="authdigestnonceformat" id="authdigestnonceformat">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine la manière dont le nombre à valeur unique du
+serveur (nonce) est généré</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestNonceFormat <var>format</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <div class="note">Non encore implémenté.</div>
+    
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestNonceLifetime" id="AuthDigestNonceLifetime">AuthDigestNonceLifetime</a> <a name="authdigestnoncelifetime" id="authdigestnoncelifetime">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Durée de validité du nombre à valeur unique du
+serveur (nonce)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestNonceLifetime <var>secondes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthDigestNonceLifetime 300</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p>La directive <code class="directive">AuthDigestNonceLifetime</code>
+    permet de contrôler la durée de validité du nombre à valeur unique
+    du serveur (nonce). Lorsque le client contacte le serveur en
+    utilisant un nonce dont la validité a expiré, le serveur renvoie un
+    code d'erreur 401 avec <code>stale=true</code>. Si
+    <var>secondes</var> est supérieur à 0, il spécifie la durée de
+    validité du nonce ; il est en général déconseillé d'affecter à cet
+    argument une valeur inférieure à 10 secondes. Si
+    <var>secondes</var> est inférieur à 0, le nonce n'expire jamais.
+    
+    </p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestProvider" id="AuthDigestProvider">AuthDigestProvider</a> <a name="authdigestprovider" id="authdigestprovider">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le(s) fournisseurs(s) d'authentification pour la
+zone du site web concernée</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestProvider <var>nom fournisseur</var>
+[<var>nom fournisseur</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthDigestProvider file</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p>La directive <code class="directive">AuthDigestProvider</code> permet de
+    définir quel fournisseur d'authentification sera utilisé pour
+    authentifier les utilisateurs pour la zone du site web concernée.
+    Assurez-vous que le module implémentant le fournisseur
+    d'authentification choisi soit bien présent dans le serveur. Le
+    fournisseur par défaut <code>file</code> est implémenté par le
+    module <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>.</p>
+
+    <p>Voir <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>,
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, et <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
+    pour la liste des fournisseurs disponibles.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestQop" id="AuthDigestQop">AuthDigestQop</a> <a name="authdigestqop" id="authdigestqop">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine le niveau de protection fourni par
+l'authentification à base de condensé</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestQop none|auth|auth-int [auth|auth-int]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthDigestQop auth</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>répertoire, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p>La directive <code class="directive">AuthDigestQop</code> permet de
+    définir le <dfn>niveau de protection</dfn> fourni. <code>auth</code>
+    ne fournit que l'authentification (nom utilisateur/mot de passe) ;
+    <code>auth-int</code> fournit l'authentification plus un contrôle
+    d'intégrité (un condensé MD5 de l'entité est aussi calculé et
+    vérifié) ; avec <code>none</code>, le module va utiliser l'ancien
+    algorithme de condensés RFC-2069 (qui n'effectue pas de contrôle
+    d'intégrité). On peut spécifier à la fois <code>auth</code> et
+    <code>auth-int</code>, auquel cas c'est le navigateur qui va choisir
+    lequel des deux utiliser. <code>none</code> ne doit être utilisé que
+    dans le cas où le navigateur ne serait pas à même (pour une raison
+    ou pour une autre) de relever le défit qu'il recevrait si un autre
+    niveau de protection était défini.</p>
+
+    <div class="note">
+      <code>auth-int</code> n'est pas encore implémenté.
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthDigestShmemSize" id="AuthDigestShmemSize">AuthDigestShmemSize</a> <a name="authdigestshmemsize" id="authdigestshmemsize">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>La quantité de mémoire partagée à allouer afin de conserver
+les informations à propos des clients</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AuthDigestShmemSize <var>taille</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AuthDigestShmemSize 1000</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_digest</td></tr>
+</table>
+    <p>La directive <code class="directive">AuthDigestShmemSize</code> permet de
+    définir la quantité de mémoire partagée à allouer au démarrage du
+    serveur afin de conserver les informations à propos des clients.
+    Notez que le segment de mémoire partagée ne peut pas être défini à
+    une taille inférieure à l'espace nécessaire pour conserver les
+    informations à propos d'<em>un</em> client. Cette valeur dépend de
+    votre système. Si vous voulez en déterminer la valeur exacte, vous
+    pouvez simplement définir <code class="directive">AuthDigestShmemSize</code>
+    à <code>0</code> et consulter le message d'erreur que renverra le
+    serveur lorsqu'on essaiera de le démarrer.</p>
+
+    <p>L'argument <var>size</var> s'exprime par défaut en octets, mais
+    vous pouvez suffixer le nombre par un <code>K</code> ou un
+    <code>M</code> pour spécifier respectivement des KiloOctets ou des
+    MégaOctets. Par exemple, les directives qui suivent sont toutes
+    équivalentes :</p>
+
+    <div class="example"><p><code>
+      AuthDigestShmemSize 1048576<br />
+      AuthDigestShmemSize 1024K<br />
+      AuthDigestShmemSize 1M
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/mod_auth_digest.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/mod_auth_digest.html" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>

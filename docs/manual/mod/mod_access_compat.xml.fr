@@ -1,0 +1,499 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 825898 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_access_compat.xml.meta">
+
+<name>mod_access_compat</name>
+<description>Autorisations de groupe &agrave; base de nom d'h&ocirc;te (nom ou
+adresse IP)</description>
+<status>Extension</status>
+<sourcefile>mod_access_compat.c</sourcefile>
+<identifier>access_compat_module</identifier>
+<compatibility>Disponible dans Apache 2.3 &agrave; des fins de compatibilit&eacute;
+avec les pr&eacute;c&eacute;dentes versions d'Apache 2.x. Les directives fournies par
+ce module sont devenues obsol&egrave;tes depuis la refonte d'authz. Voir
+<module>mod_authz_host</module></compatibility>
+
+<summary>
+    <p>Les directives fournies par le module
+    <module>mod_access_compat</module> s'utilisent dans les sections
+    <directive module="core" type="section">Directory</directive>,
+    <directive module="core" type="section">Files</directive> et
+    <directive module="core" type="section">Location</directive>, ainsi
+    que dans les fichiers <code><a
+    href="core.html#accessfilename">.htaccess</a></code> et permettent
+    de contr&ocirc;ler l'acc&egrave;s &agrave; certaines parties du serveur. On peut
+    contr&ocirc;ler cet acc&egrave;s en fonction du nom d'h&ocirc;te du client, de son
+    adresse IP ou d'autres caract&eacute;ristiques de la requ&ecirc;te, telles
+    qu'elles sont enregistr&eacute;es dans les <a href="../env.html">variables
+    d'environnement</a>. Les directives <directive
+    module="mod_access_compat">Allow</directive> et <directive
+    module="mod_access_compat">Deny</directive> permettent de sp&eacute;cifier
+    quels clients sont ou ne sont pas autoris&eacute;s &agrave; acc&eacute;der au serveur,
+    alors que la directive <directive
+    module="mod_access_compat">Order</directive> d&eacute;finit le statut
+    d'acc&egrave;s par d&eacute;faut, et d&eacute;termine la mani&egrave;re dont les directives
+    <directive module="mod_access_compat">Allow</directive> et
+    <directive module="mod_access_compat">Deny</directive> interagissent
+    entre elles.</p>
+
+    <p>Les restrictions d'acc&egrave;s &agrave; base de nom d'h&ocirc;te et
+    l'authentification &agrave; base de mot de passe peuvent &ecirc;tre impl&eacute;ment&eacute;es
+    simultan&eacute;ment. Dans ce cas, on utilise la directive <directive
+    module="mod_access_compat">Satisfy</directive> pour d&eacute;terminer la
+    mani&egrave;re dont ces deux modes de restrictions interagissent.</p>
+
+    <note type="warning"><title>Note</title>
+      <p>Les directives fournies par le module
+      <module>mod_access_compat</module> sont devenues obsol&egrave;tes depuis
+      la refonte d'authz. Voir <module>mod_authz_host</module>.</p>
+    </note>
+
+    <p>En g&eacute;n&eacute;ral, les directives de restriction d'acc&egrave;s s'appliquent &agrave;
+    toutes les m&eacute;thodes d'acc&egrave;s (<code>GET</code>, <code>PUT</code>,
+    <code>POST</code>, etc...). C'est d'ailleurs ce que l'on souhaite
+    dans la plupart des cas. Il est cependant possible de restreindre
+    certaines m&eacute;thodes, alors que les autres m&eacute;thodes ne se verront
+    impos&eacute;e aucune restriction, en regroupant les directives &agrave;
+    l'int&eacute;rieur d'une section <directive module="core"
+    type="section">Limit</directive>.</p>
+</summary>
+
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><module>mod_authz_host</module></seealso>
+<seealso><module>mod_authz_core</module></seealso>
+
+<directivesynopsis>
+<name>Allow</name>
+<description>Sp&eacute;cifie quels h&ocirc;tes peuvent acc&eacute;der &agrave; une certaine zone du
+serveur</description>
+<syntax> Allow from all|<var>h&ocirc;te</var>|env=[!]<var>variable
+d'environnement</var>
+[<var>h&ocirc;te</var>|env=[!]<var>variable d'environnement</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+    <p>La directive <directive>Allow</directive> permet de d&eacute;finir quels
+    h&ocirc;tes ont le droit d'acc&eacute;der &agrave; une certaine partie du serveur. On
+    peut contr&ocirc;ler l'acc&egrave;s par nom d'h&ocirc;te, adresse IP, intervalle
+    d'adresses IP, ou toute autre caract&eacute;ristique de la requ&ecirc;te client
+    enregistr&eacute;e dans les variables d'environnement.</p>
+
+    <p>Le premier argument de cette directive est toujours
+    <code>from</code>. Les arguments suivants peuvent prendre trois
+    formes diff&eacute;rentes. Si <code>Allow from all</code> est sp&eacute;cifi&eacute;,
+    tout h&ocirc;te se voit accord&eacute; l'acc&egrave;s, en tenant compte des directives
+    <directive module="mod_access_compat">Deny</directive> et <directive
+    module="mod_access_compat">Order</directive> comme d&eacute;crit plus loin.
+    Pour ne permettre l'acc&egrave;s au serveur qu'&agrave; un h&ocirc;te ou un groupe
+    d'h&ocirc;tes particuliers, on peut sp&eacute;cifier un <em>nom d'h&ocirc;te</em> sous
+    une des formes suivantes :</p>
+
+    <dl>
+      <dt>Un nom de domaine (partiel)</dt>
+
+      <dd>
+      <example><title>Exemple :</title>
+        Allow from apache.org<br />
+        Allow from .net example.edu
+      </example>
+      <p>Les h&ocirc;tes dont les noms correspondent ou se terminent par la
+      cha&icirc;ne sp&eacute;cifi&eacute;e ont l'autorisation d'acc&egrave;s. Seules les
+      composantes enti&egrave;res du nom d'h&ocirc;te doivent correspondre ; ainsi,
+      dans l'exemple ci-dessus, <code>foo.apache.org</code>
+      correspondra, mais <code>fooapache.org</code> ne conviendra pas.
+      Avec cette configuration, Apache va effectuer une double recherche
+      DNS sur l'adresse IP du client, sans tenir compte de la
+      d&eacute;finition de la directive <directive
+      module="core">HostnameLookups</directive>. Tout d'abord, une
+      recherche DNS inverse sur l'adresse IP est effectu&eacute;e pour
+      d&eacute;terminer le nom d'h&ocirc;te associ&eacute;, puis une recherche directe sur
+      le nom d'h&ocirc;te est effectu&eacute;e afin de s'assurer qu'il correspond
+      bien &agrave; l'adresse IP originale. L'acc&egrave;s ne sera accord&eacute; que si le
+      nom d'h&ocirc;te correspond et si les recherches DNS inverse et directe
+      concordent.</p></dd>
+
+      <dt>Une adresse IP compl&egrave;te</dt>
+
+      <dd>
+      <example><title>Exemple :</title>
+        Allow from 10.1.2.3<br />
+        Allow from 192.168.1.104 192.168.1.205
+      </example>
+      <p>L'adresse IP d'un h&ocirc;te auquel on a accord&eacute; l'acc&egrave;s</p></dd>
+
+      <dt>Une adresse IP partielle</dt>
+
+      <dd>
+      <example><title>Exemple :</title>
+        Allow from 10.1<br />
+        Allow from 10 172.20 192.168.2
+      </example>
+      <p>De un &agrave; trois des premiers octets d'une adresse IP, afin de
+      restreindre l'acc&egrave;s &agrave; un sous-r&eacute;seau.</p></dd>
+
+      <dt>Une paire r&eacute;seau/masque de sous-r&eacute;seau</dt>
+
+      <dd>
+      <example><title>Exemple :</title>
+        Allow from 10.1.0.0/255.255.0.0
+      </example>
+      <p>Un r&eacute;seau a.b.c.d, et un masque de sous-r&eacute;seau w.x.y.z, pour
+      une d&eacute;finition plus pr&eacute;cise de la restriction d'acc&egrave;s impos&eacute;e &agrave; un
+      sous-r&eacute;seau.</p></dd>
+
+      <dt>Une sp&eacute;cification CIDR r&eacute;seau/nnn</dt>
+
+      <dd>
+      <example><title>Exemple :</title>
+        Allow from 10.1.0.0/16
+      </example>
+      <p>Identique au cas pr&eacute;c&eacute;dent, mis &agrave; part que le masque est
+      constitu&eacute; des nnn bits de poids fort.</p></dd>
+    </dl>
+
+    <p>Notez que les trois derniers exemples d&eacute;signent le m&ecirc;me ensemble
+    d'h&ocirc;tes.</p>
+
+    <p>On peut sp&eacute;cifier des adresses et sous-r&eacute;seaux IPv6 de la mani&egrave;re
+    suivante :</p>
+
+    <example>
+       Allow from 2001:db8::a00:20ff:fea7:ccea<br />
+       Allow from 2001:db8::a00:20ff:fea7:ccea/10
+    </example>
+
+    <p>Le troisi&egrave;me format d'argument de la directive
+    <directive>Allow</directive> permet de contr&ocirc;ler l'acc&egrave;s au serveur
+    en fonction de l'existence d'une <a
+    href="../env.html">variable d'environnement</a>. Lorsque <code>Allow
+    from env=<var>variable d'environnement</var></code> est sp&eacute;cifi&eacute;, la
+    requ&ecirc;te est autoris&eacute;e si la variable d'environnement <var>variable
+    d'environnement</var> existe. En revanche, lorsque <code>Allow from
+    env=!<var>env-variable</var></code> est sp&eacute;cifi&eacute;, la
+    requ&ecirc;te est autoris&eacute;e si la variable d'environnement <var>variable
+    d'environnement</var> n'existe pas. Le serveur permet de d&eacute;finir
+    avec souplesse des variables d'environnement en se basant sur les
+    caract&eacute;ristiques de la requ&ecirc;te client et en utilisant les directives
+    fournies par le module <module>mod_setenvif</module>. Ainsi, on peut
+    utiliser la directive <directive>Allow</directive> pour permettre
+    l'acc&egrave;s en fonction de param&egrave;tres comme le <code>User-Agent</code>
+    (type de navigateur) des clients, le <code>Referer</code>, ou
+    d'autres champs d'en-t&ecirc;te de la requ&ecirc;te HTTP.</p>
+
+    <example><title>Exemple :</title>
+      SetEnvIf User-Agent ^KnockKnock/2\.0 laissez_moi_entrer<br />
+      &lt;Directory /docroot&gt;<br />
+      <indent>
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from env=laissez_moi_entrer<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>Dans cet exemple, les navigateurs dont la cha&icirc;ne user-agent
+    commence par <code>KnockKnock/2.0</code> se verront accorder
+    l'acc&egrave;s, alors que tous les autres seront rejet&eacute;s.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Deny</name>
+<description>D&eacute;finit quels h&ocirc;tes ne sont pas autoris&eacute;s &agrave; acc&eacute;der au
+serveur</description>
+<syntax> Deny from all|<var>h&ocirc;te</var>|env=[!]<var>variable
+d'environnement</var>
+[<var>h&ocirc;te</var>|env=[!]<var>variable d'environnement</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+    <p>Cette directive permet de restreindre l'acc&egrave;s au serveur en
+    fonction du nom d'h&ocirc;te, de l'adresse IP ou de variables
+    d'environnement. Les arguments de la directive
+    <directive>Deny</directive> sont identiques aux arguments de la
+    directive <directive
+    module="mod_access_compat">Allow</directive>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Order</name>
+<description>D&eacute;finit le statut d'acc&egrave;s par d&eacute;faut et l'ordre dans lequel
+les directives <directive>Allow</directive> et
+<directive>Deny</directive> sont &eacute;valu&eacute;es.</description>
+<syntax> Order <var>ordre</var></syntax>
+<default>Order Deny,Allow</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>Limit</override>
+
+<usage>
+
+    <p>La directive <directive>Order</directive>, associ&eacute;e aux
+    directives <directive module="mod_access_compat">Allow</directive>
+    et <directive module="mod_access_compat">Deny</directive>,
+    impl&eacute;mente un syst&egrave;me de contr&ocirc;le d'acc&egrave;s en trois passes. Au cours
+    de la premi&egrave;re passe, ce sont soit toutes les directives <directive
+    module="mod_access_compat">Allow</directive>, soit toutes les
+    directives <directive
+    module="mod_access_compat">Deny</directive> qui sont trait&eacute;es, selon
+    la d&eacute;finition de la directive <directive
+    module="mod_access_compat">Order</directive>. Le reste des
+    directives (<directive module="mod_access_compat">Deny</directive>
+    ou <directive module="mod_access_compat">Allow</directive>) est
+    trait&eacute; au cours de la seconde passe. La troisi&egrave;me passe s'applique &agrave;
+    toutes les requ&ecirc;tes qui ne sont concern&eacute;es par aucune des deux
+    premi&egrave;res passes.</p>
+
+    <p>Notez que toutes les directives <directive
+    module="mod_access_compat">Allow</directive> et <directive
+    module="mod_access_compat">Deny</directive> sont trait&eacute;es, &agrave; la
+    diff&eacute;rence d'un pare-feu classique o&ugrave; seule la premi&egrave;re r&egrave;gle qui
+    correspond est utilis&eacute;e. La derni&egrave;re directive qui correspond
+    s'applique ( &agrave; la diff&eacute;rence l&agrave; encore d'un pare-feu classique). De
+    plus, l'ordre dans lequel les lignes apparaissent dans le fichier de
+    configuration n'a pas d'incidence -- toutes les lignes <directive
+    module="mod_access_compat">Allow</directive> sont consid&eacute;r&eacute;es comme
+    un groupe, toutes les lignes <directive
+    module="mod_access_compat">Deny</directive> comme un autre, et le
+    statut par d&eacute;faut a son existence propre.</p>
+
+    <p><em>Ordre</em> peut &ecirc;tre :</p>
+
+    <dl>
+      <dt><code>Allow,Deny</code></dt>
+
+      <dd>Dans un premier temps, toutes les directives <directive
+      module="mod_access_compat">Allow</directive> sont &eacute;valu&eacute;es ; au
+      moins une d'entre elles doit correspondre, sinon la requ&ecirc;te est
+      rejet&eacute;e. Ensuite, toutes les directives <directive
+      module="mod_access_compat">Deny</directive> sont &eacute;valu&eacute;es. Si au
+      moins l'une d'entre elles correspond, la requ&ecirc;te est rejet&eacute;e.
+      Enfin, toute requ&ecirc;te qui ne correspond &agrave; aucune directive
+      <directive module="mod_access_compat">Allow</directive> ou
+      <directive module="mod_access_compat">Deny</directive> est rejet&eacute;e
+      par d&eacute;faut.</dd>
+
+      <dt><code>Deny,Allow</code></dt>
+
+      <dd>Dans un premier temps, toutes les directives <directive
+      module="mod_access_compat">Deny</directive> sont &eacute;valu&eacute;es ; Si au
+      moins une d'entre elles correspond, la requ&ecirc;te est rejet&eacute;e,
+      <strong>&agrave; moins</strong> qu'elle corresponde aussi &agrave; une directive
+      <directive module="mod_access_compat">Allow</directive>. Toute
+      requ&ecirc;te qui ne correspond &agrave; aucune directive <directive
+      module="mod_access_compat">Allow</directive> ou <directive
+      module="mod_access_compat">Deny</directive> est autoris&eacute;e.</dd>
+
+      <dt><code>Mutual-failure</code></dt>
+
+      <dd>Cet argument a le m&ecirc;me effet que <code>Allow,Deny</code> et
+      est devenu de ce fait obsol&egrave;te.</dd>
+    </dl>
+
+    <p>Les mots-cl&eacute;s ne peuvent &ecirc;tre s&eacute;par&eacute;s que par des virgules ;
+    <em>aucun espace</em> ne doit s'intercaler entre eux.</p>
+
+    <table border="1">
+      <tr>
+        <th>Match</th>
+        <th>R&eacute;sultat Allow,Deny</th>
+        <th>R&eacute;sultat Deny,Allow</th>
+      </tr><tr>
+        <th>Correspond &agrave; Allow seulement</th>
+        <td>Requ&ecirc;te autoris&eacute;e</td>
+        <td>Requ&ecirc;te autoris&eacute;e</td>
+      </tr><tr>
+        <th>Correspond &agrave; Deny seulement</th>
+        <td>Requ&ecirc;te rejet&eacute;e</td>
+        <td>Requ&ecirc;te rejet&eacute;e</td>
+      </tr><tr>
+        <th>Aucune correspondance</th>
+        <td>Par d&eacute;faut la seconde directive : rejet</td>
+        <td>Par d&eacute;faut la seconde directive : autorisation</td>
+      </tr><tr>
+        <th>Correspond &agrave; Allow &amp; Deny</th>
+        <td>La derni&egrave;re correspondance l'emporte : rejet</td>
+        <td>La derni&egrave;re correspondance l'emporte : autorisation</td>
+      </tr>
+    </table>
+
+    <p>Dans cet exemple, tous les h&ocirc;tes du domaine apache.org ont
+    l'autorisation d'acc&egrave;s ; tous les autres voient leur acc&egrave;s
+    refus&eacute;.</p>
+
+    <example>
+      Order Deny,Allow<br />
+      Deny from all<br />
+      Allow from apache.org
+    </example>
+
+    <p>Dans l'exemple suivant, tous les h&ocirc;tes du domaine apache.org ont
+    l'autorisation d'acc&egrave;s, sauf ceux du sous-domaine foo.apache.org qui
+    voient leur acc&egrave;s refus&eacute;. Tous les h&ocirc;tes qui ne sont pas dans le
+    domaine apache.org sont rejet&eacute;s car le statut par d&eacute;faut est positionn&eacute;
+    sur <directive
+    module="mod_access_compat">Deny</directive>, et consiste donc en un
+    refus d'acc&egrave;s.</p>
+
+    <example>
+      Order Allow,Deny<br />
+      Allow from apache.org<br />
+      Deny from foo.apache.org
+    </example>
+
+    <p>Par contre, si la valeur de la directive
+    <directive>Order</directive>, dans l'exemple pr&eacute;c&eacute;dent, est
+    <code>Deny,Allow</code>, tout le monde a l'autorisation d'acc&egrave;s.
+    Ceci est d&ucirc; au fait que <code>Allow from apache.org</code> sera
+    &eacute;valu&eacute; en dernier, sans tenir compte de l'ordre r&eacute;el dans lequel les
+    directives apparaissent dans le fichier de configuration, et va
+    l'emporter sur <code>Deny from foo.apache.org</code>. Tout h&ocirc;te qui
+    n'est pas dans le domaine <code>apache.org</code> aura aussi
+    l'autorisation d'acc&egrave;s car le statut par d&eacute;faut est positionn&eacute; sur
+    <directive
+    module="mod_access_compat">Allow</directive> et constitue donc une
+    autorisation d'acc&egrave;s.</p>
+
+    <p>La pr&eacute;sence d'une directive <directive>Order</directive> peut
+    affecter le contr&ocirc;le d'acc&egrave;s &agrave; une partie du serveur m&ecirc;me en
+    l'abscence de directives <directive
+    module="mod_access_compat">Allow</directive> et <directive
+    module="mod_access_compat">Deny</directive> associ&eacute;es, &agrave; cause de
+    son influence sur le statut par d&eacute;faut. Par exemple,</p>
+
+    <example>
+      &lt;Directory /www&gt;<br />
+      <indent>
+        Order Allow,Deny<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+
+    <p>va interdire tout acc&egrave;s au r&eacute;pertoire <code>/www</code> &agrave; cause
+    du statut d'acc&egrave;s par d&eacute;faut qui est d&eacute;fini &agrave; <directive
+    module="mod_access_compat">Deny</directive>.</p>
+
+    <p>La directive <directive>Order</directive> ne contr&ocirc;le l'ordre
+    dans lequel sont trait&eacute;es les directives d'acc&egrave;s qu'au cours de
+    chaque phase du traitement de la configuration du serveur. Ceci
+    implique, par exemple, qu'une directive <directive
+    module="mod_access_compat">Allow</directive> ou <directive
+    module="mod_access_compat">Deny</directive> situ&eacute;e dans une section
+    <directive module="core" type="section">Location</directive> sera
+    toujours &eacute;valu&eacute;e apr&egrave;s une directive <directive
+    module="mod_access_compat">Allow</directive> ou <directive
+    module="mod_access_compat">Deny</directive> situ&eacute;e dans une section
+    <directive module="core" type="section">Directory</directive> ou un
+    fichier <code>.htaccess</code>, sans tenir compte de la
+    d&eacute;finition de la directive <directive>Order</directive>. Pour plus
+    de d&eacute;tails &agrave; propos de la fusion des sections de configuration, voir
+    le document <a
+    href="../sections.html">Comment fonctionnent les sections Directory,
+    Location et Files</a>.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Satisfy</name>
+<description>Interaction entre le contr&ocirc;le d'acc&egrave;s en fonction de l'h&ocirc;te
+et l'authentification utilisateur</description>
+<syntax>Satisfy Any|All</syntax>
+<default>Satisfy All</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Affect&eacute; par <directive module="core" type="section"
+>Limit</directive> et <directive module="core"
+type="section">LimitExcept</directive> &agrave; partir de la version
+2.0.51</compatibility>
+<usage>
+    <p>Politique d'acc&egrave;s dans le cas o&ugrave; on utilise &agrave; la fois <directive
+    module="mod_access_compat">Allow</directive> et <directive
+    module="mod_authz_core">Require</directive>. L'argument est soit
+    <code>All</code>, soit <code>Any</code>. L'utilisation de cette
+    directive n'a de sens que si l'acc&egrave;s &agrave; une zone particuli&egrave;re du
+    serveur est restreinte par utilisateur/mot de passe et en fonction
+    de l'adresse IP de l'h&ocirc;te client. Dans ce cas, par
+    d&eacute;faut (<code>All</code>), le client doit satisfaire &agrave; la
+    restriction d'adresse, <em>et</em> fournir un couple
+    utilisateur/mot de passe valide. Avec l'argument <code>Any</code>,
+    le client se verra accorder l'acc&egrave;s s'il satisfait &agrave; la restriction
+    d'adresse ou fournit un couple utilisateur/mot de passe valide. On
+    peut utiliser cette derni&egrave;re d&eacute;finition pour restreindre l'acc&egrave;s &agrave;
+    une zone par mot de passe, mais accorder l'acc&egrave;s aux clients
+    poss&eacute;dant certaines adresses IP sans qu'ils aient &agrave; fournir de mot
+    de passe.</p>
+
+    <p>Par exemple, si vous souhaitez que les utilisateurs de votre
+    r&eacute;seau acc&egrave;dent &agrave; une zone de votre site web sans restriction, mais
+    que l'acc&egrave;s &agrave; cette zone n&eacute;cessite un mot de passe pour les autres
+    utilisateurs, vous pouvez utiliser une configuration du style :</p>
+
+    <example>
+      Require valid-user<br />
+      Allow from 192.168.1<br />
+      Satisfy Any
+    </example>
+
+    <p>
+    Une autre utilisation fr&eacute;quente de la directive
+    <directive>Satisfy</directive> est l'all&egrave;gement des restrictions
+    d'acc&egrave;s &agrave; un sous-r&eacute;pertoire par rapport aux restrictions d'acc&egrave;s au
+    r&eacute;pertoire parent :
+    </p>
+
+    <example>
+      &lt;Directory /var/www/private&gt;<br />
+        Require valid-user<br />
+      &lt;/Directory&gt;<br />
+      <br />
+      &lt;Directory /var/www/private/public&gt;<br />
+        Allow from all<br />
+        Satisfy Any<br />
+      &lt;/Directory&gt;
+    </example>
+
+    <p>Dans l'exemple ci-dessus, l'acc&egrave;s au r&eacute;pertoire
+    <code>/var/www/private</code> n&eacute;cessitera une authentification,
+    alors que l'acc&egrave;s au r&eacute;pertoire <code>/var/www/private/public</code>
+    sera accord&eacute; sans restriction.</p>
+
+
+    <p>Depuis la version 2.0.51, les directives
+    <directive>Satisfy</directive> peuvent &ecirc;tre restreintes &agrave; certaines
+    m&eacute;thodes particuli&egrave;res &agrave; l'aide des sections <directive
+    module="core" type="section">Limit</directive> et <directive
+    module="core" type="section">LimitExcept</directive>.</p>
+</usage>
+   <seealso><directive module="mod_access_compat">Allow</directive></seealso>
+   <seealso><directive module="mod_authz_core">Require</directive></seealso>
+</directivesynopsis>
+
+</modulesynopsis>

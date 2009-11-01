@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>event - Serveur Apache HTTP</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="apache">Serveur Apache HTTP Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache MPM event</h1>
+<div class="toplang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/event.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Une variante du MPM <code class="module"><a href="../mod/worker.html">worker</a></code> conçue pour ne
+mobiliser des threads que pour les connexions en cours de traitement</td></tr>
+<tr><th><a href="module-dict.html#Status">Statut:</a></th><td>MPM</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>mpm_event_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>event.c</td></tr></table>
+<h3>Sommaire</h3>
+
+    <p>Le module multi-processus (MPM) <code class="module"><a href="../mod/event.html">event</a></code> est conçu
+    pour permettre le traitement d'un nombre accru de requêtes
+    simultanées en déléguant certaines tâches à des threads de support,
+    libérant par là-même le thread principal et lui permettant de
+    traiter les nouvelles requêtes. Il s'inspire du MPM
+    <code class="module"><a href="../mod/worker.html">worker</a></code> qui implémente un serveur hybride
+    multi-processus/multi-threads. Les directives de configuration à
+    l'exécution sont identiques à celles du MPM
+    <code class="module"><a href="../mod/worker.html">worker</a></code>.</p>
+
+    <p>Pour utiliser le MPM <code class="module"><a href="../mod/event.html">event</a></code>, ajoutez
+    <code>--with-mpm=event</code> aux arguments du script
+    <code class="program"><a href="../programs/configure.html">configure</a></code> lorsque vous compilez le programme
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
+
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#group">Group</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxsparethreads">MaxSpareThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#serverlimit">ServerLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#startservers">StartServers</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadlimit">ThreadLimit</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
+<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
+</ul>
+<h3>Sujets</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">Comment tout cela fonctionne</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requirements">Prérequis</a></li>
+</ul><h3>Voir aussi</h3>
+<ul class="seealso">
+<li><a href="worker.html">Le MPM worker</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="how-it-works" id="how-it-works">Comment tout cela fonctionne</a></h2>
+    <p>Ce MPM essaie de résoudre le 'problème keep alive' de HTTP.
+    Lorsqu'un client a soumis une première requête, il peut garder la
+    connexion ouverte, et envoyer les requêtes suivantes en utilisant le
+    même socket. Ceci permet de réduire de manière significative la
+    surcharge due à la création de connexions TCP. Cependant, Apache
+    mobilise en principe à cet effet un processus/thread enfant en
+    attente des données du client, ce qui amène son propre lot
+    d'inconvénients. Pour résoudre ce problème, <code class="module"><a href="../mod/event.html">event</a></code>
+    utilise un thread dédié qui gère non seulement les sockets en
+    écoute, mais aussi tous les sockets en état Keep Alive.</p>
+
+    <p>Le MPM présuppose que l'implémentation <code>apr_pollset</code>
+    sous-jacente est raisonnablement sûre du point de vue des threads.
+    Ceci permet au MPM d'éviter un verrouillage de haut niveau excessif,
+    ou de devoir activer le thread en écoute afin de lui envoyer un
+    socket keep alive. Tout ceci n'est actuellement compatible qu'avec
+    KQueue et EPoll.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requirements" id="requirements">Prérequis</a></h2>
+    <p>Ce MPM dépend des opérations atomiques compare-and-swap
+    d'<a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> pour la synchronisation des threads. Si
+    vous compilez pour une plate-forme x86 et n'avez pas besoin du
+    support 386, ou si vous compilez pour une plate-forme SPARC et
+    n'avez pas besoin du support pre-UltraSPARC, ajoutez
+    <code>--enable-nonportable-atomics=yes</code> aux arguments du
+    script <code class="program"><a href="../programs/configure.html">configure</a></code>. Ceci permettra à APR
+    d'implémenter les opérations atomiques en utilisant des instructions
+    performantes indisponibles avec les processeurs plus
+    anciens.</p>
+
+    <p>Ce MPM ne fonctionne pas de manière optimale sur les
+    plates-formes plus anciennes qui ne gèrent pas correctement les
+    threads, mais ce problème est sans objet du fait du prérequis
+    concernant EPoll ou KQueue.</p>
+
+    <ul>
+
+      <li>Pour utiliser ce MPM sous FreeBSD, la version 5.3 ou
+      supérieure de ce système est recommandée. Il est cependant
+      possible d'exécuter ce MPM sous FreeBSD 5.2.1 si vous utilisez
+      <code>libkse</code> (voir <code>man libmap.conf</code>).</li>
+
+      <li>Pour NetBSD, il est recommander d'utiliser la version 2.0 ou
+      supérieure.</li>
+
+      <li>Pour Linux, un noyau 2.6 est recommandé. Il faut aussi
+      s'assurer que votre version de <code>glibc</code> a été compilée
+      avec le support pour EPoll.</li>
+
+    </ul>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Langues Disponibles: </span><a href="../en/mod/event.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../fr/mod/event.html" title="Français">&nbsp;fr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+</body></html>

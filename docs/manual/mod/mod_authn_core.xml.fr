@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
+<!-- English Revision : 737588 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authn_core.xml.meta">
+
+<name>mod_authn_core</name>
+<description>Le noyau de l'authentification</description>
+<status>Base</status>
+<sourcefile>mod_authn_core.c</sourcefile>
+<identifier>authn_core_module</identifier>
+<compatibility>Disponible depuis la version 2.3 d'Apache</compatibility>
+
+<summary>
+    <p>Ce module fournit le coeur des fonctionnalit&eacute;s d'authentification
+    permettant d'accorder ou de refuser l'acc&egrave;s &agrave; certaines zones du
+    site web. Les directives fournies par le module
+    <module>mod_authn_core</module> sont communes &agrave; tous les
+    fournisseurs d'authentification.</p>
+</summary>
+
+<section id="authnalias"><title>Cr&eacute;ation d'alias de fournisseurs
+d'authentification</title>
+
+    <p>Il est possible de cr&eacute;er des fournisseurs d'authentification
+    &eacute;tendus dans le fichier de configuration et de leur assigner un
+    alias. Le fournisseur ainsi nomm&eacute; peut alors &ecirc;tre r&eacute;f&eacute;renc&eacute; &agrave; l'aide
+    des directives <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> ou <directive
+    module="mod_auth_digest">AuthDigestProvider</directive> tout comme
+    un fournisseur d'authentification de base. Outre la possibilit&eacute; de
+    cr&eacute;er et attribuer un alias &agrave; un fournisseur &eacute;tendu, le m&ecirc;me
+    fournisseur d'authentification peut aussi &ecirc;tre r&eacute;f&eacute;renc&eacute; par
+    plusieurs sections relatives &agrave; une zone du site web.</p>
+
+    <section id="example"><title>Exemples</title>
+
+	<p>Cet exemple v&eacute;rifie les mots de passe dans deux fichiers
+	textes diff&eacute;rents.</p>
+
+	<example><title>V&eacute;rification dans plusieurs fichiers de mots de
+	passe au format texte</title>
+
+        # On v&eacute;rifie tout d'abord ici<br />
+        &lt;AuthnProviderAlias file file1&gt;<br />
+        <indent>
+            AuthUserFile /www/conf/passwords1<br />
+        </indent>
+        &lt;/AuthnProviderAlias&gt;<br />
+        <br />
+        # On v&eacute;rifie ensuite l&agrave;<br />
+        &lt;AuthnProviderAlias file file2&gt;   <br />
+        <indent>
+            AuthUserFile /www/conf/passwords2<br />
+        </indent>
+        &lt;/AuthnProviderAlias&gt;<br />
+        <br />
+        &lt;Directory /var/web/pages/secure&gt;<br />
+        <indent>
+            AuthBasicProvider file1 file2<br />
+            <br />
+            AuthType Basic<br />
+            AuthName "Zone prot&eacute;g&eacute;e"<br />
+            Require valid-user<br />
+        </indent>
+        &lt;/Directory&gt;<br />
+        </example>
+
+
+
+        <p>Dans l'exemple ci-dessous, deux fournisseurs
+	d'authentification ldap sont cr&eacute;&eacute;s &agrave; partir du fournisseur ldap
+	de base, et se voient attribuer un alias. L'authentification
+	d'une m&ecirc;me zone peut alors &ecirc;tre trait&eacute;e par plusieurs serveurs
+	ldap :</p>
+
+        <example><title>V&eacute;rification aupr&egrave;s de plusieurs serveurs
+	LDAP</title>
+          &lt;AuthnProviderAlias ldap alias-ldap&gt;<br />
+          <indent>
+             AuthLDAPBindDN cn=utilisateur,o=ctx<br />
+             AuthLDAPBindPassword mot-de-passe<br />
+             AuthLDAPURL ldap://serveur.ldap/o=ctx<br />
+          </indent>
+          &lt;/AuthnProviderAlias&gt;<br /><br />
+          &lt;AuthnProviderAlias ldap autre-alias-ldap&gt;<br />
+          <indent>
+             AuthLDAPBindDN cn=autre-utilisateur,o=dev<br />
+             AuthLDAPBindPassword autre-mot-de-passe<br />
+             AuthLDAPURL ldap://autre.serveur.ldap/o=dev?cn<br />
+          </indent>
+          &lt;/AuthnProviderAlias&gt;<br /><br />
+
+          Alias /secure /webpages/secure<br />
+          &lt;Directory /webpages/secure&gt;<br />
+          <indent>
+             Order deny,allow<br />
+             Allow from all<br /><br />
+
+             AuthBasicProvider autre-alias-ldap alias-ldap <br /><br />
+
+             AuthType Basic<br />Exemple
+             AuthName Zone_prot&eacute;g&eacute;e_par_LDAP<br />
+             Require valid-user<br />
+          </indent>
+          &lt;/Directory&gt;<br />
+        </example>
+    </section>
+
+</section>
+
+
+<directivesynopsis>
+<name>AuthName</name>
+<description>L'identifiant de l'autorisation &agrave; utiliser avec
+l'authentification HTTP</description>
+<syntax>AuthName <var>domaine d'autorisation</var></syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir l'identifiant d'autorisation
+    pour un r&eacute;pertoire. Cet identifiant est fourni au client de fa&ccedil;on &agrave;
+    ce qu'il sache quels nom d'utilisateur et mot de passe envoyer.
+    <directive>AuthName</directive> accepte un seul argument ; s'il
+    contient des espaces, il doit &ecirc;tre entour&eacute; de guillemets. Pour
+    pouvoir fonctionner, la directive <directive>AuthName</directive>
+    doit &ecirc;tre utilis&eacute;e en combinaison avec les directives <directive
+    module="mod_authn_core">AuthType</directive> et <directive
+    module="mod_authz_core">Require</directive>, ainsi que des
+    directives comme <directive
+    module="mod_authn_file">AuthUserFile</directive> et <directive
+    module="mod_authz_groupfile">AuthGroupFile</directive>.</p>
+
+   <p>Par exemple :</p>
+
+   <example>
+     AuthName "Top Secret"
+   </example>
+
+    <p>La cha&icirc;ne fournie comme argument &agrave; <code>AuthName</code>
+    appara&icirc;tra dans la bo&icirc;te de dialogue d'authentification pour la
+    plupart des navigateurs.</p>
+</usage>
+<seealso><a
+    href="../howto/auth.html">Authentification, autorisation et contr&ocirc;le
+    d'acc&egrave;s</a></seealso>
+<seealso><module>mod_authz_core</module></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthType</name>
+<description>Type d'authentification utilisateur</description>
+<syntax>AuthType None|Basic|Digest|Form</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Cette directive permet de d&eacute;finir le type d'authentification
+    utilisateur pour un r&eacute;pertoire. Les types d'authentification
+    disponibles sont <code>None</code>, <code>Basic</code> (impl&eacute;ment&eacute;
+    par <module>mod_auth_basic</module>), <code>Digest</code>
+    (impl&eacute;ment&eacute; par <module>mod_auth_digest</module>), et
+    <code>Form</code> (impl&eacute;ment&eacute; par
+    <module>mod_auth_form</module>).</p>
+
+    <p>Pour mettre en oeuvre l'authentification, vous devez aussi
+    utiliser les directives <directive
+    module="mod_authn_core">AuthName</directive> et <directive
+    module="mod_authz_core">Require</directive>. De plus, le serveur
+    doit pouvoir disposer d'un module fournisseur d'authentification
+    comme <module>mod_authn_file</module> et d'un module d'autorisation
+    comme <module>mod_authz_user</module>.</p>
+
+    <p>Le type d'authentification <code>None</code> d&eacute;sactive
+    l'authentification. Lorsqu'une authentification est d&eacute;finie, elle
+    est en g&eacute;n&eacute;ral h&eacute;rit&eacute;e par chacune des <a
+    href="../sections.html#mergin">sections de configuration</a> qui
+    suivent, &agrave; moins qu'un autre type d'authentification ne soit
+    sp&eacute;cifi&eacute;. Si l'on ne souhaite pas mettre en oeuvre
+    d'authentification pour une sous-section d'une section authentifi&eacute;e,
+    on doit utiliser le type d'authentification <code>None</code> ; dans
+    l'exemple suivant, les clients peuvent acc&eacute;der au r&eacute;pertoire
+    <code>/www/docs/public</code> sans devoir s'authentifier :</p>
+
+    <example>
+        &lt;Directory /www/docs&gt;
+        <indent>
+            AuthType Basic<br />
+            AuthName Documents<br />
+            AuthBasicProvider file<br />
+            AuthUserFile /usr/local/apache/passwd/passwords<br />
+            Require valid-user
+        </indent>
+        &lt;/Directory&gt;<br />
+        <br />
+        &lt;Directory /www/docs/public&gt;
+        <indent>
+            AuthType None<br />
+            Require all granted
+        </indent>
+        &lt;/Directory&gt;
+    </example>
+
+    <note>Veuillez noter que, lorsque l'authentification n'est pas
+    activ&eacute;e, les clients qui se sont d&eacute;j&agrave; authentifi&eacute;s pour une autre
+    zone de l'arborescence du site continueront en g&eacute;n&eacute;ral &agrave; envoyer des
+    en-t&ecirc;te d'authentification HTTP ou des cookies avec chaque requ&ecirc;te,
+    sans se pr&eacute;occuper de savoir si le serveur n&eacute;cessite vraiment une
+    authentification pour chaque ressource.</note>
+</usage>
+
+<seealso><a href="../howto/auth.html">Authentification, autorisation et contr&ocirc;le
+    d'acc&egrave;s</a></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>AuthnProviderAlias</name>
+<description>Regroupe un ensemble de directives qui constituent une
+extension d'un fournisseur d'authentification de base et lui attribue
+l'alias sp&eacute;cifi&eacute;</description>
+<syntax>&lt;AuthnProviderAlias <var>alias-fournisseur</var>&gt;
+... &lt;/AuthnProviderAlias&gt;</syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p>Les balises <code>&lt;AuthnProviderAlias&gt;</code> et
+    <code>&lt;/AuthnProviderAlias&gt;</code> permettent de regrouper un
+    ensemble de directives d'authentification qui seront r&eacute;f&eacute;renc&eacute;es par
+    l'alias sp&eacute;cifi&eacute; &agrave; l'aide des directives <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> ou <directive
+    module="mod_auth_digest">AuthDigestProvider</directive>.</p>
+
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
