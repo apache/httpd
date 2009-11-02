@@ -84,7 +84,7 @@ avec le système de fichiers</a></li><li><a href="http://wiki.apache.org/httpd/Re
 mod_rewrite</a></li>
 <li><a href="intro.html">Introduction</a></li>
 <li><a href="flags.html">Drapeaux</a></li>
-<li><a href="rewrite_tech.html">Détails techniques</a></li>
+<li><a href="tech.html">Détails techniques</a></li>
 <li><a href="rewrite_guide.html">Guide de réécriture - exemples utiles</a></li>
 <li><a href="rewrite_guide_advanced.html">Guide de réécriture avancé -
 encore plus d'exemples utiles</a></li>

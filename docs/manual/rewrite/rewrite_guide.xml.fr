@@ -54,7 +54,7 @@
 <seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
 <seealso><a href="rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture
 avanc&eacute; - exemples utiles avanc&eacute;s</a></seealso>
-<seealso><a href="rewrite_tech.html">D&eacute;tails techniques</a></seealso>
+<seealso><a href="tech.html">D&eacute;tails techniques</a></seealso>
 
 
 <section id="canonicalurl">

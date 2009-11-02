@@ -58,7 +58,7 @@ documentation</a></li>
 <li><a href="intro.html">Introduction to regular expressions and
 mod_rewrite</a></li>
 <li><a href="flags.html">Flags</a></li>
-<li><a href="rewrite_tech.html">Technical details</a></li>
+<li><a href="tech.html">Technical details</a></li>
 <li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
 <li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - more
 useful examples</a></li>

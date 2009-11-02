@@ -40,7 +40,7 @@ pieds.
 
 <seealso><a href="../mod/mod_rewrite.html">Documentation du
 module</a></seealso>
-<seealso><a href="rewrite_tech.html">D&eacute;tails techniques</a></seealso>
+<seealso><a href="tech.html">D&eacute;tails techniques</a></seealso>
 <seealso><a href="rewrite_guide.html">Solutions pratiques aux probl&egrave;mes
 courants</a></seealso>
 <seealso><a href="rewrite_guide_advanced.html">Solutions pratiques aux

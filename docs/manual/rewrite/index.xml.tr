@@ -85,7 +85,7 @@
     <li><a href="../mod/mod_rewrite.html">mod_rewrite Başvuru Kılavuzu</a></li>
     <li><a href="intro.html">Giriş</a></li>
     <li><a href="flags.html">Seçenekler</a></li>
-    <li><a href="rewrite_tech.html">Teknik Ayrıntılar</a></li>
+    <li><a href="tech.html">Teknik Ayrıntılar</a></li>
     <li><a href="rewrite_guide.html">Yeniden Yazma Rehberi -
     yararlı örnekler</a></li>
     <li><a href="rewrite_guide_advanced.html">Gelişkin Yeniden Yazma Rehberi -
