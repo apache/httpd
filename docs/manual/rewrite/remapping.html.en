@@ -28,14 +28,177 @@ how you can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewri
 request. This includes many examples of common uses of mod_rewrite,
 including detailed descriptions of how each works.</p>
 
-<p>Note that many of these examples won't work unchanged in your
+<div class="warning">Note that many of these examples won't work unchanged in your
 particular server configuration, so it's important that you understand
 them, rather than merely cutting and pasting the examples into your
-configuration.</p>
+configuration.</div>
 
 </div>
-<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li></ul></div>
-</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (internal)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#static-to-dynamic">From Static to Dynamic</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Canonical Hostnames</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="old-to-new" id="old-to-new">From Old to New (internal)</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Assume we have recently renamed the page
+      <code>foo.html</code> to <code>bar.html</code> and now want
+      to provide the old URL for backward compatibility. However,
+      we want that users of the old URL even not recognize that
+      the pages was renamed - that is, we don't want the address to
+      change in their browser.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We rewrite the old URL to the new one internally via the
+      following rule:</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteRule    ^<strong>/old</strong>\.html$  <strong>/new</strong>.html [PT]
+</pre></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="old-to-new-extern" id="old-to-new-extern">Rewriting From Old to New (external)</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Assume again that we have recently renamed the page
+      <code>foo.html</code> to <code>bar.html</code> and now want
+      to provide the old URL for backward compatibility. But this
+      time we want that the users of the old URL get hinted to
+      the new one, i.e. their browsers Location field should
+      change, too.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We force a HTTP redirect to the new URL which leads to a
+      change of the browsers and thus the users view:</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]
+</pre></div>
+</dd>
+
+<dt>Discussion</dt>
+
+    <dd>
+    <p>In this example, as contrasted to the <a href="#old-to-new-intern">internal</a> example above, we can simply
+    use the Redirect directive. mod_rewrite was used in that earlier
+    example in order to hide the redirect from the client:</p>
+
+    <div class="example"><p><code>
+    Redirect /foo.html /bar.html
+    </code></p></div>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="static-to-dynamic" id="static-to-dynamic">From Static to Dynamic</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>How can we transform a static page
+      <code>foo.html</code> into a dynamic variant
+      <code>foo.cgi</code> in a seamless way, i.e. without notice
+      by the browser/user.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We just rewrite the URL to the CGI-script and force the
+      handler to be <strong>cgi-script</strong> so that it is
+      executed as a CGI program.
+      This way a request to <code>/~quux/foo.html</code>
+      internally leads to the invocation of
+      <code>/~quux/foo.cgi</code>.</p>
+
+<div class="example"><pre>
+RewriteEngine  on
+RewriteBase    /~quux/
+RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
+</pre></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="canonicalhost" id="canonicalhost">Canonical Hostnames</a></h2>
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>The goal of this rule is to force the use of a particular
+        hostname, in preference to other hostnames which may be used to
+        reach the same site. For example, if you wish to force the use
+        of <strong>www.example.com</strong> instead of
+        <strong>example.com</strong>, you might use a variant of the
+        following recipe.</dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+<p>For sites running on a port other than 80:</p>
+<div class="example"><pre>
+RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
+RewriteCond %{HTTP_HOST}   !^$
+RewriteCond %{SERVER_PORT} !^80$
+RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R,NE]
+</pre></div>
+
+<p>And for a site running on port 80</p>
+<div class="example"><pre>
+RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
+RewriteCond %{HTTP_HOST}   !^$
+RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
+</pre></div>
+
+        <p>
+        If you wanted to do this generically for all domain names - that
+        is, if you want to redirect <strong>example.com</strong> to
+        <strong>www.example.com</strong> for all possible values of
+        <strong>example.com</strong>, you could use the following
+        recipe:</p>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteCond %{HTTP_HOST} !^$
+RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
+</pre></div>
+
+    <p>These rulesets will work either in your main server configuration
+    file, or in a <code>.htaccess</code> file placed in the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> of the server.</p>
+        </dd>
+      </dl>
+
+    </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/remapping.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">

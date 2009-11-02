@@ -42,7 +42,6 @@
 
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#canonicalurl">Canonical URLs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Canonical Hostnames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot">Moved <code>DocumentRoot</code></a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#trailingslash">Trailing Slash Problem</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Move Homedirs to Different Webserver</a></li>
@@ -53,9 +52,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">Backward Compatibility for YYYY to XXXX migration</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (intern)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">From Old to New (extern)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#static-to-dynamic">From Static to Dynamic</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Proxy Deny</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#external-rewriting">External Rewriting Engine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cluster">Web Cluster with Consistent URL Space</a></li>
@@ -112,56 +108,6 @@ useful examples</a></li><li><a href="tech.html">Technical details</a></li></ul><
 RewriteRule   ^/<strong>~</strong>([^/]+)/?(.*)    /<strong>u</strong>/$1/$2  [<strong>R</strong>]
 RewriteRule   ^/u/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong>R</strong>]
 </pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="canonicalhost" id="canonicalhost">Canonical Hostnames</a></h2>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>The goal of this rule is to force the use of a particular
-        hostname, in preference to other hostnames which may be used to
-        reach the same site. For example, if you wish to force the use
-        of <strong>www.example.com</strong> instead of
-        <strong>example.com</strong>, you might use a variant of the
-        following recipe.</dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-<p>For sites running on a port other than 80:</p>
-<div class="example"><pre>
-RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteCond %{SERVER_PORT} !^80$
-RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1 [L,R,NE]
-</pre></div>
-
-<p>And for a site running on port 80</p>
-<div class="example"><pre>
-RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
-</pre></div>
-
-        <p>
-        If you wanted to do this generically for all domain names - that
-        is, if you want to redirect <strong>example.com</strong> to
-        <strong>www.example.com</strong> for all possible values of
-        <strong>example.com</strong>, you could use the following
-        recipe:</p>
-
-<div class="example"><pre>
-RewriteCond %{HTTP_HOST} !^www\. [NC]
-RewriteCond %{HTTP_HOST} !^$
-RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
-</pre></div>
-
-    <p>These rulesets will work either in your main server configuration
-    file, or in a <code>.htaccess</code> file placed in the <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> of the server.</p>
         </dd>
       </dl>
 
@@ -548,103 +494,6 @@ RewriteRule   ^(.*)$ $1.phtml                   [S=1]
 #   else reverse the previous basename cutout
 RewriteCond   %{ENV:WasHTML}            ^yes$
 RewriteRule   ^(.*)$ $1.html
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="old-to-new" id="old-to-new">From Old to New (intern)</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>Assume we have recently renamed the page
-          <code>foo.html</code> to <code>bar.html</code> and now want
-          to provide the old URL for backward compatibility. Actually
-          we want that users of the old URL even not recognize that
-          the pages was renamed.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We rewrite the old URL to the new one internally via the
-          following rule:</p>
-
-<div class="example"><pre>
-RewriteEngine  on
-RewriteBase    /~quux/
-RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="old-to-new-extern" id="old-to-new-extern">From Old to New (extern)</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>Assume again that we have recently renamed the page
-          <code>foo.html</code> to <code>bar.html</code> and now want
-          to provide the old URL for backward compatibility. But this
-          time we want that the users of the old URL get hinted to
-          the new one, i.e. their browsers Location field should
-          change, too.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We force a HTTP redirect to the new URL which leads to a
-          change of the browsers and thus the users view:</p>
-
-<div class="example"><pre>
-RewriteEngine  on
-RewriteBase    /~quux/
-RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong>R</strong>]
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="static-to-dynamic" id="static-to-dynamic">From Static to Dynamic</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>How can we transform a static page
-          <code>foo.html</code> into a dynamic variant
-          <code>foo.cgi</code> in a seamless way, i.e. without notice
-          by the browser/user.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We just rewrite the URL to the CGI-script and force the
-          handler to be <strong>cgi-script</strong> so that it is
-          executed as a CGI program.
-          This way a request to <code>/~quux/foo.html</code>
-          internally leads to the invocation of
-          <code>/~quux/foo.cgi</code>.</p>
-
-<div class="example"><pre>
-RewriteEngine  on
-RewriteBase    /~quux/
-RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
 </pre></div>
         </dd>
       </dl>
