@@ -1576,7 +1576,7 @@ static const char *add_cache_disable(cmd_parms *parms, void *dummy,
     if (parms->path && !strcmp(url, "on")) {
         url = parms->path;
     }
-    if (url[0] != '/' && !strchr(url, ':')) {
+    if (url[0] != '/' && !ap_strchr_c(url, ':')) {
         return "CacheDisable must specify a path or an URL, or when in a Location, "
             "the word 'on'.";
     }
