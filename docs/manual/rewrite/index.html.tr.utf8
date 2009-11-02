@@ -22,6 +22,7 @@
 <a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="../tr/rewrite/" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <blockquote>
         <p>``mod_rewrite’ı harika yapan şey, Sendmail’ın tüm yapılandırma
@@ -74,8 +75,8 @@
 <h2><a name="documentation" id="documentation">Belgeler</a></h2>
   <ul>
     <li><a href="../mod/mod_rewrite.html">mod_rewrite Başvuru Kılavuzu</a></li>
-    <li><a href="rewrite_intro.html">Giriş</a></li>
-    <li><a href="rewrite_flags.html">Seçenekler</a></li>
+    <li><a href="intro.html">Giriş</a></li>
+    <li><a href="flags.html">Seçenekler</a></li>
     <li><a href="rewrite_tech.html">Teknik Ayrıntılar</a></li>
     <li><a href="rewrite_guide.html">Yeniden Yazma Rehberi -
     yararlı örnekler</a></li>
