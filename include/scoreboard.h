@@ -188,8 +188,6 @@ AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
 AP_DECLARE_DATA extern int ap_extended_status;
 AP_DECLARE_DATA extern int ap_mod_status_reqtail;
 
-AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
-
 /* Hooks */
 /**
   * Hook for post scoreboard creation, pre mpm.
