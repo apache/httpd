@@ -33,97 +33,27 @@ URLs on the fly</description>
 <compatibility>Available in Apache 1.3 and later</compatibility>
 
 <summary>
-      <p>This module uses a rule-based rewriting engine (based on a
-      regular-expression parser) to rewrite requested URLs on the
-      fly. It supports an unlimited number of rules and an
-      unlimited number of attached rule conditions for each rule, to
-      provide a really flexible and powerful URL manipulation
-      mechanism. The URL manipulations can depend on various tests,
-      of server variables, environment variables, HTTP
-      headers, or time stamps. Even external database lookups in
-      various formats can be used to achieve highly granular URL
-      matching.</p>
-
-      <p>This module operates on the full URLs (including the
-      path-info part) both in per-server context
-      (<code>httpd.conf</code>) and per-directory context
-      (<code>.htaccess</code>) and can generate query-string
-      parts on result. The rewritten result can lead to internal
-      sub-processing, external request redirection or even to an
-      internal proxy throughput.</p>
+	<p>The <module>mod_rewrite</module> module uses a rule-based rewriting 
+      engine, based on a regular-expression parser, to rewrite requested URLs on
+      the fly. By default, <module>mod_rewrite</module> maps a URL to a filesystem 
+      path. However, it can also be used to redirect one URL to another URL, or
+      to invoke an internal proxy fetch.</p>
+      <p><module>mod_rewrite</module> provides a flexible and powerful way to 
+      manipulate URLs using an unlimited number of rules. Each rule can have an 
+      unlimited number of attached rule conditions, to allow you to rewrite URL
+      based on server variables, environment variables, HTTP headers, or time 
+      stamps.</p>
+      <p><module>mod_rewrite</module> operates on the full URL path, including the
+      path-info section. A rewrite rule can be invoked in 
+      <code>httpd.conf</code> or in <code>.htaccess</code>. The path generated 
+      by a rewrite rule can include a query string, or can lead to internal 
+      sub-processing, external request redirection, or internal proxy 
+      throughput.</p>
 
       <p>Further details, discussion, and examples, are provided in the
       <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
 </summary>
 
-<seealso><a href="#rewriteflags">Rewrite Flags</a></seealso>
-
-<section id="quoting"><title>Quoting Special Characters</title>
-
-      <p>As of Apache 1.3.20, special characters in
-      <em>TestString</em> and <em>Substitution</em> strings can be
-      escaped (that is, treated as normal characters without their
-      usual special meaning) by prefixing them with a slash ('\')
-      character. In other words, you can include an actual
-      dollar-sign character in a <em>Substitution</em> string by
-      using '<code>\$</code>'; this keeps mod_rewrite from trying
-      to treat it as a backreference.</p>
-</section>
-
-<section id="EnvVar"><title>Environment Variables</title>
-
-      <p>This module keeps track of two additional (non-standard)
-      CGI/SSI environment variables named <code>SCRIPT_URL</code>
-      and <code>SCRIPT_URI</code>. These contain the
-      <em>logical</em> Web-view to the current resource, while the
-      standard CGI/SSI variables <code>SCRIPT_NAME</code> and
-      <code>SCRIPT_FILENAME</code> contain the <em>physical</em>
-      System-view. </p>
-
-      <p>Notice: These variables hold the URI/URL <em>as they were
-      initially requested</em>, that is, <em>before</em> any
-      rewriting. This is important to note because the rewriting process is
-      primarily used to rewrite logical URLs to physical
-      pathnames.<br />
-      These variables are set in per-server context, which means
-      that they are available in per-directory context only, if
-      <directive>RewriteEngine</directive> is set to <code>on</code> in
-      per-server context.</p>
-
-<example><title>Example</title>
-<pre>
-SCRIPT_NAME=/sw/lib/w3s/tree/global/u/rse/.www/index.html
-SCRIPT_FILENAME=/u/rse/.www/index.html
-SCRIPT_URL=/u/rse/
-SCRIPT_URI=http://en1.engelschall.com/u/rse/
-</pre>
-</example>
-
-</section>
-
-<section id="vhosts"><title>Rewriting in Virtual Hosts</title>
-
-     <p>By default, <module>mod_rewrite</module> configuration
-     settings from the main server context are not inherited by
-     virtual hosts. To make the main server settings apply to virtual
-     hosts, you must place the following directives in each <directive
-     module="core" type="section">VirtualHost</directive> section:</p>
-
-     <example>
-     RewriteEngine On<br />
-     RewriteOptions Inherit
-     </example>
-</section>
-
-<section id="Solutions"><title>Practical Solutions</title>
-
-    <p>For numerous examples of common, and not-so-common, uses for
-    mod_rewrite, see the <a href="../rewrite/rewrite_guide.html">Rewrite
-    Guide</a>, and the <a
-    href="../rewrite/rewrite_guide_advanced.html">Advanced Rewrite
-    Guide</a> documents.</p>
-
-</section>
 
 <directivesynopsis>
 <name>RewriteEngine</name>
@@ -1489,7 +1419,7 @@ cannot use <code>$N</code> in the substitution string!
     Alias       /def       /ghi
 </example>
           If you omit the <code>PT</code> flag,
-          <code>mod_rewrite</code> will rewrite
+          <module>mod_rewrite</module> will rewrite
           <code>uri=/abc/...</code> to
           <code>filename=/def/...</code> as a full API-compliant
           URI-to-filename translator should do. Then
