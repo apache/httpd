@@ -268,7 +268,7 @@ RewriteRule ^puppy.html petitchien.html [NC]
 </example>
 
 <p>Pour une liste des drapeaux disponibles, leurs significations, et des
-exemples, voir le document <a href="rewrite_flags.html">Drapeaux de
+exemples, voir le document <a href="flags.html">Drapeaux de
 r&eacute;&eacute;criture</a>.</p>
 
 </section>

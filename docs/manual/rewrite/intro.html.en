@@ -234,7 +234,7 @@ RewriteRule ^puppy.html smalldog.html [NC]
 </code></p></div>
 
 <p>For more details on the available flags, their meanings, and
-examples, see the <a href="rewrite_flags.html">Rewrite Flags</a> document.</p>
+examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
