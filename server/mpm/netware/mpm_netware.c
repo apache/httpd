@@ -110,7 +110,11 @@
 
 /* config globals */
 
-int ap_threads_per_child=0;         /* Worker threads per child */
+server_rec *ap_server_conf;
+
+/* *Non*-shared http_main globals... */
+
+static int ap_threads_per_child=0;         /* Worker threads per child */
 static int ap_threads_to_start=0;
 static int ap_threads_min_free=0;
 static int ap_threads_max_free=0;
@@ -122,10 +126,7 @@ static int mpm_state = AP_MPMQ_STARTING;
  * to deal with MaxClients changes across SIGWINCH restarts.  We use this
  * value to optimize routines that have to scan the entire scoreboard.
  */
-int ap_max_workers_limit = -1;
-server_rec *ap_server_conf;
-
-/* *Non*-shared http_main globals... */
+static int ap_max_workers_limit = -1;
 
 int hold_screen_on_exit = 0; /* Indicates whether the screen should be held open */
 
@@ -171,7 +172,7 @@ static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
 static int volatile wait_to_finish=1;
-ap_generation_t volatile ap_my_generation=0;
+static ap_generation_t volatile ap_my_generation=0;
 
 /* a clean exit from a child with proper cleanup */
 static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans,
@@ -242,11 +243,20 @@ static int netware_query(int query_code, int *result, apr_status_t *rv)
         case AP_MPMQ_MPM_STATE:
             *result = mpm_state;
             break;
+        case AP_MPMQ_GENERATION:
+            *result = ap_my_generation;
+            break;
         default:
             *rv = APR_ENOTIMPL;
             break;
     }
     return OK;
+}
+
+static apr_status_t netware_note_child_killed(int childnum)
+{
+    ap_scoreboard_image->parent[childnum].pid = 0;
+    return APR_SUCCESS;
 }
 
 static const char *netware_get_name(void)
@@ -1099,6 +1109,7 @@ static void netware_mpm_hooks(apr_pool_t *p)
     //ap_hook_open_logs(netware_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     ap_hook_mpm(netware_run, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_query(netware_query, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_note_child_killed(netware_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_mpm_get_name(netware_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
