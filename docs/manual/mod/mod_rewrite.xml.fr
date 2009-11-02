@@ -728,7 +728,7 @@ R&eacute;sultat :
 	      au cours du traitement, la requ&ecirc;te de r&eacute;&eacute;criture doit &ecirc;tre
 	      r&eacute;inject&eacute;e dans le noyau d'Apache, comme s'il s'agissait
 	      d'une nouvelle requ&ecirc;te (Voir les <a
-	      href="../rewrite/rewrite_tech.html">d&eacute;tails techniques &agrave;
+	      href="../rewrite/tech.html">d&eacute;tails techniques &agrave;
 	      propos de mod_rewrite</a>). La surcharge
 	      correspondante n'est pas aussi importante qu'il n'y
 	      para&icirc;t, car la r&eacute;injection est enti&egrave;rement prise en charge

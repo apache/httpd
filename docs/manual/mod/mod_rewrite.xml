@@ -646,7 +646,7 @@ Result:
               process, the rewritten request
               has to be re-injected into the Apache kernel, as if it
               were a new request. (See <a
-              href="../rewrite/rewrite_tech.html">mod_rewrite technical
+              href="../rewrite/tech.html">mod_rewrite technical
               details</a>.)
               This is not the serious overhead it may seem to be -
               this re-injection is completely internal to the
