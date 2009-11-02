@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<manualpage metafile="rewrite_intro.xml.meta">
+<manualpage metafile="intro.xml.meta">
 <parentdocument href="./">Rewrite</parentdocument>
 
   <title>Apache mod_rewrite Introduction</title>

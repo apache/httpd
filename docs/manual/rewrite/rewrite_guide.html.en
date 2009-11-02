@@ -61,7 +61,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Proxy Deny</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#external-rewriting">External Rewriting Engine</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
-documentation</a></li><li><a href="rewrite_intro.html">mod_rewrite
+documentation</a></li><li><a href="intro.html">mod_rewrite
 introduction</a></li><li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - advanced 
 useful examples</a></li><li><a href="rewrite_tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

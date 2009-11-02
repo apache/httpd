@@ -83,7 +83,7 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <title>URL’lerin Yeniden Yazılması</title>
 <page separate="yes" href="rewrite/">Genel Bakış</page>
 <page href="mod/mod_rewrite.html">mod_rewrite Başvuru Belgesi</page>
-<page href="rewrite/rewrite_intro.html">Giriş</page>
+<page href="rewrite/intro.html">Giriş</page>
 <page href="rewrite/rewrite_flags.html">Seçenekler</page>
 <page href="rewrite/rewrite_tech.html">Teknik Ayrıntılar</page>
 <page href="rewrite/rewrite_guide.html">Yeniden Yazma Rehberi - yararlı örnekler</page>

@@ -1248,8 +1248,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
 	<p>Pour quelques conseils &agrave; propos des <glossary
 	ref="regex">expressions rationnelles</glossary>, voir le
-	document <a
-	href="../rewrite/rewrite_intro.html#regex">Introduction &agrave;
+	document <a href="../rewrite/intro.html#regex">Introduction &agrave;
 	mod_rewrite</a>.</p>
 
       <p>Dans mod_rewrite, on peut aussi utiliser le caract&egrave;re NON

@@ -57,6 +57,18 @@
       use mod_rewrite, and use other standard Apache features instead,
       thus avoiding this unnecessary complexity.</p>
 
+
+<ul>
+<li><a href="../mod/mod_rewrite.html">mod_rewrite reference
+documentation</a></li>
+<li><a href="intro.html">Introduction to regular expressions and
+mod_rewrite</a></li>
+<li><a href="rewrite_flags.html">Flags</a></li>
+<li><a href="rewrite_tech.html">Technical details</a></li>
+<li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
+<li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - more
+useful examples</a></li>
+</ul>
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">mod_rewrite reference
@@ -66,18 +78,6 @@ documentation</a></seealso>
 wiki</a></seealso>
 <seealso><a href="../glossary.html">Glossary</a></seealso>
 
-<section id="documentation"><title>Documentation</title>
-<ul>
-<li><a href="../mod/mod_rewrite.html">mod_rewrite reference
-documentation</a></li>
-<li><a href="rewrite_intro.html">Introduction</a></li>
-<li><a href="rewrite_flags.html">Flags</a></li>
-<li><a href="rewrite_tech.html">Technical details</a></li>
-<li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
-<li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - more
-useful examples</a></li>
-</ul>
-</section>
 
 </manualpage>
 

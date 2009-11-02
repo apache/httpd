@@ -101,7 +101,7 @@ descripteurs de fichiers</a></li>
 <div class="section"><h2><a name="rewrite" id="rewrite">Guide de réécriture d'URLs</a></h2>
 <ul><li class="separate"><a href="rewrite/">Survol</a></li>
 <li><a href="mod/mod_rewrite.html">Documentation de référence de mod_rewrite</a></li>
-<li><a href="rewrite/rewrite_intro.html">Introduction</a></li>
+<li><a href="rewrite/intro.html">Introduction</a></li>
 <li><a href="rewrite/rewrite_flags.html">Drapeaux</a></li>
 <li><a href="rewrite/rewrite_tech.html">Détails techniques</a></li>
 <li><a href="rewrite/rewrite_guide.html">Guide de réécriture - exemples utiles</a></li>

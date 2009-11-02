@@ -52,7 +52,7 @@
   </summary>
 <seealso><a href="../mod/mod_rewrite.html">Documentation du
 module</a></seealso>
-<seealso><a href="rewrite_intro.html">Introduction &agrave;
+<seealso><a href="intro.html">Introduction &agrave;
 mod_rewrite</a></seealso>
 <seealso><a href="rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples
 utiles</a></seealso>

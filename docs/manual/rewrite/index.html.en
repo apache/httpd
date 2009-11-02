@@ -51,24 +51,23 @@
       use mod_rewrite, and use other standard Apache features instead,
       thus avoiding this unnecessary complexity.</p>
 
-</div>
-<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite reference
-documentation</a></li><li><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
-wiki</a></li><li><a href="../glossary.html">Glossary</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="documentation" id="documentation">Documentation</a></h2>
+
 <ul>
 <li><a href="../mod/mod_rewrite.html">mod_rewrite reference
 documentation</a></li>
-<li><a href="rewrite_intro.html">Introduction</a></li>
+<li><a href="intro.html">Introduction to regular expressions and
+mod_rewrite</a></li>
 <li><a href="rewrite_flags.html">Flags</a></li>
 <li><a href="rewrite_tech.html">Technical details</a></li>
 <li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
 <li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - more
 useful examples</a></li>
 </ul>
-</div></div>
+</div>
+<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite reference
+documentation</a></li><li><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></li><li><a href="http://wiki.apache.org/httpd/Rewrite">mod_rewrite
+wiki</a></li><li><a href="../glossary.html">Glossary</a></li></ul></div>
+</div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/rewrite/" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |

@@ -1136,7 +1136,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
       <p>For some hints on <glossary ref="regex">regular
       expressions</glossary>, see
-      the <a href="../rewrite/rewrite_intro.html#regex">mod_rewrite
+      the <a href="../rewrite/intro.html#regex">mod_rewrite
       Introduction</a>.</p>
 
       <p>In mod_rewrite, the NOT character

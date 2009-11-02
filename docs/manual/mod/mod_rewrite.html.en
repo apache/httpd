@@ -1125,7 +1125,7 @@ later</td></tr>
 
       <p>For some hints on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
       expressions</a>, see
-      the <a href="../rewrite/rewrite_intro.html#regex">mod_rewrite
+      the <a href="../rewrite/intro.html#regex">mod_rewrite
       Introduction</a>.</p>
 
       <p>In mod_rewrite, the NOT character
