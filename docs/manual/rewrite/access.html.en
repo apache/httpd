@@ -36,7 +36,78 @@ configuration.</p>
 
 </div>
 <div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li></ul></div>
-</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="blocking-of-robots" id="blocking-of-robots">Blocking of Robots</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+        <p>
+        In this recipe, we discuss how to block persistent requests from
+        a particular robot, or user agent.</p>
+
+        <p>The standard for robot exclusion defines a file,
+        <code>/robots.txt</code> that specifies those portions of your
+        website where you which to exclude robots. However, some robots
+        do not honor these files.
+        </p>
+
+        <p>Note that there are methods of accomplishing this which do
+        not use mod_rewrite. Note also that any technique that relies on
+        the clients <code>USER_AGENT</code> string can be circumvented
+        very easily, since that string can be changed.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+        <p>We use a ruleset that specifies the directory to be
+        protected, and the client <code>USER_AGENT</code> that
+        identifies the malicious or persistent robot.</p>
+
+        <p>In this example, we are blocking a robot called
+        <code>NameOfBadRobot</code> from a location
+        <code>/secret/files</code>. You may also specify an IP address
+        range, if you are trying to block that user agent only from the
+        particular source.</p>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>
+RewriteCond %{REMOTE_ADDR}       =<strong>123\.45\.67\.[8-9]</strong>
+RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
+</pre></div>
+        </dd>
+
+      <dt>Discussion</dt>
+
+      <dd>
+      <p>
+        Rather than using mod_rewrite for this, you can accomplish the
+        same end using alternate means, as illustrated here:
+      </p>
+      <div class="example"><p><code>
+      SetEnvIfNoCase User-Agent ^NameOfBadRobot goaway<br />
+      &lt;Location /secret/files&gt;<br />
+      Order allow,deny<br />
+      Allow from all<br />
+      Deny from env=goaway
+      </code></p></div>
+      <p>
+      As noted above, this technique is trivial to circumvent, by simply
+      modifying the <code>USER_AGENT</code> request header. If you
+      are experiencing a sustained attack, you should consider blocking
+      it at a higher level, such as at your firewall.
+      </p>
+
+      </dd>
+
+      </dl>
+
+    </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/access.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
