@@ -133,6 +133,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x Patch:  http://people.apache.org/~covener/2.2.x-xlate_lite-noimplicitadd.diff (no code conflicts)
     +1: covener, trawick (without unrelated generated html)
 
+  * mod_ldap: Work around broken cache management in mod_ldap:
+    If LDAPSharedCacheSize is too small, try to free some memory by purging
+    the cache and log a warning.
+    Also increase the default LDAPSharedCacheSize to 500000.
+    PR 46749.
+
+    Trunk Patch: http://svn.apache.org/viewvc?rev=822458&view=rev
+    2.2.x Patch: trunk patch works with some offsets
+
+    +1: sf
+
+  * mod_mime: Make RemoveType override the info from TypesConfig
+    PR 38330.
+
+    Trunk Patch: http://svn.apache.org/viewvc?rev=821298&view=rev
+    2.2.x Patch: trunk patch works with some offset (except for CHANGES)
+
+    +1: sf
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
