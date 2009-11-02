@@ -57,11 +57,10 @@
 documentation</a></li>
 <li><a href="intro.html">Introduction to regular expressions and
 mod_rewrite</a></li>
+<li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
+<li><a href="access.html">Using mod_rewrite to control access</a></li>
 <li><a href="flags.html">Flags</a></li>
 <li><a href="tech.html">Technical details</a></li>
-<li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
-<li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - more
-useful examples</a></li>
 </ul>
 </div>
 <div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">mod_rewrite reference
