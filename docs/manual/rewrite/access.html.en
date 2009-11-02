@@ -29,10 +29,10 @@ various resources, and other related techniques.
 This includes many examples of common uses of mod_rewrite,
 including detailed descriptions of how each works.</p>
 
-<p>Note that many of these examples won't work unchanged in your
+<div class="warning">Note that many of these examples won't work unchanged in your
 particular server configuration, so it's important that you understand
 them, rather than merely cutting and pasting the examples into your
-configuration.</p>
+configuration.</div>
 
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Forbidding Image "Hotlinking"</a></li>
