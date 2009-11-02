@@ -36,7 +36,7 @@ vous devez aussi consulter la documentation de r&eacute;f&eacute;rence.</p>
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">Documentation du module</a></seealso>
-<seealso><a href="rewrite_tech.html">D&eacute;tails techniques</a></seealso>
+<seealso><a href="tech.html">D&eacute;tails techniques</a></seealso>
 <seealso><a href="rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples
 utiles</a></seealso>
 <seealso><a href="rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture

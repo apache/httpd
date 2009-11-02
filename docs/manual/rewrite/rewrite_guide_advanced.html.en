@@ -62,7 +62,7 @@
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
 documentation</a></li><li><a href="intro.html">mod_rewrite
 introduction</a></li><li><a href="rewrite_guide.html">Rewrite Guide - useful
-examples</a></li><li><a href="rewrite_tech.html">Technical details</a></li></ul></div>
+examples</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cluster" id="cluster">Web Cluster with Consistent URL Space</a></h2>

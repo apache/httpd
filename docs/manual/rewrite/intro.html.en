@@ -37,7 +37,7 @@ but this doc should help the beginner get their feet wet.
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Rewrite maps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
-documentation</a></li><li><a href="rewrite_tech.html">Technical details</a></li><li><a href="rewrite_guide.html">Practical solutions to common
+documentation</a></li><li><a href="tech.html">Technical details</a></li><li><a href="rewrite_guide.html">Practical solutions to common
 problems</a></li><li><a href="rewrite_guide_advanced.html">Practical solutions to
 advanced problems</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

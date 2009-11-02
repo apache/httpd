@@ -56,7 +56,7 @@ module</a></seealso>
 mod_rewrite</a></seealso>
 <seealso><a href="rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples
 utiles</a></seealso>
-<seealso><a href="rewrite_tech.html">D&eacute;tails techniques</a></seealso>
+<seealso><a href="tech.html">D&eacute;tails techniques</a></seealso>
 
 
     <section id="cluster">

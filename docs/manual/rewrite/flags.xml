@@ -34,7 +34,7 @@ consult the reference documentation.</p>
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
-<seealso><a href="rewrite_tech.html">Technical details</a></seealso>
+<seealso><a href="tech.html">Technical details</a></seealso>
 <seealso><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></seealso>
 <seealso><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
 advanced useful examples</a></seealso>

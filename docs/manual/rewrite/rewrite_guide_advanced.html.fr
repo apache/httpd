@@ -66,7 +66,7 @@
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du
 module</a></li><li><a href="intro.html">Introduction à
 mod_rewrite</a></li><li><a href="rewrite_guide.html">Guide de réécriture - exemples
-utiles</a></li><li><a href="rewrite_tech.html">Détails techniques</a></li></ul></div>
+utiles</a></li><li><a href="tech.html">Détails techniques</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cluster" id="cluster">Accès à une grappe de serveurs via un espace d'adressage
