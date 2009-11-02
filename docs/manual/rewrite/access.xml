@@ -43,6 +43,87 @@ configuration.</p>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
 
+    <section id="blocked-inline-images">
+
+      <title>Forbidding Image &quot;Hotlinking&quot;</title>
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>The following technique forbids the practice of other sites
+          including your images inline in their pages. This practice is
+          often referred to as &quot;hotlinking&quot;, and results in
+          your bandwidth being used to serve content for someone else's
+          site.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>This technique relies on the value of the
+          <code>HTTP_REFERER</code> variable, which is optional. As
+          such, it's possible for some people to circumvent this
+          limitation. However, most users will experience the failed
+          request, which should, over time, result in the image being
+          removed from that other site.</p>
+          <p>There are several ways that you can handle this
+          situation.</p>
+
+    <p>In this first example, we simply deny the request, if it didn't
+    initiate from a page on our site. For the purpose of this example,
+    we assume that our site is <code>www.example.com</code>.</p>
+
+<example><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
+</pre></example>
+
+    <p>In this second example, instead of failing the request, we display
+    an alternate image instead.</p>
+
+<example><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
+</pre></example>
+
+    <p>In the third example, we redirect the request to an image on some
+    third-party site.</p>
+
+<example><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.site.com/image.gif   [R,NC]
+</pre></example>
+
+    <p>Of these techniques, the last two tend to be the most effective
+    in getting people to stop hotlinking your images, because they will
+    simply not see the image that they expected to see.</p>
+
+        </dd>
+
+        <dt>Discussion:</dt>
+
+        <dd>
+        <p>If all you wish to do is deny access to the resource, rather
+        than redirecting that request elsewhere, this can be
+        accomplished without the use of mod_rewrite:</p>
+
+        <example>
+        SetEnvIf Referer example\.com localreferer<br />
+        &lt;FilesMatch \.(jpg|png|gif)$&gt;<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from env=localreferer<br />
+        &lt;/FilesMatch&gt;
+        </example>
+        </dd>
+      </dl>
+
+    </section>
+
     <section id="blocking-of-robots">
 
       <title>Blocking of Robots</title>
@@ -87,7 +168,7 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
 </pre></example>
         </dd>
 
-      <dt>Discussion</dt>
+      <dt>Discussion:</dt>
 
       <dd>
       <p>
@@ -99,7 +180,8 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
       &lt;Location /secret/files&gt;<br />
       Order allow,deny<br />
       Allow from all<br />
-      Deny from env=goaway
+      Deny from env=goaway<br />
+      &lt;/Location&gt;
       </example>
       <p>
       As noted above, this technique is trivial to circumvent, by simply

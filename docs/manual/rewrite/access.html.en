@@ -35,8 +35,91 @@ them, rather than merely cutting and pasting the examples into your
 configuration.</p>
 
 </div>
-<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Forbidding Image "Hotlinking"</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocking of Robots</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="blocked-inline-images" id="blocked-inline-images">Forbidding Image "Hotlinking"</a></h2>
+
+      
+
+      <dl>
+        <dt>Description:</dt>
+
+        <dd>
+          <p>The following technique forbids the practice of other sites
+          including your images inline in their pages. This practice is
+          often referred to as "hotlinking", and results in
+          your bandwidth being used to serve content for someone else's
+          site.</p>
+        </dd>
+
+        <dt>Solution:</dt>
+
+        <dd>
+          <p>This technique relies on the value of the
+          <code>HTTP_REFERER</code> variable, which is optional. As
+          such, it's possible for some people to circumvent this
+          limitation. However, most users will experience the failed
+          request, which should, over time, result in the image being
+          removed from that other site.</p>
+          <p>There are several ways that you can handle this
+          situation.</p>
+
+    <p>In this first example, we simply deny the request, if it didn't
+    initiate from a page on our site. For the purpose of this example,
+    we assume that our site is <code>www.example.com</code>.</p>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    -   [F,NC]
+</pre></div>
+
+    <p>In this second example, instead of failing the request, we display
+    an alternate image instead.</p>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong>    /images/go-away.png   [R,NC]
+</pre></div>
+
+    <p>In the third example, we redirect the request to an image on some
+    third-party site.</p>
+
+<div class="example"><pre>
+RewriteCond %{HTTP_REFERER} <strong>!^$</strong>
+RewriteCond %{HTTP_REFERER} !www.example.com [NC]
+RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.site.com/image.gif   [R,NC]
+</pre></div>
+
+    <p>Of these techniques, the last two tend to be the most effective
+    in getting people to stop hotlinking your images, because they will
+    simply not see the image that they expected to see.</p>
+
+        </dd>
+
+        <dt>Discussion:</dt>
+
+        <dd>
+        <p>If all you wish to do is deny access to the resource, rather
+        than redirecting that request elsewhere, this can be
+        accomplished without the use of mod_rewrite:</p>
+
+        <div class="example"><p><code>
+        SetEnvIf Referer example\.com localreferer<br />
+        &lt;FilesMatch \.(jpg|png|gif)$&gt;<br />
+        Order deny,allow<br />
+        Deny from all<br />
+        Allow from env=localreferer<br />
+        &lt;/FilesMatch&gt;
+        </code></p></div>
+        </dd>
+      </dl>
+
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="blocking-of-robots" id="blocking-of-robots">Blocking of Robots</a></h2>
 
@@ -82,7 +165,7 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
 </pre></div>
         </dd>
 
-      <dt>Discussion</dt>
+      <dt>Discussion:</dt>
 
       <dd>
       <p>
@@ -94,7 +177,8 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
       &lt;Location /secret/files&gt;<br />
       Order allow,deny<br />
       Allow from all<br />
-      Deny from env=goaway
+      Deny from env=goaway<br />
+      &lt;/Location&gt;
       </code></p></div>
       <p>
       As noted above, this technique is trivial to circumvent, by simply
