@@ -94,7 +94,7 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <div class="section"><h2><a name="rewrite" id="rewrite">URL’lerin Yeniden Yazılması</a></h2>
 <ul><li class="separate"><a href="rewrite/">Genel Bakış</a></li>
 <li><a href="mod/mod_rewrite.html">mod_rewrite Başvuru Belgesi</a></li>
-<li><a href="rewrite/rewrite_intro.html">Giriş</a></li>
+<li><a href="rewrite/intro.html">Giriş</a></li>
 <li><a href="rewrite/rewrite_flags.html">Seçenekler</a></li>
 <li><a href="rewrite/rewrite_tech.html">Teknik Ayrıntılar</a></li>
 <li><a href="rewrite/rewrite_guide.html">Yeniden Yazma Rehberi - yararlı örnekler</a></li>

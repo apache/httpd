@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 636374 -->
+<!-- English Revision: 636374:831985 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -83,7 +83,7 @@
 <section id="documentation"><title>Belgeler</title>
   <ul>
     <li><a href="../mod/mod_rewrite.html">mod_rewrite Başvuru Kılavuzu</a></li>
-    <li><a href="rewrite_intro.html">Giriş</a></li>
+    <li><a href="intro.html">Giriş</a></li>
     <li><a href="rewrite_flags.html">Seçenekler</a></li>
     <li><a href="rewrite_tech.html">Teknik Ayrıntılar</a></li>
     <li><a href="rewrite_guide.html">Yeniden Yazma Rehberi -

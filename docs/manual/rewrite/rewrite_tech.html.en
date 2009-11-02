@@ -29,7 +29,7 @@ and URL matching.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">API Phases</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Ruleset Processing</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
-documentation</a></li><li><a href="rewrite_intro.html">mod_rewrite
+documentation</a></li><li><a href="intro.html">mod_rewrite
 introduction</a></li><li><a href="rewrite_guide.html">Rewrite Guide - useful 
 examples</a></li><li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
 advanced useful examples</a></li></ul></div>

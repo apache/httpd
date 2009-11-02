@@ -81,7 +81,7 @@ Documentation</a>.</p>
 <page separate="yes" href="rewrite/">Overview</page>
 <page href="mod/mod_rewrite.html">mod_rewrite reference
 documentation</page>
-<page href="rewrite/rewrite_intro.html">Introduction</page>
+<page href="rewrite/intro.html">Introduction</page>
 <page href="rewrite/rewrite_flags.html">Flags</page>
 <page href="rewrite/rewrite_tech.html">Technical details</page>
 <page href="rewrite/rewrite_guide.html">Rewrite Guide - useful examples</page>

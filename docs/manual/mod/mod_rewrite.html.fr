@@ -1232,7 +1232,7 @@ la version version 2.1</td></tr>
 </div>
 
 	<p>Pour quelques conseils à propos des <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expressions rationnelles</a>, voir le
-	document <a href="../rewrite/rewrite_intro.html#regex">Introduction à
+	document <a href="../rewrite/intro.html#regex">Introduction à
 	mod_rewrite</a>.</p>
 
       <p>Dans mod_rewrite, on peut aussi utiliser le caractère NON

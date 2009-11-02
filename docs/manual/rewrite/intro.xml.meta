@@ -2,13 +2,12 @@
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
 <metafile>
-  <basename>index</basename>
+  <basename>intro</basename>
   <path>/rewrite/</path>
   <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>
     <variant>fr</variant>
-    <variant outdated="yes">tr</variant>
   </variants>
 </metafile>
