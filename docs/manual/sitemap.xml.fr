@@ -91,7 +91,7 @@ descripteurs de fichiers</page>
 <page href="mod/mod_rewrite.html">Documentation de r&eacute;f&eacute;rence de mod_rewrite</page>
 <page href="rewrite/intro.html">Introduction</page>
 <page href="rewrite/flags.html">Drapeaux</page>
-<page href="rewrite/rewrite_tech.html">D&eacute;tails techniques</page>
+<page href="rewrite/tech.html">D&eacute;tails techniques</page>
 <page href="rewrite/rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples utiles</page>
 <page href="rewrite/rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture avanc&eacute;e -
 autres exemples utiles</page>

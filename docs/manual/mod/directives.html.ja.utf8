@@ -261,6 +261,7 @@
 <li><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL</a></li>
 <li><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout</a></li>
+<li><a href="mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug</a></li>
 <li><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL</a></li>
 <li><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit</a></li>

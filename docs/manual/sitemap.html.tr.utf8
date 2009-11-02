@@ -28,6 +28,7 @@
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sitemap.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 <p>Bu sayfada <a href="./">Apache HTTP Sunucusu Sürüm 2.3
 Belgeleri</a>nin tamamı listelenmiştir.</p>
@@ -95,8 +96,8 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <ul><li class="separate"><a href="rewrite/">Genel Bakış</a></li>
 <li><a href="mod/mod_rewrite.html">mod_rewrite Başvuru Belgesi</a></li>
 <li><a href="rewrite/intro.html">Giriş</a></li>
-<li><a href="rewrite/rewrite_flags.html">Seçenekler</a></li>
-<li><a href="rewrite/rewrite_tech.html">Teknik Ayrıntılar</a></li>
+<li><a href="rewrite/flags.html">Seçenekler</a></li>
+<li><a href="rewrite/tech.html">Teknik Ayrıntılar</a></li>
 <li><a href="rewrite/rewrite_guide.html">Yeniden Yazma Rehberi - yararlı örnekler</a></li>
 <li><a href="rewrite/rewrite_guide_advanced.html">Gelişkin Yeniden Yazma Rehberi - daha
 yararlı örnekler</a></li>
