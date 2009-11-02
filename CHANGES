@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.15
 
+  *) mod_rewrite: Make sure that a hostname:port isn't fully qualified if
+     the request is a CONNECT request. [Bill Zajac <billz consultla.com>]
+
   *) mod_cache: correctly consider s-maxage in cacheability
      decisions.  [Dan Poirier]
 
