@@ -58,6 +58,12 @@ long form, so that you remember what each flag is supposed to do.</p>
 <p>Presented here are each of the available flags, along with an example
 of how you might use them.</p>
 
+<h3><a name="flag_b" id="flag_b">B</a></h3>
+<p>The [B] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape non-alphanumeric
+characters before applying the transformation.
+</p>
+
+
 <h3><a name="flag_c" id="flag_c">C|chain</a></h3>
 <p>The [C] or [chain] flag indicates that the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is chained to the next
 rule. That is, if the rule matches, then it is processed as usual and
@@ -87,12 +93,18 @@ RewriteEngine On<br />
 RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
 </code></p></div>
 
-<p>This rule doesn't rewrite the request (the "-" rewrite target tells
-mod_rewrite to pass the request through unchanged) but sets a cookie
+<p>In the example give, the rule doesn't rewrite the request.
+The "-" rewrite target tells mod_rewrite to pass the request
+through unchanged. Instead, it sets a cookie
 called 'frontdoor' to a value of 'yes'. The cookie is valid for any host
 in the <code>.apache.org</code> domain. It will be set to expire in 1440
 minutes (24 hours) and will be returned for all URIs.</p>
 
+
+
+<h3><a name="flag_dpi" id="flag_dpi">DPI|discardpathinfo</a></h3>
+<p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
+discarded.</p>
 
 
 <h3><a name="flag_e" id="flag_e">E|env</a></h3>
