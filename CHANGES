@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) vhost: A purely-numeric Host: header should not be treated as a port.
+     PR 44979 [Nick Kew]
+
   *) mod_ldap: Avoid 500 errors with "Unable to set LDAP_OPT_REFHOPLIMIT option to 5"
      when built against openldap by using SDK LDAP_OPT_REFHOPLIMIT defaults unless
      LDAPReferralHopLimit is explicitly configured.
