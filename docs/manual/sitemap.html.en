@@ -97,7 +97,7 @@ Documentation</a>.</p>
 <li><a href="mod/mod_rewrite.html">mod_rewrite reference
 documentation</a></li>
 <li><a href="rewrite/intro.html">Introduction</a></li>
-<li><a href="rewrite/rewrite_flags.html">Flags</a></li>
+<li><a href="rewrite/flags.html">Flags</a></li>
 <li><a href="rewrite/rewrite_tech.html">Technical details</a></li>
 <li><a href="rewrite/rewrite_guide.html">Rewrite Guide - useful examples</a></li>
 <li><a href="rewrite/rewrite_guide_advanced.html">Advanced Rewrite Guide - more

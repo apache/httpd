@@ -22,7 +22,7 @@
  limitations under the License.
 -->
 
-<manualpage metafile="rewrite_flags.xml.meta">
+<manualpage metafile="flags.xml.meta">
 <parentdocument href="./">Rewrite</parentdocument>
 
   <title>Les drapeaux du module Apache mod_rewrite</title>

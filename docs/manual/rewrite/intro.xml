@@ -238,7 +238,7 @@ RewriteRule ^puppy.html smalldog.html [NC]
 </example>
 
 <p>For more details on the available flags, their meanings, and
-examples, see the <a href="rewrite_flags.html">Rewrite Flags</a> document.</p>
+examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
 
 </section>
 

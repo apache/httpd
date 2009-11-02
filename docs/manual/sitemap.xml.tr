@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 680076 -->
+<!-- English Revision: 680076:832009 (outdated) -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -84,7 +84,7 @@ Belgeleri</a>nin tamamı listelenmiştir.</p>
 <page separate="yes" href="rewrite/">Genel Bakış</page>
 <page href="mod/mod_rewrite.html">mod_rewrite Başvuru Belgesi</page>
 <page href="rewrite/intro.html">Giriş</page>
-<page href="rewrite/rewrite_flags.html">Seçenekler</page>
+<page href="rewrite/flags.html">Seçenekler</page>
 <page href="rewrite/rewrite_tech.html">Teknik Ayrıntılar</page>
 <page href="rewrite/rewrite_guide.html">Yeniden Yazma Rehberi - yararlı örnekler</page>
 <page href="rewrite/rewrite_guide_advanced.html">Gelişkin Yeniden Yazma Rehberi - daha
