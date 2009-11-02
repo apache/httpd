@@ -627,44 +627,6 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<stron
 
     </section>
 
-    <section id="blocking-of-robots">
-
-      <title>Blocking of Robots</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>How can we block a really annoying robot from
-          retrieving pages of a specific webarea? A
-          <code>/robots.txt</code> file containing entries of the
-          "Robot Exclusion Protocol" is typically not enough to get
-          rid of such a robot.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We use a ruleset which forbids the URLs of the webarea
-          <code>/~quux/foo/arc/</code> (perhaps a very deep
-          directory indexed area where the robot traversal would
-          create big server load). We have to make sure that we
-          forbid access only to the particular robot, i.e. just
-          forbidding the host where the robot runs is not enough.
-          This would block users from this host, too. We accomplish
-          this by also matching the User-Agent HTTP header
-          information.</p>
-
-<example><pre>
-RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>.*
-RewriteCond %{REMOTE_ADDR}       ^<strong>123\.45\.67\.[8-9]</strong>$
-RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
-</pre></example>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="blocked-inline-images">
 
       <title>Forbidding Image &quot;Hotlinking&quot;</title>

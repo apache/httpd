@@ -56,7 +56,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (intern)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">From Old to New (extern)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#static-to-dynamic">From Static to Dynamic</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocking of Robots</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Forbidding Image "Hotlinking"</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Proxy Deny</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#external-rewriting">External Rewriting Engine</a></li>
@@ -647,44 +646,6 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
 RewriteEngine  on
 RewriteBase    /~quux/
 RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="blocking-of-robots" id="blocking-of-robots">Blocking of Robots</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>How can we block a really annoying robot from
-          retrieving pages of a specific webarea? A
-          <code>/robots.txt</code> file containing entries of the
-          "Robot Exclusion Protocol" is typically not enough to get
-          rid of such a robot.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We use a ruleset which forbids the URLs of the webarea
-          <code>/~quux/foo/arc/</code> (perhaps a very deep
-          directory indexed area where the robot traversal would
-          create big server load). We have to make sure that we
-          forbid access only to the particular robot, i.e. just
-          forbidding the host where the robot runs is not enough.
-          This would block users from this host, too. We accomplish
-          this by also matching the User-Agent HTTP header
-          information.</p>
-
-<div class="example"><pre>
-RewriteCond %{HTTP_USER_AGENT}   ^<strong>NameOfBadRobot</strong>.*
-RewriteCond %{REMOTE_ADDR}       ^<strong>123\.45\.67\.[8-9]</strong>$
-RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
 </pre></div>
         </dd>
       </dl>
