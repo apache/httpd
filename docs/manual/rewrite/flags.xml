@@ -65,7 +65,7 @@ of how you might use them.</p>
 
 <section id="flag_b"><title>B</title>
 <p>The [B] flag instructs <directive
-module-"mod_rewrite">RewriteRule</a> to escape non-alphanumeric
+module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.
 </p>
 </section>
