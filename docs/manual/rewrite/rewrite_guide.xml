@@ -505,7 +505,7 @@ while (&lt;&gt;) {
 
         <dd>
           <p>A mapping is maintained, from users to target servers, in
-          external maps  files. They look like:</p>
+          external map files. They look like:</p>
 
 <example><pre>
 user1  physical_host_of_user1
@@ -513,8 +513,8 @@ user2  physical_host_of_user2
 :      :
 </pre></example>
 
-          <p>We put this into  a <code>map.users-to-hosts</code> file. The
-            aim is the map;</p>
+          <p>We put this into a <code>map.users-to-hosts</code> file. The
+            aim is to map;</p>
 
 <example><pre>
 /u/user1/anypath
