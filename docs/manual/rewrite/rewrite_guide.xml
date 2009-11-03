@@ -498,7 +498,7 @@ while (&lt;&gt;) {
           server load or storage space is called "sharding". 
           When using this method, a front-end server will use the
           url to consistently "shard" users or objects to seperate
-          backend servers.
+          backend servers.</p>
         </dd>
 
         <dt>Solution:</dt>
