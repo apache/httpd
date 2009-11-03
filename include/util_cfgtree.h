@@ -68,7 +68,6 @@ struct ap_directive_t {
 
 /**
  * The root of the configuration tree
- * @var ap_directive_t *conftree
  */
 AP_DECLARE_DATA extern ap_directive_t *ap_conftree;
 

@@ -335,7 +335,8 @@ struct module_struct {
     void *dynamic_load_handle;
 
     /** A pointer to the next module in the list
-     *  @var module_struct *next */
+     *  @var module_struct *next
+     */
     struct module_struct *next;
 
     /** Magic Cookie to identify a module structure;  It's mainly 
@@ -731,28 +732,28 @@ typedef struct {
 
 /**
  * The topmost module in the list
- * @defvar module *ap_top_module
+ * @var module *ap_top_module
  */
 AP_DECLARE_DATA extern module *ap_top_module;
 
 /**
  * Array of all statically linked modules
- * @defvar module *ap_prelinked_modules[]
+ * @var module *ap_prelinked_modules[]
  */
 AP_DECLARE_DATA extern module *ap_prelinked_modules[];
 /**
  * Array of all statically linked modulenames (symbols)
- * @defvar ap_module_symbol_t ap_prelinked_modulenames[]
+ * @var ap_module_symbol_t ap_prelinked_module_symbols[]
  */
 AP_DECLARE_DATA extern ap_module_symbol_t ap_prelinked_module_symbols[];
 /**
  * Array of all preloaded modules
- * @defvar module *ap_preloaded_modules[]
+ * @var module *ap_preloaded_modules[]
  */
 AP_DECLARE_DATA extern module *ap_preloaded_modules[];
 /**
  * Array of all loaded modules
- * @defvar module **ap_loaded_modules
+ * @var module **ap_loaded_modules
  */
 AP_DECLARE_DATA extern module **ap_loaded_modules;
 
