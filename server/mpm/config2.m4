@@ -36,14 +36,18 @@ APACHE_HELP_STRING(--enable-mpms-shared=MPM-LIST,Space-separated list of MPM mod
     mpm_build=shared
     for i in $enableval; do
         if test "$i" = "all"; then
-            for j in $SUPPORTED_MPMS; do
+            for j in $SHARED_MPMS; do
                 eval "enable_mpm_$j=shared"
                 APACHE_MPM_ENABLED($j)
             done
         else
             i=`echo $i | sed 's/-/_/g'`
-            eval "enable_mpm_$i=shared"
-            APACHE_MPM_ENABLED($i)
+            if ap_mpm_supports_shared $i; then
+                eval "enable_mpm_$i=shared"
+                APACHE_MPM_ENABLED($i)
+            else
+                AC_MSG_ERROR([MPM $i does not support dynamic loading.])
+            fi
         fi
     done
 ], [mpm_build=static])
