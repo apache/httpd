@@ -400,43 +400,6 @@ RewriteRule   ^foo\.html$             foo.night.html
 
     </section>
 
-    <section id="proxy-deny">
-
-      <title>Proxy Deny</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>How can we forbid a certain host or even a user of a
-          special host from using the Apache proxy?</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We first have to make sure <module>mod_rewrite</module>
-          is below(!) <module>mod_proxy</module> in the Configuration
-          file when compiling the Apache webserver. This way it gets
-          called <em>before</em> <module>mod_proxy</module>. Then we
-          configure the following for a host-dependent deny...</p>
-
-<example><pre>
-RewriteCond %{REMOTE_HOST} <strong>^badhost\.mydomain\.com$</strong>
-RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
-</pre></example>
-
-          <p>...and this one for a user@host-dependent deny:</p>
-
-<example><pre>
-RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST}  <strong>^badguy@badhost\.mydomain\.com$</strong>
-RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
-</pre></example>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="external-rewriting">
 
       <title>External Rewriting Engine</title>
