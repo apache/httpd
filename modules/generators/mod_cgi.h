@@ -51,8 +51,6 @@ typedef struct {
  * @param argv Pointer to the arguments to pass (may be overridden)
  * @param r The current request
  * @param p The pool to allocate correct cmd/argv elements within.
- * @param process_cgi Set true if processing r->filename and r->args
- *                    as a CGI invocation, otherwise false
  * @param e_info pass e_info.cmd_type (Set to APR_SHELLCMD or APR_PROGRAM on entry)
                       and e_info.detached (Should the child start in detached state?)
  * @remark This callback may be registered by the os-specific module 

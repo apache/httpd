@@ -23,7 +23,7 @@
  *
  * @defgroup MOD_WATCHDOG watchdog
  * @ingroup  APACHE_MODS
- * @{
+ * \@{
  */
 
 #include "httpd.h"
@@ -162,10 +162,10 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t, ap_watchdog_set_callback_interval,
 
 /**
  * Watchdog require hook.
+ * @param s The server record 
  * @param name Watchdog name.
  * @param parent Non-zero to indicate the parent process watchdog mode.
  * @param singleton Non-zero to indicate the singleton watchdog mode.
- * @param pool The pool used to create the watchdog.
  * @return OK to enable notifications from this watchdog, DECLINED otherwise.
  * @remark This is called in post config phase for all watchdog instances
  *         that have no callbacks registered. Modules using this hook
@@ -180,6 +180,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_need, (server_rec *s,
 /**
  * Watchdog initialize hook.
  * It is called after the watchdog thread is initialized.
+ * @param s The server record 
  * @param name Watchdog name.
  * @param pool The pool used to create the watchdog.
  */
@@ -191,6 +192,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_init, (
 /**
  * Watchdog terminate hook.
  * It is called when the watchdog thread is terminated.
+ * @param s The server record 
  * @param name Watchdog name.
  * @param pool The pool used to create the watchdog.
  */
@@ -202,6 +204,7 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_exit, (
 /**
  * Fixed interval watchdog hook.
  * It is called regularly on @p AP_WD_TM_INTERVAL interval.
+ * @param s The server record 
  * @param name Watchdog name.
  * @param pool Temporary pool destroyed after the call.
  */
@@ -215,4 +218,4 @@ APR_DECLARE_EXTERNAL_HOOK(ap, AP_WD, int, watchdog_step, (
 #endif
 
 #endif /* MOD_WATCHDOG_H */
-/** @} */
+/** \@} */
