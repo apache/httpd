@@ -488,73 +488,55 @@ while (&lt;&gt;) {
 
     <section id="cluster">
 
-      <title>Web Cluster with Consistent URL Space</title>
+      <title>URL-based sharding accross multiple backends</title>
 
       <dl>
         <dt>Description:</dt>
 
         <dd>
-          <p>We want to create a homogeneous and consistent URL
-          layout across all WWW servers on an Intranet web cluster, i.e.,
-          all URLs (by definition server-local and thus
-          server-dependent!) become server <em>independent</em>!
-          What we want is to give the WWW namespace a single consistent
-          layout: no URL should refer to
-          any particular target server. The cluster itself
-          should connect users automatically to a physical target
-          host as needed, invisibly.</p>
+          <p>A common technique for distributing the burden of 
+          server load or storage space is called "sharding". 
+          When using this method, a front-end server will use the
+          url to consistently "shard" users or objects to seperate
+          backend servers.
         </dd>
 
         <dt>Solution:</dt>
 
         <dd>
-          <p>First, the knowledge of the target servers comes from
-          (distributed) external maps which contain information on
-          where our users, groups, and entities reside. They have the
-          form:</p>
+          <p>A mapping is maintained, from users to target servers, in
+          external maps  files. They look like:</p>
 
 <example><pre>
-user1  server_of_user1
-user2  server_of_user2
+user1  physical_host_of_user1
+user2  physical_host_of_user2
 :      :
 </pre></example>
 
-          <p>We put them into files <code>map.xxx-to-host</code>.
-          Second we need to instruct all servers to redirect URLs
-          of the forms:</p>
+          <p>We put this into  a <code>map.users-to-hosts</code> file. The
+            aim is the map;</p>
 
 <example><pre>
-/u/user/anypath
-/g/group/anypath
-/e/entity/anypath
+/u/user1/anypath
 </pre></example>
 
           <p>to</p>
 
 <example><pre>
-http://physical-host/u/user/anypath
-http://physical-host/g/group/anypath
-http://physical-host/e/entity/anypath
+http://physical_host_of_user1/u/user/anypath
 </pre></example>
 
-          <p>when any URL path need not be valid on every server. The
-          following ruleset does this for us with the help of the map
-          files (assuming that server0 is a default server which
-          will be used if a user has no entry in the map):</p>
+          <p>thus every URL path need not be valid on every backend physical
+          host. The following ruleset does this for us with the help of the map
+          files assuming that server0 is a default server which will be used if
+          a user has no entry in the map):</p>
 
 <example><pre>
 RewriteEngine on
 
-RewriteMap      user-to-host   txt:/path/to/map.user-to-host
-RewriteMap     group-to-host   txt:/path/to/map.group-to-host
-RewriteMap    entity-to-host   txt:/path/to/map.entity-to-host
+RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
 
-RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${user-to-host:$1|server0}</strong>/u/$1/$2
-RewriteRule   ^/g/<strong>([^/]+)</strong>/?(.*)  http://<strong>${group-to-host:$1|server0}</strong>/g/$1/$2
-RewriteRule   ^/e/<strong>([^/]+)</strong>/?(.*) http://<strong>${entity-to-host:$1|server0}</strong>/e/$1/$2
-
-RewriteRule   ^/([uge])/([^/]+)/?$          /$1/$2/.www/
-RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
+RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hosts:$1|server0}</strong>/u/$1/$2
 </pre></example>
         </dd>
       </dl>
