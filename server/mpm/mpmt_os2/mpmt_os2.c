@@ -48,11 +48,11 @@
 #include "http_config.h"
 #include "http_core.h"  /* for get_remote_host */
 #include "http_connection.h"
-#include "mpm.h"
 #include "ap_mpm.h"
 #include "ap_listen.h"
 #include "apr_portable.h"
 #include "mpm_common.h"
+#include "scoreboard.h"
 #include "apr_strings.h"
 #include <os2.h>
 #include <process.h>
@@ -110,7 +110,7 @@ void ap_mpm_child_main(apr_pool_t *pconf);
 static void set_signals();
 
 
-int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
+static int mpmt_os2_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 {
     char *listener_shm_name;
     parent_info_t *parent_info;
@@ -414,35 +414,68 @@ static void set_signals()
 
 /* Enquiry functions used get MPM status info */
 
-AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
+static apr_status_t mpmt_os2_query(int query_code, int *result, apr_status_t *rv)
 {
+    *rv = APR_SUCCESS;
+
     switch (query_code) {
         case AP_MPMQ_MAX_DAEMON_USED:
             *result = ap_max_daemons_limit;
-            return APR_SUCCESS;
+            break;
+
         case AP_MPMQ_IS_THREADED:
             *result = AP_MPMQ_DYNAMIC;
-            return APR_SUCCESS;
+            break;
+
         case AP_MPMQ_IS_FORKED:
             *result = AP_MPMQ_NOT_SUPPORTED;
-            return APR_SUCCESS;
+            break;
+
         case AP_MPMQ_HARD_LIMIT_DAEMONS:
             *result = HARD_SERVER_LIMIT;
-            return APR_SUCCESS;
+            break;
+
         case AP_MPMQ_HARD_LIMIT_THREADS:
             *result = HARD_THREAD_LIMIT;
-            return APR_SUCCESS;
+            break;
+
         case AP_MPMQ_MIN_SPARE_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
+
         case AP_MPMQ_MAX_SPARE_DAEMONS:
             *result = 0;
-            return APR_SUCCESS;
+            break;
+
         case AP_MPMQ_MAX_REQUESTS_DAEMON:
             *result = ap_max_requests_per_child;
-            return APR_SUCCESS;
+            break;
+
+        case AP_MPMQ_GENERATION:
+            *result = ap_my_generation;
+            break;
+
+        default:
+            *rv = APR_ENOTIMPL;
+            break;
     }
-    return APR_ENOTIMPL;
+
+    return OK;
+}
+
+
+
+static const char *mpmt_os2_note_child_killed(int childnum)
+{
+  ap_scoreboard_image->parent[childnum].pid = 0;
+  return APR_SUCCESS;
+}
+
+
+
+static const char *mpmt_os2_get_name(void)
+{
+    return "mpmt_os2";
 }
 
 
@@ -466,6 +499,7 @@ static int mpmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
         ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
+    ap_sys_privileges_handlers(1);
 
     return OK;
 }
@@ -522,6 +556,10 @@ static void mpmt_os2_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(mpmt_os2_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_config(mpmt_os2_check_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm(mpmt_os2_run, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_query(mpmt_os2_query, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_get_name(mpmt_os2_get_name, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_mpm_note_child_killed(mpmt_os2_note_child_killed, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 
