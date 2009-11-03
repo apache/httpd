@@ -45,13 +45,11 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot">Moved <code>DocumentRoot</code></a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#trailingslash">Trailing Slash Problem</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Move Homedirs to Different Webserver</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">Search for pages in more than one directory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvvars">Set Environment Variables According To URL Parts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#uservhosts">Virtual Hosts Per User</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirecthome">Redirect Homedirs For Foreigners</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">Backward Compatibility for YYYY to XXXX migration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Proxy Deny</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#external-rewriting">External Rewriting Engine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cluster">Web Cluster with Consistent URL Space</a></li>
@@ -245,47 +243,6 @@ RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="multipledirs" id="multipledirs">Search for pages in more than one directory</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>Sometimes it is necessary to let the webserver search
-          for pages in more than one directory. Here MultiViews or
-          other techniques cannot help.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We program a explicit ruleset which searches for the
-          files in the directories.</p>
-
-<div class="example"><pre>
-RewriteEngine on
-
-#   first try to find it in dir1/...
-#   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]
-
-#   second try to find it in dir2/...
-#   ...and if found stop and be happy:
-RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f
-RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
-
-#   else go on for other Alias or ScriptAlias directives,
-#   etc.
-RewriteRule   ^(.+)  -  [PT]
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
 <h2><a name="setenvvars" id="setenvvars">Set Environment Variables According To URL Parts</a></h2>
 
       
@@ -450,51 +407,6 @@ RewriteRule   ^foo\.html$             foo.night.html
           <code>07:00-19:00</code> and at the remaining time the
           contents of <code>foo.night.html</code>. Just a nice
           feature for a homepage...</p>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="backward-compatibility" id="backward-compatibility">Backward Compatibility for YYYY to XXXX migration</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>How can we make URLs backward compatible (still
-          existing virtually) after migrating <code>document.YYYY</code>
-          to <code>document.XXXX</code>, e.g. after translating a
-          bunch of <code>.html</code> files to <code>.phtml</code>?</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We just rewrite the name to its basename and test for
-          existence of the new extension. If it exists, we take
-          that name, else we rewrite the URL to its original state.</p>
-
-
-<div class="example"><pre>
-#   backward compatibility ruleset for
-#   rewriting document.html to document.phtml
-#   when and only when document.phtml exists
-#   but no longer document.html
-RewriteEngine on
-RewriteBase   /~quux/
-#   parse out basename, but remember the fact
-RewriteRule   ^(.*)\.html$              $1      [C,E=WasHTML:yes]
-#   rewrite to document.phtml if exists
-#   Note: This is a per-directory example, so %{REQUEST_FILENAME} is the full 
-#         filesystem path as already mapped by the server.
-RewriteCond   %{REQUEST_FILENAME}.phtml -f
-RewriteRule   ^(.*)$ $1.phtml                   [S=1]
-#   else reverse the previous basename cutout
-RewriteCond   %{ENV:WasHTML}            ^yes$
-RewriteRule   ^(.*)$ $1.html
-</pre></div>
         </dd>
       </dl>
 
