@@ -71,89 +71,34 @@ URLs on the fly</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the base URL for per-directory rewrites</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteBase <em>URL-path</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for information.</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
       <p>The <code class="directive">RewriteBase</code> directive explicitly
-      sets the base URL for per-directory rewrites. As you will see
-      below, <code class="directive"><a href="#rewriterule">RewriteRule</a></code>
-      can be used in per-directory config files
-      (<code>.htaccess</code>). In such a case, it will act locally,
-      stripping the local directory prefix before processing, and applying
-      rewrite rules only to the remainder. When processing is complete, the
-      prefix is automatically added back to the
-      path. The default setting is; <code class="directive">RewriteBase</code> <em>physical-directory-path</em></p>
+      sets the base URL for per-directory rewrites.
+      When you use a <code class="directive"><a href="#rewriterule">RewriteRule</a></code>
+      in a <code>.htaccess</code> file, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> strips off
+      the local directory prefix before processing, then rewrites the rest of 
+      the URL. When the rewrite is completed, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+      automatically adds the local directory prefix back on to the path.</p>
+      
+      <p>If your URL path does not exist on the filesystem,
+      you must use <code class="directive">RewriteBase</code> in every
+      <code>.htaccess</code> file where you want to use <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives.  </p>
 
-      <p>When a substitution occurs for a new URL, this module has
-      to re-inject the URL into the server processing. To be able
-      to do this it needs to know what the corresponding URL-prefix
-      or URL-base is. By default this prefix is the corresponding
-      filepath itself. <strong>However, for most websites, URLs are NOT
-      directly related to physical filename paths, so this
-      assumption will often be wrong!</strong> Therefore, you can
-      use the <code>RewriteBase</code> directive to specify the
-      correct URL-prefix.</p>
-
-<div class="note"> If your webserver's URLs are <strong>not</strong> directly
-related to physical file paths, you will need to use
-<code class="directive">RewriteBase</code> in every <code>.htaccess</code>
-file where you want to use <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives.
-</div>
-
-        <p> For example, assume the following per-directory config file:</p>
-
+      <p>The example below demonstrates how to map 
+      http://example.com/foo/index.html to 
+      /home/www/example/newsite.html, in a <code>.htaccess</code> file. This 
+      assumes that the content available at
+      http://example.com/ is on disk at /home/www/example/</p>
 <div class="example"><pre>
-#
-#  /abc/def/.htaccess -- per-dir config file for directory /abc/def
-#  Remember: /abc/def is the physical path of /xyz, <em>i.e.</em>, the server
-#            has a 'Alias /xyz /abc/def' directive <em>e.g.</em>
-#
-
 RewriteEngine On
-
-#  let the server know that we were reached via /xyz and not
-#  via the physical path prefix /abc/def
-RewriteBase   /xyz
-
-#  now the rewriting rules
-RewriteRule   ^oldstuff\.html$  newstuff.html
+RewriteBase /foo/
+RewriteRule ^index\.html$  newsite.html
 </pre></div>
-
-        <p>In the above example, a request to
-        <code>/xyz/oldstuff.html</code> gets correctly rewritten to
-        the physical file <code>/abc/def/newstuff.html</code>.</p>
-
-<div class="note"><h3>For Apache Hackers</h3>
-<p>The following list gives detailed information about
-              the internal processing steps:</p>
-<pre>
-Request:
-  /xyz/oldstuff.html
-
-Internal Processing:
-  /xyz/oldstuff.html     -&gt; /abc/def/oldstuff.html  (per-server Alias)
-  /abc/def/oldstuff.html -&gt; /abc/def/newstuff.html  (per-dir    RewriteRule)
-  /abc/def/newstuff.html -&gt; /xyz/newstuff.html      (per-dir    RewriteBase)
-  /xyz/newstuff.html     -&gt; /abc/def/newstuff.html  (per-server Alias)
-
-Result:
-  /abc/def/newstuff.html
-</pre>
-              <p>This seems very complicated, but is in fact
-              correct Apache internal processing. Because the
-              per-directory rewriting comes late in the
-              process, the rewritten request
-              has to be re-injected into the Apache kernel, as if it
-              were a new request. (See <a href="../rewrite/tech.html">mod_rewrite technical
-              details</a>.)
-              This is not the serious overhead it may seem to be -
-              this re-injection is completely internal to the
-              Apache server (and the same procedure is used by
-              many other operations within Apache).</p>
-</div>
 
 
 </div>
