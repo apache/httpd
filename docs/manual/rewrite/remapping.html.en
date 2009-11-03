@@ -196,6 +196,11 @@ RewriteRule ^(.*).html$ $1.php
     directives are evaluated. This allows us to test for the existence
     of the the original (<code>document.html</code>) and target
     (<code>document.php</code>) files using the same base filename.</p>
+    <p>This ruleset is designed to use in a per-directory context (In a
+    &lt;Directory&gt; block or in a .htaccess file), so that the
+    <code>-f</code> checks are looking at the correct directory path.
+    You may need to set a <code class="directive"><a href="../mod/mod_rewite.html#rewritebase">RewriteBase</a></code> directive to specify the
+    directory base that you're working in.</p>
     </dd>
   </dl>
 
