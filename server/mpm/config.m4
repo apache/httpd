@@ -42,6 +42,9 @@ esac
 dnl APACHE_MPM_SUPPORTED(name, supports-shared, is_threaded)
 AC_DEFUN(APACHE_MPM_SUPPORTED,[
     SUPPORTED_MPMS="$SUPPORTED_MPMS $1 "
+    if test "$2" = "yes"; then
+        SHARED_MPMS="$SHARED_MPMS $1 "
+    fi
     if test "$3" = "yes"; then
         THREADED_MPMS="$THREADED_MPMS $1 "
     fi
@@ -59,6 +62,15 @@ AC_DEFUN(APACHE_MPM_ENABLED,[
 ap_mpm_is_supported ()
 {
     if echo "$SUPPORTED_MPMS" | grep " $1 " >/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+ap_mpm_supports_shared ()
+{
+    if echo "$SHARED_MPMS" | grep " $1 " >/dev/null; then
         return 0
     else
         return 1
