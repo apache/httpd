@@ -37,7 +37,9 @@ configuration.</div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (internal)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#static-to-dynamic">From Static to Dynamic</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">Backward Compatibility for file extension change</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Canonical Hostnames</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">Search for pages in more than one directory</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -150,6 +152,54 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<stron
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="backward-compatibility" id="backward-compatibility">Backward Compatibility for file extension change</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>How can we make URLs backward compatible (still
+      existing virtually) after migrating <code>document.YYYY</code>
+      to <code>document.XXXX</code>, e.g. after translating a
+      bunch of <code>.html</code> files to <code>.php</code>?</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We rewrite the name to its basename and test for
+      existence of the new extension. If it exists, we take
+      that name, else we rewrite the URL to its original state.</p>
+
+<div class="example"><pre>
+#   backward compatibility ruleset for
+#   rewriting document.html to document.php
+#   when and only when document.php exists
+RewriteEngine on
+
+RewriteCond $1.php -f
+RewriteCond $1.html !-f
+RewriteRule ^(.*).html$ $1.php 
+</pre></div>
+    </dd>
+
+    <dt>Discussion</dt>
+    <dd>
+    <p>This example uses an often-overlooked feature of mod_rewrite,
+    by taking advantage of the order of execution of the ruleset. In
+    particular, mod_rewrite evaluates the left-hand-side of the
+    RewriteRule before it evaluates the RewriteCond directives.
+    Consequently, $1 is already defined by the time the RewriteRule
+    directives are evaluated. This allows us to test for the existence
+    of the the original (<code>document.html</code>) and target
+    (<code>document.php</code>) files using the same base filename.</p>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="canonicalhost" id="canonicalhost">Canonical Hostnames</a></h2>
 
       <dl>
@@ -198,7 +248,50 @@ RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
         </dd>
       </dl>
 
-    </div></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multipledirs" id="multipledirs">Search for pages in more than one directory</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>A particular resource might exist in one of several places, and
+      we want to look in those places for the resource when it is
+      requested. Perhaps we've recently rearranged our directory
+      structure, dividing content into several locations.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>The following ruleset searches in two directories to find the
+      resource, and, if not finding it in either place, will attempt to
+      just serve it out of the location requested.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+
+#   first try to find it in dir1/...
+#   ...and if found stop and be happy:
+RewriteCond         %{DOCUMENT_ROOT}/<strong>dir1</strong>/%{REQUEST_URI}  -f
+RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir1</strong>/$1  [L]
+
+#   second try to find it in dir2/...
+#   ...and if found stop and be happy:
+RewriteCond         %{DOCUMENT_ROOT}/<strong>dir2</strong>/%{REQUEST_URI}  -f
+RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
+
+#   else go on for other Alias or ScriptAlias directives,
+#   etc.
+RewriteRule   ^(.+)  -  [PT]
+</pre></div>
+    </dd>
+  </dl>
+
+</div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/remapping.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
