@@ -201,6 +201,59 @@ EOF
 ])dnl
 
 dnl
+dnl APACHE_MPM_MODULE(name[, shared[, objects[, config[, path]]]])
+dnl
+dnl Provide information for building the MPM.  (Enablement is handled using
+dnl --with-mpm/--enable-mpms-shared.)
+dnl
+dnl name     -- name of MPM, same as MPM directory name
+dnl shared   -- variable to check for value "shared" to indicate shared module build
+dnl objects  -- one or more .lo files to link into the MPM module (default: mpmname.lo)
+dnl config   -- configuration logic to run if the MPM is enabled
+dnl path     -- relative path to MPM (default: server/mpm/mpmname)
+dnl
+AC_DEFUN(APACHE_MPM_MODULE,[
+    if ap_mpm_is_enabled $1; then
+        if test -z "$3"; then
+            objects="$1.lo"
+        else
+            objects="$3"
+        fi
+
+        if test -z "$5"; then
+            mpmpath="server/mpm/$1"
+        else
+            mpmpath=$5
+        fi
+
+        APACHE_FAST_OUTPUT($mpmpath/Makefile)
+
+        if test -z "$2"; then
+            libname="lib$1.la"
+            cat >$mpmpath/modules.mk<<EOF
+$libname: $objects
+	\$(MOD_LINK) $objects
+DISTCLEAN_TARGETS = modules.mk
+static = $libname
+shared =
+EOF
+        else
+            apache_need_shared=yes
+            libname="mod_mpm_$1.la"
+            shobjects=`echo $objects | sed 's/\.lo/.slo/g'`
+            cat >$mpmpath/modules.mk<<EOF
+$libname: $shobjects
+	\$(SH_LINK) -rpath \$(libexecdir) -module -avoid-version $objects
+DISTCLEAN_TARGETS = modules.mk
+static =
+shared = $libname
+EOF
+        fi
+        $4
+    fi
+])dnl
+
+dnl
 dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 dnl
 dnl default is one of:

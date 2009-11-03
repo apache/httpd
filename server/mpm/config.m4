@@ -49,7 +49,11 @@ AC_DEFUN(APACHE_MPM_SUPPORTED,[
 
 dnl APACHE_MPM_ENABLED(name)
 AC_DEFUN(APACHE_MPM_ENABLED,[
-    ENABLED_MPMS="$ENABLED_MPMS $1 "
+    if ap_mpm_is_enabled $1; then
+        :
+    else
+        ENABLED_MPMS="$ENABLED_MPMS $1 "
+    fi
 ])dnl
 
 ap_mpm_is_supported ()

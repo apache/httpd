@@ -1,5 +1,1 @@
-
-LTLIBRARY_NAME    = libprefork.la
-LTLIBRARY_SOURCES = prefork.c
-
-include $(top_srcdir)/build/ltlib.mk
+include $(top_srcdir)/build/special.mk
