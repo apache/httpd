@@ -1,4 +1,1 @@
-LTLIBRARY_NAME    = libsimple.la
-LTLIBRARY_SOURCES = simple_api.c simple_children.c simple_core.c simple_event.c simple_run.c simple_io.c
-
-include $(top_srcdir)/build/ltlib.mk
+include $(top_srcdir)/build/special.mk

@@ -1,5 +1,1 @@
-
-LTLIBRARY_NAME    = libwinnt.la
-LTLIBRARY_SOURCES = child.c mpm_winnt.c nt_eventlog.c service.c
-
-include $(top_srcdir)/build/ltlib.mk
+include $(top_srcdir)/build/special.mk

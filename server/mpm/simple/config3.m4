@@ -1,3 +1,3 @@
-if ap_mpm_is_enabled "simple"; then
-    APACHE_FAST_OUTPUT(server/mpm/simple/Makefile)
-fi
+simple_objects="simple_api.lo simple_children.lo simple_core.lo \
+simple_event.lo simple_run.lo simple_io.lo"
+APACHE_MPM_MODULE(simple, $enable_mpm_simple, $simple_objects)

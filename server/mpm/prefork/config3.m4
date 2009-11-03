@@ -1,3 +1,1 @@
-if ap_mpm_is_enabled "prefork"; then
-    APACHE_FAST_OUTPUT(server/mpm/prefork/Makefile)
-fi
+APACHE_MPM_MODULE(prefork, $enable_mpm_prefork)
