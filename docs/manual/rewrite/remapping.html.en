@@ -40,6 +40,7 @@ configuration.</div>
 <li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">Backward Compatibility for file extension change</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Canonical Hostnames</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">Search for pages in more than one directory</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#archive-access-multiplexer">Redirecting to Geographically Distributed Servers</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -288,6 +289,63 @@ RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
 #   etc.
 RewriteRule   ^(.+)  -  [PT]
 </pre></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="archive-access-multiplexer" id="archive-access-multiplexer">Redirecting to Geographically Distributed Servers</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>We have numerous mirrors of our website, and want to redirect
+    people to the one that is located in the country where they are
+    located.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+    <p>Looking at the hostname of the requesting client, we determine
+    which country they are coming from. If we can't do a lookup on their
+    IP address, we fall back to a default server.</p>
+    <p>We'll use <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
+    directive to build a list of servers that we wish to use.</p>
+
+<div class="example"><pre>
+HostnameLookups on
+RewriteEngine on
+RewriteMap    multiplex         txt:/path/to/map.mirrors
+RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]
+RewriteRule   ^(.*)$  ${multiplex:<strong>%1</strong>|www.example.com}$1  [R,L]
+</pre></div>
+
+<div class="example"><pre>
+##  map.mirrors -- Multiplexing Map
+
+de        http://www.example.de/
+uk        http://www.example.uk/
+com       http://www.example.com/
+##EOF##
+</pre></div>
+    </dd>
+
+    <dt>Discussion</dt>
+    <dd>
+    <div class="warning">This ruleset relies on 
+    <code class="directive"><a href="../mod/core.html#hostnamelookups">HostNameLookups</a></code> 
+    being set <code>on</code>, which can be
+    a significant performance hit.</div>
+
+    <p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+    directive captures the last portion of the hostname of the
+    requesting client - the country code - and the following RewriteRule
+    uses that value to look up the appropriate mirror host in the map
+    file.</p>
     </dd>
   </dl>
 

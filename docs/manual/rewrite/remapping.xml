@@ -294,4 +294,62 @@ RewriteRule   ^(.+)  -  [PT]
 
 </section>
 
+<section id="archive-access-multiplexer">
+
+  <title>Redirecting to Geographically Distributed Servers</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>We have numerous mirrors of our website, and want to redirect
+    people to the one that is located in the country where they are
+    located.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+    <p>Looking at the hostname of the requesting client, we determine
+    which country they are coming from. If we can't do a lookup on their
+    IP address, we fall back to a default server.</p>
+    <p>We'll use <directive module="mod_rewrite">RewriteMap</directive>
+    directive to build a list of servers that we wish to use.</p>
+
+<example><pre>
+HostnameLookups on
+RewriteEngine on
+RewriteMap    multiplex         txt:/path/to/map.mirrors
+RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]
+RewriteRule   ^(.*)$  ${multiplex:<strong>%1</strong>|www.example.com}$1  [R,L]
+</pre></example>
+
+<example><pre>
+##  map.mirrors -- Multiplexing Map
+
+de        http://www.example.de/
+uk        http://www.example.uk/
+com       http://www.example.com/
+##EOF##
+</pre></example>
+    </dd>
+
+    <dt>Discussion</dt>
+    <dd>
+    <note type="warning">This ruleset relies on 
+    <directive module="core">HostNameLookups</directive> 
+    being set <code>on</code>, which can be
+    a significant performance hit.</note>
+
+    <p>The <directive module="mod_rewrite">RewriteCond</directive>
+    directive captures the last portion of the hostname of the
+    requesting client - the country code - and the following RewriteRule
+    uses that value to look up the appropriate mirror host in the map
+    file.</p>
+    </dd>
+  </dl>
+
+</section>
+
+
 </manualpage> 
