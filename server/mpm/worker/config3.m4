@@ -1,6 +1,6 @@
 dnl ## XXX - Need a more thorough check of the proper flags to use
 
-if test "$MPM_NAME" = "worker" ; then
+if ap_mpm_is_enabled "worker"; then
     AC_CHECK_FUNCS(pthread_kill)
-    APACHE_FAST_OUTPUT(server/mpm/$MPM_NAME/Makefile)
+    APACHE_FAST_OUTPUT(server/mpm/worker/Makefile)
 fi

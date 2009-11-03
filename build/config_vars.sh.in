@@ -60,7 +60,7 @@ exec sed "
 /^OS_DIR/d
 /^AP_LIBS/d
 /^OS_SPECIFIC_VARS/d
-/^MPM_SUBDIR_NAME/d
+/^MPM_SUBDIRS/d
 /^EXTRA_INCLUDES/{ 
   s, = , = -I\$(includedir) ,
   s, -I\$(top_srcdir)/[^ ]*,,g

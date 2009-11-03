@@ -1,3 +1,3 @@
-if test "$MPM_NAME" = "prefork" ; then
-    APACHE_FAST_OUTPUT(server/mpm/$MPM_NAME/Makefile)
+if ap_mpm_is_enabled "prefork"; then
+    APACHE_FAST_OUTPUT(server/mpm/prefork/Makefile)
 fi
