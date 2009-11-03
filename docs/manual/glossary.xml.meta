@@ -13,6 +13,6 @@
     <variant>fr</variant>
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
-    <variant outdated="yes">tr</variant>
+    <variant>tr</variant>
   </variants>
 </metafile>

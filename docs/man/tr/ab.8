@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 8 "2009-02-16" "Apache HTTP Sunucusu" "ab"
+.TH "AB" 8 "2009-11-03" "Apache HTTP Sunucusu" "ab"
 .nh
 .SH İSİM
 ab \- Apache HTTP sunucusu başarım ölçme aracı
@@ -27,7 +27,7 @@ ab \- Apache HTTP sunucusu başarım ölçme aracı
 .SH "KULLANIM"
  
 .PP
-\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
+\fBab\fR [ -\fBA\fR \fIyetkili-kullanıcı:parola\fR ] [ -\fBb\fR \fItampon-boyu\fR ] [ -\fBc\fR \fIbağlantı-sayısı\fR ] [ -\fBC\fR \fIçerez-ismi=değer\fR ] [ -\fBd\fR ] [ -\fBe\fR \fIcsv-dosyası\fR ] [ -\fBf\fR \fIprotokol\fR ] [ -\fBg\fR \fIgnuplot-dosyası\fR ] [ -\fBh\fR ] [ -\fBH\fR \fIözel-başlık\fR ] [ -\fBi\fR ] [ -\fBk\fR ] [ -\fBn\fR \fIistek-sayısı\fR ] [ -\fBp\fR \fIPOST-dosyası\fR ] [ -\fBP\fR \fIvekil-yetkilisi:parola\fR ] [ -\fBq\fR ] [ -\fBr\fR ] [ -\fBs\fR ] [ -\fBS\fR ] [ -\fBt\fR \fIsaniye\fR ] [ -\fBT\fR \fIiçerik-türü\fR ] [ -\fBu\fR \fIPUT-dosyası\fR ] [ -\fBv\fR \fIayrıntı-düzeyi\fR] [ -\fBV\fR ] [ -\fBw\fR ] [ -\fBx\fR \fI<table>-öznitelikleri\fR ] [ -\fBX\fR \fIvekil\fR[:\fIport\fR] ] [ -\fBy\fR \fI<tr>-öznitelikleri\fR ] [ -\fBz\fR \fI<td>-öznitelikleri\fR ] [ -\fBZ\fR \fIşifre-kümesi\fR ] [http[s]://]\fIkonakadı\fR[:\fIport\fR]/\fIdizin\fR
  
 
 .SH "ÖZET"
@@ -101,10 +101,13 @@ Ortalama ve ortanca değerler arasında bir veya iki standart sapmadan fazlası 
 Ölçümleme işleminin ne kadar süreyle uygulanacağı belirtilir\&. Dahili olarak \fB-n 50000\fR seçeneği uygulanır\&. Bunu belli bir süreye göre kıyaslama yapmak amacıyla kullanabilirsiniz\&. Öntanımlı olarak bir süre kısıtlaması yoktur\&.  
 .TP
 \fB-T\fR \fIiçerik-türü\fR
-POST verisi için kullanılacak içerik türü belirtilir\&. Örnek: application/x-www-form-urlencoded\&. Öntanımlı değer: text/plain\&.  
+POST/PUT verisi için kullanılacak içerik türü belirtilir\&. Örnek: application/x-www-form-urlencoded\&. Öntanımlı değer: text/plain\&.  
 .TP
 \fB-v\fR \fIayrıntı-düzeyi\fR
 Çıktının ayrıntı düzeyi belirtilir\&. 4 ve üstü ile başlıklar hakkında bilgi, 3 ve üstü ile yanıt kodları (404, 200, vb\&.), 2 ve üstü ile ise uyarı ve bilgi iletileri gösterilir\&.  
+.TP
+-u \fIPUT-dosyası\fR
+PUT verisini içeren dosya\&. Ayrıca, -T seçeneğini belirtmeyi de unutmayın\&.  
 .TP
 \fB-V\fR
 Sürüm bilgilerini gösterir ve çıkar\&.  
