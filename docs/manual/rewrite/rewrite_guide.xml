@@ -385,9 +385,16 @@ RewriteRule   ^foo\.html$             foo.night.html
 
           <p>This provides the content of <code>foo.day.html</code>
           under the URL <code>foo.html</code> from
-          <code>07:00-19:00</code> and at the remaining time the
+          <code>07:01-18:59</code> and at the remaining time the
           contents of <code>foo.night.html</code>. Just a nice
           feature for a homepage...</p>
+
+          <note type="warning"><module>mod_cache</module>, intermediate proxies
+          and browsers may each cache responses and cause the either page to be
+          shown outside of the time-window configured.
+          <module>mod_expires</module> may be used to control this
+          effect.</note>
+
         </dd>
       </dl>
 
