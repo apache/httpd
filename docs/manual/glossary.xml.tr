@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
-<!-- English Revision: 805049:830307 (outdated) -->
+<!-- English Revision: 830307 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -383,6 +383,19 @@
     <dt><a name="ssleay" id="ssleay">SSLeay</a></dt>
     <dd>Eric A. Young tarafından geliştirilmiş özgün SSL/TLS
       gerçeklenim kütüphanesi.
+    </dd>
+
+    <dt><a name="servernameindication" id="servernameindication">Sunucu Adı
+      Belirtimi</a></dt>
+      <dd>İngilizcesi: Server Name Indication <a name="sni" id="sni"
+      >(SNI)</a></dd>
+    <dd>İlk SSL uzlaşımı sırasında istenen sunucu isminin aktarılmasını
+      mümkün kılan bir SSL işlevidir. Böylece sunucunun, SSL uzlaşım
+      işlemlerlerinde kullanılacak sanal konak yapılandırmasını doğru
+      bir şekilde seçebilmesi sağlanmıştır. Bu özellik RFC 3546'da TLS
+      eklentili SSL başlatma bölümüne eklenmiştir.<br />
+      Bakınız: <a href="ssl/ssl_faq.html">SSL SSS</a>
+      ve <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
     </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes"
