@@ -31,7 +31,7 @@ fi
 
 dnl See if this is a forking platform w.r.t. MPMs
 case $host in
-    *mingw32*)
+    *mingw32* | *os2-emx*)
         forking_mpms_supported=no
         ;;
     *)
