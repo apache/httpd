@@ -39,6 +39,10 @@
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
 
+/* hack for non-configure platforms (NetWare, Win32) */
+#if !defined(HAVE_OCSP) && (OPENSSL_VERSION_NUMBER >= 0x00907000)
+#define HAVE_OCSP
+#endif
 #ifdef HAVE_OCSP
 #include <openssl/x509_vfy.h>
 #include <openssl/ocsp.h>
