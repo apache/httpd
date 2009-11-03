@@ -1,7 +1,9 @@
-AC_MSG_CHECKING(which MPM to use)
+AC_MSG_CHECKING(which MPM to use by default)
 AC_ARG_WITH(mpm,
-APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
+APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use by default.
                           MPM={simple|event|worker|prefork|winnt}
+                          This will be statically linked as the only available MPM unless
+                          --enable-mpms-shared is also specified.
 ),[
     default_mpm=$withval
     AC_MSG_RESULT($withval);
@@ -30,7 +32,7 @@ APACHE_HELP_STRING(--with-mpm=MPM,Choose the process model for Apache to use.
 APACHE_MPM_ENABLED($default_mpm)
 
 AC_ARG_ENABLE(mpms-shared,
-APACHE_HELP_STRING(--enable-mpms-shared=MODULE-LIST,Space-separated list of shared MPM modules to enable | "all"),[
+APACHE_HELP_STRING(--enable-mpms-shared=MPM-LIST,Space-separated list of MPM modules to enable for dynamic loading.  MPM-LIST=list | "all"),[
     mpm_build=shared
     for i in $enableval; do
         if test "$i" = "all"; then
@@ -53,6 +55,13 @@ for i in $ENABLED_MPMS; do
         AC_MSG_ERROR([MPM $i is not supported on this platform.])
     fi
 done
+
+if test $mpm_build = "shared"; then
+    eval "tmp=\$enable_mpm_$default_mpm"
+    if test "$tmp" != "shared"; then
+        AC_MSG_ERROR([The default MPM ($default_mpm) must be included in --enable-mpms-shared.  Use --with-mpm to change the default MPM.])
+    fi
+fi
 
 APACHE_FAST_OUTPUT(server/mpm/Makefile)
 
