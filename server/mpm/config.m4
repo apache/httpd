@@ -63,9 +63,7 @@ ap_mpm_is_supported ()
 
 ap_mpm_is_threaded ()
 {
-    dnl Special support for --with-mpm=shared
-    dnl Assume a threaded MPM can be used.
-    if test "x$MPM_NAME" = "xshared"; then
+    if test "$mpm_build" = "shared" -a ac_cv_define_APR_HAS_THREADS = "yes"; then
         return 0
     fi
 
@@ -75,4 +73,13 @@ ap_mpm_is_threaded ()
         fi
     done
     return 1
+}
+
+ap_mpm_is_enabled ()
+{
+    if echo "$ENABLED_MPMS" | grep " $1 " >/dev/null; then
+        return 0
+    else
+        return 1
+    fi
 }

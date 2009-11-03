@@ -1,3 +1,3 @@
-if test "$MPM_NAME" = "simple" ; then
-    APACHE_FAST_OUTPUT(server/mpm/$MPM_NAME/Makefile)
+if ap_mpm_is_enabled "simple"; then
+    APACHE_FAST_OUTPUT(server/mpm/simple/Makefile)
 fi
