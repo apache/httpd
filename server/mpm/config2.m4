@@ -36,7 +36,7 @@ APACHE_HELP_STRING(--enable-mpms-shared=MPM-LIST,Space-separated list of MPM mod
     mpm_build=shared
     for i in $enableval; do
         if test "$i" = "all"; then
-            for j in $SHARED_MPMS; do
+            for j in $ap_supported_shared_mpms; do
                 eval "enable_mpm_$j=shared"
                 APACHE_MPM_ENABLED($j)
             done
@@ -52,7 +52,7 @@ APACHE_HELP_STRING(--enable-mpms-shared=MPM-LIST,Space-separated list of MPM mod
     done
 ], [mpm_build=static])
 
-for i in $ENABLED_MPMS; do
+for i in $ap_enabled_mpms; do
     if ap_mpm_is_supported $i; then
         :
     else
@@ -76,6 +76,6 @@ else
     MODLIST="$MODLIST mpm_${default_mpm}"
 fi
 
-MPM_SUBDIRS=$ENABLED_MPMS
+MPM_SUBDIRS=$ap_enabled_mpms
 APACHE_SUBST(MPM_SUBDIRS)
 APACHE_SUBST(MPM_LIB)
