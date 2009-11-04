@@ -776,13 +776,13 @@ static const char *register_code_cache(cmd_parms *cmd, void *_cfg,
                                        const char *arg)
 {
     ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
-    if (apr_strnatcmp("stat", arg) == 0) {
+    if (strcmp("stat", arg) == 0) {
         cfg->code_cache_style = APL_CODE_CACHE_STAT;
     }
-    else if (apr_strnatcmp("forever", arg) == 0) {
+    else if (strcmp("forever", arg) == 0) {
         cfg->code_cache_style = APL_CODE_CACHE_FOREVER;
     }
-    else if (apr_strnatcmp("never", arg) == 0) {
+    else if (strcmp("never", arg) == 0) {
         cfg->code_cache_style = APL_CODE_CACHE_NEVER;
     }
     else {
@@ -798,16 +798,16 @@ static const char *register_lua_scope(cmd_parms *cmd, void *_cfg,
                                       const char *max)
 {
     ap_lua_dir_cfg *cfg = (ap_lua_dir_cfg *) _cfg;
-    if (apr_strnatcmp("once", scope) == 0) {
+    if (strcmp("once", scope) == 0) {
         cfg->vm_scope = APL_SCOPE_ONCE;
     }
-    else if (apr_strnatcmp("request", scope) == 0) {
+    else if (strcmp("request", scope) == 0) {
         cfg->vm_scope = APL_SCOPE_REQUEST;
     }
-    else if (apr_strnatcmp("conn", scope) == 0) {
+    else if (strcmp("conn", scope) == 0) {
         cfg->vm_scope = APL_SCOPE_CONN;
     }
-    else if (apr_strnatcmp("server", scope) == 0) {
+    else if (strcmp("server", scope) == 0) {
         cfg->vm_scope = APL_SCOPE_SERVER;
         if (min)
             cfg->vm_server_pool_min = atoi(min);
