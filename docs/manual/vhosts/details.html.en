@@ -54,49 +54,49 @@
     sections.</p>
 
     <p>The directives
-    <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>,
-    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>,
-    <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>,
-    and <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code>
+    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and
+    <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> 
     can appear anywhere within the definition of a server. However,
     each appearance overrides the previous appearance (within that
     server).</p>
 
-    <p>The default value of the <code>Listen</code> field for
-    main_server is 80. The main_server has no default
+    <p>The main_server has no default
     <code>ServerPath</code>, or <code>ServerAlias</code>. The
     default <code>ServerName</code> is deduced from the server's IP
     address.</p>
 
-    <p>The main_server Listen directive has two functions.  One
-    function is to determine the default network port Apache will
-    bind to.  The second function is to specify the port number
-    which is used in absolute URIs during redirects.</p>
-
-    <p>Unlike the main_server, vhost ports <em>do not</em> affect
-    what ports Apache listens for connections on.</p>
-
+    <p>Port numbers specified in the <code>VirtualHost</code> directive do
+    not influence what port numbers Apache will listen on, they only discriminate between
+    which <code>VirtualHost</code> will be selected to handle a request.</p>
+    
     <p>Each address appearing in the <code>VirtualHost</code>
     directive can have an optional port. If the port is unspecified
-    it defaults to the value of the main_server's most recent
-    <code>Listen</code> statement. The special port <code>*</code>
+    it is treated as a wildcard port.  The special port <code>*</code> 
     indicates a wildcard that matches any port. Collectively the
     entire set of addresses (including multiple <code>A</code>
     record results from DNS lookups) are called the vhost's
     <em>address set</em>.</p>
 
     <p>Unless a <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code>
-    directive is used for a specific IP address the first vhost
-    with that address is treated as an IP-based vhost. The IP
-    address can also be the wildcard <code>*</code>.</p>
+    directive is used for the exact IP address and port pair in the
+    <code>VirtualHost</code> directive, Apache selects the best match
+    only on the basis of the IP address (or wildcard) and port number.  
+    If there are multiple identical best matches, the first <code>VirtualHost</code> 
+    appearing in the configuration file will be selected.</p>
 
-    <p>If name-based vhosts should be used a
+    <p>If you want Apache to <em>further</em> discriminate on the basis of the 
+    HTTP <code>Host</code> header supplied by the client, the
     <code>NameVirtualHost</code> directive <em>must</em> appear
-    with the IP address set to be used for the name-based vhosts.
-    In other words, you must specify the IP address that holds the
-    hostname aliases (CNAMEs) for your name-based vhosts via a
-    <code>NameVirtualHost</code> directive in your configuration
-    file.</p>
+    with the exact IP address (or wildcard) and port pair used in a correspnding
+    set of <code>VirtualHost</code> directives.</p>
+
+    <p>The name-based virtual host selection occurs only after the a single IP-based
+    virtual host has been selected, and only considers the set of virtual hosts
+    the carry an identical IP address and port pair.</p>
+
+    <p>Hostnames can be used in place of IP addresses in a virtual host definition,
+    but it is resolved at startup and is not recommended.</p>
+
 
     <p>Multiple <code>NameVirtualHost</code> directives can be used
     each with a set of <code>VirtualHost</code> directives but only
@@ -157,18 +157,6 @@
 
     <p>(To aid the readability of your configuration you should
     prefer the left variant.)</p>
-
-    <p>After parsing the <code>VirtualHost</code> directive, the
-    vhost server is given a default <code>Listen</code> equal to the
-    port assigned to the first name in its <code>VirtualHost</code>
-    directive.</p>
-
-    <p>The complete list of names in the <code>VirtualHost</code>
-    directive are treated just like a <code>ServerAlias</code> (but
-    are not overridden by any <code>ServerAlias</code> statement)
-    if all names resolve to the same address set. Note that
-    subsequent <code>Listen</code> statements for this vhost will not
-    affect the ports assigned in the address set.</p>
 
     <p>During initialization a list for each IP address is
     generated and inserted into an hash table. If the IP address is
@@ -349,8 +337,7 @@
       configuration file has the highest priority for its
       corresponding address set.</li>
 
-      <li>For security reasons the port number given in a
-      <code>Host:</code> header field is never used during the
+      <li>The <code>Host:</code> header field is never used during the
       matching process. Apache always uses the real port to which
       the client sent the request.</li>
 
@@ -375,7 +362,9 @@
       <code>Listen</code> by default. A wildcard port can be
       specified (<em>i.e.</em>, <code>_default_:*</code>) to catch
       requests to any available port. This also applies to
-      <code>NameVirtualHost *</code> vhosts.</li>
+      <code>NameVirtualHost *</code> vhosts.  Note that this is simply an
+      extension of the "best match" principle, as a specific and exact match
+      is favored over a wildcard.</li>
 
       <li>The main_server is only used to serve a request if the IP
       address and port number to which the client connected is
