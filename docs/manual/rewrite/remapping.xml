@@ -327,7 +327,7 @@ HostnameLookups on
 RewriteEngine on
 RewriteMap    multiplex         txt:/path/to/map.mirrors
 RewriteCond  %{REMOTE_HOST}     ([a-z]+)$ [NC]
-RewriteRule   ^(.*)$  ${multiplex:<strong>%1</strong>|http://www.example.com/}$1  [R,L]
+RewriteRule   ^/(.*)$  ${multiplex:<strong>%1</strong>|http://www.example.com/}$1  [R,L]
 </pre></example>
 
 <example><pre>
