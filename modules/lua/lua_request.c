@@ -314,6 +314,10 @@ static apr_table_t* req_headers_out(request_rec *r)
     return r->headers_out;
 }
 
+static apr_table_t* req_err_headers_out(request_rec *r)
+{
+  return r->err_headers_out;
+}
 
 /* END dispatch mathods for request_rec fields */
 
@@ -577,13 +581,13 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_the_request_field, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "method", APR_HASH_KEY_STRING,
                  makefun(&req_method_field, APL_REQ_FUNTYPE_STRING, p));
-
     apr_hash_set(dispatch, "headers_in", APR_HASH_KEY_STRING,
                  makefun(&req_headers_in, APL_REQ_FUNTYPE_TABLE, p));
-
     apr_hash_set(dispatch, "headers_out", APR_HASH_KEY_STRING,
                  makefun(&req_headers_out, APL_REQ_FUNTYPE_TABLE, p));
-
+    apr_hash_set(dispatch, "err_headers_out", APR_HASH_KEY_STRING,
+                 makefun(&req_err_headers_out, APL_REQ_FUNTYPE_TABLE, p));
+    
 
     lua_pushlightuserdata(L, dispatch);
     lua_setfield(L, LUA_REGISTRYINDEX, "Apache2.Request.dispatch");
