@@ -1801,7 +1801,7 @@ static apr_status_t handle_printenv(include_ctx_t *ctx, ap_filter_t *f,
         if (val_text == LAZY_VALUE) {
             val_text = add_include_vars_lazy(r, elts[i].key, ctx->time_str);
         }
-        val_text = ap_escape_html(ctx->dpool, elts[i].val);
+        val_text = ap_escape_html(ctx->dpool, val_text);
         v_len = strlen(val_text);
 
         /* assemble result */
