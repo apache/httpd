@@ -478,6 +478,12 @@ static int req_newindex(lua_State *L)
         return 0;
     }
 
+    if (0 == apr_strnatcmp("user", key)) {
+        const char *value = luaL_checkstring(L, 3);
+        r->user = apr_pstrdup(r->pool, value);
+        return 0;
+    }
+
     lua_pushstring(L,
                    apr_psprintf(r->pool,
                                 "Property [%s] may not be set on a request_rec",
