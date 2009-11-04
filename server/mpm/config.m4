@@ -41,12 +41,14 @@ esac
 
 dnl APACHE_MPM_SUPPORTED(name, supports-shared, is_threaded)
 AC_DEFUN(APACHE_MPM_SUPPORTED,[
-    SUPPORTED_MPMS="$SUPPORTED_MPMS $1 "
     if test "$2" = "yes"; then
-        SHARED_MPMS="$SHARED_MPMS $1 "
+        eval "ap_supported_mpm_$1=shared"
+        ap_supported_shared_mpms="$ap_supported_shared_mpms $1 "
+    else
+        eval "ap_supported_mpm_$1=static"
     fi
     if test "$3" = "yes"; then
-        THREADED_MPMS="$THREADED_MPMS $1 "
+        eval "ap_threaded_mpm_$1=yes"
     fi
 ])dnl
 
@@ -55,22 +57,25 @@ AC_DEFUN(APACHE_MPM_ENABLED,[
     if ap_mpm_is_enabled $1; then
         :
     else
-        ENABLED_MPMS="$ENABLED_MPMS $1 "
+        eval "ap_enabled_mpm_$1=yes"
+        ap_enabled_mpms="$ap_enabled_mpms $1 "
     fi
 ])dnl
 
 ap_mpm_is_supported ()
 {
-    if echo "$SUPPORTED_MPMS" | grep " $1 " >/dev/null; then
-        return 0
-    else
+    eval "tmp=\$ap_supported_mpm_$1"
+    if test -z "$tmp"; then
         return 1
+    else
+        return 0
     fi
 }
 
 ap_mpm_supports_shared ()
 {
-    if echo "$SHARED_MPMS" | grep " $1 " >/dev/null; then
+    eval "tmp=\$ap_supported_mpm_$1"
+    if test "$tmp" = "shared"; then
         return 0
     else
         return 1
@@ -83,8 +88,9 @@ ap_mpm_is_threaded ()
         return 0
     fi
 
-    for mpm in $ENABLED_MPMS; do
-        if echo "$THREADED_MPMS" | grep " $mpm " >/dev/null; then
+    for mpm in $ap_enabled_mpms; do
+        eval "tmp=\$ap_threaded_mpm_$mpm"
+        if test "$tmp" = "yes"; then
             return 0
         fi
     done
@@ -93,7 +99,8 @@ ap_mpm_is_threaded ()
 
 ap_mpm_is_enabled ()
 {
-    if echo "$ENABLED_MPMS" | grep " $1 " >/dev/null; then
+    eval "tmp=\$ap_enabled_mpm_$1"
+    if test "$tmp" = "yes"; then
         return 0
     else
         return 1
