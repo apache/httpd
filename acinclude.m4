@@ -248,6 +248,10 @@ DISTCLEAN_TARGETS = modules.mk
 static =
 shared = $libname
 EOF
+            # add default MPM to LoadModule list
+            if test $1 = $default_mpm; then
+                DSO_MODULES="$DSO_MODULES mpm_$1"
+            fi
         fi
         $4
     fi
