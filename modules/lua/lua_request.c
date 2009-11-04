@@ -454,25 +454,25 @@ static int req_newindex(lua_State *L)
     /* const char* key = luaL_checkstring(L, -2); */
     request_rec *r = ap_lua_check_request_rec(L, 1);
     key = luaL_checkstring(L, 2);
-    if (0 == apr_strnatcmp("status", key)) {
+    if (0 == strcmp("status", key)) {
         int code = luaL_checkinteger(L, 3);
         r->status = code;
         return 0;
     }
 
-    if (0 == apr_strnatcmp("content_type", key)) {
+    if (0 == strcmp("content_type", key)) {
         const char *value = luaL_checkstring(L, 3);
         ap_set_content_type(r, apr_pstrdup(r->pool, value));
         return 0;
     }
 
-    if (0 == apr_strnatcmp("filename", key)) {
+    if (0 == strcmp("filename", key)) {
         const char *value = luaL_checkstring(L, 3);
         r->filename = apr_pstrdup(r->pool, value);
         return 0;
     }
 
-    if (0 == apr_strnatcmp("uri", key)) {
+    if (0 == strcmp("uri", key)) {
         const char *value = luaL_checkstring(L, 3);
         r->uri = apr_pstrdup(r->pool, value);
         return 0;
