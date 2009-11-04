@@ -947,11 +947,23 @@ later</td></tr>
 
 <div class="note"><h3>What is matched?</h3>
       <p>The <em>Pattern</em> will initially be matched against the part of the
-      URL after the hostname and port, and before the query string. If you wish
-      to match against the hostname, port, or query string, use a
+      URL after the hostname and port, and before the query string.</p>
+
+      <p>When the RewriteRule appears in per-directory (htaccess) context, the 
+      <em>Pattern</em> is matched against what remains of the URL after removing
+      the prefix that lead Apache to the current rules (see the 
+      <code class="directive"><a href="#rewritebase">RewriteBase</a></code>).  The removed prefix
+      always ends with a slash, meaning the matching occurs against a string which
+      never has a leading slash.  A <em>Pattern</em> with <code>^/</code> never
+      matches in per-directory context.</p>
+
+      <p>If you wish to match against the hostname, port, or query string, use a
       <code class="directive"><a href="#rewritecond">RewriteCond</a></code> with the
       <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
-      <code>%{QUERY_STRING}</code> variables respectively.</p>
+      <code>%{QUERY_STRING}</code> variables respectively. If you wish to 
+      match against the full URL-path in a per-directory (htaccess) RewriteRule, 
+      use the <code>%{REQUEST_URI}</code> variable.</p>
+
 </div>
 
       <p>For some hints on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
@@ -1325,10 +1337,11 @@ cannot use <code>$N</code> in the substitution string!
         <dt>'<code>qsappend|QSA</code>'
         (query string
         append)</dt><dd>
-        This flag forces the rewrite engine to append a query
-        string part of the substitution string to the existing string,
+        This flag forces the rewrite engine to append the query
+        string part of the substitution string to the existing query string,
         instead of replacing it. Use this when you want to add more
-        data to the query string via a rewrite rule.</dd>
+        data to the query string via a rewrite rule. This rule has no net effect
+        unless your substitution explicitly provides a new query string.</dd>
 
         <dt>'<code>redirect|R</code>
           [=<em>code</em>]' (force <a id="redirect" name="redirect">redirect</a>)</dt><dd>
