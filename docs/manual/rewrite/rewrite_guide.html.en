@@ -62,7 +62,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#autorefresh">Document With Autorefresh</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mass-virtual-hosting">Mass Virtual Hosting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Proxy Deny</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#special-authentication">Special Authentication Variant</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Referer-based Deflector</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
 documentation</a></li><li><a href="intro.html">mod_rewrite
@@ -1240,38 +1239,6 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
 <div class="example"><pre>
 RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST}  <strong>^badguy@badhost\.mydomain\.com$</strong>
 RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="special-authentication" id="special-authentication">Special Authentication Variant</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>Sometimes very special authentication is needed, for
-          instance authentication which checks for a set of
-          explicitly configured users. Only these should receive
-          access and without explicit prompting (which would occur
-          when using Basic Auth via <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>).</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We use a list of rewrite conditions to exclude all except
-          our friends:</p>
-
-<div class="example"><pre>
-RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend1@client1.quux-corp\.com$</strong>
-RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend2</strong>@client2.quux-corp\.com$
-RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend3</strong>@client3.quux-corp\.com$
-RewriteRule ^/~quux/only-for-friends/      -                                 [F]
 </pre></div>
         </dd>
       </dl>

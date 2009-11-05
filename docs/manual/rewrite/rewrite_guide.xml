@@ -1238,38 +1238,6 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
 
     </section>
 
-    <section id="special-authentication">
-
-      <title>Special Authentication Variant</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>Sometimes very special authentication is needed, for
-          instance authentication which checks for a set of
-          explicitly configured users. Only these should receive
-          access and without explicit prompting (which would occur
-          when using Basic Auth via <module>mod_auth_basic</module>).</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We use a list of rewrite conditions to exclude all except
-          our friends:</p>
-
-<example><pre>
-RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend1@client1.quux-corp\.com$</strong>
-RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend2</strong>@client2.quux-corp\.com$
-RewriteCond %{REMOTE_IDENT}@%{REMOTE_HOST} <strong>!^friend3</strong>@client3.quux-corp\.com$
-RewriteRule ^/~quux/only-for-friends/      -                                 [F]
-</pre></example>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="referer-deflector">
 
       <title>Referer-based Deflector</title>
