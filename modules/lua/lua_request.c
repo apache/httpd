@@ -319,6 +319,11 @@ static apr_table_t* req_err_headers_out(request_rec *r)
   return r->err_headers_out;
 }
 
+static apr_table_t* req_notes(request_rec *r)
+{
+  return r->notes;
+}
+
 /* END dispatch mathods for request_rec fields */
 
 static int req_dispatch(lua_State *L)
@@ -593,6 +598,9 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_headers_out, APL_REQ_FUNTYPE_TABLE, p));
     apr_hash_set(dispatch, "err_headers_out", APR_HASH_KEY_STRING,
                  makefun(&req_err_headers_out, APL_REQ_FUNTYPE_TABLE, p));
+    apr_hash_set(dispatch, "notes", APR_HASH_KEY_STRING,
+                 makefun(&req_notes, APL_REQ_FUNTYPE_TABLE, p));
+
     
 
     lua_pushlightuserdata(L, dispatch);
