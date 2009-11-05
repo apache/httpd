@@ -67,6 +67,7 @@ mod_rewrite</a></li>
 <li><a href="remapping.html">Using mod_rewrite for redirection and
 remapping of URLs</a></li>
 <li><a href="access.html">Using mod_rewrite to control access</a></li>
+<li><a href="advanced.html">Advanced techniques and tricks</a></li>
 <li><a href="flags.html">Flags</a></li>
 <li><a href="tech.html">Technical details</a></li>
 </ul>
