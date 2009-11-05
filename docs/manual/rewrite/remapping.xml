@@ -400,5 +400,44 @@ com       http://www.example.com/
 
 </section>
 
+<section id="browser-dependent-content">
+
+  <title>Browser Dependent Content</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to provide different content based on the browser, or
+      user-agent, which is requesting the content.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We have to decide, based on the HTTP header "User-Agent",
+      which content to serve. The following config
+      does the following: If the HTTP header "User-Agent"
+      contains "Mozilla/3", the page <code>foo.html</code>
+      is rewritten to <code>foo.NS.html</code> and the
+      rewriting stops. If the browser is "Lynx" or "Mozilla" of
+      version 1 or 2, the URL becomes <code>foo.20.html</code>.
+      All other browsers receive page <code>foo.32.html</code>.
+      This is done with the following ruleset:</p>
+
+<example><pre>
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
+RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
+
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>.*         [OR]
+RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>.*
+RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
+
+RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
+</pre></example>
+    </dd>
+  </dl>
+
+</section>
 
 </manualpage> 

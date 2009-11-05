@@ -50,9 +50,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#external-rewriting">External Rewriting Engine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#cluster">URL-based sharding accross multiple backends</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Homedirs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#browser-dependent-content">Browser Dependent Content</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dynamic-mirror">Dynamic Mirror</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#reverse-dynamic-mirror">Reverse Dynamic Mirror</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#retrieve-missing-data">Retrieve Missing Data from Intranet</a></li>
@@ -434,63 +432,6 @@ while (&lt;&gt;) {
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="cluster" id="cluster">URL-based sharding accross multiple backends</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>A common technique for distributing the burden of 
-          server load or storage space is called "sharding". 
-          When using this method, a front-end server will use the
-          url to consistently "shard" users or objects to seperate
-          backend servers.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>A mapping is maintained, from users to target servers, in
-          external map files. They look like:</p>
-
-<div class="example"><pre>
-user1  physical_host_of_user1
-user2  physical_host_of_user2
-:      :
-</pre></div>
-
-          <p>We put this into a <code>map.users-to-hosts</code> file. The
-            aim is to map;</p>
-
-<div class="example"><pre>
-/u/user1/anypath
-</pre></div>
-
-          <p>to</p>
-
-<div class="example"><pre>
-http://physical_host_of_user1/u/user/anypath
-</pre></div>
-
-          <p>thus every URL path need not be valid on every backend physical
-          host. The following ruleset does this for us with the help of the map
-          files assuming that server0 is a default server which will be used if
-          a user has no entry in the map):</p>
-
-<div class="example"><pre>
-RewriteEngine on
-
-RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
-
-RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hosts:$1|server0}</strong>/u/$1/$2
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
 <h2><a name="structuredhomedirs" id="structuredhomedirs">Structured Homedirs</a></h2>
 
       
@@ -517,50 +458,6 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
 <div class="example"><pre>
 RewriteEngine on
 RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/.www$3
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="browser-dependent-content" id="browser-dependent-content">Browser Dependent Content</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>At least for important top-level pages it is sometimes
-          necessary to provide the optimum of browser dependent
-          content, i.e., one has to provide one version for
-          current browsers, a different version for the Lynx and text-mode
-          browsers, and another for other browsers.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We cannot use content negotiation because the browsers do
-          not provide their type in that form. Instead we have to
-          act on the HTTP header "User-Agent". The following config
-          does the following: If the HTTP header "User-Agent"
-          begins with "Mozilla/3", the page <code>foo.html</code>
-          is rewritten to <code>foo.NS.html</code> and the
-          rewriting stops. If the browser is "Lynx" or "Mozilla" of
-          version 1 or 2, the URL becomes <code>foo.20.html</code>.
-          All other browsers receive page <code>foo.32.html</code>.
-          This is done with the following ruleset:</p>
-
-<div class="example"><pre>
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
-RewriteRule ^foo\.html$         foo.<strong>NS</strong>.html          [<strong>L</strong>]
-
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Lynx/</strong>.*         [OR]
-RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/[12]</strong>.*
-RewriteRule ^foo\.html$         foo.<strong>20</strong>.html          [<strong>L</strong>]
-
-RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L</strong>]
 </pre></div>
         </dd>
       </dl>
