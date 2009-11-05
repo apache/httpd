@@ -502,28 +502,6 @@ RewriteRule    ^<strong>usa-news\.html</strong>$   <strong>http://www.quux-corp.
 
     </section>
 
-    <section id="reverse-dynamic-mirror">
-
-      <title>Reverse Dynamic Mirror</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>...</dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-<example><pre>
-RewriteEngine on
-RewriteCond   /mirror/of/remotesite/$1           -U
-RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
-</pre></example>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="retrieve-missing-data">
 
       <title>Retrieve Missing Data from Intranet</title>
