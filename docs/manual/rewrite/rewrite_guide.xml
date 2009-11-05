@@ -1201,61 +1201,6 @@ RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
 
     </section>
 
-    <section id="host-deny">
-
-      <title>Host Deny</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>How can we forbid a list of externally configured hosts
-          from using our server?</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>For Apache &gt;= 1.3b6:</p>
-
-<example><pre>
-RewriteEngine on
-RewriteMap    hosts-deny  txt:/path/to/hosts.deny
-RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND [OR]
-RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND
-RewriteRule   ^/.*  -  [F]
-</pre></example>
-
-          <p>For Apache &lt;= 1.3b6:</p>
-
-<example><pre>
-RewriteEngine on
-RewriteMap    hosts-deny  txt:/path/to/hosts.deny
-RewriteRule   ^/(.*)$ ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND}/$1
-RewriteRule   !^NOT-FOUND/.* - [F]
-RewriteRule   ^NOT-FOUND/(.*)$ ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND}/$1
-RewriteRule   !^NOT-FOUND/.* - [F]
-RewriteRule   ^NOT-FOUND/(.*)$ /$1
-</pre></example>
-
-<example><pre>
-##
-##  hosts.deny
-##
-##  ATTENTION! This is a map, not a list, even when we treat it as such.
-##             mod_rewrite parses it for key/value pairs, so at least a
-##             dummy value "-" must be present for each entry.
-##
-
-193.102.180.41 -
-bsdti1.sdm.de  -
-192.76.162.40  -
-</pre></example>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="proxy-deny">
 
       <title>Proxy Deny</title>

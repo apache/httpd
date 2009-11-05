@@ -37,6 +37,7 @@ configuration.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Forbidding Image "Hotlinking"</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocking of Robots</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Denying Hosts in a Blacklist</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -191,7 +192,59 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
 
       </dl>
 
-    </div></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="host-deny" id="host-deny">Denying Hosts in a Blacklist</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to maintain a blacklist of hosts, rather like
+      <code>hosts.deny</code>, and have those hosts blocked from
+      accessing our server.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+<div class="example"><pre>
+RewriteEngine on
+RewriteMap    hosts-deny  txt:/path/to/hosts.deny
+RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]
+RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND
+RewriteRule   ^  -  [F]
+</pre></div>
+
+<div class="example"><pre>
+##
+##  hosts.deny
+##
+##  ATTENTION! This is a map, not a list, even when we treat it as such.
+##             mod_rewrite parses it for key/value pairs, so at least a
+##             dummy value "-" must be present for each entry.
+##
+
+193.102.180.41 -
+bsdti1.sdm.de  -
+192.76.162.40  -
+</pre></div>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>
+    <p>
+    The second RewriteCond assumes that you have HostNameLookups turned
+    on, so that client IP addresses will be resolved. If that's not the
+    case, you should drop the second rule, and drop the
+    <code>[OR]</code> flag from the first RewriteCond.
+    </p>
+    </dd>
+  </dl>
+
+</div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/access.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
