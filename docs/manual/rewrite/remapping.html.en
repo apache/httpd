@@ -36,6 +36,7 @@ configuration.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">From Old to New (internal)</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">Rewriting From Old to New (external)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Resource Moved to Another Server</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#static-to-dynamic">From Static to Dynamic</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">Backward Compatibility for file extension change</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Canonical Hostnames</a></li>
@@ -119,6 +120,43 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="movehomedirs" id="movehomedirs">Resource Moved to Another Server</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>If a resource has moved to another server, you may wish to have
+      URLs continue to work for a time on the old server while people
+      update their bookmarks.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>You can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to redirect these URLs
+      to the new server, but you might also consider using the Redirect
+      or RedirectMatch directive.</p>
+
+<div class="example"><h3>With mod_rewrite</h3><pre>
+RewriteEngine on
+RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
+</pre></div>
+
+<div class="example"><h3>With RedirectMatch</h3><pre>
+RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
+</pre></div>
+
+<div class="example"><h3>With Redirect</h3><pre>
+Redirect /docs/ http://new.example.com/docs/
+</pre></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="static-to-dynamic" id="static-to-dynamic">From Static to Dynamic</a></h2>
 
   
@@ -178,11 +216,14 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<stron
 #   backward compatibility ruleset for
 #   rewriting document.html to document.php
 #   when and only when document.php exists
+&lt;Directory /var/www/htdocs&gt;
 RewriteEngine on
+RewriteBase /var/www/htdocs
 
 RewriteCond $1.php -f
 RewriteCond $1.html !-f
-RewriteRule ^(.*).html$ $1.php 
+RewriteRule ^(.*).html$ $1.php
+&lt;/Directory&gt;
 </pre></div>
     </dd>
 
@@ -196,6 +237,7 @@ RewriteRule ^(.*).html$ $1.php
     directives are evaluated. This allows us to test for the existence
     of the the original (<code>document.html</code>) and target
     (<code>document.php</code>) files using the same base filename.</p>
+
     <p>This ruleset is designed to use in a per-directory context (In a
     &lt;Directory&gt; block or in a .htaccess file), so that the
     <code>-f</code> checks are looking at the correct directory path.

@@ -191,38 +191,6 @@ RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
 
     </section>
 
-    <section id="movehomedirs">
-
-      <title>Move Homedirs to Different Webserver</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>Many webmasters have asked for a solution to the
-          following situation: They wanted to redirect just all
-          homedirs on a webserver to another webserver. They usually
-          need such things when establishing a newer webserver which
-          will replace the old one over time.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>The solution is trivial with <module>mod_rewrite</module>.
-          On the old webserver we just redirect all
-          <code>/~user/anypath</code> URLs to
-          <code>http://newserver/~user/anypath</code>.</p>
-
-<example><pre>
-RewriteEngine on
-RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
-</pre></example>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="setenvvars">
 
       <title>Set Environment Variables According To URL Parts</title>
