@@ -440,4 +440,49 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
 
 </section>
 
+<section id="canonicalurl">
+
+<title>Canonical URLs</title>
+
+<dl>
+ <dt>Description:</dt>
+
+   <dd>
+     <p>On some webservers there is more than one URL for a
+     resource. Usually there are canonical URLs (which are be
+     actually used and distributed) and those which are just
+     shortcuts, internal ones, and so on. Independent of which URL the
+     user supplied with the request, they should finally see the
+     canonical one in their browser address bar.</p>
+   </dd>
+
+   <dt>Solution:</dt>
+
+     <dd>
+       <p>We do an external HTTP redirect for all non-canonical
+       URLs to fix them in the location view of the Browser and
+       for all subsequent requests. In the example ruleset below
+       we replace <code>/puppies</code> and <code>/canines</code>
+       by the canonical <code>/dogs</code>.</p>
+
+<example><pre>
+RewriteRule   ^/(puppies|canines)/(.*)    /dogs/$2  [R]
+</pre></example>
+        </dd>
+
+     <dt>Discussion:</dt>
+     <dd>
+     This should really be accomplished with Redirect or RedirectMatch
+     directives:
+
+     <example><pre>
+     RedirectMatch ^/(puppies|canines)/(.*) /dogs/$2
+     </pre></example>
+     </dd>
+      </dl>
+
+    </section>
+
+
+
 </manualpage> 

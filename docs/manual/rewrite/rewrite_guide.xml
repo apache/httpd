@@ -54,41 +54,6 @@ useful examples</a></seealso>
 <seealso><a href="tech.html">Technical details</a></seealso>
 
 
-<section id="canonicalurl">
-
-<title>Canonical URLs</title>
-
-<dl>
- <dt>Description:</dt>
-
-   <dd>
-     <p>On some webservers there are more than one URL for a
-     resource. Usually there are canonical URLs (which should be
-     actually used and distributed) and those which are just
-     shortcuts, internal ones, etc. Independent of which URL the
-     user supplied with the request he should finally see the
-     canonical one only.</p>
-   </dd>
-
-   <dt>Solution:</dt>
-
-     <dd>
-       <p>We do an external HTTP redirect for all non-canonical
-       URLs to fix them in the location view of the Browser and
-       for all subsequent requests. In the example ruleset below
-       we replace <code>/~user</code> by the canonical
-       <code>/u/user</code> and fix a missing trailing slash for
-       <code>/u/user</code>.</p>
-
-<example><pre>
-RewriteRule   ^/<strong>~</strong>([^/]+)/?(.*)    /<strong>u</strong>/$1/$2  [<strong>R</strong>]
-RewriteRule   ^/u/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong>R</strong>]
-</pre></example>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="moveddocroot">
 
       <title>Moved <code>DocumentRoot</code></title>
