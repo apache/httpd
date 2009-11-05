@@ -287,6 +287,10 @@ typedef void (*modssl_popfree_fn)(char *data);
 #endif
 #endif
 
+#ifndef sk_STRING_pop
+#define sk_STRING_pop sk_pop
+#endif
+
 #endif /* SSL_TOOLKIT_COMPAT_H */
 
 /** @} */
