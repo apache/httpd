@@ -118,6 +118,45 @@ RewriteRule    ^<strong>/foo</strong>\.html$  <strong>bar</strong>.html  [<stron
 
 </section>
 
+<section id="movehomedirs">
+
+  <title>Resource Moved to Another Server</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>If a resource has moved to another server, you may wish to have
+      URLs continue to work for a time on the old server while people
+      update their bookmarks.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>You can use <module>mod_rewrite</module> to redirect these URLs
+      to the new server, but you might also consider using the Redirect
+      or RedirectMatch directive.</p>
+
+<example><title>With mod_rewrite</title><pre>
+RewriteEngine on
+RewriteRule   ^/docs/(.+)  http://new.example.com/docs/$1  [R,L]
+</pre></example>
+
+<example><title>With RedirectMatch</title><pre>
+RedirectMatch ^/docs/(.*) http://new.example.com/docs/$1
+</pre></example>
+
+<example><title>With Redirect</title><pre>
+Redirect /docs/ http://new.example.com/docs/
+</pre></example>
+    </dd>
+  </dl>
+
+</section>
+
+
+
 <section id="static-to-dynamic">
 
   <title>From Static to Dynamic</title>
@@ -177,11 +216,14 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<stron
 #   backward compatibility ruleset for
 #   rewriting document.html to document.php
 #   when and only when document.php exists
+&lt;Directory /var/www/htdocs&gt;
 RewriteEngine on
+RewriteBase /var/www/htdocs
 
 RewriteCond $1.php -f
 RewriteCond $1.html !-f
-RewriteRule ^(.*).html$ $1.php 
+RewriteRule ^(.*).html$ $1.php
+&lt;/Directory&gt;
 </pre></example>
     </dd>
 
@@ -195,6 +237,7 @@ RewriteRule ^(.*).html$ $1.php
     directives are evaluated. This allows us to test for the existence
     of the the original (<code>document.html</code>) and target
     (<code>document.php</code>) files using the same base filename.</p>
+
     <p>This ruleset is designed to use in a per-directory context (In a
     &lt;Directory&gt; block or in a .htaccess file), so that the
     <code>-f</code> checks are looking at the correct directory path.

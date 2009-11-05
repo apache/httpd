@@ -44,7 +44,6 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#canonicalurl">Canonical URLs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot">Moved <code>DocumentRoot</code></a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#trailingslash">Trailing Slash Problem</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Move Homedirs to Different Webserver</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#setenvvars">Set Environment Variables According To URL Parts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#uservhosts">Virtual Hosts Per User</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirecthome">Redirect Homedirs For Foreigners</a></li>
@@ -201,38 +200,6 @@ RewriteEngine  on
 RewriteBase    /~quux/
 RewriteCond    %{REQUEST_FILENAME}  <strong>-d</strong>
 RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
-</pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="movehomedirs" id="movehomedirs">Move Homedirs to Different Webserver</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>Many webmasters have asked for a solution to the
-          following situation: They wanted to redirect just all
-          homedirs on a webserver to another webserver. They usually
-          need such things when establishing a newer webserver which
-          will replace the old one over time.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>The solution is trivial with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
-          On the old webserver we just redirect all
-          <code>/~user/anypath</code> URLs to
-          <code>http://newserver/~user/anypath</code>.</p>
-
-<div class="example"><pre>
-RewriteEngine on
-RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
 </pre></div>
         </dd>
       </dl>
