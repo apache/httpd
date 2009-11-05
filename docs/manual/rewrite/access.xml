@@ -196,4 +196,56 @@ RewriteRule ^<strong>/secret/files/</strong>   -   [<strong>F</strong>]
 
     </section>
 
+<section id="host-deny">
+
+  <title>Denying Hosts in a Blacklist</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to maintain a blacklist of hosts, rather like
+      <code>hosts.deny</code>, and have those hosts blocked from
+      accessing our server.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+<example><pre>
+RewriteEngine on
+RewriteMap    hosts-deny  txt:/path/to/hosts.deny
+RewriteCond   ${hosts-deny:%{REMOTE_ADDR}|NOT-FOUND} !=NOT-FOUND [OR]
+RewriteCond   ${hosts-deny:%{REMOTE_HOST}|NOT-FOUND} !=NOT-FOUND
+RewriteRule   ^  -  [F]
+</pre></example>
+
+<example><pre>
+##
+##  hosts.deny
+##
+##  ATTENTION! This is a map, not a list, even when we treat it as such.
+##             mod_rewrite parses it for key/value pairs, so at least a
+##             dummy value "-" must be present for each entry.
+##
+
+193.102.180.41 -
+bsdti1.sdm.de  -
+192.76.162.40  -
+</pre></example>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>
+    <p>
+    The second RewriteCond assumes that you have HostNameLookups turned
+    on, so that client IP addresses will be resolved. If that's not the
+    case, you should drop the second rule, and drop the
+    <code>[OR]</code> flag from the first RewriteCond.
+    </p>
+    </dd>
+  </dl>
+
+</section>
+
 </manualpage> 
