@@ -40,5 +40,61 @@ configuration.</note>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
 
+<section id="sharding">
+
+  <title>URL-based sharding accross multiple backends</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>A common technique for distributing the burden of 
+      server load or storage space is called "sharding". 
+      When using this method, a front-end server will use the
+      url to consistently "shard" users or objects to separate
+      backend servers.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>A mapping is maintained, from users to target servers, in
+      external map files. They look like:</p>
+
+<example><pre>
+user1  physical_host_of_user1
+user2  physical_host_of_user2
+:      :
+</pre></example>
+
+  <p>We put this into a <code>map.users-to-hosts</code> file. The
+    aim is to map;</p>
+
+<example><pre>
+/u/user1/anypath
+</pre></example>
+
+  <p>to</p>
+
+<example><pre>
+http://physical_host_of_user1/u/user/anypath
+</pre></example>
+
+      <p>thus every URL path need not be valid on every backend physical
+      host. The following ruleset does this for us with the help of the map
+      files assuming that server0 is a default server which will be used if
+      a user has no entry in the map):</p>
+
+<example><pre>
+RewriteEngine on
+
+RewriteMap      users-to-hosts   txt:/path/to/map.users-to-hosts
+
+RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hosts:$1|server0}</strong>/u/$1/$2
+</pre></example>
+    </dd>
+  </dl>
+
+</section>
 
 </manualpage> 
