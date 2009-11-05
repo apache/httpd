@@ -97,4 +97,45 @@ RewriteRule   ^/u/<strong>([^/]+)</strong>/?(.*)   http://<strong>${users-to-hos
 
 </section>
 
+<section id="on-the-fly-content">
+
+  <title>On-the-fly Content-Regeneration</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to dynamically generate content, but store it
+      statically once it is generated. This rule will check for the
+      existence of the static file, and if it's not there, generate
+      it. The static files can be removed periodically, if desired (say,
+      via cron) and will be regenerated on demand.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      This is done via the following ruleset:
+
+<example><pre>
+# This example is valid in per-directory context only
+RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong>
+RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
+</pre></example>
+
+      <p>Here a request for <code>page.html</code> leads to an
+      internal run of a corresponding <code>page.cgi</code> if
+      <code>page.html</code> is missing or has filesize
+      null. The trick here is that <code>page.cgi</code> is a
+      CGI script which (additionally to its <code>STDOUT</code>)
+      writes its output to the file <code>page.html</code>.
+      Once it has completed, the server sends out
+      <code>page.html</code>. When the webmaster wants to force
+      a refresh of the contents, he just removes
+      <code>page.html</code> (typically from <code>cron</code>).</p>
+    </dd>
+  </dl>
+
+</section>
+
 </manualpage> 
