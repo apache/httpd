@@ -1784,6 +1784,7 @@ static void test(void)
                 if (c->state == STATE_CONNECTING) {
                     rv = apr_socket_connect(c->aprsock, destsa);
                     if (rv != APR_SUCCESS) {
+                        set_conn_state(c, STATE_UNCONNECTED);
                         apr_socket_close(c->aprsock);
                         err_conn++;
                         if (bad++ > 10) {
@@ -1791,7 +1792,6 @@ static void test(void)
                                     "\nTest aborted after 10 failures\n\n");
                             apr_err("apr_socket_connect()", rv);
                         }
-                        set_conn_state(c, STATE_UNCONNECTED);
                         start_connect(c);
                         continue;
                     }
