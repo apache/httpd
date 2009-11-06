@@ -39,26 +39,52 @@
       <dd>It is now possible to specify <directive module="core"
       >KeepAliveTimeout</directive> in milliseconds.
       </dd>
+ 
+      <dt>Simple MPM</dt>
+      <dd>Cleanroom MPM implementation with advanced thread pool management</dd>
+      
+      <dt>Loadable MPMs</dt>
+      <dd>Multiple MPMs can now be built as loadable modules at compile time.  
+      The MPM of choice can be configured at run time.</dd>
+ 
     </dl>
   </section>
 
   <section id="module">
     <title>Module Enhancements</title>
     <dl>
-      <dt><module>mod_ssl</module>: Support for OCSP validation of client certificates</dt>
+      <dt><module>mod_ssl</module></dt>
 
       <dd><module>mod_ssl</module> can now be configured to use an
       OCSP server to check the validation status of a client
       certificate.  The default responder is configurable, along with
       the decision on whether to prefer the responder designated in
       the client certificate itself.</dd>
+      
+      <dd><module>mod_ssl</module> now also supports OCSP stapling, where the 
+      server pro-actively obtains an OCSP verification of its certificate and 
+      transmits that to the client during the handshake. </dd>
+      
+      <dd><module>mod_ssl</module> can now be configured to share SSL Session 
+      data between servers through memcached</dd>
+ 
+      <dt><module>mod_lua</module></dt>
+
+      <dd>Embeds the <a href="http://www.lua.org/">Lua</a> language into httpd, 
+      for configuration and small business logic functions.</dd>
+ 
+      <dt><module>mod_proxy_fcgi</module></dt>
+
+      <dd>FastCGI Protocol backend for <module>mod_proxy</module></dd>
     </dl>
   </section>
 
   <section id="programs">
     <title>Program Enhancements</title>
-    <!-- <dl>
-    </dl> -->
+    <dl>
+        <dt>fcgistarter</dt>
+        <dd>FastCGI deamon starter utility</dd>
+    </dl>
   </section>
 
   <section id="developer">
