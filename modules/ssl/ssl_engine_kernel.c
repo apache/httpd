@@ -1924,7 +1924,7 @@ void ssl_callback_Info(MODSSL_INFO_CB_ARG_TYPE ssl, int where, int rc)
     }
     /* If the first handshake is complete, change state to reject any
      * subsequent client-initated renegotiation. */
-    else if (where & SSL_CB_HANDSHAKE_DONE && scr->reneg_state == RENEG_INIT) {
+    else if ((where & SSL_CB_HANDSHAKE_DONE) && scr->reneg_state == RENEG_INIT) {
         scr->reneg_state = RENEG_REJECT;
     }
 
