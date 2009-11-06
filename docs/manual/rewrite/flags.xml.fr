@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 728398 -->
+<!-- English Revision : 832080 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -22,9 +22,9 @@
  limitations under the License.
 -->
 
-<manualpage metafile="flags.xml.meta">
-<parentdocument href="./">Rewrite</parentdocument>
 
+<parentdocument href="./">Rewrite</parentdocument>
+<manualpage metafile="flags.xml.meta">
   <title>Les drapeaux du module Apache mod_rewrite</title>
 
 <summary>
@@ -68,6 +68,12 @@ bien m&eacute;moriser ce que chaque drapeau est suppos&eacute; faire.</p>
 <p>Chaque drapeau disponible est pr&eacute;sent&eacute; ici, avec un exemple
 d'utilisation.</p>
 
+<section id="flag_b"><title>B</title>
+<p>Avec le drapeau [B], la directive <directive
+module="mod_rewrite">RewriteRule</directive> &eacute;chappe les caract&egrave;res
+non-alphanum&eacute;riques avant d'appliquer la transformation.</p>
+</section>
+
 <section id="flag_c"><title>C|chain</title>
 <p>Le drapeau [C] ou [chain] indique que la r&egrave;gle <directive
 module="mod_rewrite">RewriteRule</directive> est cha&icirc;n&eacute;e avec la
@@ -98,14 +104,23 @@ RewriteEngine On<br />
 RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
 </example>
 
-<p>Cette r&egrave;gle ne r&eacute;&eacute;crit pas la requ&ecirc;te (la cible de r&eacute;&eacute;criture "-"
-indique &agrave; mod_rewrite de transmettre la requ&ecirc;te sans modification), mais
+<p>Dans l'exemple ci-dessus, la r&egrave;gle ne r&eacute;&eacute;crit
+pas la requ&ecirc;te. La cible de r&eacute;&eacute;criture "-"
+indique &agrave; mod_rewrite de transmettre la requ&ecirc;te sans
+modification. Par contre, il
 d&eacute;finit un cookie nomm&eacute; 'frontdoor' avec une valeur 'yes'. Le cookie est
 valide pour tout h&ocirc;te situ&eacute; dans le domaine <code>.apache.org</code>. Sa
 dur&eacute;e de vie est limit&eacute;e &agrave; 1440 minutes (24 heures), et il sera renvoy&eacute;
 pour tous les URIs.</p>
 
 </section>
+
+<section id="flag_dpi"><title>DPI|discardpathinfo</title>
+<p>Avec le drapeau DPI, la partie PATH_INFO de l'URI
+r&eacute;&eacute;crit est supprim&eacute;e.</p>
+</section>
+
+
 
 <section id="flag_e"><title>E|env</title>
 <p>Avec le drapeau [E], ou [env], vous pouvez d&eacute;finir la valeur d'une
@@ -184,11 +199,11 @@ l'extrait suivant utilis&eacute; dans un contexte de niveau serveur permet de
 faire en sorte que les fichiers <code>.php</code> soient
 <em>affich&eacute;s</em> par <code>mod_php</code> dans le cas o&ugrave; ils font
 l'objet d'une requ&ecirc;te avec l'extension <code>.phps</code> :
-</p>
 
 <example>
 RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
 </example>
+</p>
 
 <p>L'expression rationnelle ci-dessus -
 <code>^(/source/.+\.php)s$</code> - va correspondre &agrave; toute requ&ecirc;te qui
