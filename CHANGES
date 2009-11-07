@@ -10,6 +10,10 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_log_config: Make ${cookie}C correctly match whole cookie names
+     instead of substrings. PR 28037. [Dan Franklin <dan dan-franklin.com>,
+     Stefan Fritsch]
+
   *) vhost: A purely-numeric Host: header should not be treated as a port.
      PR 44979 [Nick Kew]
 
