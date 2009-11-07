@@ -356,6 +356,20 @@ typedef struct {
     int is_proxy;
     int disabled;
     int non_ssl_request;
+
+    /* Track the handshake/renegotiation state for the connection so
+     * that all client-initiated renegotiations can be rejected, as a
+     * partial fix for CVE-2009-3555. */
+    enum { 
+        RENEG_INIT = 0, /* Before initial handshake */
+        RENEG_REJECT, /* After initial handshake; any client-initiated
+                       * renegotiation should be rejected */
+        RENEG_ALLOW, /* A server-initated renegotiation is taking
+                      * place (as dictated by configuration) */
+        RENEG_ABORT /* Renegotiation initiated by client, abort the
+                     * connection */
+    } reneg_state;
+    
     server_rec *server;
 } SSLConnRec;
 
@@ -574,7 +588,7 @@ int          ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **
 int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
-void         ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE, int, int);
+void         ssl_callback_Info(MODSSL_INFO_CB_ARG_TYPE, int, int);
 #ifndef OPENSSL_NO_TLSEXT
 int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
 #endif

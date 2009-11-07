@@ -103,6 +103,7 @@ typedef struct {
     ap_filter_t        *pInputFilter;
     ap_filter_t        *pOutputFilter;
     int                nobuffer; /* non-zero to prevent buffering */
+    SSLConnRec         *config;
 } ssl_filter_ctx_t;
 
 typedef struct {
@@ -193,7 +194,13 @@ static int bio_filter_out_read(BIO *bio, char *out, int outl)
 static int bio_filter_out_write(BIO *bio, const char *in, int inl)
 {
     bio_filter_out_ctx_t *outctx = (bio_filter_out_ctx_t *)(bio->ptr);
-
+    
+    /* Abort early if the client has initiated a renegotiation. */
+    if (outctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
+        outctx->rc = APR_ECONNABORTED;
+        return -1;
+    }
+    
     /* when handshaking we'll have a small number of bytes.
      * max size SSL will pass us here is about 16k.
      * (16413 bytes to be exact)
@@ -465,6 +472,12 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     /* OpenSSL catches this case, so should we. */
     if (!in)
         return 0;
+
+    /* Abort early if the client has initiated a renegotiation. */
+    if (inctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
+        inctx->rc = APR_ECONNABORTED;
+        return -1;
+    }
 
     /* XXX: flush here only required for SSLv2;
      * OpenSSL calls BIO_flush() at the appropriate times for
@@ -1723,6 +1736,8 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     ssl_filter_ctx_t *filter_ctx;
 
     filter_ctx = apr_palloc(c->pool, sizeof(ssl_filter_ctx_t));
+
+    filter_ctx->config          = myConnConfig(c);
 
     filter_ctx->nobuffer        = 0;
     filter_ctx->pOutputFilter   = ap_add_output_filter(ssl_io_filter,
