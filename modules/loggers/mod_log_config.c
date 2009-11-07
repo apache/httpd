@@ -497,19 +497,42 @@ static const char *log_env_var(request_rec *r, char *a)
 static const char *log_cookie(request_rec *r, char *a)
 {
     const char *cookies;
-    const char *start_cookie;
+
+    /*
+     * This supports Netscape version 0 cookies while being tolerant to
+     * some properties of RFC2109/2965 version 1 cookies:
+     * - case-insensitive match of cookie names
+     * - white space around the '='
+     * It does not support the following version 1 features:
+     * - quoted strings as cookie values
+     * - commas to separate cookies
+     */
 
     if ((cookies = apr_table_get(r->headers_in, "Cookie"))) {
-        if ((start_cookie = ap_strstr_c(cookies,a))) {
-            char *cookie, *end_cookie;
-            start_cookie += strlen(a) + 1; /* cookie_name + '=' */
-            cookie = apr_pstrdup(r->pool, start_cookie);
-            /* kill everything in cookie after ';' */
-            end_cookie = strchr(cookie, ';');
-            if (end_cookie) {
-                *end_cookie = '\0';
-            }
-            return ap_escape_logitem(r->pool, cookie);
+        const char *cookie;
+        const char *cookie_end;
+        const char *cp;
+        int a_len = strlen(a);
+        /*
+         * Loop over semicolon-separated cookies.
+         */
+        for (cookie = cookies; *cookie != '\0'; cookie = cookie_end + strspn(cookie_end, "; \t")) {
+            /* Loop invariant: "cookie" always points to start of cookie name */
+
+            /* Set cookie_end to ';' that ends this cookie, or '\0' at EOS */
+            cookie_end = cookie + strcspn(cookie, ";");
+
+            cp = cookie + a_len;
+            if (cp >= cookie_end)
+                continue;
+            cp += strspn(cp, " \t");
+            if (*cp == '=' && !strncasecmp(cookie, a, a_len)) {
+                char *cookie_value;
+                cp++;  /* Move past '=' */
+                cp += strspn(cp, " \t");  /* Move past WS */
+                cookie_value = apr_pstrmemdup(r->pool, cp, cookie_end - cp);
+                return ap_escape_logitem(r->pool, cookie_value);
+             }
         }
     }
     return NULL;
