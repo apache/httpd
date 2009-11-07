@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.15
 
+  *) SECURITY: CVE-2009-3555 (cve.mitre.org)
+     A partial fix for the TLS renegotiation prefix injection attack by
+     rejecting any client-initiated renegotiations.  Any configuration
+     which requires renegotiation for per-directory/location access 
+     control is still vulnerable, unless using OpenSSL >= 0.9.8l.  
+     [Joe Orton, Ruediger Pluem]
+
   *) mod_rewrite: Make sure that a hostname:port isn't fully qualified if
      the request is a CONNECT request. PR 47928
      [Bill Zajac <billz consultla.com>]
