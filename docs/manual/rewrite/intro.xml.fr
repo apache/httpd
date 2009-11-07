@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 815946 -->
+<!-- English Revision : 833139 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,12 +39,13 @@ pieds.
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">Documentation du
-module</a></seealso>
-<seealso><a href="tech.html">D&eacute;tails techniques</a></seealso>
-<seealso><a href="rewrite_guide.html">Solutions pratiques aux probl&egrave;mes
-courants</a></seealso>
-<seealso><a href="rewrite_guide_advanced.html">Solutions pratiques aux
-probl&egrave;mes plus complexes</a></seealso>
+module mod_rewrite</a></seealso>
+<!-- <seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso> -->
+<seealso><a href="remapping.html">Redirection and remise en
+correspondance</a></seealso>
+<seealso><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></seealso>
+<seealso><a href="advanced.html">Techniques avanc&eacute;es et conseils</a></seealso>
+<seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
 <p>Le module Apache <module>mod_rewrite</module> est un module puissant
