@@ -235,7 +235,7 @@ RewriteRule ^(.*).html$ $1.php
     by taking advantage of the order of execution of the ruleset. In
     particular, mod_rewrite evaluates the left-hand-side of the
     RewriteRule before it evaluates the RewriteCond directives.
-    Consequently, $1 is already defined by the time the RewriteRule
+    Consequently, $1 is already defined by the time the RewriteCond
     directives are evaluated. This allows us to test for the existence
     of the the original (<code>document.html</code>) and target
     (<code>document.php</code>) files using the same base filename.</p>
