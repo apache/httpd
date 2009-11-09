@@ -204,6 +204,7 @@ struct dav_stream {
 /* returns an appropriate HTTP status code given an APR status code for a
  * failed I/O operation.  ### use something besides 500? */
 #define MAP_IO2HTTP(e) (APR_STATUS_IS_ENOSPC(e) ? HTTP_INSUFFICIENT_STORAGE : \
+                        APR_STATUS_IS_ENOENT(e) ? HTTP_CONFLICT : \
                         HTTP_INTERNAL_SERVER_ERROR)
 
 /* forward declaration for internal treewalkers */
