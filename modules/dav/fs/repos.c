@@ -197,7 +197,7 @@ struct dav_stream {
     apr_pool_t *p;
     apr_file_t *f;
     const char *pathname;       /* we may need to remove it at close time */
-    const char *temppath;
+    char *temppath;
     int unlink_on_error;
 };
 
