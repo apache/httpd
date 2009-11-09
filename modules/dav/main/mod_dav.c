@@ -982,7 +982,10 @@ static int dav_method_put(request_rec *r)
 
             if (rc != APR_SUCCESS) {
                 err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
-                                    "Could not get next bucket brigade");
+                                    apr_psprintf(r->pool,
+                                                 "Could not get next bucket "
+                                                 "brigade (URI: %s)",
+                                                 ap_escape_html(r->pool, r->uri)));
                 break;
             }
 
@@ -1005,8 +1008,10 @@ static int dav_method_put(request_rec *r)
                 rc = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
                 if (rc != APR_SUCCESS) {
                     err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
-                                        "An error occurred while reading "
-                                        "the request body.");
+                                        apr_psprintf(r->pool,
+                                                    "An error occurred while reading"
+                                                    " the request body (URI: %s)",
+                                                    ap_escape_html(r->pool, r->uri)));
                     break;
                 }
 
