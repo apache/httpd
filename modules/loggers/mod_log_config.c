@@ -496,7 +496,7 @@ static const char *log_env_var(request_rec *r, char *a)
 
 static const char *log_cookie(request_rec *r, char *a)
 {
-    const char *cookies;
+    const char *cookies_entry;
 
     /*
      * This supports Netscape version 0 cookies while being tolerant to
@@ -508,31 +508,20 @@ static const char *log_cookie(request_rec *r, char *a)
      * - commas to separate cookies
      */
 
-    if ((cookies = apr_table_get(r->headers_in, "Cookie"))) {
-        const char *cookie;
-        const char *cookie_end;
-        const char *cp;
-        int a_len = strlen(a);
-        /*
-         * Loop over semicolon-separated cookies.
-         */
-        for (cookie = cookies; *cookie != '\0'; cookie = cookie_end + strspn(cookie_end, "; \t")) {
-            /* Loop invariant: "cookie" always points to start of cookie name */
+    if ((cookies_entry = apr_table_get(r->headers_in, "Cookie"))) {
+        char *cookie, *last1, *last2;
+        char *cookies = apr_pstrdup(r->pool, cookies_entry);
 
-            /* Set cookie_end to ';' that ends this cookie, or '\0' at EOS */
-            cookie_end = cookie + strcspn(cookie, ";");
+        while ((cookie = apr_strtok(cookies, ";", &last1))) {
+            char *name = apr_strtok(cookie, "=", &last2);
+            char *value;
+            apr_collapse_spaces(name, name);
 
-            cp = cookie + a_len;
-            if (cp >= cookie_end)
-                continue;
-            cp += strspn(cp, " \t");
-            if (*cp == '=' && !strncasecmp(cookie, a, a_len)) {
-                char *cookie_value;
-                cp++;  /* Move past '=' */
-                cp += strspn(cp, " \t");  /* Move past WS */
-                cookie_value = apr_pstrmemdup(r->pool, cp, cookie_end - cp);
-                return ap_escape_logitem(r->pool, cookie_value);
-             }
+            if (!strcasecmp(name, a) && (value = apr_strtok(NULL, "=", &last2))) {
+                value += strspn(value, " \t");  /* Move past WS */
+                return ap_escape_logitem(r->pool, value);
+            }
+            cookies = NULL;
         }
     }
     return NULL;
