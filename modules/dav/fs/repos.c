@@ -140,6 +140,11 @@ enum {
 */
 #define DAV_PROPID_FS_executable        1
 
+/*
+ * prefix for temporary files
+ */
+#define DAV_FS_TMP_PREFIX ".davfs." 
+
 static const dav_liveprop_spec dav_fs_props[] =
 {
     /* standard DAV properties */
@@ -192,6 +197,7 @@ struct dav_stream {
     apr_pool_t *p;
     apr_file_t *f;
     const char *pathname;       /* we may need to remove it at close time */
+    const char *temppath;
 };
 
 /* returns an appropriate HTTP status code given an APR status code for a
@@ -852,6 +858,14 @@ static int dav_fs_is_parent_resource(
             && ctx2->pathname[len1] == '/');
 }
 
+static apr_status_t tmpfile_cleanup(void *data) {
+        dav_stream *ds = data;
+        if (ds->temppath) {
+                apr_file_remove(ds->temppath, ds->p);
+        }
+        return APR_SUCCESS;
+}
+
 static dav_error * dav_fs_open_stream(const dav_resource *resource,
                                       dav_stream_mode mode,
                                       dav_stream **stream)
@@ -876,7 +890,19 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
 
     ds->p = p;
     ds->pathname = resource->info->pathname;
-    rv = apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT, ds->p);
+    ds->temppath = NULL;
+
+    if (mode == DAV_MODE_WRITE_TRUNC) {
+        ds->temppath = apr_pstrcat(p, ap_make_dirstr_parent(p, ds->pathname),
+                                   DAV_FS_TMP_PREFIX "XXXXXX", NULL);
+        rv = apr_file_mktemp(&ds->f, ds->temppath, flags, ds->p);
+        apr_pool_cleanup_register(p, ds, tmpfile_cleanup,
+                                  apr_pool_cleanup_null);
+    }
+    else {
+        rv = apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT, ds->p);
+    }
+
     if (rv != APR_SUCCESS) {
         return dav_new_error(p, MAP_IO2HTTP(rv), 0,
                              "An error occurred while opening a resource.");
@@ -890,16 +916,32 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
 
 static dav_error * dav_fs_close_stream(dav_stream *stream, int commit)
 {
+    apr_status_t rv;
+
     apr_file_close(stream->f);
 
     if (!commit) {
-        if (apr_file_remove(stream->pathname, stream->p) != APR_SUCCESS) {
-            /* ### use a better description? */
-            return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,
-                                 "There was a problem removing (rolling "
-                                 "back) the resource "
-                                 "when it was being closed.");
+        if (stream->temppath) {
+            apr_pool_cleanup_run(stream->p, stream, tmpfile_cleanup);
         }
+        else {
+            if (apr_file_remove(stream->pathname, stream->p) != APR_SUCCESS) {
+                /* ### use a better description? */
+                return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                     "There was a problem removing (rolling "
+                                     "back) the resource "
+                                     "when it was being closed.");
+            }
+        }
+    }
+    else if (stream->temppath) {
+        rv = apr_file_rename(stream->temppath, stream->pathname, stream->p);
+        if (rv) {
+            return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, rv,
+                                 "There was a problem writing the file "
+                                 "atomically after writes.");
+        }
+        apr_pool_cleanup_kill(stream->p, stream, tmpfile_cleanup);
     }
 
     return NULL;
@@ -1451,14 +1493,18 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
             /* ### need to authorize each file */
             /* ### example: .htaccess is normally configured to fail auth */
 
-            /* stuff in the state directory is never authorized! */
-            if (!strcmp(dirent.name, DAV_FS_STATE_DIR)) {
+            /* stuff in the state directory and temp files are never authorized! */
+            if (!strcmp(dirent.name, DAV_FS_STATE_DIR) ||
+                !strncmp(dirent.name, DAV_FS_TMP_PREFIX,
+                         strlen(DAV_FS_TMP_PREFIX))) {
                 continue;
             }
         }
-        /* skip the state dir unless a HIDDEN is performed */
+        /* skip the state dir and temp files unless a HIDDEN is performed */
         if (!(params->walk_type & DAV_WALKTYPE_HIDDEN)
-            && !strcmp(dirent.name, DAV_FS_STATE_DIR)) {
+            && (!strcmp(dirent.name, DAV_FS_STATE_DIR) ||
+                !strncmp(dirent.name, DAV_FS_TMP_PREFIX,
+                         strlen(DAV_FS_TMP_PREFIX)))) {
             continue;
         }
 

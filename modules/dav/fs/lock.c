@@ -48,9 +48,7 @@
 **
 ** KEY
 **
-** The database is keyed by a key_type unsigned char (DAV_TYPE_INODE or
-** DAV_TYPE_FNAME) followed by inode and device number if possible,
-** otherwise full path (in the case of Win32 or lock-null resources).
+** The database is keyed by the full path.
 **
 ** VALUE
 **
@@ -81,9 +79,6 @@
 /* Stored lock_discovery prefix */
 #define DAV_LOCK_DIRECT         1
 #define DAV_LOCK_INDIRECT       2
-
-#define DAV_TYPE_INODE          10
-#define DAV_TYPE_FNAME          11
 
 
 /* ack. forward declare. */
@@ -372,65 +367,23 @@ static void dav_fs_close_lockdb(dav_lockdb *lockdb)
 }
 
 /*
-** dav_fs_build_fname_key
-**
-** Given a pathname, build a DAV_TYPE_FNAME lock database key.
+** dav_fs_build_key:  Given a resource, return a apr_datum_t key
+**    to look up lock information for this file.
 */
-static apr_datum_t dav_fs_build_fname_key(apr_pool_t *p, const char *pathname)
+static apr_datum_t dav_fs_build_key(apr_pool_t *p,
+                                    const dav_resource *resource)
 {
+    const char *pathname = dav_fs_pathname(resource);
     apr_datum_t key;
 
     /* ### does this allocation have a proper lifetime? need to check */
     /* ### can we use a buffer for this? */
 
-    /* size is TYPE + pathname + null */
-    key.dsize = strlen(pathname) + 2;
-    key.dptr = apr_palloc(p, key.dsize);
-    *key.dptr = DAV_TYPE_FNAME;
-    memcpy(key.dptr + 1, pathname, key.dsize - 1);
+    key.dsize = strlen(pathname) + 1;
+    key.dptr = apr_pstrmemdup(p, pathname, key.dsize - 1);
     if (key.dptr[key.dsize - 2] == '/')
         key.dptr[--key.dsize - 1] = '\0';
     return key;
-}
-
-/*
-** dav_fs_build_key:  Given a resource, return a apr_datum_t key
-**    to look up lock information for this file.
-**
-**    (inode/dev not supported or file is lock-null):
-**       apr_datum_t->dvalue = full path
-**
-**    (inode/dev supported and file exists ):
-**       apr_datum_t->dvalue = inode, dev
-*/
-static apr_datum_t dav_fs_build_key(apr_pool_t *p,
-                                    const dav_resource *resource)
-{
-    const char *file = dav_fs_pathname(resource);
-    apr_datum_t key;
-    apr_finfo_t finfo;
-    apr_status_t rv;
-
-    /* ### use lstat() ?? */
-    /*
-     * XXX: What for platforms with no IDENT (dev/inode)?
-     */
-    rv = apr_stat(&finfo, file, APR_FINFO_IDENT, p);
-    if ((rv == APR_SUCCESS || rv == APR_INCOMPLETE)
-        && ((finfo.valid & APR_FINFO_IDENT) == APR_FINFO_IDENT))
-    {
-        /* ### can we use a buffer for this? */
-        key.dsize = 1 + sizeof(finfo.inode) + sizeof(finfo.device);
-        key.dptr = apr_palloc(p, key.dsize);
-        *key.dptr = DAV_TYPE_INODE;
-        memcpy(key.dptr + 1, &finfo.inode, sizeof(finfo.inode));
-        memcpy(key.dptr + 1 + sizeof(finfo.inode), &finfo.device,
-               sizeof(finfo.device));
-
-        return key;
-    }
-
-    return dav_fs_build_fname_key(p, file);
 }
 
 /*
@@ -626,15 +579,14 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
                 need_save = DAV_TRUE;
 
                 /* Remove timed-out locknull fm .locknull list */
-                if (*key.dptr == DAV_TYPE_FNAME) {
-                    const char *fname = key.dptr + 1;
+                {
                     apr_finfo_t finfo;
                     apr_status_t rv;
 
                     /* if we don't see the file, then it's a locknull */
-                    rv = apr_stat(&finfo, fname, APR_FINFO_MIN | APR_FINFO_LINK, p);
+                    rv = apr_stat(&finfo, key.dptr, APR_FINFO_MIN | APR_FINFO_LINK, p);
                     if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
-                        if ((err = dav_fs_remove_locknull_member(p, fname, &buf)) != NULL) {
+                        if ((err = dav_fs_remove_locknull_member(p, key.dptr, &buf)) != NULL) {
                             /* ### push a higher-level description? */
                             return err;
                         }
@@ -989,13 +941,8 @@ static dav_error * dav_fs_add_locknull_state(
 
 /*
 ** dav_fs_remove_locknull_state:  Given a request, check to see if r->filename
-**    is/was a lock-null resource.  If so, return it to an existant state.
-**
-**    ### this function is broken... it doesn't check!
-**
-**    In this implementation, this involves two things:
-**    (a) remove it from the list in the appropriate .DAV/locknull file
-**    (b) on *nix, convert the key from a filename to an inode.
+**    is/was a lock-null resource.  If so, return it to an existant state, i.e.
+**    remove it from the list in the appropriate .DAV/locknull file.
 */
 static dav_error * dav_fs_remove_locknull_state(
     dav_lockdb *lockdb,
@@ -1009,35 +956,6 @@ static dav_error * dav_fs_remove_locknull_state(
     if ((err = dav_fs_remove_locknull_member(p, pathname, &buf)) != NULL) {
         /* ### add a higher-level description? */
         return err;
-    }
-
-    {
-        dav_lock_discovery *ld;
-        dav_lock_indirect  *id;
-        apr_datum_t key;
-
-        /*
-        ** Fetch the lock(s) that made the resource lock-null. Remove
-        ** them under the filename key. Obtain the new inode key, and
-        ** save the same lock information under it.
-        */
-        key = dav_fs_build_fname_key(p, pathname);
-        if ((err = dav_fs_load_lock_record(lockdb, key, DAV_CREATE_LIST,
-                                           &ld, &id)) != NULL) {
-            /* ### insert a higher-level error description */
-            return err;
-        }
-
-        if ((err = dav_fs_save_lock_record(lockdb, key, NULL, NULL)) != NULL) {
-            /* ### insert a higher-level error description */
-            return err;
-        }
-
-        key = dav_fs_build_key(p, resource);
-        if ((err = dav_fs_save_lock_record(lockdb, key, ld, id)) != NULL) {
-            /* ### insert a higher-level error description */
-            return err;
-        }
     }
 
     return NULL;
