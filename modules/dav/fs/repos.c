@@ -198,6 +198,7 @@ struct dav_stream {
     apr_file_t *f;
     const char *pathname;       /* we may need to remove it at close time */
     const char *temppath;
+    int unlink_on_error;
 };
 
 /* returns an appropriate HTTP status code given an APR status code for a
@@ -891,6 +892,7 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
     ds->p = p;
     ds->pathname = resource->info->pathname;
     ds->temppath = NULL;
+    ds->unlink_on_error = 0;
 
     if (mode == DAV_MODE_WRITE_TRUNC) {
         ds->temppath = apr_pstrcat(p, ap_make_dirstr_parent(p, ds->pathname),
@@ -898,6 +900,18 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
         rv = apr_file_mktemp(&ds->f, ds->temppath, flags, ds->p);
         apr_pool_cleanup_register(p, ds, tmpfile_cleanup,
                                   apr_pool_cleanup_null);
+    }
+    else if (mode == DAV_MODE_WRITE_SEEKABLE) {
+        rv = apr_file_open(&ds->f, ds->pathname, flags | APR_FOPEN_EXCL,
+                           APR_OS_DEFAULT, ds->p);
+        if (rv == APR_SUCCESS) {
+            /* we have created a new file */
+            ds->unlink_on_error = 1;
+        }
+        else if (APR_STATUS_IS_EEXIST(rv)) {
+            rv = apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT,
+                               ds->p);
+        }
     }
     else {
         rv = apr_file_open(&ds->f, ds->pathname, flags, APR_OS_DEFAULT, ds->p);
@@ -924,7 +938,7 @@ static dav_error * dav_fs_close_stream(dav_stream *stream, int commit)
         if (stream->temppath) {
             apr_pool_cleanup_run(stream->p, stream, tmpfile_cleanup);
         }
-        else {
+        else if (stream->unlink_on_error) {
             if (apr_file_remove(stream->pathname, stream->p) != APR_SUCCESS) {
                 /* ### use a better description? */
                 return dav_new_error(stream->p, HTTP_INTERNAL_SERVER_ERROR, 0,

@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_dav_fs: Don't delete the whole file if a PUT with content-range failed.
+     PR 42896. [Stefan Fritsch]
+
   *) mod_dav_fs: Make PUT create files atomically and no longer destroy the
      old file if the transfer aborted. PR 39815. [Paul Querna, Stefan Fritsch]
 
