@@ -2995,6 +2995,7 @@ static int dav_method_lock(request_rec *r)
 {
     dav_error *err;
     dav_resource *resource;
+    dav_resource *parent;
     const dav_hooks_locks *locks_hooks;
     int result;
     int depth;
@@ -3025,6 +3026,20 @@ static int dav_method_lock(request_rec *r)
                            &resource);
     if (err != NULL)
         return dav_handle_err(r, err, NULL);
+
+    /* Check if parent collection exists */
+    if ((err = resource->hooks->get_parent_resource(resource, &parent)) != NULL) {
+        /* ### add a higher-level description? */
+        return dav_handle_err(r, err, NULL);
+    }
+    if (parent && (!parent->exists || parent->collection != 1)) {
+        err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+                           apr_psprintf(r->pool,
+                                        "The parent resource of %s does not "
+                                        "exist or is not a collection.", 
+                                        ap_escape_html(r->pool, r->uri)));
+        return dav_handle_err(r, err, NULL);
+    }
 
     /*
      * Open writable. Unless an error occurs, we'll be
