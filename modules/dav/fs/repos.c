@@ -428,11 +428,24 @@ static dav_error * dav_fs_copymove_file(
     apr_file_close(inf);
     apr_file_close(outf);
 
-    if (is_move && apr_file_remove(src, p) != APR_SUCCESS) {
+    if (is_move && (status = apr_file_remove(src, p)) != APR_SUCCESS) {
         dav_error *err;
         int save_errno = errno;   /* save the errno that got us here */
 
-        if (apr_file_remove(dst, p) != APR_SUCCESS) {
+        if (APR_STATUS_IS_ENOENT(status)) {
+            /*
+             * Something is wrong here but the result is what we wanted.
+             * We definitely should not remove the destination file.
+             */
+             err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                 apr_psprintf(p, "Could not remove source "
+                                              "file %s after move to %s. The "
+                                              "server may be in an "
+                                              "inconsistent state.", src, dst));
+            err->save_errno = save_errno;
+            return err;
+        } 
+        else if (apr_file_remove(dst, p) != APR_SUCCESS) {
             /* ### ACK. this creates an inconsistency. do more!? */
 
             /* ### use something besides 500? */
