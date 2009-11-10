@@ -520,7 +520,7 @@ static const char *log_cookie(request_rec *r, char *a)
             if (!strcasecmp(name, a) && (value = apr_strtok(NULL, "=", &last2))) {
                 char *last;
                 value += strspn(value, " \t");  /* Move past leading WS */
-                last = value + strlen(value);
+                last = value + strlen(value) - 1;
                 while (last >= value && apr_isspace(*last)) {
                    *last = '\0';
                    --last;
