@@ -30,8 +30,9 @@ Changes with Apache 2.3.3
      old file if the transfer aborted. PR 39815. [Paul Querna, Stefan Fritsch]
 
   *) mod_dav_fs: Remove inode keyed locking as this conflicts with atomically
-     creating files. This is a format cange of the DavLockDB. The old
-     DavLockDB must be deleted on upgrade. [Stefan Fritsch]
+     creating files. On systems with inode numbers, this is a format cange of
+     the DavLockDB. The old DavLockDB must be deleted on upgrade.
+     [Stefan Fritsch]
 
   *) mod_log_config: Make ${cookie}C correctly match whole cookie names
      instead of substrings. PR 28037. [Dan Franklin <dan dan-franklin.com>,
