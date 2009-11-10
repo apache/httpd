@@ -150,6 +150,11 @@ ssl_algo_t ssl_util_algotypeof(X509 *pCert, EVP_PKEY *pKey)
             case EVP_PKEY_DSA:
                 t = SSL_ALGO_DSA;
                 break;
+#ifndef OPENSSL_NO_EC
+            case EVP_PKEY_EC:
+                t = SSL_ALGO_ECC;
+                break;
+#endif 
             default:
                 break;
         }
@@ -174,6 +179,11 @@ char *ssl_util_algotypestr(ssl_algo_t t)
         case SSL_ALGO_DSA:
             cp = "DSA";
             break;
+#ifndef OPENSSL_NO_EC
+        case SSL_ALGO_ECC:
+            cp = "ECC";
+            break;
+#endif
         default:
             break;
     }
@@ -245,7 +255,11 @@ void ssl_asn1_table_unset(apr_hash_t *table,
     apr_hash_set(table, key, klen, NULL);
 }
 
+#ifndef OPENSSL_NO_EC
+static const char *ssl_asn1_key_types[] = {"RSA", "DSA", "ECC"};
+#else
 static const char *ssl_asn1_key_types[] = {"RSA", "DSA"};
+#endif
 
 const char *ssl_asn1_keystr(int keytype)
 {

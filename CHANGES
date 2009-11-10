@@ -9,6 +9,9 @@ Changes with Apache 2.3.3
   *) SECURITY: CVE-2009-3094 (cve.mitre.org)
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
+     
+  *) mod_ssl: enable support for ECC keys and ECDH ciphers.  Tested against
+     OpenSSL 1.0.0b3.  [Vipul Gupta vipul.gupta sun.com, Sander Temme]
 
   *) mod_dav_fs: Include uri when logging a PUT error due to connection abort.
      PR 38149. [Stefan Fritsch]

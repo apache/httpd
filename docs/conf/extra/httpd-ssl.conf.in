@@ -81,6 +81,9 @@ SSLEngine on
 #   SSL Cipher Suite:
 #   List the ciphers that the client is permitted to negotiate.
 #   See the mod_ssl documentation for a complete list.
+#   Recent OpenSSL snapshots include Elliptic Curve Cryptograhpy (ECC) 
+#   cipher suites (see RFC 4492) as part of "ALL". Edit this line
+#   if you need to disable any of those ciphers.
 SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
 
 #   Server Certificate:
@@ -90,16 +93,22 @@ SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
 #   in mind that if you have both an RSA and a DSA certificate you
 #   can configure both in parallel (to also allow the use of DSA
 #   ciphers, etc.)
+#   Some ECC cipher suites (http://www.ietf.org/rfc/rfc4492.txt)
+#   require an ECC certificate which can also be configured in
+#   parallel.
 SSLCertificateFile "@exp_sysconfdir@/server.crt"
 #SSLCertificateFile "@exp_sysconfdir@/server-dsa.crt"
+#SSLCertificateFile "@exp_sysconfdir@/server-ecc.crt"
 
 #   Server Private Key:
 #   If the key is not combined with the certificate, use this
 #   directive to point at the key file.  Keep in mind that if
 #   you've both a RSA and a DSA private key you can configure
 #   both in parallel (to also allow the use of DSA ciphers, etc.)
+#   ECC keys, when in use, can also be configured in parallel
 SSLCertificateKeyFile "@exp_sysconfdir@/server.key"
 #SSLCertificateKeyFile "@exp_sysconfdir@/server-dsa.key"
+#SSLCertificateKeyFile "@exp_sysconfdir@/server-ecc.key"
 
 #   Server Certificate Chain:
 #   Point SSLCertificateChainFile at a file containing the

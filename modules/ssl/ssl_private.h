@@ -172,11 +172,21 @@ typedef int ssl_algo_t;
 #define SSL_ALGO_UNKNOWN (0)
 #define SSL_ALGO_RSA     (1<<0)
 #define SSL_ALGO_DSA     (1<<1)
+#ifndef OPENSSL_NO_EC
+#define SSL_ALGO_ECC     (1<<2)
+#define SSL_ALGO_ALL     (SSL_ALGO_RSA|SSL_ALGO_DSA|SSL_ALGO_ECC)
+#else
 #define SSL_ALGO_ALL     (SSL_ALGO_RSA|SSL_ALGO_DSA)
+#endif /* SSL_LIBRARY_VERSION */
 
 #define SSL_AIDX_RSA     (0)
 #define SSL_AIDX_DSA     (1)
+#ifndef OPENSSL_NO_EC
+#define SSL_AIDX_ECC     (2)
+#define SSL_AIDX_MAX     (3)
+#else
 #define SSL_AIDX_MAX     (2)
+#endif /* SSL_LIBRARY_VERSION */
 
 
 /**
@@ -626,6 +636,9 @@ void         ssl_hook_ConfigTest(apr_pool_t *pconf, server_rec *s);
 /**  OpenSSL callbacks */
 RSA         *ssl_callback_TmpRSA(SSL *, int, int);
 DH          *ssl_callback_TmpDH(SSL *, int, int);
+#ifndef OPENSSL_NO_EC
+EC_KEY      *ssl_callback_TmpECDH(SSL *, int, int);
+#endif /* SSL_LIBRARY_VERSION */
 int          ssl_callback_SSLVerify(int, X509_STORE_CTX *);
 int          ssl_callback_SSLVerify_CRL(int, X509_STORE_CTX *, conn_rec *);
 int          ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey);
