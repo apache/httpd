@@ -48,7 +48,8 @@
 **
 ** KEY
 **
-** The database is keyed by the full path.
+** The database is keyed by a key_type unsigned char (DAV_TYPE_FNAME)
+** followed by the full path. The key_type DAV_TYPE_INODE is not used anymore.
 **
 ** VALUE
 **
@@ -79,6 +80,12 @@
 /* Stored lock_discovery prefix */
 #define DAV_LOCK_DIRECT         1
 #define DAV_LOCK_INDIRECT       2
+
+/*
+ * not used anymore
+ * #define DAV_TYPE_INODE          10
+ */
+#define DAV_TYPE_FNAME          11
 
 
 /* ack. forward declare. */
@@ -379,8 +386,11 @@ static apr_datum_t dav_fs_build_key(apr_pool_t *p,
     /* ### does this allocation have a proper lifetime? need to check */
     /* ### can we use a buffer for this? */
 
-    key.dsize = strlen(pathname) + 1;
-    key.dptr = apr_pstrmemdup(p, pathname, key.dsize - 1);
+    /* size is TYPE + pathname + null */
+    key.dsize = strlen(pathname) + 2;
+    key.dptr = apr_palloc(p, key.dsize);
+    *key.dptr = DAV_TYPE_FNAME;
+    memcpy(key.dptr + 1, pathname, key.dsize - 1);
     if (key.dptr[key.dsize - 2] == '/')
         key.dptr[--key.dsize - 1] = '\0';
     return key;
@@ -579,14 +589,15 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
                 need_save = DAV_TRUE;
 
                 /* Remove timed-out locknull fm .locknull list */
-                {
+                if (*key.dptr == DAV_TYPE_FNAME) {
+                    const char *fname = key.dptr + 1;
                     apr_finfo_t finfo;
                     apr_status_t rv;
 
                     /* if we don't see the file, then it's a locknull */
-                    rv = apr_stat(&finfo, key.dptr, APR_FINFO_MIN | APR_FINFO_LINK, p);
+                    rv = apr_stat(&finfo, fname, APR_FINFO_MIN | APR_FINFO_LINK, p);
                     if (rv != APR_SUCCESS && rv != APR_INCOMPLETE) {
-                        if ((err = dav_fs_remove_locknull_member(p, key.dptr, &buf)) != NULL) {
+                        if ((err = dav_fs_remove_locknull_member(p, fname, &buf)) != NULL) {
                             /* ### push a higher-level description? */
                             return err;
                         }
