@@ -305,7 +305,8 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
     }
     else if (!strcasecmp(key, "headermax")) {
         ret = parse_int(val, &conf->header_max_timeout);
-        if (!ret && conf->header_max_timeout > conf->header_timeout) {
+        if (!ret && conf->header_max_timeout > 0 &&
+            conf->header_max_timeout <= conf->header_timeout) {
             ret = "Max timeout must be larger than initial timeout";
         }
     }
@@ -314,19 +315,20 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
     }
     else if (!strcasecmp(key, "bodymax")) {
         ret = parse_int(val, &conf->body_max_timeout);
-        if (!ret && conf->body_max_timeout > conf->body_timeout) {
+        if (!ret && conf->body_max_timeout > 0 &&
+            conf->body_max_timeout <= conf->body_timeout) {
             ret = "Max timeout must be larger than initial timeout";
         }
     }
     else if (!strcasecmp(key, "headerminrate")) {
         ret = parse_int(val, &conf->header_min_rate);
-        if (!ret) {
+        if (!ret && conf->header_min_rate > 0) {
             conf->header_rate_factor = apr_time_from_sec(1) / conf->header_min_rate;
         }
     }
     else if (!strcasecmp(key, "bodyminrate")) {
         ret = parse_int(val, &conf->body_min_rate);
-        if (!ret) {
+        if (!ret && conf->body_min_rate > 0) {
             conf->body_rate_factor = apr_time_from_sec(1) / conf->body_min_rate;
         }
     }
