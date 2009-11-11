@@ -13,10 +13,10 @@ Changes with Apache 2.3.3
   *) mod_ssl: enable support for ECC keys and ECDH ciphers.  Tested against
      OpenSSL 1.0.0b3.  [Vipul Gupta <vipul.gupta sun.com>, Sander Temme]
 
-  *) mod_dav_fs: Include uri when logging a PUT error due to connection abort.
+  *) mod_dav: Include uri when logging a PUT error due to connection abort.
      PR 38149. [Stefan Fritsch]
 
-  *) mod_dav_fs: Return 409 instead of 500 for a LOCK request if the parent
+  *) mod_dav: Return 409 instead of 500 for a LOCK request if the parent
      resource does not exist or is not a collection. PR 43465. [Stefan Fritsch]
 
   *) mod_dav_fs: Return 409 instead of 500 for Litmus test case copy_nodestcoll
