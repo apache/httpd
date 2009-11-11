@@ -936,10 +936,16 @@ static void ssl_init_server_certs(server_rec *s,
                                   apr_pool_t *ptemp,
                                   modssl_ctx_t *mctx)
 {
-    const char *rsa_id, *dsa_id, *ecc_id;
+    const char *rsa_id, *dsa_id;
+#ifndef OPENSSL_NO_EC
+    const char *ecc_id;
+#endif
     const char *vhost_id = mctx->sc->vhost_id;
     int i;
-    int have_rsa, have_dsa, have_ecc;
+    int have_rsa, have_dsa;
+#ifndef OPENSSL_NO_EC
+    int have_ecc;
+#endif
 
     rsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_RSA);
     dsa_id = ssl_asn1_table_keyfmt(ptemp, vhost_id, SSL_AIDX_DSA);
@@ -974,17 +980,17 @@ static void ssl_init_server_certs(server_rec *s,
 
     have_rsa = ssl_server_import_key(s, mctx, rsa_id, SSL_AIDX_RSA);
     have_dsa = ssl_server_import_key(s, mctx, dsa_id, SSL_AIDX_DSA);
-#if SSL_LIBRARY_VERSION >= 0x00908000
+#ifndef OPENSSL_NO_EC
     have_ecc = ssl_server_import_key(s, mctx, ecc_id, SSL_AIDX_ECC);
 #endif
 
     if (!(have_rsa || have_dsa
-#if SSL_LIBRARY_VERSION >= 0x00908000
+#ifndef OPENSSL_NO_EC
         || have_ecc
 #endif
           )) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-#if SSL_LIBRARY_VERSION >= 0x00908000
+#ifndef OPENSSL_NO_EC
                 "Oops, no RSA, DSA or ECC server private key found?!");
 #else
                 "Oops, no RSA or DSA server private key found?!");
