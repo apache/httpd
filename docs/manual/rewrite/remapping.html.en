@@ -23,7 +23,7 @@
 
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
-<a href="../mod_rewrite.html">reference documentation</a>. It describes
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to redirect and remap
 request. This includes many examples of common uses of mod_rewrite,
 including detailed descriptions of how each works.</p>

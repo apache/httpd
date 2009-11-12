@@ -23,7 +23,7 @@
 
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
-<a href="../mod_rewrite.html">reference documentation</a>. It describes
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 perhaps one of the most important concepts about mod_rewrite - namely,
 when to avoid using it.</p>
 
