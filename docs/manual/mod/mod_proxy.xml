@@ -339,6 +339,7 @@
     </example>
 
 </usage>
+<seealso><directive type="section" module="mod_proxy">ProxyMatch</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -403,6 +404,7 @@ proxied resources</description>
     type="section">Proxy</directive> directive, except it matches URLs
     using <glossary ref="regex">regular expressions</glossary>.</p>
 </usage>
+<seealso><directive type="section" module="mod_proxy">Proxy</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
