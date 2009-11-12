@@ -75,37 +75,60 @@ how they are used by the Apache HTTP Server.</p>
 
 </section>
 
-<section id="choosing"><title>Choosing an MPM</title>
-
-    <p>MPMs must be chosen during configuration, and compiled into
-    the server. Compilers are capable of optimizing a lot of
-    functions if threads are used, but only if they know that
-    threads are being used.</p>
-
-    <p>To actually choose the desired MPM, use the argument
-      <code>--with-mpm=<em>NAME</em></code> with the
-      <program>configure</program> script. <em>NAME</em> is the name of the
-      desired MPM.</p>
-
-    <p>Once the server has been compiled, it is possible to
-    determine which MPM was chosen by using <code>./httpd
-    -l</code>. This command will list every module that is compiled
-    into the server, including the MPM.</p>
-</section>
-
 <section id="defaults"><title>MPM Defaults</title>
 
 <p>The following table lists the default MPMs for various operating
 systems.  This will be the MPM selected if you do not make another
 choice at compile-time.</p>
 
-<table>
+<table border="1" style="zebra">
 <columnspec><column width=".2"/><column width=".2"/></columnspec>
 <tr><td>Netware</td><td><module>mpm_netware</module></td></tr>
 <tr><td>OS/2</td><td><module>mpmt_os2</module></td></tr>
-<tr><td>Unix</td><td><module>prefork</module></td></tr>
+<tr><td>Unix</td><td><module>prefork</module>, <module>worker</module>, or 
+    <module>event</module>, depending on platform capabilities</td></tr>
 <tr><td>Windows</td><td><module>mpm_winnt</module></td></tr>
 </table>
+</section>
+
+<section id="static"><title>Building an MPM as a static module</title>
+
+    <p>MPMs can be built as static modules on all platforms.  A single MPM
+    is chosen at build time and linked into the server.  The server must
+    be rebuilt in order to change the MPM.</p>
+
+    <p>To override the default MPM choice, use the
+    <code>--with-mpm=<em>NAME</em></code> option of the
+    <program>configure</program> script. <em>NAME</em> is the name of the
+    desired MPM.</p>
+
+    <p>Once the server has been compiled, it is possible to determine which MPM
+    was chosen by using <code>./httpd -l</code>. This command will list every
+    module that is compiled into the server, including the MPM.</p>
+
+</section>
+
+<section id="dynamic"><title>Building an MPM as a DSO module</title>
+
+    <p>On Unix and similar platforms, MPMs can be built as DSO modules and
+    dynamically loaded into the server in the same manner as other DSO
+    modules.  Building MPMs as DSO modules allows the MPM to be changed by
+    updating the <directive module="mod_so">LoadModule</directive> directive 
+    for the MPM instead of by rebuilding the server.</p>
+
+    <p>This feature is enabled using the
+    <code>--enable-mpms-shared</code> option of the <program>configure</program>
+    script.
+    With argument <code><em>all</em></code>, all possible MPMs for the platform
+    will be installed.  Alternately, a list of MPMs can be specified as the
+    argument.</p>
+
+    <p>The default MPM, either selected automatically or specified with the
+    <code>--with-mpm</code> option of the <program>configure</program>
+    script, will be loaded in the generated server configuration file.  Edit the
+    <directive module="mod_so">LoadModule</directive> directive to select a
+    different MPM.</p>
+
 </section>
 
 </manualpage>
