@@ -189,47 +189,6 @@ RewriteRule   ^(.*)/<strong>S=([^/]+)</strong>/(.*)    $1/$3 [E=<strong>STATUS:$
 
     </section>
 
-    <section id="uservhosts">
-
-      <title>Virtual Hosts Per User</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>Assume that you want to provide
-          <code>www.<strong>username</strong>.host.domain.com</code>
-          for the homepage of username via just DNS A records to the
-          same machine and without any virtualhosts on this
-          machine.</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>For HTTP/1.0 requests there is no solution, but for
-          HTTP/1.1 requests which contain a Host: HTTP header we
-          can use the following ruleset to rewrite
-          <code>http://www.username.host.com/anypath</code>
-          internally to <code>/home/username/anypath</code>:</p>
-
-<example><pre>
-RewriteEngine on
-RewriteCond   %{<strong>HTTP_HOST</strong>}                 ^www\.<strong>([^.]+)</strong>\.host\.com$
-RewriteRule   ^(.*) /home/<strong>%1</strong>$1
-</pre></example>
-
-<p>Parentheses used in a <directive
-module="mod_rewrite">RewriteCond</directive> are captured into the
-backreferences <code>%1</code>, <code>%2</code>, etc, while parentheses
-used in <directive module="mod_rewrite">RewriteRule</directive> are
-captured into the backreferences <code>$1</code>, <code>$2</code>,
-etc.</p>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="redirecthome">
 
       <title>Redirect Homedirs For Foreigners</title>

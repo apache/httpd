@@ -485,7 +485,65 @@ RewriteRule   ^/(puppies|canines)/(.*)    /dogs/$2  [R]
      </dd>
       </dl>
 
-    </section>
+</section>
+
+<section id="uservhosts">
+
+  <title>Virtual Hosts Per User</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>We want to automatically create a virtual host for every user who
+    has an account on our web server system, without having to create
+    new VirtualHost sections.</p>
+
+    <p>In this recipe, we assume that we'll be using the hostname
+    <code>www.<strong>username</strong>.example.com</code> for each
+    user, and serve their content out of
+    <code>/home/<strong>username</strong>/www</code>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+
+<example><pre>
+RewriteEngine on
+RewriteCond   %{<strong>HTTP_HOST</strong>}        ^www\.<strong>([^.]+)</strong>\.example\.com$
+RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
+</pre></example></dd>
+
+<dt>Discussion</dt>
+    <dd>
+
+    <note type="warning">You will need to take care of the DNS 
+    resolution - Apache does
+    not handle name resolution. You'll need either to create CNAME 
+    records for each hostname, or a DNS wildcard record. Creating DNS
+    records is beyond the scope of this document.</note>
+
+<p>Parentheses used in a <directive
+module="mod_rewrite">RewriteCond</directive> are captured into the
+backreferences <code>%1</code>, <code>%2</code>, etc, while parentheses
+used in <directive module="mod_rewrite">RewriteRule</directive> are
+captured into the backreferences <code>$1</code>, <code>$2</code>,
+etc.</p>
+
+<p>
+As with many techniques discussed in this document, mod_rewrite really
+isn't the best way to accomplish this task. You should, instead,
+consider using <module>mod_vhost_alias</module> instead, as it will much
+more gracefully handle anything beyond serving static files, such as any
+dynamic content, and Alias resolution. 
+</p>
+    </dd>
+  </dl>
+
+</section>
+
+
 
 
 
