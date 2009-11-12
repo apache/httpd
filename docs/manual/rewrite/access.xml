@@ -28,7 +28,7 @@
 <summary>
 
 <p>This document supplements the <module>mod_rewrite</module> 
-<a href="../mod_rewrite.html">reference documentation</a>. It describes
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
 how you can use <module>mod_rewrite</module> to control access to
 various resources, and other related techniques.
 This includes many examples of common uses of mod_rewrite,

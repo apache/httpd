@@ -23,7 +23,7 @@
 
 
 <p>This document supplements the <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> 
-<a href="../mod_rewrite.html">reference documentation</a>. It provides 
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It provides 
 a few advanced techniques and tricks using mod_rewrite.</p>
 
 <div class="warning">Note that many of these examples won't work unchanged in your
