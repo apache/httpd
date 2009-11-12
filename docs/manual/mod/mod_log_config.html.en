@@ -92,7 +92,7 @@
         a '<code>-</code>' rather than a 0 when no bytes are sent.</td></tr>
 <tr class="odd"><td><code>%{<var>VARNAME</var>}C</code></td>
         <td>The contents of cookie <var>VARNAME</var> in the request sent
-        to the server.</td></tr>
+        to the server. Only version 0 cookies are fully supported.</td></tr>
 <tr><td><code>%D</code></td>
         <td>The time taken to serve the request, in microseconds.</td></tr>
 <tr class="odd"><td><code>%{<var>VARNAME</var>}e</code></td>

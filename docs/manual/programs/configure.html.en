@@ -630,9 +630,49 @@
       </dl>
     
 
-    <h4><a name="modules" id="modules">MPMs and third-party modules</a></h4>
-      <p>To add the necessary Multi Processing Module and additional third-party
-        modules use the following options:</p>
+    <h4><a name="mpms" id="mpms">Multi-Processing Modules</a></h4>
+      <p><a href="../mpm.html">Multi-Processing Modules</a>, or MPMs, implement
+        the basic behavior of the server.  A single MPM must be active in order
+        for the server to function.  The list of available MPMs appears on the
+        <a href="../mod/">module index page</a>.</p>
+
+      <p>MPMs can be built as DSOs for dynamic loading or statically linked with
+        the server, and are enabled using the following options:</p>
+
+      <dl>
+        <dt><code>--with-mpm=MPM</code></dt>
+        <dd>
+          <p>Choose the default MPM for your server.  If MPMs are built as DSO 
+            modules (see <code>--enable-mpms-shared</code>), this directive
+            selects the MPM which will be loaded in the default configuration
+            file.  Otherwise, this directive selects the only available MPM,
+            which will be statically linked into the server.</p>
+          <p>If this option is omitted, the <a href="../mpm.html#defaults">default
+          MPM</a> for your operating system will be used.</p>
+        </dd>
+
+        <dt><code>--enable-mpms-shared=<var>MPM-LIST</var></code></dt>
+        <dd>
+          <p>Enable a list of MPMs as dynamic shared modules.  One of these
+            modules must be loaded dynamically using the
+            <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive.</p>
+          <p><var>MPM-LIST</var> is a space-separated list of MPM names
+            enclosed by quotation marks.  For example:</p>
+          <div class="example"><p><code>
+            --enable-mpms-shared='prefork worker'
+          </code></p></div>
+          <p>Additionally you can use the special keyword <code>all</code>,
+            which will select all MPMs which support dynamic loading on the
+            current platform and build them as DSO modules.  For example:</p>
+          <div class="example"><p><code>
+            --enable-mpms-shared=all
+          </code></p></div>
+	</dd>
+      </dl>
+    
+
+    <h4><a name="modules" id="modules">Third-party modules</a></h4>
+      <p>To add additional third-party modules use the following options:</p>
 
       <dl>
         <dt><code>--with-module=<var>module-type</var>:<var>module-file</var>[,
@@ -653,13 +693,6 @@
             If you want to build a DSO module instead of a statically linked
             use <code class="program"><a href="../programs/apxs.html">apxs</a></code>.</div>
         </dd>
-
-        <dt><code>--with-mpm=MPM</code></dt>
-        <dd>Choose the process model for your server. You have to select
-          exactly one <a href="../mpm.html">Multi-Processing Module</a>.
-          Otherwise the <a href="../mpm.html#defaults">default MPM</a> for
-          your operating system will be taken. Possible MPMs are
-          <code class="module"><a href="../mod/prefork.html">prefork</a></code> and <code class="module"><a href="../mod/worker.html">worker</a></code>.</dd>
       </dl>
     
 
