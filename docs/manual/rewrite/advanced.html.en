@@ -34,6 +34,7 @@ configuration.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#sharding">URL-based sharding accross multiple backends</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Load Balancing</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -131,6 +132,54 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
       a refresh of the contents, he just removes
       <code>page.html</code> (typically from <code>cron</code>).</p>
     </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="load-balancing" id="load-balancing">Load Balancing</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to randomly distribute load across several servers
+      using mod_rewrite.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We'll use <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> and a list of servers
+      to accomplish this.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteMap lb rnd:/path/to/serverlist.txt
+
+RewriteRule ^/(.*) http://${lb:servers}/$1 [P,L]
+</pre></div>
+
+<p><code>serverlist.txt</code> will contain a list of the servers:</p>
+
+<div class="example"><pre>
+## serverlist.txt
+
+servers one.example.com|two.example.com|three.example.com
+</pre></div>
+
+<p>If you want one particular server to get more of the load than the
+others, add it more times to the list.</p>
+
+   </dd>
+
+   <dt>Discussion</dt>
+   <dd>
+<p>Apache comes with a load-balancing module -
+<code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> - which is far more flexible and
+featureful than anything you can cobble together using mod_rewrite.</p>
+   </dd>
   </dl>
 
 </div></div>

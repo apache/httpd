@@ -142,4 +142,55 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
 
 </section>
 
+<section id="load-balancing">
+
+  <title>Load Balancing</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to randomly distribute load across several servers
+      using mod_rewrite.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We'll use <directive
+      module="mod_rewrite">RewriteMap</directive> and a list of servers
+      to accomplish this.</p>
+
+<example><pre>
+RewriteEngine on
+RewriteMap lb rnd:/path/to/serverlist.txt
+
+RewriteRule ^/(.*) http://${lb:servers}/$1 [P,L]
+</pre></example>
+
+<p><code>serverlist.txt</code> will contain a list of the servers:</p>
+
+<example><pre>
+## serverlist.txt
+
+servers one.example.com|two.example.com|three.example.com
+</pre></example>
+
+<p>If you want one particular server to get more of the load than the
+others, add it more times to the list.</p>
+
+   </dd>
+
+   <dt>Discussion</dt>
+   <dd>
+<p>Apache comes with a load-balancing module -
+<module>mod_proxy_balancer</module> - which is far more flexible and
+featureful than anything you can cobble together using mod_rewrite.</p>
+   </dd>
+  </dl>
+
+</section>
+
+
+
 </manualpage> 
