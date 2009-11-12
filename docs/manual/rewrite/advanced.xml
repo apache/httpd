@@ -23,7 +23,7 @@
 <manualpage metafile="avoid.xml.meta">
   <parentdocument href="./">Rewrite</parentdocument>
 
-<title>When not to use mod_rewrite</title>
+<title>Advanced Techniques with mod_rewrite</title>
 
 <summary>
 
