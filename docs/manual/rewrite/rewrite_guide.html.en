@@ -47,7 +47,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#redirecthome">Redirect Homedirs For Foreigners</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#external-rewriting">External Rewriting Engine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Homedirs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dynamic-mirror">Dynamic Mirror</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#retrieve-missing-data">Retrieve Missing Data from Intranet</a></li>
@@ -293,60 +292,6 @@ RewriteRule   ^foo\.html$             foo.night.html
           <code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code> may be used to control this
           effect.</div>
 
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="external-rewriting" id="external-rewriting">External Rewriting Engine</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>A FAQ: How can we solve the FOO/BAR/QUUX/etc.
-          problem? There seems no solution by the use of
-          <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>...</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>Use an external <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, i.e. a program which acts
-          like a <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. It is run once on startup of Apache
-          receives the requested URLs on <code>STDIN</code> and has
-          to put the resulting (usually rewritten) URL on
-          <code>STDOUT</code> (same order!).</p>
-
-<div class="example"><pre>
-RewriteEngine on
-RewriteMap    quux-map       <strong>prg:</strong>/path/to/map.quux.pl
-RewriteRule   ^/~quux/(.*)$  /~quux/<strong>${quux-map:$1}</strong>
-</pre></div>
-
-<div class="example"><pre>
-#!/path/to/perl
-
-#   disable buffered I/O which would lead
-#   to deadloops for the Apache server
-$| = 1;
-
-#   read URLs one per line from stdin and
-#   generate substitution URL on stdout
-while (&lt;&gt;) {
-    s|^foo/|bar/|;
-    print $_;
-}
-</pre></div>
-
-          <p>This is a demonstration-only example and just rewrites
-          all URLs <code>/~quux/foo/...</code> to
-          <code>/~quux/bar/...</code>. Actually you can program
-          whatever you like. But notice that while such maps can be
-          <strong>used</strong> also by an average user, only the
-          system administrator can <strong>define</strong> it.</p>
         </dd>
       </dl>
 
