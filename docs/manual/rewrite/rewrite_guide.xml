@@ -292,62 +292,6 @@ RewriteRule   ^foo\.html$             foo.night.html
 
     </section>
 
-    <section id="external-rewriting">
-
-      <title>External Rewriting Engine</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>A FAQ: How can we solve the FOO/BAR/QUUX/etc.
-          problem? There seems no solution by the use of
-          <module>mod_rewrite</module>...</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>Use an external <directive module="mod_rewrite"
-          >RewriteMap</directive>, i.e. a program which acts
-          like a <directive module="mod_rewrite"
-          >RewriteMap</directive>. It is run once on startup of Apache
-          receives the requested URLs on <code>STDIN</code> and has
-          to put the resulting (usually rewritten) URL on
-          <code>STDOUT</code> (same order!).</p>
-
-<example><pre>
-RewriteEngine on
-RewriteMap    quux-map       <strong>prg:</strong>/path/to/map.quux.pl
-RewriteRule   ^/~quux/(.*)$  /~quux/<strong>${quux-map:$1}</strong>
-</pre></example>
-
-<example><pre>
-#!/path/to/perl
-
-#   disable buffered I/O which would lead
-#   to deadloops for the Apache server
-$| = 1;
-
-#   read URLs one per line from stdin and
-#   generate substitution URL on stdout
-while (&lt;&gt;) {
-    s|^foo/|bar/|;
-    print $_;
-}
-</pre></example>
-
-          <p>This is a demonstration-only example and just rewrites
-          all URLs <code>/~quux/foo/...</code> to
-          <code>/~quux/bar/...</code>. Actually you can program
-          whatever you like. But notice that while such maps can be
-          <strong>used</strong> also by an average user, only the
-          system administrator can <strong>define</strong> it.</p>
-        </dd>
-      </dl>
-
-    </section>
-
     <section id="structuredhomedirs">
 
       <title>Structured Homedirs</title>
