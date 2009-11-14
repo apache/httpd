@@ -18,16 +18,25 @@ case $host in
 esac
 
 dnl See if APR supports APR_POLLSET_THREADSAFE.
-dnl XXX This hack tests for the underlying functions used by APR when it
-dnl XXX supports APR_POLLSET_THREADSAFE.
-dnl FIXME with a run-time check for
+dnl XXX This hack tests for the underlying functions used by APR when it supports
+dnl XXX APR_POLLSET_THREADSAFE, and duplicates APR's Darwin version check.
+dnl A run-time check for
 dnl     apr_pollset_create(,,APR_POLLSET_THREADSAFE) == APR_SUCCESS
-AC_CHECK_FUNCS(kqueue port_create epoll_create)
-if test "$ac_cv_func_kqueue$ac_cv_func_port_create$ac_cv_func_epoll_create" != "nonono"; then
-    have_threadsafe_pollset=yes
-else
-    have_threadsafe_pollset=no
-fi
+dnl would be great but an in-tree apr (srclib/apr) hasn't been built yet.
+
+AC_CACHE_CHECK([whether APR supports thread-safe pollsets], [ac_cv_have_threadsafe_pollset], [
+    case $host in
+        *-apple-darwin[[1-9]].*)
+            APR_SETIFNULL(ac_cv_func_kqueue, [no])
+            ;;
+    esac
+    AC_CHECK_FUNCS(kqueue port_create epoll_create)
+    if test "$ac_cv_func_kqueue$ac_cv_func_port_create$ac_cv_func_epoll_create" != "nonono"; then
+        ac_cv_have_threadsafe_pollset=yes
+    else
+        ac_cv_have_threadsafe_pollset=no
+    fi
+])
 
 dnl See if this is a forking platform w.r.t. MPMs
 case $host in
