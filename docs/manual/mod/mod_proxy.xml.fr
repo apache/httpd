@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 809241 -->
+<!-- English Revision : 835573 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -336,7 +336,7 @@
 <description>Conteneur de directives s'appliquant &agrave; des ressources
 mandat&eacute;es</description>
 <syntax>&lt;Proxy <var>url-avec-jokers</var>&gt; ...&lt;/Proxy&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>configuration du serveur</context><context>serveur virtuel</context>
 </contextlist>
 
 <usage>
@@ -372,6 +372,7 @@ mandat&eacute;es</description>
     </example>
 
 </usage>
+<seealso><directive type="section" module="mod_proxy">ProxyMatch</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -442,6 +443,7 @@ mandat&eacute;es correspondant &agrave; une expression rationnelle</description>
     les URLs auxquelles elle s'applique en utilisant une <glossary
     ref="regex">expression rationnelle</glossary>.</p>
 </usage>
+<seealso><directive type="section" module="mod_proxy">Proxy</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1097,8 +1099,8 @@ du serveur local en utilisant des expressions rationnelles</description>
 par un serveur mandat&eacute; en inverse</description>
 <syntax>ProxyPassReverse [<var>chemin</var>] <var>url</var>
 [<var>interpolate</var>]</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context>
+<contextlist><context>configuration du serveur</context><context>serveur virtuel</context>
+<context>r&eacute;pertoire</context>
 </contextlist>
 
 <usage>
