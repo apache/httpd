@@ -33,23 +33,31 @@ APACHE_MPM_ENABLED($default_mpm)
 
 AC_ARG_ENABLE(mpms-shared,
 APACHE_HELP_STRING(--enable-mpms-shared=MPM-LIST,Space-separated list of MPM modules to enable for dynamic loading.  MPM-LIST=list | "all"),[
-    mpm_build=shared
-    for i in $enableval; do
-        if test "$i" = "all"; then
-            for j in $ap_supported_shared_mpms; do
-                eval "enable_mpm_$j=shared"
-                APACHE_MPM_ENABLED($j)
-            done
-        else
-            i=`echo $i | sed 's/-/_/g'`
-            if ap_mpm_supports_shared $i; then
-                eval "enable_mpm_$i=shared"
-                APACHE_MPM_ENABLED($i)
-            else
-                AC_MSG_ERROR([MPM $i does not support dynamic loading.])
-            fi
+    if test "$enableval" = "no"; then
+        mpm_build=static
+    else
+        mpm_build=shared
+dnl     Build just the default MPM if --enable-mpms-shared has no argument.
+        if test "$enableval" = "yes"; then
+            enableval=$default_mpm
         fi
-    done
+        for i in $enableval; do
+            if test "$i" = "all"; then
+                for j in $ap_supported_shared_mpms; do
+                    eval "enable_mpm_$j=shared"
+                    APACHE_MPM_ENABLED($j)
+                done
+            else
+                i=`echo $i | sed 's/-/_/g'`
+                if ap_mpm_supports_shared $i; then
+                    eval "enable_mpm_$i=shared"
+                    APACHE_MPM_ENABLED($i)
+                else
+                    AC_MSG_ERROR([MPM $i does not support dynamic loading.])
+                fi
+            fi
+        done
+    fi
 ], [mpm_build=static])
 
 for i in $ap_enabled_mpms; do
