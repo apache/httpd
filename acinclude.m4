@@ -207,7 +207,7 @@ dnl Provide information for building the MPM.  (Enablement is handled using
 dnl --with-mpm/--enable-mpms-shared.)
 dnl
 dnl name     -- name of MPM, same as MPM directory name
-dnl shared   -- variable to check for value "shared" to indicate shared module build
+dnl shared   -- "shared" to indicate shared module build, empty string otherwise
 dnl objects  -- one or more .lo files to link into the MPM module (default: mpmname.lo)
 dnl config   -- configuration logic to run if the MPM is enabled
 dnl path     -- relative path to MPM (default: server/mpm/mpmname)
