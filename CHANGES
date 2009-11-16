@@ -11,7 +11,7 @@ Changes with Apache 2.3.3
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
   *) Build: fix --with-module to work as documented
-     PR 43881 [Gez Saunders <???>]
+     PR 43881 [Gez Saunders <gez.saunders virgin.net>]
      
   *) mod_ssl: enable support for ECC keys and ECDH ciphers.  Tested against
      OpenSSL 1.0.0b3.  [Vipul Gupta <vipul.gupta sun.com>, Sander Temme]
