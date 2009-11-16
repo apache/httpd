@@ -152,6 +152,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     +1: sf
 
+  * build: fix --with-module option to work as documented
+    PR 43881
+    Patch: http://svn.apache.org/viewvc?rev=880794&view=rev
+    +1: niq
+
+  * proxy: return consistent error message in case of failure to
+    connect to backend.
+    PR 46971
+    Patch: http://svn.apache.org/viewvc?rev=808920&view=rev
+    +1: niq
+
+  * mod_filter: dispatch correctly where dispatch string doesn't exist
+    PR 48054
+    Trunk patch: n/a (trunk upgraded to use ap_expr for condition testing)
+    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24418
+    +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
