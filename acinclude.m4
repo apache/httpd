@@ -226,6 +226,9 @@ AC_DEFUN(APACHE_MPM_MODULE,[
             mpmpath=$5
         fi
 
+        dnl VPATH support
+        test -d $mpmpath || $srcdir/build/mkdir.sh $mpmpath
+
         APACHE_FAST_OUTPUT($mpmpath/Makefile)
 
         if test -z "$2"; then
