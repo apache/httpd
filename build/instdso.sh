@@ -49,7 +49,15 @@ then
     $CMD || exit $?
 fi
 
-type install >/dev/null 2>&1 && INSTALL_CMD=install || INSTALL_CMD=cp
+case $SYS in
+    SunOS)
+        INSTALL_CMD=cp
+        ;;
+    *)
+        type install >/dev/null 2>&1 && INSTALL_CMD=install || INSTALL_CMD=cp
+        ;;
+esac
+
 CMD="$SH_LIBTOOL --mode=install $INSTALL_CMD $DSOARCHIVE $TARGETDIR/"
 echo $CMD
 $CMD || exit $?
