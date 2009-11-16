@@ -1028,9 +1028,6 @@ in case of an error</description>
     will be immediately halted and the internal error message returned.
     This is necessary to guard against security problems caused by
     bad requests.</p>
-
-    <p>Prior to version 2.0, messages were indicated by prefixing
-    them with a single unmatched double quote character.</p>
 </usage>
 
 <seealso><a href="../custom-error.html">documentation of
@@ -2875,7 +2872,7 @@ header</description>
     <dl>
       <dt><code>ServerTokens Full</code> (or not specified)</dt>
 
-      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.0.41
+      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.4.1
       (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
 
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
@@ -2891,16 +2888,16 @@ header</description>
       <dt><code>ServerTokens Minor</code></dt>
 
       <dd>Server sends (<em>e.g.</em>): <code>Server:
-      Apache/2.0</code></dd>
+      Apache/2.4</code></dd>
 
       <dt><code>ServerTokens Min[imal]</code></dt>
 
       <dd>Server sends (<em>e.g.</em>): <code>Server:
-      Apache/2.0.41</code></dd>
+      Apache/2.4.1</code></dd>
 
       <dt><code>ServerTokens OS</code></dt>
 
-      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.0.41
+      <dd>Server sends (<em>e.g.</em>): <code>Server: Apache/2.4.1
       (Unix)</code></dd>
 
     </dl>
