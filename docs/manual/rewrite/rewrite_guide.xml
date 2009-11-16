@@ -591,58 +591,6 @@ RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
 
     </section>
 
-    <section id="referer-deflector">
-
-      <title>Referer-based Deflector</title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>How can we program a flexible URL Deflector which acts
-          on the "Referer" HTTP header and can be configured with as
-          many referring pages as we like?</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>Use the following really tricky ruleset...</p>
-
-<example><pre>
-RewriteMap  deflector txt:/path/to/deflector.map
-
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}} ^-$
-RewriteRule ^.* %{HTTP_REFERER} [R,L]
-
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
-RewriteRule ^.* ${deflector:%{HTTP_REFERER}} [R,L]
-</pre></example>
-
-          <p>... in conjunction with a corresponding rewrite
-          map:</p>
-
-<example><pre>
-##
-##  deflector.map
-##
-
-http://www.badguys.com/bad/index.html    -
-http://www.badguys.com/bad/index2.html   -
-http://www.badguys.com/bad/index3.html   http://somewhere.com/
-</pre></example>
-
-          <p>This automatically redirects the request back to the
-          referring page (when "<code>-</code>" is used as the value
-          in the map) or to a specific URL (when an URL is specified
-          in the map as the second argument).</p>
-        </dd>
-      </dl>
-
-    </section>
-
 
 </manualpage>
 

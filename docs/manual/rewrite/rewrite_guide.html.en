@@ -52,7 +52,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#retrieve-missing-data">Retrieve Missing Data from Intranet</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#new-mime-type">New MIME-type, New Service</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mass-virtual-hosting">Mass Virtual Hosting</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Referer-based Deflector</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
 documentation</a></li><li><a href="intro.html">mod_rewrite
 introduction</a></li><li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - advanced 
@@ -588,58 +587,6 @@ RewriteCond   ${vhost:%1}  ^(/.*)$
 RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
     :
 </pre></div>
-        </dd>
-      </dl>
-
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="referer-deflector" id="referer-deflector">Referer-based Deflector</a></h2>
-
-      
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-          <p>How can we program a flexible URL Deflector which acts
-          on the "Referer" HTTP header and can be configured with as
-          many referring pages as we like?</p>
-        </dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>Use the following really tricky ruleset...</p>
-
-<div class="example"><pre>
-RewriteMap  deflector txt:/path/to/deflector.map
-
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}} ^-$
-RewriteRule ^.* %{HTTP_REFERER} [R,L]
-
-RewriteCond %{HTTP_REFERER} !=""
-RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
-RewriteRule ^.* ${deflector:%{HTTP_REFERER}} [R,L]
-</pre></div>
-
-          <p>... in conjunction with a corresponding rewrite
-          map:</p>
-
-<div class="example"><pre>
-##
-##  deflector.map
-##
-
-http://www.badguys.com/bad/index.html    -
-http://www.badguys.com/bad/index2.html   -
-http://www.badguys.com/bad/index3.html   http://somewhere.com/
-</pre></div>
-
-          <p>This automatically redirects the request back to the
-          referring page (when "<code>-</code>" is used as the value
-          in the map) or to a specific URL (when an URL is specified
-          in the map as the second argument).</p>
         </dd>
       </dl>
 
