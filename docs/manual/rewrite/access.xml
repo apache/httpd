@@ -252,4 +252,53 @@ bsdti1.sdm.de  -
 
 </section>
 
+<section id="referer-deflector">
+
+  <title>Referer-based Deflector</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Redirect requests based on the Referer from which the request
+      came, with different targets per Referer.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+  <p>The following ruleset uses a map file to associate each Referer
+  with a redirection target.</p>
+
+<example><pre>
+RewriteMap  deflector txt:/path/to/deflector.map
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}} =-
+RewriteRule ^ %{HTTP_REFERER} [R,L]
+
+RewriteCond %{HTTP_REFERER} !=""
+RewriteCond ${deflector:%{HTTP_REFERER}|NOT-FOUND} !=NOT-FOUND
+RewriteRule ^.* ${deflector:%{HTTP_REFERER}} [R,L]
+</pre></example>
+
+      <p>The map file lists redirection targets for each referer, or, if
+      we just wish to redirect back to where they came from, a "-" is
+      placed in the map:</p>
+
+<example><pre>
+##
+##  deflector.map
+##
+
+http://www.badguys.com/bad/index.html    -
+http://www.badguys.com/bad/index2.html   -
+http://www.badguys.com/bad/index3.html   http://somewhere.com/
+</pre></example>
+
+    </dd>
+  </dl>
+
+</section>
+
 </manualpage> 
