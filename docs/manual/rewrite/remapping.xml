@@ -253,7 +253,9 @@ RewriteRule ^(.*).html$ $1.php
 
 </section>
 
-<section id="canonicalhost"><title>Canonical Hostnames</title>
+<section id="canonicalhost">
+
+<title>Canonical Hostnames</title>
 
       <dl>
         <dt>Description:</dt>
@@ -590,5 +592,82 @@ rather than rewriting URLs.</p>
 </dl>
 
 </section>
+
+<section id="mass-virtual-hosting">
+
+  <title>Mass Virtual Hosting</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Mass virtual hosting is one of the more common uses of
+      mod_rewrite. However, it is seldom the best way to handle mass
+      virtual hosting. This topic is discussed at great length in the <a
+      href="../vhosts/mass.html">virtual host documentation</a>.</p>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="dynamic-proxy">
+
+  <title>Proxying Content with mod_rewrite</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>
+    mod_rewrite provides the [P] flag, which allows URLs to be passed,
+    via mod_proxy, to another server. Two examples are given here. In
+    one example, a URL is passed directly to another server, and served
+    as though it were a local URL. In the other example, we proxy
+    missing content to a back-end server.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>To simply map a URL to another server, we use the [P] flag, as
+      follows:</p>
+
+<example><pre>
+RewriteEngine  on
+RewriteBase    /products/
+RewriteRule    ^<strong>widget/</strong>(.*)$  <strong>http://product.example.com/widget/</strong>$1  [<strong>P</strong>]
+ProxyPassReverse /products/widget/ http://product.example.com/widget/
+</pre></example>
+
+   <p>In the second example, we proxy the request only if we can't find
+   the resource locally. This can be very useful when you're migrating
+   from one server to another, and you're not sure if all the content
+   has been migrated yet.</p>
+
+<example><pre>
+RewriteCond %{REQUEST_FILENAME}       <strong>!-f</strong>
+RewriteCond %{REQUEST_FILENAME}       <strong>!-d</strong>
+RewriteRule ^/(.*) http://<strong>old</strong>.example.com$1 [<strong>P</strong>]
+ProxyPassReverse / http://old.example.com/
+</pre></example>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd><p>In each case, we add a <directive
+    module="mod_proxy">ProxyPassReverse</directive> directive to ensure
+    that any redirects issued by the backend are correctly passed on to
+    the client.</p>
+    
+    <p>Consider using either <directive
+    module="mod_proxy">ProxyPass</directive> or <directive
+    module="mod_rewrite">ProxyPassMatch</directive> whenever possible in
+    preference to mod_rewrite.</p>
+    </dd>
+  </dl>
+
+</section>
+
+
 
 </manualpage> 
