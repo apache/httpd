@@ -1940,7 +1940,7 @@ void ssl_callback_Info(MODSSL_INFO_CB_ARG_TYPE ssl, int where, int rc)
      * state machine and move to ABORT if a Client Hello is being
      * read. */
     if ((where & SSL_CB_ACCEPT_LOOP) && scr->reneg_state == RENEG_REJECT) {
-        int state = SSL_get_state(ssl);
+        int state = SSL_get_state((SSL *)ssl);
         
         if (state == SSL3_ST_SR_CLNT_HELLO_A 
             || state == SSL23_ST_SR_CLNT_HELLO_A) {
