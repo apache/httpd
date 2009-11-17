@@ -53,54 +53,6 @@ introduction</a></seealso>
 useful examples</a></seealso>
 <seealso><a href="tech.html">Technical details</a></seealso>
 
-
-    <section id="moveddocroot">
-
-      <title>Moved <code>DocumentRoot</code></title>
-
-      <dl>
-        <dt>Description:</dt>
-
-        <dd>
-<p>Usually the <directive module="core">DocumentRoot</directive>
-of the webserver directly relates to the URL "<code>/</code>".
-But often this data is not really of top-level priority. For example,
-you may wish for visitors, on first entering a site, to go to a
-particular subdirectory <code>/about/</code>. This may be accomplished
-using the following ruleset:</p>
-</dd>
-
-        <dt>Solution:</dt>
-
-        <dd>
-          <p>We redirect the URL <code>/</code> to
-          <code>/about/</code>:
-          </p>
-         
-<example><pre>
-RewriteEngine on
-RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
-</pre></example>
-
-    <p>Note that this can also be handled using the <directive
-    module="mod_alias">RedirectMatch</directive> directive:</p>
-
-<example>
-RedirectMatch ^/$ http://example.com/about/
-</example>
-
-<p>Note also that the example rewrites only the root URL. That is, it
-rewrites a request for <code>http://example.com/</code>, but not a
-request for <code>http://example.com/page.html</code>. If you have in 
-fact changed your document root - that is, if <strong>all</strong> of 
-your content is in fact in that subdirectory, it is greatly preferable 
-to simply change your <directive module="core">DocumentRoot</directive>
-directive, rather than rewriting URLs.</p>
-</dd>
-</dl>
-
-    </section>
-
     <section id="trailingslash">
 
       <title>Trailing Slash Problem</title>
