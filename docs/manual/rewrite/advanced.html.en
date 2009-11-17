@@ -36,6 +36,10 @@ configuration.</div>
 <li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Load Balancing</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#autorefresh">Document With Autorefresh</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Userdirs</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Time-Dependent Rewriting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenvvars">Set Environment Variables Based On URL Parts</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -332,6 +336,150 @@ exit(0);
 
 ##EOF##
 </pre></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="structuredhomedirs" id="structuredhomedirs">Structured Userdirs</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Some sites with thousands of users use a
+      structured homedir layout, <em>i.e.</em> each homedir is in a
+      subdirectory which begins (for instance) with the first
+      character of the username. So, <code>/~larry/anypath</code>
+      is <code>/home/<strong>l</strong>/larry/public_html/anypath</code>
+      while <code>/~waldo/anypath</code> is
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We use the following ruleset to expand the tilde URLs
+      into the above layout.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
+</pre></div>
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="redirectanchors" id="redirectanchors">Redirecting Anchors</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>By default, redirecting to an HTML anchor doesn't work,
+    because mod_rewrite escapes the <code>#</code> character,
+    turning it into <code>%23</code>. This, in turn, breaks the
+    redirection.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the <code>[NE]</code> flag on the
+      <code>RewriteRule</code>. NE stands for No Escape.
+      </p>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>This technique will of course also work with with other 
+    special characters that mod_rewrite, by default, URL-encodes.</dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="time-dependent" id="time-dependent">Time-Dependent Rewriting</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to use mod_rewrite to serve different content based on
+      the time of day.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>There are a lot of variables named <code>TIME_xxx</code>
+      for rewrite conditions. In conjunction with the special
+      lexicographic comparison patterns <code>&lt;STRING</code>,
+      <code>&gt;STRING</code> and <code>=STRING</code> we can
+      do time-dependent redirects:</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
+RewriteRule   ^foo\.html$             foo.day.html [L]
+RewriteRule   ^foo\.html$             foo.night.html
+</pre></div>
+
+      <p>This provides the content of <code>foo.day.html</code>
+      under the URL <code>foo.html</code> from
+      <code>07:01-18:59</code> and at the remaining time the
+      contents of <code>foo.night.html</code>.</p>
+
+      <div class="warning"><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>, intermediate proxies
+      and browsers may each cache responses and cause the either page to be
+      shown outside of the time-window configured.
+      <code class="module"><a href="../mod/mod_expires.html">mod_expires</a></code> may be used to control this
+      effect. You are, of course, much better off simply serving the
+      content dynamically, and customizing it based on the time of day.</div>
+
+    </dd>
+  </dl>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="setenvvars" id="setenvvars">Set Environment Variables Based On URL Parts</a></h2>
+
+  
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>At time, we want to maintain some kind of status when we
+      perform a rewrite. For example, you want to make a note that
+      you've done that rewrite, so that you can check later to see if a
+      request can via that rewrite. One way to do this is by setting an
+      environment variable.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the [E] flag to set an environment variable.</p>
+
+<div class="example"><pre>
+RewriteEngine on
+RewriteRule   ^/horse/(.*)   /pony/$1 [E=<strong>rewritten:1</strong>]
+</pre></div>
+
+    <p>Later in your ruleset you might check for this environment
+    variable using a RewriteCond:</p>
+
+<div class="example"><pre>
+RewriteCond %{ENV:rewritten} =1
+</pre></div>
+
     </dd>
   </dl>
 

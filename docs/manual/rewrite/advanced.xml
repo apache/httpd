@@ -343,4 +343,148 @@ exit(0);
 
 </section>
 
+<section id="structuredhomedirs">
+
+  <title>Structured Userdirs</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>Some sites with thousands of users use a
+      structured homedir layout, <em>i.e.</em> each homedir is in a
+      subdirectory which begins (for instance) with the first
+      character of the username. So, <code>/~larry/anypath</code>
+      is <code>/home/<strong>l</strong>/larry/public_html/anypath</code>
+      while <code>/~waldo/anypath</code> is
+      <code>/home/<strong>w</strong>/waldo/public_html/anypath</code>.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>We use the following ruleset to expand the tilde URLs
+      into the above layout.</p>
+
+<example><pre>
+RewriteEngine on
+RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</strong>/$1/public_html$3
+</pre></example>
+    </dd>
+  </dl>
+
+</section>
+
+<section id="redirectanchors">
+
+  <title>Redirecting Anchors</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>By default, redirecting to an HTML anchor doesn't work,
+    because mod_rewrite escapes the <code>#</code> character,
+    turning it into <code>%23</code>. This, in turn, breaks the
+    redirection.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the <code>[NE]</code> flag on the
+      <code>RewriteRule</code>. NE stands for No Escape.
+      </p>
+    </dd>
+
+    <dt>Discussion:</dt>
+    <dd>This technique will of course also work with with other 
+    special characters that mod_rewrite, by default, URL-encodes.</dd>
+  </dl>
+
+</section>
+
+<section id="time-dependent">
+
+  <title>Time-Dependent Rewriting</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>We wish to use mod_rewrite to serve different content based on
+      the time of day.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>There are a lot of variables named <code>TIME_xxx</code>
+      for rewrite conditions. In conjunction with the special
+      lexicographic comparison patterns <code>&lt;STRING</code>,
+      <code>&gt;STRING</code> and <code>=STRING</code> we can
+      do time-dependent redirects:</p>
+
+<example><pre>
+RewriteEngine on
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &gt;0700
+RewriteCond   %{TIME_HOUR}%{TIME_MIN} &lt;1900
+RewriteRule   ^foo\.html$             foo.day.html [L]
+RewriteRule   ^foo\.html$             foo.night.html
+</pre></example>
+
+      <p>This provides the content of <code>foo.day.html</code>
+      under the URL <code>foo.html</code> from
+      <code>07:01-18:59</code> and at the remaining time the
+      contents of <code>foo.night.html</code>.</p>
+
+      <note type="warning"><module>mod_cache</module>, intermediate proxies
+      and browsers may each cache responses and cause the either page to be
+      shown outside of the time-window configured.
+      <module>mod_expires</module> may be used to control this
+      effect. You are, of course, much better off simply serving the
+      content dynamically, and customizing it based on the time of day.</note>
+
+    </dd>
+  </dl>
+
+</section>
+
+<section id="setenvvars">
+
+  <title>Set Environment Variables Based On URL Parts</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+      <p>At time, we want to maintain some kind of status when we
+      perform a rewrite. For example, you want to make a note that
+      you've done that rewrite, so that you can check later to see if a
+      request can via that rewrite. One way to do this is by setting an
+      environment variable.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>Use the [E] flag to set an environment variable.</p>
+
+<example><pre>
+RewriteEngine on
+RewriteRule   ^/horse/(.*)   /pony/$1 [E=<strong>rewritten:1</strong>]
+</pre></example>
+
+    <p>Later in your ruleset you might check for this environment
+    variable using a RewriteCond:</p>
+
+<example><pre>
+RewriteCond %{ENV:rewritten} =1
+</pre></example>
+
+    </dd>
+  </dl>
+
+</section>
+
 </manualpage> 
