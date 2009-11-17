@@ -131,7 +131,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   http://svn.apache.org/viewvc?rev=829667&view=rev
 
     2.2.x Patch:  http://people.apache.org/~covener/2.2.x-xlate_lite-noimplicitadd.diff (no code conflicts)
-    +1: covener, trawick (without unrelated generated html)
+    +1: covener, trawick (without unrelated generated html), poirier
+        (without unrelated generated html)
 
   * mod_ldap: Work around broken cache management in mod_ldap:
     If LDAPSharedCacheSize is too small, try to free some memory by purging
