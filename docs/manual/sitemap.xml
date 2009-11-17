@@ -84,9 +84,9 @@ documentation</page>
 <page href="rewrite/intro.html">Introduction</page>
 <page href="rewrite/flags.html">Flags</page>
 <page href="rewrite/tech.html">Technical details</page>
-<page href="rewrite/rewrite_guide.html">Rewrite Guide - useful examples</page>
-<page href="rewrite/rewrite_guide_advanced.html">Advanced Rewrite Guide - more
-useful examples</page>
+<page href="rewrite/remapping.html">Remapping URLs</page>
+<page href="rewrite/access.html">Access control</page>
+<page href="rewrite/advanced.html">Advanced techniques</page>
 </category>
 
 <category id="ssl">

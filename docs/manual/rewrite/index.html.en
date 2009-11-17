@@ -57,7 +57,6 @@
 documentation</a></li>
 <li><a href="intro.html">Introduction to regular expressions and
 mod_rewrite</a></li>
-<li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
 <li><a href="remapping.html">Using mod_rewrite for redirection and
 remapping of URLs</a></li>
 <li><a href="access.html">Using mod_rewrite to control access</a></li>

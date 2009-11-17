@@ -99,9 +99,9 @@ documentation</a></li>
 <li><a href="rewrite/intro.html">Introduction</a></li>
 <li><a href="rewrite/flags.html">Flags</a></li>
 <li><a href="rewrite/tech.html">Technical details</a></li>
-<li><a href="rewrite/rewrite_guide.html">Rewrite Guide - useful examples</a></li>
-<li><a href="rewrite/rewrite_guide_advanced.html">Advanced Rewrite Guide - more
-useful examples</a></li>
+<li><a href="rewrite/remapping.html">Remapping URLs</a></li>
+<li><a href="rewrite/access.html">Access control</a></li>
+<li><a href="rewrite/advanced.html">Advanced techniques</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache SSL/TLS Encryption</a></h2>
