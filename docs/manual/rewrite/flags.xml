@@ -35,9 +35,6 @@ consult the reference documentation.</p>
 
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="tech.html">Technical details</a></seealso>
-<seealso><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></seealso>
-<seealso><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
-advanced useful examples</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
 <p><directive module="mod_rewrite">RewriteRule</directive>s can have

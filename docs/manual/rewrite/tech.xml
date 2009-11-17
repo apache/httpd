@@ -29,14 +29,8 @@
 <p>This document discusses some of the technical details of mod_rewrite
 and URL matching.</p>
 </summary>
-<seealso><a href="../mod/mod_rewrite.html">Module
-documentation</a></seealso>
-<seealso><a href="intro.html">mod_rewrite
-introduction</a></seealso>
-<seealso><a href="rewrite_guide.html">Rewrite Guide - useful 
-examples</a></seealso>
-<seealso><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
-advanced useful examples</a></seealso>
+<seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
+<seealso><a href="index.html">mod_rewrite detailed examples</a></seealso>
 
 <section id="Internal"><title>Internal Processing</title>
 

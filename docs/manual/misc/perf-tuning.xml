@@ -830,9 +830,7 @@
       an HTTP server to <strong>reliably</strong> implement the
       protocol it needs to shutdown each direction of the
       communication independently (recall that a TCP connection is
-      bi-directional, each half is independent of the other). This
-      fact is often overlooked by other servers, but is correctly
-      implemented in Apache as of 1.2.</p>
+      bi-directional, each half is independent of the other).</p>
 
       <p>When this feature was added to Apache it caused a flurry of
       problems on various versions of Unix because of a
