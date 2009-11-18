@@ -10,6 +10,10 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) mod_authnz_ldap: Add AuthLDAPBindAuthoritative to allow Authentication to
+     try other providers in the case of an LDAP bind failure.
+     PR 46608 [Justin Erenkrantz, Joe Schaefer, Tony Stevenson]
+
   *) Build: fix --with-module to work as documented
      PR 43881 [Gez Saunders <gez.saunders virgin.net>]
      
