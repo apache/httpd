@@ -87,17 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_charset_lite: Start honoring the 'NoImplicitAdd' CharsetOption, and document
-    behavior correctly.
-
-    Trunk Patch:  http://svn.apache.org/viewvc?rev=829657&view=rev
-                  http://svn.apache.org/viewvc?rev=829664&view=rev
-                  http://svn.apache.org/viewvc?rev=829667&view=rev
-
-    2.2.x Patch:  http://people.apache.org/~covener/2.2.x-xlate_lite-noimplicitadd.diff (no code conflicts)
-    +1: covener, trawick (without unrelated generated html), poirier
-        (without unrelated generated html)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
