@@ -87,6 +87,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_charset_lite: Start honoring the 'NoImplicitAdd' CharsetOption, and document
+    behavior correctly.
+
+    Trunk Patch:  http://svn.apache.org/viewvc?rev=829657&view=rev
+                  http://svn.apache.org/viewvc?rev=829664&view=rev
+                  http://svn.apache.org/viewvc?rev=829667&view=rev
+
+    2.2.x Patch:  http://people.apache.org/~covener/2.2.x-xlate_lite-noimplicitadd.diff (no code conflicts)
+    +1: covener, trawick (without unrelated generated html), poirier
+        (without unrelated generated html)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -123,16 +133,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
    +1: minfrin
 
-  * mod_charset_lite: Start honoring the 'NoImplicitAdd' CharsetOption, and document
-    behavior correctly.
-
-    Trunk Patch:  http://svn.apache.org/viewvc?rev=829657&view=rev
-                  http://svn.apache.org/viewvc?rev=829664&view=rev
-                  http://svn.apache.org/viewvc?rev=829667&view=rev
-
-    2.2.x Patch:  http://people.apache.org/~covener/2.2.x-xlate_lite-noimplicitadd.diff (no code conflicts)
-    +1: covener, trawick (without unrelated generated html), poirier
-        (without unrelated generated html)
 
   * mod_ldap: Work around broken cache management in mod_ldap:
     If LDAPSharedCacheSize is too small, try to free some memory by purging
@@ -162,7 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     connect to backend.
     PR 46971
     Patch: http://svn.apache.org/viewvc?rev=806920&view=rev
-    +1: niq
+    +1: niq, covener
 
   * mod_filter: dispatch correctly where dispatch string doesn't exist
     PR 48054
