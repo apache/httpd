@@ -752,6 +752,31 @@ Require group <em>mygroupfile</em>
 </section>
 
 <directivesynopsis>
+<name>AuthLDAPBindAuthoritative</name>
+<description>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</description>
+<syntax>AuthLDAPBindAuthoritative<em>off|on</em></syntax>
+<default>AuthLDAPBindAuhtoritative on</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<usage>
+    <p>By default, subsequent authentication providers are only queried if a 
+    user cannot be mapped to a DN, but not if the user can be mapped to a DN and their
+    password cannot be verified with an LDAP bind.  
+    If <directive module="mod_authnz_ldap">AuthLDAPBindAuthoritative</directive> 
+    is set to <em>off</em>, other configured authentication modules will have 
+    a chance to validate the user if the LDAP bind (with the current users credentials) 
+    fails for any reason.</p>
+    <p> This allows users present in both LDAP and 
+    <directive module="mod_authn_file">AuthUserFile</directive> to authenticate
+    when the LDAP server is available but the users account is locked or password
+    is otherwise unusable.</p>
+</usage>
+<seealso><directive module="mod_authn_file">AuthUserFile</directive></seealso>
+<seealso><directive module="mod_auth_basic">AuthBasicProvider</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>AuthLDAPBindDN</name>
 <description>Optional DN to use in binding to the LDAP server</description>
 <syntax>AuthLDAPBindDN <em>distinguished-name</em></syntax>
