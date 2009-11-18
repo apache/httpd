@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * proxy: return consistent error message in case of failure to
     connect to backend.
     PR 46971
-    Patch: http://svn.apache.org/viewvc?rev=808920&view=rev
+    Patch: http://svn.apache.org/viewvc?rev=806920&view=rev
     +1: niq
 
   * mod_filter: dispatch correctly where dispatch string doesn't exist
