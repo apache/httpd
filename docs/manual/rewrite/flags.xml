@@ -387,8 +387,8 @@ URL sent with the redirect.
 </p>
 
 <p>
-A status code may be specified, in the range 300-399, with a 302 status
-code being used by default if none is specified.
+<em>Any</em> status code may be specified, that is a valid HTTP Response,
+with a 302 status code being used by default if none is specified.
 </p>
 
 <p>
