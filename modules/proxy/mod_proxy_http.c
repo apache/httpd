@@ -1145,7 +1145,7 @@ skip_body:
     }
 
     if (rv != OK) {
-        /* apr_errno value has been logged in lower level method */
+        /* apr_status_t value has been logged in lower level method */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: pass request body failed to %pI (%s)"
                      " from %s (%s)",

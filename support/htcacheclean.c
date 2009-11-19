@@ -342,7 +342,7 @@ static int process_dir(char *path, apr_pool_t *pool)
             }
         }
 
-        /* this may look strange but apr_stat() may return errno which
+        /* this may look strange but apr_stat() may return an error which
          * is system dependent and there may be transient failures,
          * so just blindly retry for a short while
          */
