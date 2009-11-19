@@ -87,6 +87,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * proxy: return consistent error message in case of failure to
+    connect to backend.
+    PR 46971
+    Patch: http://svn.apache.org/viewvc?rev=806920&view=rev
+    +1: niq, covener, jim
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -142,12 +149,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 43881
     Patch: http://svn.apache.org/viewvc?rev=880794&view=rev
     +1: niq
-
-  * proxy: return consistent error message in case of failure to
-    connect to backend.
-    PR 46971
-    Patch: http://svn.apache.org/viewvc?rev=806920&view=rev
-    +1: niq, covener, jim
 
   * mod_filter: dispatch correctly where dispatch string doesn't exist
     PR 48054
