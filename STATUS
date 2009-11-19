@@ -87,11 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * proxy: return consistent error message in case of failure to
-    connect to backend.
-    PR 46971
-    Patch: http://svn.apache.org/viewvc?rev=806920&view=rev
-    +1: niq, covener, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:

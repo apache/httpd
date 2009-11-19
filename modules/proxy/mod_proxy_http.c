@@ -1974,10 +1974,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
     /* Step Two: Make the Connection */
     if (ap_proxy_connect_backend(proxy_function, backend, worker, r->server)) {
-        if (r->proxyreq == PROXYREQ_PROXY)
-            status = HTTP_NOT_FOUND;
-        else
-            status = HTTP_SERVICE_UNAVAILABLE;
+        status = HTTP_SERVICE_UNAVAILABLE;
         goto cleanup;
     }
 
