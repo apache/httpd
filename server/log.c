@@ -494,6 +494,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
      * because it points to the old error log, or back to the tty
      * of the submitter.
      * XXX: This is BS - /dev/null is non-portable
+     *      errno-as-apr_status_t is also non-portable
      */
     if (replace_stderr && freopen("/dev/null", "w", stderr) == NULL) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, errno, s_main,

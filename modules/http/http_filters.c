@@ -272,7 +272,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             char *endstr;
 
             ctx->state = BODY_LENGTH;
-            errno = 0;
 
             /* Protects against over/underflow, non-digit chars in the
              * string (excluding leading space) (the endstr checks)
