@@ -204,6 +204,7 @@
  *                         proxy_dir_conf
  * 20091011.1 (2.3.3-dev)  add debug_level to util_ldap_state_t
  * 20091031.0 (2.3.3-dev)  remove public LDAP referral-related macros
+ * 20091119.0 (2.3.4-dev)  dav_error interface uses apr_status_t parm, not errno
  *
  */
 

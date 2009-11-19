@@ -248,7 +248,7 @@ static dav_error * dav_fs_parse_locktoken(
 
     if (ap_strstr_c(char_token, "opaquelocktoken:") != char_token) {
         return dav_new_error(p,
-                             HTTP_BAD_REQUEST, DAV_ERR_LOCK_UNK_STATE_TOKEN,
+                             HTTP_BAD_REQUEST, DAV_ERR_LOCK_UNK_STATE_TOKEN, 0,
                              "The lock token uses an unknown State-token "
                              "format and could not be parsed.");
     }
@@ -256,7 +256,7 @@ static dav_error * dav_fs_parse_locktoken(
 
     locktoken = apr_pcalloc(p, sizeof(*locktoken));
     if (apr_uuid_parse(&locktoken->uuid, char_token)) {
-        return dav_new_error(p, HTTP_BAD_REQUEST, DAV_ERR_LOCK_PARSE_TOKEN,
+        return dav_new_error(p, HTTP_BAD_REQUEST, DAV_ERR_LOCK_PARSE_TOKEN, 0,
                              "The opaquelocktoken has an incorrect format "
                              "and could not be parsed.");
     }
@@ -345,7 +345,7 @@ static dav_error * dav_fs_open_lockdb(request_rec *r, int ro, int force,
     comb->priv.lockdb_path = dav_get_lockdb_path(r);
     if (comb->priv.lockdb_path == NULL) {
         return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR,
-                             DAV_ERR_LOCK_NO_DB,
+                             DAV_ERR_LOCK_NO_DB, 0,
                              "A lock database was not specified with the "
                              "DAVLockDB directive. One must be specified "
                              "to use the locking functionality.");
@@ -424,7 +424,7 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, apr_datum_t key,
 #if DAV_DEBUG
     if (lockdb->ro) {
         return dav_new_error(lockdb->info->pool,
-                             HTTP_INTERNAL_SERVER_ERROR, 0,
+                             HTTP_INTERNAL_SERVER_ERROR, 0, 0,
                              "INTERNAL DESIGN ERROR: the lockdb was opened "
                              "readonly, but an attempt to save locks was "
                              "performed.");
@@ -637,7 +637,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
             --offset;
             return dav_new_error(p,
                                  HTTP_INTERNAL_SERVER_ERROR,
-                                 DAV_ERR_LOCK_CORRUPT_DB,
+                                 DAV_ERR_LOCK_CORRUPT_DB, 0,
                                  apr_psprintf(p,
                                              "The lock database was found to "
                                              "be corrupt. offset %"
@@ -694,7 +694,7 @@ static dav_error * dav_fs_resolve(dav_lockdb *lockdb,
     /* ### use a different description and/or error ID? */
     return dav_new_error(lockdb->info->pool,
                          HTTP_INTERNAL_SERVER_ERROR,
-                         DAV_ERR_LOCK_CORRUPT_DB,
+                         DAV_ERR_LOCK_CORRUPT_DB, 0,
                          "The lock database was found to be corrupt. "
                          "An indirect lock's direct lock could not "
                          "be found.");
@@ -768,7 +768,7 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
 
     rv = apr_file_info_get(&finfo, APR_FINFO_SIZE, file);
     if (rv != APR_SUCCESS) {
-        err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+        err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, rv,
                             apr_psprintf(p,
                                         "Opened but could not stat file %s",
                                         pbuf->buf));
@@ -776,7 +776,7 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
     }
 
     if (finfo.size != (apr_size_t)finfo.size) {
-        err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+        err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, 0,
                             apr_psprintf(p,
                                         "Opened but rejected huge file %s",
                                         pbuf->buf));
@@ -785,9 +785,9 @@ static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
 
     amt = (apr_size_t)finfo.size;
     dav_set_bufsize(p, pbuf, amt);
-    if (apr_file_read(file, pbuf->buf, &amt) != APR_SUCCESS
+    if ((rv = apr_file_read(file, pbuf->buf, &amt)) != APR_SUCCESS
         || amt != finfo.size) {
-        err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+        err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, rv,
                             apr_psprintf(p,
                                         "Failure reading locknull file "
                                         "for %s", dirpath));
@@ -813,6 +813,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
     apr_file_t *file = NULL;
     dav_error *err = NULL;
     apr_size_t amt;
+    apr_status_t rv;
 
     if (pbuf->buf == NULL)
         return NULL;
@@ -826,27 +827,27 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
 
     if (pbuf->cur_len == 0) {
         /* delete the file if cur_len == 0 */
-        if (apr_file_remove(pathname, p) != 0) {
-            return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+        if ((rv = apr_file_remove(pathname, p)) != APR_SUCCESS) {
+            return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, rv,
                                  apr_psprintf(p,
                                              "Error removing %s", pathname));
         }
         return NULL;
     }
 
-    if (apr_file_open(&file, pathname,
-                APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BINARY,
-                APR_OS_DEFAULT, p) != APR_SUCCESS) {
-        return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+    if ((rv = apr_file_open(&file, pathname,
+                            APR_WRITE | APR_CREATE | APR_TRUNCATE | APR_BINARY,
+                            APR_OS_DEFAULT, p)) != APR_SUCCESS) {
+        return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, rv,
                              apr_psprintf(p,
                                          "Error opening %s for writing",
                                          pathname));
     }
 
     amt = pbuf->cur_len;
-    if (apr_file_write(file, pbuf->buf, &amt) != APR_SUCCESS
+    if ((rv = apr_file_write(file, pbuf->buf, &amt)) != APR_SUCCESS
         || amt != pbuf->cur_len) {
-        err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+        err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, rv,
                             apr_psprintf(p,
                                         "Error writing %" APR_SIZE_T_FMT
                                         " bytes to %s",
@@ -1005,7 +1006,7 @@ static dav_error * dav_fs_get_locks(dav_lockdb *lockdb,
 #if DAV_DEBUG
     if (calltype == DAV_GETLOCKS_COMPLETE) {
         return dav_new_error(lockdb->info->pool,
-                             HTTP_INTERNAL_SERVER_ERROR, 0,
+                             HTTP_INTERNAL_SERVER_ERROR, 0, 0,
                              "INTERNAL DESIGN ERROR: DAV_GETLOCKS_COMPLETE "
                              "is not yet supported");
     }

@@ -526,7 +526,7 @@ DAV_DECLARE(dav_error *)dav_open_propdb(request_rec *r, dav_lockdb *lockdb,
 
 #if DAV_DEBUG
     if (resource->uri == NULL) {
-        return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+        return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0, 0,
                              "INTERNAL DESIGN ERROR: resource must define "
                              "its URI.");
     }
@@ -789,6 +789,7 @@ DAV_DECLARE(dav_get_props_result) dav_get_props(dav_propdb *propdb,
 #if 0
                 /* ### need to change signature to return an error */
                 return dav_new_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR, 0,
+                                     0,
                                      "INTERNAL DESIGN ERROR: insert_liveprop "
                                      "did not insert what was asked for.");
 #endif
@@ -932,7 +933,7 @@ DAV_DECLARE_NONSTD(void) dav_prop_validate(dav_prop_ctx *ctx)
 
     if (!dav_rw_liveprop(propdb, priv)) {
         ctx->err = dav_new_error(propdb->p, HTTP_CONFLICT,
-                                 DAV_ERR_PROP_READONLY,
+                                 DAV_ERR_PROP_READONLY, 0,
                                  "Property is read-only.");
         return;
     }
@@ -968,7 +969,7 @@ DAV_DECLARE_NONSTD(void) dav_prop_validate(dav_prop_ctx *ctx)
     */
     if (propdb->db == NULL) {
         ctx->err = dav_new_error(propdb->p, HTTP_INTERNAL_SERVER_ERROR,
-                                 DAV_ERR_PROP_NO_DATABASE,
+                                 DAV_ERR_PROP_NO_DATABASE, 0,
                                  "Attempted to set/remove a property "
                                  "without a valid, open, read/write "
                                  "property database.");

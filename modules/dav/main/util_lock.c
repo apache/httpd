@@ -172,7 +172,7 @@ DAV_DECLARE(dav_error *) dav_lock_parse_lockinfo(request_rec *r,
     dav_lock *lock;
 
     if (!dav_validate_root(doc, "lockinfo")) {
-        return dav_new_error(p, HTTP_BAD_REQUEST, 0,
+        return dav_new_error(p, HTTP_BAD_REQUEST, 0, 0,
                              "The request body contains an unexpected "
                              "XML root element.");
     }
@@ -187,7 +187,7 @@ DAV_DECLARE(dav_error *) dav_lock_parse_lockinfo(request_rec *r,
 
     lock->depth = dav_get_depth(r, DAV_INFINITY);
     if (lock->depth == -1) {
-        return dav_new_error(p, HTTP_BAD_REQUEST, 0,
+        return dav_new_error(p, HTTP_BAD_REQUEST, 0, 0,
                              "An invalid Depth header was specified.");
     }
     lock->timeout = dav_get_timeout(r);
@@ -230,7 +230,7 @@ DAV_DECLARE(dav_error *) dav_lock_parse_lockinfo(request_rec *r,
             continue;
         }
 
-        return dav_new_error(p, HTTP_PRECONDITION_FAILED, 0,
+        return dav_new_error(p, HTTP_PRECONDITION_FAILED, 0, 0,
                              apr_psprintf(p,
                                          "The server cannot satisfy the "
                                          "LOCK request due to an unknown XML "
@@ -346,7 +346,7 @@ DAV_DECLARE(dav_error *) dav_add_lock(request_rec *r,
         if (multi_status != NULL) {
             /* manufacture a 207 error for the multistatus response */
             *response = multi_status;
-            return dav_new_error(r->pool, HTTP_MULTI_STATUS, 0,
+            return dav_new_error(r->pool, HTTP_MULTI_STATUS, 0, 0,
                                  "Error(s) occurred on resources during the "
                                  "addition of a depth lock.");
         }
@@ -450,7 +450,7 @@ static dav_error * dav_get_direct_resource(apr_pool_t *p,
 
         /* not found! that's an error. */
         if (lock == NULL) {
-            return dav_new_error(p, HTTP_BAD_REQUEST, 0,
+            return dav_new_error(p, HTTP_BAD_REQUEST, 0, 0,
                                  "The specified locktoken does not correspond "
                                  "to an existing lock on this resource.");
         }
@@ -471,7 +471,7 @@ static dav_error * dav_get_direct_resource(apr_pool_t *p,
         resource = parent;
     }
 
-    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
+    return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0, 0,
                          "The lock database is corrupt. A direct lock could "
                          "not be found for the corresponding indirect lock "
                          "on this resource.");
@@ -600,7 +600,7 @@ static dav_error * dav_inherit_locks(request_rec *r, dav_lockdb *lockdb,
         }
         if (parent == NULL) {
             /* ### map result to something nice; log an error */
-            return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+            return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0, 0,
                                  "Could not fetch parent resource. Unable to "
                                  "inherit locks from the parent and apply "
                                  "them to this resource.");

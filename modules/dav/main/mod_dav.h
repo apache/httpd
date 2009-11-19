@@ -123,7 +123,7 @@ typedef struct dav_error {
     int error_id;               /* DAV-specific error ID */
     const char *desc;           /* DAV:responsedescription and error log */
 
-    int save_errno;             /* copy of errno causing the error */
+    apr_status_t aprerr;        /* APR error if any, or 0/APR_SUCCESS */
 
     const char *namespace;      /* [optional] namespace of error */
     const char *tagname;        /* name of error-tag */
@@ -137,16 +137,17 @@ typedef struct dav_error {
 ** errno value.
 */
 DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status,
-                                      int error_id, const char *desc);
+                                      int error_id, apr_status_t aprerr,
+                                      const char *desc);
 
 
 /*
 ** Create a new error structure with tagname and (optional) namespace;
-** namespace may be NULL, which means "DAV:". save_errno will be
-** filled with the current errno value.
+** namespace may be NULL, which means "DAV:".
 */
 DAV_DECLARE(dav_error*) dav_new_error_tag(apr_pool_t *p, int status,
-                                          int error_id, const char *desc,
+                                          int error_id, apr_status_t aprerr,
+                                          const char *desc,
                                           const char *namespace,
                                           const char *tagname);
 

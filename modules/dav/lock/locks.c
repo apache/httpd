@@ -204,7 +204,6 @@ extern const dav_hooks_locks dav_hooks_locks_generic;
 static dav_error * dav_generic_dbm_new_error(apr_dbm_t *db, apr_pool_t *p,
                                              apr_status_t status)
 {
-    int save_errno = errno;
     int errcode;
     const char *errstr;
     dav_error *err;
@@ -224,8 +223,7 @@ static dav_error * dav_generic_dbm_new_error(apr_dbm_t *db, apr_pool_t *p,
         errstr = apr_pstrdup(p, errbuf);
     }
 
-    err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, errcode, errstr);
-    err->save_errno = save_errno;
+    err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, errcode, status, errstr);
     return err;
 }
 
@@ -264,7 +262,7 @@ static dav_error * dav_generic_parse_locktoken(apr_pool_t *p,
 
     if (ap_strstr_c(char_token, "opaquelocktoken:") != char_token) {
         return dav_new_error(p,
-                             HTTP_BAD_REQUEST, DAV_ERR_LOCK_UNK_STATE_TOKEN,
+                             HTTP_BAD_REQUEST, DAV_ERR_LOCK_UNK_STATE_TOKEN, 0,
                              "The lock token uses an unknown State-token "
                              "format and could not be parsed.");
     }
@@ -272,7 +270,7 @@ static dav_error * dav_generic_parse_locktoken(apr_pool_t *p,
 
     locktoken = apr_pcalloc(p, sizeof(*locktoken));
     if (apr_uuid_parse(&locktoken->uuid, char_token)) {
-        return dav_new_error(p, HTTP_BAD_REQUEST, DAV_ERR_LOCK_PARSE_TOKEN,
+        return dav_new_error(p, HTTP_BAD_REQUEST, DAV_ERR_LOCK_PARSE_TOKEN, 0,
                              "The opaquelocktoken has an incorrect format "
                              "and could not be parsed.");
     }
@@ -363,7 +361,7 @@ static dav_error * dav_generic_open_lockdb(request_rec *r, int ro, int force,
     comb->priv.lockdb_path = dav_generic_get_lockdb_path(r);
     if (comb->priv.lockdb_path == NULL) {
         return dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR,
-                             DAV_ERR_LOCK_NO_DB,
+                             DAV_ERR_LOCK_NO_DB, 0,
                              "A lock database was not specified with the "
                              "DAVGenericLockDB directive. One must be "
                              "specified to use the locking functionality.");
@@ -447,7 +445,7 @@ static dav_error * dav_generic_save_lock_record(dav_lockdb *lockdb,
 #if DAV_DEBUG
     if (lockdb->ro) {
         return dav_new_error(lockdb->info->pool,
-                             HTTP_INTERNAL_SERVER_ERROR, 0,
+                             HTTP_INTERNAL_SERVER_ERROR, 0, 0,
                              "INTERNAL DESIGN ERROR: the lockdb was opened "
                              "readonly, but an attempt to save locks was "
                              "performed.");
@@ -665,7 +663,7 @@ static dav_error * dav_generic_load_lock_record(dav_lockdb *lockdb,
             --offset;
             return dav_new_error(p,
                                  HTTP_INTERNAL_SERVER_ERROR,
-                                 DAV_ERR_LOCK_CORRUPT_DB,
+                                 DAV_ERR_LOCK_CORRUPT_DB, 0,
                                  apr_psprintf(p,
                                              "The lock database was found to "
                                              "be corrupt. offset %"
@@ -722,7 +720,7 @@ static dav_error * dav_generic_resolve(dav_lockdb *lockdb,
     /* ### use a different description and/or error ID? */
     return dav_new_error(lockdb->info->pool,
                          HTTP_INTERNAL_SERVER_ERROR,
-                         DAV_ERR_LOCK_CORRUPT_DB,
+                         DAV_ERR_LOCK_CORRUPT_DB, 0,
                          "The lock database was found to be corrupt. "
                          "An indirect lock's direct lock could not "
                          "be found.");
@@ -798,7 +796,7 @@ static dav_error * dav_generic_get_locks(dav_lockdb *lockdb,
 #if DAV_DEBUG
     if (calltype == DAV_GETLOCKS_COMPLETE) {
         return dav_new_error(lockdb->info->pool,
-                             HTTP_INTERNAL_SERVER_ERROR, 0,
+                             HTTP_INTERNAL_SERVER_ERROR, 0, 0,
                              "INTERNAL DESIGN ERROR: DAV_GETLOCKS_COMPLETE "
                              "is not yet supported");
     }
