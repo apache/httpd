@@ -79,7 +79,6 @@ void dav_dbm_get_statefiles(apr_pool_t *p, const char *fname,
 static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
                                     apr_status_t status)
 {
-    int save_errno = errno;
     int errcode;
     const char *errstr;
     dav_error *err;
@@ -100,8 +99,7 @@ static dav_error * dav_fs_dbm_error(dav_db *db, apr_pool_t *p,
         errstr = apr_pstrdup(p, errbuf);
     }
 
-    err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, errcode, errstr);
-    err->save_errno = save_errno;
+    err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, errcode, status, errstr);
     return err;
 }
 
@@ -419,7 +417,7 @@ static dav_error * dav_propdb_open(apr_pool_t *pool,
 
             /* call it a major version error */
             return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR,
-                                 DAV_ERR_PROP_BAD_MAJOR,
+                                 DAV_ERR_PROP_BAD_MAJOR, 0,
                                  "Prop database has the wrong major "
                                  "version number and cannot be used.");
         }
@@ -441,7 +439,7 @@ static dav_error * dav_propdb_open(apr_pool_t *pool,
             dav_dbm_close(db);
 
             return dav_new_error(pool, HTTP_INTERNAL_SERVER_ERROR,
-                                 DAV_ERR_PROP_BAD_MAJOR,
+                                 DAV_ERR_PROP_BAD_MAJOR, 0,
                                  "Prop database has the wrong major "
                                  "version number and cannot be used.");
         }

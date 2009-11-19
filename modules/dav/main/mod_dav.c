@@ -557,16 +557,8 @@ static void dav_log_err(request_rec *r, dav_error *err, int level)
         if (errscan->desc == NULL)
             continue;
 
-        if (errscan->save_errno != 0) {
-            errno = errscan->save_errno;
-            ap_log_rerror(APLOG_MARK, level, errno, r, "%s  [%d, #%d]",
-                          errscan->desc, errscan->status, errscan->error_id);
-        }
-        else {
-            ap_log_rerror(APLOG_MARK, level, 0, r,
-                          "%s  [%d, #%d]",
-                          errscan->desc, errscan->status, errscan->error_id);
-        }
+        ap_log_rerror(APLOG_MARK, level, errscan->aprerr, r, "%s  [%d, #%d]",
+                      errscan->desc, errscan->status, errscan->error_id);
     }
 }
 
@@ -729,7 +721,7 @@ static dav_error *dav_get_resource(request_rec *r, int label_allowed,
     /* Note: this shouldn't happen, but just be sure... */
     if (*res_p == NULL) {
         /* ### maybe use HTTP_INTERNAL_SERVER_ERROR */
-        return dav_new_error(r->pool, HTTP_NOT_FOUND, 0,
+        return dav_new_error(r->pool, HTTP_NOT_FOUND, 0, 0,
                              apr_psprintf(r->pool,
                                           "The provider did not define a "
                                           "resource for %s.",
@@ -981,7 +973,7 @@ static int dav_method_put(request_rec *r)
                                 APR_BLOCK_READ, DAV_READ_BLOCKSIZE);
 
             if (rc != APR_SUCCESS) {
-                err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0,
+                err = dav_new_error(r->pool, HTTP_INTERNAL_SERVER_ERROR, 0, rc,
                                     apr_psprintf(r->pool,
                                                  "Could not get next bucket "
                                                  "brigade (URI: %s)",
@@ -1007,7 +999,7 @@ static int dav_method_put(request_rec *r)
 
                 rc = apr_bucket_read(b, &data, &len, APR_BLOCK_READ);
                 if (rc != APR_SUCCESS) {
-                    err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                    err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, rc,
                                         apr_psprintf(r->pool,
                                                     "An error occurred while reading"
                                                     " the request body (URI: %s)",
@@ -1298,7 +1290,7 @@ static dav_error *dav_gen_supported_methods(request_rec *r,
                 }
 
                 if (name == NULL) {
-                    return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                    return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
                                          "A DAV:supported-method element "
                                          "does not have a \"name\" attribute");
                 }
@@ -1381,7 +1373,7 @@ static dav_error *dav_gen_supported_live_props(request_rec *r,
                 }
 
                 if (name == NULL) {
-                    err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                    err = dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
                                         "A DAV:supported-live-property "
                                         "element does not have a \"name\" "
                                         "attribute");
@@ -1466,7 +1458,7 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
                         }
 
                         if (name == NULL) {
-                            return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0,
+                            return dav_new_error(r->pool, HTTP_BAD_REQUEST, 0, 0,
                                                  "A DAV:supported-report element "
                                                  "does not have a \"name\" attribute");
                         }
@@ -2150,7 +2142,7 @@ static apr_text * dav_failed_proppatch(apr_pool_t *p,
 
             if (ctx->operation == DAV_PROP_OP_SET) {
                 if (err424_set == NULL)
-                    err424_set = dav_new_error(p, HTTP_FAILED_DEPENDENCY, 0,
+                    err424_set = dav_new_error(p, HTTP_FAILED_DEPENDENCY, 0, 0,
                                                "Attempted DAV:set operation "
                                                "could not be completed due "
                                                "to other errors.");
@@ -2158,7 +2150,7 @@ static apr_text * dav_failed_proppatch(apr_pool_t *p,
             }
             else if (ctx->operation == DAV_PROP_OP_DELETE) {
                 if (err424_delete == NULL)
-                    err424_delete = dav_new_error(p, HTTP_FAILED_DEPENDENCY, 0,
+                    err424_delete = dav_new_error(p, HTTP_FAILED_DEPENDENCY, 0, 0,
                                                   "Attempted DAV:remove "
                                                   "operation could not be "
                                                   "completed due to other "
@@ -3038,7 +3030,7 @@ static int dav_method_lock(request_rec *r)
         return dav_handle_err(r, err, NULL);
     }
     if (parent && (!parent->exists || parent->collection != 1)) {
-        err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+        err = dav_new_error(r->pool, HTTP_CONFLICT, 0, 0,
                            apr_psprintf(r->pool,
                                         "The parent resource of %s does not "
                                         "exist or is not a collection.", 
@@ -3343,14 +3335,14 @@ static int dav_method_vsn_control(request_rec *r)
 
     /* if not versioning existing resource, must specify version to select */
     if (!resource->exists && target == NULL) {
-        err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+        err = dav_new_error(r->pool, HTTP_CONFLICT, 0, 0,
                             "<DAV:initial-version-required/>");
         return dav_handle_err(r, err, NULL);
     }
     else if (resource->exists) {
         /* cannot add resource to existing version history */
         if (target != NULL) {
-            err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+            err = dav_new_error(r->pool, HTTP_CONFLICT, 0, 0,
                                 "<DAV:cannot-add-to-existing-history/>");
             return dav_handle_err(r, err, NULL);
         }
@@ -3358,7 +3350,7 @@ static int dav_method_vsn_control(request_rec *r)
         /* resource must be unversioned and versionable, or version selector */
         if (resource->type != DAV_RESOURCE_TYPE_REGULAR
             || (!resource->versioned && !(vsn_hooks->versionable)(resource))) {
-            err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+            err = dav_new_error(r->pool, HTTP_CONFLICT, 0, 0,
                                 "<DAV:must-be-versionable/>");
             return dav_handle_err(r, err, NULL);
         }
@@ -3919,11 +3911,11 @@ static dav_error * dav_label_walker(dav_walk_resource *wres, int calltype)
     if (wres->resource->type != DAV_RESOURCE_TYPE_VERSION &&
         (wres->resource->type != DAV_RESOURCE_TYPE_REGULAR
          || !wres->resource->versioned)) {
-        err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0,
+        err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0, 0,
                             "<DAV:must-be-version-or-version-selector/>");
     }
     else if (wres->resource->working) {
-        err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0,
+        err = dav_new_error(ctx->w.pool, HTTP_CONFLICT, 0, 0,
                             "<DAV:must-not-be-checked-out/>");
     }
     else {
@@ -4049,11 +4041,12 @@ static int dav_method_label(request_rec *r)
          * overall error to pass to dav_handle_err()
          */
         if (depth == 0) {
-            err = dav_new_error(r->pool, multi_status->status, 0, multi_status->desc);
+            err = dav_new_error(r->pool, multi_status->status, 0, 0,
+                                multi_status->desc);
             multi_status = NULL;
         }
         else {
-            err = dav_new_error(r->pool, HTTP_MULTI_STATUS, 0,
+            err = dav_new_error(r->pool, HTTP_MULTI_STATUS, 0, 0,
                                 "Errors occurred during the LABEL operation.");
         }
 
@@ -4175,7 +4168,7 @@ static int dav_method_make_workspace(request_rec *r)
 
     /* resource must not already exist */
     if (resource->exists) {
-        err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+        err = dav_new_error(r->pool, HTTP_CONFLICT, 0, 0,
                             "<DAV:resource-must-be-null/>");
         return dav_handle_err(r, err, NULL);
     }
@@ -4231,7 +4224,7 @@ static int dav_method_make_activity(request_rec *r)
 
     /* resource must not already exist */
     if (resource->exists) {
-        err = dav_new_error(r->pool, HTTP_CONFLICT, 0,
+        err = dav_new_error(r->pool, HTTP_CONFLICT, 0, 0,
                             "<DAV:resource-must-be-null/>");
         return dav_handle_err(r, err, NULL);
     }
@@ -4240,7 +4233,7 @@ static int dav_method_make_activity(request_rec *r)
        an activity, i.e. whether the location is ok.  */
     if (vsn_hooks->can_be_activity != NULL
         && !(*vsn_hooks->can_be_activity)(resource)) {
-      err = dav_new_error(r->pool, HTTP_FORBIDDEN, 0,
+      err = dav_new_error(r->pool, HTTP_FORBIDDEN, 0, 0,
                           "<DAV:activity-location-ok/>");
       return dav_handle_err(r, err, NULL);
     }
