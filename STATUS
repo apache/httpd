@@ -128,18 +128,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     the cache and log a warning.
     Also increase the default LDAPSharedCacheSize to 500000.
     PR 46749.
-
     Trunk Patch: http://svn.apache.org/viewvc?rev=822458&view=rev
     2.2.x Patch: trunk patch works with some offsets
-
     +1: sf
 
   * mod_mime: Make RemoveType override the info from TypesConfig
     PR 38330.
-
     Trunk Patch: http://svn.apache.org/viewvc?rev=821298&view=rev
     2.2.x Patch: trunk patch works with some offset (except for CHANGES)
-
     +1: sf
 
   * build: fix --with-module option to work as documented
