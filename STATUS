@@ -168,7 +168,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.0.x of patch:
       http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x.patch
     +1: rjung
+    rpluem says: Two comments
+    1. IMHO backports are done from trunk not from other stable branches
+    2. The patch causes the compiler warning below that was fixed in r881222
+       on trunk. The backport should reflect this.
 
+ssl_engine_kernel.c: In function `ssl_callback_Info':
+ssl_engine_kernel.c:1802: warning: passing arg 1 of `SSL_state' discards qualifiers from pointer target type
+
+    Otherwise +1.
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
