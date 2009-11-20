@@ -76,49 +76,47 @@ endif
 #
 # Set the Release type that you want to build, possible values are:
 #
-#  debug		- full debug switches are set
-#  noopt		- normal switches are set (default)
-#  optimized	- optimization switches are set
+#  debug	- full debug switches are set
+#  noopt	- normal switches are set
+#  release	- optimization switches are set (default)
 
 ifdef reltype
-RELEASE=$(reltype)
-endif
+RELEASE = $(reltype)
+endif    
 
 ifdef RELTYPE
-RELEASE=$(RELTYPE)
+RELEASE = $(RELTYPE)
 endif
 
 ifdef debug
-RELEASE=debug
+RELEASE = debug
 endif
 
 ifdef DEBUG
-RELEASE=debug
+RELEASE = debug
+endif
+
+ifdef noopt
+RELEASE = noopt
+endif
+
+ifdef NOOPT
+RELEASE = noopt
 endif
 
 ifdef optimized
-RELEASE=optimized
+RELEASE = release
 endif
 
 ifdef OPTIMIZED
-RELEASE=optimized
+RELEASE = release
 endif
 
 ifndef RELEASE
-RELEASE = optimized
+RELEASE = release
 endif
 
-ifeq "$(RELEASE)" "debug"
-OBJDIR = Debug.o
-endif
-
-ifeq "$(RELEASE)" "noopt"
-OBJDIR = Noopt
-endif
-
-ifeq "$(RELEASE)" "optimized"
-OBJDIR = Release.o
-endif
+OBJDIR = obj_$(RELEASE)
 
 #
 # Setup compiler information
