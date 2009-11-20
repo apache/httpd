@@ -204,7 +204,7 @@ CFLAGS += -g -O0
 endif
 
 # -O4,p                 level 4 optimizations, optimize for speed
-ifeq "$(RELEASE)" "optimized"
+ifeq "$(RELEASE)" "release"
 CFLAGS += -O4,p
 endif
 
