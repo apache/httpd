@@ -162,6 +162,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
              if (nLogFD == NULL) {
                  /* Uh-oh. Failed to open the new log file. Try to clear
 
+  * mod_ssl: Partial fix for CVE-2009-3555
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?rev=833622&view=rev
+    Backport version for 2.0.x of patch:
+      http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x.patch
+    +1: rjung
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
