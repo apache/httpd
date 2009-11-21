@@ -60,6 +60,11 @@ bien mémoriser ce que chaque drapeau est supposé faire.</p>
 <p>Chaque drapeau disponible est présenté ici, avec un exemple
 d'utilisation.</p>
 
+<h3><a name="flag_b" id="flag_b">B</a></h3>
+<p>Avec le drapeau [B], la directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> échappe les caractères
+non-alphanumériques avant d'appliquer la transformation.</p>
+
+
 <h3><a name="flag_c" id="flag_c">C|chain</a></h3>
 <p>Le drapeau [C] ou [chain] indique que la règle <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> est chaînée avec la
 suivante. Autrement dit, si la règle s'applique, elle est traitée
@@ -89,12 +94,21 @@ RewriteEngine On<br />
 RewriteRule ^/index\.html - [CO=frontdoor:yes:.apache.org:1440:/]
 </code></p></div>
 
-<p>Cette règle ne réécrit pas la requête (la cible de réécriture "-"
-indique à mod_rewrite de transmettre la requête sans modification), mais
+<p>Dans l'exemple ci-dessus, la règle ne réécrit
+pas la requête. La cible de réécriture "-"
+indique à mod_rewrite de transmettre la requête sans
+modification. Par contre, il
 définit un cookie nommé 'frontdoor' avec une valeur 'yes'. Le cookie est
 valide pour tout hôte situé dans le domaine <code>.apache.org</code>. Sa
 durée de vie est limitée à 1440 minutes (24 heures), et il sera renvoyé
 pour tous les URIs.</p>
+
+
+
+<h3><a name="flag_dpi" id="flag_dpi">DPI|discardpathinfo</a></h3>
+<p>Avec le drapeau DPI, la partie PATH_INFO de l'URI
+réécrit est supprimée.</p>
+
 
 
 
