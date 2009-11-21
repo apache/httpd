@@ -239,7 +239,7 @@ bsdti1.sdm.de  -
     <p>
     The second RewriteCond assumes that you have HostNameLookups turned
     on, so that client IP addresses will be resolved. If that's not the
-    case, you should drop the second rule, and drop the
+    case, you should drop the second RewriteCond, and drop the
     <code>[OR]</code> flag from the first RewriteCond.
     </p>
     </dd>
