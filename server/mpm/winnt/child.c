@@ -430,7 +430,7 @@ reinit: /* target of data or connect upon too many AcceptEx failures */
                      * 2) there is VPN or Firewall software installed with 
                      *    buggy WSAAccept or WSADuplicateSocket implementation
                      * 3) the dynamic address / adapter has changed
-                     * Give five chances, then fall back on AcceptMutex 'none'
+                     * Give five chances, then fall back on AcceptFilter 'none'
                      */
                     if (accf == 2)
                         apr_bucket_free(buf);
