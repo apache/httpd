@@ -51,7 +51,6 @@
 #include "apr_thread_proc.h"
 #include "apr_signal.h"
 #include "apr_thread_mutex.h"
-#include "apr_proc_mutex.h"
 #include "apr_poll.h"
 #include "apr_ring.h"
 #include "apr_queue.h"
@@ -2472,7 +2471,6 @@ static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
     threads_per_child = DEFAULT_THREADS_PER_CHILD;
     max_clients = ap_daemons_limit * threads_per_child;
     ap_pid_fname = DEFAULT_PIDLOG;
-    ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
     ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
