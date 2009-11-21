@@ -159,8 +159,6 @@ Redirect /docs/ http://new.example.com/docs/
 
 </section>
 
-
-
 <section id="static-to-dynamic">
 
   <title>From Static to Dynamic</title>
@@ -593,6 +591,62 @@ rather than rewriting URLs.</p>
 
 </section>
 
+<section id="fallback-resource">
+<title>Fallback Resource</title>
+
+<dl>
+<dt>Description:</dt>
+<dd>You want a single resource (say, a certain file, like index.php) to
+handle all requests that come to a particular directory, except those
+that should go to an existing resource such as an image, or a css file.</dd>
+
+<dt>Solution:</dt>
+<dd>
+<p>As of version 2.4, you should use the <directive
+module="mod_dir">FallbackResource</directive> directive for this:</p>
+
+<example>
+<pre>
+&lt;Directory /var/www/my_blog&gt;
+  FallbackResource index.php
+&lt;/Directory&gt;
+</pre>
+</example>
+
+<p>However, in earlier versions of Apache, or if your needs are more
+complicated than this, you can use a variation of the following rewrite
+set to accomplish the same thing:</p>
+
+<example>
+<pre>
+&lt;Directory /var/www/my_blog&gt;
+  RewriteBase /my_blog
+
+  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-f
+  RewriteCond /var/www/my_blog/%{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.php [PT]
+&lt;/Directory&gt;
+</pre>
+</example>
+
+<p>If, on the other hand, you wish to pass the requested URI as a query
+string argument to index.php, you can replace that RewriteRule with:</p>
+
+<example>
+<pre>
+  RewriteRule (.*) index.php?$1 [PT,QSA]
+</pre>
+</example>
+
+<p>Note that these rulesets can be uses in a <code>.htaccess</code>
+file, as well as in a &lt;Directory&gt; block.</p>
+
+</dd>
+
+</dl>
+
+</section>
+
 <section id="mass-virtual-hosting">
 
   <title>Mass Virtual Hosting</title>
@@ -667,7 +721,5 @@ ProxyPassReverse / http://old.example.com/
   </dl>
 
 </section>
-
-
 
 </manualpage> 
