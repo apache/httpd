@@ -90,9 +90,9 @@
     with the exact IP address (or wildcard) and port pair used in a correspnding
     set of <code>VirtualHost</code> directives.</p>
 
-    <p>The name-based virtual host selection occurs only after the a single IP-based
+    <p>The name-based virtual host selection occurs only after a single IP-based
     virtual host has been selected, and only considers the set of virtual hosts
-    the carry an identical IP address and port pair.</p>
+    that carry an identical IP address and port pair.</p>
 
     <p>Hostnames can be used in place of IP addresses in a virtual host definition,
     but it is resolved at startup and is not recommended.</p>
