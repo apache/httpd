@@ -20,38 +20,31 @@
  limitations under the License.
 -->
 
-<manualpage metafile="avoid.xml.meta">
+<manualpage metafile="vhosts.xml.meta">
   <parentdocument href="./">Rewrite</parentdocument>
 
-<title>When not to use mod_rewrite</title>
+<title>Using mod_rewrite for virtual hosting</title>
 
 <summary>
 
 <p>This document supplements the <module>mod_rewrite</module> 
 <a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
-perhaps one of the most important concepts about mod_rewrite - namely,
-when to avoid using it.</p>
+how you can use <module>mod_rewrite</module> to create dynamically 
+configured virtual hosts.</p>
 
-<p>mod_rewrite should be considered a last resort, when other
-alternatives are found wanting. Using it when there are simpler
-alternatives leads to configurations which are confusing, fragile, and
-hard to maintain. Understanding what other alternatives are available is
-a very important step towards mod_rewrite mastery.</p>
-
-<p>Note that many of these examples won't work unchanged in your
-particular server configuration, so it's important that you understand
-them, rather than merely cutting and pasting the examples into your
-configuration.</p>
+<note type="warning">mod_rewrite is not the best way to configure
+virtual hosts. You should first consider the <a
+href="../vhosts/mass.html">alternatives</a> before resorting to
+mod_rewrite.</note>
 
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
 <seealso><a href="remapping.html">Redirection and remapping</a></seealso>
 <seealso><a href="access.html">Controlling access</a></seealso>
-<seealso><a href="vhosts.html">Virtual hosts</a></seealso>
+<!--<seealso><a href="vhosts.html">Virtual hosts</a></seealso>-->
 <seealso><a href="proxy.html">Proxying</a></seealso>
 <seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
-<!--<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>-->
-
+<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
 </manualpage> 

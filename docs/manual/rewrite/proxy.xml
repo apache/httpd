@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 832069 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="proxy.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Using mod_rewrite for Proxying</title>
+
+<summary>
+
+<p>This document supplements the <module>mod_rewrite</module> 
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
+how to use the RewriteRule's [P] flag to proxy content to another server.
+A number of recipes are provided that describe common scenarios.</p>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
+<seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
+<seealso><a href="remapping.html">Redirection and remapping</a></seealso>
+<seealso><a href="access.html">Controlling access</a></seealso>
+<seealso><a href="vhosts.html">Virtual hosts</a></seealso>
+<!--<seealso><a href="proxy.html">Proxying</a></seealso>-->
+<seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
+<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+
+<section id="dynamic-proxy">
+
+  <title>Proxying Content with mod_rewrite</title>
+
+  <dl>
+    <dt>Description:</dt>
+
+    <dd>
+    <p>
+    mod_rewrite provides the [P] flag, which allows URLs to be passed,
+    via mod_proxy, to another server. Two examples are given here. In
+    one example, a URL is passed directly to another server, and served
+    as though it were a local URL. In the other example, we proxy
+    missing content to a back-end server.</p>
+    </dd>
+
+    <dt>Solution:</dt>
+
+    <dd>
+      <p>To simply map a URL to another server, we use the [P] flag, as
+      follows:</p>
+
+<example><pre>
+RewriteEngine  on
+RewriteBase    /products/
+RewriteRule    ^<strong>widget/</strong>(.*)$  <strong>http://product.example.com/widget/</strong>$1  [<strong>P</strong>]
+ProxyPassReverse /products/widget/ http://product.example.com/widget/
+</pre></example>
+
+   <p>In the second example, we proxy the request only if we can't find
+   the resource locally. This can be very useful when you're migrating
+   from one server to another, and you're not sure if all the content
+   has been migrated yet.</p>
+
+<example><pre>
+RewriteCond %{REQUEST_FILENAME}       <strong>!-f</strong>
+RewriteCond %{REQUEST_FILENAME}       <strong>!-d</strong>
+RewriteRule ^/(.*) http://<strong>old</strong>.example.com$1 [<strong>P</strong>]
+ProxyPassReverse / http://old.example.com/
+</pre></example>
+    </dd>
+
+    <dt>Discussion:</dt>
+
+    <dd><p>In each case, we add a <directive
+    module="mod_proxy">ProxyPassReverse</directive> directive to ensure
+    that any redirects issued by the backend are correctly passed on to
+    the client.</p>
+    
+    <p>Consider using either <directive
+    module="mod_proxy">ProxyPass</directive> or <directive
+    module="mod_rewrite">ProxyPassMatch</directive> whenever possible in
+    preference to mod_rewrite.</p>
+    </dd>
+  </dl>
+
+</section>
+
+</manualpage> 
