@@ -23,8 +23,8 @@
 -->
 
 
-<parentdocument href="./">Rewrite</parentdocument>
 <manualpage metafile="flags.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
   <title>Les drapeaux du module Apache mod_rewrite</title>
 
 <summary>
@@ -199,11 +199,11 @@ l'extrait suivant utilis&eacute; dans un contexte de niveau serveur permet de
 faire en sorte que les fichiers <code>.php</code> soient
 <em>affich&eacute;s</em> par <code>mod_php</code> dans le cas o&ugrave; ils font
 l'objet d'une requ&ecirc;te avec l'extension <code>.phps</code> :
+</p>
 
 <example>
 RewriteRule ^(/source/.+\.php)s$ $1 [H=application/x-httpd-php-source]
 </example>
-</p>
 
 <p>L'expression rationnelle ci-dessus -
 <code>^(/source/.+\.php)s$</code> - va correspondre &agrave; toute requ&ecirc;te qui
