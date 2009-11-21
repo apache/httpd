@@ -70,6 +70,7 @@ authformsitepassphrase	mod/mod_auth_form.html#authformsitepassphrase
 authformsize	mod/mod_auth_form.html#authformsize
 authformusername	mod/mod_auth_form.html#authformusername
 authgroupfile	mod/mod_authz_groupfile.html#authgroupfile
+authldapbindauthoritative	mod/mod_authnz_ldap.html#authldapbindauthoritative
 authldapbinddn	mod/mod_authnz_ldap.html#authldapbinddn
 authldapbindpassword	mod/mod_authnz_ldap.html#authldapbindpassword
 authldapcharsetconfig	mod/mod_authnz_ldap.html#authldapcharsetconfig
@@ -232,6 +233,7 @@ languagepriority	mod/mod_negotiation.html#languagepriority
 ldapcacheentries	mod/mod_ldap.html#ldapcacheentries
 ldapcachettl	mod/mod_ldap.html#ldapcachettl
 ldapconnectiontimeout	mod/mod_ldap.html#ldapconnectiontimeout
+ldaplibrarydebug	mod/mod_ldap.html#ldaplibrarydebug
 ldapopcacheentries	mod/mod_ldap.html#ldapopcacheentries
 ldapopcachettl	mod/mod_ldap.html#ldapopcachettl
 ldapreferralhoplimit	mod/mod_ldap.html#ldapreferralhoplimit

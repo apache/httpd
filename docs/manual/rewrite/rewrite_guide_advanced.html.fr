@@ -6,27 +6,26 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Guide de réécriture des URLs - Sujets avancés - Serveur Apache HTTP</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="/style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="/style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="/style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="/images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossaire</a> | <a href="/sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur Apache HTTP Version 2.3</p>
-<img alt="" src="../images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="/images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="/images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Guide de réécriture des URLs - Sujets avancés</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="/">Version 2.3</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Guide de réécriture des URLs - Sujets avancés</h1>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/rewrite_guide_advanced.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/rewrite_guide_advanced.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span></p>
 </div>
 
 
     <p>Ce document complémente la
     <a href="../mod/mod_rewrite.html">documentation de référence</a> du
-    module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les différentes
-    manières d'utiliser le module d'Apache <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    module <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit les différentes
+    manières d'utiliser le module d'Apache <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code>
     pour résoudre les problèmes d'URLs typiques auxquels sont souvent
     confrontés les webmasters. Nous fournissons une description
     détaillée de la résolution de chaque problème par la configuration
@@ -35,8 +34,8 @@
     <div class="warning">ATTENTION: il pourra s'avérer nécessaire de
     modifier les exemples en fonction de la
     configuration de votre serveur, par exemple en ajoutant le drapeau
-    <code>[PT]</code> si les modules <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> et
-    <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> sont utilisés, etc... Les jeux de
+    <code>[PT]</code> si les modules <code class="module"><a href="/mod/mod_alias.html">mod_alias</a></code> et
+    <code class="module"><a href="/mod/mod_userdir.html">mod_userdir</a></code> sont utilisés, etc... Les jeux de
     règles devront également être adaptés pour passer d'un contexte de
     serveur à un contexte de répertoire (fichiers
     <code>.htaccess</code>). Essayez de toujours bien comprendre ce que
@@ -44,30 +43,30 @@
     bien des problèmes.</div>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cluster">Accès à une grappe de serveurs via un espace d'adressage
+<div id="quickview"><ul id="toc"><li><img alt="" src="/images/down.gif" /> <a href="#cluster">Accès à une grappe de serveurs via un espace d'adressage
       compatible</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Répertoires utilisateurs structurés</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#filereorg">Réorganisation du système de fichiers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#redirect404">Rediriger les URLs erronées vers un autre serveur Web</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#archive-access-multiplexer">Multiplexeur d'accès aux archives</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#browser-dependent-content">Contenu dépendant du navigateur</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dynamic-mirror">Miroir dynamique</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#reverse-dynamic-mirror">Miroir dynamique inverse</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#retrieve-missing-data">Récupérer des données manquantes depuis l'Intranet</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Répartition de charge</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#new-mime-type">Nouveau type MIME, nouveau service</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">Régéneration de contenu à la volée</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#autorefresh">Actualisation automatique d'un document</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#mass-virtual-hosting">Hébergement virtuel de masse</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Interdiction d'hôtes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Interdiction du mandataire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#special-authentication">Variante particulière d'authentification</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Redirection basée sur le référent</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#structuredhomedirs">Répertoires utilisateurs structurés</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#filereorg">Réorganisation du système de fichiers</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#redirect404">Rediriger les URLs erronées vers un autre serveur Web</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#archive-access-multiplexer">Multiplexeur d'accès aux archives</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#browser-dependent-content">Contenu dépendant du navigateur</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#dynamic-mirror">Miroir dynamique</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#reverse-dynamic-mirror">Miroir dynamique inverse</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#retrieve-missing-data">Récupérer des données manquantes depuis l'Intranet</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#load-balancing">Répartition de charge</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#new-mime-type">Nouveau type MIME, nouveau service</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#on-the-fly-content">Régéneration de contenu à la volée</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#autorefresh">Actualisation automatique d'un document</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#mass-virtual-hosting">Hébergement virtuel de masse</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#host-deny">Interdiction d'hôtes</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#proxy-deny">Interdiction du mandataire</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#special-authentication">Variante particulière d'authentification</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#referer-deflector">Redirection basée sur le référent</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du
 module</a></li><li><a href="intro.html">Introduction à
 mod_rewrite</a></li><li><a href="rewrite_guide.html">Guide de réécriture - exemples
 utiles</a></li><li><a href="tech.html">Détails techniques</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="cluster" id="cluster">Accès à une grappe de serveurs via un espace d'adressage
       compatible</a></h2>
@@ -153,7 +152,7 @@ RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="structuredhomedirs" id="structuredhomedirs">Répertoires utilisateurs structurés</a></h2>
 
@@ -187,7 +186,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="filereorg" id="filereorg">Réorganisation du système de fichiers</a></h2>
 
@@ -279,7 +278,7 @@ drwxr-xr-x   2 netsw  users     512 Jul  8 23:47 netsw-img/
 	  <code>DATA/</code> à l'utilisateur durant l'exécution des
 	  scripts CGI appropriés aux différentes URLs. Voici comment :
 	  tout d'abord, j'ajoute ces deux règles dans le fichier de
-	  configuration du répertoire racine <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> du serveur afin de
+	  configuration du répertoire racine <code class="directive"><a href="/mod/core.html#documentroot">DocumentRoot</a></code> du serveur afin de
 	  réécrire le chemin d'URL public <code>/net.sw/</code> vers le
 	  chemin interne <code>/e/netsw</code> :</p>
 
@@ -342,7 +341,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="redirect404" id="redirect404">Rediriger les URLs erronées vers un autre serveur Web</a></h2>
 
@@ -355,10 +354,10 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
           <p>Une question typique de la FAQ à propos de la réécriture
 	  revient souvent : comment rediriger vers un serveur B les
 	  requêtes qui échouent sur un serveur A ? On s'acquitte en
-	  général de cette tâche via des scripts CGI <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> en Perl, mais il
-	  existe aussi une solution avec <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
+	  général de cette tâche via des scripts CGI <code class="directive"><a href="/mod/core.html#errordocument">ErrorDocument</a></code> en Perl, mais il
+	  existe aussi une solution avec <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code>.
 	  Notez cependant que les performances sont moindres qu'avec
-	  l'utilisation d'un script CGI <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> !</p>
+	  l'utilisation d'un script CGI <code class="directive"><a href="/mod/core.html#errordocument">ErrorDocument</a></code> !</p>
         </dd>
 
         <dt>Solution :</dt>
@@ -374,7 +373,7 @@ RewriteRule   ^(.+)                             http://<strong>serveurB</strong>
 </pre></div>
 
           <p>Le problème réside dans le fait que seules les pages
-	  situées dans la racine <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> seront redirigées. Mais
+	  situées dans la racine <code class="directive"><a href="/mod/core.html#documentroot">DocumentRoot</a></code> seront redirigées. Mais
 	  même si vous pouvez ajouter des conditions supplémentaires (par
 	  exemple pour traiter aussi les répertoires home, etc...), il
 	  existe une meilleure solution :</p>
@@ -386,18 +385,18 @@ RewriteRule   ^(.+)          http://<strong>serveurB</strong>.dom/$1
 </pre></div>
 reprendre ici
           <p>On utilise ici la fonctionnalité de prévision des URLs
-	  futures de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Et cette solution
+	  futures de <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code>. Et cette solution
 	  fonctionne pour tous les types d'URLs et de manière sûre. Par
 	  contre, cette méthode a un impact sur les performances du
 	  serveur web, car chaque requête entraîne le traitement d'une
 	  sous-requête interne supplémentaire. Par conséquent, vous
 	  pouvez l'utiliser si votre serveur web s'exécute sur un CPU
 	  puissant. Dans le cas d'une machine plus lente, utilisez la
-	  première approche, ou mieux, un script CGI <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code>.</p>
+	  première approche, ou mieux, un script CGI <code class="directive"><a href="/mod/core.html#errordocument">ErrorDocument</a></code>.</p>
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="archive-access-multiplexer" id="archive-access-multiplexer">Multiplexeur d'accès aux archives</a></h2>
 
@@ -416,17 +415,17 @@ reprendre ici
 	  plus ni moins qu'un service d'accès FTP multiplexé. Alors que
 	  le fonctionnement de l'archive CPAN repose sur des scripts
 	  CGI, comment implémenter une approche similaire avec
-	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ?</p>
+	  <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> ?</p>
         </dd>
 
         <dt>Solution :</dt>
 
         <dd>
           <p>Premièrement, remarquons que depuis la version 3.0.0,
-	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> accepte aussi le préfixe
+	  <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> accepte aussi le préfixe
 	  "<code>ftp:</code>" dans les redirections. Et deuxièmement,
 	  l'approximation de la localisation peut être effectuée par une
-	  table de correspondances <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, en se basant sur
+	  table de correspondances <code class="directive"><a href="/mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>, en se basant sur
 	  la racine du domaine du client. Un jeu de règles chaînées
 	  astucieux nous permet d'utiliser cette racine du domaine comme
 	  clé de recherche dans notre table de correspondances de
@@ -454,7 +453,7 @@ com       ftp://ftp.cxan.com/CxAN/
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="browser-dependent-content" id="browser-dependent-content">Contenu dépendant du navigateur</a></h2>
 
@@ -501,7 +500,7 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="dynamic-mirror" id="dynamic-mirror">Miroir dynamique</a></h2>
 
@@ -550,7 +549,7 @@ RewriteRule    ^<strong>usa-news\.html</strong>$   <strong>http://www.quux-corp.
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="reverse-dynamic-mirror" id="reverse-dynamic-mirror">Miroir dynamique inverse</a></h2>
 
@@ -572,7 +571,7 @@ RewriteRule   ^http://www\.site-distant\.com/(.*)$ /miroir/du/site-distant/$1
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="retrieve-missing-data" id="retrieve-missing-data">Récupérer des données manquantes depuis l'Intranet</a></h2>
 
@@ -611,7 +610,7 @@ serveur www2.quux-corp.dom Port <strong>80</strong>
 
           <p>Il vous suffit d'adapter ces règles à la syntaxe de votre
 	  pare-feu. Nous pouvons maintenant définir les règles de
-	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> qui serviront à récupérer les
+	  <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> qui serviront à récupérer les
 	  données manquantes en arrière-plan via la fonctionnalité de
 	  mandataire :</p>
 
@@ -628,7 +627,7 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="load-balancing" id="load-balancing">Répartition de charge</a></h2>
 
@@ -649,7 +648,7 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
         <dd>
           <p>Il existe de nombreuses solutions à ce problème. Nous
 	  décrirons tout d'abord une variante assez connue basée sur
-	  DNS, puis une autre basée sur <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+	  DNS, puis une autre basée sur <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code>
 	  :</p>
 
           <ol>
@@ -718,7 +717,7 @@ www   IN  A       1.2.3.5
 	      mandataire</strong>
 
               <p>Dans cette variante, nous utilisons
-	      <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> et sa fonctionnalité de
+	      <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> et sa fonctionnalité de
 	      mandataire. Tout d'abord, nous définissons
 	      <code>www0.example.com</code> comme un autre nom de
 	      <code>www.example.com</code> en ajoutant l'entrée</p>
@@ -801,7 +800,7 @@ while (&lt;STDIN&gt;) {
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="new-mime-type" id="new-mime-type">Nouveau type MIME, nouveau service</a></h2>
 
@@ -888,7 +887,7 @@ HREF="*"
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="on-the-fly-content" id="on-the-fly-content">Régéneration de contenu à la volée</a></h2>
 
@@ -936,7 +935,7 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="autorefresh" id="autorefresh">Actualisation automatique d'un document</a></h2>
 
@@ -957,7 +956,7 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
         <dd>
           <p>Non ! Nous allons pour cela combiner la fonctionnalité MIME
 	  multipart, la fonctionnalité NPH du serveur web et la
-	  puissance de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour la manipulation
+	  puissance de <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> pour la manipulation
 	  d'URLs. Tout d'abord, nous définissons une nouvelle
 	  fonctionnalité pour les URLs : l'ajout de
 	  <code>:refresh</code> à toute URL fait que la 'page' est
@@ -1091,7 +1090,7 @@ exit(0);
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="mass-virtual-hosting" id="mass-virtual-hosting">Hébergement virtuel de masse</a></h2>
 
@@ -1101,7 +1100,7 @@ exit(0);
         <dt>Description :</dt>
 
         <dd>
-          <p>La fonctionnalité <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> d'Apache est intéressante et
+          <p>La fonctionnalité <code class="directive"><a href="/mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> d'Apache est intéressante et
 	  fonctionne de manière satisfaisante jusqu'à quelques
 	  douzaines de serveurs virtuels. Par contre, si vous êtes un
 	  FAI et devez héberger des centaines de serveurs virtuels,
@@ -1112,7 +1111,7 @@ exit(0);
 
         <dd>
           <p>Pour fournir cette fonctionnalité avec
-	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, on fait correspondre à notre espace de
+	  <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code>, on fait correspondre à notre espace de
 	  nommage la page web ou même le répertoire complet distants en
 	  utilisant la fonctionnalité <dfn>Mandataire</dfn>
 	  (drapeau <code>[P]</code>) :</p>
@@ -1182,7 +1181,7 @@ RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="host-deny" id="host-deny">Interdiction d'hôtes</a></h2>
 
@@ -1238,7 +1237,7 @@ bsdti1.sdm.de  -
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy-deny" id="proxy-deny">Interdiction du mandataire</a></h2>
 
@@ -1257,10 +1256,10 @@ bsdti1.sdm.de  -
 
         <dd>
           <p>Nous devons tout d'abord nous assurer que
-	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> arrive après(!)
-	  <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> dans le fichier de configuration
+	  <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> arrive après(!)
+	  <code class="module"><a href="/mod/mod_proxy.html">mod_proxy</a></code> dans le fichier de configuration
 	  lors de la compilation du serveur web Apache. De cette façon,
-	  il est appelé <em>avant</em> <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Nous
+	  il est appelé <em>avant</em> <code class="module"><a href="/mod/mod_proxy.html">mod_proxy</a></code>. Nous
 	  pouvons ensuite définir cette règle pour une interdiction
 	  dépendant de l'hôte :</p>
 
@@ -1280,7 +1279,7 @@ RewriteRule !^http://[^/.]\.mon-domaine.com.*  - [F]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="special-authentication" id="special-authentication">Variante particulière d'authentification</a></h2>
 
@@ -1296,7 +1295,7 @@ RewriteRule !^http://[^/.]\.mon-domaine.com.*  - [F]
 	  définie. Seuls ceux qui sont présents dans la liste se voient
 	  accorder un accès, et ceci sans avoir à
 	  s'identifier/authentifier (comme c'est le cas avec une
-	  authentification de base via <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>).</p>
+	  authentification de base via <code class="module"><a href="/mod/mod_auth.html">mod_auth</a></code>).</p>
         </dd>
 
         <dt>Solution :</dt>
@@ -1315,7 +1314,7 @@ RewriteRule ^/~quux/seulement-pour-les-amis/      -                             
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="referer-deflector" id="referer-deflector">Redirection basée sur le référent</a></h2>
 
@@ -1371,9 +1370,8 @@ http://www.mauvais-sujets.com/mauvais/index3.html   http://quelque-part.com/
 
     </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/rewrite_guide_advanced.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/rewrite_guide_advanced.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span></p>
 </div><div id="footer">
 <p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossaire</a> | <a href="/sitemap.html">Plan du site</a></p></div>
 </body></html>

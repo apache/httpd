@@ -6,26 +6,25 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Guide de réécriture des URLs - Serveur Apache HTTP</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="/style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="/style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="/style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="/images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p>
+<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossaire</a> | <a href="/sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur Apache HTTP Version 2.3</p>
-<img alt="" src="../images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="/images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="/images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Guide de réécriture des URLs</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="/">Version 2.3</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>Guide de réécriture des URLs</h1>
 <div class="toplang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/rewrite_guide.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/rewrite_guide.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span></p>
 </div>
 
 
     <p>Ce document complète la <a href="../mod/mod_rewrite.html">documentation de référence</a> du
-    module <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit de quelle manière on
-    peut utiliser le module Apache <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> pour
+    module <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code>. Il décrit de quelle manière on
+    peut utiliser le module Apache <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> pour
     résoudre les problèmes typiques relatifs aux URLs auxquels les
     webmasters sont souvent confrontés. La résolution de chaque problème
     par la configuration des jeux de règles de réécriture d'URLs fait
@@ -35,7 +34,7 @@
     situation en fonction de la configuration de votre serveur pourra
     s'avérer nécessaire, par exemple l'ajout du drapeau
     <code>[PT]</code> si vous utilisez les modules
-    <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code>, <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>, etc... Un
+    <code class="module"><a href="/mod/mod_alias.html">mod_alias</a></code>, <code class="module"><a href="/mod/mod_userdir.html">mod_userdir</a></code>, etc... Un
     jeu de règles défini dans le contexte du serveur devra aussi être
     adapté pour être utilisé dans un contexte <code>.htaccess</code>.
     Efforcez-vous toujours de bien comprendre l'effet produit par un jeu
@@ -43,30 +42,30 @@
     problèmes.</div>
 
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#canonicalurl">URLs canoniques</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#canonicalhost">Noms d'hôtes canoniques</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#moveddocroot"><code>DocumentRoot</code>déplacé</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#trailingslash">Problème du slash de fin</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#movehomedirs">Déplacement des répertoires home vers un autre serveur</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#multipledirs">Recherche de pages dans plus d'un répertoire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#setenvvars">Définir des variables d'environnement en fonction de
+<div id="quickview"><ul id="toc"><li><img alt="" src="/images/down.gif" /> <a href="#canonicalurl">URLs canoniques</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#canonicalhost">Noms d'hôtes canoniques</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#moveddocroot"><code>DocumentRoot</code>déplacé</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#trailingslash">Problème du slash de fin</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#movehomedirs">Déplacement des répertoires home vers un autre serveur</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#multipledirs">Recherche de pages dans plus d'un répertoire</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#setenvvars">Définir des variables d'environnement en fonction de
       certaines parties de l'URL</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#uservhosts">Hôtes virtuels basés sur l'utilisateur</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#redirecthome">Redirection des répertoires d'accueil pour les étrangers</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirection des ancrages</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#time-dependent">Réécriture dépendant de l'heure</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#backward-compatibility">Compatibilité ascendante pour une migration de YYYY vers
+<li><img alt="" src="/images/down.gif" /> <a href="#uservhosts">Hôtes virtuels basés sur l'utilisateur</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#redirecthome">Redirection des répertoires d'accueil pour les étrangers</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#redirectanchors">Redirection des ancrages</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#time-dependent">Réécriture dépendant de l'heure</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#backward-compatibility">Compatibilité ascendante pour une migration de YYYY vers
       XXXX</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#old-to-new">De l'ancien au nouveau (en interne)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#old-to-new-extern">De l'ancien au nouveau (en externe)</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#static-to-dynamic">De statique à dynamique</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#blocking-of-robots">Blocage des robots</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#blocked-inline-images">Blocage du référencement à chaud (Hotlinking) d'images</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Interdiction du mandataire</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#external-rewriting">Moteur de réécriture externe</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#old-to-new">De l'ancien au nouveau (en interne)</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#old-to-new-extern">De l'ancien au nouveau (en externe)</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#static-to-dynamic">De statique à dynamique</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#blocking-of-robots">Blocage des robots</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#blocked-inline-images">Blocage du référencement à chaud (Hotlinking) d'images</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#proxy-deny">Interdiction du mandataire</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#external-rewriting">Moteur de réécriture externe</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="rewrite_guide_advanced.html">Guide de réécriture
 avancé - exemples utiles avancés</a></li><li><a href="tech.html">Détails techniques</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="canonicalurl" id="canonicalurl">URLs canoniques</a></h2>
 
@@ -102,7 +101,7 @@ RewriteRule   ^/u/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="canonicalhost" id="canonicalhost">Noms d'hôtes canoniques</a></h2>
 
@@ -151,11 +150,11 @@ RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
 	Vous pouvez utiliser ce jeu de règles aussi bien dans le fichier
 	de configuration de votre serveur principal que dans un fichier
 	<code>.htaccess</code> placé dans le répertoire défini par la
-	directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> du serveur.</p>
+	directive <code class="directive"><a href="/mod/core.html#documentroot">DocumentRoot</a></code> du serveur.</p>
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="moveddocroot" id="moveddocroot"><code>DocumentRoot</code>déplacé</a></h2>
 
@@ -165,7 +164,7 @@ RewriteRule ^/?(.*) http://www.%{HTTP_HOST}/$1 [L,R,NE]
         <dt>Description :</dt>
 
         <dd>
-<p>En général, la directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> correspond directement à l'URL
+<p>En général, la directive <code class="directive"><a href="/mod/core.html#documentroot">DocumentRoot</a></code> correspond directement à l'URL
 "<code>/</code>" du serveur web. Mais souvent, les données qui s'y
 trouvent ne sont pas de la première priorité. Par exemple, il peut être
 intéressant, pour les visiteurs qui entrent sur le site pour la première
@@ -187,7 +186,7 @@ RewriteRule   <strong>^/$</strong>  /a-propos-de/  [<strong>R</strong>]
 </pre></div>
 
     <p>Notez que le même effet peut être obtenu à l'aide de la directive
-    <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> :</p>
+    <code class="directive"><a href="/mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> :</p>
 
 <div class="example"><p><code>
 RedirectMatch ^/$ http://exemple.com/apropos/
@@ -198,12 +197,12 @@ mais ne réécrira pas une requête pour
 <code>http://example.com/page.html</code>. En fait, si vous avez modifié
 la racine de vos documents - c'est à dire si tous vos contenus se
 trouvent dans ce sous-répertoire, il vaut mieux simplement modifier
-votre directive <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> que de
+votre directive <code class="directive"><a href="/mod/core.html#documentroot">DocumentRoot</a></code> que de
 procéder à une réécriture d'URLs.</p>
 </dd>
 </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="trailingslash" id="trailingslash">Problème du slash de fin</a></h2>
 
@@ -256,7 +255,7 @@ RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="movehomedirs" id="movehomedirs">Déplacement des répertoires home vers un autre serveur</a></h2>
 
@@ -277,7 +276,7 @@ RewriteRule    ^(.+<strong>[^/]</strong>)$           $1<strong>/</strong>  [R]
         <dt>Solution :</dt>
 
         <dd>
-          <p>Avec <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>, la solution est
+          <p>Avec <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code>, la solution est
 	  évidente. Sur l'ancien serveur web, on redirige simplement
 	  toutes les URLs du style <code>/~user/chemin</code> vers
 	  <code>http://nouveau-serveur/~user/chemin</code>.</p>
@@ -289,7 +288,7 @@ RewriteRule   ^/~(.+)  http://<strong>nouveau-serveur</strong>/~$1  [R,L]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="multipledirs" id="multipledirs">Recherche de pages dans plus d'un répertoire</a></h2>
 
@@ -330,7 +329,7 @@ RewriteRule   ^(.+)  -  [PT]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="setenvvars" id="setenvvars">Définir des variables d'environnement en fonction de
       certaines parties de l'URL</a></h2>
@@ -366,7 +365,7 @@ RewriteRule   ^(.*)/<strong>S=([^/]+)</strong>/(.*)    $1/$3 [E=<strong>STATUS:$
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="uservhosts" id="uservhosts">Hôtes virtuels basés sur l'utilisateur</a></h2>
 
@@ -399,14 +398,14 @@ RewriteEngine on
 RewriteCond   %{<strong>HTTP_HOST</strong>}                 ^www\.<strong>([^.]+)</strong>\.host\.com$
 RewriteRule   ^(.*) /home/<strong>%1</strong>$1
 </pre></div>
-<p>Les parenthèses utilisées dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> sont capturées dans les
+<p>Les parenthèses utilisées dans une directive <code class="directive"><a href="/mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> sont capturées dans les
 références arrières <code>%1</code>, <code>%2</code>, etc..., alors que
-les parenthèses utilisées dans une directive <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sont capturées dans les
+les parenthèses utilisées dans une directive <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> sont capturées dans les
 références arrières <code>$1</code>, <code>$2</code>, etc...</p>
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="redirecthome" id="redirecthome">Redirection des répertoires d'accueil pour les étrangers</a></h2>
 
@@ -436,7 +435,7 @@ RewriteRule   ^(/~.+)         http://www.quelque-part.com/$1 [R,L]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="redirectanchors" id="redirectanchors">Redirection des ancrages</a></h2>
 
@@ -461,7 +460,7 @@ RewriteRule   ^(/~.+)         http://www.quelque-part.com/$1 [R,L]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="time-dependent" id="time-dependent">Réécriture dépendant de l'heure</a></h2>
 
@@ -475,7 +474,7 @@ RewriteRule   ^(/~.+)         http://www.quelque-part.com/$1 [R,L]
 	  dépend de l'heure, de nombreux webmasters utilisent encore des
 	  scripts CGI qui redirigent par exemple vers des pages
 	  spécifiques. Comment peut-on y parvenir à tenir compte de
-	  l'heure à l'aide de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ?</p>
+	  l'heure à l'aide de <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> ?</p>
         </dd>
 
         <dt>Solution :</dt>
@@ -505,7 +504,7 @@ RewriteRule   ^foo\.html$             foo.nuit.html
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="backward-compatibility" id="backward-compatibility">Compatibilité ascendante pour une migration de YYYY vers
       XXXX</a></h2>
@@ -556,7 +555,7 @@ RewriteRule   ^(.*)$ $1.html
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="old-to-new" id="old-to-new">De l'ancien au nouveau (en interne)</a></h2>
 
@@ -588,7 +587,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="old-to-new-extern" id="old-to-new-extern">De l'ancien au nouveau (en externe)</a></h2>
 
@@ -622,7 +621,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="static-to-dynamic" id="static-to-dynamic">De statique à dynamique</a></h2>
 
@@ -656,7 +655,7 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<stron
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="blocking-of-robots" id="blocking-of-robots">Blocage des robots</a></h2>
 
@@ -696,7 +695,7 @@ RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="blocked-inline-images" id="blocked-inline-images">Blocage du référencement à chaud (Hotlinking) d'images</a></h2>
 
@@ -761,7 +760,7 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.site.com/image.gif   
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy-deny" id="proxy-deny">Interdiction du mandataire</a></h2>
 
@@ -779,10 +778,10 @@ RewriteRule <strong>\.(gif|jpg|png)$</strong> http://other.site.com/image.gif   
 
         <dd>
           <p>Nous devons tout d'abord nous assurer que
-	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> se situe en dessous (!) de
-	  <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> dans le fichier de configuration
+	  <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> se situe en dessous (!) de
+	  <code class="module"><a href="/mod/mod_proxy.html">mod_proxy</a></code> dans le fichier de configuration
 	  lors de la compilation du serveur web Apache. De cette façon,
-	  il est appelé <em>avant</em> <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Nous
+	  il est appelé <em>avant</em> <code class="module"><a href="/mod/mod_proxy.html">mod_proxy</a></code>. Nous
 	  pouvons alors utiliser la règle suivante pour une interdiction
 	  concernant un hôte...</p>
 
@@ -802,7 +801,7 @@ RewriteRule !^http://[^/.]\.mon-domaine.com.*  - [F]
         </dd>
       </dl>
 
-    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="external-rewriting" id="external-rewriting">Moteur de réécriture externe</a></h2>
 
@@ -813,16 +812,16 @@ RewriteRule !^http://[^/.]\.mon-domaine.com.*  - [F]
 
         <dd>
           <p>Une question de la Faq : comment résoudre le problème
-	  FOO/BAR/QUUX/etc. ? <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> ne semble pas
+	  FOO/BAR/QUUX/etc. ? <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> ne semble pas
 	  devoir y apporter de solution...</p>
         </dd>
 
         <dt>Solution :</dt>
 
         <dd>
-          <p>Utiliser une <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ou table de réécriture externe, c'est
+          <p>Utiliser une <code class="directive"><a href="/mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> ou table de réécriture externe, c'est
 	  à dire un programme qui agit de la même façon qu'une
-	  <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. Il
+	  <code class="directive"><a href="/mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>. Il
 	  doit être lancé une fois au démarrage d'Apache, recevoir les
 	  URLs des requêtes sur <code>STDIN</code>, et restituer l'URL
 	  résultante (en général réécrite) sur <code>STDOUT</code> (dans
@@ -864,9 +863,8 @@ while (&lt;&gt;) {
 
     </div></div>
 <div class="bottomlang">
-<p><span>Langues Disponibles: </span><a href="../en/rewrite/rewrite_guide.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
-<a href="../fr/rewrite/rewrite_guide.html" title="Français">&nbsp;fr&nbsp;</a></p>
+<p><span>Langues Disponibles: </span></p>
 </div><div id="footer">
 <p class="apache">Copyright 2009 The Apache Software Foundation.<br />Autorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossaire</a> | <a href="../sitemap.html">Plan du site</a></p></div>
+<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossaire</a> | <a href="/sitemap.html">Plan du site</a></p></div>
 </body></html>

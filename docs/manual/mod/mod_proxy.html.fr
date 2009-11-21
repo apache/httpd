@@ -603,6 +603,10 @@ mandatées</td></tr>
     </code></p></div>
 
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#proxymatch">&lt;ProxyMatch&gt;</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyBadHeader" id="ProxyBadHeader">ProxyBadHeader</a> <a name="proxybadheader" id="proxybadheader">Directive</a></h2>
@@ -794,6 +798,10 @@ mandatées correspondant à une expression rationnelle</td></tr>
     identique à la directive <code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code>, à l'exception qu'elle définit
     les URLs auxquelles elle s'applique en utilisant une <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>.</p>
 
+<h3>Voir aussi</h3>
+<ul>
+<li><code class="directive"><a href="#proxy">&lt;Proxy&gt;</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyMaxForwards" id="ProxyMaxForwards">ProxyMaxForwards</a> <a name="proxymaxforwards" id="proxymaxforwards">Directive</a></h2>
