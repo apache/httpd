@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 636043 -->
+<!-- English Revision : 881113 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -31,12 +31,8 @@
 <p>Ce document passe en revue certains d&eacute;tails techniques &agrave; propos du
 module mod_rewrite et de la mise en correspondance des URLs</p>
 </summary>
-<seealso><a href="../mod/mod_rewrite.html">Documentation du module</a></seealso>
-<seealso><a href="intro.html">Introduction &agrave; mod_rewrite</a></seealso>
-<seealso><a href="rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples
-utiles</a></seealso>
-<seealso><a href="rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture
-avanc&eacute;e - exemples utiles avanc&eacute;s</a></seealso>
+<seealso><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></seealso>
+<seealso><a href="index.html">Exemples d&eacute;taill&eacute;s d'utilisation de mod_rewrite</a></seealso>
 
 <section id="Internal"><title>Fonctionnement interne</title>
 

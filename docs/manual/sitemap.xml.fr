@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 680076 -->
+<!-- English Revision : 881113 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2008072201 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -92,8 +91,9 @@ descripteurs de fichiers</page>
 <page href="rewrite/intro.html">Introduction</page>
 <page href="rewrite/flags.html">Drapeaux</page>
 <page href="rewrite/tech.html">D&eacute;tails techniques</page>
-<page href="rewrite/rewrite_guide.html">Guide de r&eacute;&eacute;criture - exemples utiles</page>
-<page href="rewrite/rewrite_guide_advanced.html">Guide de r&eacute;&eacute;criture avanc&eacute;e -
+<page href="rewrite/remapping.html">Remise en correspondance des URLs</page>
+<page href="rewrite/access.html">Contr&ocirc;le d'acc&egrave;s</page>
+<page href="rewrite/advanced.html">Guide de r&eacute;&eacute;criture avanc&eacute;e -
 autres exemples utiles</page>
 </category>
 
