@@ -503,20 +503,25 @@ once!
 
 <usage>
       <p>The <directive>RewriteBase</directive> directive explicitly
-      sets the base URL for per-directory rewrites.
+      sets the base URL-path (not filesystem directory path!)  for per-directory rewrites.
       When you use a <directive module="mod_rewrite">RewriteRule</directive>
       in a <code>.htaccess</code> file, <module>mod_rewrite</module> strips off
       the local directory prefix before processing, then rewrites the rest of 
       the URL. When the rewrite is completed, <module>mod_rewrite</module>
       automatically adds the local directory prefix back on to the path.</p>
       
-      <p>If your URL path does not exist on the filesystem,
+      <p>This directive is <em>required</em> for per-directory rewrites whose context
+      is a directory made available via the <directive module="mod_alias">Alias</directive>
+      directive.</p>
+
+      <p>If your URL path does not exist verbatim on the filesystem,
+      or isn't directly under your <directive module="core">DocumentRoot</directive>,
       you must use <directive>RewriteBase</directive> in every
       <code>.htaccess</code> file where you want to use <directive
-      module="mod_rewrite">RewriteRule</directive> directives.  </p>
+      module="mod_rewrite">RewriteRule</directive> directives.</p>
 
       <p>The example below demonstrates how to map 
-      <code>http://example.com/foo/index.html</code> to 
+      <code>http://example.com/myapp/index.html</code> to 
       <code>/home/www/example/newsite.html</code>, in a <code>.htaccess</code> 
       file. This assumes that the content available at
       <code>http://example.com/</code> is on disk at 
@@ -524,7 +529,8 @@ once!
 <example>
 <pre>
 RewriteEngine On
-RewriteBase /foo/
+# The URL-path used to get to this context, not the filesystem path
+RewriteBase /myapp/
 RewriteRule ^index\.html$  newsite.html
 </pre>
 </example>

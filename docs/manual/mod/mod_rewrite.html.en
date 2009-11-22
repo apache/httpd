@@ -78,26 +78,32 @@ URLs on the fly</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
       <p>The <code class="directive">RewriteBase</code> directive explicitly
-      sets the base URL for per-directory rewrites.
+      sets the base URL-path (not filesystem directory path!)  for per-directory rewrites.
       When you use a <code class="directive"><a href="#rewriterule">RewriteRule</a></code>
       in a <code>.htaccess</code> file, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> strips off
       the local directory prefix before processing, then rewrites the rest of 
       the URL. When the rewrite is completed, <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
       automatically adds the local directory prefix back on to the path.</p>
       
-      <p>If your URL path does not exist on the filesystem,
+      <p>This directive is <em>required</em> for per-directory rewrites whose context
+      is a directory made available via the <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
+      directive.</p>
+
+      <p>If your URL path does not exist verbatim on the filesystem,
+      or isn't directly under your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>,
       you must use <code class="directive">RewriteBase</code> in every
-      <code>.htaccess</code> file where you want to use <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives.  </p>
+      <code>.htaccess</code> file where you want to use <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives.</p>
 
       <p>The example below demonstrates how to map 
-      <code>http://example.com/foo/index.html</code> to 
+      <code>http://example.com/myapp/index.html</code> to 
       <code>/home/www/example/newsite.html</code>, in a <code>.htaccess</code> 
       file. This assumes that the content available at
       <code>http://example.com/</code> is on disk at 
       <code>/home/www/example/</code>.</p>
 <div class="example"><pre>
 RewriteEngine On
-RewriteBase /foo/
+# The URL-path used to get to this context, not the filesystem path
+RewriteBase /myapp/
 RewriteRule ^index\.html$  newsite.html
 </pre></div>
 
