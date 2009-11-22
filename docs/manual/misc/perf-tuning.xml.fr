@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 805049 -->
+<!-- English Revision : 881113 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -878,9 +878,7 @@
       mani&egrave;re <strong>fiable</strong> le protocole, un serveur HTTP doit fermer
       les deux directions d'une communication ind&eacute;pendamment (rappelez-vous
       qu'une connexion TCP est bidirectionnelle, chaque direction &eacute;tant
-      ind&eacute;pendante de l'autre). Ce fait, souvent ignor&eacute; par les autres
-      serveurs, est impl&eacute;ment&eacute; correctement dans Apache depuis la
-      version 1.2.</p>
+      ind&eacute;pendante de l'autre).</p>
 
       <p>Quand cette fonctionnalit&eacute; fut ajout&eacute;e &agrave; Apache, elle causa une
       avalanche de probl&egrave;mes sur plusieurs versions d'Unix &agrave; cause d'une
