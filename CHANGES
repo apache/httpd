@@ -10,6 +10,9 @@ Changes with Apache 2.3.3
      mod_proxy_ftp: NULL pointer dereference on error paths.
      [Stefan Fritsch <sf fritsch.de>, Joe Orton]
 
+  *) http_core: KeepAlive no longer accepts other than On|Off.
+     [Takashi Sato]
+
   *) mod_dav: Remove errno from dav_error interface.  Calls to dav_new_error()
      and dav_new_error_tag() must be adjusted to add an apr_status_t parameter.
      [Jeff Trawick]

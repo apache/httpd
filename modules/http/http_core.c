@@ -63,22 +63,14 @@ static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
 }
 
 static const char *set_keep_alive(cmd_parms *cmd, void *dummy,
-                                  const char *arg)
+                                  int arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
 
-    /* We've changed it to On/Off, but used to use numbers
-     * so we accept anything but "Off" or "0" as "On"
-     */
-    if (!strcasecmp(arg, "off") || !strcmp(arg, "0")) {
-        cmd->server->keep_alive = 0;
-    }
-    else {
-        cmd->server->keep_alive = 1;
-    }
+    cmd->server->keep_alive = arg;
     return NULL;
 }
 
@@ -100,7 +92,7 @@ static const command_rec http_cmds[] = {
     AP_INIT_TAKE1("MaxKeepAliveRequests", set_keep_alive_max, NULL, RSRC_CONF,
                   "Maximum number of Keep-Alive requests per connection, "
                   "or 0 for infinite"),
-    AP_INIT_TAKE1("KeepAlive", set_keep_alive, NULL, RSRC_CONF,
+    AP_INIT_FLAG("KeepAlive", set_keep_alive, NULL, RSRC_CONF,
                   "Whether persistent connections should be On or Off"),
     { NULL }
 };
