@@ -94,14 +94,11 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_vhost.h"
+#include "util_mutex.h"
 
 #include "mod_ssl.h"
 
 #include "mod_rewrite.h"
-
-#ifdef AP_NEED_SET_MUTEX_PERMS
-#include "unixd.h"
-#endif
 
 static ap_dbd_t *(*dbd_acquire)(request_rec*) = NULL;
 static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
@@ -382,8 +379,8 @@ static int proxy_available;
 static int rewrite_rand_init_done = 0;
 
 /* Locks/Mutexes */
-static const char *lockname;
 static apr_global_mutex_t *rewrite_mapr_lock_acquire = NULL;
+const char *rewritemap_mutex_type = "rewrite-map";
 
 /* Optional functions imported from mod_ssl when loaded: */
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
@@ -1232,7 +1229,6 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
     rewrite_server_conf *conf;
     apr_hash_index_t *hi;
     apr_status_t rc;
-    int lock_warning_issued = 0;
 
     conf = ap_get_module_config(s->module_config, &rewrite_module);
 
@@ -1257,13 +1253,6 @@ static apr_status_t run_rewritemap_programs(server_rec *s, apr_pool_t *p)
         }
         if (!(map->argv[0]) || !*(map->argv[0]) || map->fpin || map->fpout) {
             continue;
-        }
-
-        if (!lock_warning_issued && (!lockname || !*lockname)) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                         "mod_rewrite: Running external rewrite maps "
-                         "without defining a RewriteLock is DANGEROUS!");
-            ++lock_warning_issued;
         }
 
         rc = rewritemap_program_child(p, map->argv[0], map->argv,
@@ -2646,45 +2635,26 @@ static apr_status_t rewritelock_create(server_rec *s, apr_pool_t *p)
 {
     apr_status_t rc;
 
-    /* only operate if a lockfile is used */
-    if (lockname == NULL || *(lockname) == '\0') {
-        return APR_SUCCESS;
-    }
-
     /* create the lockfile */
-    rc = apr_global_mutex_create(&rewrite_mapr_lock_acquire, lockname,
-                                 APR_LOCK_DEFAULT, p);
+    /* XXX See if there are any rewrite map programs before creating
+     * the mutex.
+     */
+    rc = ap_global_mutex_create(&rewrite_mapr_lock_acquire,
+                                rewritemap_mutex_type, NULL, s, p, 0);
     if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s,
-                     "mod_rewrite: Parent could not create RewriteLock "
-                     "file %s", lockname);
         return rc;
     }
-
-#ifdef AP_NEED_SET_MUTEX_PERMS
-    rc = ap_unixd_set_global_mutex_perms(rewrite_mapr_lock_acquire);
-    if (rc != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s,
-                     "mod_rewrite: Parent could not set permissions "
-                     "on RewriteLock; check User and Group directives");
-        return rc;
-    }
-#endif
 
     return APR_SUCCESS;
 }
 
 static apr_status_t rewritelock_remove(void *data)
 {
-    /* only operate if a lockfile is used */
-    if (lockname == NULL || *(lockname) == '\0') {
-        return APR_SUCCESS;
-    }
-
     /* destroy the rewritelock */
-    apr_global_mutex_destroy (rewrite_mapr_lock_acquire);
-    rewrite_mapr_lock_acquire = NULL;
-    lockname = NULL;
+    if (rewrite_mapr_lock_acquire) {
+        apr_global_mutex_destroy(rewrite_mapr_lock_acquire);
+        rewrite_mapr_lock_acquire = NULL;
+    }
     return(0);
 }
 
@@ -3154,23 +3124,6 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
     }
 
     apr_hash_set(sconf->rewritemaps, a1, APR_HASH_KEY_STRING, newmap);
-
-    return NULL;
-}
-
-static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, const char *a1)
-{
-    const char *error;
-
-    if ((error = ap_check_cmd_context(cmd, GLOBAL_ONLY)) != NULL)
-        return error;
-
-    /* fixup the path, especially for rewritelock_remove() */
-    lockname = ap_server_root_relative(cmd->pool, a1);
-
-    if (!lockname) {
-        return apr_pstrcat(cmd->pool, "Invalid RewriteLock path ", a1, NULL);
-    }
 
     return NULL;
 }
@@ -4279,6 +4232,8 @@ static int pre_config(apr_pool_t *pconf,
 {
     APR_OPTIONAL_FN_TYPE(ap_register_rewrite_mapfunc) *map_pfn_register;
 
+    ap_mutex_register(pconf, rewritemap_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+
     /* register int: rewritemap handlers */
     map_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_rewrite_mapfunc);
     if (map_pfn_register) {
@@ -4348,9 +4303,9 @@ static void init_child(apr_pool_t *p, server_rec *s)
 {
     apr_status_t rv = 0; /* get a rid of gcc warning (REWRITELOG_DISABLED) */
 
-    if (lockname != NULL && *(lockname) != '\0') {
+    if (rewrite_mapr_lock_acquire) {
         rv = apr_global_mutex_child_init(&rewrite_mapr_lock_acquire,
-                                         lockname, p);
+                 apr_global_mutex_lockfile(rewrite_mapr_lock_acquire), p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                          "mod_rewrite: could not init rewrite_mapr_lock_acquire"
@@ -5023,9 +4978,6 @@ static const command_rec command_table[] = {
                      "an URL-applied regexp-pattern and a substitution URL"),
     AP_INIT_TAKE2(   "RewriteMap",      cmd_rewritemap,      NULL, RSRC_CONF,
                      "a mapname and a filename"),
-    AP_INIT_TAKE1(   "RewriteLock",     cmd_rewritelock,     NULL, RSRC_CONF,
-                     "the filename of a lockfile used for inter-process "
-                     "synchronization"),
 #ifndef REWRITELOG_DISABLED
     AP_INIT_TAKE1(   "RewriteLog",      cmd_rewritelog,      NULL, RSRC_CONF,
                      "the filename of the rewriting logfile"),

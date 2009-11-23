@@ -41,6 +41,7 @@
 #include "http_connection.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"
+#include "util_mutex.h"
 #include "unixd.h"
 #include "mpm_common.h"
 #include "ap_listen.h"
@@ -457,6 +458,7 @@ static void child_main(int child_num_arg)
     ap_sb_handle_t *sbh;
     apr_bucket_alloc_t *bucket_alloc;
     int last_poll_idx = 0;
+    const char *lockfile;
 
     mpm_state = AP_MPMQ_STARTING; /* for benefit of any hooks that run as this
                                    * child initializes
@@ -487,11 +489,16 @@ static void child_main(int child_num_arg)
 
     /* needs to be done before we switch UIDs so we have permissions */
     ap_reopen_scoreboard(pchild, NULL, 0);
-    status = apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname, pchild);
+    lockfile = apr_proc_mutex_lockfile(accept_mutex);
+    status = apr_proc_mutex_child_init(&accept_mutex,
+                                       lockfile,
+                                       pchild);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, status, ap_server_conf,
                      "Couldn't initialize cross-process lock in child "
-                     "(%s) (%d)", ap_lock_fname, ap_accept_lock_mech);
+                     "(%s) (%s)",
+                     lockfile ? lockfile : "none",
+                     apr_proc_mutex_name(accept_mutex));
         clean_child_exit(APEXIT_CHILDFATAL);
     }
 
@@ -908,34 +915,11 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
-    ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_PID_T_FMT,
-                                 ap_server_root_relative(_pconf, ap_lock_fname),
-                                 ap_my_pid);
-
-    rv = apr_proc_mutex_create(&accept_mutex, ap_lock_fname,
-                               ap_accept_lock_mech, _pconf);
+    rv = ap_proc_mutex_create(&accept_mutex, ap_accept_mutex_type, NULL, s,
+                              _pconf, 0);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
-                     "Couldn't create accept lock (%s) (%d)",
-                     ap_lock_fname, ap_accept_lock_mech);
         mpm_state = AP_MPMQ_STOPPING;
         return DONE;
-    }
-
-#if APR_USE_SYSVSEM_SERIALIZE
-    if (ap_accept_lock_mech == APR_LOCK_DEFAULT ||
-        ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
-#else
-    if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
-#endif
-        rv = ap_unixd_set_proc_mutex_perms(accept_mutex);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
-                         "Couldn't set permissions on cross-process lock; "
-                         "check User and Group directives");
-            mpm_state = AP_MPMQ_STOPPING;
-            return DONE;
-        }
     }
 
     if (!is_graceful) {
@@ -988,7 +972,7 @@ static int prefork_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                 "Server built: %s", ap_get_server_built());
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                "AcceptMutex: %s (default: %s)",
+                "Accept mutex: %s (default: %s)",
                 apr_proc_mutex_name(accept_mutex),
                 apr_proc_mutex_defname());
     restart_pending = shutdown_pending = 0;
@@ -1284,6 +1268,8 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
         foreground = ap_exists_config_define("FOREGROUND");
     }
 
+    ap_mutex_register(p, ap_accept_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+
     /* sigh, want this only the second time around */
     retained = ap_retained_data_get(userdata_key);
     if (!retained) {
@@ -1313,7 +1299,6 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     server_limit = DEFAULT_SERVER_LIMIT;
     ap_daemons_limit = server_limit;
     ap_pid_fname = DEFAULT_PIDLOG;
-    ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
     ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;

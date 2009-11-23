@@ -28,6 +28,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
+#include "util_mutex.h"
 #include "util_ldap.h"
 #include "util_ldap_cache.h"
 
@@ -39,10 +40,6 @@
 
 #if !APR_HAS_LDAP
 #error mod_ldap requires APR-util to have LDAP support built in
-#endif
-
-#ifdef AP_NEED_SET_MUTEX_PERMS
-#include "unixd.h"
 #endif
 
 /* Default define for ldap functions that need a SIZELIMIT but
@@ -67,6 +64,7 @@
 #define AP_LDAP_CHASEREFERRALS_ON 1
 
 module AP_MODULE_DECLARE_DATA ldap_module;
+static const char *ldap_cache_lock_type = "ldap-cache";
 
 #define LDAP_CACHE_LOCK() do {                                  \
     if (st->util_ldap_cache_lock)                               \
@@ -2518,6 +2516,20 @@ static apr_status_t util_ldap_cleanup_module(void *data)
 
 }
 
+static int util_ldap_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
+                                apr_pool_t *ptemp)
+{
+    apr_status_t result;
+
+    result = ap_mutex_register(pconf, ldap_cache_lock_type, NULL,
+                               APR_LOCK_DEFAULT, 0);
+    if (result != APR_SUCCESS) {
+        return result;
+    }
+
+    return OK;
+}
+
 static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                                  apr_pool_t *ptemp, server_rec *s)
 {
@@ -2567,29 +2579,11 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             return DONE;
         }
 
-
-#if APR_HAS_SHARED_MEMORY
-        if (st->cache_file) {
-            st->lock_file = apr_pstrcat(st->pool, st->cache_file, ".lck",
-                                        NULL);
-        }
-#endif
-
-        result = apr_global_mutex_create(&st->util_ldap_cache_lock,
-                                         st->lock_file, APR_LOCK_DEFAULT,
-                                         st->pool);
+        result = ap_global_mutex_create(&st->util_ldap_cache_lock,
+                                        ldap_cache_lock_type, NULL, s, p, 0);
         if (result != APR_SUCCESS) {
             return result;
         }
-
-#ifdef AP_NEED_SET_MUTEX_PERMS
-        result = ap_unixd_set_global_mutex_perms(st->util_ldap_cache_lock);
-        if (result != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, result, s,
-                         "LDAP cache: failed to set mutex permissions");
-            return result;
-        }
-#endif
 
         /* merge config in all vhost */
         s_vhost = s->next;
@@ -2607,7 +2601,6 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                          "for VHOST: %s", st->cache_shm, st->cache_rmm,
                          s_vhost->server_hostname);
 #endif
-            st_vhost->lock_file = st->lock_file;
             s_vhost = s_vhost->next;
         }
 #if APR_HAS_SHARED_MEMORY
@@ -2684,12 +2677,12 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
     if (!st->util_ldap_cache_lock) return;
 
     sts = apr_global_mutex_child_init(&st->util_ldap_cache_lock,
-                                      st->lock_file, p);
+              apr_global_mutex_lockfile(st->util_ldap_cache_lock), p);
     if (sts != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s,
                      "Failed to initialise global mutex %s in child process %"
                      APR_PID_T_FMT ".",
-                     st->lock_file, getpid());
+                     ldap_cache_lock_type, getpid());
     }
 }
 
@@ -2795,6 +2788,7 @@ static void util_ldap_register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(uldap_ssl_supported);
     APR_REGISTER_OPTIONAL_FN(uldap_cache_check_subgroups);
 
+    ap_hook_pre_config(util_ldap_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(util_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_handler(util_ldap_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(util_ldap_child_init, NULL, NULL, APR_HOOK_MIDDLE);

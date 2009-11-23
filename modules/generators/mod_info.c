@@ -528,10 +528,6 @@ static int show_server_settings(request_rec * r)
     ap_rputs(" -D DEFAULT_SCOREBOARD=\"" DEFAULT_SCOREBOARD "\"\n", r);
 #endif
 
-#ifdef DEFAULT_LOCKFILE
-    ap_rputs(" -D DEFAULT_LOCKFILE=\"" DEFAULT_LOCKFILE "\"\n", r);
-#endif
-
 #ifdef DEFAULT_ERRORLOG
     ap_rputs(" -D DEFAULT_ERRORLOG=\"" DEFAULT_ERRORLOG "\"\n", r);
 #endif

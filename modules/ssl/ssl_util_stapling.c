@@ -32,10 +32,6 @@
 #include "ap_mpm.h"
 #include "apr_thread_mutex.h"
 
-#ifdef AP_NEED_SET_MUTEX_PERMS
-#include "unixd.h"
-#endif
-
 #ifdef HAVE_OCSP_STAPLING
 
 /**
@@ -480,36 +476,13 @@ int ssl_stapling_mutex_init(server_rec *s, apr_pool_t *p)
     if (mc->stapling_mutex || sc->server->stapling_enabled != TRUE) {
         return TRUE;
     }
-    if (mc->stapling_mutex_mode == SSL_MUTEXMODE_NONE
-        || mc->stapling_mutex_mode == SSL_MUTEXMODE_UNSET) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "An SSLStaplingMutex is required for OCSP Stapling");
+
+    if ((rv = ap_global_mutex_create(&mc->stapling_mutex,
+                                     ssl_stapling_mutex_type, NULL, s,
+                                     s->process->pool, 0)) != APR_SUCCESS) {
         return FALSE;
     }
 
-    if ((rv = apr_global_mutex_create(&mc->stapling_mutex,
-                                      mc->stapling_mutex_file,
-                                      mc->stapling_mutex_mech, s->process->pool))
-            != APR_SUCCESS) {
-        if (mc->stapling_mutex_file)
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "Cannot create SSLStaplingMutex with file `%s'",
-                         mc->stapling_mutex_file);
-        else
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "Cannot create SSLStaplingMutex");
-        return FALSE;
-    }
-
-#ifdef AP_NEED_SET_MUTEX_PERMS
-    rv = ap_unixd_set_global_mutex_perms(mc->stapling_mutex);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "Could not set permissions on ssl_mutex; check User "
-                     "and Group directives");
-        return FALSE;
-    }
-#endif
     return TRUE;
 }
 
@@ -517,21 +490,23 @@ int ssl_stapling_mutex_reinit(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
+    const char *lockfile;
 
     if (mc->stapling_mutex == NULL) {
         return TRUE;
     }
 
+    lockfile = apr_global_mutex_lockfile(mc->stapling_mutex);
     if ((rv = apr_global_mutex_child_init(&mc->stapling_mutex,
-                                 mc->stapling_mutex_file, p)) != APR_SUCCESS) {
-        if (mc->stapling_mutex_file) {
+                                          lockfile, p)) != APR_SUCCESS) {
+        if (lockfile) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                         "Cannot reinit SSLMutex with file `%s'",
-                         mc->szMutexFile);
+                         "Cannot reinit %s mutex with file `%s'",
+                         ssl_stapling_mutex_type, lockfile);
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
-                         "Cannot reinit SSLMutex");
+                         "Cannot reinit %s mutex", ssl_stapling_mutex_type);
         }
         return FALSE;
     }

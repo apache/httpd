@@ -74,6 +74,7 @@
 #include "http_protocol.h"
 #include "apr_uri.h"
 #include "util_md5.h"
+#include "util_mutex.h"
 #include "apr_shm.h"
 #include "apr_rmm.h"
 #include "ap_provider.h"
@@ -179,8 +180,8 @@ static unsigned long  *opaque_cntr;
 static apr_time_t     *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
 static apr_global_mutex_t *opaque_lock = NULL;
-static const char     *client_lock_name;
-static const char     *opaque_lock_name;
+static const char     *client_lock_type = "authdigest-client";
+static const char     *opaque_lock_type = "authdigest-opaque";
 static const char     *client_shm_filename;
 
 #define DEF_SHMEM_SIZE  1000L           /* ~ 12 entries */
@@ -321,12 +322,7 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_list->tbl_len     = num_buckets;
     client_list->num_entries = 0;
 
-    client_lock_name = apr_psprintf(ctx, "%s/authdigest_lock.%"APR_PID_T_FMT, tempdir, 
-                                    getpid());
-    /* FIXME: get the client_lock_name from a directive so we're portable
-     * to non-process-inheriting operating systems, like Win32. */
-    sts = apr_global_mutex_create(&client_lock, client_lock_name,
-                                  APR_LOCK_DEFAULT, ctx);
+    sts = ap_global_mutex_create(&client_lock, client_lock_type, NULL, s, ctx, 0);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return !OK;
@@ -342,11 +338,7 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     }
     *opaque_cntr = 1UL;
 
-    opaque_lock_name = apr_psprintf(ctx, "%s/authdigest_opaque_lock.%"APR_PID_T_FMT,
-                                    tempdir, 
-                                    getpid());
-    sts = apr_global_mutex_create(&opaque_lock, opaque_lock_name,
-                                  APR_LOCK_DEFAULT, ctx);
+    sts = ap_global_mutex_create(&opaque_lock, opaque_lock_type, NULL, s, ctx, 0);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
         return !OK;
@@ -370,6 +362,21 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
 
 #endif /* APR_HAS_SHARED_MEMORY */
 
+static int pre_init(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    apr_status_t rv;
+
+    rv = ap_mutex_register(pconf, client_lock_type, NULL, APR_LOCK_DEFAULT, 0);
+    if (rv == APR_SUCCESS) {
+        rv = ap_mutex_register(pconf, opaque_lock_type, NULL, APR_LOCK_DEFAULT,
+                               0);
+    }
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    return OK;
+}
 
 static int initialize_module(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
@@ -428,12 +435,16 @@ static void initialize_child(apr_pool_t *p, server_rec *s)
         return;
     }
 
-    sts = apr_global_mutex_child_init(&client_lock, client_lock_name, p);
+    sts = apr_global_mutex_child_init(&client_lock,
+                                      apr_global_mutex_lockfile(client_lock),
+                                      p);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return;
     }
-    sts = apr_global_mutex_child_init(&opaque_lock, opaque_lock_name, p);
+    sts = apr_global_mutex_child_init(&opaque_lock,
+                                      apr_global_mutex_lockfile(opaque_lock),
+                                      p);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
         return;
@@ -2033,6 +2044,7 @@ static void register_hooks(apr_pool_t *p)
     static const char * const cfgPost[]={ "http_core.c", NULL };
     static const char * const parsePre[]={ "mod_proxy.c", NULL };
 
+    ap_hook_pre_config(pre_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(initialize_module, NULL, cfgPost, APR_HOOK_MIDDLE);
     ap_hook_child_init(initialize_child, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(parse_hdr_and_update_nc, parsePre, NULL, APR_HOOK_MIDDLE);

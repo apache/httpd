@@ -13,20 +13,6 @@
 </IfModule>
 
 #
-# The accept serialization lock file MUST BE STORED ON A LOCAL DISK.
-#
-<IfModule !mpm_simple_module>
-<IfModule !mpm_winnt_module>
-<IfModule !mpm_netware_module>
-<IfModule !mpm_mpmt_os2_module>
-LockFile "@rel_logfiledir@/accept.lock"
-</IfModule>
-</IfModule>
-</IfModule>
-</IfModule>
-
-
-#
 # Only one of the below sections will be relevant on your
 # installed httpd.  Use "apachectl -l" to find out the
 # active mpm.

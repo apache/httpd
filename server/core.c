@@ -3319,6 +3319,8 @@ AP_INIT_TAKE1("LimitRequestBody", set_limit_req_body,
 AP_INIT_TAKE1("LimitXMLRequestBody", set_limit_xml_req_body, NULL, OR_ALL,
               "Limit (in bytes) on maximum size of an XML-based request "
               "body"),
+AP_INIT_TAKE2("Mutex", ap_set_mutex, NULL, RSRC_CONF,
+              "mutex (or \"default\") and mechanism"),
 
 /* System Resource Controls */
 #ifdef RLIMIT_CPU
@@ -3378,14 +3380,10 @@ AP_INIT_TAKE1("PidFile",  ap_mpm_set_pidfile, NULL, RSRC_CONF,
               "A file for logging the server process ID"),
 AP_INIT_TAKE1("ScoreBoardFile", ap_mpm_set_scoreboard, NULL, RSRC_CONF,
               "A file for Apache to maintain runtime process management information"),
-AP_INIT_TAKE1("LockFile",  ap_mpm_set_lockfile, NULL, RSRC_CONF,
-              "The lockfile used when Apache needs to lock the accept() call (deprecated)"),
 AP_INIT_TAKE1("MaxRequestsPerChild", ap_mpm_set_max_requests, NULL, RSRC_CONF,
               "Maximum number of requests a particular child serves before dying."),
 AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF,
               "The location of the directory Apache changes to before dumping core"),
-AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF,
-              AP_AVAILABLE_MUTEXES_STRING),
 AP_INIT_TAKE1("MaxMemFree", ap_mpm_set_max_mem_free, NULL, RSRC_CONF,
               "Maximum number of 1k blocks a particular childs allocator may hold."),
 AP_INIT_TAKE1("ThreadStackSize", ap_mpm_set_thread_stacksize, NULL, RSRC_CONF,

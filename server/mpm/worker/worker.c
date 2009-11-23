@@ -64,6 +64,7 @@
 #include "scoreboard.h"
 #include "fdqueue.h"
 #include "mpm_default.h"
+#include "util_mutex.h"
 #include "unixd.h"
 
 #include <signal.h>
@@ -1172,7 +1173,8 @@ static void child_main(int child_num_arg)
     /*stuff to do before we switch id's, so we have permissions.*/
     ap_reopen_scoreboard(pchild, NULL, 0);
 
-    rv = SAFE_ACCEPT(apr_proc_mutex_child_init(&accept_mutex, ap_lock_fname,
+    rv = SAFE_ACCEPT(apr_proc_mutex_child_init(&accept_mutex,
+                                               apr_proc_mutex_lockfile(accept_mutex),
                                                pchild));
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_EMERG, rv, ap_server_conf,
@@ -1692,33 +1694,11 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
-    ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_PID_T_FMT,
-                                 ap_server_root_relative(_pconf, ap_lock_fname),
-                                 ap_my_pid);
-
-    rv = apr_proc_mutex_create(&accept_mutex, ap_lock_fname,
-                               ap_accept_lock_mech, _pconf);
+    rv = ap_proc_mutex_create(&accept_mutex, ap_accept_mutex_type, NULL, s,
+                              _pconf, 0);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
-                     "Couldn't create accept lock");
         mpm_state = AP_MPMQ_STOPPING;
         return DONE;
-    }
-
-#if APR_USE_SYSVSEM_SERIALIZE
-    if (ap_accept_lock_mech == APR_LOCK_DEFAULT ||
-        ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
-#else
-    if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
-#endif
-        rv = ap_unixd_set_proc_mutex_perms(accept_mutex);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_EMERG, rv, s,
-                         "Couldn't set permissions on cross-process lock; "
-                         "check User and Group directives");
-            mpm_state = AP_MPMQ_STOPPING;
-            return DONE;
-        }
     }
 
     if (!is_graceful) {
@@ -1766,7 +1746,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                 "Server built: %s", ap_get_server_built());
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-                "AcceptMutex: %s (default: %s)",
+                "Accept mutex: %s (default: %s)",
                 apr_proc_mutex_name(accept_mutex),
                 apr_proc_mutex_defname());
     restart_pending = shutdown_pending = 0;
@@ -1957,6 +1937,8 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         foreground = ap_exists_config_define("FOREGROUND");
     }
 
+    ap_mutex_register(pconf, ap_accept_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+
     /* sigh, want this only the second time around */
     retained = ap_retained_data_get(userdata_key);
     if (!retained) {
@@ -1988,7 +1970,6 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     threads_per_child = DEFAULT_THREADS_PER_CHILD;
     max_clients = ap_daemons_limit * threads_per_child;
     ap_pid_fname = DEFAULT_PIDLOG;
-    ap_lock_fname = DEFAULT_LOCKFILE;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
     ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;

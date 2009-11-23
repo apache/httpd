@@ -209,8 +209,8 @@ SSLSessionCache none
 
 # Note that this SSL configuration is far
 # from complete - you propably will want
-# to configure SSLMutex-es and SSLSession
-# Caches at the very least.
+# to configure SSLSession Caches at the 
+# very least.
 
 <Directory />
     Options None

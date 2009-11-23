@@ -100,8 +100,8 @@ match ($0,/^SSLSessionCache +"shmcb:/) {
     sub(/^SSLSessionCache/, "#SSLSessionCache")
 }
 
-match ($0,/^SSLMutex +"file:@exp_runtimedir@\/ssl_mutex"/) {
-    sub(/"file:@exp_runtimedir@\/ssl_mutex"/, "default")
+match ($0,/^Mutex +"file:@rel_runtimedir@"/) {
+    sub(/"file:@rel_runtimedir@"/, "default")
 }
 
 match ($0,/@@.*@@/) {

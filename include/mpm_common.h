@@ -264,20 +264,6 @@ extern const char *ap_pid_fname;
 const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
                                const char *arg);
 
-/**
- * The name of lockfile used when Apache needs to lock the accept() call.
- */
-extern const char *ap_lock_fname;
-const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
-                                const char *arg);
-
-/**
- * The system mutex implementation to use for the accept mutex.
- */
-extern apr_lockmech_e ap_accept_lock_mech;
-const char *ap_mpm_set_accept_lock_mech(cmd_parms *cmd, void *dummy,
-                                        const char *arg);
-
 /*
  * Set the scorboard file.
  */
@@ -346,6 +332,11 @@ AP_DECLARE_HOOK(apr_status_t, mpm_register_timed_callback,
 
 /* get MPM name (e.g., "prefork" or "event") */
 AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
+
+/* mutex type string for accept mutex, if any; MPMs should use the
+ * same mutex type for ease of configuration
+ */
+#define ap_accept_mutex_type "mpm-accept"
 
 #ifdef __cplusplus
 }

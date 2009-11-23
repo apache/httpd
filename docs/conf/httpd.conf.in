@@ -22,11 +22,21 @@
 # configuration, error, and log files are kept.
 #
 # Do not add a slash at the end of the directory path.  If you point
-# ServerRoot at a non-local disk, be sure to point the LockFile directive
-# at a local disk.  If you wish to share the same ServerRoot for multiple
-# httpd daemons, you will need to change at least LockFile and PidFile.
+# ServerRoot at a non-local disk, be sure to specify a local disk on the
+# Mutex directive, if file-based mutexes are used.  If you wish to share the
+# same ServerRoot for multiple httpd daemons, you will need to change at
+# least PidFile.
 #
 ServerRoot "@@ServerRoot@@"
+
+#
+# Mutex: Allows you to set the mutex mechanism and mutex file directory
+# for individual mutexes, or change the global defaults
+#
+# Uncomment only if mutexes are file-based and the default mutex file
+# directory is not appropriate.
+#
+# Mutex default file:@rel_runtimedir@
 
 #
 # Listen: Allows you to bind Apache to specific IP addresses and/or
