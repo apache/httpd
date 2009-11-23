@@ -205,6 +205,7 @@
  * 20091011.1 (2.3.3-dev)  add debug_level to util_ldap_state_t
  * 20091031.0 (2.3.3-dev)  remove public LDAP referral-related macros
  * 20091119.0 (2.3.4-dev)  dav_error interface uses apr_status_t parm, not errno
+ * 20091119.1 (2.3.4-dev)  ap_mutex_register(), ap_{proc,global}_mutex_create()
  *
  */
 
@@ -213,7 +214,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20091119
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

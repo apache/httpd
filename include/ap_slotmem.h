@@ -40,10 +40,6 @@
 #include "apr_global_mutex.h"
 #include "apr_file_io.h"
 
-#ifdef AP_NEED_SET_MUTEX_PERMS
-#include "unixd.h"
-#endif
-
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>         /* for getpid() */
 #endif

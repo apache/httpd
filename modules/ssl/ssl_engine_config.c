@@ -61,9 +61,6 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
      */
     mc->sesscache_mode         = SSL_SESS_CACHE_OFF;
     mc->sesscache              = NULL;
-    mc->nMutexMode             = SSL_MUTEXMODE_UNSET;
-    mc->nMutexMech             = APR_LOCK_DEFAULT;
-    mc->szMutexFile            = NULL;
     mc->pMutex                 = NULL;
     mc->aRandSeed              = apr_array_make(pool, 4,
                                                 sizeof(ssl_randseed_t));
@@ -74,11 +71,8 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->szCryptoDevice         = NULL;
 #endif
 #ifdef HAVE_OCSP_STAPLING
-    mc->stapling_cache                  = NULL;
-    mc->stapling_mutex_mode             = SSL_MUTEXMODE_UNSET;
-    mc->stapling_mutex_mech             = APR_LOCK_DEFAULT;
-    mc->stapling_mutex_file            = NULL;
-    mc->stapling_mutex                 = NULL;
+    mc->stapling_cache         = NULL;
+    mc->stapling_mutex         = NULL;
 #endif
 
     memset(mc->pTmpKeys, 0, sizeof(mc->pTmpKeys));
@@ -382,41 +376,6 @@ void *ssl_config_perdir_merge(apr_pool_t *p, void *basev, void *addv)
 /*
  *  Configuration functions for particular directives
  */
-
-const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
-                             void *dcfg,
-                             const char *arg_)
-{
-    apr_status_t rv;
-    const char *err;
-    SSLModConfigRec *mc = myModConfig(cmd->server);
-
-    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-        return err;
-    }
-
-    if (ssl_config_global_isfixed(mc)) {
-        return NULL;
-    }
-
-    rv = ap_parse_mutex(arg_, cmd->server->process->pool,
-                        &mc->nMutexMech, &mc->szMutexFile);
-
-    if (rv == APR_ENOLOCK) {
-        mc->nMutexMode  = SSL_MUTEXMODE_NONE;
-        return NULL;
-    } else if (rv == APR_ENOTIMPL) {
-        return apr_pstrcat(cmd->pool, "Invalid SSLMutex argument ", arg_,
-                           " (" AP_ALL_AVAILABLE_MUTEXES_STRING ")", NULL);
-    } else if (rv == APR_BADARG) {
-            return apr_pstrcat(cmd->pool, "Invalid SSLMutex filepath ",
-                               arg_, NULL);
-    }
-
-    mc->nMutexMode  = SSL_MUTEXMODE_USED;
-
-    return NULL;
-}
 
 const char *ssl_cmd_SSLPassPhraseDialog(cmd_parms *cmd,
                                         void *dcfg,
@@ -1543,44 +1502,6 @@ const char *ssl_cmd_SSLStaplingCache(cmd_parms *cmd,
         return apr_psprintf(cmd->pool, "SSLStaplingCache: %s", err);
     }
     
-    return NULL;
-}
-
-const char *ssl_cmd_SSLStaplingMutex(cmd_parms *cmd,
-                                     void *dcfg,
-                                     const char *arg_)
-{
-    apr_status_t rv;
-    const char *err;
-    SSLModConfigRec *mc = myModConfig(cmd->server);
-
-    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
-        return err;
-    }
-
-    if (ssl_config_global_isfixed(mc)) {
-        return NULL;
-    }
-
-    rv = ap_parse_mutex(arg_, cmd->server->process->pool,
-                        &mc->stapling_mutex_mech, &mc->stapling_mutex_file);
-
-    if (rv == APR_ENOLOCK) {
-        mc->stapling_mutex_mode  = SSL_MUTEXMODE_NONE;
-        return NULL;
-    } 
-    else if (rv == APR_ENOTIMPL) {
-        return apr_pstrcat(cmd->pool, "Invalid SSLStaplingMutex argument ",
-                           arg_,
-                           " (" AP_ALL_AVAILABLE_MUTEXES_STRING ")", NULL);
-    } 
-    else if (rv == APR_BADARG) {
-        return apr_pstrcat(cmd->pool, "Invalid SSLStaplingMutex filepath ",
-                           arg_, NULL);
-    }
-
-    mc->stapling_mutex_mode  = SSL_MUTEXMODE_USED;
-
     return NULL;
 }
 

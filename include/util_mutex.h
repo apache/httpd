@@ -98,6 +98,110 @@ AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
                                         apr_lockmech_e *mutexmech,
                                         const char **mutexfile);
 
+/* private function to process the Mutex directive */
+AP_DECLARE(const char *) ap_set_mutex(cmd_parms *cmd, void *dummy,
+                                      const char *typelist,
+                                      const char *mechfile);
+
+/**
+ * option flags for ap_mutex_register(), ap_global_mutex_create(), and
+ * ap_proc_mutex_create()
+ */
+#define AP_MUTEX_ALLOW_NONE    1 /* allow "none" as mutex implementation;
+                                  * respected only on ap_mutex_register()
+                                  */
+#define AP_MUTEX_DEFAULT_NONE  2 /* default to "none" for this mutex;
+                                  * respected only on ap_mutex_register()
+                                  */
+
+/**
+ * Register a module's mutex type with core to allow configuration
+ * with the Mutex directive.  This must be called in the pre_config
+ * hook; otherwise, configuration directives referencing this mutex
+ * type will be rejected.
+ *
+ * The default_dir and default_mech parameters allow a module to set
+ * defaults for the lock file directory and mechanism.  These could
+ * be based on compile-time settings.  These aren't required except
+ * in special circumstances.
+ *
+ * The order of precedence for the choice of mechanism and lock file
+ * directory is:
+ *
+ *   1. Mutex directive specifically for this mutex
+ *      e.g., Mutex mpm-default flock:/tmp/mpmlocks
+ *   2. Mutex directive for global default
+ *      e.g., Mutex default flock:/tmp/httpdlocks
+ *   3. Defaults for this mutex provided on the ap_mutex_register()
+ *   4. Built-in defaults for all mutexes, which are
+ *      APR_LOCK_DEFAULT and DEFAULT_REL_RUNTIMEDIR.
+ *
+ * @param pconf The pconf pool
+ * @param type The type name of the mutex, used as the basename of the
+ * file associated with the mutex, if any.  This must be unique among
+ * all mutex types (mutex creation accommodates multi-instance mutex
+ * types); mod_foo might have mutex  types "foo-pipe" and "foo-shm"
+ * @param default_dir Default dir for any lock file required for this
+ * lock, to override built-in defaults; should be NULL for most
+ * modules, to respect built-in defaults
+ * @param default_mech Default mechanism for this lock, to override
+ * built-in defaults; should be APR_LOCK_DEFAULT for most modules, to
+ * respect built-in defaults
+ * or NULL if there are no defaults for this mutex.
+ * @param options combination of AP_MUTEX_* constants, or 0 for defaults
+ */
+AP_DECLARE(apr_status_t) ap_mutex_register(apr_pool_t *pconf,
+                                           const char *type,
+                                           const char *default_dir,
+                                           apr_lockmech_e default_mech,
+                                           apr_int32_t options);
+
+/**
+ * Create an APR global mutex that has been registered previously with
+ * ap_mutex_register().  Mutex files, permissions, and error logging will
+ * be handled internally.
+ * @param mutex The memory address where the newly created mutex will be
+ * stored.  If this mutex is disabled, mutex will be set to NULL on
+ * output.  (That is allowed only if the AP_MUTEX_ALLOW_NONE flag is
+ * passed to ap_mutex_register().)
+ * @param type The type name of the mutex, matching the type name passed
+ * to ap_mutex_register().
+ * @param instance_id A unique string to be used in the lock filename IFF
+ * this mutex type is multi-instance, NULL otherwise.
+ * @param s server_rec of main server
+ * @param pconf pool
+ * @param options combination of AP_MUTEX_* constants, or 0 for defaults
+ * (currently none are defined for this function)
+ */
+AP_DECLARE(apr_status_t) ap_global_mutex_create(apr_global_mutex_t **mutex,
+                                                const char *type,
+                                                const char *instance_id,
+                                                server_rec *s,
+                                                apr_pool_t *pconf,
+                                                apr_int32_t options);
+
+/**
+ * Create an APR proc mutex that has been registered previously with
+ * ap_mutex_register().  Mutex files, permissions, and error logging will
+ * be handled internally.
+ * @param mutex The memory address where the newly created mutex will be
+ * stored.  If this mutex is disabled, mutex will be set to NULL on
+ * output.  (That is allowed only if the AP_MUTEX_ALLOW_NONE flag is
+ * passed to ap_mutex_register().)
+ * @param type The type name of the mutex, matching the type name passed
+ * to ap_mutex_register().
+ * @param instance_id A unique string to be used in the lock filename IFF
+ * this mutex type is multi-instance, NULL otherwise.
+ * @param s server_rec of main server
+ * @param pconf pool
+ * @param options combination of AP_MUTEX_* constants, or 0 for defaults
+ * (currently none are defined for this function)
+ */
+AP_DECLARE(apr_status_t) ap_proc_mutex_create(apr_proc_mutex_t **mutex,
+                                              const char *type,
+                                              const char *instance_id,
+                                              server_rec *s, apr_pool_t *p,
+                                              apr_int32_t options);
 
 #ifdef __cplusplus
 }

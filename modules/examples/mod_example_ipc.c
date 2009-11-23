@@ -52,12 +52,8 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "http_protocol.h"
+#include "util_mutex.h"
 #include "ap_config.h"
-
-#if !defined(OS2) && !defined(WIN32) && !defined(NETWARE)
-#include "unixd.h"
-#define MOD_EXIPC_SET_MUTEX_PERMS /* XXX Apache should define something */
-#endif
 
 #if APR_HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -80,7 +76,7 @@
 apr_shm_t *exipc_shm; /* Pointer to shared memory block */
 char *shmfilename; /* Shared memory file name, used on some systems */
 apr_global_mutex_t *exipc_mutex; /* Lock around shared memory segment access */
-char *mutexfilename; /* Lock file name, used on some systems */
+static const char *exipc_mutex_type = "example-ipc-shm";
 
 /* Data structure for shared memory block */
 typedef struct exipc_data {
@@ -100,6 +96,18 @@ static apr_status_t shm_cleanup_wrapper(void *unused) {
     return OK;
 }
 
+/*
+ * This routine is called in the parent; we must register our
+ * mutex type before the config is processed so that users can
+ * adjust the mutex settings using the Mutex directive.
+ */
+
+static int exipc_pre_config(apr_pool_t *pconf, apr_pool_t *plog, 
+                            apr_pool_t *ptemp)
+{
+    ap_mutex_register(pconf, exipc_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+    return OK;
+}
 
 /* 
  * This routine is called in the parent, so we'll set up the shared
@@ -140,8 +148,8 @@ static int exipc_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     } /* Kilroy was here */
 
     /* 
-     * Both the shared memory and mutex allocation routines take a
-     * file name. Depending on system-specific implementation of these
+     * The shared memory allocation routines take a file name.
+     * Depending on system-specific implementation of these
      * routines, that file may or may not actually be created. We'd
      * like to store those files in the operating system's designated
      * temporary directory, which APR can point us to.
@@ -178,39 +186,11 @@ static int exipc_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     /* Create global mutex */
 
-    /* 
-     * Create another unique filename to lock upon. Note that
-     * depending on OS and locking mechanism of choice, the file
-     * may or may not be actually created. 
-     */
-    mutexfilename = apr_psprintf(pconf, "%s/httpd_mutex.%ld", tempdir,
-                                 (long int) getpid());
-  
-    rs = apr_global_mutex_create(&exipc_mutex, (const char *) mutexfilename, 
-                                 APR_LOCK_DEFAULT, pconf);
+    rs = ap_global_mutex_create(&exipc_mutex, exipc_mutex_type, NULL, s, pconf,
+                                0);
     if (APR_SUCCESS != rs) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rs, s, 
-                     "Failed to create mutex on file %s", 
-                     mutexfilename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-
-    /* 
-     * After the mutex is created, its permissions need to be adjusted
-     * on unix platforms so that the child processe can acquire
-     * it. This call takes care of that. The preprocessor define was
-     * set up early in this source file since Apache doesn't provide
-     * it.
-     */
-#ifdef MOD_EXIPC_SET_MUTEX_PERMS
-    rs = ap_unixd_set_global_mutex_perms(exipc_mutex);
-    if (APR_SUCCESS != rs) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rs, s, 
-                     "Parent could not set permissions on Example IPC "
-                     "mutex: check User and Group directives");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-#endif /* MOD_EXIPC_SET_MUTEX_PERMS */
 
     /* 
      * Destroy the shm segment when the configuration pool gets destroyed. This
@@ -236,12 +216,12 @@ static void exipc_child_init(apr_pool_t *p, server_rec *s)
      * the mutex pointer global here. 
      */
     rs = apr_global_mutex_child_init(&exipc_mutex, 
-                                     (const char *) mutexfilename, 
+                                     apr_global_mutex_lockfile(exipc_mutex),
                                      p);
     if (APR_SUCCESS != rs) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rs, s, 
-                     "Failed to reopen mutex on file %s", 
-                     shmfilename);
+                     "Failed to reopen mutex %s in child", 
+                     exipc_mutex_type);
         /* There's really nothing else we can do here, since This
          * routine doesn't return a status. If this ever goes wrong,
          * it will turn Apache into a fork bomb. Let's hope it never
@@ -367,6 +347,7 @@ static int exipc_handler(request_rec *r)
 
 static void exipc_register_hooks(apr_pool_t *p)
 {
+    ap_hook_pre_config(exipc_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(exipc_post_config, NULL, NULL, APR_HOOK_MIDDLE); 
     ap_hook_child_init(exipc_child_init, NULL, NULL, APR_HOOK_MIDDLE); 
     ap_hook_handler(exipc_handler, NULL, NULL, APR_HOOK_MIDDLE);

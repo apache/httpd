@@ -39,6 +39,7 @@
 #include "util_script.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
+#include "util_mutex.h"
 #include "apr.h"
 #include "apr_strings.h"
 #define APR_WANT_STRFUNC
@@ -267,15 +268,6 @@ typedef enum {
 typedef unsigned int ssl_pathcheck_t;
 
 /**
- * Define the SSL mutex modes
- */
-typedef enum {
-    SSL_MUTEXMODE_UNSET  = UNSET,
-    SSL_MUTEXMODE_NONE   = 0,
-    SSL_MUTEXMODE_USED   = 1
-} ssl_mutexmode_t;
-
-/**
  * Define the SSL enabled state
  */
 typedef enum {
@@ -403,9 +395,6 @@ typedef struct {
     const ap_socache_provider_t *sesscache;
     ap_socache_instance_t *sesscache_context;
 
-    ssl_mutexmode_t nMutexMode;
-    apr_lockmech_e  nMutexMech;
-    const char     *szMutexFile;
     apr_global_mutex_t   *pMutex;
     apr_array_header_t   *aRandSeed;
     apr_hash_t     *tVHostKeys;
@@ -419,9 +408,6 @@ typedef struct {
 #ifdef HAVE_OCSP_STAPLING
     const ap_socache_provider_t *stapling_cache;
     ap_socache_instance_t *stapling_cache_context;
-    ssl_mutexmode_t stapling_mutex_mode;
-    apr_lockmech_e  stapling_mutex_mech;
-    const char     *stapling_mutex_file;
     apr_global_mutex_t   *stapling_mutex;
 #endif
 
@@ -566,7 +552,6 @@ void        *ssl_config_server_create(apr_pool_t *, server_rec *);
 void        *ssl_config_server_merge(apr_pool_t *, void *, void *);
 void        *ssl_config_perdir_create(apr_pool_t *, char *);
 void        *ssl_config_perdir_merge(apr_pool_t *, void *, void *);
-const char  *ssl_cmd_SSLMutex(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLPassPhraseDialog(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCryptoDevice(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRandomSeed(cmd_parms *, void *, const char *, const char *, const char *);
@@ -666,7 +651,6 @@ int ssl_engine_disable(conn_rec *c);
 
 /** OCSP Stapling Support */
 #ifdef HAVE_OCSP_STAPLING
-const char *ssl_cmd_SSLStaplingMutex(cmd_parms *, void *, const char *);
 const char *ssl_cmd_SSLStaplingCache(cmd_parms *, void *, const char *);
 const char *ssl_cmd_SSLUseStapling(cmd_parms *, void *, int);
 const char *ssl_cmd_SSLStaplingResponseTimeSkew(cmd_parms *, void *, const char *);
@@ -740,6 +724,10 @@ int          ssl_mutex_off(server_rec *);
 
 int          ssl_stapling_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_stapling_mutex_reinit(server_rec *, apr_pool_t *);
+
+/* mutex type names for Mutex directive */
+#define ssl_cache_mutex_type    "ssl-cache"
+#define ssl_stapling_mutex_type "ssl-stapling"
 
 /**  Logfile Support  */
 void         ssl_die(void);

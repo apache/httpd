@@ -56,11 +56,6 @@ SSLPassPhraseDialog  builtin
 SSLSessionCache        "shmcb:@exp_runtimedir@/ssl_scache(512000)"
 SSLSessionCacheTimeout  300
 
-#   Semaphore:
-#   Configure the path to the mutual exclusion semaphore the
-#   SSL engine uses internally for inter-process synchronization. 
-SSLMutex  "file:@exp_runtimedir@/ssl_mutex"
-
 ##
 ## SSL Virtual Host Context
 ##

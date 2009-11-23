@@ -54,7 +54,6 @@ static const command_rec ssl_config_cmds[] = {
     /*
      * Global (main-server) context configuration directives
      */
-    SSL_CMD_SRV(Mutex, TAKE1, AP_ALL_AVAILABLE_MUTEXES_STRING)
     SSL_CMD_SRV(PassPhraseDialog, TAKE1,
                 "SSL dialog mechanism for the pass phrase query "
                 "('builtin', '|/path/to/pipe_program', "
@@ -201,7 +200,6 @@ static const command_rec ssl_config_cmds[] = {
     /*
      * OCSP Stapling options
      */
-    SSL_CMD_SRV(StaplingMutex, TAKE1, AP_ALL_AVAILABLE_MUTEXES_STRING)
     SSL_CMD_SRV(StaplingCache, TAKE1,
                 "SSL Stapling Response Cache storage "
                 "(`dbm:/path/to/file')")
@@ -312,6 +310,12 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
 
     /* Register to handle mod_status status page generation */
     ssl_scache_status_register(pconf);
+
+    /* Register mutex type names so they can be configured with Mutex */
+    ap_mutex_register(pconf, ssl_cache_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+#ifdef HAVE_OCSP_STAPLING
+    ap_mutex_register(pconf, ssl_stapling_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+#endif
 
     return OK;
 }

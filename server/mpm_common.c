@@ -253,20 +253,6 @@ const char * ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-const char *ap_lock_fname = NULL;
-
-const char *ap_mpm_set_lockfile(cmd_parms *cmd, void *dummy,
-                                const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_lock_fname = arg;
-    return NULL;
-}
-
 int ap_max_requests_per_child = 0;
 
 const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,
@@ -324,35 +310,6 @@ const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
         return err;
     }
     ap_graceful_shutdown_timeout = atoi(arg);
-    return NULL;
-}
-
-apr_lockmech_e ap_accept_lock_mech = APR_LOCK_DEFAULT;
-
-const char *ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
-                                        void *dummy,
-                                        const char *arg)
-{
-    apr_status_t rv;
-    const char *lockfile;
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    rv = ap_parse_mutex(arg, cmd->server->process->pool,
-                        &ap_accept_lock_mech, &lockfile);
-
-    if ((rv == APR_ENOTIMPL) || (rv == APR_ENOLOCK)) {
-        return apr_pstrcat(cmd->pool, "Invalid AcceptMutex argument ", arg,
-                           " (" AP_AVAILABLE_MUTEXES_STRING ")", NULL);
-    } else if (rv == APR_BADARG) {
-            return apr_pstrcat(cmd->pool, "Invalid AcceptMutex filepath ",
-                               arg, NULL);
-    }
-
-    if (lockfile && !ap_lock_fname)
-        ap_lock_fname = lockfile;
     return NULL;
 }
 

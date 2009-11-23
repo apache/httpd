@@ -46,11 +46,6 @@
 #define DEFAULT_MIN_FREE_DAEMON 5
 #endif
 
-/* File used for accept locking, when we use a file */
-#ifndef DEFAULT_LOCKFILE
-#define DEFAULT_LOCKFILE DEFAULT_REL_RUNTIMEDIR "/accept.lock"
-#endif
-
 /* Where the main/parent process's pid is logged */
 #ifndef DEFAULT_PIDLOG
 #define DEFAULT_PIDLOG DEFAULT_REL_RUNTIMEDIR "/httpd.pid"

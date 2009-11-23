@@ -20,10 +20,7 @@
 #include "mod_watchdog.h"
 #include "ap_provider.h"
 #include "ap_mpm.h"
-
-#ifdef AP_NEED_SET_MUTEX_PERMS
-#include "unixd.h"
-#endif
+#include "util_mutex.h"
 
 #define AP_WATCHODG_PGROUP    "watchdog"
 #define AP_WATCHODG_PVERSION  "parent"
@@ -46,7 +43,6 @@ struct ap_watchdog_t
 {
     apr_thread_mutex_t   *startup;
     apr_proc_mutex_t     *mutex;
-    const char           *mutex_path;
     const char           *name;
     watchdog_list_t      *callbacks;
     int                   is_running;
@@ -66,11 +62,11 @@ struct wd_server_conf_t
     server_rec *s;
 };
 
-static char *wd_mutex_path = NULL;
 static wd_server_conf_t *wd_server_conf = NULL;
 static apr_interval_time_t wd_interval = AP_WD_TM_INTERVAL;
 static int wd_interval_set = 0;
 static int mpm_is_forked = AP_MPMQ_NOT_SUPPORTED;
+static const char *wd_proc_mutex_type = "wd-proc";
 
 static apr_status_t wd_worker_cleanup(void *data)
 {
@@ -276,7 +272,8 @@ static apr_status_t wd_startup(ap_watchdog_t *w, apr_pool_t *p)
 
     if (w->singleton) {
         /* Initialize singleton mutex in child */
-        rc = apr_proc_mutex_child_init(&w->mutex, w->mutex_path, p);
+        rc = apr_proc_mutex_child_init(&w->mutex,
+                                       apr_proc_mutex_lockfile(w->mutex), p);
         if (rc != APR_SUCCESS)
             return rc;
     }
@@ -387,38 +384,6 @@ static apr_status_t ap_watchdog_register_callback(ap_watchdog_t *w,
     return APR_SUCCESS;
 }
 
-static apr_status_t wd_create_mutex(ap_watchdog_t *w, apr_pool_t *p)
-{
-    apr_status_t rv;
-    apr_lockmech_e mech = APR_LOCK_DEFAULT;
-    const char *mb_path = wd_mutex_path ? wd_mutex_path : "logs";
-
-    w->mutex_path = ap_server_root_relative(p,
-                                        apr_pstrcat(p, mb_path,
-                                        "/.wdc-", w->name, ".mutex", NULL));
-
-    /* TODO: Check the mutex mechanisms */
-#if APR_HAS_FCNTL_SERIALIZE
-    mech = APR_LOCK_FCNTL;
-#else
-#if APR_HAS_FLOCK_SERIALIZE
-    mech = APR_LOCK_FLOCK;
-#endif
-#endif
-    rv = apr_proc_mutex_create(&w->mutex, w->mutex_path, mech, p);
-#ifdef AP_NEED_SET_MUTEX_PERMS
-    if (rv == APR_SUCCESS) {
-        rv = ap_unixd_set_proc_mutex_perms(w->mutex);
-        if (rv != APR_SUCCESS) {
-            /* Destroy the mutex early */
-            apr_proc_mutex_destroy(w->mutex);
-            w->mutex = NULL;
-        }
-    }
-#endif
-    return rv;
-}
-
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
 /* Pre config hook.                                                         */
@@ -451,6 +416,12 @@ static int wd_pre_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
             return rv;
         }
     }
+
+    if ((rv = ap_mutex_register(pconf, wd_proc_mutex_type, NULL,
+                                APR_LOCK_DEFAULT, 0)) != APR_SUCCESS) {
+        return rv;
+    }
+
     return OK;
 }
 
@@ -557,10 +528,10 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                      * Create mutexes for singleton watchdogs
                      */
                     if (w->singleton) {
-                        rv = wd_create_mutex(w, wd_server_conf->pool);
+                        rv = ap_proc_mutex_create(&w->mutex, wd_proc_mutex_type,
+                                                  w->name, s,
+                                                  wd_server_conf->pool, 0);
                         if (rv != APR_SUCCESS) {
-                            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                                    "Watchdog: Failed to create mutex.");
                             return rv;
                         }
                     }
@@ -614,30 +585,6 @@ static void wd_child_init_hook(apr_pool_t *p, server_rec *s)
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
-/* WatchdogMutexPath directive                                              */
-/*                                                                          */
-/*--------------------------------------------------------------------------*/
-static const char *wd_cmd_mutex_path(cmd_parms *cmd, void *dummy,
-                                     const char *arg)
-{
-    const char *errs = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-
-    if (errs != NULL)
-        return errs;
-
-    if (wd_mutex_path != NULL)
-       return "Duplicate WatchdogMutexPath directives are not allowed";
-
-    wd_mutex_path = apr_pstrdup(cmd->pool, arg);
-    if (wd_mutex_path == NULL)
-        return "Invalid WatchdogMutexPath name";
-    if (wd_mutex_path[strlen(wd_mutex_path) - 1] == '/')
-        wd_mutex_path[strlen(wd_mutex_path) - 1] = '\0';
-    return NULL;
-}
-
-/*--------------------------------------------------------------------------*/
-/*                                                                          */
 /* WatchdogInterval directive                                               */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
@@ -666,13 +613,6 @@ static const char *wd_cmd_watchdog_int(cmd_parms *cmd, void *dummy,
 /*--------------------------------------------------------------------------*/
 static const command_rec wd_directives[] =
 {
-    AP_INIT_TAKE1(
-        "WatchdogMutexPath",                /* directive name               */
-        wd_cmd_mutex_path,                  /* config action routine        */
-        NULL,                               /* argument to include in call  */
-        RSRC_CONF,                          /* where available              */
-        "Path where the Watchdog mutexes will be created"
-    ),
     AP_INIT_TAKE1(
         "WatchdogInterval",                 /* directive name               */
         wd_cmd_watchdog_int,                /* config action routine        */
