@@ -64,7 +64,7 @@
 #define AP_LDAP_CHASEREFERRALS_ON 1
 
 module AP_MODULE_DECLARE_DATA ldap_module;
-static const char *ldap_cache_lock_type = "ldap-cache";
+static const char *ldap_cache_mutex_type = "ldap-cache";
 
 #define LDAP_CACHE_LOCK() do {                                  \
     if (st->util_ldap_cache_lock)                               \
@@ -2521,7 +2521,7 @@ static int util_ldap_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 {
     apr_status_t result;
 
-    result = ap_mutex_register(pconf, ldap_cache_lock_type, NULL,
+    result = ap_mutex_register(pconf, ldap_cache_mutex_type, NULL,
                                APR_LOCK_DEFAULT, 0);
     if (result != APR_SUCCESS) {
         return result;
@@ -2580,7 +2580,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         }
 
         result = ap_global_mutex_create(&st->util_ldap_cache_lock,
-                                        ldap_cache_lock_type, NULL, s, p, 0);
+                                        ldap_cache_mutex_type, NULL, s, p, 0);
         if (result != APR_SUCCESS) {
             return result;
         }
@@ -2682,7 +2682,7 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s,
                      "Failed to initialise global mutex %s in child process %"
                      APR_PID_T_FMT ".",
-                     ldap_cache_lock_type, getpid());
+                     ldap_cache_mutex_type, getpid());
     }
 }
 
