@@ -34,7 +34,9 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "util_mutex.h"
+#if AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h> /* getpid() */
 #endif
