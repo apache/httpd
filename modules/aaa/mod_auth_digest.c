@@ -180,8 +180,8 @@ static unsigned long  *opaque_cntr;
 static apr_time_t     *otn_counter;     /* one-time-nonce counter */
 static apr_global_mutex_t *client_lock = NULL;
 static apr_global_mutex_t *opaque_lock = NULL;
-static const char     *client_lock_type = "authdigest-client";
-static const char     *opaque_lock_type = "authdigest-opaque";
+static const char     *client_mutex_type = "authdigest-client";
+static const char     *opaque_mutex_type = "authdigest-opaque";
 static const char     *client_shm_filename;
 
 #define DEF_SHMEM_SIZE  1000L           /* ~ 12 entries */
@@ -322,7 +322,7 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_list->tbl_len     = num_buckets;
     client_list->num_entries = 0;
 
-    sts = ap_global_mutex_create(&client_lock, client_lock_type, NULL, s, ctx, 0);
+    sts = ap_global_mutex_create(&client_lock, client_mutex_type, NULL, s, ctx, 0);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return !OK;
@@ -338,7 +338,7 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     }
     *opaque_cntr = 1UL;
 
-    sts = ap_global_mutex_create(&opaque_lock, opaque_lock_type, NULL, s, ctx, 0);
+    sts = ap_global_mutex_create(&opaque_lock, opaque_mutex_type, NULL, s, ctx, 0);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
         return !OK;
@@ -366,9 +366,9 @@ static int pre_init(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     apr_status_t rv;
 
-    rv = ap_mutex_register(pconf, client_lock_type, NULL, APR_LOCK_DEFAULT, 0);
+    rv = ap_mutex_register(pconf, client_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
     if (rv == APR_SUCCESS) {
-        rv = ap_mutex_register(pconf, opaque_lock_type, NULL, APR_LOCK_DEFAULT,
+        rv = ap_mutex_register(pconf, opaque_mutex_type, NULL, APR_LOCK_DEFAULT,
                                0);
     }
     if (rv != APR_SUCCESS) {

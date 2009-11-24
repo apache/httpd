@@ -66,7 +66,7 @@ static wd_server_conf_t *wd_server_conf = NULL;
 static apr_interval_time_t wd_interval = AP_WD_TM_INTERVAL;
 static int wd_interval_set = 0;
 static int mpm_is_forked = AP_MPMQ_NOT_SUPPORTED;
-static const char *wd_proc_mutex_type = "wd-proc";
+static const char *wd_proc_mutex_type = "watchdog-callback";
 
 static apr_status_t wd_worker_cleanup(void *data)
 {
