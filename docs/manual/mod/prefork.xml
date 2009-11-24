@@ -83,6 +83,14 @@ uses</a></seealso>
     <p><directive module="mpm_common">MaxRequestsPerChild</directive>
     controls how frequently the server recycles processes by killing
     old ones and launching new ones.</p>
+
+    <p>This MPM uses the <code>mpm-accept</code> mutex to serialize
+    access to incoming connections when subject to the thundering herd
+    problem (generally, when there are multiple listening sockets).
+    The implementation aspects of this mutex can be configured with the
+    <directive module="core">Mutex</directive> directive.  The <a
+    href="../misc/perf-tuning.html">performance hints</a>
+    documentation has additional information about this mutex.</p>
 </section>
 
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
@@ -94,8 +102,6 @@ uses</a></seealso>
 <directivesynopsis location="mpm_common"><name>Listen</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
-</directivesynopsis>
-<directivesynopsis location="mpm_common"><name>LockFile</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxClients</name>
 </directivesynopsis>
@@ -116,8 +122,6 @@ uses</a></seealso>
 <directivesynopsis location="mod_unixd"><name>User</name>
 </directivesynopsis>
 <directivesynopsis location="mod_unixd"><name>Group</name>
-</directivesynopsis>
-<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
 
 <directivesynopsis>
