@@ -58,439 +58,436 @@
 </table>
 <table class="qref">
 <tr><td><a href="core.html#acceptfilter" id="A" name="A">AcceptFilter <var>protocol</var> <var>accept_filter</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures optimizations for a Protocol's Listener Sockets</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#acceptmutex">AcceptMutex Default|<var>method</var></a></td><td> Default </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Method that Apache uses to serialize multiple children
-accepting requests on network sockets</td></tr>
-<tr><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Resources accept trailing pathname information</td></tr>
-<tr class="odd"><td><a href="core.html#accessfilename">AccessFileName <var>filename</var> [<var>filename</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the distributed configuration file</td></tr>
-<tr><td><a href="mod_actions.html#action">Action <var>action-type</var> <var>cgi-script</var> [virtual]</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular handler or
+<tr class="odd"><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Resources accept trailing pathname information</td></tr>
+<tr><td><a href="core.html#accessfilename">AccessFileName <var>filename</var> [<var>filename</var>] ...</a></td><td> .htaccess </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Name of the distributed configuration file</td></tr>
+<tr class="odd"><td><a href="mod_actions.html#action">Action <var>action-type</var> <var>cgi-script</var> [virtual]</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular handler or
 content-type</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#addalt">AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Alternate text to display for a file, instead of an
+<tr><td><a href="mod_autoindex.html#addalt">AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Alternate text to display for a file, instead of an
 icon selected by filename</td></tr>
-<tr><td><a href="mod_autoindex.html#addaltbyencoding">AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
-[<var>MIME-encoding</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Alternate text to display for a file instead of an icon
+<tr class="odd"><td><a href="mod_autoindex.html#addaltbyencoding">AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
+[<var>MIME-encoding</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Alternate text to display for a file instead of an icon
 selected by MIME-encoding</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#addaltbytype">AddAltByType <var>string</var> <var>MIME-type</var>
-[<var>MIME-type</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Alternate text to display for a file, instead of an
+<tr><td><a href="mod_autoindex.html#addaltbytype">AddAltByType <var>string</var> <var>MIME-type</var>
+[<var>MIME-type</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Alternate text to display for a file, instead of an
 icon selected by MIME content-type</td></tr>
-<tr><td><a href="mod_mime.html#addcharset">AddCharset <var>charset</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions to the specified content
+<tr class="odd"><td><a href="mod_mime.html#addcharset">AddCharset <var>charset</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions to the specified content
 charset</td></tr>
-<tr class="odd"><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>charset</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Default charset parameter to be added when a response
+<tr><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>charset</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Default charset parameter to be added when a response
 content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
-<tr><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Description to display for a file</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addencoding">AddEncoding <var>encoding</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions to the specified encoding
+<tr class="odd"><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Description to display for a file</td></tr>
+<tr><td><a href="mod_mime.html#addencoding">AddEncoding <var>encoding</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions to the specified encoding
 type</td></tr>
-<tr><td><a href="mod_mime.html#addhandler">AddHandler <var>handler-name</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the filename extensions to the specified
+<tr class="odd"><td><a href="mod_mime.html#addhandler">AddHandler <var>handler-name</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the filename extensions to the specified
 handler</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#addicon">AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Icon to display for a file selected by name</td></tr>
-<tr><td><a href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
-[<var>MIME-encoding</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icon to display next to files selected by MIME
+<tr><td><a href="mod_autoindex.html#addicon">AddIcon <var>icon</var> <var>name</var> [<var>name</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icon to display for a file selected by name</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
+[<var>MIME-encoding</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Icon to display next to files selected by MIME
 content-encoding</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#addiconbytype">AddIconByType <var>icon</var> <var>MIME-type</var>
-[<var>MIME-type</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Icon to display next to files selected by MIME
+<tr><td><a href="mod_autoindex.html#addiconbytype">AddIconByType <var>icon</var> <var>MIME-type</var>
+[<var>MIME-type</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icon to display next to files selected by MIME
 content-type</td></tr>
-<tr><td><a href="mod_mime.html#addinputfilter">AddInputFilter <var>filter</var>[;<var>filter</var>...]
-<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps filename extensions to the filters that will process
-client requests</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addlanguage">AddLanguage <var>language-tag</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extension to the specified content
-language</td></tr>
-<tr><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>module-name</var> <var>string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Adds additional information to the module
-information displayed by the server-info handler</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter <var>filter</var>[;<var>filter</var>...]
+<tr class="odd"><td><a href="mod_mime.html#addinputfilter">AddInputFilter <var>filter</var>[;<var>filter</var>...]
 <var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps filename extensions to the filters that will process
+client requests</td></tr>
+<tr><td><a href="mod_mime.html#addlanguage">AddLanguage <var>language-tag</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extension to the specified content
+language</td></tr>
+<tr class="odd"><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>module-name</var> <var>string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adds additional information to the module
+information displayed by the server-info handler</td></tr>
+<tr><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter <var>filter</var>[;<var>filter</var>...]
+<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps filename extensions to the filters that will process
 responses from the server</td></tr>
-<tr><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
-<var>media-type</var> [<var>media-type</var>] ...</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">assigns an output filter to a particular media-type</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#addtype">AddType <var>media-type</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
+<tr class="odd"><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
+<var>media-type</var> [<var>media-type</var>] ...</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">assigns an output filter to a particular media-type</td></tr>
+<tr><td><a href="mod_mime.html#addtype">AddType <var>media-type</var> <var>extension</var>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps the given filename extensions onto the specified content
 type</td></tr>
-<tr><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps URLs to filesystem locations</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
-<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps URLs to filesystem locations using regular
+<tr class="odd"><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Maps URLs to filesystem locations</td></tr>
+<tr><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
+<var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Maps URLs to filesystem locations using regular
 expressions</td></tr>
-<tr><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
-[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts can access an area of the
+<tr class="odd"><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts can access an area of the
 server</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <var>port</var> [<var>port</var>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
+<tr><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <var>port</var> [<var>port</var>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
 proxy</td></tr>
-<tr><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Determines whether encoded path separators in URLs are allowed to
+<tr class="odd"><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether encoded path separators in URLs are allowed to
 be passed through</td></tr>
-<tr class="odd"><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>
-[<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Types of directives that are allowed in
+<tr><td><a href="core.html#allowoverride">AllowOverride All|None|<var>directive-type</var>
+[<var>directive-type</var>] ...</a></td><td> All </td><td>d</td><td>C</td></tr><tr><td class="descr" colspan="4">Types of directives that are allowed in
 <code>.htaccess</code> files</td></tr>
-<tr><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies userIDs that are allowed access without
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous">Anonymous <var>user</var> [<var>user</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies userIDs that are allowed access without
 password verification</td></tr>
-<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether the password entered will be logged in the
+<tr><td><a href="mod_authn_anon.html#anonymous_logemail">Anonymous_LogEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the password entered will be logged in the
 error log</td></tr>
-<tr><td><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies whether blank passwords are allowed</td></tr>
-<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
-<tr><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether to check the password field for a correctly
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_mustgiveemail">Anonymous_MustGiveEmail On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies whether blank passwords are allowed</td></tr>
+<tr><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets whether the userID field may be empty</td></tr>
+<tr class="odd"><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether to check the password field for a correctly
 formatted email address</td></tr>
-<tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization and authentication are passed to
+<tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets whether authorization and authentication are passed to
 lower level modules</td></tr>
-<tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <var>provider-name</var>
-[<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
-<tr class="odd"><td><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SQL query to look up a password for a user</td></tr>
-<tr><td><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">SQL query to look up a password hash for a user and realm.
-</td></tr>
-<tr class="odd"><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the database file containing the list
-of user groups for authorization</td></tr>
-<tr><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
-store passwords</td></tr>
-<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of a database file containing the list of users and
-passwords for authentication</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5|MD5-sess</a></td><td> MD5 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
-response hashes in digest authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URIs that are in the same protection space for digest
-authentication</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables or disables checking of the nonce-count sent by the
-server</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat <var>format</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how the nonce is generated</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime <var>seconds</var></a></td><td> 300 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">How long the server nonce is valid</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider <var>provider-name</var>
-[<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop none|auth|auth-int [auth|auth-int]</a></td><td> auth </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines the quality-of-protection to use in digest
-authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize <var>size</var></a></td><td> 1000 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The amount of shared memory to allocate for keeping track
-of clients</td></tr>
-<tr><td><a href="mod_auth_form.html#authformauthoritative">AuthFormAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets whether authorization and authentication are passed to
-lower level modules</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformbody">AuthFormBody <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The name of a form field carrying the body of the request to attempt on successful login</td></tr>
-<tr><td><a href="mod_auth_form.html#authformdisablenostore">AuthFormDisableNoStore <var>On|Off</var></a></td><td> Off </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Disable the CacheControl no-store header on the login page</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformfakebasicauth">AuthFormFakeBasicAuth <var>On|Off</var></a></td><td> Off </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fake a Basic Authentication header</td></tr>
-<tr><td><a href="mod_auth_form.html#authformlocation">AuthFormLocation <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The name of a form field carrying a URL to redirect to on successful login</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformloginrequiredlocation">AuthFormLoginRequiredLocation <var>url</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The URL of the page to be redirected to should login be required</td></tr>
-<tr><td><a href="mod_auth_form.html#authformloginsuccesslocation">AuthFormLoginSuccessLocation <var>url</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The URL of the page to be redirected to should login be successful</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation <var>uri</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The URL to redirect to after a user has logged out</td></tr>
-<tr><td><a href="mod_auth_form.html#authformmethod">AuthFormMethod <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The name of a form field carrying the method of the request to attempt on successful login</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformmimetype">AuthFormMimetype <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The name of a form field carrying the mimetype of the body of the request to attempt on successful login</td></tr>
-<tr><td><a href="mod_auth_form.html#authformpassword">AuthFormPassword <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The name of a form field carrying the login password</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformprovider">AuthFormProvider <var>provider-name</var>
+<tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
-<tr><td><a href="mod_auth_form.html#authformsitepassphrase">AuthFormSitePassphrase <var>secret</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Bypass authentication checks for high traffic sites</td></tr>
-<tr class="odd"><td><a href="mod_auth_form.html#authformsize">AuthFormBody <var>size</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The largest size of the form in bytes that will be parsed for the login details</td></tr>
-<tr><td><a href="mod_auth_form.html#authformusername">AuthFormUsername <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The name of a form field carrying the login username</td></tr>
-<tr class="odd"><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of a text file containing the list
+<tr><td><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">SQL query to look up a password for a user</td></tr>
+<tr class="odd"><td><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SQL query to look up a password hash for a user and realm.
+</td></tr>
+<tr><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the database file containing the list
 of user groups for authorization</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative<em>off|on</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword <em>password</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Password used in conjuction with the bind DN</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Language to charset conversion configuration file</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> always </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">LDAP attributes used to identify the user members of
+<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the type of database file that is used to
+store passwords</td></tr>
+<tr><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of a database file containing the list of users and
+passwords for authentication</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5|MD5-sess</a></td><td> MD5 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
+response hashes in digest authentication</td></tr>
+<tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">URIs that are in the same protection space for digest
+authentication</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables checking of the nonce-count sent by the
+server</td></tr>
+<tr><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat <var>format</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines how the nonce is generated</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime <var>seconds</var></a></td><td> 300 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How long the server nonce is valid</td></tr>
+<tr><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider <var>provider-name</var>
+[<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop none|auth|auth-int [auth|auth-int]</a></td><td> auth </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the quality-of-protection to use in digest
+authentication</td></tr>
+<tr><td><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize <var>size</var></a></td><td> 1000 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The amount of shared memory to allocate for keeping track
+of clients</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformauthoritative">AuthFormAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization and authentication are passed to
+lower level modules</td></tr>
+<tr><td><a href="mod_auth_form.html#authformbody">AuthFormBody <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The name of a form field carrying the body of the request to attempt on successful login</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformdisablenostore">AuthFormDisableNoStore <var>On|Off</var></a></td><td> Off </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Disable the CacheControl no-store header on the login page</td></tr>
+<tr><td><a href="mod_auth_form.html#authformfakebasicauth">AuthFormFakeBasicAuth <var>On|Off</var></a></td><td> Off </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Fake a Basic Authentication header</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformlocation">AuthFormLocation <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The name of a form field carrying a URL to redirect to on successful login</td></tr>
+<tr><td><a href="mod_auth_form.html#authformloginrequiredlocation">AuthFormLoginRequiredLocation <var>url</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The URL of the page to be redirected to should login be required</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformloginsuccesslocation">AuthFormLoginSuccessLocation <var>url</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The URL of the page to be redirected to should login be successful</td></tr>
+<tr><td><a href="mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation <var>uri</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The URL to redirect to after a user has logged out</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformmethod">AuthFormMethod <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The name of a form field carrying the method of the request to attempt on successful login</td></tr>
+<tr><td><a href="mod_auth_form.html#authformmimetype">AuthFormMimetype <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The name of a form field carrying the mimetype of the body of the request to attempt on successful login</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformpassword">AuthFormPassword <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The name of a form field carrying the login password</td></tr>
+<tr><td><a href="mod_auth_form.html#authformprovider">AuthFormProvider <var>provider-name</var>
+[<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformsitepassphrase">AuthFormSitePassphrase <var>secret</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Bypass authentication checks for high traffic sites</td></tr>
+<tr><td><a href="mod_auth_form.html#authformsize">AuthFormBody <var>size</var></a></td><td></td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">The largest size of the form in bytes that will be parsed for the login details</td></tr>
+<tr class="odd"><td><a href="mod_auth_form.html#authformusername">AuthFormUsername <var>fieldname</var></a></td><td></td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The name of a form field carrying the login username</td></tr>
+<tr><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the name of a text file containing the list
+of user groups for authorization</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative<em>off|on</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword <em>password</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Password used in conjuction with the bind DN</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Language to charset conversion configuration file</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> always </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">LDAP attributes used to identify the user members of
 groups.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username when checking for
+<tr><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username when checking for
 group membership</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth <var>Number</var></a></td><td> 10 </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the maximum sub-group nesting depth that will be
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth <var>Number</var></a></td><td> 10 </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the maximum sub-group nesting depth that will be
 evaluated before the user search is discontinued.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute uid</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the value of the attribute returned during the user
+<tr><td><a href="mod_authnz_ldap.html#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute uid</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the value of the attribute returned during the user
 query to set the REMOTE_USER environment variable</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
 environment variable</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute <em>attribute</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the attribute labels, one value per
+<tr><td><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute <em>attribute</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the attribute labels, one value per
 directive line, used to distinguish the members of the current group that
 are groups.</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass <em>LdapObjectClass</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies which LDAP objectClass values identify directory
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass <em>LdapObjectClass</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies which LDAP objectClass values identify directory
 objects that are groups during sub-group processing.</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
-<tr><td><a href="mod_authz_core.html#authmerging">AuthMerging Off | And | Or</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Controls the manner in which each configuration section's
+<tr><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
+<tr class="odd"><td><a href="mod_authz_core.html#authmerging">AuthMerging Off | And | Or</a></td><td> Off </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the manner in which each configuration section's
 authorization logic is combined with that of preceding configuration
 sections.</td></tr>
-<tr class="odd"><td><a href="mod_authn_core.html#authname">AuthName <var>auth-domain</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Authorization realm for use in HTTP
+<tr><td><a href="mod_authn_core.html#authname">AuthName <var>auth-domain</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Authorization realm for use in HTTP
 authentication</td></tr>
-<tr><td><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
-... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that represent an
+<tr class="odd"><td><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
+... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that represent an
 extension of a base authentication provider and referenced by
 the specified alias</td></tr>
-<tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType None|Basic|Digest|Form</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Type of user authentication</td></tr>
-<tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the name of a text file containing the list of users and
+<tr><td><a href="mod_authn_core.html#authtype">AuthType None|Basic|Digest|Form</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Type of user authentication</td></tr>
+<tr class="odd"><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of a text file containing the list of users and
 passwords for authentication</td></tr>
-<tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer On|Off</a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether to redirect the Client to the Referring
+<tr><td><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer On|Off</a></td><td> Off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines whether to redirect the Client to the Referring
 page on successful login or logout if a <code>Referer</code> request
 header is present</td></tr>
-<tr><td><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify the SQL Query for the required operation</td></tr>
-<tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a query to look up a login page for the user</td></tr>
-<tr><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
+<tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify the SQL Query for the required operation</td></tr>
+<tr><td><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify a query to look up a login page for the user</td></tr>
+<tr class="odd"><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the type of database file that is used to
 store list of user groups</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt; 
+<tr><td><a href="mod_authz_core.html#authzprovideralias">&lt;AuthzProviderAlias <var>baseProvider Alias Require-Parameters</var>&gt; 
 ... &lt;/AuthzProviderAlias&gt;
-</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that represent an
+</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that represent an
 extension of a base authorization provider and referenced by the specified
 alias</td></tr>
-<tr><td><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Add a member to a load balancing group</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
-[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets environment variables conditional on HTTP User-Agent
+<tr class="odd"><td><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember [<var>balancerurl</var>] <var>url</var> [<var>key=value [key=value ...]]</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add a member to a load balancing group</td></tr>
+<tr><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
+[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables conditional on HTTP User-Agent
 </td></tr>
-<tr><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables conditional on User-Agent without
+<tr class="odd"><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets environment variables conditional on User-Agent without
 respect to case</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
-<tr><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of levels of subdirectories in the
+<tr><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
+<tr class="odd"><td><a href="mod_buffer.html#buffersize">BufferSize integer</a></td><td> 131072 </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum size in bytes to buffer by the buffer filter</td></tr>
+<tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of levels of subdirectories in the
 cache.</td></tr>
-<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var>url-string</var> | <var>on</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
+<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var>url-string</var> | <var>on</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
+<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
 manager</td></tr>
-<tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore request to not serve cached content to client</td></tr>
-<tr><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
+<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
+<tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore request to not serve cached content to client</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
 </td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore the fact that a response has no Last Modified
+<tr><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore the fact that a response has no Last Modified
 header.</td></tr>
-<tr><td><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore query string when caching</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers <var>identifier</var> [<var>identifier</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore defined session identifiers encoded in the URL when caching
+<tr class="odd"><td><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore query string when caching</td></tr>
+<tr><td><a href="mod_cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers <var>identifier</var> [<var>identifier</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore defined session identifiers encoded in the URL when caching
 </td></tr>
-<tr><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The factor used to compute an expiry date based on the
+<tr class="odd"><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The factor used to compute an expiry date based on the
 LastModified date.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachelock">CacheLock <var>on|off</var></a></td><td> off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the thundering herd lock.</td></tr>
-<tr><td><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge <var>integer</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachelockpath">CacheLockPath <var>directory</var></a></td><td> /tmp/mod_cache-lock +</td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the lock path directory.</td></tr>
-<tr><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (one day) </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum size (in bytes) of a document to be placed in the
+<tr><td><a href="mod_cache.html#cachelock">CacheLock <var>on|off</var></a></td><td> off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable the thundering herd lock.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachelockmaxage">CacheLockMaxAge <var>integer</var></a></td><td> 5 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the maximum possible age of a cache lock.</td></tr>
+<tr><td><a href="mod_cache.html#cachelockpath">CacheLockPath <var>directory</var></a></td><td> /tmp/mod_cache-lock +</td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Set the lock path directory.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (one day) </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize <var>bytes</var></a></td><td> 1000000 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum size (in bytes) of a document to be placed in the
 cache</td></tr>
-<tr><td><a href="mod_cache.html#cacheminexpire">CacheMinExpire <var>seconds</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
+<tr class="odd"><td><a href="mod_cache.html#cacheminexpire">CacheMinExpire <var>seconds</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The minimum time in seconds to cache a document</td></tr>
+<tr><td><a href="mod_disk_cache.html#cacheminfilesize">CacheMinFileSize <var>bytes</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The minimum size (in bytes) of a document to be placed in the
 cache</td></tr>
-<tr><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Allows content-negotiated documents to be 
+<tr class="odd"><td><a href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs On|Off</a></td><td> Off </td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Allows content-negotiated documents to be 
 cached by proxy servers</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachequickhandler">CacheQuickHandler <var>on|off</var></a></td><td> on </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
-<tr><td><a href="mod_disk_cache.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The directory root under which cache files are
+<tr><td><a href="mod_cache.html#cachequickhandler">CacheQuickHandler <var>on|off</var></a></td><td> on </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Run the cache from the quick handler.</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cacheroot">CacheRoot <var>directory</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The directory root under which cache files are
 stored</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache requests or responses that have been marked as no-store.</td></tr>
-<tr><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to cache responses that the server has marked as private</td></tr>
-<tr class="odd"><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-path</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Technique for locating the interpreter for CGI
+<tr><td><a href="mod_cache.html#cachestorenostore">CacheStoreNoStore On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Attempt to cache requests or responses that have been marked as no-store.</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachestoreprivate">CacheStorePrivate On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Attempt to cache responses that the server has marked as private</td></tr>
+<tr><td><a href="core.html#cgimapextension">CGIMapExtension <var>cgi-path</var> <var>.extension</var></a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Technique for locating the interpreter for CGI
 scripts</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Charset to translate into</td></tr>
-<tr class="odd"><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 Implic +</td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configures charset translation behavior</td></tr>
-<tr><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Source charset of files</td></tr>
-<tr class="odd"><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the action of the speling module to case corrections</td></tr>
-<tr><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables the spelling 
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetdefault">CharsetDefault <var>charset</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Charset to translate into</td></tr>
+<tr><td><a href="mod_charset_lite.html#charsetoptions">CharsetOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 Implic +</td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configures charset translation behavior</td></tr>
+<tr class="odd"><td><a href="mod_charset_lite.html#charsetsourceenc">CharsetSourceEnc <var>charset</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Source charset of files</td></tr>
+<tr><td><a href="mod_speling.html#checkcaseonly">CheckCaseOnly on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Limits the action of the speling module to case corrections</td></tr>
+<tr class="odd"><td><a href="mod_speling.html#checkspelling">CheckSpelling on|off</a></td><td> Off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the spelling 
 module</td></tr>
-<tr class="odd"><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
-<tr><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables the generation of <code>Content-MD5</code> HTTP Response
+<tr><td><a href="mod_unixd.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
+<tr class="odd"><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
-<tr><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#cookielog">CookieLog <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename for the logging of cookies</td></tr>
-<tr><td><a href="mod_usertrack.html#cookiename">CookieName <em>token</em></a></td><td> Apache </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name of the tracking cookie</td></tr>
-<tr class="odd"><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
-    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Format of the cookie header field</td></tr>
-<tr><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>directory</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Directory where Apache attempts to
+<tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookieexpires">CookieExpires <em>expiry-period</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Expiry time for the tracking cookie</td></tr>
+<tr><td><a href="mod_log_config.html#cookielog">CookieLog <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename for the logging of cookies</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookiename">CookieName <em>token</em></a></td><td> Apache </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the tracking cookie</td></tr>
+<tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
+    <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Format of the cookie header field</td></tr>
+<tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables tracking cookie</td></tr>
+<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>directory</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Directory where Apache attempts to
 switch before dumping core</td></tr>
-<tr><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
+<tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
-[env=[!]<var>environment-variable</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable WebDAV HTTP methods</td></tr>
-<tr><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Allow PROPFIND, Depth: Infinity requests</td></tr>
-<tr class="odd"><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
-<tr><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
-<tr class="odd"><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum amount of time the server holds a lock on
+[env=[!]<var>environment-variable</var>]</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
+<tr><td><a href="mod_dav.html#dav" id="D" name="D">Dav On|Off|<var>provider-name</var></a></td><td> Off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable WebDAV HTTP methods</td></tr>
+<tr class="odd"><td><a href="mod_dav.html#davdepthinfinity">DavDepthInfinity on|off</a></td><td> off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Allow PROPFIND, Depth: Infinity requests</td></tr>
+<tr><td><a href="mod_dav_lock.html#davgenericlockdb">DavGenericLockDB <var>file-path</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
+<tr class="odd"><td><a href="mod_dav_fs.html#davlockdb">DavLockDB <var>file-path</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the DAV lock database</td></tr>
+<tr><td><a href="mod_dav.html#davmintimeout">DavMinTimeout <var>seconds</var></a></td><td> 0 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimum amount of time the server holds a lock on
 a DAV resource</td></tr>
-<tr><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>time-in-seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>number</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum sustained number of connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdmax">DBDMax <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of connections</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdmin">DBDMin <var>number</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdparams">DBDParams
-<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Parameters for database connection</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether to use persistent connections</td></tr>
-<tr><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an SQL prepared statement</td></tr>
-<tr class="odd"><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify an SQL driver</td></tr>
-<tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Icon to display for files when no specific icon is
+<tr class="odd"><td><a href="mod_dbd.html#dbdexptime">DBDExptime <var>time-in-seconds</var></a></td><td> 300 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Keepalive time for idle connections</td></tr>
+<tr><td><a href="mod_dbd.html#dbdkeep">DBDKeep <var>number</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum sustained number of connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdmax">DBDMax <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of connections</td></tr>
+<tr><td><a href="mod_dbd.html#dbdmin">DBDMin <var>number</var></a></td><td> 1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Minimum number of connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdparams">DBDParams
+<var>param1</var>=<var>value1</var>[,<var>param2</var>=<var>value2</var>]</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Parameters for database connection</td></tr>
+<tr><td><a href="mod_dbd.html#dbdpersist">DBDPersist On|Off</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether to use persistent connections</td></tr>
+<tr class="odd"><td><a href="mod_dbd.html#dbdpreparesql">DBDPrepareSQL <var>"SQL statement"</var> <var>label</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an SQL prepared statement</td></tr>
+<tr><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify an SQL driver</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Icon to display for files when no specific icon is
 configured</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
+<tr><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>language-tag</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Defines a default language-tag to be sent in the Content-Language
 header field for all resources in the current context that have not been
 assigned a language-tag by some other means.</td></tr>
-<tr><td><a href="core.html#defaulttype">DefaultType <var>media-type|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">This directive has no effect other than to emit warnings
+<tr class="odd"><td><a href="core.html#defaulttype">DefaultType <var>media-type|none</var></a></td><td> none </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">This directive has no effect other than to emit warnings
 if the value is not <code>none</code>. In prior versions, DefaultType
 would specify a default media type to assign to response content for
 which no other media type configuration could be found.
 </td></tr>
-<tr class="odd"><td><a href="core.html#define">Define <var>parameter-name</var></a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Define the existence of a variable</td></tr>
-<tr><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
-<tr><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
-<tr class="odd"><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
-<tr><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Zlib compression window size</td></tr>
-<tr class="odd"><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
-[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts are denied access to the
+<tr><td><a href="core.html#define">Define <var>parameter-name</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Define the existence of a variable</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Fragment size to be compressed at one time by zlib</td></tr>
+<tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">How much compression do we apply to the output</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote [<var>type</var>] <var>notename</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Places the compression ratio in a note for logging</td></tr>
+<tr><td><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel <var>value</var></a></td><td> 9 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">How much memory should be used by zlib for compression</td></tr>
+<tr class="odd"><td><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize <var>value</var></a></td><td> 15 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Zlib compression window size</td></tr>
+<tr><td><a href="mod_access_compat.html#deny"> Deny from all|<var>host</var>|env=[!]<var>env-variable</var>
+[<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls which hosts are denied access to the
 server</td></tr>
-<tr><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
-... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that apply only to the
+<tr class="odd"><td><a href="core.html#directory">&lt;Directory <var>directory-path</var>&gt;
+... &lt;/Directory&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that apply only to the
 named file-system directory and sub-directories</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directoryindex">DirectoryIndex
-    disabled | <var>local-url</var> [<var>local-url</var>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">List of resources to look for when the client requests
+<tr><td><a href="mod_dir.html#directoryindex">DirectoryIndex
+    disabled | <var>local-url</var> [<var>local-url</var>] ...</a></td><td> index.html </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">List of resources to look for when the client requests
 a directory</td></tr>
-<tr><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
-... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enclose directives that apply to
+<tr class="odd"><td><a href="core.html#directorymatch">&lt;DirectoryMatch <var>regex</var>&gt;
+... &lt;/DirectoryMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose directives that apply to
 file-system directories matching a regular expression and their
 subdirectories</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Toggle trailing slash redirects on or off</td></tr>
-<tr><td><a href="core.html#documentroot">DocumentRoot <var>directory-path</var></a></td><td> /usr/local/apache/h +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Directory that forms the main document tree visible
+<tr><td><a href="mod_dir.html#directoryslash">DirectorySlash On|Off</a></td><td> On </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Toggle trailing slash redirects on or off</td></tr>
+<tr class="odd"><td><a href="core.html#documentroot">DocumentRoot <var>directory-path</var></a></td><td> /usr/local/apache/h +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Directory that forms the main document tree visible
 from the web</td></tr>
-<tr class="odd"><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
-<tr><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
-<tr class="odd"><td><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel <var>level</var></a></td><td> debug </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the logging level of the DumpIO output</td></tr>
-<tr><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a hook that runs exception handlers
+<tr><td><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines whether the privileges required by dtrace are enabled.</td></tr>
+<tr class="odd"><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
+<tr><td><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel <var>level</var></a></td><td> debug </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the logging level of the DumpIO output</td></tr>
+<tr class="odd"><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
+<tr><td><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Enables a hook that runs exception handlers
 after a crash</td></tr>
-<tr><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
-<tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
-<tr><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">What the server will return to the client
+<tr class="odd"><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
+<tr><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
+<tr class="odd"><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">What the server will return to the client
 in case of an error</td></tr>
-<tr class="odd"><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Location where the server will log errors</td></tr>
-<tr><td><a href="mod_example.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
+<tr><td><a href="core.html#errorlog"> ErrorLog <var>file-path</var>|syslog[:<var>facility</var>]</a></td><td> logs/error_log (Uni +</td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Location where the server will log errors</td></tr>
+<tr class="odd"><td><a href="mod_example.html#example">Example</a></td><td></td><td>svdh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Demonstration directive to illustrate the Apache module
 API</td></tr>
-<tr class="odd"><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables generation of <code>Expires</code>
+<tr><td><a href="mod_expires.html#expiresactive">ExpiresActive On|Off</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables generation of <code>Expires</code>
 headers</td></tr>
-<tr><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
-<var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
+<tr class="odd"><td><a href="mod_expires.html#expiresbytype">ExpiresByType <var>MIME-type</var>
+<var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Value of the <code>Expires</code> header configured
 by MIME type</td></tr>
-<tr class="odd"><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
-<tr><td><a href="mod_status.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Keep track of extended status information for each 
+<tr><td><a href="mod_expires.html#expiresdefault">ExpiresDefault <var>&lt;code&gt;seconds</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Default algorithm for calculating expiration time</td></tr>
+<tr class="odd"><td><a href="mod_status.html#extendedstatus">ExtendedStatus On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Keep track of extended status information for each 
 request</td></tr>
-<tr class="odd"><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define an external filter</td></tr>
-<tr><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoLogS +</td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
-<tr class="odd"><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource <var>local-url</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Define a default URL for requests that don't map to a file</td></tr>
-<tr><td><a href="core.html#fileetag">FileETag <var>component</var> ...</a></td><td> INode MTime Size </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">File attributes used to create the ETag
+<tr><td><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine <var>filtername</var> <var>parameters</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Define an external filter</td></tr>
+<tr class="odd"><td><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions <var>option</var> [<var>option</var>] ...</a></td><td> DebugLevel=0 NoLogS +</td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure <code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code> options</td></tr>
+<tr><td><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource <var>local-url</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Define a default URL for requests that don't map to a file</td></tr>
+<tr class="odd"><td><a href="core.html#fileetag">FileETag <var>component</var> ...</a></td><td> INode MTime Size </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">File attributes used to create the ETag
 HTTP response header</td></tr>
-<tr class="odd"><td><a href="core.html#files">&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply to matched
+<tr><td><a href="core.html#files">&lt;Files <var>filename</var>&gt; ... &lt;/Files&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply to matched
 filenames</td></tr>
-<tr><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply to regular-expression matched
+<tr class="odd"><td><a href="core.html#filesmatch">&lt;FilesMatch <var>regex</var>&gt; ... &lt;/FilesMatch&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply to regular-expression matched
 filenames</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Configure the filter chain</td></tr>
-<tr><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare a smart filter</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
-    <var>proto-flags</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
-<tr><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
- <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Register a content filter</td></tr>
-<tr class="odd"><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>svd</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Get debug/diagnostic information from
+<tr><td><a href="mod_filter.html#filterchain">FilterChain [+=-@!]<var>filter-name</var> <var>...</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Configure the filter chain</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterdeclare">FilterDeclare <var>filter-name</var> <var>[type]</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare a smart filter</td></tr>
+<tr><td><a href="mod_filter.html#filterprotocol">FilterProtocol <var>filter-name</var> [<var>provider-name</var>]
+    <var>proto-flags</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Deal with correct HTTP protocol handling</td></tr>
+<tr class="odd"><td><a href="mod_filter.html#filterprovider">FilterProvider <var>filter-name</var> <var>provider-name</var>
+ <var>expression</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Register a content filter</td></tr>
+<tr><td><a href="mod_filter.html#filtertrace">FilterTrace <var>filter-name</var> <var>level</var></a></td><td></td><td>svd</td><td>B</td></tr><tr><td class="descr" colspan="4">Get debug/diagnostic information from
     <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></td></tr>
-<tr><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action to take if a single acceptable document is not 
+<tr class="odd"><td><a href="mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</a></td><td> Prefer </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action to take if a single acceptable document is not 
 found</td></tr>
-<tr class="odd"><td><a href="core.html#forcetype">ForceType <var>media-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Forces all matching files to be served with the specified
+<tr><td><a href="core.html#forcetype">ForceType <var>media-type</var>|None</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
 media type in the HTTP Content-Type header field</td></tr>
-<tr><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#gracefulshutdowntimeout" id="G" name="G">GracefulShutDownTimeout <var>seconds</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
+<tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
+<tr><td><a href="mpm_common.html#gracefulshutdowntimeout" id="G" name="G">GracefulShutDownTimeout <var>seconds</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
 will exit.</td></tr>
-<tr><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Group under which the server will answer
+<tr class="odd"><td><a href="mod_unixd.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
 requests</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
-<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
-<tr><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Name of the file that will be inserted at the top
+<tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] add|append|echo|edit|merge|set|unset
+<var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the top
 of the index listing</td></tr>
-<tr class="odd"><td><a href="mod_heartbeat.html#heartbeataddress" /></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Address to send heartbeat requests</td></tr>
-<tr><td><a href="mod_heartmonitor.html#heartbeatlisten" /></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Address to listen for heartbeat requests</td></tr>
-<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Path to store heartbeat data</td></tr>
-<tr><td><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Path to read heartbeat data</td></tr>
-<tr class="odd"><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables DNS lookups on client IP addresses</td></tr>
-<tr><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables logging of the RFC 1413 identity of the remote
+<tr><td><a href="mod_heartbeat.html#heartbeataddress" /></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Address to send heartbeat requests</td></tr>
+<tr class="odd"><td><a href="mod_heartmonitor.html#heartbeatlisten" /></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Address to listen for heartbeat requests</td></tr>
+<tr><td><a href="mod_heartmonitor.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Path to store heartbeat data</td></tr>
+<tr class="odd"><td><a href="mod_lbmethod_heartbeat.html#heartbeatstorage">HeartbeatStorage <var>file-path</var></a></td><td> logs/hb.dat </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Path to read heartbeat data</td></tr>
+<tr><td><a href="core.html#hostnamelookups">HostnameLookups On|Off|Double</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables DNS lookups on client IP addresses</td></tr>
+<tr class="odd"><td><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables logging of the RFC 1413 identity of the remote
 user</td></tr>
-<tr class="odd"><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>seconds</var></a></td><td> 30 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the timeout duration for ident requests</td></tr>
-<tr><td><a href="core.html#if">&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Contains directives that apply only if a condition is
+<tr><td><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout <var>seconds</var></a></td><td> 30 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines the timeout duration for ident requests</td></tr>
+<tr class="odd"><td><a href="core.html#if">&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Contains directives that apply only if a condition is
 satisfied by a request at runtime</td></tr>
-<tr class="odd"><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>parameter-name</var>&gt; ...
-    &lt;/IfDefine&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Encloses directives that will be processed only
+<tr><td><a href="core.html#ifdefine">&lt;IfDefine [!]<var>parameter-name</var>&gt; ...
+    &lt;/IfDefine&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Encloses directives that will be processed only
 if a test is true at startup</td></tr>
-<tr><td><a href="core.html#ifmodule">&lt;IfModule [!]<var>module-file</var>|<var>module-identifier</var>&gt; ...
-    &lt;/IfModule&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Encloses directives that are processed conditional on the
+<tr class="odd"><td><a href="core.html#ifmodule">&lt;IfModule [!]<var>module-file</var>|<var>module-identifier</var>&gt; ...
+    &lt;/IfModule&gt;</a></td><td></td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Encloses directives that are processed conditional on the
 presence or absence of a specific module</td></tr>
-<tr class="odd"><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
-&lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">contains version dependent configuration</td></tr>
-<tr><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://servername/ </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Default <code>base</code> for imagemap files</td></tr>
-<tr class="odd"><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Default action when an imagemap is called with coordinates
+<tr><td><a href="mod_version.html#ifversion">&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
+&lt;/IfVersion&gt;</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">contains version dependent configuration</td></tr>
+<tr class="odd"><td><a href="mod_imagemap.html#imapbase">ImapBase map|referer|<var>URL</var></a></td><td> http://servername/ </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Default <code>base</code> for imagemap files</td></tr>
+<tr><td><a href="mod_imagemap.html#imapdefault">ImapDefault error|nocontent|map|referer|<var>URL</var></a></td><td> nocontent </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Default action when an imagemap is called with coordinates
 that are not explicitly mapped</td></tr>
-<tr><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Action if no coordinates are given when calling
+<tr class="odd"><td><a href="mod_imagemap.html#imapmenu">ImapMenu none|formatted|semiformatted|unformatted</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Action if no coordinates are given when calling
 an imagemap</td></tr>
-<tr class="odd"><td><a href="core.html#include">Include <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Includes other configuration files from within
+<tr><td><a href="core.html#include">Include <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>svd</td><td>C</td></tr><tr><td class="descr" colspan="4">Includes other configuration files from within
 the server configuration files</td></tr>
-<tr><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert <var>"markup ..."</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Inserts text in the HEAD section of an index page.</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexignore">IndexIgnore <var>file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Adds to the list of files to hide when listing
+<tr class="odd"><td><a href="mod_autoindex.html#indexheadinsert">IndexHeadInsert <var>"markup ..."</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Inserts text in the HEAD section of an index page.</td></tr>
+<tr><td><a href="mod_autoindex.html#indexignore">IndexIgnore <var>file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Adds to the list of files to hide when listing
 a directory</td></tr>
-<tr><td><a href="mod_autoindex.html#indexoptions">IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Various configuration settings for directory
+<tr class="odd"><td><a href="mod_autoindex.html#indexoptions">IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Various configuration settings for directory
 indexing</td></tr>
-<tr class="odd"><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault Ascending|Descending
-Name|Date|Size|Description</a></td><td> Ascending Name </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the default ordering of the directory index</td></tr>
-<tr><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Adds a CSS stylesheet to the directory index</td></tr>
-<tr class="odd"><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command to filter request data (typically <code>POST</code> data)</td></tr>
-<tr><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+<tr><td><a href="mod_autoindex.html#indexorderdefault">IndexOrderDefault Ascending|Descending
+Name|Date|Size|Description</a></td><td> Ascending Name </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets the default ordering of the directory index</td></tr>
+<tr class="odd"><td><a href="mod_autoindex.html#indexstylesheet">IndexStyleSheet <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Adds a CSS stylesheet to the directory index</td></tr>
+<tr><td><a href="mod_sed.html#inputsed">InputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sed command to filter request data (typically <code>POST</code> data)</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the error log</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
+<tr><td><a href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery on|off</a></td><td> on </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Record <code>HSE_APPEND_LOG_PARAMETER</code> requests from
 ISAPI extensions to the query field</td></tr>
-<tr><td><a href="mod_isapi.html#isapicachefile">ISAPICacheFile <var>file-path</var> [<var>file-path</var>]
-...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ISAPI .dll files to be loaded at startup</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Fake asynchronous support for ISAPI callbacks</td></tr>
-<tr><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Log unsupported feature requests from ISAPI
+<tr class="odd"><td><a href="mod_isapi.html#isapicachefile">ISAPICacheFile <var>file-path</var> [<var>file-path</var>]
+...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ISAPI .dll files to be loaded at startup</td></tr>
+<tr><td><a href="mod_isapi.html#isapifakeasync">ISAPIFakeAsync on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Fake asynchronous support for ISAPI callbacks</td></tr>
+<tr class="odd"><td><a href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported on|off</a></td><td> off </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Log unsupported feature requests from ISAPI
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
+<tr><td><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer <var>size</var></a></td><td> 49152 </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Size of the Read Ahead Buffer sent to ISAPI
 extensions</td></tr>
-<tr><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Enables HTTP persistent connections</td></tr>
-<tr class="odd"><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>num</var>[ms]</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Amount of time the server will wait for subsequent
+<tr class="odd"><td><a href="core.html#keepalive" id="K" name="K">KeepAlive On|Off</a></td><td> On </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Enables HTTP persistent connections</td></tr>
+<tr><td><a href="core.html#keepalivetimeout">KeepAliveTimeout <var>num</var>[ms]</a></td><td> 5 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for subsequent
 requests on a persistent connection</td></tr>
-<tr><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>maximum size in bytes</var></a></td><td> 0 </td><td>d</td><td>B</td></tr><tr><td class="descr" colspan="4">Keep the request body instead of discarding it up to
+<tr class="odd"><td><a href="mod_request.html#keptbodysize">KeptBodySize <var>maximum size in bytes</var></a></td><td> 0 </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Keep the request body instead of discarding it up to
 the specified maximum size, for potential use by filters such as
 mod_include.</td></tr>
-<tr class="odd"><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The precendence of language variants for cases where
+<tr><td><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The precendence of language variants for cases where
 the client does not express a preference</td></tr>
-<tr><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum number of entries in the primary LDAP cache</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Time that cached items remain valid</td></tr>
-<tr><td><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout <var>seconds</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the socket connection timeout in seconds</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug <var>7</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable debugging in the LDAP SDK</td></tr>
-<tr><td><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Number of entries used to cache LDAP compare 
+<tr class="odd"><td><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of entries in the primary LDAP cache</td></tr>
+<tr><td><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Time that cached items remain valid</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout <var>seconds</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the socket connection timeout in seconds</td></tr>
+<tr><td><a href="mod_ldap.html#ldaplibrarydebug">LDAPLibraryDebug <var>7</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable debugging in the LDAP SDK</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries <var>number</var></a></td><td> 1024 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Number of entries used to cache LDAP compare 
 operations</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Time that entries in the operation cache remain
+<tr><td><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL <var>seconds</var></a></td><td> 600 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Time that entries in the operation cache remain
 valid</td></tr>
-<tr><td><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit <var>number</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum number of referral hops to chase before terminating an LDAP query.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals <var>On|Off</var></a></td><td> On </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable referral chasing during queries to the LDAP server.</td></tr>
-<tr><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>bytes</var></a></td><td> 500000 </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Size in bytes of the shared-memory cache</td></tr>
-<tr><td><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the file containing or nickname referring to a per
+<tr class="odd"><td><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit <var>number</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The maximum number of referral hops to chase before terminating an LDAP query.</td></tr>
+<tr><td><a href="mod_ldap.html#ldapreferrals">LDAPReferrals <var>On|Off</var></a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable referral chasing during queries to the LDAP server.</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile <var>directory-path/filename</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the shared memory cache file</td></tr>
+<tr><td><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize <var>bytes</var></a></td><td> 500000 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Size in bytes of the shared-memory cache</td></tr>
+<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the file containing or nickname referring to a per
 connection client certificate. Not all LDAP toolkits support per
 connection client certificates.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert <var>type</var> <var>directory-path/filename</var> <var>[password]</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the file or database containing global trusted
+<tr><td><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert <var>type</var> <var>directory-path/filename</var> <var>[password]</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the file or database containing global trusted
 Certificate Authority or global client certificates</td></tr>
-<tr><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
-<tr class="odd"><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert <var>On|Off</var></a></td><td> On </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force server certificate verification</td></tr>
-<tr><td><a href="core.html#limit">&lt;Limit <var>method</var> [<var>method</var>] ... &gt; ...
-    &lt;/Limit&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Restrict enclosed access controls to only certain HTTP
+<tr class="odd"><td><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode <var>type</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
+<tr><td><a href="mod_ldap.html#ldapverifyservercert">LDAPVerifyServerCert <var>On|Off</var></a></td><td> On </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Force server certificate verification</td></tr>
+<tr class="odd"><td><a href="core.html#limit">&lt;Limit <var>method</var> [<var>method</var>] ... &gt; ...
+    &lt;/Limit&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict enclosed access controls to only certain HTTP
 methods</td></tr>
-<tr class="odd"><td><a href="core.html#limitexcept">&lt;LimitExcept <var>method</var> [<var>method</var>] ... &gt; ...
-    &lt;/LimitExcept&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Restrict access controls to all HTTP methods
+<tr><td><a href="core.html#limitexcept">&lt;LimitExcept <var>method</var> [<var>method</var>] ... &gt; ...
+    &lt;/LimitExcept&gt;</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Restrict access controls to all HTTP methods
 except the named ones</td></tr>
-<tr><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>number</var> [<var>number</var>]</a></td><td> 10 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Determine maximum number of internal redirects and nested
+<tr class="odd"><td><a href="core.html#limitinternalrecursion">LimitInternalRecursion <var>number</var> [<var>number</var>]</a></td><td> 10 </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Determine maximum number of internal redirects and nested
 subrequests</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestbody">LimitRequestBody <var>bytes</var></a></td><td> 0 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Restricts the total size of the HTTP request body sent
+<tr><td><a href="core.html#limitrequestbody">LimitRequestBody <var>bytes</var></a></td><td> 0 </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Restricts the total size of the HTTP request body sent
 from the client</td></tr>
-<tr><td><a href="core.html#limitrequestfields">LimitRequestFields <var>number</var></a></td><td> 100 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the number of HTTP request header fields that
+<tr class="odd"><td><a href="core.html#limitrequestfields">LimitRequestFields <var>number</var></a></td><td> 100 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the number of HTTP request header fields that
 will be accepted from the client</td></tr>
-<tr class="odd"><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the size of the HTTP request header allowed from the
+<tr><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the size of the HTTP request header allowed from the
 client</td></tr>
-<tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Limit the size of the HTTP request line that will be accepted
+<tr class="odd"><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limit the size of the HTTP request line that will be accepted
 from the client</td></tr>
-<tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the size of an XML-based request body</td></tr>
-<tr><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">IP addresses and ports that the server
+<tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Limits the size of an XML-based request body</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">IP addresses and ports that the server
 listens to</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum length of the queue of pending connections</td></tr>
-<tr><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Link in the named object file or library</td></tr>
-<tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Links in the object file or library, and adds to the list
+<tr><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum length of the queue of pending connections</td></tr>
+<tr class="odd"><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Link in the named object file or library</td></tr>
+<tr><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Links in the object file or library, and adds to the list
 of active modules</td></tr>
-<tr><td><a href="core.html#location">&lt;Location
-    <var>URL-path</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to matching
+<tr class="odd"><td><a href="core.html#location">&lt;Location
+    <var>URL-path</var>|<var>URL</var>&gt; ... &lt;/Location&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Applies the enclosed directives only to matching
 URLs</td></tr>
-<tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch
-    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression
+<tr><td><a href="core.html#locationmatch">&lt;LocationMatch
+    <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression
 matching URLs</td></tr>
-<tr><td><a href="mpm_common.html#lockfile">LockFile <var>filename</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the accept serialization lock file <em>(deprecated)</em></td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>nickname</var>
 [<var>nickname</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Describes a format for use in a log file</td></tr>
 <tr><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Controls the verbosity of the ErrorLog</td></tr>
@@ -521,139 +518,139 @@ components as part of the filename</td></tr>
 <tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
 [Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">The types of files that will be included when searching for
 a matching file with MultiViews</td></tr>
-<tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>addr</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Designates an IP address for name-virtual
+<tr class="odd"><td><a href="core.html#mutex">Mutex <var>default|mutex-name</var> <var>mechanism</var></a></td><td> default default </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures mutex mechanism and lock file directory for all
+or specified mutexes</td></tr>
+<tr><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>addr</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Designates an IP address for name-virtual
 hosting</td></tr>
-<tr><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Hosts, domains, or networks that will be connected to
+<tr class="odd"><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Hosts, domains, or networks that will be connected to
 directly</td></tr>
-<tr class="odd"><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">List of additional client certificates</td></tr>
-<tr><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Allows a connection to be upgraded to an SSL connection upon request</td></tr>
-<tr class="odd"><td><a href="core.html#options" id="O" name="O">Options
-    [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Configures what features are available in a particular
+<tr><td><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts <var>filename</var> [<var>filename</var>] ...</a></td><td></td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">List of additional client certificates</td></tr>
+<tr class="odd"><td><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable [<var>IP-address</var>:]<var>portnumber</var></a></td><td></td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Allows a connection to be upgraded to an SSL connection upon request</td></tr>
+<tr><td><a href="core.html#options" id="O" name="O">Options
+    [+|-]<var>option</var> [[+|-]<var>option</var>] ...</a></td><td> All </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures what features are available in a particular
 directory</td></tr>
-<tr><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Controls the default access state and the order in which
+<tr class="odd"><td><a href="mod_access_compat.html#order"> Order <var>ordering</var></a></td><td> Deny,Allow </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the default access state and the order in which
 <code class="directive">Allow</code> and <code class="directive">Deny</code> are
 evaluated.</td></tr>
-<tr class="odd"><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sed command for filtering response content</td></tr>
-<tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
-...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">File where the server records the process ID
+<tr><td><a href="mod_sed.html#outputsed">OutputSed <var>sed-command</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sed command for filtering response content</td></tr>
+<tr class="odd"><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
+...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
+<tr><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">File where the server records the process ID
 of the daemon</td></tr>
-<tr><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td></td><td>svd</td><td>X</td></tr><tr><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
+<tr class="odd"><td><a href="mod_privileges.html#privilegesmode">PrivilegesMode FAST|SECURE|SELECTIVE</a></td><td></td><td>svd</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Trade off processing speed and efficiency vs security against
 malicious privileges-aware code.</td></tr>
-<tr class="odd"><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
-<tr><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how to handle bad header lines in a
+<tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
+<tr><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines how to handle bad header lines in a
 response</td></tr>
-<tr><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<var>word</var>|<var>host</var>|<var>domain</var>
-[<var>word</var>|<var>host</var>|<var>domain</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Words, hosts, or domains that are banned from being
+<tr class="odd"><td><a href="mod_proxy.html#proxyblock">ProxyBlock *|<var>word</var>|<var>host</var>|<var>domain</var>
+[<var>word</var>|<var>host</var>|<var>domain</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Words, hosts, or domains that are banned from being
 proxied</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domain</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Default domain name for proxied requests</td></tr>
-<tr><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Override error pages for proxied content</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyftpdircharset">ProxyFtpDirCharset <var>character set</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define the character set for proxied FTP listings</td></tr>
-<tr><td><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether wildcards in requested filenames are escaped when sent to the FTP server</td></tr>
-<tr class="odd"><td><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether wildcards in requested filenames trigger a file listing</td></tr>
-<tr><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <var>bytes</var></a></td><td> 8192 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Determine size of internal data throughput buffer</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to regular-expression-matched 
+<tr><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domain</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Default domain name for proxied requests</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Override error pages for proxied content</td></tr>
+<tr><td><a href="mod_proxy.html#proxyftpdircharset">ProxyFtpDirCharset <var>character set</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Define the character set for proxied FTP listings</td></tr>
+<tr class="odd"><td><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether wildcards in requested filenames are escaped when sent to the FTP server</td></tr>
+<tr><td><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether wildcards in requested filenames trigger a file listing</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <var>bytes</var></a></td><td> 8192 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine size of internal data throughput buffer</td></tr>
+<tr><td><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to regular-expression-matched 
 proxied resources</td></tr>
-<tr><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <var>number</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximium number of proxies that a request can be forwarded
+<tr class="odd"><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <var>number</var></a></td><td> -1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximium number of proxies that a request can be forwarded
 through</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypass">ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-  <var>[key=value</var> ...]] [nocanon] [interpolate]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maps remote servers into the local server URL-space</td></tr>
-<tr><td><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable Environment Variable interpolation in Reverse Proxy configurations</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypassmatch">ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
-	<var>[key=value</var> ...]]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maps remote servers into the local server URL-space using regular expressions</td></tr>
-<tr><td><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse [<var>path</var>] <var>url</var>
-[<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Adjusts the URL in HTTP response headers sent from a reverse
+<tr><td><a href="mod_proxy.html#proxypass">ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
+  <var>[key=value</var> ...]] [nocanon] [interpolate]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable Environment Variable interpolation in Reverse Proxy configurations</td></tr>
+<tr><td><a href="mod_proxy.html#proxypassmatch">ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
+	<var>[key=value</var> ...]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space using regular expressions</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse [<var>path</var>] <var>url</var>
+[<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain <var>internal-domain</var>
-<var>public-domain</var> [<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adjusts the Domain string in Set-Cookie headers from a reverse-
+<tr><td><a href="mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain <var>internal-domain</var>
+<var>public-domain</var> [<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Adjusts the Domain string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
-<tr><td><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath <var>internal-path</var>
-<var>public-path</var> [<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Adjusts the Path string in Set-Cookie headers from a reverse-
+<tr class="odd"><td><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath <var>internal-path</var>
+<var>public-path</var> [<var>interpolate</var>]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Adjusts the Path string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use incoming Host HTTP request header for proxy
+<tr><td><a href="mod_proxy.html#proxypreservehost">ProxyPreserveHost On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Use incoming Host HTTP request header for proxy
 request</td></tr>
-<tr><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Network buffer size for proxied HTTP and FTP
+<tr class="odd"><td><a href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network buffer size for proxied HTTP and FTP
 connections</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyremote">ProxyRemote <var>match</var> <var>remote-server</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remote proxy used to handle certain requests</td></tr>
-<tr><td><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch <var>regex</var> <var>remote-server</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Remote proxy used to handle requests matched by regular
+<tr><td><a href="mod_proxy.html#proxyremote">ProxyRemote <var>match</var> <var>remote-server</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Remote proxy used to handle certain requests</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch <var>regex</var> <var>remote-server</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Remote proxy used to handle requests matched by regular
 expressions</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyrequests">ProxyRequests On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables forward (standard) proxy requests</td></tr>
-<tr><td><a href="mod_proxy_scgi.html#proxyscgiinternalredirect">ProxySCGIInternalRedirect On|Off</a></td><td> On </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable or disable internal redirect responses from the
+<tr><td><a href="mod_proxy.html#proxyrequests">ProxyRequests On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables forward (standard) proxy requests</td></tr>
+<tr class="odd"><td><a href="mod_proxy_scgi.html#proxyscgiinternalredirect">ProxySCGIInternalRedirect On|Off</a></td><td> On </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable or disable internal redirect responses from the
 backend</td></tr>
-<tr class="odd"><td><a href="mod_proxy_scgi.html#proxyscgisendfile">ProxySCGISendfile On|Off|<var>Headername</var></a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable evaluation of <var>X-Sendfile</var> pseudo response
+<tr><td><a href="mod_proxy_scgi.html#proxyscgisendfile">ProxySCGISendfile On|Off|<var>Headername</var></a></td><td> Off </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable evaluation of <var>X-Sendfile</var> pseudo response
 header</td></tr>
-<tr><td><a href="mod_proxy.html#proxyset">ProxySet <var>url</var> <var>key=value [key=value ...]</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Set various Proxy balancer or member parameters</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxystatus">ProxyStatus Off|On|Full</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Show Proxy LoadBalancer status in mod_status</td></tr>
-<tr><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Network timeout for proxied requests</td></tr>
-<tr class="odd"><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Information provided in the <code>Via</code> HTTP response
+<tr class="odd"><td><a href="mod_proxy.html#proxyset">ProxySet <var>url</var> <var>key=value [key=value ...]</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set various Proxy balancer or member parameters</td></tr>
+<tr><td><a href="mod_proxy.html#proxystatus">ProxyStatus Off|On|Full</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Show Proxy LoadBalancer status in mod_status</td></tr>
+<tr class="odd"><td><a href="mod_proxy.html#proxytimeout">ProxyTimeout <var>seconds</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Network timeout for proxied requests</td></tr>
+<tr><td><a href="mod_proxy.html#proxyvia">ProxyVia On|Off|Full|Block</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Information provided in the <code>Via</code> HTTP response
 header for proxied requests</td></tr>
-<tr><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Name of the file that will be inserted at the end
+<tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the end
 of the index listing</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP receive buffer size</td></tr>
-<tr><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
+<tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP receive buffer size</td></tr>
+<tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
 a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
-<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect based on a regular expression match
+<tr><td><a href="mod_alias.html#redirectmatch">RedirectMatch [<var>status</var>] <var>regex</var>
+<var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external redirect based on a regular expression match
 of the current URL</td></tr>
-<tr><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external permanent redirect asking the client to fetch
+<tr class="odd"><td><a href="mod_alias.html#redirectpermanent">RedirectPermanent <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external permanent redirect asking the client to fetch
 a different URL</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external temporary redirect asking the client to fetch
+<tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sends an external temporary redirect asking the client to fetch
 a different URL</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare the header field which should be parsed for client IP addresses</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>HeaderFieldName</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which will record all intermediate IP addresses</td></tr>
-<tr><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
-<tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any character set associations for a set of file
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipheader">RemoteIPHeader <var>header-field</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare the header field which should be parsed for client IP addresses</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteipinternalproxy">RemoteIPInternalProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteipinternalproxylist">RemoteIPInternalProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteipproxiesheader">RemoteIPProxiesHeader <var>HeaderFieldName</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare the header field which will record all intermediate IP addresses</td></tr>
+<tr class="odd"><td><a href="mod_remoteip.html#remoteiptrustedproxy">RemoteIPTrustedProxy <var>proxy-ip</var>|<var>proxy-ip/subnet</var>|<var>hostname</var> ...</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr><td><a href="mod_remoteip.html#remoteiptrustedproxylist">RemoteIPTrustedProxyList <var>filename</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Declare client intranet IP addresses trusted to present the RemoteIPHeader value</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any character set associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content encoding associations for a set of file
+<tr><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content encoding associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any handler associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any handler associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any input filter associations for a set of file
+<tr><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any input filter associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any language associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any language associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any output filter associations for a set of file
+<tr><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any output filter associations for a set of file
 extensions</td></tr>
-<tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content type associations for a set of file
+<tr class="odd"><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Removes any content type associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|merge|set|unset <var>header</var>
-[<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
-<tr><td><a href="mod_reqtimeout.html#requesttimeout">RequestTimeout
+<tr><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|merge|set|unset <var>header</var>
+[<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
+<tr class="odd"><td><a href="mod_reqtimeout.html#requesttimeout">RequestTimeout
 [headerinit=<var>time</var>
 [headerminrate=<var>rate</var> [headermax=<var>time</var>]]]
 [bodyinit=<var>time</var>
 [bodyminrate=<var>rate</var> [bodymax=<var>time</var>]]]
-</a></td><td></td><td>sv</td><td>X</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
+</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
 </td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
-    [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
+<tr><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>
+    [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Tests whether an authenticated user is authorized by
 an authorization provider.</td></tr>
-<tr><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which none
+<tr class="odd"><td><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt; ... &lt;/RequireAll&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which none
 must fail and at least one must succeed for the enclosing directive to
 succeed.</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which one
+<tr><td><a href="mod_authz_core.html#requireany">&lt;RequireAny&gt; ... &lt;/RequireAny&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which one
 must succeed for the enclosing directive to succeed.</td></tr>
-<tr><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of authorization directives of which none
+<tr class="odd"><td><a href="mod_authz_core.html#requirenone">&lt;RequireNone&gt; ... &lt;/RequireNone&gt;</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of authorization directives of which none
 must succeed for the enclosing directive to not fail.</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>URL-path</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the base URL for per-directory rewrites</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
-      <em>TestString</em> <em>CondPattern</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a condition under which rewriting will take place
+<tr><td><a href="mod_rewrite.html#rewritebase">RewriteBase <em>URL-path</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the base URL for per-directory rewrites</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewritecond"> RewriteCond
+      <em>TestString</em> <em>CondPattern</em></a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a condition under which rewriting will take place
 </td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritelock">RewriteLock <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the lock file used for <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
-synchronization</td></tr>
+<tr><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>svdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewritelog">RewriteLog <em>file-path</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the file used for logging rewrite engine
 processing</td></tr>
 <tr><td><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel <em>Level</em></a></td><td> 0 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the verbosity of the log file used by the rewrite

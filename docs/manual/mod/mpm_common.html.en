@@ -32,13 +32,11 @@ more than one multi-processing module (MPM)</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#lockfile">LockFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxclients">MaxClients</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxmemfree">MaxMemFree</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxrequestsperchild">MaxRequestsPerChild</a></li>
@@ -57,90 +55,6 @@ more than one multi-processing module (MPM)</td></tr>
 </ul>
 </div>
 
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AcceptMutex" id="AcceptMutex">AcceptMutex</a> <a name="acceptmutex" id="acceptmutex">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Method that Apache uses to serialize multiple children
-accepting requests on network sockets</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AcceptMutex Default|<var>method</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AcceptMutex Default</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p>The <code class="directive">AcceptMutex</code> directives sets the
-    method (and lockfile location if appropriate) that Apache uses to
-    serialize multiple children accepting
-    requests on network sockets. Prior to Apache 2.0, the method was
-    selectable only at compile time. The optimal method to use is
-    highly architecture and platform dependent. For further details,
-    see the <a href="../misc/perf-tuning.html">performance tuning</a>
-    documentation.</p>
-
-    <p>If this directive is set to <code>Default</code>, then the
-    compile-time selected default will be used. Other possible
-    methods are listed below. Note that not all methods are
-    available on all platforms. If a method is specified which is
-    not available, a message will be written to the error log
-    listing the available methods.</p>
-
-    <dl>
-      <dt><code>flock&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>uses the <code>flock(2)</code> system call to lock the
-      file defined by the optional <var>/path/to/lockfile</var>
-      parameter. One can also use the <code class="directive"><a href="#lockfile">LockFile</a></code> directive to specify the lockfile,
-      although this is deprecated.</dd>
-
-      <dt><code>fcntl&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>uses the <code>fcntl(2)</code> system call to lock the
-      file defined by the optional <var>/path/to/lockfile</var>
-      parameter. One can also use the <code class="directive"><a href="#lockfile">LockFile</a></code> directive to specify the lockfile,
-      although this is deprecated.</dd>
-
-      <dt><code>file&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>This directive tells Apache to pick the "best" file locking
-      implementation available to it, choosing between <code>fcntl</code> and
-      <code>flock</code>, in that order. It is only available when the underlying
-      platform and <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> supports at least one of the 2.</dd>
-
-      <dt><code>posixsem</code></dt>
-      <dd>uses POSIX compatible semaphores to implement the mutex.</dd>
-
-      <dt><code>sysvsem</code></dt>
-      <dd>uses SySV-style semaphores to implement the mutex.</dd>
-
-      <dt><code>sem</code></dt>
-      <dd>This directive tells Apache to pick the "best" semaphore
-      implementation available to it, choosing between Posix and SystemV IPC,
-      in that order. It is only available when the underlying platform and
-      <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> supports at least one of the 2.</dd>
-
-      <dt><code>pthread</code></dt>
-      <dd>uses POSIX mutexes as implemented by the POSIX Threads
-      (PThreads) specification.</dd>
-
-    </dl>
-
-    <p>If you want to find out the compile time chosen default
-    for your system, you may set your <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> to <code>debug</code>. Then the default <code class="directive">AcceptMutex</code> will be written into the <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code>.</p>
-
-  <div class="warning"><h3>Warning</h3>
-     <p>On most systems, when the <code>pthread</code> option
-     is selected, if a child process terminates abnormally
-     while holding the <code>AcceptCntl</code> mutex the
-     server will stop responding to requests. When this
-     occurs, the server will require a manual restart to
-     recover.</p>
-     <p>Solaris is a notable exception as it provides a
-     mechanism, used by Apache, which usually allows the
-     mutex to be recovered after a child process terminates
-     abnormally while holding a mutex.</p>
-     <p>If your system implements the
-     <code>pthread_mutexattr_setrobust_np()</code> function,
-     you may be able to use the <code>pthread</code> option safely.</p>
-  </div>
-
-</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">Directive</a></h2>
 <table class="directive">
@@ -328,45 +242,6 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
     but use a number based on (but normally larger than) what is
     set.</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="LockFile" id="LockFile">LockFile</a> <a name="lockfile" id="lockfile">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the accept serialization lock file <em>(deprecated)</em></td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LockFile <var>filename</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LockFile logs/accept.lock</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-</table>
-    <p>The <code class="directive">LockFile</code> directive sets the path to
-    the lockfile used when Apache is used with an <code class="directive"><a href="#acceptmutex">AcceptMutex</a></code> value of either
-    <code>fcntl</code> or <code>flock</code>. This directive should
-    normally be left at its default value. The main reason for changing
-    it is if the <code>logs</code> directory is NFS mounted, since
-    <strong>the lockfile must be stored on a local disk</strong>. The PID
-    of the main server process is automatically appended to the
-    filename.</p>
-
-    <div class="warning"><h3>Security</h3>
-      <p>It is best to <em>avoid</em> putting this file in a world writable
-      directory such as <code>/var/tmp</code> because someone could create
-      a denial of service attack and prevent the server from starting by
-      creating a lockfile with the same name as the one the server will try
-      to create.</p>
-    </div>
-    <div class="warning"><h3>Deprecated</h3>
-      <p>This directive is deprecated. It is strongly suggested that
-      you use <code class="directive"><a href="#acceptmutex">AcceptMutex</a></code> to
-      specify both the mutex locking implementation as well as
-      the lockfile location.</p>
-    </div>
-
-
-<h3>See also</h3>
-<ul>
-<li><code class="directive"><a href="#acceptmutex">AcceptMutex</a></code></li>
-</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxClients" id="MaxClients">MaxClients</a> <a name="maxclients" id="maxclients">Directive</a></h2>

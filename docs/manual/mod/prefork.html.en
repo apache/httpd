@@ -48,13 +48,11 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mod_unixd.html#group">Group</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listen">Listen</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#listenbacklog">ListenBacklog</a></li>
-<li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#lockfile">LockFile</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxclients">MaxClients</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxmemfree">MaxMemFree</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
@@ -111,6 +109,13 @@ uses</a></li>
     <p><code class="directive"><a href="../mod/mpm_common.html#maxrequestsperchild">MaxRequestsPerChild</a></code>
     controls how frequently the server recycles processes by killing
     old ones and launching new ones.</p>
+
+    <p>This MPM uses the <code>mpm-accept</code> mutex to serialize
+    access to incoming connections when subject to the thundering herd
+    problem (generally, when there are multiple listening sockets).
+    The implementation aspects of this mutex can be configured with the
+    <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> directive.  The <a href="../misc/perf-tuning.html">performance hints</a>
+    documentation has additional information about this mutex.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="MaxSpareServers" id="MaxSpareServers">MaxSpareServers</a> <a name="maxspareservers" id="maxspareservers">Directive</a></h2>

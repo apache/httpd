@@ -57,7 +57,6 @@ URLs on the fly</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">RewriteBase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">RewriteCond</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewriteengine">RewriteEngine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritelock">RewriteLock</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritelog">RewriteLog</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewriteloglevel">RewriteLogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">RewriteMap</a></li>
@@ -537,24 +536,6 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteLock" id="RewriteLock">RewriteLock</a> <a name="rewritelock" id="rewritelock">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the lock file used for <code class="directive"><a href="#rewritemap">RewriteMap</a></code>
-synchronization</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteLock <em>file-path</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
-</table>
-      <p>This directive sets the filename for a synchronization
-      lockfile which mod_rewrite needs to communicate with <code class="directive"><a href="#rewritemap">RewriteMap</a></code>
-      <em>programs</em>. Set this lockfile to a local path (not on a
-      NFS-mounted device) when you want to use a rewriting
-      map-program. It is not required for other types of rewriting
-      maps.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RewriteLog" id="RewriteLog">RewriteLog</a> <a name="rewritelog" id="rewritelog">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the file used for logging rewrite engine
@@ -819,6 +800,11 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
           ``<code>NULL</code>'' if it fails (<em>i.e.</em>, there
           is no corresponding value for the given key).</p>
 
+          <p>This feature utilizes the <code>rewrite-map</code> mutex,
+          which is required for reliable communication with the program.
+          The mutex mechanism and lock file can be configured with the
+          <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> directive.</p>
+
           <p>External rewriting programs are not started if they're defined in a
           context that does not have <code class="directive">RewriteEngine</code> set to
           <code>on</code></p>.
@@ -845,11 +831,6 @@ while (&lt;STDIN&gt;) {
             <li>A common mistake is to use buffered I/O on
             <code>stdout</code>. Avoid this, as it will cause a deadloop!
             ``<code>$|=1</code>'' is used above, to prevent this.</li>
-
-            <li>The <code class="directive"><a href="#rewritelock">RewriteLock</a></code> directive can
-            be used to define a lockfile which mod_rewrite can use to synchronize
-            communication with the mapping program. By default no such
-            synchronization takes place.</li>
           </ol>
         </li>
         <li>
