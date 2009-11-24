@@ -156,7 +156,11 @@ static void mx_hash_init(apr_pool_t *p)
     /* initialize default mutex configuration */
     def = apr_pcalloc(p, sizeof *def);
     def->mech = APR_LOCK_DEFAULT;
+#ifdef DEFAULT_REL_RUNTIMEDIR
     def->dir = DEFAULT_REL_RUNTIMEDIR;
+#else
+    def->dir = "logs";
+#endif
     apr_hash_set(mxcfg_by_type, "default", APR_HASH_KEY_STRING, def);
 }
 
