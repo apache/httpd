@@ -164,8 +164,9 @@ static void mx_hash_init(apr_pool_t *p)
     apr_hash_set(mxcfg_by_type, "default", APR_HASH_KEY_STRING, def);
 }
 
-const char * ap_set_mutex(cmd_parms *cmd, void *dummy,
-                          const char *type, const char *mechdir)
+AP_DECLARE_NONSTD(const char *)ap_set_mutex(cmd_parms *cmd, void *dummy,
+                                            const char *type,
+                                            const char *mechdir)
 {
     apr_pool_t *p = cmd->pool;
     apr_lockmech_e mech;

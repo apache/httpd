@@ -99,9 +99,9 @@ AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
                                         const char **mutexfile);
 
 /* private function to process the Mutex directive */
-const char * ap_set_mutex(cmd_parms *cmd, void *dummy,
-                          const char *typelist,
-                          const char *mechfile);
+AP_DECLARE_NONSTD(const char *) ap_set_mutex(cmd_parms *cmd, void *dummy,
+                                             const char *typelist,
+                                             const char *mechfile);
 
 /**
  * option flags for ap_mutex_register(), ap_global_mutex_create(), and
