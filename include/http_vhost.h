@@ -58,8 +58,9 @@ const char *ap_parse_vhost_addrs(apr_pool_t *p, const char *hostname, server_rec
  * @param dummy NOT USED
  * @param arg a host of the form "<address>[:port]"
  */
-const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
-				      const char *arg);
+AP_DECLARE_NONSTD(const char *)ap_set_name_virtual_host(cmd_parms *cmd,
+                                                        void *dummy,
+                                                        const char *arg);
 
 /**
  * Callback function for every Name Based Virtual Host.
