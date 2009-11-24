@@ -32,6 +32,7 @@ the basic operations of the server.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">Server Identification</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#locations">File Locations</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#resource">Limiting Resource Usage</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#implementation">Implementation Choices</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -61,7 +62,7 @@ the basic operations of the server.</p>
 <h2><a name="locations" id="locations">File Locations</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#lockfile">LockFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
 
     <p>These directives control the locations of the various files
     that Apache needs for proper operation. When the pathname used
@@ -91,6 +92,17 @@ the basic operations of the server.</p>
 
     <p>The <code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code>
     directive is used with some platforms to control the stack size.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="implementation" id="implementation">Implementation Choices</a></h2>
+    
+
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code></li></ul></td></tr></table>
+
+    <p>The <code class="directive">Mutex</code> directive can be used to change
+    the underlying implementation used for mutexes, in order to relieve
+    functional or performance problems with <a class="glossarylink" href="./glossary.html#apr" title="see glossary">APR</a>'s
+    default choice.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/server-wide.html" title="English">&nbsp;en&nbsp;</a> |

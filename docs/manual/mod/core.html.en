@@ -74,6 +74,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
@@ -2240,6 +2241,223 @@ connection</td></tr>
 
     <div class="example"><p><code>
       MaxKeepAliveRequests 500
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures mutex mechanism and lock file directory for all
+or specified mutexes</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Mutex <var>default|mutex-name</var> <var>mechanism</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Mutex default default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.4 and later</td></tr>
+</table>
+    <p>The <code class="directive">Mutex</code> directive sets the mechanism,
+    and optionally the lock file location, that httpd and modules use
+    to serialize access to resources.  Specify <code>default</code> as
+    the first argument to change the settings for all mutexes; specify
+    a mutex name (see table below) as the first argument to override
+    defaults only for that mutex.</p>
+
+    <p>The <code class="directive">Mutex</code> directive is typically used in
+    the following exceptional situations:</p>
+
+    <ul>
+        <li>change the mutex mechanism when the default mechanism selected
+        by <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> has a functional or performance
+        problem</li>
+
+        <li>change the directory used by file-based mutexes when the
+        default directory does not support locking</li>
+    </ul>
+
+    <div class="note"><h3>Supported modules</h3>
+    <p>This directive only configures mutexes which have been registered
+    with the core server using the <code>ap_mutex_register()</code> API.
+    All modules bundled with httpd support the <code class="directive">Mutex</code>
+    directive, but third-party modules may not.  Consult the documentation
+    of the third-party module, which must indicate the mutex name(s) which
+    can be configured if this directive is supported.</p>
+    </div>
+
+    <p>The following table documents the names of mutexes used by httpd
+    and bundled modules.</p>
+
+    <table class="bordered"><tr class="header">
+            <th>Mutex name</th>
+            <th>Module(s)</th>
+            <th>Protected resource</th>
+	</tr>
+<tr>
+            <td><code>mpm-accept</code></td>
+            <td><code class="module"><a href="../mod/prefork.html">prefork</a></code> and <code class="module"><a href="../mod/worker.html">worker</a></code> MPMs</td>
+            <td>incoming connections, to avoid the thundering herd problem;
+            for more information, refer to the
+            <a href="../misc/perf-tuning.html">performance tuning</a>
+            documentation</td>
+	</tr>
+<tr class="odd">
+            <td><code>authdigest-client</code></td>
+            <td><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></td>
+            <td>client list in shared memory</td>
+	</tr>
+<tr>
+            <td><code>authdigest-opaque</code></td>
+            <td><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></td>
+            <td>counter in shared memory</td>
+	</tr>
+<tr class="odd">
+            <td><code>ldap-cache</code></td>
+            <td><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code></td>
+            <td>LDAP result cache</td>
+	</tr>
+<tr>
+            <td><code>rewrite-map</code></td>
+            <td><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></td>
+            <td>communication with external mapping programs, to avoid
+            intermixed I/O from multiple requests</td>
+	</tr>
+<tr class="odd">
+            <td><code>ssl-cache</code></td>
+            <td><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></td>
+            <td>SSL session cache</td>
+	</tr>
+<tr>
+            <td><code>ssl-stapling</code></td>
+            <td><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></td>
+            <td>OCSP stapling response cache</td>
+	</tr>
+<tr class="odd">
+            <td><code>watchdog-callback</code></td>
+            <td><code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code></td>
+            <td>callback function of a particular client module</td>
+	</tr>
+</table>
+
+    <p>The following mutex <em>mechanisms</em> are available:</p>
+    <ul>
+        <li><code>default | yes</code>
+        <p>This selects the default locking implementation, as determined by
+        <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>.  The default locking implementation can
+        be displayed by running <code class="program"><a href="../programs/httpd.html">httpd</a></code> with the 
+        <code>-V</code> option.</p></li>
+
+        <li><code>none | no</code>
+        <p>This effectively disables the mutex, and is only allowed for a
+        mutex if the module indicates that it is a valid choice.  Consult the
+        module documentation for more information.</p></li>
+
+        <li><code>posixsem</code>
+        <p>This is a mutex variant based on a Posix semaphore.</p>
+
+        <div class="warning"><h3>Warning</h3>
+        <p>The semaphore ownership is not recovered if a thread in the process
+        holding the mutex segfaults, resulting in a hang of the web server.</p>
+        </div>
+        </li>
+
+        <li><code>sysvsem</code>
+        <p>This is a mutex variant based on a SystemV IPC semaphore.</p>
+
+        <div class="warning"><h3>Warning</h3>
+        <p>It is possible to "leak" SysV semaphores if processes crash 
+        before the semaphore is removed.</p>
+	</div>
+
+        <div class="warning"><h3>Security</h3>
+        <p>The semaphore API allows for a denial of service attack by any
+        CGIs running under the same uid as the webserver (<em>i.e.</em>,
+        all CGIs, unless you use something like <code class="program"><a href="../programs/suexec.html">suexec</a></code>
+        or <code>cgiwrapper</code>).</p>
+	</div>
+        </li>
+
+        <li><code>sem</code>
+        <p>This selects the "best" available semaphore implementation, choosing
+        between Posix and SystemV IPC semaphores, in that order.</p></li>
+
+        <li><code>pthread</code>
+        <p>This is a mutex variant based on cross-process Posix thread
+        mutexes.</p>
+
+        <div class="warning"><h3>Warning</h3>
+        <p>On most systems, if a child process terminates abnormally while
+        holding a mutex that uses this implementation, the server will deadlock
+        and stop responding to requests.  When this occurs, the server will
+        require a manual restart to recover.</p>
+        <p>Solaris is a notable exception as it provides a mechanism which
+        usually allows the mutex to be recovered after a child process
+        terminates abnormally while holding a mutex.</p>
+        <p>If your system implements the
+        <code>pthread_mutexattr_setrobust_np()</code> function, you may be able
+        to use the <code>pthread</code> option safely.</p>
+        </div>
+        </li>
+
+        <li><code>fcntl:/path/to/mutex</code>
+        <p>This is a mutex variant where a physical (lock-)file and the 
+        <code>fcntl()</code> function are used as the mutex.</p>
+
+        <div class="warning"><h3>Warning</h3>
+        <p>When multiple mutexes based on this mechanism are used within
+        multi-threaded, multi-process environments, deadlock errors (EDEADLK)
+        can be reported for valid mutex operations if <code>fcntl()</code>
+        is not thread-aware, such as on Solaris.</p>
+	</div>
+        </li>
+
+        <li><code>flock:/path/to/mutex</code>
+        <p>This is similar to the <code>fcntl:/path/to/mutex</code> method
+        with the exception that the <code>flock()</code> function is used to
+        provide file locking.</p></li>
+
+        <li><code>file:/path/to/mutex</code>
+        <p>This selects the "best" available file locking implementation,
+        choosing between <code>fcntl</code> and <code>flock</code>, in that
+        order.</p></li>
+    </ul>
+
+    <p>Most mechanisms are only available on selected platforms, where the 
+    underlying platform and <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> support it.  Mechanisms
+    which aren't avaiable on all platforms are <em>posixsem</em>,
+    <em>sysvsem</em>, <em>sem</em>, <em>pthread</em>, <em>fcntl</em>, 
+    <em>flock</em>, and <em>file</em>.</p>
+
+    <p>With the file-based mechanisms <em>fcntl</em> and <em>flock</em>,
+    the path, if provided, is a directory where the lock file will be created.
+    The default directory is httpd's run-time file directory relative to
+    <code class="directive"><a href="#serverroot">ServerRoot</a></code>.  Always use a local disk
+    filesystem for <code>/path/to/mutex</code> and never a directory residing
+    on a NFS- or AFS-filesystem.  The basename of the file will be the mutex
+    type, an optional instance string provided by the module, with the process
+    id of the httpd parent process appended to to make it unique, avoiding
+    conflicts when multiple httpd instances share a lock file directory.  For
+    example, if the mutex name is <code>mpm-accept</code> and the lock file
+    directory is <code>/var/httpd/locks</code>, the lock file name for the
+    httpd instance with parent process id 12345 would be 
+    <code>/var/httpd/locks/mpm-accept.12345</code>.</p>
+
+    <div class="warning"><h3>Security</h3>
+    <p>It is best to <em>avoid</em> putting mutex files in a world-writable
+    directory such as <code>/var/tmp</code> because someone could create
+    a denial of service attack and prevent the server from starting by
+    creating a lockfile with the same name as the one the server will try
+    to create.</p>
+    </div>
+
+    <p>In the following example, the mutex mechanism for the MPM accept
+    mutex will be changed from the compiled-in default to <code>fcntl</code>,
+    with the associated lock file created in directory
+    <code>/var/httpd/locks</code>.  The mutex mechanism for all other mutexes
+    will be changed from the compiled-in default to <code>sysvsem</code>.</p>
+
+    <div class="example"><p><code>
+    Mutex default sysvsem<br />
+    Mutex mpm-accept fcntl:/var/httpd/locks
     </code></p></div>
 
 </div>
