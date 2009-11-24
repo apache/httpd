@@ -2335,7 +2335,13 @@ or specified mutexes</description>
         module documentation for more information.</p></li>
 
         <li><code>posixsem</code>
-        <p>This is a mutex variant based on a Posix semaphore.</p></li>
+        <p>This is a mutex variant based on a Posix semaphore.</p>
+
+        <note type="warning"><title>Warning</title>
+        <p>The semaphore ownership is not recovered if a thread in the process
+        holding the mutex segfaults, resulting in a hang of the web server.</p>
+        </note>
+        </li>
 
         <li><code>sysvsem</code>
         <p>This is a mutex variant based on a SystemV IPC semaphore.</p>
@@ -2343,6 +2349,13 @@ or specified mutexes</description>
         <note type="warning"><title>Warning</title>
         <p>It is possible to "leak" SysV semaphores if processes crash 
         before the semaphore is removed.</p>
+	</note>
+
+        <note type="warning"><title>Security</title>
+        <p>The semaphore API allows for a denial of service attack by any
+        CGIs running under the same uid as the webserver (<em>i.e.</em>,
+        all CGIs, unless you use something like <program>suexec</program>
+        or <code>cgiwrapper</code>).</p>
 	</note>
         </li>
 

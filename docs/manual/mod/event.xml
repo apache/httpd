@@ -94,8 +94,6 @@ of consuming threads only for connections with active processing</description>
     </ul>
 </section>
 
-<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
-</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
@@ -107,8 +105,6 @@ of consuming threads only for connections with active processing</description>
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
-</directivesynopsis>
-<directivesynopsis location="mpm_common"><name>LockFile</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxClients</name>
 </directivesynopsis>

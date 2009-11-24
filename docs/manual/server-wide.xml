@@ -70,7 +70,7 @@ the basic operations of the server.</p>
         <directive module="mpm_common">CoreDumpDirectory</directive>
         <directive module="core">DocumentRoot</directive>
         <directive module="core">ErrorLog</directive>
-        <directive module="mpm_common">LockFile</directive>
+        <directive module="core">Mutex</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mpm_common">ScoreBoardFile</directive>
         <directive module="core">ServerRoot</directive>
@@ -117,4 +117,20 @@ the basic operations of the server.</p>
     <p>The <directive module="mpm_common">ThreadStackSize</directive>
     directive is used with some platforms to control the stack size.</p>
   </section>
+
+  <section id="implementation">
+    <title>Implementation Choices</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">Mutex</directive>
+      </directivelist>
+    </related>
+
+    <p>The <directive>Mutex</directive> directive can be used to change
+    the underlying implementation used for mutexes, in order to relieve
+    functional or performance problems with <glossary>APR</glossary>'s
+    default choice.</p>
+  </section>
+
 </manualpage>

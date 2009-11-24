@@ -203,26 +203,6 @@ RewriteLogLevel 3
 </directivesynopsis>
 
 <directivesynopsis>
-<name>RewriteLock</name>
-<description>Sets the name of the lock file used for <directive
-module="mod_rewrite">RewriteMap</directive>
-synchronization</description>
-<syntax>RewriteLock <em>file-path</em></syntax>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-      <p>This directive sets the filename for a synchronization
-      lockfile which mod_rewrite needs to communicate with <directive
-      module="mod_rewrite">RewriteMap</directive>
-      <em>programs</em>. Set this lockfile to a local path (not on a
-      NFS-mounted device) when you want to use a rewriting
-      map-program. It is not required for other types of rewriting
-      maps.</p>
-</usage>
-
-</directivesynopsis>
-
-<directivesynopsis>
 <name>RewriteMap</name>
 <description>Defines a mapping function for key-lookup</description>
 <syntax>RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
@@ -417,6 +397,11 @@ $ httxt2dbm -i mapfile.txt -o mapfile.map
           ``<code>NULL</code>'' if it fails (<em>i.e.</em>, there
           is no corresponding value for the given key).</p>
 
+          <p>This feature utilizes the <code>rewrite-map</code> mutex,
+          which is required for reliable communication with the program.
+          The mutex mechanism and lock file can be configured with the
+          <directive module="core">Mutex</directive> directive.</p>
+
           <p>External rewriting programs are not started if they're defined in a
           context that does not have <directive>RewriteEngine</directive> set to
           <code>on</code></p>.
@@ -445,12 +430,6 @@ while (&lt;STDIN&gt;) {
             <li>A common mistake is to use buffered I/O on
             <code>stdout</code>. Avoid this, as it will cause a deadloop!
             ``<code>$|=1</code>'' is used above, to prevent this.</li>
-
-            <li>The <directive
-            module="mod_rewrite">RewriteLock</directive> directive can
-            be used to define a lockfile which mod_rewrite can use to synchronize
-            communication with the mapping program. By default no such
-            synchronization takes place.</li>
           </ol>
         </li>
         <li>

@@ -214,9 +214,9 @@ syntax error(s).</note>
     upgrades of Apache, however it can also cause deadlocks and race 
     conditions with some configurations.</p> 
 
-    <p>Care has been taken to ensure that on-disk files
-    such as the <directive module="core">Lockfile</directive> and <directive 
-    module="mod_cgid">ScriptSock</directive> files contain the server
+    <p>Care has been taken to ensure that on-disk files such as lock files
+    (<directive module="core">Mutex</directive>) and Unix socket files
+    (<directive module="mod_cgid">ScriptSock</directive>) contain the server
     PID, and should coexist without problem. However, if a configuration
     directive, third-party module or persistent CGI utilises any other on-disk 
     lock or  state files, care should be taken to ensure that multiple running 

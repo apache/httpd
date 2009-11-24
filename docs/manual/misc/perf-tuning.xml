@@ -705,67 +705,11 @@
       <directive module="mpm_common">Listen</directive>
       directives.</p>
 
-      <p>The directive <directive
-      module="mpm_common">AcceptMutex</directive> can be used to
-      change the selected mutex implementation at run-time.</p>
-
-      <dl>
-        <dt><code>AcceptMutex flock</code></dt>
-
-        <dd>
-          <p>This method uses the <code>flock(2)</code> system call to
-          lock a lock file (located by the <directive module="mpm_common"
-          >LockFile</directive> directive).</p>
-        </dd>
-
-        <dt><code>AcceptMutex fcntl</code></dt>
-
-        <dd>
-          <p>This method uses the <code>fcntl(2)</code> system call to
-          lock a lock file (located by the <directive module="mpm_common"
-          >LockFile</directive> directive).</p>
-        </dd>
-
-        <dt><code>AcceptMutex sysvsem</code></dt>
-
-        <dd>
-          <p>(1.3 or later) This method uses SysV-style semaphores to
-          implement the mutex. Unfortunately SysV-style semaphores have
-          some bad side-effects. One is that it's possible Apache will
-          die without cleaning up the semaphore (see the
-          <code>ipcs(8)</code> man page). The other is that the
-          semaphore API allows for a denial of service attack by any
-          CGIs running under the same uid as the webserver
-          (<em>i.e.</em>, all CGIs, unless you use something like
-          <program>suexec</program> or <code>cgiwrapper</code>).</p>
-        </dd>
-
-        <dt><code>AcceptMutex pthread</code></dt>
-
-        <dd>
-          <p>(1.3 or later) This method uses POSIX mutexes and should
-          work on any architecture implementing the full POSIX threads
-          specification, however appears to only work on Solaris (2.5
-          or later), and even then only in certain configurations. If
-          you experiment with this you should watch out for your server
-          hanging and not responding. Static content only servers may
-          work just fine.</p>
-        </dd>
-
-        <dt><code>AcceptMutex posixsem</code></dt>
-
-        <dd>
-          <p>(2.0 or later)  This method uses POSIX semaphores.  The
-          semaphore ownership is not recovered if a thread in the process
-          holding the mutex segfaults, resulting in a hang of the web
-          server.</p>
-        </dd>
-
-      </dl>
-
-      <p>If your system has another method of serialization which
-      isn't in the above list then it may be worthwhile adding code
-      for it to APR.</p>
+      <p>The <directive module="core">Mutex</directive> directive can
+      be used to change the mutex implementation of the 
+      <code>mpm-accept</code> mutex at run-time.  Special considerations
+      for different mutex implementations are documented with that 
+      directive.</p>
 
       <p>Another solution that has been considered but never
       implemented is to partially serialize the loop -- that is, let
