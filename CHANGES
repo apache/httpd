@@ -1,14 +1,8 @@
                                                         -*- coding: utf-8 -*-
 
-Changes with Apache 2.3.3
+Changes with Apache 2.3.5
 
-  *) SECURITY: CVE-2009-3095 (cve.mitre.org)
-     mod_proxy_ftp: sanity check authn credentials.
-     [Stefan Fritsch <sf fritsch.de>, Joe Orton]
-
-  *) SECURITY: CVE-2009-3094 (cve.mitre.org)
-     mod_proxy_ftp: NULL pointer dereference on error paths.
-     [Stefan Fritsch <sf fritsch.de>, Joe Orton]
+Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,
      and WatchdogMutexPath with a single Mutex directive.  Add APIs to
@@ -29,7 +23,16 @@ Changes with Apache 2.3.3
 
   *) Build: fix --with-module to work as documented
      PR 43881 [Gez Saunders <gez.saunders virgin.net>]
-     
+
+Changes with Apache 2.3.3
+
+  *) SECURITY: CVE-2009-3095 (cve.mitre.org)
+     mod_proxy_ftp: sanity check authn credentials.
+     [Stefan Fritsch <sf fritsch.de>, Joe Orton]
+
+  *) SECURITY: CVE-2009-3094 (cve.mitre.org)
+     mod_proxy_ftp: NULL pointer dereference on error paths.
+     [Stefan Fritsch <sf fritsch.de>, Joe Orton]
   *) mod_ssl: enable support for ECC keys and ECDH ciphers.  Tested against
      OpenSSL 1.0.0b3.  [Vipul Gupta <vipul.gupta sun.com>, Sander Temme]
 
