@@ -40,33 +40,30 @@
     substantially the same, for example:</p>
 
 <example>
-NameVirtualHost 111.22.33.44<br />
-&lt;VirtualHost 111.22.33.44&gt;<br />
-<indent>
-    ServerName                 www.customer-1.com<br />
-    DocumentRoot        /www/hosts/www.customer-1.com/docs<br />
-    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-1.com/cgi-bin<br />
-</indent>
-&lt;/VirtualHost&gt;<br />
-&lt;VirtualHost 111.22.33.44&gt;<br />
-<indent>
-    ServerName                 www.customer-2.com<br />
-    DocumentRoot        /www/hosts/www.customer-2.com/docs<br />
-    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-2.com/cgi-bin<br />
-</indent>
-&lt;/VirtualHost&gt;<br />
-# blah blah blah<br />
-&lt;VirtualHost 111.22.33.44&gt;<br />
-<indent>
-    ServerName                 www.customer-N.com<br />
-    DocumentRoot        /www/hosts/www.customer-N.com/docs<br />
-    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-N.com/cgi-bin<br />
-</indent>
+<pre>
+NameVirtualHost 111.22.33.44
+&lt;VirtualHost 111.22.33.44&gt;
+    ServerName                 www.customer-1.com
+    DocumentRoot        /www/hosts/www.customer-1.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-1.com/cgi-bin
 &lt;/VirtualHost&gt;
+
+&lt;VirtualHost 111.22.33.44&gt;
+    ServerName                 www.customer-2.com
+    DocumentRoot        /www/hosts/www.customer-2.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-2.com/cgi-bin
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost 111.22.33.44&gt;
+    ServerName                 www.customer-N.com
+    DocumentRoot        /www/hosts/www.customer-N.com/docs
+    ScriptAlias  /cgi-bin/  /www/hosts/www.customer-N.com/cgi-bin
+&lt;/VirtualHost&gt;
+</pre>
 </example>
 
-    <p>The basic idea is to replace all of the static
-    <code>&lt;VirtualHost&gt;</code> configurations with a mechanism
+    <p>We wish to replace these multiple
+    <code>&lt;VirtualHost&gt;</code> blocks with a mechanism
     that works them out dynamically. This has a number of
     advantages:</p>
 
@@ -289,12 +286,12 @@ VirtualScriptAliasIP  /www/hosts/%0/cgi-bin<br />
     <code>mod_rewrite</code> part work properly; the second half
     configures <code>mod_rewrite</code> to do the actual work.</p>
 
-    <p>There are a couple of especially tricky bits: by default,
-    <code>mod_rewrite</code> runs before other URI translation
-    modules (<code>mod_alias</code> etc.) - so if you wish to use these modules,    <code>mod_rewrite</code> must be configured to accommodate
-    them. Also, some magic is required to do a
-    per-dynamic-virtual-host equivalent of
-    <code>ScriptAlias</code>.</p>
+    <p>Because <code>mod_rewrite</code> runs before other URI translation
+    modules (e.g., <code>mod_alias</code>), <code>mod_rewrite</code> must
+    be told to explicitly ignore any URLs that would have been handled
+    by those modules. And, because these rules would otherwise bypass
+    any <code>ScriptAlias</code> directives, we must have
+    <code>mod_rewrite</code> explicitly enact those mappings.</p>
 
 <example>
 # get the server name from the Host: header<br />
@@ -312,8 +309,6 @@ CustomLog logs/access_log vcommon<br />
 </indent>
 &lt;/Directory&gt;<br />
 <br />
-# now for the hard bit<br />
-<br />
 RewriteEngine On<br />
 <br />
 # a ServerName derived from a Host: header may be any case at all<br />
@@ -330,8 +325,6 @@ RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1<br />
 ## and now deal with CGIs - we have to force a handler<br />
 RewriteCond  %{REQUEST_URI}  ^/cgi-bin/<br />
 RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]<br />
-<br />
-# that's it!
 </example>
 
 </section>
