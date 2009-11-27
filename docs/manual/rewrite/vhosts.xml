@@ -23,7 +23,7 @@
 <manualpage metafile="vhosts.xml.meta">
   <parentdocument href="./">Rewrite</parentdocument>
 
-<title>Using mod_rewrite for virtual hosting</title>
+<title>Dynamic mass virtual hosts with mod_rewrite</title>
 
 <summary>
 
@@ -47,22 +47,22 @@ mod_rewrite.</note>
 <seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
-<section id="uservhosts">
+<section id="per-hostname">
 
-  <title>Virtual Hosts Per User</title>
+  <title>Virtual Hosts For Artitrary Hostnames</title>
 
   <dl>
     <dt>Description:</dt>
 
     <dd>
-    <p>We want to automatically create a virtual host for every user who
-    has an account on our web server system, without having to create
+    <p>We want to automatically create a virtual host for every hostname
+    which resolves in our domain, without having to create
     new VirtualHost sections.</p>
 
     <p>In this recipe, we assume that we'll be using the hostname
-    <code>www.<strong>username</strong>.example.com</code> for each
+    <code>www.<strong>SITE</strong>.example.com</code> for each
     user, and serve their content out of
-    <code>/home/<strong>username</strong>/www</code>.</p>
+    <code>/home/<strong>SITE</strong>/www</code>.</p>
     </dd>
 
     <dt>Solution:</dt>
@@ -71,7 +71,10 @@ mod_rewrite.</note>
 
 <example><pre>
 RewriteEngine on
-RewriteCond   %{<strong>HTTP_HOST</strong>}        ^www\.<strong>([^.]+)</strong>\.example\.com$
+
+RewriteMap    lowercase int:tolower
+
+RewriteCond   %{lowercase:%{<strong>HTTP_HOST</strong>}}   ^www\.<strong>([^.]+)</strong>\.example\.com$
 RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
 </pre></example></dd>
 
@@ -83,6 +86,10 @@ RewriteRule   ^(.*) /home/<strong>%1</strong>/www$1
     not handle name resolution. You'll need either to create CNAME 
     records for each hostname, or a DNS wildcard record. Creating DNS
     records is beyond the scope of this document.</note>
+
+<p>The internal <code>tolower</code> RewriteMap directive is used to
+ensure that the hostnames being used are all lowercase, so that there is
+no ambiguity in the directory structure which must be created.</p>
 
 <p>Parentheses used in a <directive
 module="mod_rewrite">RewriteCond</directive> are captured into the
@@ -100,6 +107,102 @@ dynamic content, and Alias resolution.
 </p>
     </dd>
   </dl>
+
+</section>
+
+<section id="simple.rewrite"><title>Dynamic
+    Virtual Hosts Using <module>mod_rewrite</module></title>
+
+    <p>This extract from <code>httpd.conf</code> does the same
+    thing as <a href="#simple">the first example</a>. The first
+    half is very similar to the corresponding part above, except for
+    some changes, required for backward compatibility and to make the
+    <code>mod_rewrite</code> part work properly; the second half
+    configures <code>mod_rewrite</code> to do the actual work.</p>
+
+    <p>Because <code>mod_rewrite</code> runs before other URI translation
+    modules (e.g., <code>mod_alias</code>), <code>mod_rewrite</code> must
+    be told to explicitly ignore any URLs that would have been handled
+    by those modules. And, because these rules would otherwise bypass
+    any <code>ScriptAlias</code> directives, we must have
+    <code>mod_rewrite</code> explicitly enact those mappings.</p>
+
+<example>
+# get the server name from the Host: header<br />
+UseCanonicalName Off<br />
+<br />
+# splittable logs<br />
+LogFormat "%{Host}i %h %l %u %t \"%r\" %s %b" vcommon<br />
+CustomLog logs/access_log vcommon<br />
+<br />
+&lt;Directory /www/hosts&gt;<br />
+<indent>
+    # ExecCGI is needed here because we can't force<br />
+    # CGI execution in the way that ScriptAlias does<br />
+    Options FollowSymLinks ExecCGI<br />
+</indent>
+&lt;/Directory&gt;<br />
+<br />
+RewriteEngine On<br />
+<br />
+# a ServerName derived from a Host: header may be any case at all<br />
+RewriteMap  lowercase  int:tolower<br />
+<br />
+## deal with normal documents first:<br />
+# allow Alias /icons/ to work - repeat for other aliases<br />
+RewriteCond  %{REQUEST_URI}  !^/icons/<br />
+# allow CGIs to work<br />
+RewriteCond  %{REQUEST_URI}  !^/cgi-bin/<br />
+# do the magic<br />
+RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/docs/$1<br />
+<br />
+## and now deal with CGIs - we have to force a handler<br />
+RewriteCond  %{REQUEST_URI}  ^/cgi-bin/<br />
+RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-script]<br />
+</example>
+
+</section>
+
+<section id="xtra-conf"><title>Using a Separate Virtual Host Configuration File</title>
+
+    <p>This arrangement uses more advanced <module>mod_rewrite</module>
+    features to work out the translation from virtual host to document
+    root, from a separate configuration file. This provides more
+    flexibility, but requires more complicated configuration.</p>
+
+    <p>The <code>vhost.map</code> file should look something like
+    this:</p>
+
+<example>
+www.customer-1.com  /www/customers/1<br />
+www.customer-2.com  /www/customers/2<br />
+# ...<br />
+www.customer-N.com  /www/customers/N<br />
+</example>
+
+    <p>The <code>httpd.conf</code> should contain the following:</p>
+
+<example>
+RewriteEngine on<br />
+<br />
+RewriteMap   lowercase  int:tolower<br />
+<br />
+# define the map file<br />
+RewriteMap   vhost      txt:/www/conf/vhost.map<br />
+<br />
+# deal with aliases as above<br />
+RewriteCond  %{REQUEST_URI}               !^/icons/<br />
+RewriteCond  %{REQUEST_URI}               !^/cgi-bin/<br />
+RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
+# this does the file-based remap<br />
+RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
+RewriteRule  ^/(.*)$                      %1/docs/$1<br />
+<br />
+RewriteCond  %{REQUEST_URI}               ^/cgi-bin/<br />
+RewriteCond  ${lowercase:%{SERVER_NAME}}  ^(.+)$<br />
+RewriteCond  ${vhost:%1}                  ^(/.*)$<br />
+RewriteRule  ^/(.*)$                      %1/cgi-bin/$1 [H=cgi-script]
+</example>
 
 </section>
 
