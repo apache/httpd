@@ -78,10 +78,11 @@ NameVirtualHost 111.22.33.44
 
     <p>The main disadvantage is that you cannot have a different log file for
     each virtual host; however, if you have many virtual hosts, doing
-    this can be a bad idea anyway, because of the number of file
-    descriptors needed. It is better to log to a pipe or a fifo, and arrange for
-    the process at the other end to distribute the logs to the customers.
-    (This can also be used to accumulate statistics, etc.).</p>
+    this can be a bad idea anyway, because of the <a
+    href="fd-limits.html">number of file descriptors needed</a>. 
+    It is better to <a href="../logs.html#piped">log to a pipe or a fifo</a>,
+    and arrange for the process at the other end to split up the log
+    files into one per virtual host.</p>
 
 </section>
 
@@ -116,7 +117,7 @@ NameVirtualHost 111.22.33.44
     or the DNS lookup fails, then the value configured with
     <code>ServerName</code> is used instead.</p>
 
-    <p>The other thing to `fake' is the document root (configured
+    <p>The other thing to 'fake' is the document root (configured
     with <code>DocumentRoot</code> and available to CGIs via the
     <code>DOCUMENT_ROOT</code> environment variable). In a normal
     configuration, this is used by the core module when
