@@ -69,7 +69,9 @@ NameVirtualHost 111.22.33.44
 
     <ol>
       <li>Your configuration file is smaller, so Apache starts
-      more quickly and uses less memory.</li>
+      more quickly and uses less memory. Perhaps more importantly, the
+      smaller configuration is easier to maintain, and leaves less room
+      for errors.</li>
 
       <li>Adding virtual hosts is simply a matter of creating the
       appropriate directories in the filesystem and entries in the
@@ -82,7 +84,10 @@ NameVirtualHost 111.22.33.44
     href="fd-limits.html">number of file descriptors needed</a>. 
     It is better to <a href="../logs.html#piped">log to a pipe or a fifo</a>,
     and arrange for the process at the other end to split up the log
-    files into one per virtual host.</p>
+    files into one per virtual host. One example of such a process can
+    be found in the <a
+    href="../programs/other.html#split-logfile">split-logfile</a>
+    utility.</p>
 
 </section>
 
@@ -94,12 +99,15 @@ NameVirtualHost 111.22.33.44
     used here is based on automatically inserting this information into the
     pathname of the file that is used to satisfy the request. This
     can be most easily done by using <module>mod_vhost_alias</module> 
-    with Apache 2.0. Alternatively, <module>mod_rewrite</module> can be used.
-    Both of these modules are disabled by default; you must enable
+    with Apache 2.0. Alternatively, 
+    <a href="../rewrite/vhosts.html"><module>mod_rewrite</module> can 
+    be used</a>.</p>
+    <p>Both of these modules are disabled by default; you must enable
     one of them when configuring and building Apache if you want to
     use this technique.</p>
 
-    <p>A couple of things need to be `faked' to make the dynamic
+    <p>A couple of things need to be determined from the request in
+    order to make the dynamic
     virtual host look like a normal one. The most important is the
     server name, which is used by Apache to generate
     self-referential URLs etc. It is configured with the
@@ -117,7 +125,7 @@ NameVirtualHost 111.22.33.44
     or the DNS lookup fails, then the value configured with
     <code>ServerName</code> is used instead.</p>
 
-    <p>The other thing to 'fake' is the document root (configured
+    <p>The other thing to determine is the document root (configured
     with <code>DocumentRoot</code> and available to CGIs via the
     <code>DOCUMENT_ROOT</code> environment variable). In a normal
     configuration, this is used by the core module when
@@ -130,20 +138,25 @@ NameVirtualHost 111.22.33.44
     if any CGIs or SSI documents make use of it, they will get a
     misleading value.</p>
 
+    <!-- TODO: Is that true? I was pretty sure that mod_vhost_alias did
+    in fact set DOCUMENT_ROOT. Need to verify. rcb. -->
+
 </section>
 
-<section id="simple"><title>Simple Dynamic Virtual Hosts</title>
+<section id="simple"><title>Dynamic Virtual Hosts with
+mod_vhost_alias</title>
 
     <p>This extract from <code>httpd.conf</code> implements the
     virtual host arrangement outlined in the <a
-    href="#motivation">Motivation</a> section above, but in a
-    generic fashion using <code>mod_vhost_alias</code>.</p>
+    href="#motivation">Motivation</a> section above
+    using <code>mod_vhost_alias</code>.</p>
 
 <example>
 # get the server name from the Host: header<br />
 UseCanonicalName Off<br />
 <br />
 # this log format can be split per-virtual-host based on the first field<br />
+# using the split-logfile utility.<br />
 LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 CustomLog logs/access_log vcommon<br />
 <br />
@@ -157,6 +170,9 @@ VirtualScriptAlias  /www/hosts/%0/cgi-bin
     Off</code> into <code>UseCanonicalName DNS</code>. The server
     name that is inserted into the filename is then derived from
     the IP address of the virtual host.</p>
+
+<p>See the <module>mod_vhost_alias</module> documentation for more usage
+examples.</p>
 
 </section>
 
@@ -360,8 +376,7 @@ ScriptAlias  /cgi-bin/  /www/std-cgi/
 
 </section>
 
-<section id="xtra-conf"><title>Using a Separate Virtual
-    Host Configuration File</title>
+<section id="xtra-conf"><title>Using a Separate Virtual Host Configuration File</title>
 
     <p>This arrangement uses more advanced <module>mod_rewrite</module>
     features to work out the translation from virtual host to document
