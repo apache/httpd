@@ -349,8 +349,10 @@ RewriteRule  ^/(.*)$  /www/hosts/${lowercase:%{SERVER_NAME}}/cgi-bin/$1  [H=cgi-
 <section id="homepages.rewrite"><title>A
     Homepages System Using <code>mod_rewrite</code></title>
 
-    <p>This does the same thing as <a href="#homepages">the second
-    example</a>.</p>
+    <p>This is similar to <a href="#homepages">the one above</a>,
+    but also verifies that the hostname falls into a specific subset of
+    hostnames - in this case, that it looks like
+    <code>www.<strong>SITE</strong>.example.com</code>.</p>
 
 <example>
 RewriteEngine on<br />
@@ -360,15 +362,11 @@ RewriteMap   lowercase  int:tolower<br />
 # allow CGIs to work<br />
 RewriteCond  %{REQUEST_URI}  !^/cgi-bin/<br />
 <br />
-# check the hostname is right so that the RewriteRule works<br />
-RewriteCond  ${lowercase:%{SERVER_NAME}}  ^www\.[a-z-]+\.isp\.com$<br />
+# Capture the site name in the backreference variable %1<br />
+RewriteCond  ${lowercase:%{SERVER_NAME}}  ^www\.([a-z-]+)\.example\.com$<br />
 <br />
-# concatenate the virtual host name onto the start of the URI<br />
-# the [C] means do the next rewrite on the result of this one<br />
-RewriteRule  ^(.+)  ${lowercase:%{SERVER_NAME}}$1  [C]<br />
-<br />
-# now create the real file name<br />
-RewriteRule  ^www\.([a-z-]+)\.isp\.com/(.*) /home/$1/$2<br />
+# Map the request to the site's document directory<br />
+RewriteRule  ^(.*) /home/%1/$1<br />
 <br />
 # define the global CGI directory<br />
 ScriptAlias  /cgi-bin/  /www/std-cgi/
