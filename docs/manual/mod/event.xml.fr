@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 759115 -->
+<!-- English Revision : 883878 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -104,8 +104,6 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
     </ul>
 </section>
 
-<directivesynopsis location="mpm_common"><name>AcceptMutex</name>
-</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>EnableExceptionHook</name>
@@ -117,8 +115,6 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
-</directivesynopsis>
-<directivesynopsis location="mpm_common"><name>LockFile</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>MaxClients</name>
 </directivesynopsis>

@@ -110,7 +110,7 @@
     must be received within this time.</dd>
 
     <dt><code>headerminrate</code></dt>
-    <dd>The minumum data rate for receiving the request headers in
+    <dd>The minimum data rate for receiving the request headers in
     bytes/second. Whenever data is received, the timeout is increased
     according to this data rate.</dd>
 
@@ -126,7 +126,7 @@
     received within this time.</dd>
 
     <dt><code>bodyminrate</code></dt>
-    <dd>The minumum data rate for receiving the request body in
+    <dd>The minimum data rate for receiving the request body in
     bytes/second. Whenever data is received, the timeout is increased
     according to this data rate.</dd>
 
