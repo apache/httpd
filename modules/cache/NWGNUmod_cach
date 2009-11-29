@@ -26,9 +26,7 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
-			$(AP_WORK)/os/NetWare \
 			$(AP_WORK)/server/mpm/NetWare \
-			$(AP_WORK)/srclib/pcre \
 			$(NWOS) \
 			$(EOLIST)
 
