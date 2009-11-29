@@ -2406,7 +2406,7 @@ or specified mutexes</description>
 
     <p>Most mechanisms are only available on selected platforms, where the 
     underlying platform and <glossary>APR</glossary> support it.  Mechanisms
-    which aren't avaiable on all platforms are <em>posixsem</em>,
+    which aren't available on all platforms are <em>posixsem</em>,
     <em>sysvsem</em>, <em>sem</em>, <em>pthread</em>, <em>fcntl</em>, 
     <em>flock</em>, and <em>file</em>.</p>
 
