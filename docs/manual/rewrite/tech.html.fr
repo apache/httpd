@@ -28,9 +28,7 @@ module mod_rewrite et de la mise en correspondance des URLs</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Internal">Fonctionnement interne</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#InternalAPI">Phases de l'API</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#InternalRuleset">Traitement du jeu de règles</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module</a></li><li><a href="intro.html">Introduction à mod_rewrite</a></li><li><a href="rewrite_guide.html">Guide de réécriture - exemples
-utiles</a></li><li><a href="rewrite_guide_advanced.html">Guide de réécriture
-avancée - exemples utiles avancés</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Documentation du module mod_rewrite</a></li><li><a href="index.html">Exemples détaillés d'utilisation de mod_rewrite</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="Internal" id="Internal">Fonctionnement interne</a></h2>

@@ -368,7 +368,6 @@
 <li><a href="mod_rewrite.html#rewritebase">RewriteBase</a></li>
 <li><a href="mod_rewrite.html#rewritecond">RewriteCond</a></li>
 <li><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></li>
-<li><a href="mod_rewrite.html#rewritelock">RewriteLock</a></li>
 <li><a href="mod_rewrite.html#rewritelog">RewriteLog</a></li>
 <li><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></li>
 <li><a href="mod_rewrite.html#rewritemap">RewriteMap</a></li>
@@ -442,7 +441,6 @@
 <li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
 <li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><a href="mod_ssl.html#sslmutex">SSLMutex</a></li>
 <li><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable</a></li>
 <li><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></li>

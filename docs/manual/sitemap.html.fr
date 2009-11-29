@@ -104,8 +104,9 @@ descripteurs de fichiers</a></li>
 <li><a href="rewrite/intro.html">Introduction</a></li>
 <li><a href="rewrite/flags.html">Drapeaux</a></li>
 <li><a href="rewrite/tech.html">Détails techniques</a></li>
-<li><a href="rewrite/rewrite_guide.html">Guide de réécriture - exemples utiles</a></li>
-<li><a href="rewrite/rewrite_guide_advanced.html">Guide de réécriture avancée -
+<li><a href="rewrite/remapping.html">Remise en correspondance des URLs</a></li>
+<li><a href="rewrite/access.html">Contrôle d'accès</a></li>
+<li><a href="rewrite/advanced.html">Guide de réécriture avancée -
 autres exemples utiles</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

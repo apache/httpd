@@ -2423,7 +2423,7 @@ or specified mutexes</td></tr>
 
     <p>Most mechanisms are only available on selected platforms, where the 
     underlying platform and <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> support it.  Mechanisms
-    which aren't avaiable on all platforms are <em>posixsem</em>,
+    which aren't available on all platforms are <em>posixsem</em>,
     <em>sysvsem</em>, <em>sem</em>, <em>pthread</em>, <em>fcntl</em>, 
     <em>flock</em>, and <em>file</em>.</p>
 

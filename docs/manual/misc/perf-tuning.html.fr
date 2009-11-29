@@ -730,72 +730,11 @@
       <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code> multiples sur ces
       architectures est donc peu sûr.</p>
 
-      <p>On peut utiliser la directive
-      <code class="directive"><a href="../mod/mpm_common.html#acceptmutex">AcceptMutex</a></code> pour modifier
-      l'implémentation du mutex sélectionnée à l'exécution.</p>
-
-      <dl>
-        <dt><code>AcceptMutex flock</code></dt>
-
-        <dd>
-          <p>Cette méthode utilise l'appel système <code>flock(2)</code> pour
-	  créer un fichier verrou (dont la localisation est définie par la
-	  directive <code class="directive"><a href="../mod/mpm_common.html#lockfile">LockFile</a></code>.</p>
-        </dd>
-
-        <dt><code>AcceptMutex fcntl</code></dt>
-
-        <dd>
-          <p>Cette méthode utilise l'appel système <code>fcntl(2)</code> pour
-	  créer un fichier verrou ((dont la localisation est définie par la
-	  directive <code class="directive"><a href="../mod/mpm_common.html#lockfile">LockFile</a></code>.</p>
-        </dd>
-
-        <dt><code>AcceptMutex sysvsem</code></dt>
-
-        <dd>
-          <p>(Versions 1.3 ou supérieures) Cette méthode utilise les sémaphores
-	  style SysV pour implémenter les mutex. Malheureusement, les
-	  sémaphores style SysV ont quelques effets de bord néfastes. L'un
-	  d'entre eux est la possibilité pour Apache de s'arrêter sans
-	  "faire le ménage" dans les sémaphores (voir la page de manuel de
-	  <code>ipcs(8)</code>). Un autre effet de bord est introduit par
-	  l'API des sémaphores qui permet à tout CGI s'exécutant sous le même
-	  uid que le serveur web d'effectuer une attaque par déni de service
-	  (c'est à dire <em>tous</em> les CGIs, à moins que vous n'utilisiez
-	  un programme comme <code class="program"><a href="../programs/suexec.html">suexec</a></code> ou
-	  <code>cgiwrapper</code>).</p>
-        </dd>
-
-        <dt><code>AcceptMutex pthread</code></dt>
-
-        <dd>
-          <p>(versions 1.3 ou supérieures) Cette méthode utilise les mutex
-	  POSIX et devrait fonctionner sur toute architecture implémentant
-	  de manière complète la spécification concernant les threads POSIX ;
-	  il semble cependant qu'elle ne fonctionne que sur Solaris (versions
-	  2.5 ou supérieures), et sous certaines configurations seulement. Si
-	  vous tentez l'expérience, votre serveur risque de se bloquer et de ne
-	  plus répondre à vos sollicitations. Par contre, les serveurs
-	  n'hébergeant que du contenu statique devraient fonctionner
-	  correctement.</p>
-        </dd>
-
-        <dt><code>AcceptMutex posixsem</code></dt>
-
-        <dd>
-          <p>(Versions 2.0 ou supérieures) Cette méthode utilise les sémaphores
-	  POSIX. L'appartenance du sémaphore n'est pas récupérée quand un
-	  thread du processus qui détient le mutex provoque une erreur de
-	  segmentation, ce qui a pour effet de bloquer le serveur.</p>
-        </dd>
-
-      </dl>
-
-      <p>Si votre système propose une méthode de sérialisation différente de
-      celles de la liste ci-dessus, il pourrait être intéressant d'ajouter à
-      APR le code correspondant.</p>
-
+      <p>La directive <code class="directive"><a href="../mod/core.html#mutex">Mutex</a></code> permet
+      de modifier l'implémentation du mutex <code>mpm-accept</code> à
+      l'exécution. Des considérations spécifiques aux différentes
+      implémentations de mutex sont documentées avec cette directive.</p>
+      
       <p>Une autre solution qui a été imaginée mais jamais implémentée, consiste
       à sérialiser partiellement la boucle -- c'est à dire y faire entrer un
       certain nombre de processus. Ceci ne présenterait un intérêt que sur les
@@ -861,9 +800,7 @@
       manière <strong>fiable</strong> le protocole, un serveur HTTP doit fermer
       les deux directions d'une communication indépendamment (rappelez-vous
       qu'une connexion TCP est bidirectionnelle, chaque direction étant
-      indépendante de l'autre). Ce fait, souvent ignoré par les autres
-      serveurs, est implémenté correctement dans Apache depuis la
-      version 1.2.</p>
+      indépendante de l'autre).</p>
 
       <p>Quand cette fonctionnalité fut ajoutée à Apache, elle causa une
       avalanche de problèmes sur plusieurs versions d'Unix à cause d'une

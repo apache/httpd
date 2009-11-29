@@ -7,7 +7,6 @@
 # RewriteRule ^/+([^/]+)$ /manual/%1 [R=301,NE,L]
 
 acceptfilter	mod/core.html#acceptfilter
-acceptmutex	mod/mpm_common.html#acceptmutex
 acceptpathinfo	mod/core.html#acceptpathinfo
 accessfilename	mod/core.html#accessfilename
 action	mod/mod_actions.html#action
@@ -258,7 +257,6 @@ loadfile	mod/mod_so.html#loadfile
 loadmodule	mod/mod_so.html#loadmodule
 location	mod/core.html#location
 locationmatch	mod/core.html#locationmatch
-lockfile	mod/mpm_common.html#lockfile
 logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
 maxclients	mod/mpm_common.html#maxclients
@@ -277,6 +275,7 @@ minsparethreads	mod/mpm_common.html#minsparethreads
 mmapfile	mod/mod_file_cache.html#mmapfile
 modmimeusepathinfo	mod/mod_mime.html#modmimeusepathinfo
 multiviewsmatch	mod/mod_mime.html#multiviewsmatch
+mutex	mod/core.html#mutex
 namevirtualhost	mod/core.html#namevirtualhost
 noproxy	mod/mod_proxy.html#noproxy
 nwssltrustedcerts	mod/mod_nw_ssl.html#nwssltrustedcerts
@@ -344,7 +343,6 @@ requirenone	mod/mod_authz_core.html#requirenone
 rewritebase	mod/mod_rewrite.html#rewritebase
 rewritecond	mod/mod_rewrite.html#rewritecond
 rewriteengine	mod/mod_rewrite.html#rewriteengine
-rewritelock	mod/mod_rewrite.html#rewritelock
 rewritelog	mod/mod_rewrite.html#rewritelog
 rewriteloglevel	mod/mod_rewrite.html#rewriteloglevel
 rewritemap	mod/mod_rewrite.html#rewritemap
@@ -418,7 +416,6 @@ sslciphersuite	mod/mod_ssl.html#sslciphersuite
 sslcryptodevice	mod/mod_ssl.html#sslcryptodevice
 sslengine	mod/mod_ssl.html#sslengine
 sslhonorcipherorder	mod/mod_ssl.html#sslhonorcipherorder
-sslmutex	mod/mod_ssl.html#sslmutex
 sslocspdefaultresponder	mod/mod_ssl.html#sslocspdefaultresponder
 sslocspenable	mod/mod_ssl.html#sslocspenable
 sslocspoverrideresponder	mod/mod_ssl.html#sslocspoverrideresponder
