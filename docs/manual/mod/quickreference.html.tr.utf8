@@ -655,126 +655,122 @@ must succeed for the enclosing directive to not fail.</td></tr>
       <em>TestString</em> <em>CondPattern</em></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a condition under which rewriting will take place
 </td></tr>
 <tr class="odd"><td><a href="mod_rewrite.html#rewriteengine">RewriteEngine on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables runtime rewriting engine</td></tr>
-<tr><td><a href="mod_rewrite.html#rewritelock">RewriteLock <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the lock file used for <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
-synchronization</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritelog">RewriteLog <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the file used for logging rewrite engine
+<tr><td><a href="mod_rewrite.html#rewritelog">RewriteLog <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the file used for logging rewrite engine
 processing</td></tr>
-<tr><td><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel <em>Level</em></a></td><td> 0 </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the verbosity of the log file used by the rewrite
+<tr class="odd"><td><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel <em>Level</em></a></td><td> 0 </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the verbosity of the log file used by the rewrite
 engine</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
-</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
-<tr><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
-<tr class="odd"><td><a href="mod_rewrite.html#rewriterule">RewriteRule
-      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
-<tr><td><a href="core.html#rlimitcpu">RLimitCPU <var>saniye</var>|max [<var>saniye</var>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Apache alt süreçleri tarafından çalıştırılan süreçlerin işlemci
+<tr><td><a href="mod_rewrite.html#rewritemap">RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
+</a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines a mapping function for key-lookup</td></tr>
+<tr class="odd"><td><a href="mod_rewrite.html#rewriteoptions">RewriteOptions <var>Options</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets some special options for the rewrite engine</td></tr>
+<tr><td><a href="mod_rewrite.html#rewriterule">RewriteRule
+      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Defines rules for the rewriting engine</td></tr>
+<tr class="odd"><td><a href="core.html#rlimitcpu">RLimitCPU <var>saniye</var>|max [<var>saniye</var>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Apache alt süreçleri tarafından çalıştırılan süreçlerin işlemci
 tüketimine sınırlama getirir.</td></tr>
-<tr class="odd"><td><a href="core.html#rlimitmem">RLimitMEM <var>bayt-sayısı</var>|max [<var>bayt-sayısı</var>|max]
-</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Apache alt süreçleri tarafından çalıştırılan süreçlerin bellek
+<tr><td><a href="core.html#rlimitmem">RLimitMEM <var>bayt-sayısı</var>|max [<var>bayt-sayısı</var>|max]
+</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Apache alt süreçleri tarafından çalıştırılan süreçlerin bellek
 tüketimine sınırlama getirir.</td></tr>
-<tr><td><a href="core.html#rlimitnproc">RLimitNPROC <var>sayı</var>|max [<var>sayı</var>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Apache alt süreçleri tarafından çalıştırılabilecek süreç sayısına
+<tr class="odd"><td><a href="core.html#rlimitnproc">RLimitNPROC <var>sayı</var>|max [<var>sayı</var>|max]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Apache alt süreçleri tarafından çalıştırılabilecek süreç sayısına
 sınırlama getirir.</td></tr>
-<tr class="odd"><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Interaction between host-level access control and
+<tr><td><a href="mod_access_compat.html#satisfy" id="S" name="S">Satisfy Any|All</a></td><td> All </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Interaction between host-level access control and
 user authentication</td></tr>
-<tr><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>dosya-yolu</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
+<tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>dosya-yolu</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
   dosyanın yerini belirler.</td></tr>
-<tr class="odd"><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Activates a CGI script for a particular request
+<tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
-<tr><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-yolu</var>
-<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
-<tr class="odd"><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>düzenli-ifade</var>
-<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
+<tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-yolu</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
+<tr><td><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch <var>düzenli-ifade</var>
+<var>dosya-yolu</var>|<var>dizin-yolu</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Bir URL’yi dosya sistemindeki bir yere düzenli ifade kullanarak
 eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
-<tr><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">CGI betikleri için yorumlayıcı belirleme tekniği</td></tr>
-<tr class="odd"><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>
-<tr><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>bytes</var></a></td><td> 1024 </td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Maximum amount of PUT or POST requests that will be recorded
+<tr class="odd"><td><a href="core.html#scriptinterpretersource">ScriptInterpreterSource Registry|Registry-Strict|Script</a></td><td> Script </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">CGI betikleri için yorumlayıcı belirleme tekniği</td></tr>
+<tr><td><a href="mod_cgi.html#scriptlog">ScriptLog <var>file-path</var></a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Location of the CGI script error logfile</td></tr>
+<tr class="odd"><td><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer <var>bytes</var></a></td><td> 1024 </td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of PUT or POST requests that will be recorded
 in the scriptlog</td></tr>
-<tr class="odd"><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>bytes</var></a></td><td> 10385760 </td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Size limit of the CGI script logfile</td></tr>
-<tr><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> logs/cgisock </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">The filename prefix of the socket to use for communication with
+<tr><td><a href="mod_cgi.html#scriptloglength">ScriptLogLength <var>bytes</var></a></td><td> 10385760 </td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Size limit of the CGI script logfile</td></tr>
+<tr class="odd"><td><a href="mod_cgid.html#scriptsock">ScriptSock <var>file-path</var></a></td><td> logs/cgisock </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">The filename prefix of the socket to use for communication with
 the cgi daemon</td></tr>
-<tr class="odd"><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
-<var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
-<tr><td><a href="mod_status.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">İsteğin kendisi 63 karakterden uzun olduğunda, isteğin ilk 63
+<tr><td><a href="mod_nw_ssl.html#securelisten">SecureListen [<var>IP-address</var>:]<var>portnumber</var>
+<var>Certificate-Name</var> [MUTUAL]</a></td><td></td><td>s</td><td>T</td></tr><tr><td class="descr" colspan="4">Enables SSL encryption for the specified port</td></tr>
+<tr class="odd"><td><a href="mod_status.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">İsteğin kendisi 63 karakterden uzun olduğunda, isteğin ilk 63
 karakterinin mi yoksa son 63 karakterinin mi gösterileceğini belirler.
 </td></tr>
-<tr class="odd"><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">TCP tamponu boyu</td></tr>
-<tr><td><a href="core.html#serveradmin">ServerAdmin <var>eposta-adresi</var>|<var>URL</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun hata iletilerinde istemciye göstereceği eposta adresi
+<tr><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP tamponu boyu</td></tr>
+<tr class="odd"><td><a href="core.html#serveradmin">ServerAdmin <var>eposta-adresi</var>|<var>URL</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun hata iletilerinde istemciye göstereceği eposta adresi
 </td></tr>
-<tr class="odd"><td><a href="core.html#serveralias">ServerAlias <var>konakadı</var> [<var>konakadı</var>] ...</a></td><td></td><td>k</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">İstekleri isme dayalı sanal konaklarla eşleştirilirken
+<tr><td><a href="core.html#serveralias">ServerAlias <var>konakadı</var> [<var>konakadı</var>] ...</a></td><td></td><td>k</td><td>Ç</td></tr><tr><td class="descr" colspan="4">İstekleri isme dayalı sanal konaklarla eşleştirilirken
 kullanılacak konak adları için başka isimler belirtebilmeyi sağlar.
 </td></tr>
-<tr><td><a href="mpm_common.html#serverlimit">ServerLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Ayarlanabilir süreç sayısının üst sınırını belirler.</td></tr>
-<tr class="odd"><td><a href="core.html#servername">ServerName [<var>şema</var>://]<var>tam-nitelenmiş-alan-adı</var>[:<var>port</var>]
-</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun özdeşleşeceği konak ismi ve port.</td></tr>
-<tr><td><a href="core.html#serverpath">ServerPath <var>URL-yolu</var></a></td><td></td><td>k</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Uyumsuz bir tarayıcı tarafından erişilmesi için bir isme dayalı sanal konak için meşru URL yolu</td></tr>
-<tr class="odd"><td><a href="core.html#serverroot">ServerRoot <var>dizin-yolu</var></a></td><td> /usr/local/apache </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucu yapılandırması için kök dizin</td></tr>
-<tr><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucu tarafından üretilen belgelerin dipnotunu ayarlar.
+<tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ayarlanabilir süreç sayısının üst sınırını belirler.</td></tr>
+<tr><td><a href="core.html#servername">ServerName [<var>şema</var>://]<var>tam-nitelenmiş-alan-adı</var>[:<var>port</var>]
+</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun özdeşleşeceği konak ismi ve port.</td></tr>
+<tr class="odd"><td><a href="core.html#serverpath">ServerPath <var>URL-yolu</var></a></td><td></td><td>k</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Uyumsuz bir tarayıcı tarafından erişilmesi için bir isme dayalı sanal konak için meşru URL yolu</td></tr>
+<tr><td><a href="core.html#serverroot">ServerRoot <var>dizin-yolu</var></a></td><td> /usr/local/apache </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucu yapılandırması için kök dizin</td></tr>
+<tr class="odd"><td><a href="core.html#serversignature">ServerSignature On|Off|EMail</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucu tarafından üretilen belgelerin dipnotunu ayarlar.
 </td></tr>
-<tr class="odd"><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4"><code>Server</code> HTTP yanıt başlığını yapılandırır.
+<tr><td><a href="core.html#servertokens">ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</a></td><td> Full </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4"><code>Server</code> HTTP yanıt başlığını yapılandırır.
 </td></tr>
-<tr><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enables a session for the current directory or location</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session</td></tr>
-<tr><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session</td></tr>
-<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
-<tr><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The crypto driver to be used to encrypt the session</td></tr>
-<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>label</var></a></td><td> deletesession </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to remove sessions from the database</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>label</var></a></td><td> insertsession </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to insert sessions into the database</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable a per user session</td></tr>
-<tr><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>label</var></a></td><td> selectsession </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to select sessions from the database</td></tr>
-<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>label</var></a></td><td> updatesession </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to update existing sessions in the database</td></tr>
-<tr><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control whether the contents of the session are written to the
+<tr class="odd"><td><a href="mod_session.html#session">Session On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a session for the current directory or location</td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookiename">SessionCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session</td></tr>
+<tr class="odd"><td><a href="mod_session_cookie.html#sessioncookiename2">SessionCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session</td></tr>
+<tr><td><a href="mod_session_cookie.html#sessioncookieremove">SessionCookieRemove On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Control for whether session cookies should be removed from incoming HTTP headers</td></tr>
+<tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptodriver">SessionCryptoDriver <var>name</var> <var>[param[=value]]</var></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The crypto driver to be used to encrypt the session</td></tr>
+<tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>label</var></a></td><td> deletesession </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to remove sessions from the database</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>label</var></a></td><td> insertsession </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to insert sessions into the database</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable a per user session</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>label</var></a></td><td> selectsession </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to select sessions from the database</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>label</var></a></td><td> updatesession </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to update existing sessions in the database</td></tr>
+<tr class="odd"><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control whether the contents of the session are written to the
 <var>HTTP_SESSION</var> environment variable</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessionexclude">SessionExclude <var>path</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define URL prefixes for which a session is ignored</td></tr>
-<tr><td><a href="mod_session.html#sessionheader">SessionHeader <var>header</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Import session updates from a given HTTP response header</td></tr>
-<tr class="odd"><td><a href="mod_session.html#sessioninclude">SessionInclude <var>path</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define URL prefixes for which a session is valid</td></tr>
-<tr><td><a href="mod_session.html#sessionmaxage">SessionMaxAge <var>maxage</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define a maximum age in seconds for a session</td></tr>
-<tr class="odd"><td><a href="mod_env.html#setenv">SetEnv <var>ortam-değişkeni</var> <var>değer</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini tanımlar.</td></tr>
-<tr><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>öznitelik
+<tr><td><a href="mod_session.html#sessionexclude">SessionExclude <var>path</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define URL prefixes for which a session is ignored</td></tr>
+<tr class="odd"><td><a href="mod_session.html#sessionheader">SessionHeader <var>header</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Import session updates from a given HTTP response header</td></tr>
+<tr><td><a href="mod_session.html#sessioninclude">SessionInclude <var>path</var></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Define URL prefixes for which a session is valid</td></tr>
+<tr class="odd"><td><a href="mod_session.html#sessionmaxage">SessionMaxAge <var>maxage</var></a></td><td> 0 </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Define a maximum age in seconds for a session</td></tr>
+<tr><td><a href="mod_env.html#setenv">SetEnv <var>ortam-değişkeni</var> <var>değer</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortam değişkenlerini tanımlar.</td></tr>
+<tr class="odd"><td><a href="mod_setenvif.html#setenvif">SetEnvIf <em>öznitelik
     düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
-    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortam değişkenlerini isteğin özniteliklerine göre atar.
+    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini isteğin özniteliklerine göre atar.
 </td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>öznitelik
+<tr><td><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase <em>öznitelik
     düzifd [!]ort-değişkeni</em>[=<em>değer</em>]
-    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Ortam değişkenlerini isteğin özniteliklerinde harf büyüklüğüne
+    [[!]<em>ort-değişkeni</em>[=<em>değer</em>]] ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Ortam değişkenlerini isteğin özniteliklerinde harf büyüklüğüne
 bağlı olmaksızın yapılmış tanımlara göre atar.</td></tr>
-<tr><td><a href="core.html#sethandler">SetHandler <var>eylemci-ismi</var>|None</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
+<tr class="odd"><td><a href="core.html#sethandler">SetHandler <var>eylemci-ismi</var>|None</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Eşleşen tüm dosyaların belli bir eylemci tarafından işlenmesine
 sebep olur.</td></tr>
-<tr class="odd"><td><a href="core.html#setinputfilter">SetInputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">POST girdilerini ve istemci isteklerini işleyecek süzgeçleri
+<tr><td><a href="core.html#setinputfilter">SetInputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">POST girdilerini ve istemci isteklerini işleyecek süzgeçleri
 belirler.</td></tr>
-<tr><td><a href="core.html#setoutputfilter">SetOutputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Sunucunun yanıtlarını işleyecek süzgeçleri belirler.</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssiaccessenable">SSIAccessEnable on|off</a></td><td> off </td><td>dh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Enable the -A flag during conditional flow control processing.</td></tr>
-<tr><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">String that ends an include element</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Error message displayed when there is an SSI
+<tr class="odd"><td><a href="core.html#setoutputfilter">SetOutputFilter <var>süzgeç</var>[;<var>süzgeç</var>...]</a></td><td></td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun yanıtlarını işleyecek süzgeçleri belirler.</td></tr>
+<tr><td><a href="mod_include.html#ssiaccessenable">SSIAccessEnable on|off</a></td><td> off </td><td>dh</td><td>T</td></tr><tr><td class="descr" colspan="4">Enable the -A flag during conditional flow control processing.</td></tr>
+<tr class="odd"><td><a href="mod_include.html#ssiendtag">SSIEndTag <var>tag</var></a></td><td> "--&gt;" </td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">String that ends an include element</td></tr>
+<tr><td><a href="mod_include.html#ssierrormsg">SSIErrorMsg <var>message</var></a></td><td> "[an error occurred +</td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Error message displayed when there is an SSI
 error</td></tr>
-<tr><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--#" </td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">String that starts an include element</td></tr>
-<tr class="odd"><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>formatstring</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Configures the format in which date strings are
+<tr class="odd"><td><a href="mod_include.html#ssistarttag">SSIStartTag <var>tag</var></a></td><td> "&lt;!--#" </td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">String that starts an include element</td></tr>
+<tr><td><a href="mod_include.html#ssitimeformat">SSITimeFormat <var>formatstring</var></a></td><td> "%A, %d-%b-%Y %H:%M +</td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Configures the format in which date strings are
 displayed</td></tr>
-<tr><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>string</var></a></td><td> "(none)" </td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">String displayed when an unset variable is echoed</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates 
+<tr class="odd"><td><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho <var>string</var></a></td><td> "(none)" </td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">String displayed when an unset variable is echoed</td></tr>
+<tr><td><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates 
 for Client Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for 
+<tr class="odd"><td><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for 
 Client Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates 
+<tr><td><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA Certificates 
 for defining acceptable CA names</td></tr>
-<tr><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for 
+<tr class="odd"><td><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA Certificates for 
 defining acceptable CA names</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for 
+<tr><td><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">File of concatenated PEM-encoded CA CRLs for 
 Client Auth</td></tr>
-<tr><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for 
+<tr class="odd"><td><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath <em>directory-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Directory of PEM-encoded CA CRLs for 
 Client Auth</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">File of PEM-encoded Server CA Certificates</td></tr>
-<tr><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Server PEM-encoded X.509 Certificate file</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server PEM-encoded Private Key file</td></tr>
-<tr><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite <em>cipher-spec</em></a></td><td> ALL:!ADH:RC4+RSA:+H +</td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Cipher Suite available for negotiation in SSL 
+<tr><td><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">File of PEM-encoded Server CA Certificates</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Server PEM-encoded X.509 Certificate file</td></tr>
+<tr><td><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile <em>file-path</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Server PEM-encoded Private Key file</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite <em>cipher-spec</em></a></td><td> ALL:!ADH:RC4+RSA:+H +</td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Cipher Suite available for negotiation in SSL 
 handshake</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice <em>engine</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable use of a cryptographic hardware accelerator</td></tr>
-<tr><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional</a></td><td> off </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">SSL Engine Operation Switch</td></tr>
-<tr class="odd"><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCiperOrder <em>flag</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Option to prefer the server's cipher preference order</td></tr>
-<tr><td><a href="mod_ssl.html#sslmutex">SSLMutex <em>type</em></a></td><td> none </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Semaphore for internal mutual exclusion of 
-operations</td></tr>
+<tr><td><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice <em>engine</em></a></td><td> builtin </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable use of a cryptographic hardware accelerator</td></tr>
+<tr class="odd"><td><a href="mod_ssl.html#sslengine">SSLEngine on|off|optional</a></td><td> off </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SSL Engine Operation Switch</td></tr>
+<tr><td><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCiperOrder <em>flag</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Option to prefer the server's cipher preference order</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSDefaultResponder <em>uri</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Set the default responder URI for OCSP validation</td></tr>
 <tr><td><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable <em>flag</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable OCSP validation of the client certificate chain</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder <em>flag</em></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Force use of the default responder URI for OCSP validation</td></tr>

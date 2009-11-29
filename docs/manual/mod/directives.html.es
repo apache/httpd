@@ -45,7 +45,6 @@
 </div>
 <div id="directive-list"><ul>
 <li><a href="core.html#acceptfilter" id="A" name="A">AcceptFilter</a></li>
-<li><a href="mpm_common.html#acceptmutex">AcceptMutex</a></li>
 <li><a href="core.html#acceptpathinfo">AcceptPathInfo</a></li>
 <li><a href="core.html#accessfilename">AccessFileName</a></li>
 <li><a href="mod_actions.html#action">Action</a></li>
@@ -296,7 +295,6 @@
 <li><a href="mod_so.html#loadmodule">LoadModule</a></li>
 <li><a href="core.html#location">&lt;Location&gt;</a></li>
 <li><a href="core.html#locationmatch">&lt;LocationMatch&gt;</a></li>
-<li><a href="mpm_common.html#lockfile">LockFile</a></li>
 <li><a href="mod_log_config.html#logformat">LogFormat</a></li>
 <li><a href="core.html#loglevel">LogLevel</a></li>
 <li><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients</a></li>
@@ -315,6 +313,7 @@
 <li><a href="mod_file_cache.html#mmapfile">MMapFile</a></li>
 <li><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo</a></li>
 <li><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></li>
+<li><a href="core.html#mutex">Mutex</a></li>
 <li><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost</a></li>
 <li><a href="mod_proxy.html#noproxy">NoProxy</a></li>
 <li><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
@@ -382,7 +381,6 @@
 <li><a href="mod_rewrite.html#rewritebase">RewriteBase</a></li>
 <li><a href="mod_rewrite.html#rewritecond">RewriteCond</a></li>
 <li><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></li>
-<li><a href="mod_rewrite.html#rewritelock">RewriteLock</a></li>
 <li><a href="mod_rewrite.html#rewritelog">RewriteLog</a></li>
 <li><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></li>
 <li><a href="mod_rewrite.html#rewritemap">RewriteMap</a></li>
@@ -456,7 +454,6 @@
 <li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
 <li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><a href="mod_ssl.html#sslmutex">SSLMutex</a></li>
 <li><a href="mod_ssl.html#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><a href="mod_ssl.html#sslocspenable">SSLOCSPEnable</a></li>
 <li><a href="mod_ssl.html#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></li>
