@@ -2656,6 +2656,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
     /* Initialize the rebind callback's cross reference list. */
     apr_ldap_rebind_init (p);
 
+#ifdef AP_LDAP_OPT_DEBUG
     if (st->debug_level > 0) { 
         result = ldap_set_option(NULL, AP_LDAP_OPT_DEBUG, &st->debug_level);
         if (result != LDAP_SUCCESS) {
@@ -2664,6 +2665,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                     st->debug_level, result, ldap_err2string(result));
         }
     }
+#endif
 
     return(OK);
 }
