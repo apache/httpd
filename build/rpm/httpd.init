@@ -42,6 +42,9 @@ if [ -f /etc/sysconfig/httpd ]; then
         . /etc/sysconfig/httpd
 fi
 
+# Start httpd in the C locale by default.
+HTTPD_LANG=${HTTPD_LANG-"C"}
+
 # This will prevent initlog from swallowing up a pass-phrase prompt if
 # mod_ssl needs a pass-phrase from the user.
 INITLOG_ARGS=""
@@ -50,8 +53,6 @@ INITLOG_ARGS=""
 # with the thread-based "worker" MPM; BE WARNED that some modules may not
 # work correctly with a thread-based MPM; notably PHP will refuse to start.
 
-# Path to the apachectl script, server binary, and short-form for messages.
-apachectl=/usr/sbin/apachectl
 httpd=${HTTPD-/usr/sbin/httpd}
 prog=httpd
 pidfile=${PIDFILE-/var/log/httpd/httpd.pid}
@@ -81,7 +82,7 @@ check13 () {
 start() {
         echo -n $"Starting $prog: "
         check13 || exit 1
-        daemon --pidfile=${pidfile} $httpd $OPTIONS
+        LANG=$HTTPD_LANG daemon --pidfile=${pidfile} $httpd $OPTIONS
         RETVAL=$?
         echo
         [ $RETVAL = 0 ] && touch ${lockfile}
@@ -111,15 +112,20 @@ case "$1" in
 	stop
 	;;
   status)
-        status -p ${pidfile} $httpd
-	RETVAL=$?
-	;;
+        if ! test -f ${pidfile}; then
+            echo $prog is stopped
+            RETVAL=3
+        else  
+            status -p {$pidfile} $httpd
+            RETVAL=$?
+        fi
+        ;;
   restart)
 	stop
 	start
 	;;
   condrestart)
-	if status -p ${pidfile} $httpd >&/dev/null; then
+	if test -f ${pidfile} && status -p ${pidfile} $httpd >&/dev/null; then
 		stop
 		start
 	fi
@@ -127,13 +133,20 @@ case "$1" in
   reload)
         reload
 	;;
-  graceful|help|configtest|fullstatus)
-	$apachectl $@
+  configtest)
+        LANG=$HTTPD_LANG $httpd $OPTIONS -t
+        RETVAL=$?
+        ;;
+  graceful)
+        echo -n $"Gracefully restarting $prog: "
+	LANG=$HTTPD_LANG $httpd $OPTIONS -k $@
 	RETVAL=$?
+        echo
 	;;
   *)
-	echo $"Usage: $prog {start|stop|restart|condrestart|reload|status|fullstatus|graceful|help|configtest}"
+	echo $"Usage: $prog {start|stop|restart|condrestart|reload|status|graceful|help|configtest}"
 	exit 1
 esac
 
 exit $RETVAL
+
