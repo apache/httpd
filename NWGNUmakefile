@@ -80,6 +80,7 @@ XINCDIRS	+= \
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
+			-DHAVE_CONFIG_H \
 			$(EOLIST)
 
 #
@@ -216,6 +217,7 @@ TARGET_nlm = \
 # If there is an LIB target, put it here
 #
 TARGET_lib = \
+	$(OBJDIR)/pcre.lib \
 	$(EOLIST)
 
 #
@@ -258,7 +260,6 @@ FILES_nlm_objs = \
 	$(OBJDIR)/modules.o \
 	$(OBJDIR)/mpm_common.o \
 	$(OBJDIR)/mpm_netware.o \
-	$(OBJDIR)/pcre.o \
 	$(OBJDIR)/protocol.o \
 	$(OBJDIR)/provider.o \
 	$(OBJDIR)/request.o \
@@ -291,6 +292,7 @@ endif
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+	$(PCRELIB) \
 	libcpre.o \
 	$(EOLIST)
 
@@ -345,8 +347,28 @@ FILES_nlm_exports = \
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
+ifeq "$(wildcard $(PCRE)/pcre.c)" "$(PCRE)/pcre.c"
+
 FILES_lib_objs = \
+	$(OBJDIR)/pcre.o \
 	$(EOLIST)
+
+else
+
+FILES_lib_objs = \
+	$(OBJDIR)/pcre_compile.o \
+	$(OBJDIR)/pcre_exec.o \
+	$(OBJDIR)/pcre_fullinfo.o \
+	$(OBJDIR)/pcre_globals.o \
+	$(OBJDIR)/pcre_info.o \
+	$(OBJDIR)/pcre_newline.o \
+	$(OBJDIR)/pcre_tables.o \
+	$(OBJDIR)/pcre_try_flipped.o \
+	$(OBJDIR)/pcre_version.o \
+	$(OBJDIR)/chartables.o \
+	$(EOLIST)
+
+endif
 
 #
 # implement targets and dependancies (leave this section alone)

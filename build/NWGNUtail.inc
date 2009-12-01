@@ -237,6 +237,7 @@ ifneq "$(LDAPSDK)" ""
 endif
 	@echo -l $(APULDAP)/$(OBJDIR) >> $@
 	@echo -l $(XML)/$(OBJDIR) >> $@
+	@echo -l $(SRC)/$(OBJDIR) >> $@
 	@echo -nodefaults >> $@
 	@echo -map $(OBJDIR)\$(NLM_NAME).map>> $@
 ifneq "$(strip $(XLFLAGS))" ""
