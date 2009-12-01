@@ -106,3 +106,4 @@ mod_lbmethod_heartbeat.so   0x6F800000    0x00010000
 mod_heartbeat.so            0x6F7F0000    0x00010000
 mod_heartmonitor.so         0x6F7E0000    0x00010000
 mod_watchdog.so             0x6F7D0000    0x00010000
+mod_proxy_scgi.so           0x6F7C0000    0x00010000
