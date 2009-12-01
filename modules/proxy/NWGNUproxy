@@ -256,6 +256,7 @@ vpath %.c ../arch/netware
 $(OBJDIR)/mod_proxy.imp:
 	@echo Creating $@
 	@echo # Exports of mod_proxy > $@
+	@echo   (AP$(VERSION_MAJMIN)) >> $@
 	@echo   proxy_module, >> $@
 	@echo   proxy_hook_canon_handler, >> $@
 	@echo   proxy_hook_post_request, >> $@
