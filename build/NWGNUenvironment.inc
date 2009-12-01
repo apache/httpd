@@ -334,7 +334,7 @@ PCRE		= $(PCRESRC)
 APRTEST		= $(APR_WORK)/test
 HTTPD		= $(AP_WORK)/modules/http
 XML		= $(APU_WORK)/xml
-PREBUILD_INST   = $(AP_WORK)\nwprebuild
+PREBUILD_INST   = $(AP_WORK)/nwprebuild
 
 #
 # Internal Libraries

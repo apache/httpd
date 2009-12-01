@@ -71,8 +71,7 @@ XINCDIRS	+= \
 			$(AP_WORK)/modules/mappers/ \
 			$(AP_WORK)/modules/proxy/ \
 			$(AP_WORK)/modules/ssl/ \
-			$(AP_WORK)/os/NetWare \
-			$(AP_WORK)/server/mpm/NetWare \
+			$(AP_WORK)/server/mpm/netware \
 			$(PCRE) \
 			$(NWOS) \
 			$(EOLIST)
