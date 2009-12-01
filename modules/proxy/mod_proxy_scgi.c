@@ -246,7 +246,8 @@ static int send_headers(request_rec *r, proxy_conn_rec *conn)
     const char *ns_len;
     const apr_array_header_t *env_table;
     const apr_table_entry_t *env;
-    apr_size_t j, len, bodylen_size;
+    int j;
+    apr_size_t len, bodylen_size;
     apr_size_t headerlen =   sizeof(CONTENT_LENGTH)
                            + sizeof(SCGI_MAGIC)
                            + sizeof(SCGI_PROTOCOL_VERSION);
@@ -265,7 +266,7 @@ static int send_headers(request_rec *r, proxy_conn_rec *conn)
      */
     env_table = apr_table_elts(r->subprocess_env);
     env = (apr_table_entry_t *)env_table->elts;
-    for (j=0; j<env_table->nelts; ++j) {
+    for (j = 0; j < env_table->nelts; ++j) {
         if (   (!strcmp(env[j].key, GATEWAY_INTERFACE))
             || (!strcmp(env[j].key, CONTENT_LENGTH))
             || (!strcmp(env[j].key, SCGI_MAGIC))) {
@@ -293,7 +294,7 @@ static int send_headers(request_rec *r, proxy_conn_rec *conn)
     memcpy(cp, SCGI_PROTOCOL_VERSION, sizeof(SCGI_PROTOCOL_VERSION));
     cp += sizeof(SCGI_PROTOCOL_VERSION);
 
-    for (j=0; j<env_table->nelts; ++j) {
+    for (j = 0; j < env_table->nelts; ++j) {
         if (   (!strcmp(env[j].key, GATEWAY_INTERFACE))
             || (!strcmp(env[j].key, CONTENT_LENGTH))
             || (!strcmp(env[j].key, SCGI_MAGIC))) {

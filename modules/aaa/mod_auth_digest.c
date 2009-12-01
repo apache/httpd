@@ -188,8 +188,8 @@ static const char     *client_shm_filename;
 #define DEF_NUM_BUCKETS 15L
 #define HASH_DEPTH      5
 
-static long shmem_size  = DEF_SHMEM_SIZE;
-static long num_buckets = DEF_NUM_BUCKETS;
+static apr_size_t shmem_size  = DEF_SHMEM_SIZE;
+static unsigned long num_buckets = DEF_NUM_BUCKETS;
 
 
 module AP_MODULE_DECLARE_DATA auth_digest_module;

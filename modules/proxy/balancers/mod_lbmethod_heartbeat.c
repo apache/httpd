@@ -47,9 +47,9 @@ typedef struct hb_server_t {
     const char *ip;
     int busy;
     int ready;
-    int seen;
     int port;
     int id;
+    apr_time_t seen;
     proxy_worker *worker;
 } hb_server_t;
 
