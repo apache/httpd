@@ -3,7 +3,7 @@
 #
 
 SUBDIRS = \
-	$(APR_WORK)\build \
+	$(APR_WORK)/build \
 	$(EOLIST) 
 
 #
@@ -11,7 +11,7 @@ SUBDIRS = \
 # paths to tools
 #
 
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 
 #
 # build this level's files
@@ -50,6 +50,10 @@ cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NW
 	@echo -I$(APRUTIL)\include >> $@
 	@echo -ir $(NOVELLLIBC) >> $@
 
+$(PCRE)/%.h: $(subst /,\,$(PCRE))\%.h.generic
+	@echo Creating $(subst /,\,$@)
+	copy $< $(subst /,\,$(PCRE))\$(@F)
+
 $(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
 	@echo Creating $(subst /,\,$@)
 	copy $< $(subst /,\,$(PCRE))\$(@F)
@@ -62,7 +66,7 @@ $(NWOS)/chartables.c: dftables.exe $(PCRE)/dftables.c $(FILES_prebuild_headers)
 
 %.exe: $(PCRE)/%.c
 	@echo Creating Build Helper $@
-	@$(WIN_CC) $(WIN_CFLAGS) $< -o $@
+	@$(WIN_CC) $(WIN_CFLAGS) -DHAVE_CONFIG_H $< -o $@
 
 $(NWOS)/test_char.h: gen_test_char.exe $(AP_WORK)/server/gen_test_char.c
 	@echo Creating $(subst /,\,$@)
@@ -116,5 +120,5 @@ endif
 # in this makefile
 #
 
-include $(AP_WORK)\build\NWGNUtail.inc
+include $(AP_WORK)/build/NWGNUtail.inc
     

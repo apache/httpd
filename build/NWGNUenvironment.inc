@@ -50,11 +50,11 @@ $(error LDAPSDK does not point to a valid Novell CLDAP SDK)
 endif
 
 ifndef PCRESRC
-ifeq "$(wildcard $(AP_WORK)/srclib/pcre/pcre.in)" "$(AP_WORK)/srclib/pcre/pcre.in"
+ifeq "$(wildcard $(AP_WORK)/srclib/pcre/pcre-config.in)" "$(AP_WORK)/srclib/pcre/pcre-config.in"
 PCRESRC = $(AP_WORK)/srclib/pcre
 endif
 endif
-ifneq "$(wildcard $(PCRESRC)/pcre.in)" "$(PCRESRC)/pcre.in"
+ifneq "$(wildcard $(PCRESRC)/pcre-config.in)" "$(PCRESRC)/pcre-config.in"
 $(error PCRESRC does not point to a valid PCRE source tree) 
 endif
 
@@ -344,7 +344,7 @@ APRLIB		= $(APR)/$(OBJDIR)/aprlib.lib
 APRUTLIB	= $(APRUTIL)/$(OBJDIR)/aprutil.lib
 APULDAPLIB	= $(APULDAP)/$(OBJDIR)/apuldap.lib
 STMODLIB	= $(STDMOD)/$(OBJDIR)/stdmod.lib
-PCRELIB		= $(PCRE)/$(OBJDIR)/pcre.lib
+PCRELIB		= $(SRC)/$(OBJDIR)/pcre.lib
 NWOSLIB		= $(NWOS)/$(OBJDIR)/netware.lib
 SERVLIB		= $(SERVER)/$(OBJDIR)/server.lib
 HTTPDLIB	= $(HTTPD)/$(OBJDIR)/httpd.lib
