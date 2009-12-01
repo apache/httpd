@@ -27,6 +27,7 @@
 #define UTIL_MUTEX_H
 
 #include "httpd.h"
+#include "http_config.h"
 #include "apr_global_mutex.h"
 
 #if APR_HAS_FLOCK_SERIALIZE
