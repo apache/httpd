@@ -230,7 +230,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
     apr_file_t *fp;
     apr_file_t *fpin;
     apr_time_t now;
-    unsigned int fage;
+    apr_time_t fage;
     apr_finfo_t fi;
     int updated = 0;
     char *path = apr_pstrcat(pool, ctx->storage_path, ".tmp.XXXXXX", NULL);
@@ -266,7 +266,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
         bb = apr_brigade_create(pool, ba);
         apr_brigade_insert_file(bb, fpin, 0, fi.size, pool);
         tmpbb = apr_brigade_create(pool, ba);
-        fage = (unsigned int) apr_time_sec(now - fi.mtime);
+        fage = apr_time_sec(now - fi.mtime);
         do {
             char buf[4096];
             const char *ip;
@@ -300,7 +300,7 @@ static apr_status_t hm_file_update_stat(hm_ctx_t *ctx, hm_server_t *s, apr_pool_
                 apr_file_printf(fp, "%s\n", buf);
             } else if (strcmp(ip, s->ip) !=0 ) {
                 hm_server_t node; 
-                unsigned int seen;
+                apr_time_t seen;
                 /* Update seen time according to the last file modification */
                 apr_table_clear(hbt);
                 qs_to_table(apr_pstrdup(pool, t), hbt, pool);
