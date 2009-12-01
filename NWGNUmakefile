@@ -73,7 +73,7 @@ XINCDIRS	+= \
 			$(AP_WORK)/modules/ssl/ \
 			$(AP_WORK)/os/NetWare \
 			$(AP_WORK)/server/mpm/NetWare \
-			$(PCRESDK) \
+			$(PCRE) \
 			$(NWOS) \
 			$(EOLIST)
 
@@ -406,10 +406,10 @@ installdev :: FORCE
 
 prebuild :: FORCE
 	$(MAKE) -C server -f NWGNUMakefile
-	$(MAKE) -C $(PCRESDK) -f NWGNUMakefile
+	$(MAKE) -C $(PCRE) -f NWGNUMakefile
 	$(CHKNOT) $(PREBUILD_INST)\nul          mkdir $(PREBUILD_INST)
 	-copy $(AP_WORK)\server\$(OBJDIR)\*.nlm $(PREBUILD_INST)\*.*
-	-copy $(PCRESDK)\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
+	-copy $(PCRE)\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
 
 #
 # Any specialized rules here
@@ -417,7 +417,7 @@ prebuild :: FORCE
 
 vpath %.c server:modules/arch/netware:modules/http:modules/aaa:modules/mappers
 vpath %.c modules/generators:modules/metadata:modules/filters:modules/loggers
-vpath %.c modules/core:os/netware:server/mpm/netware:$(PCRESRC)
+vpath %.c modules/core:os/netware:server/mpm/netware:$(PCRE)
 
 #
 # Include the 'tail' makefile that has targets that depend on variables defined
