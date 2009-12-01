@@ -38,6 +38,7 @@ extern module alias_module;
 extern module env_module;
 extern module log_config_module;
 extern module setenvif_module;
+extern module watchdog_module;
 #ifdef USE_WINSOCK
 extern module nwssl_module;
 #endif
@@ -59,6 +60,7 @@ module *ap_prelinked_modules[] = {
   &env_module,
   &log_config_module,
   &setenvif_module,
+  &watchdog_module,
 #ifdef USE_WINSOCK
   &nwssl_module,
 #endif
@@ -82,6 +84,7 @@ ap_module_symbol_t ap_prelinked_module_symbols[] = {
   {"env_module", &env_module},
   {"log_config_module", &log_config_module},
   {"setenvif_module", &setenvif_module},
+  {"watchdog module", &watchdog_module},
 #ifdef USE_WINSOCK
   {"nwssl_module", &nwssl_module},
 #endif
@@ -105,6 +108,7 @@ module *ap_preloaded_modules[] = {
   &env_module,
   &log_config_module,
   &setenvif_module,
+  &watchdog_module,
 #ifdef USE_WINSOCK
   &nwssl_module,
 #endif
