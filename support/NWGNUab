@@ -1,14 +1,10 @@
 #
-# Make sure all needed macro's are defined
-#
-
-#
 # Get the 'head' of the build environment if necessary.  This includes default
 # targets and paths to tools
 #
 
 ifndef EnvironmentDefined
-include $(AP_WORK)\build\NWGNUhead.inc
+include $(AP_WORK)/build/NWGNUhead.inc
 endif
 
 #
@@ -17,12 +13,29 @@ endif
 # Make sure all needed macro's are defined
 #
 
-ifdef WITH_MOD_SSL
-ifneq "$(OSSLSDK)" ""
-OSSLINC = $(OSSLSDK)/outinc_nw_libc
-OSSLLIB = $(OSSLSDK)/out_nw_libc
+ifeq "$(WITH_ABS)" "1"
+
+ifeq "$(USE_NTLS)" "1"
+SSL_INC = $(NTLSSDK)/inc
+SSL_LIB = $(NTLSSDK)/imp
+SSL_BIN = $(NTLSSDK)/bin
+SSL_APP = $(NTLSSDK)/apps
+ifneq "$(wildcard $(SSL_INC)/openssl/opensslv.h)" "$(SSL_INC)/openssl/opensslv.h"
+$(warning '$(NTLSSDK)' does NOT point to a valid NTLS SDK!)
+endif
+else
+SSL_INC = $(OSSLSDK)/outinc_nw_libc
+SSL_LIB = $(OSSLSDK)/out_nw_libc
+SSL_BIN = $(OSSLSDK)/out_nw_libc
+SSL_APP = $(OSSLSDK)/apps
+ifneq "$(wildcard $(SSL_INC)/openssl/opensslv.h)" "$(SSL_INC)/openssl/opensslv.h"
+$(warning '$(OSSLSDK)' does NOT point to a valid OpenSSL SDK!)
+endif
+endif
+ifeq "$(wildcard $(SSL_INC)/openssl/opensslv.h)" "$(SSL_INC)/openssl/opensslv.h"
 HAVE_OPENSSL = 1
 endif
+
 endif
 
 #
@@ -31,8 +44,8 @@ endif
 #
 ifdef HAVE_OPENSSL
 XINCDIRS	+= \
-			$(OSSLINC) \
-			$(OSSLINC)/openssl \
+			$(SSL_INC) \
+			$(SSL_INC)/openssl \
 			$(EOLIST)
 endif
 
@@ -63,7 +76,7 @@ XDEFINES	+= \
 # These flags will be added to the link.opt file
 #
 XLFLAGS		+= \
-			-l $(OSSLLIB) \
+			-l $(SSL_LIB) \
 			$(EOLIST)
 endif
 
@@ -152,7 +165,7 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	= 8192
+NLM_STACK_SIZE	= 65536
 
 
 #
@@ -212,10 +225,12 @@ FILES_nlm_libs = \
 	$(EOLIST)
 
 ifdef HAVE_OPENSSL
+ifneq "$(USE_NTLS)" "1"
 FILES_nlm_libs += \
-	$(OSSLLIB)/crypto.lib \
-	$(OSSLLIB)/ssl.lib \
+	$(SSL_LIB)/crypto.lib \
+	$(SSL_LIB)/ssl.lib \
 	$(EOLIST)
+endif
 endif
 
 #
@@ -226,6 +241,13 @@ FILES_nlm_modules = \
 	aprlib \
 	libc \
 	$(EOLIST)
+
+ifdef HAVE_OPENSSL
+ifeq "$(USE_NTLS)" "1"
+FILES_nlm_modules += ntls \
+	$(EOLIST)
+endif
+endif
 
 #
 # If the nlm has a msg file, put it's path here
@@ -250,17 +272,23 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	$(EOLIST)
 
-ifdef HAVE_OPENSSL
 # Don't link with Winsock if standard sockets are being used
-ifndef USE_STDSOCKETS
+ifneq "$(USE_STDSOCKETS)" "1"
 FILES_nlm_Ximports += @ws2nlm.imp \
 	$(EOLIST)
 endif
+
+ifdef HAVE_OPENSSL
+ifeq "$(USE_NTLS)" "1"
+FILES_nlm_Ximports += @ntls.imp \
+	$(EOLIST)
+else
 FILES_nlm_Ximports += \
 	GetProcessSwitchCount \
 	RunningProcess \
 	GetSuperHighResolutionTimer \
 	$(EOLIST)
+endif
 endif
 
 #
@@ -299,5 +327,5 @@ install :: nlms FORCE
 # in this makefile
 #
 
-include $(AP_WORK)\build\NWGNUtail.inc
+include $(AP_WORK)/build/NWGNUtail.inc
 
