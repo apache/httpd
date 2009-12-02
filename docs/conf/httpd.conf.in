@@ -33,10 +33,11 @@ ServerRoot "@@ServerRoot@@"
 # Mutex: Allows you to set the mutex mechanism and mutex file directory
 # for individual mutexes, or change the global defaults
 #
-# Uncomment only if mutexes are file-based and the default mutex file
-# directory is not appropriate.
+# Uncomment and change the directory if mutexes are file-based and the default
+# mutex file directory is not on a local disk or is not appropriate for some
+# other reason.
 #
-# Mutex default file:@rel_runtimedir@
+# Mutex default:@rel_runtimedir@
 
 #
 # Listen: Allows you to bind Apache to specific IP addresses and/or
