@@ -284,6 +284,8 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     apr_status_t rv;
 #endif
 
+    pfn_ap_logio_get_last_bytes = APR_RETRIEVE_OPTIONAL_FN(ap_logio_get_last_bytes);
+
     if (ap_scoreboard_image) {
         running_gen = ap_scoreboard_image->global->running_generation;
         ap_scoreboard_image->global->restart_time = apr_time_now();
