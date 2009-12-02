@@ -677,8 +677,8 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
         num_buckets = 1;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "Digest: Set shmem-size: %ld, num-buckets: %ld", shmem_size,
-                 num_buckets);
+                 "Digest: Set shmem-size: %" APR_SIZE_T_FMT ", num-buckets: %ld", 
+                 shmem_size, num_buckets);
 
     return NULL;
 }
