@@ -2232,8 +2232,8 @@ connection</description>
 <name>Mutex</name>
 <description>Configures mutex mechanism and lock file directory for all
 or specified mutexes</description>
-<syntax>Mutex <var>default|mutex-name</var> <var>mechanism</var></syntax>
-<default>Mutex default default</default>
+<syntax>Mutex <var>mechanism</var> [default|<var>mutex-name</var>] ... [OmitPID]</syntax>
+<default>Mutex default</default>
 <contextlist><context>server config</context></contextlist>
 <compatibility>Available in Apache 2.3.4 and later</compatibility>
 
@@ -2265,61 +2265,6 @@ or specified mutexes</description>
     of the third-party module, which must indicate the mutex name(s) which
     can be configured if this directive is supported.</p>
     </note>
-
-    <p>The following table documents the names of mutexes used by httpd
-    and bundled modules.</p>
-
-    <table border="1" style="zebra">
-        <tr>
-            <th>Mutex name</th>
-            <th>Module(s)</th>
-            <th>Protected resource</th>
-	</tr>
-        <tr>
-            <td><code>mpm-accept</code></td>
-            <td><module>prefork</module> and <module>worker</module> MPMs</td>
-            <td>incoming connections, to avoid the thundering herd problem;
-            for more information, refer to the
-            <a href="../misc/perf-tuning.html">performance tuning</a>
-            documentation</td>
-	</tr>
-        <tr>
-            <td><code>authdigest-client</code></td>
-            <td><module>mod_auth_digest</module></td>
-            <td>client list in shared memory</td>
-	</tr>
-        <tr>
-            <td><code>authdigest-opaque</code></td>
-            <td><module>mod_auth_digest</module></td>
-            <td>counter in shared memory</td>
-	</tr>
-        <tr>
-            <td><code>ldap-cache</code></td>
-            <td><module>mod_ldap</module></td>
-            <td>LDAP result cache</td>
-	</tr>
-        <tr>
-            <td><code>rewrite-map</code></td>
-            <td><module>mod_rewrite</module></td>
-            <td>communication with external mapping programs, to avoid
-            intermixed I/O from multiple requests</td>
-	</tr>
-        <tr>
-            <td><code>ssl-cache</code></td>
-            <td><module>mod_ssl</module></td>
-            <td>SSL session cache</td>
-	</tr>
-        <tr>
-            <td><code>ssl-stapling</code></td>
-            <td><module>mod_ssl</module></td>
-            <td>OCSP stapling response cache</td>
-	</tr>
-        <tr>
-            <td><code>watchdog-callback</code></td>
-            <td><module>mod_watchdog</module></td>
-            <td>callback function of a particular client module</td>
-	</tr>
-    </table>
 
     <p>The following mutex <em>mechanisms</em> are available:</p>
     <ul>
@@ -2416,8 +2361,9 @@ or specified mutexes</description>
     <directive module="core">ServerRoot</directive>.  Always use a local disk
     filesystem for <code>/path/to/mutex</code> and never a directory residing
     on a NFS- or AFS-filesystem.  The basename of the file will be the mutex
-    type, an optional instance string provided by the module, with the process
-    id of the httpd parent process appended to to make it unique, avoiding
+    type, an optional instance string provided by the module, and unless the
+    <code>OmitPID</code> keyword is specified, the process id of the httpd 
+    parent process will be appended to to make the file name unique, avoiding
     conflicts when multiple httpd instances share a lock file directory.  For
     example, if the mutex name is <code>mpm-accept</code> and the lock file
     directory is <code>/var/httpd/locks</code>, the lock file name for the
@@ -2431,6 +2377,64 @@ or specified mutexes</description>
     creating a lockfile with the same name as the one the server will try
     to create.</p>
     </note>
+
+    <p>The following table documents the names of mutexes used by httpd
+    and bundled modules.</p>
+
+    <table border="1" style="zebra">
+        <tr>
+            <th>Mutex name</th>
+            <th>Module(s)</th>
+            <th>Protected resource</th>
+	</tr>
+        <tr>
+            <td><code>mpm-accept</code></td>
+            <td><module>prefork</module> and <module>worker</module> MPMs</td>
+            <td>incoming connections, to avoid the thundering herd problem;
+            for more information, refer to the
+            <a href="../misc/perf-tuning.html">performance tuning</a>
+            documentation</td>
+	</tr>
+        <tr>
+            <td><code>authdigest-client</code></td>
+            <td><module>mod_auth_digest</module></td>
+            <td>client list in shared memory</td>
+	</tr>
+        <tr>
+            <td><code>authdigest-opaque</code></td>
+            <td><module>mod_auth_digest</module></td>
+            <td>counter in shared memory</td>
+	</tr>
+        <tr>
+            <td><code>ldap-cache</code></td>
+            <td><module>mod_ldap</module></td>
+            <td>LDAP result cache</td>
+	</tr>
+        <tr>
+            <td><code>rewrite-map</code></td>
+            <td><module>mod_rewrite</module></td>
+            <td>communication with external mapping programs, to avoid
+            intermixed I/O from multiple requests</td>
+	</tr>
+        <tr>
+            <td><code>ssl-cache</code></td>
+            <td><module>mod_ssl</module></td>
+            <td>SSL session cache</td>
+	</tr>
+        <tr>
+            <td><code>ssl-stapling</code></td>
+            <td><module>mod_ssl</module></td>
+            <td>OCSP stapling response cache</td>
+	</tr>
+        <tr>
+            <td><code>watchdog-callback</code></td>
+            <td><module>mod_watchdog</module></td>
+            <td>callback function of a particular client module</td>
+	</tr>
+    </table>
+
+    <p>The <code>OmitPID</code> keyword suppresses the addition of the httpd
+    parent process id from the lock file name.</p>
 
     <p>In the following example, the mutex mechanism for the MPM accept
     mutex will be changed from the compiled-in default to <code>fcntl</code>,

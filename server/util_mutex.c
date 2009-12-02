@@ -125,6 +125,7 @@ typedef struct {
     apr_int32_t options;
     int set;
     int none;
+    int omit_pid;
     apr_lockmech_e mech;
     const char *dir;
 } mutex_cfg_t;
@@ -165,26 +166,29 @@ static void mx_hash_init(apr_pool_t *p)
 }
 
 AP_DECLARE_NONSTD(const char *)ap_set_mutex(cmd_parms *cmd, void *dummy,
-                                            const char *type,
-                                            const char *mechdir)
+                                            const char *arg)
 {
     apr_pool_t *p = cmd->pool;
+    const char **elt;
+    const char *mechdir;
+    const char *type;
+    int no_mutex = 0, omit_pid = 0;
+    apr_array_header_t *type_list;
     apr_lockmech_e mech;
     apr_status_t rv;
     const char *mutexdir;
-    mutex_cfg_t *mxcfg = apr_hash_get(mxcfg_by_type, type,
-                                      APR_HASH_KEY_STRING);
+    mutex_cfg_t *mxcfg;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
     if (err != NULL) {
         return err;
     }
 
-    if (!mxcfg) {
-        return apr_psprintf(p, "Mutex type %s is not valid", type);
+    mechdir = ap_getword_conf(cmd->pool, &arg);
+    if (*mechdir == NULL) {
+        return "Mutex requires at least a mechanism argument (" 
+               AP_ALL_AVAILABLE_MUTEXES_STRING ")";
     }
-
-    mxcfg->none = 0; /* in case that was the default */
 
     rv = ap_parse_mutex(mechdir, p, &mech, &mutexdir);
     if (rv == APR_ENOTIMPL) {
@@ -196,20 +200,55 @@ AP_DECLARE_NONSTD(const char *)ap_set_mutex(cmd_parms *cmd, void *dummy,
         return apr_pstrcat(p, "Invalid Mutex directory in argument ",
                            mechdir, NULL);
     }
-
-    mxcfg->set = 1;
-    if (rv == APR_ENOLOCK) { /* "none" */
-        if (!(mxcfg->options & AP_MUTEX_ALLOW_NONE)) {
-            return apr_psprintf(p,
-                                "None is not allowed for mutex type %s",
-                                type);
-        }
-        mxcfg->none = 1;
+    else if (rv == APR_ENOLOCK) { /* "none" */
+        no_mutex = 1;
     }
-    else {
-        mxcfg->mech = mech;
-        if (mutexdir) { /* retain mutex default if not configured */
-            mxcfg->dir = mutexdir;
+
+    /* "OmitPID" can appear at the end of the list, so build a list of
+     * mutex type names while looking for "OmitPID" (anywhere) or the end
+     */
+    type_list = apr_array_make(cmd->pool, 4, sizeof(char *));
+    while (*arg) {
+        char *s = ap_getword_conf(cmd->pool, &arg);
+
+        if (!strcasecmp(s, "omitpid")) {
+            omit_pid = 1;
+        }
+        else {
+            char **new_type = (char **)apr_array_push(type_list);
+            *new_type = s;
+        }
+    }
+
+    if (apr_is_empty_array(type_list)) { /* no mutex type?  assume "default" */
+        char **new_type = (char **)apr_array_push(type_list);
+        *new_type = "default";
+    }
+
+    while ((elt = (const char **)apr_array_pop(type_list)) != NULL) {
+        const char *type = *elt;
+        mxcfg = apr_hash_get(mxcfg_by_type, type, APR_HASH_KEY_STRING);
+        if (!mxcfg) {
+            return apr_psprintf(p, "Mutex type %s is not valid", type);
+        }
+
+        mxcfg->none = 0; /* in case that was the default */
+        mxcfg->omit_pid = omit_pid;
+
+        mxcfg->set = 1;
+        if (no_mutex) {
+            if (!(mxcfg->options & AP_MUTEX_ALLOW_NONE)) {
+                return apr_psprintf(p,
+                                    "None is not allowed for mutex type %s",
+                                    type);
+            }
+            mxcfg->none = 1;
+        }
+        else {
+            mxcfg->mech = mech;
+            if (mutexdir) { /* retain mutex default if not configured */
+                mxcfg->dir = mutexdir;
+            }
         }
     }
 
@@ -265,7 +304,9 @@ static const char *get_mutex_filename(apr_pool_t *p, mutex_cfg_t *mxcfg,
     }
 
 #if HAVE_UNISTD_H
-    pid_suffix = apr_psprintf(p, ".%" APR_PID_T_FMT, getpid());
+    if (!mxcfg->omit_pid) {
+        pid_suffix = apr_psprintf(p, ".%" APR_PID_T_FMT, getpid());
+    }
 #endif
 
     return ap_server_root_relative(p,
