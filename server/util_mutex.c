@@ -171,7 +171,6 @@ AP_DECLARE_NONSTD(const char *)ap_set_mutex(cmd_parms *cmd, void *dummy,
     apr_pool_t *p = cmd->pool;
     const char **elt;
     const char *mechdir;
-    const char *type;
     int no_mutex = 0, omit_pid = 0;
     apr_array_header_t *type_list;
     apr_lockmech_e mech;
@@ -185,7 +184,7 @@ AP_DECLARE_NONSTD(const char *)ap_set_mutex(cmd_parms *cmd, void *dummy,
     }
 
     mechdir = ap_getword_conf(cmd->pool, &arg);
-    if (*mechdir == NULL) {
+    if (*mechdir == '\0') {
         return "Mutex requires at least a mechanism argument (" 
                AP_ALL_AVAILABLE_MUTEXES_STRING ")";
     }
