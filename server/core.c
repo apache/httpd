@@ -3319,8 +3319,8 @@ AP_INIT_TAKE1("LimitRequestBody", set_limit_req_body,
 AP_INIT_TAKE1("LimitXMLRequestBody", set_limit_xml_req_body, NULL, OR_ALL,
               "Limit (in bytes) on maximum size of an XML-based request "
               "body"),
-AP_INIT_TAKE2("Mutex", ap_set_mutex, NULL, RSRC_CONF,
-              "mutex (or \"default\") and mechanism"),
+AP_INIT_RAW_ARGS("Mutex", ap_set_mutex, NULL, RSRC_CONF,
+                 "mutex (or \"default\") and mechanism"),
 
 /* System Resource Controls */
 #ifdef RLIMIT_CPU
