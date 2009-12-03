@@ -224,7 +224,7 @@
         <dd>Install read-only single-machine data like the server configuration
           files <code>httpd.conf</code>, <code>mime.types</code>, etc. in
           <var>DIR</var>. By default <code>sysconfdir</code> is set to
-          <code><var>PREFIX</var>/etc</code>.</dd>
+          <code><var>PREFIX</var>/conf</code>.</dd>
       </dl>
     
   
