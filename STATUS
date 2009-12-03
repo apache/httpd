@@ -158,6 +158,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: trunk works.
     +1: covener
 
+  * mod_disk_cache, mod_mem_cache: don't cache incomplete responses,
+    per RFC 2616, 13.8.
+    PR 15866
+    Trunk Patch: http://svn.apache.org/viewvc?rev=818492&view=rev
+                 http://svn.apache.org/viewvc?rev=821763&view=rev
+    2.2.x Patch: http://people.apache.org/~poirier/PR15866-22x.patch
+    +1: poirier    
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
