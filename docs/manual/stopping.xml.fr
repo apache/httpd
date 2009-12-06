@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 655319:883878 (outdated) -->
+<!-- English Revision: 883878 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -243,11 +243,11 @@ vous recevrez un message concernant ces erreurs.</note>
     avec certaines configurations.</p>
 
     <p>On a pris soin de s'assurer que les fichiers sur disque
-    comme ceux d&eacute;finis par les directives
-    <directive module="core">Lockfile</directive> et
-    <directive  module="mod_cgid">ScriptSock</directive> contiennent le PID
-    du serveur,et coexistent sans probl&egrave;me. Cependant, si une directive de
-    configuration , un module tiers ou une CGI r&eacute;sidente utilise un autre
+    comme les fichiers verrou (<directive
+    module="core">Mutex</directive>) et les fichiers socket Unix
+    (<directive module="mod_cgid">ScriptSock</directive>) contiennent le PID
+    du serveur, et coexistent sans probl&egrave;me. Cependant, si une directive de
+    configuration, un module tiers ou une CGI r&eacute;sidente utilise un autre
     verrou ou fichier d'&eacute;tat sur disque, il faut prendre soin de s'assurer
     que chaque instance de <program>httpd</program> qui s'ex&eacute;cute
     n'&eacute;crase pas les fichiers des autres instances.</p>

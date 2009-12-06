@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 420990:883878 (outdated) -->
+<!-- English Revision: 883878 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -73,7 +73,7 @@ serveur.</p>
         <directive module="mpm_common">CoreDumpDirectory</directive>
         <directive module="core">DocumentRoot</directive>
         <directive module="core">ErrorLog</directive>
-        <directive module="mpm_common">LockFile</directive>
+        <directive module="core">Mutex</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mpm_common">ScoreBoardFile</directive>
         <directive module="core">ServerRoot</directive>
@@ -121,4 +121,20 @@ serveur.</p>
     <p>La directive <directive module="mpm_common">ThreadStackSize</directive>
     permet sur certaines plates-formes de contr&ocirc;ler la taille de la pile.</p>
   </section>
+
+  <section id="implementation">
+    <title>Choix d'impl&eacute;mentation</title>
+
+    <related>
+      <directivelist>
+        <directive module="core">Mutex</directive>
+      </directivelist>
+    </related>
+
+    <p>La directive <directive>Mutex</directive> permet de modifier
+    l'impl&eacute;mentation sous-jacente des mutex, afin de r&eacute;soudre les
+    probl&egrave;mes de fonctionnement ou de performance dus au choix par
+    d&eacute;faut d'<glossary>APR</glossary>.</p>
+  </section>
+
 </manualpage>
