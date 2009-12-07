@@ -363,7 +363,7 @@ person in</title>
     AuthType Basic<br />
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user
+    Require valid-user<br />
     &lt;/Directory&gt;
     </example>
 
