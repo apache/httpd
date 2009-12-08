@@ -2,6 +2,13 @@
 
 Changes with Apache 2.3.5
 
+  *) Core HTTP: disable keepalive when the Client has sent
+     Expect: 100-continue
+     but we respond directly with a non-100 response.
+     Keepalive here led to data from clients continuing being treated as
+     a new request.
+     PR 47087 [Nick Kew]
+
 Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,

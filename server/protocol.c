@@ -1682,6 +1682,7 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
 {
     hdr_ptr x;
     char *status_line = NULL;
+    request_rec *rr;
 
     if (r->proto_num < 1001) {
         /* don't send interim response to HTTP/1.0 Client */
@@ -1699,6 +1700,14 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
          * for proxies it is a MUST NOT according to RFC 2616 8.2.3
          */
         return;
+    }
+
+    /* if we send an interim response, we're no longer in a state of
+     * expecting one.  Also, this could feasibly be in a subrequest,
+     * so we need to propagate the fact that we responded.
+     */
+    for (rr = r; rr != NULL; rr = rr->main) {
+        rr->expecting_100 = 0;
     }
 
     status_line = apr_pstrcat(r->pool, AP_SERVER_PROTOCOL, " ", r->status_line, CRLF, NULL);
