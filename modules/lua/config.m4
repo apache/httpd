@@ -25,7 +25,7 @@ fi
 AC_CHECK_LIB(m, pow, lib_m="-lm")
 AC_CHECK_LIB(m, sqrt, lib_m="-lm")
 for x in $test_paths ; do
-  if test "x$x" == "x."; then
+  if test "x$x" = "x."; then
     AC_CHECK_HEADER(lua.h,[
         save_CFLAGS=$CFLAGS
         save_LDFLAGS=$LDFLAGS
