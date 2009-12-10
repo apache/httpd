@@ -543,7 +543,7 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
  * Concatenate the return from each handler into one string that is
  * returned from this call.
  */
-static char* process_tags(header_entry *hdr, request_rec *r)
+static char* process_tags(header_entry *hdr, request_rec *r, request_rec *rr)
 {
     int i;
     const char *s;
@@ -554,9 +554,9 @@ static char* process_tags(header_entry *hdr, request_rec *r)
     for (i = 0; i < hdr->ta->nelts; i++) {
         s = tag[i].func(r, tag[i].arg);
         if (str == NULL)
-            str = apr_pstrdup(r->pool, s);
+            str = apr_pstrdup(rr->pool, s);
         else
-            str = apr_pstrcat(r->pool, str, s, NULL);
+            str = apr_pstrcat(rr->pool, str, s, NULL);
     }
     return str ? str : "";
 }
@@ -615,6 +615,12 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
     echo_do v;
     int i;
     const char *val;
+    request_rec *rr;
+
+    rr = r;
+    while (rr->main != NULL) {
+        rr = rr->main;
+    }
 
     for (i = 0; i < fixup->nelts; ++i) {
         header_entry *hdr = &((header_entry *) (fixup->elts))[i];
@@ -655,17 +661,17 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
 
         switch (hdr->action) {
         case hdr_add:
-            apr_table_addn(headers, hdr->header, process_tags(hdr, r));
+            apr_table_addn(headers, hdr->header, process_tags(hdr, r, rr));
             break;
         case hdr_append:
-            apr_table_mergen(headers, hdr->header, process_tags(hdr, r));
+            apr_table_mergen(headers, hdr->header, process_tags(hdr, r, rr));
             break;
         case hdr_merge:
             val = apr_table_get(headers, hdr->header);
             if (val == NULL) {
-                apr_table_addn(headers, hdr->header, process_tags(hdr, r));
+                apr_table_addn(headers, hdr->header, process_tags(hdr, r, rr));
             } else {
-                char *new_val = process_tags(hdr, r);
+                char *new_val = process_tags(hdr, r, rr);
                 apr_size_t new_val_len = strlen(new_val);
                 int tok_found = 0;
 
@@ -702,9 +708,9 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
             break;
         case hdr_set:
             if (!strcasecmp(hdr->header, "Content-Type")) {
-                 ap_set_content_type(r, process_tags(hdr, r));
+                 ap_set_content_type(r, process_tags(hdr, r, rr));
             }
-            apr_table_setn(headers, hdr->header, process_tags(hdr, r));
+            apr_table_setn(headers, hdr->header, process_tags(hdr, r, rr));
             break;
         case hdr_unset:
             apr_table_unset(headers, hdr->header);
@@ -719,7 +725,7 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
             if (apr_table_get(headers, hdr->header)) {
                 edit_do ed;
 
-                ed.p = r->pool;
+                ed.p = rr->pool;
                 ed.hdr = hdr;
                 ed.t = apr_table_make(r->pool, 5);
                 apr_table_do(edit_header, (void *) &ed, headers, hdr->header,
