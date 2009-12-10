@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.5
 
+  *) mod_headers: Ensure that changes to the main request remain valid when
+     the subrequest is destroyed. PR 48359 [Nick Kew, Ruediger Pluem]
+
   *) Core HTTP: disable keepalive when the Client has sent
      Expect: 100-continue
      but we respond directly with a non-100 response.
