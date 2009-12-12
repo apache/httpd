@@ -26,8 +26,6 @@
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document couvre l'arrêt et le redémarrage d'Apache sur
     les systèmes Unix et similaires. Les utilisateurs de Windows NT, 2000
@@ -246,11 +244,10 @@ vous recevrez un message concernant ces erreurs.</div>
     avec certaines configurations.</p>
 
     <p>On a pris soin de s'assurer que les fichiers sur disque
-    comme ceux définis par les directives
-    <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> et
-    <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> contiennent le PID
-    du serveur,et coexistent sans problème. Cependant, si une directive de
-    configuration , un module tiers ou une CGI résidente utilise un autre
+    comme les fichiers verrou (<code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>) et les fichiers socket Unix
+    (<code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code>) contiennent le PID
+    du serveur, et coexistent sans problème. Cependant, si une directive de
+    configuration, un module tiers ou une CGI résidente utilise un autre
     verrou ou fichier d'état sur disque, il faut prendre soin de s'assurer
     que chaque instance de <code class="program"><a href="./programs/httpd.html">httpd</a></code> qui s'exécute
     n'écrase pas les fichiers des autres instances.</p>

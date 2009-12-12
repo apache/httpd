@@ -24,8 +24,6 @@
 <a href="./ko/server-wide.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/server-wide.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
 <p>Ce document explique le fonctionnement de certaines directives du serveur
 de base qui sont utilisées pour configurer les opérations élémentaires du
@@ -34,6 +32,7 @@ serveur.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#identification">Identification du serveur</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#locations">Localisation des fichiers</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#resource">Limitation de l'utilisation des ressources</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#implementation">Choix d'implémentation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -64,7 +63,7 @@ serveur.</p>
 <h2><a name="locations" id="locations">Localisation des fichiers</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#lockfile">LockFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
 
     <p>Ces directives contrôlent la localisation des différents fichiers
     nécessaires au bon fonctionnement d'Apache. Quand le chemin utilisé ne
@@ -95,6 +94,17 @@ serveur.</p>
 
     <p>La directive <code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code>
     permet sur certaines plates-formes de contrôler la taille de la pile.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="implementation" id="implementation">Choix d'implémentation</a></h2>
+    
+
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code></li></ul></td></tr></table>
+
+    <p>La directive <code class="directive">Mutex</code> permet de modifier
+    l'implémentation sous-jacente des mutex, afin de résoudre les
+    problèmes de fonctionnement ou de performance dus au choix par
+    défaut d'<a class="glossarylink" href="./glossary.html#apr" title="voir glossaire">APR</a>.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/server-wide.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

@@ -477,7 +477,7 @@ components as part of the filename</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
 [Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">The types of files that will be included when searching for
 a matching file with MultiViews</td></tr>
-<tr><td><a href="core.html#mutex">Mutex <var>default|mutex-name</var> <var>mechanism</var></a></td><td> default default </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures mutex mechanism and lock file directory for all
+<tr><td><a href="core.html#mutex">Mutex <var>mechanism</var> [default|<var>mutex-name</var>] ... [OmitPID]</a></td><td> default </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">Configures mutex mechanism and lock file directory for all
 or specified mutexes</td></tr>
 <tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>addr</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Designates an IP address for name-virtual
 hosting</td></tr>
