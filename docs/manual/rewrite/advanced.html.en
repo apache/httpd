@@ -86,7 +86,7 @@ http://physical_host_of_user1/u/user/anypath
       <p>thus every URL path need not be valid on every backend physical
       host. The following ruleset does this for us with the help of the map
       files assuming that server0 is a default server which will be used if
-      a user has no entry in the map):</p>
+      a user has no entry in the map:</p>
 
 <div class="example"><pre>
 RewriteEngine on
@@ -396,7 +396,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
     </dd>
 
     <dt>Discussion:</dt>
-    <dd>This technique will of course also work with with other 
+    <dd>This technique will of course also work with other 
     special characters that mod_rewrite, by default, URL-encodes.</dd>
   </dl>
 
