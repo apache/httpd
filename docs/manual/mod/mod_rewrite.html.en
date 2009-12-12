@@ -94,11 +94,10 @@ URLs on the fly</td></tr>
       <code>.htaccess</code> file where you want to use <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directives.</p>
 
       <p>The example below demonstrates how to map 
-      <code>http://example.com/myapp/index.html</code> to 
-      <code>/home/www/example/newsite.html</code>, in a <code>.htaccess</code> 
-      file. This assumes that the content available at
-      <code>http://example.com/</code> is on disk at 
-      <code>/home/www/example/</code>.</p>
+      http://example.com/myapp/index.html to 
+      /home/www/example/newsite.html, in a <code>.htaccess</code> file. This 
+      assumes that the content available at
+      http://example.com/ is on disk at /home/www/example/</p>
 <div class="example"><pre>
 RewriteEngine On
 # The URL-path used to get to this context, not the filesystem path
@@ -120,45 +119,47 @@ RewriteRule ^index\.html$  newsite.html
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
 </table>
-      <p>The <code class="directive"><a href="#rewritecond">RewriteCond</a></code> 
-      directive defines a rule condition. One or more <code class="directive"><a href="#rewritecond">RewriteCond</a></code>
-      conditions can precede a <code class="directive"><a href="#rewriterule">RewriteRule</a></code> directive. The following rewrite rule is then 
-      used only if these conditions are met, and if the URI matches the pattern
-      specified in the rule.</p>
+      <p>The <code class="directive">RewriteCond</code> directive defines a
+      rule condition. One or more <code class="directive">RewriteCond</code>
+      can precede a <code class="directive"><a href="#rewriterule">RewriteRule</a></code>
+      directive. The following rule is then only used if both
+      the current state of the URI matches its pattern, <strong>and</strong> if these conditions are met.</p>
 
-      <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="TestString" id="TestString">TestString</a></h2>
-      
-      <p><code><em>TestString</em></code> can contain plain text, any of the 
-      following expanded constructs, or both.</p>
+      <p><em>TestString</em> is a string which can contain the
+      following expanded constructs in addition to plain text:</p>
+
       <ul>
         <li>
           <strong>RewriteRule backreferences</strong>: These are
           backreferences of the form <strong><code>$N</code></strong>
-          (1 &lt;= N &lt;= 9). They provide access to the grouped
-          parts of the current <code>RewriteRule</code> pattern. The grouped
-	  parts of the pattern are those in parentheses.</li>
+          (0 &lt;= N &lt;= 9), which provide access to the grouped
+          parts (in parentheses) of the pattern, from the
+          <code>RewriteRule</code> which is subject to the current
+          set of <code>RewriteCond</code> conditions.
+        </li>
         <li>
           <strong>RewriteCond backreferences</strong>: These are
           backreferences of the form <strong><code>%N</code></strong>
-          (1 &lt;= N &lt;= 9). They provide access to the grouped
-	  parts of the last-matched <code>RewriteCond</code> pattern. The
-	  grouped parts of the pattern are those in parentheses.</li>
+          (1 &lt;= N &lt;= 9), which provide access to the grouped
+          parts (again, in parentheses) of the pattern, from the last matched
+          <code>RewriteCond</code> in the current set
+          of conditions.
+        </li>
         <li>
           <strong>RewriteMap expansions</strong>: These are
           expansions of the form <strong><code>${mapname:key|default}</code></strong>.
-          See the <a href="#mapfunc">RewriteMap documentation</a> 
-	  for more details.
+          See <a href="#mapfunc">the documentation for
+          RewriteMap</a> for more details.
         </li>
         <li>
-          <strong>Server variables</strong>: These are variables of
+          <strong>Server-Variables</strong>: These are variables of
           the form
-            <strong><code>%{ <em>NAME_OF_VARIABLE</em> }</code></strong>,
-          where <em>NAME_OF_VARIABLE</em> is one of the server variables from
-	  the table below:
-	  
-	  <table>
+            <strong><code>%{</code> <em>NAME_OF_VARIABLE</em>
+            <code>}</code></strong>
+          where <em>NAME_OF_VARIABLE</em> can be a string taken
+          from the following list:
+
+          <table>
           
             <tr>
               <th>HTTP headers:</th> <th>connection &amp; request:</th> <th />
@@ -227,23 +228,34 @@ RewriteRule ^index\.html$  newsite.html
               </td>
             </tr>
           </table>
-	  </li></ul>
-	  <div class="note"><p>The following variables are specific to 
-	  <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>:</p>
+
+                <p>These variables all
+                correspond to the similarly named HTTP
+                MIME-headers, C variables of the Apache server or
+                <code>struct tm</code> fields of the Unix system.
+                Most are documented elsewhere in the Manual or in
+                the CGI specification. Those that are special to
+                mod_rewrite include those below.</p>
+        <div class="note">
                 <dl>
                   <dt><code>IS_SUBREQ</code></dt>
 
-                  <dd>Contains the text "true" if the request
-                  currently being processed is a sub-request, or
+                  <dd>Will contain the text "true" if the request
+                  currently being processed is a sub-request,
                   "false" otherwise. Sub-requests may be generated
                   by modules that need to resolve additional files
                   or URIs in order to complete their tasks.</dd>
 
                   <dt><code>API_VERSION</code></dt>
 
-                  <dd>The version of the Apache module API contained in the
-                  current httpd build, as defined in
-		  include/ap_mmn.h.</dd>
+                  <dd>This is the version of the Apache module API
+                  (the internal interface between server and
+                  module) in the current httpd build, as defined in
+                  include/ap_mmn.h. The module API version
+                  corresponds to the version of Apache in use (in
+                  the release version of Apache 1.3.14, for
+                  instance, it is 19990320:10), but is mainly of
+                  interest to module authors.</dd>
 
                   <dt><code>THE_REQUEST</code></dt>
 
@@ -256,79 +268,108 @@ RewriteRule ^index\.html$  newsite.html
                   <dt><code>REQUEST_URI</code></dt>
 
                   <dd>The resource requested in the HTTP request
-                  line.</dd>
+                  line. (In the example above, this would be
+                  "/index.html".)</dd>
 
                   <dt><code>REQUEST_FILENAME</code></dt>
 
-                  <dd>The full local filesystem path of the file or
+                  <dd>The full local filesystem path to the file or
                   script matching the request.</dd>
 
                   <dt><code>HTTPS</code></dt>
 
-                  <dd>Contains the text "on" if the connection is
-                  using SSL/TLS, or "off" otherwise. This variable
-                  does not depend on <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> being loaded.</dd>
+                  <dd>Will contain the text "on" if the connection is
+                  using SSL/TLS, or "off" otherwise.  (This variable
+                  can be safely used regardless of whether or not
+                  <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is loaded).</dd>
 
                 </dl>
 </div>
-
-      <p>Note that the <code>SCRIPT_FILENAME</code> and 
-	      <code>REQUEST_FILENAME</code>
-        variables both contain the value of the
-        <code>filename</code> field of the internal
-        <code>request_rec</code> structure.
-	If a substitution occurs and rewriting continues,
-        the value of both variables will be updated accordingly.
-	In a per-server context, before the
-        request is mapped to the filesystem, these variables contain the value
-	of <code>REQUEST_URI</code>, because the full filesystem path is not
-	yet known. To obtain the full filesystem
-        path of a request in a per-server context, use a URL-based
-        look-ahead <code>%{LA-U:REQUEST_FILENAME}</code> to determine
-	the final value of <code>REQUEST_FILENAME</code>.</p>
-
-	<p>Other available variables include the following:</p>
-	<ul><li>
-	<code>%{ENV:<em>variable</em>}</code>, where <em>variable</em> can be
-	any environment variable.</li>
-
-        <li>
-	<code>%{SSL:<em>variable</em>}</code>, where <em>variable</em> is the
-        name of an <a href="mod_ssl.html#envvars">SSL environment
-	variable</a>. If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is not loaded, this
-	will always expand to the empty string.</li>
-        <li>
-	<code>%{HTTP:<em>header</em>}</code>, where <em>header</em> can be
-	any HTTP MIME-header name. For example, 
-	<code>%{HTTP:Proxy-Connection}</code> is the value of the HTTP header
-        ``<code>Proxy-Connection:</code>''. If a HTTP header is used in a 
-	condition, and the condition evaluates to <code>true</code>, then that 
-	header is added to the Vary header of the response. This is used to 
-	ensure proper caching. 
-	If a previous condition has evaluated to <code>true</code> and the 
-	'<strong><code>ornext|OR</code></strong>' flag is in use, later
-	conditions are not evaluated, and therefore headers are not added to the
-	Vary header.</li>
-        <li>
-	<code>%{LA-U:<em>variable</em>}</code>, which is used to perform 
-        an internal URL-based sub-request, to determine the final
-        value of <em>variable</em>. This can be used to access the value of
-	a variable which is to be set in a later phase. For example, the
-	<code>REMOTE_USER</code> variable is set in the authorization phase of
-	processing. This comes after the URL translation phase, where rewrite
-	rules in <code>httpd.conf</code> are applied, but before the fixup
-	phase, where rewrite rules in a <code>.htaccess</code> file are applied.
-	Therefore, to obtain the value of the <code>REMOTE_USER</code> variable 
-	within <code>httpd.conf</code>, you must use <code>%{LA-U:REMOTE_USER}</code>. To obtain the value of the
-	<code>REMOTE_USER</code> variable within a <code>.htaccess</code> file,
-	simply use <code>%{REMOTE_USER}</code></li>
+        </li>
       </ul>
-      </div>
 
-      <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="CondPattern" id="CondPattern">CondPattern</a></h2>
-      
+      <p>Other things you should be aware of:</p>
+
+      <ol>
+        <li>
+        <p>The variables SCRIPT_FILENAME and REQUEST_FILENAME
+        contain the same value - the value of the
+        <code>filename</code> field of the internal
+        <code>request_rec</code> structure of the Apache server.
+        The first name is the commonly known CGI variable name
+        while the second is the appropriate counterpart of
+        REQUEST_URI (which contains the value of the
+        <code>uri</code> field of <code>request_rec</code>).</p>
+        <p>If a substitution occurred and the rewriting continues,
+        the value of both variables will be updated accordingly.</p>
+        <p>If used in per-server context (<em>i.e.</em>, before the
+        request is mapped to the filesystem) SCRIPT_FILENAME and
+        REQUEST_FILENAME cannot contain the full local filesystem
+        path since the path is unknown at this stage of processing.
+        Both variables will initially contain the value of REQUEST_URI
+        in that case. In order to obtain the full local filesystem
+        path of the request in per-server context, use an URL-based
+        look-ahead <code>%{LA-U:REQUEST_FILENAME}</code> to determine
+        the final value of REQUEST_FILENAME.</p></li>
+
+        <li>
+        <code>%{ENV:variable}</code>, where <em>variable</em> can be
+        any environment variable, is also available.
+        This is looked-up via internal
+        Apache structures and (if not found there) via
+        <code>getenv()</code> from the Apache server process.</li>
+
+        <li>
+        <code>%{SSL:variable}</code>, where <em>variable</em> is the
+        name of an <a href="mod_ssl.html#envvars">SSL environment
+        variable</a>, can be used whether or not
+        <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is loaded, but will always expand to
+        the empty string if it is not.  Example:
+        <code>%{SSL:SSL_CIPHER_USEKEYSIZE}</code> may expand to
+        <code>128</code>.</li>
+
+        <li>
+        <code>%{HTTP:header}</code>, where <em>header</em> can be
+        any HTTP MIME-header name, can always be used to obtain the
+        value of a header sent in the HTTP request.
+        Example: <code>%{HTTP:Proxy-Connection}</code> is
+        the value of the HTTP header
+        ``<code>Proxy-Connection:</code>''.
+        <p>If a HTTP header is used in a condition this header is added to
+        the Vary header of the response in case the condition evaluates to
+        to true for the request. It is <strong>not</strong> added if the
+        condition evaluates to false for the request. Adding the HTTP header
+        to the Vary header of the response is needed for proper caching.</p>
+        <p>It has to be kept in mind that conditions follow a short circuit
+        logic in the case of the '<strong><code>ornext|OR</code></strong>' flag
+        so that certain conditions might not be evaluated at all.</p></li>
+
+        <li>
+        <code>%{LA-U:variable}</code> can be used for look-aheads which perform
+        an internal (URL-based) sub-request to determine the final
+        value of <em>variable</em>. This can be used to access
+        variable for rewriting which is not available at the current
+        stage, but will be set in a later phase.
+        <p>For instance, to rewrite according to the
+        <code>REMOTE_USER</code> variable from within the
+        per-server context (<code>httpd.conf</code> file) you must
+        use <code>%{LA-U:REMOTE_USER}</code> - this
+        variable is set by the authorization phases, which come
+        <em>after</em> the URL translation phase (during which mod_rewrite
+        operates).</p>
+        <p>On the other hand, because mod_rewrite implements
+        its per-directory context (<code>.htaccess</code> file) via
+        the Fixup phase of the API and because the authorization
+        phases come <em>before</em> this phase, you just can use
+        <code>%{REMOTE_USER}</code> in that context.</p></li>
+
+        <li>
+        <code>%{LA-F:variable}</code> can be used to perform an internal
+        (filename-based) sub-request, to determine the final value
+        of <em>variable</em>. Most of the time, this is the same as
+        LA-U above.</li>
+      </ol>
+
       <p><em>CondPattern</em> is the condition pattern,
        a regular expression which is applied to the
       current instance of the <em>TestString</em>.
@@ -500,7 +541,6 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
         or your browser identifies itself as something non-standard), you get
         the std (standard) homepage.</p>
 
-</div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
