@@ -1066,6 +1066,11 @@ in case of an error</td></tr>
     will be immediately halted and the internal error message returned.
     This is necessary to guard against security problems caused by
     bad requests.</p>
+   
+    <p>If you are using mod_proxy, you may wish to enable
+    <code class="directive"><a href="../mod/mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></code> so that you can provide
+    custom error messages on behalf of your Origin servers. If you don't enable ProxyErrorOverride,
+    Apache will not generate custom error documents for proxied content.</p>
 
 <h3>See also</h3>
 <ul>
