@@ -382,7 +382,9 @@
       - for example, all .gif and .jpg files under any "images" directory could
       be written as "<code>/images/.*(jpg|gif)$</code>".  Apache uses Perl
       Compatible Regular Expressions provided by the <a
-      href="http://www.pcre.org/">PCRE</a> library.
+      href="http://www.pcre.org/">PCRE</a> library.  You can find more documentation
+      about PCRE's regular expression syntax at that site, or at
+      <a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.
     </dd>
 
     <dt><a name="reverseproxy" id="reverseproxy">Reverse Proxy</a></dt>
