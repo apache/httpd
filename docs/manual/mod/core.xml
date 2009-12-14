@@ -1066,6 +1066,11 @@ in case of an error</description>
     This is necessary to guard against security problems caused by
     bad requests.</p>
 
+    <p>If you are using mod_proxy, you may wish to enable
+    <directive module="mod_proxy">ProxyErrorOverride</directive> so that you can provide
+    custom error messages on behalf of your Origin servers. If you don't enable ProxyErrorOverride,
+    Apache will not generate custom error documents for proxied content.</p>
+
     <p>Prior to version 2.0, messages were indicated by prefixing
     them with a single unmatched double quote character.</p>
 </usage>
