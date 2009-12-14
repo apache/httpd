@@ -190,11 +190,63 @@ expressions</td></tr>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
     </code></p></div>
 
-    <p>It is also possible to construct an alias with case-insensitive
+    <p>The full range of <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
+    power is available.  For example,
+    it is possible to construct an alias with case-insensitive
     matching of the url-path:</p>
 
     <div class="example"><p><code>
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
+    </code></p></div>
+
+    <p>One subtle difference
+    between <code class="directive"><a href="#alias">Alias</a></code>
+    and <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> is
+    that <code class="directive"><a href="#alias">Alias</a></code> will
+    automatically copy any additional part of the URI, past the part
+    that matched, onto the end of the file path on the right side,
+    while <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> will
+    not.  This means that in almost all cases, you will want the
+    regular expression to match the entire request URI from beginning
+    to end, and to use substitution on the right side.</p>
+
+    <p>In other words, just changing 
+    <code class="directive"><a href="#alias">Alias</a></code> to
+    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> will not
+    have the same effect.  At a minimum, you need to
+    add <code>^</code> to the beginning of the regular expression
+    and add <code>(.*)$</code> to the end, and add <code>$1</code> to
+    the end of the replacement.</p>
+
+    <p>For example, suppose you want to replace this with AliasMatch:</p>
+
+    <div class="example"><p><code>
+      Alias /image/ /ftp/pub/image/
+    </code></p></div>
+
+    <p>This is NOT equivalent - don't do this!  This will send all
+    requests that have /image/ anywhere in them to /ftp/pub/image/:</p>
+
+    <div class="example"><p><code>
+      AliasMatch /image/ /ftp/pub/image/
+    </code></p></div>
+
+    <p>This is what you need to get the same effect:</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
+    </code></p></div>
+
+    <p>Of course, there's no point in
+    using <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
+    where <code class="directive"><a href="#alias">Alias</a></code> would
+    work.  <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> lets
+    you do more complicated things.  For example, you could
+    serve different kinds of files from different directories:</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br />
+      AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
     </code></p></div>
 
 
@@ -315,6 +367,17 @@ of the current URL</td></tr>
     <div class="example"><p><code>
       RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
     </code></p></div>
+
+    <p>The considerations related to the difference between
+    <code class="directive"><a href="#alias">Alias</a></code> and
+    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
+    also apply to the difference between
+    <code class="directive"><a href="#redirect">Redirect</a></code> and
+    <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>.
+    See <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> for
+    details.</p>
+
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -449,6 +512,25 @@ and designates the target as a CGI script</td></tr>
     <div class="example"><p><code>
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
     </code></p></div>
+
+    <p>As for AliasMatch, the full range of <a class="glossarylink" href="../glossary.html#rexex" title="see glossary">regular
+    expression</a> power is available.
+    For example, it is possible to construct an alias with case-insensitive
+    matching of the url-path:</p>
+
+    <div class="example"><p><code>
+      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </code></p></div>
+
+    <p>The considerations related to the difference between
+    <code class="directive"><a href="#alias">Alias</a></code> and
+    <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
+    also apply to the difference between
+    <code class="directive"><a href="#scriptalias">ScriptAlias</a></code> and
+    <code class="directive"><a href="#scriptaliasmatch">ScriptAliasMatch</a></code>.
+    See <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> for
+    details.</p>
+
 
 </div>
 </div>
