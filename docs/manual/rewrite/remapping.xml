@@ -342,7 +342,7 @@ RewriteRule  ^(.+)  %{DOCUMENT_ROOT}/<strong>dir2</strong>/$1  [L]
 
 #   else go on for other Alias or ScriptAlias directives,
 #   etc.
-RewriteRule   ^(.+)  -  [PT]
+RewriteRule   ^  -  [PT]
 </pre></example>
     </dd>
   </dl>
