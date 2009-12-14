@@ -180,11 +180,63 @@ expressions</description>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
     </example>
 
-    <p>It is also possible to construct an alias with case-insensitive
+    <p>The full range of <glossary ref="regex">regular expression</glossary>
+    power is available.  For example,
+    it is possible to construct an alias with case-insensitive
     matching of the url-path:</p>
 
     <example>
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
+    </example>
+
+    <p>One subtle difference
+    between <directive module="mod_alias">Alias</directive>
+    and <directive module="mod_alias">AliasMatch</directive> is
+    that <directive module="mod_alias">Alias</directive> will
+    automatically copy any additional part of the URI, past the part
+    that matched, onto the end of the file path on the right side,
+    while <directive module="mod_alias">AliasMatch</directive> will
+    not.  This means that in almost all cases, you will want the
+    regular expression to match the entire request URI from beginning
+    to end, and to use substitution on the right side.</p>
+
+    <p>In other words, just changing 
+    <directive module="mod_alias">Alias</directive> to
+    <directive module="mod_alias">AliasMatch</directive> will not
+    have the same effect.  At a minimum, you need to
+    add <code>^</code> to the beginning of the regular expression
+    and add <code>(.*)$</code> to the end, and add <code>$1</code> to
+    the end of the replacement.</p>
+
+    <p>For example, suppose you want to replace this with AliasMatch:</p>
+
+    <example>
+      Alias /image/ /ftp/pub/image/
+    </example>
+
+    <p>This is NOT equivalent - don't do this!  This will send all
+    requests that have /image/ anywhere in them to /ftp/pub/image/:</p>
+
+    <example>
+      AliasMatch /image/ /ftp/pub/image/
+    </example>
+
+    <p>This is what you need to get the same effect:</p>
+
+    <example>
+      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
+    </example>
+
+    <p>Of course, there's no point in
+    using <directive module="mod_alias">AliasMatch</directive>
+    where <directive module="mod_alias">Alias</directive> would
+    work.  <directive module="mod_alias">AliasMatch</directive> lets
+    you do more complicated things.  For example, you could
+    serve different kinds of files from different directories:</p>
+
+    <example>
+      AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br/>
+      AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
     </example>
 
 </usage>
@@ -426,6 +478,25 @@ and designates the target as a CGI script</description>
     <example>
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
     </example>
+
+    <p>As for AliasMatch, the full range of <glossary ref="rexex">regular
+    expression</glossary> power is available.
+    For example, it is possible to construct an alias with case-insensitive
+    matching of the url-path:</p>
+
+    <example>
+      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </example>
+
+    <p>The considerations related to the difference between
+    <directive module="mod_alias">Alias</directive> and
+    <directive module="mod_alias">AliasMatch</directive>
+    also apply to the difference between
+    <directive module="mod_alias">ScriptAlias</directive> and
+    <directive module="mod_alias">ScriptAliasMatch</directive>.
+    See <directive module="mod_alias">AliasMatch</directive> for
+    details.</p>
+
 </usage>
 </directivesynopsis>
 
