@@ -82,7 +82,7 @@ static apr_status_t crypt_init(request_rec * r, const apr_crypto_driver_t *drive
     }
 
     /* set up */
-    res = apr_crypto_factory(driver, r->pool, dconf->params, f);
+    res = apr_crypto_make(driver, r->pool, dconf->params, f);
     if (APR_ENOTIMPL == res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "generic symmetrical encryption is not supported by this "
