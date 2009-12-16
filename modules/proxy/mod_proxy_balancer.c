@@ -197,12 +197,14 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
     int checking_standby;
     int checked_standby;
     
+    proxy_worker **workers;
     proxy_worker *worker;
 
     checking_standby = checked_standby = 0;
     while (!checked_standby) {
-        worker = (proxy_worker *)balancer->workers->elts;
-        for (i = 0; i < balancer->workers->nelts; i++, worker++) {
+        workers = (proxy_worker **)balancer->workers->elts;
+        for (i = 0; i < balancer->workers->nelts; i++, workers++) {
+            worker = *workers;
             if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
                 continue;
             if (*(worker->s->route) && strcmp(worker->s->route, route) == 0) {
@@ -470,13 +472,13 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     runtime = find_session_route(*balancer, r, &route, &sticky, url);
     if (runtime) {
         int i, total_factor = 0;
-        proxy_worker *workers;
+        proxy_worker **workers;
         /* We have a sticky load balancer
          * Update the workers status
          * so that even session routes get
          * into account.
          */
-        workers = (proxy_worker *)(*balancer)->workers->elts;
+        workers = (proxy_worker **)(*balancer)->workers->elts;
         for (i = 0; i < (*balancer)->workers->nelts; i++) {
             /* Take into calculation only the workers that are
              * not in error state or not disabled.
@@ -484,9 +486,9 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
              * TODO: Abstract the below, since this is dependent
              *       on the LB implementation
              */
-            if (PROXY_WORKER_IS_USABLE(workers)) {
-                workers->s->lbstatus += workers->s->lbfactor;
-                total_factor += workers->s->lbfactor;
+            if (PROXY_WORKER_IS_USABLE(*workers)) {
+                (*workers)->s->lbstatus += (*workers)->s->lbfactor;
+                total_factor += (*workers)->s->lbfactor;
             }
             workers++;
         }
@@ -497,15 +499,15 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     }
     else if (route && (*balancer)->sticky_force) {
         int i, member_of = 0;
-        proxy_worker *workers;
+        proxy_worker **workers;
         /*
          * We have a route provided that doesn't match the
          * balancer name. See if the provider route is the
          * member of the same balancer in which case return 503
          */
-        workers = (proxy_worker *)(*balancer)->workers->elts;
+        workers = (proxy_worker **)(*balancer)->workers->elts;
         for (i = 0; i < (*balancer)->workers->nelts; i++) {
-            if (*(workers->s->route) && strcmp(workers->s->route, route) == 0) {
+            if (*((*workers)->s->route) && strcmp((*workers)->s->route, route) == 0) {
                 member_of = 1;
                 break;
             }
@@ -630,21 +632,21 @@ static int proxy_balancer_post_request(proxy_worker *worker,
 static void recalc_factors(proxy_balancer *balancer)
 {
     int i;
-    proxy_worker *workers;
+    proxy_worker **workers;
 
 
     /* Recalculate lbfactors */
-    workers = (proxy_worker *)balancer->workers->elts;
+    workers = (proxy_worker **)balancer->workers->elts;
     /* Special case if there is only one worker it's
      * load factor will always be 1
      */
     if (balancer->workers->nelts == 1) {
-        workers->s->lbstatus = workers->s->lbfactor = 1;
+        (*workers)->s->lbstatus = (*workers)->s->lbfactor = 1;
         return;
     }
     for (i = 0; i < balancer->workers->nelts; i++) {
         /* Update the status entries */
-        workers[i].s->lbstatus = workers[i].s->lbfactor;
+        workers[i]->s->lbstatus = workers[i]->s->lbfactor;
     }
 }
 
@@ -682,6 +684,7 @@ static int balancer_handler(request_rec *r)
         ap_get_module_config(sconf, &proxy_module);
     proxy_balancer *balancer, *bsel = NULL;
     proxy_worker *worker, *wsel = NULL;
+    proxy_worker **workers = NULL;
     apr_table_t *params = apr_table_make(r->pool, 10);
     int access_status;
     int i, n;
@@ -731,13 +734,14 @@ static int balancer_handler(request_rec *r)
 
         ws = ap_proxy_get_worker(r->pool, conf, name);
         if (bsel && ws) {
-            worker = (proxy_worker *)bsel->workers->elts;
+            workers = (proxy_worker **)bsel->workers->elts;
             for (n = 0; n < bsel->workers->nelts; n++) {
+                worker = *workers;
                 if (strcasecmp(worker->name, ws->name) == 0) {
                     wsel = worker;
                     break;
                 }
-                ++worker;
+                ++workers;
             }
         }
     }
@@ -792,8 +796,9 @@ static int balancer_handler(request_rec *r)
             ap_rputs("    <httpd:balancer>\n", r);
             ap_rvputs(r, "      <httpd:name>", balancer->name, "</httpd:name>\n", NULL);
             ap_rputs("      <httpd:workers>\n", r);
-            worker = (proxy_worker *)balancer->workers->elts;
+            workers = (proxy_worker **)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
+                worker = *workers;
                 ap_rputs("        <httpd:worker>\n", r);
                 ap_rvputs(r, "          <httpd:scheme>", worker->scheme,
                           "</httpd:scheme>\n", NULL);
@@ -802,7 +807,7 @@ static int balancer_handler(request_rec *r)
                ap_rprintf(r, "          <httpd:loadfactor>%d</httpd:loadfactor>\n",
                           worker->s->lbfactor);
                 ap_rputs("        </httpd:worker>\n", r);
-                ++worker;
+                ++workers;
             }
             ap_rputs("      </httpd:workers>\n", r);
             ap_rputs("    </httpd:balancer>\n", r);
@@ -854,9 +859,10 @@ static int balancer_handler(request_rec *r)
                 "<th>Elected</th><th>To</th><th>From</th>"
                 "</tr>\n", r);
 
-            worker = (proxy_worker *)balancer->workers->elts;
+            workers = (proxy_worker **)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
                 char fbuf[50];
+                worker = *workers;
                 ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
                           balancer->name + sizeof("balancer://") - 1, "&w=",
                           ap_escape_uri(r->pool, worker->name),
@@ -888,7 +894,7 @@ static int balancer_handler(request_rec *r)
                 ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
                 ap_rputs("</td></tr>\n", r);
 
-                ++worker;
+                ++workers;
             }
             ap_rputs("</table>\n", r);
             ++balancer;
