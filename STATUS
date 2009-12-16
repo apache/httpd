@@ -143,7 +143,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * build: fix --with-module option to work as documented
     PR 43881
     Patch: http://svn.apache.org/viewvc?rev=880794&view=rev
-    +1: niq
+    +1: niq, pgollucci
 
   * mod_filter: dispatch correctly where dispatch string doesn't exist
     PR 48054
@@ -156,7 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      verify their password. PR46608.
      Trunk patch: http://svn.apache.org/viewvc?rev=881808&view=rev
      2.2.x patch: trunk works.
-    +1: covener
+    +1: covener, pgollucci
 
   * mod_disk_cache, mod_mem_cache: don't cache incomplete responses,
     per RFC 2616, 13.8.
