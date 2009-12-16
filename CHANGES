@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.5
 
+  *) mod_proxy_balancer: Fix crash in balancer-manager. [Rainer Jung]
+
   *) mod_headers: Ensure that changes to the main request remain valid when
      the subrequest is destroyed. PR 48359 [Nick Kew, Ruediger Pluem]
 
