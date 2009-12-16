@@ -1344,9 +1344,17 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     }
     else {
         /* We have no idea what you are talking about, so return an error. */
-        return APR_ENOTIMPL;
+        status = APR_ENOTIMPL;
     }
 
+    /* It is possible for mod_ssl's BIO to be used outside of the
+     * direct control of mod_ssl's input or output filter -- notably,
+     * when mod_ssl initiates a renegotiation.  Switching the BIO mode
+     * back to "blocking" here ensures such operations don't fail with
+     * SSL_ERROR_WANT_READ. */
+    inctx->block = APR_BLOCK_READ;
+
+    /* Handle custom errors. */
     if (status != APR_SUCCESS) {
         return ssl_io_filter_error(f, bb, status);
     }

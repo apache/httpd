@@ -87,6 +87,29 @@ static apr_status_t upgrade_connection(request_rec *r)
     return APR_SUCCESS;
 }
 
+/* Perform a speculative (and non-blocking) read from the connection
+ * filters for the given request, to determine whether there is any
+ * pending data to read.  Return non-zero if there is, else zero. */
+static int has_buffered_data(request_rec *r) 
+{
+    apr_bucket_brigade *bb;
+    apr_off_t len;
+    apr_status_t rv;
+    int result;
+    
+    bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    
+    rv = ap_get_brigade(r->connection->input_filters, bb, AP_MODE_SPECULATIVE,
+                        APR_NONBLOCK_READ, 1); 
+    result = rv == APR_SUCCESS
+        && apr_brigade_length(bb, 1, &len) == APR_SUCCESS
+        && len > 0;
+    
+    apr_brigade_destroy(bb);
+    
+    return result;
+}
+
 /*
  *  Post Read Request Handler
  */
@@ -723,6 +746,23 @@ int ssl_hook_Access(request_rec *r)
         }
         else {
             request_rec *id = r->main ? r->main : r;
+
+            /* Additional mitigation for CVE-2009-3555: At this point,
+             * before renegotiating, an (entire) request has been read
+             * from the connection.  An attacker may have sent further
+             * data to "prefix" any subsequent request by the victim's
+             * client after the renegotiation; this data may already
+             * have been read and buffered.  Forcing a connection
+             * closure after the response ensures such data will be
+             * discarded.  Legimately pipelined HTTP requests will be
+             * retried anyway with this approach. */
+            if (has_buffered_data(r)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "insecure SSL re-negotiation required, but "
+                              "a pipelined request is present; keepalive "
+                              "disabled");
+                r->connection->keepalive = AP_CONN_CLOSE;
+            }
 
             /* do a full renegotiation */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
