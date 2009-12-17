@@ -132,18 +132,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 46749.
     Trunk Patch: http://svn.apache.org/viewvc?rev=822458&view=rev
     2.2.x Patch: trunk patch works with some offsets
-    +1: sf, rpluem
+    +1: sf, rpluem, rjung
 
   * mod_mime: Make RemoveType override the info from TypesConfig
     PR 38330.
     Trunk Patch: http://svn.apache.org/viewvc?rev=821298&view=rev
     2.2.x Patch: trunk patch works with some offset (except for CHANGES)
-    +1: sf, rpluem
+    +1: sf, rpluem, rjung
 
   * build: fix --with-module option to work as documented
     PR 43881
     Patch: http://svn.apache.org/viewvc?rev=880794&view=rev
-    +1: niq, pgollucci
+    +1: niq, pgollucci, rjung
 
   * mod_filter: dispatch correctly where dispatch string doesn't exist
     PR 48054
@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk Patch: http://svn.apache.org/viewvc?rev=818492&view=rev
                  http://svn.apache.org/viewvc?rev=821763&view=rev
     2.2.x Patch: http://people.apache.org/~poirier/PR15866-22x.patch
-    +1: poirier, rpluem
+    +1: poirier, rpluem, rjung
 
   * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
       Trunk version of patch:
