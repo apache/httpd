@@ -166,6 +166,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x Patch: http://people.apache.org/~poirier/PR15866-22x.patch
     +1: poirier    
 
+  * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=891282&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
