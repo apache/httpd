@@ -132,13 +132,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 46749.
     Trunk Patch: http://svn.apache.org/viewvc?rev=822458&view=rev
     2.2.x Patch: trunk patch works with some offsets
-    +1: sf
+    +1: sf, rpluem
 
   * mod_mime: Make RemoveType override the info from TypesConfig
     PR 38330.
     Trunk Patch: http://svn.apache.org/viewvc?rev=821298&view=rev
     2.2.x Patch: trunk patch works with some offset (except for CHANGES)
-    +1: sf
+    +1: sf, rpluem
 
   * build: fix --with-module option to work as documented
     PR 43881
@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 48054
     Trunk patch: n/a (trunk upgraded to use ap_expr for condition testing)
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24418
-    +1: niq
+    +1: niq, rpluem
 
    * mod_authnz_ldap: Add AuthLDAPBindAuthoritative to allow other authentication 
      providers a chance to run when mod_authnz_ldap finds a user but can't 
@@ -157,6 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?rev=881808&view=rev
      2.2.x patch: trunk works.
     +1: covener, pgollucci
+    rpluem says: I am +1 once you provide proper documentation for the manual
 
   * mod_disk_cache, mod_mem_cache: don't cache incomplete responses,
     per RFC 2616, 13.8.
@@ -164,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk Patch: http://svn.apache.org/viewvc?rev=818492&view=rev
                  http://svn.apache.org/viewvc?rev=821763&view=rev
     2.2.x Patch: http://people.apache.org/~poirier/PR15866-22x.patch
-    +1: poirier    
+    +1: poirier, rpluem
 
   * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
       Trunk version of patch:
