@@ -67,7 +67,7 @@ by other LDAP modules</description>
       # be loaded. Change the "yourdomain.example.com" to<br />
       # match your domain.<br />
       <br />
-      LDAPSharedCacheSize 200000<br />
+      LDAPSharedCacheSize 500000<br />
       LDAPCacheEntries 1024<br />
       LDAPCacheTTL 600<br />
       LDAPOpCacheEntries 1024<br />
@@ -385,12 +385,12 @@ by other LDAP modules</description>
 <name>LDAPSharedCacheSize</name>
 <description>Size in bytes of the shared-memory cache</description>
 <syntax>LDAPSharedCacheSize <var>bytes</var></syntax>
-<default>LDAPSharedCacheSize 102400</default>
+<default>LDAPSharedCacheSize 500000</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>Specifies the number of bytes to allocate for the shared
-    memory cache. The default is 100kb. If set to 0, shared memory
+    memory cache. The default is 500kb. If set to 0, shared memory
     caching will not be used.</p>
 </usage>
 </directivesynopsis>
