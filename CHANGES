@@ -15,6 +15,12 @@ Changes with Apache 2.2.15
   *) mod_charset_lite: Honor 'CharsetOptions NoImplicitAdd'.
      [Eric Covener]
 
+  *) mod_ldap: If LDAPSharedCacheSize is too small, try harder to purge
+     some cache entries and log a warning. Also increase the default
+     LDAPSharedCacheSize to 500000. This is a more realistic size suitable
+     for the default values of 1024 for LdapCacheEntries/LdapOpCacheEntries.
+     PR 46749. [Stefan Fritsch]
+
   *) mod_rewrite: Make sure that a hostname:port isn't fully qualified if
      the request is a CONNECT request. PR 47928
      [Bill Zajac <billz consultla.com>]

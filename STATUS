@@ -87,15 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ldap: Work around broken cache management in mod_ldap:
-    If LDAPSharedCacheSize is too small, try to free some memory by purging
-    the cache and log a warning.
-    Also increase the default LDAPSharedCacheSize to 500000.
-    PR 46749.
-    Trunk Patch: http://svn.apache.org/viewvc?rev=822458&view=rev
-    2.2.x Patch: trunk patch works with some offsets
-    +1: sf, rpluem, rjung, jim
-
   * mod_mime: Make RemoveType override the info from TypesConfig
     PR 38330.
     Trunk Patch: http://svn.apache.org/viewvc?rev=821298&view=rev
