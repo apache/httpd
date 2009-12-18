@@ -503,21 +503,54 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
             /*
              * Check if the identifier is in the querystring and cut it out.
              */
-            if (querystring
-                && (param = strstr(querystring, *identifier))
-                && (*(param + len) == '=')
-                ) {
-                char *amp;
-
-                if (querystring != param) {
-                    querystring = apr_pstrndup(p, querystring,
-                                               param - querystring);
+            if (querystring) {
+                /*
+                 * First check if the identifier is at the beginning of the
+                 * querystring and followed by a '='
+                 */
+                if (!strncmp(querystring, *identifier, len)
+                    && (*(querystring + len) == '=')) {
+                    param = querystring;
                 }
                 else {
-                    querystring = "";
+                    char *complete;
+
+                    /*
+                     * In order to avoid subkey matching (PR 48401) prepend
+                     * identifier with a '&' and append a '='
+                     */
+                    complete = apr_pstrcat(p, "&", *identifier, "=", NULL);
+                    param = strstr(querystring, complete);
+                    /* If we found something we are sitting on the '&' */
+                    if (param) {
+                        param++;
+                    }
                 }
-                if ((amp = strchr(param + len + 1, '&'))) {
-                    querystring = apr_pstrcat(p, querystring, amp + 1, NULL);
+                if (param) {
+                    char *amp;
+
+                    if (querystring != param) {
+                        querystring = apr_pstrndup(p, querystring,
+                                               param - querystring);
+                    }
+                    else {
+                        querystring = "";
+                    }
+
+                    if ((amp = strchr(param + len + 1, '&'))) {
+                        querystring = apr_pstrcat(p, querystring, amp + 1, NULL);
+                    }
+                    else {
+                        /*
+                         * If querystring is not "", then we have the case
+                         * that the identifier parameter we removed was the
+                         * last one in the original querystring. Hence we have
+                         * a trailing '&' which needs to be removed.
+                         */
+                        if (*querystring) {
+                            querystring[strlen(querystring) - 1] = '\0';
+                        }
+                    }
                 }
                 break;
             }
