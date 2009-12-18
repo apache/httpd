@@ -87,12 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_mime: Make RemoveType override the info from TypesConfig
-    PR 38330.
-    Trunk Patch: http://svn.apache.org/viewvc?rev=821298&view=rev
-    2.2.x Patch: trunk patch works with some offset (except for CHANGES)
-    +1: sf, rpluem, rjung, jim
-
   * build: fix --with-module option to work as documented
     PR 43881
     Patch: http://svn.apache.org/viewvc?rev=880794&view=rev
