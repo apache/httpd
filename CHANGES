@@ -27,6 +27,9 @@ Changes with Apache 2.2.15
      for the default values of 1024 for LdapCacheEntries/LdapOpCacheEntries.
      PR 46749. [Stefan Fritsch]
 
+  *) mod_disk_cache, mod_mem_cache: don't cache incomplete responses,
+     per RFC 2616, 13.8.  PR15866.  [Dan Poirier]
+
   *) mod_rewrite: Make sure that a hostname:port isn't fully qualified if
      the request is a CONNECT request. PR 47928
      [Bill Zajac <billz consultla.com>]
