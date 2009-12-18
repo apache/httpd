@@ -77,9 +77,19 @@ HTTP server.</p>
     and white space occurring before a directive are ignored, so
     you may indent directives for clarity.</p>
 
-    <p>The maximum length of a line in the configuration file,
-    after joining any continued lines and removing leading and
-    trailing white space, is 8192 characters.</p>
+    <p>The values of shell environment variables can be used in
+    configuration file lines using the syntax <code>${ENVVAR}</code>.
+    If "ENVVAR" is the name of a valid environment variable, the value
+    of that variable is substituted into that spot in the
+    configuration file line, and processing continues as if that text
+    were found directly in the configuration file.  (If the ENVVAR
+    variable is not found, the characters "${ENVVAR}" are left
+    unchanged for use by later stages in the config file
+    processing.)</p>
+
+    <p>The maximum length of a line in the configuration file, after
+    environment-variable substitution, joining any continued lines and
+    removing leading and trailing white space, is 8192 characters.</p>
 
     <p>You can check your configuration files for syntax errors
     without starting the server by using <code>apachectl
