@@ -115,6 +115,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x Patch: http://people.apache.org/~poirier/PR15866-22x.patch
     +1: poirier, rpluem, rjung, jim
 
+  * mod_filter: dispatch correctly where dispatch string doesn't exist
+    PR 48054
+    Trunk patch: n/a (trunk upgraded to use ap_expr for condition testing)
+    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24418
+    +1: niq, rpluem, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -152,12 +157,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
    +1: minfrin
 
-
-  * mod_filter: dispatch correctly where dispatch string doesn't exist
-    PR 48054
-    Trunk patch: n/a (trunk upgraded to use ap_expr for condition testing)
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24418
-    +1: niq, rpluem, jim
 
    * mod_authnz_ldap: Add AuthLDAPBindAuthoritative to allow other authentication 
      providers a chance to run when mod_authnz_ldap finds a user but can't 
