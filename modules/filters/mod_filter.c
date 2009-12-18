@@ -201,9 +201,7 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
          * Not sure if there's anything better to do with them
          */
         if (!str) {
-            if (provider->match_type == DEFINED && provider->match.string) {
-                match = 0;
-            }
+            match = 0;
         }
         /* we can't check for NULL in provider as that kills integer 0
          * so we have to test each string/regexp case in the switch
