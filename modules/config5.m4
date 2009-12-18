@@ -18,7 +18,7 @@ AC_ARG_WITH(module,
         fi
         cp $pkg $modpath_current/$modfilec
       fi
-      module=`echo $pkg | sed -e 's;\(.*/\)*mod_\(.*\).c;\2;'`
+      module=`echo $pkg | sed -e 's;\(.*/\).*mod_\(.*\).c;\2;'`
       objects="mod_$module.lo"
       # The filename of a convenience library must have a "lib" prefix:
       libname="libmod_$module.la"

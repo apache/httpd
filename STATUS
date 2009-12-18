@@ -87,11 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * build: fix --with-module option to work as documented
-    PR 43881
-    Patch: http://svn.apache.org/viewvc?rev=880794&view=rev
-    +1: niq, pgollucci, rjung, jim
-
   * mod_disk_cache, mod_mem_cache: don't cache incomplete responses,
     per RFC 2616, 13.8.
     PR 15866

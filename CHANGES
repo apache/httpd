@@ -8,6 +8,9 @@ Changes with Apache 2.2.15
      control is still vulnerable, unless using OpenSSL >= 0.9.8l.  
      [Joe Orton, Ruediger Pluem]
 
+   *) Build: fix --with-module to work as documented
+      PR 43881 [Gez Saunders <???>]
+
    *) mod_mime: Make RemoveType override the info from TypesConfig.
       PR 38330. [Stefan Fritsch]
 
