@@ -87,11 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_filter: dispatch correctly where dispatch string doesn't exist
-    PR 48054
-    Trunk patch: n/a (trunk upgraded to use ap_expr for condition testing)
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24418
-    +1: niq, rpluem, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
