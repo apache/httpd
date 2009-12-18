@@ -1041,6 +1041,8 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
      * sanity checks.
      */
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+        const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
+
         if (r->connection->aborted || r->no_cache) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                          "disk_cache: Discarding body for URL %s "
@@ -1058,6 +1060,17 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
             return APR_EGENERAL;
+        }
+        if (cl_header) {
+            apr_size_t cl = apr_atoi64(cl_header);
+            if ((errno == 0) && (dobj->file_size != cl)) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                             "disk_cache: URL %s didn't receive complete response, not caching",
+                             h->cache_obj->key);
+                /* Remove the intermediate cache file and return non-APR_SUCCESS */
+                file_cache_errorcleanup(dobj, r);
+                return APR_EGENERAL;
+            }
         }
 
         /* All checks were fine. Move tempfile to final destination */

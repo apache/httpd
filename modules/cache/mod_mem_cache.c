@@ -745,6 +745,16 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         apr_size_t len;
 
         if (APR_BUCKET_IS_EOS(e)) {
+            const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
+            if (cl_header) {
+                apr_size_t cl = apr_atoi64(cl_header);
+                if ((errno == 0) && (obj->count != cl)) {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                 "mem_cache: URL %s didn't receive complete response, not caching",
+                                 h->cache_obj->key);
+                    return APR_EGENERAL;
+                }
+            }
             if (mobj->m_len > obj->count) {
                 /* Caching a streamed response. Reallocate a buffer of the
                  * correct size and copy the streamed response into that
