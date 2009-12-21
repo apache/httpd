@@ -22,6 +22,10 @@ Changes with Apache 2.3.5
   *) Core: reject NULLs in request line or request headers.
      PR 43039 [Nick Kew]
 
+  *) Core: (re)-introduce -T commandline option to suppress documentroot
+     check at startup.
+     PR 41887 [Jan van den Berg <janvdberg gmail.com>]
+
 Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,

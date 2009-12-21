@@ -33,7 +33,7 @@
  * in apr_getopt() format.  Use this for default'ing args that the MPM
  * can safely ignore and pass on from its rewrite_args() handler.
  */
-#define AP_SERVER_BASEARGS "C:c:D:d:E:e:f:vVlLtSMh?X"
+#define AP_SERVER_BASEARGS "C:c:D:d:E:e:f:vVlLtTSMh?X"
 
 #ifdef __cplusplus
 extern "C" {
@@ -58,6 +58,8 @@ AP_DECLARE_DATA extern apr_array_header_t *ap_server_post_read_config;
 /** An array of all -D defines on the command line.  This allows people to
  *  effect the server based on command line options */
 AP_DECLARE_DATA extern apr_array_header_t *ap_server_config_defines;
+/** Available integer for using the -T switch */
+AP_DECLARE_DATA extern int ap_document_root_check;
 
 /**
  * An optional function to send signal to server on presence of '-k'

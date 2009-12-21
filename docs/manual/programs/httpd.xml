@@ -152,6 +152,10 @@ places where the directive is valid. Directives provided by shared modules are n
 <dd>Show the settings as parsed from the config file (currently only
 shows the virtualhost settings).</dd>
 
+<dt><code>-T</code></dt>
+
+<dd>Skip document root check at startup/restart.</dd>
+
 <dt><code>-t</code></dt>
 
 <dd>Run syntax tests for configuration files only.  The program
