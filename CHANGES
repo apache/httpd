@@ -26,6 +26,10 @@ Changes with Apache 2.3.5
      check at startup.
      PR 41887 [Jan van den Berg <janvdberg gmail.com>]
 
+  *) mod_autoindex: support XHTML as equivalent to HTML in IndexOptions,
+                    ScanHTMLTitles, ReadmeName, HeaderName
+     PR 48416 [Dmitry Bakshaev <dab18 izhnet.ru>, Nick Kew]
+
 Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,
