@@ -140,6 +140,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jim
 
+  * http_request: preserve port over internal redirect.
+    PR 35999
+    Patch: http://svn.apache.org/viewvc?view=revision&revision=807015
+    +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
