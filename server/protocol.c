@@ -431,8 +431,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             }
         }
     }
-
     *read = bytes_handled;
+
+    /* PR#43039: We shouldn't accept NULL bytes within the line */
+    if (strlen(*s) < bytes_handled - 1) {
+        return APR_EINVAL;
+    }
+
     return APR_SUCCESS;
 }
 
@@ -608,6 +613,9 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
             }
             else if (rv == APR_TIMEUP) {
                 r->status = HTTP_REQUEST_TIME_OUT;
+            }
+            else if (rv == APR_EINVAL) {
+                r->status = HTTP_BAD_REQUEST;
             }
             return 0;
         }
@@ -897,9 +905,16 @@ request_rec *ap_read_request(conn_rec *conn)
 
     /* Get the request... */
     if (!read_request_line(r, tmp_bb)) {
-        if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "request failed: URI too long (longer than %d)", r->server->limit_req_line);
+        if (r->status == HTTP_REQUEST_URI_TOO_LARGE
+            || r->status == HTTP_BAD_REQUEST) {
+            if (r->status == HTTP_BAD_REQUEST) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "request failed: invalid characters in URI");
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "request failed: URI too long (longer than %d)", r->server->limit_req_line);
+            }
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);

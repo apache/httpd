@@ -19,6 +19,9 @@ Changes with Apache 2.3.5
      a new request.
      PR 47087 [Nick Kew]
 
+  *) Core: reject NULLs in request line or request headers.
+     PR 43039 [Nick Kew]
+
 Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,
