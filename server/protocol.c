@@ -434,7 +434,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     *read = bytes_handled;
 
     /* PR#43039: We shouldn't accept NULL bytes within the line */
-    if (strlen(*s) < bytes_handled - 1) {
+    if (strlen(*s) < bytes_handled) {
         return APR_EINVAL;
     }
 
