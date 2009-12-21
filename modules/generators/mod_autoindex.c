@@ -149,6 +149,14 @@ static char c_by_encoding, c_by_type, c_by_path;
 #define BY_TYPE &c_by_type
 #define BY_PATH &c_by_path
 
+static inline int response_is_html(request_rec *r)
+{
+    char *ctype = ap_field_noparam(r->pool, r->content_type);
+    ap_str_tolower(ctype);
+    return !strcmp(ctype, "text/html")
+        || !strcmp(ctype, "application/xhtml+xml");
+}
+
 /*
  * This routine puts the standard HTML header at the top of the index page.
  * We include the DOCTYPE because we may be using features therefrom (i.e.,
@@ -1013,8 +1021,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
          * SSIs.
          */
         if (rr->content_type != NULL) {
-            if (!strcasecmp(ap_field_noparam(r->pool, rr->content_type),
-                            "text/html")) {
+            if (response_is_html(rr)) {
                 ap_filter_t *f;
                /* Hope everything will work... */
                 emit_amble = 0;
@@ -1124,8 +1131,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
          * SSIs.
          */
         if (rr->content_type != NULL) {
-            if (!strcasecmp(ap_field_noparam(r->pool, rr->content_type),
-                            "text/html")) {
+            if (response_is_html(rr)) {
                 ap_filter_t *f;
                 for (f=rr->output_filters;
                      f->frec != ap_subreq_core_filter_handle; f = f->next);
@@ -1175,8 +1181,7 @@ static char *find_title(request_rec *r)
         return NULL;
     }
     if ((r->content_type != NULL)
-        && (!strcasecmp(ap_field_noparam(r->pool, r->content_type),
-                        "text/html")
+        && (response_is_html(r)
             || !strcmp(r->content_type, INCLUDES_MAGIC_TYPE))
         && !r->content_encoding) {
         if (apr_file_open(&thefile, r->filename, APR_READ,
