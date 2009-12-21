@@ -370,7 +370,7 @@ static void usage(process_rec *process)
                  pad);
 #endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-S]", pad);
+                 "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T] [-S]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "Options:");
 
@@ -449,9 +449,14 @@ static void usage(process_rec *process)
                  "  -M                 : a synonym for -t -D DUMP_MODULES");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -t                 : run syntax check for config files");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                "  -T                 : start without DocumentRoot(s) check");
 
     destroy_and_exit_process(process, 1);
 }
+
+/* Set ap_document_root_check to default value: true */
+AP_DECLARE_DATA int ap_document_root_check = 1;
 
 int main(int argc, const char * const argv[])
 {
@@ -611,6 +616,10 @@ int main(int argc, const char * const argv[])
         case 't':
             configtestonly = 1;
             break;
+
+       case 'T':
+           ap_document_root_check = 0;
+           break;
 
         case 'S':
             configtestonly = 1;
