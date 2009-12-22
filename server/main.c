@@ -212,10 +212,6 @@ static void show_compile_settings(void)
     printf(" -D NEED_HASHBANG_EMUL\n");
 #endif
 
-#ifdef SHARED_CORE
-    printf(" -D SHARED_CORE\n");
-#endif
-
 /* This list displays the compiled in default paths: */
 #ifdef HTTPD_ROOT
     printf(" -D HTTPD_ROOT=\"" HTTPD_ROOT "\"\n");
@@ -223,10 +219,6 @@ static void show_compile_settings(void)
 
 #ifdef SUEXEC_BIN
     printf(" -D SUEXEC_BIN=\"" SUEXEC_BIN "\"\n");
-#endif
-
-#if defined(SHARED_CORE) && defined(SHARED_CORE_DIR)
-    printf(" -D SHARED_CORE_DIR=\"" SHARED_CORE_DIR "\"\n");
 #endif
 
 #ifdef DEFAULT_PIDLOG
@@ -343,14 +335,8 @@ static void usage(process_rec *process)
 
     pad[i] = '\0';
 
-#ifdef SHARED_CORE
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL ,
-                 "Usage: %s [-R directory] [-D name] [-d directory] [-f file]",
-                 bin);
-#else
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "Usage: %s [-D name] [-d directory] [-f file]", bin);
-#endif
 
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "       %s [-C \"directive\"] [-c \"directive\"]", pad);
@@ -373,12 +359,6 @@ static void usage(process_rec *process)
                  "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T] [-S]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "Options:");
-
-#ifdef SHARED_CORE
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -R directory       : specify an alternate location for "
-                 "shared object files");
-#endif
 
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -D name            : define a name for use in "
