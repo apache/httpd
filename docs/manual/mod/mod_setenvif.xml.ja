@@ -202,7 +202,7 @@ href="http://www.pcre.org/">Perl 互換の正規表現</a>です。
     <p>最初の形式では、値は "1" に設定されます。
     二つ目はもし値が定義されていればそれを取り除きます。
     三つ目は変数を <code><em>value</em></code> の与えられた値に設定します。
-    2.0.51 以降では、<var>regex</var> 内に <code>$1</code>..<code>$9</code>
+    2.0.51 以降では、<var>value</var> 内に <code>$1</code>..<code>$9</code>
     が存在すればそれを認識し、<var>regex</var> の対応する丸括弧で囲まれた部分で
     置換します。</p>
 
