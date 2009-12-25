@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2007-07-31" "Apache HTTP Server" "httpd"
+.TH "HTTPD" 8 "2009-12-22" "Apache HTTP Server" "httpd"
 
 .SH NAME
 httpd \- Apache Hypertext Transfer Protocol Server
@@ -87,6 +87,9 @@ Dump a list of loaded Static and Shared Modules\&.
 .TP
 -S
 Show the settings as parsed from the config file (currently only shows the virtualhost settings)\&.  
+.TP
+-T
+Skip document root check at startup/restart\&.  
 .TP
 -t
 Run syntax tests for configuration files only\&. The program immediately exits after these syntax parsing tests with either a return code of 0 (Syntax OK) or return code not equal to 0 (Syntax Error)\&. If -D \fIDUMP\fR_\fIVHOSTS \fRis also set, details of the virtual host configuration will be printed\&. If -D \fIDUMP\fR_\fIMODULES \fR is set, all loaded modules will be printed\&.  

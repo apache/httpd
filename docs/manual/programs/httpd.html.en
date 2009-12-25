@@ -112,12 +112,6 @@ problems during startup.</dd>
 
 <dd>Send error messages during server startup to <var>file</var>.</dd>
 
-<dt><code>-R <var>directory</var></code></dt>
-
-<dd>When the server is compiled using the <code>SHARED_CORE</code>
-rule, this specifies the <var>directory</var> for the shared
-object files.</dd>
-
 <dt><code>-h</code></dt>
 
 <dd>Output a short summary of available command line options.</dd>
@@ -141,6 +135,10 @@ places where the directive is valid. Directives provided by shared modules are n
 
 <dd>Show the settings as parsed from the config file (currently only
 shows the virtualhost settings).</dd>
+
+<dt><code>-T</code></dt>
+
+<dd>Skip document root check at startup/restart.</dd>
 
 <dt><code>-t</code></dt>
 
