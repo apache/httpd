@@ -1117,6 +1117,16 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
         }
         else {
             l2 = strlen(real);
+            if (real[0] == '/') {
+                const char *part = strstr(url, "://");
+                if (part) {
+                    part = strstr(part+3, "/");
+                    if (part) {
+                        url = part;
+                        l1 = strlen(url);
+                    }
+                }
+            }
             if (l1 >= l2 && strncasecmp(real, url, l2) == 0) {
                 u = apr_pstrcat(r->pool, ent[i].fake, &url[l2], NULL);
                 return ap_construct_url(r->pool, u, r);
