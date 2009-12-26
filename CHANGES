@@ -30,8 +30,8 @@ Changes with Apache 2.3.5
                     ScanHTMLTitles, ReadmeName, HeaderName
      PR 48416 [Dmitry Bakshaev <dab18 izhnet.ru>, Nick Kew]
 
-  *) Proxy: Fix ProxyPassReverse with relative URL.
-     PR 38864 [Nick Kew]
+  *) Proxy: Fix ProxyPassReverse with relative URL
+     Derived (slightly erroneously) from PR 38864 [Nick Kew]
 
 Changes with Apache 2.3.4
 
