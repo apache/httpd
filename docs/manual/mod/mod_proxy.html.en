@@ -1007,7 +1007,7 @@ through</td></tr>
     </table>
     <p>A sample balancer setup</p>
     <div class="example"><p><code>
-      ProxyPass /special-area http://special.example.com/ smax=5 max=10<br />
+      ProxyPass /special-area http://special.example.com smax=5 max=10<br />
       ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mycluster&gt;<br />
       <span class="indent">
