@@ -33,6 +33,9 @@ Changes with Apache 2.3.5
   *) Proxy: Fix ProxyPassReverse with relative URL
      Derived (slightly erroneously) from PR 38864 [Nick Kew]
 
+  *) mod_headers: align Header Edit with Header Set when used on Content-Type
+     PR 48422 [Cyril Bonté <cyril.bonte free.fr>, Nick Kew>]
+
 Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,

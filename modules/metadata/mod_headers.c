@@ -722,6 +722,10 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
                          echo_header, (void *) &v, r->headers_in, NULL);
             break;
         case hdr_edit:
+            if (!strcasecmp(hdr->header, "Content-Type") && r->content_type) {
+                ap_set_content_type(r, process_regexp(hdr, r->content_type,
+                                                      r->pool));
+            }
             if (apr_table_get(headers, hdr->header)) {
                 edit_do ed;
 
