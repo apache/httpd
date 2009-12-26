@@ -90,7 +90,7 @@ by other LDAP modules</td></tr>
       # be loaded. Change the "yourdomain.example.com" to<br />
       # match your domain.<br />
       <br />
-      LDAPSharedCacheSize 200000<br />
+      LDAPSharedCacheSize 500000<br />
       LDAPCacheEntries 1024<br />
       LDAPCacheTTL 600<br />
       LDAPOpCacheEntries 1024<br />
@@ -498,13 +498,13 @@ valid</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Size in bytes of the shared-memory cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPSharedCacheSize <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPSharedCacheSize 102400</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPSharedCacheSize 500000</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
     <p>Specifies the number of bytes to allocate for the shared
-    memory cache. The default is 100kb. If set to 0, shared memory
+    memory cache. The default is 500kb. If set to 0, shared memory
     caching will not be used.</p>
 
 </div>
