@@ -240,7 +240,8 @@ static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
     harness_ctx *ctx = f->ctx;
     ap_filter_rec_t *filter = f->frec;
 
-    if (f->r->status != 200) {
+    if (f->r->status != 200
+        && !apr_table_get(f->r->subprocess_env, "filter-errordocs")) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);
     }

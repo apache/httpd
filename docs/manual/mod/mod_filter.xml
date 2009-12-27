@@ -127,6 +127,13 @@
     filters declared, offering the flexibility to insert filters at the
     beginning or end of the chain, remove a filter, or clear the chain.</dd>
 </dl>
+<section id="errordocs"><title>Filtering and Response Status</title>
+    <p>mod_filter normally only runs filters on responses with
+    HTTP status 200 (OK).  If you want to filter documents with
+    other response statuses, you can set the <var>filter-errordocs</var>
+    environment variable, and it will work on all responses
+    regardless of status.  To refine this further, you can use
+    expression conditions with <directive>FilterProvider</directive>.</p>
 </section>
 <section id="upgrade"><title>Upgrading from HTTPD 2.2 Configuration</title>
     <p>The <directive module="mod_filter">FilterProvider</directive>
