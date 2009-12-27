@@ -36,6 +36,9 @@ Changes with Apache 2.3.5
   *) mod_headers: align Header Edit with Header Set when used on Content-Type
      PR 48422 [Cyril Bonté <cyril.bonte free.fr>, Nick Kew>]
 
+  *) mod_headers: Enable multi-match-and-replace edit option
+     PR 47066 [Nick Kew]
+
 Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,
