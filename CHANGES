@@ -8,8 +8,12 @@ Changes with Apache 2.2.15
      control is still vulnerable, unless using OpenSSL >= 0.9.8l.  
      [Joe Orton, Ruediger Pluem]
 
+   *) mod_filter: fix FilterProvider matching where "dispatch" string
+      doesn't exist.
+      PR 48054 [<tietw gmail.com>]
+
    *) Build: fix --with-module to work as documented
-      PR 43881 [Gez Saunders <???>]
+      PR 43881 [Gez Saunders <gez.saunders virgin.net>]
 
    *) mod_mime: Make RemoveType override the info from TypesConfig.
       PR 38330. [Stefan Fritsch]
