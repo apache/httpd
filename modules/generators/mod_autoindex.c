@@ -583,7 +583,7 @@ static const command_rec autoindex_cmds[] =
                   (void *)APR_OFFSETOF(autoindex_config_rec, header),
                   DIR_CMD_PERMS, "a filename"),
     AP_INIT_TAKE1("ReadmeName", ap_set_string_slot,
-                  (void *)APR_OFFSETOF(autoindex_config_rec, header),
+                  (void *)APR_OFFSETOF(autoindex_config_rec, readme),
                   DIR_CMD_PERMS, "a filename"),
     AP_INIT_RAW_ARGS("FancyIndexing", ap_set_deprecated, NULL, OR_ALL,
                      "The FancyIndexing directive is no longer supported. "
