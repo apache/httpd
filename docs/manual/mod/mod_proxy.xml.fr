@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 835573 -->
+<!-- English Revision : 893874 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -336,7 +336,7 @@
 <description>Conteneur de directives s'appliquant &agrave; des ressources
 mandat&eacute;es</description>
 <syntax>&lt;Proxy <var>url-avec-jokers</var>&gt; ...&lt;/Proxy&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>configuration du serveur</context><context>serveur virtuel</context>
 </contextlist>
 
 <usage>
@@ -978,9 +978,9 @@ l'espace d'URLs du serveur local</description>
     </td></tr>
 
     </table>
-    <p>Exemple de configuration d'un r&eacute;partiteur</p>
+    <p>Exemple de configuration d'un r&eacute;partiteur de charge</p>
     <example>
-      ProxyPass /zone-speciale http://special.exemple.com/ smax=5 max=10<br />
+      ProxyPass /zone-speciale http://special.exemple.com smax=5 max=10<br />
       ProxyPass / balancer://mon-cluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mon-cluster&gt;<br />
       <indent>
@@ -1099,8 +1099,8 @@ du serveur local en utilisant des expressions rationnelles</description>
 par un serveur mandat&eacute; en inverse</description>
 <syntax>ProxyPassReverse [<var>chemin</var>] <var>url</var>
 [<var>interpolate</var>]</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context>
+<contextlist><context>configuration du serveur</context><context>serveur virtuel</context>
+<context>r&eacute;pertoire</context>
 </contextlist>
 
 <usage>

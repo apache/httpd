@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 826164 -->
+<!-- English Revision : 894036 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -211,7 +211,7 @@ tardif</title>
 <directivesynopsis>
 <name>RequestHeader</name>
 <description>Configure les en-t&ecirc;tes d'une requ&ecirc;te HTTP</description>
-<syntax>RequestHeader add|append|edit|merge|set|unset <var>en-t&ecirc;te</var>
+<syntax>RequestHeader add|append|edit|edit*|merge|set|unset <var>en-t&ecirc;te</var>
 [<var>valeur</var>] [<var>remplacement</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -241,13 +241,17 @@ tardif</title>
     m&eacute;thode HTTP standard permettant d'affecter plusieurs valeurs &agrave; un
     en-t&ecirc;te.</dd>
 
-    <dt><code>edit</code></dt>
+    <dt><code>edit*</code></dt>
     <dd>Si l'en-t&ecirc;te existe, sa valeur est modifi&eacute;e en fonction d'une
     <glossary ref="regex">expression rationnelle</glossary> de type
     recherche/remplacement. L'argument <var>valeur</var> est une
     <glossary ref="regex">expression rationnelle</glossary>, et
     l'argument <var>remplacement</var> une cha&icirc;ne de caract&egrave;res de
-    remplacement qui peut contenir des r&eacute;f&eacute;rences arri&egrave;res.</dd>
+    remplacement qui peut contenir des r&eacute;f&eacute;rences arri&egrave;res. Avec
+    <code>edit</code>, la cha&icirc;ne de l'en-t&ecirc;te correspondant au mod&egrave;le ne
+    sera recherch&eacute;e et remplac&eacute;e qu'une seule fois, alors qu'avec
+    <code>edit*</code>, elle le sera pour chacune de ses instances si
+    elle appara&icirc;t plusieurs fois.</dd>
 
     <dt><code>merge</code></dt>
     <dd>La valeur d'en-t&ecirc;te est ajout&eacute;e &agrave; tout en-t&ecirc;te de m&ecirc;me nom, sauf
