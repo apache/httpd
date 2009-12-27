@@ -39,6 +39,9 @@ Changes with Apache 2.3.5
   *) mod_headers: Enable multi-match-and-replace edit option
      PR 47066 [Nick Kew]
 
+  *) mod_filter: enable it to act on non-200 responses.
+     PR 48377 [Nick Kew]
+
 Changes with Apache 2.3.4
 
   *) Replace AcceptMutex, LockFile, RewriteLock, SSLMutex, SSLStaplingMutex,
