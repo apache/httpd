@@ -95,7 +95,8 @@ typedef enum {
     hdr_merge = 'g',            /* merge (merge, but avoid duplicates) */
     hdr_unset = 'u',            /* unset header */
     hdr_echo = 'e',             /* echo headers from request to response */
-    hdr_edit = 'r'              /* change value by regexp */
+    hdr_edit = 'r',             /* change value by regexp, match once */
+    hdr_edit_r = 'R'            /* change value by regexp, everymatch */
 } hdr_actions;
 
 /*
@@ -366,6 +367,7 @@ static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s
     /* No string to parse with unset and echo commands */
     if (hdr->action == hdr_unset ||
         hdr->action == hdr_edit ||
+        hdr->action == hdr_edit_r ||
         hdr->action == hdr_echo) {
         return NULL;
     }
@@ -416,11 +418,13 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
         new->action = hdr_echo;
     else if (!strcasecmp(action, "edit"))
         new->action = hdr_edit;
+    else if (!strcasecmp(action, "edit*"))
+        new->action = hdr_edit_r;
     else
         return "first argument must be 'add', 'set', 'append', 'merge', "
-               "'unset', 'echo', or 'edit'.";
+               "'unset', 'echo', 'edit', or 'edit*'.";
 
-    if (new->action == hdr_edit) {
+    if (new->action == hdr_edit || new->action == hdr_edit_r) {
         if (subs == NULL) {
             return "Header edit requires a match and a substitution";
         }
@@ -566,6 +570,7 @@ static const char *process_regexp(header_entry *hdr, const char *value,
     unsigned int nmatch = 10;
     ap_regmatch_t pmatch[10];
     const char *subs;
+    const char *remainder;
     char *ret;
     int diffsz;
     if (ap_regexec(hdr->regex, value, nmatch, pmatch, 0)) {
@@ -574,6 +579,13 @@ static const char *process_regexp(header_entry *hdr, const char *value,
     }
     subs = ap_pregsub(pool, hdr->subs, value, nmatch, pmatch);
     diffsz = strlen(subs) - (pmatch[0].rm_eo - pmatch[0].rm_so);
+    if (hdr->action == hdr_edit) {
+        remainder = value + pmatch[0].rm_eo;
+    }
+    else { /* recurse to edit multiple matches if applicable */
+        remainder = process_regexp(hdr, value + pmatch[0].rm_eo, pool);
+        diffsz += strlen(remainder) - strlen(value + pmatch[0].rm_eo);
+    }
     ret = apr_palloc(pool, strlen(value) + 1 + diffsz);
     memcpy(ret, value, pmatch[0].rm_so);
     strcpy(ret + pmatch[0].rm_so, subs);
@@ -722,6 +734,7 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
                          echo_header, (void *) &v, r->headers_in, NULL);
             break;
         case hdr_edit:
+        case hdr_edit_r:
             if (!strcasecmp(hdr->header, "Content-Type") && r->content_type) {
                 ap_set_content_type(r, process_regexp(hdr, r->content_type,
                                                       r->pool));

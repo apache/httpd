@@ -193,7 +193,7 @@ headers</description>
 <directivesynopsis>
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
-<syntax>RequestHeader add|append|edit|merge|set|unset <var>header</var>
+<syntax>RequestHeader add|append|edit|edit*|merge|set|unset <var>header</var>
 [<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -223,11 +223,16 @@ headers</description>
     values.</dd>
 
     <dt><code>edit</code></dt>
+    <dt><code>edit*</code></dt>
     <dd>If this request header exists, its value is transformed according
     to a <glossary ref="regex">regular expression</glossary>
     search-and-replace.  The <var>value</var> argument is a <glossary
     ref="regex">regular expression</glossary>, and the <var>replacement</var>
-    is a replacement string, which may contain backreferences.</dd>
+    is a replacement string, which may contain backreferences.
+    The <code>edit</code> form will match and replace exactly once
+    in a header value, whereas the <code>edit*</code> form will replace
+    <em>every</em> instance of the search pattern if it appears more
+    than once.</dd>
 
     <dt><code>merge</code></dt>
     <dd>The response header is appended to any existing header of
