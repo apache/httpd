@@ -129,7 +129,6 @@ typedef struct {
     apr_array_header_t *aliases;
     apr_array_header_t *noproxies;
     apr_array_header_t *dirconn;
-    apr_array_header_t *allowed_connect_ports;
     apr_array_header_t *workers;
     apr_array_header_t *balancers;
     proxy_worker       *forward;    /* forward proxy worker */

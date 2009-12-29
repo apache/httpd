@@ -46,7 +46,52 @@ module AP_MODULE_DECLARE_DATA proxy_connect_module;
  * FIXME: no check for r->assbackwards, whatever that is.
  */
 
-static int allowed_port(proxy_server_conf *conf, int port)
+typedef struct {
+    apr_array_header_t *allowed_connect_ports;
+} connect_conf;
+
+static void *create_config(apr_pool_t *p, server_rec *s)
+{
+    connect_conf *c = apr_pcalloc(p, sizeof(connect_conf));
+    c->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
+    return c;
+}
+
+static void *merge_config(apr_pool_t *p, void *basev, void *overridesv)
+{
+    connect_conf *c = apr_pcalloc(p, sizeof(connect_conf));
+    connect_conf *base = (connect_conf *) basev;
+    connect_conf *overrides = (connect_conf *) overridesv;
+
+    c->allowed_connect_ports = apr_array_append(p,
+                                                base->allowed_connect_ports,
+                                                overrides->allowed_connect_ports);
+    
+    return c;
+}
+
+
+/*
+ * Set the ports CONNECT can use
+ */
+static const char *
+    set_allowed_ports(cmd_parms *parms, void *dummy, const char *arg)
+{
+    server_rec *s = parms->server;
+    connect_conf *conf =
+        ap_get_module_config(s->module_config, &proxy_connect_module);
+    int *New;
+
+    if (!apr_isdigit(arg[0]))
+        return "AllowCONNECT: port number must be numeric";
+
+    New = apr_array_push(conf->allowed_connect_ports);
+    *New = atoi(arg);
+    return NULL;
+}
+
+
+static int allowed_port(connect_conf *conf, int port)
 {
     int i;
     int *list = (int *) conf->allowed_connect_ports->elts;
@@ -122,6 +167,9 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                                  char *url, const char *proxyname,
                                  apr_port_t proxyport)
 {
+    connect_conf *c_conf =
+        ap_get_module_config(r->server->module_config, &proxy_connect_module);
+
     apr_pool_t *p = r->pool;
     apr_socket_t *sock;
     conn_rec *c = r->connection;
@@ -203,7 +251,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Check if it is an allowed port */
-    if (conf->allowed_connect_ports->nelts == 0) {
+    if (c_conf->allowed_connect_ports->nelts == 0) {
     /* Default setting if not overridden by AllowCONNECT */
         switch (uri.port) {
             case APR_URI_HTTPS_DEFAULT_PORT:
@@ -213,7 +261,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                  return ap_proxyerror(r, HTTP_FORBIDDEN,
                                       "Connect to remote machine blocked");
         }
-    } else if(!allowed_port(conf, uri.port)) {
+    } else if(!allowed_port(c_conf, uri.port)) {
               return ap_proxyerror(r, HTTP_FORBIDDEN,
                                    "Connect to remote machine blocked");
     }
@@ -442,12 +490,19 @@ static void ap_proxy_connect_register_hook(apr_pool_t *p)
     proxy_hook_canon_handler(proxy_connect_canon, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
+static const command_rec cmds[] =
+{
+    AP_INIT_ITERATE("AllowCONNECT", set_allowed_ports, NULL, RSRC_CONF,
+     "A list of ports which CONNECT may connect to"),
+    {NULL}
+};
+
 module AP_MODULE_DECLARE_DATA proxy_connect_module = {
     STANDARD20_MODULE_STUFF,
     NULL,       /* create per-directory config structure */
     NULL,       /* merge per-directory config structures */
-    NULL,       /* create per-server config structure */
-    NULL,       /* merge per-server config structures */
-    NULL,       /* command apr_table_t */
+    create_config,       /* create per-server config structure */
+    merge_config,       /* merge per-server config structures */
+    cmds,       /* command apr_table_t */
     ap_proxy_connect_register_hook  /* register hooks */
 };

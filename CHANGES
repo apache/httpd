@@ -7,6 +7,9 @@ Changes with Apache 2.3.5
      a partial match.  PR 48401.i
      [Dodou Wang <wangdong.08 gmail.com>, Ruediger Pluem]
 
+  *) mod_proxy, mod_proxy_connect: Move AllowCONNECT from mod_proxy to
+     mod_proxy_connect. [Takashi Sato]
+
   *) mod_proxy_balancer: Fix crash in balancer-manager. [Rainer Jung]
 
   *) mod_headers: Ensure that changes to the main request remain valid when
