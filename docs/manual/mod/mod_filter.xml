@@ -127,6 +127,7 @@
     filters declared, offering the flexibility to insert filters at the
     beginning or end of the chain, remove a filter, or clear the chain.</dd>
 </dl>
+</section>
 <section id="errordocs"><title>Filtering and Response Status</title>
     <p>mod_filter normally only runs filters on responses with
     HTTP status 200 (OK).  If you want to filter documents with
