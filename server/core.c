@@ -2682,7 +2682,7 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
 
 static char *server_banner = NULL;
 static int banner_locked = 0;
-static char *server_description = NULL;
+static const char *server_description = NULL;
 
 enum server_token_type {
     SrvTk_MAJOR,         /* eg: Apache/2 */
