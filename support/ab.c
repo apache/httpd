@@ -293,24 +293,25 @@ int keepalive = 0;      /* try and do keepalive connections */
 int windowsize = 0;     /* we use the OS default window size */
 char servername[1024];  /* name that server reports */
 char *hostname;         /* host name from URL */
-char *host_field;       /* value of "Host:" header field */
-char *path;             /* path name */
+const char *host_field;       /* value of "Host:" header field */
+const char *path;             /* path name */
 char postfile[1024];    /* name of file containing post data */
 char *postdata;         /* *buffer containing data from postfile */
 apr_size_t postlen = 0; /* length of data to be POSTed */
 char content_type[1024];/* content type to put in POST header */
-char *cookie,           /* optional cookie line */
-     *auth,             /* optional (basic/uuencoded) auhentication */
-     *hdrs;             /* optional arbitrary headers */
+const char *cookie,           /* optional cookie line */
+           *auth,             /* optional (basic/uuencoded) auhentication */
+           *hdrs;             /* optional arbitrary headers */
 apr_port_t port;        /* port number */
 char proxyhost[1024];   /* proxy host name */
 int proxyport = 0;      /* proxy port */
-char *connecthost;
+const char *connecthost;
 apr_port_t connectport;
-char *gnuplot;          /* GNUplot file */
-char *csvperc;          /* CSV Percentile file */
+const char *gnuplot;          /* GNUplot file */
+const char *csvperc;          /* CSV Percentile file */
 char url[1024];
-char * fullurl, * colonhost;
+const char *fullurl;
+const char *colonhost;
 int isproxy = 0;
 apr_interval_time_t aprtimeout = apr_time_from_sec(30); /* timeout value */
 
@@ -382,7 +383,7 @@ static void close_connection(struct connection * c);
 
 /* simple little function to write an error string and exit */
 
-static void err(char *s)
+static void err(const char *s)
 {
     fprintf(stderr, "%s\n", s);
     if (done)
@@ -392,7 +393,7 @@ static void err(char *s)
 
 /* simple little function to write an APR error string and exit */
 
-static void apr_err(char *s, apr_status_t rv)
+static void apr_err(const char *s, apr_status_t rv)
 {
     char buf[120];
 
@@ -1897,7 +1898,7 @@ static void usage(const char *progname)
 
 /* split URL into parts */
 
-static int parse_url(char *url)
+static int parse_url(const char *url)
 {
     char *cp;
     char *h;
