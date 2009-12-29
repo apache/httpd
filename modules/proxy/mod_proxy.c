@@ -1085,7 +1085,6 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->aliases = apr_array_make(p, 10, sizeof(struct proxy_alias));
     ps->noproxies = apr_array_make(p, 10, sizeof(struct noproxy_entry));
     ps->dirconn = apr_array_make(p, 10, sizeof(struct dirconn_entry));
-    ps->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
     ps->workers = apr_array_make(p, 10, sizeof(proxy_worker));
     ps->balancers = apr_array_make(p, 10, sizeof(proxy_balancer));
     ps->forward = NULL;
@@ -1123,7 +1122,6 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->aliases = apr_array_append(p, base->aliases, overrides->aliases);
     ps->noproxies = apr_array_append(p, base->noproxies, overrides->noproxies);
     ps->dirconn = apr_array_append(p, base->dirconn, overrides->dirconn);
-    ps->allowed_connect_ports = apr_array_append(p, base->allowed_connect_ports, overrides->allowed_connect_ports);
     ps->workers = apr_array_append(p, base->workers, overrides->workers);
     ps->balancers = apr_array_append(p, base->balancers, overrides->balancers);
     ps->forward = overrides->forward ? overrides->forward : base->forward;
@@ -1502,24 +1500,6 @@ static const char *
     return NULL;
 }
 
-/*
- * Set the ports CONNECT can use
- */
-static const char *
-    set_allowed_ports(cmd_parms *parms, void *dummy, const char *arg)
-{
-    server_rec *s = parms->server;
-    proxy_server_conf *conf =
-        ap_get_module_config(s->module_config, &proxy_module);
-    int *New;
-
-    if (!apr_isdigit(arg[0]))
-        return "AllowCONNECT: port number must be numeric";
-
-    New = apr_array_push(conf->allowed_connect_ports);
-    *New = atoi(arg);
-    return NULL;
-}
 
 /* Similar to set_proxy_exclude(), but defining directly connected hosts,
  * which should never be accessed via the configured ProxyRemote servers
@@ -2109,8 +2089,6 @@ static const command_rec proxy_cmds[] =
      "A list of domains, hosts, or subnets to which the proxy will connect directly"),
     AP_INIT_TAKE1("ProxyDomain", set_proxy_domain, NULL, RSRC_CONF,
      "The default intranet domain name (in absence of a domain in the URL)"),
-    AP_INIT_ITERATE("AllowCONNECT", set_allowed_ports, NULL, RSRC_CONF,
-     "A list of ports which CONNECT may connect to"),
     AP_INIT_TAKE1("ProxyVia", set_via_opt, NULL, RSRC_CONF,
      "Configure Via: proxy header header to one of: on | off | block | full"),
     AP_INIT_FLAG("ProxyErrorOverride", set_proxy_error_override, NULL, RSRC_CONF,

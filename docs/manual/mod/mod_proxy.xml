@@ -1085,33 +1085,6 @@ string in <code>Set-Cookie</code> headers.</p>
 </usage>
 </directivesynopsis>
 
-
-<directivesynopsis>
-<name>AllowCONNECT</name>
-<description>Ports that are allowed to <code>CONNECT</code> through the
-proxy</description>
-<syntax>AllowCONNECT <var>port</var> [<var>port</var>] ...</syntax>
-<default>AllowCONNECT 443 563</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>The <directive>AllowCONNECT</directive> directive specifies a list
-    of port numbers to which the proxy <code>CONNECT</code> method may
-    connect.  Today's browsers use this method when a <code>https</code>
-    connection is requested and proxy tunneling over HTTP is in effect.</p>
-
-    <p>By default, only the default https port (<code>443</code>) and the
-    default snews port (<code>563</code>) are enabled. Use the
-    <directive>AllowCONNECT</directive> directive to override this default and
-    allow connections to the listed ports only.</p>
-
-    <p>Note that you'll need to have <module>mod_proxy_connect</module> present
-    in the server in order to get the support for the <code>CONNECT</code> at
-    all.</p>
-</usage>
-</directivesynopsis>
-
 <directivesynopsis>
 <name>ProxyBlock</name>
 <description>Words, hosts, or domains that are banned from being
