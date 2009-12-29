@@ -596,7 +596,7 @@ static void dummy_signal_handler(int sig)
      */
 }
 
-static void accept_mutex_error(char *func, apr_status_t rv, int process_slot)
+static void accept_mutex_error(const char *func, apr_status_t rv, int process_slot)
 {
     int level = APLOG_EMERG;
 
