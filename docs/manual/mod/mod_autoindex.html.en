@@ -659,7 +659,8 @@ indexing</td></tr>
       <dd>The <code>NameWidth</code> keyword allows you to specify the width
       of the filename column in bytes.</dd>
 
-      <dd><code>-NameWidth</code> (or unset) allows <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> to calculate the best width.</dd>
+      <dd><code>-NameWidth</code> (or unset) allows <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> to calculate the best width, but only up
+      to 20 bytes wide.</dd>
 
       <dd><code>NameWidth=<var>n</var></code> fixes the column width to
       <var>n</var> bytes wide.</dd>
