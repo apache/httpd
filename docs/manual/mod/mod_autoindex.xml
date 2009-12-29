@@ -293,6 +293,15 @@ icon selected by MIME content-type</description>
     Therefore, the widest default the description column is ever
     assigned is 55 bytes.</p>
 
+    <p>Since the <var>File</var> argument may be a partial file name,
+    please remember that a too-short partial filename may match
+    unintended files. For example, <code>le.html</code> will match the
+    file <code>le.html</code> but will also match the file
+    <code>example.html</code>. In the event that there may be ambiguity,
+    use as complete a filename as you can, but keep in mind that the
+    first match encountered will be used, and order your list of
+    <code>AddDescription</code> directives accordingly.</p>
+
     <p>See the <a href="#indexoptions.descriptionwidth"
     >DescriptionWidth</a> <directive module="mod_autoindex"
     >IndexOptions</directive> keyword for details on overriding the size
