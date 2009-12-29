@@ -40,8 +40,8 @@
 #include "mod_auth.h"
 
 typedef struct {
-    char *pwfile;
-    char *dbmtype;
+    const char *pwfile;
+    const char *dbmtype;
 } authn_dbm_config_rec;
 
 static void *create_authn_dbm_dir_config(apr_pool_t *p, char *d)
