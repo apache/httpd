@@ -67,7 +67,7 @@ Documentation</h1>
 <li><a href="server-wide.html">Server-Wide Configuration</a></li>
 <li><a href="ssl/">SSL/TLS Encryption</a></li>
 <li><a href="suexec.html">Suexec Execution for CGI</a></li>
-<li><a href="rewrite/">URL Rewriting Guide</a></li>
+<li><a href="rewrite/">URL Rewriting with mod_rewrite</a></li>
 <li><a href="vhosts/">Virtual Hosts</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / Tutorials</a></h2>
