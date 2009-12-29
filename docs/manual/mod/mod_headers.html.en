@@ -350,7 +350,7 @@ headers</td></tr>
 <div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|merge|set|unset <var>header</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|unset <var>header</var>
 [<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -380,10 +380,15 @@ headers</td></tr>
     values.</dd>
 
     <dt><code>edit</code></dt>
+    <dt><code>edit*</code></dt>
     <dd>If this request header exists, its value is transformed according
     to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
     search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
-    is a replacement string, which may contain backreferences.</dd>
+    is a replacement string, which may contain backreferences.
+    The <code>edit</code> form will match and replace exactly once
+    in a header value, whereas the <code>edit*</code> form will replace
+    <em>every</em> instance of the search pattern if it appears more
+    than once.</dd>
 
     <dt><code>merge</code></dt>
     <dd>The response header is appended to any existing header of
