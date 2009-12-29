@@ -206,21 +206,21 @@ AP_DECLARE_NONSTD(const char *)ap_set_mutex(cmd_parms *cmd, void *dummy,
     /* "OmitPID" can appear at the end of the list, so build a list of
      * mutex type names while looking for "OmitPID" (anywhere) or the end
      */
-    type_list = apr_array_make(cmd->pool, 4, sizeof(char *));
+    type_list = apr_array_make(cmd->pool, 4, sizeof(const char *));
     while (*arg) {
-        char *s = ap_getword_conf(cmd->pool, &arg);
+        const char *s = ap_getword_conf(cmd->pool, &arg);
 
         if (!strcasecmp(s, "omitpid")) {
             omit_pid = 1;
         }
         else {
-            char **new_type = (char **)apr_array_push(type_list);
+            const char **new_type = (const char **)apr_array_push(type_list);
             *new_type = s;
         }
     }
 
     if (apr_is_empty_array(type_list)) { /* no mutex type?  assume "default" */
-        char **new_type = (char **)apr_array_push(type_list);
+        const char **new_type = (const char **)apr_array_push(type_list);
         *new_type = "default";
     }
 
