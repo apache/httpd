@@ -63,7 +63,7 @@ Documentation</title>
     <page href="server-wide.html">Server-Wide Configuration</page>
     <page href="ssl/">SSL/TLS Encryption</page>
     <page href="suexec.html">Suexec Execution for CGI</page>
-    <page href="rewrite/">URL Rewriting Guide</page>
+    <page href="rewrite/">URL Rewriting with mod_rewrite</page>
     <page href="vhosts/">Virtual Hosts</page>
 </category>
 
