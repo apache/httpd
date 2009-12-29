@@ -377,6 +377,28 @@ will be discarded.
 </p>
 </section>
 
+<section id="flag_qsd"><title>QSD|qsdiscard</title>
+<p>
+When the requested URI contains a query string, and the target URI does
+not, the default behavior of <directive
+module="mod_rewrite">RewriteRule</directive> is to copy that query
+string to the target URI. Using the [QSD] flag causes the query string
+to be discarded.
+</p>
+
+<p>
+Using [QSD] and [QSA] together will result in [QSD] taking preference.
+</p>
+
+<p>
+If the target URI has a query string, the default behavior will be
+observed - that is, the original query string will be discarded and
+replaced with the query string in the <code>RewriteRule</code> target
+URI.
+</p>
+
+</section>
+
 <section id="flag_r"><title>R|redirect</title>
 <p>
 Use of the [R] flag causes a HTTP redirect to be issued to the browser.
