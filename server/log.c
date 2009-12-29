@@ -50,8 +50,8 @@
 #include "ap_mpm.h"
 
 typedef struct {
-    char    *t_name;
-    int      t_val;
+    const char *t_name;
+    int t_val;
 } TRANS;
 
 APR_HOOK_STRUCT(

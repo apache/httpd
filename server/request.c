@@ -89,7 +89,7 @@ static int auth_internal_per_conf_hooks = 0;
 static int auth_internal_per_conf_providers = 0;
 
 
-static int decl_die(int status, char *phase, request_rec *r)
+static int decl_die(int status, const char *phase, request_rec *r)
 {
     if (status == DECLINED) {
         ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,

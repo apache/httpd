@@ -35,8 +35,8 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
                                          const char *attrs, long maxage, ...)
 {
 
-    char *buffer;
-    char *rfc2109;
+    const char *buffer;
+    const char *rfc2109;
     apr_table_t *t;
     va_list vp;
 
@@ -79,8 +79,8 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
                                           const char *attrs2, long maxage, ...)
 {
 
-    char *buffer;
-    char *rfc2965;
+    const char *buffer;
+    const char *rfc2965;
     apr_table_t *t;
     va_list vp;
 
@@ -121,7 +121,7 @@ AP_DECLARE(apr_status_t) ap_cookie_remove(request_rec * r, const char *name, con
     va_list vp;
 
     /* create RFC2109 compliant cookie */
-    char *rfc2109 = apr_pstrcat(r->pool, name, "=;Max-Age=0;",
+    const char *rfc2109 = apr_pstrcat(r->pool, name, "=;Max-Age=0;",
                                 attrs ? attrs : CLEAR_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' removed cookie: '%s'", r->user, rfc2109);
@@ -149,7 +149,7 @@ AP_DECLARE(apr_status_t) ap_cookie_remove2(request_rec * r, const char *name2, c
     va_list vp;
 
     /* create RFC2965 compliant cookie */
-    char *rfc2965 = apr_pstrcat(r->pool, name2, "=;Max-Age=0;",
+    const char *rfc2965 = apr_pstrcat(r->pool, name2, "=;Max-Age=0;",
                                 attrs2 ? attrs2 : CLEAR_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' removed cookie2: '%s'", r->user, rfc2965);
@@ -178,7 +178,7 @@ static int extract_cookie_line(ap_cookie_do * v, const char *key, const char *va
     char *cookie = apr_pstrdup(v->r->pool, val);
     const char *name = apr_pstrcat(v->r->pool, v->name ? v->name : "", "=", NULL);
     size_t len = strlen(name);
-    char *new_cookie = "";
+    const char *new_cookie = "";
     const char *comma = ",";
     char *next1;
     const char *semi = ";";

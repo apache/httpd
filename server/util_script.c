@@ -121,9 +121,9 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
     server_rec *s = r->server;
     conn_rec *c = r->connection;
     const char *rem_logname;
-    char *env_path;
+    const char *env_path;
 #if defined(WIN32) || defined(OS2)
-    char *env_temp;
+    const char *env_temp;
 #endif
     const char *host;
     const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
