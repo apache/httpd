@@ -31,8 +31,8 @@
 #include "mod_auth.h"
 
 typedef struct {
-    char *grpfile;
-    char *dbmtype;
+    const char *grpfile;
+    const char *dbmtype;
 } authz_dbm_config_rec;
 
 APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
@@ -94,7 +94,7 @@ module AP_MODULE_DECLARE_DATA authz_dbm_module;
  */
 
 static apr_status_t get_dbm_grp(request_rec *r, char *key1, char *key2,
-                                char *dbmgrpfile, char *dbtype,
+                                const char *dbmgrpfile, const char *dbtype,
                                 const char ** out)
 {
     char *grp_colon, *val;
