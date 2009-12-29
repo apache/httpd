@@ -95,6 +95,11 @@ static int allowed_port(connect_conf *conf, int port)
 {
     int i;
     int *list = (int *) conf->allowed_connect_ports->elts;
+    
+    if(apr_is_empty_array(conf->allowed_connect_ports)){
+        return port == APR_URI_HTTPS_DEFAULT_PORT
+               || port == APR_URI_SNEWS_DEFAULT_PORT;
+    }
 
     for(i = 0; i < conf->allowed_connect_ports->nelts; i++) {
     if(port == list[i])
@@ -251,17 +256,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Check if it is an allowed port */
-    if (c_conf->allowed_connect_ports->nelts == 0) {
-    /* Default setting if not overridden by AllowCONNECT */
-        switch (uri.port) {
-            case APR_URI_HTTPS_DEFAULT_PORT:
-            case APR_URI_SNEWS_DEFAULT_PORT:
-                break;
-            default:
-                 return ap_proxyerror(r, HTTP_FORBIDDEN,
-                                      "Connect to remote machine blocked");
-        }
-    } else if(!allowed_port(c_conf, uri.port)) {
+    if(!allowed_port(c_conf, uri.port)) {
               return ap_proxyerror(r, HTTP_FORBIDDEN,
                                    "Connect to remote machine blocked");
     }
