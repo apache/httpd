@@ -153,6 +153,7 @@ static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
 #define RULEFLAG_STATUS             1<<13
 #define RULEFLAG_ESCAPEBACKREF      1<<14
 #define RULEFLAG_DISCARDPATHINFO    1<<15
+#define RULEFLAG_QSDISCARD          1<<16
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -754,7 +755,7 @@ static char *escape_absolute_uri(apr_pool_t *p, char *uri, unsigned scheme)
  * split out a QUERY_STRING part from
  * the current URI string
  */
-static void splitout_queryargs(request_rec *r, int qsappend)
+static void splitout_queryargs(request_rec *r, int qsappend, int qsdiscard)
 {
     char *q;
 
@@ -768,6 +769,11 @@ static void splitout_queryargs(request_rec *r, int qsappend)
         && strncasecmp(r->filename, "mailto", 6)) {
         r->args = NULL; /* forget the query that's still flying around */
         return;
+    }
+
+    if ( qsdiscard ) {
+        r->args = NULL; /* Discard query string */
+        rewritelog((r, 2, NULL, "discarding query string"));
     }
 
     q = ap_strchr(r->filename, '?');
@@ -3493,6 +3499,9 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
         if (   !strcasecmp(key, "SA")
             || !strcasecmp(key, "sappend")) {              /* qsappend */
             cfg->flags |= RULEFLAG_QSAPPEND;
+        } else if ( !strcasecmp(key, "SD")
+                || !strcasecmp(key, "sdiscard") ) {       /* qsdiscard */
+            cfg->flags |= RULEFLAG_QSDISCARD;
         }
         else {
             ++error;
@@ -3998,7 +4007,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         r->path_info = NULL; 
     }
 
-    splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND);
+    splitout_queryargs(r, p->flags & RULEFLAG_QSAPPEND, p->flags & RULEFLAG_QSDISCARD);
 
     /* Add the previously stripped per-directory location prefix, unless
      * (1) it's an absolute URL path and

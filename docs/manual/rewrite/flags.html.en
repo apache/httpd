@@ -363,6 +363,27 @@ will be discarded.
 </p>
 
 
+<h3><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a></h3>
+<p>
+When the requested URI contains a query string, and the target URI does
+not, the default behavior of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to copy that query
+string to the target URI. Using the [QSD] flag causes the query string
+to be discarded.
+</p>
+
+<p>
+Using [QSD] and [QSA] together will result in [QSD] taking preference.
+</p>
+
+<p>
+If the target URI has a query string, the default behavior will be
+observed - that is, the original query string will be discarded and
+replaced with the query string in the <code>RewriteRule</code> target
+URI.
+</p>
+
+
+
 <h3><a name="flag_r" id="flag_r">R|redirect</a></h3>
 <p>
 Use of the [R] flag causes a HTTP redirect to be issued to the browser.

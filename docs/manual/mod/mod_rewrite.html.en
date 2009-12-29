@@ -1370,6 +1370,14 @@ cannot use <code>$N</code> in the substitution string!
         data to the query string via a rewrite rule. This rule has no net effect
         unless your substitution explicitly provides a new query string.</dd>
 
+        <dt>'<code>qsdiscard|QSD</code>'
+        (query string discard)</dt><dd>
+        Discards any query string attached to the incoming URI. Without
+        this flag, the query string will be automatically copied from
+        the request URI to the rewritten URL. Note, however, that if you
+        provide a query string on your target URI, that one will be used
+        instead.</dd>
+
         <dt>'<code>redirect|R</code>
           [=<em>code</em>]' (force <a id="redirect" name="redirect">redirect</a>)</dt><dd>
         <p>Prefix <em>Substitution</em> with
