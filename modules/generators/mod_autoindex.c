@@ -1482,6 +1482,7 @@ static void output_directories(struct ent **ar, int n,
                                char direction, const char *colargs)
 {
     int x;
+    int row_count;
     apr_size_t rv;
     char *name = r->uri;
     char *tp;
@@ -1658,7 +1659,23 @@ static void output_directories(struct ent **ar, int n,
         }
 
         if (autoindex_opts & TABLE_INDEXING) {
-            ap_rputs("<tr>", r);
+            ap_rputs("<tr", r);
+
+            /* Even/Odd rows for IndexStyleSheet */
+            if (d->style_sheet != NULL) {
+                ap_rputs(" class=\"", r);
+                if ( row_count % 2 == 0 ) {
+                    ap_rputs("ai_tr_even", r);
+                }
+                else {
+                    ap_rputs("ai_tr_odd", r);
+                }
+                ap_rputs("\"", r);
+                row_count++;
+            }
+
+            ap_rputs(">", r);
+
             if (!(autoindex_opts & SUPPRESS_ICON)) {
                 ap_rputs("<td valign=\"top\">", r);
                 if (autoindex_opts & ICONS_ARE_LINKS) {

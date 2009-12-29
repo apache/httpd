@@ -934,6 +934,12 @@ Name|Date|Size|Description</syntax>
       <title>Example</title>
       IndexStyleSheet "/css/style.css"
     </example>
+
+    <p>Using this directive in conjunction with <code>IndexOptions
+    HTMLTable</code> also adds <code>ai-tr-odd</code> and
+    <code>ai-tr-even</code> class declarations to alternating rows of
+    the directory listing table, so that you can style alternate rows of
+    the table differently.</p>
 </usage>
 </directivesynopsis>
 

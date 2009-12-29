@@ -900,6 +900,12 @@ Name|Date|Size|Description</code></td></tr>
       IndexStyleSheet "/css/style.css"
     </code></p></div>
 
+    <p>Using this directive in conjunction with <code>IndexOptions
+    HTMLTable</code> also adds <code>ai-tr-odd</code> and
+    <code>ai-tr-even</code> class declarations to alternating rows of
+    the directory listing table, so that you can style alternate rows of
+    the table differently.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ReadmeName" id="ReadmeName">ReadmeName</a> <a name="readmename" id="readmename">Directive</a></h2>
