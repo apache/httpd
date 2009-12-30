@@ -28,17 +28,15 @@
 <summary>
 <p>This document discusses the flags which are available to the
 <directive module="mod_rewrite">RewriteRule</directive> directive,
-providing detailed explanations and examples. This is not necessarily
-a comprehensive list of all flags available, so be sure to also
-consult the reference documentation.</p>
+providing detailed explanations and examples.</p>
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="tech.html">Technical details</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
-<p><directive module="mod_rewrite">RewriteRule</directive>s can have
-their behavior modified by one or more flags. Flags are included in
+<p>A <directive module="mod_rewrite">RewriteRule</directive> can have
+its behavior modified by one or more flags. Flags are included in
 square brackets at the end of the rule, and multiple flags are separated
 by commas.</p>
 <example>
@@ -53,7 +51,8 @@ arguments. Flags are not case sensitive.</p>
 
 <section id="flags"><title>The flags</title>
 
-<p>Each flag has a long and short form. While it is most common to use
+<p>Each flag (with a few exceptions) 
+has a long and short form. While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
 long form, so that you remember what each flag is supposed to do.</p>
 
