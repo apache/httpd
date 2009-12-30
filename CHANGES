@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.5
 
+  *) mod_proxy, mod_proxy_ftp: Move ProxyFtpDirCharset from mod_proxy to
+     mod_proxy_ftp. [Takashi Sato]
+
   *) mod_proxy, mod_proxy_connect: Move AllowCONNECT from mod_proxy to
      mod_proxy_connect. [Takashi Sato]
 
