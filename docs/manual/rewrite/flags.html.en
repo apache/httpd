@@ -27,7 +27,26 @@
 providing detailed explanations and examples.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#flags">The flags</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_b">B (escape backreferences)</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_c">C|chain</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_co">CO|cookie</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_dpi">DPI|discardpathinfo</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_e">E|env</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_f">F|forbidden</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_g">G|gone</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_h">H|handler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_l">L|last</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_n">N|next</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_nc">NC|nocase</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_ne">NE|noescape</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_ns">NS|nosubreq</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_p">P|proxy</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_pt">PT|passthrough</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsa">QSA|qsappend</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_qsd">QSD|qsdiscard</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_r">R|redirect</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_s">S|skip</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flag_t">T|type</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -44,10 +63,6 @@ RewriteRule pattern target [Flag1,Flag2,Flag3]
 a longer form, such as <code>cookie</code>. Some flags take one or more
 arguments. Flags are not case sensitive.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="flags" id="flags">The flags</a></h2>
-
 <p>Each flag (with a few exceptions) 
 has a long and short form. While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
@@ -55,35 +70,93 @@ long form, so that you remember what each flag is supposed to do.</p>
 
 <p>Presented here are each of the available flags, along with an example
 of how you might use them.</p>
-
-<h3><a name="flag_b" id="flag_b">B</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_b" id="flag_b">B (escape backreferences)</a></h2>
 <p>The [B] flag instructs <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to escape non-alphanumeric
 characters before applying the transformation.
 </p>
 
+<p>Apache has to unescape URLs before mapping them,
+so backreferences will be unescaped at the time they are applied.
+Using the B flag, non-alphanumeric characters in backreferences
+will be escaped. For example, consider the rule:</p>
 
-<h3><a name="flag_c" id="flag_c">C|chain</a></h3>
+<div class="example"><p><code>
+RewriteRule ^(/.*)$ /index.php?show=$1
+</code></p></div>
+
+<p>This will map <code>/C++</code> to
+<code>/index.php?show=/C++</code>. But it will also map
+<code>/C%2b%2b</code> to <code>/index.php?show=/C++</code>, because
+the <code>%2b</code> has been unescaped.  With the B flag, it will
+instead map to <code>/index.php?show=/C%2b%2b</code>.</p>
+
+<p>This escaping is particularly necessary in a proxy situation,
+when the backend may break if presented with an unescaped URL.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_c" id="flag_c">C|chain</a></h2>
 <p>The [C] or [chain] flag indicates that the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is chained to the next
 rule. That is, if the rule matches, then it is processed as usual and
 control moves on to the next rule. However, if it does not match, then
 the next rule, and any other rules that are chained together, will be
 skipped.</p>
 
-
-
-<h3><a name="flag_co" id="flag_co">CO|cookie</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_co" id="flag_co">CO|cookie</a></h2>
 <p>The [CO], or [cookie] flag, allows you to set a cookie when a
 particular <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
-matches. The argument consists of three required fields and two optional
+matches. The argument consists of three required fields and five optional
 fields.</p>
-<p>You must declare a name and value for the cookie to be set, and the
-domain for which you wish the cookie to be valid. You may optionally set
-the lifetime of the cookie, and the path for which it should be
-returned.</p>
-<p>By default, the lifetime of the cookie is the current browser
-session.</p>
-<p>By default, the path for which the cookie will be valid is "/" - that
-is, the entire website.</p>
+
+<p>The full syntax for the flag, including all attributes, is as
+follows:</p>
+
+<div class="example"><p><code>
+[CO=NAME:VALUE:domain:lifetime:path:secure:httponly]
+</code></p></div>
+
+<p>You must declare a name and value for the cookie to be set.</p>
+
+<p>You may optionally also set the following values:</p>
+
+<dl>
+<dt>Domain</dt>
+<dd>The domain for which you want the cookie to be valid. This may be a
+hostname, such as <code>www.example.com</code>, or it may be a domain,
+such as <code>.example.com</code>. It must be at least two parts
+separated by a dot. That is, it may not be merely <code>.com</code> or
+<code>.net</code>. Cookies of that kind are forbidden by the cookie
+security model.</dd>
+<dd>The default value for the domain is the current domain.</dd>
+
+<dt>Lifetime</dt>
+<dd>The time for which the cookie will persist, in minutes.</dd>
+<dd>A value of 0 indicates that the cookie will persist only for the
+current browser session. This is the default value if none is
+specified.</dd>
+
+<dt>Path</dt>
+<dd>The path, on the current website, for which the cookie is valid,
+such as <code>/customers/</code> or <code>/files/download/</code>.</dd>
+<dd>By default, this is set to <code>/</code> - that is, the entire
+website.</dd>
+
+<dt>Secure</dt>
+<dd>If set to <code>secure</code>, <code>true</code>, or <code>1</code>,
+the cookie will only be permitted to be translated via secure (https)
+connections.</dd>
+
+<dt>httponly</dt>
+<dd>If set to <code>HttpOnly</code>, <code>true</code>, or
+<code>1</code>, the cookie will have the <code>HttpOnly</code> flag set,
+which means that the cookie will be inaccessible to JavaScript code on
+browsers that support this feature.</dd>
+</dl>
+
 <p>Several examples are offered here:</p>
 
 <div class="example"><p><code>
@@ -98,19 +171,57 @@ called 'frontdoor' to a value of 'yes'. The cookie is valid for any host
 in the <code>.apache.org</code> domain. It will be set to expire in 1440
 minutes (24 hours) and will be returned for all URIs.</p>
 
-
-
-<h3><a name="flag_dpi" id="flag_dpi">DPI|discardpathinfo</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_dpi" id="flag_dpi">DPI|discardpathinfo</a></h2>
 <p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
 discarded.</p>
+<p>This flag is available from 2.2.12</p>
+<p>In per-directory context, the URI each <code class="directive">RewriteRule</code>
+compares against is the concatenation of the current values of the URI
+and PATH_INFO.</p>
 
+<p>The current URI can be the initial URI as requested by the client, the
+result of a previous round of mod_rewrite processing, or the result of
+a prior rule in the current round of mod_rewrite processing.</p>
 
-<h3><a name="flag_e" id="flag_e">E|env</a></h3>
+<p>In contrast, the PATH_INFO that is appended to the URI before each
+rule reflects only the value of PATH_INFO before this round of
+mod_rewrite processing. As a consequence, if large portions
+of the URI are matched and copied into a substitution in multiple
+<code class="directive">RewriteRule</code> directives, without regard for
+which parts of the URI came from the current PATH_INFO, the final
+URI may have multiple copies of PATH_INFO appended to it.</p>
+
+<p>Use this flag on any substitution where the PATH_INFO that resulted
+from the previous mapping of this request to the filesystem is not of
+interest.  This flag permanently forgets the PATH_INFO established
+before this round of mod_rewrite processing began. PATH_INFO will
+not be recalculated until the current round of mod_rewrite processing
+completes.  Subsequent rules during this round of processing will see
+only the direct result of substitutions, without any PATH_INFO
+appended.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_e" id="flag_e">E|env</a></h2>
 <p>With the [E], or [env] flag, you can set the value of an environment
 variable. Note that some environment variables may be set after the rule
 is run, thus unsetting what you have set. See <a href="../env.html">the
 Environment Variables document</a> for more details on how Environment
 variables work.</p>
+
+<p>The syntax for this flag is:</p>
+
+<div class="example"><p><code>
+[E:VAR=VAL]
+</code></p></div>
+
+<p><code>VAL</code> may contain backreferences (<code>$N</code> or
+<code>%N</code>) which will be expanded.</p>
+
+<p>These environment variables can then be used in a variety of
+contexts, including CGI programs, other RewriteRule directives, or
+CustomLog directives.</p>
 
 <p>The following example sets an evironment variable called 'image' to a
 value of '1' if the requested URI is an image file. Then, that
@@ -124,9 +235,9 @@ CustomLog logs/access_log combined env=!image
 
 <p>Note that this same effect can be obtained using <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. This technique is offered as
 an example, not as a recommendation.</p>
-
-
-<h3><a name="flag_f" id="flag_f">F|forbidden</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_f" id="flag_f">F|forbidden</a></h2>
 <p>Using the [F] flag causes Apache to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
 the <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> directive, this 
@@ -143,9 +254,9 @@ RewriteRule \.exe - [F]
 that the requested URI is not modified. There's no reason to rewrite to
 another URI, if you're going to forbid the request.</p>
 
-
-
-<h3><a name="flag_g" id="flag_g">G|gone</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_g" id="flag_g">G|gone</a></h2>
 <p>The [G] flag forces Apache to return a 410 Gone status with the
 response. This indicates that a resource used to be available, but is no
 longer available.</p>
@@ -156,9 +267,9 @@ rewrite target when using the [G] flag:</p>
 <div class="example"><p><code>
 RewriteRule oldproduct - [G,NC]
 </code></p></div>
-
-
-<h3><a name="flag_h" id="flag_h">H|handler</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_h" id="flag_h">H|handler</a></h2>
 <p>Forces the resulting request to be handled with the specified
 handler. For example, one might use this to force all files without a
 file extension to be parsed by the php handler:</p>
@@ -186,9 +297,9 @@ match any request that starts with <code>/source/</code> followed by 1 or
 n characters followed by <code>.phps</code> literally. The backreference
 $1 referrers to the captured match within parenthesis of the regular
 expression.</p>
-
-
-<h3><a name="flag_l" id="flag_l">L|last</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_l" id="flag_l">L|last</a></h2>
 <p>The [L] flag causes <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to stop processing
 the rule set. In most contexts, this means that if the rule matches, no
 further rules will be processed.</p>
@@ -221,9 +332,9 @@ is already for <code>index.php</code>, the <code class="directive"><a href="../m
 RewriteCond %{REQUEST_URI} !=index.php<br />
 RewriteRule ^(.*) index.php?req=$1 [L]
 </code></p></div>
-
-
-<h3><a name="flag_n" id="flag_n">N|next</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_n" id="flag_n">N|next</a></h2>
 <p>
 The [N] flag causes the ruleset to start over again from the top. Use
 with extreme caution, as it may result in loop.
@@ -244,9 +355,9 @@ pattern still matches (i.e., while the URI still contains an
 <code>A</code>), perform this substitution (i.e., replace the
 <code>A</code> with a <code>B</code>).</p>
 
-
-
-<h3><a name="flag_nc" id="flag_nc">NC|nocase</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_nc" id="flag_nc">NC|nocase</a></h2>
 <p>Use of the [NC] flag causes the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be matched in a
 case-insensitive manner. That is, it doesn't care whether letters appear
 as upper-case or lower-case in the matched URI.</p>
@@ -259,9 +370,9 @@ example.</p>
 <div class="example"><p><code>
 RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
 </code></p></div>
-
-
-<h3><a name="flag_ne" id="flag_ne">NE|noescape</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_ne" id="flag_ne">NE|noescape</a></h2>
 <p>By default, special characters, such as <code>&amp;</code> and
 <code>?</code>, for example, will be converted to their hexcode
 equivalent. Using the [NE] flag prevents that from happening.
@@ -278,9 +389,9 @@ being converted to its hexcode equivalent, <code>%23</code>, which will
 then result in a 404 Not Found error condition.
 </p>
 
-
-
-<h3><a name="flag_ns" id="flag_ns">NS|nosubreq</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_ns" id="flag_ns">NS|nosubreq</a></h2>
 <p>Use of the [NS] flag prevents the rule from being used on
 subrequests. For example, a page which is included using an SSI (Server
 Side Include) is a subrequest, and you may want to avoid rewrites
@@ -291,9 +402,9 @@ Images, javascript files, or css files, loaded as part of an HTML page,
 are not subrequests - the browser requests them as separate HTTP
 requests.
 </p>
-
-
-<h3><a name="flag_p" id="flag_p">P|proxy</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_p" id="flag_p">P|proxy</a></h2>
 <p>Use of the [P] flag causes the request to be handled by
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, and handled via a proxy request. For
 example, if you wanted all image requests to be handled by a back-end
@@ -307,9 +418,9 @@ RewriteRule (.*)\.(jpg|gif|png) http://images.example.com$1.$2 [P]
 pushed through the proxy, and any following rules will not be
 considered.</p>
 
-
-
-<h3><a name="flag_pt" id="flag_pt">PT|passthrough</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_pt" id="flag_pt">PT|passthrough</a></h2>
 
 <p>
 The target (or substitution string) in a RewriteRule is assumed to be a
@@ -338,9 +449,9 @@ Omission of the [PT] flag in this case will cause the Alias to be
 ignored, resulting in a 'File not found' error being returned.
 </p>
 
-
-
-<h3><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a></h2>
 <p>
 When the replacement URI contains a query string, the default behavior
 of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to discard
@@ -360,9 +471,9 @@ flag, that same request will be mapped to
 <code>/page.php?page=123</code> - that is, the existing query string
 will be discarded.
 </p>
-
-
-<h3><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_qsd" id="flag_qsd">QSD|qsdiscard</a></h2>
 <p>
 When the requested URI contains a query string, and the target URI does
 not, the default behavior of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to copy that query
@@ -381,9 +492,9 @@ replaced with the query string in the <code>RewriteRule</code> target
 URI.
 </p>
 
-
-
-<h3><a name="flag_r" id="flag_r">R|redirect</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_r" id="flag_r">R|redirect</a></h2>
 <p>
 Use of the [R] flag causes a HTTP redirect to be issued to the browser.
 If a fully-qualified URL is specified (that is, including
@@ -405,9 +516,9 @@ on to the next rule in the ruleset, which can often result in 'Invalid
 URI in request' warnings.
 </p>
 
-
-
-<h3><a name="flag_s" id="flag_s">S|skip</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_s" id="flag_s">S|skip</a></h2>
 <p>The [S] flag is used to skip rules that you don't want to run. This
 can be thought of as a <code>goto</code> statement in your rewrite
 ruleset. In the following example, we only want to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the requested URI
@@ -430,9 +541,9 @@ following it. Thus, if you want to make a <code>RewriteCond</code> apply
 to several <code>RewriteRule</code>s, one possible technique is to
 negate those conditions and use a [Skip] flag.</p>
 
-
-
-<h3><a name="flag_t" id="flag_t">T|type</a></h3>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="flag_t" id="flag_t">T|type</a></h2>
 <p>Sets the MIME type with which the resulting response will be
 sent. This has the same effect as the <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> directive.</p>
 
@@ -458,8 +569,6 @@ using <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMat
 instead. Always consider the alternate
 solutions to a problem before resorting to rewrite, which will
 invariably be a less efficient solution than the alternatives.</p>
-
-
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |

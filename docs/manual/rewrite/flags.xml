@@ -47,10 +47,6 @@ RewriteRule pattern target [Flag1,Flag2,Flag3]
 a longer form, such as <code>cookie</code>. Some flags take one or more
 arguments. Flags are not case sensitive.</p>
 
-</section>
-
-<section id="flags"><title>The flags</title>
-
 <p>Each flag (with a few exceptions) 
 has a long and short form. While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
@@ -58,12 +54,32 @@ long form, so that you remember what each flag is supposed to do.</p>
 
 <p>Presented here are each of the available flags, along with an example
 of how you might use them.</p>
+</section>
 
-<section id="flag_b"><title>B</title>
+<section id="flag_b"><title>B (escape backreferences)</title>
 <p>The [B] flag instructs <directive
 module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.
 </p>
+
+<p>Apache has to unescape URLs before mapping them,
+so backreferences will be unescaped at the time they are applied.
+Using the B flag, non-alphanumeric characters in backreferences
+will be escaped. For example, consider the rule:</p>
+
+<example>
+RewriteRule ^(/.*)$ /index.php?show=$1
+</example>
+
+<p>This will map <code>/C++</code> to
+<code>/index.php?show=/C++</code>. But it will also map
+<code>/C%2b%2b</code> to <code>/index.php?show=/C++</code>, because
+the <code>%2b</code> has been unescaped.  With the B flag, it will
+instead map to <code>/index.php?show=/C%2b%2b</code>.</p>
+
+<p>This escaping is particularly necessary in a proxy situation,
+when the backend may break if presented with an unescaped URL.</p>
+
 </section>
 
 <section id="flag_c"><title>C|chain</title>
@@ -79,16 +95,54 @@ skipped.</p>
 <section id="flag_co"><title>CO|cookie</title>
 <p>The [CO], or [cookie] flag, allows you to set a cookie when a
 particular <directive module="mod_rewrite">RewriteRule</directive>
-matches. The argument consists of three required fields and two optional
+matches. The argument consists of three required fields and five optional
 fields.</p>
-<p>You must declare a name and value for the cookie to be set, and the
-domain for which you wish the cookie to be valid. You may optionally set
-the lifetime of the cookie, and the path for which it should be
-returned.</p>
-<p>By default, the lifetime of the cookie is the current browser
-session.</p>
-<p>By default, the path for which the cookie will be valid is "/" - that
-is, the entire website.</p>
+
+<p>The full syntax for the flag, including all attributes, is as
+follows:</p>
+
+<example>
+[CO=NAME:VALUE:domain:lifetime:path:secure:httponly]
+</example>
+
+<p>You must declare a name and value for the cookie to be set.</p>
+
+<p>You may optionally also set the following values:</p>
+
+<dl>
+<dt>Domain</dt>
+<dd>The domain for which you want the cookie to be valid. This may be a
+hostname, such as <code>www.example.com</code>, or it may be a domain,
+such as <code>.example.com</code>. It must be at least two parts
+separated by a dot. That is, it may not be merely <code>.com</code> or
+<code>.net</code>. Cookies of that kind are forbidden by the cookie
+security model.</dd>
+<dd>The default value for the domain is the current domain.</dd>
+
+<dt>Lifetime</dt>
+<dd>The time for which the cookie will persist, in minutes.</dd>
+<dd>A value of 0 indicates that the cookie will persist only for the
+current browser session. This is the default value if none is
+specified.</dd>
+
+<dt>Path</dt>
+<dd>The path, on the current website, for which the cookie is valid,
+such as <code>/customers/</code> or <code>/files/download/</code>.</dd>
+<dd>By default, this is set to <code>/</code> - that is, the entire
+website.</dd>
+
+<dt>Secure</dt>
+<dd>If set to <code>secure</code>, <code>true</code>, or <code>1</code>,
+the cookie will only be permitted to be translated via secure (https)
+connections.</dd>
+
+<dt>httponly</dt>
+<dd>If set to <code>HttpOnly</code>, <code>true</code>, or
+<code>1</code>, the cookie will have the <code>HttpOnly</code> flag set,
+which means that the cookie will be inaccessible to JavaScript code on
+browsers that support this feature.</dd>
+</dl>
+
 <p>Several examples are offered here:</p>
 
 <example>
@@ -108,6 +162,31 @@ minutes (24 hours) and will be returned for all URIs.</p>
 <section id="flag_dpi"><title>DPI|discardpathinfo</title>
 <p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
 discarded.</p>
+<p>This flag is available from 2.2.12</p>
+<p>In per-directory context, the URI each <directive>RewriteRule</directive>
+compares against is the concatenation of the current values of the URI
+and PATH_INFO.</p>
+
+<p>The current URI can be the initial URI as requested by the client, the
+result of a previous round of mod_rewrite processing, or the result of
+a prior rule in the current round of mod_rewrite processing.</p>
+
+<p>In contrast, the PATH_INFO that is appended to the URI before each
+rule reflects only the value of PATH_INFO before this round of
+mod_rewrite processing. As a consequence, if large portions
+of the URI are matched and copied into a substitution in multiple
+<directive>RewriteRule</directive> directives, without regard for
+which parts of the URI came from the current PATH_INFO, the final
+URI may have multiple copies of PATH_INFO appended to it.</p>
+
+<p>Use this flag on any substitution where the PATH_INFO that resulted
+from the previous mapping of this request to the filesystem is not of
+interest.  This flag permanently forgets the PATH_INFO established
+before this round of mod_rewrite processing began. PATH_INFO will
+not be recalculated until the current round of mod_rewrite processing
+completes.  Subsequent rules during this round of processing will see
+only the direct result of substitutions, without any PATH_INFO
+appended.</p>
 </section>
 
 <section id="flag_e"><title>E|env</title>
@@ -116,6 +195,19 @@ variable. Note that some environment variables may be set after the rule
 is run, thus unsetting what you have set. See <a href="../env.html">the
 Environment Variables document</a> for more details on how Environment
 variables work.</p>
+
+<p>The syntax for this flag is:</p>
+
+<example>
+[E:VAR=VAL]
+</example>
+
+<p><code>VAL</code> may contain backreferences (<code>$N</code> or
+<code>%N</code>) which will be expanded.</p>
+
+<p>These environment variables can then be used in a variety of
+contexts, including CGI programs, other RewriteRule directives, or
+CustomLog directives.</p>
 
 <p>The following example sets an evironment variable called 'image' to a
 value of '1' if the requested URI is an image file. Then, that
@@ -478,6 +570,5 @@ solutions to a problem before resorting to rewrite, which will
 invariably be a less efficient solution than the alternatives.</p>
 </section>
 
-</section>
 </manualpage>
 
