@@ -42,6 +42,7 @@ typedef struct {
     int ftp_list_on_wildcard_set;
     int ftp_escape_wildcards;
     int ftp_escape_wildcards_set;
+    const char *ftp_directory_charset;
 } proxy_ftp_dir_conf;
 
 static void *create_proxy_ftp_dir_config(apr_pool_t *p, char *dummy)
@@ -75,7 +76,9 @@ static void *merge_proxy_ftp_dir_config(apr_pool_t *p, void *basev, void *addv)
     new->ftp_escape_wildcards_set = add->ftp_escape_wildcards_set ?
                                 1 :
                                 base->ftp_escape_wildcards_set;
-
+    new->ftp_directory_charset = add->ftp_directory_charset ?
+                                 add->ftp_directory_charset :
+                                 base->ftp_directory_charset;
     return new;
 }
 
@@ -96,6 +99,15 @@ static const char *set_ftp_escape_wildcards(cmd_parms *cmd, void *dconf,
 
     conf->ftp_escape_wildcards = flag;
     conf->ftp_escape_wildcards_set = 1;
+    return NULL;
+}
+
+static const char *set_ftp_directory_charset(cmd_parms *cmd, void *dconf,
+                                             const char *arg)
+{
+    proxy_ftp_dir_conf *conf = dconf;
+
+    conf->ftp_directory_charset = arg;
     return NULL;
 }
 
@@ -1785,12 +1797,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 
     /* set content-type */
     if (dirlisting) {
-        proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
-                                                     &proxy_module);
-
         ap_set_content_type(r, apr_pstrcat(p, "text/html;charset=",
-                                           dconf->ftp_directory_charset ?
-                                           dconf->ftp_directory_charset :
+                                           fdconf->ftp_directory_charset ?
+                                           fdconf->ftp_directory_charset :
                                            "ISO-8859-1",  NULL));
     }
     else {
@@ -2013,6 +2022,8 @@ static const command_rec proxy_ftp_cmds[] =
      RSRC_CONF|ACCESS_CONF, "Whether wildcard characters in a path cause mod_proxy_ftp to list the files instead of trying to get them. Defaults to on."),
     AP_INIT_FLAG("ProxyFtpEscapeWildcards", set_ftp_escape_wildcards, NULL,
      RSRC_CONF|ACCESS_CONF, "Whether the proxy should escape wildcards in paths before sending them to the FTP server.  Defaults to on, but most FTP servers will need it turned off if you need to manage paths that contain wildcard characters."),
+    AP_INIT_TAKE1("ProxyFtpDirCharset", set_ftp_directory_charset, NULL,
+     RSRC_CONF|ACCESS_CONF, "Define the character set for proxied FTP listings"),
     {NULL}
 };
 

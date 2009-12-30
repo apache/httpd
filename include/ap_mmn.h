@@ -208,13 +208,15 @@
  * 20091119.1 (2.3.4-dev)  ap_mutex_register(), ap_{proc,global}_mutex_create()
  * 20091229.0 (2.3.5-dev)  Move allowed_connect_ports from proxy_server_conf
  *                         to mod_proxy_connect
+ * 20091230.0 (2.3.5-dev)  Move ftp_directory_charset from proxy_dir_conf
+ *                         to proxy_ftp_dir_conf(mod_proxy_ftp)
  *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20091229
+#define MODULE_MAGIC_NUMBER_MAJOR 20091230
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
