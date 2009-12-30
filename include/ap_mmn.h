@@ -206,7 +206,7 @@
  * 20091031.0 (2.3.3-dev)  remove public LDAP referral-related macros
  * 20091119.0 (2.3.4-dev)  dav_error interface uses apr_status_t parm, not errno
  * 20091119.1 (2.3.4-dev)  ap_mutex_register(), ap_{proc,global}_mutex_create()
- * 20091229.0 (2.3.4-dev)  Move allowed_connect_ports from proxy_server_conf
+ * 20091229.0 (2.3.5-dev)  Move allowed_connect_ports from proxy_server_conf
  *                         to mod_proxy_connect
  *
  */
