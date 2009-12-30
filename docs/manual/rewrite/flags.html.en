@@ -24,9 +24,7 @@
 
 <p>This document discusses the flags which are available to the
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive,
-providing detailed explanations and examples. This is not necessarily
-a comprehensive list of all flags available, so be sure to also
-consult the reference documentation.</p>
+providing detailed explanations and examples.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flags">The flags</a></li>
@@ -34,8 +32,8 @@ consult the reference documentation.</p>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
-<p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s can have
-their behavior modified by one or more flags. Flags are included in
+<p>A <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> can have
+its behavior modified by one or more flags. Flags are included in
 square brackets at the end of the rule, and multiple flags are separated
 by commas.</p>
 <div class="example"><p><code>
@@ -50,7 +48,8 @@ arguments. Flags are not case sensitive.</p>
 <div class="section">
 <h2><a name="flags" id="flags">The flags</a></h2>
 
-<p>Each flag has a long and short form. While it is most common to use
+<p>Each flag (with a few exceptions) 
+has a long and short form. While it is most common to use
 the short form, it is recommended that you familiarize yourself with the
 long form, so that you remember what each flag is supposed to do.</p>
 
