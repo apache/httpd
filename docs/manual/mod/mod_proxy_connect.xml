@@ -57,6 +57,7 @@ proxy</description>
 <default>AllowCONNECT 443 563</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Moved from <module>mod_proxy</module> in Apache 2.3.5.</compatibility>
 
 <usage>
     <p>The <directive>AllowCONNECT</directive> directive specifies a list
