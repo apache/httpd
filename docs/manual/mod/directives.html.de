@@ -65,7 +65,7 @@
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
 <li><a href="mod_access_compat.html#allow">Allow</a></li>
-<li><a href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
+<li><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><a href="core.html#allowoverride">AllowOverride</a></li>
 <li><a href="mod_authn_anon.html#anonymous">Anonymous</a></li>
@@ -327,7 +327,7 @@
 <li><a href="mod_proxy.html#proxyblock">ProxyBlock</a></li>
 <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
 <li><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></li>
-<li><a href="mod_proxy.html#proxyftpdircharset">ProxyFtpDirCharset</a></li>
+<li><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset</a></li>
 <li><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
 <li><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
 <li><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize</a></li>
