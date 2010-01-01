@@ -31,9 +31,9 @@ but this doc should help the beginner get their feet wet.
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#regex">Regular Expressions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule basics</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule Basics</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#flags">Rewrite Flags</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">Rewrite conditions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">Rewrite Conditions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">Rewrite maps</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="advanced.html">Advanced techniques and tricks</a></li><li><a href="avoid.html">When not to use mod_rewrite</a></li></ul></div>
@@ -155,7 +155,7 @@ the expression.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewriterule" id="rewriterule">RewriteRule basics</a></h2>
+<h2><a name="rewriterule" id="rewriterule">RewriteRule Basics</a></h2>
 <p>A <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> consists
 of three arguments separated by spaces. The arguments are</p>
 <ol>
@@ -168,6 +168,12 @@ of three arguments separated by spaces. The arguments are</p>
 expression</a> matched against the URL-Path of the incoming request
 (the part after the hostname but before any question mark indicating
 the beginning of a query string).</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png" alt="Syntax of the RewriteRule directive" /><br />
+      <dfn>Figure 2:</dfn> Syntax of the RewriteRule directive.
+</p>
+
 
 <p>The <var>Substitution</var> can itself be one of three things:</p>
 
@@ -236,7 +242,7 @@ examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="rewritecond" id="rewritecond">Rewrite conditions</a></h2>
+<h2><a name="rewritecond" id="rewritecond">Rewrite Conditions</a></h2>
 <p>One or more <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
 directives can be used to restrict the types of requests that will be
 subject to the
@@ -245,6 +251,11 @@ first argument is a variable describing a characteristic of the
 request, the second argument is a <a href="#regex">regular
 expression</a> that must match the variable, and a third optional
 argument is a list of flags that modify how the match is evaluated.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png" alt="Syntax of the RewriteCond directive" /><br />
+      <dfn>Figure 3:</dfn> Syntax of the RewriteCond directive
+</p>
 
 <p>For example, to send all requests from a particular IP range to a
 different server, you could use:</p>

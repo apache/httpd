@@ -160,7 +160,7 @@ the expression.</p>
 </section>
 </section>
 
-<section id="rewriterule"><title>RewriteRule basics</title>
+<section id="rewriterule"><title>RewriteRule Basics</title>
 <p>A <directive module="mod_rewrite">RewriteRule</directive> consists
 of three arguments separated by spaces. The arguments are</p>
 <ol>
@@ -173,6 +173,13 @@ of three arguments separated by spaces. The arguments are</p>
 expression</a> matched against the URL-Path of the incoming request
 (the part after the hostname but before any question mark indicating
 the beginning of a query string).</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png" 
+      alt="Syntax of the RewriteRule directive" /><br />
+      <dfn>Figure 2:</dfn> Syntax of the RewriteRule directive.
+</p>
+
 
 <p>The <var>Substitution</var> can itself be one of three things:</p>
 
@@ -243,7 +250,7 @@ examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
 </section>
 
 
-<section id="rewritecond"><title>Rewrite conditions</title>
+<section id="rewritecond"><title>Rewrite Conditions</title>
 <p>One or more <directive module="mod_rewrite">RewriteCond</directive>
 directives can be used to restrict the types of requests that will be
 subject to the
@@ -252,6 +259,12 @@ first argument is a variable describing a characteristic of the
 request, the second argument is a <a href="#regex">regular
 expression</a> that must match the variable, and a third optional
 argument is a list of flags that modify how the match is evaluated.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png" 
+      alt="Syntax of the RewriteCond directive" /><br />
+      <dfn>Figure 3:</dfn> Syntax of the RewriteCond directive
+</p>
 
 <p>For example, to send all requests from a particular IP range to a
 different server, you could use:</p>
