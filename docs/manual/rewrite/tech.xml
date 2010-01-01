@@ -133,8 +133,8 @@ and URL matching.</p>
       first, and so the control flow is a little bit long-winded. See
       Figure 1 for more details.</p>
 <p class="figure">
-      <img src="../images/mod_rewrite_fig1.gif" width="428"
-           height="385" alt="[Needs graphics capability to display]" /><br />
+      <img src="../images/rewrite_rule_flow.png"
+          alt="Flow of RewriteRule and RewriteCond matching" /><br />
       <dfn>Figure 1:</dfn>The control flow through the rewriting ruleset
 </p>
       <p>As you can see, first the URL is matched against the
