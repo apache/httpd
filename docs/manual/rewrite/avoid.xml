@@ -53,5 +53,12 @@ configuration.</p>
 <seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
 <!--<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>-->
 
+<section id="coming">
+
+<title>Coming Soon ...</title>
+<p>
+This document currently being written.
+</p>
+</section>
 
 </manualpage> 
