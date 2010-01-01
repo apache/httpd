@@ -337,7 +337,8 @@ RewriteRule ^(.*) index.php?req=$1 [L]
 
 <section id="flag_n"><title>N|next</title>
 <p>
-The [N] flag causes the ruleset to start over again from the top. Use
+The [N] flag causes the ruleset to start over again from the top, using
+the result of the ruleset so far as a starting point. Use
 with extreme caution, as it may result in loop.
 </p>
 <p>
@@ -397,7 +398,18 @@ then result in a 404 Not Found error condition.
 <p>Use of the [NS] flag prevents the rule from being used on
 subrequests. For example, a page which is included using an SSI (Server
 Side Include) is a subrequest, and you may want to avoid rewrites
-happening on those subrequests.</p>
+happening on those subrequests. Also, when <module>mod_dir</module>
+tries to find out information about possible directory default files
+(such as <code>index.html</code> files), this is an internal
+subrequest, and you often want to avoid rewrites on such subrequests.
+On subrequests, it is not always useful, and can even cause errors, if
+the complete set of rules are applied. Use this flag to exclude
+problematic rules.</p>
+
+<p>To decide whether or not to use this rule: if you prefix URLs with 
+CGI-scripts, to force them to be processed by the CGI-script, it's
+likely that you will run into problems (or significant overhead)
+on sub-requests. In these cases, use this flag.</p>
 
 <p>
 Images, javascript files, or css files, loaded as part of an HTML page,
@@ -416,9 +428,21 @@ image server, you might do something like the following:</p>
 RewriteRule (.*)\.(jpg|gif|png) http://images.example.com$1.$2 [P]
 </example>
 
-<p>Use of the [P] flag implies [L] - that is, the request is immediatly
+<p>Use of the [P] flag implies [L] - that is, the request is immediately
 pushed through the proxy, and any following rules will not be
 considered.</p>
+
+<p>
+You must make sure that the substitution string is a valid URI
+(typically starting with <code>http://</code><em>hostname</em>) which can be
+handled by the Apache proxy module. If not, you will get an
+error from the proxy module. Use this flag to achieve a
+more powerful implementation of the <directive
+module="mod_proxy">ProxyPass</directive> directive,
+to map remote content into the namespace of the local server.</p>
+
+<p>Note: <module>mod_proxy</module> must be enabled in order
+to use this flag.</p>
 
 </section>
 
@@ -431,8 +455,10 @@ as a URI instead. That is to say, the
 use of the [PT] flag causes the result of the <directive
 module="mod_rewrite">RewriteRule</directive> to be passed back through
 URL mapping, so that location-based mappings, such as <directive
-module="mod_alias">Alias</directive>, for example, might have a chance to take
-effect.
+module="mod_alias">Alias</directive>, <directive
+module="core">Redirect</directive>, or <directive 
+module="mod_alias">ScriptAlias</directive>, for example, might have a 
+chance to take effect.
 </p>
 
 <p>
@@ -453,6 +479,10 @@ RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
 Omission of the [PT] flag in this case will cause the Alias to be
 ignored, resulting in a 'File not found' error being returned.
 </p>
+
+<p>The <code>PT</code> flag implies the <code>L</code> flag:
+rewriting will be stopped in order to pass the request to
+the next phase of processing.</p>
 
 </section>
 
@@ -505,14 +535,24 @@ URI.
 Use of the [R] flag causes a HTTP redirect to be issued to the browser.
 If a fully-qualified URL is specified (that is, including
 <code>http://servername/</code>) then a redirect will be issued to that
-location. Otherwise, the current servername will be used to generate the
-URL sent with the redirect.
+location. Otherwise, the current protocol, servername, and port number
+will be used to generate the URL sent with the redirect.
 </p>
 
 <p>
-<em>Any</em> status code may be specified, that is a valid HTTP Response,
-with a 302 status code being used by default if none is specified.
+<em>Any</em> valid HTTP response  status code may be specified, 
+using the syntax [R=305], with a 302 status code being used by 
+default if none is specified. The status code specified need not
+necessarily be a redirect (3xx) status code.
 </p>
+
+<p>If a status code is outside the redirect range (300-399) then the
+substitution string is dropped entirely, and rewriting is stopped as if
+the <code>L</code> were used.</p>
+
+<p>In addition to response status codes, you may also specify redirect
+status using their symbolic names: <code>temp</code> (default), 
+<code>permanent</code>, or <code>seeother</code>.</p>
 
 <p>
 You will almost always want to use [R] in conjunction with [L] (that is,
@@ -547,8 +587,10 @@ module="mod_rewrite">RewriteCond</directive> only applies to the
 <directive module="mod_rewrite">RewriteRule</directive> immediately
 following it. Thus, if you want to make a <code>RewriteCond</code> apply
 to several <code>RewriteRule</code>s, one possible technique is to
-negate those conditions and use a [Skip] flag.</p>
-
+negate those conditions and use a [Skip] flag. So, you can 
+use this to make pseudo if-then-else constructs: The last rule of 
+the then-clause becomes <code>skip=N</code>, where N is the 
+number of rules in the else-clause.</p>
 </section>
 
 <section id="flag_t"><title>T|type</title>
@@ -578,6 +620,12 @@ using <directive type="section" module="core">FilesMatch</directive>
 instead. Always consider the alternate
 solutions to a problem before resorting to rewrite, which will
 invariably be a less efficient solution than the alternatives.</p>
+
+<p>
+If used in per-directory context, use only <code>-</code> (dash)
+as the substitution, otherwise the MIME-type set with this flag
+is lost due to an internal re-processing.</p>
+
 </section>
 
 </manualpage>
