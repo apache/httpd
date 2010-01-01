@@ -231,7 +231,7 @@ chemin <code>/usr/local/apache2/htdocs/bar</code>.</p>
 <dt>Une URL absolue</dt>
 <dd>
 <example>
-RewriteRule ^/produits/vues$ http://site2.exemple.com/voirproduits.html [R]
+RewriteRule ^/produits/vues$ http://site2.example.com/voirproduits.html [R]
 </example>
 <p>Ceci informe le client qu'il doit effectuer une nouvelle requ&ecirc;te vers
 l'URL sp&eacute;cifi&eacute;e.</p>
@@ -291,7 +291,7 @@ certaine tranche d'adresses IP vers un autre serveur, vous pouvez
 utiliser :</p>
 <example>
 RewriteCond %{REMOTE_ADDR} ^10\.2\.<br />
-RewriteRule (.*) http://intranet.exemple.com$1
+RewriteRule (.*) http://intranet.example.com$1
 </example>
 
 <p>Si vous sp&eacute;cifiez plus d'une directive <directive

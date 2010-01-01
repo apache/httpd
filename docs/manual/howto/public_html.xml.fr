@@ -31,7 +31,7 @@
 <p>Sur les syst&egrave;mes multi-utilisateurs, on peut permettre &agrave; chaque
 utilisateur d'avoir un site web dans son r&eacute;pertoire home &agrave; l'aide de la
 directive <directive module="mod_userdir">UserDir</directive>. Les
-visiteurs de l'URL <code>http://exemple.com/~nom_utilisateur/</code>
+visiteurs de l'URL <code>http://example.com/~nom_utilisateur/</code>
 recevront un contenu situ&eacute; dans le r&eacute;pertoire home de l'utilisateur
 "<code>nom_utilisateur</code>", et dans le sous-r&eacute;pertoire sp&eacute;cifi&eacute; par
 la directive <directive module="mod_userdir">UserDir</directive>.</p>
@@ -81,7 +81,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
       UserDir public_html
     </example>
 
-    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/home/rbowen/public_html/fichier.html</code></p>
 
@@ -93,7 +93,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
       UserDir /var/html
     </example>
 
-    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/var/html/rbowen/fichier.html</code></p>
 
@@ -105,7 +105,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
       UserDir /var/www/*/docs
     </example>
 
-    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/var/www/rbowen/docs/fichier.html</code></p>
 
@@ -116,7 +116,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
       UserDir public_html /var/html
     </example>
 
-    <p>Avec l'URL <code>http://exemple.com/~rbowen/fichier.html</code>,
+    <p>Avec l'URL <code>http://example.com/~rbowen/fichier.html</code>,
     Apache va rechercher <code>~rbowen</code>. S'il ne le trouve pas,
     Apache va rechercher <code>rbowen</code> dans
     <code>/var/html</code>. S'il le trouve, l'URL ci-dessus correspondra
@@ -135,7 +135,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
     </example>
 
     <p>L'exemple ci-dessus va rediriger une requ&ecirc;te pour
-    <code>http://exemple.com/~bob/abc.html</code> vers
+    <code>http://example.com/~bob/abc.html</code> vers
     <code>http://exemple.org/users/bob/abc.html</code>.</p>
   </section>
 
@@ -189,7 +189,7 @@ avec le syst&egrave;me de fichiers</a></seealso>
     r&eacute;pertoire en passant par l'URL :</p>
 
     <example>
-    http://exemple.com/~rbowen/cgi-bin/exemple.cgi
+    http://example.com/~rbowen/cgi-bin/exemple.cgi
     </example>
 
     </section>

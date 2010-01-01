@@ -149,7 +149,7 @@
     <indent>
       Order deny,allow<br />
       Deny from all<br />
-      Allow from interne.exemple.com<br />
+      Allow from interne.example.com<br />
     </indent>
     &lt;/Proxy&gt;
     </example>
@@ -164,8 +164,8 @@
     </indent>
     &lt;/Proxy&gt;<br />
     <br />
-    ProxyPass /foo http://foo.exemple.com/bar<br />
-    ProxyPassReverse /foo http://foo.exemple.com/bar
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
     </example>
     </section> <!-- /examples -->
 
@@ -234,7 +234,7 @@
       <p>Les utilisateurs d'un Intranet ont tendance &agrave; oublier le nom du
       domaine local dans leurs requ&ecirc;tes WWW, et demandent par exemple
       "http://un-serveur/" au lieu de
-      <code>http://un-serveur.exemple.com/</code>. Certains serveurs
+      <code>http://un-serveur.example.com/</code>. Certains serveurs
       mandataires commerciaux acceptent ce genre de requ&ecirc;te et les
       traitent simplement en utilisant un nom de domaine local
       implicite. Lorsque la directive <directive
@@ -346,25 +346,25 @@ mandat&eacute;es</description>
 
     <p>Par exemple, les lignes suivantes n'autoriseront &agrave; acc&eacute;der &agrave; un
     contenu via votre serveur mandataire que les h&ocirc;tes appartenant &agrave;
-    <code>votre-reseau.exemple.com</code> :</p>
+    <code>votre-reseau.example.com</code> :</p>
 
     <example>
       &lt;Proxy *&gt;<br />
       <indent>
         Order Deny,Allow<br />
         Deny from all<br />
-        Allow from votre-reseau.exemple.com<br />
+        Allow from votre-reseau.example.com<br />
       </indent>
       &lt;/Proxy&gt;
     </example>
 
     <p>Dans l'exemple suivant, tous les fichiers du r&eacute;pertoire
-    <code>foo</code> de <code>exemple.com</code> seront trait&eacute;s par le
+    <code>foo</code> de <code>example.com</code> seront trait&eacute;s par le
     filtre <code>INCLUDES</code> lorsqu'ils seront envoy&eacute;s par
     l'interm&eacute;diaire du serveur mandataire :</p>
 
     <example>
-      &lt;Proxy http://exemple.com/foo/*&gt;<br />
+      &lt;Proxy http://example.com/foo/*&gt;<br />
       <indent>
         SetOutputFilter INCLUDES<br />
       </indent>
@@ -533,7 +533,7 @@ requ&ecirc;tes</description>
     <code>http</code>.</p>
 
     <example><title>Exemple</title>
-      ProxyRemote http://bons-gars.exemple.com/ http://gars-mirroirs.exemple.com:8000<br />
+      ProxyRemote http://bons-gars.example.com/ http://gars-mirroirs.example.com:8000<br />
       ProxyRemote * http://mandataire-intelligent.localdomain<br />
       ProxyRemote ftp http://mandataire-ftp.mon-domaine:8080
     </example>
@@ -621,8 +621,8 @@ d'Apache.</compatibility>
     <example>
       &lt;Proxy balancer://hotcluster&gt;<br />
       <indent>
-        BalancerMember http://www2.exemple.com:8009 loadfactor=1<br />
-        BalancerMember http://www3.exemple.com:8009 loadfactor=2<br />
+        BalancerMember http://www2.example.com:8009 loadfactor=1<br />
+        BalancerMember http://www3.example.com:8009 loadfactor=2<br />
         ProxySet lbmethod=bytraffic<br />
       </indent>
       &lt;/Proxy&gt;
@@ -680,15 +680,15 @@ l'espace d'URLs du serveur local</description>
     <directive>ProxyPass</directive>.</note>
 
     <p>Supposons que le serveur local a pour adresse
-    <code>http://exemple.com/</code> ; alors la ligne</p>
+    <code>http://example.com/</code> ; alors la ligne</p>
 
     <example>
-      ProxyPass /miroir/foo/ http://backend.exemple.com/
+      ProxyPass /miroir/foo/ http://backend.example.com/
     </example>
 
     <p>va convertir en interne toute requ&ecirc;te pour
-    <code>http://exemple.com/miroir/foo/bar</code> en une requ&ecirc;te
-    mandat&eacute;e pour <code>http://backend.exemple.com/bar</code>.</p>
+    <code>http://example.com/miroir/foo/bar</code> en une requ&ecirc;te
+    mandat&eacute;e pour <code>http://backend.example.com/bar</code>.</p>
 
     <note type="warning">
     <p>Si le premier argument se termine par un slash
@@ -704,11 +704,11 @@ l'espace d'URLs du serveur local</description>
 
     <example>
       ProxyPass /miroir/foo/i !<br />
-      ProxyPass /miroir/foo http://backend.exemple.com
+      ProxyPass /miroir/foo http://backend.example.com
     </example>
 
     <p>va mandater toutes les requ&ecirc;tes pour <code>/miroir/foo</code>
-    vers <code>backend.exemple.com</code>, <em>sauf</em> les requ&ecirc;tes
+    vers <code>backend.example.com</code>, <em>sauf</em> les requ&ecirc;tes
     pour <code>/miroir/foo/i</code>.</p>
 
     <note><title>Note</title>
@@ -736,7 +736,7 @@ l'espace d'URLs du serveur local</description>
     soit <code>max</code>.</p>
 
     <example>
-        ProxyPass /exemple http://backend.exemple.com smax=5 max=20 ttl=120 retry=300
+        ProxyPass /exemple http://backend.example.com smax=5 max=20 ttl=120 retry=300
     </example>
 
     <table>
@@ -980,7 +980,7 @@ l'espace d'URLs du serveur local</description>
     </table>
     <p>Exemple de configuration d'un r&eacute;partiteur de charge</p>
     <example>
-      ProxyPass /zone-speciale http://special.exemple.com smax=5 max=10<br />
+      ProxyPass /zone-speciale http://special.example.com smax=5 max=10<br />
       ProxyPass / balancer://mon-cluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mon-cluster&gt;<br />
       <indent>
@@ -1061,15 +1061,15 @@ du serveur local en utilisant des expressions rationnelles</description>
     l'utiliser comme nouvelle <var>url</var>.</p>
 
     <p>Supposons que le serveur local a pour adresse
-    <code>http://exemple.com/</code> ; alors</p>
+    <code>http://example.com/</code> ; alors</p>
 
     <example>
-      ProxyPassMatch ^(/.*\.gif)$ http://backend.exemple.com$1
+      ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1
     </example>
 
     <p>va provoquer la conversion interne de la requ&ecirc;te locale
-    <code>http://exemple.com/foo/bar.gif</code> en une requ&ecirc;te mandat&eacute;e
-    pour <code>http://backend.exemple.com/foo/bar.gif</code>.</p>
+    <code>http://example.com/foo/bar.gif</code> en une requ&ecirc;te mandat&eacute;e
+    pour <code>http://backend.example.com/foo/bar.gif</code>.</p>
 
     <note><title>Note</title>
       <p>L'argument URL doit pouvoir &ecirc;tre interpr&eacute;t&eacute; en tant qu'URL
@@ -1077,14 +1077,14 @@ du serveur local en utilisant des expressions rationnelles</description>
       doit aussi l'&ecirc;tre apr&egrave;s). Ceci limite les correspondances que vous
       pouvez utiliser. Par exemple, si l'on avait utilis&eacute;</p>
       <example>
-        ProxyPassMatch ^(/.*\.gif)$ http://backend.exemple.com:8000$1
+        ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com:8000$1
       </example>
       <p>dans l'exemple pr&eacute;c&eacute;dent, nous aurions provoqu&eacute; une erreur de
       syntaxe au d&eacute;marrage du serveur. C'est une bogue (PR 46665 dans
       ASF bugzilla), et il est possible de la contourner en reformulant
       la correspondance :</p>
       <example>
-        ProxyPassMatch ^/(.*\.gif)$ http://backend.exemple.com:8000/$1
+        ProxyPassMatch ^/(.*\.gif)$ http://backend.example.com:8000/$1
       </example>
     </note>
 
@@ -1129,24 +1129,24 @@ par un serveur mandat&eacute; en inverse</description>
     module="mod_proxy">ProxyPass</directive>.</p>
 
     <p>Supposons par exemple que le serveur local a pour adresse
-    <code>http://exemple.com/</code> ; alors</p>
+    <code>http://example.com/</code> ; alors</p>
 
     <example>
-      ProxyPass         /miroir/foo/ http://backend.exemple.com/<br />
-      ProxyPassReverse  /miroir/foo/ http://backend.exemple.com/<br />
-      ProxyPassReverseCookieDomain  backend.exemple.com  public.exemple.com<br />
+      ProxyPass         /miroir/foo/ http://backend.example.com/<br />
+      ProxyPassReverse  /miroir/foo/ http://backend.example.com/<br />
+      ProxyPassReverseCookieDomain  backend.example.com  public.example.com<br />
       ProxyPassReverseCookiePath  /  /miroir/foo/
     </example>
 
     <p>ne va pas seulement provoquer la conversion interne d'une requ&ecirc;te
-    locale pour <code>http://exemple.com/miroir/foo/bar</code> en une
-    requ&ecirc;te mandat&eacute;e pour <code>http://backend.exemple.com/bar</code>
+    locale pour <code>http://example.com/miroir/foo/bar</code> en une
+    requ&ecirc;te mandat&eacute;e pour <code>http://backend.example.com/bar</code>
     (la fonctionnalit&eacute; fournie par <code>ProxyPass</code>). Il va
     aussi s'occuper des redirections que le serveur
-    <code>backend.exemple.com</code> envoie : lorsque
-    <code>http://backend.exemple.com/bar</code> est redirig&eacute; par
-    celui-ci vers <code>http://backend.exemple.com/quux</code>, Apache
-    corrige ceci en <code>http://exemple.com/miroir/foo/quux</code>
+    <code>backend.example.com</code> envoie : lorsque
+    <code>http://backend.example.com/bar</code> est redirig&eacute; par
+    celui-ci vers <code>http://backend.example.com/quux</code>, Apache
+    corrige ceci en <code>http://example.com/miroir/foo/quux</code>
     avant de faire suivre la redirection HTTP au client. Notez que le
     nom d'h&ocirc;te utilis&eacute; pour construire l'URL est choisi en respectant la
     d&eacute;finition de la directive <directive
@@ -1389,8 +1389,8 @@ directement</description>
     module="mod_proxy">ProxyRemote</directive>.</p>
 
     <example><title>Exemple</title>
-      ProxyRemote  *  http://pare-feu.exemple.com:81<br />
-      NoProxy         .exemple.com 192.168.112.0/21
+      ProxyRemote  *  http://pare-feu.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21
     </example>
 
     <p>Le type des arguments <var>serveur</var> de la directive
@@ -1422,8 +1422,8 @@ directement</description>
       <p>Les comparaisons de noms de domaines s'effectuent sans tenir
       compte de la casse, et les parties droites des <var>Domaine</var>s
       sont toujours cens&eacute;es correspondre &agrave; la racine de l'arborescence
-      DNS, si bien que les domaines <code>.ExEmple.com</code> et
-      <code>.exemple.com.</code> (notez le point &agrave; la fin du nom) sont
+      DNS, si bien que les domaines <code>.example.com</code> et
+      <code>.example.com.</code> (notez le point &agrave; la fin du nom) sont
       consid&eacute;r&eacute;s comme identiques. Comme une comparaison de domaines ne
       n&eacute;cessite pas de recherche DNS, elle est beaucoup plus efficace
       qu'une comparaison de sous-r&eacute;seaux.</p>
@@ -1505,8 +1505,8 @@ directement</description>
       <p>Les comparaisons de <var>Nom de serveur</var> s'effectuent sans tenir
       compte de la casse, et les parties droites des <var>Noms de serveur</var>
       sont toujours cens&eacute;es correspondre &agrave; la racine de l'arborescence
-      DNS, si bien que les domaines <code>WWW.ExEmple.com</code> et
-      <code>www.exemple.com.</code> (notez le point &agrave; la fin du nom) sont
+      DNS, si bien que les domaines <code>WWW.ExAmple.com</code> et
+      <code>www.example.com.</code> (notez le point &agrave; la fin du nom) sont
       consid&eacute;r&eacute;s comme identiques.</p>
      </note></dd>
     </dl>

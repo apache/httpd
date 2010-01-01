@@ -588,7 +588,7 @@ autorisation</title>
            &lt;RequireAll&gt;
           <indent>
             Require all granted<br/>
-            Require not host <var>serveur.exemple.com</var>
+            Require not host <var>serveur.example.com</var>
           </indent>
           &lt;/RequireAll&gt;
         </example>
@@ -604,7 +604,7 @@ autorisation</title>
             &lt;RequireNone&gt;
             <indent>
               Require ip 192.168.205<br />
-              Require host phishers.exemple.com autres-idiots.exemple<br />
+              Require host phishers.example.com autres-idiots.exemple<br />
               Require host ke
             </indent>
             &lt;/RequireNone&gt;

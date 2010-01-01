@@ -279,7 +279,7 @@
       l'adresse</p>
 
       <example>
-        http://www.exemple.com/cgi-bin/premier.pl
+        http://www.example.com/cgi-bin/premier.pl
       </example>
 
       <p>ou toute autre URL correspondant &agrave; votre programme CGI, Vous

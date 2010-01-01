@@ -71,7 +71,7 @@ d'Apache</compatibility>
       # Active la conservation des connexions LDAP et le cache partag&eacute; en<br />
       # m&eacute;moire. Active le gestionnaire de statut du cache LDAP.<br />
       # N&eacute;cessite le chargement de mod_ldap et de mod_authnz_ldap.<br />
-      # Remplacez "votre-domaine.exemple.com" par le nom de votre<br />
+      # Remplacez "votre-domaine.example.com" par le nom de votre<br />
       # domaine.<br />
       <br />
       LDAPSharedCacheSize 500000<br />
@@ -85,7 +85,7 @@ d'Apache</compatibility>
         SetHandler ldap-status<br />
         Order deny,allow<br />
         Deny from all<br />
-        Allow from votre-domaine.exemple.com<br />
+        Allow from votre-domaine.example.com<br />
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "Prot&eacute;g&eacute; par LDAP"<br />
@@ -237,7 +237,7 @@ d'Apache</compatibility>
     <example>
       # Etablissement d'une connexion SSL LDAP sur le port 636.<br />
       # N&eacute;cessite le chargement de mod_ldap et mod_authnz_ldap.<br />
-      # Remplacez "votre-domaine.exemple.com" par le nom de votre<br />
+      # Remplacez "votre-domaine.example.com" par le nom de votre<br />
       # domaine.<br />
       <br />
       LDAPTrustedGlobalCert CA_DER /certs/fichier-certificat.der<br />
@@ -247,7 +247,7 @@ d'Apache</compatibility>
         SetHandler ldap-status<br />
         Order deny,allow<br />
         Deny from all<br />
-        Allow from votre-domaine.exemple.com<br />
+        Allow from votre-domaine.example.com<br />
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "Prot&eacute;g&eacute; par LDAP"<br />
@@ -261,7 +261,7 @@ d'Apache</compatibility>
     <example>
       # Etablissement d'une connexion TLS LDAP sur le port 389.<br />
       # N&eacute;cessite le chargement de mod_ldap et mod_authnz_ldap.<br />
-      # Remplacez "votre-domaine.exemple.com" par le nom de votre<br />
+      # Remplacez "votre-domaine.example.com" par le nom de votre<br />
       # domaine.<br />
       <br />
       LDAPTrustedGlobalCert CA_DER /certs/fichier-certificat.der<br />
@@ -271,7 +271,7 @@ d'Apache</compatibility>
         SetHandler ldap-status<br />
         Order deny,allow<br />
         Deny from all<br />
-        Allow from votre-domaine.exemple.com<br />
+        Allow from votre-domaine.example.com<br />
         Satisfy any<br />
         AuthType Basic<br />
         AuthName "Prot&eacute;g&eacute; par LDAP"<br />
@@ -329,7 +329,7 @@ d'Apache</compatibility>
                 SetHandler ldap-status<br />
                 Order deny,allow<br />
                 Deny from all<br />
-                Allow from votre-domaine.exemple.com<br />
+                Allow from votre-domaine.example.com<br />
                 Satisfy any<br />
                 AuthType Basic<br />
                 AuthName "Prot&eacute;g&eacute; par LDAP"<br />
@@ -407,7 +407,7 @@ d'Apache</compatibility>
                 SetHandler ldap-status<br />
                 Order deny,allow<br />
                 Deny from all<br />
-                Allow from votre-domaine.exemple.com<br />
+                Allow from votre-domaine.example.com<br />
                 LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
                 LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
                 Satisfy any<br />
