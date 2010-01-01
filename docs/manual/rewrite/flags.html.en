@@ -254,6 +254,9 @@ RewriteRule \.exe - [F]
 that the requested URI is not modified. There's no reason to rewrite to
 another URI, if you're going to forbid the request.</p>
 
+<p>When using [F], an [L] is implied - that is, the response is returned
+immediately, and no further rules are evaluated.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_g" id="flag_g">G|gone</a></h2>
@@ -267,6 +270,10 @@ rewrite target when using the [G] flag:</p>
 <div class="example"><p><code>
 RewriteRule oldproduct - [G,NC]
 </code></p></div>
+
+<p>When using [F], an [L] is implied - that is, the response is returned
+immediately, and no further rules are evaluated.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_h" id="flag_h">H|handler</a></h2>
@@ -302,7 +309,10 @@ expression.</p>
 <h2><a name="flag_l" id="flag_l">L|last</a></h2>
 <p>The [L] flag causes <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to stop processing
 the rule set. In most contexts, this means that if the rule matches, no
-further rules will be processed.</p>
+further rules will be processed. This corresponds to the
+<code>last</code> command in Perl, or the <code>break</code> command in
+C. Use this flag to indicate that the current rule should be applied
+immediately without considering further rules.</p>
 
 <p>If you are using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in either
 <code>.htaccess</code> files or in 
@@ -482,7 +492,7 @@ to be discarded.
 </p>
 
 <p>
-Using [QSD] and [QSA] together will result in [QSD] taking preference.
+Using [QSD] and [QSA] together will result in [QSD] taking precedence.
 </p>
 
 <p>
