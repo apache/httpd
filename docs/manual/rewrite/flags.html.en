@@ -346,7 +346,8 @@ RewriteRule ^(.*) index.php?req=$1 [L]
 <div class="section">
 <h2><a name="flag_n" id="flag_n">N|next</a></h2>
 <p>
-The [N] flag causes the ruleset to start over again from the top. Use
+The [N] flag causes the ruleset to start over again from the top, using
+the result of the ruleset so far as a starting point. Use
 with extreme caution, as it may result in loop.
 </p>
 <p>
@@ -405,7 +406,18 @@ then result in a 404 Not Found error condition.
 <p>Use of the [NS] flag prevents the rule from being used on
 subrequests. For example, a page which is included using an SSI (Server
 Side Include) is a subrequest, and you may want to avoid rewrites
-happening on those subrequests.</p>
+happening on those subrequests. Also, when <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code>
+tries to find out information about possible directory default files
+(such as <code>index.html</code> files), this is an internal
+subrequest, and you often want to avoid rewrites on such subrequests.
+On subrequests, it is not always useful, and can even cause errors, if
+the complete set of rules are applied. Use this flag to exclude
+problematic rules.</p>
+
+<p>To decide whether or not to use this rule: if you prefix URLs with 
+CGI-scripts, to force them to be processed by the CGI-script, it's
+likely that you will run into problems (or significant overhead)
+on sub-requests. In these cases, use this flag.</p>
 
 <p>
 Images, javascript files, or css files, loaded as part of an HTML page,
@@ -424,9 +436,20 @@ image server, you might do something like the following:</p>
 RewriteRule (.*)\.(jpg|gif|png) http://images.example.com$1.$2 [P]
 </code></p></div>
 
-<p>Use of the [P] flag implies [L] - that is, the request is immediatly
+<p>Use of the [P] flag implies [L] - that is, the request is immediately
 pushed through the proxy, and any following rules will not be
 considered.</p>
+
+<p>
+You must make sure that the substitution string is a valid URI
+(typically starting with <code>http://</code><em>hostname</em>) which can be
+handled by the Apache proxy module. If not, you will get an
+error from the proxy module. Use this flag to achieve a
+more powerful implementation of the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive,
+to map remote content into the namespace of the local server.</p>
+
+<p>Note: <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> must be enabled in order
+to use this flag.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -437,8 +460,8 @@ The target (or substitution string) in a RewriteRule is assumed to be a
 file path, by default. The use of the [PT] flag causes it to be treated
 as a URI instead. That is to say, the
 use of the [PT] flag causes the result of the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be passed back through
-URL mapping, so that location-based mappings, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, for example, might have a chance to take
-effect.
+URL mapping, so that location-based mappings, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, <code class="directive"><a href="../mod/core.html#redirect">Redirect</a></code>, or <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, for example, might have a 
+chance to take effect.
 </p>
 
 <p>
@@ -458,6 +481,10 @@ RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
 Omission of the [PT] flag in this case will cause the Alias to be
 ignored, resulting in a 'File not found' error being returned.
 </p>
+
+<p>The <code>PT</code> flag implies the <code>L</code> flag:
+rewriting will be stopped in order to pass the request to
+the next phase of processing.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -509,14 +536,24 @@ URI.
 Use of the [R] flag causes a HTTP redirect to be issued to the browser.
 If a fully-qualified URL is specified (that is, including
 <code>http://servername/</code>) then a redirect will be issued to that
-location. Otherwise, the current servername will be used to generate the
-URL sent with the redirect.
+location. Otherwise, the current protocol, servername, and port number
+will be used to generate the URL sent with the redirect.
 </p>
 
 <p>
-<em>Any</em> status code may be specified, that is a valid HTTP Response,
-with a 302 status code being used by default if none is specified.
+<em>Any</em> valid HTTP response  status code may be specified, 
+using the syntax [R=305], with a 302 status code being used by 
+default if none is specified. The status code specified need not
+necessarily be a redirect (3xx) status code.
 </p>
+
+<p>If a status code is outside the redirect range (300-399) then the
+substitution string is dropped entirely, and rewriting is stopped as if
+the <code>L</code> were used.</p>
+
+<p>In addition to response status codes, you may also specify redirect
+status using their symbolic names: <code>temp</code> (default), 
+<code>permanent</code>, or <code>seeother</code>.</p>
 
 <p>
 You will almost always want to use [R] in conjunction with [L] (that is,
@@ -549,8 +586,10 @@ RewriteRule (.*\.html) docs.php?$1
 <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> immediately
 following it. Thus, if you want to make a <code>RewriteCond</code> apply
 to several <code>RewriteRule</code>s, one possible technique is to
-negate those conditions and use a [Skip] flag.</p>
-
+negate those conditions and use a [Skip] flag. So, you can 
+use this to make pseudo if-then-else constructs: The last rule of 
+the then-clause becomes <code>skip=N</code>, where N is the 
+number of rules in the else-clause.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_t" id="flag_t">T|type</a></h2>
@@ -579,6 +618,12 @@ using <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMat
 instead. Always consider the alternate
 solutions to a problem before resorting to rewrite, which will
 invariably be a less efficient solution than the alternatives.</p>
+
+<p>
+If used in per-directory context, use only <code>-</code> (dash)
+as the substitution, otherwise the MIME-type set with this flag
+is lost due to an internal re-processing.</p>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/flags.html" title="English">&nbsp;en&nbsp;</a> |
