@@ -256,7 +256,7 @@ peuvent se présenter sous les formes suivantes :</p>
     requête est un fichier image, et la quatrième définit la variable
     <code>référant_intra_site</code> si la page référante se trouve
     quelque part dans le site web
-    <code>www.mon-domaine.exemple.com</code>.</p>
+    <code>www.mon-domaine.example.com</code>.</p>
 
     <p>La sixième ligne définit la variable d'environnement
     <code>commentaire-netscape</code> avec la chaîne trouvée dans le

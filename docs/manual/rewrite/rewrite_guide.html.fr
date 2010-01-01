@@ -123,7 +123,7 @@ RewriteRule   ^/u/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<strong
 RewriteCond %{HTTP_HOST}   !^www\.exemple\.com [NC]
 RewriteCond %{HTTP_HOST}   !^$
 RewriteCond %{SERVER_PORT} !^80$
-RewriteRule ^/?(.*)         http://www.exemple.com:%{SERVER_PORT}/$1
+RewriteRule ^/?(.*)         http://www.example.com:%{SERVER_PORT}/$1
 [L,R,NE]
 </pre></div>
 
@@ -131,7 +131,7 @@ RewriteRule ^/?(.*)         http://www.exemple.com:%{SERVER_PORT}/$1
 <div class="example"><pre>
 RewriteCond %{HTTP_HOST}   !^www\.exemple\.com [NC]
 RewriteCond %{HTTP_HOST}   !^$
-RewriteRule ^/?(.*)         http://www.exemple.com/$1 [L,R,NE]
+RewriteRule ^/?(.*)         http://www.example.com/$1 [L,R,NE]
 </pre></div>
 	<p>
 	Si vous souhaitez que cette règle s'applique à tous les noms de
@@ -189,7 +189,7 @@ RewriteRule   <strong>^/$</strong>  /a-propos-de/  [<strong>R</strong>]
     <code class="directive"><a href="/mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> :</p>
 
 <div class="example"><p><code>
-RedirectMatch ^/$ http://exemple.com/apropos/
+RedirectMatch ^/$ http://example.com/apropos/
 </code></p></div>
 <p>Notez aussi que cet exemple ne réécrit que l'URL racine. En d'autres
 termes, il réécrit une requête pour <code>http://example.com/</code>,

@@ -706,13 +706,13 @@ Directory</a></h2>
     l'annuaire un identifiant appelé Nom
     Principal d'Utilisateur (User Principle Name ou UPN). Cet UPN se
     compose en général du nom de compte de l'utilisateur, suivi du nom
-    du domaine considéré, par exemple <em>untel@nz.exemple.com</em>.</p>
+    du domaine considéré, par exemple <em>untel@nz.example.com</em>.</p>
 
     <p>Vous voudrez probablement configurer le module
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> afin de pouvoir authentifier les
     utilisateurs de n'importe quel domaine de la forêt Active Directory.
-    Ainsi, <em>untel@nz.exemple.com</em> et
-    <em>untel@au.exemple.com</em> pourront être authentifiés en une
+    Ainsi, <em>untel@nz.example.com</em> et
+    <em>untel@au.example.com</em> pourront être authentifiés en une
     seule fois par la même requête.</p>
 
     <p>Pour y parvenir, on utilise le concept de Catalogue Global
@@ -730,13 +730,13 @@ Directory</a></h2>
     vide, comme suit :</p>
 
 <div class="example"><p><code>
-AuthLDAPBindDN apache@exemple.com<br />
+AuthLDAPBindDN apache@example.com<br />
 AuthLDAPBindPassword password<br />
 AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
 </code></p></div>
 
     <p>Les utilisateurs devront s'authentifier en entrant leur UPN, de
-    la forme<em>untel@nz.exemple.com</em>.</p>
+    la forme<em>untel@nz.example.com</em>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -1115,8 +1115,8 @@ recherche LDAP</td></tr>
 <div class="example"><p><code>ldap://hôte:port/DN-de-base?attribut?portée?filtre</code></p></div>
     <p>Si vous souhaitez mettre à la disposition d'Apache plusieurs URLs
     LDAP, la syntaxe sera :</p>
-<div class="example"><p><code>AuthLDAPUrl "ldap://ldap1.exemple.com
-ldap2.exemple.com/dc=..."</code></p></div>
+<div class="example"><p><code>AuthLDAPUrl "ldap://ldap1.example.com
+ldap2.example.com/dc=..."</code></p></div>
 <p><em><strong>Mise en garde : </strong>Si vous spécifiez plusieurs
 serveurs, vous devez en entourer la liste avec des guillemets ; dans le
 cas contraire, vous générerez une erreur : "AuthLDAPURL takes one
