@@ -147,13 +147,14 @@ the expression.</p>
       which can be used with the strings <code>$N</code> and
       <code>%N</code> (see below). These are available for creating
       the strings <em>Substitution</em> and <em>TestString</em>.
-      Figure 2 shows to which locations the back-references are
-      transferred for expansion.</p>
+      Figure 1 shows to which locations the back-references are
+      transferred for expansion as well as illustrating the flow of the
+      RewriteRule, RewriteCond matching.</p>
 
 <p class="figure">
-      <img src="../images/mod_rewrite_fig2.gif" width="381"
-           height="179" alt="[Needs graphics capability to display]" /><br />
-      <dfn>Figure 2:</dfn> The back-reference flow through a rule.
+      <img src="../images/rewrite_rule_flow.png" 
+      alt="Flow of RewriteRule and RewriteCond matching" /><br />
+      <dfn>Figure 1:</dfn> The back-reference flow through a rule.
 </p>
 
 </section>
