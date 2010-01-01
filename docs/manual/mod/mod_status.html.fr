@@ -90,7 +90,7 @@ du serveur</td></tr>
     
 
     <p>Pour n'activer les rapports d'état que pour les navigateurs
-    appartenent au domaine exemple.com, ajoutez ces lignes à votre
+    appartenent au domaine example.com, ajoutez ces lignes à votre
     fichier de configuration <code>httpd.conf</code> :</p>
 <div class="example"><p><code>
     &lt;Location /etat-serveur&gt;<br />
@@ -98,7 +98,7 @@ du serveur</td></tr>
 <br />
     Order Deny,Allow<br />
     Deny from all<br />
-    Allow from .exemple.com<br />
+    Allow from .example.com<br />
     &lt;/Location&gt;
 </code></p></div>
 

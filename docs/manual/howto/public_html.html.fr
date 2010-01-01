@@ -28,7 +28,7 @@
 <p>Sur les systèmes multi-utilisateurs, on peut permettre à chaque
 utilisateur d'avoir un site web dans son répertoire home à l'aide de la
 directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>. Les
-visiteurs de l'URL <code>http://exemple.com/~nom_utilisateur/</code>
+visiteurs de l'URL <code>http://example.com/~nom_utilisateur/</code>
 recevront un contenu situé dans le répertoire home de l'utilisateur
 "<code>nom_utilisateur</code>", et dans le sous-répertoire spécifié par
 la directive <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code>.</p>
@@ -77,7 +77,7 @@ avec le système de fichiers</a></li></ul></div>
       UserDir public_html
     </code></p></div>
 
-    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/home/rbowen/public_html/fichier.html</code></p>
 
@@ -89,7 +89,7 @@ avec le système de fichiers</a></li></ul></div>
       UserDir /var/html
     </code></p></div>
 
-    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/var/html/rbowen/fichier.html</code></p>
 
@@ -101,7 +101,7 @@ avec le système de fichiers</a></li></ul></div>
       UserDir /var/www/*/docs
     </code></p></div>
 
-    <p>l'URL <code>http://exemple.com/~rbowen/fichier.html</code>
+    <p>l'URL <code>http://example.com/~rbowen/fichier.html</code>
     correspondra au chemin fichier
     <code>/var/www/rbowen/docs/fichier.html</code></p>
 
@@ -112,7 +112,7 @@ avec le système de fichiers</a></li></ul></div>
       UserDir public_html /var/html
     </code></p></div>
 
-    <p>Avec l'URL <code>http://exemple.com/~rbowen/fichier.html</code>,
+    <p>Avec l'URL <code>http://example.com/~rbowen/fichier.html</code>,
     Apache va rechercher <code>~rbowen</code>. S'il ne le trouve pas,
     Apache va rechercher <code>rbowen</code> dans
     <code>/var/html</code>. S'il le trouve, l'URL ci-dessus correspondra
@@ -130,7 +130,7 @@ avec le système de fichiers</a></li></ul></div>
     </code></p></div>
 
     <p>L'exemple ci-dessus va rediriger une requête pour
-    <code>http://exemple.com/~bob/abc.html</code> vers
+    <code>http://example.com/~bob/abc.html</code> vers
     <code>http://exemple.org/users/bob/abc.html</code>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -183,7 +183,7 @@ avec le système de fichiers</a></li></ul></div>
     répertoire en passant par l'URL :</p>
 
     <div class="example"><p><code>
-    http://exemple.com/~rbowen/cgi-bin/exemple.cgi
+    http://example.com/~rbowen/cgi-bin/exemple.cgi
     </code></p></div>
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

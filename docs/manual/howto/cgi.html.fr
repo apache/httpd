@@ -263,7 +263,7 @@
       l'adresse</p>
 
       <div class="example"><p><code>
-        http://www.exemple.com/cgi-bin/premier.pl
+        http://www.example.com/cgi-bin/premier.pl
       </code></p></div>
 
       <p>ou toute autre URL correspondant à votre programme CGI, Vous

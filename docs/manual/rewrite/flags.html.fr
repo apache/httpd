@@ -323,7 +323,7 @@ soient traitées par un serveur d'images annexe, vous pouvez utiliser
 une règle de ce style :</p>
 
 <div class="example"><p><code>
-RewriteRule (.*)\.(jpg|gif|png) http://images.exemple.com$1.$2 [P]
+RewriteRule (.*)\.(jpg|gif|png) http://images.example.com$1.$2 [P]
 </code></p></div>
 
 <p>L'utilisation du drapeau [P] provoque aussi l'effet du drapeau [L] -
