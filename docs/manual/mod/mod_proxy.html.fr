@@ -1161,9 +1161,9 @@ l'espace d'URLs du serveur local</td></tr>
     </td></tr>
 
     </table>
-    <p>Exemple de configuration d'un répartiteur</p>
+    <p>Exemple de configuration d'un répartiteur de charge</p>
     <div class="example"><p><code>
-      ProxyPass /zone-speciale http://special.exemple.com/ smax=5 max=10<br />
+      ProxyPass /zone-speciale http://special.exemple.com smax=5 max=10<br />
       ProxyPass / balancer://mon-cluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mon-cluster&gt;<br />
       <span class="indent">

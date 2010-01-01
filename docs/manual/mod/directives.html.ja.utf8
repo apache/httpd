@@ -322,6 +322,7 @@
 <li><a href="mod_proxy.html#proxyblock">ProxyBlock</a></li>
 <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
 <li><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></li>
+<li><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset</a></li>
 <li><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards</a></li>
 <li><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard</a></li>
 <li><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize</a></li>

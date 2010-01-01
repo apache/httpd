@@ -384,7 +384,7 @@ tardif</a></h2>
 <div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure les en-têtes d'une requête HTTP</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|merge|set|unset <var>en-tête</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RequestHeader add|append|edit|edit*|merge|set|unset <var>en-tête</var>
 [<var>valeur</var>] [<var>remplacement</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
@@ -414,13 +414,17 @@ tardif</a></h2>
     méthode HTTP standard permettant d'affecter plusieurs valeurs à un
     en-tête.</dd>
 
-    <dt><code>edit</code></dt>
+    <dt><code>edit*</code></dt>
     <dd>Si l'en-tête existe, sa valeur est modifiée en fonction d'une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a> de type
     recherche/remplacement. L'argument <var>valeur</var> est une
     <a class="glossarylink" href="../glossary.html#regex" title="voir glossaire">expression rationnelle</a>, et
     l'argument <var>remplacement</var> une chaîne de caractères de
-    remplacement qui peut contenir des références arrières.</dd>
+    remplacement qui peut contenir des références arrières. Avec
+    <code>edit</code>, la chaîne de l'en-tête correspondant au modèle ne
+    sera recherchée et remplacée qu'une seule fois, alors qu'avec
+    <code>edit*</code>, elle le sera pour chacune de ses instances si
+    elle apparaît plusieurs fois.</dd>
 
     <dt><code>merge</code></dt>
     <dd>La valeur d'en-tête est ajoutée à tout en-tête de même nom, sauf

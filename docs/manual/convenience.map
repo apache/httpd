@@ -30,7 +30,7 @@ addtype	mod/mod_mime.html#addtype
 alias	mod/mod_alias.html#alias
 aliasmatch	mod/mod_alias.html#aliasmatch
 allow	mod/mod_access_compat.html#allow
-allowconnect	mod/mod_proxy.html#allowconnect
+allowconnect	mod/mod_proxy_connect.html#allowconnect
 allowencodedslashes	mod/core.html#allowencodedslashes
 allowoverride	mod/core.html#allowoverride
 anonymous	mod/mod_authn_anon.html#anonymous
@@ -292,7 +292,7 @@ proxybadheader	mod/mod_proxy.html#proxybadheader
 proxyblock	mod/mod_proxy.html#proxyblock
 proxydomain	mod/mod_proxy.html#proxydomain
 proxyerroroverride	mod/mod_proxy.html#proxyerroroverride
-proxyftpdircharset	mod/mod_proxy.html#proxyftpdircharset
+proxyftpdircharset	mod/mod_proxy_ftp.html#proxyftpdircharset
 proxyftpescapewildcards	mod/mod_proxy_ftp.html#proxyftpescapewildcards
 proxyftplistonwildcard	mod/mod_proxy_ftp.html#proxyftplistonwildcard
 proxyiobuffersize	mod/mod_proxy.html#proxyiobuffersize

@@ -122,7 +122,7 @@ expressions</td></tr>
 <tr class="odd"><td><a href="mod_access_compat.html#allow"> Allow from all|<var>host</var>|env=[!]<var>env-variable</var>
 [<var>host</var>|env=[!]<var>env-variable</var>] ...</a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls which hosts can access an area of the
 server</td></tr>
-<tr><td><a href="mod_proxy.html#allowconnect">AllowCONNECT <var>port</var> [<var>port</var>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
+<tr><td><a href="mod_proxy_connect.html#allowconnect">AllowCONNECT <var>port</var> [<var>port</var>] ...</a></td><td> 443 563 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ports that are allowed to <code>CONNECT</code> through the
 proxy</td></tr>
 <tr class="odd"><td><a href="core.html#allowencodedslashes">AllowEncodedSlashes On|Off</a></td><td> Off </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Legt fest, ob kodierte Pfadtrennzeichen in URLs durchgereicht
 werden dürfen</td></tr>
@@ -561,7 +561,7 @@ response</td></tr>
 proxied</td></tr>
 <tr><td><a href="mod_proxy.html#proxydomain">ProxyDomain <var>Domain</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Default domain name for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Override error pages for proxied content</td></tr>
-<tr><td><a href="mod_proxy.html#proxyftpdircharset">ProxyFtpDirCharset <var>character set</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Define the character set for proxied FTP listings</td></tr>
+<tr><td><a href="mod_proxy_ftp.html#proxyftpdircharset">ProxyFtpDirCharset <var>character set</var></a></td><td> ISO-8859-1 </td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Define the character set for proxied FTP listings</td></tr>
 <tr class="odd"><td><a href="mod_proxy_ftp.html#proxyftpescapewildcards">ProxyFtpEscapeWildcards [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Whether wildcards in requested filenames are escaped when sent to the FTP server</td></tr>
 <tr><td><a href="mod_proxy_ftp.html#proxyftplistonwildcard">ProxyFtpListOnWildcard [on|off]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Whether wildcards in requested filenames trigger a file listing</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize <var>bytes</var></a></td><td> 8192 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determine size of internal data throughput buffer</td></tr>
@@ -639,7 +639,7 @@ extensions</td></tr>
 <tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
 ...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Removes any content type associations for a set of file
 extensions</td></tr>
-<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|merge|set|unset <var>header</var>
+<tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|unset <var>header</var>
 [<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
 <tr><td><a href="mod_reqtimeout.html#requesttimeout">RequestTimeout
 [headerinit=<var>time</var>
