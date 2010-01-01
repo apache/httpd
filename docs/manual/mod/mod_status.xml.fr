@@ -77,7 +77,7 @@ du serveur</description>
     <title>Activation du rapport d'&eacute;tat</title>
 
     <p>Pour n'activer les rapports d'&eacute;tat que pour les navigateurs
-    appartenent au domaine exemple.com, ajoutez ces lignes &agrave; votre
+    appartenent au domaine example.com, ajoutez ces lignes &agrave; votre
     fichier de configuration <code>httpd.conf</code> :</p>
 <example>
     &lt;Location /etat-serveur&gt;<br />
@@ -85,7 +85,7 @@ du serveur</description>
 <br />
     Order Deny,Allow<br />
     Deny from all<br />
-    Allow from .exemple.com<br />
+    Allow from .example.com<br />
     &lt;/Location&gt;
 </example>
 

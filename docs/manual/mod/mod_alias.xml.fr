@@ -238,7 +238,7 @@ d'effectuer une autre requ&ecirc;te avec une URL diff&eacute;rente</description>
 
     <example><title>Exemple :</title>
       # Redirige vers une URL sur un serveur diff&eacute;rent<br />
-      Redirect /service http://foo2.exemple.com/service<br />
+      Redirect /service http://foo2.example.com/service<br />
       <br />
       # Redirige vers une URL sur le m&ecirc;me serveur<br />
       Redirect /one /two
@@ -299,8 +299,8 @@ d'effectuer une autre requ&ecirc;te avec une URL diff&eacute;rente</description>
     http_protocol.c).</p>
 
     <example><title>Exemple :</title>
-      Redirect permanent /un http://exemple.com/deux<br />
-      Redirect 303 /trois http://exemple.com/autre
+      Redirect permanent /un http://example.com/deux<br />
+      Redirect 303 /trois http://example.com/autre
     </example>
 
 </usage>

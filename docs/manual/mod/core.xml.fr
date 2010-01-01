@@ -2923,7 +2923,7 @@ host</context>
     l'administration du serveur, par exemple :</p>
 
     <example>
-      ServerAdmin www-admin@foo.exemple.com
+      ServerAdmin www-admin@foo.example.com
     </example>
     <p>car les utilisateurs ne mentionnent pas syst&eacute;matiquement le
     serveur dont ils parlent !</p>
@@ -2949,7 +2949,7 @@ serveurs virtuels &agrave; base de nom</description>
       &lt;VirtualHost *:80&gt;<br />
       ServerName serveur.domaine.com<br />
       ServerAlias serveur serveur2.domaine.com serveur2<br />
-      ServerAlias *.exemple.com<br />
+      ServerAlias *.example.com<br />
       # ...<br />
       &lt;/VirtualHost&gt;
     </example>
@@ -2977,13 +2977,13 @@ fonctionnalit&eacute; de la directive <directive>Port</directive> de la version
     utilise pour s'authentifier lui-m&ecirc;me. Ceci est utile lors de la
     cr&eacute;ation de redirections d'URLs. Par exemple, si le nom de la
     machine h&eacute;bergeant le serveur web est
-    <code>simple.exemple.com</code>, la machine poss&egrave;de l'alias
-    DNS <code>www.exemple.com</code>, et si vous voulez que le serveur
+    <code>simple.example.com</code>, la machine poss&egrave;de l'alias
+    DNS <code>www.example.com</code>, et si vous voulez que le serveur
     web s'identifie avec cet alias, vous devez utilisez la d&eacute;finition
     suivante :</p>
 
     <example>
-      ServerName www.exemple.com:80
+      ServerName www.example.com:80
     </example>
 
     <p>Si la directive <directive>ServerName</directive> n'est pas
@@ -3542,11 +3542,11 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     <example><title>Exemple</title>
       &lt;VirtualHost 10.1.2.3&gt;<br />
       <indent>
-        ServerAdmin webmaster@host.exemple.com<br />
-        DocumentRoot /www/docs/host.exemple.com<br />
-        ServerName host.exemple.com<br />
-        ErrorLog logs/host.exemple.com-error_log<br />
-        TransferLog logs/host.exemple.com-access_log<br />
+        ServerAdmin webmaster@host.example.com<br />
+        DocumentRoot /www/docs/host.example.com<br />
+        ServerName host.example.com<br />
+        ErrorLog logs/host.example.com-error_log<br />
+        TransferLog logs/host.example.com-access_log<br />
       </indent>
       &lt;/VirtualHost&gt;
     </example>
@@ -3560,11 +3560,11 @@ d'h&ocirc;te sp&eacute;cifique ou &agrave; une adresse IP</description>
     <example>
       &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
       <indent>
-        ServerAdmin webmaster@host.exemple.com<br />
-        DocumentRoot /www/docs/host.exemple.com<br />
-        ServerName host.exemple.com<br />
-        ErrorLog logs/host.exemple.com-error_log<br />
-        TransferLog logs/host.exemple.com-access_log<br />
+        ServerAdmin webmaster@host.example.com<br />
+        DocumentRoot /www/docs/host.example.com<br />
+        ServerName host.example.com<br />
+        ErrorLog logs/host.example.com-error_log<br />
+        TransferLog logs/host.example.com-access_log<br />
       </indent>
       &lt;/VirtualHost&gt;
     </example>

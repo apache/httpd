@@ -252,7 +252,7 @@ peuvent se pr&eacute;senter sous les formes suivantes :</p>
     requ&ecirc;te est un fichier image, et la quatri&egrave;me d&eacute;finit la variable
     <code>r&eacute;f&eacute;rant_intra_site</code> si la page r&eacute;f&eacute;rante se trouve
     quelque part dans le site web
-    <code>www.mon-domaine.exemple.com</code>.</p>
+    <code>www.mon-domaine.example.com</code>.</p>
 
     <p>La sixi&egrave;me ligne d&eacute;finit la variable d'environnement
     <code>commentaire-netscape</code> avec la cha&icirc;ne trouv&eacute;e dans le
