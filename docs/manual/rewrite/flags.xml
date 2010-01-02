@@ -162,7 +162,7 @@ minutes (24 hours) and will be returned for all URIs.</p>
 <section id="flag_dpi"><title>DPI|discardpathinfo</title>
 <p>The DPI flag causes the PATH_INFO portion of the rewritten URI to be
 discarded.</p>
-<p>This flag is available from 2.2.12</p>
+<p>This flag is available in version 2.2.12 and later.</p>
 <p>In per-directory context, the URI each <directive>RewriteRule</directive>
 compares against is the concatenation of the current values of the URI
 and PATH_INFO.</p>
@@ -516,6 +516,8 @@ module="mod_rewrite">RewriteRule</directive> is to copy that query
 string to the target URI. Using the [QSD] flag causes the query string
 to be discarded.
 </p>
+
+<p>This flag is available in version 2.4.0 and later.</p>
 
 <p>
 Using [QSD] and [QSA] together will result in [QSD] taking precedence.
