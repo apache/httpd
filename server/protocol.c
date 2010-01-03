@@ -1704,7 +1704,7 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
         return;
     }
     if (!ap_is_HTTP_INFO(r->status)) {
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "Status is %d - not sending interim response", r->status);
         return;
     }
