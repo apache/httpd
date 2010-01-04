@@ -23,7 +23,7 @@
 <manualpage metafile="flags.xml.meta">
 <parentdocument href="./">Rewrite</parentdocument>
 
-  <title>Apache mod_rewrite Flags</title>
+  <title>RewriteRule Flags</title>
 
 <summary>
 <p>This document discusses the flags which are available to the
