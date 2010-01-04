@@ -64,6 +64,7 @@ PROPOSED PATCHES FOR THIS RELEASE:
       to something more reliable; Apache on Win32 will often exit(1)
       currently if RewriteLog is enabled
       Patch is here:
+        http://people.apache.org/~colm/mod_rewrite-win32loglock.diff
         Message-ID: <1404e5910504010716389dd7da@mail.gmail.com>
         From: Eric Covener <covener@gmail.com>
         Subject: [1.3 PATCH] Win32 RewriteLog deadlock
