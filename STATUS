@@ -129,9 +129,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      providers a chance to run when mod_authnz_ldap finds a user but can't 
      verify their password. PR46608.
      Trunk patch: http://svn.apache.org/viewvc?rev=881808&view=rev
+             doc: http://svn.apache.org/viewvc?view=revision&revision=881812
      2.2.x patch: trunk works.
     +1: covener, pgollucci
     rpluem says: I am +1 once you provide proper documentation for the manual
+    covener says: doc revision added above
 
   * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
       Trunk version of patch:
@@ -143,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * http_request: preserve port over internal redirect.
     PR 35999
     Patch: http://svn.apache.org/viewvc?view=revision&revision=807015
-    +1: niq
+    +1: niq, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
