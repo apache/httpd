@@ -67,19 +67,18 @@ PROPOSED PATCHES FOR THIS RELEASE:
         Message-ID: <1404e5910504010716389dd7da@mail.gmail.com>
         From: Eric Covener <covener@gmail.com>
         Subject: [1.3 PATCH] Win32 RewriteLog deadlock
-      +1: trawick, wrowe
+      +1: trawick, wrowe, colm (tested on XP and Vista, but not 9x).
 
    *) mod_log_config: Cleanup log_header_out function to allow multiple headers
       like Set-Cookie to be logged properly. PR 27787 
-        modules/loggers/mod_log_config.c: r1.116 (2.x patch - need 1.3 version)
+        http://people.apache.org/~colm/mod_log_config.diff
       jerenkrantz asks: Isn't this what apr_table_merge is for?
       nd replies: yep. But cookies won't be merged, because browsers don't
                   support it.
       jerenkrantz: Couldn't we copy the table and merge the values somehow?
                    This just seems like a lot of code to duplicate what we
                    have already.  *shrug*
-      +1: nd, jerenkrantz, wrowe (in principal)
-      -1: jim (until we see the 1.3 version)
+      +1: colm
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -93,7 +92,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
      analysis; this updates Apache 1.3 to the level of code 
      I've been giving out for some time
        http://www.apache.org/~trawick/whatkilledus.txt
-        +1: trawick
+        +1: trawick. colm
 
    * PR: 27023 Cookie could not delivered if the cookie made before
          proxy module.
