@@ -70,54 +70,84 @@ is today more widely used than all other web servers combined.
 
  ============================================================================
 
-Current Apache Group in alphabetical order as of 18 December 2001:
+Current Apache Group in alphabetical order as of 4th January 2010:
 
-   Greg Ames              IBM Corporation, Research Triangle Park, NC, USA
-   Aaron Bannert          California
-   Brian Behlendorf       Collab.Net, California 
-   Ken Coar               IBM Corporation, Research Triangle Park, NC, USA
-   Mark J. Cox            Red Hat, UK
-   Lars Eilebrecht        Freelance Consultant, Munich, Germany 
-   Ralf S. Engelschall    Cable & Wireless Deutschland, Munich, Germany
-   Justin Erenkrantz      University of California, Irvine
-   Roy T. Fielding        Day Software, California 
-   Tony Finch             Covalent Technologies, California
-   Dean Gaudet            Transmeta Corporation, California 
-   Dirk-Willem van Gulik  Covalent Technologies, California 
-   Brian Havard           Australia
-   Ian Holsman            CNET, California
-   Ben Hyde               Gensym, Massachusetts
-   Jim Jagielski          jaguNET Access Services, Maryland 
-   Manoj Kasichainula     Collab.Net, California
-   Alexei Kosut           Stanford University, California 
-   Martin Kraemer         Munich, Germany
-   Ben Laurie             Freelance Consultant, UK 
-   Rasmus Lerdorf         Yahoo!, California
-   Daniel Lopez Ridruejo  Covalent Technologies, California
-   Doug MacEachern        Covalent Technologies, California
-   Aram W. Mirzadeh       CableVision, New York 
-   Chuck Murcko           The Topsail Group, Pennsylvania 
-   Sameer Parekh          California 
-   David Reid             UK
-   William A. Rowe, Jr.   Covalent, Illinois
-   Wilfredo Sanchez       Apple Computer, California
-   Cliff Skolnick         California
-   Marc Slemko            Canada 
-   Joshua Slive           Canada
-   Greg Stein             California
-   Bill Stoddard          IBM Corporation, Research Triangle Park, NC
-   Paul Sutton            Seattle
-   Randy Terbush          Covalent Technologies, California 
-   Jeff Trawick           IBM Corporation, Research Triangle Park, NC
-   Cliff Woolley          University of Virginia
-
+   Erik Abele  
+   Greg Ames
+   Aaron Bannert 
+   Brian Behlendorf 
+   Rich Bowen 
+   Ken Coar 
+   Eric Covener 
+   Davi Arnaut 
+   Mark Cox 
+   Chris Darroch 
+   Lars Eilebrecht 
+   Ralf S. Engelschall 
+   Justin Erenkrantz 
+   Roy T. Fielding 
+   Tony Finch 
+   Stefan Fritsch 
+   Rob Hartill 
+   Brian Havard 
+   Yoshiki Hayashi 
+   Ian Holsman 
+   Rian Hunter 
+   Ben Hyde 
+   Jim Jagielski 
+   Rainer Jung 
+   Manoj Kasichainula 
+   Nick Kew 
+   Alexei Kosut 
+   Martin Kraemer 
+   Ben Laurie 
+   Graham Leggett 
+   Rasmus Lerdorf 
+   Jason Lingohr 
+   Colm MacCárthaigh 
+   Doug MacEachern 
+   André L. Malo 
+   Madhusudan Mathihalli 
+   Brian McCallister 
+   Aram W. Mirzadeh 
+   Thom May 
+   Chuck Murcko 
+   Brad Nicholes 
+   Victor J. Orlikowski 
+   Sameer Parekh 
+   Rüdiger Plüm 
+   Noirin Plunkett 
+   Dan Poirier 
+   Paul Querna 
+   Paul J. Reder 
+   David Reid 
+   Daniel López Ridruejo 
+   William A. Rowe, Jr. 
+   Wilfredo Sánchez 
+   Takashi Sato 
+   Cliff Skolnick 
+   Marc Slemko 
+   Joshua Slive 
+   Greg Stein 
+   Tony Stevenson 
+   Bill Stoddard 
+   Astrid Stolper 
+   Sander Striker 
+   Paul Sutton 
+   Randy Terbush 
+   Jeff Trawick 
+   Dirk-Willem van Gulik 
+   Cliff Woolley
+ 
 Apache Emeritus (old group members now off doing other things)
 
-   Ryan Bloom             California 
-   Rob Hartill            Internet Movie DB, UK 
-   David Robinson         Cambridge University, UK
-   Robert S. Thau         MIT, Massachusetts
-   Andrew Wilson          Freelance Consultant, UK 
+   Ryan Bloom
+   Dean Gaudet    
+   Rob Hartill
+   Brian Pane
+   David Robinson
+   Robert S. Thau
+   Andrew Wilson
    
 Other major contributors
 
