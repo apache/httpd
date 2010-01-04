@@ -90,7 +90,7 @@ d'Apache</compatibility>
         AuthType Basic<br />
         AuthName "Prot&eacute;g&eacute; par LDAP"<br />
         AuthBasicProvider ldap<br />
-        AuthLDAPURL ldap://127.0.0.1/dc=exemple,dc=com?uid?one<br />
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
         Require valid-user<br />
       </indent>
       &lt;/Location&gt;
@@ -252,7 +252,7 @@ d'Apache</compatibility>
         AuthType Basic<br />
         AuthName "Prot&eacute;g&eacute; par LDAP"<br />
         AuthBasicProvider ldap<br />
-        AuthLDAPURL ldaps://127.0.0.1/dc=exemple,dc=com?uid?one<br />
+        AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
         Require valid-user<br />
       </indent>
       &lt;/Location&gt;
@@ -276,7 +276,7 @@ d'Apache</compatibility>
         AuthType Basic<br />
         AuthName "Prot&eacute;g&eacute; par LDAP"<br />
         AuthBasicProvider ldap<br />
-        AuthLDAPURL ldap://127.0.0.1/dc=exemple,dc=com?uid?one TLS<br />
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS<br />
         Require valid-user<br />
       </indent>
       &lt;/Location&gt;
@@ -336,7 +336,7 @@ d'Apache</compatibility>
                 AuthBasicProvider ldap<br />
                 LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt;
 		[mot de passe]<br />
-                AuthLDAPURL ldaps://127.0.0.1/dc=exemple,dc=com?uid?one<br />
+                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
                 Require valid-user<br />
             </indent>
             &lt;/Location&gt;
@@ -414,7 +414,7 @@ d'Apache</compatibility>
                 AuthType Basic<br />
                 AuthName "Prot&eacute;g&eacute; par LDAP"<br />
                 AuthBasicProvider ldap<br />
-                AuthLDAPURL ldaps://127.0.0.1/dc=exemple,dc=com?uid?one<br />
+                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
                 Require valid-user<br />
             </indent>
             &lt;/Location&gt;
