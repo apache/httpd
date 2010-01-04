@@ -62,7 +62,7 @@ documentation</a></li>
 <li><a href="proxy.html">Dynamic proxying with mod_rewrite</a></li>
 <li><a href="advanced.html">Advanced techniques and tricks</a></li>
 <li><a href="avoid.html">When <strong>NOT</strong> to use mod_rewrite</a></li>
-<li><a href="flags.html">Flags</a></li>
+<li><a href="flags.html">RewriteRule Flags</a></li>
 <li><a href="tech.html">Technical details</a></li>
 </ul>
 </div>
