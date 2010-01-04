@@ -8,19 +8,19 @@ Changes with Apache 2.2.15
      control is still vulnerable, unless using OpenSSL >= 0.9.8l.  
      [Joe Orton, Ruediger Pluem]
 
-   *) mod_filter: fix FilterProvider matching where "dispatch" string
-      doesn't exist.
-      PR 48054 [<tietw gmail.com>]
+  *) mod_filter: fix FilterProvider matching where "dispatch" string
+     doesn't exist.
+     PR 48054 [<tietw gmail.com>]
 
-   *) Build: fix --with-module to work as documented
-      PR 43881 [Gez Saunders <gez.saunders virgin.net>]
+  *) Build: fix --with-module to work as documented
+     PR 43881 [Gez Saunders <gez.saunders virgin.net>]
 
-   *) mod_mime: Make RemoveType override the info from TypesConfig.
-      PR 38330. [Stefan Fritsch]
+  *) mod_mime: Make RemoveType override the info from TypesConfig.
+     PR 38330. [Stefan Fritsch]
 
-   *) Proxy: unable to connect to a backend is SERVICE_UNAVAILABLE,
-      rather than BAD_GATEWAY or (especially) NOT_FOUND.
-      PR 46971 [evanc nortel.com]
+  *) Proxy: unable to connect to a backend is SERVICE_UNAVAILABLE,
+     rather than BAD_GATEWAY or (especially) NOT_FOUND.
+     PR 46971 [evanc nortel.com]
 
   *) mod_charset_lite: Honor 'CharsetOptions NoImplicitAdd'.
      [Eric Covener]
