@@ -70,7 +70,7 @@
 		BalancerMember http://192.168.1.50:80<br />
 		BalancerMember http://192.168.1.51:80<br />
 	&lt;/Proxy&gt;<br />
-	ProxyPass /test balancer://mycluster/
+	ProxyPass /test balancer://mycluster
 	</example>
 </section>
 
