@@ -12,6 +12,7 @@
 # The registry is at <http://www.iana.org/assignments/media-types/>.
 #
 # MIME type					Extensions
+application/3gpp-ims+xml
 application/activemessage
 application/andrew-inset			ez
 application/applefile
@@ -41,6 +42,8 @@ application/dec-dx
 application/dialog-info+xml
 application/dicom
 application/dns
+application/dssc+der				dssc
+application/dssc+xml				xdssc
 application/dvcs
 application/ecmascript				ecma
 application/edi-consent
@@ -56,6 +59,7 @@ application/fastsoap
 application/fits
 application/font-tdpfr				pfr
 application/h224
+application/held+xml
 application/http
 application/hyperstudio				stk
 application/ibe-key-request+xml
@@ -69,6 +73,7 @@ application/index.obj
 application/index.response
 application/index.vnd
 application/iotp
+application/ipfix				ipfix
 application/ipp
 application/isup
 application/java-archive			jar
@@ -208,6 +213,7 @@ application/vnd.accpac.simply.imp		imp
 application/vnd.acucobol			acu
 application/vnd.acucorp				atc acutc
 application/vnd.adobe.air-application-installer-package+zip	air
+application/vnd.adobe.partial-upload
 application/vnd.adobe.xdp+xml			xdp
 application/vnd.adobe.xfdf			xfdf
 application/vnd.aether.imp
@@ -221,7 +227,9 @@ application/vnd.anser-web-certificate-issue-initiation	cii
 application/vnd.anser-web-funds-transfer-initiation	fti
 application/vnd.antix.game-component		atx
 application/vnd.apple.installer+xml		mpkg
-application/vnd.arastra.swi			swi
+application/vnd.apple.mpegurl			m3u8
+application/vnd.arastra.swi
+application/vnd.aristanetworks.swi		swi
 application/vnd.audiograph			aep
 application/vnd.autopackage
 application/vnd.avistar+xml
@@ -238,6 +246,7 @@ application/vnd.chipnuts.karaoke-mmd		mmd
 application/vnd.cinderella			cdy
 application/vnd.cirpack.isdn-ext
 application/vnd.claymore			cla
+application/vnd.cloanto.rp9			rp9
 application/vnd.clonk.c4group			c4g c4d c4f c4p c4u
 application/vnd.commerce-battelle
 application/vnd.commonspace			csp
@@ -311,6 +320,8 @@ application/vnd.etsi.iptvueprofile+xml
 application/vnd.etsi.mcid+xml
 application/vnd.etsi.sci+xml
 application/vnd.etsi.simservs+xml
+application/vnd.etsi.tsl+xml
+application/vnd.etsi.tsl.der
 application/vnd.eudora.data
 application/vnd.ezpix-album			ez2
 application/vnd.ezpix-package			ez3
@@ -341,9 +352,15 @@ application/vnd.fujixerox.docuworks.binder	xbd
 application/vnd.fut-misnet
 application/vnd.fuzzysheet			fzs
 application/vnd.genomatix.tuxedo		txd
+application/vnd.geocube+xml
 application/vnd.geogebra.file			ggb
 application/vnd.geogebra.tool			ggt
 application/vnd.geometry-explorer		gex gre
+application/vnd.geonext				gxt
+application/vnd.geoplan				g2w
+application/vnd.geospace			g3w
+application/vnd.globalplatform.card-content-mgt
+application/vnd.globalplatform.card-content-mgt-response
 application/vnd.gmx				gmx
 application/vnd.google-earth.kml+xml		kml
 application/vnd.google-earth.kmz		kmz
@@ -529,6 +546,7 @@ application/vnd.nokia.radio-presets		rpss
 application/vnd.novadigm.edm			edm
 application/vnd.novadigm.edx			edx
 application/vnd.novadigm.ext			ext
+application/vnd.ntt-local.file-transfer
 application/vnd.oasis.opendocument.chart		odc
 application/vnd.oasis.opendocument.chart-template	otc
 application/vnd.oasis.opendocument.database		odb
@@ -574,30 +592,98 @@ application/vnd.oma.poc.final-report+xml
 application/vnd.oma.poc.groups+xml
 application/vnd.oma.poc.invocation-descriptor+xml
 application/vnd.oma.poc.optimized-progress-report+xml
+application/vnd.oma.push
+application/vnd.oma.scidm.messages+xml
 application/vnd.oma.xcap-directory+xml
 application/vnd.omads-email+xml
 application/vnd.omads-file+xml
 application/vnd.omads-folder+xml
 application/vnd.omaloc-supl-init
 application/vnd.openofficeorg.extension		oxt
+application/vnd.openxmlformats-officedocument.custom-properties+xml
+application/vnd.openxmlformats-officedocument.customxmlproperties+xml
+application/vnd.openxmlformats-officedocument.drawing+xml
+application/vnd.openxmlformats-officedocument.drawingml.chart+xml
+application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml
+application/vnd.openxmlformats-officedocument.drawingml.diagramcolors+xml
+application/vnd.openxmlformats-officedocument.drawingml.diagramdata+xml
+application/vnd.openxmlformats-officedocument.drawingml.diagramlayout+xml
+application/vnd.openxmlformats-officedocument.drawingml.diagramstyle+xml
+application/vnd.openxmlformats-officedocument.extended-properties+xml
+application/vnd.openxmlformats-officedocument.presentationml.commentauthors+xml
+application/vnd.openxmlformats-officedocument.presentationml.comments+xml
+application/vnd.openxmlformats-officedocument.presentationml.handoutmaster+xml
+application/vnd.openxmlformats-officedocument.presentationml.notesmaster+xml
+application/vnd.openxmlformats-officedocument.presentationml.notesslide+xml
 application/vnd.openxmlformats-officedocument.presentationml.presentation pptx
+application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml
+application/vnd.openxmlformats-officedocument.presentationml.presprops+xml
 application/vnd.openxmlformats-officedocument.presentationml.slide	sldx
+application/vnd.openxmlformats-officedocument.presentationml.slide+xml
+application/vnd.openxmlformats-officedocument.presentationml.slidelayout+xml
+application/vnd.openxmlformats-officedocument.presentationml.slidemaster+xml
 application/vnd.openxmlformats-officedocument.presentationml.slideshow	ppsx
+application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml
+application/vnd.openxmlformats-officedocument.presentationml.slideupdateinfo+xml
+application/vnd.openxmlformats-officedocument.presentationml.tablestyles+xml
+application/vnd.openxmlformats-officedocument.presentationml.tags+xml
 application/vnd.openxmlformats-officedocument.presentationml.template	potx
+application/vnd.openxmlformats-officedocument.presentationml.template.main+xml
+application/vnd.openxmlformats-officedocument.presentationml.viewprops+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.calcchain+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.externallink+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcachedefinition+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.pivotcacherecords+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.pivottable+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.querytable+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.revisionheaders+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.revisionlog+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.sharedstrings+xml
 application/vnd.openxmlformats-officedocument.spreadsheetml.sheet	xlsx
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheetmetadata+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.tablesinglecells+xml
 application/vnd.openxmlformats-officedocument.spreadsheetml.template	xltx
+application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.usernames+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.volatiledependencies+xml
+application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml
+application/vnd.openxmlformats-officedocument.theme+xml
+application/vnd.openxmlformats-officedocument.themeoverride+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml
 application/vnd.openxmlformats-officedocument.wordprocessingml.document	docx
+application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.fonttable+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml
 application/vnd.openxmlformats-officedocument.wordprocessingml.template	dotx
+application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml
+application/vnd.openxmlformats-officedocument.wordprocessingml.websettings+xml
+application/vnd.openxmlformats-package.core-properties+xml
+application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml
 application/vnd.osa.netdeploy
 application/vnd.osgi.bundle
 application/vnd.osgi.dp				dp
 application/vnd.otps.ct-kip+xml
 application/vnd.palm				pdb pqa oprc
 application/vnd.paos.xml
+application/vnd.pawaafile			paw
 application/vnd.pg.format			str
 application/vnd.pg.osasli			ei6
 application/vnd.piaccess.application-licence
 application/vnd.picsel				efif
+application/vnd.pmi.widget			wg
 application/vnd.poc.group-advertisement+xml
 application/vnd.pocketlearn			plf
 application/vnd.powerbuilder6			pbd
@@ -615,7 +701,23 @@ application/vnd.pwg-multiplexed
 application/vnd.pwg-xhtml-print+xml
 application/vnd.qualcomm.brew-app-res
 application/vnd.quark.quarkxpress		qxd qxt qwd qwt qxl qxb
+application/vnd.radisys.moml+xml
+application/vnd.radisys.msml+xml
+application/vnd.radisys.msml-audit+xml
+application/vnd.radisys.msml-audit-conf+xml
+application/vnd.radisys.msml-audit-conn+xml
+application/vnd.radisys.msml-audit-dialog+xml
+application/vnd.radisys.msml-audit-stream+xml
+application/vnd.radisys.msml-conf+xml
+application/vnd.radisys.msml-dialog+xml
+application/vnd.radisys.msml-dialog-base+xml
+application/vnd.radisys.msml-dialog-fax-detect+xml
+application/vnd.radisys.msml-dialog-fax-sendrecv+xml
+application/vnd.radisys.msml-dialog-group+xml
+application/vnd.radisys.msml-dialog-speech+xml
+application/vnd.radisys.msml-dialog-transform+xml
 application/vnd.rapid
+application/vnd.realvnc.bed			bed
 application/vnd.recordare.musicxml		mxl
 application/vnd.recordare.musicxml+xml		musicxml
 application/vnd.renlearn.rlprint
@@ -624,6 +726,7 @@ application/vnd.rn-realmedia			rm
 application/vnd.route66.link66+xml		link66
 application/vnd.ruckus.download
 application/vnd.s3sms
+application/vnd.sailingtracker.track		st
 application/vnd.sbm.cid
 application/vnd.sbm.mid2
 application/vnd.scribus
@@ -648,6 +751,7 @@ application/vnd.shana.informed.interchange	iif
 application/vnd.shana.informed.package		ipk
 application/vnd.simtech-mindmapper		twd twds
 application/vnd.smaf				mmf
+application/vnd.smart.notebook
 application/vnd.smart.teacher			teacher
 application/vnd.software602.filler.form+xml
 application/vnd.software602.filler.form-xml-zip
@@ -726,6 +830,9 @@ application/vnd.webturbo			wtb
 application/vnd.wfa.wsc
 application/vnd.wmc
 application/vnd.wmf.bootstrap
+application/vnd.wolfram.mathematica
+application/vnd.wolfram.mathematica.package
+application/vnd.wolfram.player			nbp
 application/vnd.wordperfect			wpd
 application/vnd.wqd				wqd
 application/vnd.wrq-hp3000-labelled
@@ -873,6 +980,9 @@ audio/amr
 audio/amr-wb
 audio/amr-wb+
 audio/asc
+audio/atrac-advanced-lossless
+audio/atrac-x
+audio/atrac3
 audio/basic					au snd
 audio/bv16
 audio/bv32
@@ -942,10 +1052,12 @@ audio/smv
 audio/smv0
 audio/smv-qcp
 audio/sp-midi
+audio/speex
 audio/t140c
 audio/t38
 audio/telephone-event
 audio/tone
+audio/uemclip
 audio/ulpfec
 audio/vdvi
 audio/vmr-wb
@@ -966,6 +1078,8 @@ audio/vnd.dolby.mps
 audio/vnd.dolby.pl2
 audio/vnd.dolby.pl2x
 audio/vnd.dolby.pl2z
+audio/vnd.dolby.pulse.1
+audio/vnd.dra					dra
 audio/vnd.dts					dts
 audio/vnd.dts.hd				dtshd
 audio/vnd.everad.plj
@@ -1116,6 +1230,7 @@ text/parityfec
 text/plain					txt text conf def list log in
 text/prs.fallenstein.rst
 text/prs.lines.tag				dsc
+text/vnd.radisys.msml-basic-layout
 text/red
 text/rfc822-headers
 text/richtext					rtx
