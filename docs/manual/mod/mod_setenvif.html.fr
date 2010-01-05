@@ -242,7 +242,7 @@ peuvent se présenter sous les formes suivantes :</p>
    SetEnvIf Request_URI "\.jpg$" objet_est_une_image=jpg<br />
    SetEnvIf Request_URI "\.xbm$" objet_est_une_image=xbm<br />
         :<br />
-   SetEnvIf Referer www\.mon-domaine\.exemple\.com référant_intra_site<br />
+   SetEnvIf Referer www\.mon-domaine\.example\.com référant_intra_site<br />
         :<br />
    SetEnvIf objet_est_une_image xbm XBIT_PROCESSING=1<br />
         :<br />

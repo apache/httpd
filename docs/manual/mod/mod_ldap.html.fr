@@ -109,7 +109,7 @@ d'Apache</td></tr></table>
         AuthType Basic<br />
         AuthName "Protégé par LDAP"<br />
         AuthBasicProvider ldap<br />
-        AuthLDAPURL ldap://127.0.0.1/dc=exemple,dc=com?uid?one<br />
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
         Require valid-user<br />
       </span>
       &lt;/Location&gt;
@@ -265,7 +265,7 @@ d'Apache</td></tr></table>
         AuthType Basic<br />
         AuthName "Protégé par LDAP"<br />
         AuthBasicProvider ldap<br />
-        AuthLDAPURL ldaps://127.0.0.1/dc=exemple,dc=com?uid?one<br />
+        AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
         Require valid-user<br />
       </span>
       &lt;/Location&gt;
@@ -289,7 +289,7 @@ d'Apache</td></tr></table>
         AuthType Basic<br />
         AuthName "Protégé par LDAP"<br />
         AuthBasicProvider ldap<br />
-        AuthLDAPURL ldap://127.0.0.1/dc=exemple,dc=com?uid?one TLS<br />
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS<br />
         Require valid-user<br />
       </span>
       &lt;/Location&gt;
@@ -349,7 +349,7 @@ d'Apache</td></tr></table>
                 AuthBasicProvider ldap<br />
                 LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt;
 		[mot de passe]<br />
-                AuthLDAPURL ldaps://127.0.0.1/dc=exemple,dc=com?uid?one<br />
+                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
                 Require valid-user<br />
             </span>
             &lt;/Location&gt;
@@ -427,7 +427,7 @@ d'Apache</td></tr></table>
                 AuthType Basic<br />
                 AuthName "Protégé par LDAP"<br />
                 AuthBasicProvider ldap<br />
-                AuthLDAPURL ldaps://127.0.0.1/dc=exemple,dc=com?uid?one<br />
+                AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
                 Require valid-user<br />
             </span>
             &lt;/Location&gt;
