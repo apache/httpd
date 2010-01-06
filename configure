@@ -127,6 +127,10 @@ if [ "x$bytes" != "x3" ]; then
         echo " + please set the SEO variable in 'configure' manually to"
         echo " + the required 'echo' options, i.e. those which force your"
         echo " + 'echo' to not interpret escape sequences per default."
+        echo
+        echo " + NOTE: You may also need to edit the shell invoked by"
+        echo " +       'configure'. Some shells (e.g. dash) have a"
+        echo " +       faulty echo builtin."
     else
         SEO='-E'
     fi
