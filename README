@@ -5,25 +5,27 @@
   What is it?
   -----------
 
-  Apache is an HTTP server designed as a plug-in replacement for
-  the NCSA server version 1.3 (or 1.4). It fixes numerous bugs in
-  the NCSA server and includes many frequently requested new
-  features, and has an API which allows it to be extended to meet
-  users' needs more easily.
+  Apache httpd 1.3 is a HTTP server designed as a plug-in replacement 
+  for the NCSA server version 1.3 (or 1.4). It fixes numerous bugs in
+  the NCSA server, includes many frequently-requested new features, 
+  and has an API which allows it to be extended more easily to meet 
+  users' needs.
 
   The Latest Version
   ------------------
 
-  As of January 2010, version 1.3 of Apache has reached its end
-  of life. Future security updates will be available as patches, 
-  via;
+  Apache httpd 1.3 has reached end of life, as of January 2010. 
+  No further releases of this software will be made, although critical 
+  security updates may be made available as patches from the following 
+  website:
   
     http://www.apache.org/dist/httpd/patches/
 
   Users are encouraged to upgrade to version 2.2 or higher of 
-  Apache httpd. Information on upgrading is available at;
+  Apache httpd. 
+  
+  Information on upgrading is available from the following website:
 
-     http://httpd.apache.org/docs/2.0/upgrading.html
      http://httpd.apache.org/docs/2.2/upgrading.html
 
   Documentation
@@ -37,17 +39,13 @@
   Installation
   ------------
 
-  From Apache version 1.3 and up you have two possibilities to
-  build and install the Apache package: The old commonly known
-  but manual way from Apache 1.2 and below and the new
-  out-of-the-box way through the new Apache Autoconf-style
-  Interface (APACI). For detailed instructions see the file
-  INSTALL in this directory.
+  For detailed installation instructions, please see the INSTALL 
+  file in this directory.
 
   Licensing
   ---------
 
-  Please see the file called LICENSE.
+  For license details, please seem the LICENSE file in this directory.
 
   Acknowledgments
   ----------------
