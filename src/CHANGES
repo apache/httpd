@@ -1,5 +1,24 @@
 Changes with Apache 1.3.42
 
+  *) INFORMATIONAL: Please note that this release is considered
+     the final release of the Apache 1.3.x, which has now reached
+     end of life status. Future security updates will be distributed 
+     as patches, via 
+
+     http://www.apache.org/dist/httpd/patches/
+
+     Apache 1.3.x users who wish to avail of security releases,
+     bug-fixes and community support are advised to use Apache 2.2 
+     or higher. 
+
+     Information on upgrading is available at;
+
+     http://httpd.apache.org/docs/2.0/upgrading.html
+     http://httpd.apache.org/docs/2.2/upgrading.html
+
+     Thank you to everyone who helped make Apache 1.3.x the most 
+     successful, and most used, webserver software on the planet. 
+     [Apache httpd group]
 
 Changes with Apache 1.3.41
 

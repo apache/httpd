@@ -14,8 +14,17 @@
   The Latest Version
   ------------------
 
-  Details of the latest version can be found on the Apache HTTP
-  server project page under http://httpd.apache.org/.
+  As of January 2010, version 1.3 of Apache has reached its end
+  of life. Future security updates will be available as patches, 
+  via;
+  
+    http://www.apache.org/dist/httpd/patches/
+
+  Users are encouraged to upgrade to version 2.2 or higher of 
+  Apache httpd. Information on upgrading is available at;
+
+     http://httpd.apache.org/docs/2.0/upgrading.html
+     http://httpd.apache.org/docs/2.2/upgrading.html
 
   Documentation
   -------------
