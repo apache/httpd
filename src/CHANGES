@@ -20,6 +20,9 @@ Changes with Apache 1.3.42
      successful, and most used, webserver software on the planet. 
      [Apache httpd group]
 
+  *) Protect logresolve from mismanaged DNS records that return 
+     blank/null hostnames. [Jim Jagielski]
+
 Changes with Apache 1.3.41
 
   *) SECURITY: CVE-2007-6388 (cve.mitre.org)
