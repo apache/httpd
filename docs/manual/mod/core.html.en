@@ -1137,7 +1137,7 @@ in case of an error</td></tr>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>File attributes used to create the ETag
-HTTP response header</td></tr>
+HTTP response header for static files</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>FileETag <var>component</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>FileETag INode MTime Size</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -1148,7 +1148,7 @@ HTTP response header</td></tr>
     <p>
     The <code class="directive">FileETag</code> directive configures the file
     attributes that are used to create the <code>ETag</code> (entity
-    tag) response header field when the document is based on a file.
+    tag) response header field when the document is based on a static file.
     (The <code>ETag</code> value is used in cache management to save
     network bandwidth.) In Apache 1.3.22 and earlier, the
     <code>ETag</code> value was <em>always</em> formed
@@ -1192,6 +1192,12 @@ HTTP response header</td></tr>
     These conditional requests will break if the <code>ETag</code> format is
     changed via <code class="directive">FileETag</code>.
     </div>
+    <div class="note"><h3>Server Side Includes</h3>
+    An ETag is not generated for responses parsed by <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>, 
+    since the response entity can change without a change of the INode, MTime, or Size 
+    of the static file with embedded SSI directives.
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
