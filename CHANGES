@@ -3,10 +3,11 @@ Changes with Apache 2.2.15
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
      A partial fix for the TLS renegotiation prefix injection attack by
-     rejecting any client-initiated renegotiations.  Any configuration
-     which requires renegotiation for per-directory/location access 
-     control is still vulnerable, unless using OpenSSL >= 0.9.8l.  
-     [Joe Orton, Ruediger Pluem]
+     rejecting any client-initiated renegotiations. Forcibly disable keepalive
+     for the connection if there is any buffered data readable. Any
+     configuration which requires renegotiation for per-directory/location
+     access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
+     [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
   *) mod_filter: fix FilterProvider matching where "dispatch" string
      doesn't exist.
