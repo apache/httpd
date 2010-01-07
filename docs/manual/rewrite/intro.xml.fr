@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 833139 -->
+<!-- English Revision : 895078 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -172,14 +172,17 @@ arri&egrave;res dans les expressions rationnelles</title>
       sont cr&eacute;&eacute;es en interne et peuvent &ecirc;tre rappel&eacute;es via les cha&icirc;nes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
       r&eacute;f&eacute;rences sont disponibles lors de la cr&eacute;ation des cha&icirc;nes de
-      <em>Substitution</em> et des <em>Cha&icirc;nes de test</em>. La figure 2
+      <em>Substitution</em> et des <em>Cha&icirc;nes de test</em>. La
+      figure 1
       montre &agrave; quels endroits les r&eacute;f&eacute;rences arri&egrave;res sont suceptibles
-      d'&ecirc;tre d&eacute;velopp&eacute;es.</p>
+      d'&ecirc;tre d&eacute;velopp&eacute;es, et illustre le flux des comparaisons
+      effectu&eacute;es par les r&egrave;gles RewriteRule et RewriteCond.</p>
 
 <p class="figure">
-      <img src="../images/mod_rewrite_fig2.gif" width="381"
-           height="179" alt="[Pas affichable sans support des images]" /><br />
-      <dfn>Figure 2:</dfn> Le cheminement d'une r&eacute;f&eacute;rence arri&egrave;re &agrave;
+      <img src="../images/rewrite_rule_flow.png" 
+      alt="Flux des comparaisons effectu&eacute;es par les r&egrave;gles RewriteRule
+      et RewriteCond" /><br />
+      <dfn>Figure 1 :</dfn> Le cheminement d'une r&eacute;f&eacute;rence arri&egrave;re &agrave;
       travers une r&egrave;gle.
 </p>
 
@@ -202,6 +205,12 @@ transform&eacute;e;</li>
 rationnelle</a> compar&eacute;e au chemin de l'URL de la requ&ecirc;te entrante (la
 partie situ&eacute;e apr&egrave;s le nom d'h&ocirc;te mais avant tout point d'interrogation
 qui indique le d&eacute;but d'une cha&icirc;ne de requ&ecirc;te).</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png" 
+      alt="Syntaxe de la directive RewriteRule" /><br />
+      <dfn>Figure 2 :</dfn> Syntaxe de la directive RewriteRule.
+</p>
 
 <p>La cha&icirc;ne de <var>Substitution</var> peut, quant &agrave; elle, &ecirc;tre de
 trois types :</p>
@@ -285,6 +294,13 @@ le second argument est une <a href="#regex">expression rationnelle</a>
 qui doit correspondre &agrave; la variable, et un troisi&egrave;me argument optionnel
 est une liste de drapeaux qui modifient la mani&egrave;re dont la
 correspondance est &eacute;valu&eacute;e.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png" 
+      alt="Syntaxe de la directive RewriteCond" /><br />
+      <dfn>Figure 3 :</dfn> Syntaxe de la directive RewriteCond
+</p>
+
 
 <p>Par exemple, pour renvoyer toutes les requ&ecirc;tes en provenance d'une
 certaine tranche d'adresses IP vers un autre serveur, vous pouvez

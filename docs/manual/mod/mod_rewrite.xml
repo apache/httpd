@@ -1127,11 +1127,11 @@ cannot use <code>$N</code> in the substitution string!
       as the third argument to the <code>RewriteRule</code>
       directive. <em>Flags</em> is a comma-separated list, surround by square
       brackets, of any of the flags in the following table. More
-      details, ane examples, for each flag, are available in the <a
+      details, and examples, for each flag, are available in the <a
       href="../rewrite/flags.html">Rewrite Flags document</a>.</p>
 
     <table>
-    <tr><th>Flag and sytnax</th>
+    <tr><th>Flag and syntax</th>
         <th>Function</th>
     </tr>
     <tr>

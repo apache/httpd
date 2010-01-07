@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 893874 -->
+<!-- English Revision : 894526 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -408,23 +408,6 @@ incorrectes d'une r&eacute;ponse</description>
     bogu&eacute;s qui oublient d'ins&eacute;rer une ligne vide entre les
     en-t&ecirc;tes et le corps.</dd>
     </dl>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>ProxyFtpDirCharset</name>
-<description>D&eacute;finit le jeu de caract&egrave;res des listings FTP
-mandat&eacute;s</description>
-<syntax>ProxyFtpDirCharset <var>jeu-caract&egrave;res</var></syntax>
-<default>ProxyFtpDirCharset ISO-8859-1</default>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context></contextlist>
-<compatibility>Disponible depuis la version 2.2.7 d'Apache</compatibility>
-
-<usage>
-    <p>La directive <directive>ProxyFtpDirCharset</directive> permet de
-    d&eacute;finir le jeu de caract&egrave;res &agrave; utiliser pour les listings FTP en
-    HTML g&eacute;n&eacute;r&eacute;s par <module>mod_proxy_ftp</module>.</p>
 </usage>
 </directivesynopsis>
 
@@ -1209,36 +1192,6 @@ r&eacute;&eacute;crit la cha&icirc;ne correspondant au <code>chemin</code> dans 
 </usage>
 </directivesynopsis>
 
-
-<directivesynopsis>
-<name>AllowCONNECT</name>
-<description>Ports autoris&eacute;s &agrave; se <code>CONNECT</code>er &agrave; travers le
-mandataire</description>
-<syntax>AllowCONNECT <var>port</var> [<var>port</var>] ...</syntax>
-<default>AllowCONNECT 443 563</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>La directive <directive>AllowCONNECT</directive> permet de
-    sp&eacute;cifier une liste de num&eacute;ros de ports auxquels la m&eacute;thode de
-    mandataire <code>CONNECT</code> pourra se connecter. Les navigateurs
-    d'aujourd'hui utilisent cette m&eacute;thode dans le cas o&ugrave; une connexion
-    <code>https</code> est requise et o&ugrave; le tunneling mandataire sur
-    HTTP est en service.</p>
-
-    <p>Par d&eacute;faut, seuls les ports par d&eacute;fauts https (<code>443</code>)
-    et snews (<code>563</code>) sont pris en compte. Vous pouvez
-    utiliser la directive <directive>AllowCONNECT</directive> pour
-    outrepasser ces valeurs par d&eacute;faut et n'autoriser les connexions que
-    vers les ports sp&eacute;cifi&eacute;s.</p>
-
-    <p>Notez que le module <module>mod_proxy_connect</module> doit &ecirc;tre
-    charg&eacute; dans le serveur pour pouvoir acc&eacute;der au support de
-    <code>CONNECT</code>.</p>
-</usage>
-</directivesynopsis>
-
 <directivesynopsis>
 <name>ProxyBlock</name>
 <description>Termes, serveurs ou domaines bloqu&eacute;s par le
@@ -1422,7 +1375,7 @@ directement</description>
       <p>Les comparaisons de noms de domaines s'effectuent sans tenir
       compte de la casse, et les parties droites des <var>Domaine</var>s
       sont toujours cens&eacute;es correspondre &agrave; la racine de l'arborescence
-      DNS, si bien que les domaines <code>.example.com</code> et
+      DNS, si bien que les domaines <code>.ExEmple.com</code> et
       <code>.example.com.</code> (notez le point &agrave; la fin du nom) sont
       consid&eacute;r&eacute;s comme identiques. Comme une comparaison de domaines ne
       n&eacute;cessite pas de recherche DNS, elle est beaucoup plus efficace
@@ -1505,7 +1458,7 @@ directement</description>
       <p>Les comparaisons de <var>Nom de serveur</var> s'effectuent sans tenir
       compte de la casse, et les parties droites des <var>Noms de serveur</var>
       sont toujours cens&eacute;es correspondre &agrave; la racine de l'arborescence
-      DNS, si bien que les domaines <code>WWW.ExAmple.com</code> et
+      DNS, si bien que les domaines <code>WWW.ExEmple.com</code> et
       <code>www.example.com.</code> (notez le point &agrave; la fin du nom) sont
       consid&eacute;r&eacute;s comme identiques.</p>
      </note></dd>
