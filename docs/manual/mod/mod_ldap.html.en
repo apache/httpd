@@ -441,11 +441,24 @@ by other LDAP modules</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
-    <p>Specifies the timeout value (in seconds) in which the module will
-    attempt to connect to the LDAP server.  If a connection is not
-    successful with the timeout period, either an error will be 
-    returned or the module will attempt to connect to a secondary LDAP 
-    server if one is specified. The default is 10 seconds.</p>
+    <p>This directive configures the LDAP_OPT_NETWORK_TIMEOUT option in the
+    underlying LDAP client library, when available.  This value typically 
+    controls how long the LDAP client library will wait for various network 
+    calls to complete, including establishing a connection to the target LDAP 
+    server.</p>
+
+    <p> If a connection is not successful with the timeout period, either an error will be 
+    returned or the LDAP client library will attempt to connect to a secondary LDAP 
+    server if one is specified (via a space-separated list of hostnames in the 
+    <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>).</p>
+
+    <p>The default is 10 seconds, if the LDAP client library linked with the 
+    server supports the LDAP_OPT_NETWORK_TIMEOUT option.</p>
+
+    <div class="note">LDAPConnectionTimeout is only available when the LDAP client library linked
+    with the server supports the LDAP_OPT_NETWORK_TIMEOUT option, and the
+    ultimate behavior is dictated entirely by the LDAP client library.
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
