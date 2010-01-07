@@ -507,7 +507,7 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
 
             /* read the chunk */
             if (remaining > 0) {
-                n = ap_bread(f, buf, MIN((int)buf_size, (int)remaining));
+                n = ap_bread(f, buf, (int) MIN(buf_size, remaining));
                 if (n > -1) {
                     remaining -= n;
                     end_of_chunk = (remaining == 0);
@@ -548,8 +548,8 @@ long int ap_proxy_send_fb(BUFF *f, request_rec *r, cache_req *c, off_t len, int 
                 n = ap_bread(f, buf, buf_size);
             }
             else {
-                n = ap_bread(f, buf, MIN((int)buf_size,
-                                         (int)(len - total_bytes_rcvd)));
+                n = ap_bread(f, buf, (int) MIN(buf_size,
+                                               (len - total_bytes_rcvd)));
             }
         }
 

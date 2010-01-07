@@ -737,7 +737,7 @@ API_EXPORT(int) ap_bread(BUFF *fb, void *buf, int nbyte)
 {
     int i, nrd;
 
-    if (fb->flags & B_RDERR)
+    if (fb->flags & B_RDERR || nbyte < 0)
 	return -1;
     if (nbyte == 0)
 	return 0;
@@ -1258,7 +1258,7 @@ API_EXPORT(int) ap_bwrite(BUFF *fb, const void *buf, int nbyte)
     static int csize = 0;
 #endif /*CHARSET_EBCDIC*/
 
-    if (fb->flags & (B_WRERR | B_EOUT))
+    if (fb->flags & (B_WRERR | B_EOUT) || nbyte < 0)
 	return -1;
     if (nbyte == 0)
 	return 0;
