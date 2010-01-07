@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 807930 -->
+<!-- English Revision : 894306 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -309,6 +309,15 @@ fichier en fonction de son type MIME</description>
     SuppressLastModified</a></code> en ajoute 19. Ainsi, la plus grande
     taille par d&eacute;faut qui peut &ecirc;tre assign&eacute;e &agrave; la colonne description
     est de 55 octets.</p>
+
+    <p>Comme l'argument <var>fichier</var> peut &ecirc;tre un nom de fichier
+    partiel, vous devez garder &agrave; l'esprit qu'un nom de fichier partiel
+    trop court pourra correspondre &agrave; des fichiers non voulus. Par
+    exemple, <code>le.html</code> correspondra au fichier
+    <code>le.html</code>, mais aussi au fichier
+    <code>example.html</code>. En cas d'ambigu&iuml;t&eacute;, utilisez un nom de
+    fichier aussi complet que possible, et ordonnez votre liste de
+    directives <code>AddDescription</code> en cons&eacute;quence.</p>
 
     <p>Voir le mot-cl&eacute; <a href="#indexoptions.descriptionwidth"
     >DescriptionWidth</a> de la directive <directive
@@ -714,7 +723,7 @@ r&eacute;pertoire</description>
       <dd>Avec <code>-NameWidth</code> (ou si l'option n'est pas
       d&eacute;finie), <module
       >mod_autoindex</module> va calculer la meilleure largeur
-      possible.</dd>
+      possible, mais jusqu'&agrave; une largeur maximale de 20 octets.</dd>
 
       <dd><code>NameWidth=<var>n</var></code> fixe la largeur de la
       colonne &agrave; <var>n</var> octets.</dd>
@@ -1012,6 +1021,13 @@ r&eacute;pertoire</description>
       <title>Exemple</title>
       IndexStyleSheet "/css/style.css"
     </example>
+
+    <p>L'utilisation de cette directive en conjonction avec <code>IndexOptions
+    HTMLTable</code> ajoute aussi les d&eacute;clarations de classes
+    <code>ai-tr-odd</code> et <code>ai-tr-even</code> pour diff&eacute;rentier
+    les lignes successives du listing du r&eacute;pertoire, de fa&ccedil;on &agrave; ce que vous puissiez
+    d&eacute;finir un style diff&eacute;rent pour les lignes paires et impaires de la
+    table.</p>
 </usage>
 </directivesynopsis>
 

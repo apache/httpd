@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 881113 -->
+<!-- English Revision : 895068 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -144,9 +144,8 @@ module mod_rewrite et de la mise en correspondance des URLs</p>
       contr&ocirc;le est un peu compliqu&eacute;. Voir la figure 1 pour plus de
       d&eacute;tails.</p>
 <p class="figure">
-      <img src="../images/mod_rewrite_fig1.gif" width="428"
-           height="385" alt="[N&eacute;cessite le mode graphique pour
-	   l'affichage]" /><br />
+      <img src="../images/rewrite_rule_flow.png"
+          alt="Flux des comparaisons des directives RewriteRule et RewriteCond" /><br />
       <dfn>Figure 1:</dfn>D&eacute;roulement du contr&ocirc;le &agrave; travers le jeu de
       r&egrave;gles de r&eacute;&eacute;criture
 </p>

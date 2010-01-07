@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 636028:894307 (outdated) -->
+<!-- English Revision: 894307 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -65,7 +65,7 @@
     <page href="server-wide.html">Configuration &agrave; l'&eacute;chelle du serveur</page>
     <page href="ssl/">Chiffrement SSL/TLS</page>
     <page href="suexec.html">Ex&eacute;cution des CGI avec suexec</page>
-    <page href="rewrite/">Guide de r&eacute;&eacute;criture des URLs</page>
+    <page href="rewrite/">R&eacute;&eacute;criture des URLs avec mod_rewrite</page>
     <page href="vhosts/">H&ocirc;tes virtuels</page>
 </category>
 
