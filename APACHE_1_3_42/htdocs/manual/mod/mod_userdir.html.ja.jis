@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_userdir</title>
+  </head>
+  <!-- English revision: 1.20 --> 
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_userdir モジュール</h1>
+
+    <p>このモジュールは、ユーザのホームディレクトリにアクセスする機能を提供します</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>ソースファイル:</strong></a>
+    mod_userdir.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>モジュール識別子:</strong></a>
+    userdir_module</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#userdir">UserDir</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="userdir" name="userdir">UserDir</a> ディレクティブ</h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> UserDir
+    <em>directory-filename</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>UserDir
+    public_html</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> サーバ設定ファイル、 バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_userdir<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> <code>UserDir public_html</code>
+    といった形式以外は、Apache 1.1 以降でのみ有効です。
+    <samp>enabled</samp> や <samp>disabled</samp> というキーワードの記述及び、
+    ユーザ名の列挙に関しては、Apache 1.3 以降でのみ対応しています。
+
+    <p>UserDir ディレクティブは、
+    ユーザのドキュメントに対する要求があった際に使用する、
+    ユーザのホームディレクトリの中の実際のディレクトリの名前を指定します。
+    <em>directory-filename</em> には、以下のどれかを指定します。</p>
+
+    <ul>
+      <li>ディレクトリ名か、以下に述べる形式のパターン。</li>
+
+      <li><samp>disabled</samp> というキーワード。<br />
+      この設定は、<samp>enabled</samp> キーワード (以下参照)
+      において指定されたユーザ以外、
+      <em>すべて</em>のユーザ名をディレクトリに変換しないようにします。</li>
+
+      <li><samp>disabled</samp> というキーワードと、
+      その後にスペース区切りでユーザ名を列挙。<br />
+      指定されたユーザは、<samp>enabled</samp>
+      において記述がされていたとしても、
+      ディレクトリへの変換が<em>されなく</em>なります。</li>
+
+      <li><samp>enabled</samp>
+      というキーワードと、スペース区切りでユーザ名を列挙<br />
+      指定されたユーザは、変換がされないように設定されていたとしても、
+      ディレクトリへの変換を行います。
+      ただし、<samp>disabled</samp>
+      において明記されている場合には、変換がなされません。</li>
+    </ul>
+
+    <p><samp>enabled</samp> や <samp>disabled</samp>
+    といったキーワードでない場合には、
+    ファイル名のパターンとして扱われ、
+    名前からディレクトリへの変換を指定することができます。
+    <code>http://www.foo.com/~bob/one/two.html</code> への URL
+    の場合の変換について見てみます。</p>
+
+<pre>
+UserDir public_html     -&gt; ~bob/public_html/one/two.html
+UserDir /usr/web        -&gt; /usr/web/bob/one/two.html
+UserDir /home/*/www     -&gt; /home/bob/www/one/two.html
+</pre>
+
+    <p>以下のようにディレクティブを設定すると、
+    クライアントへはリダイレクトが送出されます。</p>
+<pre>
+UserDir http://www.foo.com/users -&gt; http://www.foo.com/users/bob/one/two.html
+UserDir http://www.foo.com/*/usr -&gt; http://www.foo.com/bob/usr/one/two.html
+UserDir http://www.foo.com/~*/   -&gt; http://www.foo.com/~bob/one/two.html
+</pre>
+
+    <blockquote>
+      <strong>
+      このディレクティブを利用する際、<samp>"UserDir&nbsp;./"</samp>
+      といった設定をすると、<samp>"/~root"</samp> は <samp>"/"</samp>
+      にマッピングされることに気をつけてください。
+      これは非常に望ましくありません。
+      Apache 1.3 以降を利用しているのであれば、"UserDir disabled root"
+      という記述を設定ファイル中に含めることを強く推奨します。
+      <a
+      href="core.html#directory">&lt;Directory&gt;</a> ディレクティブや、
+      <a href="../misc/security_tips.html">セキュリティに関する覚書</a>
+      も参照してください。</strong>
+    </blockquote>
+
+<p>その他の設定例:</p>
+
+<p>小数のユーザには <code>UserDir</code>
+ディレクトリを利用させるものの、残りのユーザにはさせたくない場合:</p>
+
+<pre>
+UserDir disabled
+UserDir enabled user1 user2 user3
+</pre>
+
+<p>大部分のユーザには <code>UserDir</code>
+ディレクトリを利用させ、一部のユーザのみ無効にする場合:</p>
+
+<pre>
+UserDir enabled
+UserDir disabled user4 user5 user6
+</pre>
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

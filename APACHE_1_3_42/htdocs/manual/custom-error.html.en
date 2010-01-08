@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Custom error responses</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Custom error responses</h1>
+
+    <dl>
+      <dt>Purpose</dt>
+
+      <dd>
+        Additional functionality. Allows webmasters to configure
+        the response of Apache to some error or problem. 
+
+        <p>Customizable responses can be defined to be activated in
+        the event of a server detected error or problem.</p>
+
+        <p>e.g. if a script crashes and produces a "500 Server
+        Error" response, then this response can be replaced with
+        either some friendlier text or by a redirection to another
+        URL (local or external).</p>
+      </dd>
+
+      <dt>Old behavior</dt>
+
+      <dd>NCSA httpd 1.3 would return some boring old error/problem
+      message which would often be meaningless to the user, and
+      would provide no means of logging the symptoms which caused
+      it.<br />
+      </dd>
+
+      <dt>New behavior</dt>
+
+      <dd>
+        The server can be asked to; 
+
+        <ol>
+          <li>Display some other text, instead of the NCSA hard
+          coded messages, or</li>
+
+          <li>redirect to a local URL, or</li>
+
+          <li>redirect to an external URL.</li>
+        </ol>
+
+        <p>Redirecting to another URL can be useful, but only if
+        some information can be passed which can then be used to
+        explain and/or log the error/problem more clearly.</p>
+
+        <p>To achieve this, Apache will define new CGI-like
+        environment variables, <em>e.g.</em></p>
+
+        <blockquote>
+          <code>REDIRECT_HTTP_ACCEPT=*/*, image/gif,
+          image/x-xbitmap, image/jpeg<br />
+           REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX
+          A.09.05 9000/712)<br />
+           REDIRECT_PATH=.:/bin:/usr/local/bin:/etc<br />
+           REDIRECT_QUERY_STRING=<br />
+           REDIRECT_REMOTE_ADDR=121.345.78.123<br />
+           REDIRECT_REMOTE_HOST=ooh.ahhh.com<br />
+           REDIRECT_SERVER_NAME=crash.bang.edu<br />
+           REDIRECT_SERVER_PORT=80<br />
+           REDIRECT_SERVER_SOFTWARE=Apache/0.8.15<br />
+           REDIRECT_URL=/cgi-bin/buggy.pl<br />
+          </code>
+        </blockquote>
+
+        <p>note the <code>REDIRECT_</code> prefix.</p>
+
+        <p>At least <code>REDIRECT_URL</code> and
+        <code>REDIRECT_QUERY_STRING</code> will be passed to the
+        new URL (assuming it's a cgi-script or a cgi-include). The
+        other variables will exist only if they existed prior to
+        the error/problem. <strong>None</strong> of these will be
+        set if your ErrorDocument is an <em>external</em> redirect
+        (<em>i.e.</em>, anything starting with a scheme name like
+        <code>http:</code>, even if it refers to the same host as
+        the server).</p>
+      </dd>
+
+      <dt>Configuration</dt>
+
+      <dd>
+        Use of "ErrorDocument" is enabled for .htaccess files when
+        the <a href="mod/core.html#allowoverride">"FileInfo"
+        override</a> is allowed. 
+
+        <p>Here are some examples...</p>
+
+        <blockquote>
+          <code>ErrorDocument 500 /cgi-bin/crash-recover<br />
+           ErrorDocument 500 "Sorry, our script crashed. Oh
+          dear<br />
+           ErrorDocument 500 http://xxx/<br />
+           ErrorDocument 404 /Lame_excuses/not_found.html<br />
+           ErrorDocument 401
+          /Subscription/how_to_subscribe.html</code>
+        </blockquote>
+
+        <p>The syntax is,</p>
+
+        <p><code><a
+        href="mod/core.html#errordocument">ErrorDocument</a></code>
+        &lt;3-digit-code&gt; action</p>
+
+        <p>where the action can be,</p>
+
+        <ol>
+          <li>Text to be displayed. Prefix the text with a quote
+          ("). Whatever follows the quote is displayed. <em>Note:
+          the (") prefix isn't displayed.</em></li>
+
+          <li>An external URL to redirect to.</li>
+
+          <li>A local URL to redirect to.</li>
+        </ol>
+      </dd>
+    </dl>
+    <hr />
+
+    <h2>Custom error responses and redirects</h2>
+
+    <dl>
+      <dt>Purpose</dt>
+
+      <dd>Apache's behavior to redirected URLs has been modified so
+      that additional environment variables are available to a
+      script/server-include.</dd>
+
+      <dt>Old behavior</dt>
+
+      <dd>Standard CGI vars were made available to a script which
+      has been redirected to. No indication of where the
+      redirection came from was provided.</dd>
+
+      <dt>New behavior</dt>
+
+      <dd>A new batch of environment variables will be initialized
+      for use by a script which has been redirected to. Each new
+      variable will have the prefix <code>REDIRECT_</code>.
+      <code>REDIRECT_</code> environment variables are created from
+      the CGI environment variables which existed prior to the
+      redirect, they are renamed with a <code>REDIRECT_</code>
+      prefix, <em>i.e.</em>, <code>HTTP_USER_AGENT</code> becomes
+      <code>REDIRECT_HTTP_USER_AGENT</code>. In addition to these
+      new variables, Apache will define <code>REDIRECT_URL</code>
+      and <code>REDIRECT_STATUS</code> to help the script trace its
+      origin. Both the original URL and the URL being redirected to
+      can be logged in the access log.</dd>
+    </dl>
+
+    <p>If the ErrorDocument specifies a local redirect to a CGI
+    script, the script should include a "<samp>Status:</samp>"
+    header field in its output in order to ensure the propagation
+    all the way back to the client of the error condition that
+    caused it to be invoked. For instance, a Perl ErrorDocument
+    script might include the following:</p>
+<pre>
+      :
+    print  "Content-type: text/html\n";
+    printf "Status: %s Condition Intercepted\n", $ENV{"REDIRECT_STATUS"};
+      :
+</pre>
+
+    <p>If the script is dedicated to handling a particular error
+    condition, such as <samp>404&nbsp;Not&nbsp;Found</samp>, it can
+    use the specific code and error text instead.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

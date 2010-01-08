@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <title>名前ベースのバーチャルホスト</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <!-- English revision: 1.21 -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <p>この文書では名前ベースのバーチャルホストをどんなとき、
+    またどうやって使うのかということを説明します。</p>
+
+    <ul>
+      <li><a href="#namevip">名前ベース と IP-based
+      のバーチャルホストの比較</a></li>
+
+      <li><a href="#using">名前ベースのバーチャルホストを利用する</a></li>
+
+      <li><a href="#compat">古いブラウザとの互換性</a></li>
+    </ul>
+
+    <p>参考: <a href="examples.html">標準的なセットアップでの
+    バーチャルホストの例</a>、 <a href="ip-based.html">IP ベースの
+    バーチャルホストのサポート</a>、 <a href="details.html">
+    バーチャルホストのマッチングの具体的な詳細</a> と <a
+    href="mass.html">大量のバーチャルホストを動的に設定する</a>
+    </p>
+    <hr />
+
+    <h2><a id="namevip" name="namevip"
+    >名前ベースと IP ベースのバーチャルホストの比較</a></h2>
+
+    <p>初期のバージョンの HTTP では (他の多くのプロトコル、例えば FTP
+    と同様) 一つのサーバ上でのバーチャルホストごとに異なった IP
+    アドレスが必要でした。いくつかのプラットフォームでは、このことが
+    実行可能なバーチャルホストの数を限定してしまうことになりました。また、
+    IP アドレスの数には限りがあるということについての懸念から、レジストラ
+    (ARIN, RIPE, APNIC) はバーチャルホストごとに
+    IP を割り当てるようなことは避けるよう強く要請しています。</p>
+
+    <p>名前ベースのバーチャルホストは通常単純で、
+    それぞれのホスト名とそれに対応する正確な IP アドレスを DNS
+    で設定し、異なるホスト名を区別出来るように Apache HTTP
+    サーバを設定するだけです。さらに、名前ベースのバーチャルホストは不足する
+    IP アドレスの需要を緩和します。したがって、IP
+    ベースのバーチャルホストを選択すべき特定の理由がなければ名前ベースの
+    バーチャルホストを使うべきです。
+    IP ベースのバーチャルホストを使用することを考慮する理由として、</p>
+
+    <ul> 
+      <li>名前ベースのバーチャルホストに対応していない古いクライアントがある
+      名前ベースのバーチャルホストが働くためには、クライアントは
+      HTTP ホストヘッダを送ってこなければなりません。
+      これは HTTP/1.1 の仕様で要求されていて、すべての現代的な
+      HTTP/1.0 ブラウザでも拡張として実装されています。
+      とても古いクライアントをサポートしつつ、名前ベースの
+      バーチャルホストを行いたい場合は、この文書の最後の方に
+      書かれている解決策になるかもしれない方法を見てください。</li>
+
+      <li>名前ベースのバーチャルホストは SSL プロトコルの特徴により、
+      SSL セキュアサーバには使えません。</li>
+
+      <li>オペレーティングシステムやネットワーク装置のなかには、別の IP
+      アドレス上でない場合、複数のホストを別扱いできないような
+      帯域管理の方法を実装しているものがあります。</li>
+    </ul>
+
+    <h2><a id="using"
+    name="using">名前ベースのバーチャルホストを利用する</a></h2>
+
+    <table border="1">
+      <tr>
+        <td align="top"><strong>関連ディレクティブ</strong><br />
+         <br />
+         <a href="../mod/core.html#documentroot">DocumentRoot</a><br />
+         <a
+         href="../mod/core.html#namevirtualhost">NameVirtualHost</a><br />
+         <a href="../mod/core.html#serveralias">ServerAlias</a><br />
+         <a href="../mod/core.html#servername">ServerName</a><br />
+         <a href="../mod/core.html#serverpath">ServerPath</a><br />
+         <a href="../mod/core.html#virtualhost">VirtualHost</a><br />
+        </td>
+      </tr>
+    </table>
+
+    <p>名前ベースのバーチャルホストを使うには、そのホストへの
+    リクエストを受け付けるサーバの IP アドレス (もしかしたらポートも)
+    を指定する必要があります。
+    これは <a href="../mod/core.html#namevirtualhost">NameVirtualHost</a>
+    ディレクティブで設定します。通常、<code>NameVirtualHost</code> で
+    <code>*</code> の属性を使ってサーバのすべての IP アドレスを使います。
+    (<code>NameVirtualHost *</code> はバージョン 1.3.13 以降のみで動作します。)
+    <code>NameVirtualHost</code> ディレクティブで IP アドレスを書いても、
+    自動的にサーバがその IP アドレスをリッスンするということはないことに
+    注意してください。詳細は <a href="../bind.html">Apache の使うアドレスと
+    ポートを設定する</a> を読んでください。さらに、ここで指定された
+    IP アドレスはすべてサーバのネットワークインターフェースと関連付けられて
+    いなければなりません。</p>
+
+    <p>次は、扱いたいそれぞれのホストに対して <a
+    href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a>
+    ブロックを作成してください。<code>&lt;VirtualHost&gt;</code>
+    ディレクティブの引数は <code>NameVirtualHost</code>
+    ディレクティブの引数と同じにしてください (すなわち、IP
+    アドレス一つやすべてのアドレスを表す <code>*</code>)。それぞれの
+    <code>&lt;VirtualHost&gt;</code> ディレクティブの中には、最低限、
+    どのホストが扱われるかを示す <a
+    href="../mod/core.html#servername">ServerName</a> ディレクティブと、
+    そのホスト用のコンテンツがファイルシステム上のどこにあるかを示す
+    <a href="../mod/core.html#documentroot">DocumentRoot</a>
+    ディレクティブを書く必要があります。</p>
+
+    <p>既に存在するウェブサーバにバーチャルホストを追加する場合、
+    存在するホスト用の &lt;VirtualHost&gt; ブロックを作らなければなりません。
+    <code>ServerName</code> と <code>DocumentRoot</code>
+    はこのバーチャルホストも含めて、それぞれグローバルな
+    <code>ServerName</code> 及び <code>DocumentRoot</code>
+    と同じものにするべきです。設定ファイル中で最初に記述した
+    このバーチャルホストは
+    デフォルトのバーチャルホストとしても振る舞います。
+    </p>
+    <p>例えば、ドメイン <samp>www.domain.tld</samp> を運用しているところに
+    バーチャルホスト <samp>www.otherdomain.tld</samp> を追加する場合で、
+    両方が同じ IP アドレスを指しているとします。そのような場合は、
+    <code>httpd.conf</code> に以下のようなコードを追加するだけです</p>
+<pre>
+    NameVirtualHost *
+
+    &lt;VirtualHost *&gt;
+    ServerName www.domain.tld
+    DocumentRoot /www/domain
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost *&gt;
+    ServerName www.otherdomain.tld
+    DocumentRoot /www/otherdomain
+    &lt;/VirtualHost&gt;
+</pre>
+
+    <p><code>NameVirtualHost</code> 及び
+    <code>&lt;VirtualHost&gt;</code> のどちらの場合も、
+    * の部分には明示的に IP アドレスを指定することができます。
+    バージョン 1.3.12 以前では IP アドレスの指定が必要でした。</p>
+
+    <p>複数の名前でサーバアクセスができるようにしたいことも多いでしょう。
+    このようなことは、<a href="../mod/core.html#serveralias"
+    ><code>ServerAlias</code></a> ディレクティブを &lt;VirtualHost&gt;
+    セクションに記述することで実現できます。
+    例えばこれを最初の &lt;VirtualHost&gt; ブロックに書き加えると、</p> 
+<pre>
+    ServerAlias domain.tld *.domain.tld
+</pre>
+
+    <p><code>domain.tld</code> ドメインへのすべてのホストへのリクエストは
+    <code>www.domain.tld</code> のバーチャルホストが処理します。
+    * や ? をワイルドカード文字として使用できますが、当然ながらそれだけで
+    <code>ServerName</code> や <code>ServerAlias</code>
+    の名前や場所を構成することはできません。まず最初に DNS のホスト名と
+    IP アドレスをサーバにあわせて適切に設定する事が必要です</p>
+
+    <p>最後に、<code>&lt;VirtualHost&gt;</code> コンテナの中に
+    他のディレクティブを書くことで、バーチャルホストの設定を細かく変更
+    することができます。どのディレクティブを書くことができるかは、
+    ディレクティブの <a
+    href="../mod/directive-dict.html#context">コンテキスト</a> を
+    調べてください。<em>主サーバコンテキスト</em>
+    (<code>&lt;VirtualHost&gt;</code> コンテナの外) の
+    設定用ディレクティブはバーチャルホストでの設定で上書きされていない
+    ときのみ使用されます。</p>
+
+    <p>リクエストが来ると、サーバはまず最初に <code>NameVirtualHost</code>
+    にマッチする IP アドレスかどうかをチェックします。マッチすれば
+    マッチした IP アドレスの <code>&lt;VirtualHost&gt;</code>
+    のそれぞれのセクションの中から <code>ServerName</code> か
+    <code>ServerAlias</code> に要求されたホスト名があるか探します。
+    見つかればそのサーバ用の設定を使います。マッチするバーチャルホスト
+    が見つからなければ、マッチした IP アドレスの 
+    <strong>リストの最初にあるバーチャルホスト</strong> が使われます。</p>
+
+    <p>結果として、リストの最初のバーチャルホストが <em>デフォルト</em> の
+    バーチャルホストになります。IP アドレスが <code>NameVirtualHost</code>
+    ディレクティブにマッチした場合は、<em>メインのサーバ</em> の
+    <code>DocumentRoot</code> 使われ <strong>ません</strong>
+    どのバーチャルホストにもマッチしないリクエストに対して、
+    特別な設定をしたいのであれば、設定ファイル中の最初の
+    <code>&lt;VirtualHost&gt;</code> にそれを記述してください。</p>
+
+    <h2><a id="compat" name="compat">古いブラウザとの互換性</a></h2>
+
+    <p>上で書いたように、名前ベースのバーチャルホストが正しく動作する
+    ために必要な情報を送ってこないクライアントが依然として存在しています。
+    そのようなクライアントに対しては、該当する IP アドレスについて、
+    一番最初に設定されているバーチャルホスト
+    (<cite>プライマリ</cite>の名前ベースのバーチャルホスト)
+    からページが送り返されます。</p>
+
+    <p><a href="../mod/core.html#serverpath"><code>ServerPath</code></a>
+    ディレクティブで対処が可能です。ちょっと不格好ですけれども。</p>
+
+    <p>設定例</p>
+<pre>
+    NameVirtualHost 111.22.33.44
+
+    &lt;VirtualHost 111.22.33.44&gt;
+    ServerName www.domain.tld
+    ServerPath /domain
+    DocumentRoot /web/domain
+    &lt;/VirtualHost&gt;
+</pre>
+
+    <p>この例にはどういう意味があるでしょうか? これは
+    "<samp>/domain</samp>" で始まる URI へのリクエストはすべて、
+    バーチャルホスト <samp>www.domain.tld</samp> で処理される、
+    という意味です。つまり、すべてのクライアントで
+    <code>http://www.domain.tld/domain/</code> でアクセスできるページが、
+    <samp>Host:</samp> ヘッダを送ってくるクライアントであれば
+    <code>http://www.domain.tld/</code> としてもアクセスできる、
+    という意味です。</p>
+
+    <p>これを実用的なものとするためには、
+    プライマリのバーチャルホストのページに
+    <samp>http://www.domain.tld/domain/</samp> へのリンクを設置します。
+    そして、バーチャルホストのページでは、純粋な相対リンク (<em>例:</em>
+    "<samp>file.html</samp>" や "<samp>../icons/image.gif</samp>")、
+    あるいは <samp>/domain/</samp> で始まるリンク (<em>例:</em>
+    "<samp>http://www.domain.tld/domain/misc/file.html</samp>" や
+    "<samp>/domain/misc/file.html</samp>") だけを設置します。</p>
+
+    <p>これには、幾分かの規律が必要となりますが、
+    このようなガイドラインを忠実に守ることにより、たいていの場合、
+    すべてのブラウザで ― 新しいブラウザでも古いものでも ―
+    作成したページが見えるということを保証します。</p>
+
+    <p>参考: <a href="examples.html#serverpath">ServerPath 設定例</a></p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

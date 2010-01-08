@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache HTTP Server and Supporting Programs</title>
+
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <!-- English revision: 1.3 -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">サーバとサポートプログラム</h1>
+
+    <p>このページでは、Apache HTTP サーバとともに提供されている実行
+    プログラムを全て載せています。</p>
+
+    <dl>
+      <dt><a href="httpd.html">httpd</a></dt>
+
+      <dd>Apache ハイパーテキスト転送プロトコルサーバ</dd>
+
+      <dt><a href="apachectl.html">apachectl</a></dt>
+
+      <dd>Apache HTTP サーバコントロールインターフェース</dd>
+
+      <dt><a href="ab.html">ab</a></dt>
+
+      <dd>Apache HTTP サーバベンチマークツール</dd>
+
+      <dt><a href="apxs.html">apxs</a></dt>
+
+      <dd>Apache 拡張ツール</dd>
+
+      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+
+      <dd>Basic 認証において利用する DBM 書式でのユーザ認証用ファイルの
+      作成と更新</dd>
+
+      <dt><a href="htdigest.html">htdigest</a></dt>
+
+
+      <dd>Digest 認証において利用するユーザ認証用ファイルの作成と更新</dd>
+
+      <dt><a href="htpasswd.html">htpasswd</a></dt>
+
+      <dd>Basic 認証において利用するユーザ認証用ファイルの作成と更新</dd>
+
+
+      <dt><a href="logresolve.html">logresolve</a></dt>
+
+      <dd>Apache ログファイル内における IP アドレスのホスト名解決</dd>
+
+
+      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+
+      <dd>サーバを　kill しないで Apache ログをローテートする</dd>
+
+      <dt><a href="suexec.html">suexec</a></dt>
+
+      <dd>Apache が Exec する際のユーザ切替</dd>
+
+      <dt><a href="other.html">その他のプログラム</a></dt>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

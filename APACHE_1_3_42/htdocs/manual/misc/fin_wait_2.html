@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Connections in FIN_WAIT_2 and Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Connections in the FIN_WAIT_2 state and
+    Apache</h1>
+
+    <ol>
+      <li>
+        <h2>What is the FIN_WAIT_2 state?</h2>
+        Starting with the Apache 1.2 betas, people are reporting
+        many more connections in the FIN_WAIT_2 state (as reported
+        by <code>netstat</code>) than they saw using older
+        versions. When the server closes a TCP connection, it sends
+        a packet with the FIN bit sent to the client, which then
+        responds with a packet with the ACK bit set. The client
+        then sends a packet with the FIN bit set to the server,
+        which responds with an ACK and the connection is closed.
+        The state that the connection is in during the period
+        between when the server gets the ACK from the client and
+        the server gets the FIN from the client is known as
+        FIN_WAIT_2. See the <a
+        href="ftp://ds.internic.net/rfc/rfc793.txt">TCP RFC</a> for
+        the technical details of the state transitions. 
+
+        <p>The FIN_WAIT_2 state is somewhat unusual in that there
+        is no timeout defined in the standard for it. This means
+        that on many operating systems, a connection in the
+        FIN_WAIT_2 state will stay around until the system is
+        rebooted. If the system does not have a timeout and too
+        many FIN_WAIT_2 connections build up, it can fill up the
+        space allocated for storing information about the
+        connections and crash the kernel. The connections in
+        FIN_WAIT_2 do not tie up an httpd process.</p>
+      </li>
+
+      <li>
+        <h2>But why does it happen?</h2>
+        There are numerous reasons for it happening, some of them
+        may not yet be fully clear. What is known follows. 
+
+        <h3>Buggy clients and persistent connections</h3>
+        Several clients have a bug which pops up when dealing with
+        <a href="../keepalive.html">persistent connections</a> (aka
+        keepalives). When the connection is idle and the server
+        closes the connection (based on the <a
+        href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a>),
+        the client is programmed so that the client does not send
+        back a FIN and ACK to the server. This means that the
+        connection stays in the FIN_WAIT_2 state until one of the
+        following happens: 
+
+        <ul>
+          <li>The client opens a new connection to the same or a
+          different site, which causes it to fully close the older
+          connection on that socket.</li>
+
+          <li>The user exits the client, which on some (most?)
+          clients causes the OS to fully shutdown the
+          connection.</li>
+
+          <li>The FIN_WAIT_2 times out, on servers that have a
+          timeout for this state.</li>
+        </ul>
+
+        <p>If you are lucky, this means that the buggy client will
+        fully close the connection and release the resources on
+        your server. However, there are some cases where the socket
+        is never fully closed, such as a dialup client
+        disconnecting from their provider before closing the
+        client. In addition, a client might sit idle for days
+        without making another connection, and thus may hold its
+        end of the socket open for days even though it has no
+        further use for it. <strong>This is a bug in the browser or
+        in its operating system's TCP implementation.</strong></p>
+
+        <p>The clients on which this problem has been verified to
+        exist:</p>
+
+        <ul>
+          <li>Mozilla/3.01 (X11; I; FreeBSD 2.1.5-RELEASE
+          i386)</li>
+
+          <li>Mozilla/2.02 (X11; I; FreeBSD 2.1.5-RELEASE
+          i386)</li>
+
+          <li>Mozilla/3.01Gold (X11; I; SunOS 5.5 sun4m)</li>
+
+          <li>MSIE 3.01 on the Macintosh</li>
+
+          <li>MSIE 3.01 on Windows 95</li>
+        </ul>
+
+        <p>This does not appear to be a problem on:</p>
+
+        <ul>
+          <li>Mozilla/3.01 (Win95; I)</li>
+        </ul>
+
+        <p>It is expected that many other clients have the same
+        problem. What a client <strong>should do</strong> is
+        periodically check its open socket(s) to see if they have
+        been closed by the server, and close their side of the
+        connection if the server has closed. This check need only
+        occur once every few seconds, and may even be detected by a
+        OS signal on some systems (<em>e.g.</em>, Win95 and NT
+        clients have this capability, but they seem to be ignoring
+        it).</p>
+
+        <p>Apache <strong>cannot</strong> avoid these FIN_WAIT_2
+        states unless it disables persistent connections for the
+        buggy clients, just like we recommend doing for Navigator
+        2.x clients due to other bugs. However, non-persistent
+        connections increase the total number of connections needed
+        per client and slow retrieval of an image-laden web page.
+        Since non-persistent connections have their own resource
+        consumptions and a short waiting period after each closure,
+        a busy server may need persistence in order to best serve
+        its clients.</p>
+
+        <p>As far as we know, the client-caused FIN_WAIT_2 problem
+        is present for all servers that support persistent
+        connections, including Apache 1.1.x and 1.2.</p>
+
+        <h3>A necessary bit of code introduced in 1.2</h3>
+        While the above bug is a problem, it is not the whole
+        problem. Some users have observed no FIN_WAIT_2 problems
+        with Apache 1.1.x, but with 1.2b enough connections build
+        up in the FIN_WAIT_2 state to crash their server. The most
+        likely source for additional FIN_WAIT_2 states is a
+        function called <code>lingering_close()</code> which was
+        added between 1.1 and 1.2. This function is necessary for
+        the proper handling of persistent connections and any
+        request which includes content in the message body
+        (<em>e.g.</em>, PUTs and POSTs). What it does is read any
+        data sent by the client for a certain time after the server
+        closes the connection. The exact reasons for doing this are
+        somewhat complicated, but involve what happens if the
+        client is making a request at the same time the server
+        sends a response and closes the connection. Without
+        lingering, the client might be forced to reset its TCP
+        input buffer before it has a chance to read the server's
+        response, and thus understand why the connection has
+        closed. See the <a href="#appendix">appendix</a> for more
+        details. 
+
+        <p>The code in <code>lingering_close()</code> appears to
+        cause problems for a number of factors, including the
+        change in traffic patterns that it causes. The code has
+        been thoroughly reviewed and we are not aware of any bugs
+        in it. It is possible that there is some problem in the BSD
+        TCP stack, aside from the lack of a timeout for the
+        FIN_WAIT_2 state, exposed by the
+        <code>lingering_close</code> code that causes the observed
+        problems.</p>
+      </li>
+
+      <li>
+        What can I do about it? There are several possible
+        workarounds to the problem, some of which work better than
+        others. 
+
+        <h3>Add a timeout for FIN_WAIT_2</h3>
+        The obvious workaround is to simply have a timeout for the
+        FIN_WAIT_2 state. This is not specified by the RFC, and
+        could be claimed to be a violation of the RFC, but it is
+        widely recognized as being necessary. The following systems
+        are known to have a timeout: 
+
+        <ul>
+          <li><a href="http://www.freebsd.org/">FreeBSD</a>
+          versions starting at 2.0 or possibly earlier.</li>
+
+          <li><a href="http://www.netbsd.org/">NetBSD</a> version
+          1.2(?)</li>
+
+          <li><a href="http://www.openbsd.org/">OpenBSD</a> all
+          versions(?)</li>
+
+          <li><a href="http://www.bsdi.com/">BSD/OS</a> 2.1, with
+          the <a
+          href="ftp://ftp.bsdi.com/bsdi/patches/patches-2.1/K210-027">
+          K210-027</a> patch installed.</li>
+
+          <li><a href="http://www.sun.com/">Solaris</a> as of
+          around version 2.2. The timeout can be tuned by using
+          <code>ndd</code> to modify
+          <code>tcp_fin_wait_2_flush_interval</code>, but the
+          default should be appropriate for most servers and
+          improper tuning can have negative impacts.</li>
+
+          <li><a href="http://www.linux.org/">Linux</a> 2.0.x and
+          earlier(?)</li>
+
+          <li><a href="http://www.hp.com/">HP-UX</a> 10.x defaults
+          to terminating connections in the FIN_WAIT_2 state after
+          the normal keepalive timeouts. This does not refer to the
+          persistent connection or HTTP keepalive timeouts, but the
+          <code>SO_LINGER</code> socket option which is enabled by
+          Apache. This parameter can be adjusted by using
+          <code>nettune</code> to modify parameters such as
+          <code>tcp_keepstart</code> and <code>tcp_keepstop</code>.
+          In later revisions, there is an explicit timer for
+          connections in FIN_WAIT_2 that can be modified; contact
+          HP support for details.</li>
+
+          <li><a href="http://www.sgi.com/">SGI IRIX</a> can be
+          patched to support a timeout. For IRIX 5.3, 6.2, and 6.3,
+          use patches 1654, 1703 and 1778 respectively. If you have
+          trouble locating these patches, please contact your SGI
+          support channel for help.</li>
+
+          <li><a href="http://www.ncr.com/">NCR's MP RAS Unix</a>
+          2.xx and 3.xx both have FIN_WAIT_2 timeouts. In 2.xx it
+          is non-tunable at 600 seconds, while in 3.xx it defaults
+          to 600 seconds and is calculated based on the tunable
+          "max keep alive probes" (default of 8) multiplied by the
+          "keep alive interval" (default 75 seconds).</li>
+
+          <li><a href="http://www.sequent.com">Sequent's ptx/TCP/IP
+          for DYNIX/ptx</a> has had a FIN_WAIT_2 timeout since
+          around release 4.1 in mid-1994.</li>
+        </ul>
+
+        <p>The following systems are known to not have a
+        timeout:</p>
+
+        <ul>
+          <li><a href="http://www.sun.com/">SunOS 4.x</a> does not
+          and almost certainly never will have one because it as at
+          the very end of its development cycle for Sun. If you
+          have kernel source should be easy to patch.</li>
+        </ul>
+
+        <p>There is a <a
+        href="http://www.apache.org/dist/httpd/contrib/patches/1.2/fin_wait_2.patch">
+        patch available</a> for adding a timeout to the FIN_WAIT_2
+        state; it was originally intended for BSD/OS, but should be
+        adaptable to most systems using BSD networking code. You
+        need kernel source code to be able to use it. 
+
+        <h3>Compile without using
+        <code>lingering_close()</code></h3>
+        It is possible to compile Apache 1.2 without using the
+        <code>lingering_close()</code> function. This will result
+        in that section of code being similar to that which was in
+        1.1. If you do this, be aware that it can cause problems
+        with PUTs, POSTs and persistent connections, especially if
+        the client uses pipelining. That said, it is no worse than
+        on 1.1, and we understand that keeping your server running
+        is quite important. 
+
+        <p>To compile without the <code>lingering_close()</code>
+        function, add <code>-DNO_LINGCLOSE</code> to the end of the
+        <code>EXTRA_CFLAGS</code> line in your
+        <code>Configuration</code> file, rerun
+        <code>Configure</code> and rebuild the server.</p>
+
+        <h3>Use <code>SO_LINGER</code> as an alternative to
+        <code>lingering_close()</code></h3>
+        On most systems, there is an option called
+        <code>SO_LINGER</code> that can be set with
+        <code>setsockopt(2)</code>. It does something very similar
+        to <code>lingering_close()</code>, except that it is broken
+        on many systems so that it causes far more problems than
+        <code>lingering_close</code>. On some systems, it could
+        possibly work better so it may be worth a try if you have
+        no other alternatives. 
+
+        <p>To try it, add <code>-DUSE_SO_LINGER
+        -DNO_LINGCLOSE</code> to the end of the
+        <code>EXTRA_CFLAGS</code> line in your
+        <code>Configuration</code> file, rerun
+        <code>Configure</code> and rebuild the server.</p>
+
+        <p><strong>NOTE:</strong> Attempting to use
+        <code>SO_LINGER</code> and <code>lingering_close()</code>
+        at the same time is very likely to do very bad things, so
+        don't.</p>
+
+        <h3>Increase the amount of memory used for storing
+        connection state</h3>
+
+        <dl>
+          <dt>BSD based networking code:</dt>
+
+          <dd>
+            BSD stores network data, such as connection states, in
+            something called an mbuf. When you get so many
+            connections that the kernel does not have enough mbufs
+            to put them all in, your kernel will likely crash. You
+            can reduce the effects of the problem by increasing the
+            number of mbufs that are available; this will not
+            prevent the problem, it will just make the server go
+            longer before crashing. 
+
+            <p>The exact way to increase them may depend on your
+            OS; look for some reference to the number of "mbufs" or
+            "mbuf clusters". On many systems, this can be done by
+            adding the line <code>NMBCLUSTERS="n"</code>, where
+            <code>n</code> is the number of mbuf clusters you want
+            to your kernel config file and rebuilding your
+            kernel.</p>
+          </dd>
+        </dl>
+
+        <h3>Disable KeepAlive</h3>
+
+        <p>If you are unable to do any of the above then you
+        should, as a last resort, disable KeepAlive. Edit your
+        httpd.conf and change "KeepAlive On" to "KeepAlive
+        Off".</p>
+      </li>
+
+
+      <li>
+      <h2><a id="appendix" name="appendix">Appendix</a></h2>
+
+        <p>Below is a message from Roy Fielding, one of the authors
+        of HTTP/1.1.</p>
+
+        <h3>Why the lingering close functionality is necessary with
+        HTTP</h3>
+        The need for a server to linger on a socket after a close
+        is noted a couple times in the HTTP specs, but not
+        explained. This explanation is based on discussions between
+        myself, Henrik Frystyk, Robert S. Thau, Dave Raggett, and
+        John C. Mallery in the hallways of MIT while I was at W3C. 
+
+        <p>If a server closes the input side of the connection
+        while the client is sending data (or is planning to send
+        data), then the server's TCP stack will signal an RST
+        (reset) back to the client. Upon receipt of the RST, the
+        client will flush its own incoming TCP buffer back to the
+        un-ACKed packet indicated by the RST packet argument. If
+        the server has sent a message, usually an error response,
+        to the client just before the close, and the client
+        receives the RST packet before its application code has
+        read the error message from its incoming TCP buffer and
+        before the server has received the ACK sent by the client
+        upon receipt of that buffer, then the RST will flush the
+        error message before the client application has a chance to
+        see it. The result is that the client is left thinking that
+        the connection failed for no apparent reason.</p>
+
+        <p>There are two conditions under which this is likely to
+        occur:</p>
+
+        <ol>
+          <li>sending POST or PUT data without proper
+          authorization</li>
+
+          <li>sending multiple requests before each response
+          (pipelining) and one of the middle requests resulting in
+          an error or other break-the-connection result.</li>
+        </ol>
+
+        <p>The solution in all cases is to send the response, close
+        only the write half of the connection (what shutdown is
+        supposed to do), and continue reading on the socket until
+        it is either closed by the client (signifying it has
+        finally read the response) or a timeout occurs. That is
+        what the kernel is supposed to do if SO_LINGER is set.
+        Unfortunately, SO_LINGER has no effect on some systems; on
+        some other systems, it does not have its own timeout and
+        thus the TCP memory segments just pile-up until the next
+        reboot (planned or not).</p>
+
+        <p>Please note that simply removing the linger code will
+        not solve the problem -- it only moves it to a different
+        and much harder one to detect.</p>
+      </li>
+    </ol>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

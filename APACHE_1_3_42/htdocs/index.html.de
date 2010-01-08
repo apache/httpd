@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Testseite fuer die Apache-Installation auf dieser Web Site</title>
+  <!-- Translated Wed Aug 18 11:04:02 GMT 1999 - Martin.Kraemer@Fujitsu-Siemens.com -->
+ </head>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <body
+  bgcolor="#FFFFFF"
+  text="#000000"
+  link="#0000FF"
+  vlink="#000080"
+  alink="#FF0000"
+ >
+  <h1 align="CENTER">
+   Es klappt! Der Apache Web-Server ist auf dieser Web-Site installiert!
+  </h1>
+  <p>
+   Wenn Sie diese Seite sehen, dann bedeutet das, dass die
+   Eigent&uuml;mer dieser Dom&auml;ne soeben einen neuen
+   <a href="http://www.apache.org/foundation/preFAQ.html">Apache Web-Server</a>
+   erfolgreich installiert haben. Jetzt muss noch der
+   richtige Web-Inhalt zugef&uuml;gt und diese Platzhalter-Seite
+   ersetzt werden (oder der Web-Server f&uuml;r den Zugriff auf den
+   richtigen Inhalt umkonfiguriert werden).
+  </P>
+  <hr>
+  <blockquote>
+   Wenn Sie diese Seite an Stelle einer anderen erwarteten Web-Site
+   sehen sollten, dann <strong>nehmen Sie bitte Kontakt mit dem
+   Eigent&uuml;mer dieser Site auf</strong> (Versuchen Sie, eine EMail
+   an <samp>&lt;Webmaster@<em>dom&auml;nenname</em>&gt;</samp>
+   zu senden)!<br>
+   <p>
+   Obwohl der Eigent&uuml;mer dieser Dom&auml;ne die Apache
+   Web-Server Software verwendet, hat diese Web-Site ziemlich sicher
+   keinerlei Verbindung mit der <em>Apache Software Foundation</em>
+   (die diese Software kostenlos vertreibt). Es besteht also
+   <big><strong>keinerlei Veranlassung</strong></big>, eine EMail an
+   die Entwickler der Software zu senden. Sollten Sie das dennoch
+   tun, wird Ihre Mail stillschweigend
+   <strong><big>ignoriert</big></strong>.
+  </blockquote>
+  <hr>
+  <p>
+   Die englische <a
+   href="manual/">Online-Dokumentation</a> f&uuml;r die
+   Apache Web-Server Software ist Bestandteil dieser
+   Software-Distribution.
+  </p>
+  <p>
+   Dem <i>WebMaster</i> dieser Web-Site steht es frei, das
+   untenstehende "Powered by Apache"-Logo auf einem Apache-basierten
+   Web-Server zu verwenden.<br>
+   Vielen Dank, dass Sie Apache gew&auml;hlt haben!
+  </p>
+  <div align="CENTER">
+   <img src="apache_pb.gif" alt="Powered by Apache!">
+  </div>
+ </body>
+</html>

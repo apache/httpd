@@ -1,0 +1,67 @@
+#!/usr/local/bin/perl
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+#
+# This script will take a combined Web server access
+# log file and break its contents into separate files.
+# It assumes that the first field of each line is the
+# virtual host identity (put there by "%v"), and that
+# the logfiles should be named that+".log" in the current
+# directory.
+#
+# The combined log file is read from stdin. Records read
+# will be appended to any existing log files.
+#
+%is_open = ();
+
+while ($log_line = <STDIN>) {
+    #
+    # Get the first token from the log record; it's the
+    # identity of the virtual host to which the record
+    # applies.
+    #
+    ($vhost) = split (/\s/, $log_line);
+    #
+    # Normalize the virtual host name to all lowercase.
+    # If it's blank, the request was handled by the default
+    # server, so supply a default name.  This shouldn't
+    # happen, but caution rocks.
+    #
+    $vhost = lc ($vhost) or "access";
+    #
+    # if the vhost contains a "/" or "\", it is illegal so just use 
+    # the default log to avoid any security issues due if it is interprted
+    # as a directory separator.
+    if ($vhost =~ m#[/\\]#) { $vhost = "access" }
+    #
+    # If the log file for this virtual host isn't opened
+    # yet, do it now.
+    #
+    if (! $is_open{$vhost}) {
+        open $vhost, ">>${vhost}.log"
+            or die ("Can't open ${vhost}.log");
+        $is_open{$vhost} = 1;
+    }
+    #
+    # Strip off the first token (which may be null in the
+    # case of the default server), and write the edited
+    # record to the current log file.
+    #
+    $log_line =~ s/^\S*\s+//;
+    printf $vhost "%s", $log_line;
+}
+exit 0;

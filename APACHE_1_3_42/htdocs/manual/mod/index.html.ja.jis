@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache モジュール</title>
+
+  </head>
+  <!-- English revision: 1.43 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache モジュール</h1>
+
+    <p>Apache の配布に含まれているモジュールは、以下の通りです。
+    <a href="index-bytype.html">種類順のモジュールリスト</a> や
+    <a href="directives.html">Apache の全ディレクティブ</a>
+    のアルファベット順リストも参照してください。
+    Apache の配布に含まれない Apache モジュールについては
+    <a href="http://modules.apache.org/"
+    >http://modules.apache.org</a> を参照してください。</p>
+
+    <dl>
+      <dt><a href="core.html">Core</a></dt>
+
+      <dd>Apache のコア</dd>
+
+      <dt><a href="mod_access.html">mod_access</a></dt>
+
+      <dd>クライアントのホスト名や IP
+      アドレスによってアクセス制御を行なう</dd>
+
+      <dt><a href="mod_actions.html">mod_actions</a>
+      Apache 1.1 以降</dt>
+
+      <dd>メディアタイプやリクエストメソッドによって CGI
+      スクリプトを実行する</dd>
+
+      <dt><a href="mod_alias.html">mod_alias</a></dt>
+
+      <dd>ホストファイルシステムのドキュメントツリーへのマッピング及び
+      URL のリダイレクションを行なう</dd>
+
+      <dt><a href="mod_asis.html">mod_asis</a></dt>
+
+      <dd>HTTP ヘッダを含むファイルを送信する</dd>
+
+      <dt><a href="mod_auth.html">mod_auth</a></dt>
+
+      <dd>テキストファイル形式の認証ファイルを使用した
+      ユーザ認証機能を提供する</dd>
+
+      <dt><a href="mod_auth_anon.html">mod_auth_anon</a>
+      Apache 1.1 以降</dt>
+
+      <dd>認証が必要となるエリアへの匿名 (anonymous)
+      でのアクセス機能を提供する</dd>
+
+      <dt><a href="mod_auth_db.html">mod_auth_db</a>
+      Apache 1.1 以降</dt>
+
+      <dd>Berkeley DB
+      形式の認証ファイルを使用したユーザ認証機能を提供する</dd>
+
+      <dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt>
+
+      <dd>DBM 形式の認証ファイルを使用したユーザ認証機能を提供する</dd>
+
+      <dt><a href="mod_auth_digest.html">mod_auth_digest</a>
+      Apache 1.3.8 以降</dt>
+
+      <dd>MD5 を使用した認証機能 (訳注: Digest 認証)
+      を提供する</dd>
+
+      <dt><a href="mod_autoindex.html">mod_autoindex</a></dt>
+
+      <dd>自動的にディレクトリ一覧を作成する</dd>
+
+      <dt><a href="mod_browser.html">mod_browser</a>
+      Apache 1.2.* でのみ有効</dt>
+
+      <dd>User-Agent 文字列を元に環境変数を設定する。
+      Apache 1.3 以降において、mod_setenvif で置き換えられた</dd>
+
+      <dt><a href="mod_cern_meta.html">mod_cern_meta</a>
+      Apache 1.1 以降</dt>
+
+      <dd>HTTP ヘッダメタファイルをサポートする</dd>
+
+      <dt><a href="mod_cgi.html">mod_cgi</a></dt>
+
+      <dd>CGI スクリプトを実行する</dd>
+
+      <dt><a href="mod_cookies.html">mod_cookies</a>
+      Apache 1.1.1 以降</dt>
+
+      <dd>Netscape のような cookie をサポートする。
+      Apache 1.2 において、mod_usertrack に置き換えられた</dd>
+
+      <dt><a href="mod_digest.html">mod_digest</a> Apache 1.1 以降</dt>
+
+      <dd>MD5 認証 (訳注: Digest 認証) 機能を提供する
+	(mod_auth_digest により、mod_digest は非推奨になっている)</dd>
+
+      <dt><a href="mod_dir.html">mod_dir</a></dt>
+
+      <dd>ディレクトリの取り扱いについての、基本的な機能を提供する</dd>
+
+      <dt><a href="mod_dld.html">mod_dld</a>
+      Apache 1.2.* 及びそれ以前</dt>
+
+      <dd>GNU libdld を用いて起動時にモジュールのリンクを行なう。
+      Apache 1.3 において、mod_so に置き換えられた</dd>
+
+      <dt><a href="mod_env.html">mod_env</a> Apache 1.1 以降</dt>
+
+      <dd>CGI スクリプトに渡す環境変数の操作を行なう</dd>
+
+      <dt><a href="mod_example.html">mod_example</a>
+      Apache 1.2 以降</dt>
+
+      <dd>Apache API のデモンストレーション用</dd>
+
+      <dt><a href="mod_expires.html">mod_expires</a>
+      Apache 1.2 以降</dt>
+
+      <dd>リソースに Expires: ヘッダを適用する</dd>
+
+      <dt><a href="mod_headers.html">mod_headers</a>
+      Apache 1.2 以降</dt>
+
+      <dd>リソースに任意の HTTP ヘッダを加える</dd>
+
+      <dt><a href="mod_imap.html">mod_imap</a> Apache 1.1 以降</dt>
+
+      <dd>イメージマップファイルを取り扱う機能を提供する</dd>
+
+      <dt><a href="mod_include.html">mod_include</a></dt>
+
+      <dd>SSI ドキュメントを有効にする</dd>
+
+      <dt><a href="mod_info.html">mod_info</a> Apache 1.1 以降</dt>
+
+      <dd>サーバの設定情報を閲覧する</dd>
+
+      <dt><a href="mod_isapi.html">mod_isapi</a> WIN32 のみ</dt>
+
+      <dd>Windows ISAPI エクステンションをサポートする</dd>
+
+      <dt><a href="mod_log_agent.html">mod_log_agent</a></dt>
+
+      <dd>User Agent のログを記録する</dd>
+
+      <dt><a href="mod_log_common.html">mod_log_common</a>
+      Apache 1.1.1 以降</dt>
+
+      <dd>Common Logfile Format での標準的な書式によりログを記録する。
+      Apache 1.2 以降において、mod_log_config
+      モジュールに置き換えられた</dd>
+
+      <dt><a href="mod_log_config.html">mod_log_config</a></dt>
+
+      <dd>mod_log_common
+      の代わりとなるもので、ユーザが書式を設定できる</dd>
+
+      <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt>
+
+      <dd>サーバへのリクエストの forensic ログ収集</dd>
+
+      <dt><a href="mod_log_referer.html">mod_log_referer</a></dt>
+
+      <dd>ドキュメントの参照元 (REFERER) のログを記録する</dd>
+
+      <dt><a href="mod_mime.html">mod_mime</a></dt>
+
+      <dd>ファイルの拡張子を利用してドキュメントタイプの判定を行なう</dd>
+
+      <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt>
+
+      <dd>"マジックナンバー"
+      を利用してドキュメントタイプの判定を行なう</dd>
+
+      <dt><a href="mod_mmap_static.html">mod_mmap_static</a>
+      Apache 1.3 以降</dt>
+
+      <dd>ファイルのキャッシングを行なう実験的なモジュールで、
+      ファイルをメモリ内にマッピングすることにより
+      パフォーマンスを向上させる</dd>
+
+      <dt><a href="mod_negotiation.html">mod_negotiation</a></dt>
+
+      <dd>コンテントネゴシエーション機能を提供する</dd>
+
+      <dt><a href="mod_proxy.html">mod_proxy</a> Apache 1.1 以降</dt>
+
+      <dd>proxy キャッシュ機能を提供する</dd>
+
+      <dt><a href="mod_rewrite.html">mod_rewrite</a>
+      Apache 1.2 以降</dt>
+
+      <dd>正規表現を利用した、URI
+      からファイル名への強力なマッピング機能を提供する</dd>
+
+      <dt><a href="mod_setenvif.html">mod_setenvif</a>
+      Apache 1.3 以降</dt>
+
+      <dd>クライアントの情報を元に環境変数をセットする</dd>
+
+      <dt><a href="mod_so.html">mod_so</a> Apache 1.3 以降</dt>
+
+      <dd>実行時にモジュール (UNIXでは .so、Win32 では .dll)
+      を動的読み込みする機能を提供する</dd>
+
+      <dt><a href="mod_speling.html">mod_speling</a>
+      Apache 1.3 以降</dt>
+
+      <dd>URL の小さな記述ミスを自動的に修正する</dd>
+
+      <dt><a href="mod_status.html">mod_status</a> Apache 1.1 以降</dt>
+
+      <dd>サーバの稼動状況を表示する</dd>
+
+      <dt><a href="mod_userdir.html">mod_userdir</a></dt>
+
+      <dd>ユーザのホームディレクトリにアクセスする機能を提供する</dd>
+
+      <dt><a href="mod_unique_id.html">mod_unique_id</a>
+      Apache 1.3 以降</dt>
+
+      <dd>リクエストごとに、一意なリクエスト ID を生成する</dd>
+
+      <dt><a href="mod_usertrack.html">mod_usertrack</a>
+      Apache 1.2 以降</dt>
+
+      <dd>cookie によりユーザの追跡を行なう
+      (mod_cookies.c を置き換えたもの)</dd>
+
+      <dt><a href="mod_vhost_alias.html">mod_vhost_alias</a>
+      Apache 1.3.7 以降</dt>
+
+      <dd>たくさんのバーチャルホスト設定を動的に構成する</dd>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

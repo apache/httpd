@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+    <!--#set var="FAQMASTER" value="YES" -->
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+    <!-- Stuff to Add:                                                  -->
+    <!-- - can't bind to port 80                                        -->
+    <!--   - permission denied                                          -->
+    <!--   - address already in use                                     -->
+    <!-- - mod_auth & passwd lines "user:pw:.*" - ++1st colon onward is -->
+    <!--   treated as pw, not just ++1st to \-\-2nd.                    -->
+    <!-- - SSL:                                                         -->
+    <!--   - Can I use Apache-SSL for free in Canada?                   -->
+    <!--   - Why can't I use Apache-SSL in the U.S.?                    -->
+    <!-- - How can I found out how many visitors my site gets?          -->
+    <!-- - How do I add a counter?                                      -->
+    <!-- - How do I configure Apache as a proxy?                        -->
+    <!-- - What browsers support HTTP/1.1?                              -->
+    <!-- - What's the point of vhosts-by-name is there aren't any       -->
+    <!--   HTTP/1.1 browsers?                                           -->
+    <!-- - Is there an Apache for W95/WNT?                              -->
+    <!-- - Why does Apache die when a vhost can't be DNS-resolved?      -->
+    <!-- - Why do I get "send lost connection" messages in my error     -->
+    <!--   log?                                                         -->
+    <!--   - specifically consider .pdf files which seem to cause this  -->
+    <!--     a lot when accessed via the plugin ... and also mention    -->
+    <!--     how range-requests can cause bytes served < file size      -->
+    <!-- - Why do directory indexes appear as garbage?  (A: -lucb)      -->
+    <!-- - How do I add a footer to all pages offered by my server?     -->
+    <!-- - Fix midi question; a bigger problem than midi vs. x-midi is  -->
+    <!--   the simple fact that older versions of Apache (and new ones  -->
+    <!--   that have been upgraded without upgrading the mime.types     -->
+    <!--   file) don't have the type listed at all.                     -->
+    <!-- - RewriteRule /~fraggle/* /cgi-bin/fraggle.pl does not work    -->
+    <!-- - how do I disable authentication for a subdirectory?          -->
+    <!--   (A: you can't but "Satisfy any; Allow from all" can be close -->
+    <!-- - '400 malformed request' on Win32 might mean stale proxy; see -->
+    <!--   PR #2300.                                                    -->
+    <!-- - how do I tell what version of Apache I am running?           -->
+
+    <ol type="A">
+      <!--#include virtual="FAQ-A.html?TOC" -->
+      <!--#include virtual="FAQ-B.html?TOC" -->
+      <!--#include virtual="FAQ-C.html?TOC" -->
+      <!--#include virtual="FAQ-D.html?TOC" -->
+      <!--#include virtual="FAQ-E.html?TOC" -->
+      <!--#include virtual="FAQ-F.html?TOC" -->
+      <!--#include virtual="FAQ-G.html?TOC" -->
+      <!--#include virtual="FAQ-H.html?TOC" -->
+      <!--#include virtual="FAQ-I.html?TOC" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#include virtual="FAQ-A.html?" -->
+    <!--#include virtual="FAQ-B.html?" -->
+    <!--#include virtual="FAQ-C.html?" -->
+    <!--#include virtual="FAQ-D.html?" -->
+    <!--#include virtual="FAQ-E.html?" -->
+    <!--#include virtual="FAQ-F.html?" -->
+    <!--#include virtual="FAQ-G.html?" -->
+    <!--#include virtual="FAQ-H.html?" -->
+    <!--#include virtual="FAQ-I.html?" -->
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

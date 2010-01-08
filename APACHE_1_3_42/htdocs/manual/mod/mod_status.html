@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_status</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_status</h1>
+
+    <p>This module provides information on server activity and
+    performance.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_status.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    status_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.1 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>The Status module allows a server administrator to find out
+    how well their server is performing. A HTML page is presented
+    that gives the current server statistics in an easily readable
+    form. If required this page can be made to automatically
+    refresh (given a compatible browser). Another page gives a
+    simple machine-readable list of the current server state.</p>
+
+    <p>The details given are:</p>
+
+    <ul>
+      <li>The number of children serving requests</li>
+
+      <li>The number of idle children</li>
+
+      <li>The status of each child, the number of requests that
+      child has performed and the total number of bytes served by
+      the child (*)</li>
+
+      <li>A total number of accesses and byte count served (*)</li>
+
+      <li>The time the server was started/restarted and the time it
+      has been running for</li>
+
+      <li>Averages giving the number of requests per second, the
+      number of bytes served per second and the average number of
+      bytes per request (*)</li>
+
+      <li>The current percentage CPU used by each child and in
+      total by Apache (*)</li>
+
+      <li>The current hosts and requests being processed (*)</li>
+    </ul>
+
+    <p>Details marked "(*)" are only available with
+    <code>ExtendedStatus On</code>.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#extendedstatus">ExtendedStatus</a></li>
+    </ul>
+
+    <h2>Enabling Status Support</h2>
+    To enable status reports only for browsers from the foo.com
+    domain add this code to your <code>httpd.conf</code>
+    configuration file 
+<pre>
+    &lt;Location /server-status&gt;
+    SetHandler server-status
+
+    Order Deny,Allow
+    Deny from all
+    Allow from .foo.com
+    &lt;/Location&gt;
+</pre>
+
+    <p>You can now access server statistics by using a Web browser
+    to access the page
+    <code>http://your.server.name/server-status</code></p>
+
+    <p>Alternatively, if you have <code>lynx</code> installed, you can
+    also get a server statics report from the command line by running
+    the command <code>apachectl status</code>, or, for the extended
+    status report, <code>apachectl fullstatus</code>. See the <a
+    href="../programs/apachectl.html">apachectl</a> documentation for
+    additional details.</a><p>
+
+    <p>Note that mod_status will only work when you are running
+    Apache in <a href="core.html#servertype">standalone</a> mode
+    and not <a href="core.html#servertype">inetd</a> mode.</p>
+
+    <h3>Automatic Updates</h3>
+    You can get the status page to update itself automatically if
+    you have a browser that supports "refresh". Access the page
+    <code>http://your.server.name/server-status?refresh=N</code> to
+    refresh the page every N seconds. 
+
+    <h3>Machine Readable Status File</h3>
+    A machine-readable version of the status file is available by
+    accessing the page
+    <code>http://your.server.name/server-status?auto</code>. This
+    is useful when automatically run, see the Perl program in the
+    <code>/support</code> directory of Apache,
+    <code>log_server_status</code>. 
+
+    <blockquote>
+      <strong>It should be noted that if <samp>mod_status</samp> is
+      compiled into the server, its handler capability is available
+      in <em>all</em> configuration files, including
+      <em>per</em>-directory files (<em>e.g.</em>,
+      <samp>.htaccess</samp>). This may have security-related
+      ramifications for your site.</strong>
+    </blockquote>
+    <hr />
+
+    <h2><a id="extendedstatus" name="extendedstatus">ExtendedStatus
+    directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ExtendedStatus
+    On|Off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ExtendedStatus
+    Off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config <br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_status<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ExtendedStatus
+    is only available in Apache 1.3.2 and later. 
+
+    <p>This directive controls whether the server keeps track of
+    extended status information for each request. This is only
+    useful if the status module is enabled on the server.</p>
+
+    <p>This setting applies to the entire server, and cannot be
+    enabled or disabled on a virtualhost-by-virtualhost basis.</p>
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>How Directory, Location and Files sections work</title>
+
+  </head>
+  <!-- English revision: 1.13 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Directory, Location, Files
+    セクションの動作方法</h1>
+
+    <p>セクション <a
+    href="mod/core.html#directory"><code>&lt;Directory&gt;</code></a>, 
+    <a
+    href="mod/core.html#location"><code>&lt;Location&gt;</code></a>, <a
+    href="mod/core.html#files"><code>&lt;Files&gt;</code></a>
+    には、それぞれ指定されたディレクトリ、URL,
+    ファイルにのみ適用されるディレクティブを書くことができます。
+    また、ディレクトリにディレクティブを適用するためにディレクトリ中に
+    .htaccess ファイルを使用することもできます。このドキュメントは
+    これらのセクションの違いを説明し、それらと、ディレクトリや
+    リクエストされた URL に Apache がどのディレクティブを
+    適用するかを決定する方法との関係を説明します。</p>
+
+    <h2>セクション中に許可されているディレクティブ</h2>
+
+    <p>構文上 <code>&lt;Directory&gt;</code>
+    に書けるものはすべて <code>&lt;Location&gt;</code>
+    にも書くことができます (<code>&lt;Files&gt;</code>
+    セクションは例外です)。しかし、中には
+    <code>AllowOverride</code> や <code>FollowSymLinks</code>
+    と <code>SymLinksIfOwnerMatch</code>
+    という二つのオプションのように、<code>&lt;Location&gt;</code>,
+    <code>&lt;LocationMatch&gt;</code>,
+    <code>&lt;DirectoryMatch&gt;</code> 中では意味のないものもあります。
+    同様のことが <code>&lt;Files&gt;</code>
+    にも言えます。構文的にはすべて大丈夫ですが、
+    意味的にはそうでないものもあります。</p>
+
+    <h2>セクションのマージ方法</h2>
+
+    <p>マージの順番は以下のようになっています:</p>
+
+    <ol>
+      <li><code>&lt;Directory&gt;</code> (正規表現無し) と
+      .htaccess を同時に (.htaccess が許可されていれば、それが
+      <code>&lt;Directory&gt;</code> を 上書きします)
+      </li>
+
+      <li><code>&lt;DirectoryMatch&gt;</code> と正規表現のある
+      <code>&lt;Directory&gt;</code></li>
+
+      <li><code>&lt;Files&gt;</code> と
+      <code>&lt;FilesMatch&gt;</code> を同時に</li>
+
+      <li><code>&lt;Location&gt;</code> と
+      <code>&lt;LocationMatch&gt;</code> を同時に</li>
+    </ol>
+
+    <p><code>&lt;Directory&gt;</code>
+    以外は、それぞれのグループは設定ファイルに現れた順番に処理されます。
+    <code>&lt;Directory&gt;</code> (上のグループ 1)
+    はディレクトリが短いものから長いものへと処理されます。複数の
+    <code>&lt;Directory&gt;</code> セクションが同じディレクトリに
+    適用される場合は、設定ファイル中の順番に従って処理されます。
+    設定ファイルは httpd.conf, srm.conf, access.conf
+    の順に処理されます。<code>Include</code>
+    によって挿入された設定は 挿入しているファイルの
+    <code>Include</code>
+    ディレクティブの位置にあったかのように扱われます。</p>
+
+    <p><code>&lt;VirtualHost&gt;</code> セクション中のセクションは
+    バーチャルホストの定義の外側の対応するセクションの
+    <em>後</em>に適用されます。これによりバーチャルホストが
+    メインのサーバ設定を上書きできるようなります。(注意: これは
+    1.2.2 以降と 1.3a2 以降でのみ正しく動作します。
+    これらのリリースより前のものはバーチャルホストの中のセクションは
+    メインサーバの<em>前</em>に適用されていました)。</p>
+
+    <p>後のセクションのディレクティブが前のセクションのものを上書きします。</p>
+
+    <h2>セクションを使う際の注意</h2>
+
+    <p>一般的なガイドラインは:</p>
+
+    <ul>
+      <li>ファイルシステムレベルでオブジェクトのマッチを行なうときは、
+      <code>&lt;Directory&gt;</code> と <code>&lt;Files&gt;</code>
+      を使う必要があります。</li>
+
+      <li>URL レベルでオブジェクトのマッチを行なうときは
+      <code>&lt;Location&gt;</code> を使う必要があります。</li>
+    </ul>
+
+    <p>重要な例外は:</p>
+
+    <ul>
+      <li>プロキシの制御は <code>&lt;Directory&gt;</code>
+      を通して行なわれます。これはプロキシが
+      <code>&lt;Location&gt;</code>
+      より前から存在したことによるミスです。将来の設定言語ではおそらく
+      <code>&lt;Location&gt;</code> に切り替えられるでしょう。</li>
+    </ul>
+
+    <p>.htaccess ファイルの解析に関する注意:</p>
+
+    <ul>
+      <li>Location 中で .htaccess の解析方法を変更しても、
+      何も変わりません。.htaccess の解析は既に終わっているからです。</li>
+    </ul>
+
+    <p><code>&lt;Location&gt;</code> とシンボリックリンク:</p>
+
+    <ul>
+      <li>&quot;<code>Options FollowSymLinks</code>&quot; や
+      &quot;<code>Options SymLinksIfOwnerMatch</code>&quot; は
+      <code>&lt;Location&gt;</code>,
+      <code>&lt;LocationMatch&gt;</code>,
+      <code>&lt;DirectoryMatch&gt;</code>
+      セクションでは使うことができません
+      (それらのオプションは単に無視されます)。それらのオプションは
+      <code>&lt;Directory&gt;</code> セクション (もしくは
+      <code>.htaccess</code> ファイル) の中でのみ使用可能です。</li>
+    </ul>
+
+    <p><code>&lt;Files&gt;</code> と <code>Options</code>:</p>
+
+    <ul>
+      <li>Apache はこの状況はチェックしませんが、
+      <code>&lt;Files&gt;</code> セクションの中で <code>Options</code>
+      ディレクティブを使用しても効果はありません。</li>
+    </ul>
+
+    <p>他の注意:</p>
+
+    <ul>
+      <li>実際には、名前を変換する段階 (URL
+      をファイル名にマップするために <code>Alias</code> や
+      <code>DocumentRoot</code> が使用されるところ) の直前に
+      <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+      が行なわれます。
+      これらを適用した結果は変換が終わった後に完全に捨てられます。
+      </li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

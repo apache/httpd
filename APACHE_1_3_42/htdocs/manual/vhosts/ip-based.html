@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache IP-based Virtual Host Support</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache IP-based Virtual Host Support</h1>
+    <strong>See also:</strong> <a href="name-based.html">Name-based
+    Virtual Hosts Support</a> 
+    <hr />
+
+    <h2>System requirements</h2>
+    As the term <cite>IP-based</cite> indicates, the server
+    <strong>must have a different IP address for each IP-based
+    virtual host</strong>. This can be achieved by the machine
+    having several physical network connections, or by use of
+    virtual interfaces which are supported by most modern operating
+    systems (see system documentation for details, these are
+    frequently called "ip aliases", and the "ifconfig" command is
+    most commonly used to set them up). 
+
+    <h2>How to set up Apache</h2>
+    There are two ways of configuring apache to support multiple
+    hosts. Either by running a separate httpd daemon for each
+    hostname, or by running a single daemon which supports all the
+    virtual hosts. 
+
+    <p>Use multiple daemons when:</p>
+
+    <ul>
+      <li>There are security partitioning issues, such as company1
+      does not want anyone at company2 to be able to read their
+      data except via the web. In this case you would need two
+      daemons, each running with different <a
+      href="../mod/core.html#user">User</a>, <a
+      href="../mod/core.html#group">Group</a>, <a
+      href="../mod/core.html#listen">Listen</a>, and <a
+      href="../mod/core.html#serverroot">ServerRoot</a>
+      settings.</li>
+
+      <li>You can afford the memory and <a
+      href="../misc/descriptors.html">file descriptor
+      requirements</a> of listening to every IP alias on the
+      machine. It's only possible to <a
+      href="../mod/core.html#listen">Listen</a> to the "wildcard"
+      address, or to specific addresses. So if you have a need to
+      listen to a specific address for whatever reason, then you
+      will need to listen to all specific addresses. (Although one
+      httpd could listen to N-1 of the addresses, and another could
+      listen to the remaining address.)</li>
+    </ul>
+    Use a single daemon when: 
+
+    <ul>
+      <li>Sharing of the httpd configuration between virtual hosts
+      is acceptable.</li>
+
+      <li>The machine services a large number of requests, and so
+      the performance loss in running separate daemons may be
+      significant.</li>
+    </ul>
+
+    <h2>Setting up multiple daemons</h2>
+    Create a separate httpd installation for each virtual host. For
+    each installation, use the <a
+    href="../mod/core.html#listen">Listen</a> directive in the
+    configuration file to select which IP address (or virtual host)
+    that daemon services. e.g. 
+<pre>
+    Listen www.smallco.com:80
+</pre>
+    It is recommended that you use an IP address instead of a
+    hostname (see <a href="../dns-caveats.html">DNS caveats</a>). 
+
+    <h2>Setting up a single daemon with virtual hosts</h2>
+    For this case, a single httpd will service requests for the
+    main server and all the virtual hosts. The <a
+    href="../mod/core.html#virtualhost">VirtualHost</a> directive
+    in the configuration file is used to set the values of <a
+    href="../mod/core.html#serveradmin">ServerAdmin</a>, <a
+    href="../mod/core.html#servername">ServerName</a>, <a
+    href="../mod/core.html#documentroot">DocumentRoot</a>, <a
+    href="../mod/core.html#errorlog">ErrorLog</a> and <a
+    href="../mod/mod_log_config.html#transferlog">TransferLog</a>
+    or <a href="../mod/mod_log_config.html#customlog">CustomLog</a>
+    configuration directives to different values for each virtual
+    host. e.g. 
+<pre>
+    &lt;VirtualHost www.smallco.com&gt;
+    ServerAdmin webmaster@mail.smallco.com
+    DocumentRoot /groups/smallco/www
+    ServerName www.smallco.com
+    ErrorLog /groups/smallco/logs/error_log
+    TransferLog /groups/smallco/logs/access_log
+    &lt;/VirtualHost&gt;
+
+    &lt;VirtualHost www.baygroup.org&gt;
+    ServerAdmin webmaster@mail.baygroup.org
+    DocumentRoot /groups/baygroup/www
+    ServerName www.baygroup.org
+    ErrorLog /groups/baygroup/logs/error_log
+    TransferLog /groups/baygroup/logs/access_log
+    &lt;/VirtualHost&gt;
+</pre>
+    It is recommended that you use an IP address instead of a
+    hostname (see <a href="../dns-caveats.html">DNS caveats</a>). 
+
+    <p>Almost <strong>any</strong> configuration directive can be
+    put in the VirtualHost directive, with the exception of
+    directives that control process creation and a few other
+    directives. To find out if a directive can be used in the
+    VirtualHost directive, check the <a
+    href="../mod/directive-dict.html#Context">Context</a> using the
+    <a href="../mod/directives.html">directive index</a>.</p>
+
+    <p><a href="../mod/core.html#user">User</a> and <a
+    href="../mod/core.html#group">Group</a> may be used inside a
+    VirtualHost directive if the <a href="../suexec.html">suEXEC
+    wrapper</a> is used.</p>
+
+    <p><em>SECURITY:</em> When specifying where to write log files,
+    be aware of some security risks which are present if anyone
+    other than the user that starts Apache has write access to the
+    directory where they are written. See the <a
+    href="../misc/security_tips.html">security tips</a> document
+    for details.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

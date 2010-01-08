@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_alias</title>
+
+  </head>
+  <!-- English revision: 1.37 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_alias モジュール</h1>
+
+    <p>このモジュールは、ホストファイルシステム上のいろいろな違う場所を
+    ドキュメントツリーにマップする機能と、
+    URL のリダイレクトを行なう機能を提供します。</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>ソースファイル:</strong></a> mod_alias.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>モジュール識別子:</strong></a>
+    alias_module</p>
+
+    <h2>概要</h2>
+
+    <p>このモジュールのディレクティブはサーバにリクエストが到着したときに
+    URL の操作や制御をすることを可能にします。<code>Alias</code>
+    ディレクティブと <code>ScriptAlias</code> ディレクティブは
+    URL とファイルシステムのパスをマップするために使用されます。これは
+     <a href="core.html#documentroot"><code>DocumentRoot</code></a>
+    の下にないドキュメントをウェブのドキュメントツリーの一部として
+    送られるようにします。<code>ScriptAlias</code>
+    ディレクティブにはマップ先のディレクトリが CGI
+    スクリプトのみであることを示すという追加の効果があります。
+    </p>
+
+    <p><code>Redirect</code> ディレクティブはクライアントに違った
+    URL に新しいリクエストを送るように指示します。これは、
+    リソースが新しい場所に移動したときによく使用されます。</p>
+
+    <p>URL を操作するためのより強力で柔軟なディレクティブ群は <a
+    href="mod_rewrite.html"><code>mod_rewrite</code></a>
+    モジュールにあります。
+    </p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#alias">Alias</a></li>
+
+      <li><a href="#aliasmatch">AliasMatch</a></li>
+
+      <li><a href="#redirect">Redirect</a></li>
+
+      <li><a href="#redirectmatch">RedirectMatch</a></li>
+
+      <li><a href="#redirecttemp">RedirectTemp</a></li>
+
+      <li><a href="#redirectperm">RedirectPermanent</a></li>
+
+      <li><a href="#scriptalias">ScriptAlias</a></li>
+
+      <li><a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="alias" name="alias">Alias ディレクティブ</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> Alias <em>URL-path
+    file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_alias</p>
+
+    <p>Alias ディレクティブはドキュメントをローカルファイルシステムの
+    <a href="core.html#documentroot">DocumentRoot</a>
+    以外の場所に保管することを可能にします。<em>Url-path</em>
+    (% が復号された) で始まるパスの URL は
+    <em>directory-filename</em>
+    で始まるローカルファイルにマップされます。</p>
+
+    <p>例:</p>
+
+    <blockquote>
+      <code>Alias /image /ftp/pub/image</code>
+    </blockquote>
+
+    <p>http://myserver/image/foo.gif へのリクエストに対して、サーバは
+    ファイル /ftp/pub/image/foo.gif を返します。</p>
+
+    <p>もし <em>url-path</em> の最後に /
+    を書いたなら、サーバはエイリアスを展開するために最後の /
+    を要求するということに注意してください。すなわち、<code>Alias /icons/
+     /usr/local/apache/icons/</code> というものを使用していると、
+    <code>/icons</code> という url はエイリアスされません。</p>
+
+    <p>エイリアスの<em>行き先</em>を含んでいる <a
+    href="core.html#directory"><code>&lt;Directory&gt;</code></a>
+    セクションを追加する必要があるかもしれないことに注意してください。
+    エイリアスの展開は <code>&lt;Directory&gt;</code>
+    セクションを調べる前に行なわれますので、
+    エイリアスの行き先の <code>&lt;Directory&gt;</code> セクションのみ
+    効果があります。
+    (しかし、<a
+    href="core.html#location"><code>&lt;Location&gt;</code></a>
+    セクションはエイリアスが処理される前に実行されますので、
+    こちらは適用されます。)</p>
+
+    <p><a href="#scriptalias">ScriptAlias</a>
+    も参照してください。</p>
+    <hr />
+
+    <h2><a id="aliasmatch" name="aliasmatch">AliasMatch</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> AliasMatch <em>regex
+    file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.3
+    以降で使用可能</p>
+    <p>このディレクティブは <a href="#alias">Alias</a>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    が合うかどうかを調べ、合う場合は括弧で囲まれたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。例えば、
+    <code>/icons</code> ディレクトリを使用するようにする
+    ためには以下のようなものが使用できます:</p>
+<pre>
+    AliasMatch ^/icons(.*) /usr/local/apache/icons$1
+</pre>
+    <hr />
+
+    <h2><a id="redirect" name="redirect">Redirect
+    ディレクティブ</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> Redirect [<em>status</em>]
+    <em>URL-path URL</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、
+    ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ディレクトリと
+    .htaccess のコンテキストは 1.1 以降のみ。<em>Status</em>
+    引数は Apache 1.2 以降。</p>
+
+    <p>Redirect ディレクティブは古い URL を新しいものへマップします。
+    新しい URL がクライアントに返されます。そして、
+    クライアントは新しいアドレスをもう一回取得しようとします。
+    <em>URL-path</em> (% が復号された) パスで始まるドキュメントへの
+    すべてのリクエストは <em>URL</em> で始まる新しい
+    (% が符号化された) URL へのリダイレクトエラーが返されます。</p>
+
+    <p>例:</p>
+
+    <blockquote>
+      <code>Redirect /service http://foo2.bar.com/service</code>
+    </blockquote>
+
+    <p>クライアントは http://myserver/service/foo.txt
+    へのリクエストを行なうと、代わりに http://foo2.bar.com/service/foo.txt
+    をアクセスするように告げられます。</p>
+
+    <p><strong>注意:</strong>
+    設定ファイル中の順番に関わらず、Redirect ディレクティブは Alias
+    ディレクティブと ScriptAlias ディレクティブよりも優先されます。
+    また、.htaccess ファイルや &lt;Directory&gt;
+    セクションの中で使われていたとしても、<em>URL-path</em>
+    は相対パスではなく、完全な URL でなければなりません。</p>
+
+    <p>もし <em>status</em> 引数が与えられていなければ、リダイレクトは
+    "temporary" (HTTP ステータス 302) になります。これはクライアントに
+    リソースが一時的に移動したということを示します。<em>Status</em>
+    引数は 他の HTTP のステータスコードを返すために使用することができます:</p>
+
+    <dl>
+      <dt>permanent</dt>
+
+      <dd>永久にリダイレクトをするステータス (301) を返します。
+      これはリソースが永久に移動したということを意味します。</dd>
+
+      <dt>temp</dt>
+
+      <dd>一時的なリダイレクトステータス (302)
+      を返します。これがデフォルトです。</dd>
+
+      <dt>seeother</dt>
+
+      <dd>"See Other" ステータス (303) を返します。
+      これはリソースが他のもので置き換えられたことを意味します。</dd>
+
+    <dt>gone</dt>
+
+      <dd>"Gone" ステータス (410) を返します。これはリソースが永久に
+      削除されたことを意味します。このステータスが使用された場合、
+      <em>url</em> 引数は省略されなければなりません。</dd>
+    </dl>
+
+    <p><em>Status</em> の値にステータスコードを数値で与えることで
+    他のステータスコードも返すことができます。ステータスが 300 と 399
+    の間にある場合、<em>url</em> 引数は存在していなければいけません。
+    その他の場合は省略されていなければなりません。ただし、
+    ステータスは Apache のコードが知っているものである必要があります
+    (http_protocol.c の関数 <code>send_error_response</code>
+    を見てください)。</p>
+    <p>例:</p>
+
+    <pre>
+    Redirect permanent /one http://example.com/two<br />
+    Redirect 303 /two http://example.com/other
+    </pre>
+    <hr />
+
+    <h2><a id="redirectmatch"
+    name="redirectmatch">RedirectMatch</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> RedirectMatch
+    [<em>status</em>] <em>regex URL</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.3
+    以降で使用可能。</p>
+
+    <p>このディレクティブは <a href="#redirect">Redirect</a>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    が合うかどうかを調べ、合う場合は括弧で括られたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。
+    たとえば、すべての GIF ファイルを別サーバの同様な名前の JPEG
+    ファイルにリダイレクトするには、以下のようなものを使います:
+    </p>
+<pre>
+    RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+</pre>
+    <hr />
+
+    <h2><a id="redirecttemp" name="redirecttemp">RedirectTemp
+    ディレクティブ</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> RedirectTemp <em>URL-path
+    URL</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>
+    このディレクティブは Apache 1.2 以降でのみ使用可能</p>
+
+    <p>このディレクティブはクライアントに Redirect
+    が一時的なものである (ステータス 302) ことを知らせます。
+    <code>Redirect temp</code> とまったく同じです。</p>
+    <hr />
+
+    <h2><a id="redirectperm" name="redirectperm">RedirectPermanent
+    ディレクティブ</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> RedirectPermanent
+    <em>URL-path URL</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a> サーバ設定ファイル、
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a>
+    このディレクティブは Apache 1.2 以降でのみ使用可能。</p>
+
+    <p>このディレクティブはクライアントに Redirect が永久的なもの
+    (ステータス 301) であることを知らせます。
+    <code>Redirect premanent</code> と全く同じです。</p>
+    <hr />
+
+    <h2><a id="scriptalias" name="scriptalias">ScriptAlias
+    ディレクティブ</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ScriptAlias <em>URL-path
+    file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_alias</p>
+
+    <p>ScriptAlias ディレクティブは、対象ディレクトリに
+     <a href="mod_cgi.html">mod_cgi</a> の cgi-script
+    ハンドラで処理される CGI
+    スクリプトがあることを示す以外は
+    <a href="#alias">Alias</a>
+    ディレクティブと同じ振る舞いをします。<em>URL-path</em>
+    (% が復号された) パスで 始まる URL はローカルのファイルシステムの
+    フルパスである二番目の引数にマップされます。</p>
+
+    <p>例:</p>
+
+    <blockquote>
+      <code>ScriptAlias /cgi-bin/ /web/cgi-bin/</code>
+    </blockquote>
+
+    <p>http://myserver/cgi-bin/foo へのリクエストに対してサーバはスクリプト
+    /web/cgi-bin/foo を実行します。</p>
+    <hr />
+
+    <h2><a id="scriptaliasmatch"
+    name="scriptaliasmatch">ScriptAliasMatch</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ScriptAliasMatch <em>regex
+    file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.3
+    以降で使用可能</p>
+
+    <p>このディレクティブは <a href="#scriptalias">ScriptAlias</a>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    が合うかどうかを調べ、合う場合は括弧で囲まれたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。
+    例えば、標準の <code>/cgi-bin</code>
+    を使用するようにするためには、以下のようなものを使います:
+    </p>
+<pre>
+    ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

@@ -1,0 +1,270 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.4 $ ($Date: 2001/10/08 01:26:54 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="8">
+        <strong>URL Rewriting</strong> 
+
+        <ol>
+          <li><a href="#rewrite-more-config">Where can I find
+          mod_rewrite rulesets which already solve particular
+          URL-related problems?</a></li>
+
+          <li><a href="#rewrite-article">Where can I find any
+          published information about URL-manipulations and
+          mod_rewrite?</a></li>
+
+          <li><a href="#rewrite-complexity">Why is mod_rewrite so
+          difficult to learn and seems so complicated?</a></li>
+
+          <li><a href="#rewrite-dontwork">What can I do if my
+          RewriteRules don't work as expected?</a></li>
+
+          <li><a href="#rewrite-prefixdocroot">Why don't some of my
+          URLs get prefixed with DocumentRoot when using
+          mod_rewrite?</a></li>
+
+          <li><a href="#rewrite-nocase">How can I make all my URLs
+          case-insensitive with mod_rewrite?</a></li>
+
+          <li><a href="#rewrite-virthost">Why are RewriteRules in
+          my VirtualHost parts ignored?</a></li>
+
+          <li><a href="#rewrite-envwhitespace">How can I use
+          strings with whitespaces in RewriteRule's ENV
+          flag?</a></li>
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>H. URL Rewriting</h3>
+
+    <ol>
+      <li>
+        <a id="rewrite-more-config"
+        name="rewrite-more-config"><strong>Where can I find
+        mod_rewrite rulesets which already solve particular
+        URL-related problems?</strong></a> 
+
+        <p>There is a collection of practical solutions that can be
+        found in the
+        <a href="rewriteguide.html">Apache 1.3 URL Rewriting Guide</a>.
+        If you have more interesting rulesets
+        which solve particular problems not currently covered in
+        this document, send it to <a
+        href="mailto:rse@apache.org">Ralf S. Engelschall</a> for
+        inclusion. The other webmasters will thank you for avoiding
+        the reinvention of the wheel.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="rewrite-article"
+        name="rewrite-article"><strong>Where can I find any
+        published information about URL-manipulations and
+        mod_rewrite?</strong></a> 
+
+        <p>There is an article from <a
+        href="mailto:rse@apache.org">Ralf S. Engelschall</a> about
+        URL-manipulations based on <a
+        href="../mod/mod_rewrite.html"><samp>mod_rewrite</samp></a>
+        in the "iX Multiuser Multitasking Magazin" issue #12/96.
+        The German (original) version can be read online at &lt;<a
+        href="http://www.heise.de/ix/artikel/1996/12/149/">http://www.heise.de/ix/artikel/1996/12/149/</a>&gt;,
+        the English (translated) version can be found at &lt;<a
+        href="http://www.heise.de/ix/artikel/E/1996/12/149/">http://www.heise.de/ix/artikel/E/1996/12/149/</a>&gt;.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="rewrite-complexity"
+        name="rewrite-complexity"><strong>Why is mod_rewrite so
+        difficult to learn and seems so complicated?</strong></a> 
+
+        <p>Hmmm... there are a lot of reasons. First, mod_rewrite
+        itself is a powerful module which can help you in really
+        <strong>all</strong> aspects of URL rewriting, so it can be
+        no trivial module per definition. To accomplish its hard
+        job it uses software leverage and makes use of a powerful
+        regular expression library by Henry Spencer which is an
+        integral part of Apache since its version 1.2. And regular
+        expressions itself can be difficult to newbies, while
+        providing the most flexible power to the advanced
+        hacker.</p>
+
+        <p>On the other hand mod_rewrite has to work inside the
+        Apache API environment and needs to do some tricks to fit
+        there. For instance the Apache API as of 1.x really was not
+        designed for URL rewriting at the <tt>.htaccess</tt> level
+        of processing. Or the problem of multiple rewrites in
+        sequence, which is also not handled by the API per design.
+        To provide this features mod_rewrite has to do some special
+        (but API compliant!) handling which leads to difficult
+        processing inside the Apache kernel. While the user usually
+        doesn't see anything of this processing, it can be
+        difficult to find problems when some of your RewriteRules
+        seem not to work.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="rewrite-dontwork"
+        name="rewrite-dontwork"><strong>What can I do if my
+        RewriteRules don't work as expected?</strong></a> 
+
+        <p>Use "<samp>RewriteLog somefile</samp>" and
+        "<samp>RewriteLogLevel 9</samp>" and have a precise look at
+        the steps the rewriting engine performs. This is really the
+        only one and best way to debug your rewriting
+        configuration.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="rewrite-prefixdocroot"
+        name="rewrite-prefixdocroot"><strong>Why don't some of my
+        URLs get prefixed with DocumentRoot when using
+        mod_rewrite?</strong></a> 
+
+        <p>If the rule starts with <samp>/somedir/...</samp> make
+        sure that really no <samp>/somedir</samp> exists on the
+        filesystem if you don't want to lead the URL to match this
+        directory, <em>i.e.</em>, there must be no root directory
+        named <samp>somedir</samp> on the filesystem. Because if
+        there is such a directory, the URL will not get prefixed
+        with DocumentRoot. This behavior looks ugly, but is really
+        important for some other aspects of URL rewriting.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="rewrite-nocase" name="rewrite-nocase"><strong>How
+        can I make all my URLs case-insensitive with
+        mod_rewrite?</strong></a> 
+
+        <p>You can't! The reasons are: first, that, case
+        translations for arbitrary length URLs cannot be done
+        <em>via</em> regex patterns and corresponding
+        substitutions. One needs a per-character pattern like the
+        sed/Perl <samp>tr|..|..|</samp> feature. Second, just
+        making URLs always upper or lower case does not solve the
+        whole problem of case-INSENSITIVE URLs, because URLs
+        actually have to be rewritten to the correct case-variant
+        for the file residing on the filesystem in order to allow
+        Apache to access the file. And the Unix filesystem is
+        always case-SENSITIVE.</p>
+
+        <p>But there is a module named <code><a
+        href="../mod/mod_speling.html">mod_speling.c</a></code> in
+        the Apache distribution. Try this module to help correct
+        people who use mis-cased URLs.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="rewrite-virthost"
+        name="rewrite-virthost"><strong>Why are RewriteRules in my
+        VirtualHost parts ignored?</strong></a> 
+
+        <p>Because you have to enable the engine for every virtual
+        host explicitly due to security concerns. Just add a
+        "RewriteEngine on" to your virtual host configuration
+        parts.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="rewrite-envwhitespace"
+        name="rewrite-envwhitespace"><strong>How can I use strings
+        with whitespaces in RewriteRule's ENV flag?</strong></a> 
+
+        <p>There is only one ugly solution: You have to surround
+        the complete flag argument by quotation marks
+        (<samp>"[E=...]"</samp>). Notice: The argument to quote
+        here is not the argument to the E-flag, it is the argument
+        of the Apache config file parser, <em>i.e.</em>, the third
+        argument of the RewriteRule here. So you have to write
+        <samp>"[E=any text with whitespaces]"</samp>.</p>
+        <hr />
+      </li>
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Configuring Multiple IP Addresses</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Configuring Multiple IP Addresses</h1>
+<pre>
+This material is originally from John Ioannidis (ji@polaris.ctr.columbia.edu)
+I have condensed it some and applied some corrections for SunOS 4.1.x
+courtesy of Chuck Smoko (csmoko@relay.nswc.navy.mil).
+
+Bob Baggerman  (bob@bizweb.com)
+12 Jan 94
+
+=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+John Ionnidis writes:
+
+This is a topic that comes up once in a while on comp.protocols.tcp-ip
+and other newsgroups. The question is, how to get a machine with one
+network interface to respond to more than one IP addresses.
+
+I have a solution than might suit you.  For my doctoral work (there's
+a paper about it in this year's ('91) SIGCOMM, also available for
+anonymous FTP from cs.columbia.edu:/pub/ji/sigcomm*.ps.Z), I've
+developed what I call the "Virtual Interface" (VIF). To the networking
+code, it looks like an interface. It gets ifattach()ed when you open
+the /dev/vif* device, and then you can ifconfig it as you like. It
+does not have an if_input procedure; it only has an if_output. Packets
+that it receives (from higher-level protocols) which have its
+IP address, it simply loops back (like any well-behaved if driver).
+Packets that it receives that are destined for some other address, it
+encapsulates in an encapsulation protocol I call IPIP (IP-within-IP,
+protocol number IPPROTO_IPIP == 94), and sends it to another machine
+that groks that encapsulation protocol. This feature you won't need,
+but here's how to have multiple IP addresses on a machine with a
+single real interface:
+
+Let's say your primary interface's IP address is 198.3.2.1, and you
+also want it to respond to addresses 198.4.3.2 and 198.5.4.3 (note
+that these are three distinct class C addresses in three distinct
+class C nets). Here are the ifconfigs:
+
+  ifconfig le0 198.3.2.1 up -trailers   # config primary interface
+
+  ifconfig vif0 198.4.3.2 up            # config first virtual interface
+  route delete net 198.4.3 198.4.3.2    # delete spurious route
+  route add host 198.4.3.2 198.4.3.2 0  # add route for this i/f
+
+  ifconfig vif1 198.5.4.3 up            # config second virtual interface
+  route delete net 198.5.4 198.5.4.3    # delete spurious route
+  route add host 198.5.4.3 198.5.4.3 0  # add route for this i/f
+
+The route deletes are needed because the ifconfig creates a default
+route to the interface's network, which can cause problems; all that's
+needed is the (host) route to the interface's address.
+
+Now, get le0's ethernet address (say, 8:0:20:3:2:1), and add the
+following static ARP entries:
+
+  arp -s 198.4.3.2 8:0:20:3:2:1 pub
+  arp -s 198.5.4.3 8:0:20:3:2:1 pub
+
+This will cause any ARP requests for the VIF addresses to be replied
+with your machine's ethernet address.
+
+Now, make sure your default route is to your segment's gateway,
+through the real interface. Finally, make sure your routers and/or
+hosts on the same segment as yours know that 198.4.3.2 and 198.5.4.3
+are on that cable.
+
+Here's what you've accomplished.
+
+ARP requests for any of your host's addresses will be replied to with
+the host's ethernet address (the real one, because that's what it is,
+the virtual ones because of the public static arp entries). Packets
+reaching your host with any of these addresses will be accepted by the
+ip_input routine because they match the address of one of the host's
+interfaces. Packets leaving your host can have any of its addresses
+(real and virtual).
+
+The code for vif follows. To use it, put the stuff in netinet/if_vif.c
+and netinet/if_vif.h, configure your kernel with the number of
+virtual interfaces you want using a line like:
+
+pseudo-device   vif4            # Virtual IP interface
+
+in your configuration file, and the line
+
+netinet/if_vif.c        optional vif device-driver
+
+in the "files" file. Also, add the appropriate entries in conf.c, so
+that you can access the if_attach() routine when you open the device:
+
+
+-------------------------- conf.c------------------------------------------
+
+add this in the appropriate place in the headers of conf.c:
+
+--------------------
+#include "vif.h"
+#if NVIF &gt; 0
+int     vifopen(), vifclose(), vifread(), vifwrite(), vifselect(), vifioctl();
+#else
+#define vifopen         nodev
+#define vifclose        nodev
+#define vifread         nodev
+#define vifwrite        nodev
+#define vifselect       nodev
+#define vifioctl        nodev
+#endif
+--------------------
+
+then, way down in the definition for cdevsw[]:
+
+--------------------
+        vifopen,        vifclose,       vifread,        vifwrite,       /*14*/
+        vifioctl,       nodev,          nodev,          0,
+        0,      nodev,
+--------------------
+
+Make sure you remember the correct major device number, 14 in this case!
+
+---------------------------------------------------------------------------
+
+Finally, here's the code. It has the tunneling pieces removed (you
+need more code to use that anyway), and it comes from a Mach 2.6
+kernel; it should compile on any Berkeley-derived unix with minor
+changes (most likely only in the includes).
+
+---------------------netinet/if_vif.h--------------------------------------
+typedef struct
+{
+        struct ifnet    vif_if;
+        struct ifnet    *vif_sif;       /* slave interface */
+        int             vif_flags;
+} vif_softc_t;
+
+#define VIFMTU  (1024+512)
+---------------------------------------------------------------------------
+
+and
+
+---------------------netinet/if_vif.c--------------------------------------
+/*
+ * Virtual IP interface module.
+ */
+
+#include "param.h"
+#include "../sys/systm.h"
+#include "../sys/mbuf.h"
+#include "../sys/socket.h"
+#include "../sys/errno.h"
+#include "../sys/ioctl.h"
+
+#include "../net/if.h"
+#include "../net/netisr.h"
+#include "../net/route.h"
+
+#ifdef  INET
+#include "../netinet/in.h"
+#include "../netinet/in_systm.h"
+#include "../netinet/in_var.h"
+#include "../netinet/ip.h"
+#endif
+
+#include "in_pcb.h"
+#include "vif.h"
+
+typedef struct
+{
+        struct ifnet    vif_if;
+        struct ifnet    *vif_sif;       /* slave interface */
+        int             vif_flags;
+} vif_softc_t;
+
+#define VIFMTU  (1024+512)
+
+vif_softc_t vif_softc[NVIF];
+
+int vifs_inited = 0;
+
+
+vifattach()
+{
+        register int i;
+        register struct ifnet *ifp;
+        int     vifoutput(), vififioctl();
+
+        for (i=0; i&lt;NVIF; i++)
+        {
+                ifp = &amp;vif_softc[i].vif_if;
+                ifp-&gt;if_name = "vif";
+                ifp-&gt;if_unit = i;
+                ifp-&gt;if_mtu = VIFMTU;
+                ifp-&gt;if_flags = IFF_LOOPBACK | IFF_NOARP;
+                ifp-&gt;if_ioctl = vififioctl;
+                ifp-&gt;if_output = vifoutput;
+                if_attach(ifp);
+        }
+}
+
+vifopen(dev, flag)
+int dev, flag;
+{
+        int unit;
+
+        if (!vifs_inited)
+        {
+                vifattach();
+                vifs_inited = 1;
+                printf("vif initialized\n");
+        }
+
+        unit = minor(dev);
+        if ((unit &lt; 0) || (unit &gt;= NVIF))
+        {
+                return ENXIO;
+        }
+
+        return 0;
+}
+
+vifclose(dev, flag)
+int dev, flag;
+{
+        return 0;
+}
+
+vifread()
+{
+        return ENXIO;
+}
+
+vifwrite()
+{
+        return ENXIO;
+}
+
+vifselect()
+{
+        return ENXIO;
+}
+
+vifoutput(ifp, m0, dst)
+        struct ifnet *ifp;
+        register struct mbuf *m0;
+        struct sockaddr *dst;
+{
+        int s;
+        register struct ifqueue *ifq;
+        struct mbuf *m;
+        struct sockaddr_in *din;
+
+        if (dst-&gt;sa_family != AF_INET)
+        {
+                printf("%s%d: can't handle af%d\n",
+                       ifp-&gt;if_name, ifp-&gt;if_unit,
+                       dst-&gt;sa_family);
+                m_freem(m0);
+                return (EAFNOSUPPORT);
+        }
+
+        din = (struct sockaddr_in *)dst;
+
+        if (din-&gt;sin_addr.s_addr == IA_SIN(ifp-&gt;if_addrlist)-&gt;sin_addr.s_addr)
+        {
+                /* printf("%s%d: looping\n", ifp-&gt;if_name, ifp-&gt;if_unit); */
+
+                /*
+                 * Place interface pointer before the data
+                 * for the receiving protocol.
+                 */
+                if (m0-&gt;m_off &lt;= MMAXOFF &amp;&amp;
+                    m0-&gt;m_off &gt;= MMINOFF + sizeof(struct ifnet *)) {
+                        m0-&gt;m_off -= sizeof(struct ifnet *);
+                        m0-&gt;m_len += sizeof(struct ifnet *);
+                } else {
+                        MGET(m, M_DONTWAIT, MT_HEADER);
+                        if (m == (struct mbuf *)0)
+                          return (ENOBUFS);
+                        m-&gt;m_off = MMINOFF;
+                        m-&gt;m_len = sizeof(struct ifnet *);
+                        m-&gt;m_next = m0;
+                        m0 = m;
+                }
+                *(mtod(m0, struct ifnet **)) = ifp;
+                s = splimp();
+                ifp-&gt;if_opackets++;
+                ifq = &amp;ipintrq;
+                if (IF_QFULL(ifq)) {
+                        IF_DROP(ifq);
+                        m_freem(m0);
+                        splx(s);
+                        return (ENOBUFS);
+                }
+                IF_ENQUEUE(ifq, m0);
+                schednetisr(NETISR_IP);
+                ifp-&gt;if_ipackets++;
+                splx(s);
+                return (0);
+        }
+
+        return EHOSTUNREACH;
+}
+
+/*
+ * Process an ioctl request.
+ */
+/* ARGSUSED */
+vififioctl(ifp, cmd, data)
+        register struct ifnet *ifp;
+        int cmd;
+        caddr_t data;
+{
+        int error = 0;
+
+        switch (cmd) {
+
+        case SIOCSIFADDR:
+                ifp-&gt;if_flags |= IFF_UP;
+                /*
+                 * Everything else is done at a higher level.
+                 */
+                break;
+
+        default:
+                error = EINVAL;
+        }
+        return (error);
+}
+
+vifioctl(dev, cmd, arg, mode)
+dev_t dev;
+int cmd;
+caddr_t arg;
+int mode;
+{
+        int unit;
+
+        unit = minor(dev);
+        if ((unit &lt; 0) || (unit &gt;= NVIF))
+          return ENXIO;
+
+        return EINVAL;
+}
+----------------------------------------------------------------------------
+
+To use it, compile your kernel, and reboot. Then create the vif
+device:
+
+# mknod /dev/vif c 14 0
+
+(or whatever major number it ended up being), and echo something into
+it:
+
+# echo &gt; /dev/vif
+
+This will cause the device to be opened, which will if_attach the
+interfaces. If you feel like playing with the code, you may want to
+kmem_alloc() the vif_softc structure at open time, and use the minor
+number of the device to tell it how many interfaces to create.
+
+Now you can go ahead and ifconfig <em>etc.</em>
+
+I'll be happy to answer minor questions, and hear about success and
+failure stories, but I cannot help you if you don't already know how
+to hack kernels.
+
+Good luck!
+
+/ji
+
+In-Real-Life: John "Heldenprogrammer" Ioannidis
+E-Mail-To: ji@cs.columbia.edu
+V-Mail-To: +1 212 854 8120
+P-Mail-To: 450 Computer Science \n Columbia University \n New York, NY 10027
+</pre>
+
+    <p>Note: there is also a <a
+    href="http://www.multihost.com/">commercial-product-turned-freeware
+    called "Col. Patch"</a> which does this as a loadable kernel
+    module for SunOS 4.1.3_U1.</p>
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

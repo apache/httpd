@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_isapi</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_isapi</h1>
+
+    <p>This module supports ISAPI Extensions within Apache for
+    Windows.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_isapi.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    isapi_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> WIN32 only</p>
+
+    <h2>Summary</h2>
+
+    <p>This module implements the Internet Server extension API. It
+    allows Internet Server extensions (<em>e.g.</em> ISAPI .dll
+    modules) to be served by Apache for Windows, subject to the
+    noted restrictions.</p>
+
+    <p>ISAPI extension modules (.dll files) are written by third
+    parties. The Apache Group does not author these modules, so we
+    provide no support for them. Please contact the ISAPI's author
+    directly if you are experiencing problems running their ISAPI
+    extention. <strong>Please <em>do not</em> post such problems to
+    Apache's lists or bug reporting pages.</strong></p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a
+      href="#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></li>
+
+      <li><a
+      href="#isapilognotsupported">ISAPILogNotSupported</a></li>
+
+      <li><a
+      href="#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></li>
+
+      <li><a
+      href="#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></li>
+    </ul>
+
+    <h2>Usage</h2>
+
+    <p>In the server configuration file, use the AddHandler
+    directive to associate ISAPI files with the
+    <code>isapi-isa</code> handler, and map it to the with their
+    file extensions. To enable any .dll file to be processed as an
+    ISAPI extention, edit the httpd.conf file and add the following
+    line:</p>
+<pre>
+    AddHandler isapi-isa .dll
+</pre>
+
+    <p>ISAPI extensions are governed by the same permissions and
+    restrictions as CGI scripts. That is, <code>Options
+    ExecCGI</code> must be set for the directory that contains the
+    ISAPI .dll file.</p>
+
+    <p>Review the <a href="#notes">Additional Notes</a> and the <a
+    href="#journal">Programmer's Journal</a> for additional details
+    and clarification of the specific ISAPI support offered by
+    mod_isapi.</p>
+
+    <h2><a id="notes" name="notes">Additional Notes</a></h2>
+
+    <p>Apache's ISAPI implementation conforms to all of the ISAPI
+    2.0 specification, except for the "Microsoft-specific"
+    extensions dealing with asynchronous I/O. Apache's I/O model
+    does not allow asynchronous reading and writing in a manner
+    that the ISAPI could access. If an ISA tries to access
+    unsupported features, including async I/O, a message is placed
+    in the error log to help with debugging. Since these messages
+    can become a flood, a new directive; <code>ISAPILogNotSupported
+    Off</code>, is introduced in Apache 1.3.13.</p>
+
+    <p>Some servers, like Microsoft IIS, load the ISA into the
+    server, and keep it loaded until memory usage is too high, or
+    specific configuration options are used. Apache currently loads
+    and unloads the ISA for each request. This is inefficient, but
+    Apache's request model makes this method the only method that
+    currently works. Apache 2.0 is expected to support more
+    effective loading and caching methods, with more precise
+    control over individual ISAPI modules and directories.</p>
+
+    <p>Also, remember that while Apache supports ISAPI Extensions,
+    it <strong>does not support ISAPI Filters.</strong> Support for
+    filters may be added at a later date, but no support is planned
+    at this time.</p>
+
+    <h2><a id="journal" name="journal">Programmer's
+    Journal</a></h2>
+
+    <p>If you are programming Apache 1.3 mod_isapi modules, you
+    must limit your calls to ServerSupportFunction to the following
+    directives:</p>
+
+    <dl>
+      <dt>HSE_REQ_SEND_URL_REDIRECT_RESP</dt>
+
+      <dd>Redirect the user to another location.<br />
+       This must be a fully qualified URL (e.g.
+      http://server/location).</dd>
+
+      <dt>HSE_REQ_SEND_URL</dt>
+
+      <dd>Redirect the user to another location.<br />
+       This cannot be a fully qualified URL, you are not allowed to
+      pass the protocol or a server name (e.g. simply
+      /location).<br />
+       This redirection is handled by the server, not the
+      browser.<br />
+       <strong>Warning:</strong> in their recent documentation,
+      Microsoft appears to have abandoned the distinction between
+      the two HSE_REQ_SEND_URL functions. Apache continues to treat
+      them as two distinct functions with different requirements
+      and behaviors.</dd>
+
+      <dt>HSE_REQ_SEND_RESPONSE_HEADER</dt>
+
+      <dd>Apache accepts a response body following the header if it
+      follows the blank line (two consecutive newlines) in the
+      headers string argument. This body cannot contain NULLs,
+      since the headers argument is NULL terminated.</dd>
+
+      <dt>HSE_REQ_DONE_WITH_SESSION</dt>
+
+      <dd>Apache considers this a no-op, since the session will be
+      finished when the ISAPI returns from processing.</dd>
+
+      <dt>HSE_REQ_MAP_URL_TO_PATH</dt>
+
+      <dd>Apache will translate a virtual name to a physical
+      name.</dd>
+
+      <dt>HSE_APPEND_LOG_PARAMETER <em>Apache 1.3.13 and
+      later</em></dt>
+
+      <dd>
+        This logged message may be captured in any of the following
+        logs: 
+
+        <ul>
+          <li>in the \"%{isapi-parameter}n\" component in a
+          CustomLog directive</li>
+
+          <li>in the %q log component with the
+          ISAPIAppendLogToQuery On directive</li>
+
+          <li>in the error log with the ISAPIAppendLogToErrors On
+          directive</li>
+        </ul>
+        The first option, the %{isapi-parameter}n component, is
+        always available and prefered.
+      </dd>
+
+      <dt>HSE_REQ_IS_KEEP_CONN <em>Apache 1.3.13 and
+      later</em></dt>
+
+      <dd>Will return the negotiated Keep-Alive status.</dd>
+
+      <dt>HSE_REQ_SEND_RESPONSE_HEADER_EX <em>Apache 1.3.13 and
+      later</em></dt>
+
+      <dd>Will behave as documented, although the fKeepConn flag is
+      ignored.</dd>
+
+      <dt>HSE_REQ_IS_CONNECTED <em>Apache 1.3.13 and
+      later</em></dt>
+
+      <dd>Will report false if the request has been aborted.</dd>
+    </dl>
+
+    <p>Apache returns FALSE to any unsupported call to
+    ServerSupportFunction, and sets the GetLastError value to
+    ERROR_INVALID_PARAMETER.</p>
+
+    <p>Prior to Apache 1.3.13, ReadClient was a noop, and any
+    request with a request body greater than 48kb was rejected by
+    mod_isapi. As of Apache 1.3.13, ReadClient now retrieves the
+    request body exceeding the initial buffer (defined by
+    ISAPIReadAheadBuffer). Based on the ISAPIReadAheadBuffer
+    setting (number of bytes to buffer prior to calling the ISAPI
+    handler) shorter requests are sent complete to the extension
+    when it is invoked. If the request is longer, the ISAPI
+    extension must use ReadClient to retrieve the remaining request
+    body.</p>
+
+    <p>WriteClient is supported, but only with the HSE_IO_SYNC flag
+    or no option flag (value of 0). Any other WriteClient request
+    will be rejected with a return value of FALSE, and a
+    GetLastError value of ERROR_INVALID_PARAMETER.</p>
+
+    <p>GetServerVariable is supported, although extended server
+    variables do not exist (as defined by other servers.) All the
+    usual Apache CGI environment variables are available from
+    GetServerVariable. As of Apache 1.3.13, the ALL_HTTP and
+    ALL_RAW and variables are now available.</p>
+
+    <p>Apache 2.0 mod_isapi may support additional features
+    introduced in later versions of the ISAPI specification, as
+    well as limited emulation of async I/O and the TransmitFile
+    semantics. Apache 2.0 may also support caching of ISAPI .dlls
+    for performance. No further enhancements to the Apache 1.3
+    mod_isapi features are anticipated.</p>
+    <hr />
+
+    <h2><a id="isapireadaheadbuffer"
+    name="isapireadaheadbuffer">ISAPIReadAheadBuffer
+    directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ISAPIReadAheadBuffer
+    <em>size</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> 49152<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> None<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_isapi<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.13
+    and later, Win32 only 
+
+    <p>Defines the maximum size of the Read Ahead Buffer sent to
+    ISAPI extentions when they are initally invoked. All remaining
+    data must be retrieved using the ReadClient callback; some
+    ISAPI extensions may not support the ReadClient function. Refer
+    questions to the ISAPI extention's author.</p>
+    <hr />
+
+    <h2><a id="isapilognotsupported"
+    name="isapilognotsupported">ISAPILogNotSupported
+    directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ISAPILogNotSupported
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> on<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> None<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_isapi<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.13
+    and later, Win32 only 
+
+    <p>Logs all requests for unsupported features from ISAPI
+    extentions in the server error log. While this should be turned
+    off once all desired ISAPI modules are functioning, it defaults
+    to on to help administrators track down problems.</p>
+    <hr />
+
+    <h2><a id="isapiappendlogtoerrors"
+    name="isapiappendlogtoerrors">ISAPIAppendLogToErrors
+    directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ISAPIAppendLogToErrors
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> off<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> None<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_isapi<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.13
+    and later, Win32 only 
+
+    <p>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
+    extentions to the server error log.</p>
+    <hr />
+
+    <h2><a id="isapiappendlogtoquery"
+    name="isapiappendlogtoquery">ISAPIAppendLogToQuery
+    directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ISAPIAppendLogToQuery
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> off<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> None<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_isapi<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.13
+    and later, Win32 only 
+
+    <p>Record HSE_APPEND_LOG_PARAMETER requests from ISAPI
+    extentions to the query field (appended to the CustomLog %q
+    component).</p>
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

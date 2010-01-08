@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <title>URL でのアクセス制御</title>
+  </head>
+  <!-- English revision: 1.15 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">URL でのアクセス制御</h1>
+
+    <h2><a id="location" name="location">
+    <code>&lt;Location&gt;</code> ディレクティブ</a></h2>
+    <a href="mod/directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> &lt;Location
+    <em>URL プレフィクス</em>&gt;<br />
+     <a href="mod/directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+     <a href="mod/directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> コア<br />
+
+    <p>&lt;Location&gt; ディレクティブは URL
+    でのアクセス制御を提供します。これは<a
+    href="mod/core.html#directory">&lt;Directory&gt;</a>
+    ディレクティブと匹敵し、&lt;/Location&gt; と併せて使います。
+    指定された URL
+    に対して適用させるディレクティブは、それらの間に列挙します。
+    <code>&lt;Location&gt;</code> セクションは &lt;Directory&gt;
+    セクション及び <code>.htaccess</code>
+    ファイルが読まれた後、設定ファイルに現れた順に処理されます。</p>
+
+    <p>HTTP の動作方法のため、<em>URL
+    接頭辞</em>は、プロキシリクエストを除いて、<code>/path/</code> という
+    形式になっているべきで、<code>http://servername</code> を含めていは
+    いけないことに注意してください。また、必ずしもディレクトリ
+    を保護する必要があるわけではなく (個々のファイル、
+    または多くのファイルでも構いません)、
+    ワイルドカードを含むこともできます。ワイルドカードについては、
+    `?' は何か一文字、`*' はすべての文字列にマッチします。</p>
+
+    <p>この機能は、<code><a
+    href="mod/mod_mime.html#sethandler">SetHandler</a></code>
+    ディレクティブと組み合わせて使うと特に有益です。
+    例えば、ステータス要求を可能にするけれども、foo.com
+    から来たブラウザだけに許可を限定したい場合は以下を使うことができます:</p>
+<pre>
+    &lt;Location /status&gt;
+    SetHandler server-status
+    Order Deny,Allow
+    Deny from all
+    Allow from .foo.com
+    &lt;/Location&gt;
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

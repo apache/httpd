@@ -1,0 +1,972 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.26 $ ($Date: 2004/03/16 17:48:46 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="5">
+        <strong>Configuration Questions</strong> 
+
+        <ol>
+          <li><a href="#fdlim">Why can't I run more than
+          &lt;<em>n</em>&gt; virtual hosts?</a></li>
+
+          <li><a href="#freebsd-setsize">Can I increase
+          <samp>FD_SETSIZE</samp> on FreeBSD?</a></li>
+
+          <li><a href="#errordoc401">Why doesn't my
+          <code>ErrorDocument 401</code> work?</a></li>
+
+          <li><a href="#cookies1">Why does Apache send a cookie on
+          every response?</a></li>
+
+          <li><a href="#cookies2">Why don't my cookies work, I even
+          compiled in <samp>mod_cookies</samp>?</a></li>
+
+          <li><a href="#jdk1-and-http1.1">Why do my Java app[let]s
+          give me plain text when I request an URL from an Apache
+          server?</a></li>
+
+          <li><a href="#midi">How do I get Apache to send a MIDI
+          file so the browser can play it?</a></li>
+
+          <li><a href="#addlog">How do I add browsers and referrers
+          to my logs?</a></li>
+
+          <li><a href="#set-servername">Why does accessing
+          directories only work when I include the trailing "/"
+          (<em>e.g.</em>,&nbsp;<samp>http://foo.domain.com/~user/</samp>)
+          but not when I omit it
+          (<em>e.g.</em>,&nbsp;<samp>http://foo.domain.com/~user</samp>)?</a></li>
+
+          <li><a href="#no-info-directives">Why doesn't mod_info
+          list any directives?</a></li>
+
+          <li><a href="#namevhost">I upgraded to Apache 1.3 and now
+          my virtual hosts don't work!</a></li>
+
+          <li><a href="#redhat-htm">I'm using RedHat Linux and my
+          .htm files are showing up as HTML source rather than
+          being formatted!</a></li>
+
+          <li><a href="#htaccess-work">My <code>.htaccess</code>
+          files are being ignored.</a></li>
+
+          <li><a href="#forbidden">Why do I get a
+          "<samp>Forbidden</samp>" message whenever I try to access
+          a particular directory?</a></li>
+
+          <li><a href="#malfiles">Why do I get a
+          "<samp>Forbidden/You don't have permission to access / on
+          this server</samp>" message whenever I try to access my
+          server?</a></li>
+
+          <li><a href="#ie-ignores-mime">Why do my files appear
+          correctly in Internet Explorer, but show up as source or
+          trigger a save window with Netscape; or, Why doesn't
+          Internet Explorer render my text/plain document
+          correctly?</a></li>
+
+	  <li><a href="#canonical-hostnames">My site is accessible
+          under many different hostnames; how do I redirect clients
+          so that they see only a single name?</a></li>
+
+          <li><a href="#firewall">Why can I access my website from the
+          server or from my local network, but I can't access it from
+          elsewhere on the Internet?</a></li>
+
+	  <li><a href="#indexes">How do I turn automatic directory listings
+	  on or off?</a></li>
+
+         <li><a href="#options">Why do my Options directives not have
+         the desired effect?</a></li>
+
+         <li><a href="#serverheader">How can I change the information
+         that Apache returns about itself in the headers?</a></li>
+
+         <li><a href="#proxyscan">Why do I see requests for other sites
+         appearing in my log files?</a></li>
+
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>E. Configuration Questions</h3>
+
+    <ol>
+      <li>
+        <a id="fdlim" name="fdlim"><strong>Why can't I run more
+        than &lt;<em>n</em>&gt; virtual hosts?</strong></a> 
+
+        <p>You are probably running into resource limitations in
+        your operating system. The most common limitation is the
+        <em>per</em>-process limit on <strong>file
+        descriptors</strong>, which is almost always the cause of
+        problems seen when adding virtual hosts. Apache often does
+        not give an intuitive error message because it is normally
+        some library routine (such as <code>gethostbyname()</code>)
+        which needs file descriptors and doesn't complain
+        intelligibly when it can't get them.</p>
+
+        <p>Each log file requires a file descriptor, which means
+        that if you are using separate access and error logs for
+        each virtual host, each virtual host needs two file
+        descriptors. Each <a
+        href="../mod/core.html#listen"><samp>Listen</samp></a>
+        directive also needs a file descriptor.</p>
+
+        <p>Typical values for &lt;<em>n</em>&gt; that we've seen
+        are in the neighborhood of 128 or 250. When the server
+        bumps into the file descriptor limit, it may dump core with
+        a SIGSEGV, it might just hang, or it may limp along and
+        you'll see (possibly meaningful) errors in the error log.
+        One common problem that occurs when you run into a file
+        descriptor limit is that CGI scripts stop being executed
+        properly.</p>
+
+        <p>As to what you can do about this:</p>
+
+        <ol>
+          <li>Reduce the number of <a
+          href="../mod/core.html#listen"><samp>Listen</samp></a>
+          directives. If there are no other servers running on the
+          machine on the same port then you normally don't need any
+          Listen directives at all. By default Apache listens to
+          all addresses on port 80.</li>
+
+          <li>Reduce the number of log files. You can use <a
+          href="../mod/mod_log_config.html"><samp>mod_log_config</samp></a>
+          to log all requests to a single log file while including
+          the name of the virtual host in the log file. You can
+          then write a script to split the logfile into separate
+          files later if necessary. Such a script is provided with
+          the Apache 1.3 distribution in the
+          <samp>src/support/split-logfile</samp> file.</li>
+
+          <li>
+            Increase the number of file descriptors available to
+            the server (see your system's documentation on the
+            <code>limit</code> or <code>ulimit</code> commands).
+            For some systems, information on how to do this is
+            available in the <a href="perf.html">performance
+            hints</a> page. There is a specific note for <a
+            href="#freebsd-setsize">FreeBSD</a> below. 
+
+            <p>For Windows 95, try modifying your
+            <samp>C:\CONFIG.SYS</samp> file to include a line
+            like</p>
+
+            <dl>
+              <dd><code>FILES=300</code></dd>
+            </dl>
+
+            <p>Remember that you'll need to reboot your Windows 95
+            system in order for the new value to take effect.</p>
+          </li>
+
+          <li>"Don't do that" - try to run with fewer virtual
+          hosts</li>
+
+          <li>Spread your operation across multiple server
+          processes (using <a
+          href="../mod/core.html#listen"><samp>Listen</samp></a>
+          for example, but see the first point) and/or ports.</li>
+        </ol>
+
+        <p>Since this is an operating-system limitation, there's
+        not much else available in the way of solutions.</p>
+
+        <p>As of 1.2.1 we have made attempts to work around various
+        limitations involving running with many descriptors. <a
+        href="descriptors.html">More information is
+        available.</a></p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="freebsd-setsize" name="freebsd-setsize"><strong>Can
+        I increase <samp>FD_SETSIZE</samp> on FreeBSD?</strong></a>
+        
+
+        <p>On versions of FreeBSD before 3.0, the
+        <samp>FD_SETSIZE</samp> define defaults to 256. This means
+        that you will have trouble usefully using more than 256
+        file descriptors in Apache. This can be increased, but
+        doing so can be tricky.</p>
+
+        <p>If you are using a version prior to 2.2, you need to
+        recompile your kernel with a larger
+        <samp>FD_SETSIZE</samp>. This can be done by adding a line
+        such as:</p>
+
+        <dl>
+          <dd><code>options FD_SETSIZE <em>nnn</em></code></dd>
+        </dl>
+
+        <p>to your kernel config file. Starting at version 2.2,
+        this is no longer necessary.</p>
+
+        <p>If you are using a version of 2.1-stable from after
+        1997/03/10 or 2.2 or 3.0-current from before 1997/06/28,
+        there is a limit in the resolver library that prevents it
+        from using more file descriptors than what
+        <samp>FD_SETSIZE</samp> is set to when libc is compiled. To
+        increase this, you have to recompile libc with a higher
+        <samp>FD_SETSIZE</samp>.</p>
+
+        <p>In FreeBSD 3.0, the default <samp>FD_SETSIZE</samp> has
+        been increased to 1024 and the above limitation in the
+        resolver library has been removed.</p>
+
+        <p>After you deal with the appropriate changes above, you
+        can increase the setting of <samp>FD_SETSIZE</samp> at
+        Apache compilation time by adding
+        "<samp>-DFD_SETSIZE=<em>nnn</em></samp>" to the
+        <samp>EXTRA_CFLAGS</samp> line in your
+        <samp>Configuration</samp> file.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="errordoc401" name="errordoc401"><strong>Why doesn't
+        my <code>ErrorDocument 401</code> work?</strong></a> 
+
+        <p>You need to use it with a URL in the form
+        "<samp>/foo/bar</samp>" and not one with a method and
+        hostname such as "<samp>http://host/foo/bar</samp>". See
+        the <a
+        href="../mod/core.html#errordocument"><samp>ErrorDocument</samp></a>
+        documentation for details. This was incorrectly documented
+        in the past.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="cookies1" name="cookies1"><strong>Why does Apache
+        send a cookie on every response?</strong></a> 
+
+        <p>Apache does <em>not</em> automatically send a cookie on
+        every response, unless you have re-compiled it with the <a
+        href="../mod/mod_usertrack.html"><samp>mod_usertrack</samp></a>
+        module, and specifically enabled it with the <a
+        href="../mod/mod_usertrack.html#cookietracking"><samp>CookieTracking</samp></a>
+        directive. This module has been in Apache since version
+        1.2. This module may help track users, and uses cookies to
+        do this. If you are not using the data generated by
+        <samp>mod_usertrack</samp>, do not compile it into
+        Apache.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="cookies2" name="cookies2"><strong>Why don't my
+        cookies work, I even compiled in
+        <samp>mod_cookies</samp>?</strong></a> 
+
+        <p>Firstly, you do <em>not</em> need to compile in
+        <samp>mod_cookies</samp> in order for your scripts to work
+        (see the <a href="#cookies1">previous question</a> for more
+        about <samp>mod_cookies</samp>). Apache passes on your
+        <samp>Set-Cookie</samp> header fine, with or without this
+        module. If cookies do not work it will be because your
+        script does not work properly or your browser does not use
+        cookies or is not set-up to accept them.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="jdk1-and-http1.1"
+        name="jdk1-and-http1.1"><strong>Why do my Java app[let]s
+        give me plain text when I request an URL from an Apache
+        server?</strong></a> 
+
+        <p>As of version 1.2, Apache is an HTTP/1.1 (HyperText
+        Transfer Protocol version 1.1) server. This fact is
+        reflected in the protocol version that's included in the
+        response headers sent to a client when processing a
+        request. Unfortunately, low-level Web access classes
+        included in the Java Development Kit (JDK) version 1.0.2
+        expect to see the version string "HTTP/1.0" and do not
+        correctly interpret the "HTTP/1.1" value Apache is sending
+        (this part of the response is a declaration of what the
+        server can do rather than a declaration of the dialect of
+        the response). The result is that the JDK methods do not
+        correctly parse the headers, and include them with the
+        document content by mistake.</p>
+
+        <p>This is definitely a bug in the JDK 1.0.2 foundation
+        classes from Sun, and it has been fixed in version 1.1.
+        However, the classes in question are part of the virtual
+        machine environment, which means they're part of the Web
+        browser (if Java-enabled) or the Java environment on the
+        client system - so even if you develop <em>your</em>
+        classes with a recent JDK, the eventual users might
+        encounter the problem. The classes involved are replaceable
+        by vendors implementing the Java virtual machine
+        environment, and so even those that are based upon the
+        1.0.2 version may not have this problem.</p>
+
+        <p>In the meantime, a workaround is to tell Apache to
+        "fake" an HTTP/1.0 response to requests that come from the
+        JDK methods; this can be done by including a line such as
+        the following in your server configuration files:</p>
+
+        <dl>
+          <dd><code>BrowserMatch Java1.0 force-response-1.0<br />
+           BrowserMatch JDK/1.0 force-response-1.0</code></dd>
+        </dl>
+
+        <p>More information about this issue can be found in the <a
+        href="http://httpd.apache.org/info/jdk-102.html"><cite>Java
+        and HTTP/1.1</cite></a> page at the Apache web site.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="midi" name="midi"><strong>How do I get Apache to
+        send a MIDI file so the browser can play it?</strong></a> 
+
+        <p>Even though the registered MIME type for MIDI files is
+        <samp>audio/midi</samp>, some browsers are not set up to
+        recognize it as such; instead, they look for
+        <samp>audio/x-midi</samp>. There are two things you can do
+        to address this:</p>
+
+        <ol>
+          <li>Configure your browser to treat documents of type
+          <samp>audio/midi</samp> correctly. This is the type that
+          Apache sends by default. This may not be workable,
+          however, if you have many client installations to change,
+          or if some or many of the clients are not under your
+          control.</li>
+
+          <li>
+            Instruct Apache to send a different
+            <samp>Content-type</samp> header for these files by
+            adding the following line to your server's
+            configuration files: 
+
+            <dl>
+              <dd><code>AddType audio/x-midi .mid .midi
+              .kar</code></dd>
+            </dl>
+
+            <p>Note that this may break browsers that <em>do</em>
+            recognize the <samp>audio/midi</samp> MIME type unless
+            they're prepared to also handle
+            <samp>audio/x-midi</samp> the same way.</p>
+          </li>
+        </ol>
+        <hr />
+      </li>
+
+      <li>
+        <a id="addlog" name="addlog"><strong>How do I add browsers
+        and referrers to my logs?</strong></a> 
+
+        <p>Apache provides a couple of different ways of doing
+        this. The recommended method is to compile the <a
+        href="../mod/mod_log_config.html"><samp>mod_log_config</samp></a>
+        module into your configuration and use the <a
+        href="../mod/mod_log_config.html#customlog"><samp>CustomLog</samp></a>
+        directive.</p>
+
+        <p>You can either log the additional information in files
+        other than your normal transfer log, or you can add them to
+        the records already being written. For example:</p>
+
+        <p>
+        <code>CustomLog&nbsp;logs/access_log&nbsp;"%h&nbsp;%l&nbsp;%u&nbsp;%t&nbsp;\"%r\"&nbsp;%s&nbsp;%b&nbsp;\"%{Referer}i\"&nbsp;\"%{User-Agent}i\""</code></p>
+
+        <p>This will add the values of the <samp>User-agent:</samp>
+        and <samp>Referer:</samp> headers, which indicate the
+        client and the referring page, respectively, to the end of
+        each line in the access log.</p>
+
+        <p>You may want to check out the <cite>Apache Week</cite>
+        article entitled: "<a
+        href="http://www.apacheweek.com/features/logfiles"
+        rel="Help"><cite>Gathering Visitor Information: Customizing
+        Your Logfiles</cite></a>".</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="set-servername" name="set-servername"><strong>Why
+        does accessing directories only work when I include the
+        trailing "/"
+        (<em>e.g.</em>,&nbsp;<samp>http://foo.domain.com/~user/</samp>)
+        but not when I omit it
+        (<em>e.g.</em>,&nbsp;<samp>http://foo.domain.com/~user</samp>)?</strong></a>
+        
+
+        <p>When you access a directory without a trailing "/",
+        Apache needs to send what is called a redirect to the
+        client to tell it to add the trailing slash. If it did not
+        do so, relative URLs would not work properly. When it sends
+        the redirect, it needs to know the name of the server so
+        that it can include it in the redirect. There are two ways
+        for Apache to find this out; either it can guess, or you
+        can tell it. If your DNS is configured correctly, it can
+        normally guess without any problems. If it is not, however,
+        then you need to tell it.</p>
+
+        <p>Add a <a
+        href="../mod/core.html#servername">ServerName</a> directive
+        to the config file to tell it what the domain name of the
+        server is.</p>
+
+        <p>The other thing that can occasionally cause this symptom is a
+        misunderstanding of the <a
+        href="../mod/mod_alias.html#alias">Alias</a> directive,
+        resulting in an alias working with a trailing slash, and not 
+        without one. The <code>Alias</code> directive is very literal,
+        and aliases what you tell it to. Consider the following
+        example:</p>
+
+        <pre>
+        Alias /example/ /home/www/example/
+        </pre>
+
+        <p>The above directive creates an alias for URLs starting with
+        <code>/example/</code>, but does <em>not</em> alias URLs
+        starting with <code>/example</code>. That is to say, a URL such
+        as <code>http://servername.com/example/</code> will get the
+        desired content, but a URL such as
+        <code>http://servername.com/example</code> will result in a
+        "file not found" error.</p>
+
+        <p>The following <code>Alias</code>, on the other hand, will
+        work for both cases:</p>
+
+        <pre>
+        Alias /example /home/www/example
+        </pre>
+
+        <hr />
+      </li>
+
+      <li>
+        <a id="no-info-directives"
+        name="no-info-directives"><strong>Why doesn't mod_info list
+        any directives?</strong></a> 
+
+        <p>The <a
+        href="../mod/mod_info.html"><samp>mod_info</samp></a>
+        module allows you to use a Web browser to see how your
+        server is configured. Among the information it displays is
+        the list modules and their configuration directives. The
+        "current" values for the directives are not necessarily
+        those of the running server; they are extracted from the
+        configuration files themselves at the time of the request.
+        If the files have been changed since the server was last
+        reloaded, the display will not match the values actively in
+        use. If the files and the path to the files are not
+        readable by the user as which the server is running (see
+        the <a href="../mod/core.html#user"><samp>User</samp></a>
+        directive), then <samp>mod_info</samp> cannot read them in
+        order to list their values. An entry <em>will</em> be made
+        in the error log in this event, however.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="namevhost" name="namevhost"><strong>I upgraded to
+        Apache 1.3 and now my virtual hosts don't
+        work!</strong></a> 
+
+        <p>In versions of Apache prior to 1.3b2, there was a lot of
+        confusion regarding address-based virtual hosts and
+        (HTTP/1.1) name-based virtual hosts, and the rules
+        concerning how the server processed
+        <samp>&lt;VirtualHost&gt;</samp> definitions were very
+        complex and not well documented.</p>
+
+        <p>Apache 1.3b2 introduced a new directive, <a
+        href="../mod/core.html#namevirtualhost"><samp>NameVirtualHost</samp></a>,
+        which simplifies the rules quite a bit. However, changing
+        the rules like this means that your existing name-based
+        <samp>&lt;VirtualHost&gt;</samp> containers probably won't
+        work correctly immediately following the upgrade.</p>
+
+        <p>To correct this problem, add the following line to the
+        beginning of your server configuration file, before
+        defining any virtual hosts:</p>
+
+        <dl>
+          <dd><code>NameVirtualHost <em>n.n.n.n</em></code></dd>
+        </dl>
+
+        <p>Replace the "<samp>n.n.n.n</samp>" with the IP address
+        to which the name-based virtual host names resolve; if you
+        have multiple name-based hosts on multiple addresses,
+        repeat the directive for each address.</p>
+
+        <p>Make sure that your name-based
+        <samp>&lt;VirtualHost&gt;</samp> blocks contain
+        <samp>ServerName</samp> and possibly
+        <samp>ServerAlias</samp> directives so Apache can be sure
+        to tell them apart correctly.</p>
+
+        <p>Please see the <a href="../vhosts/">Apache Virtual Host
+        documentation</a> for further details about
+        configuration.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="redhat-htm" name="redhat-htm"><strong>I'm using
+        RedHat Linux and my .htm files are showing up as HTML
+        source rather than being formatted!</strong></a> 
+
+        <p>RedHat messed up and forgot to put a content type for
+        <code>.htm</code> files into <code>/etc/mime.types</code>.
+        Edit <code>/etc/mime.types</code>, find the line containing
+        <code>html</code> and add <code>htm</code> to it. Then
+        restart your httpd server:</p>
+
+        <dl>
+          <dd><code>kill -HUP `cat /var/run/httpd.pid`</code></dd>
+        </dl>
+
+        <p>Then <strong>clear your browsers' caches</strong>. (Many
+        browsers won't re-examine the content type after they've
+        reloaded a page.)</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="htaccess-work" name="htaccess-work"><strong>My
+        <code>.htaccess</code> files are being
+        ignored.</strong></a> 
+
+        <p>This is almost always due to your <a
+        href="../mod/core.html#allowoverride">AllowOverride</a>
+        directive being set incorrectly for the directory in
+        question. If it is set to <code>None</code> then .htaccess
+        files will not even be looked for. If you do have one that
+        is set, then be certain it covers the directory you are
+        trying to use the .htaccess file in. This is normally
+        accomplished by ensuring it is inside the proper <a
+        href="../mod/core.html#directory">Directory</a>
+        container.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="forbidden" name="forbidden"><strong>Why do I get a
+        "<samp>Forbidden</samp>" message whenever I try to access a
+        particular directory?</strong></a> 
+
+        <p>This message is generally caused because either</p>
+
+        <ul>
+          <li>The underlying file system permissions do not allow
+          the User/Group under which Apache is running to access
+          the necessary files; or</li>
+
+          <li>The Apache configuration has some access restrictions
+          in place which forbid access to the files.</li>
+        </ul>
+
+        <p>You can determine which case applies to your situation
+        by checking the error log.</p>
+
+        <p>In the case where file system permission are at fault,
+        remember that not only must the directory and files in
+        question be readable, but also all parent directories must
+        be at least searchable (i.e., <i>chmod +x /directory/path</i>)
+        by the web server in order for the content to be accessible.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="malfiles" name="malfiles"><b>Why do I get a
+        "<samp>Forbidden/You don't have permission to access / on
+        this server</samp>" message whenever I try to access my
+        server?</b></a> 
+
+        <p>Search your <code>conf/httpd.conf</code> file for this
+        exact string: <code>&lt;Files ~&gt;</code>. If you find it,
+        that's your problem -- that particular &lt;Files&gt;
+        container is malformed. Delete it or replace it with
+        <code>&lt;Files ~ "^\.ht"&gt;</code> and restart your
+        server and things should work as expected.</p>
+
+        <p>This error appears to be caused by a problem with the
+        version of linuxconf distributed with Redhat 6.x. It may
+        reappear if you use linuxconf again.</p>
+
+        <p>If you don't find this string, check out the <a
+        href="#forbidden">previous question</a>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="ie-ignores-mime" name="ie-ignores-mime"><strong>Why
+        do my files appear correctly in Internet Explorer, but show
+        up as source or trigger a save window with
+        Netscape; or, Why doesn't Internet Explorer render
+        my text/plain document correctly?</strong></a> 
+
+        <p>MS Internet Explorer (MSIE) and Netscape handle mime type
+        detection in different ways, and therefore will display the
+        document differently. In particular, IE sometimes relies on
+        the file extension or the contents of the file to determine
+        the mime type. This can happen when the server specifies a
+        mime type of <code>application/octet-stream</code> or
+        <code>text/plain</code>.  This behavior violates the the HTTP
+        standard and makes it impossible to deliver plain text
+        documents to MSIE clients in some cases.  More details are
+        available on MSIE's mime type detection behavior in an <a
+        href="http://msdn.microsoft.com/workshop/networking/moniker/overview/appendix_a.asp">
+        MSDN article</a> and a <a
+        href="http://ppewww.ph.gla.ac.uk/~flavell/www/content-type.html">note</a>
+        by Alan J. Flavell.</p>
+
+        <p>The best you can do as a server administrator is to
+        accurately configure the mime type of your documents by editing
+        the <code>mime.types</code> file or using an <a
+        href="../mod/mod_mime.html#addtype"><code>AddType</code></a>
+        directive in the Apache configuration files.  In some cases,
+        you may be able to fool MSIE into rendering text/plain documents
+        correctly by assuring they have a <code>.txt</code> filename
+        extension, but this will not work if MSIE thinks the content
+        looks like another file type.
+</p> <hr />
+      </li>
+      <li>
+	<a name="canonical-hostnames"><strong>My site is accessible
+        under many different hostnames; how do I redirect clients
+        so that they see only a single name?</strong></a>
+
+        <p>Many sites map a variety of hostnames to the same content.
+        For example, <code>www.example.com</code>,
+        <code>example.com</code> and <code>www.example.net</code> may
+        all refer to the same site.  It is best to make sure that,
+        regardless of the name clients use to access the site, they
+        will be redirected to a single, canonical hostname.  This
+        makes the site easier to maintain and assures that there will
+        be only one version of the site in proxy caches and search
+        engines.</p>
+
+        <p>There are two techniques to implement canonical hostnames:</p>
+
+        <ol>
+          <li>Use <a href="../mod/mod_rewrite.html">mod_rewrite</a>
+          as described in the "Canonical Hostnames" section of the
+          <a href="rewriteguide.html">URL Rewriting Guide</a>.</li>
+
+          <li>Use <a href="../vhosts/name-based.html">name-based
+          virtual hosting</a>:
+
+<blockquote><code>
+NameVirtualHost *<br />
+<br />
+&lt;VirtualHost *&gt;<br />
+&nbsp;&nbsp;ServerName www.example.net<br />
+&nbsp;&nbsp;ServerAlias example.com<br />
+&nbsp;&nbsp;Redirect permanent / http://www.example.com/<br />
+&lt;/VirtualHost&gt;<br />
+<br />
+&lt;VirtualHost *&gt;<br />
+&nbsp;&nbsp;ServerName www.example.com<br />
+&nbsp;&nbsp;DocumentRoot /usr/local/apache/htdocs<br />
+&lt;/VirtualHost&gt;
+</code></blockquote>
+          </li></ol>
+        <hr /></li>
+
+         <li><a id="firewall" name="firewall"><strong>Why can I access my
+         website from the server or from my local network, but I
+         can't access it from elsewhere on the Internet?</strong></a>
+
+         <p>There are many possible reasons for this, and almost all
+         of them are related to the configuration of your network, not
+         the configuration of the Apache HTTP Server.  One of the most
+         common problems is that a firewall blocks access to the
+         default HTTP port 80.  In particular, many consumer ISPs
+         block access to this port.  You can see if this is the case
+         by changing any <code>Port</code> and <code>Listen</code>
+         directives in <code>httpd.conf</code> to use port 8000 and
+         then request your site using
+         <code>http://yourhost.example.com:8000/</code>.  (Of course,
+         a very restrictive firewall may block this port as well.)</p>
+
+        <hr /></li>
+
+         <li><a id="indexes" name="indexes"><strong>How do I turn automatic
+         directory listings on or off?</strong></a>
+
+         <p>If a client requests a URL that designates a directory and
+         the directory does not contain a filename that matches the <a
+         href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a>
+         directive, then <a
+         href="../mod/mod_autoindex.html">mod_autoindex</a> can be
+         configured to present a listing of the directory contents.</p>
+
+         <p>To turn on automatic directory indexing, find the 
+         <a href="../mod/core.html#options">Options</a> directive that
+         applies to the directory and add the <code>Indexes</code>
+         keyword. For example:</p>
+
+         <blockquote><code>
+         &lt;Directory /path/to/directory&gt;<br />
+         &nbsp;&nbsp;&nbsp;Options +Indexes<br />
+         &lt;/Directory&gt;
+         </code></blockquote>
+         
+         <p>To turn off automatic directory indexing, remove
+         the <code>Indexes</code> keyword from the appropriate 
+         <code>Options</code> line. To turn off directory listing
+         for a particular subdirectory, you can use 
+         <code>Options -Indexes</code>. For example:</p>
+
+         <blockquote><code>
+         &lt;Directory /path/to/directory&gt;<br />
+         &nbsp;&nbsp;&nbsp;Options -Indexes<br />
+         &lt;/Directory&gt;
+         </code></blockquote>
+
+       <hr /></li>
+
+         <li><a id="options" name="options"><strong>Why do my Options
+         directives not have the desired effect?</strong></a>
+
+         <p>Directives placed in the configuration files are applied
+         in a very particular order, as described by <a
+         href="../sections.html">How Directory, Location, and Files
+         sections work</a>.  In addition, each <a
+         href="../mod/core.html#options">Options</a> directive has the
+         effect of resetting the options to <code>none</code> before
+         adding the specified options (unless only "+" and "-" options
+         are used).  The consequence is that <code>Options</code> set
+         in the main server or virtual host context (outside any
+         directory, location, or files section) will usually have no
+         effect, because they are overridden by more specific
+         <code>Options</code> directives.  For example, in the following</p>
+
+<blockquote><code>
+&lt;Directory /usr/local/apache/htdocs&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;Options Indexes<br />
+&lt;/Directory&gt;<br />
+Options Includes ExecCGI<br />
+</code></blockquote>
+    
+         <p><code>Includes</code> and <code>ExecCGI</code> will be 
+         <strong>off</strong> in the <code>/usr/local/apache/htdocs</code>
+         directory.</p>
+
+         <p>You can usually avoid problems by either finding the 
+         <code>Options</code> directive that already applies to a 
+         specific directory and changing it, or by putting your
+         <code>Options</code> directive inside the most specific possible
+         <code>&lt;Directory&gt;</code> section.</p>
+
+       <hr /></li>
+
+
+       <li><a id="serverheader" name="serverheader"><strong>How can I change
+       the information that Apache returns about itself in the
+       headers?</strong></a>
+
+    <p>When a client connects to Apache, part of the information returned in
+    the headers is the name "Apache" Additional information that can be sent
+    is the version number, such as "1.3.26", the operating system, and a
+    list of non-standard modules you have installed.</p>
+
+    <p>For example:</p>
+
+<blockquote><code>
+Server: Apache/1.3.26 (Unix) mod_perl/1.26
+</code></blockquote>
+
+    <p>Frequently, people want to remove this information, under the mistaken
+    understanding that this will make the system more secure. This is
+    probably not the case, as the same exploits will likely be attempted
+    regardless of the header information you provide.</p>
+
+    <p>There are, however, two answers to this question: the correct answer,
+    and the answer that you are probably looking for.</p>
+
+    <p>The correct answer to this question is that you should use the
+    ServerTokens directive to alter the quantity of information which is
+    passed in the headers. Setting this directive to <code>Prod</code> will
+    pass the least possible amount of information:</p>
+
+<blockquote><code>
+Server: Apache
+</code></blockquote>
+
+    <p>The answer you are probably looking for is how to make Apache lie 
+    about what what it is, ie send something like:</p>
+
+<blockquote><code>
+Server: Bob's Happy HTTPd Server
+</code></blockquote>
+
+    <p>In order to do this, you will need to modify the Apache source code and
+    rebuild Apache. This is not advised, as it is almost certain not to
+    provide you with the added security you think that you are gaining. The
+    exact method of doing this is left as an exercise for the reader, as we
+    are not keen on helping you do something that is intrinsically a bad
+    idea.</p>
+
+    <hr /></li>
+
+         <li><a id="proxyscan" name="proxyscan"><strong>Why do I see requests
+         for other sites appearing in my log files?</strong></a>
+
+         <p>A an access_log entry showing this situation could look
+         like this:</p> 
+
+         <blockquote><code> 63.251.56.142 - -
+         [25/Jul/2002:12:48:04 -0700] "GET http://www.yahoo.com/
+         HTTP/1.0" 200 1456 </code></blockquote>
+
+         <p>The question is: why did a request for
+         <code>www.yahoo.com</code> come to your server instead of
+         Yahoo's server?  And why does the response have a status 
+         code of 200 (success)?</p>
+
+         <p>This is usually the result of malicious clients trying to
+         exploit open proxy servers to access a website without
+         revealing their true location.  If you find entries like this
+         in your log, the first thing to do is to make sure you have
+         properly configured your server not to proxy for unknown
+         clients.  If you don't need to provide a proxy server at all,
+         you should simply assure that the <a
+         href="../mod/mod_proxy.html#proxyrequests">ProxyRequests</a>
+         directive is <strong>not</strong> set <code>on</code>.
+         If you do need to run a proxy server, then you must ensure
+         that you <a href="../mod/mod_proxy.html#access">secure your
+         server properly</a> so that only authorized clients can use
+         it.</p>
+
+         <p>If your server is configured properly, then the attempt to
+         proxy through your server will fail.  If you see a status
+         code of <code>404</code> (file not found) in the log, then
+         you know that the request failed.  If you see a status code
+         of <code>200</code> (success), that does not necessarily mean
+         that the attempt to proxy succeeded.  RFC2616 section 5.1.2
+         mandates that Apache must accept requests with absolute URLs
+         in the request-URI, even for non-proxy requests.  Since
+         Apache has no way to know all the different names that your
+         server may be known under, it cannot simply reject hostnames
+         it does not recognize.  Instead, it will serve requests for
+         unknown sites locally by stripping off the hostname and using
+         the default server or virtual host.  Therefore you can
+         compare the size of the file (1456 in the above example) to
+         the size of the corresponding file in your default server.
+         If they are the same, then the proxy attempt failed, since a
+         document from your server was delivered, not a document from
+         <code>www.yahoo.com</code>.</p>
+
+         <p>If you wish to prevent this type of request entirely, then
+         you need to let Apache know what hostnames to accept and what
+         hostnames to reject.  You do this by configuring name-virtual
+         hosts, where the first listed host is the default host that
+         will catch and reject unknown hostnames.  For example:</p>
+
+<blockquote>
+<pre>
+NameVirtualHost *
+
+&lt;VirtualHost *&gt;
+  ServerName default.only
+  &lt;Location /&gt;
+    Order allow,deny
+    Deny from all
+  &lt;/Location&gt;
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *&gt;
+  ServerName realhost1.example.com
+  ServerAlias alias1.example.com alias2.example.com
+  DocumentRoot /path/to/site1
+&lt;/VirtualHost&gt;
+
+...
+</pre>
+</blockquote>
+    <hr /></li>
+
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

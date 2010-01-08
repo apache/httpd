@@ -1,0 +1,276 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.3 $ ($Date: 2001/10/08 01:26:54 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="3">
+        <strong>Building Apache</strong> 
+
+        <ol>
+          <li><a href="#bind8.1">Why do I get an error about an
+          undefined reference to "<samp>__inet_ntoa</samp>" or
+          other <samp>__inet_*</samp> symbols?</a></li>
+
+          <li><a href="#cantbuild">Why won't Apache compile with my
+          system's <samp>cc</samp>?</a></li>
+
+          <li><a href="#linuxiovec">Why do I get complaints about
+          redefinition of "<code>struct iovec</code>" when
+          compiling under Linux?</a></li>
+
+          <li><a href="#broken-gcc">I'm using gcc and I get some
+          compilation errors, what is wrong?</a></li>
+
+          <li><a href="#glibc-crypt">I'm using RedHat Linux 5.0, or
+          some other <samp>glibc</samp>-based Linux system, and I
+          get errors with the <code>crypt</code> function when I
+          attempt to build Apache 1.2.</a></li>
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>C. Building Apache</h3>
+
+    <ol>
+      <li>
+        <a id="bind8.1" name="bind8.1"><strong>Why do I get an
+        error about an undefined reference to
+        "<samp>__inet_ntoa</samp>" or other <samp>__inet_*</samp>
+        symbols?</strong></a> 
+
+        <p>If you have installed <a
+        href="http://www.isc.org/bind.html">BIND-8</a> then this is
+        normally due to a conflict between your include files and
+        your libraries. BIND-8 installs its include files and
+        libraries <code>/usr/local/include/</code> and
+        <code>/usr/local/lib/</code>, while the resolver that comes
+        with your system is probably installed in
+        <code>/usr/include/</code> and <code>/usr/lib/</code>. If
+        your system uses the header files in
+        <code>/usr/local/include/</code> before those in
+        <code>/usr/include/</code> but you do not use the new
+        resolver library, then the two versions will conflict.</p>
+
+        <p>To resolve this, you can either make sure you use the
+        include files and libraries that came with your system or
+        make sure to use the new include files and libraries.
+        Adding <code>-lbind</code> to the
+        <code>EXTRA_LDFLAGS</code> line in your
+        <samp>Configuration</samp> file, then re-running
+        <samp>Configure</samp>, should resolve the problem. (Apache
+        versions 1.2.* and earlier use <code>EXTRA_LFLAGS</code>
+        instead.)</p>
+
+        <p><strong>Note:</strong>As of BIND 8.1.1, the bind
+        libraries and files are installed under
+        <samp>/usr/local/bind</samp> by default, so you should not
+        run into this problem. Should you want to use the bind
+        resolvers you'll have to add the following to the
+        respective lines:</p>
+
+        <dl>
+          <dd><code>EXTRA_CFLAGS=-I/usr/local/bind/include<br />
+           EXTRA_LDFLAGS=-L/usr/local/bind/lib<br />
+           EXTRA_LIBS=-lbind</code></dd>
+        </dl>
+        <hr />
+      </li>
+
+      <li>
+        <a id="cantbuild" name="cantbuild"><strong>Why won't Apache
+        compile with my system's <samp>cc</samp>?</strong></a> 
+
+        <p>If the server won't compile on your system, it is
+        probably due to one of the following causes:</p>
+
+        <ul>
+          <li><strong>The <samp>Configure</samp> script doesn't
+          recognize your system environment.</strong><br />
+           This might be either because it's completely unknown or
+          because the specific environment (include files, OS
+          version, <em>et cetera</em>) isn't explicitly handled. If
+          this happens, you may need to port the server to your OS
+          yourself.</li>
+
+          <li><strong>Your system's C compiler is
+          garbage.</strong><br />
+           Some operating systems include a default C compiler that
+          is either not ANSI C-compliant or suffers from other
+          deficiencies. The usual recommendation in cases like this
+          is to acquire, install, and use <samp>gcc</samp>.</li>
+
+          <li><strong>Your <samp>include</samp> files may be
+          confused.</strong><br />
+           In some cases, we have found that a compiler
+          installation or system upgrade has left the C header
+          files in an inconsistent state. Make sure that your
+          include directory tree is in sync with the compiler and
+          the operating system.</li>
+
+          <li><strong>Your operating system or compiler may be out
+          of revision.</strong><br />
+           Software vendors (including those that develop operating
+          systems) issue new releases for a reason; sometimes to
+          add functionality, but more often to fix bugs that have
+          been discovered. Try upgrading your compiler and/or your
+          operating system.</li>
+        </ul>
+
+        <p>The Apache Group tests the ability to build the server
+        on many different platforms. Unfortunately, we can't test
+        all of the OS platforms there are. If you have verified
+        that none of the above issues is the cause of your problem,
+        and it hasn't been reported before, please submit a <a
+        href="http://httpd.apache.org/bug_report.html">problem
+        report</a>. Be sure to include <em>complete</em> details,
+        such as the compiler &amp; OS versions and exact error
+        messages.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="linuxiovec" name="linuxiovec"><strong>Why do I get
+        complaints about redefinition of "<code>struct
+        iovec</code>" when compiling under Linux?</strong></a> 
+
+        <p>This is a conflict between your C library includes and
+        your kernel includes. You need to make sure that the
+        versions of both are matched properly. There are two
+        workarounds, either one will solve the problem:</p>
+
+        <ul>
+          <li>Remove the definition of <code>struct iovec</code>
+          from your C library includes. It is located in
+          <code>/usr/include/sys/uio.h</code>.
+          <strong>Or,</strong></li>
+
+          <li>Add <code>-DNO_WRITEV</code> to the
+          <code>EXTRA_CFLAGS</code> line in your
+          <samp>Configuration</samp> and reconfigure/rebuild. This
+          hurts performance and should only be used as a last
+          resort.</li>
+        </ul>
+        <hr />
+      </li>
+
+      <li>
+        <a id="broken-gcc" name="broken-gcc"><strong>I'm using gcc
+        and I get some compilation errors, what is
+        wrong?</strong></a> 
+
+        <p>GCC parses your system header files and produces a
+        modified subset which it uses for compiling. This behavior
+        ties GCC tightly to the version of your operating system.
+        So, for example, if you were running IRIX 5.3 when you
+        built GCC and then upgrade to IRIX 6.2 later, you will have
+        to rebuild GCC. Similarly for Solaris 2.4, 2.5, or 2.5.1
+        when you upgrade to 2.6. Sometimes you can type "gcc -v"
+        and it will tell you the version of the operating system it
+        was built against.</p>
+
+        <p>If you fail to do this, then it is very likely that
+        Apache will fail to build. One of the most common errors is
+        with <code>readv</code>, <code>writev</code>, or
+        <code>uio.h</code>. This is <strong>not</strong> a bug with
+        Apache. You will need to re-install GCC.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="glibc-crypt" name="glibc-crypt"><strong>I'm using
+        RedHat Linux 5.0, or some other <samp>glibc</samp>-based
+        Linux system, and I get errors with the <code>crypt</code>
+        function when I attempt to build Apache 1.2.</strong></a> 
+
+        <p><samp>glibc</samp> puts the <code>crypt</code> function
+        into a separate library. Edit your
+        <code>src/Configuration</code> file and set this:</p>
+
+        <dl>
+          <dd><code>EXTRA_LIBS=-lcrypt</code></dd>
+        </dl>
+
+        <p>Then re-run <samp>src/Configure</samp> and re-execute
+        the make.</p>
+        <hr />
+      </li>
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

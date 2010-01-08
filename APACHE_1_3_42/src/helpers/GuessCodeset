@@ -1,0 +1,32 @@
+#!/bin/sh
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# This script tries to find out whether the native codeset of this machine
+# is ASCII or EBCDIC. On EBCDIC based machines, it is used to activate
+# the mod_ebcdic EBCDIC conversion module.
+#
+# Note: This script will break if you use an ebcdic cross-compiler!
+#
+case `${AWK-awk} 'BEGIN {printf("%c%c%c%c%c<->%c%c%c%c%c%c\n",97,115,99,105,105,133,130,131,132,137,131);}' /dev/null` in
+    ascii*)     echo ASCII;;
+    *ebcdic)    echo EBCDIC;;
+    *)          echo >&2 "ERROR: Your platform codeset could not be detected correctly."
+		echo >&2 "Assuming ASCII. Please send an EMail to <martin@apache.org>"
+		echo >&2 "describing the platform in use. Is your AWK broken?"
+		echo ASCII;;
+esac

@@ -1,0 +1,24 @@
+Apache HTTP Server
+Copyright 2010 The Apache Software Foundation.
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+Portions of this software were developed at the National Center
+for Supercomputing Applications (NCSA) at the University of
+Illinois at Urbana-Champaign.
+
+This software contains code derived from the RSA Data Security
+Inc. MD5 Message-Digest Algorithm, including various
+modifications by Spyglass Inc., Carnegie Mellon University, and
+Bell Communications Research, Inc (Bellcore).
+
+This work includes the Expat xml parsing library Copyright (c) 
+1998, 1999 James Clark, distributed under and subject to the 
+Mozilla Public License Version 1.1.
+
+This work includes the regex library Copyright 1992, 1993, 1994 
+Henry Spencer, all rights reserved.
+
+This software contains code derived from UNIX V7, Copyright(C)
+Caldera International Inc.

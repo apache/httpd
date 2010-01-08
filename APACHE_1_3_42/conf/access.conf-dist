@@ -1,0 +1,8 @@
+#
+# This is the default file for the AccessConfig directive in httpd.conf.
+# It is processed after httpd.conf and srm.conf.
+#
+# To avoid confusion, it is recommended that you put all of your
+# Apache server directives into the httpd.conf file and leave this
+# one essentially empty.
+#

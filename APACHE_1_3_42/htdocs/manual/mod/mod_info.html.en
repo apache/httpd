@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_info</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_info</h1>
+
+    <p>This module provides a comprehensive overview of the server
+    configuration including all installed modules and directives in
+    the configuration files.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_info.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    info_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.1 and later.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#addmoduleinfo">AddModuleInfo</a></li>
+    </ul>
+
+    <h2>Using mod_info</h2>
+
+    <p>To configure it, add the following to your
+    <code>access.conf</code> file.</p>
+<pre>
+&lt;Location /server-info&gt;
+SetHandler server-info
+&lt;/Location&gt;
+</pre>
+    You may wish to add a <a
+    href="core.html#limit">&lt;Limit&gt;</a> clause inside the <a
+    href="core.html#location">location</a> directive to limit
+    access to your server configuration information. 
+
+    <p>Once configured, the server information is obtained by
+    accessing <tt>http://your.host.dom/server-info</tt></p>
+
+    <blockquote>
+      <p><strong>Note that the configuration files are read by the
+      module at run-time, and therefore the display may
+      <em>not</em> reflect the running server's active
+      configuration if the files have been changed since the server
+      was last reloaded. Also, the configuration files must be
+      readable by the user as which the server is running (see the
+      <a href="core.html#user"><samp>User</samp></a> directive), or
+      else the directive settings will not be listed.</strong></p>
+
+      <p><strong>It should also be noted that if
+      <samp>mod_info</samp> is compiled into the server, its
+      handler capability is available in <em>all</em> configuration
+      files, including <em>per</em>-directory files (<em>e.g.</em>,
+      <samp>.htaccess</samp>). This may have security-related
+      ramifications for your site.</strong></p>
+
+      <p>In particular, this module can leak sensitive information
+      from the configuration directives of other Apache modules such as
+      system paths, usernames/passwords, database names, etc.  Due to
+      the way this module works there is no way to block information
+      from it.  Therefore, this module should ONLY be used in a controlled
+      environment and always with caution.</p>
+
+    </blockquote>
+    <hr />
+
+    <h2><a id="addmoduleinfo"
+    name="addmoduleinfo">AddModuleInfo</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AddModuleInfo
+    <em>module-name string</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_info<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3 and
+    above 
+
+    <p>This allows the content of <em>string</em> to be shown as
+    HTML interpreted, <strong>Additional Information</strong> for
+    the module <em>module-name</em>. Example:</p>
+
+    <blockquote>
+<pre>
+AddModuleInfo mod_auth.c 'See &lt;A HREF="http://www.apache.org/docs/mod/mod_auth.html"&gt;http://www.apache.org/docs/mod/mod_auth.html&lt;/A&gt;'
+</pre>
+    </blockquote>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

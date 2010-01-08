@@ -1,0 +1,84 @@
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
+
+LIB=libap.a
+
+OBJS=ap_cpystrn.o ap_execve.o ap_fnmatch.o ap_getpass.o ap_md5c.o ap_signal.o \
+     ap_slack.o ap_snprintf.o ap_sha1.o ap_checkpass.o ap_base64.o ap_ebcdic.o \
+     ap_strtol.o
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
+
+all: $(LIB)
+
+clean:
+	rm -f *.o *.a
+
+distclean: clean
+	-rm -f Makefile
+
+$(OBJS): Makefile
+
+$(LIB): $(OBJS)
+	rm -f $@
+	ar cr $@ $(OBJS)
+	$(RANLIB) $@
+
+# We really don't expect end users to use this rule.  It works only with
+# gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
+# using it.
+depend:
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
+
+# DO NOT REMOVE
+ap_cpystrn.o: ap_cpystrn.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
+ap_execve.o: ap_execve.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
+ap_fnmatch.o: ap_fnmatch.c $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(OSDIR)/os-inline.c \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h $(INCDIR)/fnmatch.h
+ap_getpass.o: ap_getpass.c $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(OSDIR)/os-inline.c \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h $(INCDIR)/ap.h
+ap_md5c.o: ap_md5c.c $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(OSDIR)/os-inline.c \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h $(INCDIR)/ap_md5.h \
+ $(INCDIR)/ap.h
+ap_sha1.o: ap_sha1.c $(INCDIR)/ap_config.h $(INCDIR)/ap_sha1.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h $(OSDIR)/os-inline.c
+ap_signal.o: ap_signal.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
+ap_slack.o: ap_slack.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_log.h
+ap_snprintf.o: ap_snprintf.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h
+ap_strtol.o: ap_strtol.c $(INCDIR)/httpd.h $(INCDIR)/ap_config.h \
+ $(INCDIR)/ap_mmn.h $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(OSDIR)/os-inline.c $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h

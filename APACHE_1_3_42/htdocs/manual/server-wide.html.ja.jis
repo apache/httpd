@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Server-Wide Configuration</title>
+
+  </head>
+  <!-- English revision: 1.10 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">サーバ全体の設定</h1>
+
+    <p>このドキュメントでは<a href="mod/core.html">コア</a>サーバの
+    ディレクティブの中で、基本動作を設定するためのものを説明します。
+    </p>
+
+    <ul>
+      <li><a href="#identification">サーバ ID</a></li>
+
+      <li><a href="#locations">ファイルの位置</a></li>
+
+      <li><a href="#process">プロセス生成</a></li>
+
+      <li><a href="#network">ネットワーク設定</a></li>
+
+      <li><a href="#resource">リソースの制限</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="identification" name="identification">サーバ ID</a></h2>
+
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+          <br />
+          <a href="mod/core.html#servername">ServerName</a><br />
+          <a
+         href="mod/core.html#serveradmin">ServerAdmin</a><br />
+          <a
+         href="mod/core.html#serversignature">ServerSignature</a><br />
+          <a
+         href="mod/core.html#servertokens">ServerTokens</a><br />
+          <a href="mod/core.html#usecanonicalname">UseCanonicalName</a><br />
+        </td>
+      </tr>
+    </table>
+
+    <p><code>ServerAdmin</code> ディレクティブと <code>ServerTokens</code>
+    ディレクティブは、エラーメッセージなどのサーバが作るドキュメントに、
+    どのようなサーバの情報を表示するかを制御します。
+    <code>ServerTokens</code> ディレクティブは、Server HTTP
+    レスポンスヘッダフィールドの値を設定します。</p>
+
+    <p><code>ServerName</code> ディレクティブと
+    <code>UseCanonicalName</code> ディレクティブは、
+    サーバが自分自身を参照する URL を作るときに使われます。たとえば、
+    クライアントがディレクトリを要求して、そのディレクトリ名の最後に
+    スラッシュが付いていないような場合には、ドキュメントの相対的な
+    参照を正しく解決できるようにするために、Apache は最後のスラッシュ
+    を含んだ完全なパスにクライアントをリダイレクトさせる必要があります。
+    </p>
+    <hr />
+
+    <h2><a id="locations" name="locations">ファイルの位置</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+        <br />
+        <a
+       href="mod/core.html#coredumpdirectory">CoreDumpDirectory</a><br />
+        <a
+       href="mod/core.html#documentroot">DocumentRoot</a><br />
+        <a href="mod/core.html#errorlog">ErrorLog</a><br />
+        <a href="mod/core.html#lockfile">Lockfile</a><br />
+        <a href="mod/core.html#pidfile">PidFile</a><br />
+        <a
+       href="mod/core.html#scoreboardfile">ScoreBoardFile</a><br />
+      <a href="mod/core.html#serverroot">ServerRoot</a><br />
+      </td>
+    </tr>
+  </table>
+
+    <p>これらのディレクティブは Apache が適切な動作をするために必要な
+    各種ファイルの位置を制御します。パスがスラッシュ "/"
+    で始まっていないときは、ファイルは <code>ServerRoot</code>
+    からの相対パスとして探されます。
+    root 以外のユーザが書き込み可能なパスにファイルを置く場合は注意が必要です。
+    詳細は<a href="misc/security_tips.html">「セキュリティ情報」</a>を
+    参照してください。</p>
+    <hr />
+
+    <h2><a id="process" name="process">プロセス生成</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+        <br />
+        <a
+       href="mod/core.html#bs2000account">BS2000Account</a><br />
+        <a href="mod/core.html#group">Group</a><br />
+        <a href="mod/core.html#maxclients">MaxClients</a><br />
+        <a
+       href="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</a><br />
+        <a
+       href="mod/core.html#maxspareservers">MaxSpareServers</a><br />
+        <a
+       href="mod/core.html#minspareservers">MinSpareServers</a><br />
+        <a href="mod/core.html#servertype">ServerType</a><br />
+        <a
+       href="mod/core.html#startservers">StartServers</a><br />
+        <a
+       href="mod/core.html#threadsperchild">ThreadsPerChild</a><br />
+        <a href="mod/core.html#user">User</a><br />
+        </td>
+      </tr>
+    </table>
+
+    <p><code>ServerType</code> に推奨されている値である
+    <code>Standalone</code> が設定されている場合は、Unix 上での Apache
+    は pre-forking サーバです。そこでは一つの制御用プロセスが子プロセスを
+    起動する責任を持ちます。そして、子プロセスはプロセスが生存している間
+    listen し、接続されたらそのコネクションに対する処理を行ないます。
+    Apache はリクエストが来たときにすぐに応答できるように、常に複数の
+    <em>スペア</em>サーバプロセス、またはアイドルサーバプロセスを維持
+    しようとします。こうすることで、リクエストが扱われる前に新しい子プロセスが
+    fork されるのをクライアントが待つ必要がなくなります。</p>
+
+    <p><code>StartServers</code>, <code>MinSpareServers</code>,
+    <code>MaxSpareServers</code>, <code>MaxServers</code> は、
+    親プロセスがリクエストを扱うことになる子プロセスを作成する方法を制御します。
+    通常、Apache は非常に自制的ですので、ほとんどのサイトでは
+    デフォルト値から変更する必要はありません。ただ、同時に 256 を超える
+    リクエストを扱うサイトは <code>MaxClients</code> を増やす必要があるでしょう。
+    一方、メモリの少ないサイトでは、サーバがスラッシング (メモリをディスクに
+    スワップしたり、メモリに戻したりするのを繰り返す) を防ぐために
+    <code>MaxClients</code> を減らす必要があるでしょう。
+    プロセス作成をチューンするための詳しい情報は
+    <a href="misc/perf-tuning.html">性能の情報</a>
+    ドキュメントを参照してください。
+    </p>
+
+    <p>Unix では通常、親プロセスは 80 番ポートをバインドするために
+    root で起動されますが、子プロセスは Apache からより特権の少ない
+    ユーザとして起動されます。<code>User</code> ディレクティブと
+    <code>Group</code>ディレクティブは、Apache の子プロセスに設定される
+    特権を設定するために使用されます。子プロセスは提供するすべての
+    コンテンツを読めなければいけませんが、
+    それ以上の特権は少なければ少ない方が望ましいです。
+    また、<a href="suexec.html">suexec</a> が使用されていないときは、
+    CGI スクリプトが継承する特権にもこれらのディレクティブの
+    設定が適用されます。</p>
+
+    <p><code>MaxRequestsPerChild</code> は、サーバが古いプロセスを
+    kill して新しいプロセスを起動することで、
+    プロセスを再利用する頻度を設定します。</p>
+
+    <p>Windows では、Apache は制御プロセス一つと子プロセス一つでスタート
+    します。子プロセスはリクエストに応えるために複数のスレッドを作成します。
+    スレッドの数は <code>ThreadsPerChild</code> ディレクティブで制御します。
+    </p>
+    <hr />
+
+    <h2><a id="network" name="network">ネットワーク設定</a></h2>
+
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+        <br />
+        <a href="mod/core.html#bindaddress">BindAddress</a><br />
+        <a href="mod/core.html#keepalive">KeepAlive</a><br />
+        <a
+       href="mod/core.html#keepalivetimeout">KeepAliveTimeout</a><br />
+        <a href="mod/core.html#listen">Listen</a><br />
+        <a
+       href="mod/core.html#listenbacklog">ListenBackLog</a><br />
+        <a
+       href="mod/core.html#acceptfilter">AcceptFilter</a><br />
+        <a href="mod/core.html#acceptmutex">AcceptMutex</a><br />
+        <a
+       href="mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</a><br />
+        <a href="mod/core.html#port">Port</a><br />
+        <a
+       href="mod/core.html#sendbuffersize">SendBufferSize</a><br />
+        <a href="mod/core.html#timeout">TimeOut</a><br />
+        </td>
+      </tr>
+    </table>
+
+
+    <p>Apache は起動すると、ローカルマシンの何らかのポート番号と
+    アドレスにコネクトし、リクエストを待ちます。デフォルトでは、
+    マシンに割り当てられているすべてのアドレスでサーバ設定の
+    <code>Port</code> ディレクティブで指定されているポート番号を listen
+    します。二つ以上のポートを listen したり、選択されたアドレスのみを
+    listen したり、その組み合わせを listen したりするようにもできます。
+    違う IP アドレス、ホスト名、ポート番号によって Apache の応答を
+    決定する<a href="vhosts/">バーチャルホスト</a>機能と組み合わせて
+    使われることがよくあります。
+    </p>
+
+    <p>Apache が listen するアドレスとポート番号を指定、
+    もしくは制限するディレクティブは二つあります。
+    <code>BindAddress</code> ディレクティブはサーバが一つの IP
+    アドレスだけを listen させるために使用されます。
+    <code>Listen</code> ディレクティブは Apache が listen する IP アドレスと
+    ポート番号の組、またはどちらか一方を複数指定するために使用されます。</p>
+
+    <p><code>ListenBackLog</code> ディレクティブ、<code>SendBufferSize</code>
+    ディレクティブ、<code>TimeOut</code> ディレクティブは、Apache と
+    ネットワークとの関係を調整します。<code>AcceptFilter</code>
+    は BSD 特有のフィルタの最適化を制御します。
+    <a href="misc/perf-bsd44.html">性能に関するヒント</a>の BSD の節を
+    見てください。<code>AcceptMutex</code> はどのように accept 時の
+    排他制御を行なうかを制御します。これが一体何で、なぜ必要であるかは、
+    <a href="misc/perf-tuning.html">一般的な性能に関するヒント</a>
+    を見てください。</p>
+
+    <p><code>KeepAlive</code> ディレクティブ、<code>KeepAliveTimeout</code>
+    ディレクティブ、<code>MaxKeepAliveRequests</code> ディレクティブは、
+    Apache が persistent connection をどのように扱うかを制御します。</p>
+    <hr />
+
+    <h2><a id="resource" name="resource">リソースの制限</a></h2>
+
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+        <br />
+        <a
+       href="mod/core.html#limitrequestbody">LimitRequestBody</a><br />
+        <a
+       href="mod/core.html#limitrequestfields">LimitRequestFields</a><br />
+        <a
+       href="mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a><br />
+        <a
+       href="mod/core.html#limitrequestline">LimitRequestLine</a><br />
+        <a href="mod/core.html#rlimitcpu">RLimitCPU</a><br />
+        <a href="mod/core.html#rlimitmem">RLimitMEM</a><br />
+        <a href="mod/core.html#rlimitnproc">RLimitNPROC</a><br />
+        <a
+       href="mod/core.html#threadstacksize">ThreadStackSize</a><br />
+        </td>
+      </tr>
+    </table>
+
+    <p><code>LimitRequest</code>* ディレクティブは Apache が
+    クライアントからのリクエスト読み込みで使うリソースを制限するために
+    使われます。これらの値を制限することで、いくつかのサービス拒否攻撃の
+    影響を和らげることができます。</p>
+
+    <p><code>RLimit</code>* ディレクティブは、Apache の子プロセスから
+    fork されたプロセスが使用するリソースを制限するために
+    使われます。特に、これは CGI スクリプトと SSI exec コマンドで
+    使われるリソースを制御します。</p>
+
+    <p><code>ThreadStackSize</code> は Netware でのみ、
+    スタックの大きさを制御するために使われます。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

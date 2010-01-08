@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_speling</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_speling</h1>
+
+    <p>This module attempts to correct misspellings of URLs that
+    users might have entered, by ignoring capitalization and by
+    allowing up to one misspelling.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_speling.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    speling_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3 and later. Available as an External module in Apache
+    1.1 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>Requests to documents sometimes cannot be served by the core
+    apache server because the request was misspelled or
+    miscapitalized. This module addresses this problem by trying to
+    find a matching document, even after all other modules gave up.
+    It does its work by comparing each document name in the
+    requested directory against the requested document name
+    <strong>without regard to case</strong>, and allowing
+    <strong>up to one misspelling</strong> (character insertion /
+    omission / transposition or wrong character). A list is built
+    with all document names which were matched using this
+    strategy.</p>
+
+    <p>If, after scanning the directory,</p>
+
+    <ul>
+      <li>no matching document was found, Apache will proceed as
+      usual and return a "document not found" error.</li>
+
+      <li>only one document is found that "almost" matches the
+      request, then it is returned in the form of a redirection
+      response.</li>
+
+      <li>more than one document with a close match was found, then
+      the list of the matches is returned to the client, and the
+      client can select the correct candidate.</li>
+    </ul>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#checkspelling">CheckSpelling</a></li>
+    </ul>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="checkspelling"
+    name="checkspelling">CheckSpelling</a> directive</h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CheckSpelling
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>CheckSpelling
+    Off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> Options <br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_speling<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> CheckSpelling
+    was available as a separately available module for Apache 1.1,
+    but was limited to miscapitalizations. As of Apache 1.3, it is
+    part of the Apache distribution. Prior to Apache 1.3.2, the
+    <samp>CheckSpelling</samp> directive was only available in the
+    "server" and "virtual host" contexts. 
+
+    <p>This directive enables or disables the spelling module. When
+    enabled, keep in mind that</p>
+
+    <ul>
+      <li>the directory scan which is necessary for the spelling
+      correction will have an impact on the server's performance
+      when many spelling corrections have to be performed at the
+      same time.</li>
+
+      <li>the document trees should not contain sensitive files
+      which could be matched inadvertently by a spelling
+      "correction".</li>
+
+      <li>the module is unable to correct misspelled user names (as
+      in <code>http://my.host/~apahce/</code>), just file names or
+      directory names.</li>
+
+      <li>spelling corrections apply strictly to existing files, so
+      a request for the <samp>&lt;Location /status&gt;</samp> may
+      get incorrectly treated as the negotiated file
+      "<samp>/stats.html</samp>".</li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

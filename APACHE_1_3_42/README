@@ -1,0 +1,71 @@
+
+                                 Apache
+                             Version 1.3 (and up)
+
+  What is it?
+  -----------
+
+  Apache httpd 1.3 is a HTTP server designed as a plug-in replacement 
+  for the NCSA server version 1.3 (or 1.4). It fixes numerous bugs in
+  the NCSA server, includes many frequently-requested new features, 
+  and has an API which allows it to be extended more easily to meet 
+  users' needs.
+
+  The Latest Version
+  ------------------
+
+  Apache httpd 1.3 has reached end of life, as of January 2010. 
+  No further releases of this software will be made, although critical 
+  security updates may be made available as patches from the following 
+  website:
+  
+    http://www.apache.org/dist/httpd/patches/
+
+  Users are encouraged to upgrade to version 2.2 or higher of 
+  Apache httpd. 
+  
+  Information on upgrading is available from the following website:
+
+     http://httpd.apache.org/docs/2.2/upgrading.html
+
+  Documentation
+  -------------
+
+  The documentation available as of the date of this release is
+  also included, in HTML format, in the htdocs/manual/ directory.
+  For the most up-to-date documentation can be found on
+  http://httpd.apache.org/docs/.
+
+  Installation
+  ------------
+
+  For detailed installation instructions, please see the INSTALL 
+  file in this directory.
+
+  Licensing
+  ---------
+
+  For license details, please see the LICENSE file in this directory.
+
+  Acknowledgments
+  ----------------
+
+  We wish to acknowledge the following copyrighted works that
+  make up portions of the Apache software:
+
+  Portions of this software were developed at the National Center
+  for Supercomputing Applications (NCSA) at the University of
+  Illinois at Urbana-Champaign.
+
+  This software contains code derived from the RSA Data Security
+  Inc. MD5 Message-Digest Algorithm, including various
+  modifications by Spyglass Inc., Carnegie Mellon University, and
+  Bell Communications Research, Inc (Bellcore).
+
+  This package contains a modified version of software written and
+  copyrighted by Henry Spencer.  Please see the file called 
+  src/regex/COPYRIGHT. 
+
+  The NT port was started with code provided to the Apache Group
+  by Ambarish Malpani of ValiCert, Inc. (http://www.valicert.com/).
+

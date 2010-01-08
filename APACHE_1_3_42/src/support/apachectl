@@ -1,0 +1,189 @@
+#!/bin/sh
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# Apache control script designed to allow an easy command line interface
+# to controlling Apache.  Written by Marc Slemko, 1997/08/23
+# 
+# The exit codes returned are:
+#	0 - operation completed successfully
+#	1 - 
+#	2 - usage error
+#	3 - httpd could not be started
+#	4 - httpd could not be stopped
+#	5 - httpd could not be started during a restart
+#	6 - httpd could not be restarted during a restart
+#	7 - httpd could not be restarted during a graceful restart
+#	8 - configuration syntax error
+#
+# When multiple arguments are given, only the error from the _last_
+# one is reported.  Run "apachectl help" for usage info
+#
+#
+# |||||||||||||||||||| START CONFIGURATION SECTION  ||||||||||||||||||||
+# --------------------                              --------------------
+# 
+# the path to your PID file
+PIDFILE=/usr/local/apache/logs/httpd.pid
+#
+# the path to your httpd binary, including options if necessary
+HTTPD='/usr/local/apache/src/httpd'
+#
+# a command that outputs a formatted text version of the HTML at the
+# url given on the command line.  Designed for lynx, however other
+# programs may work.  
+LYNX="lynx -dump"
+#
+# the URL to your server's mod_status status page.  If you do not
+# have one, then status and fullstatus will not work.
+STATUSURL="http://localhost/server-status"
+#
+# --------------------                              --------------------
+# ||||||||||||||||||||   END CONFIGURATION SECTION  ||||||||||||||||||||
+
+ERROR=0
+ARGV="$@"
+if [ "x$ARGV" = "x" ] ; then 
+    ARGS="help"
+fi
+
+for ARG in $@ $ARGS
+do
+    # check for pidfile
+    if [ -f $PIDFILE ] ; then
+	PID=`cat $PIDFILE`
+	if [ "x$PID" != "x" ] && kill -0 $PID 2>/dev/null ; then
+	    STATUS="httpd (pid $PID) running"
+	    RUNNING=1
+	else
+	    STATUS="httpd (pid $PID?) not running"
+	    RUNNING=0
+	fi
+    else
+	STATUS="httpd (no pid file) not running"
+	RUNNING=0
+    fi
+
+    case $ARG in
+    start)
+	if [ $RUNNING -eq 1 ]; then
+	    echo "$0 $ARG: httpd (pid $PID) already running"
+	    continue
+	fi
+	if $HTTPD ; then
+	    echo "$0 $ARG: httpd started"
+	else
+	    echo "$0 $ARG: httpd could not be started"
+	    ERROR=3
+	fi
+	;;
+    stop)
+	if [ $RUNNING -eq 0 ]; then
+	    echo "$0 $ARG: $STATUS"
+	    continue
+	fi
+	if kill $PID ; then
+	    echo "$0 $ARG: httpd stopped"
+	else
+	    echo "$0 $ARG: httpd could not be stopped"
+	    ERROR=4
+	fi
+	;;
+    restart)
+	if [ $RUNNING -eq 0 ]; then
+	    echo "$0 $ARG: httpd not running, trying to start"
+	    if $HTTPD ; then
+		echo "$0 $ARG: httpd started"
+	    else
+		echo "$0 $ARG: httpd could not be started"
+		ERROR=5
+	    fi
+	else
+	    if $HTTPD -t >/dev/null 2>&1; then
+		if kill -HUP $PID ; then
+		    echo "$0 $ARG: httpd restarted"
+		else
+		    echo "$0 $ARG: httpd could not be restarted"
+		    ERROR=6
+		fi
+	    else
+		echo "$0 $ARG: configuration broken, ignoring restart"
+		echo "$0 $ARG: (run 'apachectl configtest' for details)"
+		ERROR=6
+	    fi
+	fi
+	;;
+    graceful)
+	if [ $RUNNING -eq 0 ]; then
+	    echo "$0 $ARG: httpd not running, trying to start"
+	    if $HTTPD ; then
+		echo "$0 $ARG: httpd started"
+	    else
+		echo "$0 $ARG: httpd could not be started"
+		ERROR=5
+	    fi
+	else
+	    if $HTTPD -t >/dev/null 2>&1; then
+		if kill -USR1 $PID ; then
+		    echo "$0 $ARG: httpd gracefully restarted"
+		else
+		    echo "$0 $ARG: httpd could not be restarted"
+		    ERROR=7
+		fi
+	    else
+		echo "$0 $ARG: configuration broken, ignoring restart"
+		echo "$0 $ARG: (run 'apachectl configtest' for details)"
+		ERROR=7
+	    fi
+	fi
+	;;
+    status)
+	$LYNX $STATUSURL | awk ' /process$/ { print; exit } { print } '
+	;;
+    fullstatus)
+	$LYNX $STATUSURL
+	;;
+    configtest)
+	if $HTTPD -t; then
+	    :
+	else
+	    ERROR=8
+	fi
+	;;
+    *)
+	echo "usage: $0 (start|stop|restart|fullstatus|status|graceful|configtest|help)"
+	cat <<EOF
+
+start      - start httpd
+stop       - stop httpd
+restart    - restart httpd if running by sending a SIGHUP or start if 
+             not running
+fullstatus - dump a full status screen; requires lynx and mod_status enabled
+status     - dump a short status screen; requires lynx and mod_status enabled
+graceful   - do a graceful restart by sending a SIGUSR1 or start if not running
+configtest - do a configuration syntax test
+help       - this screen
+
+EOF
+	ERROR=2
+    ;;
+
+    esac
+
+done
+
+exit $ERROR

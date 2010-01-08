@@ -1,0 +1,566 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Apache"=".\Apache.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApacheCore"=".\ApacheCore.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ap
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheOS
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gen_test_char
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name gen_uri_delims
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name regex
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Win9xConHook
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ApacheOS"=".\os\win32\ApacheOS.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "InstallBin"=".\InstallBin.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name Apache
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_anon
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_dbm
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_digest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_cern_meta
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_digest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_expires
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_headers
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_info
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_log_forensic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_mime_magic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_rewrite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_speling
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_status
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_unique_id
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_usertrack
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_vhost_alias
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name htdigest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name htpasswd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name logresolve
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name rotatelogs
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name xmlparse
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name Win9xConHook
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Win9xConHook"=".\os\win32\Win9xConHook.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ap"=".\ap\ap.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gen_test_char"=".\main\gen_test_char.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "gen_uri_delims"=".\main\gen_uri_delims.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "htdigest"=".\support\htdigest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "htpasswd"=".\support\htpasswd.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "logresolve"=".\support\logresolve.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mod_auth_anon"=".\os\win32\mod_auth_anon.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_auth_dbm"=".\os\win32\mod_auth_dbm.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name sdbm
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_auth_digest"=".\os\win32\mod_auth_digest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_cern_meta"=".\os\win32\mod_cern_meta.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_digest"=".\os\win32\mod_digest.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_expires"=".\os\win32\mod_expires.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_headers"=".\os\win32\mod_headers.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_info"=".\os\win32\mod_info.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_log_forensic"=".\os\win32\mod_log_forensic.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_mime_magic"=".\os\win32\mod_mime_magic.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_proxy"=".\os\win32\mod_proxy.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_rewrite"=".\os\win32\mod_rewrite.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_speling"=".\os\win32\mod_speling.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_status"=".\os\win32\mod_status.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_unique_id"=".\os\win32\mod_unique_id.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_usertrack"=".\os\win32\mod_usertrack.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_vhost_alias"=".\os\win32\mod_vhost_alias.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name ApacheCore
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "regex"=".\regex\regex.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "rotatelogs"=".\support\rotatelogs.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "sdbm"=".\lib\sdbm\sdbm.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "xmlparse"=".\lib\expat-lite\xmlparse.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name xmltok
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "xmltok"=".\lib\expat-lite\xmltok.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

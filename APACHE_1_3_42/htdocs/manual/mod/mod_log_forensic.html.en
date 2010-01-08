@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+
+    <title>Apache module mod_log_forensic</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Module mod_log_forensic</h1>
+
+    <p>This module provides for forensic logging of the requests made to the
+    server</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_log_forensic.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    log_forensic_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Version 1.3.30 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>This module provides for forensic logging of client
+    requests. Logging is done before and after processing a request, so the
+    forensic log contains two log lines for each request.
+    The forensic logger is very strict, which means:</p>
+
+    <ul>
+    <li>The format is fixed. You cannot modify the logging format at
+    runtime.</li>
+    <li>If it cannot write its data, the child process exits immediately
+    and may dump core (depends on your
+    <code><a href="core.html#coredumpdirectory">CoreDumpDirectory</a></code>
+    configuration).</li>
+    </ul>
+
+    <p>The <code>check_forensic</code> script, which can be found in the
+    distribution's support directory, may be helpful in evaluating the
+    forensic log output.</p>
+
+    <p>See also: <a href="../logs.html">Apache Log Files</a>.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#forensiclog">ForensicLog</a></li>
+    </ul>
+
+    <h2><a id="formats" name="formats">Forensic Log Format</a></h2>
+
+    <p>Each request is logged two times. The first time <em>before</em> it's
+    processed further (that is, after receiving the headers). The second log
+    entry is written <em>after</em> the request processing at the same time
+    where normal logging occurs.</p>
+
+    <p>In order to identify each request, a unique request ID is assigned.
+    This forensic ID can be cross logged in the normal transfer log using the
+    <code>%{forensic-id}n</code> format string. If you're using
+    <code><a href="mod_unique_id.html">mod_unique_id</a></code>, its generated
+    ID will be used.</p>
+
+    <p>The first line logs the forensic ID, the request line and all received
+    headers, separated by pipe characters (<code>|</code>). A sample line
+    looks like the following (all on one line):</p>
+
+    <p><code>
+        +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
+        HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
+        U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
+        Firefox/0.8|Accept:image/png, <var>etc...</var>
+    </code></p>
+
+    <p>The plus character at the beginning indicates that this is first log
+    line of this request. The second line just contains a minus character and
+    the id again:</p>
+
+    <p><code>
+      -yQtJf8CoAB4AAFNXBIEAAAAA
+    </code></p>
+
+    <p>The <code>check_forensic</code> script takes as its argument the name
+    of the logfile. It looks for those <code>+</code>/<code>-</code> ID pairs
+    and complains if a request was not completed.</p>
+
+    <h2>Security Considerations</h2>
+
+    <p>See the <a
+    href="../misc/security_tips.html#serverroot">security tips</a>
+    document for details on why your security could be compromised
+    if the directory where logfiles are stored is writable by
+    anyone other than the user that starts the server.</p>
+
+    <hr />
+
+    <h2><a id="forensiclog" name="forensiclog">ForensicLog</a>
+    directive</h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ForensicLog
+    <var>filename</var>|<var>pipe</var><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_log_forensic<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available
+    in Version 1.3.30 and above</p>
+
+    <p>The <code>ForensicLog</code> directive is used to
+    log requests to the server for forensic analysis. Each log entry
+    is assigned unique ID which can be associated with the request
+    using the normal <code><a href="mod_log_config.html#customlog">CustomLog</a></code>
+    directive. <code>mod_log_forensic</code> creates a token called
+    <code>forensic-id</code>, which can be added to the transfer log
+    using the <code>%{forensic-id}n</code> format string.</p>
+
+    <p>The argument, which specifies the location to which
+    the logs will be written, can take one of the following two
+    types of values:</p>
+
+    <dl>
+      <dt><var>filename</var></dt>
+      <dd>A filename, relative to the <code><a href="core.html#serverroot">ServerRoot</a></code>.</dd>
+
+      <dt><var>pipe</var></dt>
+      <dd>The pipe character "<code>|</code>", followed by the path
+      to a program to receive the log information on its standard
+      input. <strong>Security:</strong> if a program is used, then
+      it will be run as the user who started httpd. This will be
+      root if the server was started by root; be sure that the
+      program is secure.</dd>
+    </dl>
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

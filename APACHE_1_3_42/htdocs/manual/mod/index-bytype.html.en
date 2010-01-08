@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache modules</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache modules</h1>
+
+    <p>Below is a list of all of the modules that come as part of
+    the Apache distribution. See also the list of modules <a
+    href="./">sorted alphabetically</a> and the complete
+    alphabetical list of <a href="directives.html">all Apache
+    directives</a>. For modules that are not part of the Apache
+    distribution, please see <a
+    href="http://modules.apache.org/">http://modules.apache.org</a>.</p>
+
+    <h2>Core</h2>
+
+    <dl>
+      <dt><a href="core.html">Core</a></dt>
+
+      <dd>Core Apache features</dd>
+    </dl>
+
+    <h2>Environment Creation</h2>
+
+    <dl>
+      <dt><a href="mod_env.html">mod_env</a></dt>
+
+      <dd>Passing of environments to CGI scripts</dd>
+
+      <dt><a href="mod_setenvif.html">mod_setenvif</a> Apache 1.3
+      and up</dt>
+
+      <dd>Set environment variables based on client
+      information</dd>
+
+      <dt><a href="mod_unique_id.html">mod_unique_id</a> Apache 1.3
+      and up</dt>
+
+      <dd>Generate unique request identifier for every request</dd>
+    </dl>
+
+    <h2>Content Type Decisions</h2>
+
+    <dl>
+      <dt><a href="mod_mime.html">mod_mime</a></dt>
+
+      <dd>Determining document types using file extensions</dd>
+
+      <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt>
+
+      <dd>Determining document types using "magic numbers"</dd>
+
+      <dt><a href="mod_negotiation.html">mod_negotiation</a></dt>
+
+      <dd>Content negotiation</dd>
+    </dl>
+
+    <h2>URL Mapping</h2>
+
+    <dl>
+      <dt><a href="mod_alias.html">mod_alias</a></dt>
+
+      <dd>Mapping different parts of the host filesystem in the
+      document tree, and URL redirection</dd>
+
+      <dt><a href="mod_rewrite.html">mod_rewrite</a> Apache 1.2 and
+      up</dt>
+
+      <dd>Powerful URI-to-filename mapping using regular
+      expressions</dd>
+
+      <dt><a href="mod_userdir.html">mod_userdir</a></dt>
+
+      <dd>User home directories</dd>
+
+      <dt><a href="mod_speling.html">mod_speling</a> Apache 1.3 and
+      up</dt>
+
+      <dd>Automatically correct minor typos in URLs</dd>
+
+      <dt><a href="mod_vhost_alias.html">mod_vhost_alias</a> Apache
+      1.3.7 and up</dt>
+
+      <dd>Support for dynamically configured mass virtual
+      hosting</dd>
+    </dl>
+
+    <h2>Directory Handling</h2>
+
+    <dl>
+      <dt><a href="mod_dir.html">mod_dir</a></dt>
+
+      <dd>Basic directory handling</dd>
+
+      <dt><a href="mod_autoindex.html">mod_autoindex</a></dt>
+
+      <dd>Automatic directory listings</dd>
+    </dl>
+
+    <h2>Access Control</h2>
+
+    <dl>
+      <dt><a href="mod_access.html">mod_access</a></dt>
+
+      <dd>Access control based on client hostname or IP
+      address</dd>
+
+      <dt><a href="mod_auth.html">mod_auth</a></dt>
+
+      <dd>User authentication using text files</dd>
+
+      <dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt>
+
+      <dd>User authentication using DBM files</dd>
+
+      <dt><a href="mod_auth_db.html">mod_auth_db</a></dt>
+
+      <dd>User authentication using Berkeley DB files</dd>
+
+      <dt><a href="mod_auth_anon.html">mod_auth_anon</a> Apache 1.1
+      and up</dt>
+
+      <dd>Anonymous user access to authenticated areas</dd>
+
+      <dt><a href="mod_auth_digest.html">mod_auth_digest</a> Apache
+      1.3.8 and up</dt>
+
+      <dd>Experimental MD5 authentication</dd>
+
+      <dt><a href="mod_digest.html">mod_digest</a> Apache 1.1 and
+      up</dt>
+
+      <dd>MD5 authentication</dd>
+    </dl>
+
+    <h2>HTTP Response</h2>
+
+    <dl>
+      <dt><a href="mod_headers.html">mod_headers</a> Apache 1.2 and
+      up</dt>
+
+      <dd>Add arbitrary HTTP headers to resources</dd>
+
+      <dt><a href="mod_cern_meta.html">mod_cern_meta</a> Apache 1.1
+      and up</dt>
+
+      <dd>Support for HTTP header metafiles</dd>
+
+      <dt><a href="mod_expires.html">mod_expires</a> Apache 1.2 and
+      up</dt>
+
+      <dd>Apply Expires: headers to resources</dd>
+
+      <dt><a href="mod_asis.html">mod_asis</a></dt>
+
+      <dd>Sending files which contain their own HTTP headers</dd>
+    </dl>
+
+    <h2>Dynamic Content</h2>
+
+    <dl>
+      <dt><a href="mod_include.html">mod_include</a></dt>
+
+      <dd>Server-parsed documents</dd>
+
+      <dt><a href="mod_cgi.html">mod_cgi</a></dt>
+
+      <dd>Invoking CGI scripts</dd>
+
+      <dt><a href="mod_actions.html">mod_actions</a> Apache 1.1 and
+      up</dt>
+
+      <dd>Executing CGI scripts based on media type or request
+      method</dd>
+
+      <dt><a href="mod_isapi.html">mod_isapi</a> WIN32 only</dt>
+
+      <dd>Windows ISAPI Extension support</dd>
+    </dl>
+
+    <h2>Internal Content Handlers</h2>
+
+    <dl>
+      <dt><a href="mod_status.html">mod_status</a> Apache 1.1 and
+      up</dt>
+
+      <dd>Server status display</dd>
+
+      <dt><a href="mod_info.html">mod_info</a> Apache 1.1 and
+      up</dt>
+
+      <dd>Server configuration information</dd>
+    </dl>
+
+    <h2>Logging</h2>
+
+    <dl>
+      <dt><a href="mod_log_config.html">mod_log_config</a></dt>
+
+      <dd>User-configurable logging replacement for
+      mod_log_common</dd>
+
+      <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt>
+
+      <dd>Forensic logging of requests made to the server</dd>
+
+      <dt><a href="mod_log_agent.html">mod_log_agent</a></dt>
+
+      <dd>Logging of User Agents</dd>
+
+      <dt><a href="mod_log_referer.html">mod_log_referer</a></dt>
+
+      <dd>Logging of document references</dd>
+
+      <dt><a href="mod_usertrack.html">mod_usertrack</a> Apache 1.2
+      and up</dt>
+
+      <dd>User tracking using Cookies (replacement for
+      mod_cookies.c)</dd>
+    </dl>
+
+    <h2>Miscellaneous</h2>
+
+    <dl>
+      <dt><a href="mod_imap.html">mod_imap</a> Apache 1.1 and
+      up</dt>
+
+      <dd>The imagemap file handler</dd>
+
+      <dt><a href="mod_proxy.html">mod_proxy</a> Apache 1.1 and
+      up</dt>
+
+      <dd>Caching proxy abilities</dd>
+
+      <dt><a href="mod_so.html">mod_so</a> Apache 1.3 and up</dt>
+
+      <dd>Support for loading modules (DLLs on Windows) at
+      runtime</dd>
+
+      <dt><a href="mod_mmap_static.html">mod_mmap_static</a> Apache
+      1.3 and up</dt>
+
+      <dd>Experimental file caching, mapping files into memory to
+      improve performace</dd>
+    </dl>
+
+    <h2>Development</h2>
+
+    <dl>
+      <dt><a href="mod_example.html">mod_example</a> Apache 1.2 and
+      up</dt>
+
+      <dd>Demonstrates Apache API</dd>
+    </dl>
+
+    <h2>Obsolete</h2>
+
+    <dl>
+      <dt><a href="mod_browser.html">mod_browser</a> Apache 1.2.*
+      only</dt>
+
+      <dd>Set environment variables based on User-Agent strings.
+      Replaced by mod_setenvif in Apache 1.3 and up</dd>
+
+      <dt><a href="mod_cookies.html">mod_cookies</a> up to Apache
+      1.1.1</dt>
+
+      <dd>Support for Netscape-like cookies. Replaced in Apache 1.2
+      by mod_usertrack</dd>
+
+      <dt><a href="mod_dld.html">mod_dld</a> Apache 1.2.* and
+      earlier</dt>
+
+      <dd>Start-time linking with the GNU libdld. Replaced in
+      Apache 1.3 by mod_so</dd>
+
+      <dt><a href="mod_log_common.html">mod_log_common</a> up to
+      Apache 1.1.1</dt>
+
+      <dd>Standard logging in the Common Logfile Format. Replaced
+      by the mod_log_config module in Apache 1.2 and up</dd>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

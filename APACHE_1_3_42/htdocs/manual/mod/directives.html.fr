@@ -1,0 +1,572 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--Traduction anglais 1.69 -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>Directives Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Directives Apache</h1>
+
+    <p>Chacune des directives Apache disponible dans la
+    distribution standard est list&eacute;e ici. Elles sont
+    d&eacute;crites selon un format pr&eacute;cis, et nous
+    fournissons un <a href="directive-dict.html"
+    rel="Glossary">dictionnaire</a> des termes utilis&eacute;s pour
+    leur description.</p>
+
+    <ul>
+      <li><a href="core.html#acceptfilter">AcceptFilter</a></li>
+
+      <li><a href="core.html#acceptmutex">AcceptMutex</a></li>
+
+      <li><a href="core.html#accessconfig">AccessConfig</a></li>
+
+      <li><a
+      href="core.html#accessfilename">AccessFileName</a></li>
+
+      <li><a href="mod_actions.html#action">Action</a></li>
+
+      <li><a href="mod_autoindex.html#addalt">AddAlt</a></li>
+
+      <li><a
+      href="mod_autoindex.html#addaltbyencoding">AddAltByEncoding</a></li>
+
+      <li><a
+      href="mod_autoindex.html#addaltbytype">AddAltByType</a></li>
+
+      <li><a href="mod_mime.html#addcharset">AddCharset</a></li>
+
+      <li><a
+      href="core.html#adddefaultcharset">AddDefaultCharset</a></li>
+
+      <li><a
+      href="mod_autoindex.html#adddescription">AddDescription</a></li>
+
+      <li><a href="mod_mime.html#addencoding">AddEncoding</a></li>
+
+      <li><a href="mod_mime.html#addhandler">AddHandler</a></li>
+
+      <li><a href="mod_autoindex.html#addicon">AddIcon</a></li>
+
+      <li><a
+      href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding</a></li>
+
+      <li><a
+      href="mod_autoindex.html#addiconbytype">AddIconByType</a></li>
+
+      <li><a href="mod_mime.html#addlanguage">AddLanguage</a></li>
+
+      <li><a href="core.html#addmodule">AddModule</a></li>
+
+      <li><a
+      href="mod_info.html#addmoduleinfo">AddModuleInfo</a></li>
+
+      <li><a href="mod_mime.html#addtype">AddType</a></li>
+
+      <li><a href="mod_log_agent.html#agentlog">AgentLog</a></li>
+
+      <li><a href="mod_alias.html#alias">Alias</a></li>
+
+      <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
+
+      <li><a href="mod_access.html#allow">allow</a></li>
+
+      <li><a
+      href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
+
+      <li><a href="core.html#allowoverride">AllowOverride</a></li>
+
+      <li><a href="mod_auth_anon.html#anonymous">Anonymous</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#Authoritative">Anonymous_Authoritative</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#LogEmail">Anonymous_LogEmail</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#MustGiveEmail">Anonymous_MustGiveEmail</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#NoUserID">Anonymous_NoUserID</a></li>
+
+      <li><a
+      href="mod_auth_anon.html#VerifyEmail">Anonymous_VerifyEmail</a></li>
+
+      <li><a
+      href="mod_auth.html#authauthoritative">AuthAuthoritative</a></li>
+
+      <li><a
+      href="mod_auth_db.html#authdbauthoritative">AuthDBAuthoritative</a></li>
+
+      <li><a
+      href="mod_auth_db.html#authdbgroupfile">AuthDBGroupFile</a></li>
+
+      <li><a
+      href="mod_auth_dbm.html#authdbmauthoritative">AuthDBMAuthoritative</a></li>
+
+      <li><a
+      href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
+
+      <li><a
+      href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></li>
+
+      <li><a
+      href="mod_auth_db.html#authdbuserfile">AuthDBUserFile</a></li>
+
+      <li><a
+      href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a></li>
+
+      <li><a
+      href="mod_digest.html#authdigestfile">AuthDigestFile</a></li>
+
+      <li><a
+      href="mod_auth.html#authgroupfile">AuthGroupFile</a></li>
+
+      <li><a href="core.html#authname">AuthName</a></li>
+
+      <li><a href="core.html#authtype">AuthType</a></li>
+
+      <li><a
+      href="mod_auth.html#authuserfile">AuthUserFile</a></li>
+
+      <li><a href="core.html#bindaddress">BindAddress</a></li>
+
+      <li><a
+      href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
+
+      <li><a
+      href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
+
+      <li><a href="core.html#bs2000account">BS2000Account</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachedefaultexpire">CacheDefaultExpire</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachedirlength">CacheDirLength</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachedirlevels">CacheDirLevels</a></li>
+
+      <li><a
+      href="mod_proxy.html#cacheforcecompletion">CacheForceCompletion</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachegcinterval">CacheGcInterval</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
+
+      <li><a
+      href="mod_proxy.html#cachemaxexpire">CacheMaxExpire</a></li>
+
+      <li><a
+      href="mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
+
+      <li><a href="mod_proxy.html#cacheroot">CacheRoot</a></li>
+
+      <li><a href="mod_proxy.html#cachesize">CacheSize</a></li>
+
+      <li><a
+      href="mod_speling.html#checkspelling">CheckSpelling</a></li>
+
+      <li><a
+      href="core.html#clearmodulelist">ClearModuleList</a></li>
+
+      <li><a href="core.html#contentdigest">ContentDigest</a></li>
+
+      <li><a
+      href="mod_usertrack.html#cookieexpires">CookieExpires</a></li>
+
+      <li><a href="mod_cookies.html#cookielog">CookieLog</a>
+      (mod_cookies)</li>
+
+      <li><a href="mod_log_config.html#cookielog">CookieLog</a>
+      (mod_log_config)</li>
+
+      <li><a
+      href="mod_usertrack.html#cookietracking">CookieTracking</a></li>
+
+      <li><a
+      href="core.html#coredumpdirectory">CoreDumpDirectory</a></li>
+
+      <li><a
+      href="mod_log_config.html#customlog">CustomLog</a></li>
+
+      <li><a
+      href="mod_autoindex.html#defaulticon">DefaultIcon</a></li>
+
+      <li><a
+      href="mod_mime.html#defaultlanguage">DefaultLanguage</a></li>
+
+      <li><a href="core.html#defaulttype">DefaultType</a></li>
+
+      <li><a href="mod_access.html#deny">deny</a></li>
+
+      <li><a href="core.html#directory">&lt;Directory&gt;</a></li>
+
+      <li><a
+      href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
+
+      <li><a
+      href="mod_dir.html#directoryindex">DirectoryIndex</a></li>
+
+      <li><a href="core.html#documentroot">DocumentRoot</a></li>
+
+      <li><a href="core.html#ebcdicconvert">EBCDICConvert</a></li>
+
+      <li><a
+      href="core.html#ebcdicconvertbytype">EBCDICConvertByType</a></li>
+
+      <li><a href="core.html#ebcdickludge">EBCDICKludge</a></li>
+
+      <li><a href="core.html#errordocument">ErrorDocument</a></li>
+
+      <li><a href="core.html#errorlog">ErrorLog</a></li>
+
+      <li><a href="mod_example.html#example">Example</a></li>
+
+      <li><a
+      href="mod_expires.html#expiresactive">ExpiresActive</a></li>
+
+      <li><a
+      href="mod_expires.html#expiresbytype">ExpiresByType</a></li>
+
+      <li><a
+      href="mod_expires.html#expiresdefault">ExpiresDefault</a></li>
+
+      <li><a
+      href="mod_status.html#extendedstatus">ExtendedStatus</a></li>
+
+      <li><a
+      href="mod_autoindex.html#fancyindexing">FancyIndexing</a></li>
+
+      <li><a href="core.html#files">&lt;Files&gt;</a></li>
+
+      <li><a
+      href="core.html#filesmatch">&lt;FilesMatch&gt;</a></li>
+
+      <li><a href="mod_mime.html#forcetype">ForceType</a></li>
+
+      <li><a href="mod_log_forensic.html#forensiclog">ForensicLog</a></li>
+
+      <li><a href="core.html#group">Group</a></li>
+
+      <li><a href="mod_headers.html#header">Header</a></li>
+
+      <li><a
+      href="mod_autoindex.html#headername">HeaderName</a></li>
+
+      <li><a
+      href="core.html#hostnamelookups">HostNameLookups</a></li>
+
+      <li><a href="core.html#identitycheck">IdentityCheck</a></li>
+
+      <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
+
+      <li><a href="core.html#ifmodule">&lt;IfModule&gt;</a></li>
+
+      <li><a href="mod_imap.html#imapbase">ImapBase</a></li>
+
+      <li><a href="mod_imap.html#imapdefault">ImapDefault</a></li>
+
+      <li><a href="mod_imap.html#imapmenu">ImapMenu</a></li>
+
+      <li><a href="core.html#include">Include</a></li>
+
+      <li><a
+      href="mod_autoindex.html#indexignore">IndexIgnore</a></li>
+
+      <li><a
+      href="mod_autoindex.html#indexoptions">IndexOptions</a></li>
+
+      <li><a
+      href="mod_autoindex.html#indexorderdefault">IndexOrderDefault</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapilognotsupported">ISAPILogNotSupported</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapiappendlogtoerrors">ISAPIAppendLogToErrors</a></li>
+
+      <li><a
+      href="mod_isapi.html#isapiappendlogtoquery">ISAPIAppendLogToQuery</a></li>
+
+      <li><a href="core.html#keepalive">KeepAlive</a></li>
+
+      <li><a
+      href="core.html#keepalivetimeout">KeepAliveTimeout</a></li>
+
+      <li><a
+      href="mod_negotiation.html#languagepriority">LanguagePriority</a></li>
+
+      <li><a href="core.html#limit">&lt;Limit&gt;</a></li>
+
+      <li><a
+      href="core.html#limitexcept">&lt;LimitExcept&gt;</a></li>
+
+      <li><a
+      href="core.html#limitrequestbody">LimitRequestBody</a></li>
+
+      <li><a
+      href="core.html#limitrequestfields">LimitRequestFields</a></li>
+
+      <li><a
+      href="core.html#limitrequestfieldsize">LimitRequestFieldsize</a></li>
+
+      <li><a
+      href="core.html#limitrequestline">LimitRequestLine</a></li>
+
+      <li><a href="core.html#listen">Listen</a></li>
+
+      <li><a href="core.html#listenbacklog">ListenBacklog</a></li>
+
+      <li><a href="mod_so.html#loadfile">LoadFile</a></li>
+
+      <li><a href="mod_so.html#loadmodule">LoadModule</a></li>
+
+      <li><a href="core.html#location">&lt;Location&gt;</a></li>
+
+      <li><a
+      href="core.html#locationmatch">&lt;LocationMatch&gt;</a></li>
+
+      <li><a href="core.html#lockfile">LockFile</a></li>
+
+      <li><a
+      href="mod_log_config.html#logformat">LogFormat</a></li>
+
+      <li><a href="core.html#loglevel">LogLevel</a></li>
+
+      <li><a href="core.html#maxclients">MaxClients</a></li>
+
+      <li><a
+      href="core.html#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+
+      <li><a
+      href="core.html#maxrequestsperchild">MaxRequestsPerChild</a></li>
+
+      <li><a
+      href="core.html#maxspareservers">MaxSpareServers</a></li>
+
+      <li><a href="mod_cern_meta.html#metadir">MetaDir</a></li>
+
+      <li><a href="mod_cern_meta.html#metafiles">MetaFiles</a></li>
+
+      <li><a
+      href="mod_cern_meta.html#metasuffix">MetaSuffix</a></li>
+
+      <li><a
+      href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></li>
+
+      <li><a
+      href="core.html#minspareservers">MinSpareServers</a></li>
+
+      <li><a href="mod_mmap_static.html#mmapfile">MMapFile</a></li>
+
+      <li><a
+      href="core.html#namevirtualhost">NameVirtualHost</a></li>
+
+      <li><a href="mod_proxy.html#nocache">NoCache</a></li>
+
+      <li><a href="core.html#options">Options</a></li>
+
+      <li><a href="mod_access.html#order">order</a></li>
+
+      <li><a href="mod_env.html#passenv">PassEnv</a></li>
+
+      <li><a href="core.html#pidfile">PidFile</a></li>
+
+      <li><a href="core.html#port">Port</a></li>
+
+      <li><a href="mod_proxy.html#proxyblock">ProxyBlock</a></li>
+
+      <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
+
+      <li><a href="mod_proxy.html#proxypass">ProxyPass</a></li>
+
+      <li><a
+      href="mod_proxy.html#proxypassreverse">ProxyPassReverse</a></li>
+
+      <li><a
+      href="mod_proxy.html#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li>
+
+      <li><a href="mod_proxy.html#proxyremote">ProxyRemote</a></li>
+
+      <li><a
+      href="mod_proxy.html#proxyrequests">ProxyRequests</a></li>
+
+      <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
+
+      <li><a
+      href="mod_autoindex.html#readmename">ReadmeName</a></li>
+
+      <li><a href="mod_alias.html#redirect">Redirect</a></li>
+
+      <li><a
+      href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
+
+      <li><a
+      href="mod_alias.html#redirectperm">RedirectPermanent</a></li>
+
+      <li><a
+      href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
+
+      <li><a
+      href="mod_log_referer.html#refererignore">RefererIgnore</a></li>
+
+      <li><a
+      href="mod_log_referer.html#refererlog">RefererLog</a></li>
+
+      <li><a
+      href="mod_mime.html#removeencoding">RemoveEncoding</a></li>
+
+      <li><a
+      href="mod_mime.html#removehandler">RemoveHandler</a></li>
+
+      <li><a href="mod_mime.html#removetype">RemoveType</a></li>
+
+      <li><a href="core.html#require">require</a></li>
+
+      <li><a
+      href="core.html#resourceconfig">ResourceConfig</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteBase">RewriteBase</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteCond">RewriteCond</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteEngine">RewriteEngine</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteLock">RewriteLock</a></li>
+
+      <li><a href="mod_rewrite.html#RewriteLog">RewriteLog</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteLogLevel">RewriteLogLevel</a></li>
+
+      <li><a href="mod_rewrite.html#RewriteMap">RewriteMap</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteOptions">RewriteOptions</a></li>
+
+      <li><a
+      href="mod_rewrite.html#RewriteRule">RewriteRule</a></li>
+
+      <li><a href="core.html#rlimitcpu">RLimitCPU</a></li>
+
+      <li><a href="core.html#rlimitmem">RLimitMEM</a></li>
+
+      <li><a href="core.html#rlimitnproc">RLimitNPROC</a></li>
+
+      <li><a href="core.html#satisfy">Satisfy</a></li>
+
+      <li><a
+      href="core.html#scoreboardfile">ScoreBoardFile</a></li>
+
+      <li><a href="mod_actions.html#script">Script</a></li>
+
+      <li><a href="mod_alias.html#scriptalias">ScriptAlias</a></li>
+
+      <li><a
+      href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></li>
+
+      <li><a
+      href="core.html#scriptinterpretersource">ScriptInterpreterSource</a></li>
+
+      <li><a href="mod_cgi.html#scriptlog">ScriptLog</a></li>
+
+      <li><a
+      href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
+
+      <li><a
+      href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
+
+      <li><a
+      href="core.html#sendbuffersize">SendBufferSize</a></li>
+
+      <li><a href="core.html#serveradmin">ServerAdmin</a></li>
+
+      <li><a href="core.html#serveralias">ServerAlias</a></li>
+
+      <li><a href="core.html#servername">ServerName</a></li>
+
+      <li><a href="core.html#serverpath">ServerPath</a></li>
+
+      <li><a href="core.html#serverroot">ServerRoot</a></li>
+
+      <li><a
+      href="core.html#serversignature">ServerSignature</a></li>
+
+      <li><a href="core.html#servertokens">ServerTokens</a></li>
+
+      <li><a href="core.html#servertype">ServerType</a></li>
+
+      <li><a href="mod_env.html#setenv">SetEnv</a></li>
+
+      <li><a href="mod_setenvif.html#setenvif">SetEnvIf</a></li>
+
+      <li><a
+      href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></li>
+
+      <li><a href="mod_mime.html#sethandler">SetHandler</a></li>
+
+      <li><a href="core.html#startservers">StartServers</a></li>
+
+      <li><a
+      href="core.html#threadsperchild">ThreadsPerChild</a></li>
+
+      <li><a href="core.html#timeout">TimeOut</a></li>
+
+      <li><a
+      href="mod_log_config.html#transferlog">TransferLog</a></li>
+
+      <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
+
+      <li><a href="mod_env.html#unsetenv">UnsetEnv</a></li>
+
+      <li><a
+      href="core.html#usecanonicalname">UseCanonicalName</a></li>
+
+      <li><a href="core.html#user">User</a></li>
+
+      <li><a href="mod_userdir.html#userdir">UserDir</a></li>
+
+      <li><a
+      href="core.html#virtualhost">&lt;VirtualHost&gt;</a></li>
+
+      <li><a
+      href="mod_vhost_alias.html#virtualdocumentroot">VirtualDocumentRoot</a></li>
+
+      <li><a
+      href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP</a></li>
+
+      <li><a
+      href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</a></li>
+
+      <li><a
+      href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
+
+      <li><a href="mod_include.html#xbithack">XBitHack</a></li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

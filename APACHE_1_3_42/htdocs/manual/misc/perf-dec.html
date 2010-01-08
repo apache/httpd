@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Performance Tuning Tips for Digital Unix</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Performance Tuning Tips for Digital
+    Unix</h1>
+    Below is a set of newsgroup posts made by an engineer from DEC
+    in response to queries about how to modify DEC's Digital Unix
+    OS for more heavily loaded web sites. Copied with permission. 
+    <hr />
+
+    <h2>Update</h2>
+    From: Jeffrey Mogul &lt;mogul@pa.dec.com&gt;<br />
+     Date: Fri, 28 Jun 96 16:07:56 MDT<br />
+     
+
+    <ol>
+      <li>The advice given in the README file regarding the
+      "tcbhashsize" variable is incorrect. The largest value this
+      should be set to is 1024. Setting it any higher will have the
+      perverse result of disabling the hashing mechanism.</li>
+
+      <li>
+        Patch ID OSF350-146 has been superseded by 
+
+        <blockquote>
+          Patch ID OSF350-195 for V3.2C<br />
+           Patch ID OSF360-350195 for V3.2D
+        </blockquote>
+        Patch IDs for V3.2E and V3.2F should be available soon.
+        There is no known reason why the Patch ID OSF360-350195
+        won't work on these releases, but such use is not
+        officially supported by Digital. This patch kit will not be
+        needed for V3.2G when it is released.
+      </li>
+    </ol>
+    <hr />
+<pre>
+From           mogul@pa.dec.com (Jeffrey Mogul)
+Organization   DEC Western Research
+Date           30 May 1996 00:50:25 GMT
+Newsgroups     <a
+href="news:comp.unix.osf.osf1">comp.unix.osf.osf1</a>
+Message-ID     &lt;4oirch$bc8@usenet.pa.dec.com&gt;
+Subject        Re: Web Site Performance
+References     1
+
+
+
+In article &lt;skoogDs54BH.9pF@netcom.com&gt; skoog@netcom.com (Jim Skoog) writes:
+&gt;Where are the performance bottlenecks for Alpha AXP running the
+&gt;Netscape Commerce Server 1.12 with high volume internet traffic?
+&gt;We are evaluating network performance for a variety of Alpha AXP
+&gt;runing DEC UNIX 3.2C, which run DEC's seal firewall and behind
+&gt;that Alpha 1000 and 2100 webservers.
+
+Our experience (running such Web servers as <a
+href="http://altavista.digital.com">altavista.digital.com</a>
+and <a
+href="http://www.digital.com">www.digital.com</a>) is that there is one important kernel tuning
+knob to adjust in order to get good performance on V3.2C.  You
+need to patch the kernel global variable "somaxconn" (use dbx -k
+to do this) from its default value of 8 to something much larger.
+
+How much larger?  Well, no larger than 32767 (decimal).  And
+probably no less than about 2048, if you have a really high volume
+(millions of hits per day), like AltaVista does.
+
+This change allows the system to maintain more than 8 TCP
+connections in the SYN_RCVD state for the HTTP server.  (You
+can use "netstat -An |grep SYN_RCVD" to see how many such
+connections exist at any given instant).
+
+If you don't make this change, you might find that as the load gets
+high, some connection attempts take a very long time.  And if a lot
+of your clients disconnect from the Internet during the process of
+TCP connection establishment (this happens a lot with dialup
+users), these "embryonic" connections might tie up your somaxconn
+quota of SYN_RCVD-state connections.  Until the kernel times out
+these embryonic connections, no other connections will be accepted,
+and it will appear as if the server has died.
+
+The default value for somaxconn in Digital UNIX V4.0 will be quite
+a bit larger than it has been in previous versions (we inherited
+this default from 4.3BSD).
+
+Digital UNIX V4.0 includes some other performance-related changes
+that significantly improve its maximum HTTP connection rate.  However,
+we've been using V3.2C systems to front-end for altavista.digital.com
+with no obvious performance bottlenecks at the millions-of-hits-per-day
+level.
+
+We have some Webstone performance results available at
+        http://www.digital.com/info/alphaserver/news/webff.html
+
+<em>[The document referenced above is no longer at that URL -- Ed.]</em>
+
+I'm not sure if these were done using V4.0 or an earlier version
+of Digital UNIX, although I suspect they were done using a test
+version of V4.0.
+
+-Jeff
+
+----------------------------------------------------------------------------
+
+From           mogul@pa.dec.com (Jeffrey Mogul)
+Organization   DEC Western Research
+Date           31 May 1996 21:01:01 GMT
+Newsgroups     <a
+href="news:comp.unix.osf.osf1">comp.unix.osf.osf1</a>
+Message-ID     &lt;4onmmd$mmd@usenet.pa.dec.com&gt;
+Subject        Digital UNIX V3.2C Internet tuning patch info
+
+----------------------------------------------------------------------------
+
+Something that probably few people are aware of is that Digital
+has a patch kit available for Digital UNIX V3.2C that may improve
+Internet performance, especially for busy web servers.
+
+This patch kit is one way to increase the value of somaxconn,
+which I discussed in a message here a day or two ago.
+
+I've included in this message the revised README file for this
+patch kit below.  Note that the original README file in the patch
+kit itself may be an earlier version; I'm told that the version
+below is the right one.
+
+Sorry, this patch kit is NOT available for other versions of Digital
+UNIX.  Most (but not quite all) of these changes also made it into V4.0,
+so the description of the various tuning parameters in this README
+file might be useful to people running V4.0 systems.
+
+This patch kit does not appear to be available (yet?) from
+        <a
+href="http://www.service.digital.com/html/patch_service.html">http://www.service.digital.com/html/patch_service.html</a>
+so I guess you'll have to call Digital's Customer Support to get it.
+
+-Jeff
+
+DESCRIPTION: Digital UNIX Network tuning patch
+
+             Patch ID: OSF350-146
+
+             SUPERSEDED PATCHES: OSF350-151, OSF350-158
+
+        This set of files improves the performance of the network
+        subsystem on a system being used as a web server.  There are
+        additional tunable parameters included here, to be used
+        cautiously by an informed system administrator.
+
+TUNING
+
+        To tune the web server, the number of simultaneous socket
+        connection requests are limited by:
+
+        somaxconn               Sets the maximum number of pending requests
+                                allowed to wait on a listening socket.  The
+                                default value in Digital UNIX V3.2 is 8.
+                                This patch kit increases the default to 1024,
+                                which matches the value in Digital UNIX V4.0.
+
+        sominconn               Sets the minimum number of pending connections
+                                allowed on a listening socket.  When a user
+                                process calls listen with a backlog less
+                                than sominconn, the backlog will be set to
+                                sominconn.  sominconn overrides somaxconn.
+                                The default value is 1.
+
+        The effectiveness of tuning these parameters can be monitored by
+        the sobacklog variables available in the kernel:
+
+        sobacklog_hiwat         Tracks the maximum pending requests to any
+                                socket.  The initial value is 0.
+
+        sobacklog_drops         Tracks the number of drops exceeding the
+                                socket set backlog limit.  The initial
+                                value is 0.
+
+        somaxconn_drops         Tracks the number of drops exceeding the
+                                somaxconn limit.  When sominconn is larger
+                                than somaxconn, tracks the number of drops
+                                exceeding sominconn.  The initial value is 0.
+
+        TCP timer parameters also affect performance. Tuning the following
+        require some knowledge of the characteristics of the network.
+
+        tcp_msl                 Sets the tcp maximum segment lifetime.
+                                This is the maximum lifetime in half
+                                seconds that a packet can be in transit
+                                on the network.  This value, when doubled,
+                                is the length of time a connection remains
+                                in the TIME_WAIT state after a incoming
+                                close request is processed.  The unit is
+                                specified in 1/2 seconds, the initial
+                                value is 60.
+
+        tcp_rexmit_interval_min
+                                Sets the minimum TCP retransmit interval.
+                                For some WAN networks the default value may
+                                be too short, causing unnecessary duplicate
+                                packets to be sent.  The unit is specified
+                                in 1/2 seconds, the initial value is 1.
+
+        tcp_keepinit            This is the amount of time a partially
+                                established connection will sit on the listen
+                                queue before timing out (<em>e.g.</em>, if a client
+                                sends a SYN but never answers our SYN/ACK).
+                                Partially established connections tie up slots
+                                on the listen queue.  If the queue starts to
+                                fill with connections in SYN_RCVD state,
+                                tcp_keepinit can be decreased to make those
+                                partial connects time out sooner.  This should
+                                be used with caution, since there might be
+                                legitimate clients that are taking a while
+                                to respond to SYN/ACK.  The unit is specified
+                                in 1/2 seconds, the default value is 150
+                                (ie. 75 seconds).
+
+        The hashlist size for the TCP inpcb lookup table is regulated by:
+
+        tcbhashsize             The number of hash buckets used for the
+                                TCP connection table used in the kernel.
+                                The initial value is 32.  For best results,
+                                should be specified as a power of 2.  For
+                                busy Web servers, set this to 2048 or more.
+
+        The hashlist size for the interface alias table is regulated by:
+
+        inifaddr_hsize          The number of hash buckets used for the
+                                interface alias table used in the kernel.
+                                The initial value is 32.  For best results,
+                                should be specified as a power of 2.
+
+        ipport_userreserved     The maximum number of concurrent non-reserved,
+                                dynamically allocated ports.  Default range
+                                is 1025-5000.  The maximum value is 65535.
+                                This limits the numer of times you can
+                                simultaneously telnet or ftp out to connect
+                                to other systems.
+
+        tcpnodelack             Don't delay acknowledging TCP data; this
+                                can sometimes improve performance of locally
+                                run CAD packages.  Default is value is 0,
+                                the enabled value is 1.
+
+                           Digital UNIX version:
+
+                                  V3.2C
+Feature                    V3.2C  patch  V4.0
+=======                    =====  =====  ====
+somaxconn                   X      X      X
+sominconn                   -      X      X
+sobacklog_hiwat             -      X      -
+sobacklog_drops             -      X      -
+somaxconn_drops             -      X      -
+tcpnodelack                 X      X      X
+tcp_keepidle                X      X      X
+tcp_keepintvl               X      X      X
+tcp_keepcnt                 -      X      X
+tcp_keepinit                -      X      X
+TCP keepalive per-socket    -      -      X
+tcp_msl                     -      X      -
+tcp_rexmit_interval_min     -      X      -
+TCP inpcb hashing           -      X      X
+tcbhashsize                 -      X      X
+interface alias hashing     -      X      X
+inifaddr_hsize              -      X      X
+ipport_userreserved         -      X      -
+sysconfig -q inet           -      -      X
+sysconfig -q socket         -      -      X
+
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

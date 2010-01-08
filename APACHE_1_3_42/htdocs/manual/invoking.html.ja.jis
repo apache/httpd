@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache の開始</title>
+
+  </head>
+  <!-- English Revision: 1.2 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache の開始</h1>
+
+    <ul>
+      <li><a href="#windows">Apache を Windows で開始する</a></li>
+
+      <li>
+        <a href="#unix">Apache を Unix で開始する</a>
+
+        <ul>
+          <li><a href="#errors">開始時のエラー</a></li>
+
+          <li><a href="#boot">ブート時の開始</a></li>
+
+          <li><a href="#info">追加の情報</a></li>
+        </ul>
+      </li>
+    </ul>
+    <hr />
+
+    <h2><a id="windows" name="windows">Apache を
+    Windows で開始する</a></h2>
+
+    <p>Windows 上では、Apache は通常、 Windows NT, 2000, XP
+    ではサービスとして、Windows 95, ME 
+    ではコンソールアプリケーションとして実行されます。このことは、
+    Cygwin プラットフォームについては完全にはあてはまりません。
+    詳細は <a href="windows.html#run">Windows 用の Apache を実行する</a>
+    を見てください。</p>
+
+    <h2><a id="unix" name="unix">Apache を Unix で開始する</a></h2>
+
+    <p>Unix では <a href="programs/httpd.html">httpd</a>
+    プログラムはバックグラウンドで継続的に動作してリクエストを処理する
+    デーモンとして実行されます。Apache は <a
+    href="mod/core.html#servertype">ServerType</a>
+    ディレクティブによってHTTP サービスへの接続のたびに
+    インターネットデーモン <code>inetd</code> から起動する事も
+    可能ですがこれは推奨されません。</p>
+
+    <p>もし設定ファイルで指定した<a href="mod/core.html#port">ポート</a>が
+    デフォルトの 80 (もしくは 1024 未満のポートのどれか) であるなら、
+    この特権ポートにバインドできるように、Apache の起動には root
+    権限が必要です。サーバが、ログファイルを開くなどいくつか準備の動作を終えると、
+    待ち受けてクライアントのリクエストに応答する<em>子</em>プロセスをいくつか
+    スタートします。メインの <code>httpd</code> プロセスは root
+    ユーザとして動き続けますが、子プロセスはより低い権限のユーザとして動きます。
+    これは Apache の<a
+    href="server-wide.html#process">プロセス生成ディレクティブ</a>
+    により制御されます。</p>
+
+    <p><code>httpd</code> の起動時に最初にすることは<a
+    href="configuring.html">設定ファイル</a> <code>httpd.conf</code>
+    を見つけて読み込むことです。このファイルの位置はコンパイル時に設定されますが、
+    コマンドラインオプション <code>-f</code> を使って実行時に
+    その位置を指定することが可能です。</p>
+
+    <blockquote>
+      <code>/usr/local/apache/bin/httpd -f
+      /usr/local/apache/conf/httpd.conf</code>
+    </blockquote>
+
+    <p><code>httpd</code> バイナリを直接起動する代わりに <a
+    href="programs/apachectl.html">apachectl</a>
+    と呼ばれるシェルスクリプトを使うことも出来ます。これによりデーモンプロセスを
+    <code>apachectl start</code> や <code>apachectl stop</code>
+    などの簡単なコマンドによって制御することができます。</p>
+
+    <p>開始の段階がすべてうまく行けば、サーバはターミナルを切り離し、
+    コマンドプロンプトがほぼ一瞬で戻って来ます。これは、
+    サーバが動作していることを示しています。その後で、ブラウザを使用して
+    サーバに接続し、<a href="mod/core.html#documentroot">DocumentRoot</a>
+    ディレクトリのテストページやそのページからリンクされた文書の
+    ローカルコピーを見ることができます。</p>
+
+    <h3><a id="errors" name="errors">開始時のエラー</a></h3>
+
+    <p>もし Apache が開始時に致命的な問題に遭うと、
+    終了する前に問題を説明するメッセージをコンソールまたは
+    <a href="mod/core.html#errorlog">ErrorLog</a> に書きだします。
+    最もよくあるエラーメッセージの一つは
+    &quot;<code>Unable to bind to Port ...</code>&quot;
+    です。このメッセージは通常これらの原因があります:</p>
+
+    <ul>
+      <li>root ユーザとしてログインしていない時に特権ポートで
+      サーバを始めようとした;</li>
+
+      <li>他の Apache または他のウェブサーバが既に同じポートに
+      バインドしている時にサーバを始めようとした。</li>
+    </ul>
+
+    <p>トラブルシューティングの手順は、Apache
+    <a href="misc/FAQ.html">FAQ</a> を参照してください。</p>
+
+    <h3><a id="boot" name="boot">ブート時の起動</a></h3>
+
+    <p>システムのリブート後にもサーバを実行し続けさせたい場合は、
+    <code>httpd</code> または <code>apachectl</code>
+    の呼び出しをシステムのスタートアップファイル(標準では
+    <code>rc.local</code> または、<code>rc.N</code>
+    ディレクトリのファイル)に追加して下さい。これは root で Apache
+    を開始します。この設定をする前にセキュリティやアクセス制限が
+    サーバに対して適切に設定されるようにしてください。
+    <code>apachectl</code> スクリプトは init
+    スクリプトとして直接リンクできるように設計されていますが、
+    システムの正確な仕様を把握してから使用してください。</p>
+
+    <h3><a id="info" name="info">追加の情報</a></h3>
+
+    <p>サーバに含まれている他のサポートプログラムと同様に
+    <a href="programs/httpd.html">httpd</a> と
+    <a href="programs/apachectl.html">apachectl</a>
+    のコマンドラインオプションについての追加の情報は、
+    <a href="programs/">サーバとサポートプログラム</a>
+    ページで入手可能です。Apache 配布に含まれているすべての
+    <a href="mod/">モジュール</a> やそれにより提供される
+    <a href="mod/directives.html">ディレクティブ</a>
+    の文書もあります。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache のハンドラの使用</title>
+  </head>
+  <!-- English revision: 1.22 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache のハンドラの使用</h1>
+
+    <ul>
+      <li><a href="#definition">ハンドラとは</a></li>
+
+      <li><a href="#examples">例</a></li>
+
+      <li><a href="#programmer">プログラマ向けのメモ</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="definition" name="definition">ハンドラとは</a></h2>
+
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連モジュール</strong><br />
+         <br />
+         <a href="mod/mod_actions.html">mod_actions</a><br />
+         <a href="mod/mod_asis.html">mod_asis</a><br />
+         <a href="mod/mod_cgi.html">mod_cgi</a><br />
+         <a href="mod/mod_imap.html">mod_imap</a><br />
+         <a href="mod/mod_info.html">mod_info</a><br />
+         <a href="mod/mod_include.html">mod_include</a><br />
+         <a href="mod/mod_mime.html">mod_mime</a><br />
+         <a
+        href="mod/mod_negotiation.html">mod_negotiation</a><br />
+         <a href="mod/mod_status.html">mod_status</a><br />
+         </td>
+
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+         <br />
+         <a href="mod/mod_actions.html#action">Action</a><br />
+         <a
+        href="mod/mod_mime.html#addhandler">AddHandler</a><br />
+         <a
+        href="mod/mod_mime.html#removehandler">RemoveHandler</a><br />
+         <a
+        href="mod/mod_mime.html#sethandler">SetHandler</a><br />
+         </td>
+       </tr>
+    </table>
+
+    <p>「ハンドラ」とは、ファイルが呼ばれたときに実行される動作の Apache
+    における内部表現です。通常、ファイルはファイル型に基づいた暗黙の
+    ハンドラがあります。普通はすべてのファイルは単にサーバに扱われますが、
+    ファイルタイプの中には別に「ハンドル」 (訳注: 扱う) されるものもあります。
+    </p>
+
+    <p>Apache 1.1 では、ハンドラを明示的に使用する機能が追加されました。
+    ファイルの拡張子や置いている場所に基づいて、ファイル型と関係なく
+    ハンドラを指定することができます。これはより優雅な解決法という点と、
+    ファイルにタイプ<strong>と</strong>
+    ハンドラの両方を関連付けることができるという点で優れています。
+    (<a href="mod/mod_mime.html#multipleext">複数の拡張子のあるファイル</a>
+    も参照してください)。
+    </p>
+
+    <p>ハンドラはサーバに組み込んだり、モジュールとして含めたり、
+    <a href="mod/mod_actions.html#action">Action</a>
+    ディレクティブとして追加したりすることができます。
+    以下は標準配布に組み込まれているハンドラです。
+    </p>
+
+    <ul>
+      <li><strong>default-handler</strong>: <code>default_handelr()</code>
+      を使ってファイルを送ります。
+      静的なコンテンツを扱うときにデフォルトで使用されるハンドラです。(core)</li>
+
+      <li><strong>send-as-is</strong>:
+      HTTP ヘッダのあるファイルをそのまま送ります。
+      (<a href="mod/mod_asis.html">mod_asis</a>)</li>
+
+      <li><strong>cgi-script</strong>: ファイルを CGI
+      スクリプトとして扱います。(<a href="mod/mod_cgi.html">mod_cgi</a>)</li>
+
+      <li><strong>imap-file</strong>:
+      イメージマップのルールファイルとして解析します。
+      (<a href="mod/mod_imap.html">mod_imap</a>)</li>
+
+      <li><strong>server-info</strong>: サーバの設定情報を取得します。
+      (<a href="mod/mod_info.html">mod_info</a>)</li>
+
+      <li><strong>server-parsed</strong>: SSI を解析します。
+      (<a href="mod/mod_include.html">mod_include</a>)</li>
+
+      <li><strong>server-status</strong>: サーバの状態報告を取得します。
+      (<a href="mod/mod_status.html">mod_status</a>)</li>
+
+      <li><strong>type-map</strong>:
+      コンテントネゴシエーションのためのタイプマップとして解析します。
+      (<a href="mod/mod_negotiation.html">mod_negotiation</a>)</li>
+    </ul>
+    <hr />
+
+    <h2><a id="examples" name="examples">例</a></h2>
+
+    <h3>CGI スクリプトを用いて静的なコンテンツを変更する</h3>
+
+    <p>以下のディレクティブによって、拡張子が <code>html</code>
+    であるファイルは <code>footer.pl</code>
+    CGI スクリプトを起動するようになります。</p>
+<pre>
+     Action add-footer /cgi-bin/footer.pl
+     AddHandler add-footer .html
+</pre>
+
+    <p>CGI スクリプトは望ましい修正や追加を行なって、元々要求された文書
+    (環境変数 <code>PATH_TRANSLATED</code> で指されています)
+    を送る責任があります。
+    </p>
+
+    <h3>HTTP ヘッダのあるファイル</h3>
+
+    <p>以下のディレクティブは <code>send-as-is</code>
+    ハンドラを使用するように指示します。このハンドラは自分自身の
+    HTTP ヘッダを持っているファイルに使用されます。ここでは、拡張子に関わらず、
+    <code>/web/htdocs/asis</code> ディレクトリにある全てのファイルは
+    <code>send-as-is</code> ハンドラによって扱われます。
+    </p>
+<pre>
+    &lt;Directory /web/htdocs/asis&gt;
+    SetHandler send-as-is
+    &lt;/Directory&gt;
+</pre>
+    <hr />
+
+    <h2><a id="programmer" name="programmer">プログラマ向けのメモ</a></h2>
+
+
+    <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
+    <a href="misc/API.html">Apache API</a> に追加されました。
+    詳しく言うと、<code>request_rec</code>
+    構造体に新しいレコードが追加されたということです。</p>
+<pre>
+    char *handler
+</pre>
+
+    <p>もしモジュールがハンドラに関わりたい場合、やらなければならないことは、
+    リクエストが <code>invoke_handler</code>ステージに達する以前に
+     <code>r-&gt;handler</code>を設定することだけです。
+    ハンドラはコンテントタイプの代わりにハンドラ名を使うようになっていること以外は、
+    以前と同じように実装されています。必ず要求されているわけではありませんが、
+    メディアタイプの名前空間を侵さないように、ハンドラの名前にはスラッシュ
+    を含まない、ダッシュ (訳注: "-") で分離された名前を付ける習慣になっています。
+    </p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

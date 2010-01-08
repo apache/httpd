@@ -1,0 +1,336 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.18 $ ($Date: 2004/05/13 13:11:38 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="9">
+        <strong>Features</strong> 
+
+        <ol>
+          <li><a href="#proxy">Does or will Apache act as a Proxy
+          server?</a></li>
+
+          <li><a href="#multiviews">What are "multiviews"?</a></li>
+
+          <li><a href="#putsupport">Why can't I publish to my
+          Apache server using PUT on Netscape Gold and other
+          programs?</a></li>
+
+          <li><a href="#SSL-i">Why doesn't Apache include
+          SSL?</a></li>
+
+          <li><a href="#footer">How can I attach a footer to my
+          documents without using SSI?</a></li>
+
+          <li><a href="#search">Does Apache include a search
+          engine?</a></li>
+
+          <li><a href="#rotate">How can I rotate my log
+          files?</a></li>
+
+          <li><a href="#conditional-logging">How do I keep certain
+          requests from appearing in my logs?</a></li>
+
+          <li><a href="#dbinteg">Does Apache include any sort of
+          database integration?</a></li>
+
+          <li><a href="#asp">Can I use Active Server Pages (ASP)
+          with Apache?</a></li>
+
+          <li><a href="#java">Does Apache come with Java
+          support?</a></li>
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>I. Features</h3>
+
+    <ol>
+      <li>
+        <a id="proxy" name="proxy"><strong>Does or will Apache act
+        as a Proxy server?</strong></a> 
+
+        <p>Apache version 1.1 and above comes with a <a
+        href="../mod/mod_proxy.html">proxy module</a>. If compiled
+        in, this will make Apache act as a caching-proxy
+        server.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="multiviews" name="multiviews"><strong>What are
+        "multiviews"?</strong></a> 
+
+        <p>"Multiviews" is the general name given to the Apache
+        server's ability to provide language-specific document
+        variants in response to a request. This is documented quite
+        thoroughly in the <a href="../content-negotiation.html"
+        rel="Help">content negotiation</a> description page. In
+        addition, <cite>Apache Week</cite> carried an article on
+        this subject entitled "<a
+        href="http://www.apacheweek.com/features/negotiation"
+        rel="Help"><cite>Content Negotiation
+        Explained</cite></a>".</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="putsupport" name="putsupport"><strong>Why can't I
+        publish to my Apache server using PUT on Netscape Gold and
+        other programs?</strong></a> 
+
+        <p>Because you need to install and configure a script to
+        handle the uploaded files. This script is often called a
+        "PUT" handler. There are several available, but they may
+        have security problems. Using FTP uploads may be easier and
+        more secure, at least for now. For more information, see
+        the <cite>Apache Week</cite> article <a
+        href="http://www.apacheweek.com/features/put"><cite>Publishing
+        Pages with PUT</cite></a>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="SSL-i" name="SSL-i"><strong>Why doesn't Apache
+        include SSL?</strong></a> 
+
+        <p>SSL (Secure Socket Layer) data transport requires
+        encryption, and many governments have restrictions upon the
+        import, export, and use of encryption technology. If Apache
+        included SSL in the base package, its distribution would
+        involve all sorts of legal and bureaucratic issues, and it
+        would no longer be freely available. Also, some of the
+        technology required to talk to current clients using SSL is
+        patented by <a href="http://www.rsa.com/">RSA Data
+        Security</a>, who restricts its use without a license.</p>
+
+        <p>Some SSL implementations of Apache are available,
+        however; see the "<a
+        href="http://httpd.apache.org/related_projects.html">related
+        projects</a>" page at the main Apache web site.</p>
+
+        <p>You can find out more about this topic in the
+        <cite>Apache Week</cite> article about <a
+        href="http://www.apacheweek.com/features/ssl"
+        rel="Help"><cite>Apache and Secure
+        Transactions</cite></a>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="footer" name="footer"><strong>How can I attach a
+        footer to my documents without using SSI?</strong></a> 
+
+        <p>You can make arbitrary changes to static documents by
+        configuring an <a
+        href="../mod/mod_actions.html#action">Action</a> which
+        launches a CGI script. The CGI is then responsible for
+        setting a content-type and delivering the requested
+        document (the location of which is passed in the
+        <samp>PATH_TRANSLATED</samp> environment variable), along
+        with whatever footer is needed.</p>
+
+        <p>Busy sites may not want to run a CGI script on every
+        request, and should consider using an Apache module to add
+        the footer. There are several third party modules available
+        through the <a href="http://modules.apache.org/">Apache
+        Module Registry</a> which will add footers to documents.
+        These include mod_trailer, PHP
+        (<samp>php3_auto_append_file</samp>), mod_layout, and
+        mod_perl (<samp>Apache::Sandwich</samp>).</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="search" name="search"><strong>Does Apache include a
+        search engine?</strong></a> 
+
+        <p>Apache does not include a search engine, but there are
+        many good commercial and free search engines which can be
+        used easily with Apache. Some of them are listed on the <a
+        href="http://www.searchtools.com/tools/tools.html">Web Site
+        Search Tools</a> page. Open source search engines that are
+        often used with Apache include <a
+        href="http://www.htdig.org/">ht://Dig</a> and <a
+        href="http://sunsite.berkeley.edu/SWISH-E/">SWISH-E</a>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="rotate" name="rotate"><strong>How can I rotate my
+        log files?</strong></a> 
+
+        <p>The simple answer: by piping the transfer log into an
+        appropriate log file rotation utility.</p>
+
+        <p>The longer answer: In the src/support/ directory, you
+        will find a utility called <a
+        href="../programs/rotatelogs.html">rotatelogs</a> which can
+        be used like this:</p>
+<pre>
+   TransferLog "|/path/to/rotatelogs /path/to/logs/access_log 86400"
+</pre>
+
+        <p>to enable daily rotation of the log files.<br />
+         A more sophisticated solution of a logfile rotation
+        utility is available under the name <code>cronolog</code>
+        from Andrew Ford's site at <a
+        href="http://www.cronolog.org/">http://www.cronolog.org/</a>.
+        It can automatically create logfile subdirectories based on
+        time and date, and can have a constant symlink point to the
+        rotating logfiles. (As of version 1.6.1, cronolog is
+        available under the <a href="../LICENSE">Apache
+        License</a>). Use it like this:</p>
+<pre>
+   CustomLog "|/path/to/cronolog --symlink=/usr/local/apache/logs/access_log /usr/local/apache/logs/%Y/%m/access_log" combined
+</pre>
+        <hr />
+      </li>
+
+      <li>
+        <a id="conditional-logging"
+        name="conditional-logging"><strong>How do I keep certain
+        requests from appearing in my logs?</strong></a> 
+
+        <p>The maximum flexibility for removing unwanted
+        information from log files is obtained by post-processing
+        the logs, or using piped-logs to feed the logs through a
+        program which does whatever you want. However, Apache does
+        offer the ability to prevent requests from ever appearing
+        in the log files. You can do this by using the <a
+        href="../mod/mod_setenvif.html#setenvif"><code>SetEnvIf</code></a>
+        directive to set an environment variable for certain
+        requests and then using the conditional <a
+        href="../mod/mod_log_config.html#customlog-conditional"><code>
+        CustomLog</code></a> syntax to prevent logging when the
+        environment variable is set.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="dbinteg" name="dbinteg"><b>Does Apache support any
+        sort of database integration?</b></a> 
+
+        <p>No. Apache is a Web (HTTP) server, not an application
+        server. The base package does not include any such
+        functionality. See the <a href="http://www.php.net/">PHP
+        project</a> and the <a
+        href="http://perl.apache.org/">mod_perl project</a> for
+        examples of modules that allow you to work with databases
+        from within the Apache environment.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="asp" name="asp"><b>Can I use Active Server Pages
+        (ASP) with Apache?</b></a> 
+
+        <p>The base Apache Web Server package does not include ASP
+        support. However, a number of projects provide ASP or 
+        ASP-like functionality for Apache. Some of these are:</p>
+            <ul>
+            <li><a
+            href="http://www.apache-asp.org/">Apache::ASP</a></li>
+            <li><a
+            href="http://go-mono.com/archive/xsp-0.10.html">mod_mono</a></li>
+            <li><a
+            href="http://wwws.sun.com/software/chilisoft/">Chilisoft
+            ASP</a></li>
+            </ul>
+        <p>See also the <a
+        href="http://httpd.apache.org/related_projects.html">related
+        projects</a> page to find out more.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="java" name="java"><b>Does Apache come with Java
+        support?</b></a> 
+
+        <p>The base Apache Web server package does not include
+        support for Java, Java Server Pages, Enterprise Java Beans,
+        or Java servlets. Those features are available as add-ons
+        from the Apache/Java project site, &lt;URL:<a
+        href="http://jakarta.apache.org">http://jakarta.apache.org/</a>&gt;.</p>
+        <hr />
+      </li>
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

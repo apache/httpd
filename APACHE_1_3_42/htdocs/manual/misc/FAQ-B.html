@@ -1,0 +1,464 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.14 $ ($Date: 2003/06/07 06:01:40 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="2">
+        <strong>General Technical Questions</strong> 
+
+        <ol>
+          <li><a href="#what2do">"Why can't I ...? Why won't ...
+          work?" What to do in case of problems</a></li>
+
+          <li><a href="#compatible">How compatible is Apache with
+          my existing NCSA 1.3 setup?</a></li>
+
+          <li><a href="#year2000">Is Apache Year 2000
+          compliant?</a></li>
+
+          <li><a href="#submit_patch">How do I submit a patch to
+          the Apache Group?</a></li>
+
+          <li><a href="#domination">Why has Apache stolen my
+          favourite site's Internet address?</a></li>
+
+          <li><a href="#apspam">Why am I getting spam mail from the
+          Apache site?</a></li>
+
+          <li><a href="#redist">May I include the Apache software
+          on a CD or other package I'm distributing?</a></li>
+
+          <li><a href="#zoom">What's the best hardware/operating
+          system/... How do I get the most out of my Apache Web
+          server?</a></li>
+
+          <li><a href="#regex">What are "regular
+          expressions"?</a></li>
+
+          <li><a href="#binaries">Why isn't there a binary for my
+          platform?</a></li>
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>B. General Technical Questions</h3>
+
+    <ol>
+      <li>
+        <a id="what2do" name="what2do"><strong>"Why can't I ...?
+        Why won't ... work?" What to do in case of
+        problems</strong></a> 
+
+        <p>If you are having trouble with your Apache server
+        software, you should take the following steps:</p>
+
+        <ol>
+          <li>
+            <strong>Check the errorlog!</strong> 
+
+            <p>Apache tries to be helpful when it encounters a
+            problem. In many cases, it will provide some details by
+            writing one or messages to the server error log.
+            Sometimes this is enough for you to diagnose &amp; fix
+            the problem yourself (such as file permissions or the
+            like). The default location of the error log is
+            <samp>/usr/local/apache/logs/error_log</samp>, but see
+            the <a
+            href="../mod/core.html#errorlog"><samp>ErrorLog</samp></a>
+            directive in your config files for the location on your
+            server.</p>
+          </li>
+
+          <li>
+            <strong>Check the <a
+            href="http://httpd.apache.org/docs/misc/FAQ.html">FAQ</a>!</strong>
+            
+
+            <p>The latest version of the Apache Frequently-Asked
+            Questions list can always be found at the main Apache
+            web site.</p>
+          </li>
+
+          <li>
+            <strong>Check the Apache bug database</strong> 
+
+            <p>Most problems that get reported to The Apache Group
+            are recorded in the <a
+            href="http://bugs.apache.org/">bug database</a>.
+            <em><strong>Please</strong> check the existing reports,
+            open <strong>and</strong> closed, before adding
+            one.</em> If you find that your issue has already been
+            reported, please <em>don't</em> add a "me, too" report.
+            If the original report isn't closed yet, we suggest
+            that you check it periodically. You might also consider
+            contacting the original submitter, because there may be
+            an email exchange going on about the issue that isn't
+            getting recorded in the database.</p>
+          </li>
+
+          <li>
+            <strong>Ask in a user support group.</strong> 
+
+            <p>A lot of common problems never make it to the bug
+            database because there's already high Q&amp;A traffic
+            about them in the <a
+            href="http://httpd.apache.org/userslist.html">Users
+            mailing list</a> or <a
+            href="news:comp.infosystems.www.servers.unix"><samp>comp.infosystems.www.servers.unix</samp></a>
+            and related newsgroups. These newsgroups are also
+            available via <a
+            href="http://groups.google.com/groups?group=comp.infosystems.www.servers">
+            Google</a>. Many Apache users, and some of the developers,
+            can be found roaming their virtual halls, so it is suggested
+            that you seek wisdom there. The chances are good that
+            you'll get a faster answer there than from the bug
+            database, even if you <em>don't</em> see your question
+            already posted.</p>
+          </li>
+
+          <li>
+            <strong>If all else fails, report the problem in the
+            bug database</strong> 
+
+            <p>If you've gone through those steps above that are
+            appropriate and have obtained no relief, then please
+            <em>do</em> let The Apache Group know about the problem
+            by <a
+            href="http://httpd.apache.org/bug_report.html">logging
+            a bug report</a>.</p>
+
+            <p>If your problem involves the server crashing and
+            generating a core dump, please include a backtrace (if
+            possible). As an example,</p>
+
+            <dl>
+              <dd><code># cd <em>ServerRoot</em><br />
+               # dbx httpd core<br />
+               (dbx) where</code></dd>
+            </dl>
+
+            <p>(Substitute the appropriate locations for your
+            <samp>ServerRoot</samp> and your <samp>httpd</samp> and
+            <samp>core</samp> files. You may have to use
+            <code>gdb</code> instead of <code>dbx</code>.)</p>
+          </li>
+        </ol>
+        <hr />
+      </li>
+
+      <li>
+        <a id="compatible" name="compatible"><strong>How compatible
+        is Apache with my existing NCSA 1.3 setup?</strong></a> 
+
+        <p>Apache attempts to offer all the features and
+        configuration options of NCSA httpd 1.3, as well as many of
+        the additional features found in NCSA httpd 1.4 and NCSA
+        httpd 1.5.</p>
+
+        <p>NCSA httpd appears to be moving toward adding
+        experimental features which are not generally required at
+        the moment. Some of the experiments will succeed while
+        others will inevitably be dropped. The Apache philosophy is
+        to add what's needed as and when it is needed.</p>
+
+        <p>Friendly interaction between Apache and NCSA developers
+        should ensure that fundamental feature enhancements stay
+        consistent between the two servers for the foreseeable
+        future.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="year2000" name="year2000"><strong>Is Apache Year
+        2000 compliant?</strong></a> 
+
+        <p>Yes, Apache is Year 2000 compliant.</p>
+
+        <p>Apache internally never stores years as two digits. On
+        the HTTP protocol level RFC1123-style addresses are
+        generated which is the only format a HTTP/1.1-compliant
+        server should generate. To be compatible with older
+        applications Apache recognizes ANSI C's
+        <code>asctime()</code> and RFC850-/RFC1036-style date
+        formats, too. The <code>asctime()</code> format uses
+        four-digit years, but the RFC850 and RFC1036 date formats
+        only define a two-digit year. If Apache sees such a date
+        with a value less than 70 it assumes that the century is
+        <samp>20</samp> rather than <samp>19</samp>.</p>
+
+        <p>Although Apache is Year 2000 compliant, you may still
+        get problems if the underlying OS has problems with dates
+        past year 2000 (<em>e.g.</em>, OS calls which accept or
+        return year numbers). Most (UNIX) systems store dates
+        internally as signed 32-bit integers which contain the
+        number of seconds since 1<sup>st</sup> January 1970, so the
+        magic boundary to worry about is the year 2038 and not
+        2000. But modern operating systems shouldn't cause any
+        trouble at all.</p>
+
+        <p>Users of Apache 1.2.x should upgrade to a current
+        version of Apache 1.3 (see <a
+        href="../new_features_1_3.html#misc">year-2000 improvements
+        in Apache 1.3</a> for details).</p>
+
+        <p>The Apache HTTP Server project is an open-source
+        software product of the Apache Software Foundation. The
+        project and the Foundation <b>cannot</b> offer legal
+        assurances regarding any suitability of the software for
+        your application. There are several commercial Apache
+        support organizations and derivative server products
+        available that may be able to stand behind the software and
+        provide you with any assurances you may require. You may
+        find links to some of these vendors at <samp>&lt;<a
+        href="http://www.apache.org/info/support.cgi">http://www.apache.org/info/support.cgi</a>&gt;</samp>.</p>
+
+        <p>The Apache HTTP server software is distributed with the
+        following disclaimer, found in the software license:</p>
+<pre>
+   THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
+   EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+   PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
+   ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+   NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+   OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+</pre>
+        <hr />
+      </li>
+
+      <li>
+        <a id="submit_patch" name="submit_patch"><strong>How do I
+        submit a patch to the Apache Group?</strong></a> 
+
+        <p>The Apache Group encourages patches from outside
+        developers. There are 2 main "types" of patches: small
+        bugfixes and general improvements. Bugfixes should be
+        submitting using the Apache <a
+        href="http://httpd.apache.org/bug_report.html">bug report
+        page</a>. Improvements, modifications, and additions should
+        follow the instructions below.</p>
+
+        <p>In general, the first course of action is to be a member
+        of the <samp>dev@httpd.apache.org</samp> mailing list. This
+        indicates to the Group that you are closely following the
+        latest Apache developments. Your patch file should be
+        generated using either '<code>diff&nbsp;-c</code>' or
+        '<code>diff&nbsp;-u</code>' against the latest CVS tree. To
+        submit your patch, send email to
+        <samp>dev@httpd.apache.org</samp> with a
+        <samp>Subject:</samp> line that starts with
+        <samp>[PATCH]</samp> and includes a general description of
+        the patch. In the body of the message, the patch should be
+        clearly described and then included at the end of the
+        message. If the patch-file is long, you can note a URL to
+        the file instead of the file itself. Use of MIME
+        enclosures/attachments should be avoided.</p>
+
+        <p>Be prepared to respond to any questions about your
+        patches and possibly defend your code. If your patch
+        results in a lot of discussion, you may be asked to submit
+        an updated patch that incorporates all changes and
+        suggestions.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="domination" name="domination"><strong>Why has Apache
+        stolen my favourite site's Internet address?</strong></a> 
+
+        <p>The simple answer is: "It hasn't." This misconception is
+        usually caused by the site in question having migrated to
+        the Apache Web server software, but not having migrated the
+        site's content yet. When Apache is installed, the default
+        page that gets installed tells the Webmaster the
+        installation was successful. The expectation is that this
+        default page will be replaced with the site's real content.
+        If it doesn't, complain to the Webmaster, not to the Apache
+        project -- we just make the software and aren't responsible
+        for what people do (or don't do) with it.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="apspam" name="apspam"><strong>Why am I getting spam
+        mail from the Apache site?</strong></a> 
+
+        <p>The short answer is: "You aren't." Usually when someone
+        thinks the Apache site is originating spam, it's because
+        they've traced the spam to a Web site, and the Web site
+        says it's using Apache. See the <a
+        href="#domination">previous FAQ entry</a> for more details
+        on this phenomenon.</p>
+
+        <p>No marketing spam originates from the Apache site. The
+        only mail that comes from the site goes only to addresses
+        that have been <em>requested</em> to receive the mail.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="redist" name="redist"><strong>May I include the
+        Apache software on a CD or other package I'm
+        distributing?</strong></a> 
+
+        <p>The detailed answer to this question can be found in the
+        Apache license, which is included in the Apache
+        distribution in the file <code>LICENSE</code>. You can also
+        find it on the Web at <samp>&lt;<a
+        href="http://www.apache.org/LICENSE.txt">http://www.apache.org/LICENSE.txt</a>&gt;</samp>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="zoom" name="zoom"><strong>What's the best
+        hardware/operating system/... How do I get the most out of
+        my Apache Web server?</strong></a> 
+
+        <p>Check out Dean Gaudet's <a
+        href="perf-tuning.html">performance tuning page</a>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="regex" name="regex"><strong>What are "regular
+        expressions"?</strong></a> 
+
+        <p>Regular expressions are a way of describing a pattern -
+        for example, "all the words that begin with the letter A"
+        or "every 10-digit phone number" or even "Every sentence
+        with two commas in it, and no capital letter Q". Regular
+        expressions (aka "regex"s) are useful in Apache because
+        they let you apply certain attributes against collections
+        of files or resources in very flexible ways - for example,
+        all .gif and .jpg files under any "images" directory could
+        be written as /\/images\/.*(jpg|gif)$/.</p>
+
+        <p>The best overview around is probably the one which comes
+        with Perl. We implement a simple subset of Perl's regex
+        support, but it's still a good way to learn what they mean.
+        You can start by going to the <a
+        href="http://www.perl.com/doc/manual/html/pod/perlre.html">CPAN
+        page on regular expressions</a>, and branching out from
+        there.</p> <hr />
+      </li>
+
+      <li>
+        <a id="binaries" name="binaries"><b>Why isn't there a
+        binary for my platform?</b></a> 
+
+        <p>The developers make sure that the software builds and
+        works correctly on the platforms available to them; this
+        does <i>not</i> necessarily mean that <i>your</i> platform
+        is one of them. In addition, the Apache HTTP server project
+        is primarily source oriented, meaning that distributing
+        valid and buildable source code is the purpose of a
+        release, not making sure that there is a binary package for
+        all of the supported platforms.</p>
+
+        <p>If you don't see a kit for your platform listed in the
+        binary distribution area (&lt;URL:<a
+        href="http://httpd.apache.org/dist/httpd/binaries/">http://httpd.apache.org/dist/httpd/binaries/</a>&gt;),
+        it means either that the platform isn't available to any of
+        the developers, or that they just haven't gotten around to
+        preparing a binary for it. As this is a voluntary project,
+        they are under no obligation to do so. Users are encouraged
+        and expected to build the software themselves.</p>
+
+        <p>The sole exception to these practices is the Windows
+        package. Unlike most Unix and Unix-like platforms, Windows
+        systems do not come with a bundled software development
+        environment, so we <i>do</i> prepare binary kits for
+        Windows when we make a release. Again, however, it's a
+        voluntary thing and only a limited number of the developers
+        have the capability to build the InstallShield package, so
+        the Windows release may lag somewhat behind the source
+        release. This lag should be no more than a few days at
+        most.</p>
+        <hr />
+      </li>
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

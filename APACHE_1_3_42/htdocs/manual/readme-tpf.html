@@ -1,0 +1,735 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+<title>The Apache TPF Port</title>
+<style type="text/css">
+   /*<![CDATA[*/ <!--
+   .indented { margin-left: 25pt; }
+   .output { padding-left: 20px; padding-right: 20px; background-color: #dadada;  }
+   .nobr { white-space: nowrap; }
+   --> /*]]>*/
+    </style>
+</head>
+
+<body>
+<center>
+<h2><a id="top" name="top"></a> Overview of the Apache TPF Port</h2>
+<hr />
+[
+<a href="#configuration_files">Configuration&nbsp;Files</a>
+| <a href="#whats_available">What's&nbsp;Available</a>
+| <a href="#cgi">CGI&nbsp;Scripts</a>
+| <a href="#options">Options</a>
+| <a href="#syslog">Syslog</a>
+| <a href="#porting_notes">Porting&nbsp;Notes</a>&nbsp;]
+<hr />
+</center>
+
+<p>Apache includes changes allowing it to run on IBM's EBCDIC-based
+<a href="http://www.ibm.com/software/ts/tpf/index.html">TPF</a> (Transaction
+Processing Facility) operating system. This builds on the
+<a href="http://httpd.apache.org/docs/ebcdic.html">EBCDIC changes</a>
+previously made to Apache.</p>
+
+<p>Refer to either the <a href="install-tpf.html">TPF4.1 installation</a> or
+<a href="install-ztpf.html">z/TPF1.1 installation</a> documents for
+step-by-step build instructions.</p>
+
+<p>If you would like to be notified when new versions of Apache are released
+consider joining the
+<a href="http://httpd.apache.org/lists.html">announcements list</a>.</p><br />
+<center>
+<h2><a id="configuration_files" name="configuration_files"></a>Apache Configuration Files</h2>
+</center>
+
+<h3>Directives</h3>
+<p>The distributed configuration files (httpd.conf-dist and mime.types, both
+located in the conf subdirectory) work on TPF with the following caveats:</p>
+
+<ul>
+   <li>Apache on TPF does not support listening on multiple ports.</li>
+
+   <li>Performance considerations may dictate lowering the default values for
+   TimeOut (5 minutes) and KeepAliveTimeout (15 seconds) in order to reduce the
+   number of active ECBs on your system.</li>
+
+   <li>The default value of MaxRequestsPerChild is zero (infinity). A non-zero
+   value is recommended on TPF to control resource utilization (such as heap
+   storage) by the long running Apache child ECBs.</li>
+
+   <li>Depending on your typical response size, the SendBufferSize directive
+   can be useful for setting SO_SNDBUF higher than the 32KB default buffer size
+   for Native Stack.</li>
+
+</ul>
+
+<h3>Restart</h3>
+<p>Unlike on Unix systems, newly created Apache child processes on TPF re-read
+the various configuration files (such as httpd.conf and mime.types). <br />
+Therefore when you change the configuration file(s) you should manually restart
+the server to keep the Apache parent process and all child processes in sync.
+There are several ways to restart Apache on TPF:</p>
+
+<ul style="list-style: none;">
+
+   <li><b>zinet stop/start</b>
+   <p><tt>zinet stop s-<i>apache</i></tt> followed by a <br />
+   <tt>zinet start s-<i>apache</i></tt></p>
+
+   <p>The Apache parent tells its children to immediately exit, even if they're
+   processing a request.  Once the children exit, the parent exits.</p></li>
+
+   <li><b>"stop now" sigterm signal</b>
+   <p><tt>zfile kill -s sigterm <i>apache_parent_pid</i></tt> or <br />
+   <tt>zfile kill -s sigterm `cat /usr/local/apache/logs/httpd.pid`</tt></p>
+
+   <p>The Apache parent tells its children to immediately exit, even if they're
+   processing a request.  Once the children exit, the parent exits.  For the
+   DAEMON model, InetD (ZINET) will create a new Apache parent to replace the
+   one that exited.</p></li>
+
+   <li><b>"restart now" sighup signal</b>
+   <p><tt>zfile kill -s sighup <i>apache_parent_pid</i></tt> or <br />
+   <tt>zfile kill -s sighup `cat /usr/local/apache/logs/httpd.pid`</tt></p>
+
+   <p>The Apache parent tells its children to immediately exit, even if they're
+   processing a request.  Then the existing parent re-reads the configuration
+   file(s) and creates new children to replace the exiting ones.</p></li>
+
+   <li><b>"graceful restart" sigusr1 signal</b>
+   <p><tt>zfile kill -s sigusr1 <i>apache_parent_pid</i></tt> or <br />
+   <tt>zfile kill -s sigusr1 `cat /usr/local/apache/logs/httpd.pid`</tt></p>
+
+   <p>The Apache parent asks its children to exit when they're finished with
+   any requests they're currently handling.  Then the existing parent re-reads
+   the configuration file(s) and creates new children to replace the exiting
+   ones.</p>
+   <p>"Graceful restart" can be used to pick up new configuration files without
+   disrupting traffic.</p></li>
+
+</ul>
+<p>Apache documentation details
+<a href="http://httpd.apache.org/docs/1.3/stopping.html">Stopping and Restarting Apache</a>.</p>
+
+<p>Please see the Spring 2006 TPFUG
+<a href="http://www.ibm.com/software/htp/tpf/tpfug/tughd.htm">Apache presentation</a>
+(in the Open Source section) for TPF diagrams and additional information on
+start, stop, and restart.</p><br />
+
+<center>
+<h2><a id="whats_available" name="whats_available"></a> What's Available in this Version</h2>
+</center>
+
+<p>Unless otherwise noted either TPF4.1&nbsp;PUT09 or z/TPF1.1 is required for
+the server to function on TPF.</p>
+
+<p>The Apache organization provides
+<a href="http://httpd.apache.org/docs/">online documentation</a> describing
+the various modules and components of the server.</p>
+
+<h3>Components/modules tested on TPF:</h3>
+
+<ul>
+   <li>alloc.c</li>
+
+   <li>ap_base64.c</li>
+
+   <li>ap_checkpass.c</li>
+
+   <li>ap_cpystrn.c</li>
+
+   <li>ap_ebcdic.c</li>
+
+   <li>ap_fnmatch.c</li>
+
+   <li>ap_md5c.c</li>
+
+   <li>ap_sha1.c</li>
+
+   <li>ap_signal.c</li>
+
+   <li>ap_slack.c</li>
+
+   <li>ap_snprintf.c</li>
+
+   <li>buff.c</li>
+
+   <li>buildmark.c</li>
+
+   <li>http_config.c</li>
+
+   <li>http_core.c</li>
+
+   <li>http_log.c</li>
+
+   <li>http_main.c</li>
+
+   <li>http_protocol.c</li>
+
+   <li>http_request.c</li>
+
+   <li>http_vhost.c</li>
+
+   <li>logresolve.c <em>(requires TPF4.1&nbsp;PUT 10 or z/TPF1.1)</em></li>
+
+   <li>mod_access.c <em>(Use of mod_access directives "<tt>allow&nbsp;from</tt>" &amp; "<tt>deny&nbsp;from</tt>"
+   with host <u>names</u> (versus ip addresses) requires TPF4.1&nbsp;PUT 10 or z/TPF1.1)</em></li>
+
+   <li>mod_actions.c</li>
+
+   <li>mod_alias.c</li>
+
+   <li>mod_asis.c</li>
+
+   <li>mod_auth.c</li>
+
+   <li>mod_auth_anon.c</li>
+
+   <li>mod_autoindex.c</li>
+
+   <li>mod_cern_meta.c</li>
+
+   <li>mod_cgi.c <em>(requires TPF4.1&nbsp;PUT 10 or z/TPF1.1)</em></li>
+
+   <li>mod_digest.c</li>
+
+   <li>mod_dir.c</li>
+
+   <li>mod_env.c</li>
+
+   <li>mod_example.c</li>
+
+   <li>mod_expires.c</li>
+
+   <li>mod_headers.c</li>
+
+   <li>mod_imap.c</li>
+
+   <li>mod_include.c <em>(CGI execution requires TPF4.1&nbsp;PUT 10 or z/TPF1.1)</em></li>
+
+   <li>mod_info.c</li>
+
+   <li>mod_log_agent.c</li>
+
+   <li>mod_log_config.c</li>
+
+   <li>mod_log_forensic.c</li>
+
+   <li>mod_log_referer.c</li>
+
+   <li>mod_mime.c</li>
+
+   <li>mod_mime_magic.c</li>
+
+   <li>mod_negotiation.c</li>
+
+   <li><a href="http://hpwww.ec-lyon.fr/~vincent/apache/mod_put.html">mod_put.c</a> <em>(third party module)</em></li>
+
+   <li>mod_setenvif.c</li>
+
+   <li>mod_speling.c</li>
+
+   <li>mod_status.c</li>
+
+   <li>mod_tpf_shm_static.c <em>(third party module, requires
+   TPF4.1&nbsp;PUT 10 or z/TPF1.1)</em></li>
+
+   <li>mod_unique_id.c <em>(requires TPF4.1&nbsp;PUT 10 or z/TPF1.1)</em></li>
+
+   <li>mod_userdir.c</li>
+
+   <li>mod_usertrack.c</li>
+
+   <li>os.c</li>
+
+   <li>os-inline.c</li>
+
+   <li>regular expression parser <em>(used only on TPF4.1)</em></li>
+
+   <li>rfc1413.c</li>
+
+   <li>rotatelogs.c <em>(requires TPF4.1&nbsp;PUT 10 or z/TPF1.1; on TPF4.1,
+   if PJ27214 is implemented be sure to apply PJ28367)</em></li>
+
+   <li>syslog <em>(requires TPF4.1&nbsp;PUT13 or z/TPF1.1; see
+   <a href="#syslog">usage</a> instructions)</em></li>
+
+   <li>util.c</li>
+
+   <li>util_date.c</li>
+
+   <li>util_md5.c</li>
+
+   <li>util_script.c</li>
+
+   <li>util_uri.c</li>
+
+</ul>
+
+<h3>Components/modules not yet supported on TPF:</h3>
+
+<ul>
+   <li>htdigest.c</li>
+
+   <li>htpasswd.c</li>
+
+   <li>lib/expat-lite</li>
+
+   <li>lib/sdbm</li>
+
+   <li>mod_auth_digest.c</li>
+
+   <li>mod_proxy.c</li>
+
+   <li>mod_rewrite.c</li>
+
+   <li>mod_vhost_alias.c</li>
+
+   <li>proxy_cache.c</li>
+
+   <li>proxy_connect.c</li>
+
+   <li>proxy_ftp.c</li>
+
+   <li>proxy_http.c</li>
+
+   <li>proxy_util.c</li>
+</ul>
+
+<h3>Components/modules that don't apply or that probably won't ever be
+   available on TPF:</h3>
+
+<ul>
+   <li>ab.c</li>
+
+   <li>ap_getpass.c</li>
+
+   <li>mod_auth_db.c</li>
+
+   <li>mod_auth_dbm.c</li>
+
+   <li>mod_auth_db.module</li>
+
+   <li>mod_mmap_static.c</li>
+
+   <li>mod_so.c</li>
+
+   <li>suexec.c</li>
+
+</ul><br />
+
+<center>
+<h2><a id="cgi" name="cgi"></a>How to Use CGI Scripts</h2>
+</center>
+
+<p>The following is a very simple example of a CGI script ("Hello World") and
+the necessary steps to run it.<br />
+Refer to the
+<a href="http://httpd.apache.org/docs/mod/mod_cgi.html">mod_cgi module</a>
+for additional information.</p>
+
+<h3>Add necessary directives to httpd.conf:</h3>
+
+<p>Example:</p>
+
+<p class="indented"><tt>ScriptLog logs/script_log<br />
+ScriptAlias /cgi-bin/ /usr/local/apache/cgi-bin/</tt></p>
+
+<p>A request for <tt>http://</tt><i>myserver</i><tt>/cgi-bin/filename.cgi</tt>
+would cause the server to run the script
+<span class="nobr"><tt>/usr/local/apache/cgi-bin/filename.cgi</tt></span></p>
+
+<h3>Create the CGI script:</h3>
+
+<p>For this example <tt>QZZ1</tt> is the name of the TPF program that will be
+executed by the CGI script.<br />
+The directory path must match what is in the httpd.conf file for
+<tt>ScriptAlias</tt> directive.</p>
+
+<p class="indented"><b><tt>zfile echo "#!QZZ1" &gt; /usr/local/apache/cgi-bin/filename.cgi<br />
+zfile cat /usr/local/apache/cgi-bin/filename.cgi&nbsp;&nbsp;&nbsp;&nbsp;</tt></b>
+(expected output:&nbsp;<tt>#!QZZ1</tt>)</p>
+
+<h3>Mark the script as executable:</h3>
+
+<p class="indented">
+<b><tt>zfile chmod 755 /usr/local/apache/cgi-bin/filename.cgi</tt></b></p>
+
+<h3>Create, load, and activate the CGI program (QZZ1) on TPF:</h3>
+
+<table class="indented" summary="CGI example"><tr><td class="output"><pre>
+/* QZZ1-- simple "Hello world" program to demonstrate basic CGI output */
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+
+   /* Print the CGI response header, required for all HTML output. */
+   /* Note the extra \n, to send the blank line.                   */
+   /* Print the HTML response page to STDOUT.                      */
+   printf("Content-type: text/html\n\n");
+
+   printf("&lt;html&gt;\n");
+   printf("&lt;head&gt;&lt;title&gt;CGI Output&lt;/title&gt;&lt;/head&gt;\n");
+   printf("&lt;body&gt;\n");
+   printf("&lt;h1&gt;Hello world.&lt;/h1&gt;\n");
+   printf("&lt;/body&gt;\n");
+   printf("&lt;/html&gt;\n");
+
+   exit(0);
+}
+</pre></td></tr></table>
+
+<h3>Request the CGI script from a browser:</h3>
+
+<p class="indented"><tt>http://</tt><i>myserver</i><tt>/cgi-bin/filename.cgi</tt></p>
+
+<center>
+<br />
+<h2><a id="options" name="options">How to Use Apache's "Dash" Options</a></h2>
+</center>
+
+<h3>Overview of Apache's "dash" options:</h3>
+
+<p>Apache can be invoked with various options, such as "-f".  Some of these
+options display information about the server or perform syntax checks but they
+don't actually start the server.  These "information only" options are useful
+with TPF's ZFILE command line feature: -h, -l, -L, -S, -t, -T, -v, and -V.</p>
+
+<p>Another option, -X, is used when actually running the server. It is passed
+to Apache through the ZINET XPARM field since ZINET is the only way to start
+the server on TPF.</p>
+
+<p>A third group of options apply to both the informational displays (ZFILE)
+and running the server (ZINET XPARM): -d, -D and -f.</p>
+
+<p>The rest of Apache's options are either not applicable or are not supported
+on TPF.</p>
+
+<p>On TPF4.1 using dash options requires PJ27277 which shipped on PUT13.</p>
+
+<h3>Table of supported Apache options</h3>
+
+<table border="1" cellpadding="5" summary="Supported Apache options">
+<tr>
+   <td>
+   <b>Option&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+
+   <td><b>ZFILE</b></td>
+
+   <td><b>ZINET</b></td>
+
+   <td><b>Description</b></td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-d</b> <i>path</i></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">ZINET</td>
+
+   <td valign="top">Set the initial value for the
+            ServerRoot directive.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-D</b> <i>define</i></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">ZINET</td>
+
+   <td valign="top">Set a configuration parameter which can be used with
+   &lt;IfDefine&gt;...&lt;/IfDefine&gt; sections in the configuration file to
+   conditionally skip or process commands.</td>
+
+</tr>
+
+<tr>
+   <td valign="top"><b>-f</b> <i>filename</i></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">ZINET</td>
+
+   <td valign="top">Use an alternate configuration file instead of the default
+   conf/httpd.conf file.</td>
+        </tr>
+
+        <tr>
+   <td valign="top"><b>-h</b></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">List a short summary of available command line options then
+   exit. Note that this outputs all options, not just those supported on TPF.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-l</b></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">List modules compiled into the server then exit.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-L</b></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">List available configuration directives then exit. Note
+   that this outputs all configuration directives, not just those supported on
+   TPF.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-S</b></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">Show the settings as parsed from the configuration file
+   then exit. Currently Apache only shows the virtual host settings.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-t</b></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">Run syntax tests for configuration files with document root
+   checks then exit.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-T</b></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">Run syntax tests for configuration
+            files <i>without</i> document root checks then
+            exit.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-v</b></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">Show the version number then exit.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-V</b></td>
+
+   <td valign="top">ZFILE</td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">Show the version number and various compile settings then
+   exit.</td>
+</tr>
+
+<tr>
+   <td valign="top"><b>-X</b></td>
+
+   <td valign="top">&nbsp;</td>
+
+   <td valign="top">ZINET</td>
+
+   <td valign="top">Run in single-process mode for internal debugging purposes
+   only. The parent process does not tpf_fork any children.</td>
+</tr>
+</table>
+
+<p>See
+<a href="http://httpd.apache.org/docs/programs/httpd.html">http://httpd.apache.org/docs/programs/httpd.html</a>
+for more information about these command line options.</p>
+
+<h3>Setup for ZFILE examples:</h3>
+
+<p>Ensure Apache (CHTA) is loaded.</p>
+
+<p>Create the httpd script:</p>
+
+<p class="indented"><b><tt>zfile echo "#!CHTA" &gt; /bin/httpd<br />
+zfile cat /bin/httpd&nbsp;&nbsp;</tt></b>
+(expected output:&nbsp;&nbsp;<tt>#!CHTA</tt>)</p>
+
+<p class="indented">(See "ZFILE-Activate a TPF Segment or Script" in the
+<a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Information Center</a>
+for additional information.)</p>
+
+<p>Mark the script as executable:</p>
+
+<p class="indented"><b><tt>zfile chmod 755 /bin/httpd</tt></b></p>
+
+<h3>ZFILE example 1:</h3>
+
+<p class="indented"><b><tt>zfile httpd -v</tt></b></p>
+
+<table class="indented" summary="ZFILE example 1"><tr><td class="output"><pre>
+FILE0001I 11.43.09 START OF DISPLAY FROM httpd -v
+Server version: Apache/1.3.20 (TPF)
+Server built: May 23 2001 09:39:22
+END OF DISPLAY
+</pre></td></tr></table>
+
+<h3>ZFILE example 2:</h3>
+
+<p class="indented"><b><tt>zfile httpd -t -f /usr/local/apache/conf/alt.conf</tt></b></p>
+
+<table class="indented" summary="ZFILE example 2">
+<tr>
+   <td class="output"><pre>
+FILE0002I 11.47.26 START OF ERROR DISPLAY FROM httpd -t ...
+Syntax OK
+END OF DISPLAY
+</pre></td>
+</tr>
+</table>
+
+<h3>ZINET XPARM example:</h3>
+
+<p>This example uses an alternate configuration file called
+/usr/local/apache/conf/alt.conf.</p>
+
+<p>Create and transfer your alternate configuration file to your TPF test system.</p>
+
+<p>Add and start Apache using <tt>ZINET</tt> commands:</p>
+
+<p class="indented"><b><tt>zinet add s-<i>apache</i> pgm-<i>chta</i>
+model-daemon user-root xparm--f conf/alt.conf<br />
+zinet start s-<i>apache</i></tt></b></p>
+
+<p>(See "ZINET ADD-Add an Internet Server Application Entry" and "ZINET
+ALTER-Change an Internet Server Application Entry" in the
+<a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Information Center</a>
+for more information about using the XPARM field.)</p><br />
+
+<center>
+<h2><a id="syslog" name="syslog"></a>Syslog Daemon</h2>
+</center>
+
+<h3>Syslog overview:</h3>
+
+<p>The syslog daemon is a server process that provides a message logging
+facility for application and system processes.  It can be used to write
+messages to log files or to tapes. See "Operating the Syslog Daemon" in the
+<a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Information Center</a>.
+And see the Apache ErrorLog
+<a href="http://httpd.apache.org/docs/mod/core.html">directive documentation</a>
+for details on how to use syslog with Apache.</p>
+
+<p>On TPF4.1 syslog capabilities were added with PJ27214 which shipped with
+PUT13. You must follow the
+<a href="install-tpf.html#syslog">TPF4.1 syslog-specific installation instructions</a>
+in order to have the option of using syslog with Apache on a TPF4.1 system.
+No additional installation steps are needed for z/TPF1.1 systems.</p>
+
+<h3>Tips on using syslog with your Apache error log:</h3>
+
+<p>This section provides some tips on using syslog with Apache.
+It is not meant to replace the syslog documentation in the TPF TCP/IP publication.</p>
+
+<ul>
+   <li>The syslog daemon will not create files. If you are logging to a file
+   (as specified in the <tt>syslog.conf</tt> configuration file) that file must
+   already exist and have permissions that allow the syslog daemon to write to
+   it.</li>
+
+   <li>You must restart the syslog daemon for it to recognize changes to its
+   <tt>syslog.conf</tt> configuration file.</li>
+
+   <li>The syslog daemon must be active prior to starting Apache.</li>
+
+   <li>To indicate you want to use syslog with your Apache error log add the
+   following directive to your <tt>httpd.conf</tt> file:
+   "<tt>ErrorLog&nbsp;syslog:</tt><i>facility</i>" where <i>facility</i> is
+   "local0" through "local7".</li>
+
+   <li>Apache will default the facility to "local7" if you omit the facility
+   name from the ErrorLog directive (that is "<tt>ErrorLog&nbsp;syslog</tt>").</li>
+
+   <li>The syslog facility name must be one that is recognized by both Apache
+   and the syslog.h header file. The facility names "local0" through "local7"
+   are explicitly set aside for your use.</li>
+
+   <li>Although "local0" through "local7" are recommended user
+   facility names, here is the complete list of names recognized by both
+   Apache and TPF's syslog.h: auth, cron, daemon, kern, local0, local1,
+   local2, local3, local4, local5, local6, local7, lpr, mail, news,
+   syslog, user, and uucp.</li>
+
+   <li>You won't see the normal Apache startup/shutdown messages when you
+   use syslog with your Apache error log.</li>
+
+   <li>Syslog does not support TCP/IP Offload devices (ZCLAW;
+   <em>used only on TPF4.1</em>)</li>
+
+</ul><br />
+
+<center>
+<h2><a id="porting_notes" name="porting_notes"></a>Porting Notes</h2>
+</center>
+
+<h3>Changes made due to differences between UNIX and TPF's process models:</h3>
+
+<ul>
+   <li><p><b>Signals</b>: On TPF a signal sent to a process remains
+   unhandled until the process explicitly requests that signals be
+   handled using the <tt>tpf_process_signals()</tt> function.<br />
+   Additionally, the default action for an alarm on TPF4.1 without
+   PJ30263 applied is to take an OPR-7777 dump and exit.<br />
+   On UNIX, z/TPF, and TPF4.1 with PJ30263 applied the default is the
+   equivalent of <tt>exit()</tt> with no dump taken.</p></li>
+
+   <li><p><b>Find that function...</b> Some simple functions &amp;
+   definitions needed to be added on TPF. They are in src/os/tpf/os.h.</p></li>
+
+   <li><p><b>EBCDIC changes:</b> TPF-specific conversion tables between
+   US-ASCII and EBCDIC (character set IBM-1047 to be exact) were created.</p></li>
+
+   <li><p><b>Miscellaneous, minor changes:</b> Various minor changes
+   (such as casting) were made due to differences in how some functions
+   are implemented on TPF.</p></li>
+</ul>
+
+<br />
+
+<hr />
+
+<center>
+[ <a href="#top">top</a>
+| <a href="#configuration_files">Configuration&nbsp;Files</a>
+| <a href="#whats_available">What's&nbsp;Available</a>
+| <a href="#cgi">CGI&nbsp;Scripts</a>
+| <a href="#options">Options</a>
+| <a href="#syslog">Syslog</a>
+| <a href="#porting_notes">Porting&nbsp;Notes</a>&nbsp;]
+</center>
+
+<hr />
+
+</body>
+</html>
