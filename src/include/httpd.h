@@ -389,7 +389,7 @@ extern "C" {
 
 #define SERVER_BASEVENDOR   "Apache Group"
 #define SERVER_BASEPRODUCT  "Apache"
-#define SERVER_BASEREVISION "1.3.42-dev"
+#define SERVER_BASEREVISION "1.3.42"
 #define SERVER_BASEVERSION  SERVER_BASEPRODUCT "/" SERVER_BASEREVISION
 
 #define SERVER_PRODUCT  SERVER_BASEPRODUCT
@@ -410,7 +410,7 @@ API_EXPORT(const char *) ap_get_server_built(void);
  * Always increases along the same track as the source branch.
  * For example, Apache 1.4.2 would be '10402100', 2.5b7 would be '20500007'.
  */
-#define APACHE_RELEASE 10342000
+#define APACHE_RELEASE 10342100
 
 #define SERVER_PROTOCOL "HTTP/1.1"
 #ifndef SERVER_SUPPORT
