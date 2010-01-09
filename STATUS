@@ -139,6 +139,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Patch: http://svn.apache.org/viewvc?view=revision&revision=807015
     +1: niq, covener
 
+  * mod_reqtimeout: New module to limit time waiting for requests from clients.
+    Backport current version from trunk.
+    Trunk Patch: http://svn.apache.org/viewvc?rev=821591&view=rev
+                 http://svn.apache.org/viewvc?rev=821792&view=rev
+                 http://svn.apache.org/viewvc?rev=821990&view=rev
+                 http://svn.apache.org/viewvc?rev=822509&view=rev
+                 http://svn.apache.org/viewvc?rev=822857&view=rev
+                 http://svn.apache.org/viewvc?rev=825177&view=rev
+                 http://svn.apache.org/viewvc?rev=834499&view=rev
+                 http://svn.apache.org/viewvc?rev=885121&view=rev
+    2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2.patch
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
