@@ -87,6 +87,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * http_request: preserve port over internal redirect.
+    PR 35999
+    Patch: http://svn.apache.org/viewvc?view=revision&revision=807015
+    +1: niq, covener, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -133,11 +137,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: covener, pgollucci
     rpluem says: I am +1 once you provide proper documentation for the manual
     covener says: doc revision added above
-
-  * http_request: preserve port over internal redirect.
-    PR 35999
-    Patch: http://svn.apache.org/viewvc?view=revision&revision=807015
-    +1: niq, covener
 
   * mod_reqtimeout: New module to limit time waiting for requests from clients.
     Backport current version from trunk.
