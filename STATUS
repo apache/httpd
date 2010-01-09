@@ -87,11 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * http_request: preserve port over internal redirect.
-    PR 35999
-    Patch: http://svn.apache.org/viewvc?view=revision&revision=807015
-    +1: niq, covener, sf
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

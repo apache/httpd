@@ -9,6 +9,9 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) Preserve Port information over internal redirects
+     PR 35999 [Jonas Ringh <jonas.ringh cixit.se>]
+
   *) mod_filter: fix FilterProvider matching where "dispatch" string
      doesn't exist.
      PR 48054 [<tietw gmail.com>]
