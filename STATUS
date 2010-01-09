@@ -146,6 +146,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2.patch
     +1: sf
 
+  * http_request: We don't need to create new->allowed_methods both
+    on line 413 and again on line 450.
+    Patch: http://svn.apache.org/viewvc?view=revision&revision=897570
+    +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
