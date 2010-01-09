@@ -447,7 +447,6 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->err_headers_out = r->err_headers_out;
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
     new->notes           = apr_table_make(r->pool, 5);
-    new->allowed_methods = ap_make_method_list(new->pool, 2);
 
     new->htaccess        = r->htaccess;
     new->no_cache        = r->no_cache;
