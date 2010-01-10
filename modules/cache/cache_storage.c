@@ -498,7 +498,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
                 && (*(param + len + 1) == '=')
                 && !strchr(param + len + 2, '/')) {
                 path = apr_pstrndup(p, path, param - path);
-                break;
+                continue;
             }
             /*
              * Check if the identifier is in the querystring and cut it out.
@@ -552,7 +552,6 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
                         }
                     }
                 }
-                break;
             }
         }
     }
