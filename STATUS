@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * http_request: We don't need to create new->allowed_methods both
     on line 413 and again on line 450.
     Patch: http://svn.apache.org/viewvc?view=revision&revision=897570
-    +1: niq
+    +1: niq, sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
