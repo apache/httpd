@@ -159,6 +159,7 @@ typedef struct util_ldap_state_t {
     long  connectionTimeout;
     int   verify_svr_cert;
     int debug_level;                    /* SDK debug level */
+    struct timeval *opTimeout;
 
 } util_ldap_state_t;
 
