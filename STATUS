@@ -173,6 +173,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-v2.patch
     +1: rjung, rpluem
 
+  * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=891282&view=rev
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?rev=896900&view=rev
+    Backport:
+      http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-v2.patch
+    Patch applies also on top of above partial fix for CVE-2009-3555
+    with some offset.
+    +1: rjung
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
