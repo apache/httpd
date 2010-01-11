@@ -284,7 +284,7 @@ static int uldap_connection_init(request_rec *r,
     int version  = LDAP_VERSION3;
     apr_ldap_err_t *result = NULL;
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
-    struct timeval timeOut = {10,0};    /* 10 second connection timeout */
+    struct timeval connectionTimeout = {10,0};    /* 10 second connection timeout */
 #endif
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
@@ -435,15 +435,34 @@ static int uldap_connection_init(request_rec *r,
 
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
     if (st->connectionTimeout > 0) {
-        timeOut.tv_sec = st->connectionTimeout;
+        connectionTimeout.tv_sec = st->connectionTimeout;
     }
 
     if (st->connectionTimeout >= 0) {
         rc = apr_ldap_set_option(r->pool, ldc->ldap, LDAP_OPT_NETWORK_TIMEOUT,
-                                 (void *)&timeOut, &(result));
+                                 (void *)&connectionTimeout, &(result));
         if (APR_SUCCESS != rc) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "LDAP: Could not set the connection timeout");
+        }
+    }
+#endif
+
+#ifdef LDAP_OPT_TIMEOUT
+    /*
+     * LDAP_OPT_TIMEOUT is not portable, but it influences all synchronous ldap
+     * function calls and not just ldap_search_ext_s(), which accepts a timeout
+     * parameter.
+     * XXX: It would be possible to simulate LDAP_OPT_TIMEOUT by replacing all
+     * XXX: synchronous ldap function calls with asynchronous calls and using
+     * XXX: ldap_result() with a timeout.
+     */
+    if (st->opTimeout) {
+        rc = apr_ldap_set_option(r->pool, ldc->ldap, LDAP_OPT_TIMEOUT,
+                                 st->opTimeout, &(result));
+        if (APR_SUCCESS != rc) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "LDAP: Could not set LDAP_OPT_TIMEOUT");
         }
     }
 #endif
@@ -462,6 +481,8 @@ static int uldap_connection_open(request_rec *r,
 {
     int rc = 0;
     int failures = 0;
+    int new_connection = 0;
+    util_ldap_state_t *st;
 
     /* sanity check for NULL */
     if (!ldc) {
@@ -480,6 +501,7 @@ static int uldap_connection_open(request_rec *r,
     */
     if (NULL == ldc->ldap)
     {
+       new_connection = 1;
        rc = uldap_connection_init( r, ldc );
        if (LDAP_SUCCESS != rc)
        {
@@ -488,22 +510,54 @@ static int uldap_connection_open(request_rec *r,
     }
 
 
+    st = (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
+                                                   &ldap_module);
+
     /* loop trying to bind up to 10 times if LDAP_SERVER_DOWN error is
-     * returned.  Break out of the loop on Success or any other error.
+     * returned. If LDAP_TIMEOUT is returned on the first try, maybe the
+     * connection was idle for a long time and has been dropped by a firewall.
+     * In this case close the connection immediately and try again. To set
+     * a timeout in a portable way, we have to use ldap_simple_bind() and 
+     * ldap_result() instead of ldap_simple_bind_s().
+     *
+     * On Success or any other error, break out of the loop.
      *
      * NOTE: Looping is probably not a great idea. If the server isn't
      * responding the chances it will respond after a few tries are poor.
      * However, the original code looped and it only happens on
      * the error condition.
-      */
+     */
     for (failures=0; failures<10; failures++)
     {
-        rc = ldap_simple_bind_s(ldc->ldap,
-                                (char *)ldc->binddn,
-                                (char *)ldc->bindpw);
-        if (!AP_LDAP_IS_SERVER_DOWN(rc)) {
+        LDAPMessage *result;
+        int msgid = ldap_simple_bind(ldc->ldap,
+                                     (char *)ldc->binddn,
+                                     (char *)ldc->bindpw);
+        if (msgid == -1) {
+            ldc->reason = "LDAP: ldap_simple_bind() failed";
             break;
-        } else if (failures == 5) {
+        }
+        rc = ldap_result(ldc->ldap, msgid, 0, st->opTimeout, &result);
+        if (rc == -1) {
+            ldc->reason = "LDAP: ldap_simple_bind() result retrieval failed";
+            break;
+        }
+        else if (rc == 0) {
+            ldc->reason = "LDAP: ldap_simple_bind() timed out";
+            rc = LDAP_TIMEOUT;
+        } else if (ldap_parse_result(ldc->ldap, result, &rc, NULL,
+                                     NULL, NULL, NULL, 1 ) == -1) {
+            ldc->reason = "LDAP: ldap_simple_bind() parse result failed";
+            break;
+        }
+        if ((AP_LDAP_IS_SERVER_DOWN(rc) && failures == 5) ||
+            (rc == LDAP_TIMEOUT && failures == 0))
+        {
+           if (rc == LDAP_TIMEOUT && !new_connection) {
+               ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                             "ldap_simple_bind() timed out on reused "
+                             "connection, dropped by firewall?");
+           }
            /* attempt to init the connection once again */
            uldap_connection_unbind( ldc );
            rc = uldap_connection_init( r, ldc );
@@ -511,7 +565,10 @@ static int uldap_connection_open(request_rec *r,
            {
                break;
            }
-       }
+        }
+        else if (!AP_LDAP_IS_SERVER_DOWN(rc)) {
+            break;
+        }
     }
 
     /* free the handle if there was an error
@@ -519,7 +576,7 @@ static int uldap_connection_open(request_rec *r,
     if (LDAP_SUCCESS != rc)
     {
        uldap_connection_unbind(ldc);
-        ldc->reason = "LDAP: ldap_simple_bind_s() failed";
+        ldc->reason = "LDAP: ldap_simple_bind() failed";
     }
     else {
         ldc->bound = 1;
@@ -809,11 +866,21 @@ start_over:
     /* search for reqdn */
     result = ldap_search_ext_s(ldc->ldap, (char *)reqdn, LDAP_SCOPE_BASE,
                                "(objectclass=*)", NULL, 1,
-                               NULL, NULL, NULL, APR_LDAP_SIZELIMIT, &res);
+                               NULL, NULL, st->opTimeout, APR_LDAP_SIZELIMIT, &res);
     if (AP_LDAP_IS_SERVER_DOWN(result))
     {
         ldc->reason = "DN Comparison ldap_search_ext_s() "
                       "failed with server down";
+        uldap_connection_unbind(ldc);
+        goto start_over;
+    }
+    if (result == LDAP_TIMEOUT && failures == 0) {
+        /*
+         * we are reusing a connection that doesn't seem to be active anymore
+         * (firewall state drop?), let's try a new connection.
+         */
+        ldc->reason = "DN Comparison ldap_search_ext_s() "
+                      "failed with timeout";
         uldap_connection_unbind(ldc);
         goto start_over;
     }
@@ -957,6 +1024,15 @@ start_over:
         uldap_connection_unbind(ldc);
         goto start_over;
     }
+    if (result == LDAP_TIMEOUT && failures == 0) {
+        /*
+         * we are reusing a connection that doesn't seem to be active anymore
+         * (firewall state drop?), let's try a new connection.
+         */
+        ldc->reason = "ldap_compare_s() failed with timeout";
+        uldap_connection_unbind(ldc);
+        goto start_over;
+    }
 
     ldc->reason = "Comparison complete";
     if ((LDAP_COMPARE_TRUE == result) ||
@@ -1054,6 +1130,15 @@ start_over:
     if (AP_LDAP_IS_SERVER_DOWN(result)) {
         ldc->reason = "ldap_search_ext_s() for subgroups failed with server"
                       " down";
+        uldap_connection_unbind(ldc);
+        goto start_over;
+    }
+    if (result == LDAP_TIMEOUT && failures == 0) {
+        /*
+         * we are reusing a connection that doesn't seem to be active anymore
+         * (firewall state drop?), let's try a new connection.
+         */
+        ldc->reason = "ldap_search_ext_s() for subgroups failed with timeout";
         uldap_connection_unbind(ldc);
         goto start_over;
     }
@@ -1517,7 +1602,7 @@ start_over:
     result = ldap_search_ext_s(ldc->ldap,
                                (char *)basedn, scope,
                                (char *)filter, attrs, 0,
-                               NULL, NULL, NULL, APR_LDAP_SIZELIMIT, &res);
+                               NULL, NULL, st->opTimeout, APR_LDAP_SIZELIMIT, &res);
     if (AP_LDAP_IS_SERVER_DOWN(result))
     {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
@@ -1764,7 +1849,7 @@ start_over:
     result = ldap_search_ext_s(ldc->ldap,
                                (char *)basedn, scope,
                                (char *)filter, attrs, 0,
-                               NULL, NULL, NULL, APR_LDAP_SIZELIMIT, &res);
+                               NULL, NULL, st->opTimeout, APR_LDAP_SIZELIMIT, &res);
     if (AP_LDAP_IS_SERVER_DOWN(result))
     {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
@@ -2421,6 +2506,55 @@ static void *util_ldap_create_dir_config(apr_pool_t *p, char *d) {
    return dc;
 }
 
+static const char *util_ldap_set_op_timeout(cmd_parms *cmd,
+                                            void *dummy,
+                                            const char *val)
+{
+    long timeout;
+    char *endptr;
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
+                                                  &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    timeout = strtol(val, &endptr, 10);
+    if ((val == endptr) || (*endptr != '\0')) {
+        return "Timeout not numerical";
+    }
+    if (timeout < 0) {
+        return "Timeout must be non-negative";
+    }
+
+    if (timeout) {
+        if (!st->opTimeout) {
+            st->opTimeout = apr_pcalloc(cmd->pool, sizeof(struct timeval));
+        }
+        st->opTimeout->tv_sec = timeout;
+    }
+    else {
+        st->opTimeout = NULL;
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+                 "[%" APR_PID_T_FMT "] ldap connection: Setting op timeout "
+                 "to %d seconds.", getpid(), timeout);
+
+#ifndef LDAP_OPT_TIMEOUT
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+                 "LDAP: LDAP_OPT_TIMEOUT option not supported by the "
+                 "LDAP library in use. Using LDAPTimeout value as search "
+                 "timeout only." );
+#endif
+
+    return NULL;
+}
+
+
 
 static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 {
@@ -2448,6 +2582,8 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->secure = APR_LDAP_NONE;
     st->secure_set = 0;
     st->connectionTimeout = 10;
+    st->opTimeout = apr_pcalloc(p, sizeof(struct timeval));
+    st->opTimeout->tv_sec = 60;
     st->verify_svr_cert = 1;
 
     return st;
@@ -2495,6 +2631,7 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
         trying to make special expections for one LDAP SDK, GLOBAL_ONLY 
         is being enforced on this setting as well. */
     st->connectionTimeout = base->connectionTimeout;
+    st->opTimeout = base->opTimeout;
     st->verify_svr_cert = base->verify_svr_cert;
     st->debug_level = base->debug_level;
 
@@ -2772,6 +2909,11 @@ static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPLibraryDebug", util_ldap_set_debug_level,
                   NULL, RSRC_CONF,
                   "Enable debugging in LDAP SDK (Default: off, values: SDK specific"),
+
+    AP_INIT_TAKE1("LDAPTimeout", util_ldap_set_op_timeout,
+                  NULL, RSRC_CONF,
+                  "Specify the LDAP bind/search timeout in seconds "
+                  "(0 = no limit). Default: 60"),
 
     {NULL}
 };

@@ -210,6 +210,7 @@
  *                         to mod_proxy_connect
  * 20091230.0 (2.3.5-dev)  Move ftp_directory_charset from proxy_dir_conf
  *                         to proxy_ftp_dir_conf(mod_proxy_ftp)
+ * 20091230.1 (2.3.5-dev)  add util_ldap_state_t.opTimeout
  *
  */
 
@@ -218,7 +219,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20091230
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
