@@ -226,8 +226,9 @@ headers</td></tr>
     successful responses, and is always needed to affect non-<code>2<var>xx</var></code> 
     responses such as redirects or client errors.</p>
 
-    <p>The action it performs is determined by the second
-    argument. This can be one of the following values:</p>
+    <p>The action it performs is determined by the first
+    argument (second argument if a <var>condition</var> is specified).
+    This can be one of the following values:</p>
 
     <dl>
     <dt><code>add</code></dt>
@@ -284,7 +285,7 @@ headers</td></tr>
     expression</a>.</p>
 
     <p>For <code>set</code>, <code>append</code>, <code>merge</code> and
-    <code>add</code> a <var>value</var> is specified as the third argument.
+    <code>add</code> a <var>value</var> is specified as the next argument.
     If <var>value</var>
     contains spaces, it should be surrounded by double quotes.
     <var>value</var> may be a character string, a string containing format
