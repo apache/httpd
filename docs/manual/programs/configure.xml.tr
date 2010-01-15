@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 678129:886856 (outdated) -->
+<!-- English Revision: 886856 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -236,9 +236,9 @@
         <dt><code>--sysconfdir=<var>dizin</var></code></dt>
         <dd><code>httpd.conf</code>, <code>mime.types</code> gibi tek
           makinelik salt okunur sunucu yapılandırma dosyaları
-          <code><em>dizin</em></code> dizinine kurulur. Öntanımlı olarak
-          <code>sysconfdir</code> bu dizini <code><var>PREFIX</var>/etc</code>
-          olarak tanımlar.</dd>
+          <code><em>dizin</em></code> dizinine kurulur.
+          <code>sysconfdir</code> için <code><var>PREFIX</var>/conf</code>
+          öntanımlı dizindir.</dd>
       </dl>
     </section>
   </section>

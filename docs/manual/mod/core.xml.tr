@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 662727 -->
+<!-- English Revision: 890374 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -962,6 +962,12 @@ Denetimi</a></seealso>
       devre dışı bırakılır ve yerleşik hata iletisi döndürülür. Bu, hatalı
       istekler yaparak güvenlik sorunlarına yol açılmak istenmesi
       durumlarında gereklidir.</p>
+
+    <p><module>mod_proxy</module> kullanıyorsanız, gerekise vekili olunan
+      sunucu yararına özel hata iletileri üretmenizi sağlayabilen <directive
+      module="mod_proxy">ProxyErrorOverride</directive> yönergesini etkin
+      kılabilirsiniz. Bu yönergeyi etkinleştirmezseniz Apache vekaleten
+      sunulan içerik için özel hata sayfaları üretmeyecektir.</p>
 
     <p>2.0 öncesi sürümlerde iletiler bir çift çift-tırnak içine alınmayıp,
       tek bir çift-tırnak ile başlatılması yeterli olurdu.</p>
