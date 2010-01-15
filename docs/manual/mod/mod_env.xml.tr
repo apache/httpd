@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 421100:833097 (outdated) -->
+<!-- English Revision: 833097 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -74,6 +74,15 @@ müdahale etmek için kullanılır.</description>
     <example><title>Örnek</title>
       SetEnv SPECIAL_PATH /foo/bin
     </example>
+
+    <note><p>Bu yönerge ile atanan dahili ortam değişkenleri, erişim denetimi ve
+      URI'leri dosya isimleri ile eşleştirme gibi daha önceki istek işleme
+      yönergelerinden <em>sonra</em> atanır. Eğer atayacağınız ortam
+      değikenlerinin <directive module="mod_rewrite">RewriteRule</directive>
+      yönergelerindeki gibi erken dönem işlem aşamalarında etkili olmasını
+      istiyorsanız bu ortam değişkenlerini <directive
+      module="mod_setenvif">SetEnvIf</directive> yönergesi ile atamalısınız.</p>
+    </note>
 </usage>
 </directivesynopsis>
 

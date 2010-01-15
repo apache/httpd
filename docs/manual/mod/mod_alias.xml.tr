@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 678099:890440 (outdated) -->
+<!-- English Revision: 890440 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -188,11 +188,58 @@ eşler.</description>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
     </example>
 
-    <p>Ayrıca, <code><em>URL-yolu</em></code> ile harf büyüklüğüne duyarsız
-      eşleşmeler sağlayacak düzenli ifadeler de kullanılabilir:</p>
+    <p><glossary ref="regex">Düzenli ifadeler</glossary> tüm gücüyle
+      kullanılabilir Örneğin, <code><em>URL-yolu</em></code> ile harf büyüklüğüne
+      duyarsız eşleşmeler sağlayacak düzenli ifadeler kullanılabilir:</p>
 
     <example>
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
+    </example>
+
+    <p><directive module="mod_alias">Alias</directive>
+      ile <directive module="mod_alias">AliasMatch</directive> arasındaki
+      belirgin tek fark <directive module="mod_alias">Alias</directive>
+      yönergesinin URI'nin bir ek bölümünü, sağda, dosya yolunun sonundaki
+      eşleşen parçayı özdevinimli olarak kopyalayacak olmasıdır. Halbuki
+      <directive module="mod_alias">AliasMatch </directive> bunu yapmaz. Yani,
+      hemen her durumda, istek URI'sinin baştan sona tümünün düzenli ifade ile
+      eşleşmesini ve sağ taraftaki ikamenin kullanılmasını istersiniz.</p>
+
+    <p>Başka bir deyişle, <directive module="mod_alias">Alias</directive> yerine
+      <directive module="mod_alias">AliasMatch</directive> yazmak aynı etkiyi
+      sağlamayacaktır. En azından, düzenli ifadenin başına <code>^</code> ve
+      sonuna <code>(.*)$</code> ekledikten sonra yer değiştirme parçasının sonuna
+      da <code>$1</code> eklemeniz gerekir.</p>
+
+    <p>Örneğin, bunu AliasMatch ile değiştirmek istediğinizi varsayalım:</p>
+
+    <example>
+      Alias /image/ /ftp/pub/image/
+    </example>
+
+    <p>Bu aynı şey değildir; bunu yapmayın! Bu, herhangi bir yerinde /image/
+      içeren tüm istekleri /ftp/pub/image/ dizinine gönderecektir:</p>
+
+    <example>
+      AliasMatch /image/ /ftp/pub/image/
+    </example>
+
+    <p>Aynı etkiyi elde etmek için yapacağınız bu olacaktır:</p>
+
+    <example>
+      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
+    </example>
+
+    <p>Şüphesiz, <directive module="mod_alias">Alias</directive> yönergesinin
+      çalıştığı yerde <directive module="mod_alias">AliasMatch</directive>
+      kullanmanın bir yararı yoktur. <directive
+      module="mod_alias">AliasMatch</directive> daha karmaşık şeyler yapma imkanı
+      verir. Örneğin, farklı dizinler altındaki farklı dosyalar için başka
+      yerdeki dosyaları sunmak isteyelim:</p>
+
+    <example>
+      AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br/>
+      AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
     </example>
   </usage>
 </directivesynopsis>
@@ -426,7 +473,21 @@ eşler ve hedefi bir CGI betiği olarak çalıştırır.</description>
     <example>
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
     </example>
-  </usage>
+
+    <p>AliasMatch'teki gibi, burada da <glossary ref="rexex">düzenli
+      ifadeler</glossary> tüm gücüyle kullanılabilir. Örneğin, bir URL yolu ile
+      harf büyüklüğüne duyarsız eşleşme sağlayan bir rumuz oluşturmak
+      mümkündür:</p>
+
+    <example>
+      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </example>
+
+    <p><directive module="mod_alias">Alias</directive> ve
+      <directive module="mod_alias">AliasMatch</directive> arasındaki farklarla
+      ilgili herşey burada da geçerlidir. Ayrıntılar için  <directive
+      module="mod_alias">AliasMatch</directive>yönergesine bakınız.</p>
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>
