@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_alias.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_alias.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Belge ağacının parçalarının dosya sisteminin parçalarıyla
 eşlenmesini sağlar ve URL yönlendirmesi yapar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -190,11 +189,57 @@ eşler.</td></tr>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
     </code></p></div>
 
-    <p>Ayrıca, <code><em>URL-yolu</em></code> ile harf büyüklüğüne duyarsız
-      eşleşmeler sağlayacak düzenli ifadeler de kullanılabilir:</p>
+    <p><a class="glossarylink" href="../glossary.html#regex" title="sözlüğe bakınız">Düzenli ifadeler</a> tüm gücüyle
+      kullanılabilir Örneğin, <code><em>URL-yolu</em></code> ile harf büyüklüğüne
+      duyarsız eşleşmeler sağlayacak düzenli ifadeler kullanılabilir:</p>
 
     <div class="example"><p><code>
       AliasMatch (?i)^/image(.*) /ftp/pub/image$1
+    </code></p></div>
+
+    <p><code class="directive"><a href="#alias">Alias</a></code>
+      ile <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> arasındaki
+      belirgin tek fark <code class="directive"><a href="#alias">Alias</a></code>
+      yönergesinin URI'nin bir ek bölümünü, sağda, dosya yolunun sonundaki
+      eşleşen parçayı özdevinimli olarak kopyalayacak olmasıdır. Halbuki
+      <code class="directive"><a href="#aliasmatch ">AliasMatch </a></code> bunu yapmaz. Yani,
+      hemen her durumda, istek URI'sinin baştan sona tümünün düzenli ifade ile
+      eşleşmesini ve sağ taraftaki ikamenin kullanılmasını istersiniz.</p>
+
+    <p>Başka bir deyişle, <code class="directive"><a href="#alias">Alias</a></code> yerine
+      <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> yazmak aynı etkiyi
+      sağlamayacaktır. En azından, düzenli ifadenin başına <code>^</code> ve
+      sonuna <code>(.*)$</code> ekledikten sonra yer değiştirme parçasının sonuna
+      da <code>$1</code> eklemeniz gerekir.</p>
+
+    <p>Örneğin, bunu AliasMatch ile değiştirmek istediğinizi varsayalım:</p>
+
+    <div class="example"><p><code>
+      Alias /image/ /ftp/pub/image/
+    </code></p></div>
+
+    <p>Bu aynı şey değildir; bunu yapmayın! Bu, herhangi bir yerinde /image/
+      içeren tüm istekleri /ftp/pub/image/ dizinine gönderecektir:</p>
+
+    <div class="example"><p><code>
+      AliasMatch /image/ /ftp/pub/image/
+    </code></p></div>
+
+    <p>Aynı etkiyi elde etmek için yapacağınız bu olacaktır:</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/image/(.*)$ /ftp/pub/image/$1
+    </code></p></div>
+
+    <p>Şüphesiz, <code class="directive"><a href="#alias">Alias</a></code> yönergesinin
+      çalıştığı yerde <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
+      kullanmanın bir yararı yoktur. <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> daha karmaşık şeyler yapma imkanı
+      verir. Örneğin, farklı dizinler altındaki farklı dosyalar için başka
+      yerdeki dosyaları sunmak isteyelim:</p>
+
+    <div class="example"><p><code>
+      AliasMatch ^/image/(.*)\.jpg$ /files/jpg.images/$1.jpg<br />
+      AliasMatch ^/image/(.*)\.gif$ /files/gif.images/$1.gif
     </code></p></div>
   
 </div>
@@ -428,7 +473,20 @@ eşler ve hedefi bir CGI betiği olarak çalıştırır.</td></tr>
     <div class="example"><p><code>
       ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
     </code></p></div>
-  
+
+    <p>AliasMatch'teki gibi, burada da <a class="glossarylink" href="../glossary.html#rexex" title="sözlüğe bakınız">düzenli
+      ifadeler</a> tüm gücüyle kullanılabilir. Örneğin, bir URL yolu ile
+      harf büyüklüğüne duyarsız eşleşme sağlayan bir rumuz oluşturmak
+      mümkündür:</p>
+
+    <div class="example"><p><code>
+      ScriptAliasMatch (?i)^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+    </code></p></div>
+
+    <p><code class="directive"><a href="#alias">Alias</a></code> ve
+      <code class="directive"><a href="#aliasmatch">AliasMatch</a></code> arasındaki farklarla
+      ilgili herşey burada da geçerlidir. Ayrıntılar için  <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>yönergesine bakınız.</p>
+
 </div>
 </div>
 <div class="bottomlang">

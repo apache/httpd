@@ -22,7 +22,6 @@
 <a href="./fr/caching.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
 <a href="./tr/caching.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu belge <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
       <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, <code class="module"><a href="./mod/mod_mem_cache.html">mod_mem_cache</a></code>,
@@ -235,14 +234,16 @@
           "public" değerlerinden birini içermelidir.</li>
 
         <li>Eğer URL (GET yöntemi kullanan bir HTML formunun yaptığı gibi) bir
-          sorgu dizgesi içeriyorsa  yanıt, RFC2616’nın 13.9. bölümünde
-          açıklandığı gibi bir "Expires:" başlığı içermedikçe yanıt içeriği
-          önbelleğe alınmayacaktır.</li>
+          sorgu dizgesi içeriyorsa  yanıt, RFC2616’nın 13.9 ve 13.2.1.
+          bölümünde açıklandığı gibi max-age veya s-maxage değerli bir
+          "Cache-Control:" başlığı veya  "Expires:" başlığı ile açıkça bir
+          zaman aşımı içermedikçe yanıt içeriği önbelleğe alınmayacaktır.</li>
 
         <li><code class="directive"><a href="./mod/mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></code>
           yönergesinin kullanımını gerektiren bir durum olmadıkça 200 durum
           koduna sahip bir yanıtın "Etag", "Last-Modified" ve "Expires"
-          başlıklarından en az birini içermesi gerekir.</li>
+          başlıklarından en az birini ya da max-age veya s-maxage değerli bir
+          "Cache-Control:" başlığını içermesi gerekir.</li>
 
         <li><code class="directive"><a href="./mod/mod_cache.html#cachestoreprivate">CacheStorePrivate</a></code>
           yönergesinin kullanımını gerektiren bir durum olmadıkça yanıt

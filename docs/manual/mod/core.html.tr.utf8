@@ -26,7 +26,6 @@
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/core.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Apache HTTP Sunucusunda daima mevcut olan çekirdek
  özellikler</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr></table>
@@ -1105,6 +1104,11 @@ kullanımı önerilmemektedir.</td></tr>
       istekler yaparak güvenlik sorunlarına yol açılmak istenmesi
       durumlarında gereklidir.</p>
 
+    <p><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> kullanıyorsanız, gerekirse vekili olunan
+      sunucu yararına özel hata iletileri üretmenizi sağlayabilen <code class="directive"><a href="../mod/mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></code> yönergesini etkin
+      kılabilirsiniz. Bu yönergeyi etkinleştirmezseniz Apache vekaleten
+      sunulan içerik için özel hata sayfaları üretmeyecektir.</p>
+
     <p>2.0 öncesi sürümlerde iletiler bir çift çift-tırnak içine alınmayıp,
       tek bir çift-tırnak ile başlatılması yeterli olurdu.</p>
 
@@ -1175,8 +1179,8 @@ kullanımı önerilmemektedir.</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Yönergesi</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>ETag</code> HTTP yanıt başlığını oluşturmakta kullanılacak
-  dosya özniteliklerini belirler.</td></tr>
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td><code>ETag</code>Duruk dosyalar için HTTP yanıt başlığını
+oluşturmakta kullanılacak dosya özniteliklerini belirler.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FileETag <var>bileşen</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>FileETag INode MTime Size</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
@@ -1184,15 +1188,16 @@ kullanımı önerilmemektedir.</td></tr>
 <tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Çekirdek</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>core</td></tr>
 </table>
-    <p><code class="directive">FileETag</code> yönergesi, belge bir dosyaya dayandığı
-      takdirde <code>ETag</code> (Entity Tag - öğe etiketi kısaltması) yanıt
-      başlığı alanını oluşturmakta kullanılacak dosya özniteliklerini
-      yapılandırır. (<code>ETag</code> değeri, ağ band genişliğinden kazanmak
-      için arabellek yönetiminde kullanılır.) Apache 1.3.22 ve öncesinde
-      <code>ETag</code> değeri <em>daima</em>  dosyanın düğümü, boyutu ve son
-      değişiklik zamanından (mtime) oluşurdu. <code class="directive">FileETag</code>
-      yönergesi ne kullanılması gerektiğini belirleyebilmenizi sağlar. Değer
-      olarak belirtilebilecek anahtar sözcükler şunlardır:</p>
+    <p><code class="directive">FileETag</code> yönergesi, belge bir duruk dosyaya
+      dayandığı takdirde <code>ETag</code> (Entity Tag - öğe etiketi
+      kısaltması) yanıt başlığı alanını oluşturmakta kullanılacak dosya
+      özniteliklerini yapılandırır. (<code>ETag</code> değeri, ağ band
+      genişliğinden kazanmak için arabellek yönetiminde kullanılır.) Apache
+      1.3.22 ve öncesinde <code>ETag</code> değeri <em>daima</em>  dosyanın
+      düğümü, boyutu ve son değişiklik zamanından (mtime) oluşurdu.
+      <code class="directive">FileETag</code> yönergesi ne kullanılması gerektiğini
+      belirleyebilmenizi sağlar. Değer olarak belirtilebilecek anahtar
+      sözcükler şunlardır:</p>
 
     <dl>
      <dt><strong>INode</strong></dt>
@@ -1221,6 +1226,7 @@ kullanımı önerilmemektedir.</td></tr>
       geçersizleştirme olmadığı takdirde onun alt dizinlerinin) ayarları
       <code>FileETag&nbsp;MTime&nbsp;Size</code> yapılandırmasına eşdeğer
       olacaktır.</p>
+
     <div class="warning"><h3>Uyarı</h3>
       WebDAV’ın etkin olduğu yerlerde veya dizinlerde saklama alanı sağlayıcı
       olarak <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> kullanılıyorsa öntanımlı ayarları
@@ -1230,6 +1236,13 @@ kullanımı önerilmemektedir.</td></tr>
       <code>ETag</code> ayarı <code class="directive">FileETag</code> yönergesi
       kullanılarak değiştirilirse koşullu istekler gerektiği gibi yerine
       getirilemez.
+    </div>
+
+    <div class="note"><h3>Sunucu Taraflı İçerik (SSI)</h3>
+      <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> tarafından çözümlenen yanıtlar için bie ETag
+      üretilmez. Bunun sebebi, gömülü SSI yönergeleri ile duruk dosyanın
+      boyutunda, değişiklik zamanında ve dosya düğümünde bir değişiklik
+      olmaksızın yanıt öğesinin değişebilmesidir.
     </div>
 
 </div>

@@ -25,9 +25,9 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
-<p>Bu belgede Apache HTTP sunucusunu yapılandırmakta kullanılan dosyalar açıklanmıştır.</p>
+<p>Bu belgede Apache HTTP sunucusunu yapılandırmakta kullanılan dosyalar
+açıklanmıştır.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">Ana Yapılandırma Dosyaları</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#syntax">Yapılandırma Dosyalarının Sözdizimi</a></li>
@@ -41,19 +41,55 @@
     
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
-    <p>Apache düz metin yapılandırma dosyalarına <a href="mod/directives.html">yönergeler</a> yerleştirilerek yapılandırılır. Ana yapılandırma dosyasının ismi normalde <code>httpd.conf</code>’tur. Bu dosyanın yeri derleme sırasında belirlenir, ancak çalıştırma sırasında <code>-f</code> komut satırı seçeneği ile başka bir yer belirtilebilir. Ayrıca, <code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergesi kullanılarak başka yapılandırma dosyaları da eklenebilir ve bu dosyaların isimleri belirtilirken dosya ismi şablonları kullanılabilir. Bu dosyaların içine de ana yapılandırma dosyasında olduğu gibi her türlü yönerge yerleştirilebilir. Ana yapılandırma dosyalarındaki değişiklikler Apache tarafından sadece başlatma veya yeniden başlatma sırasında etkin kılınır.</p>
+    <p>Apache düz metin yapılandırma dosyalarına <a href="mod/directives.html">yönergeler</a> yerleştirilerek yapılandırılır.
+    Ana yapılandırma dosyasının ismi normalde <code>httpd.conf</code>’tur. Bu
+    dosyanın yeri derleme sırasında belirlenir, ancak çalıştırma sırasında
+    <code>-f</code> komut satırı seçeneği ile başka bir yer belirtilebilir.
+    Ayrıca, <code class="directive"><a href="./mod/core.html#include">Include</a></code> yönergesi kullanılarak
+    başka yapılandırma dosyaları da eklenebilir ve bu dosyaların isimleri
+    belirtilirken dosya ismi şablonları kullanılabilir. Bu dosyaların içine de
+    ana yapılandırma dosyasında olduğu gibi her türlü yönerge
+    yerleştirilebilir. Ana yapılandırma dosyalarındaki değişiklikler Apache
+    tarafından sadece başlatma veya yeniden başlatma sırasında etkin
+    kılınır.</p>
 
-    <p>Sunucu ayrıca MIME belge türlerini içeren bir dosya daha okur; dosya ismi öntanımlı olarak <code>mime.types</code> olup <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code> yönergesi ile başka bir dosya belirtilebilir.</p>
+    <p>Sunucu ayrıca MIME belge türlerini içeren bir dosya daha okur; dosya
+    ismi öntanımlı olarak <code>mime.types</code> olup <code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code> yönergesi ile başka bir dosya
+    belirtilebilir.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="syntax" id="syntax">Yapılandırma Dosyalarının Sözdizimi</a></h2>
     
 
-    <p>Apache yapılandırma dosyalarının her satırında sadece bir yönerge bulunur ve bir yönergenin birden fazla satıra yayılması daha iyi olacaksa satır katlanabilir; devamı bir alt satırda olan her satırın son karakteri “\” (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü karakteri arasında başka karakter bulunmamalıdır.</p>
+    <p>Apache yapılandırma dosyalarının her satırında sadece bir yönerge
+    bulunur ve bir yönergenin birden fazla satıra yayılması daha iyi olacaksa
+    satır katlanabilir; devamı bir alt satırda olan her satırın son karakteri
+    “\” (tersbölü) olmalı, satırsonu karakteri ile bu tersbölü karakteri
+    arasında başka karakter bulunmamalıdır.</p>
 
-    <p>Yapılandırma dosyalarındaki yönergelerin isimleri harf büyüklüğüne duyarlı olduğu halde argümanları genellikle harf büyüklüğüne duyarlı değildir. Diyez (“#”) karakteri ile başlayan satırlar açıklama olarak ele alınır ve yok sayılırlar. Yapılandırma yönergesi içeren satırların ardına  açıklama yerleştirilemez. Yönerge isminden önce yer alan boşluklar ve boş satırlar yok sayılır; bu özellik, okunabilirliği sağlamak için yönergelerin girintilenebilmesi olanağını verir.</p>
+    <p>Yapılandırma dosyalarındaki yönergelerin isimleri harf büyüklüğüne
+    duyarlı olduğu halde argümanları genellikle harf büyüklüğüne duyarlı
+    değildir. Diyez (“#”) karakteri ile başlayan satırlar açıklama olarak ele
+    alınır ve yok sayılırlar. Yapılandırma yönergesi içeren satırların ardına
+    açıklama yerleştirilemez. Yönerge isminden önce yer alan boşluklar ve boş
+    satırlar yok sayılır; bu özellik, okunabilirliği sağlamak için yönergelerin
+    girintilenebilmesi olanağını verir.</p>
 
-    <p>Sunucuyu başlatmadan önce <code>apachectl configtest</code> ile veya <code>-t</code> komut satırı seçeneği ile yapılandırma dosyalarınızı sözdizimi hatalarına karşı sınayabilirsiniz.</p>
+    <p>Kabuk ortam değişkenlerinin değerleri yapılandırma dosyası içinde
+    <code>${ENVVAR}</code> sözdizimi ile kullanılabilir. "ENVVAR" geçerli bir
+    ortam değişkeninin adı olduğu takdirde, yapılandırma dosyasında görüldüğü
+    yerlerde değişkenin değeri yazılmış gibi işlem yapılır. (ENVVAR diye bir
+    değişken yoksa yapılandırma dosyasının işlenmesinin sonraki aşamalarında
+    kullanılmak üzere "${ENVVAR}" karakterleri oldukları gibi bırakılır.)</p>
+
+    <p>Yapılandırma dosyasındaki bir satırı uzunluğu, ortam değişkenlerinin
+    değerleri yerleştirildikten, devam satırları birleştirilip satırın önündeki
+    ve ardındaki boşluk karakterleri temizlendikten sonra en fazla 8192
+    karakter olabilir.</p>
+
+<p>Sunucuyu başlatmadan önce <code>apachectl configtest</code> ile veya
+    <code>-t</code> komut satırı seçeneği ile yapılandırma dosyalarınızı
+    sözdizimi hatalarına karşı sınayabilirsiniz.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="modules" id="modules">Modüller</a></h2>
@@ -61,9 +97,19 @@
 
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
-    <p>Apache modüler yapıda bir sunucudur. Bu, çekirdek sunucunun sadece en temel işlevselliği içermesi demektir. Ek özellikler, Apache’ye <a href="mod/">modüller</a> halinde yüklenebilir. Öntanımlı olarak, derleme sırasında sunucunun <a href="mod/module-dict.html#Status">temel</a> bir modül kümesi içermesi sağlanır. Eğer sunucu  <a href="dso.html">devingen yüklenen</a> modülleri kullanmak üzere yapılandırılarak derlenirse modüller ayrı olarak derlenip gerektiği zaman <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesi kullanılarak yüklenebilir. Aksi takdirde, ek modülleri yükleyebilmek veya kaldırabilmek için Apache’nin yeniden derlenmesi gerekir. Yapılandırma yönergeleri belli bir modülün varlığına dayalı olarak bir <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> bloku içine alınmak suretiyle sunucuya koşullu olarak eklenebilir.</p>
+    <p>Apache modüler yapıda bir sunucudur. Bu, çekirdek sunucunun sadece en
+    temel işlevselliği içermesi demektir. Ek özellikler, Apache’ye <a href="mod/">modüller</a> halinde yüklenebilir. Öntanımlı olarak, derleme
+    sırasında sunucunun <a href="mod/module-dict.html#Status">temel</a> bir
+    modül kümesi içermesi sağlanır. Eğer sunucu  <a href="dso.html">devingen
+    yüklenen</a> modülleri kullanmak üzere yapılandırılarak derlenirse modüller
+    ayrı olarak derlenip gerektiği zaman <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesi kullanılarak yüklenebilir.
+    Aksi takdirde, ek modülleri yükleyebilmek veya kaldırabilmek için
+    Apache’nin yeniden derlenmesi gerekir. Yapılandırma yönergeleri belli bir
+    modülün varlığına dayalı olarak bir <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> bloku içine alınmak suretiyle sunucuya
+    koşullu olarak eklenebilir.</p>
 
-    <p>Sunucunun içinde derlenmiş modüllerin listesini görmek için <code>-l</code> komut satırı seçeneğini kullanabilirsiniz.</p>
+    <p>Sunucunun içinde derlenmiş modüllerin listesini görmek için
+    <code>-l</code> komut satırı seçeneğini kullanabilirsiniz.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="scope" id="scope">Yönergelerin Etki Alanı</a></h2>
@@ -71,11 +117,26 @@
 
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
-    <p>Ana yapılandırma dosyasına yerleştirilen yönergeler sunucunun tamamına uygulanır. Yapılandırmanızı sunucunun belli bir parçası için değiştirmek isterseniz yönergelerinizi <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> bölümleri içine yerleştirerek etki alanlarını değiştirebilirsiniz. Bu bölümler yönergelerin etkilediği alanları dosya sistemininin belli yerleri veya belli URL’lerle sınırlar. Yerine göre daha hassas ayarlamalar yapmak için bu bölgeler iç içe de kullanılabilir.</p>
+    <p>Ana yapılandırma dosyasına yerleştirilen yönergeler sunucunun tamamına
+    uygulanır. Yapılandırmanızı sunucunun belli bir parçası için değiştirmek
+    isterseniz yönergelerinizi <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code>, <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> ve <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code> bölümleri içine yerleştirerek etki
+    alanlarını değiştirebilirsiniz. Bu bölümler yönergelerin etkilediği
+    alanları dosya sistemininin belli yerleri veya belli URL’lerle sınırlar.
+    Yerine göre daha hassas ayarlamalar yapmak için bu bölgeler iç içe de
+    kullanılabilir.</p>
 
-    <p>Apache, çok sayıda farklı siteyi aynı anda sunabilecek yetenektedir. Buna <a href="vhosts/">Sanal Konaklık</a> adı verilir. Yönergelerin etki alanları ayrıca <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümleri içine konarak da değiştirilebilir. Böylece belli bir siteden gelen isteklere farklı bir uygulama yapılabilir.</p>
+    <p>Apache, çok sayıda farklı siteyi aynı anda sunabilecek yetenektedir.
+    Buna <a href="vhosts/">Sanal Konaklık</a> adı verilir. Yönergelerin etki
+    alanları ayrıca <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümleri içine konarak da
+    değiştirilebilir. Böylece belli bir siteden gelen isteklere farklı bir
+    uygulama yapılabilir.</p>
 
-    <p>Yönergelerin çoğu bu bölümlere yerleştirilebilirse de bazı yönergelerin bazı bağlamlarda bir etkisi olmaz. Örneğin, süreç oluşturmayı denetleyen yönergeler sadece ana sunucu bağlamına yerleştirilebilir. Hangi yönergenin hangi bağlama yerleştirilebileceğini bulmak için yönergenin <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız. Bu konuda daha ayrıntılı bilgi edinmek için: <a href="sections.html">Directory, Location ve Files Bölümleri Nasıl Çalışır</a>.</p>
+    <p>Yönergelerin çoğu bu bölümlere yerleştirilebilirse de bazı yönergelerin
+    bazı bağlamlarda bir etkisi olmaz. Örneğin, süreç oluşturmayı denetleyen
+    yönergeler sadece ana sunucu bağlamına yerleştirilebilir. Hangi yönergenin
+    hangi bağlama yerleştirilebileceğini bulmak için yönergenin <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız. Bu konuda
+    daha ayrıntılı bilgi edinmek için: <a href="sections.html">Directory, Location ve Files Bölümleri Nasıl
+    Çalışır</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="htaccess" id="htaccess">.htaccess Dosyaları</a></h2>
@@ -83,11 +144,25 @@
 
     <table class="related"><tr><th>İlgili Modüller</th><th>İlgili Yönergeler</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code></li><li><code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code></li></ul></td></tr></table>
 
-    <p>Apache yapılandırma sorumluluğunu dağıtmak için site ağaçları içine özel dosyalar yerleştirilmesine izin verir. Bu özel dosyalar normalde <code>.htaccess</code> dosyaları olmakla birlikte <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code> yönergesi kullanılarak rasgele bir isim belirtilebilir. <code>.htaccess</code> dosyalarına yerleştirilen yönergeler sadece dosyanın bulunduğu dizine ve alt dizinlerine uygulanır. <code>.htaccess</code> dosyalarında da ana yapılandırma dosyalarında geçerli sözdizimi kullanılır. <code>.htaccess</code> dosyaları her istek gelişinde yeniden okunduğundan bu dosyalarda yapılan değişiklikler hemen etkisini gösterir.</p>
+    <p>Apache yapılandırma sorumluluğunu dağıtmak için site ağaçları içine özel
+    dosyalar yerleştirilmesine izin verir. Bu özel dosyalar normalde
+    <code>.htaccess</code> dosyaları olmakla birlikte <code class="directive"><a href="./mod/core.html#accessfilename">AccessFileName</a></code> yönergesi kullanılarak rasgele bir
+    isim belirtilebilir. <code>.htaccess</code> dosyalarına yerleştirilen
+    yönergeler sadece dosyanın bulunduğu dizine ve alt dizinlerine uygulanır.
+    <code>.htaccess</code> dosyalarında da ana yapılandırma dosyalarında
+    geçerli sözdizimi kullanılır. <code>.htaccess</code> dosyaları her istek
+    gelişinde yeniden okunduğundan bu dosyalarda yapılan değişiklikler hemen
+    etkisini gösterir.</p>
 
-    <p><code>.htaccess</code> dosyalarına hangi yönergelerin yerleştirilebileceğini bulmak için yönerge <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız. Sunucunun yöneticisi <code>.htaccess</code> dosyalarına hangi yönergelerin yerleştirilebileceğini ana yapılandırma dosyalarında <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> yönergesini kullanarak belirleyebilir.</p>
+    <p><code>.htaccess</code> dosyalarına hangi yönergelerin
+    yerleştirilebileceğini bulmak için yönerge <a href="mod/directive-dict.html#Context">bağlamına</a> bakınız. Sunucunun
+    yöneticisi <code>.htaccess</code> dosyalarına hangi yönergelerin
+    yerleştirilebileceğini ana yapılandırma dosyalarında <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> yönergesini kullanarak
+    belirleyebilir.</p>
 
-    <p><code>.htaccess</code> dosyaları hakkında daha ayrıntılı bilgi edinmek için <a href="howto/htaccess.html">.htaccess öğreticisi</a>ne bakabilirsiniz.</p>
+    <p><code>.htaccess</code> dosyaları hakkında daha ayrıntılı bilgi edinmek
+    için <a href="howto/htaccess.html">.htaccess öğreticisi</a>ne
+    bakabilirsiniz.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Mevcut Diller: </span><a href="./de/configuring.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

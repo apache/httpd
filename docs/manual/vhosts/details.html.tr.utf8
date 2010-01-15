@@ -23,7 +23,6 @@
 <a href="../ko/vhosts/details.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/details.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
 
     <p>Sanal konak kodu <strong>Apache 1.3</strong> sürümünde baştan yeniden
@@ -50,45 +49,45 @@
       tanımlardan bahsederken <em>ana_sunucu</em>, <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> bölümlerindeki tanımlamalardan
       bahsederken <em>sankonlar</em> diyeceğiz.</p>
 
-    <p><code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>,
-      <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>,
-      <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> ve
-      <code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code> yönergeleri bir sunucu
+    <p><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> ve
+      <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code> yönergeleri bir sunucu
       yapılandırmasının her yerinde karşımıza çıkabilir. Bununla birlikte,
       sunucu dahilinde son göründükleri yerlerde önceki eşdeğerlerini geçersiz
       kılarlar.</p>
 
-    <p><code>Listen</code> yönergesinin ana_sunucu için öntanımlı değeri
-      80’dir. <code>ServerPath</code> ve <code>ServerAlias</code>
+    <p><code>ServerPath</code> ve <code>ServerAlias</code>
       yönergelerinin ana_sunucu için öntanımlı değerleri yoktur. Öntanımlı
       <code>ServerName</code> değeri ise sunucunun IP adresinden elde
       edilir.</p>
 
-    <p>Ana_sunucu <code>Listen</code> yönergesinin iki işlevi vardır. Biri
-      Apache’nin dinleyeceği öntanımlı ağ portunu belirlemek, diğeri ise
-      yönlendirmeler sırasında mutlak URI’lerde kullanılan port numarasını
-      belirlemektir.</p>
-
-    <p>Ana_sunucunun aksine sankonların portları Apache‘nin dinleyeceği
-      portlar üzerinde etkili değildir.</p>
+    <p><code>VirtualHost</code> yönergesinde belirtilen port numaraları
+      Apache'nin dinleyeceği port numaraları olarak değerlendirilmez. Bunlar
+      sadece, bir isteği işleme sokmak üzere seçilecek
+      <code>VirtualHost</code>'lar arasında ayrım yapabilmek için kullanılır.</p>
 
     <p><code>VirtualHost</code> yönergesinde görünen her adresin seçimlik bir
-      portu olabilir. Eğer bir port belirtilmemişse öntanımlı olarak
-      ana_sunucunun son <code>Listen</code> yönergesinin değeri kullanılır.
-      Port olarak <code>*</code> belirtildiği takdirde bütün portlar dinlenir.
-      Adreslerin tamamını (DNS sorgularındaki çoklu A kayıtları dahil) içeren
-      kümeye sankonların <em>adres kümesi</em> denir.</p>
+      portu olabilir. Eğer bir port belirtilmemişse <code>*</code> belirtildiği
+      varsayılır. Port olarak <code>*</code> belirtildiği takdirde bütün portlar
+      dinlenir. Adreslerin tamamını (DNS sorgularındaki çoklu A kayıtları dahil)
+      içeren kümeye sankonların <em>adres kümesi</em> denir.</p>
 
-    <p><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> yönergesi ilk
-      sankonun IP adresi için kullanılmadığı takdirde bu IP adresine sahip ilk
-      sankon IP’ye dayalı sankon olarak ele alınır. IP adresi olarak
-      <code>*</code> belirtmek de mümkündür.</p>
+    <p><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> yönergesi,
+      <code>VirtualHost</code> yönergesindeki IP adresini ve portu aynen
+      içermediği takdirde, Apache bu çiftle en iyi eşleşeni seçer. Eğer çok
+      sayıda eşleşen varsa yapılandırma dosyasında ilk eşleşen
+      <code>VirtualHost</code> seçilir.</p>
 
-    <p>Eğer isme dayalı sankonlar kullanılacaksa <code>NameVirtualHost</code>
-      yönergesinin bu isme dayalı sankonların IP adresi kümesini içermesi
-      <em>gerekir</em>. Başka bir deyişle, yapılandırma dosyanızın
-      <code>NameVirtualHost</code> yönergesine sankonların sunucu isimlerinin
-      karşı düştüğü IP adresini yazmalısınız.</p>
+    <p>Eğer Apache'nin istemci tarafından sağlanan HTTP <code>Host</code>
+      başlığına dayanarak ayrım yapmasını istiyorsanız
+      <code>NameVirtualHost</code> yönergesindeki IP adresi ve portun
+      <code>VirtualHost</code> yönergesindeki ile tamamen eşleşmesi gerekir.</p>
+
+    <p>İsme dayalı sanal konak seçimi sadece tek bir IP'ye dayalı sanal konak
+      seçildikten sonra ve bu sanal konaklar aynı IP-port çiftini taşıyorlarsa
+      mümkün olabilir.</p>
+
+    <p>Bir sanal konak tanımında IP adresi yerine konak ismi de kullanılabilirse
+      de çözümleme işlemi sunucu başlatılırken yapılacağından bu önerilmez. </p>
 
     <p>Çok sayıda <code>NameVirtualHost</code> yönergesi belirtebilirse de her
       IP:port çifti için birden fazla <code>NameVirtualHost</code> yönergesi
@@ -148,17 +147,6 @@
 
     <p>(Okuma kolaylığı bakımından soldaki sürümü tercih etmenizi öneririz.)
     </p>
-
-    <p><code>VirtualHost</code> yönergesi çözümlendikten sonra sankon
-      sunucusuna yönergedeki ilk isme atanmış portun öntanımlı olduğu bir
-      <code>Listen</code> verilir.</p>
-
-    <p>Eğer tüm <code>VirtualHost</code> isimlerinin listesi aynı adres
-      kümesine çözümleniyorsa bu isimler birer <code>ServerAlias</code> gibi
-      ele alınırlar (bir <code>ServerAlias</code> yönergesi ile geçersiz
-      kılınmadıkça). Bir sankon tanımından sonra gelen <code>Listen</code>
-      satırlarının o sankonun adres kümesine atanmış portlara bir etkisinin
-      olmayacağına dikkat ediniz.</p>
 
     <p>İsim listeleri IP adreslerine göre gruplanır ve bir çiftler tablosuna
       kaydedilir. Eğer IP adresi bir <code>NameVirtualHost</code> yönergesinde
@@ -322,9 +310,9 @@
         yapılandırma dosyasında ilk sırada yer alanı en yüksek önceliğe
         sahiptir.</li>
 
-      <li>Güvenlik saikiyle, eşleştirme işlemi sırasında <code>Host:</code>
-        başlık alanında belirtilen port asla kullanılmaz. Apache daima
-        istemcinin bağlantı kurduğu gerçek portu kullanır.</li>
+      <li><code>Host:</code> başlık alanı eşleştirme işlemi sırasında asla
+        kullanılmaz. Apache istemcinin bağlantı kurduğu gerçek portu
+        kullanır.</li>
 
       <li>Değeri başka bir <code>ServerPath</code> yönergesinin değeri için
         önek olan bir <code>ServerPath</code> yönergesi yapılandırma
@@ -343,7 +331,9 @@
         port ile sankon için belirtilen port eşleşmelidir. Olası tüm portlarla
         eşleşmeyi sağlamak üzere yıldız imi (<code>_default_:*</code>
         şeklinde) kullanılabilir. Aynı şey <code>NameVirtualHost *</code>
-        sankonlarına da uygulanır.</li>
+        sankonlarına da uygulanır. Bunun, "en iyi eşleşme" kuralının bir uzantısı
+        olarak bir basitleştirme oluşuna dikkat ediniz; belirgin ve tıpatıp bir
+        eşleşme yıldız imine göre önceliklidir.</li>
 
       <li>Ana_sunucunun bir isteğe hizmet sunabilmesi için istemcinin
         bağlandığı IP adresi ve port hiçbir yerde belirtilmemiş ve
