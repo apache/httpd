@@ -1017,6 +1017,11 @@ Denetimi</a></li>
       istekler yaparak güvenlik sorunlarına yol açılmak istenmesi
       durumlarında gereklidir.</p>
 
+    <p><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> kullanıyorsanız, gerekise vekili olunan
+      sunucu yararına özel hata iletileri üretmenizi sağlayabilen <code class="directive"><a href="../mod/mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></code> yönergesini etkin
+      kılabilirsiniz. Bu yönergeyi etkinleştirmezseniz Apache vekaleten
+      sunulan içerik için özel hata sayfaları üretmeyecektir.</p>
+
     <p>2.0 öncesi sürümlerde iletiler bir çift çift-tırnak içine alınmayıp,
       tek bir çift-tırnak ile başlatılması yeterli olurdu.</p>
 
