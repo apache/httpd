@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_env.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_env.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>CGI betiklerine ve SSI sayfalarına aktarılan değişkenlere
 müdahale etmek için kullanılır.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -85,6 +84,14 @@ müdahale etmek için kullanılır.</td></tr>
     <div class="example"><h3>Örnek</h3><p><code>
       SetEnv SPECIAL_PATH /foo/bin
     </code></p></div>
+
+    <div class="note"><p>Bu yönerge ile atanan dahili ortam değişkenleri, erişim denetimi ve
+      URI'leri dosya isimleri ile eşleştirme gibi daha önceki istek işleme
+      yönergelerinden <em>sonra</em> atanır. Eğer atayacağınız ortam
+      değikenlerinin <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      yönergelerindeki gibi erken dönem işlem aşamalarında etkili olmasını
+      istiyorsanız bu ortam değişkenlerini <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code> yönergesi ile atamalısınız.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

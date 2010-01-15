@@ -26,7 +26,6 @@
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/glossary.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Bu sözlük, genelinde HTML sayfa sunumuna, özelinde Apache HTTP Sunucusuna
       özgü ortak terminolojinin bir kısmını içerir. Her kavram ile ilgili daha
@@ -124,7 +123,8 @@
       Örneğin, “resimler” dizini altındaki dosyalardan .gif ve .jpg uzantılı
       olanları toplamak için “<code>/resimler/.*(jpg|gif)$</code>” düzenli
       ifadesi yazılabilir. Apache, <a href="http://www.pcre.org/">PCRE</a>
-      kütüphanesi ile sağlanan Perl uyumlu düzenli ifadeleri kullanır.
+      kütüphanesi ile sağlanan Perl uyumlu düzenli ifadeleri kullanır. PCRE'nin
+      düzenli ifade sözdizimi hakkıda bilgi edinmek için bu siteye veya <a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>'ya bakabilirsiniz.
     </dd>
 
     <dt><a name="accesscontrol" id="accesscontrol">Erişim Denetimi</a></dt>
@@ -362,6 +362,18 @@
     <dt><a name="ssleay" id="ssleay">SSLeay</a></dt>
     <dd>Eric A. Young tarafından geliştirilmiş özgün SSL/TLS
       gerçeklenim kütüphanesi.
+    </dd>
+
+    <dt><a name="servernameindication" id="servernameindication">Sunucu İsmi
+      Belirtimi</a></dt>
+    <dd>İngilizcesi: Server Name Indication <a name="sni" id="sni">(SNI)</a>
+    </dd>
+    <dd>İstenen sunucunun konak ismini ilk SSL uzlaşım iletisinde aktarmayı ve
+      böylece SSL uzlaşım işleminde kullanılacak sanal konak yapılandırmasının
+      doğru seçilebilmesini sağlayan bir SSL işlevi. RFC 3546'da TLS eklentileri
+      ile birlikte SSL'ye eklenmiştir.<br />
+      Bakınız: <a href="ssl/ssl_faq.html">SSL FAQ</a>
+      ve <a href="http://www.ietf.org/rfc/rfc3546.txt">RFC 3546</a>
     </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">Sunucu Taraflı İçerik Yerleştirme</a></dt>
