@@ -105,7 +105,7 @@
 
     <dt><code>headerinit</code></dt>
     <dd>The initial timeout for receiving the request headers in seconds. 
-    Also the timout for receiving the first byte of the request. If
+    Also the timeout for receiving the first byte of the request. If
     <code>headerminrate</code> is not set, the request line and all headers
     must be received within this time.</dd>
 
@@ -121,7 +121,7 @@
 
     <dt><code>bodyinit</code></dt>
     <dd>The initial timeout for receiving the request body in seconds. 
-    Also the timout for receiving the first byte of the request body. If
+    Also the timeout for receiving the first byte of the request body. If
     <code>bodyminrate</code> is not set, the complete request body must be
     received within this time.</dd>
 
