@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.5
 
+  *) Turn static function get_server_name_for_url() into public
+     ap_get_server_name_for_url() and use it where appropriate. This
+     fixes mod_rewrite generating invalid URLs for redirects to IPv6
+     literal addresses. [Stefan Fritsch]
+
   *) mod_ldap: Introduce new config option LDAPTimeout to set the timeout
      for LDAP operations like bind and search. [Stefan Fritsch]
 

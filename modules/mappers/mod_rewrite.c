@@ -881,7 +881,7 @@ static void fully_qualify_uri(request_rec *r)
         char *thisport;
         int port;
 
-        thisserver = ap_get_server_name(r);
+        thisserver = ap_get_server_name_for_url(r);
         port = ap_get_server_port(r);
         thisport = ap_is_default_port(port, r)
                    ? ""
@@ -4402,7 +4402,7 @@ static int hook_uri2file(request_rec *r)
      */
 
     /* add the canonical URI of this URL */
-    thisserver = ap_get_server_name(r);
+    thisserver = ap_get_server_name_for_url(r);
     port = ap_get_server_port(r);
     if (ap_is_default_port(port, r)) {
         thisport = "";
