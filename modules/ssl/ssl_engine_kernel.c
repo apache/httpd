@@ -151,7 +151,7 @@ int ssl_hook_ReadReq(request_rec *r)
 
         thisurl = ap_escape_html(r->pool,
                                  apr_psprintf(r->pool, "https://%s%s/",
-                                              ap_get_server_name(r),
+                                              ap_get_server_name_for_url(r),
                                               thisport));
 
         errmsg = apr_psprintf(r->pool,

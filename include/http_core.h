@@ -211,6 +211,15 @@ AP_DECLARE(char *) ap_construct_url(apr_pool_t *p, const char *uri, request_rec 
 AP_DECLARE(const char *) ap_get_server_name(request_rec *r);
 
 /**
+ * Get the current server name from the request for the purposes
+ * of using in a URL.  If the server name is an IPv6 literal
+ * address, it will be returned in URL format (e.g., "[fe80::1]").
+ * @param r The current request
+ * @return the server name
+ */
+AP_DECLARE(const char *) ap_get_server_name_for_url(request_rec *r);
+
+/**
  * Get the current server port
  * @param r The current request
  * @return The server's port
