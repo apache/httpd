@@ -129,17 +129,11 @@ _tryzlib:
 	cd modules\filters
 	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-	cd modules\proxy
-	$(MAKE) $(MAKEOPT) -f mod_serf.mak CFG="mod_serf - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..
 !ELSEIF $(USESLN) == 1
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
-	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_serf
 !ELSE
 	@msdev Apache.dsw /USEENV /MAKE \
 		"mod_deflate - Win32 $(LONG)" /NORECURSE $(CTARGET)
-	@msdev Apache.dsw /USEENV /MAKE \
-		"mod_serf - Win32 $(LONG)" /NORECURSE $(CTARGET)
 !ENDIF
 
 !ELSE
@@ -147,7 +141,7 @@ _tryzlib:
 
 _tryzlib:
 	@echo -----
-	@echo mod_deflate and mod_serf will not build unless zlib is built in srclib\zlib.  
+	@echo mod_deflate will not build unless zlib is installed in srclib\zlib.  
 	@echo Version 1.2.1 and later available from http://www.gzip.org/zlib/
 	@echo built w/ nmake -f win32/Makefile.msc will satisfy this requirement.
 
@@ -466,9 +460,6 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_ftp.mak   CFG="mod_proxy_ftp - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_http.mak  CFG="mod_proxy_http - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_proxy_scgi.mak  CFG="mod_proxy_scgi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-!IF EXIST("srclib\zlib")
-	 $(MAKE) $(MAKEOPT) -f mod_serf.mak        CFG="mod_serf - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-!ENDIF
 	cd ..\..
 	cd modules\proxy\balancers
 	 $(MAKE) $(MAKEOPT) -f mod_lbmethod_bybusyness.mak CFG="mod_lbmethod_bybusyness - Win32 $(LONG)" RECURSE=0 $(CTARGET)
