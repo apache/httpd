@@ -94,6 +94,9 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_core_output_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_content_length_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_core_input_filter_handle;
 
+/* Provide ap_document_root_check storage and default value = true */
+AP_DECLARE_DATA int ap_document_root_check = 1;
+
 /* magic pointer for ErrorDocument xxx "default" */
 static char errordocument_default;
 

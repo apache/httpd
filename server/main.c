@@ -440,9 +440,6 @@ static void usage(process_rec *process)
     destroy_and_exit_process(process, 1);
 }
 
-/* Set ap_document_root_check to default value: true */
-AP_DECLARE_DATA int ap_document_root_check = 1;
-
 int main(int argc, const char * const argv[])
 {
     char c;
