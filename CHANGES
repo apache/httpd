@@ -1,5 +1,7 @@
                                                         -*- coding: utf-8 -*-
 
+Changes with Apache 2.3.6
+
 Changes with Apache 2.3.5
 
   *) Ensure each subrequest has a shallow copy of headers_in so that the
