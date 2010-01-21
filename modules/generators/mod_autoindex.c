@@ -149,7 +149,7 @@ static char c_by_encoding, c_by_type, c_by_path;
 #define BY_TYPE &c_by_type
 #define BY_PATH &c_by_path
 
-static inline int response_is_html(request_rec *r)
+static APR_INLINE int response_is_html(request_rec *r)
 {
     char *ctype = ap_field_noparam(r->pool, r->content_type);
     ap_str_tolower(ctype);
