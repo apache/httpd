@@ -442,7 +442,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
     new->request_time    = r->request_time;
     new->main            = r->main;
 
-    new->headers_in      = apr_table_copy(r->pool, r->headers_in);
+    new->headers_in      = r->headers_in;
     new->headers_out     = apr_table_make(r->pool, 12);
     new->err_headers_out = r->err_headers_out;
     new->subprocess_env  = rename_original_env(r->pool, r->subprocess_env);
@@ -515,8 +515,6 @@ AP_DECLARE(void) ap_internal_fast_redirect(request_rec *rr, request_rec *r)
     r->per_dir_config = rr->per_dir_config;
     /* copy output headers from subrequest, but leave negotiation headers */
     r->notes = apr_table_overlay(r->pool, rr->notes, r->notes);
-    r->headers_in = apr_table_overlay(r->pool, rr->headers_in,
-                                      r->headers_in);
     r->headers_out = apr_table_overlay(r->pool, rr->headers_out,
                                        r->headers_out);
     r->err_headers_out = apr_table_overlay(r->pool, rr->err_headers_out,

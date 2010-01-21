@@ -5,7 +5,7 @@ Changes with Apache 2.3.5
   *) Ensure each subrequest has a shallow copy of headers_in so that the
      parent request headers are not corrupted.  Elimiates a problematic
      optimization in the case of no request body.  PR 48359 
-     [Jake Scott, William Rowe]
+     [Jake Scott, William Rowe, Ruediger Pluem]
 
   *) Turn static function get_server_name_for_url() into public
      ap_get_server_name_for_url() and use it where appropriate. This
