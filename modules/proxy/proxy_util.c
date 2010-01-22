@@ -1119,9 +1119,9 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
             const char *part = url;
             l2 = strlen(real);
             if (real[0] == '/') {
-                part = strstr(url, "://");
+                part = ap_strstr_c(url, "://");
                 if (part) {
-                    part = strchr(part+3, '/');
+                    part = ap_strchr_c(part+3, '/');
                     if (part) {
                         l1 = strlen(part);
                     }
