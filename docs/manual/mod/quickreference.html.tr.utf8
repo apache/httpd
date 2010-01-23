@@ -633,11 +633,9 @@ extensions</td></tr>
 extensions</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader add|append|edit|edit*|merge|set|unset <var>header</var>
 [<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Configure HTTP request headers</td></tr>
-<tr><td><a href="mod_reqtimeout.html#requesttimeout">RequestTimeout
-[headerinit=<var>time</var>
-[headerminrate=<var>rate</var> [headermax=<var>time</var>]]]
-[bodyinit=<var>time</var>
-[bodyminrate=<var>rate</var> [bodymax=<var>time</var>]]]
+<tr><td><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout
+[header=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
+[body=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
 </a></td><td></td><td>sk</td><td>D</td></tr><tr><td class="descr" colspan="4">Set timeout values for receiving request headers and body from client.
 </td></tr>
 <tr class="odd"><td><a href="mod_authz_core.html#require">Require [not] <var>entity-name</var>

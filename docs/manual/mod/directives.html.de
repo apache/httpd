@@ -369,7 +369,7 @@
 <li><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></li>
 <li><a href="mod_mime.html#removetype">RemoveType</a></li>
 <li><a href="mod_headers.html#requestheader">RequestHeader</a></li>
-<li><a href="mod_reqtimeout.html#requesttimeout">RequestTimeout</a></li>
+<li><a href="mod_reqtimeout.html#requestreadtimeout">RequestReadTimeout</a></li>
 <li><a href="core.html#require">Require</a></li>
 <li><a href="mod_authz_core.html#require">Require</a></li>
 <li><a href="mod_authz_core.html#requireall">&lt;RequireAll&gt;</a></li>
