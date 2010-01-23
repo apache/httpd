@@ -633,9 +633,8 @@ connection client certificates.</description>
 <usage>
     <p>This directive configures the LDAP_OPT_NETWORK_TIMEOUT option in the
     underlying LDAP client library, when available.  This value typically 
-    controls how long the LDAP client library will wait for various network 
-    calls to complete, including establishing a connection to the target LDAP 
-    server.</p>
+    controls how long the LDAP client library will wait for the TCP connection
+    to the LDAP server to complete.</p>
 
     <p> If a connection is not successful with the timeout period, either an error will be 
     returned or the LDAP client library will attempt to connect to a secondary LDAP 
@@ -651,6 +650,28 @@ connection client certificates.</description>
     </note>
 </usage>
 </directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPTimeout</name>
+<description>Specifies the timeout for LDAP search and bind operations, in seconds</description>
+<syntax>LDAPTimeout <var>seconds</var></syntax>
+<default>LDAPTimeout 60</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>This directive configures the timeout for bind and search operations, as well as
+    the LDAP_OPT_TIMEOUT option in the underlying LDAP client library, when available.</p>
+
+    <p> If the timeout expires, httpd will retry in case an existing connection has
+    been silently dropped by a firewall.</p>
+
+    <note>
+    <p>Timeouts for ldap compare operations requires an SDK with LDAP_OPT_TIMEOUT, such as OpenLDAP &gt;= 2.4.4.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>LDAPVerifyServerCert</name>

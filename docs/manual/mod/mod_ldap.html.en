@@ -67,6 +67,7 @@ by other LDAP modules</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapreferrals">LDAPReferrals</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ldaptimeout">LDAPTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedclientcert">LDAPTrustedClientCert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ldaptrustedmode">LDAPTrustedMode</a></li>
@@ -474,9 +475,8 @@ by other LDAP modules</td></tr>
 </table>
     <p>This directive configures the LDAP_OPT_NETWORK_TIMEOUT option in the
     underlying LDAP client library, when available.  This value typically 
-    controls how long the LDAP client library will wait for various network 
-    calls to complete, including establishing a connection to the target LDAP 
-    server.</p>
+    controls how long the LDAP client library will wait for the TCP connection
+    to the LDAP server to complete.</p>
 
     <p> If a connection is not successful with the timeout period, either an error will be 
     returned or the LDAP client library will attempt to connect to a secondary LDAP 
@@ -618,6 +618,28 @@ valid</td></tr>
     <p>Specifies the number of bytes to allocate for the shared
     memory cache. The default is 500kb. If set to 0, shared memory
     caching will not be used.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LDAPTimeout" id="LDAPTimeout">LDAPTimeout</a> <a name="ldaptimeout" id="ldaptimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the timeout for LDAP search and bind operations, in seconds</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LDAPTimeout 60</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
+</table>
+    <p>This directive configures the timeout for bind and search operations, as well as
+    the LDAP_OPT_TIMEOUT option in the underlying LDAP client library, when available.</p>
+
+    <p> If the timeout expires, httpd will retry in case an existing connection has
+    been silently dropped by a firewall.</p>
+
+    <div class="note">
+    <p>Timeouts for ldap compare operations requires an SDK with LDAP_OPT_TIMEOUT, such as OpenLDAP &gt;= 2.4.4.</p>
+    </div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
