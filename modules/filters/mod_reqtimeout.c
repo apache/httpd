@@ -281,12 +281,15 @@ static void *reqtimeout_merge_srv_config(apr_pool_t *p, void *base_, void *add_)
     return cfg;
 }
 
-static const char *parse_int(const char *arg, int *val) {
+static const char *parse_int(apr_pool_t *p, const char *arg, int *val) {
     char *endptr;
     *val = strtol(arg, &endptr, 10);
-    
-    if ((arg == endptr) || (*endptr != '\0')) {
-        return "Value not numerical";
+
+    if (arg == endptr) {
+        return apr_psprintf(p, "Value '%s' not numerical", endptr);
+    }
+    if (*endptr != '\0') {
+        return apr_psprintf(p, "Cannot parse '%s'", endptr);
     }
     if (*val < 0) {
         return "Value must be non-negative";
@@ -300,43 +303,67 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
                                       const char *val)
 {
     const char *ret = NULL;
-    if (!strcasecmp(key, "headerinit")) {
-        ret = parse_int(val, &conf->header_timeout);
+    char *rate_str = NULL, *initial_str, *max_str = NULL;
+    int rate = 0, initial = 0, max = 0;
+    enum { PARAM_HEADER, PARAM_BODY } type;
+
+    if (!strcasecmp(key, "header")) {
+        type = PARAM_HEADER;
     }
-    else if (!strcasecmp(key, "headermax")) {
-        ret = parse_int(val, &conf->header_max_timeout);
-        if (!ret && conf->header_max_timeout > 0 &&
-            conf->header_max_timeout <= conf->header_timeout) {
-            ret = "Max timeout must be larger than initial timeout";
-        }
-    }
-    else if (!strcasecmp(key, "bodyinit")) {
-        ret = parse_int(val, &conf->body_timeout);
-    }
-    else if (!strcasecmp(key, "bodymax")) {
-        ret = parse_int(val, &conf->body_max_timeout);
-        if (!ret && conf->body_max_timeout > 0 &&
-            conf->body_max_timeout <= conf->body_timeout) {
-            ret = "Max timeout must be larger than initial timeout";
-        }
-    }
-    else if (!strcasecmp(key, "headerminrate")) {
-        ret = parse_int(val, &conf->header_min_rate);
-        if (!ret && conf->header_min_rate > 0) {
-            conf->header_rate_factor = apr_time_from_sec(1) / conf->header_min_rate;
-        }
-    }
-    else if (!strcasecmp(key, "bodyminrate")) {
-        ret = parse_int(val, &conf->body_min_rate);
-        if (!ret && conf->body_min_rate > 0) {
-            conf->body_rate_factor = apr_time_from_sec(1) / conf->body_min_rate;
-        }
+    else if (!strcasecmp(key, "body")) {
+        type = PARAM_BODY;
     }
     else {
-        ret = "unknown RequestTimeout parameter";
+        return "Unknown RequestReadTimeout parameter";
+    }
+    
+    if ((rate_str = strcasestr(val, ",minrate="))) {
+        initial_str = apr_pstrndup(p, val, rate_str - val);
+        rate_str += strlen(",minrate=");
+        ret = parse_int(p, rate_str, &rate);
+        if (ret)
+            return ret;
+
+        if (rate == 0)
+            return "Minimum data rate must be larger than 0";
+
+        if ((max_str = strchr(initial_str, '-'))) {
+            *max_str++ = '\0';
+            ret = parse_int(p, max_str, &max);
+            if (ret)
+                return ret;
+        }
+        
+        ret = parse_int(p, initial_str, &initial);
+    }
+    else {
+        if (ap_strchr_c(val, '-'))
+            return "Must set MinRate option if using timeout range";
+        ret = parse_int(p, val, &initial);
+    }
+        
+    if (ret)
+        return ret;
+
+    if (max && initial >= max) {
+        return "Maximum timeout must be larger than initial timeout";
+    }
+
+    if (type == PARAM_HEADER) {
+        conf->header_timeout = initial;
+        conf->header_max_timeout = max;
+        conf->header_min_rate = rate;
+        if (rate)
+            conf->header_rate_factor = apr_time_from_sec(1) / rate;
+    }
+    else {
+        conf->body_timeout = initial;
+        conf->body_max_timeout = max;
+        conf->body_min_rate = rate;
+        if (rate)
+            conf->body_rate_factor = apr_time_from_sec(1) / rate;
     }
     return ret;
-    
 }
 
 static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
@@ -353,7 +380,7 @@ static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
         word = ap_getword_conf(cmd->pool, &arg);
         val = strchr(word, '=');
         if (!val) {
-            return "Invalid RequestTimeout parameter. Parameter must be "
+            return "Invalid RequestReadTimeout parameter. Parameter must be "
             "in the form 'key=value'";
         }
         else
@@ -362,8 +389,8 @@ static const char *set_reqtimeouts(cmd_parms *cmd, void *mconfig,
         err = set_reqtimeout_param(conf, cmd->pool, word, val);
         
         if (err)
-            return apr_pstrcat(cmd->temp_pool, "RequestTimeout: ", err, " ",
-                               word, "=", val, "; ", NULL);
+            return apr_psprintf(cmd->temp_pool, "RequestReadTimeout: %s=%s: %s",
+                               word, val, err);
     }
     
     return NULL;
@@ -387,8 +414,9 @@ static void reqtimeout_hooks(apr_pool_t *pool)
 }
 
 static const command_rec reqtimeout_cmds[] = {
-    AP_INIT_RAW_ARGS("RequestTimeout", set_reqtimeouts, NULL, RSRC_CONF,
-                     "Adjust various Request Timeout parameters"),
+    AP_INIT_RAW_ARGS("RequestReadTimeout", set_reqtimeouts, NULL, RSRC_CONF,
+                     "Set various timeout parameters for reading request "
+                     "headers and body"),
     {NULL}
 };
 
