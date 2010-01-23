@@ -38,18 +38,7 @@
         30 seconds for receiving the request body:
 
         <example>
-          RequestTimeout headerinit=10 bodyinit=30
-        </example>
-      </li>
-
-      <li>
-        Allow at least 10 seconds to receive the request including the headers.
-        If the client sends data, increase the timeout by 1 second for every
-        500 bytes received. But do not allow more than 30 seconds for the
-        request including the headers:
-
-        <example>
-          RequestTimeout headerinit=10 headerminrate=500 headermax=30
+          RequestReadTimeout header=10 body=30
         </example>
       </li>
 
@@ -61,7 +50,18 @@
         <directive module="core">LimitRequestBody</directive>):
 
         <example>
-          RequestTimeout bodyinit=10 bodyminrate=1000
+          RequestReadTimeout body=10,MinRate=1000
+        </example>
+      </li>
+
+      <li>
+        Allow at least 10 seconds to receive the request including the headers.
+        If the client sends data, increase the timeout by 1 second for every
+        500 bytes received. But do not allow more than 30 seconds for the
+        request including the headers:
+
+        <example>
+          RequestReadTimeout header=10-30,MinRate=500
         </example>
       </li>
 
@@ -69,16 +69,14 @@
 </section>
 
 <directivesynopsis>
-<name>RequestTimeout</name>
+<name>RequestReadTimeout</name>
 <description>Set timeout values for receiving request headers and body from client.
 </description>
-<syntax>RequestTimeout
-[headerinit=<var>time</var>
-[headerminrate=<var>rate</var> [headermax=<var>time</var>]]]
-[bodyinit=<var>time</var>
-[bodyminrate=<var>rate</var> [bodymax=<var>time</var>]]]
+<syntax>RequestReadTimeout
+[header=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
+[body=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
 </syntax>
-<default>Unset; all values 0</default>
+<default>Unset; no limit</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -96,46 +94,45 @@
     (usually the case on Linux and FreeBSD), the socket is not sent to the
     server process before at least one byte (or the whole request for
     <code>httpready</code>) is received. The header timeout configured with
-    <code>RequestTimeout</code> is only effective after the server process has
+    <code>RequestReadTimeout</code> is only effective after the server process has
     received the socket.</p>
 
-    <p>For the timeout parameters, the value 0 means no limit.</p>
+    <p>For each of the two timeout types (header or body), there are three ways
+    to specify the timeout:
+    </p>
 
-    <dl>
+    <ul>
 
-    <dt><code>headerinit</code></dt>
-    <dd>The initial timeout for receiving the request headers in seconds. 
-    Also the timeout for receiving the first byte of the request. If
-    <code>headerminrate</code> is not set, the request line and all headers
-    must be received within this time.</dd>
+    <li><strong>Fixed timeout value</strong>:<br />
 
-    <dt><code>headerminrate</code></dt>
-    <dd>The minimum data rate for receiving the request headers in
-    bytes/second. Whenever data is received, the timeout is increased
-    according to this data rate.</dd>
+    <example><var>type</var>=<var>timeout</var></example>
 
-    <dt><code>headermax</code></dt>
-    <dd>The maximum timeout for receiving the request headers in seconds.
-    The timeout cannot be increased above this value by
-    <code>headerminrate</code>.</dd>
+    <p>The time in seconds allowed for reading all of the request headers or
+    body, respectively. A value of 0 means no limit.</p>
+    </li>
 
-    <dt><code>bodyinit</code></dt>
-    <dd>The initial timeout for receiving the request body in seconds. 
-    Also the timeout for receiving the first byte of the request body. If
-    <code>bodyminrate</code> is not set, the complete request body must be
-    received within this time.</dd>
+    <li><strong>Timeout value that is increased when data is
+    received</strong>:<br />
+    <example>
+    <var>type</var>=<var>timeout</var>,MinRate=<var>data_rate</var>
+    </example>
 
-    <dt><code>bodyminrate</code></dt>
-    <dd>The minimum data rate for receiving the request body in
-    bytes/second. Whenever data is received, the timeout is increased
-    according to this data rate.</dd>
+    <p>Same as above, but whenever data is received, the timeout value is
+    increased according to the specified minimum data rate (in bytes per
+    second).</p>
+    </li>
 
-    <dt><code>bodymax</code></dt>
-    <dd>The maximum timeout for receiving the request body in seconds.
-    The timeout cannot be increased above this value by
-    <code>bodyminrate</code></dd>
+    <li><strong>Timeout value that is increased when data is received, with an
+    upper bound</strong>:<br />
+    <example>
+    <var>type</var>=<var>timeout</var>-<var>maxtimeout</var>,MinRate=<var>data_rate</var>
+    </example>
 
-    </dl>
+    <p>Same as above, but the timeout will not be increased above the second
+    value of the specified timeout range.</p>
+    </li>
+
+    </ul>
 
 </usage>
 
