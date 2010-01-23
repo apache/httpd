@@ -31,8 +31,6 @@
 <a href="./pt-br/" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 <form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Recherche Google" type="submit" /><input value="10" name="num" type="hidden" /><input value="fr" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Version 2.3" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Notes de version</a></h2>
 <ul><li><a href="new_features_2_4.html">Nouvelles fonctionnalités dApache 2.3/2.4</a></li>
@@ -69,7 +67,7 @@
 <li><a href="server-wide.html">Configuration à l'échelle du serveur</a></li>
 <li><a href="ssl/">Chiffrement SSL/TLS</a></li>
 <li><a href="suexec.html">Exécution des CGI avec suexec</a></li>
-<li><a href="rewrite/">Guide de réécriture des URLs</a></li>
+<li><a href="rewrite/">Réécriture des URLs avec mod_rewrite</a></li>
 <li><a href="vhosts/">Hôtes virtuels</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">Recettes / Tutoriels</a></h2>
