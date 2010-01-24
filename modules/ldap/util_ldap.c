@@ -471,6 +471,40 @@ static int uldap_connection_init(request_rec *r,
 }
 
 /*
+ * Replacement function for ldap_simple_bind_s() with a timeout.
+ * To do this in a portable way, we have to use ldap_simple_bind() and 
+ * ldap_result().
+ *
+ * Returns LDAP_SUCCESS on success; and an error code on failure
+ */
+static int uldap_simple_bind(util_ldap_connection_t *ldc, char *binddn,
+                             char* bindpw, struct timeval *timeout)
+{
+    LDAPMessage *result;
+    int rc;
+    int msgid = ldap_simple_bind(ldc->ldap, binddn, bindpw);
+    if (msgid == -1) {
+        ldc->reason = "LDAP: ldap_simple_bind() failed";
+        /* -1 is LDAP_SERVER_DOWN in openldap, use something else */
+        return LDAP_OTHER;
+    }
+    rc = ldap_result(ldc->ldap, msgid, 0, timeout, &result);
+    if (rc == -1) {
+        ldc->reason = "LDAP: ldap_simple_bind() result retrieval failed";
+        /* -1 is LDAP_SERVER_DOWN in openldap, use something else */
+        rc = LDAP_OTHER;
+    }
+    else if (rc == 0) {
+        ldc->reason = "LDAP: ldap_simple_bind() timed out";
+        rc = LDAP_TIMEOUT;
+    } else if (ldap_parse_result(ldc->ldap, result, &rc, NULL, NULL, NULL,
+                                 NULL, 1) == -1) {
+        ldc->reason = "LDAP: ldap_simple_bind() parse result failed";
+    }
+    return rc;
+}
+
+/*
  * Connect to the LDAP server and binds. Does not connect if already
  * connected (i.e. ldc->ldap is non-NULL.) Does not bind if already bound.
  *
@@ -516,9 +550,7 @@ static int uldap_connection_open(request_rec *r,
     /* loop trying to bind up to 10 times if LDAP_SERVER_DOWN error is
      * returned. If LDAP_TIMEOUT is returned on the first try, maybe the
      * connection was idle for a long time and has been dropped by a firewall.
-     * In this case close the connection immediately and try again. To set
-     * a timeout in a portable way, we have to use ldap_simple_bind() and 
-     * ldap_result() instead of ldap_simple_bind_s().
+     * In this case close the connection immediately and try again.
      *
      * On Success or any other error, break out of the loop.
      *
@@ -529,27 +561,8 @@ static int uldap_connection_open(request_rec *r,
      */
     for (failures=0; failures<10; failures++)
     {
-        LDAPMessage *result;
-        int msgid = ldap_simple_bind(ldc->ldap,
-                                     (char *)ldc->binddn,
-                                     (char *)ldc->bindpw);
-        if (msgid == -1) {
-            ldc->reason = "LDAP: ldap_simple_bind() failed";
-            break;
-        }
-        rc = ldap_result(ldc->ldap, msgid, 0, st->opTimeout, &result);
-        if (rc == -1) {
-            ldc->reason = "LDAP: ldap_simple_bind() result retrieval failed";
-            break;
-        }
-        else if (rc == 0) {
-            ldc->reason = "LDAP: ldap_simple_bind() timed out";
-            rc = LDAP_TIMEOUT;
-        } else if (ldap_parse_result(ldc->ldap, result, &rc, NULL,
-                                     NULL, NULL, NULL, 1 ) == -1) {
-            ldc->reason = "LDAP: ldap_simple_bind() parse result failed";
-            break;
-        }
+        rc = uldap_simple_bind(ldc, (char *)ldc->binddn, (char *)ldc->bindpw,
+                               st->opTimeout);
         if ((AP_LDAP_IS_SERVER_DOWN(rc) && failures == 5) ||
             (rc == LDAP_TIMEOUT && failures == 0))
         {
@@ -1657,12 +1670,16 @@ start_over:
      * fails, it means that the password is wrong (the dn obviously
      * exists, since we just retrieved it)
      */
-    result = ldap_simple_bind_s(ldc->ldap,
-                                (char *)*binddn,
-                                (char *)bindpw);
-    if (AP_LDAP_IS_SERVER_DOWN(result)) {
-        ldc->reason = "ldap_simple_bind_s() to check user credentials "
-                      "failed with server down";
+    result = uldap_simple_bind(ldc, (char *)*binddn, (char *)bindpw,
+                               st->opTimeout);
+    if (AP_LDAP_IS_SERVER_DOWN(result) ||
+        (result == LDAP_TIMEOUT && failures == 0)) {
+        if (AP_LDAP_IS_SERVER_DOWN(result))
+            ldc->reason = "ldap_simple_bind() to check user credentials "
+                          "failed with server down";
+        else
+            ldc->reason = "ldap_simple_bind() to check user credentials "
+                          "timed out";
         ldap_msgfree(res);
         uldap_connection_unbind(ldc);
         goto start_over;
@@ -1670,7 +1687,7 @@ start_over:
 
     /* failure? if so - return */
     if (result != LDAP_SUCCESS) {
-        ldc->reason = "ldap_simple_bind_s() to check user credentials failed";
+        ldc->reason = "ldap_simple_bind() to check user credentials failed";
         ldap_msgfree(res);
         uldap_connection_unbind(ldc);
         return result;
