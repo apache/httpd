@@ -151,6 +151,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Patch: http://svn.apache.org/viewvc?view=revision&revision=897570
     +1: niq, sf
 
+  * mod_authnz_ldap: log authn failures at INFO instead of WARN
+      Trunk Patch: http://svn.apache.org/viewvc?rev=902641&view=rev
+      2.2.x Patch: trunk patch works
+    +1: covener 
+    
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
