@@ -155,6 +155,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk Patch: http://svn.apache.org/viewvc?rev=902641&view=rev
       2.2.x Patch: trunk patch works
     +1: covener, sf, fuankg
+    niq asks: Why not debug level, as with the previous case? Presumably
+              the main log message is the one from mod_auth_[basic|digest]?
+              Ping me back on IRC to convince me to +1 this.
     
 PATCHES/ISSUES THAT ARE STALLED
 
