@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.6
 
+  *) mod_authnz_ldap: Failures to map a username to a DN, or to check a user
+     password now result in an informational level log entry instead of 
+     warning level.  [Eric Covener]
+
 Changes with Apache 2.3.5
 
   *) Ensure each subrequest has a shallow copy of headers_in so that the
