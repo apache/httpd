@@ -1103,7 +1103,7 @@ static void output_html_results(void)
     if (timetaken) {
         printf("<tr %s><th colspan=2 %s>Requests per second:</th>"
            "<td colspan=2 %s>%.2f</td></tr>\n",
-           trstring, tdstring, tdstring, (double) done * 1000 / timetaken);
+           trstring, tdstring, tdstring, (double) done / timetaken);
         printf("<tr %s><th colspan=2 %s>Transfer rate:</th>"
            "<td colspan=2 %s>%.2f kb/s received</td></tr>\n",
            trstring, tdstring, tdstring, (double) totalread / timetaken);
