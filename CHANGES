@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.6
 
+  *) ab: Fix calculation of requests per second in HTML output. PR 48594.
+     [Stefan Fritsch]
+
   *) mod_authnz_ldap: Failures to map a username to a DN, or to check a user
      password now result in an informational level log entry instead of 
      warning level.  [Eric Covener]
