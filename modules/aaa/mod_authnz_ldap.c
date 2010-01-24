@@ -154,6 +154,29 @@ static apr_xlate_t* get_conv_set (request_rec *r)
 }
 
 
+static const char* authn_ldap_xlate_password(request_rec *r,
+                                             const char* sent_password)
+{
+    apr_xlate_t *convset = NULL;
+    apr_size_t inbytes;
+    apr_size_t outbytes;
+    char *outbuf;
+
+    if (charset_conversions && (convset = get_conv_set(r)) ) {
+        inbytes = strlen(sent_password);
+        outbytes = (inbytes+1)*3;
+        outbuf = apr_pcalloc(r->pool, outbytes);
+
+        /* Convert the password to UTF-8. */
+        if (apr_xlate_conv_buffer(convset, sent_password, &inbytes, outbuf,
+                                  &outbytes) == APR_SUCCESS)
+            return outbuf;
+    }
+
+    return sent_password;
+}
+
+
 /*
  * Build the search filter, or at least as much of the search filter that
  * will fit in the buffer. We don't worry about the buffer not being able
@@ -342,6 +365,7 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
     int result = 0;
     int remote_user_attribute_set = 0;
     const char *dn = NULL;
+    const char *utfpassword;
 
     authn_ldap_request_t *req =
         (authn_ldap_request_t *)apr_pcalloc(r->pool, sizeof(authn_ldap_request_t));
@@ -395,9 +419,13 @@ start_over:
     /* build the username filter */
     authn_ldap_build_filter(filtbuf, r, user, NULL, sec);
 
+    /* convert password to utf-8 */
+    utfpassword = authn_ldap_xlate_password(r, password);
+
     /* do the user search */
     result = util_ldap_cache_checkuserid(r, ldc, sec->url, sec->basedn, sec->scope,
-                                         sec->attributes, filtbuf, password, &dn, &vals);
+                                         sec->attributes, filtbuf, utfpassword,
+                                         &dn, &vals);
     util_ldap_connection_close(ldc);
 
     /* sanity check - if server is down, retry it up to 5 times */
