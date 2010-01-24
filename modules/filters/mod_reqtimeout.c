@@ -317,7 +317,7 @@ static const char *set_reqtimeout_param(reqtimeout_srv_cfg *conf,
         return "Unknown RequestReadTimeout parameter";
     }
     
-    if ((rate_str = strcasestr(val, ",minrate="))) {
+    if ((rate_str = ap_strcasestr(val, ",minrate="))) {
         initial_str = apr_pstrndup(p, val, rate_str - val);
         rate_str += strlen(",minrate=");
         ret = parse_int(p, rate_str, &rate);
