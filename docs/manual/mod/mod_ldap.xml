@@ -567,10 +567,9 @@ connection client certificates.</description>
 
 <usage>
     <p>This directive configures the LDAP_OPT_NETWORK_TIMEOUT option in the
-    underlying LDAP client library, when available.  This value typically 
-    controls how long the LDAP client library will wait for various network 
-    calls to complete, including establishing a connection to the target LDAP 
-    server.</p>
+    underlying LDAP client library, when available.  This value typically
+    controls how long the LDAP client library will wait for the TCP connection
+    to the LDAP server to complete.</p>
 
     <p> If a connection is not successful with the timeout period, either an error will be 
     returned or the LDAP client library will attempt to connect to a secondary LDAP 
