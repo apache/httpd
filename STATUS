@@ -154,7 +154,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_authnz_ldap: log authn failures at INFO instead of WARN
       Trunk Patch: http://svn.apache.org/viewvc?rev=902641&view=rev
       2.2.x Patch: trunk patch works
-    +1: covener, sf
+    +1: covener, sf, fuankg
     
 PATCHES/ISSUES THAT ARE STALLED
 
