@@ -143,7 +143,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=825177&view=rev
                  http://svn.apache.org/viewvc?rev=834499&view=rev
                  http://svn.apache.org/viewvc?rev=885121&view=rev
-    2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2.patch
+                 http://svn.apache.org/viewvc?rev=900018&view=rev
+                 http://svn.apache.org/viewvc?rev=902434&view=rev
+                 http://svn.apache.org/viewvc?rev=902593&view=rev
+    2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2-v2.patch
     +1: sf
 
   * http_request: We don't need to create new->allowed_methods both
