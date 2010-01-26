@@ -803,6 +803,19 @@ indexing</td></tr>
 
       <dd>The <code>XHTML</code> keyword forces <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
       to emit XHTML 1.0 code instead of HTML 3.2.</dd>
+
+      <dt><a name="indexoptions.addaltclass" id="indexoptions.addaltclass">AddAltClass</a></dt>
+      <dd>Adds an additional CSS class declaration to each row of the
+      directory listing table when <code>IndexOptions HTMLTable</code> 
+      is in effect and an <code>IndexStyleSheet</code> is defined.
+      Rather than the standard <code>even</code> and <code>odd</code>
+      classes that would otherwise be applied to each row of the table,
+      a class of <code>even-<em>ALT</em></code> or
+      <code>odd-<em>ALT</em></code> where <em>ALT</em> is either the
+      standard alt text associated with the file tyle (eg. <em>snd</em>,
+      <em>txt</em>, <em>img</em>, etc) or the alt text defined by one of
+      the various <code>AddAlt*</code> directives.
+      </dd>
     </dl>
 
    
@@ -911,10 +924,23 @@ Name|Date|Size|Description</code></td></tr>
     </code></p></div>
 
     <p>Using this directive in conjunction with <code>IndexOptions
-    HTMLTable</code> also adds <code>ai-tr-odd</code> and
-    <code>ai-tr-even</code> class declarations to alternating rows of
-    the directory listing table, so that you can style alternate rows of
-    the table differently.</p>
+    HTMLTable</code> adds a number of CSS classes to the resulting HTML.
+    The entire table is given a CSS id of <code>indexlist</code> and the
+    following classes are associated with the various parts of the
+    listing:</p>
+
+    <table>
+    <tr><th>Class</th><th>Definition</th></tr>
+    <tr><td>tr.indexhead</td><td>Header row of listing</td></tr>
+    <tr><td>th.indexcolicon and td.indexcolicon</td> <td>Icon column</td></tr>
+    <tr><td>th.indexcolname and td.indexcolname</td> <td>File name column</td></tr>
+    <tr><td>th.indexcollastmod and td.indexcollastmod</td> <td>Last modified column</td></tr>
+    <tr><td>th.indexcolsize and td.indexcolsize</td> <td>File size column</td></tr>
+    <tr><td>th.indexcoldesc and td.indexcoldesc</td> <td>Description column</td></tr>
+    <tr><td>tr.breakrow</td> <td>Horizontal rule at the bottom of the table</td></tr>
+    <tr><td>tr.odd and tr.even</td> <td>Alternating even and odd rows</td></tr>
+    </table>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
