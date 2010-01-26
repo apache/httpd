@@ -1100,7 +1100,7 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
     
     if (emit_H1) {
         if (d->style_sheet != NULL) {
-    	    // Insert style id if stylesheet used
+    	    /* Insert style id if stylesheet used */
     	    ap_rvputs(r, "  <h1 id=\"indextitle\">Index of ", title, "</h1>\n", NULL);
     	} else {
         ap_rvputs(r, "<h1>Index of ", title, "</h1>\n", NULL);
@@ -1280,8 +1280,8 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
         }
         if (!(p->alt = find_default_alt(d, testpath))) {
             if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^"))) {
-            	// Special alt text for parent dir to distinguish it from other directories
-            	// this is essential when trying to style this dir entry via AddAltClass
+            	/* Special alt text for parent dir to distinguish it from other directories
+            	   this is essential when trying to style this dir entry via AddAltClass */
                 p->alt = "PARENTDIR";
             }
         }
@@ -1547,7 +1547,7 @@ static void output_directories(struct ent **ar, int n,
     if (autoindex_opts & TABLE_INDEXING) {
         int cols = 1;
         if (d->style_sheet != NULL) {
-            // Emit table with style id
+            /* Emit table with style id */
             ap_rputs("  <table id=\"indexlist\">\n   <tr class=\"indexhead\">", r);
         } else {
             ap_rputs("  <table>\n   <tr>", r);
@@ -1684,12 +1684,12 @@ static void output_directories(struct ent **ar, int n,
             /* Even/Odd rows for IndexStyleSheet */
             if (d->style_sheet != NULL) {
                 if (ar[x]->alt && (autoindex_opts & ADDALTCLASS)) {
-                    // Include alt text in class name, distinguish between odd and even rows
+                    /* Include alt text in class name, distinguish between odd and even rows */
                     char *altclass = apr_pstrdup(scratch, ar[x]->alt);
                     ap_str_tolower(altclass);
                     ap_rvputs(r, "   <tr class=\"", ( x & 0x1) ? "odd-" : "even-", altclass, "\">", NULL);
                 } else {
-                    // Distinguish between odd and even rows
+                    /* Distinguish between odd and even rows */
                     ap_rvputs(r, "   <tr class=\"", ( x & 0x1) ? "odd" : "even", "\">", NULL);
                 }
             } else {
