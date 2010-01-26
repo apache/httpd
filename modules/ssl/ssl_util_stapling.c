@@ -414,6 +414,10 @@ static BOOL stapling_renew_response(server_rec *s, modssl_ctx_t *mctx, SSL *ssl,
         goto done;
     }
 
+    if (!uri.port) {
+        uri.port = apr_uri_port_of_scheme(uri.scheme);
+    }
+
     *prsp = modssl_dispatch_ocsp_request(&uri, mctx->stapling_responder_timeout,
                                          req, conn, vpool);
 
