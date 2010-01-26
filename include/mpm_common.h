@@ -265,12 +265,6 @@ const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
                                const char *arg);
 
 /*
- * Set the scorboard file.
- */
-const char *ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
-                                  const char *arg);
-
-/*
  * The directory that the server changes directory to dump core.
  */
 extern char ap_coredump_dir[MAX_STRING_LEN];

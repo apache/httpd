@@ -3379,6 +3379,15 @@ AP_INIT_ITERATE2("AddOutputFilterByType", add_ct_output_filters,
 AP_INIT_FLAG("AllowEncodedSlashes", set_allow2f, NULL, RSRC_CONF,
              "Allow URLs containing '/' encoded as '%2F'"),
 
+/* scoreboard.c directives */
+AP_INIT_TAKE1("ScoreboardFile", ap_set_scoreboard, NULL, RSRC_CONF,
+              "A file for Apache to maintain runtime process management information"),
+AP_INIT_FLAG("ExtendedStatus", ap_set_extended_status, NULL, RSRC_CONF,
+             "\"On\" to track extended status information, \"Off\" to disable"),
+AP_INIT_FLAG("SeeRequestTail", ap_set_reqtail, NULL, RSRC_CONF,
+             "For extended status, \"On\" to see the last 63 chars of "
+             "the request line, \"Off\" (default) to see the first 63"),
+
 /*
  * These are default configuration directives that mpms can/should
  * pay attention to.
@@ -3387,8 +3396,6 @@ AP_INIT_FLAG("AllowEncodedSlashes", set_allow2f, NULL, RSRC_CONF,
  */
 AP_INIT_TAKE1("PidFile",  ap_mpm_set_pidfile, NULL, RSRC_CONF,
               "A file for logging the server process ID"),
-AP_INIT_TAKE1("ScoreBoardFile", ap_mpm_set_scoreboard, NULL, RSRC_CONF,
-              "A file for Apache to maintain runtime process management information"),
 AP_INIT_TAKE1("MaxRequestsPerChild", ap_mpm_set_max_requests, NULL, RSRC_CONF,
               "Maximum number of requests a particular child serves before dying."),
 AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF,

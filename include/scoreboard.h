@@ -32,6 +32,7 @@ extern "C" {
 #endif
 
 #include "ap_config.h"
+#include "http_config.h"
 #include "apr_hooks.h"
 #include "apr_thread_proc.h"
 #include "apr_portable.h"
@@ -187,6 +188,13 @@ AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
 AP_DECLARE_DATA extern int ap_extended_status;
 AP_DECLARE_DATA extern int ap_mod_status_reqtail;
+
+/*
+ * Command handlers [internal]
+ */
+const char *ap_set_scoreboard(cmd_parms *cmd, void *dummy, const char *arg);
+const char *ap_set_extended_status(cmd_parms *cmd, void *dummy, int arg);
+const char *ap_set_reqtail(cmd_parms *cmd, void *dummy, int arg);
 
 /* Hooks */
 /**

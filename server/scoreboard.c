@@ -38,8 +38,43 @@
 
 AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
 AP_DECLARE_DATA const char *ap_scoreboard_fname = NULL;
+
+const char * ap_set_scoreboard(cmd_parms *cmd, void *dummy,
+                               const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    ap_scoreboard_fname = arg;
+    return NULL;
+}
+
+/* Default to false when mod_status is not loaded */
 AP_DECLARE_DATA int ap_extended_status = 0;
+
+const char *ap_set_extended_status(cmd_parms *cmd, void *dummy, int arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    ap_extended_status = arg;
+    return NULL;
+}
+
 AP_DECLARE_DATA int ap_mod_status_reqtail = 0;
+
+const char *ap_set_reqtail(cmd_parms *cmd, void *dummy, int arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    ap_mod_status_reqtail = arg;
+    return NULL;
+}
 
 #if APR_HAS_SHARED_MEMORY
 
