@@ -547,6 +547,19 @@ indexing</td></tr>
     of</p>
 
     <dl>
+      <dt><a name="indexoptions.addaltclass" id="indexoptions.addaltclass">AddAltClass</a></dt>
+      <dd>Adds an additional CSS class declaration to each row of the
+      directory listing table when <code>IndexOptions HTMLTable</code> 
+      is in effect and an <code>IndexStyleSheet</code> is defined.
+      Rather than the standard <code>even</code> and <code>odd</code>
+      classes that would otherwise be applied to each row of the table,
+      a class of <code>even-<em>ALT</em></code> or
+      <code>odd-<em>ALT</em></code> where <em>ALT</em> is either the
+      standard alt text associated with the file tyle (eg. <em>snd</em>,
+      <em>txt</em>, <em>img</em>, etc) or the alt text defined by one of
+      the various <code>AddAlt*</code> directives.
+      </dd>
+
       <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>character-set</var></a> (<em>Apache 2.0.61 and
       later</em>)</dt>
 
@@ -558,18 +571,6 @@ indexing</td></tr>
 
       <div class="example"><h3>Example:</h3><p><code>
         IndexOptions Charset=UTF-8
-      </code></p></div>
-      </dd>
-
-      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>MIME content-type</var></a> (<em>Apache 2.0.61 and
-      later</em>)</dt>
-
-      <dd>The <code>Type</code> keyword allows you to
-      specify the MIME content-type of the generated page. The default
-      is <var>text/html</var>.
-
-      <div class="example"><h3>Example:</h3><p><code>
-        IndexOptions Type=text/plain
       </code></p></div>
       </dd>
 
@@ -770,6 +771,18 @@ indexing</td></tr>
       <code>Last-Modified</code> header on all Unix platforms.</strong>
       If this is a concern, leave this option disabled.</dd>
 
+      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>MIME content-type</var></a> (<em>Apache 2.0.61 and
+      later</em>)</dt>
+
+      <dd>The <code>Type</code> keyword allows you to
+      specify the MIME content-type of the generated page. The default
+      is <var>text/html</var>.
+
+      <div class="example"><h3>Example:</h3><p><code>
+        IndexOptions Type=text/plain
+      </code></p></div>
+      </dd>
+
       <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
       (<em>Apache 2.0a3 and later</em>)</dt>
 
@@ -804,18 +817,6 @@ indexing</td></tr>
       <dd>The <code>XHTML</code> keyword forces <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code>
       to emit XHTML 1.0 code instead of HTML 3.2.</dd>
 
-      <dt><a name="indexoptions.addaltclass" id="indexoptions.addaltclass">AddAltClass</a></dt>
-      <dd>Adds an additional CSS class declaration to each row of the
-      directory listing table when <code>IndexOptions HTMLTable</code> 
-      is in effect and an <code>IndexStyleSheet</code> is defined.
-      Rather than the standard <code>even</code> and <code>odd</code>
-      classes that would otherwise be applied to each row of the table,
-      a class of <code>even-<em>ALT</em></code> or
-      <code>odd-<em>ALT</em></code> where <em>ALT</em> is either the
-      standard alt text associated with the file tyle (eg. <em>snd</em>,
-      <em>txt</em>, <em>img</em>, etc) or the alt text defined by one of
-      the various <code>AddAlt*</code> directives.
-      </dd>
     </dl>
 
    
