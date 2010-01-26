@@ -71,6 +71,7 @@ module AP_MODULE_DECLARE_DATA autoindex_module;
 #define IGNORE_CASE         (1 << 16)
 #define EMIT_XHTML          (1 << 17)
 #define SHOW_FORBIDDEN      (1 << 18)
+#define ADDALTCLASS         (1 << 19)
 
 #define K_NOADJUST 0
 #define K_ADJUST 1
@@ -398,6 +399,9 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
         }
         else if (!strcasecmp(w, "ShowForbidden")) {
             option = SHOW_FORBIDDEN;
+        }
+        else if (!strcasecmp(w, "AddAltClass")) {
+            option = ADDALTCLASS;
         }
         else if (!strcasecmp(w, "None")) {
             if (action != '\0') {
@@ -1090,8 +1094,17 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
     if (emit_amble) {
         emit_preamble(r, emit_xhtml, title);
     }
+    
+    autoindex_config_rec *d;
+    d = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config, &autoindex_module);
+    
     if (emit_H1) {
+        if (d->style_sheet != NULL) {
+    	    // Insert style id if stylesheet used
+    	    ap_rvputs(r, "  <h1 id=\"indextitle\">Index of ", title, "</h1>\n", NULL);
+    	} else {
         ap_rvputs(r, "<h1>Index of ", title, "</h1>\n", NULL);
+    }
     }
     if (rr != NULL) {
         ap_destroy_sub_req(rr);
@@ -1162,7 +1175,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
         ap_rputs(ap_psignature("", r), r);
     }
     if (!suppress_post) {
-        ap_rputs("</body></html>\n", r);
+        ap_rputs(" </body>\n</html>\n", r);
     }
     if (rr != NULL) {
         ap_destroy_sub_req(rr);
@@ -1267,7 +1280,9 @@ static struct ent *make_parent_entry(apr_int32_t autoindex_opts,
         }
         if (!(p->alt = find_default_alt(d, testpath))) {
             if (!(p->alt = find_default_alt(d, "^^DIRECTORY^^"))) {
-                p->alt = "DIR";
+            	// Special alt text for parent dir to distinguish it from other directories
+            	// this is essential when trying to style this dir entry via AddAltClass
+                p->alt = "PARENTDIR";
             }
         }
         p->desc = find_desc(d, testpath);
@@ -1531,9 +1546,14 @@ static void output_directories(struct ent **ar, int n,
 
     if (autoindex_opts & TABLE_INDEXING) {
         int cols = 1;
-        ap_rputs("<table><tr>", r);
+        if (d->style_sheet != NULL) {
+            // Emit table with style id
+            ap_rputs("  <table id=\"indexlist\">\n   <tr class=\"indexhead\">", r);
+        } else {
+            ap_rputs("  <table>\n   <tr>", r);
+        }
         if (!(autoindex_opts & SUPPRESS_ICON)) {
-            ap_rputs("<th>", r);
+            ap_rvputs(r, "<th", (d->style_sheet != NULL) ? " class=\"indexcolicon\">" : " valign=\"top\">", NULL);
             if ((tp = find_default_icon(d, "^^BLANKICON^^"))) {
                 ap_rvputs(r, "<img src=\"", ap_escape_html(scratch, tp),
                              "\" alt=\"[ICO]\"", NULL);
@@ -1555,34 +1575,36 @@ static void output_directories(struct ent **ar, int n,
 
             ++cols;
         }
-        ap_rputs("<th>", r);
+        ap_rvputs(r, "<th", (d->style_sheet != NULL) ? " class=\"indexcolname\">" : ">", NULL);
         emit_link(r, "Name", K_NAME, keyid, direction,
                   colargs, static_columns);
         if (!(autoindex_opts & SUPPRESS_LAST_MOD)) {
-            ap_rputs("</th><th>", r);
+            ap_rvputs(r, "</th><th", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">" : ">", NULL);
             emit_link(r, "Last modified", K_LAST_MOD, keyid, direction,
                       colargs, static_columns);
             ++cols;
         }
         if (!(autoindex_opts & SUPPRESS_SIZE)) {
-            ap_rputs("</th><th>", r);
+            ap_rvputs(r, "</th><th", (d->style_sheet != NULL) ? " class=\"indexcolsize\">" : ">", NULL);
             emit_link(r, "Size", K_SIZE, keyid, direction,
                       colargs, static_columns);
             ++cols;
         }
         if (!(autoindex_opts & SUPPRESS_DESC)) {
-            ap_rputs("</th><th>", r);
+            ap_rvputs(r, "</th><th", (d->style_sheet != NULL) ? " class=\"indexcoldesc\">" : ">", NULL);
             emit_link(r, "Description", K_DESC, keyid, direction,
                       colargs, static_columns);
             ++cols;
         }
         if (!(autoindex_opts & SUPPRESS_RULES)) {
             breakrow = apr_psprintf(r->pool,
-                                    "<tr><th colspan=\"%d\">"
-                                    "<hr%s></th></tr>\n", cols,
+                                    "   <tr%s><th colspan=\"%d\">"
+                                    "<hr%s></th></tr>\n",
+                                    (d->style_sheet != NULL) ? " class=\"indexbreakrow\"" : "",
+                                    cols,
                                     (autoindex_opts & EMIT_XHTML) ? " /" : "");
         }
-        ap_rvputs(r, "</th></tr>", breakrow, NULL);
+        ap_rvputs(r, "</th></tr>\n", breakrow, NULL);
     }
     else if (autoindex_opts & FANCY_INDEXING) {
         ap_rputs("<pre>", r);
@@ -1659,25 +1681,23 @@ static void output_directories(struct ent **ar, int n,
         }
 
         if (autoindex_opts & TABLE_INDEXING) {
-            ap_rputs("<tr", r);
-
             /* Even/Odd rows for IndexStyleSheet */
             if (d->style_sheet != NULL) {
-                ap_rputs(" class=\"", r);
-                if ( row_count % 2 == 0 ) {
-                    ap_rputs("ai_tr_even", r);
+                if (ar[x]->alt && (autoindex_opts & ADDALTCLASS)) {
+                    // Include alt text in class name, distinguish between odd and even rows
+                    char *altclass = apr_pstrdup(scratch, ar[x]->alt);
+                    ap_str_tolower(altclass);
+                    ap_rvputs(r, "   <tr class=\"", ( x & 0x1) ? "odd-" : "even-", altclass, "\">", NULL);
+                } else {
+                    // Distinguish between odd and even rows
+                    ap_rvputs(r, "   <tr class=\"", ( x & 0x1) ? "odd" : "even", "\">", NULL);
                 }
-                else {
-                    ap_rputs("ai_tr_odd", r);
-                }
-                ap_rputs("\"", r);
-                row_count++;
+            } else {
+                ap_rputs("<tr>", r);
             }
 
-            ap_rputs(">", r);
-
             if (!(autoindex_opts & SUPPRESS_ICON)) {
-                ap_rputs("<td valign=\"top\">", r);
+                ap_rvputs(r, "<td", (d->style_sheet != NULL) ? " class=\"indexcolicon\">" : " valign=\"top\">", NULL);
                 if (autoindex_opts & ICONS_ARE_LINKS) {
                     ap_rvputs(r, "<a href=\"", anchor, "\">", NULL);
                 }
@@ -1711,7 +1731,7 @@ static void output_directories(struct ent **ar, int n,
                 }
             }
             if (d->name_adjust == K_ADJUST) {
-                ap_rvputs(r, "<td><a href=\"", anchor, "\">",
+                ap_rvputs(r, "<td", (d->style_sheet != NULL) ? " class=\"indexcolname\">" : ">", "<a href=\"", anchor, "\">",
                           ap_escape_html(scratch, t2), "</a>", NULL);
             }
             else {
@@ -1725,7 +1745,7 @@ static void output_directories(struct ent **ar, int n,
                   t2 = name_scratch;
                   nwidth = name_width;
                 }
-                ap_rvputs(r, "<td><a href=\"", anchor, "\">",
+                ap_rvputs(r, "<td", (d->style_sheet != NULL) ? " class=\"indexcolname\">" : ">", "<a href=\"", anchor, "\">",
                           ap_escape_html(scratch, t2),
                           "</a>", pad_scratch + nwidth, NULL);
             }
@@ -1735,26 +1755,26 @@ static void output_directories(struct ent **ar, int n,
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, MAX_STRING_LEN,
-                                 "</td><td align=\"right\">%d-%b-%Y %H:%M  ",
+                                 "%Y-%m-%d %H:%M  ",
                                  &ts);
-                    ap_rputs(time_str, r);
+                    ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">" : " align=\"right\">",time_str, NULL);
                 }
                 else {
-                    ap_rputs("</td><td>&nbsp;", r);
+                    ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcollastmod\">&nbsp;" : ">&nbsp;", NULL);
                 }
             }
             if (!(autoindex_opts & SUPPRESS_SIZE)) {
                 char buf[5];
-                ap_rvputs(r, "</td><td align=\"right\">",
+                ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcolsize\">" : " align=\"right\">",
                           apr_strfsize(ar[x]->size, buf), NULL);
             }
             if (!(autoindex_opts & SUPPRESS_DESC)) {
                 if (ar[x]->desc) {
                     if (d->desc_adjust == K_ADJUST) {
-                        ap_rvputs(r, "</td><td>", ar[x]->desc, NULL);
+                        ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcoldesc\">" : ">", ar[x]->desc, NULL);
                     }
                     else {
-                        ap_rvputs(r, "</td><td>",
+                        ap_rvputs(r, "</td><td", (d->style_sheet != NULL) ? " class=\"indexcoldesc\">" : ">",
                                   terminate_description(d, ar[x]->desc,
                                                         autoindex_opts,
                                                         desc_width), NULL);
@@ -1823,11 +1843,11 @@ static void output_directories(struct ent **ar, int n,
                     apr_time_exp_t ts;
                     apr_time_exp_lt(&ts, ar[x]->lm);
                     apr_strftime(time_str, &rv, MAX_STRING_LEN,
-                                "%d-%b-%Y %H:%M  ", &ts);
+                                "%Y-%m-%d %H:%M  ", &ts);
                     ap_rputs(time_str, r);
                 }
                 else {
-                    /*Length="22-Feb-1998 23:42  " (see 4 lines above) */
+                    /*Length="1975-04-07 01:23  " (see 4 lines above) */
                     ap_rputs("                   ", r);
                 }
             }
