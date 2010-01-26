@@ -241,18 +241,6 @@ const char *ap_mpm_set_pidfile(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-const char * ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
-                                   const char *arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-
-    ap_scoreboard_fname = arg;
-    return NULL;
-}
-
 int ap_max_requests_per_child = 0;
 
 const char *ap_mpm_set_max_requests(cmd_parms *cmd, void *dummy,

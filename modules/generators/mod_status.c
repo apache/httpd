@@ -102,41 +102,6 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(ap, STATUS, int, status_hook,
 static pid_t child_pid;
 #endif
 
-/*
- * command-related code. This is here to prevent use of ExtendedStatus
- * without status_module included.
- */
-static const char *set_extended_status(cmd_parms *cmd, void *dummy, int arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-    ap_extended_status = arg;
-    return NULL;
-}
-
-static const char *set_reqtail(cmd_parms *cmd, void *dummy, int arg)
-{
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-    if (err != NULL) {
-        return err;
-    }
-    ap_mod_status_reqtail = arg;
-    return NULL;
-}
-
-
-static const command_rec status_module_cmds[] =
-{
-    AP_INIT_FLAG("ExtendedStatus", set_extended_status, NULL, RSRC_CONF,
-      "\"On\" to enable extended status information, \"Off\" to disable"),
-    AP_INIT_FLAG("SeeRequestTail", set_reqtail, NULL, RSRC_CONF,
-      "For verbose requests, \"On\" to see the last 63 chars of the request, "
-      "\"Off\" (default) to see the first 63 in extended status display"),
-    {NULL}
-};
-
 /* Format the number of bytes nicely */
 static void format_byte_out(request_rec *r, apr_off_t bytes)
 {
@@ -815,6 +780,15 @@ static int status_handler(request_rec *r)
     return 0;
 }
 
+static void status_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    /* When mod_status is loaded, default our ExtendedStatus to 'on'
+     * other modules which prefer verbose scoreboards may play a similar game.
+     * If left to their own requirements, mpm modules can make do with simple
+     * scoreboard entries.
+     */
+    ap_extended_status = 1;
+}
 
 static int status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
                        server_rec *s)
@@ -845,6 +819,7 @@ static void status_child_init(apr_pool_t *p, server_rec *s)
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_handler(status_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_config(status_pre_config, NULL, NULL, APR_HOOK_LAST);
     ap_hook_post_config(status_init, NULL, NULL, APR_HOOK_MIDDLE);
 #ifdef HAVE_TIMES
     ap_hook_child_init(status_child_init, NULL, NULL, APR_HOOK_MIDDLE);
@@ -858,7 +833,7 @@ module AP_MODULE_DECLARE_DATA status_module =
     NULL,                       /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    status_module_cmds,         /* command table */
+    NULL,                       /* command table */
     register_hooks              /* register_hooks */
 };
 
