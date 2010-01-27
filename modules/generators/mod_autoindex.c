@@ -1175,7 +1175,7 @@ static void emit_tail(request_rec *r, char *readme_fname, int suppress_amble)
         ap_rputs(ap_psignature("", r), r);
     }
     if (!suppress_post) {
-        ap_rputs(" </body>\n</html>\n", r);
+        ap_rputs("</body></html>\n", r);
     }
     if (rr != NULL) {
         ap_destroy_sub_req(rr);
