@@ -1497,7 +1497,6 @@ static void output_directories(struct ent **ar, int n,
                                char direction, const char *colargs)
 {
     int x;
-    int row_count = 0;
     apr_size_t rv;
     char *name = r->uri;
     char *tp;
