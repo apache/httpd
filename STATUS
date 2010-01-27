@@ -87,11 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * http_request: We don't need to create new->allowed_methods both
-    on line 413 and again on line 450.
-    Patch: http://svn.apache.org/viewvc?view=revision&revision=897570
-    +1: niq, sf, wrowe
-
   * mod_authnz_ldap: log authn failures at INFO instead of WARN
       Trunk Patch: http://svn.apache.org/viewvc?rev=902641&view=rev
       2.2.x Patch: trunk patch works
