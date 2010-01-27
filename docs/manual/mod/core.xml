@@ -1093,8 +1093,6 @@ in case of an error</description>
 </directivesynopsis>
 
 <directivesynopsis>
-
-<directivesynopsis>
 <name>ExtendedStatus</name>
 <description>Keep track of extended status information for each 
 request</description>
@@ -1122,7 +1120,7 @@ request</description>
     third party modules may do the same.  Such modules rely on
     collecting detailed information about the state of all workers.
     The default is changed by <module>mod_status</module> beginning
-    with version 2.3.6; the previous default was always Off.
+    with version 2.3.6; the previous default was always Off.</p>
 </note>
 </directivesynopsis>
 
