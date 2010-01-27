@@ -9,6 +9,10 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) mod_authnz_ldap: Failures to map a username to a DN, or to check a user
+     password now result in an informational level log entry instead of 
+     warning level.  [Eric Covener]
+
   *) Preserve Port information over internal redirects
      PR 35999 [Jonas Ringh <jonas.ringh cixit.se>]
 
