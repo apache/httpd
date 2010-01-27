@@ -87,6 +87,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * http_request: We don't need to create new->allowed_methods both
+    on line 413 and again on line 450.
+    Patch: http://svn.apache.org/viewvc?view=revision&revision=897570
+    +1: niq, sf, wrowe
+
+  * mod_authnz_ldap: log authn failures at INFO instead of WARN
+      Trunk Patch: http://svn.apache.org/viewvc?rev=902641&view=rev
+      2.2.x Patch: trunk patch works
+    +1: covener, sf, fuankg
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -149,19 +159,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2-v2.patch
     +1: sf
 
-  * http_request: We don't need to create new->allowed_methods both
-    on line 413 and again on line 450.
-    Patch: http://svn.apache.org/viewvc?view=revision&revision=897570
-    +1: niq, sf, wrowe
-
-  * mod_authnz_ldap: log authn failures at INFO instead of WARN
-      Trunk Patch: http://svn.apache.org/viewvc?rev=902641&view=rev
-      2.2.x Patch: trunk patch works
-    +1: covener, sf, fuankg
-    niq asks: Why not debug level, as with the previous case? Presumably
-              the main log message is the one from mod_auth_[basic|digest]?
-              Ping me back on IRC to convince me to +1 this.
-
   * Ensure each subrequest has a shallow copy of headers_in so that the
     parent request headers are not corrupted.  Elimiates a problematic
     optimization in the case of no request body.  PR 48359 
@@ -171,6 +168,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Ported to 2.2;
       http://people.apache.org/~wrowe/protocol_headers_copy.patch
     +1: wrowe
+    -1: niq: this risks breaking existing apps, as discussed in
+             comments on PR 48359.
     
 PATCHES/ISSUES THAT ARE STALLED
 
