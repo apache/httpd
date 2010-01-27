@@ -122,7 +122,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
    +1: minfrin
 
-
    * mod_authnz_ldap: Add AuthLDAPBindAuthoritative to allow other authentication 
      providers a chance to run when mod_authnz_ldap finds a user but can't 
      verify their password. PR46608.
@@ -153,14 +152,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     parent request headers are not corrupted.  Elimiates a problematic
     optimization in the case of no request body.  PR 48359 
     [Jake Scott, William Rowe, Ruediger Pluem]
+    Link to discussion thread;
+      https://issues.apache.org/bugzilla/show_bug.cgi?id=48359
     Applied to trunk;
       http://svn.apache.org/viewvc/httpd/httpd/trunk/server/protocol.c?r1=901578&r2=901577
-    Ported to 2.2;
+    Ported to 2.2 (also attached to PR);
       http://people.apache.org/~wrowe/protocol_headers_copy.patch
     +1: wrowe
     -1: niq: this risks breaking existing apps, as discussed in
              comments on PR 48359.
-    
+             [wrowe notes; incorrect and invalid objection, also as
+              identified in the comments.  Legitimate API users are
+              presently broken by this memory scope flaw.]
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
