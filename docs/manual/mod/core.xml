@@ -1093,6 +1093,40 @@ in case of an error</description>
 </directivesynopsis>
 
 <directivesynopsis>
+
+<directivesynopsis>
+<name>ExtendedStatus</name>
+<description>Keep track of extended status information for each 
+request</description>
+<syntax>ExtendedStatus On|Off</syntax>
+<default>ExtendedStatus Off[*]</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>This option tracks additional data per worker about the
+    currently executing request, and a utilization summary; you 
+    can see these variables during runtime by configuring 
+    <module>mod_status</module>.  Note that other modules may
+    rely on this scoreboard.</p>
+
+    <p>This setting applies to the entire server, and cannot be
+    enabled or disabled on a virtualhost-by-virtualhost basis.
+    The collection of extended status information can slow down
+    the server.  Also note that this setting cannot be changed
+    during a graceful restart.</p>
+</usage>
+
+<note>
+    <p>Note that loading <module>mod_status</module> will change 
+    the default behavior to ExtendedStatus On, while other
+    third party modules may do the same.  Such modules rely on
+    collecting detailed information about the state of all workers.
+    The default is changed by <module>mod_status</module> beginning
+    with version 2.3.6; the previous default was always Off.
+</note>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>FileETag</name>
 <description>File attributes used to create the ETag
 HTTP response header for static files</description>
@@ -2879,6 +2913,45 @@ later</compatibility>
     <code>ExecCGI</code> key is not a common one. It must be
     configured manually in the windows registry and hence prevents
     accidental program calls on your system.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SeeRequestTail</name>
+<description>Determine if mod_status displays the first 63 characters
+of a request or the last 63, assuming the request itself is greater than
+63 chars.</description>
+<syntax>SeeRequestTail On|Off</syntax>
+<default>SeeRequestTail Off</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Available in Apache 2.2.7 and later.</compatibility>
+
+<usage>
+    <p>mod_status with <code>ExtendedStatus On</code>
+    displays the actual request being handled. 
+    For historical purposes, only 63 characters of the request
+    are actually stored for display purposes. This directive
+    controls whether the 1st 63 characters are stored (the previous
+    behavior and the default) or if the last 63 characters are. This
+    is only applicable, of course, if the length of the request is
+    64 characters or greater.</p>
+
+    <p>If Apache is handling <code
+    >GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code
+    > mod_status displays as follows:
+    </p>
+
+    <table border="1">
+      <tr>
+        <th>Off (default)</th>
+        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
+      </tr>
+    </table>
+
 </usage>
 </directivesynopsis>
 
