@@ -780,7 +780,7 @@ static int status_handler(request_rec *r)
     return 0;
 }
 
-static void status_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+static int status_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     /* When mod_status is loaded, default our ExtendedStatus to 'on'
      * other modules which prefer verbose scoreboards may play a similar game.
@@ -788,6 +788,7 @@ static void status_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
      * scoreboard entries.
      */
     ap_extended_status = 1;
+    return OK;
 }
 
 static int status_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
