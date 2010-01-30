@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.6
 
+  *) Make ap_pregsub(), used by AliasMatch and friends, use the same syntax
+     for regex backreferences as mod_rewrite and mod_include: Remove the use
+     of '&' as an alias for '$0' and allow to escape any character with a
+     backslash. PR 48351. [Stefan Fritsch]
+
   *) mod_authnz_ldap: If AuthLDAPCharsetConfig is set, also convert the
      password to UTF-8. PR 45318.
      [Johannes Müller <joh_m gmx.de>, Stefan Fritsch]
@@ -19,11 +24,6 @@ Changes with Apache 2.3.5
      parent request headers are not corrupted.  Elimiates a problematic
      optimization in the case of no request body.  PR 48359 
      [Jake Scott, William Rowe, Ruediger Pluem]
-
-  *) Make ap_pregsub(), used by AliasMatch and friends, use the same syntax
-     for regex backreferences as mod_rewrite and mod_include: Remove the use
-     of '&' as an alias for '$0' and allow to escape any character with a
-     backslash. PR 48351. [Stefan Fritsch]
 
   *) Turn static function get_server_name_for_url() into public
      ap_get_server_name_for_url() and use it where appropriate. This
