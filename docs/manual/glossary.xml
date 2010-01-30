@@ -380,10 +380,17 @@
       expressions are useful in Apache because they let you apply certain
       attributes against collections of files or resources in very flexible ways
       - for example, all .gif and .jpg files under any "images" directory could
-      be written as "<code>/images/.*(jpg|gif)$</code>".  Apache uses Perl
-      Compatible Regular Expressions provided by the <a
-      href="http://www.pcre.org/">PCRE</a> library.  You can find more documentation
-      about PCRE's regular expression syntax at that site, or at
+      be written as "<code>/images/.*(jpg|gif)$</code>".  In places where
+      regular expressions are used to replace strings, the special variables
+      $1 ... $9 contain backreferences to the grouped parts (in parentheses) of
+      the matched expression. The special variable $0 contains a backerference
+      to the whole matched expression. To write a literal dollar sign in a
+      replacement string, it can be escaped with a backslash. Historically, the
+      variable &amp; could be used as alias for $0 in some places. This is no
+      longer possible since version 2.3.5.  Apache uses Perl Compatible Regular
+      Expressions provided by the <a href="http://www.pcre.org/">PCRE</a>
+      library.  You can find more documentation about PCRE's regular expression
+      syntax at that site, or at
       <a href="http://en.wikipedia.org/wiki/PCRE">Wikipedia</a>.
     </dd>
 

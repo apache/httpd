@@ -547,7 +547,8 @@
       <p>If you are matching positive (<code>=</code> or <code>==</code>), you
       can capture grouped parts of the regular expression. The captured parts
       are stored in the special variables <code>$1</code> ..
-      <code>$9</code>.</p>
+      <code>$9</code>. The whole string matched by the regular expression is
+      stored in the special variable <code>$0</code></p>
 
       <example><title>Example</title>
         &lt;!--#if expr="$QUERY_STRING = /^sid=([a-zA-Z0-9]+)/" --&gt;<br />
