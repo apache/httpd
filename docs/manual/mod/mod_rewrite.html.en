@@ -132,18 +132,20 @@ RewriteRule ^index\.html$  newsite.html
         <li>
           <strong>RewriteRule backreferences</strong>: These are
           backreferences of the form <strong><code>$N</code></strong>
-          (0 &lt;= N &lt;= 9), which provide access to the grouped
+          (0 &lt;= N &lt;= 9). $1 to $9 provide access to the grouped
           parts (in parentheses) of the pattern, from the
           <code>RewriteRule</code> which is subject to the current
-          set of <code>RewriteCond</code> conditions.
+          set of <code>RewriteCond</code> conditions. $0 provides
+          access to the whole string matched by that pattern.
         </li>
         <li>
           <strong>RewriteCond backreferences</strong>: These are
           backreferences of the form <strong><code>%N</code></strong>
-          (1 &lt;= N &lt;= 9), which provide access to the grouped
+          (0 &lt;= N &lt;= 9). %1 to %9 provide access to the grouped
           parts (again, in parentheses) of the pattern, from the last matched
           <code>RewriteCond</code> in the current set
-          of conditions.
+          of conditions. %0 provides access to the whole string matched by
+          that pattern.
         </li>
         <li>
           <strong>RewriteMap expansions</strong>: These are

@@ -20,6 +20,11 @@ Changes with Apache 2.3.5
      optimization in the case of no request body.  PR 48359 
      [Jake Scott, William Rowe, Ruediger Pluem]
 
+  *) Make ap_pregsub(), used by AliasMatch and friends, use the same syntax
+     for regex backreferences as mod_rewrite and mod_include: Remove the use
+     of '&' as an alias for '$0' and allow to escape any character with a
+     backslash. PR 48351. [Stefan Fritsch]
+
   *) Turn static function get_server_name_for_url() into public
      ap_get_server_name_for_url() and use it where appropriate. This
      fixes mod_rewrite generating invalid URLs for redirects to IPv6
@@ -36,7 +41,7 @@ Changes with Apache 2.3.5
 
   *) mod_cache: Do an exact match of the keys defined by
      CacheIgnoreURLSessionIdentifiers against the querystring instead of
-     a partial match.  PR 48401.i
+     a partial match.  PR 48401.
      [Dodou Wang <wangdong.08 gmail.com>, Ruediger Pluem]
 
   *) mod_proxy_balancer: Fix crash in balancer-manager. [Rainer Jung]

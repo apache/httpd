@@ -376,15 +376,13 @@ AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input,
     len = 0;
 
     while ((c = *src++) != '\0') {
-        if (c == '&')
-            no = 0;
-        else if (c == '$' && apr_isdigit(*src))
+        if (c == '$' && apr_isdigit(*src))
             no = *src++ - '0';
         else
             no = 10;
 
         if (no > 9) {                /* Ordinary character. */
-            if (c == '\\' && (*src == '$' || *src == '&'))
+            if (c == '\\' && *src)
                 c = *src++;
             len++;
         }
