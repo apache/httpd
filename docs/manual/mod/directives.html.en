@@ -215,7 +215,7 @@
 <li><a href="mod_expires.html#expiresactive">ExpiresActive</a></li>
 <li><a href="mod_expires.html#expiresbytype">ExpiresByType</a></li>
 <li><a href="mod_expires.html#expiresdefault">ExpiresDefault</a></li>
-<li><a href="mod_status.html#extendedstatus">ExtendedStatus</a></li>
+<li><a href="core.html#extendedstatus">ExtendedStatus</a></li>
 <li><a href="mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></li>
 <li><a href="mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></li>
 <li><a href="mod_dir.html#fallbackresource" id="F" name="F">FallbackResource</a></li>
@@ -275,6 +275,7 @@
 <li><a href="mod_ldap.html#ldapreferrals">LDAPReferrals</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
+<li><a href="mod_ldap.html#ldaptimeout">LDAPTimeout</a></li>
 <li><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></li>
 <li><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></li>
 <li><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode</a></li>
@@ -398,7 +399,7 @@
 <li><a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
 <li><a href="mod_cgid.html#scriptsock">ScriptSock</a></li>
 <li><a href="mod_nw_ssl.html#securelisten">SecureListen</a></li>
-<li><a href="mod_status.html#seerequesttail">SeeRequestTail</a></li>
+<li><a href="core.html#seerequesttail">SeeRequestTail</a></li>
 <li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><a href="core.html#serveradmin">ServerAdmin</a></li>
 <li><a href="core.html#serveralias">ServerAlias</a></li>

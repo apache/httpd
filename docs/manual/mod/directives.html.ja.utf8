@@ -269,6 +269,7 @@
 <li><a href="mod_ldap.html#ldapreferrals">LDAPReferrals</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
+<li><a href="mod_ldap.html#ldaptimeout">LDAPTimeout</a></li>
 <li><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></li>
 <li><a href="mod_ldap.html#ldaptrustedglobalcert">LDAPTrustedGlobalCert</a></li>
 <li><a href="mod_ldap.html#ldaptrustedmode">LDAPTrustedMode</a></li>
