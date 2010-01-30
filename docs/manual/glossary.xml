@@ -387,7 +387,7 @@
       to the whole matched expression. To write a literal dollar sign in a
       replacement string, it can be escaped with a backslash. Historically, the
       variable &amp; could be used as alias for $0 in some places. This is no
-      longer possible since version 2.3.5.  Apache uses Perl Compatible Regular
+      longer possible since version 2.3.6.  Apache uses Perl Compatible Regular
       Expressions provided by the <a href="http://www.pcre.org/">PCRE</a>
       library.  You can find more documentation about PCRE's regular expression
       syntax at that site, or at
