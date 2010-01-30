@@ -68,14 +68,14 @@ performance</td></tr>
     </ul>
 
     <p>The lines marked "(*)" are only available if 
-    <code class="directive"><a href="#extendedstatus">ExtendedStatus</a></code> 
-    is <code>On</code>.</p>
+    <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> 
+    is <code>On</code>.  In version 2.3.6, loading mod_status will
+    toggle <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> On
+    by default.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
-</ul>
+<p>This module provides no
+            directives.</p>
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Status Support</a></li>
@@ -133,61 +133,6 @@ performance</td></tr>
       <code>.htaccess</code>). This may have security-related
       ramifications for your site.</strong>
     </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keep track of extended status information for each 
-request</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ExtendedStatus Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_status</td></tr>
-</table>
-    <p>This setting applies to the entire server, and cannot be
-    enabled or disabled on a virtualhost-by-virtualhost basis.
-    The collection of extended status information can slow down
-    the server.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine if mod_status displays the first 63 characters
-of a request or the last 63, assuming the request itself is greater than
-63 chars.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SeeRequestTail Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.7 and later.</td></tr>
-</table>
-    <p>mod_status with <code>ExtendedStatus On</code>
-    displays the actual request being handled. 
-    For historical purposes, only 63 characters of the request
-    are actually stored for display purposes. This directive
-    controls whether the 1st 63 characters are stored (the previous
-    behavior and the default) or if the last 63 characters are. This
-    is only applicable, of course, if the length of the request is
-    64 characters or greater.</p>
-
-    <p>If Apache is handling <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> mod_status displays as follows:
-    </p>
-
-    <table class="bordered">
-      <tr>
-        <th>Off (default)</th>
-        <td>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples</td>
-      </tr>
-      <tr>
-        <th>On</th>
-        <td>orage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</td>
-      </tr>
-    </table>
-
 
 </div>
 </div>
