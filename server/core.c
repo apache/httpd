@@ -1102,39 +1102,36 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
 
 
 static const char *set_define(cmd_parms *cmd, void *dummy,
-                                   const char *optarg)
+                              const char *optarg)
 {
-    int remove = 0;
-
-    const char *err = ap_check_cmd_context(cmd,
-                                           GLOBAL_ONLY);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    if (*optarg == '!') {
-        remove = 1;
-        optarg++;
-    }
-
-    if (remove == 0 && !ap_exists_config_define(optarg)) {
+    if (!ap_exists_config_define(optarg)) {
         char **newv = (char **)apr_array_push(ap_server_config_defines);
         *newv = apr_pstrdup(cmd->pool, optarg);
     }
-    else if (remove == 1) {
-        int i;
-        char **defines = (char **)ap_server_config_defines->elts;
-        for (i = 0; i < ap_server_config_defines->nelts; i++) {
-            if (strcmp(defines[i], optarg) == 0) {
-                if (i == ap_server_config_defines->nelts - 1) {
-                    apr_array_pop(ap_server_config_defines);
-                    break;
-                }
-                else {
-                    defines[i] = apr_array_pop(ap_server_config_defines);
-                    break;
-                }
-            }
+
+    return NULL;
+}
+
+static const char *unset_define(cmd_parms *cmd, void *dummy,
+                                const char *optarg)
+{
+    int i;
+    char **defines;
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    defines = (char **)ap_server_config_defines->elts;
+    for (i = 0; i < ap_server_config_defines->nelts; i++) {
+        if (strcmp(defines[i], optarg) == 0) {
+            defines[i] = apr_array_pop(ap_server_config_defines);
+            break;
         }
     }
 
@@ -3263,6 +3260,8 @@ AP_INIT_TAKE1("AcceptPathInfo", set_accept_path_info, NULL, OR_FILEINFO,
   "Set to on or off for PATH_INFO to be accepted by handlers, or default for the per-handler preference"),
 AP_INIT_TAKE1("Define", set_define, NULL, RSRC_CONF,
               "Define the existance of a variable.  Same as passing -D to the command line."),
+AP_INIT_TAKE1("UnDefine", unset_define, NULL, RSRC_CONF,
+              "Undefine the existance of a variable. Undo a Define."),
 AP_INIT_RAW_ARGS("<If", ifsection, NULL, OR_ALL,
   "Container for directives to be conditionally applied"),
 
