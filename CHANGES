@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.6
 
+  *) Allow the Define directive to undefine a variable by prefixing the
+     argument with a '!'. PR 35350. [Stefan Fritsch]
+
   *) Make ap_pregsub(), used by AliasMatch and friends, use the same syntax
      for regex backreferences as mod_rewrite and mod_include: Remove the use
      of '&' as an alias for '$0' and allow to escape any character with a

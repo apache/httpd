@@ -596,8 +596,8 @@ which no other media type configuration could be found.
 
 <directivesynopsis>
 <name>Define</name>
-<description>Define the existence of a variable</description>
-<syntax>Define <var>parameter-name</var></syntax>
+<description>Define or undefine the existence of a variable</description>
+<syntax>Define [!]<var>parameter-name</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
@@ -606,6 +606,8 @@ which no other media type configuration could be found.
     <p>This directive can be used to toggle the use of <directive module="core"
     type="section">IfDefine</directive> sections without needing to alter
     <code>-D</code> arguments in any startup scripts.</p>
+    <p>If the parameter-name is prefixed with a <code>!</code>, the definition
+    of the argument is removed.</p>
 </usage>
 </directivesynopsis>
 
