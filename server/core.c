@@ -1104,7 +1104,7 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
 static const char *set_define(cmd_parms *cmd, void *dummy,
                                    const char *optarg)
 {
-    char **newv;
+    int remove = 0;
 
     const char *err = ap_check_cmd_context(cmd,
                                            GLOBAL_ONLY);
@@ -1112,8 +1112,31 @@ static const char *set_define(cmd_parms *cmd, void *dummy,
         return err;
     }
 
-    newv = (char **)apr_array_push(ap_server_config_defines);
-    *newv = apr_pstrdup(cmd->pool, optarg);
+    if (*optarg == '!') {
+        remove = 1;
+        optarg++;
+    }
+
+    if (remove == 0 && !ap_exists_config_define(optarg)) {
+        char **newv = (char **)apr_array_push(ap_server_config_defines);
+        *newv = apr_pstrdup(cmd->pool, optarg);
+    }
+    else if (remove == 1) {
+        int i;
+        char **defines = (char **)ap_server_config_defines->elts;
+        for (i = 0; i < ap_server_config_defines->nelts; i++) {
+            if (strcmp(defines[i], optarg) == 0) {
+                if (i == ap_server_config_defines->nelts - 1) {
+                    apr_array_pop(ap_server_config_defines);
+                    break;
+                }
+                else {
+                    defines[i] = apr_array_pop(ap_server_config_defines);
+                    break;
+                }
+            }
+        }
+    }
 
     return NULL;
 }
