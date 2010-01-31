@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 894036 -->
+<!-- English Revision : 899254 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -350,7 +350,9 @@ tardif</title>
     erreurs client.</p>
 
     <p>L'action que cette directive provoque est d&eacute;termin&eacute;e par le
-    second argument. Il peut prendre une des valeurs suivantes :</p>
+    premier argument (ou par le second argument si une
+    <var>condition</var> est sp&eacute;cifi&eacute;e). Il peut prendre
+    une des valeurs suivantes :</p>
 
     <dl>
     <dt><code>add</code></dt>
@@ -414,7 +416,7 @@ tardif</title>
 
     <p>Avec <code>set</code>, <code>append</code>, <code>merge</code> et
     <code>add</code>, une <var>valeur</var> est sp&eacute;cifi&eacute;e comme
-    troisi&egrave;me argument. Si <var>valeur</var> contient des espaces, elle
+    argument suivant. Si <var>valeur</var> contient des espaces, elle
     doit &ecirc;tre entour&eacute;e de guillemets. <var>valeur</var> peut &ecirc;tre une
     cha&icirc;ne de caract&egrave;res, une cha&icirc;ne contenant des sp&eacute;cificateurs de
     format, ou une combinaison des deux. <var>valeur</var> supporte les
