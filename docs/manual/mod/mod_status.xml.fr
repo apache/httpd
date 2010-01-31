@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 779139 -->
+<!-- English Revision : 903777 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -69,8 +69,10 @@ du serveur</description>
     </ul>
 
     <p>Les lignes se terminant par "(*)" ne sont disponibles que si la
-    directive <directive module="mod_status">ExtendedStatus</directive>
-    est d&eacute;finie &agrave; <code>On</code>.</p>
+    directive <directive module="core">ExtendedStatus</directive>
+    est d&eacute;finie &agrave; <code>On</code>. Depuis la version
+    2.3.6, le chargement de mod_status d&eacute;finit automatiquement
+    <directive module="core">ExtendedStatus</directive> &agrave; On.</p>
 </summary>
 
 <section id="enable">
@@ -125,65 +127,6 @@ du serveur</description>
     </note>
 
 </section>
-
-<directivesynopsis>
-
-<name>ExtendedStatus</name>
-<description>Extrait des informations d'&eacute;tat &eacute;tendues pour chaque
-requ&ecirc;te</description>
-<syntax>ExtendedStatus On|Off</syntax>
-<default>ExtendedStatus Off</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-    <p>Cette directive s'applique au serveur dans son ensemble, et ne
-    peut pas &ecirc;tre activ&eacute;e/d&eacute;sactiv&eacute;e pour un serveur virtuel
-    particulier. Notez que l'extraction des informations d'&eacute;tat &eacute;tendues
-    peut ralentir le serveur.</p>
-</usage>
-
-</directivesynopsis>
-<directivesynopsis>
-
-<name>SeeRequestTail</name>
-<description>D&eacute;termine si mod_status affiche les 63 premiers caract&egrave;res
-d'une requ&ecirc;te ou les 63 derniers, en supposant que la requ&ecirc;te
-elle-m&ecirc;me poss&egrave;de plus de 63 caract&egrave;res.</description>
-<syntax>SeeRequestTail On|Off</syntax>
-<default>SeeRequestTail Off</default>
-<contextlist><context>server config</context></contextlist>
-<compatibility>Disponible depuis la version 2.2.7
-d'Apache.</compatibility>
-
-<usage>
-    <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
-    v&eacute;ritable requ&ecirc;te en cours de traitement. Pour des raisons
-    historiques, seuls 63 caract&egrave;res de la requ&ecirc;te sont r&eacute;ellement
-    stock&eacute;s &agrave; des fins d'affichage. Cette directive permet de d&eacute;terminer
-    si ce sont les 63 premiers caract&egrave;res qui seront stock&eacute;s (c'est le
-    comportement par d&eacute;faut et celui des versions ant&eacute;rieures &agrave; 2.2.7),
-    ou si ce sont les 63 derniers. Ceci ne s'applique bien entendu que
-    si la taille de la requ&ecirc;te est de 64 caract&egrave;res ou plus.</p>
-
-    <p>Si Apache traite la requ&ecirc;te <code
-    >GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
-    , l'affichage de la requ&ecirc;te par mod_status se pr&eacute;sentera comme suit :
-    </p>
-
-    <table border="1">
-      <tr>
-        <th>Off (d&eacute;faut)</th>
-        <td>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourritu</td>
-      </tr>
-      <tr>
-        <th>On</th>
-        <td>apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</td>
-      </tr>
-    </table>
-
-</usage>
-
-</directivesynopsis>
 
 </modulesynopsis>
 

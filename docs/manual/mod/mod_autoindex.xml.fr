@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 894306 -->
+<!-- English Revision : 903057 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -571,6 +571,22 @@ r&eacute;pertoire</description>
     suivantes :</p>
 
     <dl>
+      <dt><a name="indexoptions.addaltclass"
+               id="indexoptions.addaltclass">AddAltClass</a></dt>
+      <dd>Ajoute une d&eacute;claration de classe CSS suppl&eacute;mentaire &agrave; chaque
+      enregistrement de la table du listing du r&eacute;pertoire dans le cas o&ugrave;
+      <code>IndexOptions HTMLTable</code> est activ&eacute; et o&ugrave; un
+      <code>IndexStyleSheet</code> a &eacute;t&eacute; d&eacute;fini. Plut&ocirc;t que d'appliquer
+      &agrave; chaque enregistrement de la table les classes standards
+      <code>even</code> et <code>odd</code>, c'est ici une classe
+      <code>even-<em>ALT</em></code> ou <code>odd-<em>ALT</em></code>
+      qui sera appliqu&eacute;e, o&ugrave; <em>ALT</em> sera soit le texte alternatif
+      standard associ&eacute; au style du fichier (par exemple <em>snd</em>,
+      <em>txt</em>, <em>img</em>, etc...), soit le texte alternatif
+      d&eacute;fini par une des diff&eacute;rentes directives <code>AddAlt*</code>.
+      </dd>
+
+    
       <dt><a name="indexoptions.charset"
                id="indexoptions.charset"
       >Charset=<var>jeu de caract&egrave;res</var></a> (<em>Versions 2.0.61 et
@@ -583,20 +599,6 @@ r&eacute;pertoire</description>
 
       <example><title>Exemple :</title>
         IndexOptions Charset=UTF-8
-      </example>
-      </dd>
-
-      <dt><a name="indexoptions.type"
-               id="indexoptions.type"
-      >Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
-      sup&eacute;rieures d'Apache</em>)</dt>
-
-      <dd>Le mot-cl&eacute; <code>Type</code> vous permet de sp&eacute;cifier le type
-      MIME de la page g&eacute;n&eacute;r&eacute;e. La valeur par d&eacute;faut est
-      <var>text/html</var>.
-
-      <example><title>Exemple :</title>
-        IndexOptions Type=text/plain
       </example>
       </dd>
 
@@ -860,6 +862,21 @@ r&eacute;pertoire</description>
       Unix.</strong> Si c'est le cas, laissez cette option
       d&eacute;sactiv&eacute;e.</dd>
 
+      <dt><a name="indexoptions.type"
+               id="indexoptions.type"
+      >Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
+      sup&eacute;rieures d'Apache</em>)</dt>
+
+      <dd>Le mot-cl&eacute; <code>Type</code> vous permet de sp&eacute;cifier le type
+      MIME de la page g&eacute;n&eacute;r&eacute;e. La valeur par d&eacute;faut est
+      <var>text/html</var>.
+
+      <example><title>Exemple :</title>
+        IndexOptions Type=text/plain
+      </example>
+      </dd>
+
+
       <dt><a name="indexoptions.versionsort"
                id="indexoptions.versionsort">VersionSort</a>
       (<em>Apache 2.0a3 and later</em>)</dt>
@@ -1023,11 +1040,29 @@ r&eacute;pertoire</description>
     </example>
 
     <p>L'utilisation de cette directive en conjonction avec <code>IndexOptions
-    HTMLTable</code> ajoute aussi les d&eacute;clarations de classes
-    <code>ai-tr-odd</code> et <code>ai-tr-even</code> pour diff&eacute;rentier
-    les lignes successives du listing du r&eacute;pertoire, de fa&ccedil;on &agrave; ce que vous puissiez
-    d&eacute;finir un style diff&eacute;rent pour les lignes paires et impaires de la
-    table.</p>
+    HTMLTable</code> ajoute plusieurs classes CSS au document HTML
+    r&eacute;sultant. Un identifiant CSS <code>indexlist</code> est attribu&eacute; &agrave;
+    l'ensemble de la table et les classes suivantes sont associ&eacute;es aux
+    diff&eacute;rentes parties du listing :</p>
+
+    <table>
+    <tr><th>Classe</th><th>D&eacute;finition</th></tr>
+    <tr><td>tr.indexhead</td><td>Ligne d'en-t&ecirc;te du listing</td></tr>
+    <tr><td>th.indexcolicon and td.indexcolicon</td> <td>Colonne de
+    l'ic&ocirc;ne</td></tr>
+    <tr><td>th.indexcolname and td.indexcolname</td> <td>Colonne du nom
+    du fichier</td></tr>
+    <tr><td>th.indexcollastmod and td.indexcollastmod</td> <td>Colonne
+    de la date de derni&egrave;re modification</td></tr>
+    <tr><td>th.indexcolsize and td.indexcolsize</td> <td>Colonne de la
+    taille du fichier</td></tr>
+    <tr><td>th.indexcoldesc and td.indexcoldesc</td> <td>Colonne de la
+    description</td></tr>
+    <tr><td>tr.breakrow</td> <td>Pied de page</td></tr>
+    <tr><td>tr.odd and tr.even</td> <td>Alternance des lignes paires et
+    impaires</td></tr>
+    </table>
+
 </usage>
 </directivesynopsis>
 
