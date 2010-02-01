@@ -172,6 +172,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=905406&view=rev
     +1: minfrin
 
+  * mod_log_config: Add the R option to log the handler used within the
+    request.
+    Submitted by: Christian Folini <christian.folini netnea com>
+    Trunk patch: http://svn.apache.org/viewvc?rev=905420&view=rev
+    Trunk works for 2.2.x
+    +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
