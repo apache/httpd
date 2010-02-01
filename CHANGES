@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.6
 
+  *) Allow fine control over the removal of Last-Modified and ETag headers
+     within the INCLUDES filter, making it possible to cache responses if
+     desired. Fix the default value of the SSIAccessEnable directive.
+     [Graham Leggett]
+
   *) Allow the Define directive to undefine a variable by prefixing the
      argument with a '!'. PR 35350. [Stefan Fritsch]
 
