@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.6
 
+  *) mod_log_config: Add the R option to log the handler used within the
+     request. [Christian Folini <christian.folini netnea com>]
+
   *) Allow fine control over the removal of Last-Modified and ETag headers
      within the INCLUDES filter, making it possible to cache responses if
      desired. Fix the default value of the SSIAccessEnable directive.

@@ -376,6 +376,11 @@ static const char *log_status(request_rec *r, char *a)
     return pfmt(r->pool, r->status);
 }
 
+static const char *log_handler(request_rec *r, char *a)
+{
+    return ap_escape_logitem(r->pool, r->handler);
+}
+
 static const char *clf_log_bytes_sent(request_rec *r, char *a)
 {
     if (!r->sent_bodyct || !r->bytes_sent) {
@@ -1530,6 +1535,7 @@ static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
         log_pfn_register(p, "T", log_request_duration, 1);
         log_pfn_register(p, "U", log_request_uri, 1);
         log_pfn_register(p, "s", log_status, 1);
+        log_pfn_register(p, "R", log_handler, 1);
     }
 
     return OK;
