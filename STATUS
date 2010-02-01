@@ -165,6 +165,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               identified in the comments.  Legitimate API users are
               presently broken by this memory scope flaw.]
 
+  * mod_include: Allow fine control over the removal of Last-Modified and ETag headers
+    within the INCLUDES filter, making it possible to cache responses if
+    desired. Fix the default value of the SSIAccessEnable directive.
+    2.2.x patch: http://people.apache.org/~minfrin/mod_include_caching2-2.2.patch
+    Trunk patch: http://svn.apache.org/viewvc?rev=905406&view=rev
+    +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
