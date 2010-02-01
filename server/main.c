@@ -530,33 +530,8 @@ int main(int argc, const char * const argv[])
             break;
 
         case 'e':
-            if (strcasecmp(optarg, "emerg") == 0) {
-                ap_default_loglevel = APLOG_EMERG;
-            }
-            else if (strcasecmp(optarg, "alert") == 0) {
-                ap_default_loglevel = APLOG_ALERT;
-            }
-            else if (strcasecmp(optarg, "crit") == 0) {
-                ap_default_loglevel = APLOG_CRIT;
-            }
-            else if (strncasecmp(optarg, "err", 3) == 0) {
-                ap_default_loglevel = APLOG_ERR;
-            }
-            else if (strncasecmp(optarg, "warn", 4) == 0) {
-                ap_default_loglevel = APLOG_WARNING;
-            }
-            else if (strcasecmp(optarg, "notice") == 0) {
-                ap_default_loglevel = APLOG_NOTICE;
-            }
-            else if (strcasecmp(optarg, "info") == 0) {
-                ap_default_loglevel = APLOG_INFO;
-            }
-            else if (strcasecmp(optarg, "debug") == 0) {
-                ap_default_loglevel = APLOG_DEBUG;
-            }
-            else {
+            if (ap_parse_log_level(optarg, &ap_default_loglevel) != NULL)
                 usage(process);
-            }
             break;
 
         case 'E':
