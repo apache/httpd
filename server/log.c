@@ -1127,6 +1127,25 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
     apr_pool_cleanup_run(pl->p, pl, piped_log_cleanup);
 }
 
+AP_DECLARE(const char *) ap_parse_log_level(const char *str, int *val)
+{
+    char *err = "Loglevel keyword must be one of emerg/alert/crit/error/warn/"
+                "notice/info/debug";
+    int i = 0;
+
+    if (str == NULL)
+        return err;
+
+    while (priorities[i].t_name != NULL) {
+        if (!strcasecmp(str, priorities[i].t_name)) {
+            *val = priorities[i].t_val;
+            return NULL;
+        }
+        i++;
+    }
+    return err;
+}
+
 AP_IMPLEMENT_HOOK_VOID(error_log,
                        (const char *file, int line, int level,
                         apr_status_t status, const server_rec *s,

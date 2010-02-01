@@ -491,6 +491,14 @@ AP_DECLARE_NONSTD(const char *) ap_set_int_slot(cmd_parms *cmd,
                                                 const char *arg);
 
 /**
+ * Parsing function for log level
+ * @param str The string to parse
+ * @param val The parsed log level
+ * @return An error string or NULL on success
+ */
+AP_DECLARE(const char *) ap_parse_log_level(const char *str, int *val);
+
+/**
  * Return true if the specified method is limited by being listed in
  * a &lt;Limit&gt; container, or by *not* being listed in a &lt;LimitExcept&gt;
  * container.

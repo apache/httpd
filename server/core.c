@@ -2626,34 +2626,9 @@ static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg)
     }
 
     if ((str = ap_getword_conf(cmd->pool, &arg))) {
-        if (!strcasecmp(str, "emerg")) {
-            cmd->server->loglevel = APLOG_EMERG;
-        }
-        else if (!strcasecmp(str, "alert")) {
-            cmd->server->loglevel = APLOG_ALERT;
-        }
-        else if (!strcasecmp(str, "crit")) {
-            cmd->server->loglevel = APLOG_CRIT;
-        }
-        else if (!strcasecmp(str, "error")) {
-            cmd->server->loglevel = APLOG_ERR;
-        }
-        else if (!strcasecmp(str, "warn")) {
-            cmd->server->loglevel = APLOG_WARNING;
-        }
-        else if (!strcasecmp(str, "notice")) {
-            cmd->server->loglevel = APLOG_NOTICE;
-        }
-        else if (!strcasecmp(str, "info")) {
-            cmd->server->loglevel = APLOG_INFO;
-        }
-        else if (!strcasecmp(str, "debug")) {
-            cmd->server->loglevel = APLOG_DEBUG;
-        }
-        else {
-            return "LogLevel requires level keyword: one of "
-                   "emerg/alert/crit/error/warn/notice/info/debug";
-        }
+        err = ap_parse_log_level(arg, &cmd->server->loglevel);
+        if (err != NULL)
+            return err;
     }
     else {
         return "LogLevel requires level keyword";
