@@ -434,6 +434,8 @@
 <li><a href="mod_include.html#ssiaccessenable">SSIAccessEnable</a></li>
 <li><a href="mod_include.html#ssiendtag">SSIEndTag</a></li>
 <li><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></li>
+<li><a href="mod_include.html#ssietag">SSIETag</a></li>
+<li><a href="mod_include.html#ssilastmodified">SSILastModified</a></li>
 <li><a href="mod_include.html#ssistarttag">SSIStartTag</a></li>
 <li><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></li>
 <li><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></li>

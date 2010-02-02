@@ -147,29 +147,31 @@
         string exists, otherwise an empty string)</td></tr>
 <tr><td><code>%r</code></td>
         <td>First line of request</td></tr>
-<tr class="odd"><td><code>%s</code></td>
+<tr class="odd"><td><code>%R</code></td>
+        <td>The handler generating the response (if any).</td></tr>
+<tr><td><code>%s</code></td>
         <td>Status. For requests that got internally redirected, this is
         the status of the *original* request --- <code>%&gt;s</code>
         for the last.</td></tr>
-<tr><td><code>%t</code></td>
+<tr class="odd"><td><code>%t</code></td>
         <td>Time the request was received (standard english
         format)</td></tr>
-<tr class="odd"><td><code>%{<var>format</var>}t</code></td>
+<tr><td><code>%{<var>format</var>}t</code></td>
         <td>The time, in the form given by format, which should be in
         <code>strftime(3)</code> format. (potentially localized)</td></tr>
-<tr><td><code>%T</code></td>
+<tr class="odd"><td><code>%T</code></td>
         <td>The time taken to serve the request, in seconds.</td></tr>
-<tr class="odd"><td><code>%u</code></td>
+<tr><td><code>%u</code></td>
         <td>Remote user (from auth; may be bogus if return status
         (<code>%s</code>) is 401)</td></tr>
-<tr><td><code>%U</code></td>
+<tr class="odd"><td><code>%U</code></td>
         <td>The URL path requested, not including any query string.</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>The canonical <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
         of the server serving the request.</td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td>The server name according to the <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> setting.</td></tr>
-<tr class="odd"><td><code>%X</code></td>
+<tr><td><code>%X</code></td>
         <td>Connection status when response is completed:
 
         <table>
@@ -187,10 +189,10 @@
         <p>(This directive was <code>%c</code> in late versions of Apache
         1.3, but this conflicted with the historical ssl
         <code>%{<var>var</var>}c</code> syntax.)</p></td></tr>
-<tr><td><code>%I</code></td>
+<tr class="odd"><td><code>%I</code></td>
         <td>Bytes received, including request and headers, cannot be zero.
         You need to enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
-<tr class="odd"><td><code>%O</code></td>
+<tr><td><code>%O</code></td>
         <td>Bytes sent, including headers, cannot be zero. You need to
         enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
 </table>
@@ -243,6 +245,11 @@
       connection is aborted, or if SSL is used).  The <code>%O</code>
       format provided by <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> will log the
       actual number of bytes sent over the network.</p>
+
+      <p>Note: <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> is implemented as a
+      quick-handler and not as a standard handler. Therefore, the
+      <code>%R</code> format string will not return any handler
+      information when content caching is involved.</p>
 
     
 

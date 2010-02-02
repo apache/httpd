@@ -634,7 +634,9 @@ valid</td></tr>
     the LDAP_OPT_TIMEOUT option in the underlying LDAP client library, when available.</p>
 
     <p> If the timeout expires, httpd will retry in case an existing connection has
-    been silently dropped by a firewall.</p>
+    been silently dropped by a firewall. However, performance will be much better if
+    the firewall is configured to send TCP RST packets instead of silently dropping
+    packets.</p>
 
     <div class="note">
     <p>Timeouts for ldap compare operations requires an SDK with LDAP_OPT_TIMEOUT, such as OpenLDAP &gt;= 2.4.4.</p>

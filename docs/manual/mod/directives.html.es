@@ -439,6 +439,8 @@
 <li><a href="mod_include.html#ssiaccessenable">SSIAccessEnable</a></li>
 <li><a href="mod_include.html#ssiendtag">SSIEndTag</a></li>
 <li><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></li>
+<li><a href="mod_include.html#ssietag">SSIETag</a></li>
+<li><a href="mod_include.html#ssilastmodified">SSILastModified</a></li>
 <li><a href="mod_include.html#ssistarttag">SSIStartTag</a></li>
 <li><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></li>
 <li><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></li>
@@ -495,7 +497,8 @@
 <li><a href="core.html#traceenable">TraceEnable</a></li>
 <li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
-<li><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv</a></li>
+<li><a href="core.html#undefine" id="U" name="U">UnDefine</a></li>
+<li><a href="mod_env.html#unsetenv">UnsetEnv</a></li>
 <li><a href="core.html#usecanonicalname">UseCanonicalName</a></li>
 <li><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><a href="mod_unixd.html#user">User</a></li>
