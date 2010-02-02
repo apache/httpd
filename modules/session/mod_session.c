@@ -174,6 +174,9 @@ static int ap_session_save(request_rec * r, session_rec * z)
         apr_time_t now = apr_time_now();
         int rv = 0;
 
+        session_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                       &session_module);
+
         /* sanity checks, should we try save at all? */
         if (z->written) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, SESSION_PREFIX
@@ -186,6 +189,12 @@ static int ap_session_save(request_rec * r, session_rec * z)
                           "attempt made to save a session when the session had already expired, "
                           "session not saved: %s", r->uri);
             return APR_EGENERAL;
+        }
+
+        /* reset the expiry back to maxage, if the expiry is present */
+        if (dconf->maxage) {
+            z->expiry = now + dconf->maxage * APR_USEC_PER_SEC;
+            z->maxage = dconf->maxage;
         }
 
         /* encode the session */

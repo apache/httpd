@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.6
 
+  *) mod_session: Session expiry was being initialised, but not updated
+     on each session save, resulting in timed out sessions when there
+     should not have been. Fixed. [Graham Leggett]
+
   *) mod_log_config: Add the R option to log the handler used within the
      request. [Christian Folini <christian.folini netnea com>]
 
