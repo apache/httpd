@@ -70,14 +70,13 @@ du serveur</td></tr>
     </ul>
 
     <p>Les lignes se terminant par "(*)" ne sont disponibles que si la
-    directive <code class="directive"><a href="#extendedstatus">ExtendedStatus</a></code>
-    est définie à <code>On</code>.</p>
+    directive <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code>
+    est définie à <code>On</code>. Depuis la version
+    2.3.6, le chargement de mod_status définit automatiquement
+    <code class="directive"><a href="../mod/core.html#extendedstatus">ExtendedStatus</a></code> à On.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
-</ul>
+<p>Ce module ne fournit aucune directive.</p>
 <h3>Sujets</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Activation du rapport d'état</a></li>
@@ -136,63 +135,6 @@ du serveur</td></tr>
       exemple <code>.htaccess</code>), ce qui peut avoir des
       répercutions quant à la sécurité de votre site.</strong>
     </div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Extrait des informations d'état étendues pour chaque
-requête</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ExtendedStatus Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_status</td></tr>
-</table>
-    <p>Cette directive s'applique au serveur dans son ensemble, et ne
-    peut pas être activée/désactivée pour un serveur virtuel
-    particulier. Notez que l'extraction des informations d'état étendues
-    peut ralentir le serveur.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si mod_status affiche les 63 premiers caractères
-d'une requête ou les 63 derniers, en supposant que la requête
-elle-même possède plus de 63 caractères.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SeeRequestTail Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.7
-d'Apache.</td></tr>
-</table>
-    <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
-    véritable requête en cours de traitement. Pour des raisons
-    historiques, seuls 63 caractères de la requête sont réellement
-    stockés à des fins d'affichage. Cette directive permet de déterminer
-    si ce sont les 63 premiers caractères qui seront stockés (c'est le
-    comportement par défaut et celui des versions antérieures à 2.2.7),
-    ou si ce sont les 63 derniers. Ceci ne s'applique bien entendu que
-    si la taille de la requête est de 64 caractères ou plus.</p>
-
-    <p>Si Apache traite la requête <code>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
-    , l'affichage de la requête par mod_status se présentera comme suit :
-    </p>
-
-    <table class="bordered">
-      <tr>
-        <th>Off (défaut)</th>
-        <td>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourritu</td>
-      </tr>
-      <tr>
-        <th>On</th>
-        <td>apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</td>
-      </tr>
-    </table>
-
 
 </div>
 </div>

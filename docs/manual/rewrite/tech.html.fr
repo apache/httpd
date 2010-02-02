@@ -140,7 +140,7 @@ module mod_rewrite et de la mise en correspondance des URLs</p>
       contrôle est un peu compliqué. Voir la figure 1 pour plus de
       détails.</p>
 <p class="figure">
-      <img src="../images/mod_rewrite_fig1.gif" width="428" height="385" alt="[Nécessite le mode graphique pour     l'affichage]" /><br />
+      <img src="../images/rewrite_rule_flow.png" alt="Flux des comparaisons des directives RewriteRule et RewriteCond" /><br />
       <dfn>Figure 1:</dfn>Déroulement du contrôle à travers le jeu de
       règles de réécriture
 </p>

@@ -316,6 +316,15 @@ fichier en fonction de son type MIME</td></tr>
     taille par défaut qui peut être assignée à la colonne description
     est de 55 octets.</p>
 
+    <p>Comme l'argument <var>fichier</var> peut être un nom de fichier
+    partiel, vous devez garder à l'esprit qu'un nom de fichier partiel
+    trop court pourra correspondre à des fichiers non voulus. Par
+    exemple, <code>le.html</code> correspondra au fichier
+    <code>le.html</code>, mais aussi au fichier
+    <code>example.html</code>. En cas d'ambiguïté, utilisez un nom de
+    fichier aussi complet que possible, et ordonnez votre liste de
+    directives <code>AddDescription</code> en conséquence.</p>
+
     <p>Voir le mot-clé <a href="#indexoptions.descriptionwidth">DescriptionWidth</a> de la directive <code class="directive">module="mod_autoindex"&gt;IndexOptions</code> pour plus de
     détails sur la manière d'augmenter la taille de cette colonne, ou
     pour permettre des descriptions de taille illimitée.</p>
@@ -572,6 +581,21 @@ répertoire</td></tr>
     suivantes :</p>
 
     <dl>
+      <dt><a name="indexoptions.addaltclass" id="indexoptions.addaltclass">AddAltClass</a></dt>
+      <dd>Ajoute une déclaration de classe CSS supplémentaire à chaque
+      enregistrement de la table du listing du répertoire dans le cas où
+      <code>IndexOptions HTMLTable</code> est activé et où un
+      <code>IndexStyleSheet</code> a été défini. Plutôt que d'appliquer
+      à chaque enregistrement de la table les classes standards
+      <code>even</code> et <code>odd</code>, c'est ici une classe
+      <code>even-<em>ALT</em></code> ou <code>odd-<em>ALT</em></code>
+      qui sera appliquée, où <em>ALT</em> sera soit le texte alternatif
+      standard associé au style du fichier (par exemple <em>snd</em>,
+      <em>txt</em>, <em>img</em>, etc...), soit le texte alternatif
+      défini par une des différentes directives <code>AddAlt*</code>.
+      </dd>
+
+    
       <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>jeu de caractères</var></a> (<em>Versions 2.0.61 et
       supérieures d'Apache</em>)</dt>
 
@@ -582,18 +606,6 @@ répertoire</td></tr>
 
       <div class="example"><h3>Exemple :</h3><p><code>
         IndexOptions Charset=UTF-8
-      </code></p></div>
-      </dd>
-
-      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
-      supérieures d'Apache</em>)</dt>
-
-      <dd>Le mot-clé <code>Type</code> vous permet de spécifier le type
-      MIME de la page générée. La valeur par défaut est
-      <var>text/html</var>.
-
-      <div class="example"><h3>Exemple :</h3><p><code>
-        IndexOptions Type=text/plain
       </code></p></div>
       </dd>
 
@@ -703,7 +715,7 @@ répertoire</td></tr>
 
       <dd>Avec <code>-NameWidth</code> (ou si l'option n'est pas
       définie), <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> va calculer la meilleure largeur
-      possible.</dd>
+      possible, mais jusqu'à une largeur maximale de 20 octets.</dd>
 
       <dd><code>NameWidth=<var>n</var></code> fixe la largeur de la
       colonne à <var>n</var> octets.</dd>
@@ -820,6 +832,19 @@ répertoire</td></tr>
       l'en-tête <code>Last-Modified</code> sur toutes les plate-formes
       Unix.</strong> Si c'est le cas, laissez cette option
       désactivée.</dd>
+
+      <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
+      supérieures d'Apache</em>)</dt>
+
+      <dd>Le mot-clé <code>Type</code> vous permet de spécifier le type
+      MIME de la page générée. La valeur par défaut est
+      <var>text/html</var>.
+
+      <div class="example"><h3>Exemple :</h3><p><code>
+        IndexOptions Type=text/plain
+      </code></p></div>
+      </dd>
+
 
       <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
       (<em>Apache 2.0a3 and later</em>)</dt>
@@ -973,6 +998,31 @@ répertoire</td></tr>
       
       IndexStyleSheet "/css/style.css"
     </code></p></div>
+
+    <p>L'utilisation de cette directive en conjonction avec <code>IndexOptions
+    HTMLTable</code> ajoute plusieurs classes CSS au document HTML
+    résultant. Un identifiant CSS <code>indexlist</code> est attribué à
+    l'ensemble de la table et les classes suivantes sont associées aux
+    différentes parties du listing :</p>
+
+    <table>
+    <tr><th>Classe</th><th>Définition</th></tr>
+    <tr><td>tr.indexhead</td><td>Ligne d'en-tête du listing</td></tr>
+    <tr><td>th.indexcolicon and td.indexcolicon</td> <td>Colonne de
+    l'icône</td></tr>
+    <tr><td>th.indexcolname and td.indexcolname</td> <td>Colonne du nom
+    du fichier</td></tr>
+    <tr><td>th.indexcollastmod and td.indexcollastmod</td> <td>Colonne
+    de la date de dernière modification</td></tr>
+    <tr><td>th.indexcolsize and td.indexcolsize</td> <td>Colonne de la
+    taille du fichier</td></tr>
+    <tr><td>th.indexcoldesc and td.indexcoldesc</td> <td>Colonne de la
+    description</td></tr>
+    <tr><td>tr.breakrow</td> <td>Pied de page</td></tr>
+    <tr><td>tr.odd and tr.even</td> <td>Alternance des lignes paires et
+    impaires</td></tr>
+    </table>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

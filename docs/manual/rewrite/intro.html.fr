@@ -159,13 +159,15 @@ arrières dans les expressions rationnelles</a></h3>
       sont créées en interne et peuvent être rappelées via les chaînes
       <code>$N</code> et <code>%N</code> (voir ci-dessous). Ces
       références sont disponibles lors de la création des chaînes de
-      <em>Substitution</em> et des <em>Chaînes de test</em>. La figure 2
+      <em>Substitution</em> et des <em>Chaînes de test</em>. La
+      figure 1
       montre à quels endroits les références arrières sont suceptibles
-      d'être développées.</p>
+      d'être développées, et illustre le flux des comparaisons
+      effectuées par les règles RewriteRule et RewriteCond.</p>
 
 <p class="figure">
-      <img src="../images/mod_rewrite_fig2.gif" width="381" height="179" alt="[Pas affichable sans support des images]" /><br />
-      <dfn>Figure 2:</dfn> Le cheminement d'une référence arrière à
+      <img src="../images/rewrite_rule_flow.png" alt="Flux des comparaisons effectuées par les règles RewriteRule       et RewriteCond" /><br />
+      <dfn>Figure 1 :</dfn> Le cheminement d'une référence arrière à
       travers une règle.
 </p>
 
@@ -187,6 +189,11 @@ transformée;</li>
 rationnelle</a> comparée au chemin de l'URL de la requête entrante (la
 partie située après le nom d'hôte mais avant tout point d'interrogation
 qui indique le début d'une chaîne de requête).</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewriterule.png" alt="Syntaxe de la directive RewriteRule" /><br />
+      <dfn>Figure 2 :</dfn> Syntaxe de la directive RewriteRule.
+</p>
 
 <p>La chaîne de <var>Substitution</var> peut, quant à elle, être de
 trois types :</p>
@@ -265,6 +272,12 @@ le second argument est une <a href="#regex">expression rationnelle</a>
 qui doit correspondre à la variable, et un troisième argument optionnel
 est une liste de drapeaux qui modifient la manière dont la
 correspondance est évaluée.</p>
+
+<p class="figure">
+      <img src="../images/syntax_rewritecond.png" alt="Syntaxe de la directive RewriteCond" /><br />
+      <dfn>Figure 3 :</dfn> Syntaxe de la directive RewriteCond
+</p>
+
 
 <p>Par exemple, pour renvoyer toutes les requêtes en provenance d'une
 certaine tranche d'adresses IP vers un autre serveur, vous pouvez

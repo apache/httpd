@@ -249,7 +249,9 @@ tardif</a></h2>
     erreurs client.</p>
 
     <p>L'action que cette directive provoque est déterminée par le
-    second argument. Il peut prendre une des valeurs suivantes :</p>
+    premier argument (ou par le second argument si une
+    <var>condition</var> est spécifiée). Il peut prendre
+    une des valeurs suivantes :</p>
 
     <dl>
     <dt><code>add</code></dt>
@@ -312,7 +314,7 @@ tardif</a></h2>
 
     <p>Avec <code>set</code>, <code>append</code>, <code>merge</code> et
     <code>add</code>, une <var>valeur</var> est spécifiée comme
-    troisième argument. Si <var>valeur</var> contient des espaces, elle
+    argument suivant. Si <var>valeur</var> contient des espaces, elle
     doit être entourée de guillemets. <var>valeur</var> peut être une
     chaîne de caractères, une chaîne contenant des spécificateurs de
     format, ou une combinaison des deux. <var>valeur</var> supporte les

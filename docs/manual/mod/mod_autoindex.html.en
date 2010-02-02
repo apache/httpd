@@ -555,7 +555,7 @@ indexing</td></tr>
       classes that would otherwise be applied to each row of the table,
       a class of <code>even-<em>ALT</em></code> or
       <code>odd-<em>ALT</em></code> where <em>ALT</em> is either the
-      standard alt text associated with the file tyle (eg. <em>snd</em>,
+      standard alt text associated with the file style (eg. <em>snd</em>,
       <em>txt</em>, <em>img</em>, etc) or the alt text defined by one of
       the various <code>AddAlt*</code> directives.
       </dd>

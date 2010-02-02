@@ -68,7 +68,6 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#allowconnect">AllowCONNECT</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#balancermember">BalancerMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
@@ -76,7 +75,6 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyblock">ProxyBlock</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxydomain">ProxyDomain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyerroroverride">ProxyErrorOverride</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#proxyftpdircharset">ProxyFtpDirCharset</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyiobuffersize">ProxyIOBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxymaxforwards">ProxyMaxForwards</a></li>
@@ -364,35 +362,6 @@
 
    </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ports autorisés à se <code>CONNECT</code>er à travers le
-mandataire</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AllowCONNECT <var>port</var> [<var>port</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>AllowCONNECT 443 563</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-</table>
-    <p>La directive <code class="directive">AllowCONNECT</code> permet de
-    spécifier une liste de numéros de ports auxquels la méthode de
-    mandataire <code>CONNECT</code> pourra se connecter. Les navigateurs
-    d'aujourd'hui utilisent cette méthode dans le cas où une connexion
-    <code>https</code> est requise et où le tunneling mandataire sur
-    HTTP est en service.</p>
-
-    <p>Par défaut, seuls les ports par défauts https (<code>443</code>)
-    et snews (<code>563</code>) sont pris en compte. Vous pouvez
-    utiliser la directive <code class="directive">AllowCONNECT</code> pour
-    outrepasser ces valeurs par défaut et n'autoriser les connexions que
-    vers les ports spécifiés.</p>
-
-    <p>Notez que le module <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> doit être
-    chargé dans le serveur pour pouvoir accéder au support de
-    <code>CONNECT</code>.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ajoute un membre à un groupe de répartition de
@@ -470,7 +439,7 @@ directement</td></tr>
       <p>Les comparaisons de noms de domaines s'effectuent sans tenir
       compte de la casse, et les parties droites des <var>Domaine</var>s
       sont toujours censées correspondre à la racine de l'arborescence
-      DNS, si bien que les domaines <code>.example.com</code> et
+      DNS, si bien que les domaines <code>.ExEmple.com</code> et
       <code>.example.com.</code> (notez le point à la fin du nom) sont
       considérés comme identiques. Comme une comparaison de domaines ne
       nécessite pas de recherche DNS, elle est beaucoup plus efficace
@@ -551,7 +520,7 @@ directement</td></tr>
       <p>Les comparaisons de <var>Nom de serveur</var> s'effectuent sans tenir
       compte de la casse, et les parties droites des <var>Noms de serveur</var>
       sont toujours censées correspondre à la racine de l'arborescence
-      DNS, si bien que les domaines <code>WWW.ExAmple.com</code> et
+      DNS, si bien que les domaines <code>WWW.ExEmple.com</code> et
       <code>www.example.com.</code> (notez le point à la fin du nom) sont
       considérés comme identiques.</p>
      </div></dd>
@@ -734,23 +703,6 @@ mandatés</td></tr>
     <p>Cette directive n'affecte pas le traitement des réponses
     informatives (1xx), de type succès normal (2xx), ou de redirection
     (3xx).</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="ProxyFtpDirCharset" id="ProxyFtpDirCharset">ProxyFtpDirCharset</a> <a name="proxyftpdircharset" id="proxyftpdircharset">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit le jeu de caractères des listings FTP
-mandatés</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ProxyFtpDirCharset <var>jeu-caractères</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ProxyFtpDirCharset ISO-8859-1</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.7 d'Apache</td></tr>
-</table>
-    <p>La directive <code class="directive">ProxyFtpDirCharset</code> permet de
-    définir le jeu de caractères à utiliser pour les listings FTP en
-    HTML générés par <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
