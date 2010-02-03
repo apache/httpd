@@ -62,6 +62,7 @@ compatibility variables.</p>
 <tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
 <tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
+<tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
 <tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
 <tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
@@ -1770,6 +1771,39 @@ the certificate being verified.</p>
 <p>This option forces the configured default OCSP responder to be used
 during OCSP certificate validation, regardless of whether the
 certificate being validated references an OCSP responder.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLInsecureRenegotiation</name>
+<description>Option to enable support for insecure renegotiation</description>
+<syntax>SSLInsecureRenegotiation <em>flag</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 1.0.0 Beta 5 or later</compatibility>
+
+<usage>
+<p>As originally specified, all versions of the SSL and TLS protocols
+(up to and including TLS/1.2) were vulnerable to a Man-in-the-Middle
+attack
+(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
+during a renegotiation.  This vulnerability allowed an attacker to
+"prefix" a chosen plaintext to the HTTP request as seen by the web
+server.  A protocol extension was developed which fixed this
+vulnerability if supported by both client and server.</p>
+
+<p>If <module>mod_ssl</module> is linked against OpenSSL version 1.0.0
+Beta 5 or later, by default renegotiation is only supported with
+clients supporting the new protocol extension.  If this directive is
+enabled, renegotiation will be allowed with old (unpatched) clients.
+SSL connections will be vulnerable to the prefix attack as described
+above if this directive is enabled.  The <code>SSL_SECURE_RENEG</code>
+variable can be used to determine whether secure renegotiation is
+supported for a given SSL connection.</p>
+
+<example><title>Example</title>
+SSLInsecureRenegotiation on
+</example>
 </usage>
 </directivesynopsis>
 
