@@ -332,6 +332,14 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
                                                    TLSEXT_NAMETYPE_host_name));
     }
 #endif
+    else if (ssl != NULL && strcEQ(var, "SECURE_RENEG")) {
+        int flag = 0;
+#ifdef SSL_get_secure_renegotiation_support
+        flag = SSL_get_secure_renegotiation_support(ssl);
+#endif
+        result = apr_pstrdup(p, flag ? "true" : "false");
+    }                             
+
     return result;
 }
 
