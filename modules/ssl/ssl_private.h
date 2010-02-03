@@ -507,6 +507,7 @@ struct SSLSrvConfigRec {
     int              vhost_id_len;
     int              session_cache_timeout;
     BOOL             cipher_server_pref;
+    BOOL             insecure_reneg;
     modssl_ctx_t    *server;
     modssl_ctx_t    *proxy;
     ssl_log_level_e  ssl_log_level;
@@ -580,6 +581,7 @@ const char  *ssl_cmd_SSLUserName(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLLogLevelDebugDump(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *arg);
 const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag);
+const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag);
 
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);

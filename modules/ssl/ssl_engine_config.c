@@ -185,6 +185,7 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->vhost_id_len           = 0;     /* set during module init */
     sc->session_cache_timeout  = UNSET;
     sc->cipher_server_pref     = UNSET;
+    sc->insecure_reneg         = UNSET;
     sc->ssl_log_level          = SSL_LOG_UNSET;
     sc->proxy_ssl_check_peer_expire = SSL_ENABLED_UNSET;
     sc->proxy_ssl_check_peer_cn     = SSL_ENABLED_UNSET;
@@ -294,6 +295,7 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeBool(proxy_enabled);
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
+    cfgMergeBool(insecure_reneg);
     cfgMerge(ssl_log_level, SSL_LOG_UNSET);
     cfgMerge(proxy_ssl_check_peer_expire, SSL_ENABLED_UNSET);
     cfgMerge(proxy_ssl_check_peer_cn, SSL_ENABLED_UNSET);
@@ -627,6 +629,18 @@ const char *ssl_cmd_SSLHonorCipherOrder(cmd_parms *cmd, void *dcfg, int flag)
     return "SSLHonorCiperOrder unsupported; not implemented by the SSL library";
 #endif
 }
+
+const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag)
+{
+#ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    sc->insecure_reneg = flag?TRUE:FALSE;
+    return NULL;
+#else
+    return "SSLInsecureRenegotiation is not supported by the SSL library";
+#endif
+}
+
 
 static const char *ssl_cmd_check_dir(cmd_parms *parms,
                                      const char **dir)
