@@ -32,9 +32,8 @@ address)</description>
 
 <summary>
     <p>The authorization providers implemented by <module>mod_authz_host</module> are
-    registered using the <directive module="mod_authz_core">Require</directive> or
-    <directive module="mod_authz_core">Match</directive> directives.  These 
-    directives can be referenced within a 
+    registered using the <directive module="mod_authz_core">Require</directive>
+    directive. The directive can be referenced within a 
     <directive module="core" type="section">Directory</directive>,
     <directive module="core" type="section">Files</directive>, 
     or <directive module="core" type="section">Location</directive> section
@@ -55,13 +54,11 @@ address)</description>
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></seealso> 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
-<seealso><directive module="mod_authz_core">Match</directive></seealso>
 
 <section id="requiredirectives"><title>The Require Directives</title>
 
-    <p>Apache's <directive module="mod_authz_core">Require</directive> and 
-    <directive module="mod_authz_core">Match</directive> directives are 
-    used during the authorization phase to ensure that a user is allowed or
+    <p>Apache's <directive module="mod_authz_core">Require</directive> 
+    directive is used during the authorization phase to ensure that a user is allowed or
     denied access to a resource.  mod_authz_host extends the 
     authorization types with <code>env</code>, <code>ip</code>, 
     <code>host</code> and <code>all</code>.  Other authorization types may also be 
