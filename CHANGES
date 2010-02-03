@@ -14,8 +14,8 @@ Changes with Apache 2.3.6
      desired. Fix the default value of the SSIAccessEnable directive.
      [Graham Leggett]
 
-  *) Allow the Define directive to undefine a variable by prefixing the
-     argument with a '!'. PR 35350. [Stefan Fritsch]
+  *) Add new UnDefine directive to undefine a variable. PR 35350.
+     [Stefan Fritsch]
 
   *) Make ap_pregsub(), used by AliasMatch and friends, use the same syntax
      for regex backreferences as mod_rewrite and mod_include: Remove the use
