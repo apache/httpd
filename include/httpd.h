@@ -1705,6 +1705,7 @@ AP_DECLARE(void) ap_pregfree(apr_pool_t *p, ap_regex_t *reg);
  * @param source The string that was originally matched to the regex
  * @param nmatch the nmatch returned from ap_pregex
  * @param pmatch the pmatch array returned from ap_pregex
+ * @return The substituted string, or NULL on error
  */
 AP_DECLARE(char *) ap_pregsub(apr_pool_t *p, const char *input, const char *source,
                               size_t nmatch, ap_regmatch_t pmatch[]);
