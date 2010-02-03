@@ -55,6 +55,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspenable">SSLOCSPEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspoverrideresponder">SSLOCSPOverrideResponder</a></li>
@@ -111,6 +112,7 @@ compatibility variables.</p>
 <tr><td><code>SSL_PROTOCOL</code></td>                  <td>string</td>    <td>The SSL protocol version (SSLv2, SSLv3, TLSv1)</td></tr>
 <tr><td><code>SSL_SESSION_ID</code></td>                <td>string</td>    <td>The hex-encoded SSL session id</td></tr>
 <tr><td><code>SSL_SESSION_RESUMED</code></td>           <td>string</td>    <td>Initial or Resumed SSL Session.  Note: multiple requests may be served over the same (Initial or Resumed) SSL session if HTTP KeepAlive is in use</td></tr>
+<tr><td><code>SSL_SECURE_RENEG</code></td>              <td>string</td>    <td><code>true</code> if secure renegotiation is supported, else <code>false</code></td></tr>
 <tr><td><code>SSL_CIPHER</code></td>                    <td>string</td>    <td>The cipher specification name</td></tr>
 <tr><td><code>SSL_CIPHER_EXPORT</code></td>             <td>string</td>    <td><code>true</code> if cipher is an export cipher</td></tr>
 <tr><td><code>SSL_CIPHER_USEKEYSIZE</code></td>         <td>number</td>    <td>Number of cipher bits (actually used)</td></tr>
@@ -651,6 +653,39 @@ the client's preference is used.  If this directive is enabled, the
 server's preference will be used instead.</p>
 <div class="example"><h3>Example</h3><p><code>
 SSLHonorCipherOrder on
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLInsecureRenegotiation" id="SSLInsecureRenegotiation">SSLInsecureRenegotiation</a> <a name="sslinsecurerenegotiation" id="sslinsecurerenegotiation">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option to enable support for insecure renegotiation</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLInsecureRenegotiation <em>flag</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.3 and later, if using OpenSSL 1.0.0 Beta 5 or later</td></tr>
+</table>
+<p>As originally specified, all versions of the SSL and TLS protocols
+(up to and including TLS/1.2) were vulnerable to a Man-in-the-Middle
+attack
+(<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>)
+during a renegotiation.  This vulnerability allowed an attacker to
+"prefix" a chosen plaintext to the HTTP request as seen by the web
+server.  A protocol extension was developed which fixed this
+vulnerability if supported by both client and server.</p>
+
+<p>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is linked against OpenSSL version 1.0.0
+Beta 5 or later, by default renegotiation is only supported with
+clients supporting the new protocol extension.  If this directive is
+enabled, renegotiation will be allowed with old (unpatched) clients.
+SSL connections will be vulnerable to the prefix attack as described
+above if this directive is enabled.  The <code>SSL_SECURE_RENEG</code>
+variable can be used to determine whether secure renegotiation is
+supported for a given SSL connection.</p>
+
+<div class="example"><h3>Example</h3><p><code>
+SSLInsecureRenegotiation on
 </code></p></div>
 
 </div>
