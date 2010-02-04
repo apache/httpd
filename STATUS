@@ -179,6 +179,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk works for 2.2.x
     +1: minfrin
 
+  * worker: Don't log MaxClients until we actually hit it.  Warn when within
+    MinSpareThreads of MaxClients.
+    Trunk patch: http://svn.apache.org/viewvc?rev=906535&view=rev
+    2.2.x patch: http://people.apache.org/~poirier/maxclients-2.2.patch
+    +1: poirier
 
 PATCHES/ISSUES THAT ARE STALLED
 
