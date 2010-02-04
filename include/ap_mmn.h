@@ -213,6 +213,7 @@
  * 20091230.1 (2.3.5-dev)  add util_ldap_state_t.opTimeout
  * 20091230.2 (2.3.5-dev)  add ap_get_server_name_for_url()
  * 20091230.3 (2.3.6-dev)  add ap_parse_log_level()
+ * 20091230.4 (2.3.6-dev)  export ap_process_request_after_handler() for mod_serf
  *
  */
 
@@ -221,7 +222,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20091230
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 4                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

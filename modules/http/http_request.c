@@ -237,7 +237,7 @@ static void check_pipeline(conn_rec *c)
 }
 
 
-void ap_process_request_after_handler(request_rec *r)
+AP_DECLARE(void) ap_process_request_after_handler(request_rec *r)
 {
     apr_bucket_brigade *bb;
     apr_bucket *b;
