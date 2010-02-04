@@ -142,6 +142,8 @@ _tryserf:
 _tryserf:
 	@echo -----
 	@echo mod_serf will not build unless libserf.dll is built in srclib\serf
+	@echo For purposes of alpha, libserf release 0.3.0 works, but only with
+	@echo http://people.apache.org/~wrowe/fixserf-win32-0.3.0.patch
 
 !ENDIF
 #     NOT EXIST("srclib\serf")
@@ -600,10 +602,12 @@ _build:
 _copybin:
 	copy $(LONG)\httpd.$(src_exe) 				"$(inst_exe)" <.y
 	copy $(LONG)\libhttpd.$(src_dll) 			"$(inst_dll)" <.y
-	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.$(src_dll) 	"$(inst_dll)" <.y
 	copy srclib\apr-util\ldap\$(LONG)\apr_ldap-1.$(src_dll) "$(inst_dll)" <.y
+!IF EXIST("srclib\serf")
+	copy srclib\serf\$(LONG)\libserf.$(src_dll) 		"$(inst_dll)" <.y
+!ENDIF
 	for %d in (odbc $(DBD_LIST)) do ( \
 	  copy srclib\apr-util\dbd\$(LONG)\apr_dbd_%d-1.$(src_dll) "$(inst_dll)" <.y \
 	)
@@ -714,6 +718,9 @@ _copybin:
 	copy modules\proxy\$(LONG)\mod_proxy_ftp.$(src_so) 	"$(inst_so)" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_http.$(src_so) 	"$(inst_so)" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_scgi.$(src_so) 	"$(inst_so)" <.y
+!IF EXIST("srclib\serf")
+	copy modules\proxy\$(LONG)\mod_serf.$(src_so)		"$(inst_so)" <.y
+!ENDIF
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_bybusyness.$(src_so) "$(inst_so)" <.y
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_byrequests.$(src_so) "$(inst_so)" <.y
 	copy modules\proxy\balancers\$(LONG)\mod_lbmethod_bytraffic.$(src_so)  "$(inst_so)" <.y
@@ -952,6 +959,9 @@ BEGIN {
 		srclib\apr-util\xml\expat\lib\expat.h \
 		srclib\apr\include\*.h \
 		srclib\apr-util\include\*.h \
+!IF EXIST("srclib\serf")
+		srclib\serf\*.h \
+!ENDIF
 		include\*.h \
 		os\win32\os.h \
 		modules\cache\mod_cache.h \
@@ -981,6 +991,10 @@ BEGIN {
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.exp "$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.lib 	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.exp 	"$(INSTDIR)\lib" <.y
+!IF EXIST("srclib\serf")
+	copy srclib\serf\$(LONG)\libserf.lib 		"$(INSTDIR)\lib" <.y
+	copy srclib\serf\$(LONG)\libserf.exp 		"$(INSTDIR)\lib" <.y
+!ENDIF
 	copy $(LONG)\libhttpd.exp 			"$(INSTDIR)\lib" <.y
 	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.exp 	"$(INSTDIR)\lib" <.y
