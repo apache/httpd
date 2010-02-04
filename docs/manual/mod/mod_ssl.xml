@@ -132,6 +132,34 @@ CustomLog logs/ssl_request_log \
 </example>
 </section>
 
+<section id="notes"><title>Request Notes</title>
+
+<p><module>mod_ssl</module> sets "notes" for the request which can be
+used in logging with the <code>%{<em>name</em>}n</code> format
+string in <module>mod_log_config</module>.</p>
+
+<p>The notes supported are as follows:</p>
+
+<dl>
+  <dt><code>ssl-access-forbidden</code></dt>
+  <dd>This note is set to the value <code>1</code> if access was
+  denied due to an <directive>SSLRequire</directive>
+  or <directive>SSLRequireSSL</directive> directive.</dd>
+
+  <dt><code>ssl-secure-reneg</code></dt>
+  <dd>If <module>mod_ssl</module> is built against a version of
+  OpenSSL which supports the secure renegotiation extension, this note
+  is set to the value <code>1</code> if SSL is in used for the current
+  connection, and the client also supports the secure renegotiation
+  extension.  If the client does not support the secure renegotiation
+  extension, the note is set to the value <code>0</code>.
+  If <module>mod_ssl</module> is not built against a version of
+  OpenSSL which supports secure renegotiation, or if SSL is not in use
+  for the current connection, the note is not set.</dd>
+</dl>
+
+</section>
+
 <directivesynopsis>
 <name>SSLPassPhraseDialog</name>
 <description>Type of pass phrase dialog for encrypted private 
