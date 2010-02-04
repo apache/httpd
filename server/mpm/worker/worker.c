@@ -1547,14 +1547,27 @@ static void perform_idle_server_maintenance(void)
         if (free_length == 0) { /* scoreboard is full, can't fork */
 
             if (active_thread_count >= ap_daemons_limit * threads_per_child) { 
-                static int reported = 0;
-                if (!reported) {
-                    /* only report this condition once */
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                                 ap_server_conf,
-                                 "server reached MaxClients setting, consider"
-                                 " raising the MaxClients setting");
-                    reported = 1;
+                /* no threads are "inactive" - starting, stopping, etc. */
+                /* have we reached MaxClients, or just getting close? */
+                if (0 == idle_thread_count) {
+                    static int reported = 0;
+                    if (!reported) {
+                        /* only report this condition once */
+                        ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+                                     ap_server_conf,
+                                     "server reached MaxClients setting, consider"
+                                     " raising the MaxClients setting");
+                        reported = 1;
+                    }
+                } else {
+                    static int reported = 0;
+                    if (!reported) {
+                        ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+                                     ap_server_conf,
+                                     "server is within MinSpareThreads of MaxClients, "
+                                     "consider raising the MaxClients setting");
+                        reported = 1;
+                    }
                 }
             }
             else {

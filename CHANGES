@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.6
 
+  *) worker: Don't report server has reached MaxClients until it has.
+     Add message when server gets within MinSpareThreads of MaxClients.
+     PR 46996.  [Dan Poirier]
+
   *) mod_session: Session expiry was being initialised, but not updated
      on each session save, resulting in timed out sessions when there
      should not have been. Fixed. [Graham Leggett]
