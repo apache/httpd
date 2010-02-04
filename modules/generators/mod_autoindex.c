@@ -992,6 +992,7 @@ static void do_emit_plain(request_rec *r, apr_file_t *f)
 static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
                       int emit_xhtml, char *title)
 {
+    autoindex_config_rec *d;
     apr_table_t *hdrs = r->headers_in;
     apr_file_t *f = NULL;
     request_rec *rr = NULL;
@@ -1095,7 +1096,6 @@ static void emit_head(request_rec *r, char *header_fname, int suppress_amble,
         emit_preamble(r, emit_xhtml, title);
     }
     
-    autoindex_config_rec *d;
     d = (autoindex_config_rec *) ap_get_module_config(r->per_dir_config, &autoindex_module);
     
     if (emit_H1) {
