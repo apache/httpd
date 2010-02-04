@@ -1192,14 +1192,10 @@ int ssl_hook_Fixup(request_rec *r)
     }
 
 
-    apr_table_setn(r->notes, "ssl-secure-reneg", 
 #ifdef SSL_get_secure_renegotiation_support
-                   SSL_get_secure_renegotiation_support(ssl)
-                   ? "1" : "0"
-#else
-                   "0"
+    apr_table_setn(r->notes, "ssl-secure-reneg", 
+                   SSL_get_secure_renegotiation_support(ssl) ? "1" : "0");
 #endif
-        );
 
     return DECLINED;
 }
