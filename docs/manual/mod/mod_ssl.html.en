@@ -90,6 +90,7 @@ to provide the cryptography engine.</p>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#envvars">Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#logformats">Custom Log Formats</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#notes">Request Notes</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -178,6 +179,34 @@ provided. Information about this function is provided in the <a href="../ssl/ssl
 CustomLog logs/ssl_request_log \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 </code></p></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="notes" id="notes">Request Notes</a></h2>
+
+<p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> sets "notes" for the request which can be
+used in logging with the <code>%{<em>name</em>}n</code> format
+string in <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
+
+<p>The notes supported are as follows:</p>
+
+<dl>
+  <dt><code>ssl-access-forbidden</code></dt>
+  <dd>This note is set to the value <code>1</code> if access was
+  denied due to an <code class="directive">SSLRequire</code>
+  or <code class="directive">SSLRequireSSL</code> directive.</dd>
+
+  <dt><code>ssl-secure-reneg</code></dt>
+  <dd>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is built against a version of
+  OpenSSL which supports the secure renegotiation extension, this note
+  is set to the value <code>1</code> if SSL is in used for the current
+  connection, and the client also supports the secure renegotiation
+  extension.  If the client does not support the secure renegotiation
+  extension, the note is set to the value <code>0</code>.
+  If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is not built against a version of
+  OpenSSL which supports secure renegotiation, or if SSL is not in use
+  for the current connection, the note is not set.</dd>
+</dl>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLCACertificateFile" id="SSLCACertificateFile">SSLCACertificateFile</a> <a name="sslcacertificatefile" id="sslcacertificatefile">Directive</a></h2>
@@ -661,6 +690,7 @@ SSLHonorCipherOrder on
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Option to enable support for insecure renegotiation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLInsecureRenegotiation <em>flag</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLInsecureRenegotiation off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
@@ -678,15 +708,23 @@ vulnerability if supported by both client and server.</p>
 <p>If <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> is linked against OpenSSL version 1.0.0
 Beta 5 or later, by default renegotiation is only supported with
 clients supporting the new protocol extension.  If this directive is
-enabled, renegotiation will be allowed with old (unpatched) clients.
-SSL connections will be vulnerable to the prefix attack as described
-above if this directive is enabled.  The <code>SSL_SECURE_RENEG</code>
-variable can be used to determine whether secure renegotiation is
-supported for a given SSL connection.</p>
+enabled, renegotiation will be allowed with old (unpatched) clients,
+albeit insecurely.</p>
+
+<div class="warning"><h3>Security warning</h3>
+<p>If this directive is enabled, SSL connections will be vulnerable to
+the Man-in-the-Middle prefix attack as described
+in <a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CAN-2009-3555">CVE-2009-3555</a>.</p>
+</div>
 
 <div class="example"><h3>Example</h3><p><code>
 SSLInsecureRenegotiation on
 </code></p></div>
+
+<p>The <code>SSL_SECURE_RENEG</code> environment variable can be used
+from an SSI or CGI script to determine whether secure renegotiation is
+supported for a given SSL connection.</p>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
