@@ -97,7 +97,7 @@ static apr_status_t hm_listen(hm_ctx_t *ctx)
     rv = apr_socket_opt_set(ctx->sock, APR_SO_NONBLOCK, 1);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ctx->s,
-                     "Heartmonitor: Failed to set APR_SO_REUSEADDR to 1 on socket.");
+                     "Heartmonitor: Failed to set APR_SO_NONBLOCK to 1 on socket.");
         return rv;
     }
 
