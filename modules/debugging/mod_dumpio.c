@@ -246,7 +246,7 @@ static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg)
     if ((str = ap_getword_conf(cmd->pool, &arg))) {
         err = ap_parse_log_level(str, &ptr->loglevel);
         if (err != NULL)
-            return err;
+            return apr_psprintf(cmd->pool, "DumpIOLogLevel: %s", err);
     }
     else {
         return "DumpIOLogLevel requires level keyword";

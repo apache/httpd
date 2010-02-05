@@ -2628,7 +2628,7 @@ static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg)
     if ((str = ap_getword_conf(cmd->pool, &arg))) {
         err = ap_parse_log_level(str, &cmd->server->loglevel);
         if (err != NULL)
-            return err;
+            return apr_psprintf(cmd->pool, "LogLevel: %s", err);
     }
     else {
         return "LogLevel requires level keyword";
