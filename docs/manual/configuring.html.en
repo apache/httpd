@@ -84,6 +84,11 @@ HTTP server.</p>
     unchanged for use by later stages in the config file
     processing.)</p>
 
+    <p>Only environment variables defined before the server is started
+    can be used in expansions.  Variables defined in the
+    configuration file itself, for example with <code class="directive"><a href="./mod/mod_env.html#setenv">SetEnv</a></code>, take effect too late to be
+    used for expansions in the configuration file.</p>
+
     <p>The maximum length of a line in the configuration file, after
     environment-variable substitution, joining any continued lines and
     removing leading and trailing white space, is 8192 characters.</p>
