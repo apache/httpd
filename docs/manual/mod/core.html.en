@@ -1572,7 +1572,8 @@ the server configuration files</td></tr>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files.</p>
 
-    <p>Shell-style (<code>fnmatch()</code>) wildcard characters can be used to
+    <p>Shell-style (<code>fnmatch()</code>) wildcard characters can be used
+    in the filename part of the path (not the directory part) to
     include several files at once, in alphabetical order. In
     addition, if <code class="directive">Include</code> points to a directory,
     rather than a file, Apache will read all files in that directory
