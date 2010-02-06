@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 709841 -->
+<!-- English Revision : 906266 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -35,10 +35,9 @@ d'Apache</compatibility>
 
 <summary>
     <p>Les fournisseurs d'autorisation impl&eacute;ment&eacute;s par le module
-    <module>mod_authz_host</module> sont enregistr&eacute;s &agrave; l'aide des
-    directives <directive module="mod_authz_core">Require</directive> ou
-    <directive module="mod_authz_core">Match</directive>. On peut
-    utiliser ces directives &agrave; l'int&eacute;rieur de sections <directive
+    <module>mod_authz_host</module> sont enregistr&eacute;s &agrave; l'aide de
+    la directive <directive module="mod_authz_core">Require</directive>. On peut
+    utiliser cette directive &agrave; l'int&eacute;rieur de sections <directive
     module="core" type="section">Directory</directive>, <directive
     module="core" type="section">Files</directive>, ou <directive
     module="core" type="section">Location</directive> ou de fichiers
@@ -61,13 +60,11 @@ d'Apache</compatibility>
 <seealso><a href="../howto/auth.html">Authentification, autorisation et
 contr&ocirc;le d'acc&egrave;s</a></seealso>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
-<seealso><directive module="mod_authz_core">Match</directive></seealso>
 
 <section id="requiredirectives"><title>Les directives Require</title>
 
-    <p>Les directives d'Apache <directive
-    module="mod_authz_core">Require</directive> et <directive
-    module="mod_authz_core">Match</directive> sont utilis&eacute;es au cours de
+    <p>La directive Apache <directive
+    module="mod_authz_core">Require</directive> est utilis&eacute;e au cours de
     la phase d'autorisation pour v&eacute;rifier si un utilisateur se voit
     accorder ou refuser l'acc&egrave;s &agrave; une ressource. mod_authz_host fournit
     les types d'autorisation <code>env</code>, <code>ip</code>,
