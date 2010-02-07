@@ -482,7 +482,7 @@ int ssl_stapling_mutex_init(server_rec *s, apr_pool_t *p)
     }
 
     if ((rv = ap_global_mutex_create(&mc->stapling_mutex,
-                                     ssl_stapling_mutex_type, NULL, s,
+                                     SSL_STAPLING_MUTEX_TYPE, NULL, s,
                                      s->process->pool, 0)) != APR_SUCCESS) {
         return FALSE;
     }
@@ -506,11 +506,11 @@ int ssl_stapling_mutex_reinit(server_rec *s, apr_pool_t *p)
         if (lockfile) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "Cannot reinit %s mutex with file `%s'",
-                         ssl_stapling_mutex_type, lockfile);
+                         SSL_STAPLING_MUTEX_TYPE, lockfile);
         }
         else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
-                         "Cannot reinit %s mutex", ssl_stapling_mutex_type);
+                         "Cannot reinit %s mutex", SSL_STAPLING_MUTEX_TYPE);
         }
         return FALSE;
     }
