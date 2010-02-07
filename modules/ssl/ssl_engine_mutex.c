@@ -47,7 +47,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
         return TRUE;
     }
 
-    if ((rv = ap_global_mutex_create(&mc->pMutex, ssl_cache_mutex_type, NULL,
+    if ((rv = ap_global_mutex_create(&mc->pMutex, SSL_CACHE_MUTEX_TYPE, NULL,
                                      s, s->process->pool, 0))
             != APR_SUCCESS) {
         return FALSE;
@@ -74,10 +74,10 @@ int ssl_mutex_reinit(server_rec *s, apr_pool_t *p)
         if (lockfile)
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "Cannot reinit %s mutex with file `%s'",
-                         ssl_cache_mutex_type, lockfile);
+                         SSL_CACHE_MUTEX_TYPE, lockfile);
         else
             ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
-                         "Cannot reinit %s mutex", ssl_cache_mutex_type);
+                         "Cannot reinit %s mutex", SSL_CACHE_MUTEX_TYPE);
         return FALSE;
     }
     return TRUE;

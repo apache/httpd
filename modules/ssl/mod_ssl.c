@@ -314,9 +314,9 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
     ssl_scache_status_register(pconf);
 
     /* Register mutex type names so they can be configured with Mutex */
-    ap_mutex_register(pconf, ssl_cache_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+    ap_mutex_register(pconf, SSL_CACHE_MUTEX_TYPE, NULL, APR_LOCK_DEFAULT, 0);
 #ifdef HAVE_OCSP_STAPLING
-    ap_mutex_register(pconf, ssl_stapling_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+    ap_mutex_register(pconf, SSL_STAPLING_MUTEX_TYPE, NULL, APR_LOCK_DEFAULT, 0);
 #endif
 
     return OK;

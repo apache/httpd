@@ -728,8 +728,8 @@ int          ssl_stapling_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_stapling_mutex_reinit(server_rec *, apr_pool_t *);
 
 /* mutex type names for Mutex directive */
-#define ssl_cache_mutex_type    "ssl-cache"
-#define ssl_stapling_mutex_type "ssl-stapling"
+#define SSL_CACHE_MUTEX_TYPE    "ssl-cache"
+#define SSL_STAPLING_MUTEX_TYPE "ssl-stapling"
 
 /**  Logfile Support  */
 void         ssl_die(void);
