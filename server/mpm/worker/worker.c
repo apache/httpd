@@ -1707,7 +1707,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
-    rv = ap_proc_mutex_create(&accept_mutex, ap_accept_mutex_type, NULL, s,
+    rv = ap_proc_mutex_create(&accept_mutex, AP_ACCEPT_MUTEX_TYPE, NULL, s,
                               _pconf, 0);
     if (rv != APR_SUCCESS) {
         mpm_state = AP_MPMQ_STOPPING;
@@ -1950,7 +1950,7 @@ static int worker_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
         foreground = ap_exists_config_define("FOREGROUND");
     }
 
-    ap_mutex_register(pconf, ap_accept_mutex_type, NULL, APR_LOCK_DEFAULT, 0);
+    ap_mutex_register(pconf, AP_ACCEPT_MUTEX_TYPE, NULL, APR_LOCK_DEFAULT, 0);
 
     /* sigh, want this only the second time around */
     retained = ap_retained_data_get(userdata_key);

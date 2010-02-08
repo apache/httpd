@@ -330,7 +330,7 @@ AP_DECLARE_HOOK(const char *,mpm_get_name,(void))
 /* mutex type string for accept mutex, if any; MPMs should use the
  * same mutex type for ease of configuration
  */
-#define ap_accept_mutex_type "mpm-accept"
+#define AP_ACCEPT_MUTEX_TYPE "mpm-accept"
 
 #ifdef __cplusplus
 }
