@@ -39,7 +39,8 @@ extern "C" {
  * of the provider are NOT safe to be called concurrently from
  * multiple processes or threads, and an external global mutex must be
  * used to serialize access to the provider.
- * XXX: Even if store/retrieve/remove is atomic, isn't it useful to note
+ */
+/* XXX: Even if store/retrieve/remove is atomic, isn't it useful to note
  * independently that status and iterate may or may not be?
  */
 #define AP_SOCACHE_FLAG_NOTMPSAFE (0x0001)
@@ -62,9 +63,11 @@ struct ap_socache_hints {
  * Iterator callback prototype for the ap_socache_provider_t->iterate() method
  * @param instance The cache instance (passed through)
  * @param s Associated server structure (passed through)
- * @param id Unique ID for the object; binary blob
+ * @param id Unique ID for the object (binary blob)
+ * with a trailing null char for convenience
  * @param idlen Length of id blob
- * @param data Output buffer to place retrievd data (binary blob)
+ * @param data Output buffer to place retrieved data (binary blob)
+ * with a trailing null char for convenience
  * @param datalen Length of data buffer
  * @param pool Pool for temporary allocations (passed through)
  * @return APR status value; return APR_SUCCESS or the iteration will halt;
