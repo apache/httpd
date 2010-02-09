@@ -815,12 +815,10 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
             && idx->id_len == idlen && (idx->data_used - idx->id_len) < *destlen
             && shmcb_cyclic_memcmp(header->subcache_data_size,
                                    SHMCB_DATA(header, subcache),
-                                   idx->data_pos, id, idx->id_len) == 0)
-        {
+                                   idx->data_pos, id, idx->id_len) == 0) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "match at idx=%d, data=%d", pos, idx->data_pos);
-            if (idx->expires > now)
-            {
+            if (idx->expires > now) {
                 unsigned int data_offset;
 
                 /* Find the offset of the data segment, after the id */
@@ -914,8 +912,7 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "iterating idx=%d, data=%d", pos, idx->data_pos);
-            if (idx->expires > now)
-            {
+            if (idx->expires > now) {
                 unsigned char *id = *buf;
                 unsigned char *dest;
                 unsigned int data_offset, dest_len;
