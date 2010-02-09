@@ -1812,9 +1812,10 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
     id = SSL_SESSION_get_session_id(session);
     idlen = SSL_SESSION_get_session_id_length(session);
 
-    timeout += modssl_session_get_time(session);
-
-    rc = ssl_scache_store(s, id, idlen, timeout, session, conn->pool);
+    rc = ssl_scache_store(s, id, idlen,
+                          apr_time_from_sec(modssl_session_get_time(session)
+                                          + timeout),
+                          session, conn->pool);
 
     ssl_session_log(s, "SET", id, idlen,
                     rc == TRUE ? "OK" : "BAD",
