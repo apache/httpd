@@ -74,7 +74,7 @@ typedef apr_status_t (*ap_socache_iterator_t)(ap_socache_instance_t *instance,
                                               server_rec *s,
                                               const unsigned char *id,
                                               unsigned int idlen,
-                                              unsigned char *data,
+                                              const unsigned char *data,
                                               unsigned int datalen,
                                               apr_pool_t *pool);
 
