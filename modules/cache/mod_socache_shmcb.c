@@ -656,48 +656,6 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
                  "we now have %u socache entries", subcache->idx_used);
 }
 
-static void shmcb_subcache_iterate(server_rec *s, SHMCBHeader *header,
-                                   SHMCBSubcache *subcache)
-{
-    apr_time_t now = apr_time_now();
-    unsigned int loop = 0;
-    unsigned int new_idx_pos = subcache->idx_pos;
-    SHMCBIndex *idx = NULL;
-
-    while (loop < subcache->idx_used) {
-        idx = SHMCB_INDEX(subcache, new_idx_pos);
-        if (idx->expires > now)
-            /* it hasn't expired yet, we're done iterating */
-            break;
-        loop++;
-        new_idx_pos = SHMCB_CYCLIC_INCREMENT(new_idx_pos, 1, header->index_num);
-    }
-    if (!loop)
-        /* Nothing to do */
-        return;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "will be expiring %u socache entries", loop);
-    if (loop == subcache->idx_used) {
-        /* We're expiring everything, piece of cake */
-        subcache->idx_used = 0;
-        subcache->data_used = 0;
-    } else {
-        /* There remain other indexes, so we can use idx to adjust 'data' */
-        unsigned int diff = SHMCB_CYCLIC_SPACE(subcache->data_pos,
-                                               idx->data_pos,
-                                               header->subcache_data_size);
-        /* Adjust the indexes */
-        subcache->idx_used -= loop;
-        subcache->idx_pos = new_idx_pos;
-        /* Adjust the data area */
-        subcache->data_used -= diff;
-        subcache->data_pos = idx->data_pos;
-    }
-    header->stat_expiries += loop;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "we now have %u socache entries", subcache->idx_used);
-}
-
 static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
                                 SHMCBSubcache *subcache, 
                                 unsigned char *data, unsigned int data_len,
@@ -831,11 +789,11 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
                                    SHMCB_DATA(header, subcache),
                                    idx->data_pos, id, idx->id_len) == 0)
         {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "match at idx=%d, data=%d", pos, idx->data_pos);
             if (idx->expires > now)
             {
                 unsigned int data_offset;
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                             "match at idx=%d, data=%d", pos, idx->data_pos);
 
                 /* Find the offset of the data segment, after the id */
                 data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos, 
@@ -855,7 +813,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
                 /* Already stale, quietly remove and treat as not-found */
                 idx->removed = 1;
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                             "shmcb_subcache_remove removing expired entry");
+                             "shmcb_subcache_retrieve discarding expired entry");
                 return -1;
             }
         }
@@ -872,8 +830,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
 static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
                                  SHMCBSubcache *subcache,
                                  const unsigned char *id,
-                                 unsigned int idlen,
-                                 apr_time_t now)
+                                 unsigned int idlen)
 {
     unsigned int pos;
     unsigned int loop = 0;
@@ -890,10 +847,11 @@ static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
                                    idx->data_pos, id, idx->id_len) == 0) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "possible match at idx=%d, data=%d", pos, idx->data_pos);
+
             /* Found the matching entry, remove it quietly. */
             idx->removed = 1;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                             "shmcb_subcache_remove removing matching entry");
+                         "shmcb_subcache_remove removing matching entry");
             return 0;
         }
         /* Increment */
