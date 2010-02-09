@@ -642,7 +642,7 @@ void         ssl_scache_init(server_rec *, apr_pool_t *);
 void         ssl_scache_status_register(apr_pool_t *p);
 void         ssl_scache_kill(server_rec *);
 BOOL         ssl_scache_store(server_rec *, UCHAR *, int,
-                              time_t, SSL_SESSION *, apr_pool_t *);
+                              apr_time_t, SSL_SESSION *, apr_pool_t *);
 SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int, apr_pool_t *);
 void         ssl_scache_remove(server_rec *, UCHAR *, int,
                                apr_pool_t *);

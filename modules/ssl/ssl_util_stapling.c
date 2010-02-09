@@ -184,7 +184,7 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
     unsigned char *p;
     int resp_derlen;
     BOOL rv;
-    time_t timeout;
+    apr_time_t expiry;
 
     resp_derlen = i2d_OCSP_RESPONSE(rsp, NULL) + 1;
 
@@ -200,25 +200,25 @@ static BOOL stapling_cache_response(server_rec *s, modssl_ctx_t *mctx,
         return FALSE;
     }
 
-
     p = resp_der;
 
+    /* TODO: potential optimization; _timeout members as apr_interval_time_t */
     if (ok == TRUE) {
         *p++ = 1;
-        timeout = mctx->stapling_cache_timeout;
+        expiry = apr_time_from_sec(mctx->stapling_cache_timeout);
     } 
     else {
         *p++ = 0;
-        timeout = mctx->stapling_errcache_timeout;
+        expiry = apr_time_from_sec(mctx->stapling_errcache_timeout);
     }
 
-    timeout += apr_time_sec(apr_time_now());
+    expiry += apr_time_now();
 
     i2d_OCSP_RESPONSE(rsp, &p);
 
     rv = mc->stapling_cache->store(mc->stapling_cache_context, s,
                                    cinf->idx, sizeof(cinf->idx),
-                                   timeout, resp_der, resp_derlen, pool);
+                                   expiry, resp_der, resp_derlen, pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "stapling_cache_response: OCSP response session store error!");

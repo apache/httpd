@@ -113,7 +113,7 @@ void ssl_scache_kill(server_rec *s)
 }
 
 BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
-                      time_t expiry, SSL_SESSION *sess,
+                      apr_time_t expiry, SSL_SESSION *sess,
                       apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
