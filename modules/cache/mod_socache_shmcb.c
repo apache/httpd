@@ -813,6 +813,7 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
 {
     unsigned int pos;
     unsigned int loop = 0;
+    apr_time_t now = apr_time_now();
 
     pos = subcache->idx_pos;
 
