@@ -29,6 +29,7 @@
 #include "httpd.h"
 #include "ap_provider.h"
 #include "apr_pools.h"
+#include "apr_time.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,7 +38,10 @@ extern "C" {
 /** If this flag is set, the store/retrieve/remove/status interfaces
  * of the provider are NOT safe to be called concurrently from
  * multiple processes or threads, and an external global mutex must be
- * used to serialize access to the provider. */
+ * used to serialize access to the provider.
+ * XXX: Even if store/retrieve/remove is atomic, isn't it useful to note
+ * independently that status and iterate may or may not be?
+ */
 #define AP_SOCACHE_FLAG_NOTMPSAFE (0x0001)
 
 /** A cache instance. */
@@ -50,10 +54,30 @@ struct ap_socache_hints {
     apr_size_t avg_id_len;
     /** Approximate average size of objects: */
     apr_size_t avg_obj_size;
-    /** Interval (in seconds) after which an expiry run is
+    /** Interval after which an expiry run is
      * necessary. */
-    time_t expiry_interval;
+    apr_interval_time_t expiry_interval;
 };
+
+/**
+ * Iterator callback prototype for the ap_socache_provider_t->iterate() method
+ * @param instance The cache instance (passed through)
+ * @param s Associated server structure (passed through)
+ * @param id Unique ID for the object; binary blob
+ * @param idlen Length of id blob
+ * @param data Output buffer to place retrievd data (binary blob)
+ * @param datalen Length of data buffer
+ * @param pool Pool for temporary allocations (passed through)
+ * @return APR status value; return APR_SUCCESS or the iteration will halt;
+ * this value is returned to the ap_socache_provider_t->iterate() caller
+ */
+typedef apr_status_t (*ap_socache_iterator_t)(ap_socache_instance_t *instance,
+                                              server_rec *s,
+                                              const unsigned char *id,
+                                              unsigned int idlen,
+                                              unsigned char *data,
+                                              unsigned int *datalen,
+                                              apr_pool_t *pool);
 
 /** A socache provider structure.  socache providers are registered
  * with the ap_provider.h interface using the AP_SOCACHE_PROVIDER_*
@@ -121,7 +145,7 @@ typedef struct ap_socache_provider_t {
      */
     apr_status_t (*store)(ap_socache_instance_t *instance, server_rec *s, 
                           const unsigned char *id, unsigned int idlen, 
-                          time_t expiry, 
+                          apr_time_t expiry, 
                           unsigned char *data, unsigned int datalen,
                           apr_pool_t *pool);
 
@@ -156,12 +180,28 @@ typedef struct ap_socache_provider_t {
 
     /** Dump the status of a cache instance for mod_status.  Will use
      * the ap_r* interfaces to produce appropriate status output.
+     * XXX: apr_r* are deprecated, bad dogfood
      *
      * @param instance The cache instance
      * @param r The request structure
      * @param flags The AP_STATUS_* constants used (see mod_status.h)
      */
     void (*status)(ap_socache_instance_t *instance, request_rec *r, int flags);
+
+    /**
+     * Dump all cached objects through an iterator callback.
+     * @param instance The cache instance
+     * @param s Associated server structure (for logging purposes)
+     * @param iterator The user provided callback which will receive
+     * individual calls for each unexpired id/data pair
+     * @param pool Pool for temporary allocations.
+     * @return APR status value; APR_NOTFOUND if the object was not
+     * found
+     */
+    apr_status_t (*iterate)(ap_socache_instance_t *instance, server_rec *s,
+                            ap_socache_iterator_t *iterator,
+                            apr_pool_t *pool);
+
 } ap_socache_provider_t;
 
 /** The provider group used to register socache providers. */

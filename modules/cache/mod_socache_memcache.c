@@ -200,7 +200,7 @@ static int socache_mc_id2key(ap_socache_instance_t *ctx,
 
 static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s, 
                                      const unsigned char *id, unsigned int idlen,
-                                     time_t timeout,
+                                     apr_time_t expiry,
                                      unsigned char *ucaData, unsigned int nData,
                                      apr_pool_t *p)
 {
@@ -211,7 +211,8 @@ static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s,
         return APR_EINVAL;
     }
 
-    rv = apr_memcache_set(ctx->mc, buf, (char*)ucaData, nData, timeout, 0);
+    /* In APR-util - unclear what 'timeout' is, as it was not implemented */
+    rv = apr_memcache_set(ctx->mc, buf, (char*)ucaData, nData, 0, 0);
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
@@ -286,6 +287,14 @@ static void socache_mc_status(ap_socache_instance_t *ctx, request_rec *r, int fl
     /* TODO: Make a mod_status handler. meh. */
 }
 
+apr_status_t socache_mc_iterate(ap_socache_instance_t *instance,
+                                server_rec *s,
+                                ap_socache_iterator_t *iterator,
+                                apr_pool_t *pool)
+{
+    return APR_ENOTIMPL;
+}
+
 static const ap_socache_provider_t socache_mc = {
     "memcache",
     0,
@@ -295,7 +304,8 @@ static const ap_socache_provider_t socache_mc = {
     socache_mc_store,
     socache_mc_retrieve,
     socache_mc_remove,
-    socache_mc_status
+    socache_mc_status,
+    socache_mc_iterate
 };
 
 #endif /* HAVE_APU_MEMCACHE */

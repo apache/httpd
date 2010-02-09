@@ -44,8 +44,8 @@ struct ap_socache_instance_t {
     const char *data_file;
     /* Pool must only be used with the mutex held. */
     apr_pool_t *pool;
-    time_t last_expiry;
-    time_t expiry_interval;
+    apr_time_t last_expiry;
+    apr_interval_time_t expiry_interval;
 };
 
 /**
@@ -136,7 +136,7 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
     apr_dbm_close(dbm);
 
     ctx->expiry_interval = (hints && hints->expiry_interval 
-                            ? hints->expiry_interval : 30);
+                            ? hints->expiry_interval : apr_time_from_sec(30));
 
 #if AP_NEED_SET_MUTEX_PERMS
     /*
@@ -183,7 +183,7 @@ static void socache_dbm_kill(ap_socache_instance_t *ctx, server_rec *s)
 
 static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx, 
                                       server_rec *s, const unsigned char *id, 
-                                      unsigned int idlen, time_t expiry, 
+                                      unsigned int idlen, apr_time_t expiry, 
                                       unsigned char *ucaData, 
                                       unsigned int nData, apr_pool_t *pool)
 {
@@ -196,14 +196,14 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
 #ifdef PAIRMAX
     if ((idlen + nData) >= PAIRMAX) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "data size too large for DBM session cache: %d >= %d",
+                 "data size too large for DBM socache: %d >= %d",
                  (idlen + nData), PAIRMAX);
         return APR_ENOSPC;
     }
 #else
     if ((idlen + nData) >= 950 /* at least less than approx. 1KB */) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "data size too large for DBM session cache: %d >= %d",
+                 "data size too large for DBM socache: %d >= %d",
                  (idlen + nData), 950);
         return APR_ENOSPC;
     }
@@ -214,15 +214,15 @@ static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx,
     dbmkey.dsize = idlen;
 
     /* create DBM value */
-    dbmval.dsize = sizeof(time_t) + nData;
+    dbmval.dsize = sizeof(apr_time_t) + nData;
     dbmval.dptr  = (char *)malloc(dbmval.dsize);
     if (dbmval.dptr == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "malloc error creating DBM value");
         return APR_ENOMEM;
     }
-    memcpy((char *)dbmval.dptr, &expiry, sizeof(time_t));
-    memcpy((char *)dbmval.dptr+sizeof(time_t), ucaData, nData);
+    memcpy((char *)dbmval.dptr, &expiry, sizeof(apr_time_t));
+    memcpy((char *)dbmval.dptr+sizeof(apr_time_t), ucaData, nData);
 
     /* and store it to the DBM file */
     apr_pool_clear(ctx->pool);
@@ -264,8 +264,8 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
     unsigned int nData;
-    time_t expiry;
-    time_t now;
+    apr_time_t expiry;
+    apr_time_t now;
     apr_status_t rc;
 
     /* allow the regular expiring to occur */
@@ -293,26 +293,26 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
         apr_dbm_close(dbm);
         return rc;
     }
-    if (dbmval.dptr == NULL || dbmval.dsize <= sizeof(time_t)) {
+    if (dbmval.dptr == NULL || dbmval.dsize <= sizeof(apr_time_t)) {
         apr_dbm_close(dbm);
         return APR_EGENERAL;
     }
 
     /* parse resulting data */
-    nData = dbmval.dsize-sizeof(time_t);
+    nData = dbmval.dsize-sizeof(apr_time_t);
     if (nData > *destlen) {
         apr_dbm_close(dbm);
         return APR_ENOSPC;
     }    
 
     *destlen = nData;
-    memcpy(&expiry, dbmval.dptr, sizeof(time_t));
-    memcpy(dest, (char *)dbmval.dptr + sizeof(time_t), nData);
+    memcpy(&expiry, dbmval.dptr, sizeof(apr_time_t));
+    memcpy(dest, (char *)dbmval.dptr + sizeof(apr_time_t), nData);
 
     apr_dbm_close(dbm);
 
     /* make sure the stuff is still not expired */
-    now = time(NULL);
+    now = apr_time_now();
     if (expiry <= now) {
         socache_dbm_remove(ctx, s, id, idlen, p);
         return APR_NOTFOUND;
@@ -355,27 +355,27 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
-    time_t tExpiresAt;
-    int nElements = 0;
-    int nDeleted = 0;
-    int bDelete;
+    apr_time_t expiry;
+    int elts = 0;
+    int deleted = 0;
+    int expired;
     apr_datum_t *keylist;
     int keyidx;
     int i;
-    time_t tNow;
+    apr_time_t now;
     apr_status_t rv;
 
     /*
-     * make sure the expiration for still not-accessed session
-     * cache entries is done only from time to time
+     * make sure the expiration for still not-accessed
+     * socache entries is done only from time to time
      */
-    tNow = time(NULL);
+    now = time(NULL);
 
-    if (tNow < ctx->last_expiry + ctx->expiry_interval) {
+    if (now < ctx->last_expiry + ctx->expiry_interval) {
         return;
     }
 
-    ctx->last_expiry = tNow;
+    ctx->last_expiry = now;
 
     /*
      * Here we have to be very carefully: Not all DBM libraries are
@@ -410,17 +410,17 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
         }
         apr_dbm_firstkey(dbm, &dbmkey);
         while (dbmkey.dptr != NULL) {
-            nElements++;
-            bDelete = FALSE;
+            elts++;
+            expired = FALSE;
             apr_dbm_fetch(dbm, dbmkey, &dbmval);
-            if (dbmval.dsize <= sizeof(time_t) || dbmval.dptr == NULL)
-                bDelete = TRUE;
+            if (dbmval.dsize <= sizeof(apr_time_t) || dbmval.dptr == NULL)
+                expired = TRUE;
             else {
-                memcpy(&tExpiresAt, dbmval.dptr, sizeof(time_t));
-                if (tExpiresAt <= tNow)
-                    bDelete = TRUE;
+                memcpy(&expiry, dbmval.dptr, sizeof(apr_time_t));
+                if (expiry <= now)
+                    expired = TRUE;
             }
-            if (bDelete) {
+            if (expired) {
                 if ((keylist[keyidx].dptr = apr_pmemdup(ctx->pool, dbmkey.dptr, dbmkey.dsize)) != NULL) {
                     keylist[keyidx].dsize = dbmkey.dsize;
                     keyidx++;
@@ -443,7 +443,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
         }
         for (i = 0; i < keyidx; i++) {
             apr_dbm_delete(dbm, keylist[i]);
-            nDeleted++;
+            deleted++;
         }
         apr_dbm_close(dbm);
 
@@ -454,7 +454,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "Inter-Process Session Cache (DBM) Expiry: "
                  "old: %d, new: %d, removed: %d",
-                 nElements, nElements-nDeleted, nDeleted);
+                 elts, elts-deleted, deleted);
 }
 
 static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r, 
@@ -463,13 +463,13 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
-    int nElem;
-    int nSize;
-    int nAverage;
+    int elts;
+    long size;
+    int avg;
     apr_status_t rv;
 
-    nElem = 0;
-    nSize = 0;
+    elts = 0;
+    size = 0;
 
     apr_pool_clear(ctx->pool);
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
@@ -488,18 +488,26 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
         apr_dbm_fetch(dbm, dbmkey, &dbmval);
         if (dbmval.dptr == NULL)
             continue;
-        nElem += 1;
-        nSize += dbmval.dsize;
+        elts += 1;
+        size += dbmval.dsize;
     }
     apr_dbm_close(dbm);
-    if (nSize > 0 && nElem > 0)
-        nAverage = nSize / nElem;
+    if (size > 0 && elts > 0)
+        avg = (int)(size / (long)elts);
     else
-        nAverage = 0;
+        avg = 0;
     ap_rprintf(r, "cache type: <b>DBM</b>, maximum size: <b>unlimited</b><br>");
-    ap_rprintf(r, "current sessions: <b>%d</b>, current size: <b>%d</b> bytes<br>", nElem, nSize);
-    ap_rprintf(r, "average session size: <b>%d</b> bytes<br>", nAverage);
+    ap_rprintf(r, "current entries: <b>%d</b>, current size: <b>%ld</b> bytes<br>", elts, size);
+    ap_rprintf(r, "average entry size: <b>%d</b> bytes<br>", avg);
     return;
+}
+
+apr_status_t socache_dbm_iterate(ap_socache_instance_t *instance,
+                                 server_rec *s,
+                                 ap_socache_iterator_t *iterator,
+                                 apr_pool_t *pool)
+{
+    return APR_ENOTIMPL;
 }
 
 static const ap_socache_provider_t socache_dbm = {
@@ -511,7 +519,8 @@ static const ap_socache_provider_t socache_dbm = {
     socache_dbm_store,
     socache_dbm_retrieve,
     socache_dbm_remove,
-    socache_dbm_status
+    socache_dbm_status,
+    socache_dbm_iterate
 };
 
 static void register_hooks(apr_pool_t *p)
