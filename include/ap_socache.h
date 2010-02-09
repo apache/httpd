@@ -54,8 +54,7 @@ struct ap_socache_hints {
     apr_size_t avg_id_len;
     /** Approximate average size of objects: */
     apr_size_t avg_obj_size;
-    /** Interval after which an expiry run is
-     * necessary. */
+    /** Suggested interval between expiry cleanup runs; */
     apr_interval_time_t expiry_interval;
 };
 
