@@ -80,14 +80,14 @@ typedef struct {
  */
 typedef struct {
     /* absolute time this entry expires */
-    time_t expires;
+    apr_time_t expires;
     /* location within the subcache's data area */
     unsigned int data_pos;
     /* size (most logic ignores this, we keep it only to minimise memcpy) */
     unsigned int data_used;
     /* length of the used data which contains the id */
     unsigned int id_len;
-    /* Used to mark explicitly-removed sessions */
+    /* Used to mark explicitly-removed socache entries */
     unsigned char removed;
 } SHMCBIndex;
 
@@ -147,7 +147,7 @@ struct ap_socache_instance_t {
                         sizeof(SHMCBHeader) + \
                         (num) * ((pHeader)->subcache_size))
 
-/* This macro takes a pointer to the header and a session id and returns a
+/* This macro takes a pointer to the header and an id and returns a
  * pointer to the corresponding subcache. */
 #define SHMCB_MASK(pHeader, id) \
                 SHMCB_SUBCACHE((pHeader), *(id) & ((pHeader)->subcache_num - 1))
@@ -239,13 +239,14 @@ static int shmcb_cyclic_memcmp(unsigned int buf_size, unsigned char *data,
 
 
 /* Prototypes for low-level subcache operations */
-static void shmcb_subcache_expire(server_rec *, SHMCBHeader *, SHMCBSubcache *);
+static void shmcb_subcache_expire(server_rec *, SHMCBHeader *, SHMCBSubcache *,
+                                  apr_time_t);
 /* Returns zero on success, non-zero on failure. */   
 static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
                                 SHMCBSubcache *subcache, 
                                 unsigned char *data, unsigned int data_len,
                                 const unsigned char *id, unsigned int id_len,
-                                time_t expiry);
+                                apr_time_t expiry);
 /* Returns zero on success, non-zero on failure. */   
 static int shmcb_subcache_retrieve(server_rec *, SHMCBHeader *, SHMCBSubcache *,
                                    const unsigned char *id, unsigned int idlen,
@@ -437,7 +438,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
         subcache->data_pos = subcache->data_used = 0;
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                 "Shared memory session cache initialised");
+                 "Shared memory socache initialised");
     /* Success ... */
 
     return APR_SUCCESS;
@@ -453,7 +454,7 @@ static void socache_shmcb_kill(ap_socache_instance_t *ctx, server_rec *s)
 
 static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx, 
                                         server_rec *s, const unsigned char *id, 
-                                        unsigned int idlen, time_t timeout, 
+                                        unsigned int idlen, apr_time_t expiry, 
                                         unsigned char *encoded,
                                         unsigned int len_encoded,
                                         apr_pool_t *p)
@@ -464,15 +465,16 @@ static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "socache_shmcb_store (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
+    /* XXX: Says who?  Why shouldn't this be acceptable, or padded if not? */
     if (idlen < 4) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short session_id provided "
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short id provided "
                 "(%u bytes)", idlen);
         return APR_EINVAL;
     }
     if (shmcb_subcache_store(s, header, subcache, encoded,
-                             len_encoded, id, idlen, timeout)) {
+                             len_encoded, id, idlen, expiry)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "can't store a session!");
+                     "can't store an socache entry!");
         return APR_ENOSPC;
     }
     header->stat_stores++;
@@ -495,7 +497,7 @@ static apr_status_t socache_shmcb_retrieve(ap_socache_instance_t *ctx,
                  "socache_shmcb_retrieve (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
 
-    /* Get the session corresponding to the session_id, if it exists. */
+    /* Get the entry corresponding to the id, if it exists. */
     rv = shmcb_subcache_retrieve(s, header, subcache, id, idlen,
                                  dest, destlen);
     if (rv == 0)
@@ -520,7 +522,7 @@ static apr_status_t socache_shmcb_remove(ap_socache_instance_t *ctx,
                  "socache_shmcb_remove (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
     if (idlen < 4) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short session_id provided "
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short id provided "
                 "(%u bytes)", idlen);
         return APR_EINVAL;
     }
@@ -543,8 +545,8 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     server_rec *s = r->server;
     SHMCBHeader *header = ctx->header;
     unsigned int loop, total = 0, cache_total = 0, non_empty_subcaches = 0;
-    time_t idx_expiry, min_expiry = 0, max_expiry = 0, average_expiry = 0;
-    time_t now = time(NULL);
+    apr_time_t idx_expiry, min_expiry = 0, max_expiry = 0, average_expiry = 0;
+    apr_time_t now = apr_time_now();
     double expiry_total = 0;
     int index_pct, cache_pct;
 
@@ -555,7 +557,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     /* Iterate over the subcaches */
     for (loop = 0; loop < header->subcache_num; loop++) {
         SHMCBSubcache *subcache = SHMCB_SUBCACHE(header, loop);
-        shmcb_subcache_expire(s, header, subcache);
+        shmcb_subcache_expire(s, header, subcache, now);
         total += subcache->idx_used;
         cache_total += subcache->data_used;
         if (subcache->idx_used) {
@@ -576,29 +578,29 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
                                        header->subcache_num);
     /* Generate HTML */
     ap_rprintf(r, "cache type: <b>SHMCB</b>, shared memory: <b>%" APR_SIZE_T_FMT "</b> "
-               "bytes, current sessions: <b>%d</b><br>",
+               "bytes, current entries: <b>%d</b><br>",
                ctx->shm_size, total);
     ap_rprintf(r, "subcaches: <b>%d</b>, indexes per subcache: <b>%d</b><br>",
                header->subcache_num, header->index_num);
     if (non_empty_subcaches) {
-        average_expiry = (time_t)(expiry_total / (double)non_empty_subcaches);
+        average_expiry = (apr_time_t)(expiry_total / (double)non_empty_subcaches);
         ap_rprintf(r, "time left on oldest entries' objects: ");
         if (now < average_expiry)
             ap_rprintf(r, "avg: <b>%d</b> seconds, (range: %d...%d)<br>",
-                       (int)(average_expiry - now),
-                       (int)(min_expiry - now),
-                       (int)(max_expiry - now));
+                       (int)apr_time_sec(average_expiry - now),
+                       (int)apr_time_sec(min_expiry - now),
+                       (int)apr_time_sec(max_expiry - now));
         else
             ap_rprintf(r, "expiry_threshold: <b>Calculation error!</b><br>");
     }
 
     ap_rprintf(r, "index usage: <b>%d%%</b>, cache usage: <b>%d%%</b><br>",
                index_pct, cache_pct);
-    ap_rprintf(r, "total sessions stored since starting: <b>%lu</b><br>",
+    ap_rprintf(r, "total entries stored since starting: <b>%lu</b><br>",
                header->stat_stores);
-    ap_rprintf(r, "total sessions expired since starting: <b>%lu</b><br>",
+    ap_rprintf(r, "total entries expired since starting: <b>%lu</b><br>",
                header->stat_expiries);
-    ap_rprintf(r, "total (pre-expiry) sessions scrolled out of the cache: "
+    ap_rprintf(r, "total (pre-expiry) entries scrolled out of the cache: "
                "<b>%lu</b><br>", header->stat_scrolled);
     ap_rprintf(r, "total retrieves since starting: <b>%lu</b> hit, "
                "<b>%lu</b> miss<br>", header->stat_retrieves_hit,
@@ -614,9 +616,8 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
  */
 
 static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
-                                  SHMCBSubcache *subcache)
+                                  SHMCBSubcache *subcache, apr_time_t now)
 {
-    time_t now = time(NULL);
     unsigned int loop = 0;
     unsigned int new_idx_pos = subcache->idx_pos;
     SHMCBIndex *idx = NULL;
@@ -633,7 +634,7 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
         /* Nothing to do */
         return;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "will be expiring %u sessions", loop);
+                 "will be expiring %u socache entries", loop);
     if (loop == subcache->idx_used) {
         /* We're expiring everything, piece of cake */
         subcache->idx_used = 0;
@@ -652,14 +653,56 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
     }
     header->stat_expiries += loop;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "we now have %u sessions", subcache->idx_used);
+                 "we now have %u socache entries", subcache->idx_used);
+}
+
+static void shmcb_subcache_iterate(server_rec *s, SHMCBHeader *header,
+                                   SHMCBSubcache *subcache)
+{
+    apr_time_t now = apr_time_now();
+    unsigned int loop = 0;
+    unsigned int new_idx_pos = subcache->idx_pos;
+    SHMCBIndex *idx = NULL;
+
+    while (loop < subcache->idx_used) {
+        idx = SHMCB_INDEX(subcache, new_idx_pos);
+        if (idx->expires > now)
+            /* it hasn't expired yet, we're done iterating */
+            break;
+        loop++;
+        new_idx_pos = SHMCB_CYCLIC_INCREMENT(new_idx_pos, 1, header->index_num);
+    }
+    if (!loop)
+        /* Nothing to do */
+        return;
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "will be expiring %u socache entries", loop);
+    if (loop == subcache->idx_used) {
+        /* We're expiring everything, piece of cake */
+        subcache->idx_used = 0;
+        subcache->data_used = 0;
+    } else {
+        /* There remain other indexes, so we can use idx to adjust 'data' */
+        unsigned int diff = SHMCB_CYCLIC_SPACE(subcache->data_pos,
+                                               idx->data_pos,
+                                               header->subcache_data_size);
+        /* Adjust the indexes */
+        subcache->idx_used -= loop;
+        subcache->idx_pos = new_idx_pos;
+        /* Adjust the data area */
+        subcache->data_used -= diff;
+        subcache->data_pos = idx->data_pos;
+    }
+    header->stat_expiries += loop;
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "we now have %u socache entries", subcache->idx_used);
 }
 
 static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
                                 SHMCBSubcache *subcache, 
                                 unsigned char *data, unsigned int data_len,
                                 const unsigned char *id, unsigned int id_len,
-                                time_t expiry)
+                                apr_time_t expiry)
 {
     unsigned int data_offset, new_idx, id_offset;
     SHMCBIndex *idx;
@@ -668,13 +711,13 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
     /* Sanity check the input */
     if (total_len > header->subcache_data_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "inserting session larger (%d) than subcache data area (%d)",
+                     "inserting socache entry larger (%d) than subcache data area (%d)",
                      total_len, header->subcache_data_size);
         return -1;
     }
 
     /* If there are entries to expire, ditch them first. */
-    shmcb_subcache_expire(s, header, subcache);
+    shmcb_subcache_expire(s, header, subcache, apr_time_now());
 
     /* Loop until there is enough space to insert */
     if (header->subcache_data_size - subcache->data_used < total_len
@@ -718,11 +761,15 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
      * CHECKING WHETHER IT SHOULD BE GENUINELY "INSERTED" SOMEWHERE.
      *
      * We either fix that, or find out at a "higher" (read "mod_ssl")
-     * level whether it is possible to have distinct session caches for
-     * any attempted tomfoolery to do with different session timeouts.
-     * Knowing in advance that we can have a cache-wide constant timeout
+     * level whether it is possible to have distinct socaches for
+     * any attempted tomfoolery to do with different socache entry expirys.
+     * Knowing in advance that we can have a cache-wide constant expiry
      * would make this stuff *MUCH* more efficient. Mind you, it's very
      * efficient right now because I'm ignoring this problem!!!
+     *
+     * XXX: Author didn't consider that httpd doesn't promise to perform
+     * any processing in date order (c.f. FAQ "My log entries are not in
+     * date order!")
      */
     /* Insert the id */
     id_offset = SHMCB_CYCLIC_INCREMENT(subcache->data_pos, subcache->data_used,
@@ -767,8 +814,11 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
     unsigned int pos;
     unsigned int loop = 0;
 
-    /* If there are entries to expire, ditch them first. */
-    shmcb_subcache_expire(s, header, subcache);
+    /* If there are entries to expire, ditch them first.
+     * XXX: Horribly inefficient to double the work, why not simply 
+     * upon store when free space might be useful?
+     */
+    shmcb_subcache_expire(s, header, subcache, apr_time_now());
     pos = subcache->idx_pos;
 
     while (loop < subcache->idx_used) {
@@ -823,7 +873,7 @@ static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
      * consistent statistics where a "remove" operation may actually be the
      * higher layer spotting an expiry issue prior to us. Our caller is
      * handling stats, so a failure return would be inconsistent if the
-     * intended session was in fact removed by an expiry run. */
+     * intended socache entry was in fact removed by an expiry run. */
 
     pos = subcache->idx_pos;
     while (loop < subcache->idx_used) {
@@ -837,10 +887,10 @@ static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
                                    idx->data_pos, id, idx->id_len) == 0) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "possible match at idx=%d, data=%d", pos, idx->data_pos);
-            /* Found the matching session, remove it quietly. */
+            /* Found the matching entry, remove it quietly. */
             idx->removed = 1;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                             "shmcb_subcache_remove removing matching session");
+                             "shmcb_subcache_remove removing matching entry");
             return 0;
         }
         /* Increment */
@@ -849,6 +899,14 @@ static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
     }
 
     return -1; /* failure */
+}
+
+apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
+                                   server_rec *s,
+                                   ap_socache_iterator_t *iterator,
+                                   apr_pool_t *pool)
+{
+    return APR_ENOTIMPL;
 }
 
 static const ap_socache_provider_t socache_shmcb = {
@@ -860,7 +918,8 @@ static const ap_socache_provider_t socache_shmcb = {
     socache_shmcb_store,
     socache_shmcb_retrieve,
     socache_shmcb_remove,
-    socache_shmcb_status
+    socache_shmcb_status,
+    socache_shmcb_iterate
 };
 
 static void register_hooks(apr_pool_t *p)
