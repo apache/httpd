@@ -153,7 +153,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
     mc->pid = getpid();
 
     /*
-     * Let us cleanup on restarts and exists
+     * Let us cleanup on restarts and exits
      */
     apr_pool_cleanup_register(p, base_server,
                               ssl_init_ModuleKill,
