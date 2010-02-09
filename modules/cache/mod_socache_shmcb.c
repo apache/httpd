@@ -26,6 +26,7 @@
 #include "apr_shm.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_general.h"
 
 #include "ap_socache.h"
 
@@ -197,8 +198,7 @@ static void shmcb_cyclic_ntoc_memcpy(unsigned int buf_size, unsigned char *data,
     }
 }
 
-/* A "cyclic-to-normal" memcpy. */
-static void shmcb_cyclic_cton_memcpy(unsigned int buf_size, unsigned char *dest,
+/* A "cyclic-to-normal" memcpy. */static void shmcb_cyclic_cton_memcpy(unsigned int buf_size, unsigned char *dest,
                                      const unsigned char *data, unsigned int src_offset,
                                      unsigned int src_len)
 {
@@ -254,6 +254,17 @@ static int shmcb_subcache_retrieve(server_rec *, SHMCBHeader *, SHMCBSubcache *,
 /* Returns zero on success, non-zero on failure. */   
 static int shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
                                  const unsigned char *, unsigned int);
+
+/* Returns result of the (iterator)() call, zero is success (continue) */
+static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
+                                           server_rec *s,
+                                           SHMCBHeader *header,
+                                           SHMCBSubcache *subcache,
+                                           ap_socache_iterator_t *iterator,
+                                           unsigned char **buf,
+                                           apr_size_t *buf_len,
+                                           apr_pool_t *pool,
+                                           apr_time_t now);
 
 /*
  * High-Level "handlers" as per ssl_scache.c
@@ -611,6 +622,30 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "leaving shmcb_status");
 }
 
+apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
+                                   server_rec *s,
+                                   ap_socache_iterator_t *iterator,
+                                   apr_pool_t *pool)
+{
+    SHMCBHeader *header = instance->header;
+    unsigned int loop;
+    apr_time_t now = apr_time_now();
+    apr_status_t rv = APR_SUCCESS;
+    apr_size_t buflen = 0;
+    unsigned char *buf;
+
+    /* Perform the iteration inside the mutex to avoid corruption or invalid
+     * pointer arithmetic. The rest of our logic uses read-only header data so
+     * doesn't need the lock. */
+    /* Iterate over the subcaches */
+    for (loop = 0; loop < header->subcache_num && rv == APR_SUCCESS; loop++) {
+        SHMCBSubcache *subcache = SHMCB_SUBCACHE(header, loop);
+        rv = shmcb_subcache_iterate(instance, s, header, subcache, iterator,
+                                    &buf, &buflen, pool, now);
+    }
+    return rv;
+}
+
 /*
  * Subcache-level cache operations 
  */
@@ -718,16 +753,9 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
     /* HERE WE ASSUME THAT THE NEW SESSION SHOULD GO ON THE END! I'M NOT
      * CHECKING WHETHER IT SHOULD BE GENUINELY "INSERTED" SOMEWHERE.
      *
-     * We either fix that, or find out at a "higher" (read "mod_ssl")
-     * level whether it is possible to have distinct socaches for
-     * any attempted tomfoolery to do with different socache entry expirys.
-     * Knowing in advance that we can have a cache-wide constant expiry
-     * would make this stuff *MUCH* more efficient. Mind you, it's very
-     * efficient right now because I'm ignoring this problem!!!
-     *
-     * XXX: Author didn't consider that httpd doesn't promise to perform
-     * any processing in date order (c.f. FAQ "My log entries are not in
-     * date order!")
+     * We aught to fix that.  httpd (never mind third party modules)
+     * does not promise to perform any processing in date order
+     * (c.f. FAQ "My log entries are not in date order!")
      */
     /* Insert the id */
     id_offset = SHMCB_CYCLIC_INCREMENT(subcache->data_pos, subcache->data_used,
@@ -862,12 +890,89 @@ static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
     return -1; /* failure */
 }
 
-apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
-                                   server_rec *s,
-                                   ap_socache_iterator_t *iterator,
-                                   apr_pool_t *pool)
+
+static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
+                                           server_rec *s,
+                                           SHMCBHeader *header,
+                                           SHMCBSubcache *subcache,
+                                           ap_socache_iterator_t *iterator,
+                                           unsigned char **buf,
+                                           apr_size_t *buf_len,
+                                           apr_pool_t *pool,
+                                           apr_time_t now)
 {
-    return APR_ENOTIMPL;
+    unsigned int pos;
+    unsigned int loop = 0;
+    apr_status_t rv;
+
+    pos = subcache->idx_pos;
+    while (loop < subcache->idx_used) {
+        SHMCBIndex *idx = SHMCB_INDEX(subcache, pos);
+
+        /* Only consider 'idx' if the "removed" flag isn't set. */
+        if (!idx->removed) {
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "iterating idx=%d, data=%d", pos, idx->data_pos);
+            if (idx->expires > now)
+            {
+                unsigned char *id = *buf;
+                unsigned char *dest;
+                unsigned int data_offset, dest_len;
+                apr_size_t buf_req;
+
+                /* Find the offset of the data segment, after the id */
+                data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos, 
+                                                     idx->id_len,
+                                                     header->subcache_data_size);
+
+                dest_len = idx->data_used - idx->id_len;
+
+                buf_req = APR_ALIGN_DEFAULT(idx->id_len + 1) 
+                        + APR_ALIGN_DEFAULT(dest_len + 1);
+
+                if (buf_req > *buf_len) {
+                     /* Grow to ~150% of this buffer requirement on resize
+                      * always using APR_ALIGN_DEFAULT sized pages
+                      */
+                     *buf_len = buf_req + APR_ALIGN_DEFAULT(buf_req / 2);
+                     *buf = apr_palloc(pool, *buf_len);
+                     id = *buf;
+                }
+
+                dest = *buf + APR_ALIGN_DEFAULT(idx->id_len + 1);
+
+                /* Copy out the data, because it's potentially cyclic */
+                shmcb_cyclic_cton_memcpy(header->subcache_data_size, id,
+                                         SHMCB_DATA(header, subcache),
+                                         idx->data_pos, idx->id_len);
+                id[idx->id_len] = '\0';
+
+                shmcb_cyclic_cton_memcpy(header->subcache_data_size, dest,
+                                         SHMCB_DATA(header, subcache),
+                                         data_offset, dest_len);
+                dest[dest_len] = '\0';
+
+                rv = (*iterator)(instance, s, id, idx->id_len,
+                                 dest, dest_len, pool);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                             "shmcb_subcache_iterate discarding expired entry");
+                if (rv != APR_SUCCESS)
+                    return rv;
+            }
+            else {
+                /* Already stale, quietly remove and treat as not-found */
+                idx->removed = 1;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                             "shmcb_subcache_iterate discarding expired entry");
+            }
+        }
+        /* Increment */
+        loop++;
+        pos = SHMCB_CYCLIC_INCREMENT(pos, 1, header->index_num);
+    }
+
+    return -1; /* failure */
 }
 
 static const ap_socache_provider_t socache_shmcb = {
