@@ -32,6 +32,7 @@
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
+#include "apr_strings.h"
 
 module AP_MODULE_DECLARE_DATA dumpio_module ;
 
