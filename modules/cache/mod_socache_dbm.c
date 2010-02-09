@@ -452,7 +452,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "Inter-Process Session Cache (DBM) Expiry: "
+                 "DBM socache expiry: "
                  "old: %d, new: %d, removed: %d",
                  elts, elts-deleted, deleted);
 }

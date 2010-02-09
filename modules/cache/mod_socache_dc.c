@@ -104,10 +104,10 @@ static apr_status_t socache_dc_store(ap_socache_instance_t *ctx, server_rec *s,
     /* Send the serialised session to the distributed cache context */
     if (!DC_CTX_add_session(ctx->dc, id, idlen, der, der_len,
                             apr_time_in_msec(expiry)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'add_session' failed");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'store' failed");
         return APR_EGENERAL;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'add_session' successful");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'store' successful");
     return APR_SUCCESS;
 }
 
@@ -120,15 +120,15 @@ static apr_status_t socache_dc_retrieve(ap_socache_instance_t *ctx, server_rec *
 
     /* Retrieve any corresponding session from the distributed cache context */
     if (!DC_CTX_get_session(ctx->dc, id, idlen, dest, *destlen, &data_len)) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'get_session' MISS");
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'retrieve' MISS");
         return APR_EGENERAL;
     }
     if (data_len > *destlen) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'get_session' OVERFLOW");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'retrieve' OVERFLOW");
         return APR_ENOSPC;
     }
     *destlen = data_len;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'get_session' HIT");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'retrieve' HIT");
     return APR_SUCCESS;
 }
 
@@ -138,10 +138,10 @@ static apr_status_t socache_dc_remove(ap_socache_instance_t *ctx,
 {
     /* Remove any corresponding session from the distributed cache context */
     if (!DC_CTX_remove_session(ctx->dc, id, idlen)) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove_session' MISS");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove' MISS");
         return APR_NOTFOUND;
     } else {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove_session' HIT");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove' HIT");
         return APR_SUCCESS;
     }
 }

@@ -750,7 +750,7 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
                      "data_used=%d", subcache->idx_used, subcache->data_used);
     }
 
-    /* HERE WE ASSUME THAT THE NEW SESSION SHOULD GO ON THE END! I'M NOT
+    /* HERE WE ASSUME THAT THE NEW ENTRY SHOULD GO ON THE END! I'M NOT
      * CHECKING WHETHER IT SHOULD BE GENUINELY "INSERTED" SOMEWHERE.
      *
      * We aught to fix that.  httpd (never mind third party modules)
