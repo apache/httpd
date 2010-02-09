@@ -75,7 +75,7 @@ typedef apr_status_t (*ap_socache_iterator_t)(ap_socache_instance_t *instance,
                                               const unsigned char *id,
                                               unsigned int idlen,
                                               unsigned char *data,
-                                              unsigned int *datalen,
+                                              unsigned int datalen,
                                               apr_pool_t *pool);
 
 /** A socache provider structure.  socache providers are registered
