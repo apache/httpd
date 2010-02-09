@@ -814,42 +814,49 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
     unsigned int pos;
     unsigned int loop = 0;
 
-    /* If there are entries to expire, ditch them first.
-     * XXX: Horribly inefficient to double the work, why not simply 
-     * upon store when free space might be useful?
-     */
-    shmcb_subcache_expire(s, header, subcache, apr_time_now());
     pos = subcache->idx_pos;
 
     while (loop < subcache->idx_used) {
         SHMCBIndex *idx = SHMCB_INDEX(subcache, pos);
 
         /* Only consider 'idx' if the id matches, and the "removed"
-         * flag isn't set; check the data length too to avoid a buffer
-         * overflow in case of corruption, which should be impossible,
+         * flag isn't set, and the record is not expired.
+         * Check the data length too to avoid a buffer overflow 
+         * in case of corruption, which should be impossible,
          * but it's cheap to be safe. */
         if (!idx->removed
             && idx->id_len == idlen && (idx->data_used - idx->id_len) < *destlen
             && shmcb_cyclic_memcmp(header->subcache_data_size,
                                    SHMCB_DATA(header, subcache),
-                                   idx->data_pos, id, idx->id_len) == 0) {
-            unsigned int data_offset;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "match at idx=%d, data=%d", pos, idx->data_pos);
+                                   idx->data_pos, id, idx->id_len) == 0)
+        {
+            if (idx->expires > now)
+            {
+                unsigned int data_offset;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                             "match at idx=%d, data=%d", pos, idx->data_pos);
 
-            /* Find the offset of the data segment, after the id */
-            data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos, 
-                                                 idx->id_len,
-                                                 header->subcache_data_size);
+                /* Find the offset of the data segment, after the id */
+                data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos, 
+                                                     idx->id_len,
+                                                     header->subcache_data_size);
 
-            *destlen = idx->data_used - idx->id_len;
+                *destlen = idx->data_used - idx->id_len;
 
-            /* Copy out the data */
-            shmcb_cyclic_cton_memcpy(header->subcache_data_size,
-                                     dest, SHMCB_DATA(header, subcache),
-                                     data_offset, *destlen);
+                /* Copy out the data */
+                shmcb_cyclic_cton_memcpy(header->subcache_data_size,
+                                         dest, SHMCB_DATA(header, subcache),
+                                         data_offset, *destlen);
 
-            return 0;
+                return 0;
+            }
+            else {
+                /* Already stale, quietly remove and treat as not-found */
+                idx->removed = 1;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                             "shmcb_subcache_remove removing expired entry");
+                return -1;
+            }
         }
         /* Increment */
         loop++;
@@ -859,21 +866,16 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "shmcb_subcache_retrieve found no match");
     return -1;
-
 }
 
 static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
                                  SHMCBSubcache *subcache,
-                                 const unsigned char *id, unsigned int idlen)
+                                 const unsigned char *id,
+                                 unsigned int idlen,
+                                 apr_time_t now)
 {
     unsigned int pos;
     unsigned int loop = 0;
-
-    /* Unlike the others, we don't do an expire-run first. This is to keep
-     * consistent statistics where a "remove" operation may actually be the
-     * higher layer spotting an expiry issue prior to us. Our caller is
-     * handling stats, so a failure return would be inconsistent if the
-     * intended socache entry was in fact removed by an expiry run. */
 
     pos = subcache->idx_pos;
     while (loop < subcache->idx_used) {
