@@ -182,7 +182,7 @@ typedef struct ap_socache_provider_t {
 
     /** Dump the status of a cache instance for mod_status.  Will use
      * the ap_r* interfaces to produce appropriate status output.
-     * XXX: apr_r* are deprecated, bad dogfood
+     * XXX: ap_r* are deprecated, bad dogfood
      *
      * @param instance The cache instance
      * @param r The request structure
