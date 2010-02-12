@@ -220,7 +220,7 @@ typedef struct {
     apr_pool_t   *pool;     /* Subpool for hostname and addr data */
     apr_socket_t *sock;     /* Connection socket */
     apr_sockaddr_t *addr;   /* Preparsed remote address info */
-    apr_uint32_t flags;     /* Conection flags */
+    apr_uint32_t flags;     /* Connection flags */
     int          close;     /* Close 'this' connection */
     proxy_worker *worker;   /* Connection pool this connection belongs to */
     void         *data;     /* per scheme connection data */
