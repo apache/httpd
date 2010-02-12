@@ -39,6 +39,11 @@
     requests, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and
     <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> have to be present in the server.</p>
 
+    <p>CONNECT is also used, when the server needs to send an HTTPS request
+    through a forward proxy. In this case the server acts as a CONNECT client.
+    This functionality is part of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and
+    <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> is not needed in this case.</p>
+
     <div class="warning"><h3>Warning</h3>
       <p>Do not enable proxying until you have <a href="mod_proxy.html#access">secured your server</a>. Open proxy
       servers are dangerous both to your network and to the Internet at

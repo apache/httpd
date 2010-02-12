@@ -32,7 +32,7 @@
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides the features used for
-    proxying HTTP requests. <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+    proxying HTTP and HTTPS requests. <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
     supports HTTP/0.9, HTTP/1.0 and HTTP/1.1. It does <em>not</em>
     provide any caching abilities. If you want to set up a caching
     proxy, you might want to use the additional service of the
