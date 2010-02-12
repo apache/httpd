@@ -232,6 +232,7 @@ typedef struct {
                              * which the backend currently answers. */
     int          need_flush;/* Flag to decide whether we need to flush the
                              * filter chain or not */
+    void         *forward;  /* opaque forward proxy data */
 } proxy_conn_rec;
 
 typedef struct {

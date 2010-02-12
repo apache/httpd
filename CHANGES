@@ -1,5 +1,11 @@
                                                         -*- coding: utf-8 -*-
 
+Changes with Apache 2.3.7
+
+  *) mod_proxy, mod_proxy_http: Support remote https proxies
+     by using HTTP CONNECT.
+     PR 19188.  [Philippe Dutrueux <lilas evidian.com>, Rainer Jung]
+
 Changes with Apache 2.3.6
 
   *) worker: Don't report server has reached MaxClients until it has.

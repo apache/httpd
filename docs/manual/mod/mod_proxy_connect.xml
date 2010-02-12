@@ -39,6 +39,11 @@
     requests, <module>mod_proxy</module> and
     <module>mod_proxy_connect</module> have to be present in the server.</p>
 
+    <p>CONNECT is also used, when the server needs to send an HTTPS request
+    through a forward proxy. In this case the server acts as a CONNECT client.
+    This functionality is part of <module>mod_proxy</module> and
+    <module>mod_proxy_connect</module> is not needed in this case.</p>
+
     <note type="warning"><title>Warning</title>
       <p>Do not enable proxying until you have <a
       href="mod_proxy.html#access">secured your server</a>. Open proxy
