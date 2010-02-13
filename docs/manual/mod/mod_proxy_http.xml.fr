@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 771066 -->
+<!-- English Revision : 909323 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -34,7 +34,7 @@
 <summary>
     <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
     chargement de <module>mod_proxy</module>. Il fournit le support du
-    mandatement des requ&ecirc;tes HTTP. <module>mod_proxy_http</module>
+    mandatement des requ&ecirc;tes HTTP et HTTPS. <module>mod_proxy_http</module>
     supporte HTTP/0.9, HTTP/1.0 et HTTP/1.1. Il ne fournit
     <em>aucune</em> fonctionnalit&eacute; de mise en cache. Si vous souhaitez
     mettre en oeuvre un mandataire qui assure aussi les fonctions de
