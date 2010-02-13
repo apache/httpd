@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 894526 -->
+<!-- English Revision : 909323 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -513,7 +513,9 @@ requ&ecirc;tes</description>
 
     <p><var>protocole</var> est effectivement le protocole &agrave; utiliser
     pour communiquer avec le serveur distant ; ce module ne supporte que
-    <code>http</code>.</p>
+    <code>http</code> et <code>https</code>. Lorsqu'on utilise
+    <code>https</code>, les requ&ecirc;tes sont redirig&eacute;es par le mandataire
+    distant en utilisant la m&eacute;thode HTTP CONNECT.</p>
 
     <example><title>Exemple</title>
       ProxyRemote http://bons-gars.example.com/ http://gars-mirroirs.example.com:8000<br />
