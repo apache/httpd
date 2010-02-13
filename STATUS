@@ -131,6 +131,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: covener, pgollucci
     rpluem says: I am +1 once you provide proper documentation for the manual
     covener says: doc revision added above
+    minfrin says: The trunk patches no longer apply clean, is it possible to
+                  create a v2.2. patch?
 
   * mod_reqtimeout: New module to limit time waiting for requests from clients.
     Backport current version from trunk.
@@ -183,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     MinSpareThreads of MaxClients.
     Trunk patch: http://svn.apache.org/viewvc?rev=906535&view=rev
     2.2.x patch: http://people.apache.org/~poirier/maxclients-2.2.patch
-    +1: poirier
+    +1: poirier, minfrin
 
   * mod_proxy: Allow https to a remote forward proxy by issuing an HTTP
     CONNECT request. This adds a CONNECT client (sending a connect request).
@@ -192,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: https://issues.apache.org/bugzilla/show_bug.cgi?id=19188
     Trunk patch: http://svn.apache.org/viewvc?rev=909323&view=rev
     2.2.x patch: http://people.apache.org/~rjung/patches/bz19188-proxyremote-https-v1.patch
-    +1: rjung
+    +1: rjung, minfrin
 
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
