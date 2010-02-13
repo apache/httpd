@@ -1159,6 +1159,16 @@ request</td></tr>
     the server.  Also note that this setting cannot be changed
     during a graceful restart.</p>
 
+    <div class="note">
+    <p>Note that loading <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> will change 
+    the default behavior to ExtendedStatus On, while other
+    third party modules may do the same.  Such modules rely on
+    collecting detailed information about the state of all workers.
+    The default is changed by <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> beginning
+    with version 2.3.6; the previous default was always Off.</p>
+    </div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Directive</a></h2>
@@ -1567,22 +1577,32 @@ the server configuration files</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Wildcard matching available in 2.0.41 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Wildcard matching available in 2.0.41 and later, directory
+wildcard matching available in 2.3.6 and later</td></tr>
 </table>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files.</p>
 
     <p>Shell-style (<code>fnmatch()</code>) wildcard characters can be used
-    in the filename part of the path (not the directory part) to
-    include several files at once, in alphabetical order. In
-    addition, if <code class="directive">Include</code> points to a directory,
-    rather than a file, Apache will read all files in that directory
-    and any subdirectory.  However, including entire directories is not
-    recommended, because it is easy to accidentally leave temporary
-    files in a directory that can cause <code class="program"><a href="../programs/httpd.html">httpd</a></code> to
-    fail. Instead, we encourage you to use the wildcard syntax shown
-    below, to include files that match a particular pattern, such as
-    *.conf, for example.</p>
+    in the filename or directory parts of the path to include several files
+    at once, in alphabetical order. In addition, if
+    <code class="directive">Include</code> points to a directory, rather than a file,
+    Apache will read all files in that directory and any subdirectory.
+    However, including entire directories is not recommended, because it is
+    easy to accidentally leave temporary files in a directory that can cause
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> to fail. Instead, we encourage you to use the
+    wildcard syntax shown below, to include files that match a particular
+    pattern, such as *.conf, for example.</p>
+
+    <p>When a wildcard is specified for a file or directory component of the
+    path, and no file or directory matches the wildcard, the
+    <code class="directive"><a href="#include">Include</a></code> directive will be
+    silently ignored. When a directory or file component of the path is
+    specified exactly, and that directory or file does not exist,
+    <code class="directive"><a href="#include">Include</a></code> directive will fail with an
+    error saying the file or directory cannot be found. This removes the need
+    for placeholder files to exist so that at least one file or directory is
+    found by the wildcard.</p>
 
     <p>The file path specified may be an absolute path, or may be relative 
     to the <code class="directive"><a href="#serverroot">ServerRoot</a></code> directory.</p>
@@ -1600,6 +1620,15 @@ the server configuration files</td></tr>
       Include conf/ssl.conf<br />
       Include conf/vhosts/*.conf
     </code></p></div>
+
+    <p>Wildcards may be included in the directory or file portion of the
+    path:</p>
+  
+    <div class="example"><p><code>
+      Include conf/vhosts/*/vhost.conf
+      Include conf/vhosts/*/*.conf
+    </code></p></div>
+
 
 <h3>See also</h3>
 <ul>
