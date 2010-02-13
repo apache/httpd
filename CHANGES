@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.7
 
+  *) Support wildcards in both the directory and file components of
+     the path specified by the Include directive. [Graham Leggett]
+
   *) mod_proxy, mod_proxy_http: Support remote https proxies
      by using HTTP CONNECT.
      PR 19188.  [Philippe Dutrueux <lilas evidian.com>, Rainer Jung]
