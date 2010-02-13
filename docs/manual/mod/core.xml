@@ -1112,16 +1112,18 @@ request</description>
     The collection of extended status information can slow down
     the server.  Also note that this setting cannot be changed
     during a graceful restart.</p>
-</usage>
 
-<note>
+    <note>
     <p>Note that loading <module>mod_status</module> will change 
     the default behavior to ExtendedStatus On, while other
     third party modules may do the same.  Such modules rely on
     collecting detailed information about the state of all workers.
     The default is changed by <module>mod_status</module> beginning
     with version 2.3.6; the previous default was always Off.</p>
-</note>
+    </note>
+
+</usage>
+
 </directivesynopsis>
 
 <directivesynopsis>
