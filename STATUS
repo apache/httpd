@@ -194,6 +194,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~rjung/patches/bz19188-proxyremote-https-v1.patch
     +1: rjung
 
+  * core: Support wildcards in both the directory and file components of
+    the path specified by the Include directive.
+    Trunk patch: http://svn.apache.org/viewvc?rev=909878&view=rev
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-wildcard+docs.patch
+    +1: minfrin
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
