@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.7
 
+  *) mod_proxy_http: Make sure that when an ErrorDocument is served
+     from a reverse proxied URL, that the subrequest respects the status
+     of the original request. This brings the behaviour of proxy_handler
+     in line with default_handler. PR 47106. [Graham Leggett]
+
   *) Support wildcards in both the directory and file components of
      the path specified by the Include directive. [Graham Leggett]
 
