@@ -2133,7 +2133,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                 forward_info *forward = apr_pcalloc(conn->pool, sizeof(forward_info));
                 conn->forward = forward;
                 forward->use_http_connect = 1;
-                forward->target_host = uri->hostname;
+                forward->target_host = apr_pstrdup(conn->pool, uri->hostname);
                 forward->target_port = uri->port;
                 /* Do we want to pass Proxy-Authorization along?
                  * If we haven't used it, then YES
@@ -2146,7 +2146,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                     proxy_auth[0] != '\0' &&
                     r->user == NULL && /* we haven't yet authenticated */
                     apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")) {
-                    forward->proxy_auth = proxy_auth;
+                    forward->proxy_auth = apr_pstrdup(conn->pool, proxy_auth);
                 }
             }
         }
