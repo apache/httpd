@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 894290 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_reflector.xml.meta">
+
+<name>mod_reflector</name>
+<description>Reflect a request body as a response via the output filter stack.</description>
+<status>Base</status>
+<sourcefile>mod_reflector.c</sourcefile>
+<identifier>reflector_module</identifier>
+<compatibility>Version 2.3 and later</compatibility>
+
+<summary>
+    <p>This module allows request bodies to be reflected back to the
+    client, in the process passing the request through the output filter
+    stack. A suitably configured chain of filters can be used to transform
+    the request into a response. This module can used to turn an output
+    filter into an HTTP service.</p>
+</summary>
+
+<section id="examples"><title>Examples</title>
+    <dl>
+    <dt>Compression service</dt>
+    <dd>Pass the request body through the DEFLATE filter to compress the
+    body. This request requires a Content-Encoding request header containing
+    "gzip" for the filter to return compressed data.
+    <example>
+      &lt;Location /compress&gt;<br/>
+        SetHandler reflector<br/>
+        SetOutputFilter DEFLATE<br/>
+      &lt;/Location&gt;
+    </example>
+    </dd>
+
+    <dt>Image downsampling service</dt>
+    <dd>Pass the request body through an image downsampling filter, and reflect
+    the results to the caller.
+    <example>
+      &lt;Location /downsample&gt;<br/>
+        SetHandler reflector<br/>
+        SetOutputFilter DOWNSAMPLE<br/>
+      &lt;/Location&gt;
+    </example>
+    </dd>
+    </dl>
+</section>
+
+<directivesynopsis>
+<name>ReflectorHeader</name>
+<description>Reflect an input header to the output headers</description>
+<syntax>ReflectorHeader <var>inputheader</var> <var>[outputheader]</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context></contextlist>
+<override>Options</override>
+
+<usage>
+    <p>This directive controls the reflection of request headers to the response.
+    The first argument is the name of the request header to copy. If the optional
+    second argument is specified, it will be used as the name of the response
+    header, otherwise the original request header name will be used.</p>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
