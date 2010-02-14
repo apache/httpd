@@ -2301,7 +2301,10 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
 {
     int status;
     apr_size_t nbytes;
+    apr_size_t left;
+    int complete = 0;
     char buffer[HUGE_STRING_LEN];
+    char drain_buffer[HUGE_STRING_LEN];
     forward_info *forward = (forward_info *)backend->forward;
     int len = 0;
 
@@ -2327,16 +2330,31 @@ static apr_status_t send_http_connect(proxy_conn_rec *backend,
     apr_socket_send(backend->sock, buffer, &nbytes);
 
     /* Receive the whole CONNECT response */
-    nbytes = sizeof(buffer) - 1;
-    status = apr_socket_recv(backend->sock, buffer, &nbytes);
-    while (status == APR_SUCCESS) {
+    left = sizeof(buffer) - 1;
+    /* Read until we find the end of the headers or run out of buffer */
+    do {
+        nbytes = left;
+        status = apr_socket_recv(backend->sock, buffer + len, &nbytes);
         len += nbytes;
+        left -= nbytes;
         buffer[len] = '\0';
-        if (strstr(buffer, "\r\n\r\n") != NULL) {
+        if (strstr(buffer + len - nbytes, "\r\n\r\n") != NULL) {
+            complete = 1;
             break;
         }
-        nbytes = sizeof(buffer) - 1 - len;
-        status = apr_socket_recv(backend->sock, buffer + len, &nbytes);
+    } while (status == APR_SUCCESS && left > 0);
+    /* Drain what's left */
+    if (!complete) {
+        nbytes = sizeof(drain_buffer) - 1;
+        while (status == APR_SUCCESS && nbytes) {
+            status = apr_socket_recv(backend->sock, drain_buffer, &nbytes);
+            buffer[nbytes] = '\0';
+            nbytes = sizeof(drain_buffer) - 1;
+            if (strstr(drain_buffer, "\r\n\r\n") != NULL) {
+                complete = 1;
+                break;
+            }
+        }
     }
 
     /* Check for HTTP_OK response status */
