@@ -37,6 +37,7 @@
         <module>mod_ext_filter</module>
         <module>mod_include</module>
         <module>mod_charset_lite</module>
+        <module>mod_reflector</module>
       </modulelist>
       <directivelist>
         <directive module="mod_filter">FilterChain</directive>
@@ -47,6 +48,7 @@
         <directive module="mod_mime">AddOutputFilter</directive>
         <directive module="mod_mime">RemoveInputFilter</directive>
         <directive module="mod_mime">RemoveOutputFilter</directive>
+        <directive module="mod_reflector">ReflectorHeader</directive>
         <directive module="mod_ext_filter">ExtFilterDefine</directive>
         <directive module="mod_ext_filter">ExtFilterOptions</directive>
         <directive module="core">SetInputFilter</directive>
@@ -118,6 +120,25 @@ document is not already in the desired charset</li>
 </ul>
 </section>
 
+<section id="service">
+
+<title>Exposing Filters as an HTTP Service</title>
+<p>Filters can be used to process content originating from the client in
+addition to processing content originating on the server using the
+<module>mod_reflector</module> module.</p>
+
+<p><module>mod_reflector</module> accepts POST requests from clients, and reflects
+the content request body received within the POST request back in the response,
+passing through the output filter stack on the way back to the client.</p>
+
+<p>This technique can be used as an alternative to a web service running within
+an application server stack, where an output filter provides the transformation
+required on the request body. For example, the <module>mod_deflate</module>
+module might be used to provide a general compression service, or an image
+transformation filter might be turned into an image transformation service.</p>
+    
+</section>
+  
 <section id="using">
 <title>Using Filters</title>
 <p>There are two ways to use filtering: Simple and Dynamic.

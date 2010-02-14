@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.7
 
+  *) Introduce mod_reflector, a handler capable of reflecting POSTed
+     request bodies back within the response through the output filter
+     stack. Can be used to turn an output filter into a web service.
+     [Graham Leggett]
+
   *) mod_proxy_http: Make sure that when an ErrorDocument is served
      from a reverse proxied URL, that the subrequest respects the status
      of the original request. This brings the behaviour of proxy_handler

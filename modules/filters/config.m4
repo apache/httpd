@@ -11,6 +11,7 @@ APACHE_MODULE(ext_filter, external filter module, , , most)
 APACHE_MODULE(request, Request Body Filtering, , , yes)
 APACHE_MODULE(include, Server Side Includes, , , yes)
 APACHE_MODULE(filter, Smart Filtering, , , yes)
+APACHE_MODULE(reflector, Reflect request through the output filter stack, , , yes)
 APACHE_MODULE(substitute, response content rewrite-like filtering, , , most)
 
 sed_obj="mod_sed.lo sed0.lo sed1.lo regexp.lo"
