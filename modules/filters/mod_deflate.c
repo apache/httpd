@@ -557,8 +557,46 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
         }
 
-        /* At this point we have decided to filter the content, so change
-         * important content metadata before sending any response out.
+        /* At this point we have decided to filter the content. Let's try to
+         * to initialize zlib (except for 304 responses, where we will only
+         * send out the headers).
+         */
+
+        if (r->status != HTTP_NOT_MODIFIED) {
+            ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
+            ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
+            ctx->buffer = apr_palloc(r->pool, c->bufferSize);
+            ctx->libz_end_func = deflateEnd;
+
+            zRC = deflateInit2(&ctx->stream, c->compressionlevel, Z_DEFLATED,
+                               c->windowSize, c->memlevel,
+                               Z_DEFAULT_STRATEGY);
+
+            if (zRC != Z_OK) {
+                deflateEnd(&ctx->stream);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "unable to init Zlib: "
+                              "deflateInit2 returned %d: URL %s",
+                              zRC, r->uri);
+                /*
+                 * Remove ourselves as it does not make sense to return:
+                 * We are not able to init libz and pass data down the chain
+                 * uncompressed.
+                 */
+                ap_remove_output_filter(f);
+                return ap_pass_brigade(f->next, bb);
+            }
+            /*
+             * Register a cleanup function to ensure that we cleanup the internal
+             * libz resources.
+             */
+            apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
+                                      apr_pool_cleanup_null);
+        }
+
+        /*
+         * Zlib initialization worked, so we can now change the important
+         * content metadata before sending the response out.
          */
 
         /* If the entire Content-Encoding is "identity", we can replace it. */
@@ -582,36 +620,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
-
-        ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
-        ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
-        ctx->buffer = apr_palloc(r->pool, c->bufferSize);
-        ctx->libz_end_func = deflateEnd;
-
-        zRC = deflateInit2(&ctx->stream, c->compressionlevel, Z_DEFLATED,
-                           c->windowSize, c->memlevel,
-                           Z_DEFAULT_STRATEGY);
-
-        if (zRC != Z_OK) {
-            deflateEnd(&ctx->stream);
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "unable to init Zlib: "
-                          "deflateInit2 returned %d: URL %s",
-                          zRC, r->uri);
-            /*
-             * Remove ourselves as it does not make sense to return:
-             * We are not able to init libz and pass data down the chain
-             * uncompressed.
-             */
-            ap_remove_output_filter(f);
-            return ap_pass_brigade(f->next, bb);
-        }
-        /*
-         * Register a cleanup function to ensure that we cleanup the internal
-         * libz resources.
-         */
-        apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
-                                  apr_pool_cleanup_null);
 
         /* add immortal gzip header */
         e = apr_bucket_immortal_create(gzip_header, sizeof gzip_header,
