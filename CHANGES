@@ -9,6 +9,10 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) worker: Don't report server has reached MaxClients until it has.
+     Add message when server gets within MinSpareThreads of MaxClients.
+     PR 46996.  [Dan Poirier]
+
   *) mod_ssl: Reintroduce SSL_CLIENT_S_DN, SSL_CLIENT_I_DN, SSL_SERVER_S_DN,
      SSL_SERVER_I_DN back to the environment variables to be set by mod_ssl.
      [Peter Sylvester <peter.sylvester edelweb.fr>]
