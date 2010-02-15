@@ -161,6 +161,7 @@ TARGET_nlm = \
 	$(OBJDIR)/modbuffer.nlm \
 	$(OBJDIR)/ratelimit.nlm \
 	$(OBJDIR)/reqtimeout.nlm \
+	$(OBJDIR)/reflector.nlm \
 	$(EOLIST)
 
 # If the zlib libraries source exists then build the mod_deflate module
