@@ -695,6 +695,10 @@ extern apr_array_header_t *ssl_extlist_by_oid(request_rec *r, const char *oidstr
 
 void         ssl_var_log_config_register(apr_pool_t *p);
 
+/* Extract SSL_*_DN_* variables into table 't' from SSL object 'ssl',
+ * allocating from 'p': */
+void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p);
+
 #define APR_SHM_MAXSIZE (64 * 1024 * 1024)
 
 #endif /* SSL_PRIVATE_H */

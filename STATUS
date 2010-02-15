@@ -87,15 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_ssl: Improve environment variable extraction to be more
-   efficient and to correctly handle DNs with duplicate tags.
-   PR 45975.
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=724717
-                http://svn.apache.org/viewvc?view=rev&revision=813165
-                http://svn.apache.org/viewvc?view=rev&revision=820401
-   2.2.x Patch: http://people.apache.org/~minfrin/ssl-env2.diff
-   +1: minfrin, fuankg, jim
-
   * worker: Don't log MaxClients until we actually hit it.  Warn when within
     MinSpareThreads of MaxClients.
     Trunk patch: http://svn.apache.org/viewvc?rev=906535&view=rev
