@@ -9,6 +9,10 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) mod_proxy, mod_proxy_http: Support remote https proxies
+     by using HTTP CONNECT.
+     PR 19188.  [Philippe Dutrueux <lilas evidian.com>, Rainer Jung]
+
   *) worker: Don't report server has reached MaxClients until it has.
      Add message when server gets within MinSpareThreads of MaxClients.
      PR 46996.  [Dan Poirier]
