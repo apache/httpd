@@ -402,27 +402,31 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var)
     return result;
 }
 
+/* In this table, .extract is non-zero if RDNs using the NID should be
+ * extracted to for the SSL_{CLIENT,SERVER}_{I,S}_DN_* environment
+ * variables. */
 static const struct {
     char *name;
     int   nid;
+    int   extract;
 } ssl_var_lookup_ssl_cert_dn_rec[] = {
-    { "C",     NID_countryName            },
-    { "ST",    NID_stateOrProvinceName    }, /* officially    (RFC2156) */
-    { "SP",    NID_stateOrProvinceName    }, /* compatibility (SSLeay)  */
-    { "L",     NID_localityName           },
-    { "O",     NID_organizationName       },
-    { "OU",    NID_organizationalUnitName },
-    { "CN",    NID_commonName             },
-    { "T",     NID_title                  },
-    { "I",     NID_initials               },
-    { "G",     NID_givenName              },
-    { "S",     NID_surname                },
-    { "D",     NID_description            },
+    { "C",     NID_countryName,            1 },
+    { "ST",    NID_stateOrProvinceName,    1 }, /* officially    (RFC2156) */
+    { "SP",    NID_stateOrProvinceName,    0 }, /* compatibility (SSLeay)  */
+    { "L",     NID_localityName,           1 },
+    { "O",     NID_organizationName,       1 },
+    { "OU",    NID_organizationalUnitName, 1 },
+    { "CN",    NID_commonName,             1 },
+    { "T",     NID_title,                  1 },
+    { "I",     NID_initials,               1 },
+    { "G",     NID_givenName,              1 },
+    { "S",     NID_surname,                1 },
+    { "D",     NID_description,            1 },
 #ifdef NID_userId
-    { "UID",   NID_userId                 },
+    { "UID",   NID_x500UniqueIdentifier,   1 },
 #endif
-    { "Email", NID_pkcs9_emailAddress     },
-    { NULL,    0                          }
+    { "Email", NID_pkcs9_emailAddress,     1 },
+    { NULL,    0,                          0 }
 };
 
 static char *ssl_var_lookup_ssl_cert_dn(apr_pool_t *p, X509_NAME *xsname, char *var)
@@ -669,6 +673,96 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
         return apr_pstrdup(p, var_library);
     }
     return NULL;
+}
+
+/* Add each RDN in 'xn' to the table 't' where the NID is present in
+ * 'nids', using key prefix 'pfx'.  */
+static void extract_dn(apr_table_t *t, apr_hash_t *nids, const char *pfx, 
+                       X509_NAME *xn, apr_pool_t *p)
+{
+    STACK_OF(X509_NAME_ENTRY) *ents = X509_NAME_get_entries(xn);
+    X509_NAME_ENTRY *xsne;
+    apr_hash_t *count;
+    int i, nid;
+  
+    /* Hash of (int) NID -> (int *) counter to count each time an RDN
+     * with the given NID has been seen. */
+    count = apr_hash_make(p);
+
+    /* For each RDN... */
+    for (i = 0; i < sk_X509_NAME_ENTRY_num(ents); i++) {
+         const char *tag;
+
+         xsne = sk_X509_NAME_ENTRY_value(ents, i);
+
+         /* Retrieve the nid, and check whether this is one of the nids
+          * which are to be extracted. */
+         nid = OBJ_obj2nid((ASN1_OBJECT *)X509_NAME_ENTRY_get_object(xsne));
+
+         tag = apr_hash_get(nids, &nid, sizeof nid);
+         if (tag) {
+             unsigned char *data = X509_NAME_ENTRY_get_data_ptr(xsne);
+             const char *key;
+             int *dup;
+             char *value;
+
+             /* Check whether a variable with this nid was already
+              * been used; if so, use the foo_N=bar syntax. */
+             dup = apr_hash_get(count, &nid, sizeof nid);
+             if (dup) {
+                 key = apr_psprintf(p, "%s%s_%d", pfx, tag, ++(*dup));
+             }
+             else {
+                 /* Otherwise, use the plain foo=bar syntax. */
+                 dup = apr_pcalloc(p, sizeof *dup);
+                 apr_hash_set(count, &nid, sizeof nid, dup);
+                 key = apr_pstrcat(p, pfx, tag, NULL);
+             }
+             
+             /* cast needed from 'unsigned char *' to 'char *' */
+             value = apr_pstrmemdup(p, (char *)data,
+                                    X509_NAME_ENTRY_get_data_len(xsne));
+#if APR_CHARSET_EBCDIC
+             ap_xlate_proto_from_ascii(value, X509_NAME_ENTRY_get_data_len(xsne));
+#endif /* APR_CHARSET_EBCDIC */
+             apr_table_setn(t, key, value);
+         }
+    }
+}
+
+void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p)
+{
+    apr_hash_t *nids;
+    unsigned n;
+    X509 *xs;
+
+    /* Build up a hash table of (int *)NID->(char *)short-name for all
+     * the tags which are to be extracted: */
+    nids = apr_hash_make(p);
+    for (n = 0; ssl_var_lookup_ssl_cert_dn_rec[n].name; n++) {
+        if (ssl_var_lookup_ssl_cert_dn_rec[n].extract) {
+            apr_hash_set(nids, &ssl_var_lookup_ssl_cert_dn_rec[n].nid,
+                         sizeof(ssl_var_lookup_ssl_cert_dn_rec[0].nid),
+                         ssl_var_lookup_ssl_cert_dn_rec[n].name);
+        }
+    }
+    
+    /* Extract the server cert DNS -- note that the refcount does NOT
+     * increase: */
+    xs = SSL_get_certificate(ssl);
+    if (xs) {
+        extract_dn(t, nids, "SSL_SERVER_S_DN_", X509_get_subject_name(xs), p);
+        extract_dn(t, nids, "SSL_SERVER_I_DN_", X509_get_issuer_name(xs), p);
+    }
+    
+    /* Extract the client cert DNs -- note that the refcount DOES
+     * increase: */
+    xs = SSL_get_peer_certificate(ssl);
+    if (xs) {
+        extract_dn(t, nids, "SSL_CLIENT_S_DN_", X509_get_subject_name(xs), p);
+        extract_dn(t, nids, "SSL_CLIENT_I_DN_", X509_get_issuer_name(xs), p);
+        X509_free(xs);
+    }
 }
 
 const char *ssl_ext_lookup(apr_pool_t *p, conn_rec *c, int peer,
