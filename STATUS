@@ -107,7 +107,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?view=rev&revision=813165
                 http://svn.apache.org/viewvc?view=rev&revision=820401
    2.2.x Patch: http://people.apache.org/~minfrin/ssl-env2.diff
-   +1: minfrin, fuankg
+   +1: minfrin, fuankg, jim
 
  * mod_cache: Introduce the thundering herd lock, a mechanism to keep
               the flood of requests at bay that strike a backend webserver as
@@ -120,7 +120,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?rev=809440&view=rev
                 http://svn.apache.org/viewvc?rev=809665&view=rev
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
-   +1: minfrin
+   +1: minfrin, jim
 
    * mod_authnz_ldap: Add AuthLDAPBindAuthoritative to allow other authentication 
      providers a chance to run when mod_authnz_ldap finds a user but can't 
@@ -175,20 +175,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     desired. Fix the default value of the SSIAccessEnable directive.
     2.2.x patch: http://people.apache.org/~minfrin/mod_include_caching2-2.2.patch
     Trunk patch: http://svn.apache.org/viewvc?rev=905406&view=rev
-    +1: minfrin
+    +1: minfrin, jim
 
   * mod_log_config: Add the R option to log the handler used within the
     request.
     Submitted by: Christian Folini <christian.folini netnea com>
     Trunk patch: http://svn.apache.org/viewvc?rev=905420&view=rev
     Trunk works for 2.2.x
-    +1: minfrin
+    +1: minfrin, jim
 
   * worker: Don't log MaxClients until we actually hit it.  Warn when within
     MinSpareThreads of MaxClients.
     Trunk patch: http://svn.apache.org/viewvc?rev=906535&view=rev
     2.2.x patch: http://people.apache.org/~poirier/maxclients-2.2.patch
-    +1: poirier, minfrin
+    +1: poirier, minfrin, jim
 
   * mod_proxy: Allow https to a remote forward proxy by issuing an HTTP
     CONNECT request. This adds a CONNECT client (sending a connect request).
@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    http://svn.apache.org/viewvc?rev=910081&view=rev
                    http://svn.apache.org/viewvc?rev=910124&view=rev
     2.2.x patch: http://people.apache.org/~rjung/patches/bz19188-proxyremote-https-v2.patch
-    +1: rjung, minfrin
+    +1: rjung, minfrin, jim
 
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
@@ -215,7 +215,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: https://issues.apache.org/bugzilla/show_bug.cgi?id=47106
     Trunk patch: http://svn.apache.org/viewvc?rev=909899&view=rev
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24976
-    +1: minfrin
+    +1: minfrin, jim
 
 
 PATCHES/ISSUES THAT ARE STALLED
