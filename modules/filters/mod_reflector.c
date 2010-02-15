@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include "apr_strings.h"
 #include "apr_tables.h"
 
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
+#include "http_protocol.h"
 #include "http_request.h"
+#include "mod_core.h"
 
 module AP_MODULE_DECLARE_DATA reflector_module;
 
@@ -44,7 +46,6 @@ static int header_do(void *dummy, const char *key, const char *value)
 static int reflector_handler(request_rec * r)
 {
     apr_bucket_brigade *bbin, *bbout;
-    apr_bucket *e;
     reflector_cfg *conf;
     apr_status_t status;
 
