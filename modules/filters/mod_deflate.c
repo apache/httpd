@@ -1019,11 +1019,13 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     }
 
     if (!APR_BRIGADE_EMPTY(ctx->proc_bb)) {
-        /* May return APR_INCOMPLETE which is fine by us. */
-        apr_brigade_partition(ctx->proc_bb, readbytes, &bkt);
-
-        APR_BRIGADE_CONCAT(bb, ctx->proc_bb);
-        apr_brigade_split_ex(bb, bkt, ctx->proc_bb);
+        if (apr_brigade_partition(ctx->proc_bb, readbytes, &bkt) == APR_INCOMPLETE) {
+            APR_BRIGADE_CONCAT(bb, ctx->proc_bb);
+        }
+        else {
+            APR_BRIGADE_CONCAT(bb, ctx->proc_bb);
+            apr_brigade_split_ex(bb, bkt, ctx->proc_bb);
+        }
     }
 
     return APR_SUCCESS;
