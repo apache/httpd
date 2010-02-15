@@ -87,12 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * worker: Don't log MaxClients until we actually hit it.  Warn when within
-    MinSpareThreads of MaxClients.
-    Trunk patch: http://svn.apache.org/viewvc?rev=906535&view=rev
-    2.2.x patch: http://people.apache.org/~poirier/maxclients-2.2.patch
-    +1: poirier, minfrin, jim
-
   * mod_proxy: Allow https to a remote forward proxy by issuing an HTTP
     CONNECT request. This adds a CONNECT client (sending a connect request).
     It is not the same as mod_proxy_connect, which is a CONNECT server
