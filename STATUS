@@ -87,6 +87,34 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_ssl: Improve environment variable extraction to be more
+   efficient and to correctly handle DNs with duplicate tags.
+   PR 45975.
+   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=724717
+                http://svn.apache.org/viewvc?view=rev&revision=813165
+                http://svn.apache.org/viewvc?view=rev&revision=820401
+   2.2.x Patch: http://people.apache.org/~minfrin/ssl-env2.diff
+   +1: minfrin, fuankg, jim
+
+  * worker: Don't log MaxClients until we actually hit it.  Warn when within
+    MinSpareThreads of MaxClients.
+    Trunk patch: http://svn.apache.org/viewvc?rev=906535&view=rev
+    2.2.x patch: http://people.apache.org/~poirier/maxclients-2.2.patch
+    +1: poirier, minfrin, jim
+
+  * mod_proxy: Allow https to a remote forward proxy by issuing an HTTP
+    CONNECT request. This adds a CONNECT client (sending a connect request).
+    It is not the same as mod_proxy_connect, which is a CONNECT server
+    (responding to connect requests).
+    PR: https://issues.apache.org/bugzilla/show_bug.cgi?id=19188
+    Trunk patches: http://svn.apache.org/viewvc?rev=909323&view=rev
+                   http://svn.apache.org/viewvc?rev=910079&view=rev
+                   http://svn.apache.org/viewvc?rev=910081&view=rev
+                   http://svn.apache.org/viewvc?rev=910124&view=rev
+    2.2.x patch: http://people.apache.org/~rjung/patches/bz19188-proxyremote-https-v2.patch
+    +1: rjung, minfrin, jim
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -99,15 +127,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               vs 2.6 kernels, potentially a suspect test for root.
    sf:        Couldn't the linux 2.4 bug be worked around by calling access
               twice? Once with R_OK and once with X_OK.
-
- * mod_ssl: Improve environment variable extraction to be more
-   efficient and to correctly handle DNs with duplicate tags.
-   PR 45975.
-   Trunk Patch: http://svn.apache.org/viewvc?view=rev&revision=724717
-                http://svn.apache.org/viewvc?view=rev&revision=813165
-                http://svn.apache.org/viewvc?view=rev&revision=820401
-   2.2.x Patch: http://people.apache.org/~minfrin/ssl-env2.diff
-   +1: minfrin, fuankg, jim
 
  * mod_cache: Introduce the thundering herd lock, a mechanism to keep
               the flood of requests at bay that strike a backend webserver as
@@ -183,24 +202,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=905420&view=rev
     Trunk works for 2.2.x
     +1: minfrin, jim
-
-  * worker: Don't log MaxClients until we actually hit it.  Warn when within
-    MinSpareThreads of MaxClients.
-    Trunk patch: http://svn.apache.org/viewvc?rev=906535&view=rev
-    2.2.x patch: http://people.apache.org/~poirier/maxclients-2.2.patch
-    +1: poirier, minfrin, jim
-
-  * mod_proxy: Allow https to a remote forward proxy by issuing an HTTP
-    CONNECT request. This adds a CONNECT client (sending a connect request).
-    It is not the same as mod_proxy_connect, which is a CONNECT server
-    (responding to connect requests).
-    PR: https://issues.apache.org/bugzilla/show_bug.cgi?id=19188
-    Trunk patches: http://svn.apache.org/viewvc?rev=909323&view=rev
-                   http://svn.apache.org/viewvc?rev=910079&view=rev
-                   http://svn.apache.org/viewvc?rev=910081&view=rev
-                   http://svn.apache.org/viewvc?rev=910124&view=rev
-    2.2.x patch: http://people.apache.org/~rjung/patches/bz19188-proxyremote-https-v2.patch
-    +1: rjung, minfrin, jim
 
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
