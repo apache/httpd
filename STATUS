@@ -195,8 +195,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     It is not the same as mod_proxy_connect, which is a CONNECT server
     (responding to connect requests).
     PR: https://issues.apache.org/bugzilla/show_bug.cgi?id=19188
-    Trunk patch: http://svn.apache.org/viewvc?rev=909323&view=rev
-    2.2.x patch: http://people.apache.org/~rjung/patches/bz19188-proxyremote-https-v1.patch
+    Trunk patches: http://svn.apache.org/viewvc?rev=909323&view=rev
+                   http://svn.apache.org/viewvc?rev=910079&view=rev
+                   http://svn.apache.org/viewvc?rev=910081&view=rev
+                   http://svn.apache.org/viewvc?rev=910124&view=rev
+    2.2.x patch: http://people.apache.org/~rjung/patches/bz19188-proxyremote-https-v2.patch
     +1: rjung, minfrin
 
   * core: Support wildcards in both the directory and file components of
