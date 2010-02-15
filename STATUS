@@ -87,17 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy: Allow https to a remote forward proxy by issuing an HTTP
-    CONNECT request. This adds a CONNECT client (sending a connect request).
-    It is not the same as mod_proxy_connect, which is a CONNECT server
-    (responding to connect requests).
-    PR: https://issues.apache.org/bugzilla/show_bug.cgi?id=19188
-    Trunk patches: http://svn.apache.org/viewvc?rev=909323&view=rev
-                   http://svn.apache.org/viewvc?rev=910079&view=rev
-                   http://svn.apache.org/viewvc?rev=910081&view=rev
-                   http://svn.apache.org/viewvc?rev=910124&view=rev
-    2.2.x patch: http://people.apache.org/~rjung/patches/bz19188-proxyremote-https-v2.patch
-    +1: rjung, minfrin, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
