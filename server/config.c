@@ -1670,7 +1670,7 @@ static const char *process_resource_config_fnmatch(server_rec *s,
     int current;
 
     /* find the first part of the filename */
-    rest = ap_strchr(fname, '/');
+    rest = ap_strchr((char*)fname, '/');
     if (rest) {
         fname = apr_pstrndup(ptemp, fname, rest - fname);
         rest++;
