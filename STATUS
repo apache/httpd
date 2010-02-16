@@ -197,6 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     more than one instance of htcacheclean on the same machine.
     Trunk patch: http://svn.apache.org/viewvc?rev=910705&view=rev
                  http://svn.apache.org/viewvc?rev=910735&view=rev
+                 http://svn.apache.org/viewvc?rev=910756&view=rev
     2.2.x patch: trunk patch works
     +1: minfrin
 
