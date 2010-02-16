@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.7
 
+  *) support/rotatelogs: Support the simplest log rotation case, log
+     truncation. Useful when the log is being processed in real time
+     using a command like tail. [Graham Leggett]
+
   *) support/htcacheclean: Teach it how to write a pid file (modelled on
      httpd's writing of a pid file) so that it becomes possible to run
      more than one instance of htcacheclean on the same machine.
