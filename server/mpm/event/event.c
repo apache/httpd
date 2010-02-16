@@ -2239,6 +2239,7 @@ static int event_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                  ap_get_server_description());
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                  "Server built: %s", ap_get_server_built());
+    ap_log_command_line(plog, s);
 
     restart_pending = shutdown_pending = 0;
     mpm_state = AP_MPMQ_RUNNING;

@@ -216,6 +216,7 @@
  * 20091230.4 (2.3.6-dev)  export ap_process_request_after_handler() for mod_serf
  * 20100208.0 (2.3.6-dev)  ap_socache_provider_t API changes to store and iterate
  * 20100208.1 (2.3.6-dev)  Added forward member to proxy_conn_rec
+ * 20100215.0 (2.3.7-dev)  Added ap_log_command_line().
  *
  */
 

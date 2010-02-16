@@ -250,6 +250,14 @@ AP_DECLARE(void) ap_log_cerror(const char *file, int line, int level,
 AP_DECLARE(void) ap_error_log2stderr(server_rec *s);
 
 /**
+ * Log the command line used to start the server.
+ * @param p The pool to use for logging
+ * @param s The server_rec whose process's command line we want to log.
+ * The command line is logged to that server's error log.
+ */
+AP_DECLARE(void) ap_log_command_line(apr_pool_t *p, server_rec *s);
+
+/**
  * Log the current pid of the parent process
  * @param p The pool to use for logging
  * @param fname The name of the file to log to
