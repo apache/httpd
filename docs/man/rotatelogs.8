@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2009-02-02" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2010-02-16" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -46,11 +46,14 @@ Causes the use of local time rather than GMT as the base for the interval or for
 -f
 Causes the logfile to be opened immediately, as soon as rotatelogs starts, instead of waiting for the first logfile entry to be read (for non-busy sites, there may be a substantial delay between when the server is started and when the first request is handled, meaning that the associated logfile does not "exist" until then, which causes problems from some automated logging tools)  
 .TP
+-t
+Causes the logfile to be truncated instead of rotated\&. This is useful when a log is processed in real time by a command like tail, and there is no need for archived data\&. No suffix will be added to the filename, however format strings containing '%' characters will be respected\&.  
+.TP
 -v
 Produce verbose output on STDERR\&. The output contains the result of the configuration parsing, and all file open and close actions\&.  
 .TP
 \fIlogfile\fR
-The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created from the strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&.  
+The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds (unless the -t option is used)\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created from the strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&.  
 .TP
 \fIrotationtime\fR
 The time between log file rotations in seconds\&. The rotation occurs at the beginning of this interval\&. For example, if the rotation time is 3600, the log file will be rotated at the beginning of every hour; if the rotation time is 86400, the log file will be rotated every night at midnight\&. (If no data is logged during an interval, no file will be created\&.)  
@@ -98,6 +101,15 @@ This configuration will rotate the logfile whenever it reaches a size of 5 megab
  
 .PP
 This configuration will rotate the error logfile whenever it reaches a size of 5 megabytes, and the suffix to the logfile name will be created of the form errorlog\&.YYYY-mm-dd-HH_MM_SS\&.
+ 
+.nf
+
+     CustomLog "|bin/rotatelogs -t /var/logs/logfile 86400" common
+
+.fi
+ 
+.PP
+This creates the file /var/logs/logfile, truncating the file at startup and then truncating the file once per day\&. It is expected in this scenario that a separate process (such as tail) would process the file in real time\&.
  
 .SH "PORTABILITY"
  

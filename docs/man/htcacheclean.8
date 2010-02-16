@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTCACHECLEAN" 8 "2008-04-21" "Apache HTTP Server" "htcacheclean"
+.TH "HTCACHECLEAN" 8 "2010-02-16" "Apache HTTP Server" "htcacheclean"
 
 .SH NAME
 htcacheclean \- Clean up the disk cache
@@ -30,7 +30,7 @@ htcacheclean \- Clean up the disk cache
 \fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] [ -\fBr\fR ] [ -\fBn\fR ] -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
  
 .PP
-\fBhtcacheclean\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] -\fBd\fR\fIinterval\fR -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
+\fBhtcacheclean\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] [ -\fBP\fR\fIpidfile\fR ] -\fBd\fR\fIinterval\fR -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
  
 
 .SH "SUMMARY"
@@ -63,6 +63,9 @@ Delete all empty directories\&. By default only cache files are removed, however
 .TP
 -p\fIpath\fR
 Specify \fIpath\fR as the root directory of the disk cache\&. This should be the same value as specified with the CacheRoot directive\&.  
+.TP
+-P\fIpidfile\fR
+Specify \fIpidfile\fR as the name of the file to write the process ID to when daemonized\&.  
 .TP
 -l\fIlimit\fR
 Specify \fIlimit\fR as the total disk cache size limit\&. The value is expressed in bytes by default (or attaching B to the number)\&. Attach K for Kbytes or M for MBytes\&.  
