@@ -1298,8 +1298,9 @@ connections</td></tr>
     </code></p></div>
 
     <p><var>scheme</var> is effectively the protocol that should be used to
-    communicate with the remote server; only <code>http</code> is supported by
-    this module.</p>
+    communicate with the remote server; only <code>http</code> and <code>https</code>
+    are supported by this module. When using <code>https</code>, the requests
+    are forwarded through the remote proxy using the HTTP CONNECT method.</p>
 
     <div class="example"><h3>Example</h3><p><code>
       ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000<br />
