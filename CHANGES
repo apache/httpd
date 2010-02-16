@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.7
 
+  *) Log command line on startup, so there's a record of command line
+     arguments like -f.
+     PR 48752.  [Dan Poirier]
+
   *) Introduce mod_reflector, a handler capable of reflecting POSTed
      request bodies back within the response through the output filter
      stack. Can be used to turn an output filter into a web service.
