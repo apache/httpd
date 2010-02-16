@@ -735,7 +735,7 @@ static void usage(const char *error)
                                                                              NL
     "  -p   Specify PATH as the root directory of the disk cache."           NL
                                                                              NL
-    "  -P   Specify PIDFILE as the file to write the pid file to."           NL
+    "  -P   Specify PIDFILE as the file to write the pid to."                NL
                                                                              NL
     "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K'"    NL
     "       or 'M' to the number for specifying KBytes or MBytes."           NL
