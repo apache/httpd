@@ -1661,7 +1661,7 @@ static const char *process_resource_config_fnmatch(server_rec *s,
                                                    apr_pool_t *ptemp,
                                                    unsigned depth)
 {
-    char *rest;
+    const char *rest;
     apr_status_t rv;
     apr_dir_t *dirp;
     apr_finfo_t dirent;
@@ -1670,7 +1670,7 @@ static const char *process_resource_config_fnmatch(server_rec *s,
     int current;
 
     /* find the first part of the filename */
-    rest = ap_strchr((char*)fname, '/');
+    rest = ap_strchr_c(fname, '/');
     if (rest) {
         fname = apr_pstrndup(ptemp, fname, rest - fname);
         rest++;
