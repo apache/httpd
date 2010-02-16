@@ -88,6 +88,7 @@ struct rotate_config {
     int force_open;
     int verbose;
     const char *szLogRoot;
+    int truncate;
 };
 
 typedef struct rotate_status rotate_status_t;
@@ -114,7 +115,7 @@ static void usage(const char *argv0, const char *reason)
         fprintf(stderr, "%s\n", reason);
     }
     fprintf(stderr,
-            "Usage: %s [-v] [-l] [-f] <logfile> "
+            "Usage: %s [-v] [-l] [-f] [-t] <logfile> "
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
             argv0);
@@ -135,7 +136,10 @@ static void usage(const char *argv0, const char *reason)
             "starts (N.B. if using a rotation time,\nthe time will always "
             "be a multiple of the rotation time, so you can synchronize\n"
             "cron scripts with it). At the end of each rotation time or "
-            "when the file size\nis reached a new log is started.\n");
+            "when the file size\nis reached a new log is started. If the "
+            "-t option is specified, the specified\nfile will be truncated "
+            "instead of rotated, and is useful where tail is used to\n"
+            "process logs in real time.\n");
     exit(1);
 }
 
@@ -296,14 +300,20 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         apr_strftime(status->filename, &rs, sizeof(status->filename), config->szLogRoot, &e);
     }
     else {
-        sprintf(status->filename, "%s.%010d", config->szLogRoot, tLogStart);
+        if (config->truncate) {
+            snprintf(status->filename, sizeof(status->filename), "%s", config->szLogRoot);
+        }
+        else {
+            snprintf(status->filename, sizeof(status->filename), "%s.%010d", config->szLogRoot,
+                    tLogStart);
+        }
     }
     apr_pool_create(&status->pfile, status->pool);
     if (config->verbose) {
         fprintf(stderr, "Opening file %s\n", status->filename);
     }
-    rv = apr_file_open(&status->nLogFD, status->filename, APR_WRITE | APR_CREATE | APR_APPEND,
-                       APR_OS_DEFAULT, status->pfile);
+    rv = apr_file_open(&status->nLogFD, status->filename, APR_WRITE | APR_CREATE | APR_APPEND
+                       | (config->truncate ? APR_TRUNCATE : 0), APR_OS_DEFAULT, status->pfile);
     if (rv != APR_SUCCESS) {
         char error[120];
 
@@ -430,13 +440,16 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
-    while ((rv = apr_getopt(opt, "lfv", &c, &optarg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lftv", &c, &optarg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
             config.use_localtime = 1;
             break;
         case 'f':
             config.force_open = 1;
+            break;
+        case 't':
+            config.truncate = 1;
             break;
         case 'v':
             config.verbose = 1;
