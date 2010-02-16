@@ -858,7 +858,7 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
                      ap_server_argv0, fname);
         exit(1);
     }
-    apr_file_printf(pid_file, "%ld" APR_EOL_STR, (long)mypid);
+    apr_file_printf(pid_file, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
     apr_file_close(pid_file);
     saved_pid = mypid;
 }

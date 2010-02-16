@@ -974,7 +974,7 @@ int main(int argc, const char * const argv[])
         if (APR_SUCCESS == (status = apr_file_open(&file, pidfile, APR_WRITE
                 | APR_CREATE | APR_TRUNCATE,
                 APR_UREAD | APR_UWRITE | APR_GREAD, pool))) {
-            apr_file_printf(file, "%ld" APR_EOL_STR, (long) mypid);
+            apr_file_printf(file, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
             apr_file_close(file);
         }
         else if (!isdaemon) {
