@@ -49,6 +49,7 @@
     [ -<strong>n</strong> ]
     [ -<strong>t</strong> ]
     [ -<strong>i</strong> ]
+    [ -<strong>P</strong><var>pidfile</var> ]
     -<strong>d</strong><var>interval</var>
     -<strong>p</strong><var>path</var>
     -<strong>l</strong><var>limit</var></code></p>
@@ -94,6 +95,10 @@
     <dd>Specify <var>path</var> as the root directory of the disk cache. This
     should be the same value as specified with the <directive
     module="mod_disk_cache">CacheRoot</directive> directive.</dd>
+
+    <dt><code>-P<var>pidfile</var></code></dt>
+    <dd>Specify <var>pidfile</var> as the name of the file to write the
+    process ID to when daemonized.</dd>
 
     <dt><code>-l<var>limit</var></code></dt>
     <dd>Specify <var>limit</var> as the total disk cache size limit. The value

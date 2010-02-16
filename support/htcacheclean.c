@@ -708,8 +708,8 @@ static void usage(const char *error)
     }
     apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
-    "Usage: %s [-Dvtrn] -pPATH -lLIMIT"                                      NL
-    "       %s [-nti] -dINTERVAL -pPATH -lLIMIT"                             NL
+    "Usage: %s [-Dvtrn] -pPATH -lLIMIT [-PPIDFILE]"                          NL
+    "       %s [-nti] -dINTERVAL -pPATH -lLIMIT [-PPIDFILE]"                 NL
                                                                              NL
     "Options:"                                                               NL
     "  -d   Daemonize and repeat cache cleaning every INTERVAL minutes."     NL
@@ -734,6 +734,8 @@ static void usage(const char *error)
     "       directories created may require attention."                      NL
                                                                              NL
     "  -p   Specify PATH as the root directory of the disk cache."           NL
+                                                                             NL
+    "  -P   Specify PIDFILE as the file to write the pid file to."           NL
                                                                              NL
     "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K'"    NL
     "       or 'M' to the number for specifying KBytes or MBytes."           NL
@@ -770,7 +772,7 @@ int main(int argc, const char * const argv[])
     int retries, isdaemon, limit_found, intelligent, dowork;
     char opt;
     const char *arg;
-    char *proxypath, *path;
+    char *proxypath, *path, *pidfile;
     char errmsg[1024];
 
     interrupted = 0;
@@ -786,6 +788,7 @@ int main(int argc, const char * const argv[])
     intelligent = 0;
     previous = 0; /* avoid compiler warning */
     proxypath = NULL;
+    pidfile = NULL;
 
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
         return 1;
@@ -807,7 +810,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_init(&o, pool, argc, argv);
 
     while (1) {
-        status = apr_getopt(o, "iDnvrtd:l:L:p:", &opt, &arg);
+        status = apr_getopt(o, "iDnvrtd:l:L:p:P:", &opt, &arg);
         if (status == APR_EOF) {
             break;
         }
@@ -912,6 +915,14 @@ int main(int argc, const char * const argv[])
                                        proxypath, apr_strerror(status, errmsg, sizeof errmsg)));
                 }
                 break;
+
+            case 'P':
+                if (pidfile) {
+                    usage_repeated_arg(pool, opt);
+                }
+                pidfile = apr_pstrdup(pool, arg);
+                break;
+
             } /* switch */
         } /* else */
     } /* while */
@@ -956,6 +967,22 @@ int main(int argc, const char * const argv[])
         apr_proc_detach(APR_PROC_DETACH_DAEMONIZE);
     }
 #endif
+
+    if (pidfile) {
+        apr_file_t *file;
+        pid_t mypid = getpid();
+        if (APR_SUCCESS == (status = apr_file_open(&file, pidfile, APR_WRITE
+                | APR_CREATE | APR_TRUNCATE,
+                APR_UREAD | APR_UWRITE | APR_GREAD, pool))) {
+            apr_file_printf(file, "%ld" APR_EOL_STR, (long) mypid);
+            apr_file_close(file);
+        }
+        else if (!isdaemon) {
+            apr_file_printf(errfile,
+                    "Could not write the pid file '%s': %s" APR_EOL_STR,
+                    pidfile, apr_strerror(status, errmsg, sizeof errmsg));
+        }
+    }
 
     do {
         apr_pool_create(&instance, pool);

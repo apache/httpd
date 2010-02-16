@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.7
 
+  *) support/htcacheclean: Teach it how to write a pid file (modelled on
+     httpd's writing of a pid file) so that it becomes possible to run
+     more than one instance of htcacheclean on the same machine.
+     [Graham Leggett]
+
   *) Log command line on startup, so there's a record of command line
      arguments like -f.
      PR 48752.  [Dan Poirier]
