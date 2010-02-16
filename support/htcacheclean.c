@@ -972,10 +972,9 @@ int main(int argc, const char * const argv[])
         apr_file_t *file;
         pid_t mypid = getpid();
         if (APR_SUCCESS == (status = apr_file_open(&file, pidfile, APR_WRITE
-                | APR_CREATE | APR_TRUNCATE,
+                | APR_CREATE | APR_TRUNCATE | APR_DELONCLOSE,
                 APR_UREAD | APR_UWRITE | APR_GREAD, pool))) {
             apr_file_printf(file, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
-            apr_file_close(file);
         }
         else if (!isdaemon) {
             apr_file_printf(errfile,
