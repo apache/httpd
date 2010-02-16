@@ -192,6 +192,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24976
     +1: minfrin, jim
 
+  * support/htcacheclean: Teach it how to write a pid file (modelled on
+    httpd's writing of a pid file) so that it becomes possible to run
+    more than one instance of htcacheclean on the same machine.
+    Trunk patch: http://svn.apache.org/viewvc?rev=910705&view=rev
+    2.2.x patch: trunk patch works
+    +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
