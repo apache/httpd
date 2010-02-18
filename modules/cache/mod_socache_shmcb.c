@@ -632,7 +632,7 @@ apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
     apr_time_t now = apr_time_now();
     apr_status_t rv = APR_SUCCESS;
     apr_size_t buflen = 0;
-    unsigned char *buf;
+    unsigned char *buf = NULL;
 
     /* Perform the iteration inside the mutex to avoid corruption or invalid
      * pointer arithmetic. The rest of our logic uses read-only header data so
