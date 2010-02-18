@@ -121,6 +121,7 @@ criteria</description>
 <description>Enables generation of <code>Expires</code>
 headers</description>
 <syntax>ExpiresActive On|Off</syntax>
+<default>ExpiresActive Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
