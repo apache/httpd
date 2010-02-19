@@ -201,6 +201,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: trunk patch works
     +1: minfrin
 
+  * core: Make sure to not destroy bucket brigades that have been created
+    by earlier filters. Otherwise the pool cleanups would be removed causing
+    potential memory leaks later on.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=821477
+    2.2.x patch: http://people.apache.org/~sf/avoid_apr_brigade_destroy-2.2.x.diff
+    +1: sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
