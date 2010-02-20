@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 659902:910017 (outdated) -->
+<!-- English Revision: 910017 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -39,6 +39,7 @@
         <module>mod_ext_filter</module>
         <module>mod_include</module>
         <module>mod_charset_lite</module>
+	<module>mod_reflector</module>
       </modulelist>
       <directivelist>
         <directive module="mod_filter">FilterChain</directive>
@@ -49,6 +50,7 @@
         <directive module="mod_mime">AddOutputFilter</directive>
         <directive module="mod_mime">RemoveInputFilter</directive>
         <directive module="mod_mime">RemoveOutputFilter</directive>
+	<directive module="mod_reflector">ReflectorHeader</directive>
         <directive module="mod_ext_filter">ExtFilterDefine</directive>
         <directive module="mod_ext_filter">ExtFilterOptions</directive>
         <directive module="core">SetInputFilter</directive>
@@ -129,6 +131,30 @@ sont de type compressible et non d&eacute;j&agrave; compress&eacute;es</li>
 le document texte n'est pas d&eacute;j&agrave; dans le jeu de caract&egrave;res voulu</li>
 </ul>
 </section>
+
+<section id="service">
+
+<title>Pr&eacute;sentation des filtres en tant que service HTTP</title>
+<p>Les filtres permettent de traiter les contenus en provenance du
+serveur. Le module <module>mod_reflector</module> permet aussi
+d'utiliser les filtres pour traiter les contenus en provenance du
+client.</p>
+
+<p>Le module <module>mod_reflector</module> re&ccedil;oit les requ&ecirc;tes POST des
+clients, et en r&eacute;percute le corps dans la requ&ecirc;te POST constituant la
+r&eacute;ponse, lors de l'envoi de cette derni&egrave;re au client en passant &agrave; travers la
+pile de filtres en sortie.</p>
+
+<p>Cette technique peut &ecirc;tre utilis&eacute;e comme alternative &agrave; un service web
+s'ex&eacute;cutant &agrave; l'int&eacute;rieur de la pile d'un serveur d'applications, o&ugrave; un
+filtre en sortie effectue la transformation requise sur le corps de la
+requ&ecirc;te. Par exemple, on peut utiliser le module
+<module>mod_deflate</module> pour fournir un service g&eacute;n&eacute;ral de
+compression ; un filtre de transformation d'images peut aussi se voir
+mu&eacute; en service de transformation d'images.</p>
+    
+</section>
+  
 
 <section id="using">
 <title>Utilisation des filtres</title>
