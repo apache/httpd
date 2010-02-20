@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 420990 -->
+<!-- English Revision : 911498 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -126,6 +126,7 @@ l'intervalle</title>
 <description>Active la g&eacute;n&eacute;ration d'en-t&ecirc;tes
 <code>Expires</code></description>
 <syntax>ExpiresActive On|Off</syntax>
+<default>ExpiresActive Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
