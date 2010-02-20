@@ -33,7 +33,7 @@
     <p>This module allows request bodies to be reflected back to the
     client, in the process passing the request through the output filter
     stack. A suitably configured chain of filters can be used to transform
-    the request into a response. This module can used to turn an output
+    the request into a response. This module can be used to turn an output
     filter into an HTTP service.</p>
 </summary>
 
