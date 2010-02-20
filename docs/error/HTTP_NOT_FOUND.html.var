@@ -288,7 +288,7 @@ Body:----------pl--
     o problemie.
 
   <!--#else -->
-    Jeśli wpisałeś URLa ręcznie, sprawdź, czy nie się nie pomyliłeś.
+    Jeśli wpisałeś URLa ręcznie, sprawdź, czy się nie pomyliłeś.
 
   <!--#endif -->
 
