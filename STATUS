@@ -166,14 +166,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     desired. Fix the default value of the SSIAccessEnable directive.
     2.2.x patch: http://people.apache.org/~minfrin/mod_include_caching2-2.2.patch
     Trunk patch: http://svn.apache.org/viewvc?rev=905406&view=rev
-    +1: minfrin, jim
+    +1: minfrin, jim, rpluem
 
   * mod_log_config: Add the R option to log the handler used within the
     request.
     Submitted by: Christian Folini <christian.folini netnea com>
     Trunk patch: http://svn.apache.org/viewvc?rev=905420&view=rev
     Trunk works for 2.2.x
-    +1: minfrin, jim
+    +1: minfrin, jim, rpluem
 
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: https://issues.apache.org/bugzilla/show_bug.cgi?id=47106
     Trunk patch: http://svn.apache.org/viewvc?rev=909899&view=rev
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24976
-    +1: minfrin, jim
+    +1: minfrin, jim, rpluem
 
   * support/htcacheclean: Teach it how to write a pid file (modelled on
     httpd's writing of a pid file) so that it becomes possible to run
@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     potential memory leaks later on.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=821477
     2.2.x patch: http://people.apache.org/~sf/avoid_apr_brigade_destroy-2.2.x.diff
-    +1: sf
+    +1: sf, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
