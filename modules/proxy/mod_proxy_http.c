@@ -1704,6 +1704,21 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             e = apr_bucket_heap_create(buffer, cntr, NULL, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
+        /* PR 41646: get HEAD right with ProxyErrorOverride */
+        if (ap_is_HTTP_ERROR(r->status) && conf->error_override) {
+            /* clear r->status for override error, otherwise ErrorDocument
+             * thinks that this is a recursive error, and doesn't find the
+             * custom error page
+             */
+            r->status = HTTP_OK;
+            /* Discard body, if one is expected */
+            if (!r->header_only && /* not HEAD request */
+                (proxy_status != HTTP_NO_CONTENT) && /* not 204 */
+                (proxy_status != HTTP_NOT_MODIFIED)) { /* not 304 */
+                ap_discard_request_body(rp);
+            }
+            return proxy_status;
+        }
 
         /* send body - but only if a body is expected */
         if ((!r->header_only) &&                   /* not HEAD request */
@@ -1865,29 +1880,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         return DONE;
     }
 
-    if (conf->error_override) {
-        /* the code above this checks for 'OK' which is what the hook expects */
-        if (!ap_is_HTTP_ERROR(proxy_status)) {
-            return OK;
-        }
-        else {
-            /* clear r->status for override error, otherwise ErrorDocument
-             * thinks that this is a recursive error, and doesn't find the
-             * custom error page
-             */
-            r->status = HTTP_OK;
-            /* Discard body, if one is expected */
-            if (!r->header_only && /* not HEAD request */
-                (proxy_status != HTTP_NO_CONTENT) && /* not 204 */
-                (proxy_status != HTTP_NOT_MODIFIED)) { /* not 304 */
-                ap_discard_request_body(rp);
-            }
-            return proxy_status;
-        }
-    }
-    else {
-        return OK;
-    }
+    return OK;
 }
 
 static

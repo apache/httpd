@@ -2,6 +2,12 @@
 
 Changes with Apache 2.3.7
 
+  *) Proxy: get the headers right in a HEAD request with
+     ProxyErrorOverride, by checking for an overridden error
+     before not after going into a catch-all code path.
+     PR 41646.
+     Patch by Nick Kew, based on detailed analysis by Stuart Children.
+
   *) support/rotatelogs: Support the simplest log rotation case, log
      truncation. Useful when the log is being processed in real time
      using a command like tail. [Graham Leggett]
