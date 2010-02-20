@@ -206,6 +206,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~sf/avoid_apr_brigade_destroy-2.2.x.diff
     +1: sf, rpluem
 
+  * mod_proxy_ajp: Really regard the operation a success, when the client
+    aborted the connection. In addition adjust the log message if the client
+    aborted the connection.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=911466&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
