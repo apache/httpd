@@ -125,19 +125,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24976
     +1: minfrin, jim, rpluem
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
- * unixd: set suexec_enabled correctly when httpd is run by non-root
-   PR 42175
-   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
-   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
-   +1: niq
-   -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
-              vs 2.6 kernels, potentially a suspect test for root.
-   sf:        Couldn't the linux 2.4 bug be worked around by calling access
-              twice? Once with R_OK and once with X_OK.
-
  * mod_cache: Introduce the thundering herd lock, a mechanism to keep
               the flood of requests at bay that strike a backend webserver as
               a cached entity goes stale.
@@ -150,6 +137,26 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?rev=809665&view=rev
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
    +1: minfrin, jim, pgollucci
+
+  * core: Make sure to not destroy bucket brigades that have been created
+    by earlier filters. Otherwise the pool cleanups would be removed causing
+    potential memory leaks later on.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=821477
+    2.2.x patch: http://people.apache.org/~sf/avoid_apr_brigade_destroy-2.2.x.diff
+    +1: sf, rpluem, pgollucci
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+ * unixd: set suexec_enabled correctly when httpd is run by non-root
+   PR 42175
+   Trunk Patch: http://cvs.apache.org/viewvc?view=rev&revision=791337
+   2.2.x Patch: https://issues.apache.org/bugzilla/attachment.cgi?id=20004
+   +1: niq
+   -0: wrowe; Please refer to man 'access' BUGS section about linux 2.4 
+              vs 2.6 kernels, potentially a suspect test for root.
+   sf:        Couldn't the linux 2.4 bug be worked around by calling access
+              twice? Once with R_OK and once with X_OK.
 
   * mod_reqtimeout: New module to limit time waiting for requests from clients.
     Backport current version from trunk.
@@ -198,13 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=910756&view=rev
     2.2.x patch: trunk patch works
     +1: minfrin
-
-  * core: Make sure to not destroy bucket brigades that have been created
-    by earlier filters. Otherwise the pool cleanups would be removed causing
-    potential memory leaks later on.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=821477
-    2.2.x patch: http://people.apache.org/~sf/avoid_apr_brigade_destroy-2.2.x.diff
-    +1: sf, rpluem, pgollucci
 
   * mod_proxy_ajp: Really regard the operation a success, when the client
     aborted the connection. In addition adjust the log message if the client
