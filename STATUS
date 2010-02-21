@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                 http://svn.apache.org/viewvc?rev=809440&view=rev
                 http://svn.apache.org/viewvc?rev=809665&view=rev
    2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
-   +1: minfrin, jim
+   +1: minfrin, jim, pgollucci
 
   * mod_reqtimeout: New module to limit time waiting for requests from clients.
     Backport current version from trunk.
@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     potential memory leaks later on.
     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=821477
     2.2.x patch: http://people.apache.org/~sf/avoid_apr_brigade_destroy-2.2.x.diff
-    +1: sf, rpluem
+    +1: sf, rpluem, pgollucci
 
   * mod_proxy_ajp: Really regard the operation a success, when the client
     aborted the connection. In addition adjust the log message if the client
@@ -214,6 +214,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem,
+
+  * rewrite_log: remove locking
+    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=783734
+
+    [also requested on apache@freebsd.org]
+
+    +1: pgollucci
 
 PATCHES/ISSUES THAT ARE STALLED
 
