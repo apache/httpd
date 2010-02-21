@@ -125,27 +125,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24976
     +1: minfrin, jim, rpluem
 
- * mod_cache: Introduce the thundering herd lock, a mechanism to keep
-              the flood of requests at bay that strike a backend webserver as
-              a cached entity goes stale.
-   Trunk Patch: http://svn.apache.org/viewvc?rev=808212&view=rev
-                http://svn.apache.org/viewvc?rev=808220&view=rev
-                http://svn.apache.org/viewvc?rev=808649&view=rev
-                http://svn.apache.org/viewvc?rev=808652&view=rev
-                http://svn.apache.org/viewvc?rev=808656&view=rev
-                http://svn.apache.org/viewvc?rev=809440&view=rev
-                http://svn.apache.org/viewvc?rev=809665&view=rev
-   2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
-   +1: minfrin, jim, pgollucci
-
-  * core: Make sure to not destroy bucket brigades that have been created
-    by earlier filters. Otherwise the pool cleanups would be removed causing
-    potential memory leaks later on.
-    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=821477
-    2.2.x patch: http://people.apache.org/~sf/avoid_apr_brigade_destroy-2.2.x.diff
-    +1: sf, rpluem, pgollucci
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -158,6 +137,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               vs 2.6 kernels, potentially a suspect test for root.
    sf:        Couldn't the linux 2.4 bug be worked around by calling access
               twice? Once with R_OK and once with X_OK.
+
+ * mod_cache: Introduce the thundering herd lock, a mechanism to keep
+              the flood of requests at bay that strike a backend webserver as
+              a cached entity goes stale.
+   Trunk Patch: http://svn.apache.org/viewvc?rev=808212&view=rev
+                http://svn.apache.org/viewvc?rev=808220&view=rev
+                http://svn.apache.org/viewvc?rev=808649&view=rev
+                http://svn.apache.org/viewvc?rev=808652&view=rev
+                http://svn.apache.org/viewvc?rev=808656&view=rev
+                http://svn.apache.org/viewvc?rev=809440&view=rev
+                http://svn.apache.org/viewvc?rev=809665&view=rev
+   2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
+   +1: minfrin, jim, pgollucci
 
   * mod_reqtimeout: New module to limit time waiting for requests from clients.
     Backport current version from trunk.
@@ -206,6 +198,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=910756&view=rev
     2.2.x patch: trunk patch works
     +1: minfrin
+
+  * core: Make sure to not destroy bucket brigades that have been created
+    by earlier filters. Otherwise the pool cleanups would be removed causing
+    potential memory leaks later on.
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=821477
+    2.2.x patch: http://people.apache.org/~sf/avoid_apr_brigade_destroy-2.2.x.diff
+    +1: sf, rpluem, pgollucci
 
   * mod_proxy_ajp: Really regard the operation a success, when the client
     aborted the connection. In addition adjust the log message if the client
