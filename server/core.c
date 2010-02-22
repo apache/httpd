@@ -3929,10 +3929,10 @@ static int core_pre_connection(conn_rec *c, void *csd)
 
 static void register_hooks(apr_pool_t *p)
 {
-    /* create_connection and install_transport_filters are
-     * hooks that should always be APR_HOOK_REALLY_LAST to give other
-     * modules the opportunity to install alternate network transports
-     * and stop other functions from being run.
+    /* create_connection and pre_connection should always be hooked
+     * APR_HOOK_REALLY_LAST by core to give other modules the opportunity
+     * to install alternate network transports and stop other functions 
+     * from being run.
      */
     ap_hook_create_connection(core_create_conn, NULL, NULL,
                               APR_HOOK_REALLY_LAST);
