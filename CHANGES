@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.7
 
+  *) Fix startup segfault when the Mutex directive is used but no loaded 
+     modules use httpd mutexes.  PR 48787.  [Jeff Trawick]
+
   *) Proxy: get the headers right in a HEAD request with
      ProxyErrorOverride, by checking for an overridden error
      before not after going into a catch-all code path.

@@ -143,7 +143,7 @@ static apr_status_t cleanup_mx_hash(void *dummy)
     return APR_SUCCESS;
 }
 
-static void mx_hash_init(apr_pool_t *p)
+AP_DECLARE_NONSTD(void) ap_mutex_init(apr_pool_t *p)
 {
     mutex_cfg_t *def;
 
@@ -266,7 +266,7 @@ AP_DECLARE(apr_status_t) ap_mutex_register(apr_pool_t *pconf,
         return APR_EINVAL;
     }
 
-    mx_hash_init(pconf);
+    ap_mutex_init(pconf); /* in case this mod's pre-config ran before core's */
 
     mxcfg->options = options;
     if (options & AP_MUTEX_DEFAULT_NONE) {
