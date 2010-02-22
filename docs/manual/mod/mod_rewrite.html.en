@@ -276,7 +276,11 @@ RewriteRule ^index\.html$  newsite.html
                   <dt><code>REQUEST_FILENAME</code></dt>
 
                   <dd>The full local filesystem path to the file or
-                  script matching the request.</dd>
+                  script matching the request, if this has already
+                  been determined by the server at the time 
+                  <code>REQUEST_FILENAME</code> is referenced. Otherwise, 
+                  such as when used in virtual host context, the same 
+                  value as <code>REQUEST_URI</code>.</dd>
 
                   <dt><code>HTTPS</code></dt>
 
