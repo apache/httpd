@@ -3714,6 +3714,13 @@ AP_DECLARE(int) ap_sys_privileges_handlers(int inc)
     sys_privileges += inc;
     return sys_privileges;
 }
+
+static int core_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+    ap_mutex_init(pconf);
+    return APR_SUCCESS;
+}
+
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     ap__logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
@@ -3932,6 +3939,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_pre_connection(core_pre_connection, NULL, NULL,
                            APR_HOOK_REALLY_LAST);
 
+    ap_hook_pre_config(core_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_post_config(core_post_config,NULL,NULL,APR_HOOK_REALLY_FIRST);
     ap_hook_translate_name(ap_core_translate,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_map_to_storage(core_map_to_storage,NULL,NULL,APR_HOOK_REALLY_LAST);

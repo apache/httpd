@@ -103,6 +103,9 @@ AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
 AP_DECLARE_NONSTD(const char *) ap_set_mutex(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 
+/* private function to initialize Mutex infrastructure */
+AP_DECLARE_NONSTD(void) ap_mutex_init(apr_pool_t *p);
+
 /**
  * option flags for ap_mutex_register(), ap_global_mutex_create(), and
  * ap_proc_mutex_create()
