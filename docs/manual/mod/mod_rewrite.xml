@@ -794,7 +794,11 @@ Result:
                   <dt><code>REQUEST_FILENAME</code></dt>
 
                   <dd>The full local filesystem path to the file or
-                  script matching the request.</dd>
+                  script matching the request, if this has already
+                  been determined by the server at the time 
+                  <code>REQUEST_FILENAME</code> is referenced. Otherwise, 
+                  such as when used in virtual host context, the same 
+                  value as <code>REQUEST_URI</code>.</dd>
 
                   <dt><code>HTTPS</code></dt>
 
@@ -811,14 +815,25 @@ Result:
       <p>Other things you should be aware of:</p>
 
       <ol>
-        <li>The variables SCRIPT_FILENAME and REQUEST_FILENAME
+        <li><p>The variables SCRIPT_FILENAME and REQUEST_FILENAME
         contain the same value - the value of the
         <code>filename</code> field of the internal
         <code>request_rec</code> structure of the Apache server.
         The first name is the commonly known CGI variable name
         while the second is the appropriate counterpart of
         REQUEST_URI (which contains the value of the
-        <code>uri</code> field of <code>request_rec</code>).</li>
+        <code>uri</code> field of <code>request_rec</code>).</p>
+        <p>If a substitution occurred and the rewriting continues,
+        the value of both variables will be updated accordingly.</p>
+        <p>If used in per-server context (<em>i.e.</em>, before the
+        request is mapped to the filesystem) SCRIPT_FILENAME and
+        REQUEST_FILENAME cannot contain the full local filesystem
+        path since the path is unknown at this stage of processing.
+        Both variables will initially contain the value of REQUEST_URI
+        in that case. In order to obtain the full local filesystem
+        path of the request in per-server context, use an URL-based
+        look-ahead <code>%{LA-U:REQUEST_FILENAME}</code> to determine
+        the final value of REQUEST_FILENAME.</p></li>
 
         <li>
         <code>%{ENV:variable}</code>, where <em>variable</em> can be
