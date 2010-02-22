@@ -8,8 +8,7 @@ Changes with Apache 2.3.7
   *) Proxy: get the headers right in a HEAD request with
      ProxyErrorOverride, by checking for an overridden error
      before not after going into a catch-all code path.
-     PR 41646.
-     Patch by Nick Kew, based on detailed analysis by Stuart Children.
+     PR 41646.  [Nick Kew, Stuart Children]
 
   *) support/rotatelogs: Support the simplest log rotation case, log
      truncation. Useful when the log is being processed in real time
@@ -21,8 +20,7 @@ Changes with Apache 2.3.7
      [Graham Leggett]
 
   *) Log command line on startup, so there's a record of command line
-     arguments like -f.
-     PR 48752.  [Dan Poirier]
+     arguments like -f.  PR 48752.  [Dan Poirier]
 
   *) Introduce mod_reflector, a handler capable of reflecting POSTed
      request bodies back within the response through the output filter
@@ -38,8 +36,8 @@ Changes with Apache 2.3.7
      the path specified by the Include directive. [Graham Leggett]
 
   *) mod_proxy, mod_proxy_http: Support remote https proxies
-     by using HTTP CONNECT.
-     PR 19188.  [Philippe Dutrueux <lilas evidian.com>, Rainer Jung]
+     by using HTTP CONNECT.  PR 19188.  
+     [Philippe Dutrueux <lilas evidian.com>, Rainer Jung]
 
 Changes with Apache 2.3.6
 
