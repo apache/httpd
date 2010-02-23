@@ -2,6 +2,11 @@
 
 Changes with Apache 2.3.7
 
+  *) mod_negotiation: Preserve query string over multiviews negotiation.
+     This buglet was fixed for type maps in 2.2.6, but the same issue
+     affected multiviews and was overlooked.
+     PR 33112 [Joergen Thomsen <apache jth.net>]
+
   *) mod_ldap: Eliminate a potential crash with multiple LDAPTrustedClientCert
      when some are not password-protected. [Eric Covener]
 
