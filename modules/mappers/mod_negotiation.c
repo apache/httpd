@@ -3129,6 +3129,9 @@ static int handle_multi(request_rec *r)
             goto return_from_multi;
         }
     }
+    if (sub_req->args == NULL) {
+        sub_req->args = r->args;
+    }
 
     /* now do a "fast redirect" ... promotes the sub_req into the main req */
     ap_internal_fast_redirect(sub_req, r);
