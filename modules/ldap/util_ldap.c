@@ -625,9 +625,12 @@ static int compare_client_certs(apr_array_header_t *srcs,
     src = (struct apr_ldap_opt_tls_cert_t *)srcs->elts;
     dest = (struct apr_ldap_opt_tls_cert_t *)dests->elts;
     for (i = 0; i < srcs->nelts; i++) {
-        if (strcmp(src[i].path, dest[i].path) ||
-            strcmp(src[i].password, dest[i].password) ||
-            src[i].type != dest[i].type) {
+        if ((strcmp(src[i].path, dest[i].path)) ||
+            (src[i].type != dest[i].type) ||
+            /* One is passwordless? If so, then not equal */
+            ((src[i].password == NULL) ^ (dest[i].password == NULL)) ||
+            (src[i].password != NULL && dest[i].password != NULL &&
+             strcmp(src[i].password, dest[i].password))) {
             return 1;
         }
     }
