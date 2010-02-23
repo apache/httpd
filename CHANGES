@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.7
 
+  *) mod_ldap: Eliminate a potential crash with multiple LDAPTrustedClientCert
+     when some are not password-protected. [Eric Covener]
+
   *) Fix startup segfault when the Mutex directive is used but no loaded 
      modules use httpd mutexes.  PR 48787.  [Jeff Trawick]
 
