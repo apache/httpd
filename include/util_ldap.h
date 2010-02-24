@@ -125,6 +125,7 @@ typedef struct util_ldap_connection_t {
 typedef struct util_ldap_config_t {
     int ChaseReferrals;
     int ReferralHopLimit;
+    apr_array_header_t *client_certs;  /* Client certificates */
 } util_ldap_config_t;
 
 /* LDAP cache state information */ 
@@ -145,7 +146,6 @@ typedef struct util_ldap_state_t {
     struct util_ldap_connection_t *connections;
     int   ssl_supported;
     apr_array_header_t *global_certs;  /* Global CA certificates */
-    apr_array_header_t *client_certs;  /* Client certificates */
     int   secure;
     int   secure_set;
 
