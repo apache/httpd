@@ -686,7 +686,7 @@ static util_ldap_connection_t *
             && ((!l->bindpw && !bindpw) || (l->bindpw && bindpw
                                              && !strcmp(l->bindpw, bindpw)))
             && (l->deref == deref) && (l->secure == secureflag)
-            && !compare_client_certs(st->client_certs, l->client_certs))
+            && !compare_client_certs(dc->client_certs, l->client_certs))
         {
             break;
         }
@@ -711,7 +711,7 @@ static util_ldap_connection_t *
 #endif
             if ((l->port == port) && (strcmp(l->host, host) == 0) &&
                 (l->deref == deref) && (l->secure == secureflag) &&
-                !compare_client_certs(st->client_certs, l->client_certs))
+                !compare_client_certs(dc->client_certs, l->client_certs))
             {
                 /* the bind credentials have changed */
                 l->bound = 0;
@@ -779,7 +779,7 @@ static util_ldap_connection_t *
         l->secure = secureflag;
 
         /* save away a copy of the client cert list that is presently valid */
-        l->client_certs = apr_array_copy_hdr(l->pool, st->client_certs);
+        l->client_certs = apr_array_copy_hdr(l->pool, dc->client_certs);
 
         l->keep = 1;
 
@@ -2300,9 +2300,7 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
                                                      const char *file,
                                                      const char *password)
 {
-    util_ldap_state_t *st =
-        (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
-                                                  &ldap_module);
+    util_ldap_config_t *dc =  config;
     apr_finfo_t finfo;
     apr_status_t rv;
     int cert_type = 0;
@@ -2314,21 +2312,21 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
         if (APR_LDAP_CA_TYPE_UNKNOWN == cert_type) {
             return apr_psprintf(cmd->pool, "The certificate type \"%s\" is "
                                            "not recognised. It should be one "
-                                           "of CERT_DER, CERT_BASE64, "
-                                           "CERT_NICKNAME, CERT_PFX,"
+                                           "of CA_DER, CA_BASE64, "
+                                           "CERT_DER, CERT_BASE64, "
+                                           "CERT_NICKNAME, CERT_PFX, "
                                            "KEY_DER, KEY_BASE64, KEY_PFX",
                                            type);
         }
-        else if (APR_LDAP_CA_TYPE_DER == cert_type ||
-                 APR_LDAP_CA_TYPE_BASE64 == cert_type ||
-                 APR_LDAP_CA_TYPE_CERT7_DB == cert_type ||
+        else if ( APR_LDAP_CA_TYPE_CERT7_DB == cert_type ||
                  APR_LDAP_CA_TYPE_SECMOD == cert_type ||
                  APR_LDAP_CERT_TYPE_PFX == cert_type ||
                  APR_LDAP_CERT_TYPE_KEY3_DB == cert_type) {
             return apr_psprintf(cmd->pool, "The certificate type \"%s\" is "
                                            "only valid within a "
                                            "LDAPTrustedGlobalCert directive. "
-                                           "Only CERT_DER, CERT_BASE64, "
+                                           "Only CA_DER, CA_BASE64, "
+                                           "CERT_DER, CERT_BASE64, "
                                            "CERT_NICKNAME, KEY_DER, and "
                                            "KEY_BASE64 may be used.", type);
         }
@@ -2341,8 +2339,8 @@ static const char *util_ldap_set_trusted_client_cert(cmd_parms *cmd,
                       "LDAP: SSL trusted client cert - %s (type %s)",
                        file, type);
 
-    /* add the certificate to the global array */
-    cert = (apr_ldap_opt_tls_cert_t *)apr_array_push(st->global_certs);
+    /* add the certificate to the client array */
+    cert = (apr_ldap_opt_tls_cert_t *)apr_array_push(dc->client_certs);
     cert->type = cert_type;
     cert->path = file;
     cert->password = password;
@@ -2520,6 +2518,7 @@ static void *util_ldap_create_dir_config(apr_pool_t *p, char *d) {
        (util_ldap_config_t *) apr_pcalloc(p,sizeof(util_ldap_config_t));
 
    /* defaults are AP_LDAP_CHASEREFERRALS_ON and AP_LDAP_DEFAULT_HOPLIMIT */
+   dc->client_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
    dc->ChaseReferrals = AP_LDAP_CHASEREFERRALS_ON;
    dc->ReferralHopLimit = AP_LDAP_HOPLIMIT_UNSET;
 
@@ -2598,7 +2597,6 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->connections = NULL;
     st->ssl_supported = 0;
     st->global_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
-    st->client_certs = apr_array_make(p, 10, sizeof(apr_ldap_opt_tls_cert_t));
     st->secure = APR_LDAP_NONE;
     st->secure_set = 0;
     st->connectionTimeout = 10;
@@ -2635,8 +2633,6 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->ssl_supported = 0;
     st->global_certs = apr_array_append(p, base->global_certs,
                                            overrides->global_certs);
-    st->client_certs = apr_array_append(p, base->client_certs,
-                                           overrides->client_certs);
     st->secure = (overrides->secure_set == 0) ? base->secure
                                               : overrides->secure;
 
@@ -2891,7 +2887,7 @@ static const command_rec util_ldap_cmds[] = {
                    "passphrase if applicable."),
 
     AP_INIT_TAKE23("LDAPTrustedClientCert", util_ldap_set_trusted_client_cert,
-                   NULL, RSRC_CONF,
+                   NULL, OR_AUTHCFG,
                    "Takes three arguments: the first argument is the certificate "
                    "type of the second argument, one of CA_DER, CA_BASE64, "
                    "CA_CERT7_DB, CA_SECMOD, CERT_DER, CERT_BASE64, CERT_KEY3_DB, "

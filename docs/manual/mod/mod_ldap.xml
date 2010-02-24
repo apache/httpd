@@ -349,8 +349,10 @@ by other LDAP modules</description>
         SDK to work correctly. These certificates can be specified as
         binary DER or Base64 (PEM) encoded files.</p>
 
-        <p>Client certificates are specified per connection using the
-        LDAPTrustedClientCert directive.</p>
+        <p>Both CA and client certificates may be specified globally
+        (LDAPTrustedGlobalCert) or per-connection (LDAPTrustedClientCert).  
+        When any settings are specified per-connection, the global 
+        settings are superceded.</p>
 
         <p>The documentation for the SDK claims to support both SSL and
         STARTTLS, however STARTTLS does not seem to work on all versions
@@ -372,6 +374,9 @@ by other LDAP modules</description>
                 Allow from yourdomain.example.com<br />
                 LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
                 LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
+                # CA certs respecified due to per-directory client certs<br />
+                LDAPTrustedClientCert CA_DER /certs/cacert1.der<br />
+                LDAPTrustedClientCert CA_BASE64 /certs/cacert2.pem<br />
                 Satisfy any<br />
                 AuthType Basic<br />
                 AuthName "LDAP Protected"<br />
@@ -575,8 +580,7 @@ Certificate Authority or global client certificates</description>
 connection client certificate. Not all LDAP toolkits support per
 connection client certificates.</description>
 <syntax>LDAPTrustedClientCert <var>type</var> <var>directory-path/filename/nickname</var> <var>[password]</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
     <p>It specifies the directory path, file name or nickname of a
@@ -591,6 +595,8 @@ connection client certificates.</description>
     The type specifies the kind of certificate parameter being
     set, depending on the LDAP toolkit being used. Supported types are:</p>
     <ul>
+      <li>CA_DER - binary DER encoded CA certificate</li>
+      <li>CA_BASE64 - PEM encoded CA certificate</li>
       <li>CERT_DER - binary DER encoded client certificate</li>
       <li>CERT_BASE64 - PEM encoded client certificate</li>
       <li>CERT_NICKNAME - Client certificate "nickname" (Netscape SDK)</li>
