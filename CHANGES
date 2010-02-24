@@ -2,6 +2,13 @@
 
 Changes with Apache 2.3.7
 
+  *) mod_ldap: Update LDAPTrustedClientCert to consistently be a per-directory
+     setting only, matching most of the documentation and examples. 
+     PR 46541 [Paul Reder, Eric Covener] 
+
+  *) mod_ldap: LDAPTrustedClientCert now accepts CA_DER/CA_BASE64 argument 
+     types previously allowed only in LDAPTrustedGlobalCert. [Eric Covener]
+
   *) mod_negotiation: Preserve query string over multiviews negotiation.
      This buglet was fixed for type maps in 2.2.6, but the same issue
      affected multiviews and was overlooked.
