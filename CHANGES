@@ -9,6 +9,10 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) mod_authnz_ldap: Add AuthLDAPBindAuthoritative to allow Authentication to
+     try other providers in the case of an LDAP bind failure.
+     PR 46608 [Justin Erenkrantz, Joe Schaefer, Tony Stevenson]
+
   *) mod_proxy, mod_proxy_http: Support remote https proxies
      by using HTTP CONNECT.
      PR 19188.  [Philippe Dutrueux <lilas evidian.com>, Rainer Jung]
