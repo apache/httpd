@@ -63,6 +63,7 @@ typedef struct {
     deref_options deref;            /* how to handle alias dereferening */
     char *binddn;                   /* DN to bind to server (can be NULL) */
     char *bindpw;                   /* Password to bind to server (can be NULL) */
+    int bind_authoritative;         /* If true, will return errors when bind fails */
 
     int user_is_dn;                 /* If true, connection->user is DN instead of userid */
     char *remote_user_attribute;    /* If set, connection->user is this attribute instead of userid */
@@ -294,6 +295,7 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->host = NULL;
     sec->binddn = NULL;
     sec->bindpw = NULL;
+    sec->bind_authoritative = 1;
     sec->deref = always;
     sec->group_attrib_is_dn = 1;
     sec->auth_authoritative = 1;
@@ -409,6 +411,14 @@ start_over:
 
     /* handle bind failure */
     if (result != LDAP_SUCCESS) {
+        if (!sec->bind_authoritative) {
+           ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "[%" APR_PID_T_FMT "] auth_ldap authenticate: "
+                      "user %s authentication failed; URI %s [%s][%s] (not authoritative)",
+                      getpid(), user, r->uri, ldc->reason, ldap_err2string(result));
+           return AUTH_USER_NOT_FOUND;
+        }
+
         ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                       "[%" APR_PID_T_FMT "] auth_ldap authenticate: "
                       "user %s authentication failed; URI %s [%s][%s]",
@@ -1064,6 +1074,10 @@ static const command_rec authnz_ldap_cmds[] =
     AP_INIT_TAKE1("AuthLDAPBindPassword", ap_set_string_slot,
                   (void *)APR_OFFSETOF(authn_ldap_config_t, bindpw), OR_AUTHCFG,
                   "Password to use to bind to LDAP server. If not provided, will do an anonymous bind."),
+
+    AP_INIT_FLAG("AuthLDAPBindAuthoritative", ap_set_flag_slot,
+                  (void *)APR_OFFSETOF(authn_ldap_config_t, bind_authoritative), OR_AUTHCFG,
+                  "Set to 'on' to return failures when user-specific bind fails - defaults to on."),
 
     AP_INIT_FLAG("AuthLDAPRemoteUserIsDN", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authn_ldap_config_t, user_is_dn), OR_AUTHCFG,
