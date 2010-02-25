@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.7
 
+  *) support/rotatelogs: Add -L option to create a link to the current
+     log file.  PR 48761 [<lyndon orthanc.ca>, Dan Poirier]
+
   *) mod_ldap: Update LDAPTrustedClientCert to consistently be a per-directory
      setting only, matching most of the documentation and examples. 
      PR 46541 [Paul Reder, Eric Covener] 

@@ -35,6 +35,7 @@
 
      <p><code><strong>rotatelogs</strong>
      [ -<strong>l</strong> ]
+     [ -<strong>L</strong> <var>linkname</var> ]
      [ -<strong>f</strong> ]
      [ -<strong>v</strong> ]
      <var>logfile</var>
@@ -52,6 +53,12 @@ interval or for <code>strftime(3)</code> formatting with size-based
 rotation.  Note that using <code>-l</code> in an environment which
 changes the GMT offset (such as for BST or DST) can lead to unpredictable
 results!</dd>
+
+<dt><code>-L</code> <var>linkname</var></dt>
+<dd>Causes a hard link to be made from the current logfile
+to the specified link name.  This can be used to watch
+the log continuously across rotations using a command like 
+<code>tail -F linkname</code>.</dd>
 
 <dt><code>-f</code></dt>
 <dd>Causes the logfile to be opened immediately, as soon as
