@@ -1806,10 +1806,10 @@ certificate being validated references an OCSP responder.</p>
 <name>SSLInsecureRenegotiation</name>
 <description>Option to enable support for insecure renegotiation</description>
 <syntax>SSLInsecureRenegotiation <em>flag</em></syntax>
+<default>SSLInsecureRenegotiation off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in httpd 2.3 and later, if using OpenSSL 1.0.0 Beta 5 or later</compatibility>
-<default>SSLInsecureRenegotiation off</default>
 
 <usage>
 <p>As originally specified, all versions of the SSL and TLS protocols
