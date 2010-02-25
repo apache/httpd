@@ -33,7 +33,7 @@
 
     <p>Pour pouvoir fonctionner, ce module <em>requiert</em> le
     chargement de <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Il fournit le support du
-    mandatement des requêtes HTTP. <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
+    mandatement des requêtes HTTP et HTTPS. <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>
     supporte HTTP/0.9, HTTP/1.0 et HTTP/1.1. Il ne fournit
     <em>aucune</em> fonctionnalité de mise en cache. Si vous souhaitez
     mettre en oeuvre un mandataire qui assure aussi les fonctions de
