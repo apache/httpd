@@ -58,6 +58,7 @@ for HTTP Basic authentication.</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbindpassword">AuthLDAPBindPassword</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
@@ -654,6 +655,36 @@ Require group <em>mygroupfile</em>
       and won't be able to find the FrontPage-managed user file.</li>
     </ul>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPBindAuthoritative" id="AuthLDAPBindAuthoritative">AuthLDAPBindAuthoritative</a> <a name="authldapbindauthoritative" id="authldapbindauthoritative">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindAuthoritative<em>off|on</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPBindAuhtoritative on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in versions later than 2.2.14</td></tr>
+</table>
+    <p>By default, subsequent authentication providers are only queried if a 
+    user cannot be mapped to a DN, but not if the user can be mapped to a DN and their
+    password cannot be verified with an LDAP bind.  
+    If <code class="directive"><a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></code> 
+    is set to <em>off</em>, other configured authentication modules will have 
+    a chance to validate the user if the LDAP bind (with the current users credentials) 
+    fails for any reason.</p>
+    <p> This allows users present in both LDAP and 
+    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> to authenticate
+    when the LDAP server is available but the users account is locked or password
+    is otherwise unusable.</p>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code></li>
+<li><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPBindDN" id="AuthLDAPBindDN">AuthLDAPBindDN</a> <a name="authldapbinddn" id="authldapbinddn">Directive</a></h2>
