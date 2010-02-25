@@ -89,6 +89,7 @@ struct rotate_config {
     int verbose;
     const char *szLogRoot;
     int truncate;
+    const char *linkfile;
 };
 
 typedef struct rotate_status rotate_status_t;
@@ -115,7 +116,7 @@ static void usage(const char *argv0, const char *reason)
         fprintf(stderr, "%s\n", reason);
     }
     fprintf(stderr,
-            "Usage: %s [-v] [-l] [-f] [-t] <logfile> "
+            "Usage: %s [-v] [-l] [-L linkname] [-f] [-t] <logfile> "
             "{<rotation time in seconds>|<rotation size>(B|K|M|G)} "
             "[offset minutes from UTC]\n\n",
             argv0);
@@ -139,7 +140,9 @@ static void usage(const char *argv0, const char *reason)
             "when the file size\nis reached a new log is started. If the "
             "-t option is specified, the specified\nfile will be truncated "
             "instead of rotated, and is useful where tail is used to\n"
-            "process logs in real time.\n");
+            "process logs in real time.  If the -L option is specified, "
+            "a hard link will be\nmade from the current log file to the "
+            "specified filename.\n");
     exit(1);
 }
 
@@ -351,6 +354,20 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
         status->pfile_prev = NULL;
     }
     status->nMessCount = 0;
+    if (config->linkfile) {
+        apr_file_remove(config->linkfile, status->pfile);
+        if (config->verbose) {
+            fprintf(stderr,"Linking %s to %s\n", status->filename, config->linkfile);
+        }
+        rv = apr_file_link(status->filename, config->linkfile);
+        if (rv != APR_SUCCESS) {
+            char error[120];
+            apr_strerror(rv, error, sizeof error);
+            fprintf(stderr, "Error linking file %s to %s (%s)\n",
+                    status->filename, config->linkfile, error);
+            exit(2);
+        }
+    }
 }
 
 /*
@@ -440,10 +457,13 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&status.pool, NULL);
     apr_getopt_init(&opt, status.pool, argc, argv);
-    while ((rv = apr_getopt(opt, "lftv", &c, &optarg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lL:ftv", &c, &optarg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
             config.use_localtime = 1;
+            break;
+        case 'L':
+            config.linkfile = optarg;
             break;
         case 'f':
             config.force_open = 1;
