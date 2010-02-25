@@ -95,6 +95,7 @@
 <li><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></li>
 <li><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize</a></li>
 <li><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></li>
+<li><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></li>
 <li><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
