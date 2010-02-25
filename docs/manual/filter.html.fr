@@ -30,13 +30,14 @@
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#intro">Le filtrage avec Apache 2</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#smart">Filtrage intelligent</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#service">Présentation des filtres en tant que service HTTP</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#using">Utilisation des filtres</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intro" id="intro">Le filtrage avec Apache 2</a></h2>
     
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li><li><code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_reflector.html#reflectorheader">ReflectorHeader</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
 
 <p>La chaîne de filtrage est disponible depuis la version 2.0 d'Apache,
 et permet aux applications de traiter les données en entrée et en sortie
@@ -104,6 +105,29 @@ sont de type compressible et non déjà compressées</li>
 <li>Un filtre de conversion de jeux de caractères ne sera inséré que si
 le document texte n'est pas déjà dans le jeu de caractères voulu</li>
 </ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="service" id="service">Présentation des filtres en tant que service HTTP</a></h2>
+
+
+<p>Les filtres permettent de traiter les contenus en provenance du
+serveur. Le module <code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code> permet aussi
+d'utiliser les filtres pour traiter les contenus en provenance du
+client.</p>
+
+<p>Le module <code class="module"><a href="./mod/mod_reflector.html">mod_reflector</a></code> reçoit les requêtes POST des
+clients, et en répercute le corps dans la requête POST constituant la
+réponse, lors de l'envoi de cette dernière au client en passant à travers la
+pile de filtres en sortie.</p>
+
+<p>Cette technique peut être utilisée comme alternative à un service web
+s'exécutant à l'intérieur de la pile d'un serveur d'applications, où un
+filtre en sortie effectue la transformation requise sur le corps de la
+requête. Par exemple, on peut utiliser le module
+<code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> pour fournir un service général de
+compression ; un filtre de transformation d'images peut aussi se voir
+mué en service de transformation d'images.</p>
+    
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="using" id="using">Utilisation des filtres</a></h2>

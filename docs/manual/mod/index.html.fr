@@ -175,7 +175,8 @@ under different user IDs.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>Module fournissant le support HTTP à
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_remoteip.html" id="R" name="R">mod_remoteip</a></dt><dd>Remplace l'adresse IP et le nom d'hôte apparents du client
+<dt><a href="mod_reflector.html" id="R" name="R">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
+<dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Remplace l'adresse IP et le nom d'hôte apparents du client
 pour la requête par l'adresse IP présentée par un mandataire ou un
 répartiteur de charge via les en-têtes de la requête.
 </dd>

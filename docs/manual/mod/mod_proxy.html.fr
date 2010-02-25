@@ -1435,7 +1435,9 @@ requêtes</td></tr>
 
     <p><var>protocole</var> est effectivement le protocole à utiliser
     pour communiquer avec le serveur distant ; ce module ne supporte que
-    <code>http</code>.</p>
+    <code>http</code> et <code>https</code>. Lorsqu'on utilise
+    <code>https</code>, les requêtes sont redirigées par le mandataire
+    distant en utilisant la méthode HTTP CONNECT.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
       ProxyRemote http://bons-gars.example.com/ http://gars-mirroirs.example.com:8000<br />

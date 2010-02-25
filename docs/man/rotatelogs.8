@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2010-02-16" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2010-02-19" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -27,7 +27,7 @@ rotatelogs \- Piped logging program to rotate Apache logs
 .SH "SYNOPSIS"
  
 .PP
-\fBrotatelogs\fR [ -\fBl\fR ] [ -\fBf\fR ] [ -\fBv\fR ] \fIlogfile\fR \fIrotationtime\fR|\fIfilesize\fR(B|K|M|G) [ \fIoffset\fR ]
+\fBrotatelogs\fR [ -\fBl\fR ] [ -\fBL\fR \fIlinkname\fR ] [ -\fBf\fR ] [ -\fBv\fR ] \fIlogfile\fR \fIrotationtime\fR|\fIfilesize\fR(B|K|M|G) [ \fIoffset\fR ]
  
 
 .SH "SUMMARY"
@@ -42,6 +42,9 @@ rotatelogs is a simple program for use in conjunction with Apache's piped logfil
 .TP
 -l
 Causes the use of local time rather than GMT as the base for the interval or for strftime(3) formatting with size-based rotation\&. Note that using -l in an environment which changes the GMT offset (such as for BST or DST) can lead to unpredictable results!  
+.TP
+-L \fIlinkname\fR
+Causes a hard link to be made from the current logfile to the specified link name\&. This can be used to watch the log continuously across rotations using a command like tail -F linkname\&.  
 .TP
 -f
 Causes the logfile to be opened immediately, as soon as rotatelogs starts, instead of waiting for the first logfile entry to be read (for non-busy sites, there may be a substantial delay between when the server is started and when the first request is handled, meaning that the associated logfile does not "exist" until then, which causes problems from some automated logging tools)  

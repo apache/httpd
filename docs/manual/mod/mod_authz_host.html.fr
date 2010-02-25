@@ -34,10 +34,9 @@ d'Apache</td></tr></table>
 <h3>Sommaire</h3>
 
     <p>Les fournisseurs d'autorisation implémentés par le module
-    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> sont enregistrés à l'aide des
-    directives <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> ou
-    <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code>. On peut
-    utiliser ces directives à l'intérieur de sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou de fichiers
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> sont enregistrés à l'aide de
+    la directive <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>. On peut
+    utiliser cette directive à l'intérieur de sections <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code>, ou <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> ou de fichiers
     <code><a href="core.html#accessfilename">.htaccess</a> </code> pour
     contrôler l'accès à certaines zones du serveur. Le contrôle d'accès
     peut être effectué en fonction du nom d'hôte, de l'adresse IP, ou
@@ -63,13 +62,12 @@ d'Apache</td></tr></table>
 <li><a href="../howto/auth.html">Authentification, autorisation et
 contrôle d'accès</a></li>
 <li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
-<li><code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requiredirectives" id="requiredirectives">Les directives Require</a></h2>
 
-    <p>Les directives d'Apache <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> et <code class="directive"><a href="../mod/mod_authz_core.html#match">Match</a></code> sont utilisées au cours de
+    <p>La directive Apache <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> est utilisée au cours de
     la phase d'autorisation pour vérifier si un utilisateur se voit
     accorder ou refuser l'accès à une ressource. mod_authz_host fournit
     les types d'autorisation <code>env</code>, <code>ip</code>,

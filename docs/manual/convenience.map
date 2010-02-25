@@ -179,7 +179,7 @@ example	mod/mod_example.html#example
 expiresactive	mod/mod_expires.html#expiresactive
 expiresbytype	mod/mod_expires.html#expiresbytype
 expiresdefault	mod/mod_expires.html#expiresdefault
-extendedstatus	mod/mod_status.html#extendedstatus
+extendedstatus	mod/core.html#extendedstatus
 extfilterdefine	mod/mod_ext_filter.html#extfilterdefine
 extfilteroptions	mod/mod_ext_filter.html#extfilteroptions
 fallbackresource	mod/mod_dir.html#fallbackresource
@@ -239,6 +239,7 @@ ldapreferralhoplimit	mod/mod_ldap.html#ldapreferralhoplimit
 ldapreferrals	mod/mod_ldap.html#ldapreferrals
 ldapsharedcachefile	mod/mod_ldap.html#ldapsharedcachefile
 ldapsharedcachesize	mod/mod_ldap.html#ldapsharedcachesize
+ldaptimeout	mod/mod_ldap.html#ldaptimeout
 ldaptrustedclientcert	mod/mod_ldap.html#ldaptrustedclientcert
 ldaptrustedglobalcert	mod/mod_ldap.html#ldaptrustedglobalcert
 ldaptrustedmode	mod/mod_ldap.html#ldaptrustedmode
@@ -321,6 +322,7 @@ redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
+reflectorheader	mod/mod_reflector.html#reflectorheader
 remoteipheader	mod/mod_remoteip.html#remoteipheader
 remoteipinternalproxy	mod/mod_remoteip.html#remoteipinternalproxy
 remoteipinternalproxylist	mod/mod_remoteip.html#remoteipinternalproxylist
@@ -335,7 +337,7 @@ removelanguage	mod/mod_mime.html#removelanguage
 removeoutputfilter	mod/mod_mime.html#removeoutputfilter
 removetype	mod/mod_mime.html#removetype
 requestheader	mod/mod_headers.html#requestheader
-requesttimeout	mod/mod_reqtimeout.html#requesttimeout
+requestreadtimeout	mod/mod_reqtimeout.html#requestreadtimeout
 require	mod/mod_authz_core.html#require
 requireall	mod/mod_authz_core.html#requireall
 requireany	mod/mod_authz_core.html#requireany
@@ -362,7 +364,7 @@ scriptlogbuffer	mod/mod_cgi.html#scriptlogbuffer
 scriptloglength	mod/mod_cgi.html#scriptloglength
 scriptsock	mod/mod_cgid.html#scriptsock
 securelisten	mod/mod_nw_ssl.html#securelisten
-seerequesttail	mod/mod_status.html#seerequesttail
+seerequesttail	mod/core.html#seerequesttail
 sendbuffersize	mod/mpm_common.html#sendbuffersize
 serveradmin	mod/core.html#serveradmin
 serveralias	mod/core.html#serveralias
@@ -400,6 +402,8 @@ setoutputfilter	mod/core.html#setoutputfilter
 ssiaccessenable	mod/mod_include.html#ssiaccessenable
 ssiendtag	mod/mod_include.html#ssiendtag
 ssierrormsg	mod/mod_include.html#ssierrormsg
+ssietag	mod/mod_include.html#ssietag
+ssilastmodified	mod/mod_include.html#ssilastmodified
 ssistarttag	mod/mod_include.html#ssistarttag
 ssitimeformat	mod/mod_include.html#ssitimeformat
 ssiundefinedecho	mod/mod_include.html#ssiundefinedecho
@@ -416,6 +420,7 @@ sslciphersuite	mod/mod_ssl.html#sslciphersuite
 sslcryptodevice	mod/mod_ssl.html#sslcryptodevice
 sslengine	mod/mod_ssl.html#sslengine
 sslhonorcipherorder	mod/mod_ssl.html#sslhonorcipherorder
+sslinsecurerenegotiation	mod/mod_ssl.html#sslinsecurerenegotiation
 sslocspdefaultresponder	mod/mod_ssl.html#sslocspdefaultresponder
 sslocspenable	mod/mod_ssl.html#sslocspenable
 sslocspoverrideresponder	mod/mod_ssl.html#sslocspoverrideresponder
@@ -456,6 +461,7 @@ timeout	mod/core.html#timeout
 traceenable	mod/core.html#traceenable
 transferlog	mod/mod_log_config.html#transferlog
 typesconfig	mod/mod_mime.html#typesconfig
+undefine	mod/core.html#undefine
 unsetenv	mod/mod_env.html#unsetenv
 usecanonicalname	mod/core.html#usecanonicalname
 usecanonicalphysicalport	mod/core.html#usecanonicalphysicalport
