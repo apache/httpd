@@ -200,6 +200,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     +1: pgollucci
 
+  * mod_negotiation: Do not loose query string after content negotiation
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=915407&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
