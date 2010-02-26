@@ -150,7 +150,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=902434&view=rev
                  http://svn.apache.org/viewvc?rev=902593&view=rev
     2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2-v2.patch
-    +1: sf
+    +1: sf, jorton
 
   * Ensure each subrequest has a shallow copy of headers_in so that the
     parent request headers are not corrupted.  Elimiates a problematic
@@ -199,14 +199,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     [also requested on apache@freebsd.org]
 
-    +1: pgollucci, sf
+    +1: pgollucci, sf, jorton
 
   * mod_negotiation: Do not loose query string after content negotiation
       Trunk version of patch:
          http://svn.apache.org/viewcvs.cgi?rev=915407&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, jorton
 
   * mod_ssl: Add SSLInsecureRenegotiation directive.
       Trunk version of patch:
