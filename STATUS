@@ -220,6 +220,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jorton/ms_reneg22_v1.diff
       +1: jorton,
 
+  * mod_ssl: Fix potential SSL I/O filter hang if a long list of 
+    trusted CAs is configured for client cert auth.  PR 46952
+      Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=788715&view=rev
+      Backport version for 2.2.x of patch:
+        http://people.apache.org/~jorton/ms_flush.diff
+      +1: jorton,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
