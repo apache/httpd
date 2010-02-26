@@ -208,6 +208,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem,
 
+  * mod_ssl: Add SSLInsecureRenegotiation directive.
+      Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=906057&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=906485&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=906491&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=908015&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=916733&view=rev
+      Backport version for 2.2.x of patch:
+        http://people.apache.org/~jorton/ms_reneg22_v1.diff
+      +1: jorton,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
