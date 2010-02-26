@@ -1120,7 +1120,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
             ctx = f->ctx = apr_pcalloc(r->pool, sizeof(header_filter_ctx));
         }
         else if (ctx->headers_sent) {
-            apr_brigade_destroy(b);
+            apr_brigade_cleanup(b);
             return OK;
         }
     }
@@ -1291,7 +1291,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     ap_pass_brigade(f->next, b2);
 
     if (r->header_only) {
-        apr_brigade_destroy(b);
+        apr_brigade_cleanup(b);
         ctx->headers_sent = 1;
         return OK;
     }
