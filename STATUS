@@ -183,6 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=910756&view=rev
     2.2.x patch: trunk patch works
     +1: minfrin
+    sf: +1, but would like a world readable pid file even better
 
   * mod_proxy_ajp: Really regard the operation a success, when the client
     aborted the connection. In addition adjust the log message if the client
