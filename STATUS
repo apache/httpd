@@ -191,14 +191,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=911466&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, sf
 
   * rewrite_log: remove locking
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=783734
 
     [also requested on apache@freebsd.org]
 
-    +1: pgollucci
+    +1: pgollucci, sf
 
   * mod_negotiation: Do not loose query string after content negotiation
       Trunk version of patch:
