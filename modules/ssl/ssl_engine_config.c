@@ -637,8 +637,8 @@ const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int fla
     sc->insecure_reneg = flag?TRUE:FALSE;
     return NULL;
 #else
-    return "Secure renegotation is not supported by the SSL library; "
-        "the SSLInsecureRenegotiation directive is not available";
+    return "The SSLInsecureRenegotiation directive is not available "
+        "with this SSL library";
 #endif
 }
 
