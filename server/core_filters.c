@@ -655,6 +655,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                             /* Create a temporary brigade as a means
                              * of concatenating a bunch of buckets together
                              */
+                            temp_brig = apr_brigade_create(f->c->pool,
+                                                       f->c->bucket_alloc);
                             if (last_merged_bucket) {
                                 /* If we've concatenated together small
                                  * buckets already in a previous pass,
@@ -667,15 +669,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                                  * these buckets, so that the content
                                  * in them doesn't have to be copied again.
                                  */
-                                apr_bucket_brigade *bb;
-                                bb = apr_brigade_split(b,
-                                         APR_BUCKET_NEXT(last_merged_bucket));
-                                temp_brig = b;
-                                b = bb;
-                            }
-                            else {
-                                temp_brig = apr_brigade_create(f->c->pool,
-                                                           f->c->bucket_alloc);
+                                APR_BRIGADE_PREPEND(b, temp_brig);
+                                brigade_move(temp_brig, b, APR_BUCKET_NEXT(last_merged_bucket));
                             }
 
                             temp = APR_BRIGADE_FIRST(b);
@@ -879,7 +874,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 logio_add_bytes_out(c, bytes_sent);
         }
 
-        apr_brigade_destroy(b);
+        apr_brigade_cleanup(b);
 
         /* drive cleanups for resources which were set aside
          * this may occur before or after termination of the request which
@@ -910,7 +905,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                           "core_output_filter: writing data to the network");
 
             if (more)
-                apr_brigade_destroy(more);
+                apr_brigade_cleanup(more);
 
             /* No need to check for SUCCESS, we did that above. */
             if (!APR_STATUS_IS_EAGAIN(rv)) {
