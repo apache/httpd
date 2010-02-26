@@ -25,9 +25,10 @@ Changes with Apache 2.2.15
      Add message when server gets within MinSpareThreads of MaxClients.
      PR 46996.  [Dan Poirier]
 
-  *) mod_ssl: Reintroduce SSL_CLIENT_S_DN, SSL_CLIENT_I_DN, SSL_SERVER_S_DN,
-     SSL_SERVER_I_DN back to the environment variables to be set by mod_ssl.
-     [Peter Sylvester <peter.sylvester edelweb.fr>]
+  *) mod_ssl: When extracting certificate subject/issuer names to the
+     SSL_*_DN_* variables, handle RDNs with duplicate tags by
+     exporting multiple varialables with an "_n" integer suffix.
+     PR 45875.  [Joe Orton, Peter Sylvester <peter.sylvester edelweb.fr>]
 
   *) mod_authnz_ldap: Failures to map a username to a DN, or to check a user
      password now result in an informational level log entry instead of 
