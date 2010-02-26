@@ -288,6 +288,9 @@ Package=<4>
     Project_Dep_Name mod_remoteip
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_reqtimeout
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_request
     End Project Dependency
     Begin Project Dependency
@@ -2586,6 +2589,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_remoteip"=.\modules\metadata\mod_remoteip.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_reqtimeout"=.\modules\filters\mod_reqtimeout.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
