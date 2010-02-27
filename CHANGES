@@ -9,6 +9,9 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) mod_log_config: Add the R option to log the handler used within the
+     request. [Christian Folini <christian.folini netnea com>]
+
   *) Allow fine control over the removal of Last-Modified and ETag headers
      within the INCLUDES filter, making it possible to cache responses if
      desired. Fix the default value of the SSIAccessEnable directive.
