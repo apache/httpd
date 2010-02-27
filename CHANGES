@@ -9,6 +9,11 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) mod_proxy_http: Make sure that when an ErrorDocument is served
+     from a reverse proxied URL, that the subrequest respects the status
+     of the original request. This brings the behaviour of proxy_handler
+     in line with default_handler. PR 47106. [Graham Leggett]
+
   *) mod_log_config: Add the R option to log the handler used within the
      request. [Christian Folini <christian.folini netnea com>]
 
