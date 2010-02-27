@@ -87,13 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_include: Allow fine control over the removal of Last-Modified and ETag headers
-    within the INCLUDES filter, making it possible to cache responses if
-    desired. Fix the default value of the SSIAccessEnable directive.
-    2.2.x patch: http://people.apache.org/~minfrin/mod_include_caching2-2.2.patch
-    Trunk patch: http://svn.apache.org/viewvc?rev=905406&view=rev
-    +1: minfrin, jim, rpluem
-
   * mod_log_config: Add the R option to log the handler used within the
     request.
     Submitted by: Christian Folini <christian.folini netnea com>

@@ -115,7 +115,9 @@ typedef struct {
     const char *default_time_fmt;
     const char *undefined_echo;
     xbithack_t  xbithack;
-    const int accessenable;
+    int accessenable;
+    int lastmodified;
+    int etag;
 } include_dir_config;
 
 typedef struct {
@@ -461,6 +463,9 @@ static const char lazy_eval_sentinel;
 #define DEFAULT_ERROR_MSG "[an error occurred while processing this directive]"
 #define DEFAULT_TIME_FORMAT "%A, %d-%b-%Y %H:%M:%S %Z"
 #define DEFAULT_UNDEFINED_ECHO "(none)"
+#define DEFAULT_ACCESSENABLE 0
+#define DEFAULT_LASTMODIFIED 0
+#define DEFAULT_ETAG 0
 
 #ifdef XBITHACK
 #define DEFAULT_XBITHACK XBITHACK_FULL
@@ -3529,7 +3534,9 @@ static int includes_setup(ap_filter_t *f)
      * We don't know if we are going to be including a file or executing
      * a program - in either case a strong ETag header will likely be invalid.
      */
-    apr_table_setn(f->r->notes, "no-etag", "");
+    if (!conf->etag) {
+        apr_table_setn(f->r->notes, "no-etag", "");
+    }
 
     return OK;
 }
@@ -3618,13 +3625,32 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
      * a program which may change the Last-Modified header or make the
      * content completely dynamic.  Therefore, we can't support these
      * headers.
-     * Exception: XBitHack full means we *should* set the Last-Modified field.
+     *
+     * Exception: XBitHack full means we *should* set the
+     * Last-Modified field.
+     *
+     * SSILastModified on means we *should* set the Last-Modified field
+     * if not present, or respect an existing value if present.
      */
 
+    /* Must we respect the last modified header? By default, no */
+    if (conf->lastmodified) {
+
+        /* update the last modified if we have a valid time, and only if
+         * we don't already have a valid last modified.
+         */
+        if (r->finfo.valid & APR_FINFO_MTIME
+                && !apr_table_get(f->r->headers_out, "Last-Modified")) {
+            ap_update_mtime(r, r->finfo.mtime);
+            ap_set_last_modified(r);
+        }
+
+    }
+
     /* Assure the platform supports Group protections */
-    if ((conf->xbithack == XBITHACK_FULL)
+    else if (((conf->xbithack == XBITHACK_FULL)
         && (r->finfo.valid & APR_FINFO_GPROT)
-        && (r->finfo.protection & APR_GEXECUTE)) {
+        && (r->finfo.protection & APR_GEXECUTE))) {
         ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
     }
@@ -3704,6 +3730,9 @@ static void *create_includes_dir_config(apr_pool_t *p, char *dummy)
     result->default_time_fmt  = DEFAULT_TIME_FORMAT;
     result->undefined_echo    = DEFAULT_UNDEFINED_ECHO;
     result->xbithack          = DEFAULT_XBITHACK;
+    result->accessenable      = DEFAULT_ACCESSENABLE;
+    result->lastmodified      = DEFAULT_LASTMODIFIED;
+    result->etag              = DEFAULT_ETAG;
 
     return result;
 }
@@ -3856,6 +3885,14 @@ static const command_rec includes_cmds[] =
     AP_INIT_FLAG("SSIAccessEnable", ap_set_flag_slot,
                   (void *)APR_OFFSETOF(include_dir_config, accessenable),
                   OR_LIMIT, "Whether testing access is enabled. Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("SSILastModified", ap_set_flag_slot,
+                  (void *)APR_OFFSETOF(include_dir_config, lastmodified),
+                  OR_LIMIT, "Whether to set the last modified header or respect "
+                  "an existing header. Limited to 'on' or 'off'"),
+    AP_INIT_FLAG("SSIEtag", ap_set_flag_slot,
+                  (void *)APR_OFFSETOF(include_dir_config, etag),
+                  OR_LIMIT, "Whether to allow the generation of ETags within the server. "
+                  "Existing ETags will be preserved. Limited to 'on' or 'off'"),
     {NULL}
 };
 
