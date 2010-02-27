@@ -87,13 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_log_config: Add the R option to log the handler used within the
-    request.
-    Submitted by: Christian Folini <christian.folini netnea com>
-    Trunk patch: http://svn.apache.org/viewvc?rev=905420&view=rev
-    Trunk works for 2.2.x
-    +1: minfrin, jim, rpluem
-
   * mod_proxy_http: Make sure that when an ErrorDocument is served
     from a reverse proxied URL, that the subrequest respects the status
     of the original request. This brings the behaviour of proxy_handler

@@ -159,6 +159,9 @@
     <tr><td><code>%r</code></td>
         <td>First line of request</td></tr>
 
+    <tr><td><code>%R</code></td>
+        <td>The handler generating the response (if any).</td></tr>
+
     <tr><td><code>%s</code></td>
         <td>Status. For requests that got internally redirected, this is
         the status of the *original* request --- <code>%&gt;s</code>
@@ -266,6 +269,11 @@
       connection is aborted, or if SSL is used).  The <code>%O</code>
       format provided by <module>mod_logio</module> will log the
       actual number of bytes sent over the network.</p>
+
+      <p>Note: <module>mod_cache</module> is implemented as a
+      quick-handler and not as a standard handler. Therefore, the
+      <code>%R</code> format string will not return any handler
+      information when content caching is involved.</p>
 
     </section>
 
