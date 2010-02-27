@@ -87,19 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_cache: Introduce the thundering herd lock, a mechanism to keep
-              the flood of requests at bay that strike a backend webserver as
-              a cached entity goes stale.
-   Trunk Patch: http://svn.apache.org/viewvc?rev=808212&view=rev
-                http://svn.apache.org/viewvc?rev=808220&view=rev
-                http://svn.apache.org/viewvc?rev=808649&view=rev
-                http://svn.apache.org/viewvc?rev=808652&view=rev
-                http://svn.apache.org/viewvc?rev=808656&view=rev
-                http://svn.apache.org/viewvc?rev=809440&view=rev
-                http://svn.apache.org/viewvc?rev=809665&view=rev
-   2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-thundering.patch
-   +1: minfrin, jim, pgollucci
-
   * rewrite_log: remove locking
     trunk patch: http://svn.apache.org/viewvc?view=revision&revision=783734
 
