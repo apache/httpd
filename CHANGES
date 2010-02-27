@@ -9,6 +9,11 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) mod_negotiation: Preserve query string over multiviews negotiation.
+     This buglet was fixed for type maps in 2.2.6, but the same issue
+     affected multiviews and was overlooked.
+     PR 33112 [Joergen Thomsen <apache jth.net>]
+
   *) mod_cache: Introduce the thundering herd lock, a mechanism to keep
      the flood of requests at bay that strike a backend webserver as
      a cached entity goes stale. [Graham Leggett]
