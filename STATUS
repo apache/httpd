@@ -87,15 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_ajp: Really regard the operation a success, when the client
-    aborted the connection. In addition adjust the log message if the client
-    aborted the connection.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=911466&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, sf, minfrin
-
   * mod_ssl: Add SSLInsecureRenegotiation directive.
       Trunk version of patch:
         http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
