@@ -96,6 +96,19 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, sf, minfrin
 
+  * mod_ssl: Add SSLInsecureRenegotiation directive.
+      Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=906057&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=906485&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=906491&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=908015&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=916733&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=916817&view=rev
+      Backport version for 2.2.x of patch:
+        http://people.apache.org/~jorton/ms_reneg22_v2.diff
+      +1: jorton, trawick, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -164,19 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     sf: +1, but would like a world readable pid file even better
     minfrin: r917005 gives you a world readable pid files
-
-  * mod_ssl: Add SSLInsecureRenegotiation directive.
-      Trunk version of patch:
-        http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=906057&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=906485&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=906491&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=908015&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=916733&view=rev
-        http://svn.apache.org/viewcvs.cgi?rev=916817&view=rev
-      Backport version for 2.2.x of patch:
-        http://people.apache.org/~jorton/ms_reneg22_v2.diff
-      +1: jorton, trawick
 
   * mod_ssl: Fix potential SSL I/O filter hang if a long list of 
     trusted CAs is configured for client cert auth.  PR 46952
