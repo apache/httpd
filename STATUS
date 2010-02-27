@@ -96,12 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     minfrin: The trunk patch currently conflicts with v2.2, is someone able
     to take a look?
 
-  * mod_negotiation: Do not loose query string after content negotiation
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=915407&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jorton, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
