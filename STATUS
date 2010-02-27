@@ -87,6 +87,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy_ajp: Really regard the operation a success, when the client
+    aborted the connection. In addition adjust the log message if the client
+    aborted the connection.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=911466&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, sf, minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -155,15 +164,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: minfrin
     sf: +1, but would like a world readable pid file even better
     minfrin: r917005 gives you a world readable pid files
-
-  * mod_proxy_ajp: Really regard the operation a success, when the client
-    aborted the connection. In addition adjust the log message if the client
-    aborted the connection.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=911466&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, sf
 
   * mod_ssl: Add SSLInsecureRenegotiation directive.
       Trunk version of patch:
