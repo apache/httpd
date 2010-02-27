@@ -304,10 +304,10 @@ static void doRotate(rotate_config_t *config, rotate_status_t *status)
     }
     else {
         if (config->truncate) {
-            snprintf(status->filename, sizeof(status->filename), "%s", config->szLogRoot);
+            apr_snprintf(status->filename, sizeof(status->filename), "%s", config->szLogRoot);
         }
         else {
-            snprintf(status->filename, sizeof(status->filename), "%s.%010d", config->szLogRoot,
+            apr_snprintf(status->filename, sizeof(status->filename), "%s.%010d", config->szLogRoot,
                     tLogStart);
         }
     }
