@@ -87,15 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_http: Make sure that when an ErrorDocument is served
-    from a reverse proxied URL, that the subrequest respects the status
-    of the original request. This brings the behaviour of proxy_handler
-    in line with default_handler.
-    PR: https://issues.apache.org/bugzilla/show_bug.cgi?id=47106
-    Trunk patch: http://svn.apache.org/viewvc?rev=909899&view=rev
-    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=24976
-    +1: minfrin, jim, rpluem
-
  * mod_cache: Introduce the thundering herd lock, a mechanism to keep
               the flood of requests at bay that strike a backend webserver as
               a cached entity goes stale.
