@@ -9,6 +9,11 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) Allow fine control over the removal of Last-Modified and ETag headers
+     within the INCLUDES filter, making it possible to cache responses if
+     desired. Fix the default value of the SSIAccessEnable directive.
+     [Graham Leggett]
+
   *) core: Fix potential memory leaks by making sure to not destroy
      bucket brigades that have been created by earlier filters.
      [Stefan Fritsch]
