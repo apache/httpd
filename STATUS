@@ -87,15 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * rewrite_log: remove locking
-    trunk patch: http://svn.apache.org/viewvc?view=revision&revision=783734
-
-    [also requested on apache@freebsd.org]
-
-    +1: pgollucci, sf, jorton, trawick
-    minfrin: The trunk patch currently conflicts with v2.2, is someone able
-    to take a look?
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
