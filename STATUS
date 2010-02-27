@@ -93,6 +93,8 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     [also requested on apache@freebsd.org]
 
     +1: pgollucci, sf, jorton, trawick
+    minfrin: The trunk patch currently conflicts with v2.2, is someone able
+    to take a look?
 
   * mod_negotiation: Do not loose query string after content negotiation
       Trunk version of patch:
