@@ -758,6 +758,28 @@ static void usage_repeated_arg(apr_pool_t *pool, char option) {
                        option));
 }
 
+static void log_pid(apr_pool_t *pool, const char *pidfilename, apr_file_t **pidfile)
+{
+    apr_status_t status;
+    char errmsg[120];
+    pid_t mypid = getpid();
+
+    if (APR_SUCCESS == (status = apr_file_open(pidfile, pidfilename, APR_WRITE
+                | APR_CREATE | APR_TRUNCATE | APR_DELONCLOSE,
+                APR_UREAD | APR_UWRITE | APR_GREAD, pool))) {
+        apr_file_printf(*pidfile, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
+    }
+    else {
+        if (errfile) {
+            apr_file_printf(errfile,
+                            "Could not write the pid file '%s': %s" APR_EOL_STR,
+                            pidfilename, 
+                            apr_strerror(status, errmsg, sizeof errmsg));
+        }
+        exit(1);
+    }
+}
+
 /*
  * main
  */
@@ -769,10 +791,11 @@ int main(int argc, const char * const argv[])
     apr_pool_t *pool, *instance;
     apr_getopt_t *o;
     apr_finfo_t info;
+    apr_file_t *pidfile;
     int retries, isdaemon, limit_found, intelligent, dowork;
     char opt;
     const char *arg;
-    char *proxypath, *path, *pidfile;
+    char *proxypath, *path, *pidfilename;
     char errmsg[1024];
 
     interrupted = 0;
@@ -788,7 +811,7 @@ int main(int argc, const char * const argv[])
     intelligent = 0;
     previous = 0; /* avoid compiler warning */
     proxypath = NULL;
-    pidfile = NULL;
+    pidfilename = NULL;
 
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
         return 1;
@@ -917,10 +940,10 @@ int main(int argc, const char * const argv[])
                 break;
 
             case 'P':
-                if (pidfile) {
+                if (pidfilename) {
                     usage_repeated_arg(pool, opt);
                 }
-                pidfile = apr_pstrdup(pool, arg);
+                pidfilename = apr_pstrdup(pool, arg);
                 break;
 
             } /* switch */
@@ -961,27 +984,25 @@ int main(int argc, const char * const argv[])
     }
     baselen = strlen(path);
 
+    if (pidfilename) {
+        log_pid(pool, pidfilename, &pidfile); /* before daemonizing, so we
+                                               * can report errors
+                                               */
+    }
+
 #ifndef DEBUG
     if (isdaemon) {
         apr_file_close(errfile);
+        errfile = NULL;
+        if (pidfilename) {
+            apr_file_close(pidfile); /* delete original pidfile only in parent */
+        }
         apr_proc_detach(APR_PROC_DETACH_DAEMONIZE);
+        if (pidfilename) {
+            log_pid(pool, pidfilename, &pidfile);
+        }
     }
 #endif
-
-    if (pidfile) {
-        apr_file_t *file;
-        pid_t mypid = getpid();
-        if (APR_SUCCESS == (status = apr_file_open(&file, pidfile, APR_WRITE
-                | APR_CREATE | APR_TRUNCATE | APR_DELONCLOSE,
-                APR_UREAD | APR_UWRITE | APR_GREAD, pool))) {
-            apr_file_printf(file, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
-        }
-        else if (!isdaemon) {
-            apr_file_printf(errfile,
-                    "Could not write the pid file '%s': %s" APR_EOL_STR,
-                    pidfile, apr_strerror(status, errmsg, sizeof errmsg));
-        }
-    }
 
     do {
         apr_pool_create(&instance, pool);
