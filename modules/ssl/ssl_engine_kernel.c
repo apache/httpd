@@ -760,10 +760,17 @@ int ssl_hook_Access(request_rec *r)
                 r->connection->keepalive = AP_CONN_CLOSE;
             }
 
-            /* do a full renegotiation */
+            /* Perform a full renegotiation. */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "Performing full renegotiation: "
-                          "complete handshake protocol");
+                          "Performing full renegotiation: complete handshake "
+                          "protocol (%s support secure renegotiation)",
+#if defined(SSL_get_secure_renegotiation_support)
+                          SSL_get_secure_renegotiation_support(ssl) ? 
+                          "client does" : "client does not"
+#else
+                          "server does not"
+#endif
+                );
 
             SSL_set_session_id_context(ssl,
                                        (unsigned char *)&id,
@@ -779,6 +786,7 @@ int ssl_hook_Access(request_rec *r)
             if (SSL_get_state(ssl) != SSL_ST_OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Re-negotiation request failed");
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, r->server);
 
                 r->connection->aborted = 1;
                 return HTTP_FORBIDDEN;
@@ -1067,6 +1075,7 @@ static const char *ssl_hook_Fixup_vars[] = {
     "SSL_VERSION_INTERFACE",
     "SSL_VERSION_LIBRARY",
     "SSL_PROTOCOL",
+    "SSL_SECURE_RENEG",
     "SSL_COMPRESS_METHOD",
     "SSL_CIPHER",
     "SSL_CIPHER_EXPORT",
@@ -1170,6 +1179,12 @@ int ssl_hook_Fixup(request_rec *r)
             }
         }
     }
+
+
+#ifdef SSL_get_secure_renegotiation_support
+    apr_table_setn(r->notes, "ssl-secure-reneg", 
+                   SSL_get_secure_renegotiation_support(ssl) ? "1" : "0");
+#endif
 
     return DECLINED;
 }
