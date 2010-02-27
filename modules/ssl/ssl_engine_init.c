@@ -394,6 +394,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
     MODSSL_SSL_METHOD_CONST SSL_METHOD *method = NULL;
     char *cp;
     int protocol = mctx->protocol;
+    SSLSrvConfigRec *sc = mySrvConfig(s);
 
     /*
      *  Create the new per-server SSL context
@@ -444,11 +445,14 @@ static void ssl_init_ctx_protocol(server_rec *s,
     }
 
 #ifdef SSL_OP_CIPHER_SERVER_PREFERENCE
-    {
-        SSLSrvConfigRec *sc = mySrvConfig(s);
-        if (sc->cipher_server_pref == TRUE) {
-            SSL_CTX_set_options(ctx, SSL_OP_CIPHER_SERVER_PREFERENCE);
-        }
+    if (sc->cipher_server_pref == TRUE) {
+        SSL_CTX_set_options(ctx, SSL_OP_CIPHER_SERVER_PREFERENCE);
+    }
+#endif
+
+#ifdef SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION
+    if (sc->insecure_reneg == TRUE) {
+        SSL_CTX_set_options(ctx, SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION);
     }
 #endif
 

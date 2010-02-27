@@ -35,6 +35,10 @@ Changes with Apache 2.2.15
      desired. Fix the default value of the SSIAccessEnable directive.
      [Graham Leggett]
 
+  *) mod_ssl: Add the 'SSLInsecureRenegotiation' directive, which
+     allows insecure renegotiation with clients which do not yet
+     support the secure renegotiation protocol.  [Joe Orton]
+
   *) core: Fix potential memory leaks by making sure to not destroy
      bucket brigades that have been created by earlier filters.
      [Stefan Fritsch]
