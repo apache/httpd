@@ -22,6 +22,8 @@
 
 /* -------------------------------------------------------------- */
 
+extern APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
+
 extern module AP_MODULE_DECLARE_DATA cache_module;
 
 /* Determine if "url" matches the hostname, scheme and port and path
@@ -164,9 +166,182 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
     return apr_time_sec(current_age);
 }
 
+/**
+ * Try obtain a cache wide lock on the given cache key.
+ *
+ * If we return APR_SUCCESS, we obtained the lock, and we are clear to
+ * proceed to the backend. If we return APR_EEXISTS, then the lock is
+ * already locked, someone else has gone to refresh the backend data
+ * already, so we must return stale data with a warning in the mean
+ * time. If we return anything else, then something has gone pear
+ * shaped, and we allow the request through to the backend regardless.
+ *
+ * This lock is created from the request pool, meaning that should
+ * something go wrong and the lock isn't deleted on return of the
+ * request headers from the backend for whatever reason, at worst the
+ * lock will be cleaned up when the request dies or finishes.
+ *
+ * If something goes truly bananas and the lock isn't deleted when the
+ * request dies, the lock will be trashed when its max-age is reached,
+ * or when a request arrives containing a Cache-Control: no-cache. At
+ * no point is it possible for this lock to permanently deny access to
+ * the backend.
+ */
+CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
+        request_rec *r, char *key) {
+    apr_status_t status;
+    const char *lockname;
+    const char *path;
+    char dir[5];
+    apr_time_t now = apr_time_now();
+    apr_finfo_t finfo;
+    apr_file_t *lockfile;
+    void *dummy;
+
+    finfo.mtime = 0;
+
+    if (!conf || !conf->lock || !conf->lockpath) {
+        /* no locks configured, leave */
+        return APR_SUCCESS;
+    }
+
+    /* lock already obtained earlier? if so, success */
+    apr_pool_userdata_get(&dummy, CACHE_LOCKFILE_KEY, r->pool);
+    if (dummy) {
+        return APR_SUCCESS;
+    }
+
+    /* create the key if it doesn't exist */
+    if (!key) {
+        cache_generate_key(r, r->pool, &key);
+    }
+
+    /* create a hashed filename from the key, and save it for later */
+    lockname = ap_cache_generate_name(r->pool, 0, 0, key);
+
+    /* lock files represent discrete just-went-stale URLs "in flight", so
+     * we support a simple two level directory structure, more is overkill.
+     */
+    dir[0] = '/';
+    dir[1] = lockname[0];
+    dir[2] = '/';
+    dir[3] = lockname[1];
+    dir[4] = 0;
+
+    /* make the directories */
+    path = apr_pstrcat(r->pool, conf->lockpath, dir, NULL);
+    if (APR_SUCCESS != (status = apr_dir_make_recursive(path,
+            APR_UREAD|APR_UWRITE|APR_UEXECUTE, r->pool))) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                     "Could not create a cache lock directory: %s",
+                     path);
+        return status;
+    }
+    lockname = apr_pstrcat(r->pool, path, "/", lockname, NULL);
+    apr_pool_userdata_set(lockname, CACHE_LOCKNAME_KEY, NULL, r->pool);
+
+    /* is an existing lock file too old? */
+    status = apr_stat(&finfo, lockname,
+                APR_FINFO_MTIME | APR_FINFO_NLINK, r->pool);
+    if (!(APR_STATUS_IS_ENOENT(status)) && APR_SUCCESS != status) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EEXIST, r->server,
+                     "Could not stat a cache lock file: %s",
+                     lockname);
+        return status;
+    }
+    if (APR_SUCCESS == status && ((now - finfo.mtime) > conf->lockmaxage)
+            || (now < finfo.mtime)) {
+        ap_log_error(APLOG_MARK, APLOG_INFO, status, r->server,
+                     "Cache lock file for '%s' too old, removing: %s",
+                     r->uri, lockname);
+        apr_file_remove(lockname, r->pool);
+    }
+
+    /* try obtain a lock on the file */
+    if (APR_SUCCESS == (status = apr_file_open(&lockfile, lockname,
+            APR_WRITE | APR_CREATE | APR_EXCL | APR_DELONCLOSE,
+            APR_UREAD | APR_UWRITE, r->pool))) {
+        apr_pool_userdata_set(lockfile, CACHE_LOCKFILE_KEY, NULL, r->pool);
+    }
+    return status;
+
+}
+
+/**
+ * Remove the cache lock, if present.
+ *
+ * First, try to close the file handle, whose delete-on-close should
+ * kill the file. Otherwise, just delete the file by name.
+ *
+ * If no lock name has yet been calculated, do the calculation of the
+ * lock name first before trying to delete the file.
+ *
+ * If an optional bucket brigade is passed, the lock will only be
+ * removed if the bucket brigade contains an EOS bucket.
+ */
+CACHE_DECLARE(apr_status_t) ap_cache_remove_lock(cache_server_conf *conf,
+        request_rec *r, char *key, apr_bucket_brigade *bb) {
+    void *dummy;
+    const char *lockname;
+
+    if (!conf || !conf->lock || !conf->lockpath) {
+        /* no locks configured, leave */
+        return APR_SUCCESS;
+    }
+    if (bb) {
+        apr_bucket *e;
+        int eos_found = 0;
+        for (e = APR_BRIGADE_FIRST(bb);
+             e != APR_BRIGADE_SENTINEL(bb);
+             e = APR_BUCKET_NEXT(e))
+        {
+            if (APR_BUCKET_IS_EOS(e)) {
+                eos_found = 1;
+                break;
+            }
+        }
+        if (!eos_found) {
+            /* no eos found in brigade, don't delete anything just yet,
+             * we are not done.
+             */
+            return APR_SUCCESS;
+        }
+    }
+    apr_pool_userdata_get(&dummy, CACHE_LOCKFILE_KEY, r->pool);
+    if (dummy) {
+        return apr_file_close((apr_file_t *)dummy);
+    }
+    apr_pool_userdata_get(&dummy, CACHE_LOCKNAME_KEY, r->pool);
+    lockname = (const char *)dummy;
+    if (!lockname) {
+        char dir[5];
+
+        /* create the key if it doesn't exist */
+        if (!key) {
+            cache_generate_key(r, r->pool, &key);
+        }
+
+        /* create a hashed filename from the key, and save it for later */
+        lockname = ap_cache_generate_name(r->pool, 0, 0, key);
+
+        /* lock files represent discrete just-went-stale URLs "in flight", so
+         * we support a simple two level directory structure, more is overkill.
+         */
+        dir[0] = '/';
+        dir[1] = lockname[0];
+        dir[2] = '/';
+        dir[3] = lockname[1];
+        dir[4] = 0;
+
+        lockname = apr_pstrcat(r->pool, conf->lockpath, dir, "/", lockname, NULL);
+    }
+    return apr_file_remove(lockname, r->pool);
+}
+
 CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
                                             request_rec *r)
 {
+    apr_status_t status;
     apr_int64_t age, maxage_req, maxage_cresp, maxage, smaxage, maxstale;
     apr_int64_t minfresh;
     const char *cc_cresp, *cc_req;
@@ -176,6 +351,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     char *val;
     apr_time_t age_c = 0;
     cache_info *info = &(h->cache_obj->info);
+    const char *warn_head;
     cache_server_conf *conf =
       (cache_server_conf *)ap_get_module_config(r->server->module_config,
                                                 &cache_module);
@@ -338,7 +514,6 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
         ((smaxage == -1) && (maxage == -1) &&
          (info->expire != APR_DATE_BAD) &&
          (age < (apr_time_sec(info->expire - info->date) + maxstale - minfresh)))) {
-        const char *warn_head;
 
         warn_head = apr_table_get(h->resp_hdrs, "Warning");
 
@@ -361,7 +536,7 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
         }
         /*
          * If none of Expires, Cache-Control: max-age, or Cache-Control:
-         * s-maxage appears in the response, and the respose header age
+         * s-maxage appears in the response, and the response header age
          * calculated is more than 24 hours add the warning 113
          */
         if ((maxage_cresp == -1) && (smaxage == -1) &&
@@ -380,7 +555,71 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
         return 1;    /* Cache object is fresh (enough) */
     }
 
-    return 0;        /* Cache object is stale */
+    /*
+     * At this point we are stale, but: if we are under load, we may let
+     * a significant number of stale requests through before the first
+     * stale request successfully revalidates itself, causing a sudden
+     * unexpected thundering herd which in turn brings angst and drama.
+     *
+     * So.
+     *
+     * We want the first stale request to go through as normal. But the
+     * second and subsequent request, we must pretend to be fresh until
+     * the first request comes back with either new content or confirmation
+     * that the stale content is still fresh.
+     *
+     * To achieve this, we create a very simple file based lock based on
+     * the key of the cached object. We attempt to open the lock file with
+     * exclusive write access. If we succeed, woohoo! we're first, and we
+     * follow the stale path to the backend server. If we fail, oh well,
+     * we follow the fresh path, and avoid being a thundering herd.
+     *
+     * The lock lives only as long as the stale request that went on ahead.
+     * If the request succeeds, the lock is deleted. If the request fails,
+     * the lock is deleted, and another request gets to make a new lock
+     * and try again.
+     *
+     * At any time, a request marked "no-cache" will force a refresh,
+     * ignoring the lock, ensuring an extended lockout is impossible.
+     *
+     * A lock that exceeds a maximum age will be deleted, and another
+     * request gets to make a new lock and try again.
+     */
+    status = ap_cache_try_lock(conf, r, (char *)h->cache_obj->key);
+    if (APR_SUCCESS == status) {
+        /* we obtained a lock, follow the stale path */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "Cache lock obtained for stale cached URL, "
+                     "revalidating entry: %s",
+                     r->unparsed_uri);
+        return 0;
+    }
+    else if (APR_EEXIST == status) {
+        /* lock already exists, return stale data anyway, with a warning */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "Cache already locked for stale cached URL, "
+                     "pretend it is fresh: %s",
+                     r->unparsed_uri);
+
+        /* make sure we don't stomp on a previous warning */
+        warn_head = apr_table_get(h->resp_hdrs, "Warning");
+        if ((warn_head == NULL) ||
+            ((warn_head != NULL) && (ap_strstr_c(warn_head, "110") == NULL))) {
+            apr_table_merge(h->resp_hdrs, "Warning",
+                        "110 Response is stale");
+        }
+
+        return 1;
+    }
+    else {
+        /* some other error occurred, just treat the object as stale */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
+                     "Attempt to obtain a cache lock for stale "
+                     "cached URL failed, revalidating entry anyway: %s",
+                     r->unparsed_uri);
+        return 0;
+    }
+
 }
 
 /*
