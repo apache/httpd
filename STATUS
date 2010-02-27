@@ -99,6 +99,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
         http://people.apache.org/~jorton/ms_reneg22_v2.diff
       +1: jorton, trawick, minfrin
+      minfrin: needs docs, on the case
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
