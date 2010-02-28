@@ -115,10 +115,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=902434&view=rev
                  http://svn.apache.org/viewvc?rev=902593&view=rev
                  http://svn.apache.org/viewvc?rev=916866&view=rev
+                 http://svn.apache.org/viewvc?rev=917151&view=rev
     2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2-v2.patch
                  http://people.apache.org/~sf/mod_reqtimeout.2.2-windows-build.patch
+                 http://svn.apache.org/viewvc?rev=917151&view=rev
     +1: sf, jorton
     trawick: combo of Status=Experimental/enabled=yes seems strange,
+    sf: I am fine with any other combination of Status/enabled.
 
   * Ensure each subrequest has a shallow copy of headers_in so that the
     parent request headers are not corrupted.  Eliminates a problematic
