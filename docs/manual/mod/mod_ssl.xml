@@ -1815,7 +1815,7 @@ SSLCryptoDevice ubsec
 <default>SSLInsecureRenegotiation off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Available in httpd 2.3 and later, if using OpenSSL 1.0.0 Beta 5 or later</compatibility>
+<compatibility>Available in httpd 2.2.15 and later, if using OpenSSL 1.0.0 Beta 5 or later</compatibility>
 
 <usage>
 <p>As originally specified, all versions of the SSL and TLS protocols
