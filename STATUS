@@ -83,6 +83,23 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  * Ensure each subrequest has a shallow copy of headers_in so that the
+    parent request headers are not corrupted.  Eliminates a problematic
+    optimization in the case of no request body.  PR 48359 
+    [Jake Scott, William Rowe, Ruediger Pluem]
+    Link to discussion thread;
+      https://issues.apache.org/bugzilla/show_bug.cgi?id=48359
+    Applied to trunk;
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/server/protocol.c?r1=901578&r2=901577
+    Ported to 2.2 (also attached to PR);
+      http://people.apache.org/~wrowe/protocol_headers_copy.patch
+    +1: wrowe
+    -1: niq: this risks breaking existing apps, as discussed in
+             comments on PR 48359.
+             [wrowe notes; incorrect and invalid objection, also as
+              identified in the comments.  Legitimate API users are
+              presently broken by this memory scope flaw.]
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -100,23 +117,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               vs 2.6 kernels, potentially a suspect test for root.
    sf:        Couldn't the linux 2.4 bug be worked around by calling access
               twice? Once with R_OK and once with X_OK.
-
-  * Ensure each subrequest has a shallow copy of headers_in so that the
-    parent request headers are not corrupted.  Eliminates a problematic
-    optimization in the case of no request body.  PR 48359 
-    [Jake Scott, William Rowe, Ruediger Pluem]
-    Link to discussion thread;
-      https://issues.apache.org/bugzilla/show_bug.cgi?id=48359
-    Applied to trunk;
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/server/protocol.c?r1=901578&r2=901577
-    Ported to 2.2 (also attached to PR);
-      http://people.apache.org/~wrowe/protocol_headers_copy.patch
-    +1: wrowe
-    -1: niq: this risks breaking existing apps, as discussed in
-             comments on PR 48359.
-             [wrowe notes; incorrect and invalid objection, also as
-              identified in the comments.  Legitimate API users are
-              presently broken by this memory scope flaw.]
 
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
