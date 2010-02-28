@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_reqtimeout - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.2</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_reqtimeout</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_reqtimeout.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Set timeout and minimum data rate for receiving requests
+</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>reqtimeout_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_reqtimeout.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.15 and later</td></tr></table>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#requestreadtimeout">RequestReadTimeout</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+
+    <ol>
+      <li>
+        Allow 10 seconds to receive the request including the headers and
+        30 seconds for receiving the request body:
+
+        <div class="example"><p><code>
+          RequestReadTimeout header=10 body=30
+        </code></p></div>
+      </li>
+
+      <li>
+        Allow at least 10 seconds to receive the request body.
+        If the client sends data, increase the timeout by 1 second for every
+        1000 bytes received, with no upper limit for the timeout (exept for
+        the limit given indirectly by
+        <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>):
+
+        <div class="example"><p><code>
+          RequestReadTimeout body=10,MinRate=1000
+        </code></p></div>
+      </li>
+
+      <li>
+        Allow at least 10 seconds to receive the request including the headers.
+        If the client sends data, increase the timeout by 1 second for every
+        500 bytes received. But do not allow more than 30 seconds for the
+        request including the headers:
+
+        <div class="example"><p><code>
+          RequestReadTimeout header=10-30,MinRate=500
+        </code></p></div>
+      </li>
+
+    </ol>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RequestReadTimeout" id="RequestReadTimeout">RequestReadTimeout</a> <a name="requestreadtimeout" id="requestreadtimeout">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set timeout values for receiving request headers and body from client.
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestReadTimeout
+[header=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
+[body=<var>timeout</var>[[-<var>maxtimeout</var>],MinRate=<var>rate</var>]
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Unset; no limit</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_reqtimeout</td></tr>
+</table>
+    <p>This directive can set various timeouts for receiving the request headers
+    and the request body from the client. If the client fails to send headers or
+    body within the configured time, a <code>408 REQUEST TIME OUT</code> error
+    is sent.</p>
+
+    <p>For SSL virtual hosts, the header timeout values include the time needed
+    to do the initial SSL handshake. The body timeout values include the time
+    needed for SSL renegotiation (if necessary).</p>
+
+    <p>When an <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> is in use
+    (usually the case on Linux and FreeBSD), the socket is not sent to the
+    server process before at least one byte (or the whole request for
+    <code>httpready</code>) is received. The header timeout configured with
+    <code>RequestReadTimeout</code> is only effective after the server process has
+    received the socket.</p>
+
+    <p>For each of the two timeout types (header or body), there are three ways
+    to specify the timeout:
+    </p>
+
+    <ul>
+
+    <li><strong>Fixed timeout value</strong>:<br />
+
+    <div class="example"><p><code><var>type</var>=<var>timeout</var></code></p></div>
+
+    <p>The time in seconds allowed for reading all of the request headers or
+    body, respectively. A value of 0 means no limit.</p>
+    </li>
+
+    <li><strong>Timeout value that is increased when data is
+    received</strong>:<br />
+    <div class="example"><p><code>
+    <var>type</var>=<var>timeout</var>,MinRate=<var>data_rate</var>
+    </code></p></div>
+
+    <p>Same as above, but whenever data is received, the timeout value is
+    increased according to the specified minimum data rate (in bytes per
+    second).</p>
+    </li>
+
+    <li><strong>Timeout value that is increased when data is received, with an
+    upper bound</strong>:<br />
+    <div class="example"><p><code>
+    <var>type</var>=<var>timeout</var>-<var>maxtimeout</var>,MinRate=<var>data_rate</var>
+    </code></p></div>
+
+    <p>Same as above, but the timeout will not be increased above the second
+    value of the specified timeout range.</p>
+    </li>
+
+    </ul>
+
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_reqtimeout.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2009 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
