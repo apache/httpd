@@ -64,6 +64,7 @@
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
+  <modulefile>mod_reqtimeout.xml</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
   <modulefile>mod_setenvif.xml.ja</modulefile>
   <modulefile>mod_so.xml.ja</modulefile>

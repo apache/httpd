@@ -156,7 +156,9 @@ by other LDAP modules</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_rewrite.html" id="R" name="R">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
+<dt><a href="mod_reqtimeout.html" id="R" name="R">mod_reqtimeout</a></dt><dd>Set timeout and minimum data rate for receiving requests
+</dd>
+<dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
 <dt><a href="mod_setenvif.html" id="S" name="S">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
 on characteristics of the request</dd>

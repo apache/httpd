@@ -94,6 +94,9 @@ cacheignorenolastmod	mod/mod_cache.html#cacheignorenolastmod
 cacheignorequerystring	mod/mod_cache.html#cacheignorequerystring
 cacheignoreurlsessionidentifiers	mod/mod_cache.html#cacheignoreurlsessionidentifiers
 cachelastmodifiedfactor	mod/mod_cache.html#cachelastmodifiedfactor
+cachelock	mod/mod_cache.html#cachelock
+cachelockmaxage	mod/mod_cache.html#cachelockmaxage
+cachelockpath	mod/mod_cache.html#cachelockpath
 cachemaxexpire	mod/mod_cache.html#cachemaxexpire
 cachemaxfilesize	mod/mod_disk_cache.html#cachemaxfilesize
 cacheminfilesize	mod/mod_disk_cache.html#cacheminfilesize
@@ -298,6 +301,7 @@ removelanguage	mod/mod_mime.html#removelanguage
 removeoutputfilter	mod/mod_mime.html#removeoutputfilter
 removetype	mod/mod_mime.html#removetype
 requestheader	mod/mod_headers.html#requestheader
+requestreadtimeout	mod/mod_reqtimeout.html#requestreadtimeout
 require	mod/core.html#require
 rewritebase	mod/mod_rewrite.html#rewritebase
 rewritecond	mod/mod_rewrite.html#rewritecond
@@ -341,6 +345,8 @@ setoutputfilter	mod/core.html#setoutputfilter
 ssienableaccess	mod/mod_include.html#ssienableaccess
 ssiendtag	mod/mod_include.html#ssiendtag
 ssierrormsg	mod/mod_include.html#ssierrormsg
+ssietag	mod/mod_include.html#ssietag
+ssilastmodified	mod/mod_include.html#ssilastmodified
 ssistarttag	mod/mod_include.html#ssistarttag
 ssitimeformat	mod/mod_include.html#ssitimeformat
 ssiundefinedecho	mod/mod_include.html#ssiundefinedecho
@@ -357,6 +363,7 @@ sslciphersuite	mod/mod_ssl.html#sslciphersuite
 sslcryptodevice	mod/mod_ssl.html#sslcryptodevice
 sslengine	mod/mod_ssl.html#sslengine
 sslhonorcipherorder	mod/mod_ssl.html#sslhonorcipherorder
+sslinsecurerenegotiation	mod/mod_ssl.html#sslinsecurerenegotiation
 sslmutex	mod/mod_ssl.html#sslmutex
 ssloptions	mod/mod_ssl.html#ssloptions
 sslpassphrasedialog	mod/mod_ssl.html#sslpassphrasedialog
