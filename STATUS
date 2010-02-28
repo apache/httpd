@@ -119,9 +119,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2-v2.patch
                  http://people.apache.org/~sf/mod_reqtimeout.2.2-windows-build.patch
                  http://svn.apache.org/viewvc?rev=917151&view=rev
-    +1: sf, jorton
+    +1: sf, jorton, rjung
     trawick: combo of Status=Experimental/enabled=yes seems strange,
     sf: I am fine with any other combination of Status/enabled.
+    rjung: mod_substitute as another recent example started its 2.2.x
+    life with status "Extension" and enabled "most" and an additional
+    docs comment about being experimental (see r602738). I'm fine with
+    either result.
 
   * Ensure each subrequest has a shallow copy of headers_in so that the
     parent request headers are not corrupted.  Eliminates a problematic
