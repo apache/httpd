@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_log_config.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Sunucuya yapılan isteklerin günlük kayıtlarının tutulması
 </td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
@@ -149,29 +148,31 @@
           eklenir yoksa hiçbir şey eklenmez).</td></tr>
 <tr><td><code>%r</code></td>
         <td>İsteğin ilk satırı.</td></tr>
-<tr class="odd"><td><code>%s</code></td>
+<tr class="odd"><td><code>%R</code></td>
+        <td>Yanıt varsa yanıtı üreten eylemci.</td></tr>
+<tr><td><code>%s</code></td>
         <td>Durum. Dahili olarak yönlendirilen istekler için isteğin *özgün*
           durumudur --- isteğin son durumu için <code>%&gt;s</code>
           kullanınız.</td></tr>
-<tr><td><code>%t</code></td>
+<tr class="odd"><td><code>%t</code></td>
         <td>İsteğin alındığı tarih ve saat (standart ingiliz biçemi).</td></tr>
-<tr class="odd"><td><code>%{<var>biçem</var>}t</code></td>
+<tr><td><code>%{<var>biçem</var>}t</code></td>
         <td>İsteğin alındığı tarih ve saat; <var>biçem</var>
           <code>strftime(3)</code> biçeminde belirtilmelidir (genelde
           yerelleştirme amaçlı).</td></tr>
-<tr><td><code>%T</code></td>
+<tr class="odd"><td><code>%T</code></td>
         <td>Saniye cinsinden, isteği sunmak için harcanan zaman.</td></tr>
-<tr class="odd"><td><code>%u</code></td>
+<tr><td><code>%u</code></td>
         <td>Uzak kullanıcı (kimlik doğrulaması istenmişse vardır; durum kodu
           (<code>%s</code>) 401 ise yanlış olabilir).</td></tr>
-<tr><td><code>%U</code></td>
+<tr class="odd"><td><code>%U</code></td>
         <td>Herhangi bir sorgu dizgesi içermeksizin istenen URL yolu.</td></tr>
-<tr class="odd"><td><code>%v</code></td>
+<tr><td><code>%v</code></td>
         <td>İsteği sunan sunucunun meşru sunucu ismi (<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>).</td></tr>
-<tr><td><code>%V</code></td>
+<tr class="odd"><td><code>%V</code></td>
         <td><code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> ayarı ile
           ilgili sunucu ismi.</td></tr>
-<tr class="odd"><td><code>%X</code></td>
+<tr><td><code>%X</code></td>
         <td>Yanıt tamamlandığında bağlantı durumu:
 
         <table>
@@ -187,10 +188,10 @@
         <p>(Apache 1.3’ün son sürümlerinde bu belirteç <code>%c</code> idi
           fakat geçmişe yönelik olarak <code>%{<var>isim</var>}c</code> ssl
           sözdizimi ile çelişiyordu.)</p></td></tr>
-<tr><td><code>%I</code></td>
+<tr class="odd"><td><code>%I</code></td>
         <td>İstek ve başlıklar dahil alınan bayt sayısı; sıfır olamaz. Bunu
           kullanmak için <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin olmalıdır.</td></tr>
-<tr class="odd"><td><code>%O</code></td>
+<tr><td><code>%O</code></td>
         <td>Başlıklar dahil gönderilen bayt sayısı; sıfır olamaz.Bunu
           kullanmak için <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> etkin olmalıdır.</td></tr>
 </table>
@@ -239,6 +240,11 @@
         Artık, ağa gönderilen gerçek bayt sayısını günlüğe kaydetmek için
         <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> modülü tarafından sağlanan <code>%O</code>
         biçem belirteci kullanılmaktadır.</p>
+
+      <p>Dikkat: <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> standart bir eylemci olarak değil
+        hızlandırılmış bir eylemci olarak gerçeklenmştir. Bu bakımdan
+        <code>%R</code> biçem dizgesi içerik önbelleklemesi ile ilgili
+        herhangi bir eylemci bilgisi döndürmeyecektir.</p>
 
     
 

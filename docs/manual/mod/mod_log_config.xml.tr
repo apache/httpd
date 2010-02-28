@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 721035:917009 (outdated) -->
+<!-- English Revision: 917009 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -163,6 +163,9 @@
     <tr><td><code>%r</code></td>
         <td>İsteğin ilk satırı.</td></tr>
 
+    <tr><td><code>%R</code></td>
+        <td>Yanıt varsa yanıtı üreten eylemci.</td></tr>
+
     <tr><td><code>%s</code></td>
         <td>Durum. Dahili olarak yönlendirilen istekler için isteğin *özgün*
           durumudur --- isteğin son durumu için <code>%&gt;s</code>
@@ -264,6 +267,11 @@
         Artık, ağa gönderilen gerçek bayt sayısını günlüğe kaydetmek için
         <module>mod_logio</module> modülü tarafından sağlanan <code>%O</code>
         biçem belirteci kullanılmaktadır.</p>
+
+      <p>Dikkat: <module>mod_cache</module> standart bir eylemci olarak değil
+        hızlandırılmış bir eylemci olarak gerçeklenmştir. Bu bakımdan
+        <code>%R</code> biçem dizgesi içerik önbelleklemesi ile ilgili
+        herhangi bir eylemci bilgisi döndürmeyecektir.</p>
 
     </section>
 
