@@ -249,8 +249,8 @@ CACHE_DECLARE(apr_status_t) ap_cache_try_lock(cache_server_conf *conf,
                      lockname);
         return status;
     }
-    if (APR_SUCCESS == status && ((now - finfo.mtime) > conf->lockmaxage)
-            || (now < finfo.mtime)) {
+    if ((status == APR_SUCCESS) && (((now - finfo.mtime) > conf->lockmaxage)
+                                  || (now < finfo.mtime))) {
         ap_log_error(APLOG_MARK, APLOG_INFO, status, r->server,
                      "Cache lock file for '%s' too old, removing: %s",
                      r->uri, lockname);
