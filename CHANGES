@@ -1,5 +1,10 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.15
+
+  *) Ensure each subrequest has a shallow copy of headers_in so that the
+     parent request headers are not corrupted.  Elimiates a problematic
+     optimization in the case of no request body.  PR 48359
+     [Jake Scott, William Rowe, Ruediger Pluem]
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
      A partial fix for the TLS renegotiation prefix injection attack by
