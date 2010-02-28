@@ -138,7 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=788715&view=rev
       Backport version for 2.2.x of patch:
         http://people.apache.org/~jorton/ms_flush.diff
-      +1: jorton,
+      +1: jorton, wrowe [from review of svn patch]
 
 PATCHES/ISSUES THAT ARE STALLED
 
