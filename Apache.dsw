@@ -249,6 +249,9 @@ Package=<4>
     Project_Dep_Name mod_proxy_http
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_reqtimeout
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_rewrite
     End Project Dependency
     Begin Project Dependency
@@ -2176,6 +2179,27 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_proxy
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_reqtimeout"=.\modules\filters\mod_reqtimeout.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
     End Project Dependency
 }}}
 

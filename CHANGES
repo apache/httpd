@@ -9,6 +9,9 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) mod_reqtimeout: New module to set timeouts and minimum data rates for
+     receiving requests from the client. [Stefan Fritsch]
+
   *) mod_proxy_ajp: Really regard the operation a success, when the client
      aborted the connection. In addition adjust the log message if the client
      aborted the connection. [Ruediger Pluem]

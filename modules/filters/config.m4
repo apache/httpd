@@ -4,6 +4,7 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(filters)
 
+APACHE_MODULE(reqtimeout, Limit time waiting for request from client, , , most)
 APACHE_MODULE(ext_filter, external filter module, , , most)
 APACHE_MODULE(include, Server Side Includes, , , yes)
 APACHE_MODULE(filter, Smart Filtering, , , yes)

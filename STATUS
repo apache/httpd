@@ -101,32 +101,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    sf:        Couldn't the linux 2.4 bug be worked around by calling access
               twice? Once with R_OK and once with X_OK.
 
-  * mod_reqtimeout: New module to limit time waiting for requests from clients.
-    Backport current version from trunk.
-    Trunk Patch: http://svn.apache.org/viewvc?rev=821591&view=rev
-                 http://svn.apache.org/viewvc?rev=821792&view=rev
-                 http://svn.apache.org/viewvc?rev=821990&view=rev
-                 http://svn.apache.org/viewvc?rev=822509&view=rev
-                 http://svn.apache.org/viewvc?rev=822857&view=rev
-                 http://svn.apache.org/viewvc?rev=825177&view=rev
-                 http://svn.apache.org/viewvc?rev=834499&view=rev
-                 http://svn.apache.org/viewvc?rev=885121&view=rev
-                 http://svn.apache.org/viewvc?rev=900018&view=rev
-                 http://svn.apache.org/viewvc?rev=902434&view=rev
-                 http://svn.apache.org/viewvc?rev=902593&view=rev
-                 http://svn.apache.org/viewvc?rev=916866&view=rev
-                 http://svn.apache.org/viewvc?rev=917151&view=rev
-    2.2.x Patch: http://people.apache.org/~sf/mod_reqtimeout.2.2-v2.patch
-                 http://people.apache.org/~sf/mod_reqtimeout.2.2-windows-build.patch
-                 http://svn.apache.org/viewvc?rev=917151&view=rev
-    +1: sf, jorton, rjung
-    trawick: combo of Status=Experimental/enabled=yes seems strange,
-    sf: I am fine with any other combination of Status/enabled.
-    rjung: mod_substitute as another recent example started its 2.2.x
-    life with status "Extension" and enabled "most" and an additional
-    docs comment about being experimental (see r602738). I'm fine with
-    either result.
-
   * Ensure each subrequest has a shallow copy of headers_in so that the
     parent request headers are not corrupted.  Eliminates a problematic
     optimization in the case of no request body.  PR 48359 
