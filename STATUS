@@ -156,8 +156,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=917005&view=rev
     2.2.x patch: trunk patch works
     +1: minfrin
-    sf: +1, but would like a world readable pid file even better
-    minfrin: r917005 gives you a world readable pid files
+    sf: r910705 does not work with 2.2.x, pease create an adjusted patch:
+        htcacheclean.c:935: undefined reference to `usage_repeated_arg'
 
   * mod_ssl: Fix potential SSL I/O filter hang if a long list of 
     trusted CAs is configured for client cert auth.  PR 46952
