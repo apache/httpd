@@ -10,8 +10,8 @@ Changes with Apache 2.2.15
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
   *) mod_proxy_ajp: Really regard the operation a success, when the client
-    aborted the connection. In addition adjust the log message if the client
-    aborted the connection. [Ruediger Pluem]
+     aborted the connection. In addition adjust the log message if the client
+     aborted the connection. [Ruediger Pluem]
 
   *) mod_negotiation: Preserve query string over multiviews negotiation.
      This buglet was fixed for type maps in 2.2.6, but the same issue
