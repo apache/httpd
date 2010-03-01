@@ -106,6 +106,10 @@ make: *** [all-recursive] Error 1
     minfrin: trunk patch works for me, and includes a change to 
              modules/http/http_request.c. I suspect protocol_headers_copy.patch
              is an older path, can you confirm?
+    rpluem: I was voting on http://people.apache.org/~wrowe/protocol_headers_copy.patch
+            but you have a good point with the change to
+            modules/http/http_request.c. So I change my vote to -1 until it
+            is clear on what we are voting and how this patch looks like.
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
