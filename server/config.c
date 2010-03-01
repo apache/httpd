@@ -1704,7 +1704,7 @@ static const char *process_resource_config_fnmatch(server_rec *s,
     }
 
     candidates = apr_array_make(ptemp, 1, sizeof(fnames));
-    while (apr_dir_read(&dirent, APR_FINFO_DIRENT, dirp) == APR_SUCCESS) {
+    while (apr_dir_read(&dirent, APR_FINFO_DIRENT | APR_FINFO_TYPE, dirp) == APR_SUCCESS) {
         /* strip out '.' and '..' */
         if (strcmp(dirent.name, ".")
             && strcmp(dirent.name, "..")
