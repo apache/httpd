@@ -94,7 +94,15 @@ RELEASE SHOWSTOPPERS:
     Ported to 2.2 (also attached to PR);
       http://people.apache.org/~wrowe/protocol_headers_copy.patch
     +1: wrowe, minfrin
+    rpluem says: The patch fails to compile:
 
+protocol.c: In function `ap_set_sub_req_protocol':
+protocol.c:1091: error: too many arguments to function `strip_headers_request_body'
+make[2]: *** [protocol.lo] Error 1
+make[1]: *** [all-recursive] Error 1
+make: *** [all-recursive] Error 1
+
+    Once this is fixed I am +1.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
