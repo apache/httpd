@@ -747,7 +747,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         if (APR_BUCKET_IS_EOS(e)) {
             const char *cl_header = apr_table_get(r->headers_out, "Content-Length");
             if (cl_header) {
-                apr_size_t cl = apr_atoi64(cl_header);
+                apr_int64_t cl = apr_atoi64(cl_header);
                 if ((errno == 0) && (obj->count != cl)) {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                                  "mem_cache: URL %s didn't receive complete response, not caching",
