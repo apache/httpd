@@ -2,7 +2,7 @@
 Changes with Apache 2.2.15
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
-     A partial fix for the TLS renegotiation prefix injection attack by
+     mod_ssl: A partial fix for the TLS renegotiation prefix injection attack by
      rejecting any client-initiated renegotiations. Forcibly disable keepalive
      for the connection if there is any buffered data readable. Any
      configuration which requires renegotiation for per-directory/location
@@ -33,10 +33,10 @@ Changes with Apache 2.2.15
   *) mod_log_config: Add the R option to log the handler used within the
      request. [Christian Folini <christian.folini netnea com>]
 
-  *) Allow fine control over the removal of Last-Modified and ETag headers
-     within the INCLUDES filter, making it possible to cache responses if
-     desired. Fix the default value of the SSIAccessEnable directive.
-     [Graham Leggett]
+  *) mod_include: Allow fine control over the removal of Last-Modified and
+     ETag headers within the INCLUDES filter, making it possible to cache
+     responses if desired. Fix the default value of the SSIAccessEnable
+     directive. [Graham Leggett]
 
   *) mod_ssl: Add the 'SSLInsecureRenegotiation' directive, which
      allows insecure renegotiation with clients which do not yet
@@ -70,7 +70,7 @@ Changes with Apache 2.2.15
      password now result in an informational level log entry instead of 
      warning level.  [Eric Covener]
 
-  *) Preserve Port information over internal redirects
+  *) core: Preserve Port information over internal redirects
      PR 35999 [Jonas Ringh <jonas.ringh cixit.se>]
 
   *) mod_filter: fix FilterProvider matching where "dispatch" string
@@ -83,7 +83,7 @@ Changes with Apache 2.2.15
   *) mod_mime: Make RemoveType override the info from TypesConfig.
      PR 38330. [Stefan Fritsch]
 
-  *) Proxy: unable to connect to a backend is SERVICE_UNAVAILABLE,
+  *) mod_proxy: unable to connect to a backend is SERVICE_UNAVAILABLE,
      rather than BAD_GATEWAY or (especially) NOT_FOUND.
      PR 46971 [evanc nortel.com]
 
@@ -114,7 +114,7 @@ Changes with Apache 2.2.15
   *) mod_mime: Detect invalid use of MultiviewsMatch inside Location and
      LocationMatch sections.  PR 47754.  [Dan Poirier]
 
-  *) ab, mod_ssl: Restore compatibility with OpenSSL < 0.9.7g. 
+  *) ab, mod_ssl: Restore compatibility with OpenSSL < 0.9.7g.
      [Guenter Knauf]
 
 Changes with Apache 2.2.14
