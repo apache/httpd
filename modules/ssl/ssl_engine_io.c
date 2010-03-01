@@ -472,6 +472,12 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     if (!in)
         return 0;
 
+    /* Abort early if the client has initiated a renegotiation. */
+    if (inctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
+        inctx->rc = APR_ECONNABORTED;
+        return -1;
+    }
+
     /* In theory, OpenSSL should flush as necessary, but it is known
      * not to do so correctly in some cases; see PR 46952.
      *
