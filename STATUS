@@ -127,10 +127,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=910756&view=rev
                  http://svn.apache.org/viewvc?rev=917002&view=rev
                  http://svn.apache.org/viewvc?rev=917005&view=rev
-    2.2.x patch: trunk patch works
-    +1: minfrin
-    sf: r910705 does not work with 2.2.x, pease create an adjusted patch:
-        htcacheclean.c:935: undefined reference to `usage_repeated_arg'
+    2.2.x patch: http://people.apache.org/~minfrin/htcacheclean-pid.patch
+    +1: minfrin, sf
 
   * mod_ssl: Fix potential SSL I/O filter hang if a long list of 
     trusted CAs is configured for client cert auth.  PR 46952
