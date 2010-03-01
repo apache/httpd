@@ -92,24 +92,12 @@ RELEASE SHOWSTOPPERS:
     Applied to trunk;
       http://svn.apache.org/viewvc/httpd/httpd/trunk/server/protocol.c?r1=901578&r2=901577
     Ported to 2.2 (also attached to PR);
-      http://people.apache.org/~wrowe/protocol_headers_copy.patch
+      http://people.apache.org/~wrowe/httpd-headers-in-fix.patch
     +1: wrowe, minfrin
-    rpluem says: The patch fails to compile:
-
-protocol.c: In function `ap_set_sub_req_protocol':
-protocol.c:1091: error: too many arguments to function `strip_headers_request_body'
-make[2]: *** [protocol.lo] Error 1
-make[1]: *** [all-recursive] Error 1
-make: *** [all-recursive] Error 1
-
-    Once this is fixed I am +1.
-    minfrin: trunk patch works for me, and includes a change to 
-             modules/http/http_request.c. I suspect protocol_headers_copy.patch
-             is an older path, can you confirm?
-    rpluem: I was voting on http://people.apache.org/~wrowe/protocol_headers_copy.patch
-            but you have a good point with the change to
-            modules/http/http_request.c. So I change my vote to -1 until it
-            is clear on what we are voting and how this patch looks like.
+    -1: rpluem says: The patch fails to compile
+    wrowe; the r arg to strip_headers_request_body was no longer needed, sorry I had
+           not checked protocol_headers_copy.patch at -Wall.  win32 let it slide.
+           see revised patch above
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
