@@ -93,7 +93,7 @@ RELEASE SHOWSTOPPERS:
       http://svn.apache.org/viewvc/httpd/httpd/trunk/server/protocol.c?r1=901578&r2=901577
     Ported to 2.2 (also attached to PR);
       http://people.apache.org/~wrowe/protocol_headers_copy.patch
-    +1: wrowe
+    +1: wrowe, minfrin
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
