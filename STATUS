@@ -99,6 +99,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_ssl: Fix potential SSL I/O filter hang if a long list of
+    trusted CAs is configured for client cert auth.  PR 46952
+      Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=788715&view=rev
+      Backport version for 2.2.x of patch:
+        http://people.apache.org/~jorton/ms_flush.diff
+      +1: jorton, wrowe [from review of svn patch], minfrin
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
