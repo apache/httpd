@@ -93,11 +93,7 @@ RELEASE SHOWSTOPPERS:
       http://svn.apache.org/viewvc/httpd/httpd/trunk/server/protocol.c?r1=901578&r2=901577
     Ported to 2.2 (also attached to PR);
       http://people.apache.org/~wrowe/httpd-headers-in-fix.patch
-    +1: wrowe, minfrin
-    -1: rpluem says: The patch fails to compile
-    wrowe; the r arg to strip_headers_request_body was no longer needed, sorry I had
-           not checked protocol_headers_copy.patch at -Wall.  win32 let it slide.
-           see revised patch above
+    +1: wrowe, minfrin, rpluem
 
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
