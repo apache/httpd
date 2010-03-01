@@ -1542,7 +1542,7 @@ static const char *process_command_config(server_rec *s,
 }
 
 typedef struct {
-    char *fname;
+    const char *fname;
 } fnames;
 
 static int fname_alphasort(const void *fn1, const void *fn2)
@@ -1710,8 +1710,15 @@ static const char *process_resource_config_fnmatch(server_rec *s,
             && strcmp(dirent.name, "..")
             && (apr_fnmatch(fname, dirent.name,
                             APR_FNM_PERIOD) == APR_SUCCESS)) {
+            const char *full_path = ap_make_full_path(ptemp, path, dirent.name);
+            /* If matching internal to path, and we happen to match something
+             * other than a directory, skip it
+             */
+            if (rest && (rv == APR_SUCCESS) && (dirent.filetype != APR_DIR)) {
+                continue;
+            }
             fnew = (fnames *) apr_array_push(candidates);
-            fnew->fname = ap_make_full_path(ptemp, path, dirent.name);
+            fnew->fname = full_path;
         }
     }
 
