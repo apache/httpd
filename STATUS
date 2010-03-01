@@ -117,6 +117,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     the path specified by the Include directive.
     Trunk patch: http://svn.apache.org/viewvc?rev=909878&view=rev
                  http://svn.apache.org/viewvc?rev=917735&view=rev
+                 http://svn.apache.org/viewvc?rev=917759&view=rev
     2.2.x patch: http://people.apache.org/~minfrin/httpd-wildcard+docs2.patch
     Submitted by: minfrin, poirier
     +1: minfrin
