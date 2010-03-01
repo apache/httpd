@@ -116,7 +116,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * core: Support wildcards in both the directory and file components of
     the path specified by the Include directive.
     Trunk patch: http://svn.apache.org/viewvc?rev=909878&view=rev
-    2.2.x patch: http://people.apache.org/~minfrin/httpd-wildcard+docs.patch
+                 http://svn.apache.org/viewvc?rev=917735&view=rev
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-wildcard+docs2.patch
+    Submitted by: minfrin, poirier
     +1: minfrin
 
   * support/htcacheclean: Teach it how to write a pid file (modelled on
