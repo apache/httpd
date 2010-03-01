@@ -15,7 +15,7 @@
  */
 
 /*
- * http_protocol.c --- routines which directly communicate with the client.
+ * protocol.c --- routines which directly communicate with the client.
  *
  * Code originally by Rob McCool; much redone by Robert S. Thau
  * and the Apache Software Foundation.
