@@ -42,6 +42,9 @@ Changes with Apache 2.2.15
      allows insecure renegotiation with clients which do not yet
      support the secure renegotiation protocol.  [Joe Orton]
 
+  *) mod_ssl: Fix a potential I/O hang if a long list of trusted CAs
+     is configured for client cert auth. PR 46952.  [Joe Orton]
+
   *) core: Fix potential memory leaks by making sure to not destroy
      bucket brigades that have been created by earlier filters.
      [Stefan Fritsch]

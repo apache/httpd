@@ -465,7 +465,6 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     apr_size_t inl = inlen;
     bio_filter_in_ctx_t *inctx = (bio_filter_in_ctx_t *)(bio->ptr);
     apr_read_type_e block = inctx->block;
-    SSLConnRec *sslconn = myConnConfig(inctx->f->c);
 
     inctx->rc = APR_SUCCESS;
 
@@ -473,23 +472,19 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     if (!in)
         return 0;
 
-    /* Abort early if the client has initiated a renegotiation. */
-    if (inctx->filter_ctx->config->reneg_state == RENEG_ABORT) {
-        inctx->rc = APR_ECONNABORTED;
-        return -1;
-    }
-
-    /* XXX: flush here only required for SSLv2;
-     * OpenSSL calls BIO_flush() at the appropriate times for
-     * the other protocols.
+    /* In theory, OpenSSL should flush as necessary, but it is known
+     * not to do so correctly in some cases; see PR 46952.
+     *
+     * Historically, this flush call was performed only for an SSLv2
+     * connection or for a proxy connection.  Calling _out_flush
+     * should be very cheap in cases where it is unnecessary (and no
+     * output is buffered) so the performance impact of doing it
+     * unconditionally should be minimal.
      */
-    if ((SSL_version(inctx->ssl) == SSL2_VERSION) || sslconn->is_proxy) {
-        if (bio_filter_out_flush(inctx->bio_out) < 0) {
-            bio_filter_out_ctx_t *outctx =
-                   (bio_filter_out_ctx_t *)(inctx->bio_out->ptr);
-            inctx->rc = outctx->rc;
-            return -1;
-        }
+    if (bio_filter_out_flush(inctx->bio_out) < 0) {
+        bio_filter_out_ctx_t *outctx = inctx->bio_out->ptr;
+        inctx->rc = outctx->rc;
+        return -1;
     }
 
     BIO_clear_retry_flags(bio);
