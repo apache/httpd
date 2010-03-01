@@ -103,6 +103,10 @@ make[1]: *** [all-recursive] Error 1
 make: *** [all-recursive] Error 1
 
     Once this is fixed I am +1.
+    minfrin: trunk patch works for me, and includes a change to 
+             modules/http/http_request.c. I suspect protocol_headers_copy.patch
+             is an older path, can you confirm?
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
