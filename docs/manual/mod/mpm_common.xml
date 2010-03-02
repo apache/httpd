@@ -404,6 +404,7 @@ will handle during its life</description>
 </usage>
 <seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="prefork">MaxSpareServers</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -437,6 +438,7 @@ spikes</description>
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="prefork">MinSpareServers</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

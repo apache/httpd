@@ -376,6 +376,7 @@ will handle during its life</td></tr>
 <ul>
 <li><code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code></li>
 <li><code class="directive"><a href="#startservers">StartServers</a></code></li>
+<li><code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -411,6 +412,7 @@ spikes</td></tr>
 <ul>
 <li><code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code></li>
 <li><code class="directive"><a href="#startservers">StartServers</a></code></li>
+<li><code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
