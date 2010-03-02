@@ -1503,7 +1503,6 @@ apr_status_t isapi_handler (request_rec *r)
     /* Set up client input */
     res = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR);
     if (res) {
-        isapi_unload(isa, 0);
         return res;
     }
 
@@ -1534,7 +1533,6 @@ apr_status_t isapi_handler (request_rec *r)
         }
 
         if (res < 0) {
-            isapi_unload(isa, 0);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
 
