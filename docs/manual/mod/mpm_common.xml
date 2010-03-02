@@ -150,8 +150,9 @@ of the daemon</description>
     href="../misc/security_tips.html#serverroot">security</a>.</p>
 
     <note><title>Note</title>
-      <p>As of Apache 2 it is recommended to use only the <program>
-      apachectl</program> script for (re-)starting or stopping the server.</p>
+      <p>As of Apache 2, we recommended that you only use the <program>
+      apachectl</program> script, or the init script that your OS provides,
+      for (re-)starting or stopping the server.</p>
     </note>
 </usage>
 </directivesynopsis>
