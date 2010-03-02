@@ -1,13 +1,18 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.15
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
-     mod_ssl: A partial fix for the TLS renegotiation prefix injection attack by
-     rejecting any client-initiated renegotiations. Forcibly disable keepalive
-     for the connection if there is any buffered data readable. Any
+     mod_ssl: A partial fix for the TLS renegotiation prefix injection attack
+     by rejecting any client-initiated renegotiations. Forcibly disable
+     keepalive for the connection if there is any buffered data readable. Any
      configuration which requires renegotiation for per-directory/location
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
+
+  *) SECURITY: CVE-2010-0425 (cve.mitre.org)
+     mod_isapi: Do not unload an isapi .dll module until the request
+     processing is completed, avoiding orphaned callback pointers.
+     [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
   *) Ensure each subrequest has a shallow copy of headers_in so that the
      parent request headers are not corrupted.  Elimiates a problematic
@@ -334,8 +339,8 @@ Changes with Apache 2.2.12
   *) mod_include: support generating non-ASCII characters as entities in SSI
      PR 25202 [Nick Kew] 
 
-  *) core/utils: Enhance ap_escape_html API to support escaping non-ASCII chars
-     [Nick Kew]
+  *) core/utils: Enhance ap_escape_html API to support escaping non-ASCII
+     chars [Nick Kew]
 
   *) mod_rewrite: fix "B" flag breakage by reverting r589343
      PR 45529 [Bob Ionescu <bobsiegen googlemail.com>]
@@ -343,12 +348,13 @@ Changes with Apache 2.2.12
   *) mod_cgid: fix segfault problem on solaris.
      PR 39332 [Masaoki Kobayashi <masaoki techfirm.co.jp>, Jeff Trawick]
 
-  *) mod_ldap: Avoid a segfault when result->rc is checked in uldap_connection_init
-     when result is NULL. This could happen if LDAP initialization failed.
-     PR 45994.  [Dan Poirier <poirier pobox.com>]
+  *) mod_ldap: Avoid a segfault when result->rc is checked in
+     uldap_connection_init when result is NULL. This could happen if LDAP
+     initialization failed.  PR 45994. [Dan Poirier <poirier pobox.com>]
 
-  *) Set Listen protocol to "https" if port is set to 443 and no proto is specified
-     (as documented but not implemented). PR 46066  [Dan Poirier <poirier pobox.com>]
+  *) Set Listen protocol to "https" if port is set to 443 and no proto is
+     specified (as documented but not implemented). PR 46066
+     [Dan Poirier <poirier pobox.com>]
 
   *) mod_cache: Correctly save Content-Encoding of cachable entity. PR 46401
      [Dan Poirier <poirier pobox.com>]
@@ -463,9 +469,9 @@ Changes with Apache 2.2.10
   *) mod_charset_lite: Avoid dropping error responses by handling meta buckets
      correctly. PR 45687 [Dan Poirier <poirier pobox.com>]
 
-  *) mod_proxy_http: Introduce environment variable proxy-initial-not-pooled to
-     avoid reusing pooled connections if the client connection is an initial
-     connection. PR 37770. [Ruediger Pluem]
+  *) mod_proxy_http: Introduce environment variable proxy-initial-not-pooled
+     to avoid reusing pooled connections if the client connection is an
+     initial connection. PR 37770. [Ruediger Pluem]
 
   *) mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
      PR 44799 [Christian Wenz <christian wenz.org>]
@@ -752,8 +758,8 @@ Changes with Apache 2.2.7 (not released)
      contents in other-than ISO-8859-1 charset (e.g. utf-8). [Ruediger Pluem]
 
   *) mod_dav: Adjust etag generation to produce identical results on 32-bit
-     and 64-bit platforms and avoid a regression with conditional PUT's on lock
-     and etag. PR 44152.
+     and 64-bit platforms and avoid a regression with conditional PUT's on
+     lock and etag. PR 44152.
      [Michael Clark <michael metaparadigm.com>, Ruediger Pluem]
 
   *) mod_ssl: Fix handling of the buffered request body during a per-location
@@ -992,8 +998,8 @@ Changes with Apache 2.2.6
      PR 43183 [Brian Rectanus <Brian.Rectanus breach.com>, Vincent Bray]
 
   *) mod_proxy: Ensure that at least scheme://hostname[:port] matches between
-     worker and URL when searching for the best fitting worker for a given URL.
-     PR 40910 [Ruediger Pluem]
+     worker and URL when searching for the best fitting worker for a given
+     URL.  PR 40910 [Ruediger Pluem]
 
   *) mod_proxy: Improve network performance by setting APR_TCP_NODELAY
      (disable Nagle algorithm) on sockets if implemented.
@@ -1234,10 +1240,11 @@ Changes with Apache 2.2.4
   *) core: Fix NONBLOCK status of listening sockets on restart/graceful
      PR 37680.  [Darius Davis <darius-abz free-range.com.au>]
 
-  *) mod_deflate: Rework inflate output and deflate output filter to fix several
-     issues: Incorrect handling of flush buckets, potential memory leaks,
-     excessive memory usage in inflate output filter for large compressed
-     content. PR 39854. [Ruediger Pluem, Nick Kew, Justin Erenkrantz]
+  *) mod_deflate: Rework inflate output and deflate output filter to fix
+     several issues: Incorrect handling of flush buckets, potential memory
+     leaks, excessive memory usage in inflate output filter for large
+     compressed content. PR 39854.
+     [Ruediger Pluem, Nick Kew, Justin Erenkrantz]
 
   *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
      [Davi Arnaut <davi haxent.com.br>]
@@ -1277,7 +1284,8 @@ Changes with Apache 2.2.4
      AP_FILTER_ERROR.  [Niklas Edmundsson <nikke acc.umu.se>]
 
   *) core: Fix issue which could cause piped loggers to be orphaned and never
-     terminate after a graceful restart.  PR 40651.  [Joe Orton, Ruediger Pluem]
+     terminate after a graceful restart.  PR 40651.
+     [Joe Orton, Ruediger Pluem]
 
   *) core: Fix address-in-use startup failure caused by corruption of the list
      of listen sockets in some configurations with multiple generic Listen
@@ -1285,16 +1293,17 @@ Changes with Apache 2.2.4
 
   *) mod_headers: Support regexp-based editing of HTTP headers.  [Nick Kew]
 
-  *) mod_proxy: Add explicit flushing feature. When Servlet container sends AJP
-     body message with size 0, this means that Servlet container has asked for
-     an explicit flush. Create flush bucket in that case. This feature has been
-     added to the recent Tomcat versions without breaking the AJP protocol.
-     [Mladen Turk]
+  *) mod_proxy: Add explicit flushing feature. When Servlet container sends
+     AJP body message with size 0, this means that Servlet container has asked
+     for an explicit flush. Create flush bucket in that case. This feature has
+     been added to the recent Tomcat versions without breaking the AJP
+     protocol.  [Mladen Turk]
 
-  *) mod_proxy_balancer: Set the new environment variable BALANCER_ROUTE_CHANGED
-     if a worker with a route different from the one supplied by the client
-     had been chosen or if the client supplied no routing information for
-     a balancer with sticky sessions.  [Ruediger Pluem]
+  *) mod_proxy_balancer: Set the new environment variable
+     BALANCER_ROUTE_CHANGED if a worker with a route different from the one
+     supplied by the client had been chosen or if the client supplied no
+     routing information for a balancer with sticky sessions.
+     [Ruediger Pluem]
 
   *) mod_proxy_balancer: Add information about the route, the sticky session
      and the worker used during a request as environment variables. PR 39806.
@@ -1303,8 +1312,8 @@ Changes with Apache 2.2.4
   *) mod_proxy: Don't try to use dead backend connection. PR 37770.
      [Olivier BOEL <ob dorrboel.com>] 
 
-  *) mod_proxy_balancer: Extract stickysession routing information contained as
-     parameter in the URL correctly. PR 40400.
+  *) mod_proxy_balancer: Extract stickysession routing information contained
+     as parameter in the URL correctly. PR 40400.
      [Ruediger Pluem, Tomokazu Harada <harada sysrdc.ns-sol.co.jp>]
 
   *) mod_proxy_ajp: Added cping/cpong support for the AJP protocol.
@@ -1352,8 +1361,8 @@ Changes with Apache 2.2.4
      PR 30022, 40470.  [William Rowe, Matt Eaton <asf divinehawk.com>]
 
   *) mod_isapi: Ensure we walk through all the methods the developer may have
-     employed to report their HTTP status result code.
-     PR 16637 30033 28089.  [Matt Lewandowsky <matt iamcode.net>, William Rowe]
+     employed to report their HTTP status result code.  PR 16637 30033 28089
+     [Matt Lewandowsky <matt iamcode.net>, William Rowe]
 
   *) mod_echo: Fix precedence problem in if statement. PR 40658.
      [Larry Cipriani <lvc lucent.com>]
@@ -1363,9 +1372,9 @@ Changes with Apache 2.2.4
 
   *) The full server version information is now included in the error log at
      startup as well as server status reports, irrespective of the setting
-     of the ServerTokens directive.  ap_get_server_version() is now deprecated,
-     and is replaced by ap_get_server_banner() and ap_get_server_description().
-     [Jeff Trawick]
+     of the ServerTokens directive.  ap_get_server_version() is now
+     deprecated, and is replaced by ap_get_server_banner() and
+     ap_get_server_description().  [Jeff Trawick]
 
   *) mod_proxy_balancer: Workers can now be defined as part of
      a balancer cluster "set" in which members of a lower-numbered set
@@ -1546,9 +1555,9 @@ Changes with Apache 2.2.1
   *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
      PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>]
 
-  *) mod_proxy_balancer: Do not overwrite the status of initialized workers and
-     respect the configured status of uninitilized workers when creating a new
-     child process. [Ruediger Pluem]
+  *) mod_proxy_balancer: Do not overwrite the status of initialized workers
+     and respect the configured status of uninitilized workers when creating
+     a new child process. [Ruediger Pluem]
 
   *) mod_proxy_ajp: Crosscheck the length of the body chunk with the length of
      the ajp message to prevent mod_proxy_ajp from reading beyond the buffer
@@ -1560,7 +1569,8 @@ Changes with Apache 2.2.1
      resetting r->status_line, such as the built-in byterange filter.
      [Jeff Trawick]
 
-  *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
+  *) mod_speling: Stop crashing with certain non-file requests.
+     [Jeff Trawick]
 
   *) mod_cache: Make caching of reverse proxies possible again. PR 38017.
      [Ruediger Pluem]
