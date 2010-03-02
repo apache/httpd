@@ -507,13 +507,13 @@ Apache</a></seealso>
 <module>worker</module></modulelist>
 
 <usage>
-    <p>The server will set the TCP send buffer size to the number of bytes
-    specified. Very useful to increase past standard OS defaults on
-    high speed high latency (<em>i.e.</em>, 100ms or so, such as
-    transcontinental fast pipes).</p>
+    <p>Sets the server's TCP send buffer size to the number of bytes
+    specified. It is often useful to set this past the OS's standard
+    default value on high speed, high latency conections 
+    (<em>i.e.</em>, 100ms or so, such as transcontinental fast pipes).</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    OS default.</p>
+    default value provided by your OS.</p>
 </usage>
 </directivesynopsis>
 
