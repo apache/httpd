@@ -25,8 +25,8 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
-    2.2.15  : In development
-    2.2.14  : Tagged September 24, 2009.
+    2.2.15  : Tagged March 1, 2010
+    2.2.14  : Released October 3, 2009.
     2.2.13  : Released August 8, 2009.
     2.2.12  : Released July 28, 2009.
     2.2.11  : Released December 14, 2008.
@@ -167,7 +167,6 @@ PATCHES/ISSUES THAT ARE STALLED
      http://people.apache.org/~chrisd/patches/walk_cache/walk_cache-2.2.x.patch
    +1: chrisd
    -0: jim (would prefer to see in 2.4, and to push 2.4 out)
-
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
      entering ap_mpm_run(), then destroy pmain when exiting ap_mpm_run().
