@@ -68,7 +68,7 @@ switch before dumping core</td></tr>
 </table>
     <p>This controls the directory to which Apache attempts to
     switch before dumping core. If your operating system is configured to
-    create core files in the crashing processes working directory, 
+    create core files in the working directory of the crashing process, 
     <code class="directive">CoreDumpDirectory</code> is necessary to change working
     directory from the default <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> 
     directory, which should not be writable by the user the server runs as.</p>
