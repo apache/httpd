@@ -445,7 +445,8 @@ of the daemon</td></tr>
     warnings about log file placement and <a href="../misc/security_tips.html#serverroot">security</a>.</p>
 
     <div class="note"><h3>Note</h3>
-      <p>As of Apache 2 it is recommended to use only the <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> script for (re-)starting or stopping the server.</p>
+      <p>As of Apache 2, we recommended that you only use the <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> script, or the init script that your OS provides,
+      for (re-)starting or stopping the server.</p>
     </div>
 
 </div>
