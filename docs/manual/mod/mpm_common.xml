@@ -236,6 +236,10 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 <seealso><a href="../dns-caveats.html">DNS Issues</a></seealso>
 <seealso><a href="../bind.html">Setting which addresses and ports Apache
     uses</a></seealso>
+<seealso><a
+href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Further
+discussion of the <code>Address already in use</code> error message,
+including other causes.</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
