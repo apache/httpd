@@ -567,7 +567,9 @@ Apache</a></seealso>
     <note><title>Note</title>
       <p>There is a hard limit of <code>ServerLimit 20000</code> compiled
       into the server (for the <module>prefork</module> MPM 200000). This is
-      intended to avoid nasty effects caused by typos.</p>
+      intended to avoid nasty effects caused by typos. To increase it
+      even further past this limit, you will need to modify the value of
+      MAX_SERVER_LIMIT in the mpm source file and rebuild the server.</p>
     </note>
 </usage>
 <seealso><a href="../stopping.html">Stopping and Restarting Apache</a></seealso>
