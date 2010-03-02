@@ -586,7 +586,10 @@ Apache</a></li>
 </table>
     <p>The <code class="directive">StartServers</code> directive sets the
     number of child server processes created on startup. As the number
-    of processes is dynamically controlled depending on the load,
+    of processes is dynamically controlled depending on the load, (see
+    <code class="directive"><a href="#minsparethreads">MinSpareThreads</a></code>,
+    <code class="directive"><a href="#maxsparethreads">MaxSpareThreads</a></code>,
+    <code class="directive"><a href="../mod/prefork.html#minspareservers">MinSpareServers</a></code>, <code class="directive"><a href="../mod/prefork.html#maxspareservers">MaxSpareServers</a></code>)
     there is usually little reason to adjust this parameter.</p>
 
     <p>The default value differs from MPM to MPM. <code class="module"><a href="../mod/worker.html">worker</a></code>
