@@ -147,6 +147,7 @@ uses</a></seealso>
 </usage>
 <seealso><directive module="prefork">MinSpareServers</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -169,6 +170,7 @@ uses</a></seealso>
 </usage>
 <seealso><directive module="prefork">MaxSpareServers</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
+<seealso><directive module="mpm_common">MinSpareThreads</directive></seealso>
 </directivesynopsis>
 
 </modulesynopsis>
