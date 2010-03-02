@@ -257,7 +257,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: ap_get_brigade failed");
             apr_brigade_destroy(input_brigade);
-            return HTTP_INTERNAL_SERVER_ERROR;
+            return HTTP_BAD_REQUEST;
         }
 
         /* have something */

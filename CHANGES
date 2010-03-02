@@ -9,6 +9,11 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) SECURITY: CVE-2010-0408 (cve.mitre.org)
+     mod_proxy_ajp: Respond with HTTP_BAD_REQUEST when the body is not sent
+     when request headers indicate a request body is incoming; not a case of
+     HTTP_INTERNAL_SERVER_ERROR.  [Niku Toivola <niku.toivola sulake.com>]
+
   *) SECURITY: CVE-2010-0425 (cve.mitre.org)
      mod_isapi: Do not unload an isapi .dll module until the request
      processing is completed, avoiding orphaned callback pointers.
