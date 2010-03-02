@@ -613,7 +613,12 @@ Apache</a></seealso>
 <usage>
     <p>Number of threads created on startup. As the
     number of threads is dynamically controlled depending on the
-    load, there is usually little reason to adjust this
+    load, (see
+    <directive module="mpm_common">MinSpareThreads</directive>,
+    <directive module="mpm_common">MaxSpareThreads</directive>,
+    <directive module="prefork">MinSpareServers</directive>, <directive
+    module="prefork">MaxSpareServers</directive>)
+    there is usually little reason to adjust this
     parameter.</p>
 
     <p>For <module>mpm_netware</module> the default is
@@ -663,7 +668,9 @@ and later</compatibility>
       <p>There is a hard limit of <code>ThreadLimit 20000</code> (or
       <code>ThreadLimit 15000</code> with <module>mpm_winnt</module>)
       compiled into the server. This is intended to avoid nasty effects
-      caused by typos.</p>
+      caused by typos. To increase it even further past this limit, you
+      will need to modify the value of MAX_THREAD_LIMIT in the mpm
+      source file and rebuild the server.</p>
     </note>
 </usage>
 </directivesynopsis>
