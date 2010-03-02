@@ -9,6 +9,11 @@ Changes with Apache 2.2.15
      access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
+  *) Ensure each subrequest has a shallow copy of headers_in so that the
+     parent request headers are not corrupted.  Elimiates a problematic
+     optimization in the case of no request body.  PR 48359
+     [Jake Scott, William Rowe, Ruediger Pluem]
+
   *) mod_reqtimeout: New module to set timeouts and minimum data rates for
      receiving requests from the client. [Stefan Fritsch]
 
