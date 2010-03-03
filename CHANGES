@@ -23,7 +23,8 @@ Changes with Apache 2.2.15
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
-  *) Ensure each subrequest has a shallow copy of headers_in so that the
+  *) SECURITY: CVE-2010-0434 (cve.mitre.org)
+     Ensure each subrequest has a shallow copy of headers_in so that the
      parent request headers are not corrupted.  Elimiates a problematic
      optimization in the case of no request body.  PR 48359
      [Jake Scott, William Rowe, Ruediger Pluem]
