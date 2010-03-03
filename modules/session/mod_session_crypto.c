@@ -21,7 +21,15 @@
 #include "apr_strings.h"
 #include "http_log.h"
 
-#if (APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 4)) && APU_HAVE_CRYPTO > 0
+#if APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION < 4
+
+#error session_crypto_module requires APR v1.4.0 or later
+
+#elif APU_HAVE_CRYPTO == 0
+
+#error Crypto support must be enabled in APR
+
+#else
 
 #include "apr_crypto.h"                /* for apr_*_crypt et al */
 
@@ -598,6 +606,4 @@ module AP_MODULE_DECLARE_DATA session_crypto_module =
     register_hooks                    /* register hooks */
 };
 
-#else
-#error session_crypto_module requires APR v1.4.0 or later
 #endif
