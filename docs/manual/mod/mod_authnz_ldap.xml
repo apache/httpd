@@ -755,7 +755,7 @@ Require group <em>mygroupfile</em>
 <name>AuthLDAPBindAuthoritative</name>
 <description>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</description>
 <syntax>AuthLDAPBindAuthoritative<em>off|on</em></syntax>
-<default>AuthLDAPBindAuhtoritative on</default>
+<default>AuthLDAPBindAuthoritative on</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
