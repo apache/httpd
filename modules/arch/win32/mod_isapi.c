@@ -485,10 +485,10 @@ struct isapi_cid {
     apr_thread_mutex_t      *completed;
 };
 
-int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
-                                       char         *variable_name,
-                                       void         *buf_ptr,
-                                       apr_uint32_t *buf_size)
+static int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
+                                              char         *variable_name,
+                                              void         *buf_ptr,
+                                              apr_uint32_t *buf_size)
 {
     request_rec *r = cid->r;
     const char *result;
@@ -587,9 +587,9 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
     return 0;
 }
 
-int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
-                               void         *buf_data,
-                               apr_uint32_t *buf_size)
+static int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
+                                      void         *buf_data,
+                                      apr_uint32_t *buf_size)
 {
     request_rec *r = cid->r;
     apr_uint32_t read = 0;
@@ -804,10 +804,10 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
     return ate;
 }
 
-int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
-                                void         *buf_ptr,
-                                apr_uint32_t *size_arg,
-                                apr_uint32_t  flags)
+static int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
+                                       void         *buf_ptr,
+                                       apr_uint32_t *size_arg,
+                                       apr_uint32_t  flags)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
@@ -860,11 +860,11 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
     return (rv == APR_SUCCESS);
 }
 
-int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
-                                          apr_uint32_t  HSE_code,
-                                          void         *buf_ptr,
-                                          apr_uint32_t *buf_size,
-                                          apr_uint32_t *data_type)
+static int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
+                                                 apr_uint32_t  HSE_code,
+                                                 void         *buf_ptr,
+                                                 apr_uint32_t *buf_size,
+                                                 apr_uint32_t *data_type)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
@@ -1404,7 +1404,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
  *
  **********************************************************/
 
-apr_status_t isapi_handler (request_rec *r)
+static apr_status_t isapi_handler (request_rec *r)
 {
     isapi_dir_conf *dconf;
     apr_table_t *e;
