@@ -25,8 +25,8 @@ Changes with Apache 2.2.15
 
   *) SECURITY: CVE-2010-0434 (cve.mitre.org)
      Ensure each subrequest has a shallow copy of headers_in so that the
-     parent request headers are not corrupted.  Elimiates a problematic
-     optimization in the case of no request body.  PR 48359
+     parent request headers are not corrupted.  Eliminates a problematic
+     optimization in the case of no request body.  PR 48359.
      [Jake Scott, William Rowe, Ruediger Pluem]
 
   *) mod_reqtimeout: New module to set timeouts and minimum data rates for
@@ -39,7 +39,7 @@ Changes with Apache 2.2.15
   *) mod_negotiation: Preserve query string over multiviews negotiation.
      This buglet was fixed for type maps in 2.2.6, but the same issue
      affected multiviews and was overlooked.
-     PR 33112 [Joergen Thomsen <apache jth.net>]
+     PR 33112.  [Joergen Thomsen <apache jth.net>]
 
   *) mod_cache: Introduce the thundering herd lock, a mechanism to keep
      the flood of requests at bay that strike a backend webserver as
@@ -71,7 +71,7 @@ Changes with Apache 2.2.15
 
   *) mod_authnz_ldap: Add AuthLDAPBindAuthoritative to allow Authentication to
      try other providers in the case of an LDAP bind failure.
-     PR 46608 [Justin Erenkrantz, Joe Schaefer, Tony Stevenson]
+     PR 46608.  [Justin Erenkrantz, Joe Schaefer, Tony Stevenson]
 
   *) mod_proxy, mod_proxy_http: Support remote https proxies
      by using HTTP CONNECT.
@@ -91,21 +91,21 @@ Changes with Apache 2.2.15
      warning level.  [Eric Covener]
 
   *) core: Preserve Port information over internal redirects
-     PR 35999 [Jonas Ringh <jonas.ringh cixit.se>]
+     PR 35999.  [Jonas Ringh <jonas.ringh cixit.se>]
 
   *) mod_filter: fix FilterProvider matching where "dispatch" string
      doesn't exist.
-     PR 48054 [<tietw gmail.com>]
+     PR 48054.  [<tietew gmail.com>]
 
   *) Build: fix --with-module to work as documented
-     PR 43881 [Gez Saunders <gez.saunders virgin.net>]
+     PR 43881.  [Gez Saunders <gez.saunders virgin.net>]
 
   *) mod_mime: Make RemoveType override the info from TypesConfig.
-     PR 38330. [Stefan Fritsch]
+     PR 38330.  [Stefan Fritsch]
 
   *) mod_proxy: unable to connect to a backend is SERVICE_UNAVAILABLE,
      rather than BAD_GATEWAY or (especially) NOT_FOUND.
-     PR 46971 [evanc nortel.com]
+     PR 46971.  [Evan Champion <evanc nortel.com>]
 
   *) mod_charset_lite: Honor 'CharsetOptions NoImplicitAdd'.
      [Eric Covener]
@@ -114,20 +114,20 @@ Changes with Apache 2.2.15
      some cache entries and log a warning. Also increase the default
      LDAPSharedCacheSize to 500000. This is a more realistic size suitable
      for the default values of 1024 for LdapCacheEntries/LdapOpCacheEntries.
-     PR 46749. [Stefan Fritsch]
+     PR 46749.  [Stefan Fritsch]
 
   *) mod_disk_cache, mod_mem_cache: don't cache incomplete responses,
      per RFC 2616, 13.8.  PR15866.  [Dan Poirier]
 
   *) mod_rewrite: Make sure that a hostname:port isn't fully qualified if
-     the request is a CONNECT request. PR 47928
+     the request is a CONNECT request.  PR 47928.
      [Bill Zajac <billz consultla.com>]
 
   *) mod_cache: correctly consider s-maxage in cacheability
      decisions.  [Dan Poirier]
 
   *) core: Return APR_EOF if request body is shorter than the length announced
-     by the client. PR 33098 [ Stefan Fritsch <sf sfritsch.de>]
+     by the client. PR 33098.  [Stefan Fritsch]
 
   *) mod_rewrite: Add scgi scheme detection.  [André Malo]
 
