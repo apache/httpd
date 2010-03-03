@@ -759,7 +759,7 @@ Require group <em>mygroupfile</em>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines if other authentication providers are used when a user can be mapped to a DN but the server cannot successfully bind with the users credentials.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPBindAuthoritative<em>off|on</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPBindAuhtoritative on</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPBindAuthoritative on</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
