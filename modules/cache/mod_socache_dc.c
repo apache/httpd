@@ -154,10 +154,10 @@ static void socache_dc_status(ap_socache_instance_t *ctx, request_rec *r, int fl
                " target: <b>%s</b><br>", ctx->target);
 }
 
-apr_status_t socache_dc_iterate(ap_socache_instance_t *instance,
-                                server_rec *s,
-                                ap_socache_iterator_t *iterator,
-                                apr_pool_t *pool)
+static apr_status_t socache_dc_iterate(ap_socache_instance_t *instance,
+                                       server_rec *s,
+                                       ap_socache_iterator_t *iterator,
+                                       apr_pool_t *pool)
 {
     return APR_ENOTIMPL;
 }

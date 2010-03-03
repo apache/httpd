@@ -622,10 +622,10 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "leaving shmcb_status");
 }
 
-apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
-                                   server_rec *s,
-                                   ap_socache_iterator_t *iterator,
-                                   apr_pool_t *pool)
+static apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
+                                          server_rec *s,
+                                          ap_socache_iterator_t *iterator,
+                                          apr_pool_t *pool)
 {
     SHMCBHeader *header = instance->header;
     unsigned int loop;
