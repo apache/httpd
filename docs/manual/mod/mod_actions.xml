@@ -73,20 +73,23 @@ introduced in Apache 2.1</compatibility>
     environment variables. The handler used for the particular request
     is passed using the <code>REDIRECT_HANDLER</code> variable.</p>
 
-    <example><title>Examples</title>
+    <example><title>Example: MIME type</title>
       # Requests for files of a particular MIME content type:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
+    </example>
+
+    <p>In this example, requests for files with a MIME content
+    type of <code>image/gif</code> will be handled by the
+    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
+
+    <example><title>Example: File extension</title>
       # Files of a particular file extension<br />
       AddHandler my-file-type .xyz<br />
       Action my-file-type /cgi-bin/program.cgi<br />
     </example>
 
-    <p>In the first example, requests for files with a MIME content
-    type of <code>image/gif</code> will be handled by the
-    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
-
-    <p>In the second example, requests for files with a file extension of
+    <p>In this example, requests for files with a file extension of
     <code>.xyz</code> are handled by the specified cgi script 
     <code>/cgi-bin/program.cgi</code>.</p>
 
