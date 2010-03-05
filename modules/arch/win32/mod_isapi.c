@@ -485,10 +485,10 @@ struct isapi_cid {
     apr_thread_mutex_t      *completed;
 };
 
-static int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
-                                              char         *variable_name,
-                                              void         *buf_ptr,
-                                              apr_uint32_t *buf_size)
+static int APR_THREAD_FUNC regfnGetServerVariable(isapi_cid    *cid,
+                                                  char         *variable_name,
+                                                  void         *buf_ptr,
+                                                  apr_uint32_t *buf_size)
 {
     request_rec *r = cid->r;
     const char *result;
@@ -587,9 +587,9 @@ static int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
     return 0;
 }
 
-static int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
-                                      void         *buf_data,
-                                      apr_uint32_t *buf_size)
+static int APR_THREAD_FUNC regfnReadClient(isapi_cid    *cid,
+                                           void         *buf_data,
+                                           apr_uint32_t *buf_size)
 {
     request_rec *r = cid->r;
     apr_uint32_t read = 0;
@@ -804,10 +804,10 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
     return ate;
 }
 
-static int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
-                                       void         *buf_ptr,
-                                       apr_uint32_t *size_arg,
-                                       apr_uint32_t  flags)
+static int APR_THREAD_FUNC regfnWriteClient(isapi_cid    *cid,
+                                            void         *buf_ptr,
+                                            apr_uint32_t *size_arg,
+                                            apr_uint32_t  flags)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
@@ -860,11 +860,11 @@ static int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
     return (rv == APR_SUCCESS);
 }
 
-static int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
-                                                 apr_uint32_t  HSE_code,
-                                                 void         *buf_ptr,
-                                                 apr_uint32_t *buf_size,
-                                                 apr_uint32_t *data_type)
+static int APR_THREAD_FUNC regfnServerSupportFunction(isapi_cid    *cid,
+                                                      apr_uint32_t  HSE_code,
+                                                      void         *buf_ptr,
+                                                      apr_uint32_t *buf_size,
+                                                      apr_uint32_t *data_type)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
@@ -1495,10 +1495,10 @@ static apr_status_t isapi_handler (request_rec *r)
     cid->ecb->lpszContentType = (char*) apr_table_get(e, "CONTENT_TYPE");
 
     /* Set up the callbacks */
-    cid->ecb->GetServerVariable = GetServerVariable;
-    cid->ecb->WriteClient = WriteClient;
-    cid->ecb->ReadClient = ReadClient;
-    cid->ecb->ServerSupportFunction = ServerSupportFunction;
+    cid->ecb->GetServerVariable = regfnGetServerVariable;
+    cid->ecb->WriteClient = regfnWriteClient;
+    cid->ecb->ReadClient = regfnReadClient;
+    cid->ecb->ServerSupportFunction = regfnServerSupportFunction;
 
     /* Set up client input */
     res = ap_setup_client_block(r, REQUEST_CHUNKED_ERROR);
