@@ -2,10 +2,34 @@
 
 Changes with Apache 2.3.7
 
+  *) SECURITY: CVE-2009-3555 (cve.mitre.org)
+     mod_ssl: A partial fix for the TLS renegotiation prefix injection attack
+     by rejecting any client-initiated renegotiations. Forcibly disable
+     keepalive for the connection if there is any buffered data readable. Any
+     configuration which requires renegotiation for per-directory/location
+     access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
+     [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
+
+  *) SECURITY: CVE-2010-0408 (cve.mitre.org)
+     mod_proxy_ajp: Respond with HTTP_BAD_REQUEST when the body is not sent
+     when request headers indicate a request body is incoming; not a case of
+     HTTP_INTERNAL_SERVER_ERROR.  [Niku Toivola <niku.toivola sulake.com>]
+
   *) SECURITY: CVE-2010-0425 (cve.mitre.org)
      mod_isapi: Do not unload an isapi .dll module until the request
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
+
+  *) mod_proxy_ajp: Really regard the operation a success, when the client
+     aborted the connection. In addition adjust the log message if the client
+     aborted the connection. [Ruediger Pluem]
+
+  *) mod_ssl: Add the 'SSLInsecureRenegotiation' directive, which
+     allows insecure renegotiation with clients which do not yet
+     support the secure renegotiation protocol.  [Joe Orton]
+
+  *) mod_ssl: Fix a potential I/O hang if a long list of trusted CAs
+     is configured for client cert auth. PR 46952.  [Joe Orton]
 
   *) core: Only log a 408 if it is no keepalive timeout. PR 39785
      [Ruediger Pluem,  Mark Montague <markmont umich.edu>]
@@ -78,10 +102,10 @@ Changes with Apache 2.3.6
   *) mod_log_config: Add the R option to log the handler used within the
      request. [Christian Folini <christian.folini netnea com>]
 
-  *) Allow fine control over the removal of Last-Modified and ETag headers
-     within the INCLUDES filter, making it possible to cache responses if
-     desired. Fix the default value of the SSIAccessEnable directive.
-     [Graham Leggett]
+  *) mod_include: Allow fine control over the removal of Last-Modified and
+     ETag headers within the INCLUDES filter, making it possible to cache
+     responses if desired. Fix the default value of the SSIAccessEnable
+     directive.  [Graham Leggett]
 
   *) Add new UnDefine directive to undefine a variable. PR 35350.
      [Stefan Fritsch]
