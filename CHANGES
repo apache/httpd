@@ -7,6 +7,9 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) core: Only log a 408 if it is no keepalive timeout. PR 39785
+     [Ruediger Pluem,  Mark Montague <markmont umich.edu>]
+
   *) support/rotatelogs: Add -L option to create a link to the current
      log file.  PR 48761 [<lyndon orthanc.ca>, Dan Poirier]
 
