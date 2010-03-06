@@ -3,6 +3,14 @@
 Changes with Apache 2.3.7
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
+     mod_ssl: Comprehensive fix of the TLS renegotiation prefix injection
+     attack when compiled against OpenSSL version 0.9.8m or later. Introduces
+     the 'SSLInsecureRenegotiation' directive to reopen this vulnerability
+     and offer unsafe legacy renegotiation with clients which do not yet
+     support the new secure renegotiation protocol, RFC 5746.
+     [Joe Orton, and with thanks to the OpenSSL Team]
+
+  *) SECURITY: CVE-2009-3555 (cve.mitre.org)
      mod_ssl: A partial fix for the TLS renegotiation prefix injection attack
      by rejecting any client-initiated renegotiations. Forcibly disable
      keepalive for the connection if there is any buffered data readable. Any
