@@ -81,21 +81,24 @@ gestionnaire ont été introduits dans Apache 2.1</td></tr>
     requête particulière est transmis à l'aide de la variable
     <code>REDIRECT_HANDLER</code>.</p>
 
-    <div class="example"><h3>Exemples</h3><p><code>
+    <div class="example"><h3>Exemple : type MIME</h3><p><code>
       # Requêtes concernant des fichiers possédant un type de contenu
       # MIME particulier :<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
-      # Fichiers possédant une extension particulière<br />
-      AddHandler mon-type-de-fichier .xyz<br />
-      Action mon-type-de-fichier /cgi-bin/programme.cgi<br />
     </code></p></div>
 
-    <p>Dans le premier exemple, les requêtes pour des fichiers possédant
+    <p>Dans cet exemple, les requêtes pour des fichiers possédant
     le type de contenu MIME <code>image/gif</code> seront traitées par
     le script CGI <code>/cgi-bin/images.cgi</code>.</p>
 
-    <p>Dans le second exemple, les requêtes pour des fichiers possédant
+    <div class="example"><h3>Example: extension de nom de fichier</h3><p><code>
+      # Fichiers dont le nom possède une extension particulière<br />
+      AddHandler mon-type-de-fichier .xyz<br />
+      Action mon-type-de-fichier /cgi-bin/program.cgi<br />
+    </code></p></div>
+
+    <p>Dans cet exemple, les requêtes pour des fichiers possédant
     l'extension <code>.xyz</code> seront traitées par
     le script CGI <code>/cgi-bin/programme.cgi</code>.</p>
 
