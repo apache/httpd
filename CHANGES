@@ -1,4 +1,4 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.16
 
 
@@ -6,11 +6,20 @@ Changes with Apache 2.2.16
 Changes with Apache 2.2.15
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
+     mod_ssl: Comprehensive fix of the TLS renegotiation prefix injection
+     attack when compiled against OpenSSL version 0.9.8m or later. Introduces
+     the 'SSLInsecureRenegotiation' directive to reopen this vulnerability
+     and offer unsafe legacy renegotiation with clients which do not yet
+     support the new secure renegotiation protocol, RFC 5746.
+     [Joe Orton, and with thanks to the OpenSSL Team]
+
+  *) SECURITY: CVE-2009-3555 (cve.mitre.org)
      mod_ssl: A partial fix for the TLS renegotiation prefix injection attack
-     by rejecting any client-initiated renegotiations. Forcibly disable
-     keepalive for the connection if there is any buffered data readable. Any
-     configuration which requires renegotiation for per-directory/location
-     access control is still vulnerable, unless using OpenSSL >= 0.9.8l.
+     for OpenSSL versions prior to 0.9.8l; reject any client-initiated
+     renegotiations. Forcibly disable keepalive for the connection if there
+     is any buffered data readable. Any configuration which requires
+     renegotiation for per-directory/location access control is still
+     vulnerable, unless using openssl 0.9.8l or later.
      [Joe Orton, Ruediger Pluem, Hartmut Keil <Hartmut.Keil adnovum.ch>]
 
   *) SECURITY: CVE-2010-0408 (cve.mitre.org)
@@ -57,10 +66,6 @@ Changes with Apache 2.2.15
      ETag headers within the INCLUDES filter, making it possible to cache
      responses if desired. Fix the default value of the SSIAccessEnable
      directive. [Graham Leggett]
-
-  *) mod_ssl: Add the 'SSLInsecureRenegotiation' directive, which
-     allows insecure renegotiation with clients which do not yet
-     support the secure renegotiation protocol.  [Joe Orton]
 
   *) mod_ssl: Fix a potential I/O hang if a long list of trusted CAs
      is configured for client cert auth. PR 46952.  [Joe Orton]
