@@ -625,8 +625,11 @@ invariably be a less efficient solution than the alternatives.</p>
 
 <p>
 If used in per-directory context, use only <code>-</code> (dash)
-as the substitution, otherwise the MIME-type set with this flag
-is lost due to an internal re-processing.</p>
+as the substitution <em>for the entire round of mod_rewrite processing</em>, 
+otherwise the MIME-type set with this flag is lost due to an internal 
+re-processing (including subsequent rounds of mod_rewrite processing).
+The <code>L</code> flag can be useful in this context to end the 
+<em>current</em> round of mod_rewrite processing.</p>
 
 </section>
 
