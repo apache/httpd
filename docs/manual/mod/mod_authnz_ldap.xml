@@ -804,6 +804,7 @@ authenticating the user if this one fails</description>
 <name>AuthLDAPGroupAttribute</name>
 <description>LDAP attributes used to check for group membership</description>
 <syntax>AuthLDAPGroupAttribute <em>attribute</em></syntax>
+<default>AuthLDAPGroupAttribute member uniquemember</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
