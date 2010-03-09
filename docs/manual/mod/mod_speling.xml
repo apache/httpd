@@ -77,11 +77,6 @@ module</description>
 <context>.htaccess</context>
 </contextlist>
 <override>Options</override>
-<compatibility>CheckSpelling was available as a separately available
-module for Apache 1.1, but was limited to miscapitalizations. As
-of Apache 1.3, it is part of the Apache distribution. Prior to Apache
-1.3.2, the <code>CheckSpelling</code> directive was only available in the
-"server" and "virtual host" contexts.</compatibility>
 
 <usage>
     <p>This directive enables or disables the spelling module. When
