@@ -269,6 +269,27 @@ RewriteRule ^(.*).html$ $1.php
         <dt>Solution:</dt>
 
         <dd>
+
+<p>The very best way to solve this doesn't involve mod_rewrite at all,
+but rather uses the <code class="directive"><a href="../mod/alias.html#redirect">Redirect</a></code>
+directive places in a virtual host for the non-canonical
+hostname(s).</p>
+
+<div class="example"><pre>
+&lt;VirtualHost *:80&gt;
+  ServerName undesired.example.com
+  ServerAlias example.com notthis.example.com
+
+  Redirect / http://www.example.com/
+&lt;/VirtualHost&gt;
+</pre></div>
+
+<p>However, there are situations where you'll need to use mod_rewrite -
+primarily when you don't have access to the main server configuration
+file, or if you wish to do this dynamically for a larger number of
+hostnames. For these situations, you might use one of the recipes
+below.</p>
+
 <p>For sites running on a port other than 80:</p>
 <div class="example"><pre>
 RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
