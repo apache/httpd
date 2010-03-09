@@ -114,6 +114,13 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  * Commit /dist/httpd/patches/apply_to_2.0.63/CVE-2008-2364-patch-2.0.txt:
+    SECURITY: CVE-2008-2364 (cve.mitre.org)
+    mod_proxy_http: Better handling of excessive interim responses
+    from origin server to prevent potential denial of service and high
+    memory usage.
+    +1: trawick
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
