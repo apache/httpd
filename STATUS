@@ -121,6 +121,11 @@ RELEASE SHOWSTOPPERS:
     memory usage.
     +1: trawick, wrowe
 
+  * Commit http://people.apache.org/~wrowe/CVE-2010-0434.patch
+    SECURITY: CVE-2010-0434 (cve.mitre.org)
+    note; simpler because we had not yet cleaned up input headers for subreq
+    +1: wrowe
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
