@@ -119,7 +119,7 @@ RELEASE SHOWSTOPPERS:
     mod_proxy_http: Better handling of excessive interim responses
     from origin server to prevent potential denial of service and high
     memory usage.
-    +1: trawick
+    +1: trawick, wrowe
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
