@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.64
 
+  *) SECURITY: CVE-2010-0425 (cve.mitre.org)
+     mod_isapi: Do not unload an isapi .dll module until the request
+     processing is completed, avoiding orphaned callback pointers.
+     [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
+
   *) SECURITY: CVE-2008-2939 (cve.mitre.org)
      mod_proxy_ftp: Prevent XSS attacks when using wildcards in the path of
      the FTP URL. Discovered by Marc Bevand of Rapid7. [Ruediger Pluem]
