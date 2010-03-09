@@ -273,7 +273,7 @@ RewriteRule ^(.*).html$ $1.php
 
 <p>The very best way to solve this doesn't involve mod_rewrite at all,
 but rather uses the <directive module="alias">Redirect</directive>
-directive places in a virtual host for the non-canonical
+directive placed in a virtual host for the non-canonical
 hostname(s).</p>
 
 <example><pre>
