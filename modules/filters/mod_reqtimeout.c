@@ -20,6 +20,7 @@
 #include "http_connection.h"
 #include "http_protocol.h"
 #include "http_log.h"
+#include "http_core.h"
 #include "util_filter.h"
 #define APR_WANT_STRFUNC
 #include "apr_strings.h"
@@ -38,6 +39,7 @@ typedef struct
     apr_time_t body_rate_factor;
 } reqtimeout_srv_cfg;
 
+/* this struct is used both as conn_config and as filter context */
 typedef struct
 {
     apr_time_t timeout_at;
@@ -47,13 +49,9 @@ typedef struct
     int new_max_timeout;
     int in_keep_alive;
     char *type;
+    apr_socket_t *socket;
     apr_time_t rate_factor;
 } reqtimeout_con_cfg;
-
-typedef struct
-{
-    apr_socket_t *socket;
-} reqtimeout_ctx;
 
 static const char *const reqtimeout_filter_name = "reqtimeout";
 
@@ -80,18 +78,11 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
                                       apr_read_type_e block,
                                       apr_off_t readbytes)
 {
-    reqtimeout_ctx *ctx;
     apr_time_t time_left;
     apr_time_t now;
     apr_status_t rv;
     apr_interval_time_t saved_sock_timeout = -1;
-    reqtimeout_con_cfg *ccfg;
-
-    ctx = f->ctx;
-    AP_DEBUG_ASSERT(ctx != NULL);
-
-    ccfg = ap_get_module_config(f->c->conn_config, &reqtimeout_module);
-    AP_DEBUG_ASSERT(ccfg != NULL);
+    reqtimeout_con_cfg *ccfg = f->ctx;
 
     if (ccfg->in_keep_alive) {
         /* For this read, the normal keep-alive timeout must be used */
@@ -114,6 +105,24 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         return ap_get_brigade(f->next, bb, mode, block, readbytes);
     }
 
+    if (!ccfg->socket) {
+        core_net_rec *net_rec;
+        ap_filter_t *core_in = f->next;
+
+        while (core_in && core_in->frec != ap_core_input_filter_handle)
+            core_in = core_in->next;
+
+        if (!core_in) {
+            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, f->c,
+                          "mod_reqtimeout: Can't get socket "
+                          "handle from core_input_filter");
+            ap_remove_input_filter(f);
+            return ap_get_brigade(f->next, bb, mode, block, readbytes);
+        }
+        net_rec = core_in->ctx;
+        ccfg->socket = net_rec->client_socket;
+    }
+
     time_left = ccfg->timeout_at - now;
     if (time_left <= 0) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
@@ -134,11 +143,11 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         time_left = apr_time_from_sec(1);
     }
 
-    rv = apr_socket_timeout_get(ctx->socket, &saved_sock_timeout);
+    rv = apr_socket_timeout_get(ccfg->socket, &saved_sock_timeout);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
     if (saved_sock_timeout >= time_left) {
-        rv = apr_socket_timeout_set(ctx->socket, time_left);
+        rv = apr_socket_timeout_set(ccfg->socket, time_left);
         AP_DEBUG_ASSERT(rv == APR_SUCCESS);
     }
     else {
@@ -148,7 +157,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
 
     if (saved_sock_timeout != -1) {
-        apr_socket_timeout_set(ctx->socket, saved_sock_timeout);
+        apr_socket_timeout_set(ccfg->socket, saved_sock_timeout);
     }
 
     if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {
@@ -162,9 +171,8 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     return rv;
 }
 
-static int reqtimeout_pre_conn(conn_rec *c, void *csd)
+static int reqtimeout_init(conn_rec *c)
 {
-    reqtimeout_ctx *ctx;
     reqtimeout_con_cfg *ccfg;
     reqtimeout_srv_cfg *cfg;
 
@@ -173,11 +181,8 @@ static int reqtimeout_pre_conn(conn_rec *c, void *csd)
     AP_DEBUG_ASSERT(cfg != NULL);
     if (cfg->header_timeout <= 0 && cfg->body_timeout <= 0) {
         /* not configured for this vhost */
-        return OK;
+        return DECLINED;
     }
-
-    ctx = apr_pcalloc(c->pool, sizeof(reqtimeout_ctx));
-    ctx->socket = csd;
 
     ccfg = apr_pcalloc(c->pool, sizeof(reqtimeout_con_cfg));
     ccfg->new_timeout = cfg->header_timeout;
@@ -187,8 +192,9 @@ static int reqtimeout_pre_conn(conn_rec *c, void *csd)
     ccfg->rate_factor = cfg->header_rate_factor;
     ap_set_module_config(c->conn_config, &reqtimeout_module, ccfg);
 
-    ap_add_input_filter("reqtimeout", ctx, NULL, c);
-    return OK;
+    ap_add_input_filter("reqtimeout", ccfg, NULL, c);
+    /* we are not handling the connection, we just do initialization */
+    return DECLINED;
 }
 
 static int reqtimeout_after_headers(request_rec *r)
@@ -198,7 +204,7 @@ static int reqtimeout_after_headers(request_rec *r)
         ap_get_module_config(r->connection->conn_config, &reqtimeout_module);
 
     if (ccfg == NULL) {
-        /* not configured for this vhost */
+        /* not configured for this connection */
         return OK;
     }
 
@@ -224,7 +230,7 @@ static int reqtimeout_after_body(request_rec *r)
         ap_get_module_config(r->connection->conn_config, &reqtimeout_module);
 
     if (ccfg == NULL) {
-        /* not configured for this vhost */
+        /* not configured for this connection */
         return OK;
     }
 
@@ -406,7 +412,16 @@ static void reqtimeout_hooks(apr_pool_t *pool)
      */
     ap_register_input_filter(reqtimeout_filter_name, reqtimeout_filter, NULL,
                              AP_FTYPE_CONNECTION + 8);
-    ap_hook_pre_connection(reqtimeout_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
+
+    /*
+     * mod_reqtimeout needs to be called before ap_process_http_request (which
+     * is run at APR_HOOK_REALLY_LAST) but after all other protocol modules.
+     * This ensures that it only influences normal http connections and not
+     * e.g. mod_ftp. Also, if mod_reqtimeout used the pre_connection hook, it
+     * would be inserted on mod_proxy's backend connections.
+     */
+    ap_hook_process_connection(reqtimeout_init, NULL, NULL, APR_HOOK_LAST);
+
     ap_hook_post_read_request(reqtimeout_after_headers, NULL, NULL,
                               APR_HOOK_MIDDLE);
     ap_hook_log_transaction(reqtimeout_after_body, NULL, NULL,

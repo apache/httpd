@@ -28,6 +28,9 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_reqtimeout: Do not wrongly enforce timeouts for mod_proxy's backend
+     connections and other protocol handlers (like mod_ftp). [Stefan Fritsch]
+
   *) mod_proxy_ajp: Really regard the operation a success, when the client
      aborted the connection. In addition adjust the log message if the client
      aborted the connection. [Ruediger Pluem]
