@@ -1116,7 +1116,7 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
 
     rnew->status          = HTTP_OK;
 
-    rnew->headers_in = apr_table_copy(rnew->pool, r->headers_in);
+    rnew->headers_in      = apr_table_copy(rnew->pool, r->headers_in);
 
     /* did the original request have a body?  (e.g. POST w/SSI tags)
      * if so, make sure the subrequest doesn't inherit body headers
