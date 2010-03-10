@@ -124,7 +124,8 @@ RELEASE SHOWSTOPPERS:
   * Commit http://people.apache.org/~wrowe/CVE-2010-0434.patch
     SECURITY: CVE-2010-0434 (cve.mitre.org)
     note; simpler because we had not yet cleaned up input headers for subreq
-    +1: wrowe
+    +1: wrowe, trawick
+    trawick: remember to post to apply_to_2.0.63 when approved
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
