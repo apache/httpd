@@ -643,13 +643,18 @@ static void log_error_core(const char *file, int line, int level,
     }
 
     if (c) {
-        /* XXX: TODO: add a method of selecting whether logged client
+        /* XXX: TODO: add a method of selecting whether logged remote
          * addresses are in dotted quad or resolved form... dotted
          * quad is the most secure, which is why I'm implementing it
          * first. -djg
          */
+        /*
+         * remote_ip can be client or backend server. If we have a scoreboard
+         * handle, it is likely a client.
+         */
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            "[client %s] ", c->remote_ip);
+                            c->sbh ? "[client %s:%d] " : "[remote %s:%d] ",
+                            c->remote_ip, c->remote_addr->port);
     }
     if (status != 0) {
         if (status < APR_OS_START_EAIERR) {
