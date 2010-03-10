@@ -28,6 +28,9 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_proxy_http: Log the port of the remote server in various messages.
+     PR 48812. [Igor Galić <i galic brainsware org>] 
+
   *) mod_reqtimeout: Do not wrongly enforce timeouts for mod_proxy's backend
      connections and other protocol handlers (like mod_ftp). [Stefan Fritsch]
 
