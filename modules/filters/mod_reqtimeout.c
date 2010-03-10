@@ -24,6 +24,7 @@
 #include "util_filter.h"
 #define APR_WANT_STRFUNC
 #include "apr_strings.h"
+#include "apr_support.h"
 
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
@@ -51,6 +52,7 @@ typedef struct
     char *type;
     apr_socket_t *socket;
     apr_time_t rate_factor;
+    apr_bucket_brigade *tmpbb;
 } reqtimeout_con_cfg;
 
 static const char *const reqtimeout_filter_name = "reqtimeout";
@@ -72,6 +74,49 @@ static void extend_timeout(reqtimeout_con_cfg *ccfg, apr_bucket_brigade *bb)
     }
 }
 
+static apr_status_t check_time_left(reqtimeout_con_cfg *ccfg,
+                                    apr_time_t *time_left_p)
+{
+    *time_left_p = ccfg->timeout_at - apr_time_now();
+    if (*time_left_p <= 0)
+        return APR_TIMEUP;
+    
+    if (*time_left_p < apr_time_from_sec(1)) {
+        *time_left_p = apr_time_from_sec(1);
+    }
+    return APR_SUCCESS;
+}
+
+static apr_status_t have_lf_or_eos(apr_bucket_brigade *bb)
+{
+    apr_bucket *b = APR_BRIGADE_LAST(bb);
+
+    for ( ; b != APR_BRIGADE_SENTINEL(bb) ; b = APR_BUCKET_PREV(b) ) {
+    	const char *str;
+    	apr_size_t len;
+    	apr_status_t rv;
+
+        if (APR_BUCKET_IS_EOS(b))
+            return APR_SUCCESS;
+
+        if (APR_BUCKET_IS_METADATA(b))
+            continue;
+
+        rv = apr_bucket_read(b, &str, &len, APR_BLOCK_READ);
+        if (rv != APR_SUCCESS)
+            return rv;
+
+        if (len == 0)
+            continue;
+
+        if (str[len-1] == APR_ASCII_LF)
+            return APR_SUCCESS;
+    }
+    return APR_INCOMPLETE;
+}
+
+
+#define MIN(x,y) ((x) < (y) ? (x) : (y))
 static apr_status_t reqtimeout_filter(ap_filter_t *f,
                                       apr_bucket_brigade *bb,
                                       ap_input_mode_t mode,
@@ -123,12 +168,9 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         ccfg->socket = net_rec->client_socket;
     }
 
-    time_left = ccfg->timeout_at - now;
-    if (time_left <= 0) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
-                      "Request %s read timeout", ccfg->type);
-        return APR_TIMEUP;
-    }
+    rv = check_time_left(ccfg, &time_left);
+    if (rv != APR_SUCCESS)
+        goto out;
 
     if (block == APR_NONBLOCK_READ || mode == AP_MODE_INIT
         || mode == AP_MODE_EATCRLF) {
@@ -139,34 +181,98 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         return rv;
     }
 
-    if (time_left < apr_time_from_sec(1)) {
-        time_left = apr_time_from_sec(1);
-    }
-
     rv = apr_socket_timeout_get(ccfg->socket, &saved_sock_timeout);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
 
-    if (saved_sock_timeout >= time_left) {
-        rv = apr_socket_timeout_set(ccfg->socket, time_left);
-        AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+    rv = apr_socket_timeout_set(ccfg->socket, MIN(time_left, saved_sock_timeout));
+    AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+
+    if (mode == AP_MODE_GETLINE) {
+        /*
+         * For a blocking AP_MODE_GETLINE read, apr_brigade_split_line()
+         * would loop until a whole line has been read. As this would make it
+         * impossible to enforce a total timeout, we only do non-blocking
+         * reads.
+         */
+        apr_size_t remaining = HUGE_STRING_LEN;
+        do {
+            apr_off_t bblen;
+
+            rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE, APR_NONBLOCK_READ, remaining);
+            if (APR_STATUS_IS_EAGAIN(rv)) {
+                rv = APR_SUCCESS;
+            }
+            else if (rv != APR_SUCCESS) {
+                break;
+            }
+
+            if (!APR_BRIGADE_EMPTY(bb)) {
+                rv = have_lf_or_eos(bb);
+                if (rv != APR_INCOMPLETE) {
+                    break;
+                }
+
+                if (ccfg->min_rate > 0) {
+                    extend_timeout(ccfg, bb);
+                }
+
+                rv = apr_brigade_length(bb, 1, &bblen);
+                if (rv != APR_SUCCESS) {
+                    break;
+                }
+                remaining -= bblen;
+                if (remaining <= 0) {
+                    break;
+                }
+
+                /* Haven't got a whole line yet, save what we have ... */
+                if (!ccfg->tmpbb) {
+                    ccfg->tmpbb = apr_brigade_create(f->c->pool, f->c->bucket_alloc);
+                }
+                APR_BRIGADE_CONCAT(ccfg->tmpbb, bb);
+            }
+
+            /* ... and wait for more */
+            rv = apr_wait_for_io_or_timeout(NULL, ccfg->socket, 1);
+            if (rv != APR_SUCCESS)
+                break;
+
+            rv = check_time_left(ccfg, &time_left);
+            if (rv != APR_SUCCESS)
+                break;
+
+            rv = apr_socket_timeout_set(ccfg->socket,
+                                   MIN(time_left, saved_sock_timeout));
+            AP_DEBUG_ASSERT(rv == APR_SUCCESS);
+
+        } while (1);
+
+        if (ccfg->tmpbb)
+            APR_BRIGADE_PREPEND(bb, ccfg->tmpbb);
+
     }
     else {
-        saved_sock_timeout = -1;
+        /* mode != AP_MODE_GETLINE */
+        rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
+        if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {
+            extend_timeout(ccfg, bb);
+        }
     }
 
-    rv = ap_get_brigade(f->next, bb, mode, block, readbytes);
+    apr_socket_timeout_set(ccfg->socket, saved_sock_timeout);
 
-    if (saved_sock_timeout != -1) {
-        apr_socket_timeout_set(ccfg->socket, saved_sock_timeout);
-    }
-
-    if (ccfg->min_rate > 0 && rv == APR_SUCCESS) {
-        extend_timeout(ccfg, bb);
-    }
-
+out:
     if (rv == APR_TIMEUP) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                       "Request %s read timeout", ccfg->type);
+        /*
+         * If we allow lingering close, the client may keep this
+         * process/thread busy for another 30s (MAX_SECS_TO_LINGER).
+         * Therefore we have to abort the connection. The downside is
+         * that the client will most likely not receive the error
+         * message.
+         */
+        f->c->aborted = 1;
     }
     return rv;
 }
