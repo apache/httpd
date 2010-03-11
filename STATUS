@@ -107,7 +107,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=917759&view=rev
     2.2.x patch: http://people.apache.org/~minfrin/httpd-wildcard+docs2.patch
     Submitted by: minfrin, poirier
-    +1: minfrin
+    +1: minfrin, jim
 
   * support/htcacheclean: Teach it how to write a pid file (modelled on
     httpd's writing of a pid file) so that it becomes possible to run
@@ -122,7 +122,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * Fix apr_pstrcat() call in 2.2.x mod_rewrite (doesn't apply to trunk).
     2.2.x patch: http://people.apache.org/~trawick/mod_rewrite_pstrcat.txt
-    +1: trawick
+    +1: trawick, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
