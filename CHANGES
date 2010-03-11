@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.64
 
+  *) SECURITY: CVE-2008-2364 (cve.mitre.org)
+     mod_proxy_http: Better handling of excessive interim responses
+     from origin server to prevent potential denial of service and high
+     memory usage. Reported by Ryujiro Shibuya. [Ruediger Pluem,
+     Joe Orton, Jim Jagielski]
+
   *) SECURITY: CVE-2010-0425 (cve.mitre.org)
      mod_isapi: Do not unload an isapi .dll module until the request
      processing is completed, avoiding orphaned callback pointers.

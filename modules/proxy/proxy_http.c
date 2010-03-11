@@ -1290,6 +1290,16 @@ static int addit_dammit(void *v, const char *key, const char *val)
     return 1;
 }
 
+/*
+ * Limit the number of interim respones we sent back to the client. Otherwise
+ * we suffer from a memory build up. Besides there is NO sense in sending back
+ * an unlimited number of interim responses to the client. Thus if we cross
+ * this limit send back a 502 (Bad Gateway).
+ */
+#ifndef AP_MAX_INTERIM_RESPONSES
+#define AP_MAX_INTERIM_RESPONSES 10
+#endif
+
 static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_http_conn_t *p_conn,
@@ -1322,7 +1332,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      */
     rp->proxyreq = PROXYREQ_RESPONSE;
 
-    while (received_continue) {
+    while (received_continue && (received_continue <= AP_MAX_INTERIM_RESPONSES)) {
         apr_brigade_cleanup(bb);
 
         len = ap_getline(buffer, sizeof(buffer), rp, 0);
@@ -1440,7 +1450,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));
             }            
-            ap_proxy_pre_http_request(origin,rp);
+            if (!ap_is_HTTP_INFO(r->status)) {
+                ap_proxy_pre_http_request(origin, rp);
+            }
 
             /* handle Via header in response */
             if (conf->viaopt != via_off && conf->viaopt != via_block) {
@@ -1486,6 +1498,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         if ( r->status != HTTP_CONTINUE ) {
             received_continue = 0;
         } else {
+            received_continue++;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
                          "proxy: HTTP: received 100 CONTINUE");
         }
@@ -1620,6 +1633,14 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: header only");
         }
+    }
+
+    /* See define of AP_MAX_INTERIM_RESPONSES for why */
+    if (received_continue > AP_MAX_INTERIM_RESPONSES) {
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             apr_psprintf(p, 
+                             "Too many (%d) interim responses from origin server",
+                             received_continue));
     }
 
     if ( conf->error_override ) {
