@@ -4,7 +4,7 @@
 <!-- $LastChangedRevision$ -->
 
 <!--
- Licensed to the Apache Software Foundation (ASF) under one or more
+ Licensed to the Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
  The ASF licenses this file to You under the Apache License, Version 2.0
@@ -25,7 +25,7 @@
   <title>Mapping URLs to Filesystem Locations</title>
 
   <summary>
-    <p>This document explains how Apache uses the URL of a request
+    <p>This document explains how the Apache HTTP Server uses the URL of a request
     to determine the filesystem location from which to serve a
     file.</p>
   </summary>
@@ -65,7 +65,7 @@
 
 <section id="documentroot"><title>DocumentRoot</title>
 
-    <p>In deciding what file to serve for a given request, Apache's
+    <p>In deciding what file to serve for a given request, httpd's
     default behavior is to take the URL-Path for the request (the part
     of the URL following the hostname and port) and add it to the end
     of the <directive module="core">DocumentRoot</directive> specified
@@ -80,7 +80,7 @@
     in the file <code>/var/www/html/fish/guppies.html</code> being
     served to the requesting client.</p>
 
-    <p>Apache is also capable of <a href="vhosts/">Virtual
+    <p>httpd is also capable of <a href="vhosts/">Virtual
     Hosting</a>, where the server receives requests for more than one
     host. In this case, a different <directive
     module="core">DocumentRoot</directive> can be specified for each
@@ -101,11 +101,11 @@
     <p>There are frequently circumstances where it is necessary to
     allow web access to parts of the filesystem that are not strictly
     underneath the <directive
-    module="core">DocumentRoot</directive>. Apache offers several
+    module="core">DocumentRoot</directive>. httpd offers several
     different ways to accomplish this. On Unix systems, symbolic links
     can bring other parts of the filesystem under the <directive
     module="core">DocumentRoot</directive>. For security reasons,
-    Apache will follow symbolic links only if the <directive
+    httpd will follow symbolic links only if the <directive
     module="core">Options</directive> setting for the relevant
     directory includes <code>FollowSymLinks</code> or
     <code>SymLinksIfOwnerMatch</code>.</p>
@@ -184,7 +184,7 @@
 <section id="redirect"><title>URL Redirection</title>
 
     <p>The configuration directives discussed in the above sections
-    tell Apache to get content from a specific place in the filesystem
+    tell httpd to get content from a specific place in the filesystem
     and return it to the client. Sometimes, it is desirable instead to
     inform the client that the requested content is located at a
     different URL, and instruct the client to make a new request with
@@ -205,7 +205,7 @@
     substituted for <code>/foo/</code>. You can redirect clients to
     any server, not only the origin server.</p>
 
-    <p>Apache also provides a <directive
+    <p>httpd also provides a <directive
     module="mod_alias">RedirectMatch</directive> directive for more
     complicated rewriting problems. For example, to redirect requests
     for the site home page to a different site, but leave all other
@@ -223,7 +223,7 @@
 
 <section id="proxy"><title>Reverse Proxy</title>
 
-<p>Apache also allows you to bring remote documents into the URL space
+<p>httpd also allows you to bring remote documents into the URL space
 of the local server.  This technique is called <em>reverse
 proxying</em> because the web server acts like a proxy server by
 fetching the documents from a remote server and returning them to the
@@ -289,7 +289,7 @@ is available to rewrite links in HTML and XHTML.</p>
 
     <p>Another common cause of "File Not Found" errors is
     accidental mistyping of URLs, either directly in the browser,
-    or in HTML links. Apache provides the module
+    or in HTML links. httpd provides the module
     <module>mod_speling</module> (sic) to help with
     this problem. When this module is activated, it will intercept
     "File Not Found" errors and look for a resource with a similar
@@ -307,7 +307,7 @@ is available to rewrite links in HTML and XHTML.</p>
     is followed by a URL redirection and a new request from the
     client.</p>
 
-    <p>If all attempts to locate the content fail, Apache returns
+    <p>If all attempts to locate the content fail, httpd returns
     an error page with HTTP status code 404 (file not found). The
     appearance of this page is controlled with the
     <directive module="core">ErrorDocument</directive> directive
