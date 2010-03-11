@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.64
 
+  *) SECURITY: CVE-2010-0434 (cve.mitre.org)
+     Ensure each subrequest has a shallow copy of headers_in so that the
+     parent request headers are not corrupted.  Elimiates a problematic
+     optimization in the case of no request body.  PR 48359
+     [Jake Scott, William Rowe, Ruediger Pluem]
+
   *) SECURITY: CVE-2008-2364 (cve.mitre.org)
      mod_proxy_http: Better handling of excessive interim responses
      from origin server to prevent potential denial of service and high

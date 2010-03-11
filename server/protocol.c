@@ -1022,7 +1022,7 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
 
     rnew->status          = HTTP_OK;
 
-    rnew->headers_in      = r->headers_in;
+    rnew->headers_in      = apr_table_copy(rnew->pool, r->headers_in);
     rnew->subprocess_env  = apr_table_copy(rnew->pool, r->subprocess_env);
     rnew->headers_out     = apr_table_make(rnew->pool, 5);
     rnew->err_headers_out = apr_table_make(rnew->pool, 5);
