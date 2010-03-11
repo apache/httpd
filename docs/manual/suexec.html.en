@@ -25,8 +25,8 @@
 <a href="./tr/suexec.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>The <strong>suEXEC</strong> feature provides
-    Apache users the ability
+    <p>The <strong>suEXEC</strong> feature provides users of the Apache
+    HTTP Server the ability
     to run <strong>CGI</strong> and <strong>SSI</strong> programs
     under user IDs different from the user ID of the calling
     web server. Normally, when a CGI or SSI program executes, it
@@ -57,8 +57,8 @@
 <h2><a name="before" id="before">Before we begin</a></h2>
 
     <p>Before jumping head-first into this document,
-    you should be aware of the assumptions made on the part of the
-    Apache Group and this document.</p>
+    you should be aware that certain assumptions are made about you and
+    the environment in which you will be using suexec.</p>
 
     <p>First, it is assumed that you are using a UNIX
     derivative operating system that is capable of
@@ -83,11 +83,11 @@
     security risks. It is <strong>highly</strong> recommended you
     not alter the suEXEC code unless you are well versed in the
     particulars of security programming and are willing to share
-    your work with the Apache Group for consideration.</p>
+    your work with the Apache HTTP Server development team for consideration.</p>
 
     <p>Fourth, and last, it has been the decision of
-    the Apache Group to <strong>NOT</strong> make suEXEC part of
-    the default installation of Apache. To this end, suEXEC
+    the Apache HTTP Server development team to <strong>NOT</strong> make suEXEC part of
+    the default installation of Apache htpd. To this end, suEXEC
     configuration requires of the administrator careful attention
     to details. After due consideration has been given to the
     various settings for suEXEC, the administrator may install
@@ -95,7 +95,7 @@
     these settings need to be carefully determined and specified by
     the administrator to properly maintain system security during
     the use of suEXEC functionality. It is through this detailed
-    process that the Apache Group hopes to limit suEXEC
+    process that we hope to limit suEXEC
     installation only to those who are careful and determined
     enough to use it.</p>
 
@@ -111,11 +111,11 @@
     taken to ensure your system's security.</p>
 
     <p><strong>suEXEC</strong> is based on a setuid
-    "wrapper" program that is called by the main Apache web server.
+    "wrapper" program that is called by the main Apache HTTP Server.
     This wrapper is called when an HTTP request is made for a CGI
     or SSI program that the administrator has designated to run as
     a userid other than that of the main server. When such a
-    request is made, Apache provides the suEXEC wrapper with the
+    request is made, Apache httpd provides the suEXEC wrapper with the
     program's name and the user and group IDs under which the
     program is to execute.</p>
 
@@ -142,10 +142,10 @@
         <p class="indent">
           The wrapper will only execute if it is given the proper
           number of arguments. The proper argument format is known
-          to the Apache web server. If the wrapper is not receiving
+          to the Apache HTTP Server. If the wrapper is not receiving
           the proper number of arguments, it is either being
           hacked, or there is something wrong with the suEXEC
-          portion of your Apache binary.
+          portion of your Apache httpd binary.
         </p>
       </li>
 
@@ -256,8 +256,7 @@
       </li>
 
       <li>
-        <strong>Is the directory within the Apache
-        webspace?</strong>
+        <strong>Is the directory within the httpd webspace?</strong>
 
         <p class="indent">
           If the request is for a regular portion of the server, is
@@ -380,7 +379,7 @@
       <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
 
       <dd>The <a href="mod/mpm_common.html#user">username</a> under which
-      Apache normally runs. This is the only user allowed to
+      httpd normally runs. This is the only user allowed to
       execute this program.</dd>
 
       <dt><code>--with-suexec-userdir=<em>DIR</em></code></dt>
@@ -403,7 +402,7 @@
 
       <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
 
-      <dd>Define as the DocumentRoot set for Apache. This will be
+      <dd>Define as the DocumentRoot set for httpd. This will be
       the only hierarchy (aside from <code class="directive"><a href="./mod/mod_userdir.html#userdir">UserDir</a></code>s) that can be used for suEXEC behavior. The
       default directory is the <code>--datadir</code> value with the suffix
       "<code>/htdocs</code>", <em>e.g.</em> if you configure with
@@ -443,7 +442,7 @@
 
       <p>If you have enabled the suEXEC feature with the
       <code>--enable-suexec</code> option the <code>suexec</code> binary
-      (together with Apache itself) is automatically built if you execute
+      (together with httpd itself) is automatically built if you execute
       the <code>make</code> command.</p>
 
       <p>After all components have been built you can execute the
@@ -469,7 +468,7 @@
       always the possibility that a system or library call suEXEC uses
       before this check may be exploitable on your system. To counter
       this, and because it is best-practise in general, you should use
-      filesystem permissions to ensure that only the group Apache
+      filesystem permissions to ensure that only the group httpd
       runs as may execute suEXEC.</p>
 
       <p>If for example, your web server is configured to run as:</p>
@@ -487,7 +486,7 @@
           chmod 4750 /usr/local/apache2/bin/suexec<br />
       </code></p></div>
 
-      <p>This will ensure that only the group Apache runs as can even
+      <p>This will ensure that only the group httpd runs as can even
       execute the suEXEC wrapper.</p>
     
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -495,10 +494,10 @@
 <h2><a name="enable" id="enable">Enabling &amp; Disabling
     suEXEC</a></h2>
 
-    <p>Upon startup of Apache, it looks for the file
+    <p>Upon startup of httpd, it looks for the file
     <code class="program"><a href="./programs/suexec.html">suexec</a></code> in the directory defined by the
     <code>--sbindir</code> option (default is
-    "/usr/local/apache/sbin/suexec"). If Apache finds a properly
+    "/usr/local/apache/sbin/suexec"). If httpd finds a properly
     configured suEXEC wrapper, it will print the following message
     to the error log:</p>
 
@@ -511,11 +510,11 @@
     it, or the executable is not installed <em>setuid root</em>.</p>
 
      <p>If you want to enable the suEXEC mechanism for the first time
-    and an Apache server is already running you must kill and
-    restart Apache. Restarting it with a simple HUP or USR1 signal
+    and an Apache HTTP Server is already running you must kill and
+    restart httpd. Restarting it with a simple HUP or USR1 signal
     will not be enough. </p>
      <p>If you want to disable suEXEC you should kill and restart
-    Apache after you have removed the <code class="program"><a href="./programs/suexec.html">suexec</a></code> file.</p>
+    httpd after you have removed the <code class="program"><a href="./programs/suexec.html">suexec</a></code> file.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">Using suEXEC</a></h2>
@@ -558,7 +557,7 @@
 
     <p><strong>NOTE!</strong> This section may not be
     complete. For the latest revision of this section of the
-    documentation, see the Apache Group's <a href="http://httpd.apache.org/docs/trunk/suexec.html">Online
+    documentation, see the <a href="http://httpd.apache.org/docs/trunk/suexec.html">Online
     Documentation</a> version.</p>
 
     <p>There are a few points of interest regarding
@@ -577,7 +576,7 @@
           virtual host requests, or one top-level personal document
           root for userdir requests. For example, if you have four
           VirtualHosts configured, you would need to structure all
-          of your VHosts' document roots off of one main Apache
+          of your VHosts' document roots off of one main httpd
           document hierarchy to take advantage of suEXEC for
           VirtualHosts. (Example forthcoming.)
         </p>
