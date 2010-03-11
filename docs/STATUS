@@ -121,6 +121,13 @@ Things That Need Fixing
   perhaps based around mod_example, or one of the other simple example
   modules?
 
+- http://httpd.apache.org/docs/trunk/developer/ is a graveyard, and a
+  profound embarrassment.
+    - Purge all the dead links
+    - Figure out how to auto-generate API docs, and do it
+    - Introductory module authoring doc
+    - Verify links to external resources at least every year
+
 LaTeX Todo list
 ==================
 
