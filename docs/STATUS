@@ -25,6 +25,8 @@ Things That Need Fixing
     - Document the translation process.
     - Generally update it to make it reflect the current reality of how
       we work.
+    -  Improving the documentation of the documentations' build system
+       itself (requirements, procedures)
 
 - Update this document. Determine which of these issues are in fact
   still open, and which have already been dealt with.
@@ -40,6 +42,10 @@ Things That Need Fixing
   even sure what to say needs done. Can we get someone to elaborate on
   what, exactly, needs written? Ivan Ristic has said maybe he would be
   willing to contribute.
+  - More content and better organisation
+  - mod_dav resources are owned by the httpd. Perhaps write up the
+    two-httpd dav setup covered in Rich Bowen's DAV Apachecon
+    presentation.
 
 - Performance doc is way too low-level. Several people have said that
   they might help out here, but it's a significant undertaking, and more
@@ -55,6 +61,8 @@ Things That Need Fixing
 - New Auth system
     - Much clean-up and enhancement of aaa howto
     - Independent note on how to upgrade to new auth system
+    - Discussion of DBD auth, and, in particular, examples of how to set
+      up auth using each of the supported databases.
 
 - modules docs
     - mod_suexec: very little documentation
@@ -84,12 +92,12 @@ Things That Need Fixing
 
 - How does <Proxy> fit into sections.html?
 
-* Missing documentation for the support program checkgid
+- Missing documentation for the support program checkgid
 
-* New user docs: Directory Handling (mod_dir/mod_autoindex/etc)
+- New user docs: Directory Handling (mod_dir/mod_autoindex/etc)
   (draft available in wiki)
 
-* Enhancements to the DTD/XSL:
+- Enhancements to the DTD/XSL:
   - New index: directives by context, including listing which directives
     are available for each AllowOverride setting.
   - New index: backout modules by type (aaa, mappers, loggers etc.)
@@ -102,17 +110,16 @@ Things That Need Fixing
   - remove <pre> elements. Use <br /> and <indent> elements to get
     a similar effect.
 
-* Improving the documentation of the documentations' build system
-  itself (requirements, procedures)
-
-* Improving the "security docs"
-  - More content and better organisation
-  - mod_dav ressources are owned by the httpd
-
-* Provide example solutions for the mapping of encodings, especially
+- Provide example solutions for the mapping of encodings, especially
   for .gz etc. (also in regard to our default configuration)
 
-* Change the name 'Apache' to 'Apache HTTP Server' or 'http'.
+- How-To style documents for more of the daily tasks
+    - Logging and log reporting
+    - ?
+
+- Writing modules - Can we provide a basic intro to writing modules,
+  perhaps based around mod_example, or one of the other simple example
+  modules?
 
 LaTeX Todo list
 ==================
