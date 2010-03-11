@@ -87,7 +87,7 @@
 
     <p>Fourth, and last, it has been the decision of
     the Apache HTTP Server development team to <strong>NOT</strong> make suEXEC part of
-    the default installation of Apache htpd. To this end, suEXEC
+    the default installation of Apache httpd. To this end, suEXEC
     configuration requires of the administrator careful attention
     to details. After due consideration has been given to the
     various settings for suEXEC, the administrator may install
