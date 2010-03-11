@@ -33,6 +33,17 @@ Things That Need Fixing
 - The FAQ never amounted to much. Review the current FAQ, which is
   1.3-era, and bring it into this century.
 
+- Security docs are unhelpful, and assume that the reader knows nothing.
+  Need something a little more advanced, which either discusses
+  application-level security, or links to something that does. I'm not
+  even sure what to say needs done. Can we get someone to elaborate on
+  what, exactly, needs written? Ivan Ristic has said maybe he would be
+  willing to contribute.
+
+- Performance doc is way too low-level. Several people have said that
+  they might help out here, but it's a significant undertaking, and more
+  than a little daunting.
+ 
 - Windows platform docs are in desperate need of rewrites/updates for 2.x.
     - Bill Rowe and Bill Stoddard are good contacts for tech questions.
     - "using apache" has been done, "compiling apache" is still open
@@ -71,9 +82,6 @@ Things That Need Fixing
     mads said he was working on this, but...
 
 - How does <Proxy> fit into sections.html?
-
-Documentation improvements
-==========================
 
 * Missing documentation for the support program checkgid
 
