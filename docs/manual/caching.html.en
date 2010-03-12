@@ -25,7 +25,7 @@
 
     <p>This document supplements the <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>,
     <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> and <a href="programs/htcacheclean.html">htcacheclean</a> reference documentation.
-    It describes how to use Apache's caching features to accelerate web and 
+    It describes how to use the Apache HTTP Server's caching features to accelerate web and 
     proxy serving, while avoiding common problems and misconfigurations.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
@@ -61,7 +61,7 @@
     basic, but sometimes useful, form of caching. Rather than maintain
     the complexity of actively ensuring the cachability of URLs,
     <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> offers file-handle and memory-mapping 
-    tricks to keep a cache of files as they were when Apache was last 
+    tricks to keep a cache of files as they were when httpd was last 
     started. As such, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> is aimed at improving 
     the access time to local static files which do not change very
     often.</p>
@@ -98,7 +98,7 @@
 
     <p>If the URL is not found within the cache, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
     will add a <a href="filter.html">filter</a> to the request handling. After
-    Apache has located the content by the usual means, the filter will be run
+    httpd has located the content by the usual means, the filter will be run
     as the content is served. If the content is determined to be cacheable, 
     the content will be saved to the cache for future serving.</p>
 
@@ -166,7 +166,7 @@
 
       <p>When content expires from the cache and is re-requested from the 
       backend or content provider, rather than pass on the original request,
-      Apache will use a conditional request instead.</p>
+      httpd will use a conditional request instead.</p>
 
       <p>HTTP offers a number of headers which allow a client, or cache
       to discern between different versions of the same content. For
@@ -194,7 +194,7 @@
       <p>Secondly, conditional requests are usually less strenuous on the
       backend. For static files, typically all that is involved is a call
       to <code>stat()</code> or similar system call, to see if the file has
-      changed in size or modification time. As such, even if Apache is
+      changed in size or modification time. As such, even if httpd is
       caching local content, even expired content may still be served faster
       from the cache if it has not changed. As long as reading from the cache
       store is faster than reading from the backend (e.g. <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> with memory disk
@@ -204,9 +204,9 @@
     <h3>What Can be Cached?</h3>
       
 
-      <p>As mentioned already, the two styles of caching in Apache work 
+      <p>As mentioned already, the two styles of caching in httpd work 
       differently, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> caching maintains file 
-      contents as they were when Apache was started. When a request is 
+      contents as they were when httpd was started. When a request is 
       made for a file that is cached by this module, it is intercepted 
       and the cached file is served.</p>
 
@@ -306,7 +306,7 @@ Vary: negotiate,accept-language,accept-charset
       <p>Using <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> is very much like having a built
       in reverse-proxy. Requests will be served by the caching module unless
       it determines that the backend should be queried. When caching local
-      resources, this drastically changes the security model of Apache.</p>
+      resources, this drastically changes the security model of httpd.</p>
 
       <p>As traversing a filesystem hierarchy to examine potential
       <code>.htaccess</code> files would be a very expensive operation,
@@ -331,7 +331,7 @@ Vary: negotiate,accept-language,accept-charset
       <p>As requests to end-users can be served from the cache, the cache
       itself can become a target for those wishing to deface or interfere with
       content. It is important to bear in mind that the cache must at all
-      times be writable by the user which Apache is running as. This is in 
+      times be writable by the user which httpd is running as. This is in 
       stark contrast to the usually recommended situation of maintaining
       all content unwritable by the Apache user.</p>
 
@@ -343,7 +343,7 @@ Vary: negotiate,accept-language,accept-charset
       <p>This presents a somewhat elevated risk in comparison to the other 
       types of attack it is possible to make as the Apache user. If you are 
       using <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> you should bear this in mind - 
-      ensure you upgrade Apache when security upgrades are announced and 
+      ensure you upgrade httpd when security upgrades are announced and 
       run CGI processes as a non-Apache user using <a href="suexec.html">suEXEC</a> if possible.</p>
 
     
@@ -351,15 +351,16 @@ Vary: negotiate,accept-language,accept-charset
     <h3>Cache Poisoning</h3>
       
 
-      <p>When running Apache as a caching proxy server, there is also the
+      <p>When running httpd as a caching proxy server, there is also the
       potential for so-called cache poisoning. Cache Poisoning is a broad 
       term for attacks in which an attacker causes the proxy server to 
       retrieve incorrect (and usually undesirable) content from the backend.
       </p>
 
-      <p>For example if the DNS servers used by your system running Apache
+      <p>For example if the DNS servers used by your system running
+      httpd
       are vulnerable to DNS cache poisoning, an attacker may be able to control
-      where Apache connects to when requesting content from the origin server.
+      where httpd connects to when requesting content from the origin server.
       Another example is so-called HTTP request-smuggling attacks.</p>
 
       <p>This document is not the correct place for an in-depth discussion
@@ -378,13 +379,14 @@ Vary: negotiate,accept-language,accept-charset
 
     <p>The act of opening a file can itself be a source of delay, particularly 
     on network filesystems. By maintaining a cache of open file descriptors
-    for commonly served files, Apache can avoid this delay. Currently Apache
+    for commonly served files, httpd can avoid this delay. Currently
+        httpd
     provides one implementation of File-Handle Caching.</p> 
 
     <h3>CacheFile</h3>
       
 
-      <p>The most basic form of caching present in Apache is the file-handle
+      <p>The most basic form of caching present in httpd is the file-handle
       caching provided by <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>. Rather than caching 
       file-contents, this cache maintains a table of open file descriptors. Files 
       to be cached in this manner are specified in the configuration file using
@@ -393,7 +395,7 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>The 
       <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> directive 
-      instructs Apache to open the file when Apache is started and to re-use 
+      instructs httpd to open the file when it is started and to re-use 
       this file-handle for all subsequent access to this file.</p>
 
       <div class="example"><pre>CacheFile /usr/local/apache2/htdocs/index.html</pre></div>
@@ -404,15 +406,15 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>Although using <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code>
       does not cause the file-contents to be cached per-se, it does mean
-      that if the file changes while Apache is running these changes will
+      that if the file changes while httpd is running these changes will
       not be picked up. The file will be consistently served as it was
-      when Apache was started.</p>
+      when httpd was started.</p>
 
-      <p>If the file is removed while Apache is running, Apache will continue
+      <p>If the file is removed while httpd is running, it will continue
       to maintain an open file descriptor and serve the file as it was when
-      Apache was started. This usually also means that although the file
+      httpd was started. This usually also means that although the file
       will have been deleted, and not show up on the filesystem, extra free
-      space will not be recovered until Apache is stopped and the file
+      space will not be recovered until httpd is stopped and the file
       descriptor closed.</p>
     
 
@@ -435,7 +437,7 @@ Vary: negotiate,accept-language,accept-charset
     efficiently. By caching files in memory you decrease the amount of 
     memory available on the system. As we'll see, in the case of operating
     system caching, this is not so much of an issue, but when using
-    Apache's own in-memory caching it is important to make sure that you
+    httpd's own in-memory caching it is important to make sure that you
     do not allocate too much memory to a cache. Otherwise the system
     will be forced to swap out memory, which will likely degrade 
     performance.</p>
@@ -466,37 +468,37 @@ sys     0m0.000s</pre></div>
       <p>By ensuring there is "spare" memory on your system, you can ensure 
       that more and more file-contents will be stored in this cache. This 
       can be a very efficient means of in-memory caching, and involves no 
-      extra configuration of Apache at all.</p>
+      extra configuration of httpd at all.</p>
 
       <p>Additionally, because the operating system knows when files are 
       deleted or modified, it can automatically remove file contents from the 
-      cache when neccessary. This is a big advantage over Apache's in-memory 
+      cache when neccessary. This is a big advantage over httpd's in-memory 
       caching which has no way of knowing when a file has changed.</p>
     
 
     <p>Despite the performance and advantages of automatic operating system
     caching there are some circumstances in which in-memory caching may be 
-    better performed by Apache.</p>
+    better performed by httpd.</p>
 
     <h3>MMapFile Caching</h3>
       
 
       <p><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> provides the 
       <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> directive, which
-      allows you to have Apache map a static file's contents into memory at
-      start time (using the mmap system call). Apache will use the in-memory 
+      allows you to have httpd map a static file's contents into memory at
+      start time (using the mmap system call). httpd will use the in-memory 
       contents for all subsequent accesses to this file.</p>
 
       <div class="example"><pre>MMapFile /usr/local/apache2/htdocs/index.html</pre></div>
 
       <p>As with the
       <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> directive, any
-      changes in these files will not be picked up by Apache after it has
+      changes in these files will not be picked up by httpd after it has
       started.</p>
 
       <p> The <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> 
       directive does not keep track of how much memory it allocates, so
-      you must ensure not to over-use the directive. Each Apache child
+      you must ensure not to over-use the directive. Each httpd child
       process will replicate this memory, so it is critically important
       to ensure that the files mapped are not so large as to cause the
       system to swap memory.</p>
@@ -588,7 +590,7 @@ CacheDirLength 1</pre></div>
       as it is expired, it does not maintain any information on the total
       size of the cache or how little free space may be left.</p>
 
-      <p>Instead, provided with Apache is the <a href="programs/htcacheclean.html">htcacheclean</a> tool which, as the name
+      <p>Instead, provided with httpd is the <a href="programs/htcacheclean.html">htcacheclean</a> tool which, as the name
       suggests, allows you to clean the cache periodically. Determining 
       how frequently to run <a href="programs/htcacheclean.html">htcacheclean</a> and what target size to 
       use for the cache is somewhat complex and trial and error may be needed to
