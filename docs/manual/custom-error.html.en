@@ -26,147 +26,122 @@
 <a href="./tr/custom-error.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Additional functionality allows webmasters to configure the response
-    of Apache to some error or problem.</p>
 
-    <p>Customizable responses can be defined to be activated in the event of
-    a server detected error or problem.</p>
+    <p>Although the Apache HTTP Server provides generic error responses
+    in the event of 4xx or 5xx HTTP status codes, these responses are
+    rather stark, uninformative, and can be indimidating to site users.
+    You may wish to provide custom error responses which are either 
+    friendlier, or in some language other than English, or perhaps which
+    are styled more in line with your site layout.</p>
 
-    <p>If a script crashes and produces a "500 Server Error" response,
-    then this response can be replaced with either some friendlier text or by
-    a redirection to another URL (local or external).</p>
+    <p>Customized error responses can be defined for any HTTP status
+    code designated as an error condition - that is, any 4xx or 5xx
+    status.</p>
+
+    <p>Additionally, a set of values are provided, so
+    that the error document can be customized further based on the
+    values of these variables, using <a href="howto/ssi.html">Server
+    Side Includes</a>. Or, you can have error conditions handled by a
+    cgi program, or other dynamic handler (PHP, mod_perl, etc) which
+    makes use of these variables.</p>
+
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">Behavior</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#configuration">Configuration</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#custom">Custom Error Responses and Redirects</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#configuration">Configuration</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#variables">Available Variables</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#custom">Customizing Error Responses</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#multi-lang">Multi Language Customer Error Documents</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="behavior" id="behavior">Behavior</a></h2>
-    
-
-    <h3>Old Behavior</h3>
-      
-
-      <p>NCSA httpd 1.3 would return some boring old error/problem message
-      which would often be meaningless to the user, and would provide no
-      means of logging the symptoms which caused it.</p>
-    
-
-    <h3>New Behavior</h3>
-      
-
-      <p>The server can be asked to:</p>
-
-      <ol>
-        <li>Display some other text, instead of the NCSA hard coded
-        messages, or</li>
-
-        <li>redirect to a local URL, or</li>
-
-        <li>redirect to an external URL.</li>
-      </ol>
-
-      <p>Redirecting to another URL can be useful, but only if some
-      information can be passed which can then be used to explain and/or log
-      the error/problem more clearly.</p>
-
-      <p>To achieve this, Apache will define new CGI-like environment
-      variables:</p>
-
-      <div class="example"><p><code>
-        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap,
-            image/jpeg<br />
-        REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX A.09.05
-            9000/712)<br />
-        REDIRECT_PATH=.:/bin:/usr/local/bin:/etc<br />
-        REDIRECT_QUERY_STRING=<br />
-        REDIRECT_REMOTE_ADDR=121.345.78.123<br />
-        REDIRECT_REMOTE_HOST=ooh.ahhh.com<br />
-        REDIRECT_SERVER_NAME=crash.bang.edu<br />
-        REDIRECT_SERVER_PORT=80<br />
-        REDIRECT_SERVER_SOFTWARE=Apache/0.8.15<br />
-        REDIRECT_URL=/cgi-bin/buggy.pl
-      </code></p></div>
-
-      <p>Note the <code>REDIRECT_</code> prefix.</p>
-
-      <p>At least <code>REDIRECT_URL</code> and
-      <code>REDIRECT_QUERY_STRING</code> will be passed to the
-      new URL (assuming it's a cgi-script or a cgi-include). The
-      other variables will exist only if they existed prior to
-      the error/problem. <strong>None</strong> of these will be
-      set if your <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> is an
-      <em>external</em> redirect (anything starting with a
-      scheme name like <code>http:</code>, even if it refers to the same host
-      as the server).</p>
-    
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
 <h2><a name="configuration" id="configuration">Configuration</a></h2>
-    
 
-    <p>Use of <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> is enabled
-    for .htaccess files when the
-    <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is set to FileInfo.</p>
-
-    <p>Here are some examples...</p>
+    <p>Custom error documents are configured using the <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> directive.
+    <code>ErrorDocument</code>, which may be used in global,
+    virtualhost, or directory context. It may be used in .htaccess files
+    if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is set to 
+    FileInfo.</p>
 
     <div class="example"><p><code>
-      ErrorDocument 500 /cgi-bin/crash-recover <br />
-      ErrorDocument 500 "Sorry, our script crashed. Oh dear" <br />
-      ErrorDocument 500 http://xxx/ <br />
-      ErrorDocument 404 /Lame_excuses/not_found.html <br />
-      ErrorDocument 401 /Subscription/how_to_subscribe.html
+      ErrorDocument 500 "Sorry, our script crashed. Oh dear"<br />
+      ErrorDocument 500 /cgi-bin/crash-recover<br />
+      ErrorDocument 500 http://error.example.com/server_error.html<br />
+      ErrorDocument 404 /errors/not_found.html <br />
+      ErrorDocument 401 /subscription/how_to_subscribe.html
     </code></p></div>
 
-    <p>The syntax is,</p>
+    <p>The syntax of the <code>ErrorDocuemnt</code> directrive is:</p>
 
     <div class="example"><p><code>
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
     </code></p></div>
 
-    <p>where the action can be,</p>
+    <p>where the action can be one of:</p>
 
     <ol>
       <li>Text to be displayed. Wrap the text with quotes (").</li>
-
-      <li>An external URL to redirect to.</li>
-
       <li>A local URL to redirect to.</li>
+      <li>An external URL to redirect to.</li>
     </ol>
+
+    <p>When redirecting to a local URL, additional environment variables
+    are set so that the response can be further customized. They are not sent to
+    external URLs.</p>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="custom" id="custom">Custom Error Responses and Redirects</a></h2>
-    
+<h2><a name="variables" id="variables">Available Variables</a></h2>
 
-    <p>Apache's behavior to redirected URLs has been modified so
-    that additional environment variables are available to a
-    script/server-include.</p>
+      <p>Redirecting to another URL can be useful, but only if some
+      information can be passed which can then be used to explain or log
+      the error condition more clearly.</p>
 
-    <h3>Old behavior</h3>
-      
+      <p>To achieve this, when the error redirect is sent, additional
+      environment variables will be set, which will be generated from
+      the headers provided to the original request by prepending
+      'REDIRECT_' onto the original header name. This provides the error
+      document the context of the original request.</p>
 
-      <p>Standard CGI vars were made available to a script which
-      has been redirected to. No indication of where the
-      redirection came from was provided.</p>
-    
+      <p>For example, you might recieve, in addition to more usual
+      environment variables, the following.</p>
 
-    <h3>New behavior</h3>
-      
+      <div class="example"><p><code>
+        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/jpeg, image/png<br />
+        REDIRECT_HTTP_USER_AGENT=Mozilla/5.0 Fedora/3.5.8-1.fc12 Firefox/3.5.8<br />
+        REDIRECT_PATH=.:/bin:/usr/local/bin:/sbin<br />
+        REDIRECT_QUERY_STRING=<br />
+        REDIRECT_REMOTE_ADDR=121.345.78.123<br />
+        REDIRECT_REMOTE_HOST=client.example.com<br />
+        REDIRECT_SERVER_NAME=www.example.edu<br />
+        REDIRECT_SERVER_PORT=80<br />
+        REDIRECT_SERVER_SOFTWARE=Apache/2.2.15<br />
+        REDIRECT_URL=/cgi-bin/buggy.pl
+      </code></p></div>
 
-      <p>A new batch of environment variables will be initialized
-      for use by a script which has been redirected to. Each new
-      variable will have the prefix <code>REDIRECT_</code>.
-      <code>REDIRECT_</code> environment variables are created from
-      the CGI environment variables which existed prior to the
-      redirect, they are renamed with a <code>REDIRECT_</code>
+      <p><code>REDIRECT_</code> environment variables are created from
+      the environment variables which existed prior to the
+      redirect. They are renamed with a <code>REDIRECT_</code>
       prefix, <em>i.e.</em>, <code>HTTP_USER_AGENT</code> becomes
-      <code>REDIRECT_HTTP_USER_AGENT</code>. In addition to these
-      new variables, Apache will define <code>REDIRECT_URL</code>
-      and <code>REDIRECT_STATUS</code> to help the script trace its
-      origin. Both the original URL and the URL being redirected to
-      can be logged in the access log.</p>
+      <code>REDIRECT_HTTP_USER_AGENT</code>.</p>
+
+      <p><code>REDIRECT_URL</code>, <code>REDIRECT_STATUS</code>, and
+      <code>REDIRECT_QUERY_STRING</code> are guaranteed to be set, and
+      the other headers will be set only if they existed prior to the
+      error condition.</p>
+
+      <p><strong>None</strong> of these will be
+      set if the <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> target is an
+      <em>external</em> redirect (anything starting with a
+      scheme name like <code>http:</code>, even if it refers to the same host
+      as the server).</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="custom" id="custom">Customizing Error Responses</a></h2>
+
+      <p>If you point your <code>ErrorDocument</code> to some variety of
+      dynamic handler such as a server-side include document, CGI
+      script, or some variety of other handler, you may wish to use the
+      available custom environent variables to customize this
+      response.</p>
 
       <p>If the ErrorDocument specifies a local redirect to a CGI
       script, the script should include a "<code>Status:</code>"
@@ -186,13 +161,46 @@
       condition, such as <code>404&nbsp;Not&nbsp;Found</code>, it can
       use the specific code and error text instead.</p>
 
-      <p>Note that the script <em>must</em> emit an appropriate
-      <code>Status:</code> header (such as <code>302&nbsp;Found</code>), if the
-      response contains a <code>Location:</code> header (in order to issue a
-      client side redirect). Otherwise the <code>Location:</code> header may
-      have no effect.</p>
-    
-  </div></div>
+      <p>Note that if the response contains <code>Location:</code>
+      header (in order to issue a client-side redirect), the script
+      <em>must</em> emit an appropriate <code>Status:</code> header 
+      (such as <code>302&nbsp;Found</code>). Otherwise the 
+      <code>Location:</code> header may have no effect.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="multi-lang" id="multi-lang">Multi Language Customer Error Documents</a></h2>
+
+    <p>Provided with your installation of the Apache HTTP Server is a
+    directory of custom error documents translated into 16 different
+    languages. There's also a configuration file in the
+    <code>conf/extra</code> configuration directory that can be included
+    to enable this feature.</p>
+
+    <p>In your server configuration file, you'll see a line such as:</p>
+
+    <div class="example"><p><code>
+    # Multi-language error messages<br />
+    #Include conf/extra/httpd-multilang-errordoc.conf
+    </code></p></div>
+
+    <p>Uncommenting this <code>Include</code> line will enable this
+    feature, and provide language-negotiated error messages, based on
+    the language preference set in the client browser.</p>
+
+    <p>Additionally, these documents contain various of the
+    <code>REDIRECT_</code> variables, so that additional information can
+    be provided to the end-user about what happened, and what they can
+    do now.</p>
+
+    <p>These documents can be customized to whatever degree you wish to
+    provide more useful information to users about your site, and what
+    they can expect to find there.</p>
+
+    <p><code class="module"><a href="./mod/mod_includes.html">mod_includes</a></code> and <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> 
+    must be enabled to use this feature.</p>
+
+ </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/custom-error.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
