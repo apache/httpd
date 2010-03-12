@@ -143,7 +143,8 @@ To Do List
 - http://httpd.apache.org/docs/trunk/developer/ is a graveyard, and a
   profound embarrassment.
     - Purge all the dead links
-    - Figure out how to auto-generate API docs, and do it
+    - API docs are generated via 'make dox'. Find somewhere that we can
+      do this on a schedule, and link to that from the documentation.
     - Introductory module authoring doc
     - Verify links to external resources at least every year
 
