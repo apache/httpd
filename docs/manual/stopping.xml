@@ -25,13 +25,13 @@
   <title>Stopping and Restarting</title>
 
 <summary>
-    <p>This document covers stopping and restarting Apache on
+    <p>This document covers stopping and restarting the Apache HTTP Server (httpd) on
     Unix-like systems. Windows NT, 2000 and XP users should see
-    <a href="platform/windows.html#winsvc">Running Apache as a
+    <a href="platform/windows.html#winsvc">Running httpd as a
     Service</a> and Windows 9x and ME users should see <a
-    href="platform/windows.html#wincons">Running Apache as a
+    href="platform/windows.html#wincons">Running httpd as a
     Console Application</a> for information on how to control
-    Apache on those platforms.</p>
+    httpd on those platforms.</p>
 </summary>
 
 <seealso><program>httpd</program></seealso>
@@ -40,7 +40,7 @@
 
 <section id="introduction"><title>Introduction</title>
 
-    <p>In order to stop or restart Apache, you must send a signal to
+    <p>In order to stop or restart the Apache HTTP Server, you must send a signal to
     the running <program>httpd</program> processes.  There are two ways to
     send the signals.  First, you can use the unix <code>kill</code>
     command to directly send signals to the processes. You will
@@ -211,7 +211,7 @@ syntax error(s).</note>
     <note><p>The <code>graceful-stop</code> signal allows you to run multiple
     identically configured instances of <program>httpd</program> at the 
     same time. This is a powerful feature when performing graceful 
-    upgrades of Apache, however it can also cause deadlocks and race 
+    upgrades of httpd, however it can also cause deadlocks and race 
     conditions with some configurations.</p> 
 
     <p>Care has been taken to ensure that on-disk files such as lock files
