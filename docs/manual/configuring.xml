@@ -25,8 +25,7 @@
   <title>Configuration Files</title>
 
 <summary>
-<p>This document describes the files used to configure the Apache
-HTTP server.</p>
+<p>This document describes the files used to configure the Apache HTTP server (httpd).</p>
 </summary>
 
   <section id="main">
@@ -42,7 +41,7 @@ HTTP server.</p>
       </directivelist>
     </related>
 
-    <p>Apache is configured by placing <a
+    <p>The Apache HTTP Server is configured by placing <a
     href="mod/directives.html">directives</a> in plain text
     configuration files. The main configuration file is usually called
     <code>httpd.conf</code>. The location of this file is set at
@@ -52,7 +51,7 @@ HTTP server.</p>
     directive, and wildcards can be used to include many configuration
     files. Any directive may be placed in any of these configuration
     files.  Changes to the main configuration files are only
-    recognized by Apache when it is started or restarted.</p>
+    recognized by httpd when it is started or restarted.</p>
 
     <p>The server also reads a file containing mime document types;
     the filename is set by the <directive
@@ -63,7 +62,7 @@ HTTP server.</p>
   <section id="syntax">
     <title>Syntax of the Configuration Files</title>
 
-    <p>Apache configuration files contain one directive per line.
+    <p>httpd configuration files contain one directive per line.
     The back-slash "\" may be used as the last character on a line
     to indicate that the directive continues onto the next line.
     There must be no other characters or white space between the
@@ -116,18 +115,18 @@ HTTP server.</p>
       </directivelist>
     </related>
 
-    <p>Apache is a modular server. This implies that only the most
+    <p>httpd is a modular server. This implies that only the most
     basic functionality is included in the core server. Extended
     features are available through <a
     href="mod/">modules</a> which can be loaded
-    into Apache. By default, a <a
+    into httpd. By default, a <a
     href="mod/module-dict.html#Status">base</a> set of modules is
     included in the server at compile-time. If the server is
     compiled to use <a href="dso.html">dynamically loaded</a>
     modules, then modules can be compiled separately and added at
     any time using the <directive module="mod_so">LoadModule</directive>
     directive.
-    Otherwise, Apache must be recompiled to add or remove modules.
+    Otherwise, httpd must be recompiled to add or remove modules.
     Configuration directives may be included conditional on a
     presence of a particular module by enclosing them in an <directive
     module="core" type="section">IfModule</directive> block.</p>
@@ -166,7 +165,7 @@ HTTP server.</p>
     locations or URLs. They can also be nested, allowing for very
     fine grained configuration.</p>
 
-    <p>Apache has the capability to serve many different websites
+    <p>httpd has the capability to serve many different websites
     simultaneously. This is called <a href="vhosts/">Virtual
     Hosting</a>. Directives can also be scoped by placing them
     inside <directive module="core" type="section">VirtualHost</directive>
@@ -194,7 +193,7 @@ HTTP server.</p>
       </directivelist>
     </related>
 
-    <p>Apache allows for decentralized management of configuration
+    <p>httpd allows for decentralized management of configuration
     via special files placed inside the web tree. The special files
     are usually called <code>.htaccess</code>, but any name can be
     specified in the <directive module="core">AccessFileName</directive>
