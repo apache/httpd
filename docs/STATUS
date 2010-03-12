@@ -16,6 +16,19 @@ Decisions pending
   and httpd thereafter, but there are some contexts in which this is
   awkward.
 
+Who's Working On What
+=====================
+
+Rich:
+    - Changing mentions of 'Apache' to 'Apache HTTP Server' or 'httpd'
+      as appropriate in the context.
+
+    - Rewriting the custom-error document, which is grossly outdated.
+
+    - Adding to the discussion of conditional logging, which I think
+      could be turned into more of a howto than the one paragraph it's
+      got now.
+
 To Do List
 =======================
 
