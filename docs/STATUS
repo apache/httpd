@@ -10,7 +10,13 @@ http://httpd.apache.org/docs-project/docsformat.html
 Decisions pending
 =================
 
-Things That Need Fixing
+- Determine what The Right Way to use the terms "Apache", "Apache HTTP
+  Server" and "httpd" are. Whether they require specific markup or
+  links. (Rich) I've been using Apache HTTP Server in the first mention,
+  and httpd thereafter, but there are some contexts in which this is
+  awkward.
+
+To Do List
 =======================
 
 - Refer to this product as either 'Apache HTTP Server' or 'httpd', as
@@ -131,6 +137,12 @@ Things That Need Fixing
 - Update the list of translations at
   http://httpd.apache.org/docs-project/translations.html  Some of those
   are accurate, and others are way outdated.
+
+- Rewriting the 'custom error' doc, which is ancient and doesn't flow
+  very well.
+
+- I'd like to expand the discussion of conditional logging, and add a
+  few more useful exmaples.
 
 LaTeX Todo list
 ==================
