@@ -1362,7 +1362,7 @@ static int make_child(server_rec *s, int slot)
         if (status != OK)
             ap_log_error(APLOG_MARK, APLOG_DEBUG, errno,
                          ap_server_conf,
-                         "processor unbind failed %d", status);
+                         "processor unbind failed");
 #endif
         RAISE_SIGSTOP(MAKE_CHILD);
 
