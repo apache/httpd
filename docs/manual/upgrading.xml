@@ -26,7 +26,7 @@
 
 <summary>
   <p>In order to assist folks upgrading, we maintain a document
-  describing information critical to existing Apache users. These
+  describing information critical to existing Apache HTTP Server users. These
   are intended to be brief notes, and you should be able to find
   more information in either the <a
   href="new_features_2_4.html">New Features</a> document, or in
@@ -39,7 +39,7 @@
 
 </summary>
 <seealso><a href="new_features_2_4.html">Overview of new features in
-  Apache 2.4</a></seealso>
+  Apache HTTP Server 2.4</a></seealso>
 
   <section id="compile-time">
     <title>Compile-Time Configuration Changes</title>
