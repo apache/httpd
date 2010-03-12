@@ -207,13 +207,13 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             }
 
             if (!APR_BRIGADE_EMPTY(bb)) {
+                if (ccfg->min_rate > 0) {
+                    extend_timeout(ccfg, bb);
+                }
+
                 rv = have_lf_or_eos(bb);
                 if (rv != APR_INCOMPLETE) {
                     break;
-                }
-
-                if (ccfg->min_rate > 0) {
-                    extend_timeout(ccfg, bb);
                 }
 
                 rv = apr_brigade_length(bb, 1, &bblen);
