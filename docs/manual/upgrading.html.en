@@ -23,7 +23,7 @@
 </div>
 
   <p>In order to assist folks upgrading, we maintain a document
-  describing information critical to existing Apache users. These
+  describing information critical to existing Apache HTTP Server users. These
   are intended to be brief notes, and you should be able to find
   more information in either the <a href="new_features_2_4.html">New Features</a> document, or in
   the <code>src/CHANGES</code> file.</p>
@@ -38,7 +38,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Misc Changes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#third-party">Third Party Modules</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="new_features_2_4.html">Overview of new features in
-  Apache 2.4</a></li></ul></div>
+  Apache HTTP Server 2.4</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compile-time" id="compile-time">Compile-Time Configuration Changes</a></h2>

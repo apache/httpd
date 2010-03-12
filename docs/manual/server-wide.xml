@@ -57,7 +57,7 @@ the basic operations of the server.</p>
     directives are used by the server to determine how to construct
     self-referential URLs. For example, when a client requests a
     directory, but does not include the trailing slash in the
-    directory name, Apache must redirect the client to the full
+    directory name, httpd must redirect the client to the full
     name including the trailing slash so that the client will
     correctly resolve relative references in the document.</p>
   </section>
@@ -78,7 +78,7 @@ the basic operations of the server.</p>
     </related>
 
     <p>These directives control the locations of the various files
-    that Apache needs for proper operation. When the pathname used
+    that httpd needs for proper operation. When the pathname used
     does not begin with a slash (/), the files are located relative
     to the <directive module="core">ServerRoot</directive>. Be careful
     about locating files in paths which are writable by non-root users.
@@ -104,13 +104,13 @@ the basic operations of the server.</p>
 
     <p>The <directive>LimitRequest</directive>*
     directives are used to place limits on the amount of resources
-    Apache will use in reading requests from clients. By limiting
+    httpd will use in reading requests from clients. By limiting
     these values, some kinds of denial of service attacks can be
     mitigated.</p>
 
     <p>The <directive>RLimit</directive>* directives
     are used to limit the amount of resources which can be used by
-    processes forked off from the Apache children. In particular,
+    processes forked off from the httpd children. In particular,
     this will control resources used by CGI scripts and SSI exec
     commands.</p>
 

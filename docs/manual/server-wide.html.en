@@ -54,7 +54,7 @@ the basic operations of the server.</p>
     directives are used by the server to determine how to construct
     self-referential URLs. For example, when a client requests a
     directory, but does not include the trailing slash in the
-    directory name, Apache must redirect the client to the full
+    directory name, httpd must redirect the client to the full
     name including the trailing slash so that the client will
     correctly resolve relative references in the document.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -65,7 +65,7 @@ the basic operations of the server.</p>
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
 
     <p>These directives control the locations of the various files
-    that Apache needs for proper operation. When the pathname used
+    that httpd needs for proper operation. When the pathname used
     does not begin with a slash (/), the files are located relative
     to the <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code>. Be careful
     about locating files in paths which are writable by non-root users.
@@ -80,13 +80,13 @@ the basic operations of the server.</p>
 
     <p>The <code class="directive">LimitRequest</code>*
     directives are used to place limits on the amount of resources
-    Apache will use in reading requests from clients. By limiting
+    httpd will use in reading requests from clients. By limiting
     these values, some kinds of denial of service attacks can be
     mitigated.</p>
 
     <p>The <code class="directive">RLimit</code>* directives
     are used to limit the amount of resources which can be used by
-    processes forked off from the Apache children. In particular,
+    processes forked off from the httpd children. In particular,
     this will control resources used by CGI scripts and SSI exec
     commands.</p>
 
