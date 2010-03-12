@@ -26,7 +26,7 @@
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Configuring Apache to listen on specific addresses and ports.</p>
+    <p>Configuring Apache HTTP Server (httpd) to listen on specific addresses and ports.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Special IPv6 Considerations</a></li>
@@ -40,12 +40,12 @@
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mpm_common.html">mpm_common</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code></li></ul></td></tr></table>
 
 
-    <p>When Apache starts, it binds to some port and address on
+    <p>When httpd starts, it binds to some port and address on
     the local machine and waits for incoming requests. By default,
     it listens to all addresses on the machine.  However, it may need to
     be told to listen on specific ports, or only on selected 
     addresses, or a combination of both. This is often combined with the 
-    Virtual Host feature, which determines how Apache responds to 
+    Virtual Host feature, which determines how httpd responds to 
     different IP addresses, hostnames and ports.</p>
 
     <p>The <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
@@ -90,10 +90,10 @@
 
     <p>A growing number of platforms implement IPv6, and
     <a class="glossarylink" href="./glossary.html#apr" title="see glossary">APR</a> supports IPv6 on most of these platforms,
-    allowing Apache to allocate IPv6 sockets, and to handle requests sent 
+    allowing httpd to allocate IPv6 sockets, and to handle requests sent 
     over IPv6.</p>
 
-    <p>One complicating factor for Apache administrators is whether or
+    <p>One complicating factor for httpd administrators is whether or
     not an IPv6 socket can handle both IPv4 connections and IPv6 
     connections.  Handling IPv4 connections with an IPv6 socket uses 
     IPv4-mapped IPv6 addresses, which are allowed by default on most 
@@ -101,19 +101,19 @@
     OpenBSD, in order to match the system-wide policy on those
     platforms. On systems where it is disallowed by default, a 
     special <code class="program"><a href="./programs/configure.html">configure</a></code> parameter can change this behavior
-    for Apache.</p>
+    for httpd.</p>
 
     <p>On the other hand, on some platforms, such as Linux and Tru64, the 
     <strong>only</strong> way to handle both IPv6 and IPv4 is to use 
-    mapped addresses. If you want Apache to handle IPv4 and IPv6 connections 
+    mapped addresses. If you want httpd to handle IPv4 and IPv6 connections 
     with a minimum of sockets, which requires using IPv4-mapped IPv6 
     addresses, specify the <code>--enable-v4-mapped</code> <code class="program"><a href="./programs/configure.html">configure</a></code> option.</p>
 
     <p><code>--enable-v4-mapped</code> is the default on all platforms except 
-    FreeBSD, NetBSD, and OpenBSD, so this is probably how your Apache was 
+    FreeBSD, NetBSD, and OpenBSD, so this is probably how your httpd was 
     built.</p>
 
-    <p>If you want Apache to handle IPv4 connections only, regardless of 
+    <p>If you want httpd to handle IPv4 connections only, regardless of 
     what your platform and APR will support, specify an IPv4 address on all 
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directives, as in the
     following examples:</p>
@@ -123,7 +123,7 @@
       Listen 192.0.2.1:80
     </code></p></div>
 
-    <p>If your platform supports it and you want Apache to handle IPv4 and 
+    <p>If your platform supports it and you want httpd to handle IPv4 and 
     IPv6 connections on separate sockets (i.e., to disable IPv4-mapped 
     addresses), specify the <code>--disable-v4-mapped</code> <code class="program"><a href="./programs/configure.html">configure</a></code> option. <code>--disable-v4-mapped</code> is the
     default on FreeBSD, NetBSD, and OpenBSD.</p>
