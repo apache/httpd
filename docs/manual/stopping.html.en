@@ -27,12 +27,12 @@
 <a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>This document covers stopping and restarting Apache on
+    <p>This document covers stopping and restarting the Apache HTTP Server (httpd) on
     Unix-like systems. Windows NT, 2000 and XP users should see
-    <a href="platform/windows.html#winsvc">Running Apache as a
-    Service</a> and Windows 9x and ME users should see <a href="platform/windows.html#wincons">Running Apache as a
+    <a href="platform/windows.html#winsvc">Running httpd as a
+    Service</a> and Windows 9x and ME users should see <a href="platform/windows.html#wincons">Running httpd as a
     Console Application</a> for information on how to control
-    Apache on those platforms.</p>
+    httpd on those platforms.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">Stop Now</a></li>
@@ -44,7 +44,7 @@
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
 
-    <p>In order to stop or restart Apache, you must send a signal to
+    <p>In order to stop or restart the Apache HTTP Server, you must send a signal to
     the running <code class="program"><a href="./programs/httpd.html">httpd</a></code> processes.  There are two ways to
     send the signals.  First, you can use the unix <code>kill</code>
     command to directly send signals to the processes. You will
@@ -208,7 +208,7 @@ syntax error(s).</div>
     <div class="note"><p>The <code>graceful-stop</code> signal allows you to run multiple
     identically configured instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> at the 
     same time. This is a powerful feature when performing graceful 
-    upgrades of Apache, however it can also cause deadlocks and race 
+    upgrades of httpd, however it can also cause deadlocks and race 
     conditions with some configurations.</p> 
 
     <p>Care has been taken to ensure that on-disk files such as lock files
