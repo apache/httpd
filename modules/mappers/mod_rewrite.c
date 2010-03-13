@@ -3014,7 +3014,7 @@ static const char *cmd_rewritelock(cmd_parms *cmd, void *dconf, const char *a1)
     lockname = ap_server_root_relative(cmd->pool, a1);
 
     if (!lockname) {
-        return apr_pstrcat(cmd->pool, "Invalid RewriteLock path ", a1);
+        return apr_pstrcat(cmd->pool, "Invalid RewriteLock path ", a1, NULL);
     }
 
     return NULL;
