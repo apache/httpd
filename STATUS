@@ -86,6 +86,9 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * Fix apr_pstrcat() call in 2.2.x mod_rewrite (doesn't apply to trunk).
+    2.2.x patch: http://people.apache.org/~trawick/mod_rewrite_pstrcat.txt
+    +1: trawick, jim, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -119,10 +122,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=917005&view=rev
     2.2.x patch: http://people.apache.org/~minfrin/htcacheclean-pid.patch
     +1: minfrin, sf
-
-  * Fix apr_pstrcat() call in 2.2.x mod_rewrite (doesn't apply to trunk).
-    2.2.x patch: http://people.apache.org/~trawick/mod_rewrite_pstrcat.txt
-    +1: trawick, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
