@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Issues Regarding DNS and Apache - Apache HTTP Server</title>
+<title>Issues Regarding DNS and Apache HTTPD - Apache HTTP Server</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Issues Regarding DNS and Apache</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Issues Regarding DNS and Apache HTTPD</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/dns-caveats.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/dns-caveats.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
@@ -26,8 +26,8 @@
 </div>
 
     <p>This page could be summarized with the statement: don't
-    configure Apache in such a way that it relies on DNS resolution
-    for parsing of the configuration files. If Apache requires DNS
+    configure Apache HTTPD in such a way that it relies on DNS resolution
+    for parsing of the configuration files. If HTTPD requires DNS
     resolution to parse the configuration files then your server
     may be subject to reliability problems (ie. it might not boot),
     or denial and theft of service attacks (including users able
@@ -52,16 +52,16 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>In order for Apache to function properly, it absolutely needs
+    <p>In order for HTTPD to function properly, it absolutely needs
     to have two pieces of information about each virtual host: the
     <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> and at least one
     IP address that the server will bind and respond to. The above
-    example does not include the IP address, so Apache must use DNS
+    example does not include the IP address, so HTTPD must use DNS
     to find the address of <code>www.abc.dom</code>. If for some
     reason DNS is not available at the time your server is parsing
     its config file, then this virtual host <strong>will not be
     configured</strong>. It won't be able to respond to any hits
-    to this virtual host (prior to Apache version 1.2 the server
+    to this virtual host (prior to HTTPD version 1.2 the server
     would not even boot).</p>
 
     <p>Suppose that <code>www.abc.dom</code> has address 192.0.2.1.
@@ -75,13 +75,12 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>This time Apache needs to use reverse DNS to find the
+    <p>This time HTTPD needs to use reverse DNS to find the
     <code>ServerName</code> for this virtualhost. If that reverse
-    lookup fails then it will partially disable the virtualhost
-    (prior to Apache version 1.2 the server would not even boot).
+    lookup fails then it will partially disable the virtualhost.
     If the virtual host is name-based then it will effectively be
     totally disabled, but if it is IP-based then it will mostly
-    work. However, if Apache should ever have to generate a full
+    work. However, if HTTPD should ever have to generate a full
     URL for the server which includes the server name, then it will
     fail to generate a valid URL.</p>
 
@@ -100,7 +99,7 @@
     
 
     <p>There are (at least) two forms that denial of service
-    can come in. If you are running a version of Apache prior to
+    can come in. If you are running a version of HTTPD prior to
     version 1.2 then your server will not even boot if one of the
     two DNS lookups mentioned above fails for any of your virtual
     hosts. In some cases this DNS lookup may not even be under your
@@ -143,7 +142,7 @@
     users typed in URLs of the form
     <code>http://www.abc.dom/whatever</code>) will all be served by
     the <code>def.dom</code> virtual host. To better understand why
-    this happens requires a more in-depth discussion of how Apache
+    this happens requires a more in-depth discussion of how HTTPD 
     matches up incoming requests with the virtual host that will
     serve it. A rough document describing this <a href="vhosts/details.html">is available</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -151,8 +150,8 @@
 <h2><a name="main" id="main">The "main server" Address</a></h2>
     
 
-    <p>The addition of <a href="vhosts/name-based.html">name-based
-    virtual host support</a> in Apache 1.1 requires Apache to know
+    <p><a href="vhosts/name-based.html">Name-based
+    virtual host support</a> requires HTTPD to know
     the IP address(es) of the host that <code class="program"><a href="./programs/httpd.html">httpd</a></code>
     is running on. To get this address it uses either the global
     <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>
@@ -171,7 +170,7 @@
     or maybe <code>/etc/nsswitch.conf</code>.</p>
 
     <p>If your server doesn't have to perform DNS for any other
-    reason then you might be able to get away with running Apache
+    reason then you might be able to get away with running HTTPD 
     with the <code>HOSTRESORDER</code> environment variable set to
     "local". This all depends on what OS and resolver libraries you
     are using. It also affects CGIs unless you use
@@ -206,9 +205,9 @@
 <h2><a name="appendix" id="appendix">Appendix: Future Directions</a></h2>
     
 
-    <p>The situation regarding DNS is highly undesirable. For
-    Apache 1.2 we've attempted to make the server at least continue
-    booting in the event of failed DNS, but it might not be the
+    <p>The situation regarding DNS is highly undesirable. Although
+    we've attempted to make the server at least continue
+    booting in the event of failed DNS, it might not be the
     best we can do. In any event, requiring the use of explicit IP
     addresses in configuration files is highly undesirable in
     today's Internet where renumbering is a necessity.</p>
