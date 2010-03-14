@@ -28,7 +28,7 @@
 
     <p>Although the Apache HTTP Server provides generic error responses
     in the event of 4xx or 5xx HTTP status codes, these responses are
-    rather stark, uninformative, and can be indimidating to site users.
+    rather stark, uninformative, and can be intimidating to site users.
     You may wish to provide custom error responses which are either 
     friendlier, or in some language other than English, or perhaps which
     are styled more in line with your site layout.</p>
@@ -49,8 +49,8 @@
   <section id="configuration"><title>Configuration</title>
 
     <p>Custom error documents are configured using the <directive
-    module="core">ErrorDocument</directive> directive.
-    <code>ErrorDocument</code>, which may be used in global,
+    module="core">ErrorDocument</directive> directive,
+    which may be used in global,
     virtualhost, or directory context. It may be used in .htaccess files
     if <directive module="core">AllowOverride</directive> is set to 
     FileInfo.</p>
@@ -63,7 +63,7 @@
       ErrorDocument 401 /subscription/how_to_subscribe.html
     </example>
 
-    <p>The syntax of the <code>ErrorDocuemnt</code> directrive is:</p>
+    <p>The syntax of the <code>ErrorDocument</code> directive is:</p>
 
     <example>
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
@@ -191,7 +191,7 @@
     provide more useful information to users about your site, and what
     they can expect to find there.</p>
 
-    <p><module>mod_includes</module> and <module>mod_negotiation</module> 
+    <p><module>mod_include</module> and <module>mod_negotiation</module> 
     must be enabled to use this feature.</p>
 
  </section>
