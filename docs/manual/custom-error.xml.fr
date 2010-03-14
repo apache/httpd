@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 558686 -->
+<!-- English Revision : 922267 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -27,152 +27,123 @@
   <title>Messages d'erreur personnalis&eacute;s</title>
 
   <summary>
-    <p>Une fonctionnalit&eacute; additionnelle permet aux webmasters de
-    configurer la r&eacute;ponse d'Apache &agrave; certaines erreurs ou probl&egrave;mes.</p>
+    <p>Le serveur HTTP Apache fournit des messages d'erreur g&eacute;n&eacute;riques
+    pour les codes de statut 4xx ou 5xx ; ces messages sont cependant
+    relativement aust&egrave;res, impr&eacute;cis, et peuvent s'av&eacute;rer intimidants
+    pour les visiteurs du site. Si vous le souhaitez, vous pouvez
+    afficher des messages d'erreur plus conviviaux, dans un langage
+    autre que l'anglais, ou m&ecirc;me sous une forme plus en ad&eacute;quation avec
+    le style de votre site.</p>
 
-    <p>Il est possible de d&eacute;finir des r&eacute;ponses personnalisables comme
-    devant &ecirc;tre activ&eacute;es lorsque le serveur d&eacute;tecte une erreur ou un
-    probl&egrave;me.</p>
+    <p>Il est possible de d&eacute;finir des messages d'erreur personnalis&eacute;s
+    pour chaque code de statut HTTP associ&eacute; &agrave; une condition d'erreur -
+    c'est &agrave; dire tout code de statut 4xx ou 5xx.</p>
 
-    <p>Si un script se crashe et provoque l'envoi d'une r&eacute;ponse "500
-    Server Error", cette derni&egrave;re peut &ecirc;tre remplac&eacute;e soit par un texte
-    plus convivial, soit par une redirection vers une autre URL (locale
-    ou externe).</p>
+    <p>De plus, il est possible de
+    personnaliser le message d'erreur en fonction d'un jeu de valeurs
+    fourni, en utilisant les <a href="howto/ssi.html">Inclusions C&ocirc;t&eacute;
+    Serveur (SSI)</a>. Un programme CGI ou un autre gestionnaire
+    dynamique (PHP, mod_perl, etc...) peut aussi utiliser ces variables
+    pour g&eacute;rer les conditions d'erreur.</p>
+
+    
   </summary>
 
-  <section id="behavior">
-    <title>Comportement</title>
+  <section id="configuration"><title>Configuration</title>
 
-    <section>
-      <title>Ancien comportement</title>
+    <p>Les messages d'erreur personnalis&eacute;s sont configur&eacute;s via la
+    directive <directive module="core">ErrorDocument</directive>, qui
+    peut &ecirc;tre utilis&eacute;e dans un contexte global, serveur virtuel ou
+    r&eacute;pertoire. On peut utiliser cette directive dans les fichiers
+    .htaccess si <directive module="core">AllowOverride</directive> est
+    d&eacute;finie &agrave; FileInfo.</p>
 
-      <p>httpd 1.3 de NCSA renvoyait d'antiques et obscurs messages
-      d'erreur ou de probl&egrave;me qui la plupart du temps n'avaient aucune
-      signification pour l'utilisateur, et ne permettaient pas de
-      journaliser les symptomes qui les avaient caus&eacute;s.</p>
-    </section>
+    <example>
+      ErrorDocument 500 "D&eacute;sol&eacute;, notre script s'est crash&eacute; ; comme c'est
+      dommage !"<br />
+      ErrorDocument 500 /cgi-bin/crash-recover<br />
+      ErrorDocument 500 http://erreur.example.com/erreur_serveur.html<br />
+      ErrorDocument 404 /erreurs/non_trouve.html <br />
+      ErrorDocument 401 /inscription/comment_s_inscrire.html
+    </example>
+      
+<p>La syntaxe de la directive <code>ErrorDocument</code> est :</p>
+      <example>
+      ErrorDocument &lt;code_3_chiffres&gt; &lt;action&gt;
+    </example>
+      <p>o&ugrave; action peut &ecirc;tre :</p>
+        <ol>
+      <li>Le texte &agrave; afficher. Entourez le texte de guillemets (").</li>
+      <li>Une URL de redirection local.</li>
+      <li>Une URL de redirection externe.</li>
+    </ol>
 
-    <section>
-      <title>Nouveau comportement</title>
+    <p>Dans le cas d'une redirection vers une URL locale, des variables
+    d'environnement suppl&eacute;mentaires sont d&eacute;finies de fa&ccedil;on &agrave; ce que la
+    r&eacute;ponse puisse &ecirc;tre personnalis&eacute;e par la suite. Elles ne sont pas
+    envoy&eacute;es aux URLs externes.</p>
 
-      <p>Il est possible de demander au serveur :</p>
+  </section>
 
-      <ol>
-        <li>d'afficher un autre texte &agrave; la place du message NCSA cod&eacute; en
-	dur, ou</li>
-
-        <li>rediriger vers une URL locale, ou</li>
-
-        <li>rediriger vers une URL externe.</li>
-      </ol>
+        <section id="variables"><title>Variables disponibles</title>
 
       <p>La redirection vers une autre URL peut &ecirc;tre utile, mais
       seulement s'il est possible de transmettre certaines informations
-      qui pourront &ecirc;tre utilis&eacute;es pour expliquer et/ou journaliser
-      l'erreur ou le probl&egrave;me plus clairement.</p>
+      qui pourront &ecirc;tre utilis&eacute;es pour expliquer ou journaliser
+      la condition d'erreur ou le probl&egrave;me plus clairement.</p>
 
-      <p>Pour y parvenir, Apache va d&eacute;finir de nouvelles variables
-      d'environnement de style CGI :</p>
+	<p>Pour y parvenir, lorsque la redirection d'erreur est envoy&eacute;e,
+	des variables d'environnement suppl&eacute;mentaires sont d&eacute;finies &agrave;
+	partir des en-t&ecirc;tes de la requ&ecirc;te originale en pr&eacute;fixant le nom
+	d'origine de l'en-t&ecirc;te par 'REDIRECT_', ce qui permet de fournir au
+	message d'erreur le contexte de la requ&ecirc;te originelle.</p>
+
+      <p>Par exemple, en plus des variables d'environnement habituelles,
+      vous pouvez recevoir ce qui suit :</p>
+      
 
       <example>
-        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/x-xbitmap,
-            image/jpeg<br />
-        REDIRECT_HTTP_USER_AGENT=Mozilla/1.1b2 (X11; I; HP-UX A.09.05
-            9000/712)<br />
-        REDIRECT_PATH=.:/bin:/usr/local/bin:/etc<br />
+        REDIRECT_HTTP_ACCEPT=*/*, image/gif, image/jpeg, image/png<br />
+        REDIRECT_HTTP_USER_AGENT=Mozilla/5.0 Fedora/3.5.8-1.fc12 Firefox/3.5.8<br />
+        REDIRECT_PATH=.:/bin:/usr/local/bin:/sbin<br />
         REDIRECT_QUERY_STRING=<br />
         REDIRECT_REMOTE_ADDR=121.345.78.123<br />
-        REDIRECT_REMOTE_HOST=ooh.ahhh.com<br />
-        REDIRECT_SERVER_NAME=crash.bang.edu<br />
+        REDIRECT_REMOTE_HOST=client.example.com<br />
+        REDIRECT_SERVER_NAME=www.example.edu<br />
         REDIRECT_SERVER_PORT=80<br />
-        REDIRECT_SERVER_SOFTWARE=Apache/0.8.15<br />
+        REDIRECT_SERVER_SOFTWARE=Apache/2.2.15<br />
         REDIRECT_URL=/cgi-bin/buggy.pl
       </example>
 
-      <p>Notez le pr&eacute;fixe <code>REDIRECT_</code>.</p>
+      <p>Les variables d'environnement <code>REDIRECT_</code> sont
+      cr&eacute;&eacute;es &agrave; partir des variables d'environnement pr&eacute;existantes &agrave; la
+      redirection qui sont pr&eacute;fix&eacute;es par la cha&icirc;ne <code>REDIRECT_</code> ;
+      par exemple, <code>HTTP_USER_AGENT</code> devient
+      <code>REDIRECT_HTTP_USER_AGENT</code>.</p>
 
-      <p>Au minimum <code>REDIRECT_URL</code> et
-      <code>REDIRECT_QUERY_STRING</code> seront transmises &agrave; la nouvelle
-      URL (en supposant qu'il s'agit d'une inclusion ou d'un script
-      cgi). Les autres variables ne seront pr&eacute;sentes que si elles
-      existaient avant que l'erreur ou le probl&egrave;me ne survienne.
-      <strong>Aucune</strong> d'entre elles ne sera d&eacute;finie si votre
+      <p><code>REDIRECT_URL</code>, <code>REDIRECT_STATUS</code>, et
+      <code>REDIRECT_QUERY_STRING</code> sont syst&eacute;matiquement d&eacute;finies,
+      les autres variables n'&eacute;tant d&eacute;finies que si l'en-t&ecirc;te
+      correspondant existait avant la condition d'erreur.</p>
+
+      <p><strong>Aucune</strong> d'entre elles ne sera d&eacute;finie si votre
       directive <directive module="core">ErrorDocument</directive>
       sp&eacute;cifie une redirection <em>externe</em> (toute URL commen&ccedil;ant
       par un protocole du style <code>http:</code>, m&ecirc;me si elle fait
       r&eacute;f&eacute;rence au m&ecirc;me h&ocirc;te que le serveur).</p>
-    </section>
+    
   </section>
 
-  <section id="configuration">
-    <title>Configuration</title>
+  <section id="custom"><title>Personnalisation des messages d'erreur</title>
 
-    <p>L'utilisation de la directive <directive
-    module="core">ErrorDocument</directive> est activ&eacute;e pour les
-    fichiers .htaccess si la directive <directive
-    module="core">AllowOverride</directive> est positionn&eacute;e dans cette
-    optique.</p>
-
-    <p>Voici quelques exemples...</p>
-
-    <example>
-      ErrorDocument 500 /cgi-bin/crash-recover <br />
-      ErrorDocument 500 "Toutes nos excuses, notre script s'est crash&eacute;."
-      <br />
-      ErrorDocument 500 http://xxx/ <br />
-      ErrorDocument 404 /Lame_excuses/not_found.html <br />
-      ErrorDocument 401 /Subscription/how_to_subscribe.html
-    </example>
-
-    <p>La syntaxe est la suivante :</p>
-
-    <example>
-      ErrorDocument &lt;code &agrave; 3 chiffres&gt; &lt;action&gt;
-    </example>
-
-    <p>o&ugrave; action peut &ecirc;tre :</p>
-
-    <ol>
-      <li>Un texte &agrave; afficher. Entourez-le de guillemets (").</li>
-
-      <li>Une URL externe vers laquelle on sera redirig&eacute;.</li>
-
-      <li>Une URL locale vers laquelle on sera redirig&eacute;.</li>
-    </ol>
-  </section>
-
-  <section id="custom">
-    <title>Messages d'erreur et de redirection personnalis&eacute;s</title>
-
-    <p>Lors d'une redirection d'URL, Apache a modifi&eacute; son comportement
-    et les scripts ou inclusions c&ocirc;t&eacute; serveur disposent maintenant de
-    variables d'environnement suppl&eacute;mentaires.</p>
-
-    <section>
-      <title>Ancien comportement</title>
-
-      <p>Un script vers lequel une requ&ecirc;te avait &eacute;t&eacute; redirig&eacute;e
-      avait acc&egrave;s aux variables CGI standards, sans indication sur
-      l'origine de la redirection.</p>
-    </section>
-
-    <section>
-      <title>Nouveau comportement</title>
-
-      <p>Un nouveau jeu de variables d'environnement va &ecirc;tre initialis&eacute;
-      &agrave; des fins d'utilisation par un script vers lequel une requ&ecirc;te
-      aura &eacute;t&eacute; redirig&eacute;e. Chaque nouvelle variable sera pr&eacute;fix&eacute;e par
-      <code>REDIRECT_</code>. Les variables d'environnement
-      <code>REDIRECT_</code> sont cr&eacute;&eacute;es &agrave; partir des variables
-      d'environnement CGI existant avant la redirection, et renomm&eacute;es en
-      leur ajoutant le pr&eacute;fixe <code>REDIRECT_</code> ; par exemple,
-      <code>HTTP_USER_AGENT</code> devient
-      <code>REDIRECT_HTTP_USER_AGENT</code>. En plus de ces nouvelles
-      variables, Apache va d&eacute;finir <code>REDIRECT_URL</code> et
-      <code>REDIRECT_STATUS</code> pour aider le script &agrave; remonter &agrave;
-      l'origine de la redirection. L'URL originale et l'URL de
-      redirection peuvent &ecirc;tre enregistr&eacute;es dans le journal des
-      acc&egrave;s.</p>
+       
+	<p>Si vous faites pointer votre directive
+	<code>ErrorDocument</code> vers certains gestionnaires
+	dynamiques comme les inclusions c&ocirc;t&eacute; serveur, les scripts CGI ou
+	d'autres gestionnaires, vous pouvez utiliser les variables
+	d'environnement suppl&eacute;mentaires disponibles pour personnaliser
+	le message.</p>
+      
 
       <p>Si la directive ErrorDocument sp&eacute;cifie une redirection locale
       vers un script CGI, ce dernier doit ajouter un en-t&ecirc;te
@@ -195,11 +166,47 @@
       place.</p>
 
       <p>Notez que si la r&eacute;ponse contient un en-t&ecirc;te
-      <code>Location:</code>, le script <em>doit</em> &eacute;mettre un en-t&ecirc;te
-      <code>Status:</code> appropri&eacute; (tel que
-      <code>302&nbsp;Found</code>) afin de provoquer une redirection au
-      niveau du client. Dans le cas contraire, l'en-t&ecirc;te
-      <code>Location:</code> risque de n'avoir aucun effet.</p>
-    </section>
+      <code>Location:</code> (afin d'initier une redirection c&ocirc;t&eacute;
+      client), le script <em>doit</em> &eacute;mettre un en-t&ecirc;te appropri&eacute;
+      (comme <code>302&nbsp;Found</code>). Dans le cas contraire,
+      l'en-t&ecirc;te <code>Location:</code> ne produira aucun effet.</p>
   </section>
+
+  <section id="multi-lang"><title>Messages d'erreur personnalis&eacute;s
+  multilingues</title>
+
+    <p>Vous trouverez dans la distribution du serveur HTTP Apache un
+    r&eacute;pertoire contenant des messages d'erreur personnalis&eacute;s traduits en
+    16 langues diff&eacute;rentes. Pour activer cette fonctionnalit&eacute;, vous
+    pouvez aussi inclure un fichier de configuration qui se trouve dans
+    le r&eacute;pertoire de configuration <code>conf/extra</code>.</p>
+
+    <p>Dans le fichier de configuration de votre serveur, vous trouverez
+    un groupe de lignes du style :</p>
+
+    <example>
+    # Multi-language error messages<br />
+    #Include conf/extra/httpd-multilang-errordoc.conf
+    </example>
+
+    <p>D&eacute;commentez la ligne <code>Include</code> pour activer cette
+    fonctionnalit&eacute;, et pr&eacute;senter des messages d'erreur dont le langage
+    sera n&eacute;goci&eacute; en fonction du langage pr&eacute;f&eacute;r&eacute; d&eacute;fini au niveau du
+    navigateur du client.</p>
+
+    <p>De plus, ces documents contiennent diverses variables
+    <code>REDIRECT_</code>, de fa&ccedil;on &agrave; ce que l'utilisateur final
+    dispose d'informations suppl&eacute;mentaires &agrave; propos de ce qui a pu se
+    produire, et de ce qu'il est susceptible de faire maintenant.</p>
+
+    <p>Ces documents peuvent &ecirc;tre personnalis&eacute;s en fournissant autant
+    d'informations utiles que vous le souhaitez aux utilisateurs &agrave;
+    propos de votre site, et de ce qu'ils sont susceptibles d'y trouver.</p>
+
+    <p>Pour pouvoir utiliser cette fonctionnalit&eacute;, vous devez activer
+    <module>mod_include</module> et <module>mod_negotiation</module>.</p>
+
+ </section>
+
+
 </manualpage>

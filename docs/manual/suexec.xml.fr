@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 698389:921866 (outdated) -->
+<!-- English Revision: 921866 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -50,8 +50,8 @@
 <section id="before"><title>Avant de commencer</title>
 
     <p>Avant de foncer t&ecirc;te baiss&eacute;e dans la lecture de ce document,
-    vous devez tenir compte des hypoth&egrave;ses faites par le Groupe
-    Apache et dans ce document.</p>
+    vous devez tenir compte de certaines hypoth&egrave;ses concernant vous-m&ecirc;me
+    et l'environnement dans lequel vous allez utiliser suexec.</p>
 
     <p>Premi&egrave;rement, vous devez utiliser un syst&egrave;me d'exploitation
     UNIX ou d&eacute;riv&eacute;, capable d'effectuer des op&eacute;rations
@@ -76,11 +76,13 @@
     <strong>vivement</strong> recommand&eacute; de ne pas modifier le code de
     suEXEC, &agrave; moins que vous ne soyez un programmeur sp&eacute;cialiste des
     particularit&eacute;s li&eacute;es &agrave; la s&eacute;curit&eacute;, et souhaitez partager votre
-    travail avec le Groupe Apache afin de pouvoir en discuter.</p>
+    travail avec l'&eacute;quipe de d&eacute;veloppement du serveur HTTP Apache afin
+    de pouvoir en discuter.</p>
 
-    <p>Quatri&egrave;mement et derni&egrave;rement, le Groupe Apache a d&eacute;cid&eacute; de ne
+    <p>Quatri&egrave;mement et derni&egrave;rement, l'&eacute;quipe de d&eacute;veloppement du
+    serveur HTTP Apache a d&eacute;cid&eacute; de ne
     <strong>PAS</strong> inclure suEXEC dans l'installation par d&eacute;faut
-    d'Apache. Pour pouvoir mettre en oeuvre suEXEC, l'administrateur
+    d'Apache httpd. Pour pouvoir mettre en oeuvre suEXEC, l'administrateur
     doit porter la plus grande attention aux d&eacute;tails. Apr&egrave;s avoir bien
     r&eacute;fl&eacute;chi aux diff&eacute;rents points de la configuration de suEXEC,
     l'administrateur peut l'installer selon les m&eacute;thodes classiques.
@@ -88,7 +90,7 @@
     d&eacute;termin&eacute;es et sp&eacute;cifi&eacute;es avec soin par l'administrateur, afin de
     maintenir la s&eacute;curit&eacute; du syst&egrave;me de mani&egrave;re appropri&eacute;e lors de
     l'utilisation de la fonctionnalit&eacute; suEXEC. C'est par le biais de
-    ce processus minutieux que le Groupe Apache esp&egrave;re r&eacute;server
+    ce processus minutieux que nous esp&eacute;rons r&eacute;server
     l'installation de suEXEC aux administrateurs prudents et
     suffisamment d&eacute;termin&eacute;s &agrave; vouloir l'utiliser.</p>
 
@@ -105,12 +107,12 @@
     prises pour pr&eacute;server la s&eacute;curit&eacute; de votre syst&egrave;me.</p>
 
     <p><strong>suEXEC</strong> est bas&eacute; sur un programme "conteneur"
-    (wrapper) setuid qui est appel&eacute; par le serveur web Apache principal.
+    (wrapper) setuid qui est appel&eacute; par le serveur HTTP Apache principal.
     Ce conteneur est appel&eacute; quand une requ&ecirc;te HTTP concerne
     un programme CGI ou SSI que l'administrateur
     a d&eacute;cid&eacute; de faire s'ex&eacute;cuter
     sous un utilisateur autre que celui du serveur principal.
-    Lorsqu'il re&ccedil;oit une telle requ&ecirc;te, Apache fournit au conteneur
+    Lorsqu'il re&ccedil;oit une telle requ&ecirc;te, Apache httpd fournit au conteneur
     suEXEC le nom du programme, ainsi que les identifiants utilisateur
     et groupe sous lesquels le programme doit s'ex&eacute;cuter.</p>
 
@@ -137,11 +139,11 @@
 
         <p class="indent">
           Le conteneur ne s'ex&eacute;cutera que si on lui fournit un nombre
-	  d'arguments correct. Le serveur web apache sait quel est le
+	  d'arguments correct. Le serveur HTTP apache sait quel est le
 	  bon format des arguments. Si le conteneur ne re&ccedil;oit pas un
 	  nombre d'arguments correct, soit il a &eacute;t&eacute; modifi&eacute;,
 	  soit quelque chose ne va pas dans la portion suEXEC de
-	  votre binaire Apache.
+	  votre binaire Apache httpd.
         </p>
       </li>
 
@@ -258,7 +260,7 @@
 
       <li>
         <strong>Le r&eacute;pertoire est-il dans l'espace web
-	d'Apache ?</strong>
+	de httpd ?</strong>
 
         <p class="indent">
           Si la requ&ecirc;te concerne une portion de la racine du serveur,
@@ -388,7 +390,7 @@
       <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
 
       <dd>L'<a href="mod/mpm_common.html#user">utilisateur</a> sous
-      lequel Apache s'ex&eacute;cute habituellement. C'est le seul utilisateur
+      lequel httpd s'ex&eacute;cute habituellement. C'est le seul utilisateur
       autoris&eacute; &agrave; utiliser suexec.</dd>
 
       <dt><code>--with-suexec-userdir=<em>DIR</em></code></dt>
@@ -419,7 +421,7 @@
       <dt><code>--with-suexec-docroot=<em>DIR</em></code></dt>
 
       <dd>Cette option fonctionne comme la directive DocumentRoot pour
-      Apache. Il s'agit de la seule hi&eacute;rarchie (en dehors des directives
+      httpd. Il s'agit de la seule hi&eacute;rarchie (en dehors des directives
       <directive module="mod_userdir"
       >UserDir</directive>) dans laquelle la fonctionnalit&eacute; suEXEC
       pourra &ecirc;tre utilis&eacute;e. La valeur par d&eacute;faut est la valeur de
@@ -466,7 +468,7 @@
     <p>Si vous avez activ&eacute; la fonctionnalit&eacute; suEXEC &agrave; l'aide de
      l'option <code>--enable-suexec</code>, le binaire
      <code>suexec</code> sera automatiquement construit (en m&ecirc;me temps
-     qu'Apache) lorsque vous ex&eacute;cuterez la commande
+     que httpd) lorsque vous ex&eacute;cuterez la commande
      <code>make</code>.</p>
 
      <p>Lorsque tous les composants auront &eacute;t&eacute; construits, vous pourrez
@@ -494,7 +496,7 @@
     tenir compte de ceci, et parce que c'est en g&eacute;n&eacute;ral la meilleure
     pratique, vous devez utiliser les permissions du syst&egrave;me de
     fichiers afin de vous assurer que seul le groupe sous lequel
-    s'ex&eacute;cute Apache puisse faire appel &agrave; suEXEC.</p>
+    s'ex&eacute;cute httpd puisse faire appel &agrave; suEXEC.</p>
 
     <p>Si, par exemple, votre serveur web est configur&eacute; pour
     s'ex&eacute;cuter en tant que :</p>
@@ -513,7 +515,7 @@
     chmod 4750 /usr/local/apache2/bin/suexec<br />
 </example>
 
-    <p>Ceci permet de s'assurer que seul le groupe sous lequel Apache
+    <p>Ceci permet de s'assurer que seul le groupe sous lequel httpd
     s'ex&eacute;cute (ici webgroup) puisse faire appel au conteneur
     suEXEC.</p>
   </section>
@@ -522,11 +524,11 @@
 <section id="enable"><title>Activation et d&eacute;sactivation
 de suEXEC</title>
 
-    <p>Au d&eacute;marrage, Apache v&eacute;rifie la pr&eacute;sence du fichier
+    <p>Au d&eacute;marrage, httpd v&eacute;rifie la pr&eacute;sence du fichier
     <program>suexec</program> dans le r&eacute;pertoire d&eacute;fini par
     l'option <code>--sbindir</code> du script configure (le
     r&eacute;pertoire par d&eacute;faut est "/usr/local/apache/sbin/suexec"). Si
-    Apache trouve un conteneur suEXEC correctement configur&eacute;, il
+    httpd trouve un conteneur suEXEC correctement configur&eacute;, il
     enregistrera le message suivant dans le journal des erreurs :</p>
 
 <example>
@@ -538,13 +540,13 @@ de suEXEC</title>
     l'endroit o&ugrave; il est sens&eacute; &ecirc;tre, ou l'ex&eacute;cutable suexec n'est pas
     install&eacute; en <em>setuid root</em>.</p>
 
-     <p>Si le serveur Apache est d&eacute;j&agrave; en cours d'ex&eacute;cution, et si
+     <p>Si le serveur HTTP Apache est d&eacute;j&agrave; en cours d'ex&eacute;cution, et si
      vous activez le m&eacute;canisme suEXEC pour la premi&egrave;re fois, vous
-     devez arr&ecirc;ter et red&eacute;marrer Apache. Un red&eacute;marrage
+     devez arr&ecirc;ter et red&eacute;marrer httpd. Un red&eacute;marrage
      &agrave; l'aide d'un simple signal HUP ou USR1 suffira. </p>
      <p>Pour d&eacute;sactiver suEXEC, vous devez supprimer le fichier
      <program>suexec</program>, puis arr&ecirc;ter et red&eacute;marrer
-     Apache.</p>
+     httpd.</p>
 </section>
 
 <section id="usage"><title>Utilisation de suEXEC</title>
@@ -598,7 +600,7 @@ de suEXEC</title>
     <p><strong>NOTE !</strong> Cette section est peut-&ecirc;tre incompl&egrave;te.
     Pour en consulter la derni&egrave;re r&eacute;vision, voir la version de la <a
     href="http://httpd.apache.org/docs/&httpd.docs;/suexec.html"
-    >Documentation en ligne</a> du Groupe Apache.</p>
+    >Documentation en ligne</a>.</p>
 
     <p>Quelques points importants du conteneur peuvent
     imposer des contraintes du point de vue de la configuration du
@@ -621,7 +623,7 @@ de suEXEC</title>
 	  si vous avez configur&eacute; quatre h&ocirc;tes virtuels, vous devrez
 	  d&eacute;finir la structure des racines de documents de vos h&ocirc;tes
 	  virtuels en dehors d'une hi&eacute;rarchie de documents principale
-	  d'Apache, afin de tirer parti de suEXEC dans le contexte des
+	  de httpd, afin de tirer parti de suEXEC dans le contexte des
 	  h&ocirc;tes virtuels (Exemple &agrave; venir).
         </p>
       </li>
