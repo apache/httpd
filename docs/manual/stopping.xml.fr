@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 883878:922234 (outdated) -->
+<!-- English Revision: 922234 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,14 +27,15 @@
   <title>Arr&ecirc;t et red&eacute;marrage</title>
 
 <summary>
-    <p>Ce document couvre l'arr&ecirc;t et le red&eacute;marrage d'Apache sur
+    <p>Ce document couvre l'arr&ecirc;t et le red&eacute;marrage du
+    serveur HTTP Apache (httpd) sur
     les syst&egrave;mes Unix et similaires. Les utilisateurs de Windows NT, 2000
     and XP doivent consulter
-    <a href="platform/windows.html#winsvc">Ex&eacute;cuter Apache en tant que
+    <a href="platform/windows.html#winsvc">Ex&eacute;cuter httpd en tant que
     service</a> et les utilisateurs de Windows 9x et ME doivent consulter
-    <a href="platform/windows.html#wincons">Ex&eacute;cuter Apache comme une
+    <a href="platform/windows.html#wincons">Ex&eacute;cuter httpd comme une
     application de type console</a> pour plus d'informations sur le contr&ocirc;le
-    d'Apache &agrave; partir de ces plateformes.</p>
+    de httpd &agrave; partir de ces plateformes.</p>
 </summary>
 
 <seealso><program>httpd</program></seealso>
@@ -43,7 +44,7 @@
 
 <section id="introduction"><title>Introduction</title>
 
-    <p>Afin d'arr&ecirc;ter ou red&eacute;marrer Apache, vous devez envoyer un signal aux
+    <p>Afin d'arr&ecirc;ter ou red&eacute;marrer le serveur HTTP Apache, vous devez envoyer un signal aux
     processus <program>httpd</program> en cours d'ex&eacute;cution.  Les signaux
     peuvent &ecirc;tre envoy&eacute;s de deux mani&egrave;res.  Tout d'abord, vous pouvez
     utiliser la commande unix <code>kill</code>
@@ -237,8 +238,8 @@ vous recevrez un message concernant ces erreurs.</note>
     <note><p>Le signal <code>graceful-stop</code> vous permet d'ex&eacute;cuter
     simultan&eacute;ment plusieurs instances de <program>httpd</program>
     avec des configurations identiques. Ceci s'av&egrave;re une fonctionnalit&eacute;
-    puissante quand vous effectuez des mises &agrave; jour "en douceur" d'Apache;
-    cependant, cela peut aussi causer des blocages fatals et des
+    puissante quand vous effectuez des mises &agrave; jour "en douceur"
+    de httpd ; cependant, cela peut aussi causer des blocages fatals et des
     situations de comp&eacute;tition (race conditions)
     avec certaines configurations.</p>
 

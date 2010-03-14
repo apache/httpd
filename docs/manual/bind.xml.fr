@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 587444:922236 (outdated) -->
+<!-- English Revision: 922236 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,7 +27,8 @@
   <title>Adresse IP et port d'&eacute;coute</title>
 
   <summary>
-    <p>Configuration d'Apache pour l'&eacute;coute sur un port et une adresse IP sp&eacute;cifiques.</p>
+    <p>Configuration du serveur HTTP Apache (httpd) pour l'&eacute;coute
+    sur un port et une adresse IP sp&eacute;cifiques.</p>
   </summary>
 
   <seealso><a href="vhosts/">H&ocirc;tes virtuels</a></seealso>
@@ -48,13 +49,13 @@
     </related>
 
 
-    <p>Au d&eacute;marrage d'Apache, un port et une adresse lui sont associ&eacute;s sur
+    <p>Au d&eacute;marrage de httpd, un port et une adresse lui sont associ&eacute;s sur
     l'h&ocirc;te local et le serveur se met en attente de l'arriv&eacute;e d'une requ&ecirc;te.
     Par d&eacute;faut, le serveur &eacute;coute toutes les adresses de l'h&ocirc;te local.
     Cependant, on peut lui pr&eacute;ciser des ports et des adresses sp&eacute;cifiques &agrave; &eacute;couter,
     ou une combinaison des deux.
     Tout ceci est souvent associ&eacute; avec la fonctionnalit&eacute; des h&ocirc;tes virtuels
-    qui d&eacute;termine la mani&egrave;re dont Apache r&eacute;pond aux diff&eacute;rents ports,
+    qui d&eacute;termine la mani&egrave;re dont httpd r&eacute;pond aux diff&eacute;rents ports,
     noms d'h&ocirc;tes et adresses IP.</p>
 
     <p>La directive <directive module="mpm_common">Listen</directive>
@@ -99,10 +100,10 @@
 
     <p>Un nombre croissant de plateformes impl&eacute;mentent IPv6, et
     <glossary>APR</glossary> supporte IPv6 sur la plupart d'entre elles,
-    ce qui permet &agrave; Apache d'allouer des points de connexion (sockets) IPv6
+    ce qui permet &agrave; httpd d'allouer des points de connexion (sockets) IPv6
     et de traiter des requ&ecirc;tes envoy&eacute;es sur IPv6.</p>
 
-    <p>Les administrateurs d'Apache doivent se pr&eacute;occuper de la possibilit&eacute;
+    <p>Les administrateurs de httpd doivent se pr&eacute;occuper de la possibilit&eacute;
     pour un point de connexion IPv6 de traiter &agrave; la fois des connexions IPv4
     et des connexions IPv6.
     Le traitement de connexions IPv4 avec un point de connexion IPv6 utilise
@@ -111,11 +112,11 @@
     et OpenBSD, afin de respecter la politique de s&eacute;curit&eacute; du syst&egrave;me sur ces plateformes.
     Sur les syst&egrave;mes o&ugrave; ces adresses sont interdites par d&eacute;faut, un
     param&egrave;tre sp&eacute;cial du script <program>configure</program> permet de modifier
-    ce comportement pour Apache.</p>
+    ce comportement pour httpd.</p>
 
     <p>En revanche, sur certaines plateformes comme Linux et Tru64, la
     <strong>seule</strong> mani&egrave;re de g&eacute;rer &agrave; la fois IPv6 et IPv4 passe
-    par l'utilisation d'adresses traduites. Si vous voulez qu'Apache g&egrave;re
+    par l'utilisation d'adresses traduites. Si vous voulez que httpd g&egrave;re
     des connexions IPv4 et IPv6 avec un minimum de points de connexion,
     ce qui n&eacute;cessite l'utilisation d'adresses IPv6 traduites en IPv4,
     utilisez l'option <code>--enable-v4-mapped</code> du script <program>
@@ -123,9 +124,9 @@
 
     <p>L'option <code>--enable-v4-mapped</code> est utilis&eacute;e par d&eacute;faut sur
     toutes les plateformes sauf FreeBSD, NetBSD, et OpenBSD;
-    votre Apache a donc probablement &eacute;t&eacute; construit avec cette option.</p>
+    votre httpd a donc probablement &eacute;t&eacute; construit avec cette option.</p>
 
-    <p>Si vous souhaitez qu'Apache ne g&egrave;re que des connexions IPv4, sans se
+    <p>Si vous souhaitez que httpd ne g&egrave;re que des connexions IPv4, sans se
     soucier de ce que vos plateforme et APR supportent, sp&eacute;cifiez une adresse
     IPv4 dans toutes les directives
     <directive module="mpm_common">Listen</directive>, comme dans l'exemple
@@ -136,7 +137,7 @@
       Listen 192.0.2.1:80
     </example>
 
-    <p>Si votre plateforme le supporte et si vous souhaitez qu'Apache g&egrave;re
+    <p>Si votre plateforme le supporte et si vous souhaitez que httpd g&egrave;re
     des connexions IPv4 et IPv6 sur des points de connexion s&eacute;par&eacute;s
     (c'est &agrave; dire d&eacute;sactiver la traduction des adresses IPv6 au format IPv4),
     utilisez l'option <code>--disable-v4-mapped</code> du script

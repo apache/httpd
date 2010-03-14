@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 420990:922232 (outdated) -->
+<!-- English Revision: 922232 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -30,7 +30,8 @@
   <p>Afin d'assister les utilisateurs lors de leurs op&eacute;rations de mise &agrave;
   jour, nous maintenons un document
   qui comporte des informations critiques &agrave; l'attention des personnes qui
-  utilisent d&eacute;j&agrave; Apache. Ces informations ne sont que de br&egrave;ves notes, et vous
+  utilisent d&eacute;j&agrave; le serveur HTTP Apache. Ces informations
+  ne sont que de br&egrave;ves notes, et vous
   devriez trouver plus d'informations dans le document <a
   href="new_features_2_4.html">Nouvelles fonctionnalit&eacute;s</a>, ou dans
   le fichier <code>src/CHANGES</code>.</p>
@@ -43,7 +44,7 @@
 
 </summary>
 <seealso><a href="new_features_2_4.html">Vue d'ensemble des nouvelles
-fonctionnalit&eacute;s de Apache 2.4</a></seealso>
+fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
 
   <section id="compile-time">
     <title>Modifications de la configuration au moment de la compilation</title>
@@ -57,6 +58,7 @@ fonctionnalit&eacute;s de Apache 2.4</a></seealso>
 
     <!-- <ul>
      </ul> -->
+    </ul>
   </section>
 
   <section id="misc">

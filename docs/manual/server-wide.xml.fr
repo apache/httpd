@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 883878:922232 (outdated) -->
+<!-- English Revision: 922232 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -59,7 +59,7 @@ serveur.</p>
     <directive module="core">UseCanonicalPhysicalPort</directive> pour
     d&eacute;terminer la mani&egrave;re de construire des URLs vers ses propres ressources.
     Par exemple, quand un client &eacute;met une requ&ecirc;te vers un r&eacute;pertoire, mais
-    n'ajoute pas le slash final au nom du r&eacute;pertoire, Apache doit rediriger le
+    n'ajoute pas le slash final au nom du r&eacute;pertoire, httpd doit rediriger le
     client vers le nom complet incluant le slash final afin que le client
     puisse r&eacute;soudre correctement les r&eacute;f&eacute;rences relatives pr&eacute;sentes dans
     le document.</p>
@@ -81,7 +81,7 @@ serveur.</p>
     </related>
 
     <p>Ces directives contr&ocirc;lent la localisation des diff&eacute;rents fichiers
-    n&eacute;cessaires au bon fonctionnement d'Apache. Quand le chemin utilis&eacute; ne
+    n&eacute;cessaires au bon fonctionnement de httpd. Quand le chemin utilis&eacute; ne
     commence pas par un slash (/), la localisation des fichiers est relative
     &agrave; la valeur de la directive
     <directive module="core">ServerRoot</directive>. Soyez prudent avec la
@@ -108,13 +108,13 @@ serveur.</p>
     </related>
 
     <p>Les directives <directive>LimitRequest</directive>* permettent de
-    limiter la quantit&eacute; de ressources consomm&eacute;es par Apache pour le traitement
+    limiter la quantit&eacute; de ressources consomm&eacute;es par httpd pour le traitement
     des requ&ecirc;tes des clients. Cette limitation permet de minimiser les effets
     de certains types d'attaques par d&eacute;ni de service.</p>
 
     <p>Les directives <directive>RLimit</directive>* permettent de limiter la
     quantit&eacute; de ressources utilisable par les processus initi&eacute;s (forked) par
-    les processus enfants Apache. Elles permettent en particulier de contr&ocirc;ler
+    les processus enfants httpd. Elles permettent en particulier de contr&ocirc;ler
     les ressources utilis&eacute;es par les scripts CGI et les commandes exec des
     "Inclusions c&ocirc;t&eacute; serveur" (Server Side Includes ou SSI).</p>
 
