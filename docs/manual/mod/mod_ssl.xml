@@ -1827,8 +1827,8 @@ during a renegotiation.  This vulnerability allowed an attacker to
 server.  A protocol extension was developed which fixed this
 vulnerability if supported by both client and server.</p>
 
-<p>If <module>mod_ssl</module> is linked against OpenSSL version 1.0.0
-Beta 5 or later, by default renegotiation is only supported with
+<p>If <module>mod_ssl</module> is linked against OpenSSL version 0.9.8m
+or later, by default renegotiation is only supported with
 clients supporting the new protocol extension.  If this directive is
 enabled, renegotiation will be allowed with old (unpatched) clients,
 albeit insecurely.</p>
