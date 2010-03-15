@@ -164,6 +164,9 @@ To Do List
   helpful. Additionally, a significant part of the doc consists of a
   quoted email message. This seems somewhat unprofessional.
 
+- Document mod_lua based on the various docs at
+  https://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/lua/docs/
+
 LaTeX Todo list
 ==================
 
