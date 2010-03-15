@@ -152,8 +152,20 @@ AP_DECLARE(void) ap_lingering_close(conn_rec *c)
             break;
 
         if (timeup == 0) {
-            /* First time through; calculate now + 30 seconds. */
-            timeup = apr_time_now() + apr_time_from_sec(MAX_SECS_TO_LINGER);
+            /*
+             * First time through;
+             * calculate now + 30 seconds (MAX_SECS_TO_LINGER).
+             *
+             * If some module requested a shortened waiting period, only wait for
+             * 2s (SECONDS_TO_LINGER). This is useful for mitigating certain
+             * DoS attacks.
+             */
+            if (apr_table_get(c->notes, "short-lingering-close")) {
+                timeup = apr_time_now() + apr_time_from_sec(SECONDS_TO_LINGER);
+            }
+            else {
+                timeup = apr_time_now() + apr_time_from_sec(MAX_SECS_TO_LINGER);
+            }
             continue;
         }
     } while (apr_time_now() < timeup);

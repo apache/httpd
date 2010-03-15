@@ -266,13 +266,12 @@ out:
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                       "Request %s read timeout", ccfg->type);
         /*
-         * If we allow lingering close, the client may keep this
+         * If we allow a normal lingering close, the client may keep this
          * process/thread busy for another 30s (MAX_SECS_TO_LINGER).
-         * Therefore we have to abort the connection. The downside is
-         * that the client will most likely not receive the error
-         * message.
+         * Therefore we tell ap_lingering_close() to shorten this period to
+         * 2s (SECONDS_TO_LINGER).
          */
-        f->c->aborted = 1;
+        apr_table_setn(f->c->notes, "short-lingering-close", "1");
     }
     return rv;
 }
