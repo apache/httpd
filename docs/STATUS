@@ -158,6 +158,12 @@ To Do List
 - I'd like to expand the discussion of conditional logging, and add a
   few more useful exmaples.
 
+- The mod_usertrack docs should describe what the module does, now,
+  rather than spending so much time comparing it to what a long-gone
+  module, which our readers never used, used to do. Examples would be
+  helpful. Additionally, a significant part of the doc consists of a
+  quoted email message. This seems somewhat unprofessional.
+
 LaTeX Todo list
 ==================
 
