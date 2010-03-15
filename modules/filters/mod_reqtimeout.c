@@ -151,21 +151,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     }
 
     if (!ccfg->socket) {
-        core_net_rec *net_rec;
-        ap_filter_t *core_in = f->next;
-
-        while (core_in && core_in->frec != ap_core_input_filter_handle)
-            core_in = core_in->next;
-
-        if (!core_in) {
-            ap_log_cerror(APLOG_MARK, APLOG_WARNING, 0, f->c,
-                          "mod_reqtimeout: Can't get socket "
-                          "handle from core_input_filter");
-            ap_remove_input_filter(f);
-            return ap_get_brigade(f->next, bb, mode, block, readbytes);
-        }
-        net_rec = core_in->ctx;
-        ccfg->socket = net_rec->client_socket;
+        ccfg->socket = ap_get_module_config(f->c->conn_config, &core_module);
     }
 
     rv = check_time_left(ccfg, &time_left);
