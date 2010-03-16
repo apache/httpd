@@ -169,7 +169,7 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
     return APR_SUCCESS;
 }
 
-static void socache_mc_kill(ap_socache_instance_t *context, server_rec *s)
+static void socache_mc_destroy(ap_socache_instance_t *context, server_rec *s)
 {
     /* noop. */
 }
@@ -300,7 +300,7 @@ static const ap_socache_provider_t socache_mc = {
     0,
     socache_mc_create,
     socache_mc_init,
-    socache_mc_kill,
+    socache_mc_destroy,
     socache_mc_store,
     socache_mc_retrieve,
     socache_mc_remove,

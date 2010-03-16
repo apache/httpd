@@ -167,7 +167,7 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
     return APR_SUCCESS;
 }
 
-static void socache_dbm_kill(ap_socache_instance_t *ctx, server_rec *s)
+static void socache_dbm_destroy(ap_socache_instance_t *ctx, server_rec *s)
 {
     /* the correct way */
     unlink(apr_pstrcat(ctx->pool, ctx->data_file, DBM_FILE_SUFFIX_DIR, NULL));
@@ -515,7 +515,7 @@ static const ap_socache_provider_t socache_dbm = {
     AP_SOCACHE_FLAG_NOTMPSAFE,
     socache_dbm_create,
     socache_dbm_init,
-    socache_dbm_kill,
+    socache_dbm_destroy,
     socache_dbm_store,
     socache_dbm_retrieve,
     socache_dbm_remove,
