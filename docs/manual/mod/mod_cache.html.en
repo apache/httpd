@@ -522,6 +522,7 @@ LastModified date.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.15 and later</td></tr>
 </table>
   <p>The <code class="directive">CacheLock</code> directive enables the thundering herd lock
   for the given URL space.</p>
