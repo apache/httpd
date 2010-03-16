@@ -120,6 +120,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~minfrin/htcacheclean-pid.patch
     +1: minfrin, sf
 
+  * mod_proxy_http: Log backend server port in error messages
+    Trunk patch: http://svn.apache.org/viewvc?rev=921347&view=rev
+                 http://svn.apache.org/viewvc?rev=921583&view=rev
+    2.2.x patch: Trunk patch works
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
