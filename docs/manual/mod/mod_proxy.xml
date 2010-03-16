@@ -400,7 +400,8 @@ request</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.0.31 and later.</compatibility>
+<compatibility>Available in Apache 2.0.31 and later. Usable in directory
+context in 2.3.3 and later.</compatibility>
 
 <usage>
     <p>When enabled, this option will pass the Host: line from the incoming
