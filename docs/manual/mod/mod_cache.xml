@@ -585,6 +585,7 @@ LastModified date.</description>
 <default>CacheLock off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Available in Apache 2.2.15 and later</compatibility>
 
 <usage>
   <p>The <directive>CacheLock</directive> directive enables the thundering herd lock
