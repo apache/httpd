@@ -22,10 +22,10 @@
 
 <manualpage metafile="stopping.xml.meta">
 
-  <title>Stopping and Restarting</title>
+  <title>Stopping and Restarting Apache HTTPD</title>
 
 <summary>
-    <p>This document covers stopping and restarting the Apache HTTP Server (httpd) on
+    <p>This document covers stopping and restarting Apache HTTPD on
     Unix-like systems. Windows NT, 2000 and XP users should see
     <a href="platform/windows.html#winsvc">Running httpd as a
     Service</a> and Windows 9x and ME users should see <a

@@ -29,7 +29,7 @@
 
     <p>Although the Apache HTTP Server provides generic error responses
     in the event of 4xx or 5xx HTTP status codes, these responses are
-    rather stark, uninformative, and can be indimidating to site users.
+    rather stark, uninformative, and can be intimidating to site users.
     You may wish to provide custom error responses which are either 
     friendlier, or in some language other than English, or perhaps which
     are styled more in line with your site layout.</p>
@@ -55,8 +55,8 @@
 <div class="section">
 <h2><a name="configuration" id="configuration">Configuration</a></h2>
 
-    <p>Custom error documents are configured using the <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> directive.
-    <code>ErrorDocument</code>, which may be used in global,
+    <p>Custom error documents are configured using the <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> directive,
+    which may be used in global,
     virtualhost, or directory context. It may be used in .htaccess files
     if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is set to 
     FileInfo.</p>
@@ -69,7 +69,7 @@
       ErrorDocument 401 /subscription/how_to_subscribe.html
     </code></p></div>
 
-    <p>The syntax of the <code>ErrorDocuemnt</code> directrive is:</p>
+    <p>The syntax of the <code>ErrorDocument</code> directive is:</p>
 
     <div class="example"><p><code>
       ErrorDocument &lt;3-digit-code&gt; &lt;action&gt;
@@ -197,7 +197,7 @@
     provide more useful information to users about your site, and what
     they can expect to find there.</p>
 
-    <p><code class="module"><a href="./mod/mod_includes.html">mod_includes</a></code> and <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> 
+    <p><code class="module"><a href="./mod/mod_include.html">mod_include</a></code> and <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> 
     must be enabled to use this feature.</p>
 
  </div></div>

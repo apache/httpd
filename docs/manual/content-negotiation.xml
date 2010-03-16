@@ -26,7 +26,7 @@
 
 <summary>
 
-    <p>The Apache HTTP Server (httpd) supports content negotiation as described in
+    <p>Apache HTTPD supports content negotiation as described in
     the HTTP/1.1 specification. It can choose the best
     representation of a resource based on the browser-supplied
     preferences for media type, languages, character set and

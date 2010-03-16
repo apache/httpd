@@ -22,11 +22,11 @@
 
 <manualpage metafile="dns-caveats.xml.meta">
 
-  <title>Issues Regarding DNS and Apache HTTPD</title>
+  <title>Issues Regarding DNS and Apache HTTP Server</title>
 
   <summary>
     <p>This page could be summarized with the statement: don't
-    configure Apache HTTPD in such a way that it relies on DNS resolution
+    configure Apache HTTP Server in such a way that it relies on DNS resolution
     for parsing of the configuration files. If HTTPD requires DNS
     resolution to parse the configuration files then your server
     may be subject to reliability problems (ie. it might not boot),
