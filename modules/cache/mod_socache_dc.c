@@ -82,7 +82,7 @@ static apr_status_t socache_dc_init(ap_socache_instance_t *ctx,
     return APR_SUCCESS;
 }
 
-static void socache_dc_kill(ap_socache_instance_t *ctx, server_rec *s)
+static void socache_dc_destroy(ap_socache_instance_t *ctx, server_rec *s)
 {
     if (ctx && ctx->dc) {
         DC_CTX_free(ctx->dc);
@@ -167,7 +167,7 @@ static const ap_socache_provider_t socache_dc = {
     0,
     socache_dc_create,
     socache_dc_init,
-    socache_dc_kill,
+    socache_dc_destroy,
     socache_dc_store,
     socache_dc_retrieve,
     socache_dc_remove,
