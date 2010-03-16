@@ -185,6 +185,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     with some offset.
     +1: rjung
 
+  * mod_ssl: Implement SSLInsecureRenegotiation
+    Trunk version of patch:
+      http://svn.apache.org/viewcvs.cgi?rev=906039&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=906057&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=906485&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=906491&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=908015&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=916733&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=916817&view=rev
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?rev=917044&view=rev
+    Backport:
+      http://people.apache.org/~rjung/patches/SSLInsecureRenegotiation_httpd_2_0_x-backport-r917044.patch 
+    Patch applies also on top of the two above partial fixes for CVE-2009-3555
+    with some offset and fuzz.
+    +1: rjung
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
