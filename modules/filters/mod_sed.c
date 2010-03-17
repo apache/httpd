@@ -478,11 +478,13 @@ static apr_status_t sed_request_filter(ap_filter_t *f,
     if (!APR_BRIGADE_EMPTY(ctx->bb)) {
         apr_bucket *b = NULL;
 
-        /* This may return APR_INCOMPLETE which should be fine */
-        apr_brigade_partition(ctx->bb, readbytes, &b);
-
-        APR_BRIGADE_CONCAT(bb, ctx->bb);
-        apr_brigade_split_ex(bb, b, ctx->bb);
+        if (apr_brigade_partition(ctx->bb, readbytes, &b) == APR_INCOMPLETE) {
+            APR_BRIGADE_CONCAT(bb, ctx->bb);
+        }
+        else {
+            APR_BRIGADE_CONCAT(bb, ctx->bb);
+            apr_brigade_split_ex(bb, b, ctx->bb);
+        }
     }
     return APR_SUCCESS;
 }
