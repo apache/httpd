@@ -135,6 +135,8 @@ static int proxy_connect_transfer(request_rec *r, conn_rec *c_i, conn_rec *c_o,
         rv = ap_get_brigade(c_i->input_filters, bb, AP_MODE_READBYTES,
                             APR_NONBLOCK_READ, CONN_BLKSZ);
         if (rv == APR_SUCCESS) {
+            if (c_o->aborted)
+                return APR_EPIPE;
             if (APR_BRIGADE_EMPTY(bb))
                 break;
 #ifdef DEBUGGING
@@ -186,6 +188,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     char buffer[HUGE_STRING_LEN];
     apr_socket_t *client_socket = ap_get_module_config(c->conn_config, &core_module);
     int failed, rc;
+    int client_error = 0;
     apr_pollset_t *pollset;
     apr_pollfd_t pollfd;
     const apr_pollfd_t *signalled;
@@ -440,6 +443,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                          ap_log_rerror(APLOG_MARK, APLOG_NOTICE, 0, r,
                                        "proxy: CONNECT: err/hup on backconn");
                 }
+                if (rv != APR_SUCCESS)
+                    client_error = 1;
             }
             else if (cur->desc.s == client_socket) {
                 pollevent = cur->rtnevents;
@@ -472,7 +477,10 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * Close the socket and clean up
      */
 
-    ap_lingering_close(backconn);
+    if (client_error)
+        apr_socket_close(sock);
+    else
+        ap_lingering_close(backconn);
 
     c->aborted = 1;
 
