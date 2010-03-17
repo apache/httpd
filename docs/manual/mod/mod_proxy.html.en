@@ -1228,7 +1228,8 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.31 and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.31 and later. Usable in directory
+context in 2.3.3 and later.</td></tr>
 </table>
     <p>When enabled, this option will pass the Host: line from the incoming
     request to the proxied host, instead of the hostname specified in the

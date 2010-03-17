@@ -26,7 +26,7 @@
 <a href="./tr/bind.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Configuring Apache HTTPD to listen on specific addresses and ports.</p>
+    <p>Configuring Apache HTTP Server to listen on specific addresses and ports.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#ipv6">Special IPv6 Considerations</a></li>
