@@ -84,6 +84,24 @@ To Do List
       up auth using each of the supported databases.
 
 - modules docs
+    - the follwing modules added since 2.2 lack documentation
+        - mod_dialup
+        - mod_lua
+        - mod_ratelimit
+        - mod_serf
+        - mod_watchdog
+        - mod_heartbeat
+        - mod_heartmonitor
+        - mod_lbmethod_bybusyness
+        - mod_lbmethod_byrequests
+        - mod_lbmethod_bytraffic
+        - mod_lbmethod_heartbeat
+        - mod_socache_dbm
+        - mod_socache_memcache
+        - mod_socache_shmcb
+        - mpm_simple
+      the list may be incomplete
+      maybe some of the modules will not be included in 2.4
     - mod_suexec: very little documentation
     - mod_rewrite: explain, when which variables are actually available
       (PR 16402)
