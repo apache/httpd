@@ -26,7 +26,8 @@
 <a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-<p>This document describes the files used to configure Apache HTTPD.</p>
+<p>This document describes the files used to configure Apache HTTP
+Server.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#main">Main Configuration Files</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#syntax">Syntax of the Configuration Files</a></li>
@@ -40,7 +41,7 @@
     
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#include">Include</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#typesconfig">TypesConfig</a></code></li></ul></td></tr></table>
 
-    <p>Apache HTTPD is configured by placing <a href="mod/directives.html">directives</a> in plain text
+    <p>Apache HTTP Server is configured by placing <a href="mod/directives.html">directives</a> in plain text
     configuration files. The main configuration file is usually called
     <code>httpd.conf</code>. The location of this file is set at
     compile-time, but may be overridden with the <code>-f</code>

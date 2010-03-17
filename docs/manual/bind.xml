@@ -25,7 +25,7 @@
   <title>Binding</title>
 
   <summary>
-    <p>Configuring Apache HTTPD to listen on specific addresses and ports.</p>
+    <p>Configuring Apache HTTP Server to listen on specific addresses and ports.</p>
   </summary>
 
   <seealso><a href="vhosts/">Virtual Hosts</a></seealso>

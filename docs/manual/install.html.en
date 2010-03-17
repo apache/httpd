@@ -187,7 +187,7 @@
 <div class="section">
 <h2><a name="extract" id="extract">Extract</a></h2>
 
-    <p>Extracting the source from the Apache HTTPD tarball is a
+    <p>Extracting the source from the Apache HTTP Server tarball is a
     simple matter of uncompressing, and then untarring:</p>
 
 <div class="example"><p><code>

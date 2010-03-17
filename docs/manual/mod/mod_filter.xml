@@ -136,9 +136,9 @@
     regardless of status.  To refine this further, you can use
     expression conditions with <directive>FilterProvider</directive>.</p>
 </section>
-<section id="upgrade"><title>Upgrading from HTTPD 2.2 Configuration</title>
+<section id="upgrade"><title>Upgrading from Apache HTTP Server 2.2 Configuration</title>
     <p>The <directive module="mod_filter">FilterProvider</directive>
-    directive has changed from HTTPD 2.2: the <var>match</var> and
+    directive has changed from httpd 2.2: the <var>match</var> and
     <var>dispatch</var> arguments are replaced with a single but
     more versatile <var>expression</var>.  In general, you can convert
     a match/dispatch pair to the two sides of an expression, using

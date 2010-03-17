@@ -43,8 +43,7 @@
     controls the maximum total number of threads that may be
     launched.</p>
 </summary>
-<seealso><a href="../bind.html">Setting which addresses and ports Apache
-uses</a></seealso>
+<seealso><a href="../bind.html">Setting which addresses and ports Apache HTTP Server uses</a></seealso>
 
 <section id="how-it-works"><title>How it Works</title>
     <p>A single control process (the parent) is responsible for launching 
@@ -54,13 +53,13 @@ uses</a></seealso>
     as a listener thread which listens for connections and passes them
     to a server thread for processing when they arrive.</p>
 
-    <p>Apache always tries to maintain a pool of <dfn>spare</dfn> or
+    <p>Apache HTTP Server always tries to maintain a pool of <dfn>spare</dfn> or
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     threads or processes to be created before their requests can be
     served. The number of processes that will initially launched is
     set by the <directive module="mpm_common">StartServers</directive>
-    directive. During operation, Apache assesses the total number
+    directive. During operation, the server assesses the total number
     of idle threads in all processes, and forks or kills processes to
     keep this number within the boundaries specified by <directive
     module="mpm_common">MinSpareThreads</directive> and <directive
@@ -122,10 +121,10 @@ uses</a></seealso>
 
     <p>While the parent process is usually started as <code>root</code>
     under Unix in order to bind to port 80, the child processes and threads
-    are launched by Apache as a less-privileged user. The <directive
+    are launched by the server as a less-privileged user. The <directive
     module="mod_unixd">User</directive> and <directive
     module="mod_unixd">Group</directive> directives are used to set
-    the privileges of the Apache child processes. The child processes
+    the privileges of the Apache HTTP Server child processes. The child processes
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible. In
     addition, unless <program>suexec</program> is used,

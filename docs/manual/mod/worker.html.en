@@ -75,8 +75,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
-<li><a href="../bind.html">Setting which addresses and ports Apache
-uses</a></li>
+<li><a href="../bind.html">Setting which addresses and ports Apache HTTP Server uses</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -87,13 +86,13 @@ uses</a></li>
     as a listener thread which listens for connections and passes them
     to a server thread for processing when they arrive.</p>
 
-    <p>Apache always tries to maintain a pool of <dfn>spare</dfn> or
+    <p>Apache HTTP Server always tries to maintain a pool of <dfn>spare</dfn> or
     idle server threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     threads or processes to be created before their requests can be
     served. The number of processes that will initially launched is
     set by the <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code>
-    directive. During operation, Apache assesses the total number
+    directive. During operation, the server assesses the total number
     of idle threads in all processes, and forks or kills processes to
     keep this number within the boundaries specified by <code class="directive"><a href="../mod/mpm_common.html#minsparethreads">MinSpareThreads</a></code> and <code class="directive"><a href="../mod/mpm_common.html#maxsparethreads">MaxSpareThreads</a></code>. Since this
     process is very self-regulating, it is rarely necessary to modify
@@ -151,8 +150,8 @@ uses</a></li>
 
     <p>While the parent process is usually started as <code>root</code>
     under Unix in order to bind to port 80, the child processes and threads
-    are launched by Apache as a less-privileged user. The <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> directives are used to set
-    the privileges of the Apache child processes. The child processes
+    are launched by the server as a less-privileged user. The <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> directives are used to set
+    the privileges of the Apache HTTP Server child processes. The child processes
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible. In
     addition, unless <code class="program"><a href="../programs/suexec.html">suexec</a></code> is used,
