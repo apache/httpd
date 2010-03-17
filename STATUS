@@ -26,8 +26,9 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.3.5   : Tagged on January 21, 2010.
-    2.3.4   : Tagged on November 24, 2009.
+    2.3.6   : In development
+    2.3.5   : Released on January 26, 2010.
+    2.3.4   : Released on December 8, 2009.
     2.3.3   : Tagged on November 11, 2009, not released.
     2.3.2   : Tagged on March 23, 2009, not released.
     2.3.1   : Tagged on January 2, 2009, not released.
@@ -100,6 +101,11 @@ CURRENT VOTES:
 
     pquerna: Do we want to change this for *2.4*?
     wrowe: Replies "yes"
+
+  * Name the Server (version 2.4 or 3.0, depending on the final call)
+    Recent discussion indicates we should designate a (short name).
+    This is not yet a [Vote] - Your nominations please:
+      * Apache HTTP Server (httpd)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
