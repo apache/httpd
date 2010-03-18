@@ -1303,7 +1303,7 @@ SSLRenegBufferSize 262144
 
 <directivesynopsis>
 <name>SSLStrictSNIVHostCheck</name>
-<description>Whether to allow non SNI clients to access a name based virtual
+<description>Whether to allow non-SNI clients to access a name-based virtual
 host.
 </description>
 <syntax>SSLStrictSNIVHostCheck on|off</syntax>
@@ -1314,8 +1314,8 @@ host.
 
 <usage>
 <p>
-This directive sets whether a non SNI client is allowed to access a name based
-virtual host. If set to <code>on</code> in the default name based virtual
+This directive sets whether a non-SNI client is allowed to access a name-based
+virtual host. If set to <code>on</code> in the default name-based virtual
 host, clients that are SNI unaware will not be allowed to access <em>any</em>
 virtual host, belonging to this particular IP / port combination.
 If set to <code>on</code> in any other virtual host, SNI unaware clients
