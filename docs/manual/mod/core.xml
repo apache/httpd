@@ -3458,7 +3458,7 @@ port</description>
     the client if any are supplied (otherwise it will use the
     canonical name, as defined above). These values are the same
     that are used to implement <a
-    href="../vhosts/name-based.html">name based virtual hosts</a>,
+    href="../vhosts/name-based.html">name-based virtual hosts</a>,
     and are available with the same clients. The CGI variables
     <code>SERVER_NAME</code> and <code>SERVER_PORT</code> will be
     constructed from the client supplied values as well.</p>

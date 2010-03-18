@@ -859,7 +859,7 @@ HTTPS to an Apache+mod_ssl server with Microsoft Internet Explorer (MSIE)?</titl
     MSIE 5.x has an error in the way it handles the SGC negotiation.</p>
     
     <p>And finally there are versions of MSIE which seem to require that
-    an SSL session can be reused (a totally non standard-conforming
+    an SSL session can be reused (a totally non-standard-conforming
     behaviour, of course). Connecting with those MSIE versions only work
     if a SSL session cache is used. So, as a work-around, make sure you
     are using a session cache (see the <directive module="mod_ssl"

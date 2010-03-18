@@ -179,7 +179,7 @@
 
   <p>To solve this problem the <directive module="mod_cache">CacheQuickHandler
   </directive> directive can be set to <strong>off</strong>, and the server will
-  process all phases normally handled by a non cached request, including the
+  process all phases normally handled by a non-cached request, including the
   <strong>authentication and authorisation</strong> phases.</p>
 
   <p>In addition, the administrator may optionally specify the <strong>precise point
