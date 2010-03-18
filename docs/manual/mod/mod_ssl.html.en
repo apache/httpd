@@ -1740,11 +1740,11 @@ host.
 </table>
 <p>
 This directive sets whether a non SNI client is allowed to access a name based
-virtual host. If set to <code>on</code> in the non default name based virtual
-host, non SNI clients are not allowed to access this particular virtual host.
-If set to <code>on</code> in the default name based virtual host, non SNI
-clients are not allowed to access any name based virtual host belonging to
-this IP / port combination.
+virtual host. If set to <code>on</code> in the default name based virtual
+host, clients that are SNI unaware will not be allowed to access <em>any</em>
+virtual host, belonging to this particular IP / port combination.
+If set to <code>on</code> in any other virtual host, SNI unaware clients
+are not allowed to access this particular virtual host.
 </p>
 
 <div class="warning"><p>
