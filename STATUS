@@ -126,6 +126,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: Trunk patch works
     +1: sf
 
+  * mod_ssl: modules/ssl/ssl_engine_init.c (ssl_init_ctx_cleanup_proxy):
+    Unset pkp->certs pointer after freeing the array; fixes segfault at
+    startup if the certs are shared across >1 server_rec.
+    Trunk patch: http://svn.apache.org/viewvc?rev=417988&view=rev
+    2.2.x patch: Trunk patch works
+    (Original patch by jorton)
+    +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * srclib/pcre and vendor/pcre
