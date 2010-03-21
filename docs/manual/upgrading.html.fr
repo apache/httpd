@@ -25,7 +25,8 @@
   <p>Afin d'assister les utilisateurs lors de leurs opérations de mise à
   jour, nous maintenons un document
   qui comporte des informations critiques à l'attention des personnes qui
-  utilisent déjà Apache. Ces informations ne sont que de brèves notes, et vous
+  utilisent déjà le serveur HTTP Apache. Ces informations
+  ne sont que de brèves notes, et vous
   devriez trouver plus d'informations dans le document <a href="new_features_2_4.html">Nouvelles fonctionnalités</a>, ou dans
   le fichier <code>src/CHANGES</code>.</p>
 
@@ -41,7 +42,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Changements divers</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#third-party">Modules tiers</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="new_features_2_4.html">Vue d'ensemble des nouvelles
-fonctionnalités de Apache 2.4</a></li></ul></div>
+fonctionnalités du serveur HTTP Apache 2.4</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compile-time" id="compile-time">Modifications de la configuration au moment de la compilation</a></h2>

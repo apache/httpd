@@ -54,7 +54,7 @@ serveur.</p>
     <code class="directive"><a href="./mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code> pour
     déterminer la manière de construire des URLs vers ses propres ressources.
     Par exemple, quand un client émet une requête vers un répertoire, mais
-    n'ajoute pas le slash final au nom du répertoire, Apache doit rediriger le
+    n'ajoute pas le slash final au nom du répertoire, httpd doit rediriger le
     client vers le nom complet incluant le slash final afin que le client
     puisse résoudre correctement les références relatives présentes dans
     le document.</p>
@@ -66,7 +66,7 @@ serveur.</p>
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#coredumpdirectory">CoreDumpDirectory</a></code></li><li><code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code></li><li><code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code></li></ul></td></tr></table>
 
     <p>Ces directives contrôlent la localisation des différents fichiers
-    nécessaires au bon fonctionnement d'Apache. Quand le chemin utilisé ne
+    nécessaires au bon fonctionnement de httpd. Quand le chemin utilisé ne
     commence pas par un slash (/), la localisation des fichiers est relative
     à la valeur de la directive
     <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code>. Soyez prudent avec la
@@ -82,13 +82,13 @@ serveur.</p>
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#limitrequestbody">LimitRequestBody</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfields">LimitRequestFields</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a></code></li><li><code class="directive"><a href="./mod/core.html#limitrequestline">LimitRequestLine</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitcpu">RLimitCPU</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitmem">RLimitMEM</a></code></li><li><code class="directive"><a href="./mod/core.html#rlimitnproc">RLimitNPROC</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#threadstacksize">ThreadStackSize</a></code></li></ul></td></tr></table>
 
     <p>Les directives <code class="directive">LimitRequest</code>* permettent de
-    limiter la quantité de ressources consommées par Apache pour le traitement
+    limiter la quantité de ressources consommées par httpd pour le traitement
     des requêtes des clients. Cette limitation permet de minimiser les effets
     de certains types d'attaques par déni de service.</p>
 
     <p>Les directives <code class="directive">RLimit</code>* permettent de limiter la
     quantité de ressources utilisable par les processus initiés (forked) par
-    les processus enfants Apache. Elles permettent en particulier de contrôler
+    les processus enfants httpd. Elles permettent en particulier de contrôler
     les ressources utilisées par les scripts CGI et les commandes exec des
     "Inclusions côté serveur" (Server Side Includes ou SSI).</p>
 

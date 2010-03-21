@@ -25,7 +25,7 @@
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Ce document explique comment Apache utilise l'URL contenue dans une
+    <p>Ce document explique comment le serveur HTTP Apache utilise l'URL contenue dans une
     requête pour déterminer le noeud du système de fichier à partir duquel le
     fichier devra être servi.</p>
   </div>
@@ -48,7 +48,7 @@ l'arborescence DocumentRoot</a></li>
 <div class="section">
 <h2><a name="documentroot" id="documentroot">Racine des documents (DocumentRoot)</a></h2>
 
-    <p>La méthode par défaut d'Apache pour déterminer quel fichier servir pour
+    <p>La méthode par défaut de httpd pour déterminer quel fichier servir pour
     une requête donnée, consiste à extraire le chemin du fichier de la requête
     (la partie de l'URL qui suit le nom d'hôte et le port), puis de l'ajouter
     à la fin de la valeur de la directive
@@ -65,7 +65,7 @@ l'arborescence DocumentRoot</a></li>
     <code>http://www.example.com/fish/guppies.html</code> retournera le
     fichier <code>/var/www/html/fish/guppies.html</code> au client.</p>
 
-    <p>Apache supporte aussi les <a href="vhosts/">Hôtes virtuels</a>,
+    <p>httpd supporte aussi les <a href="vhosts/">Hôtes virtuels</a>,
     ce qui lui permet de traiter des requêtes pour plusieurs hôtes.
     Dans ce cas, un <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
     différent peut être défini pour chaque hôte virtuel;
@@ -86,11 +86,11 @@ l'arborescence DocumentRoot</a></h2>
 
     <p>Il existe de nombreuses circonstances pour lesquelles il est nécessaire
     d'autoriser l'accès web à des portions du système de fichiers qui ne se
-    trouvent pas dans l'arborescence <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>.  Apache propose de nombreuses
+    trouvent pas dans l'arborescence <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>.  httpd propose de nombreuses
     solutions pour réaliser cela. Sur les systèmes Unix, les liens
     symboliques permettent de rattacher d'autres portions du système de
     fichiers au <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>. Pour des raisons de sécurité,
-    Apache ne suivra les liens symboliques que si les <code class="directive"><a href="./mod/core.html#options">Options</a></code> pour le répertoire concerné contiennent
+    httpd ne suivra les liens symboliques que si les <code class="directive"><a href="./mod/core.html#options">Options</a></code> pour le répertoire concerné contiennent
     <code>FollowSymLinks</code> ou <code>SymLinksIfOwnerMatch</code>.</p>
 
     <p>Une autre méthode consiste à utiliser la directive <code class="directive"><a href="./mod/mod_alias.html#alias">Alias</a></code> pour rattacher toute portion
@@ -168,7 +168,7 @@ l'arborescence DocumentRoot</a></h2>
 <h2><a name="redirect" id="redirect">Redirection d'URL</a></h2>
 
     <p>Les directives de configuration décrites dans les sections précédentes
-    demandent à Apache d'extraire un contenu depuis un emplacement spécifique
+    demandent à httpd d'extraire un contenu depuis un emplacement spécifique
     du système de fichiers
     et de la retourner au client. Il est cependant parfois
     souhaitable d'informer le
@@ -189,7 +189,7 @@ l'arborescence DocumentRoot</a></h2>
     <code>/bar/</code>. Vous pouvez rediriger les clients non seulement sur le
     serveur d'origine, mais aussi vers n'importe quel autre serveur.</p>
 
-    <p>Apache propose aussi la directive <code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> pour traiter les problèmes
+    <p>httpd propose aussi la directive <code class="directive"><a href="./mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> pour traiter les problèmes
     de réécriture d'une plus grande complexité. Par exemple, afin de rediriger
     les requêtes pour la page d'accueil du site vers un site différent, mais
     laisser toutes les autres requêtes inchangées, utilisez la
@@ -207,7 +207,7 @@ l'arborescence DocumentRoot</a></h2>
 <div class="section">
 <h2><a name="proxy" id="proxy">Mandataire inverse (Reverse Proxy)</a></h2>
 
-<p>Apache vous permet aussi de rapatrier des documents distants
+<p>httpd vous permet aussi de rapatrier des documents distants
 dans l'espace des URL du serveur local.
 Cette technique est appelée <em>mandataire inverse ou reverse
 proxying</em> car le serveur web agit comme un serveur mandataire en
@@ -275,7 +275,7 @@ permet de réécrire les liens dans les documents HTML et XHTML.</p>
 
     <p>Une autre cause fréquente d'erreurs "File Not Found" est l'erreur de
     frappe accidentelle dans les URLs, soit directement dans le navigateur,
-    soit dans les liens HTML. Apache propose le module
+    soit dans les liens HTML. httpd propose le module
     <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> (sic) pour tenter de résoudre ce problème.
     Lorsque ce module est activé, il intercepte les erreurs
     "File Not Found" et recherche une ressource possédant un nom de fichier
@@ -293,7 +293,8 @@ permet de réécrire les liens dans les documents HTML et XHTML.</p>
     requête "incorrecte" entraîne une redirection d'URL et une nouvelle requête
     de la part du client.</p>
 
-    <p>Si toutes les tentatives pour localiser le contenu échouent, Apache
+    <p>Si toutes les tentatives pour localiser le contenu
+    échouent, httpd
     retourne une page d'erreur avec le code de statut HTTP 404
     (file not found). L'apparence de cette page est contrôlée à l'aide de la
     directive <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code>

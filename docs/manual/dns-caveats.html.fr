@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Problèmes liés au DNS avec Apache - Serveur Apache HTTP</title>
+<title>Problèmes liés au DNS avec le serveur HTTP Apache - Serveur Apache HTTP</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Problèmes liés au DNS avec Apache</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Serveur HTTP</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Problèmes liés au DNS avec le serveur HTTP Apache</h1>
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/dns-caveats.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/dns-caveats.html" title="Français">&nbsp;fr&nbsp;</a> |
@@ -25,9 +25,10 @@
 <a href="./tr/dns-caveats.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
 
-    <p>Cette page pourrait se résumer ainsi : configurez Apache de façon
+    <p>Cette page pourrait se résumer ainsi : configurez le
+    serveur HTTP Apache de façon
     à ce qu'il n'ait pas besoin de résolution DNS pour interpréter les
-    fichiers de configuration. Si Apache doit effectuer des résolutions
+    fichiers de configuration. Si httpd doit effectuer des résolutions
     DNS pour interpréter les fichiers de configuration, votre serveur
     pourra présenter des problèmes de fiabilité (en d'autres termes,
     il est possible qu'il refuse de démarrer), ou d'attaques par déni ou
@@ -46,48 +47,47 @@
     
 
     <div class="example"><p><code>
-      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base <br />
-      # de configuration <br />
+      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
+      # de configuration
       &lt;VirtualHost www.abc.dom&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>Pour fonctionner correctement, Apache a absolument besoin de deux
+    <p>Pour fonctionner correctement, le serveur a absolument besoin de deux
     informations à propos de chaque serveur virtuel : le nom du serveur
     défini par la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>, et au moins une adresse IP à
     laquelle le serveur va se rattacher et répondre. L'exemple ci-dessus
-    ne comporte pas d'adresse IP, si bien qu'Apache devra utiliser le
+    ne comporte pas d'adresse IP, si bien que httpd devra utiliser le
     DNS pour trouver l'adresse IP de <code>www.abc.dom</code>. Si pour
     une raison quelconque, le DNS n'est pas disponible au moment où
     votre serveur interprète son fichier de configuration, ce serveur
     virtuel <strong>ne sera pas pris en compte dans la
     configuration</strong>. Il sera incapable de
     répondre à toute requête pour ce serveur virtuel (avec les versions
-    d'Apache antérieures à 1.2, le serveur ne démarrera tout simplement
+    de httpd antérieures à 1.2, le serveur ne démarrera tout simplement
     pas).</p>
 
     <p>Supposons que l'adresse de <code>www.abc.dom</code> soit
     192.0.2.1, et examinons cet extrait de configuration :</p>
 
     <div class="example"><p><code>
-      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base <br />
-      # de configuration <br />
+      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
+      # de configuration
       &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>Cette fois, Apache doit effectuer une recherche DNS inverse pour
+    <p>Cette fois, httpd doit effectuer une recherche DNS inverse pour
     trouver le nom <code>ServerName</code> de ce serveur virtuel. Si
     cette recherche inverse échoue, le serveur virtuel sera
-    partiellement désactivé (avec les versions d'Apache antérieures à
-    1.2, le serveur ne démarrera tout simplement pas). Si le serveur
+    partiellement désactivé. Si le serveur
     virtuel est à base de nom, il sera en fait totalement désactivé,
     mais s'il est à base d'adresse IP, il fonctionnera probablement.
-    Cependant, Apache échouera s'il doit générer une URL complète pour
+    Cependant, httpd échouera s'il doit générer une URL complète pour
     le serveur qui inclut ce nom de serveur.</p>
 
     <p>Voici un extrait de configuration qui permet d'éviter ces deux
@@ -106,7 +106,7 @@
     
 
     <p>Il existe (au moins) deux formes possibles de déni de service. Si
-    vous utilisez une version d'Apache antérieure à 1.2, votre serveur
+    vous utilisez une version de httpd antérieure à 1.2, votre serveur
     ne démarrera pas si une des deux recherches DNS mentionnées
     ci-dessus échoue pour au moins un de vos serveurs virtuels. Dans
     certains cas, cette recherche DNS ne sera même pas sous votre
@@ -150,16 +150,16 @@
     par le serveur virtuel <code>def.dom</code>. Une meilleur
     compréhension de la raison pour laquelle ceci peut se produire
     nécessite une discussion plus approfondie à propos de la manière
-    dont Apache associe les requêtes entrantes aux différents serveurs
+    dont httpd associe les requêtes entrantes aux différents serveurs
     virtuels qui vont les servir. Un document de base décrivant ceci <a href="vhosts/details.html">est disponible</a>.</p>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="main" id="main">L'adresse du "serveur principal"</a></h2>
     
 
-    <p>L'addition du <a href="vhosts/name-based.html">support des
-    serveurs virtuels à base de nom</a> dans la version 1.1 d'Apache
-    oblige ce dernier à connaître la/les adresse(s) IP de l'hôte sur
+    <p><a href="vhosts/name-based.html">Le support des
+    serveurs virtuels à base de nom</a> oblige httpd à
+    connaître la/les adresse(s) IP de l'hôte sur
     lequel <code class="program"><a href="./programs/httpd.html">httpd</a></code> s'exécute. Pour obtenir cette
     adresse, soit il utilise la directive <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> globale (si elle est présente),
     soit il fait appel à la fonction C <code>gethostname</code> (qui
@@ -180,7 +180,7 @@
     <p>Si votre serveur n'a aucune autre raison d'effectuer des
     recherches DNS, vous pouvez définir la variable d'environnement
     <code>HOSTRESORDER</code> à "local", et vous serez alors en mesure
-    d'exécuter Apache. Tout dépend du système d'exploitation et des
+    d'exécuter httpd. Tout dépend du système d'exploitation et des
     bibliothèques de résolution de noms que vous utilisez. Elle affecte
     aussi les programmes CGI, à moins que vous n'utilisiez
     <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> pour contrôler l'environnement. Il est
@@ -214,9 +214,9 @@
     
 
     <p>La situation concernant le DNS apparaît clairement comme non
-    souhaitable. Avec Apache 1.2, nous avons fait en sorte que le
+    souhaitable. Bien que nous ayons fait en sorte que le
     serveur puisse au moins démarrer en cas d'échec de recherche DNS,
-    mais ce n'est pas ce que nous pouvons faire de mieux. En tout état
+    ce n'est pas ce que nous pouvons faire de mieux. En tout état
     de cause, le fait de devoir spécifier des adresses IP explicites
     dans les fichiers de configuration est fortement non souhaitable
     avec l'Internet d'aujourd'hui où les changements de numérotation

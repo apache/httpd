@@ -26,7 +26,8 @@
     <p>Ce document complète la documentation de référence des modules
     <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>,
     <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> et du programme <a href="programs/htcacheclean.html">htcacheclean</a>.
-    Il décrit l'utilisation des fonctionnalités de mise en cache d'Apache
+    Il décrit l'utilisation des fonctionnalités de mise en
+    cache du serveur HTTP Apache
     pour accélérer les services web et proxy, tout en évitant les problèmes
     courants et les erreurs de configuration.</p>
   </div>
@@ -69,7 +70,8 @@
     possibilité de mise en cache d'URLs,
     <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> fournit des méthodes pour la gestion
     et l'édition de fichiers en mémoire afin de maintenir un cache de fichiers
-    dans l'état où ils étaient la dernière fois qu'Apache a démarré.
+    dans l'état où ils étaient la dernière
+    fois qu'httpd a démarré.
     En tant que tel, <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> a été conçu pour améliorer
     le temps d'accès à des fichiers locaux statiques qui ne sont modifiés
     que rarement.</p>
@@ -112,7 +114,7 @@
 
     <p>Si l'URL ne se trouve pas dans le cache, <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>
     va ajouter un <a href="filter.html">filtre</a> au traitement de la requête.
-    Une fois le contenu localisé par Apache selon la conception courante, le
+    Une fois le contenu localisé par httpd selon la conception courante, le
     filtre sera exécuté en même temps que le contenu sera servi.
     S'il est déterminé que le contenu peut être mis en cache,
     il sera sauvegardé dans le cache pour une utilisation future.</p>
@@ -187,7 +189,7 @@
 
       <p>Lorsqu'un contenu est arrivé à expiration dans le cache et fait
       l'objet d'une nouvelle demande d'accès, plutôt que traiter directement
-      la requête originale, Apache préfère utiliser une
+      la requête originale, httpd préfère utiliser une
       requête conditionnelle.</p>
 
       <p>HTTP propose toute une panoplie d'en-têtes qui permettent à un client,
@@ -219,7 +221,7 @@
       Pour ce qui est des fichiers
       statiques, l'action type est un appel à <code>stat()</code> ou un appel
       système similaire, pour déterminer si la taille du fichier ou sa date de
-      modification ont changé. Ainsi, même si Apache met en cache le contenu
+      modification ont changé. Ainsi, même si httpd met en cache le contenu
       local, un contenu arrivé à expiration pourra être servi plus rapidement
       depuis le cache s'il n'a pas été modifié, parce que la lecture depuis le
       cache est plus rapide que la lecture depuis le processus en arrière-plan
@@ -230,10 +232,11 @@
     <h3>Que peut-on mettre en cache ?</h3>
       
 
-      <p>Comme mentionné plus haut, les deux styles de mise en cache d'Apache
+      <p>Comme mentionné plus haut, les deux styles de mise en
+      cache de httpd
       fonctionnent différemment; la mise en cache de
       <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> conserve les contenus des fichiers
-      tels qu'ils étaient au démarrage d'Apache. Quand une requête pour un
+      tels qu'ils étaient au démarrage de httpd. Quand une requête pour un
       fichier mis en cache par ce module est envoyée, elle est interceptée
       et le fichier mis en cache est servi.</p>
 
@@ -342,7 +345,7 @@ Vary: negotiate,accept-language,accept-charset
       seront servies par le module de mise en cache sauf si ce dernier
       détermine qu'un processus d'arrière-plan doit être appelé. La mise en
       cache de ressources locales modifie considérablement le modèle de
-      sécurité d'Apache.</p>
+      sécurité de httpd.</p>
 
       <p>Comme le parcours de la hiérarchie d'un système de fichiers pour
       examiner le contenu d'éventuels fichiers
@@ -371,7 +374,8 @@ Vary: negotiate,accept-language,accept-charset
       <p>Etant donné que les requêtes des utilisateurs finaux peuvent être
       servies depuis le cache, ce dernier est une cible potentielle pour ceux
       qui veulent défigurer un contenu ou interférer avec lui. Il est important
-      de garder à l'esprit que l'utilisateur sous lequel tourne Apache doit
+      de garder à l'esprit que l'utilisateur sous lequel tourne
+      httpd doit
       toujours avoir l'accès en écriture dans le cache. Ceci est en contraste
       total avec la recommandation usuelle d'interdire à l'utilisateur sous
       lequel tourne Apache
@@ -387,7 +391,8 @@ Vary: negotiate,accept-language,accept-charset
       <p>Cela représente un risque relativement élévé par rapport aux autres
       types d'attaques qu'il est possible de mener sous l'utilisateur apache.
       Si vous utilisez <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, vous devez garder ceci
-      à l'esprit : effectuez toujours les mises à jour d'Apache quand des
+      à l'esprit : effectuez toujours les mises à jour de
+      httpdquand des
       correctifs de sécurité sont annoncés et exécutez les processus CGI sous
       un utilisateur autre qu'apache en utilisant
       <a href="suexec.html">suEXEC</a> dans la mesure du possible.</p>
@@ -397,7 +402,7 @@ Vary: negotiate,accept-language,accept-charset
     <h3>Empoisonnement du cache (Cache Poisoning)</h3>
       
 
-      <p>Si vous utilisez Apache comme serveur mandataire avec mise en cache,
+      <p>Si vous utilisez httpd comme serveur mandataire avec mise en cache,
       vous vous exposez aussi à un éventuel "Empoisonnement du
       cache" (Cache poisoning). L'empoisonnement du cache est un terme général
       pour désigner les attaques au cours desquelles l'attaquant fait en sorte
@@ -406,8 +411,8 @@ Vary: negotiate,accept-language,accept-charset
       </p>
 
       <p>Par exemple, si les serveur DNS qu'utilise votre système où tourne
-      Apache sont vulnérables à l'empoisonnement du cache des DNS, un attaquant
-      pourra contrôler vers où Apache se connecte lorsqu'il demande un contenu
+      httpd sont vulnérables à l'empoisonnement du cache des DNS, un attaquant
+      pourra contrôler vers où httpd se connecte lorsqu'il demande un contenu
       depuis le serveur d'origine.
       Un autre exemple est constitué par les attaques ainsi nommées
       "Dissimulation de requêtes HTTP" (HTTP request-smuggling).</p>
@@ -427,17 +432,20 @@ Vary: negotiate,accept-language,accept-charset
     <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code></li></ul></td></tr></table>
 
     <p>Le fait d'ouvrir un fichier peut en lui-même introduire un délai,
-    en particulier dans les systèmes de fichiers répartis sur le réseau. Apache
+    en particulier dans les systèmes de fichiers répartis
+    sur le réseau. httpd
     peut s'affranchir de ce délai en maintenant
     un cache des descripteurs de fichiers
-    ouverts pour ce qui concerne les fichiers souvent accédés. Apache propose
+    ouverts pour ce qui concerne les fichiers souvent
+    accédés. httpd propose
     actuellement une implémentation de mise en cache de la
     gestion de fichier.</p>
 
     <h3>Directive CacheFile</h3>
       
 
-      <p>La forme la plus élémentaire de mise en cache que propose Apache est
+      <p>La forme la plus élémentaire de mise en cache que
+      propose httpd est
       fournie par le module <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>.
       Plutôt que de mettre en cache le contenu des fichiers, ce cache maintient
       une table des descripteurs de fichiers ouverts. Les fichiers à mettre en
@@ -446,7 +454,8 @@ Vary: negotiate,accept-language,accept-charset
       <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code>.</p>
 
       <p>La directive
-      <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> demande à Apache
+      <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code> demande
+      à httpd
       d'ouvrir le fichier lors de son démarrage et de réutiliser le descripteur
       de fichier élaboré à cette occasion pour tous les
       accès ultérieurs à ce fichier.</p>
@@ -461,17 +470,19 @@ Vary: negotiate,accept-language,accept-charset
       <p>Bien que l'utilisation de la directive
       <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code>
       n'entraîne pas la mise en cache du contenu du fichier, cela ne signifie
-      pas qu'en cas de modification du fichier pendant l'exécution d'Apache,
+      pas qu'en cas de modification du fichier pendant
+      l'exécution de httpd,
       ces changements seront pris en compte. Le fichier sera toujours servi
-      dans l'état où il était quand Apache a démarré.</p>
+      dans l'état où il était quand httpd a démarré.</p>
 
-      <p>Si le fichier est supprimé pendant l'exécution d'Apache, ce dernier
+      <p>Si le fichier est supprimé pendant l'exécution de
+      httpd, ce dernier
       continuera à maintenir un descripteur de fichier ouvert et à servir le
-      fichier dans l'état où il était quand Apache a démarré. Cela signifie
+      fichier dans l'état où il était quand httpd a démarré. Cela signifie
       aussi habituellement que malgré le fait que le fichier ait été supprimé,
       et ne soit
       plus accessible par le système de fichiers, l'espace libéré ne sera
-      restitué qu'à l'arrêt d'Apache quand le
+      restitué qu'à l'arrêt de httpd quand le
       descripteur de fichier sera fermé.</p>
     
 
@@ -498,7 +509,7 @@ Vary: negotiate,accept-language,accept-charset
     disponible. Comme nous le verrons plus loin, ce n'est pas un problème en
     soi dans le cas de la mise en cache par l'intermédiaire du système
     d'exploitation, mais si l'on utilise la mise en cache en mémoire propre à
-    Apache, il faut prendre garde à ne pas allouer trop de mémoire au cache.
+    httpd, il faut prendre garde à ne pas allouer trop de mémoire au cache.
     Sinon le système sera contraint d'utiliser le swap, ce qui dégradera
     sensiblement les performances.</p>
 
@@ -531,19 +542,20 @@ sys     0m0.000s</pre></div>
       être assuré qu'il y aura de plus en plus de contenus de fichiers stockés
       dans ce cache. Ceci peut s'avérer une méthode de mise en cache en mémoire
       très efficace, et ne nécessite aucune configuration supplémentaire
-      d'Apache.</p>
+      de httpd.</p>
 
       <p>De plus, comme le système d'exploitation sait si des fichiers
       ont été
       supprimés ou modifiés, il peut effacer automatiquement des contenus de
       fichiers du cache lorsque cela s'avère nécessaire. Ceci constitue un gros
-      avantage par rapport à la mise en cache en mémoire d'Apache qui n'a
+      avantage par rapport à la mise en cache en mémoire
+      de httpd qui n'a
       aucune possibilité de savoir si un fichier a été modifié.</p>
     
 
     <p>En dépit des performances et des avantages de la mise en cache
     automatique par le système d'exploitation, la mise en cache en mémoire
-    peut être effectuée plus efficacement par Apache dans certaines
+    peut être effectuée plus efficacement par httpd dans certaines
     circonstances.</p>
 
     <h3>Mise en cache à l'aide de la directive MMapFile</h3>
@@ -551,8 +563,9 @@ sys     0m0.000s</pre></div>
 
       <p>La directive <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code>
       fournie par le module <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> vous permet de
-      demander à Apache de charger un contenu de fichier statique en mémoire
-      lors de son démarrage (à l'aide de l'appel système mmap). Apache
+      demander à httpd de charger un contenu de fichier statique en mémoire
+      lors de son démarrage (à l'aide de l'appel
+      système mmap). httpd
       utilisera le contenu chargé en mémoire pour satisfaire ultérieurement
       toutes les demandes d'accès à ce fichier.</p>
 
@@ -560,13 +573,13 @@ sys     0m0.000s</pre></div>
 
       <p>Comme dans le cas de la directive
       <code class="directive"><a href="./mod/mod_file_cache.html#cachefile">CacheFile</a></code>, toute
-      modification du fichier ne sera plus prise en compte par Apache une fois
+      modification du fichier ne sera plus prise en compte par httpd une fois
       ce dernier démarré.</p>
 
       <p> La directive
       <code class="directive"><a href="./mod/mod_file_cache.html#mmapfile">MMapFile</a></code> ne gardant
       pas la trace de la quantité de mémoire qu'elle alloue, vous devez prendre
-      garde de ne pas en abuser. Chaque processus enfant d'Apache utilisant
+      garde de ne pas en abuser. Chaque processus enfant de httpd utilisant
       sa propre réplique de la mémoire allouée, il est donc d'une importance
       critique de s'assurer que les fichiers chargés ne sont pas d'une taille
       trop importante afin d'épargner au système l'utilisation du swap.</p>
@@ -668,7 +681,8 @@ CacheDirLength 1</pre></div>
       disponible.</p>
 
       <p>Par contre l'utilitaire
-      <a href="programs/htcacheclean.html">htcacheclean</a> fourni avec Apache
+      <a href="programs/htcacheclean.html">htcacheclean</a> fourni avec
+      httpd
       vous permet, comme son nom l'indique, de nettoyer le cache périodiquement.
       Déterminer la fréquence à laquelle lancer <a href="programs/htcacheclean.html">htcacheclean</a> et la taille souhaitée
       pour le cache est une tâche relativement complexe et il vous faudra de

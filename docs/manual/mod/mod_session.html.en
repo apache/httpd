@@ -230,7 +230,7 @@
       of the cookie.</p>
       
       <div class="warning"><h3>Warning</h3>
-      <p>Some of the HTTP cookie privacy features are either non standard, or
+      <p>Some of the HTTP cookie privacy features are either non-standard, or
       are not implemented consistently across browsers. The session modules
       allow you to set cookie parameters, but it makes no guarantee that privacy
       will be respected by the browser. If security is a concern, use the
