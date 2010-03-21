@@ -25,6 +25,7 @@
 <a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/custom-error.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p>Apache, bazı sorunlara ve hatalara karşılık vereceği yanıtların
       yapılandırabilmesini mümkün kılan ek bir işlevselliğe sahiptir.</p>

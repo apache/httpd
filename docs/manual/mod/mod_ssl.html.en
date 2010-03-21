@@ -1728,7 +1728,7 @@ SSLSessionCacheTimeout 600
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLStrictSNIVHostCheck" id="SSLStrictSNIVHostCheck">SSLStrictSNIVHostCheck</a> <a name="sslstrictsnivhostcheck" id="sslstrictsnivhostcheck">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to allow non SNI clients to access a name based virtual
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to allow non-SNI clients to access a name-based virtual
 host.
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLStrictSNIVHostCheck on|off</code></td></tr>
@@ -1739,8 +1739,8 @@ host.
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.12 and later</td></tr>
 </table>
 <p>
-This directive sets whether a non SNI client is allowed to access a name based
-virtual host. If set to <code>on</code> in the default name based virtual
+This directive sets whether a non-SNI client is allowed to access a name-based
+virtual host. If set to <code>on</code> in the default name-based virtual
 host, clients that are SNI unaware will not be allowed to access <em>any</em>
 virtual host, belonging to this particular IP / port combination.
 If set to <code>on</code> in any other virtual host, SNI unaware clients

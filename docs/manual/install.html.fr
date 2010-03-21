@@ -134,8 +134,7 @@
       de configuration et de la présence éventuelle de modules tiers.</dd>
 
       <dt>Compilateur ANSI-C et système de construction</dt>
-      <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a href="http://gcc.gnu.org/">GNU C
-       (GCC)</a> de la <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
+      <dd>Vous devez disposer d'un compilateur ANSI-C. Le compilateur <a href="http://gcc.gnu.org/">GNU C (GCC)</a> de la <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
       est recommandé. Si vous ne possédez pas GCC,
       assurez-vous au moins que votre compilateur soit compatible ANSI.
       En outre, votre <code>PATH</code> doit contenir
@@ -193,7 +192,7 @@
 <div class="section">
 <h2><a name="extract" id="extract">Extraction</a></h2>
 
-    <p>L'extraction des sources depuis l'archive Apache HTTPD consiste
+    <p>L'extraction des sources depuis l'archive du serveur HTTP Apache consiste
     simplement à décompresser et à désarchiver cette dernière :</p>
 
 <div class="example"><p><code>

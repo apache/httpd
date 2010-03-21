@@ -647,6 +647,7 @@ fonction de la date de dernière modification.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.15 d'Apache</td></tr>
 </table>
   <p>La directive <code class="directive">CacheLock</code> active la protection
   contre les tempêtes de requêtes pour l'espace d'adressage donné.</p>
