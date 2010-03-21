@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 507346 -->
+<!-- English Revision : 924467 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -24,12 +24,13 @@
 
 <manualpage metafile="dns-caveats.xml.meta">
 
-  <title>Probl&egrave;mes li&eacute;s au DNS avec Apache</title>
+  <title>Probl&egrave;mes li&eacute;s au DNS avec le serveur HTTP Apache</title>
 
   <summary>
-    <p>Cette page pourrait se r&eacute;sumer ainsi : configurez Apache de fa&ccedil;on
+    <p>Cette page pourrait se r&eacute;sumer ainsi : configurez le
+    serveur HTTP Apache de fa&ccedil;on
     &agrave; ce qu'il n'ait pas besoin de r&eacute;solution DNS pour interpr&eacute;ter les
-    fichiers de configuration. Si Apache doit effectuer des r&eacute;solutions
+    fichiers de configuration. Si httpd doit effectuer des r&eacute;solutions
     DNS pour interpr&eacute;ter les fichiers de configuration, votre serveur
     pourra pr&eacute;senter des probl&egrave;mes de fiabilit&eacute; (en d'autres termes,
     il est possible qu'il refuse de d&eacute;marrer), ou d'attaques par d&eacute;ni ou
@@ -41,49 +42,48 @@
     <title>Un exemple simple</title>
 
     <example>
-      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base <br />
-      # de configuration <br />
+      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
+      # de configuration
       &lt;VirtualHost www.abc.dom&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </example>
 
-    <p>Pour fonctionner correctement, Apache a absolument besoin de deux
+    <p>Pour fonctionner correctement, le serveur a absolument besoin de deux
     informations &agrave; propos de chaque serveur virtuel : le nom du serveur
     d&eacute;fini par la directive <directive
     module="core">ServerName</directive>, et au moins une adresse IP &agrave;
     laquelle le serveur va se rattacher et r&eacute;pondre. L'exemple ci-dessus
-    ne comporte pas d'adresse IP, si bien qu'Apache devra utiliser le
+    ne comporte pas d'adresse IP, si bien que httpd devra utiliser le
     DNS pour trouver l'adresse IP de <code>www.abc.dom</code>. Si pour
     une raison quelconque, le DNS n'est pas disponible au moment o&ugrave;
     votre serveur interpr&egrave;te son fichier de configuration, ce serveur
     virtuel <strong>ne sera pas pris en compte dans la
     configuration</strong>. Il sera incapable de
     r&eacute;pondre &agrave; toute requ&ecirc;te pour ce serveur virtuel (avec les versions
-    d'Apache ant&eacute;rieures &agrave; 1.2, le serveur ne d&eacute;marrera tout simplement
+    de httpd ant&eacute;rieures &agrave; 1.2, le serveur ne d&eacute;marrera tout simplement
     pas).</p>
 
     <p>Supposons que l'adresse de <code>www.abc.dom</code> soit
     192.0.2.1, et examinons cet extrait de configuration :</p>
 
     <example>
-      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base <br />
-      # de configuration <br />
+      # Cet exemple de configuration est invalide, ne l'utilisez pas comme base
+      # de configuration
       &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </example>
 
-    <p>Cette fois, Apache doit effectuer une recherche DNS inverse pour
+    <p>Cette fois, httpd doit effectuer une recherche DNS inverse pour
     trouver le nom <code>ServerName</code> de ce serveur virtuel. Si
     cette recherche inverse &eacute;choue, le serveur virtuel sera
-    partiellement d&eacute;sactiv&eacute; (avec les versions d'Apache ant&eacute;rieures &agrave;
-    1.2, le serveur ne d&eacute;marrera tout simplement pas). Si le serveur
+    partiellement d&eacute;sactiv&eacute;. Si le serveur
     virtuel est &agrave; base de nom, il sera en fait totalement d&eacute;sactiv&eacute;,
     mais s'il est &agrave; base d'adresse IP, il fonctionnera probablement.
-    Cependant, Apache &eacute;chouera s'il doit g&eacute;n&eacute;rer une URL compl&egrave;te pour
+    Cependant, httpd &eacute;chouera s'il doit g&eacute;n&eacute;rer une URL compl&egrave;te pour
     le serveur qui inclut ce nom de serveur.</p>
 
     <p>Voici un extrait de configuration qui permet d'&eacute;viter ces deux
@@ -102,7 +102,7 @@
     <title>D&eacute;ni de service</title>
 
     <p>Il existe (au moins) deux formes possibles de d&eacute;ni de service. Si
-    vous utilisez une version d'Apache ant&eacute;rieure &agrave; 1.2, votre serveur
+    vous utilisez une version de httpd ant&eacute;rieure &agrave; 1.2, votre serveur
     ne d&eacute;marrera pas si une des deux recherches DNS mentionn&eacute;es
     ci-dessus &eacute;choue pour au moins un de vos serveurs virtuels. Dans
     certains cas, cette recherche DNS ne sera m&ecirc;me pas sous votre
@@ -146,7 +146,7 @@
     par le serveur virtuel <code>def.dom</code>. Une meilleur
     compr&eacute;hension de la raison pour laquelle ceci peut se produire
     n&eacute;cessite une discussion plus approfondie &agrave; propos de la mani&egrave;re
-    dont Apache associe les requ&ecirc;tes entrantes aux diff&eacute;rents serveurs
+    dont httpd associe les requ&ecirc;tes entrantes aux diff&eacute;rents serveurs
     virtuels qui vont les servir. Un document de base d&eacute;crivant ceci <a
     href="vhosts/details.html">est disponible</a>.</p>
   </section>
@@ -154,9 +154,9 @@
   <section id="main">
     <title>L'adresse du "serveur principal"</title>
 
-    <p>L'addition du <a href="vhosts/name-based.html">support des
-    serveurs virtuels &agrave; base de nom</a> dans la version 1.1 d'Apache
-    oblige ce dernier &agrave; conna&icirc;tre la/les adresse(s) IP de l'h&ocirc;te sur
+    <p><a href="vhosts/name-based.html">Le support des
+    serveurs virtuels &agrave; base de nom</a> oblige httpd &agrave;
+    conna&icirc;tre la/les adresse(s) IP de l'h&ocirc;te sur
     lequel <program>httpd</program> s'ex&eacute;cute. Pour obtenir cette
     adresse, soit il utilise la directive <directive
     module="core">ServerName</directive> globale (si elle est pr&eacute;sente),
@@ -178,7 +178,7 @@
     <p>Si votre serveur n'a aucune autre raison d'effectuer des
     recherches DNS, vous pouvez d&eacute;finir la variable d'environnement
     <code>HOSTRESORDER</code> &agrave; "local", et vous serez alors en mesure
-    d'ex&eacute;cuter Apache. Tout d&eacute;pend du syst&egrave;me d'exploitation et des
+    d'ex&eacute;cuter httpd. Tout d&eacute;pend du syst&egrave;me d'exploitation et des
     biblioth&egrave;ques de r&eacute;solution de noms que vous utilisez. Elle affecte
     aussi les programmes CGI, &agrave; moins que vous n'utilisiez
     <module>mod_env</module> pour contr&ocirc;ler l'environnement. Il est
@@ -214,9 +214,9 @@
     <title>Appendice : orientations pour le futur</title>
 
     <p>La situation concernant le DNS appara&icirc;t clairement comme non
-    souhaitable. Avec Apache 1.2, nous avons fait en sorte que le
+    souhaitable. Bien que nous ayons fait en sorte que le
     serveur puisse au moins d&eacute;marrer en cas d'&eacute;chec de recherche DNS,
-    mais ce n'est pas ce que nous pouvons faire de mieux. En tout &eacute;tat
+    ce n'est pas ce que nous pouvons faire de mieux. En tout &eacute;tat
     de cause, le fait de devoir sp&eacute;cifier des adresses IP explicites
     dans les fichiers de configuration est fortement non souhaitable
     avec l'Internet d'aujourd'hui o&ugrave; les changements de num&eacute;rotation

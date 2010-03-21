@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 909323 -->
+<!-- English Revision : 923952 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -438,7 +438,8 @@ du mandataire</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0.31 d'Apache.</compatibility>
+<compatibility>Disponible depuis la version 2.0.31 d'Apache. Utilisable
+dans un contexte de r&eacute;pertoire depuis la version 2.3.3.</compatibility>
 
 <usage>
     <p>Lorsqu'elle est activ&eacute;e, cette directive va transmettre l'en-t&ecirc;te

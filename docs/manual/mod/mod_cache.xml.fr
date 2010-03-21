@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 821993 -->
+<!-- English Revision : 924915 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -744,6 +744,7 @@ l'ent&ecirc;te Cache-Control: a pour valeur no-store.</description>
 <default>CacheLock off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
+<compatibility>Disponible depuis la version 2.2.15 d'Apache</compatibility>
 
 <usage>
   <p>La directive <directive>CacheLock</directive> active la protection
