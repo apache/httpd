@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English revision : 712041 -->
+<!-- English revision : 922642 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -24,7 +24,8 @@
 
 <manualpage metafile="new_features_2_2.xml.meta">
 
-<title>Aper&ccedil;u des nouvelles fonctionnalit&eacute;s dans Apache 2.2</title>
+<title>Aper&ccedil;u des nouvelles fonctionnalit&eacute;s de la version
+2.2 du serveur HTTP Apache</title>
 
 <summary>
   <p>Ce document d&eacute;crit quelques uns des changements principaux entre

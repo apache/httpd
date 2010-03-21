@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 922234:924467 (outdated) -->
+<!-- English Revision: 924467 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -24,11 +24,11 @@
 
 <manualpage metafile="stopping.xml.meta">
 
-  <title>Arr&ecirc;t et red&eacute;marrage</title>
+  <title>Arr&ecirc;t et red&eacute;marrage du serveur HTTP Apache</title>
 
 <summary>
     <p>Ce document couvre l'arr&ecirc;t et le red&eacute;marrage du
-    serveur HTTP Apache (httpd) sur
+    serveur HTTP Apache sur
     les syst&egrave;mes Unix et similaires. Les utilisateurs de Windows NT, 2000
     and XP doivent consulter
     <a href="platform/windows.html#winsvc">Ex&eacute;cuter httpd en tant que
