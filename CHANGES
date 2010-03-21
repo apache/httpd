@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.16
 
+  *) core: Support wildcards in both the directory and file components of
+     the path specified by the Include directive. [Graham Leggett, Dan
+     Poirier]
 
 
 Changes with Apache 2.2.15

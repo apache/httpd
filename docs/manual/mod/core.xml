@@ -1513,20 +1513,33 @@ the server configuration files</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Wildcard matching available in 2.0.41 and later</compatibility>
+<compatibility>Wildcard matching available in 2.0.41 and later, directory
+wildcard matching available in 2.3.6 and later</compatibility>
 
 <usage>
     <p>This directive allows inclusion of other configuration files
     from within the server configuration files.</p>
 
-    <p>Shell-style (<code>fnmatch()</code>) wildcard characters can be used to
-    include several files at once, in alphabetical order. In
-    addition, if <directive>Include</directive> points to a directory,
-    rather than a file, Apache will read all files in that directory
-    and any subdirectory.  But including entire directories is not
-    recommended, because it is easy to accidentally leave temporary
-    files in a directory that can cause <program>httpd</program> to
-    fail.</p>
+    <p>Shell-style (<code>fnmatch()</code>) wildcard characters can be used
+    in the filename or directory parts of the path to include several files
+    at once, in alphabetical order. In addition, if
+    <directive>Include</directive> points to a directory, rather than a file,
+    Apache will read all files in that directory and any subdirectory.
+    However, including entire directories is not recommended, because it is
+    easy to accidentally leave temporary files in a directory that can cause
+    <program>httpd</program> to fail. Instead, we encourage you to use the
+    wildcard syntax shown below, to include files that match a particular
+    pattern, such as *.conf, for example.</p>
+  
+    <p>When a wildcard is specified for a file or directory component of the
+    path, and no file or directory matches the wildcard, the
+    <directive module="core">Include</directive> directive will be
+    silently ignored. When a directory or file component of the path is
+    specified exactly, and that directory or file does not exist,
+    <directive module="core">Include</directive> directive will fail with an
+    error saying the file or directory cannot be found. This removes the need
+    for placeholder files to exist so that at least one file or directory is
+    found by the wildcard.</p>
 
     <p>The file path specified may be an absolute path, or may be relative 
     to the <directive module="core">ServerRoot</directive> directory.</p>

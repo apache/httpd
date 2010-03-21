@@ -86,15 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Support wildcards in both the directory and file components of
-    the path specified by the Include directive.
-    Trunk patch: http://svn.apache.org/viewvc?rev=909878&view=rev
-                 http://svn.apache.org/viewvc?rev=917735&view=rev
-                 http://svn.apache.org/viewvc?rev=917759&view=rev
-    2.2.x patch: http://people.apache.org/~minfrin/httpd-wildcard+docs2.patch
-    Submitted by: minfrin, poirier
-    +1: minfrin, jim, poirier
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
