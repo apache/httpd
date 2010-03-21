@@ -58,7 +58,6 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
 
     <!-- <ul>
      </ul> -->
-    </ul>
   </section>
 
   <section id="misc">
