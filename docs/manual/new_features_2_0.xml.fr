@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 420990:922642 (outdated) -->
+<!-- English Revision : 922462 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- $LastChangedRevision: 2010032101 $ -->
+
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -22,7 +25,8 @@
 
 <manualpage metafile="new_features_2_0.xml.meta">
 
-    <title>Vue d'ensemble des nouvelles fonctionnalit&#233;s d'Apache 2.0</title>
+    <title>Vue d'ensemble des nouvelles fonctionnalit&#233;s de la
+    version 2.0 du serveur HTTP Apache</title>
 
     <summary>
         <p>Ce document d&#233;crit les changements majeurs apport&#233;s entre les 
