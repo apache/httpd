@@ -134,6 +134,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     (Original patch by jorton)
     +1: minfrin
 
+  * mod_proxy: Tone down a warning message that appears when the same
+    backend website is reverse proxied two or more times into the
+    frontend URL space.
+    PR: 48947
+    Trunk patch: http://svn.apache.org/viewvc?rev=925850&view=rev
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-proxy-worker-already-used.patch
+    +1: minfrin
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
