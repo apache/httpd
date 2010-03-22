@@ -180,7 +180,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
          * impossible to enforce a total timeout, we only do non-blocking
          * reads.
          */
-        apr_size_t remaining = HUGE_STRING_LEN;
+        apr_off_t remaining = HUGE_STRING_LEN;
         do {
             apr_off_t bblen;
 
