@@ -58,7 +58,7 @@ more than one multi-processing module (MPM)</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CoreDumpDirectory" id="CoreDumpDirectory">CoreDumpDirectory</a> <a name="coredumpdirectory" id="coredumpdirectory">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory where Apache attempts to
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory where Apache HTTP Server attempts to
 switch before dumping core</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CoreDumpDirectory <var>directory</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>See usage for the default setting</code></td></tr>
@@ -66,7 +66,7 @@ switch before dumping core</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p>This controls the directory to which Apache attempts to
+    <p>This controls the directory to which Apache httpd attempts to
     switch before dumping core. If your operating system is configured to
     create core files in the working directory of the crashing process, 
     <code class="directive">CoreDumpDirectory</code> is necessary to change working
@@ -79,9 +79,9 @@ switch before dumping core</td></tr>
     of the crashing processes.</p>
     
     <div class="note"><h3>Core Dumps on Linux</h3>
-      <p>If Apache starts as root and switches to another user, the
+      <p>If Apache httpd starts as root and switches to another user, the
       Linux kernel <em>disables</em> core dumps even if the directory is
-      writable for the process. Apache (2.0.46 and later) reenables core dumps
+      writable for the process. Apache httpd (2.0.46 and later) reenables core dumps
       on Linux 2.4 and beyond, but only if you explicitly configure a <code class="directive">CoreDumpDirectory</code>.</p>
     </div>
 
@@ -148,15 +148,15 @@ listens to</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Required directive since Apache 2.0<br />
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Required directive since Apache HTTP Server 2.0<br />
 The <var>protocol</var> argument was added in 2.1.5</td></tr>
 </table>
-    <p>The <code class="directive">Listen</code> directive instructs Apache to
+    <p>The <code class="directive">Listen</code> directive instructs Apache httpd to
     listen to only specific IP addresses or ports; by default it
     responds to requests on all IP interfaces. <code class="directive">Listen</code>
     is now a required directive. If it is not in the config file, the
     server will fail to start. This is a change from previous versions
-    of Apache.</p>
+    of Apache httpd.</p>
 
     <p>The <code class="directive">Listen</code> directive tells the server to
     accept incoming requests on the specified port or address-and-port
@@ -216,7 +216,7 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
 <h3>See also</h3>
 <ul>
 <li><a href="../dns-caveats.html">DNS Issues</a></li>
-<li><a href="../bind.html">Setting which addresses and ports Apache
+<li><a href="../bind.html">Setting which addresses and ports Apache HTTP Server
     uses</a></li>
 <li><a href="http://wiki.apache.org/httpd/CouldNotBindToAddress">Further
 discussion of the <code>Address already in use</code> error message,
@@ -360,7 +360,7 @@ will handle during its life</td></tr>
 
     <div class="note"><h3>Restrictions</h3>
       <p>The range of the <code class="directive">MaxSpareThreads</code> value
-      is restricted. Apache will correct the given value automatically
+      is restricted. Apache httpd will correct the given value automatically
       according to the following rules:</p>
       <ul>
         <li><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code> wants the value to be greater than
@@ -445,7 +445,7 @@ of the daemon</td></tr>
     warnings about log file placement and <a href="../misc/security_tips.html#serverroot">security</a>.</p>
 
     <div class="note"><h3>Note</h3>
-      <p>As of Apache 2, we recommended that you only use the <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> script, or the init script that your OS provides,
+      <p>As of Apache HTTP Server 2, we recommended that you only use the <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> script, or the init script that your OS provides,
       for (re-)starting or stopping the server.</p>
     </div>
 
@@ -478,13 +478,13 @@ the child processes</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p>Apache uses a scoreboard to communicate between its parent
+    <p>Apache HTTP Server uses a scoreboard to communicate between its parent
     and child processes.  Some architectures require a file to facilitate
-    this communication. If the file is left unspecified, Apache first
+    this communication. If the file is left unspecified, Apache httpd first
     attempts to create the scoreboard entirely in memory (using anonymous
     shared memory) and, failing that, will attempt to create the file on
     disk (using file-based shared memory). Specifying this directive causes
-    Apache to always create the file on the disk.</p>
+    Apache httpd to always create the file on the disk.</p>
 
     <div class="example"><h3>Example</h3><p><code>
       ScoreBoardFile /var/run/apache_status
@@ -501,7 +501,7 @@ the child processes</td></tr>
 <h3>See also</h3>
 <ul>
 <li><a href="../stopping.html">Stopping and Restarting
-Apache</a></li>
+Apache HTTP Server</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -535,10 +535,10 @@ Apache</a></li>
 </table>
     <p>For the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, this directive sets the
     maximum configured value for <code class="directive"><a href="#maxclients">MaxClients</a></code> for the lifetime of the
-    Apache process.  For the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM, this directive
+    Apache httpd process.  For the <code class="module"><a href="../mod/worker.html">worker</a></code> MPM, this directive
     in combination with <code class="directive"><a href="#threadlimit">ThreadLimit</a></code> sets
     the maximum configured value for <code class="directive"><a href="#maxclients">MaxClients</a></code> for the lifetime of the
-    Apache process.  Any attempts to change this directive during a
+    Apache httpd process.  Any attempts to change this directive during a
     restart will be ignored, but <code class="directive"><a href="#maxclients">MaxClients</a></code> can be modified during
     a restart.</p>
 
@@ -546,7 +546,7 @@ Apache</a></li>
     <code class="directive">ServerLimit</code> is set to a value much higher
     than necessary, extra, unused shared memory will be allocated.  If
     both <code class="directive">ServerLimit</code> and <code class="directive"><a href="#maxclients">MaxClients</a></code> are set to values
-    higher than the system can handle, Apache may not start or the
+    higher than the system can handle, Apache httpd may not start or the
     system may become unstable.</p>
 
     <p>With the <code class="module"><a href="../mod/prefork.html">prefork</a></code> MPM, use this directive only
@@ -571,7 +571,7 @@ Apache</a></li>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../stopping.html">Stopping and Restarting Apache</a></li>
+<li><a href="../stopping.html">Stopping and Restarting Apache HTTP Server</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -633,11 +633,11 @@ per child process</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available for <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> in Apache 2.0.41
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available for <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> in Apache HTTP Server 2.0.41
 and later</td></tr>
 </table>
     <p>This directive sets the maximum configured value for <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> for the lifetime
-    of the Apache process.  Any attempts to change this directive
+    of the Apache httpd process.  Any attempts to change this directive
     during a restart will be ignored, but <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> can be modified
     during a restart up to the value of this directive.</p>
 
@@ -646,10 +646,10 @@ and later</td></tr>
     than <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code>,
     extra unused shared memory will be allocated.  If both
     <code class="directive">ThreadLimit</code> and <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> are set to values
-    higher than the system can handle, Apache may not start or the
+    higher than the system can handle, Apache httpd may not start or the
     system may become unstable. Do not set the value of this directive
     any higher than your greatest predicted setting of <code class="directive"><a href="#threadsperchild">ThreadsPerChild</a></code> for the
-    current run of Apache.</p>
+    current run of Apache httpd.</p>
 
     <p>The default value for <code class="directive">ThreadLimit</code> is
     <code>1920</code> when used with <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code> and
@@ -699,7 +699,7 @@ client connections</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.1 and later</td></tr>
 </table>
     <p>The <code class="directive">ThreadStackSize</code> directive sets the 
     size of the stack (for autodata) of threads which handle client
@@ -710,14 +710,14 @@ client connections</td></tr>
 
     <ul>
       <li>On platforms with a relatively small default thread stack size
-      (e.g., HP-UX), Apache may crash when using some third-party modules
+      (e.g., HP-UX), Apache httpd may crash when using some third-party modules
       which use a relatively large amount of autodata storage.  Those
       same modules may have worked fine on other platforms where the
       default thread stack size is larger.  This type of crash is
       resolved by setting <code class="directive">ThreadStackSize</code> to a 
       value higher than the operating system default.  This type of 
       adjustment is necessary only if the provider of the third-party 
-      module specifies that it is required, or if diagnosis of an Apache 
+      module specifies that it is required, or if diagnosis of an Apache httpd
       crash indicates that the thread stack size was too small.</li>
 
       <li>On platforms where the default thread stack size is 
