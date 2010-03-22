@@ -115,15 +115,15 @@ ones that change the configuration of particular places in the
 filesystem or webspace.  First, it is important to understand the
 difference between the two.  The filesystem is the view of your disks
 as seen by your operating system.  For example, in a default install,
-Apache resides at <code>/usr/local/apache2</code> in the Unix
+Apache httpd resides at <code>/usr/local/apache2</code> in the Unix
 filesystem or <code>"c:/Program Files/Apache Group/Apache2"</code> in
 the Windows filesystem.  (Note that forward slashes should always be
-used as the path separator in Apache, even for Windows.)  In contrast,
+used as the path separator in Apache httpd configuration files, even for Windows.)  In contrast,
 the webspace is the view of your site as delivered by the web server
 and seen by the client.  So the path <code>/dir/</code> in the
 webspace corresponds to the path
 <code>/usr/local/apache2/htdocs/dir/</code> in the filesystem of a
-default Apache install on Unix.  The webspace need not map directly to
+default Apache httpd install on Unix.  The webspace need not map directly to
 the filesystem, since webpages may be generated dynamically
 from databases or other locations.</p>
 
@@ -202,7 +202,7 @@ Deny from all<br />
 <p>The <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 directive need not have anything to do with the filesystem.
 For example, the following example shows how to map a particular
-URL to an internal Apache handler provided by <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
+URL to an internal Apache HTTP Server handler provided by <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
 No file called <code>server-status</code> needs to exist in the
 filesystem.</p>
 
