@@ -502,33 +502,6 @@ Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>SSLFIPS</name>
-<description>SSL FIPS mode Switch</description>
-<syntax>SSLFIPS on|off</syntax>
-<default>SSLFIPS off</default>
-<contextlist><context>server config</context></contextlist>
-
-<usage>
-<p>
-This directive toggles the usage of the SSL library FIPS_mode flag.
-It must be set in the global server context and cannot be configured
-with conflicting settings (SSLFIPS on followed by SSLFIPS off or 
-similar).  The mode applies to all SSL library operations.
-</p>
-<p>
-If httpd was compiled against an SSL library which did not support
-the FIPS_mode flag, <code>SSLFIPS on</code> will fail.  Refer to the
-FIPS 140-2 Security Policy document of the SSL provider library for
-specific requirements to use mod_ssl in a FIPS 140-2 approved mode
-of operation; note that mod_ssl itself is not validated, but may be
-described as using FIPS 140-2 validated cryptographic module, when
-all components are assembled and operated under the guidelines imposed
-by the applicable Security Policy.
-</p>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>SSLProtocol</name>
 <description>Configure usable SSL protocol flavors</description>
 <syntax>SSLProtocol [+|-]<em>protocol</em> ...</syntax>
