@@ -138,6 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     build of openssl is required for 'SSLFIPS on'.  
     PR: 46270  [Dr Stephen Henson <steve openssl.org>, William Rowe]
     Trunk patch: http://svn.apache.org/viewvc?rev=925980&view=rev
+                 http://svn.apache.org/viewvc?rev=926000&view=rev
     2.2.x patch: http://people.apache.org/~wrowe/ssl-fips-2.2.patch
     +1: wrowe
 
