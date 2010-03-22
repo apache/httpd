@@ -33,8 +33,9 @@
 <h3>Summary</h3>
 
     <p>This Multi-Processing Module (MPM) implements a non-threaded,
-    pre-forking web server that handles requests in a manner similar
-    to Apache 1.3.  It is appropriate for sites that need to avoid
+    pre-forking web server. Each server process may answer incoming
+    requests, and a parent process manages the size of the server pool.
+    It is appropriate for sites that need to avoid
     threading for compatibility with non-thread-safe libraries.  It
     is also the best MPM for isolating each request, so that a problem
     with a single request will not affect any other.</p>
@@ -71,7 +72,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
-<li><a href="../bind.html">Setting which addresses and ports Apache
+<li><a href="../bind.html">Setting which addresses and ports Apache HTTP Server
 uses</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -79,7 +80,7 @@ uses</a></li>
 <h2><a name="how-it-works" id="how-it-works">How it Works</a></h2>
     <p>A single control process is responsible for launching child
     processes which listen for connections and serve them when they
-    arrive. Apache always tries to maintain several <dfn>spare</dfn>
+    arrive. Apache httpd always tries to maintain several <dfn>spare</dfn>
     or idle server processes, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     child processes to be forked before their requests can be
@@ -90,7 +91,7 @@ uses</a></li>
     <code class="directive"><a href="#maxspareservers">MaxSpareServers</a></code>, and
     <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> regulate how
     the parent process creates children to serve requests. In general,
-    Apache is very self-regulating, so most sites do not need to
+    Apache httpd is very self-regulating, so most sites do not need to
     adjust these directives from their default values. Sites which
     need to serve more than 256 simultaneous requests may need to
     increase <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code>,
@@ -101,8 +102,8 @@ uses</a></li>
 
     <p>While the parent process is usually started as <code>root</code>
     under Unix in order to bind to port 80, the child processes are
-    launched by Apache as a less-privileged user. The <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> directives are used to set
-    the privileges of the Apache child processes. The child processes
+    launched by Apache httpd as a less-privileged user. The <code class="directive"><a href="../mod/mod_unixd.html#user">User</a></code> and <code class="directive"><a href="../mod/mod_unixd.html#group">Group</a></code> directives are used to set
+    the privileges of the Apache httpd child processes. The child processes
     must be able to read all the content that will be served, but
     should have as few privileges beyond that as possible.</p>
 
@@ -136,7 +137,7 @@ uses</a></li>
     <p>Tuning of this parameter should only be necessary on very
     busy sites. Setting this parameter to a large number is almost
     always a bad idea. If you are trying to set the value equal to or lower than
-    <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, Apache
+    <code class="directive"><a href="#minspareservers">MinSpareServers</a></code>, Apache HTTP Server
     will automatically adjust it to <code class="directive">MinSpareServers</code><code> + 1</code>.</p>
 
 <h3>See also</h3>
