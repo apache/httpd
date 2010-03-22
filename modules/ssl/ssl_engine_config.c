@@ -260,6 +260,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
 
     cfgMerge(mc, NULL);
     cfgMerge(enabled, SSL_ENABLED_UNSET);
+#ifdef HAVE_FIPS
+    cfgMergeBool(fips);
+#endif
     cfgMergeBool(proxy_enabled);
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
@@ -633,6 +636,27 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
     }
 
     return "Argument must be On, Off, or Optional";
+}
+
+const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+    const char *err;
+
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+
+#ifdef HAVE_FIPS
+    if ((sc->fips != UNSET) && (sc->fips != (flag ? TRUE : FALSE)))
+        return "Conflicting SSLFIPS options, cannot be both On and Off";
+    sc->fips = flag ? TRUE : FALSE;
+#else
+    if (flag)
+        return "SSLFIPS invalid, rebuild httpd and openssl compiled for FIPS";
+#endif
+
+    return NULL;
 }
 
 const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
