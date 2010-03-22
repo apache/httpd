@@ -35,7 +35,7 @@
 
     <p>The main thread is responsible for launching child
     worker threads which listen for connections and serve them when they
-    arrive. Apache always tries to maintain several <dfn>spare</dfn>
+    arrive. Apache HTTP Server always tries to maintain several <dfn>spare</dfn>
     or idle worker threads, which stand ready to serve incoming
     requests. In this way, clients do not need to wait for a new
     child threads to be spawned before their requests can be
@@ -46,7 +46,7 @@
     <directive module="mpm_common">MaxSpareThreads</directive>, and
     <directive module="mpm_netware">MaxThreads</directive>
     regulate how the main thread creates worker threads to serve
-    requests. In general, Apache is very self-regulating, so most
+    requests. In general, Apache httpd is very self-regulating, so most
     sites do not need to adjust these directives from their default
     values. Sites with limited memory may need to decrease <directive
     module="mpm_netware">MaxThreads</directive> to keep the server from
@@ -62,7 +62,7 @@
     threads to continue servicing requests indefinitely.</p>
 </summary>
 <seealso><a href="../bind.html">Setting which addresses and
-    ports Apache uses</a>
+    ports Apache httpd uses</a>
 </seealso>
 
 <directivesynopsis location="mpm_common"><name>Listen</name>
