@@ -133,6 +133,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~minfrin/httpd-proxy-worker-already-used.patch
     +1: minfrin
 
+  * Introduce SSLFIPS directive to support OpenSSL FIPS_mode; permits all
+    builds of mod_ssl to use 'SSLFIPS off' for portability, but the proper
+    build of openssl is required for 'SSLFIPS on'.  
+    PR: 46270  [Dr Stephen Henson <steve openssl.org>, William Rowe]
+    Trunk patch: http://svn.apache.org/viewvc?rev=&view=rev
+    2.2.x patch: http://people.apache.org/~wrowe/ssl-fips-2.2.patch
+    +1: wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
