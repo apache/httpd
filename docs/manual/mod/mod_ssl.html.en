@@ -54,6 +54,7 @@ to provide the cryptography engine.</p>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslciphersuite">SSLCipherSuite</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslengine">SSLEngine</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sslfips">SSLFIPS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sslocspdefaultresponder">SSLOCSPDefaultResponder</a></li>
@@ -665,6 +666,34 @@ SSLEngine on<br />
 <code>optional</code>. This enables support for 
 <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS 
 Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSLFIPS" id="SSLFIPS">SSLFIPS</a> <a name="sslfips" id="sslfips">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SSL FIPS mode Switch</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLFIPS on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLFIPS off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
+</table>
+<p>
+This directive toggles the usage of the SSL library FIPS_mode flag.
+It must be set in the global server context and cannot be configured
+with conflicting settings (SSLFIPS on followed by SSLFIPS off or 
+similar).  The mode applies to all SSL library operations.
+</p>
+<p>
+If httpd was compiled against an SSL library which did not support
+the FIPS_mode flag, <code>SSLFIPS on</code> will fail.  Refer to the
+FIPS 140-2 Security Policy document of the SSL provider library for
+specific requirements to use mod_ssl in a FIPS 140-2 approved mode
+of operation; note that mod_ssl itself is not validated, but may be
+described as using FIPS 140-2 validated cryptographic module, when
+all components are assembled and operated under the guidelines imposed
+by the applicable Security Policy.
+</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
