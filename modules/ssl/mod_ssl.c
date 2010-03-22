@@ -76,6 +76,9 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(Engine, TAKE1,
                 "SSL switch for the protocol engine "
                 "('on', 'off')")
+    SSL_CMD_SRV(FIPS, FLAG,
+                "Enable FIPS-140 mode "
+                "(`on', `off')")
     SSL_CMD_ALL(CipherSuite, TAKE1,
                 "Colon-delimited list of permitted SSL Ciphers "
                 "('XXX:...:XXX' - see manual)")

@@ -28,6 +28,11 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) Introduce SSLFIPS directive to support OpenSSL FIPS_mode; permits all
+     builds of mod_ssl to use 'SSLFIPS off' for portability, but the proper
+     build of openssl is required for 'SSLFIPS on'.  PR 46270.
+     [Dr Stephen Henson <steve openssl.org>, William Rowe]
+
   *) mod_proxy_http: Log the port of the remote server in various messages.
      PR 48812. [Igor Galić <i galic brainsware org>] 
 

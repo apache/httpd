@@ -79,12 +79,25 @@ static int ssl_tmp_key_init_rsa(server_rec *s,
 {
     SSLModConfigRec *mc = myModConfig(s);
 
+#ifdef HAVE_FIPS
+
+    if (FIPS_mode() && bits < 1024) {
+        mc->pTmpKeys[idx] = NULL;
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                     "Init: Skipping generating temporary "
+                     "%d bit RSA private key in FIPS mode", bits);
+        return OK;
+    }
+
+#endif
+
     if (!(mc->pTmpKeys[idx] =
           RSA_generate_key(bits, RSA_F4, NULL, NULL)))
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "Init: Failed to generate temporary "
                      "%d bit RSA private key", bits);
+        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         return !OK;
     }
 
@@ -95,6 +108,18 @@ static int ssl_tmp_key_init_dh(server_rec *s,
                                int bits, int idx)
 {
     SSLModConfigRec *mc = myModConfig(s);
+
+#ifdef HAVE_FIPS
+
+    if (FIPS_mode() && bits < 1024) {
+        mc->pTmpKeys[idx] = NULL;
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                     "Init: Skipping generating temporary "
+                     "%d bit DH parameters in FIPS mode", bits);
+        return OK;
+    }
+
+#endif
 
     if (!(mc->pTmpKeys[idx] =
           ssl_dh_GetTmpParam(bits)))
@@ -230,6 +255,26 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      * needs to live once we return from ssl_rand_seed().
      */
     ssl_rand_seed(base_server, ptemp, SSL_RSCTX_STARTUP, "Init: ");
+
+#ifdef HAVE_FIPS
+    if(sc->fips) {
+        if (!FIPS_mode())
+            if (FIPS_mode_set(1)) {
+                ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                             "Operating in SSL FIPS mode");
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "FIPS mode failed");
+                ssl_log_ssl_error(APLOG_MARK, APLOG_EMERG, s);
+                ssl_die();
+            }
+        }
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                     "SSL FIPS mode disabled");
+    }
+#endif
 
     /*
      * read server private keys/public certs into memory.

@@ -516,6 +516,9 @@ struct SSLSrvConfigRec {
 #ifndef OPENSSL_NO_TLSEXT
     ssl_enabled_t    strict_sni_vhost_check;
 #endif
+#ifdef HAVE_FIPS
+    BOOL             fips;
+#endif
 };
 
 /**
@@ -600,6 +603,8 @@ const char  *ssl_cmd_SSLProxyCheckPeerCN(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOCSPOverrideResponder(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLOCSPDefaultResponder(cmd_parms *cmd, void *dcfg, const char *arg);
 const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
+
+const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag);
 
 /**  module initialization  */
 int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
