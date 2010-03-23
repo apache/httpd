@@ -31,7 +31,7 @@ HTTP headers</description>
 
 <summary>
     <p>This module provides the handler <code>send-as-is</code>
-    which causes Apache to send the document without adding most of
+    which causes Apache HTTP Server to send the document without adding most of
     the usual HTTP headers.</p>
 
     <p>This can be used to send any kind of data from the server,
@@ -44,7 +44,7 @@ HTTP headers</description>
 
 <seealso><module>mod_headers</module></seealso>
 <seealso><module>mod_cern_meta</module></seealso>
-<seealso><a href="../handler.html">Apache's Handler Use</a></seealso>
+<seealso><a href="../handler.html">Apache httpd's Handler Use</a></seealso>
 
 <section id="usage"><title>Usage</title>
 
@@ -54,7 +54,7 @@ HTTP headers</description>
     <example>AddHandler send-as-is asis</example>
 
     <p>The contents of any file with a <code>.asis</code> extension
-    will then be sent by Apache to the client with almost no
+    will then be sent by Apache httpd to the client with almost no
     changes. In particular, HTTP headers are derived from the file
     itself according to <module>mod_cgi</module> rules, so an asis
     file must include valid headers, and may also use the CGI
@@ -67,7 +67,7 @@ HTTP headers</description>
 
     <example>
       Status: 301 Now where did I leave that URL<br />
-      Location: http://xyz.abc.com/foo/bar.html<br />
+      Location: http://xyz.example.com/foo/bar.html<br />
       Content-type: text/html<br />
       <br />
       &lt;html&gt;<br />
@@ -76,7 +76,7 @@ HTTP headers</description>
       &lt;/head&gt;<br />
       &lt;body&gt;<br />
       &lt;h1&gt;Fred's exceptionally wonderful page has moved to<br />
-      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
+      &lt;a href="http://xyz.example.com/foo/bar.html"&gt;Joe's&lt;/a&gt;
       site.<br />
       &lt;/h1&gt;<br />
       &lt;/body&gt;<br />
