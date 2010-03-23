@@ -42,7 +42,7 @@
     <dl>
       <dt>Unix Threading</dt>
 
-      <dd>On Unix systems with POSIX threads support, Apache can
+      <dd>On Unix systems with POSIX threads support, Apache httpd can
       now run in a hybrid multiprocess, multithreaded mode. This
       improves scalability for many, but not all configurations.</dd>
 
@@ -50,45 +50,45 @@
 
       <dd>The build system has been rewritten from scratch to be
       based on <code>autoconf</code> and <code>libtool</code>.
-      This makes Apache's configuration system more similar to
+      This makes Apache httpd's configuration system more similar to
       that of other packages.</dd>
 
       <dt>Multiprotocol Support</dt>
 
-      <dd>Apache now has some of the infrastructure in place to
+      <dd>Apache HTTP Server now has some of the infrastructure in place to
       support serving multiple protocols. <code class="module"><a href="./mod/mod_echo.html">mod_echo</a></code> has
       been written as an example.</dd>
 
       <dt>Better support for non-Unix
       platforms</dt>
 
-      <dd>Apache 2.0 is faster and more stable on non-Unix
+      <dd>Apache HTTP Server 2.0 is faster and more stable on non-Unix
       platforms such as BeOS, OS/2, and Windows. With the
       introduction of platform-specific <a href="mpm.html">multi-processing modules</a> (MPMs) and the
       Apache Portable Runtime (APR), these platforms are now
       implemented in their native API, avoiding the often buggy and
       poorly performing POSIX-emulation layers.</dd>
 
-      <dt>New Apache API</dt>
+      <dt>New Apache httpd API</dt>
 
       <dd>The API for modules has changed significantly for 2.0.
       Many of the module-ordering/-priority problems from 1.3 should
       be gone. 2.0 does much of this automatically, and module ordering
       is now done per-hook to allow more flexibility. Also, new calls
       have been added that provide additional module capabilities
-      without patching the core Apache server.</dd>
+      without patching the core Apache HTTP Server.</dd>
 
       <dt>IPv6 Support</dt>
 
       <dd>On systems where IPv6 is supported by the underlying
-      Apache Portable Runtime library, Apache gets IPv6 listening
+      Apache Portable Runtime library, Apache httpd gets IPv6 listening
       sockets by default. Additionally, the <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>, <code class="directive"><a href="./mod/core.html#namevirtualhost">NameVirtualHost</a></code>, and <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> directives support
       IPv6 numeric address strings (e.g., "<code>Listen
       [2001:db8::1]:8080</code>").</dd>
 
       <dt>Filtering</dt>
 
-      <dd>Apache modules may now be written as filters which act on
+      <dd>Apache httpd modules may now be written as filters which act on
       the stream of content as it is delivered to or from the
       server. This allows, for example, the output of CGI scripts to
       be parsed for Server Side Include directives using the
@@ -114,7 +114,7 @@
 
       <dt>Native Windows NT Unicode Support</dt>
 
-      <dd>Apache 2.0 on Windows NT now uses utf-8 for all filename
+      <dd>Apache httpd 2.0 on Windows NT now uses utf-8 for all filename
       encodings. These directly translate to the underlying Unicode
       file system, providing multilanguage support for all Windows
       NT-based installations, including Windows 2000 and Windows XP.
@@ -124,7 +124,7 @@
 
       <dt>Regular Expression Library Updated</dt>
 
-      <dd>Apache 2.0 includes the <a href="http://www.pcre.org/">Perl
+      <dd>Apache httpd 2.0 includes the <a href="http://www.pcre.org/">Perl
       Compatible Regular Expression Library</a> (PCRE).  All regular
       expression evaluation now uses the more powerful Perl 5
       syntax.</dd>
@@ -138,25 +138,25 @@
     <dl>
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
 
-      <dd>New module in Apache 2.0. This module is an interface
+      <dd>New module in Apache httpd 2.0. This module is an interface
       to the SSL/TLS encryption protocols provided by
       OpenSSL.</dd>
 
       <dt><code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code></dt>
 
-      <dd>New module in Apache 2.0. This module implements the HTTP
+      <dd>New module in Apache httpd 2.0. This module implements the HTTP
       Distributed Authoring and Versioning (DAV) specification for
       posting and maintaining web content.</dd>
 
       <dt><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></dt>
 
-      <dd>New module in Apache 2.0.  This module allows supporting
+      <dd>New module in Apache httpd 2.0.  This module allows supporting
       browsers to request that content be compressed before delivery,
       saving network bandwidth.</dd>
 
       <dt><code class="module"><a href="./mod/mod_auth_ldap.html">mod_auth_ldap</a></code></dt>
 
-      <dd>New module in Apache 2.0.41.  This module allows an LDAP
+      <dd>New module in Apache httpd 2.0.41.  This module allows an LDAP
       database to be used to store credentials for HTTP Basic
       Authentication.  A companion module, <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>
       provides connection pooling and results caching.</dd>
@@ -168,18 +168,18 @@
 
       <dt><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></dt>
 
-      <dd>New module in Apache 2.0. This experimental module allows
+      <dd>New module in Apache httpd 2.0. This experimental module allows
       for character set translation or recoding.</dd>
 
       <dt><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></dt>
 
-      <dd>New module in Apache 2.0. This module includes the
-      functionality of <code>mod_mmap_static</code> in Apache 1.3,
-      plus adds further caching abilities.</dd>
+      <dd>New module in Apache httpd 2.0. This module includes the
+      functionality of <code>mod_mmap_static</code> in Apache HTTP
+      Server version 1.3, plus adds further caching abilities.</dd>
 
       <dt><code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code></dt>
 
-      <dd>This module is much more flexible in Apache 2.0. It can now
+      <dd>This module is much more flexible in Apache httpd 2.0. It can now
       modify request headers used by <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, and
       it can conditionally set response headers.</dd>
 
