@@ -29,8 +29,8 @@
 
     <p>
       Below is a list of all of the modules that come as part of
-      the Apache distribution.  See also the complete
-      alphabetical list of <a href="directives.html">all Apache
+      the Apache HTTP Server distribution.  See also the complete
+      alphabetical list of <a href="directives.html">all Apache HTTP Server
       directives</a>.
     </p>
   </div>

@@ -82,7 +82,7 @@ of consuming threads only for connections with active processing</td></tr>
     completes the first request, the client can keep the connection
     open, and send further requests using the same socket. This can
     save signifigant overhead in creating TCP connections. However,
-    Apache traditionally keeps an entire child process/thread waiting
+    Apache HTTP Server traditionally keeps an entire child process/thread waiting
     for data from the client, which brings its own disadvantages. To
     solve this problem, this MPM uses a dedicated thread to handle both
     the Listening sockets, and all sockets that are in a Keep Alive
