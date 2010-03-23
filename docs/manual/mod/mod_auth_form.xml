@@ -125,7 +125,7 @@
 
       <p>The part that does the actual login is handled by the <var>form-login-handler</var>.
       The action of the form should point at this handler, which is configured within
-      Apache as follows:</p>
+      Apache httpd as follows:</p>
       
       <example><title>Form login handler example</title>
         &lt;Location /dologin.html&gt;
@@ -241,7 +241,7 @@
 
       <p><module>mod_auth_form</module> addresses this by allowing the method and body
       of the original request to be embedded in the login form. If authentication
-      is successful, the original method and body will be retried by Apache, preserving
+      is successful, the original method and body will be retried by Apache httpd, preserving
       the state of the original request.</p>
 
       <p>To enable body preservation, add three additional fields to the login form as
@@ -392,7 +392,7 @@ lower level modules</description>
 <default>httpd_username</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormUsername</directive> directive specifies
@@ -408,7 +408,7 @@ lower level modules</description>
 <default>httpd_password</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormPassword</directive> directive specifies
@@ -424,7 +424,7 @@ lower level modules</description>
 <default>httpd_location</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLocation</directive> directive specifies
@@ -440,7 +440,7 @@ lower level modules</description>
 <default>httpd_method</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormMethod</directive> directive specifies
@@ -463,7 +463,7 @@ lower level modules</description>
 <default>httpd_mimetype</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormMethod</directive> directive specifies
@@ -486,7 +486,7 @@ lower level modules</description>
 <default>httpd_body</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormMethod</directive> directive specifies
@@ -509,7 +509,7 @@ lower level modules</description>
 <default>8192</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormSize</directive> directive specifies
@@ -535,7 +535,7 @@ lower level modules</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive> directive
@@ -557,7 +557,7 @@ lower level modules</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive> directive
@@ -578,7 +578,7 @@ lower level modules</description>
 <default>AuthFormFakeBasicAuth Off</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormFakeBasicAuth</directive> flag
@@ -597,7 +597,7 @@ lower level modules</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormLogoutLocation</directive> directive
@@ -632,7 +632,7 @@ lower level modules</description>
 <default>AuthFormDisableNoStore Off</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormDisableNoStore</directive> flag
@@ -652,11 +652,11 @@ lower level modules</description>
 <default>none</default>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive module="mod_auth_form">AuthFormSitePassphrase</directive> directive
-    specifies a passphrase which, if present in the user session, causes Apache to
+    specifies a passphrase which, if present in the user session, causes Apache httpd to
     bypass authentication checks for the given URL. It can be used on high traffic websites
     to reduce the load induced on authentication infrastructure.</p>
     

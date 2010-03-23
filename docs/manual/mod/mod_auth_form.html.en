@@ -154,7 +154,7 @@
 
       <p>The part that does the actual login is handled by the <var>form-login-handler</var>.
       The action of the form should point at this handler, which is configured within
-      Apache as follows:</p>
+      Apache httpd as follows:</p>
       
       <div class="example"><h3>Form login handler example</h3><p><code>
         &lt;Location /dologin.html&gt;
@@ -270,7 +270,7 @@
 
       <p><code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> addresses this by allowing the method and body
       of the original request to be embedded in the login form. If authentication
-      is successful, the original method and body will be retried by Apache, preserving
+      is successful, the original method and body will be retried by Apache httpd, preserving
       the state of the original request.</p>
 
       <p>To enable body preservation, add three additional fields to the login form as
@@ -383,7 +383,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code> directive specifies
     the name of an HTML field which, if present, will contain the method of the request to
@@ -406,7 +406,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformdisablenostore">AuthFormDisableNoStore</a></code> flag
     disables the sending of a <code>Cache-Control no-store</code> header with the
@@ -426,7 +426,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformfakebasicauth">AuthFormFakeBasicAuth</a></code> flag
     determines whether a <code>Basic Authentication</code> header will be added to
@@ -445,7 +445,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformlocation">AuthFormLocation</a></code> directive specifies
     the name of an HTML field which, if present, will contain a URL to redirect the browser to
@@ -461,7 +461,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></code> directive
     specifies the URL to redirect to should the user not be authorised to view a page. By default,
@@ -483,7 +483,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></code> directive
     specifies the URL to redirect to should the user have logged in successfully. This directive
@@ -504,7 +504,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformlogoutlocation">AuthFormLogoutLocation</a></code> directive
     specifies the URL of a page on the server to redirect to should the user attempt to log out.</p>
@@ -539,7 +539,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code> directive specifies
     the name of an HTML field which, if present, will contain the method of the request to
@@ -562,7 +562,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformmethod">AuthFormMethod</a></code> directive specifies
     the name of an HTML field which, if present, will contain the
@@ -585,7 +585,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformpassword">AuthFormPassword</a></code> directive specifies
     the name of an HTML field which, if present, will contain the password to be used to log
@@ -638,10 +638,10 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformsitepassphrase">AuthFormSitePassphrase</a></code> directive
-    specifies a passphrase which, if present in the user session, causes Apache to
+    specifies a passphrase which, if present in the user session, causes Apache httpd to
     bypass authentication checks for the given URL. It can be used on high traffic websites
     to reduce the load induced on authentication infrastructure.</p>
     
@@ -670,7 +670,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformsize">AuthFormSize</a></code> directive specifies
     the maximum size of the body of the request that will be parsed to find the login form.</p>
@@ -696,7 +696,7 @@ lower level modules</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_auth_form</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive"><a href="#authformusername">AuthFormUsername</a></code> directive specifies
     the name of an HTML field which, if present, will contain the username to be used to log
