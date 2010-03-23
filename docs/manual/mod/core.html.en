@@ -110,8 +110,8 @@ available</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.1.5 and later.
-On Windows from Apache 2.3.3 and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.1.5 and later.
+On Windows from Apache httpd 2.3.3 and later.</td></tr>
 </table>
     <p>This directive enables operating system specific optimizations for a 
        listening socket by the Protocol type. The basic premise is for the 
@@ -189,7 +189,7 @@ On Windows from Apache 2.3.3 and later.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.30 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.0.30 and later</td></tr>
 </table>
 
     <p>This directive controls whether requests that contain trailing
@@ -345,7 +345,7 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.33 and later; deprecated in Apache 2.1 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.0.33 and later; deprecated in Apache httpd 2.1 and later</td></tr>
 </table>
     <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the
     response <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a>.  Because of certain
@@ -410,7 +410,7 @@ be passed through</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.46 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.0.46 and later</td></tr>
 </table>
     <p>The <code class="directive">AllowEncodedSlashes</code> directive allows URLs
     which contain encoded path separators (<code>%2F</code> for <code>/</code>
@@ -558,7 +558,7 @@ scripts</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>NetWare only</td></tr>
 </table>
-    <p>This directive is used to control how Apache finds the
+    <p>This directive is used to control how Apache httpd finds the
     interpreter used to run CGI scripts. For example, setting
     <code>CGIMapExtension sys:\foo.nlm .foo</code> will
     cause all CGI script files with a <code>.foo</code> extension to
@@ -619,7 +619,7 @@ which no other media type configuration could be found.
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The argument <code>none</code> is available in Apache 2.2.7 and later.  All other choices are DISABLED for 2.3.x and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>The argument <code>none</code> is available in Apache httpd 2.2.7 and later.  All other choices are DISABLED for 2.3.x and later.</td></tr>
 </table>
     <p>This directive has been disabled.  For backwards compatibility
     of configuration files, it may be specified with the value
@@ -690,7 +690,7 @@ named file-system directory and sub-directories</td></tr>
 
     <div class="note">
       <p>Be careful with the <var>directory-path</var> arguments:
-      They have to literally match the filesystem path which Apache uses
+      They have to literally match the filesystem path which Apache httpd uses
       to access the files. Directives applied to a particular
       <code>&lt;Directory&gt;</code> will not apply to files accessed from
       that same directory via a different path, such as via different symbolic
@@ -763,9 +763,9 @@ named file-system directory and sub-directories</td></tr>
     the corresponding <code class="directive">&lt;Directory&gt;</code> will
     be applied.</p>
 
-   <p><strong>Note that the default Apache access for
+   <p><strong>Note that the default access for
     <code>&lt;Directory /&gt;</code> is <code>Allow from All</code>.
-    This means that Apache will serve any file mapped from an URL. It is
+    This means that Apache httpd will serve any file mapped from an URL. It is
     recommended that you change this with a block such
     as</strong></p>
 
@@ -879,7 +879,7 @@ Locations</a></li>
     memory-mapping if it needs to read the contents of a file during
     delivery.  By default, when the handling of a request requires
     access to the data within a file -- for example, when delivering a
-    server-parsed file using <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> -- Apache
+    server-parsed file using <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> -- Apache httpd
     memory-maps the file if the OS supports it.</p>
 
     <p>This memory-mapping sometimes yields a performance improvement.
@@ -930,7 +930,7 @@ Locations</a></li>
     sendfile support from the kernel to transmit file contents to the client.
     By default, when the handling of a request requires no access
     to the data within a file -- for example, when delivering a
-    static file -- Apache uses sendfile to deliver the file contents
+    static file -- Apache httpd uses sendfile to deliver the file contents
     without ever reading the file if the OS supports it.</p>
 
     <p>This sendfile mechanism avoids separate read and send operations,
@@ -987,10 +987,10 @@ in case of an error</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Quoting syntax for text messages is different in Apache
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Quoting syntax for text messages is different in Apache HTTP Server
 2.0</td></tr>
 </table>
-    <p>In the event of a problem or error, Apache can be configured
+    <p>In the event of a problem or error, Apache httpd can be configured
     to do one of four things,</p>
 
     <ol>
@@ -1008,7 +1008,7 @@ in case of an error</td></tr>
     <p>The first option is the default, while options 2-4 are
     configured using the <code class="directive">ErrorDocument</code>
     directive, which is followed by the HTTP response code and a URL
-    or a message. Apache will sometimes offer additional information
+    or a message. Apache httpd will sometimes offer additional information
     regarding the problem/error.</p>
 
     <p>URLs can begin with a slash (/) for local web-paths (relative
@@ -1024,9 +1024,9 @@ in case of an error</td></tr>
     </code></p></div>
 
     <p>Additionally, the special value <code>default</code> can be used
-    to specify Apache's simple hardcoded message.  While not required
+    to specify Apache httpd's simple hardcoded message.  While not required
     under normal circumstances, <code>default</code> will restore
-    Apache's simple hardcoded message for configurations that would
+    Apache httpd's simple hardcoded message for configurations that would
     otherwise inherit an existing <code class="directive">ErrorDocument</code>.</p>
 
     <div class="example"><p><code>
@@ -1040,7 +1040,7 @@ in case of an error</td></tr>
 
     <p>Note that when you specify an <code class="directive">ErrorDocument</code>
     that points to a remote URL (ie. anything with a method such as
-    <code>http</code> in front of it), Apache will send a redirect to the
+    <code>http</code> in front of it), Apache HTTP Server will send a redirect to the
     client to tell it where to find the document, even if the
     document ends up being on the same server. This has several
     implications, the most important being that the client will not
@@ -1073,7 +1073,7 @@ in case of an error</td></tr>
     <p>If you are using mod_proxy, you may wish to enable
     <code class="directive"><a href="../mod/mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></code> so that you can provide
     custom error messages on behalf of your Origin servers. If you don't enable ProxyErrorOverride,
-    Apache will not generate custom error documents for proxied content.</p>
+    Apache httpd will not generate custom error documents for proxied content.</p>
 
 <h3>See also</h3>
 <ul>
@@ -1133,7 +1133,7 @@ in case of an error</td></tr>
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
-<li><a href="../logs.html">Apache Log Files</a></li>
+<li><a href="../logs.html">Apache HTTP Server Log Files</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1187,7 +1187,7 @@ HTTP response header for static files</td></tr>
     attributes that are used to create the <code>ETag</code> (entity
     tag) response header field when the document is based on a static file.
     (The <code>ETag</code> value is used in cache management to save
-    network bandwidth.) In Apache 1.3.22 and earlier, the
+    network bandwidth.) In Apache httpd 1.3.22 and earlier, the
     <code>ETag</code> value was <em>always</em> formed
     from the file's inode, size, and last-modified time (mtime). The
     <code class="directive">FileETag</code> directive allows you to choose
@@ -1329,7 +1329,7 @@ media type in the HTTP Content-Type header field</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved to the core in Apache 2.0</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved to the core in Apache httpd 2.0</td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code>, or
@@ -1545,7 +1545,7 @@ later.</td></tr>
 
     <p>In the former case, the directives between the start and end
     markers are only processed if the module named <var>module</var>
-    is included in Apache -- either compiled in or
+    is included in Apache httpd -- either compiled in or
     dynamically loaded using <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>. The second format reverses the test,
     and only processes the directives if <var>module</var> is
     <strong>not</strong> included.</p>
@@ -1587,7 +1587,7 @@ wildcard matching available in 2.3.6 and later</td></tr>
     in the filename or directory parts of the path to include several files
     at once, in alphabetical order. In addition, if
     <code class="directive">Include</code> points to a directory, rather than a file,
-    Apache will read all files in that directory and any subdirectory.
+    Apache httpd will read all files in that directory and any subdirectory.
     However, including entire directories is not recommended, because it is
     easy to accidentally leave temporary files in a directory that can cause
     <code class="program"><a href="../programs/httpd.html">httpd</a></code> to fail. Instead, we encourage you to use the
@@ -1685,9 +1685,9 @@ requests on a persistent connection</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Specifying a value in milliseconds is available in 
-Apache 2.3.2 and later</td></tr>
+Apache httpd 2.3.2 and later</td></tr>
 </table>
-    <p>The number of seconds Apache will wait for a subsequent
+    <p>The number of seconds Apache httpd will wait for a subsequent
     request before closing the connection. By adding a postfix of ms the
     timeout can be also set in milliseconds. Once a request has been
     received, the timeout value specified by the
@@ -1827,10 +1827,10 @@ subrequests</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.47 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.0.47 and later</td></tr>
 </table>
     <p>An internal redirect happens, for example, when using the <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> directive, which internally
-    redirects the original request to a CGI script. A subrequest is Apache's
+    redirects the original request to a CGI script. A subrequest is Apache httpd's
     mechanism to find out what would happen for some URI if it were requested.
     For example, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> uses subrequests to look for the
     files listed in the <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>
@@ -2322,7 +2322,7 @@ or specified mutexes</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.4 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3.4 and later</td></tr>
 </table>
     <p>The <code class="directive">Mutex</code> directive sets the mechanism,
     and optionally the lock file location, that httpd and modules use
@@ -2785,7 +2785,7 @@ directory</td></tr>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limits the CPU consumption of processes launched
-by Apache children</td></tr>
+by Apache httpd children</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RLimitCPU <var>seconds</var>|max [<var>seconds</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -2802,10 +2802,10 @@ by Apache children</td></tr>
     the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
-    <p>This applies to processes forked off from Apache children
-    servicing requests, not the Apache children themselves. This
+    <p>This applies to processes forked off from Apache httpd children
+    servicing requests, not the Apache httpd children themselves. This
     includes CGI scripts and SSI exec commands, but not any
-    processes forked off from the Apache parent such as piped
+    processes forked off from the Apache httpd parent such as piped
     logs.</p>
 
     <p>CPU resource limits are expressed in seconds per
@@ -2821,7 +2821,7 @@ by Apache children</td></tr>
 <div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limits the memory consumption of processes launched
-by Apache children</td></tr>
+by Apache httpd children</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RLimitMEM <var>bytes</var>|max [<var>bytes</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -2838,10 +2838,10 @@ by Apache children</td></tr>
     the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
-    <p>This applies to processes forked off from Apache children
-    servicing requests, not the Apache children themselves. This
+    <p>This applies to processes forked off from Apache httpd children
+    servicing requests, not the Apache httpd children themselves. This
     includes CGI scripts and SSI exec commands, but not any
-    processes forked off from the Apache parent such as piped
+    processes forked off from the Apache httpd parent such as piped
     logs.</p>
 
     <p>Memory resource limits are expressed in bytes per
@@ -2857,7 +2857,7 @@ by Apache children</td></tr>
 <div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limits the number of processes that can be launched by
-processes launched by Apache children</td></tr>
+processes launched by Apache httpd children</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RLimitNPROC <var>number</var>|max [<var>number</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
@@ -2874,10 +2874,10 @@ processes launched by Apache children</td></tr>
     the server is running as <code>root</code>, or in the initial startup
     phase.</p>
 
-    <p>This applies to processes forked off from Apache children
-    servicing requests, not the Apache children themselves. This
+    <p>This applies to processes forked off from Apache httpd children
+    servicing requests, not the Apache httpd children themselves. This
     includes CGI scripts and SSI exec commands, but not any
-    processes forked off from the Apache parent such as piped
+    processes forked off from the Apache httpd parent such as piped
     logs.</p>
 
     <p>Process limits control the number of processes per user.</p>
@@ -2909,12 +2909,12 @@ scripts</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Win32 only;
-option <code>Registry-Strict</code> is available in Apache 2.0 and
+option <code>Registry-Strict</code> is available in Apache HTTP Server 2.0 and
 later</td></tr>
 </table>
-    <p>This directive is used to control how Apache finds the
+    <p>This directive is used to control how Apache httpd finds the
     interpreter used to run CGI scripts. The default setting is
-    <code>Script</code>. This causes Apache to use the interpreter pointed to
+    <code>Script</code>. This causes Apache httpd to use the interpreter pointed to
     by the shebang line (first line, starting with <code>#!</code>) in the
     script. On Win32 systems this line usually looks like:</p>
 
@@ -2934,13 +2934,13 @@ later</td></tr>
     search key. The command defined by the registry subkey
     <code>Shell\ExecCGI\Command</code> or, if it does not exist, by the subkey
     <code>Shell\Open\Command</code> is used to open the script file. If the
-    registry keys cannot be found, Apache falls back to the behavior of the
+    registry keys cannot be found, Apache httpd falls back to the behavior of the
     <code>Script</code> option.</p>
 
     <div class="warning"><h3>Security</h3>
     <p>Be careful when using <code>ScriptInterpreterSource
     Registry</code> with <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>'ed directories, because
-    Apache will try to execute <strong>every</strong> file within this
+    Apache httpd will try to execute <strong>every</strong> file within this
     directory. The <code>Registry</code> setting may cause undesired
     program calls on files which are typically not executed. For
     example, the default open command on <code>.htm</code> files on
@@ -2951,7 +2951,7 @@ later</td></tr>
     so.</p>
     </div>
 
-    <p>The option <code>Registry-Strict</code> which is new in Apache
+    <p>The option <code>Registry-Strict</code> which is new in Apache HTTP Server
     2.0 does the same thing as <code>Registry</code> but uses only the
     subkey <code>Shell\ExecCGI\Command</code>. The
     <code>ExecCGI</code> key is not a common one. It must be
@@ -2970,7 +2970,7 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.7 and later.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.2.7 and later.</td></tr>
 </table>
     <p>mod_status with <code>ExtendedStatus On</code>
     displays the actual request being handled. 
@@ -2981,7 +2981,7 @@ of a request or the last 63, assuming the request itself is greater than
     is only applicable, of course, if the length of the request is
     64 characters or greater.</p>
 
-    <p>If Apache is handling <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> mod_status displays as follows:
+    <p>If Apache httpd is handling <code>GET&nbsp;/disk1/storage/apache/htdocs/images/imagestore1/food/apples.jpg&nbsp;HTTP/1.1</code> mod_status displays as follows:
     </p>
 
     <table class="bordered">
@@ -3052,7 +3052,7 @@ to name-virtual hosts</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../vhosts/">Apache Virtual Host documentation</a></li>
+<li><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3117,8 +3117,8 @@ itself</td></tr>
 <h3>See also</h3>
 <ul>
 <li><a href="../dns-caveats.html">Issues Regarding DNS and
-    Apache</a></li>
-<li><a href="../vhosts/">Apache virtual host
+    Apache HTTP Server</a></li>
+<li><a href="../vhosts/">Apache HTTP Server virtual host
     documentation</a></li>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
 <li><code class="directive"><a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code></li>
@@ -3141,7 +3141,7 @@ is accessed by an incompatible browser</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../vhosts/">Apache Virtual Host documentation</a></li>
+<li><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3288,7 +3288,7 @@ handler</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved into the core in Apache 2.0</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved into the core in Apache httpd 2.0</td></tr>
 </table>
     <p>When placed into an <code>.htaccess</code> file or a
     <code class="directive"><a href="#directory">&lt;Directory&gt;</a></code> or
@@ -3406,7 +3406,7 @@ certain events before failing a request</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>The <code class="directive">TimeOut</code> directive defines the length
-    of time Apache will wait for I/O in various circumstances:</p>
+    of time Apache httpd will wait for I/O in various circumstances:</p>
 
     <ol>
       <li>When reading data from the client, the length of time to
@@ -3440,7 +3440,7 @@ requests</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 1.3.34, 2.0.55 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 1.3.34, 2.0.55 and later</td></tr>
 </table>
     <p>This directive overrides the behavior of <code>TRACE</code> for both
     the core server and <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.  The default
@@ -3485,15 +3485,15 @@ port</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>In many situations Apache must construct a <em>self-referential</em>
+    <p>In many situations Apache httpd must construct a <em>self-referential</em>
     URL -- that is, a URL that refers back to the same server. With
-    <code>UseCanonicalName On</code> Apache will use the hostname and port
+    <code>UseCanonicalName On</code> Apache httpd will use the hostname and port
     specified in the <code class="directive"><a href="#servername">ServerName</a></code>
     directive to construct the canonical name for the server. This name
     is used in all self-referential URLs, and for the values of
     <code>SERVER_NAME</code> and <code>SERVER_PORT</code> in CGIs.</p>
 
-    <p>With <code>UseCanonicalName Off</code> Apache will form
+    <p>With <code>UseCanonicalName Off</code> Apache httpd will form
     self-referential URLs using the hostname and port supplied by
     the client if any are supplied (otherwise it will use the
     canonical name, as defined above). These values are the same
@@ -3507,19 +3507,19 @@ port</td></tr>
     names such as <code>www</code>. You'll notice that if the users
     type a shortname, and a URL which is a directory, such as
     <code>http://www/splat</code>, <em>without the trailing
-    slash</em> then Apache will redirect them to
+    slash</em> then Apache httpd will redirect them to
     <code>http://www.domain.com/splat/</code>. If you have
     authentication enabled, this will cause the user to have to
     authenticate twice (once for <code>www</code> and once again
     for <code>www.domain.com</code> -- see <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">the
     FAQ on this subject for more information</a>). But if
     <code class="directive">UseCanonicalName</code> is set <code>Off</code>, then
-    Apache will redirect to <code>http://www/splat/</code>.</p>
+    Apache httpd will redirect to <code>http://www/splat/</code>.</p>
 
     <p>There is a third option, <code>UseCanonicalName DNS</code>,
     which is intended for use with mass IP-based virtual hosting to
     support ancient clients that do not provide a
-    <code>Host:</code> header. With this option Apache does a
+    <code>Host:</code> header. With this option Apache httpd does a
     reverse DNS lookup on the server IP address that the client
     connected to in order to work out self-referential URLs.</p>
 
@@ -3549,14 +3549,14 @@ port</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>In many situations Apache must construct a <em>self-referential</em>
+    <p>In many situations Apache httpd must construct a <em>self-referential</em>
     URL -- that is, a URL that refers back to the same server. With
-    <code>UseCanonicalPhysicalPort On</code> Apache will, when
+    <code>UseCanonicalPhysicalPort On</code> Apache httpd will, when
     constructing the canonical port for the server to honor
     the <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> directive,
     provide the actual physical port number being used by this request
     as a potential port. With <code>UseCanonicalPhysicalPort Off</code>
-    Apache will not ever use the actual physical port number, instead
+    Apache httpd will not ever use the actual physical port number, instead
     relying on all configured information to construct a valid port number.</p>
 
     <div class="note"><h3>Note</h3>
@@ -3660,8 +3660,8 @@ hostname or IP address</td></tr>
 
     <div class="note"><h3>Note</h3>
     <p>The use of <code class="directive">&lt;VirtualHost&gt;</code> does
-    <strong>not</strong> affect what addresses Apache listens on. You
-    may need to ensure that Apache is listening on the correct addresses
+    <strong>not</strong> affect what addresses Apache httpd listens on. You
+    may need to ensure that Apache httpd is listening on the correct addresses
     using <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
     </div>
 
@@ -3694,11 +3694,11 @@ hostname or IP address</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../vhosts/">Apache Virtual Host documentation</a></li>
+<li><a href="../vhosts/">Apache HTTP Server Virtual Host documentation</a></li>
 <li><a href="../dns-caveats.html">Issues Regarding DNS and
-    Apache</a></li>
+    Apache HTTP Server</a></li>
 <li><a href="../bind.html">Setting
-    which addresses and ports Apache uses</a></li>
+    which addresses and ports Apache HTTP Server uses</a></li>
 <li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;
     and &lt;Files&gt; sections work</a> for an explanation of how these
     different sections are combined when a request is received</li>
