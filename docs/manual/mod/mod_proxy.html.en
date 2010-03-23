@@ -36,14 +36,14 @@
       network and to the Internet at large.</p>
     </div>
 
-    <p>This module implements a proxy/gateway for Apache. It implements
+    <p>This module implements a proxy/gateway for Apache HTTP Server. It implements
     proxying capability for <code>AJP13</code> (Apache JServe Protocol
     version 1.3), <code>FTP</code>, <code>CONNECT</code> (for SSL),
     <code>HTTP/0.9</code>, <code>HTTP/1.0</code>, and <code>HTTP/1.1</code>.
     The module can be configured to connect to other proxy modules for these
     and other protocols.</p>
 
-    <p>Apache's proxy features are divided into several modules in
+    <p>Apache httpd's proxy features are divided into several modules in
     addition to <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>:
     <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code>, <code class="module"><a href="../mod/mod_proxy_ftp.html">mod_proxy_ftp</a></code>,
     <code class="module"><a href="../mod/mod_proxy_ajp.html">mod_proxy_ajp</a></code>, <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>,
@@ -113,7 +113,7 @@
 <div class="section">
 <h2><a name="forwardreverse" id="forwardreverse">Forward Proxies and Reverse 
        Proxies/Gateways</a></h2>
-      <p>Apache can be configured in both a <dfn>forward</dfn> and
+      <p>Apache HTTP Server can be configured in both a <dfn>forward</dfn> and
       <dfn>reverse</dfn> proxy (also known as <dfn>gateway</dfn>) mode.</p>
 
       <p>An ordinary <dfn>forward proxy</dfn> is an intermediate
@@ -234,7 +234,7 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intranet" id="intranet">Intranet Proxy</a></h2>
-      <p>An Apache proxy server situated in an intranet needs to forward
+      <p>An Apache httpd proxy server situated in an intranet needs to forward
       external requests through the company's firewall (for this, configure
       the <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> directive
       to forward the respective <var>scheme</var> to the firewall proxy).
@@ -248,7 +248,7 @@
       WWW requests, thus requesting "http://somehost/" instead of
       <code>http://somehost.example.com/</code>. Some commercial proxy servers
       let them get away with this and simply serve the request, implying a
-      configured local domain. When the <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> directive is used and the server is <a href="#proxyrequests">configured for proxy service</a>, Apache can return
+      configured local domain. When the <code class="directive"><a href="#proxydomain">ProxyDomain</a></code> directive is used and the server is <a href="#proxyrequests">configured for proxy service</a>, Apache httpd can return
       a redirect response and send the client to the correct, fully qualified,
       server address. This is the preferred method since the user's bookmark
       files will then contain fully qualified hosts.</p>
@@ -332,7 +332,7 @@
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerMember is only available in Apache 2.2
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerMember is only available in Apache HTTP Server 2.2
   and later.</td></tr>
 </table>
     <p>This directive adds a member to a load balancing group. It could be used
@@ -358,7 +358,7 @@ directly</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This directive is only useful for Apache proxy servers within
+    <p>This directive is only useful for Apache httpd proxy servers within
     intranets.  The <code class="directive">NoProxy</code> directive specifies a
     list of subnets, IP addresses, hosts and/or domains, separated by
     spaces. A request to a host which matches one or more of these is
@@ -457,7 +457,7 @@ directly</td></tr>
 
     <div class="note"><h3>Note</h3>
       <p>In many situations, it is more effective to specify an <var><a href="#ipaddr">IPAddr</a></var> in place of a <var>Hostname</var> since a
-      DNS lookup can be avoided. Name resolution in Apache can take a remarkable
+      DNS lookup can be avoided. Name resolution in Apache httpd can take a remarkable
       deal of time when the connection to the name server uses a slow PPP
       link.</p>
       <p><var>Hostname</var> comparisons are done without regard to the case,
@@ -528,7 +528,7 @@ response</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.44 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.0.44 and later</td></tr>
 </table>
     <p>The <code class="directive">ProxyBadHeader</code> directive determines the
     behaviour of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> if it receives syntactically invalid
@@ -597,7 +597,7 @@ proxied</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This directive is only useful for Apache proxy servers within
+    <p>This directive is only useful for Apache httpd proxy servers within
     intranets. The <code class="directive">ProxyDomain</code> directive specifies
     the default domain which the apache proxy server will belong to. If a
     request to a host without a domain name is encountered, a redirection
@@ -689,7 +689,7 @@ through</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0 and later;
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.0 and later;
 	default behaviour changed in 2.2.7/2.3</td></tr>
 </table>
     <p>The <code class="directive">ProxyMaxForwards</code> directive specifies the
@@ -704,7 +704,7 @@ through</td></tr>
     <p>Note that setting <code class="directive">ProxyMaxForwards</code> is a
     violation of the HTTP/1.1 protocol (RFC2616), which forbids a Proxy
     setting <code>Max-Forwards</code> if the Client didn't set it.
-    Earlier Apache versions would always set it.  A negative
+    Earlier Apache httpd versions would always set it.  A negative
     <code class="directive">ProxyMaxForwards</code> value, including the
     default -1, gives you protocol-compliant behaviour, but may
     leave you open to loops.</p>
@@ -768,7 +768,7 @@ through</td></tr>
       general <code class="directive">ProxyPass</code> directive.</p>
     </div>
 
-    <p>As of Apache 2.1, the ability to use pooled connections to a backend
+    <p>As of Apache HTTP Server 2.1, the ability to use pooled connections to a backend
     server is available. Using the <code>key=value</code> parameters it is
     possible to tune this connection pooling. The default for a <code>Hard
     Maximum</code> for the number of connections is the number of threads per
@@ -779,7 +779,7 @@ through</td></tr>
     <p>Setting <code>min</code> will determine how many connections will always 
     be open to the backend server. Upto the Soft Maximum or <code>smax</code> 
     number of connections will be created on demand. Any connections above 
-    <code>smax</code> are subject to a time to live or <code>ttl</code>.  Apache
+    <code>smax</code> are subject to a time to live or <code>ttl</code>.  Apache httpd
     will never create more than the Hard Maximum or <code>max</code> connections
     to the backend server.</p>
 
@@ -802,7 +802,7 @@ through</td></tr>
     for the number of connections is the number of threads per process in the 
     active MPM. In the Prefork MPM, this is always 1, while with the Worker MPM
     it is controlled by the <code class="directive">ThreadsPerChild</code>.
-    Apache will never create more than the Hard Maximum connections
+    Apache httpd will never create more than the Hard Maximum connections
     to the backend server.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
@@ -814,13 +814,13 @@ through</td></tr>
         <td>-</td>
         <td>If set this will be the maximum time to wait for a free
     connection in the connection pool, in milliseconds. If there are no free
-    connections in the pool the Apache will return <code>SERVER_BUSY</code>
+    connections in the pool the Apache httpd will return <code>SERVER_BUSY</code>
     status to the client.
     </td></tr>
     <tr><td>connectiontimeout</td>
         <td>timeout</td>
         <td>Connect timeout in seconds.
-        The number of seconds Apache waits for the creation of a connection to
+        The number of seconds Apache httpd waits for the creation of a connection to
         the backend to complete. By adding a postfix of ms the timeout can be
         also set in milliseconds.
     </td></tr>
@@ -829,7 +829,8 @@ through</td></tr>
         <td>This parameter should be used when you want to force mod_proxy
     to immediately close a connection to the backend after being used, and
     thus, disable its persistent connection and pool for that backend.
-    This helps in various situations where a firewall between Apache and
+    This helps in various situations where a firewall between Apache
+    httpd and
     the backend server (regardless of protocol) tends to silently
     drop connections or when backends themselves may be under round-
     robin DNS. To disable connection pooling reuse,
@@ -858,7 +859,7 @@ through</td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
         <td>This parameter should be used when you have a firewall between your
-    Apache and the backend server, who tend to drop inactive connections.
+    Apache httpd and the backend server, who tend to drop inactive connections.
     This flag will tell the Operating System to send <code>KEEP_ALIVE</code>
     messages on inactive connections (interval depends on global OS settings,
     generally 120ms), and thus prevent the firewall to drop the connection.
@@ -905,7 +906,7 @@ through</td></tr>
         <td>60</td>
         <td>Connection pool worker retry timeout in seconds.
     If the connection pool worker to the backend server is in the error state,
-    Apache will not forward any requests to that server until the timeout
+    Apache httpd will not forward any requests to that server until the timeout
     expires. This enables to shut down the backend server for maintenance,
     and bring it back online later. A value of 0 means always retry workers
     in an error state with no timeout.
@@ -928,12 +929,12 @@ through</td></tr>
     <tr><td>timeout</td>
         <td><code class="directive"><a href="#proxytimeout">ProxyTimeout</a></code></td>
         <td>Connection timeout in seconds.
-        The number of seconds Apache waits for data sent by / to the backend.
+        The number of seconds Apache httpd waits for data sent by / to the backend.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Time To Live for the inactive connections above the
-        <code>smax</code> connections in seconds. Apache will close all
+        <code>smax</code> connections in seconds. Apache httpd will close all
         connections that has not been used inside that time period.
     </td></tr>
 
@@ -1129,15 +1130,15 @@ proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This directive lets Apache adjust the URL in the <code>Location</code>,
+    <p>This directive lets Apache httpd adjust the URL in the <code>Location</code>,
     <code>Content-Location</code> and <code>URI</code> headers on HTTP
-    redirect responses. This is essential when Apache is used as a
+    redirect responses. This is essential when Apache httpd is used as a
     reverse proxy (or gateway) to avoid by-passing the reverse proxy
     because of HTTP redirects on the backend servers which stay behind
     the reverse proxy.</p>
 
     <p>Only the HTTP response headers specifically mentioned above
-    will be rewritten.  Apache will not rewrite other response
+    will be rewritten. Apache httpd will not rewrite other response
     headers, nor will it rewrite URL references inside HTML pages.
     This means that if the proxied content contains absolute URL
     references, they will by-pass the proxy.  A third-party module
@@ -1164,7 +1165,7 @@ proxied server</td></tr>
     (the functionality <code>ProxyPass</code> provides here). It also takes care
     of redirects the server <code>backend.example.com</code> sends: when
     <code>http://backend.example.com/bar</code> is redirected by him to
-    <code>http://backend.example.com/quux</code> Apache adjusts this to
+    <code>http://backend.example.com/quux</code> Apache httpd adjusts this to
     <code>http://example.com/mirror/foo/quux</code> before forwarding the HTTP
     redirect response to the client. Note that the hostname used for
     constructing the URL is chosen in respect to the setting of the <code class="directive"><a href="../mod/core.html#usecanonicalname">UseCanonicalName</a></code> directive.</p>
@@ -1228,7 +1229,7 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.31 and later. Usable in directory
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.0.31 and later. Usable in directory
 context in 2.3.3 and later.</td></tr>
 </table>
     <p>When enabled, this option will pass the Host: line from the incoming
@@ -1329,7 +1330,7 @@ expressions</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This allows or prevents Apache from functioning as a forward proxy
+    <p>This allows or prevents Apache httpd from functioning as a forward proxy
     server. (Setting ProxyRequests to <code>Off</code> does not disable use of
     the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.)</p>
 
@@ -1359,7 +1360,7 @@ expressions</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ProxySet is only available in Apache 2.2
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ProxySet is only available in Apache HTTP Server 2.2
   and later.</td></tr>
 </table>
     <p>This directive is used as an alternate method of setting any of the
@@ -1435,7 +1436,7 @@ expressions</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.31 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.0.31 and later</td></tr>
 </table>
     <p>This directive allows a user to specifiy a timeout on proxy requests.
     This is useful when you have a slow/buggy appserver which hangs, and you
@@ -1468,7 +1469,7 @@ header for proxied requests</td></tr>
     <code>Via:</code> header line added for the current host.</li>
 
     <li>If set to <code>Full</code>, each generated <code>Via:</code> header
-    line will additionally have the Apache server version shown as a
+    line will additionally have the Apache httpd server version shown as a
     <code>Via:</code> comment field.</li>
 
     <li>If set to <code>Block</code>, every proxy request will have all its
