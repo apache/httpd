@@ -49,7 +49,7 @@ on characteristics of the request</description>
 </example>
 </summary>
 
-<seealso><a href="../env.html">Environment Variables in Apache</a></seealso>
+<seealso><a href="../env.html">Environment Variables in Apache HTTP Server</a></seealso>
 
 <directivesynopsis>
 <name>BrowserMatch</name>
@@ -92,9 +92,6 @@ respect to case</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.2 and
-    above (in Apache 1.2 this directive was found in the
-    now-obsolete mod_browser module)</compatibility>
 
 <usage>
 
@@ -216,7 +213,7 @@ of</p>
     <p>In the first form, the value will be set to "1". The second
     will remove the given variable if already defined, and the
     third will set the variable to the literal value given by
-    <code><em>value</em></code>. Since version 2.0.51 Apache will
+    <code><em>value</em></code>. Since version 2.0.51, Apache httpd will
     recognize occurrences of <code>$1</code>..<code>$9</code> within
     <var>value</var> and replace them by parenthesized subexpressions
     of <var>regex</var>.</p>
@@ -252,7 +249,7 @@ of</p>
     set [a-z].</p>
 </usage>
 
-<seealso><a href="../env.html">Environment Variables in Apache</a>,
+<seealso><a href="../env.html">Environment Variables in Apache HTTP Server</a>,
 for additional examples.
 </seealso>
 </directivesynopsis>
@@ -268,7 +265,6 @@ without respect to case</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.3 and above</compatibility>
 
 <usage>
 
