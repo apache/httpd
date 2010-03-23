@@ -30,8 +30,8 @@ address)</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>access_compat_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_access_compat.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 as a compatibility module with 
-previous versions of Apache 2.x.  The directives provided by this module
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache HTTP Server 2.3 as a compatibility module with 
+previous versions of Apache httpd 2.x.  The directives provided by this module
 have been deprecated by the new authz refactoring.  Please see 
 <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></td></tr></table>
 <h3>Summary</h3>
@@ -121,7 +121,7 @@ server</td></tr>
       access. Only complete components are matched, so the above
       example will match <code>foo.apache.org</code> but it will not
       match <code>fooapache.org</code>. This configuration will cause
-      Apache to perform a double DNS lookup on the client IP
+      Apache httpd to perform a double DNS lookup on the client IP
       address, regardless of the setting of the <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code> directive.  It will do
       a reverse DNS lookup on the IP address to find the associated
       hostname, and then do a forward lookup on the hostname to assure
