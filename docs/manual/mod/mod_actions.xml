@@ -43,7 +43,7 @@ media type or request method.</description>
 
 <seealso><module>mod_cgi</module></seealso>
 <seealso><a href="../howto/cgi.html">Dynamic Content with CGI</a></seealso>
-<seealso><a href="../handler.html">Apache's Handler Use</a></seealso>
+<seealso><a href="../handler.html">Apache httpd's Handler Use</a></seealso>
 
 <directivesynopsis>
 <name>Action</name>

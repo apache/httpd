@@ -81,7 +81,7 @@
 <section id="query">
     <title>Autoindex Request Query Arguments</title>
 
-    <p>Apache 2.0.23 reorganized the Query Arguments for Column
+    <p>Apache HTTP Server 2.0.23 reorganized the Query Arguments for Column
     Sorting, and introduced an entire group of new query options.
     To effectively eliminate all client control over the output,
     the <code><a href="#indexoptions.ignoreclient">IndexOptions
@@ -550,7 +550,7 @@ indexing</description>
 
       <dt><a name="indexoptions.charset"
                id="indexoptions.charset"
-      >Charset=<var>character-set</var></a> (<em>Apache 2.0.61 and
+      >Charset=<var>character-set</var></a> (<em>Apache HTTP Server 2.0.61 and
       later</em>)</dt>
 
       <dd>The <code>Charset</code> keyword allows you to
@@ -566,7 +566,7 @@ indexing</description>
 
       <dt><a name="indexoptions.descriptionwidth"
                id="indexoptions.descriptionwidth"
-      >DescriptionWidth=[<var>n</var> | *]</a> (<em>Apache 2.0.23 and
+      >DescriptionWidth=[<var>n</var> | *]</a> (<em>Apache HTTP Server 2.0.23 and
       later</em>)</dt>
 
       <dd>The <code>DescriptionWidth</code> keyword allows you to
@@ -593,7 +593,7 @@ indexing</description>
       <dd>This turns on fancy indexing of directories.</dd>
 
       <dt><a name="indexoptions.foldersfirst"
-               id="indexoptions.foldersfirst">FoldersFirst</a> (<em>Apache
+               id="indexoptions.foldersfirst">FoldersFirst</a> (<em>Apache HTTP Server
       2.0.23 and later</em>)</dt>
 
       <dd>If this option is enabled, subdirectory listings will
@@ -611,7 +611,7 @@ indexing</description>
 
       <dt><a name="indexoptions.htmltable"
                id="indexoptions.htmltable">HTMLTable</a> (<em>Experimental,
-      Apache 2.0.23 and later</em>)</dt>
+      Apache HTTP Server 2.0.23 and later</em>)</dt>
 
       <dd>This experimental option with <code>FancyIndexing</code> constructs
       a simple table for the fancy directory listing. Note this will
@@ -636,7 +636,7 @@ indexing</description>
       icon. This allows browser to precalculate the page layout without having
       to wait until all the images have been loaded. If no value is given for
       the option, it defaults to the standard height of the icons supplied
-      with the Apache software.</dd>
+      with the Apache httpd software.</dd>
 
       <dt><a name="indexoptions.iconwidth"
                id="indexoptions.iconwidth">IconWidth[=<var
@@ -648,7 +648,7 @@ indexing</description>
       the file icon. This allows browser to precalculate the page
       layout without having to wait until all the images have been
       loaded. If no value is given for the option, it defaults to
-      the standard width of the icons supplied with the Apache
+      the standard width of the icons supplied with the Apache httpd
       software.</dd>
 
       <dt><a name="indexoptions.ignorecase"
@@ -697,7 +697,7 @@ indexing</description>
       <dt><a name="indexoptions.showforbidden"
                id="indexoptions.showforbidden">ShowForbidden</a></dt>
 
-      <dd>If specified, Apache will show files normally hidden because
+      <dd>If specified, Apache httpd will show files normally hidden because
       the subrequest returned <code>HTTP_UNAUTHORIZED</code> or
       <code>HTTP_FORBIDDEN</code></dd>
 
@@ -705,15 +705,15 @@ indexing</description>
                id="indexoptions.suppresscolumnsorting"
                >SuppressColumnSorting</a></dt>
 
-      <dd>If specified, Apache will not make the column headings in a
+      <dd>If specified, Apache httpd will not make the column headings in a
       FancyIndexed directory listing into links for sorting. The
       default behavior is for them to be links; selecting the
       column heading will sort the directory listing by the values
-      in that column. <strong>Prior to Apache 2.0.23, this also
+      in that column. <strong>Prior to Apache HTTP Server 2.0.23, this also
       disabled parsing the Query Arguments for the sort
       string.</strong> That behavior is now controlled by <a
       href="#indexoptions.ignoreclient"><code>IndexOptions
-      IgnoreClient</code></a> in Apache 2.0.23.</dd>
+      IgnoreClient</code></a> in Apache HTTP Server 2.0.23.</dd>
 
       <dt><a name="indexoptions.suppressdescription"
                id="indexoptions.suppressdescription"
@@ -744,7 +744,7 @@ indexing</description>
       as usual.</dd>
 
       <dt><a name="indexoptions.suppressicon"
-               id="indexoptions.suppressicon">SuppressIcon</a> (<em>Apache
+               id="indexoptions.suppressicon">SuppressIcon</a> (<em>Apache HTTP Server
       2.0.23 and later</em>)</dt>
 
       <dd>This will suppress the icon in fancy indexing listings.
@@ -763,7 +763,7 @@ indexing</description>
 
       <dt><a name="indexoptions.suppressrules"
                id="indexoptions.suppressrules">SuppressRules</a>
-      (<em>Apache 2.0.23 and later</em>)</dt>
+      (<em>Apache HTTP Server 2.0.23 and later</em>)</dt>
 
       <dd>This will suppress the horizontal rule lines (<code>hr</code>
       elements) in directory listings. Combining both <code>SuppressIcon</code> and
@@ -778,7 +778,7 @@ indexing</description>
       <dd>This will suppress the file size in fancy indexing listings.</dd>
 
       <dt><a name="indexoptions.trackmodified"
-               id="indexoptions.trackmodified">TrackModified</a> (<em>Apache
+               id="indexoptions.trackmodified">TrackModified</a> (<em>Apache HTTP Server
       2.0.23 and later</em>)</dt>
 
       <dd>This returns the <code>Last-Modified</code> and <code>ETag</code>
@@ -797,7 +797,7 @@ indexing</description>
 
       <dt><a name="indexoptions.type"
                id="indexoptions.type"
-      >Type=<var>MIME content-type</var></a> (<em>Apache 2.0.61 and
+      >Type=<var>MIME content-type</var></a> (<em>Apache HTTP Server 2.0.61 and
       later</em>)</dt>
 
       <dd>The <code>Type</code> keyword allows you to
@@ -811,7 +811,7 @@ indexing</description>
 
       <dt><a name="indexoptions.versionsort"
                id="indexoptions.versionsort">VersionSort</a>
-      (<em>Apache 2.0a3 and later</em>)</dt>
+      (<em>Apache HTTP Server 2.0a3 and later</em>)</dt>
 
       <dd>The <code>VersionSort</code> keyword causes files containing
       version numbers to sort in a natural way. Strings are sorted as
@@ -840,7 +840,7 @@ indexing</description>
 
       <dt><a name="indexoptions.xhtml"
                id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache 2.0.49 and later</em>)</dt>
+      (<em>Apache HTTP Server 2.0.49 and later</em>)</dt>
 
       <dd>The <code>XHTML</code> keyword forces <module>mod_autoindex</module>
       to emit XHTML 1.0 code instead of HTML 3.2.</dd>
@@ -853,7 +853,7 @@ indexing</description>
    -->
    <dl><dt>Incremental IndexOptions</dt>
    <dd>
-     <p>Apache 1.3.3 introduced some significant changes in the
+     <p>Apache httpd 1.3.3 introduced some significant changes in the
      handling of <directive>IndexOptions</directive> directives. In
      particular:</p>
 
