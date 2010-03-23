@@ -34,7 +34,7 @@ Windows</compatibility>
 <summary>
 
     <p>On selected operating systems this module can be used to
-    load modules into Apache at runtime via the <a
+    load modules into Apache HTTP Server at runtime via the <a
     href="../dso.html">Dynamic Shared Object</a> (DSO) mechanism,
     rather than requiring a recompilation.</p>
 
@@ -44,9 +44,11 @@ Windows</compatibility>
     extension.</p>
 
     <note type="warning"><title>Warning</title>
-    <p>Apache 1.3 modules cannot be directly used
-    with Apache 2.0 - the module must be modified to dynamically
-    load or compile into Apache 2.0.</p>
+    <p>Modules built for one major version of the Apache HTTP Server
+    will generally not work on another. (e.g. 1.3 vs. 2.0, or 2.0 vs.
+    2.2) There are usually API changes between one major version and
+    another that require that modules be modified to work with the new
+    version.</p>
     </note>
 </summary>
 
@@ -54,7 +56,7 @@ Windows</compatibility>
 
     <note><title>Note</title>
     <p>The module name format changed for Windows
-    with Apache 1.3.15 and 2.0 - the modules are now named as
+    with Apache HTTP Server 1.3.15 and 2.0 - the modules are now named as
     mod_foo.so</p>
 
     <p>While mod_so still loads modules with
@@ -62,7 +64,7 @@ Windows</compatibility>
     preferred; if you are converting your loadable module for 2.0,
     please fix the name to this 2.0 convention.</p></note>
 
-    <p>The Apache module API is unchanged between the Unix and
+    <p>The Apache httpd module API is unchanged between the Unix and
     Windows versions. Many modules will run on Windows with no or
     little change from Unix, although others rely on aspects of the
     Unix architecture which are not present in Windows, and will
@@ -70,8 +72,8 @@ Windows</compatibility>
 
     <p>When a module does work, it can be added to the server in
     one of two ways. As with Unix, it can be compiled into the
-    server. Because Apache for Windows does not have the
-    <code>Configure</code> program of Apache for Unix, the module's
+    server. Because Apache httpd for Windows does not have the
+    <code>Configure</code> program of Apache httpd for Unix, the module's
     source file must be added to the ApacheCore project file, and
     its symbols must be added to the
     <code>os\win32\modules.c</code> file.</p>
@@ -80,14 +82,14 @@ Windows</compatibility>
     library that can be loaded into the server at runtime, using
     the <code><directive>LoadModule</directive></code>
     directive. These module DLLs can be distributed and run on any
-    Apache for Windows installation, without recompilation of the
+    Apache httpd for Windows installation, without recompilation of the
     server.</p>
 
     <p>To create a module DLL, a small change is necessary to the
     module's source file: The module record must be exported from
     the DLL (which will be created later; see below). To do this,
     add the <code>AP_MODULE_DECLARE_DATA</code> (defined in the
-    Apache header files) to your module's module record definition.
+    Apache httpd header files) to your module's module record definition.
     For example, if your module has:</p>
 
 <example>
@@ -108,7 +110,7 @@ Windows</compatibility>
     link this against the libhttpd.lib export library that is
     created when the libhttpd.dll shared library is compiled. You
     may also have to change the compiler settings to ensure that
-    the Apache header files are correctly located. You can find
+    the Apache httpd header files are correctly located. You can find
     this library in your server root's modules directory. It is
     best to grab an existing module .dsp file from the tree to
     assure the build environment is configured correctly, or
