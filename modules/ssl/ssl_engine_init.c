@@ -233,9 +233,11 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             sc->server->pphrase_dialog_type = SSL_PPTYPE_BUILTIN;
         }
 
+#ifdef HAVE_FIPS
         if (sc->fips == UNSET) {
             sc->fips = FALSE;
         }
+#endif
     }
 
 #if APR_HAS_THREADS
