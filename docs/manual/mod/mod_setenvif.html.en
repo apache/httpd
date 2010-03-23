@@ -60,7 +60,7 @@ on characteristics of the request</td></tr>
 </ul>
 <h3>See also</h3>
 <ul class="seealso">
-<li><a href="../env.html">Environment Variables in Apache</a></li>
+<li><a href="../env.html">Environment Variables in Apache HTTP Server</a></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -104,9 +104,6 @@ respect to case</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache 1.2 and
-    above (in Apache 1.2 this directive was found in the
-    now-obsolete mod_browser module)</td></tr>
 </table>
 
     <p>The <code class="directive">BrowserMatchNoCase</code> directive is
@@ -222,7 +219,7 @@ of</p>
     <p>In the first form, the value will be set to "1". The second
     will remove the given variable if already defined, and the
     third will set the variable to the literal value given by
-    <code><em>value</em></code>. Since version 2.0.51 Apache will
+    <code><em>value</em></code>. Since version 2.0.51, Apache httpd will
     recognize occurrences of <code>$1</code>..<code>$9</code> within
     <var>value</var> and replace them by parenthesized subexpressions
     of <var>regex</var>.</p>
@@ -259,7 +256,7 @@ of</p>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../env.html">Environment Variables in Apache</a>,
+<li><a href="../env.html">Environment Variables in Apache HTTP Server</a>,
 for additional examples.
 </li>
 </ul>
@@ -276,7 +273,6 @@ without respect to case</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_setenvif</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Apache 1.3 and above</td></tr>
 </table>
 
     <p>The <code class="directive">SetEnvIfNoCase</code> is semantically identical to
