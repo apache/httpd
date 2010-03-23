@@ -583,7 +583,9 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
 
 const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
 {
+#ifdef HAVE_FIPS
     SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+#endif
     const char *err;
 
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
