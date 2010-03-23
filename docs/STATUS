@@ -7,30 +7,14 @@ http://httpd.apache.org/docs-project/docsformat.html
 
               ------------------------------
 
-Decisions pending
-=================
-
-- Determine what The Right Way to use the terms "Apache", "Apache HTTP
-  Server" and "httpd" are. Whether they require specific markup or
-  links. (Rich) I've been using Apache HTTP Server in the first mention,
-  and httpd thereafter, but there are some contexts in which this is
-  awkward.
-
-Who's Working On What
-=====================
-
-Rich:
-    - Changing mentions of 'Apache' to 'Apache HTTP Server' or 'httpd'
-      as appropriate in the context.
-
-    - Rewriting the custom-error document, which is grossly outdated.
-
-    - Adding to the discussion of conditional logging, which I think
-      could be turned into more of a howto than the one paragraph it's
-      got now.
-
 To Do List
 =======================
+
+- Rewriting the custom-error document, which is grossly outdated.
+
+- Adding to the discussion of conditional logging, which I think
+  could be turned into more of a howto than the one paragraph it's
+  got now.
 
 - Refer to this product as either 'Apache HTTP Server' or 'httpd', as
   appropriate in context, rather than just 'Apache'. 'Apache' is the
