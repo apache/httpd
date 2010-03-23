@@ -157,7 +157,7 @@ tutorial</a></li>
     redirect to <code>http://www.example.com/bob/one/two.html</code>.</p>
 
     <p>If you add a redirect, it must be the last alternative in the list.
-    Apache cannot determine if the redirect succeeded or not, so if you have
+    Apache httpd cannot determine if the redirect succeeded or not, so if you have
     the redirect earlier in the list, that will always be the alternative
     that is used.</p>
 
@@ -170,7 +170,7 @@ tutorial</a></li>
 <h3>See also</h3>
 <ul>
 <li>
-  <a href="../howto/public_html.html">public_html tutorial</a>
+  <a href="../howto/public_html.html">Per-user web directories tutorial</a>
 </li>
 </ul>
 </div>

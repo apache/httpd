@@ -223,7 +223,7 @@ for a given virtual host</description>
 <usage>
 
     <p>The <directive>VirtualDocumentRoot</directive> directive allows you to
-    determine where Apache will find your documents based on the
+    determine where Apache HTTP Server will find your documents based on the
     value of the server name. The result of expanding
     <em>interpolated-directory</em> is used as the root of the
     document tree in a similar manner to the <directive
@@ -271,7 +271,7 @@ a given virtual host</description>
 <usage>
 
     <p>The <directive>VirtualScriptAlias</directive> directive allows you to
-    determine where Apache will find CGI scripts in a similar
+    determine where Apache httpd will find CGI scripts in a similar
     manner to <directive module="mod_vhost_alias"
     >VirtualDocumentRoot</directive> does for other documents. It matches
     requests for URIs starting <code>/cgi-bin/</code>, much like <directive

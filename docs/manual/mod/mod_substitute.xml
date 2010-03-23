@@ -27,7 +27,7 @@
 <status>Experimental</status>
 <sourcefile>mod_substitute.c</sourcefile>
 <identifier>substitute_module</identifier>
-<compatibility>Available in Apache 2.2.7 and later</compatibility>
+<compatibility>Available in Apache HTTP Server 2.2.7 and later</compatibility>
 
 <summary>
     <p><module>mod_substitute</module> provides a mechanism to perform

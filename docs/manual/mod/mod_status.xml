@@ -59,7 +59,7 @@ performance</description>
       bytes per request (*)</li>
 
       <li>The current percentage CPU used by each worker and in
-      total by Apache (*)</li>
+      total by all workers combined (*)</li>
 
       <li>The current hosts and requests being processed (*)</li>
     </ul>
@@ -108,9 +108,9 @@ performance</description>
     <p>A machine-readable version of the status file is available by
     accessing the page
     <code>http://your.server.name/server-status?auto</code>. This
-    is useful when automatically run, see the Perl program in the
-    <code>/support</code> directory of Apache,
-    <code>log_server_status</code>.</p>
+    is useful when automatically run, see the Perl program
+    <code>log_server_status</code>, which you will find in the 
+    <code>/support</code> directory of your Apache HTTP Server installation.</p>
 
     <note>
       <strong>It should be noted that if <module>mod_status</module> is
