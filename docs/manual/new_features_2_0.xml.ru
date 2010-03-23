@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='KOI8-R' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
-<!-- English Revision: 96910:922642 (outdated) -->
+<!-- English Revision: 96910:926409 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
