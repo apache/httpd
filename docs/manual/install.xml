@@ -26,10 +26,10 @@
 
 <summary>
 
-    <p>This document covers compilation and installation of Apache
+    <p>This document covers compilation and installation of the Apache HTTP Server
     on Unix and Unix-like systems only. For compiling and
     installation on Windows, see <a
-    href="platform/windows.html">Using Apache with Microsoft
+    href="platform/windows.html">Using Apache HTTP Server with Microsoft
     Windows</a>. For other platforms, see the <a
     href="platform/">platform</a> documentation.</p>
 
@@ -44,7 +44,7 @@
 </summary>
 
 <seealso><a href="programs/configure.html">Configure the source tree</a></seealso>
-<seealso><a href="invoking.html">Starting Apache</a></seealso>
+<seealso><a href="invoking.html">Starting Apache httpd</a></seealso>
 <seealso><a href="stopping.html">Stopping and Restarting</a></seealso>
 
 <section id="overview"><title>Overview for the
@@ -113,12 +113,12 @@
 
 <section id="requirements"><title>Requirements</title>
 
-    <p>The following requirements exist for building Apache:</p>
+    <p>The following requirements exist for building Apache httpd:</p>
 
     <dl>
       <dt>Disk Space</dt>
       <dd>Make sure you have at least 50 MB of temporary free disk
-      space available. After installation Apache occupies
+      space available. After installation the server occupies
       approximately 10 MB of disk space. The actual disk space
       requirements will vary considerably based on your chosen
       configuration options and any third-party modules.</dd>

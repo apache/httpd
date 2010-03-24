@@ -27,8 +27,8 @@
 
     <p>In order to effectively manage a web server, it is necessary
     to get feedback about the activity and performance of the
-    server as well as any problems that may be occurring. The Apache
-    HTTP Server provides very comprehensive and flexible logging
+    server as well as any problems that may be occurring. The Apache HTTP Server 
+    provides very comprehensive and flexible logging
     capabilities. This document describes how to configure its
     logging capabilities, and how to understand what the logs
     contain.</p>
@@ -46,7 +46,7 @@
 <h2><a name="security" id="security">Security Warning</a></h2>
     
 
-    <p>Anyone who can write to the directory where Apache is
+    <p>Anyone who can write to the directory where Apache httpd is
     writing a log file can almost certainly gain access to the uid
     that the server is started as, which is normally root. Do
     <em>NOT</em> give people write access to the directory the logs
@@ -421,7 +421,7 @@
     log file typically grows 1 MB or more per 10,000 requests. It
     will consequently be necessary to periodically rotate the log
     files by moving or deleting the existing logs. This cannot be
-    done while the server is running, because Apache will continue
+    done while the server is running, because Apache httpd will continue
     writing to the old log file as long as it holds the file open.
     Instead, the server must be <a href="stopping.html">restarted</a> after the log files are
     moved or deleted so that it will open new log files.</p>
@@ -458,7 +458,7 @@
     In order to write logs to a pipe, simply replace the filename
     with the pipe character "<code>|</code>", followed by the name
     of the executable which should accept log entries on its
-    standard input. Apache will start the piped-log process when
+    standard input. The server will start the piped-log process when
     the server starts, and will restart it if it crashes while the
     server is running. (This last feature is why we can refer to
     this technique as "reliable piped logging".)</p>
