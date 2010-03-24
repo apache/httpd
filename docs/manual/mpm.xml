@@ -36,13 +36,13 @@ how they are used by the Apache HTTP Server.</p>
     platforms in a range of different environments. Different
     platforms and different environments often require different
     features, or may have different ways of implementing the same
-    feature most efficiently. Apache has always accommodated a wide
+    feature most efficiently. Apache httpd has always accommodated a wide
     variety of environments through its modular design. This design
     allows the webmaster to choose which features will be included
     in the server by selecting which modules to load either at
     compile-time or at run-time.</p>
 
-    <p>Apache 2.0 extends this modular design to the most basic
+    <p>Apache HTTP Server 2.0 extends this modular design to the most basic
     functions of a web server. The server ships with a selection of
     Multi-Processing Modules (MPMs) which are responsible for
     binding to network ports on the machine, accepting requests,
@@ -52,12 +52,12 @@ how they are used by the Apache HTTP Server.</p>
     allows two important benefits:</p>
 
     <ul>
-      <li>Apache can more cleanly and efficiently support a wide
+      <li>Apache httpd can more cleanly and efficiently support a wide
       variety of operating systems. In particular, the Windows
-      version of Apache is now much more efficient, since
+      version of the server is now much more efficient, since
       <module>mpm_winnt</module> can use native
       networking features in place of the POSIX layer used in
-      Apache 1.3. This benefit also extends to other operating
+      Apache httpd 1.3. This benefit also extends to other operating
       systems that implement specialized MPMs.</li>
 
       <li>The server can be better customized for the needs of the
@@ -68,7 +68,7 @@ how they are used by the Apache HTTP Server.</p>
       <module>prefork</module>.</li>
     </ul>
 
-    <p>At the user level, MPMs appear much like other Apache
+    <p>At the user level, MPMs appear much like other Apache httpd
     modules. The main difference is that one and only one MPM must
     be loaded into the server at any time. The list of available
     MPMs appears on the <a href="mod/">module index page</a>.</p>
