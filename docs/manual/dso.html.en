@@ -57,7 +57,7 @@
     itself. Practically all other distributed Apache httpd modules can then
     be placed into a DSO by individually enabling the DSO build for
     them via <code class="program"><a href="./programs/configure.html">configure</a></code>'s
-    <code>--enable-<em>module</em>=shared</code> option as discussed
+    <code>--enable-mods-shared</code> option as discussed
     in the <a href="install.html">install documentation</a>. After a
     module is compiled into a DSO named <code>mod_foo.so</code> you
     can use <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>'s <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> command in your
@@ -65,7 +65,7 @@
     or restart.</p>
 
     <p>To simplify this creation of DSO files for Apache httpd modules
-    (especially for third-party modules) a new support program
+    (especially for third-party modules) a support program
     named <code class="program"><a href="./programs/apxs.html">apxs</a></code> (<dfn>APache
     eXtenSion</dfn>) is available. It can be used to build DSO based
     modules <em>outside of</em> the Apache httpd source tree. The idea is
@@ -87,38 +87,40 @@
 
     <ol>
       <li>
-        Build and install a <em>distributed</em> Apache httpd module, say
+        <p>Build and install a <em>distributed</em> Apache httpd module, say
         <code>mod_foo.c</code>, into its own DSO
-        <code>mod_foo.so</code>: 
+        <code>mod_foo.so</code>:</p>
 
 <div class="example"><p><code>
-$ ./configure --prefix=/path/to/install --enable-foo=shared<br />
+$ ./configure --prefix=/path/to/install --enable-foo --enable-mods-shared=foo<br />
 $ make install
 </code></p></div>
       </li>
 
       <li>
-        Build and install a <em>third-party</em> Apache httpd module, say
-        <code>mod_foo.c</code>, into its own DSO
-        <code>mod_foo.so</code>: 
-
-<div class="example"><p><code>
-$ ./configure --add-module=<var>module_type</var>:/path/to/3rdparty/mod_foo.c \<br />
-<span class="indent">
-  --enable-foo=shared<br />
-</span>
-$ make install
-</code></p></div>
-      </li>
-
-      <li>
-        Configure Apache HTTP Server for <em>later installation</em> of shared
-        modules: 
+        <p>Configure Apache HTTP Server for <em>later installation</em> of shared
+        modules:</p>
 
 <div class="example"><p><code>
 $ ./configure --enable-so<br />
 $ make install
 </code></p></div>
+      </li>
+
+      <li>
+      <p>Configure Apache HTTP Server with all modules enabled, and loaded
+      as shared objects. You can then remove individual ones by
+      commenting out the <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> directives in
+      <code>httpd.conf</code>.</p>
+
+<div class="example"><p><code>
+$ ./configure --enable-modules=most --enable-mods-shared=all<br />
+$ make install
+</code></p></div>
+   
+        <p>The <code>most</code> argument to
+        <code>--enable-modules</code> indicates that all modules
+        which are not experimental or example modules will be built.</p>
       </li>
 
       <li>
@@ -129,8 +131,7 @@ $ make install
 
 <div class="example"><p><code>
 $ cd /path/to/3rdparty<br />
-$ apxs -c mod_foo.c<br />
-$ apxs -i -a -n foo mod_foo.la
+$ apxs -cia mod_foo.c
 </code></p></div>
       </li>
     </ol>
@@ -139,6 +140,8 @@ $ apxs -i -a -n foo mod_foo.la
     use a <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
     directive in <code>httpd.conf</code> to tell Apache httpd to activate
     the module.</p>
+
+    <p>See the <a href="programs/apxs.html">apxs documentation</a> for more details.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="background" id="background">Background</a></h2>
@@ -231,16 +234,6 @@ $ apxs -i -a -n foo mod_foo.la
     provides. On the other hand using shared objects for extending
     a program is not used by a lot of programs.</p>
 
-    <p>As of 1998 there were only a few software packages available
-    which use the DSO mechanism to extend their
-    functionality at run-time: Perl 5 (via its XS mechanism and the
-    DynaLoader module), Netscape Server, <em>etc.</em> Starting
-    with version 1.3, Apache HTTP Server joined the crew, because Apache httpd
-    already uses a module concept to extend its functionality and
-    internally uses a dispatch-list-based approach to link external
-    modules into the Apache httpd core functionality. So, Apache httpd is
-    really predestined for using DSO to load its modules at
-    run-time.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="advantages" id="advantages">Advantages and Disadvantages</a></h2>
@@ -263,7 +256,7 @@ $ apxs -i -a -n foo mod_foo.la
       third-party modules even after installation. This is at least
       a great benefit for vendor package maintainers who can create
       a Apache httpd core package and additional packages containing
-      extensions like PHP3, mod_perl, mod_fastcgi,
+      extensions like PHP, mod_perl, mod_security,
       <em>etc.</em></li>
 
       <li>Easier Apache httpd module prototyping because with the
