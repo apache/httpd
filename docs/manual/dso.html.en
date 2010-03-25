@@ -50,11 +50,11 @@
 
 <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
-    <p>The DSO support for loading individual Apache modules is based
+    <p>The DSO support for loading individual Apache httpd modules is based
     on a module named <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> which must be statically
-    compiled into the Apache core. It is the only module besides
+    compiled into the Apache httpd core. It is the only module besides
     <code class="module"><a href="./mod/core.html">core</a></code> which cannot be put into a DSO
-    itself. Practically all other distributed Apache modules can then
+    itself. Practically all other distributed Apache httpd modules can then
     be placed into a DSO by individually enabling the DSO build for
     them via <code class="program"><a href="./programs/configure.html">configure</a></code>'s
     <code>--enable-<em>module</em>=shared</code> option as discussed
@@ -64,17 +64,17 @@
     <code>httpd.conf</code> file to load this module at server startup
     or restart.</p>
 
-    <p>To simplify this creation of DSO files for Apache modules
+    <p>To simplify this creation of DSO files for Apache httpd modules
     (especially for third-party modules) a new support program
     named <code class="program"><a href="./programs/apxs.html">apxs</a></code> (<dfn>APache
     eXtenSion</dfn>) is available. It can be used to build DSO based
-    modules <em>outside of</em> the Apache source tree. The idea is
-    simple: When installing Apache the <code class="program"><a href="./programs/configure.html">configure</a></code>'s
-    <code>make install</code> procedure installs the Apache C
+    modules <em>outside of</em> the Apache httpd source tree. The idea is
+    simple: When installing Apache HTTP Server the <code class="program"><a href="./programs/configure.html">configure</a></code>'s
+    <code>make install</code> procedure installs the Apache httpd C
     header files and puts the platform-dependent compiler and
     linker flags for building DSO files into the <code class="program"><a href="./programs/apxs.html">apxs</a></code>
     program. This way the user can use <code class="program"><a href="./programs/apxs.html">apxs</a></code> to compile
-    his Apache module sources without the Apache distribution
+    his Apache httpd module sources without the Apache httpd distribution
     source tree and without having to fiddle with the
     platform-dependent compiler and linker flags for DSO
     support.</p>
@@ -82,12 +82,12 @@
 <div class="section">
 <h2><a name="usage" id="usage">Usage Summary</a></h2>
 
-    <p>To give you an overview of the DSO features of Apache 2.x,
+    <p>To give you an overview of the DSO features of Apache HTTP Server 2.x,
     here is a short and concise summary:</p>
 
     <ol>
       <li>
-        Build and install a <em>distributed</em> Apache module, say
+        Build and install a <em>distributed</em> Apache httpd module, say
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code>: 
 
@@ -98,7 +98,7 @@ $ make install
       </li>
 
       <li>
-        Build and install a <em>third-party</em> Apache module, say
+        Build and install a <em>third-party</em> Apache httpd module, say
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code>: 
 
@@ -112,7 +112,7 @@ $ make install
       </li>
 
       <li>
-        Configure Apache for <em>later installation</em> of shared
+        Configure Apache HTTP Server for <em>later installation</em> of shared
         modules: 
 
 <div class="example"><p><code>
@@ -122,9 +122,9 @@ $ make install
       </li>
 
       <li>
-        Build and install a <em>third-party</em> Apache module, say
+        Build and install a <em>third-party</em> Apache httpd module, say
         <code>mod_foo.c</code>, into its own DSO
-        <code>mod_foo.so</code> <em>outside of</em> the Apache
+        <code>mod_foo.so</code> <em>outside of</em> the Apache httpd
         source tree using <code class="program"><a href="./programs/apxs.html">apxs</a></code>: 
 
 <div class="example"><p><code>
@@ -137,7 +137,7 @@ $ apxs -i -a -n foo mod_foo.la
 
     <p>In all cases, once the shared module is compiled, you must
     use a <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
-    directive in <code>httpd.conf</code> to tell Apache to activate
+    directive in <code>httpd.conf</code> to tell Apache httpd to activate
     the module.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -231,14 +231,14 @@ $ apxs -i -a -n foo mod_foo.la
     provides. On the other hand using shared objects for extending
     a program is not used by a lot of programs.</p>
 
-    <p>As of 1998 there are only a few software packages available
-    which use the DSO mechanism to actually extend their
+    <p>As of 1998 there were only a few software packages available
+    which use the DSO mechanism to extend their
     functionality at run-time: Perl 5 (via its XS mechanism and the
     DynaLoader module), Netscape Server, <em>etc.</em> Starting
-    with version 1.3, Apache joined the crew, because Apache
+    with version 1.3, Apache HTTP Server joined the crew, because Apache httpd
     already uses a module concept to extend its functionality and
     internally uses a dispatch-list-based approach to link external
-    modules into the Apache core functionality. So, Apache is
+    modules into the Apache httpd core functionality. So, Apache httpd is
     really predestined for using DSO to load its modules at
     run-time.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -256,22 +256,22 @@ $ apxs -i -a -n foo mod_foo.la
       <code class="program"><a href="./programs/configure.html">configure</a></code> options at build-time. For instance
       this way one is able to run different server instances
       (standard &amp; SSL version, minimalistic &amp; powered up
-      version [mod_perl, PHP3], <em>etc.</em>) with only one Apache
+      version [mod_perl, PHP3], <em>etc.</em>) with only one Apache httpd
       installation.</li>
 
       <li>The server package can be easily extended with
       third-party modules even after installation. This is at least
       a great benefit for vendor package maintainers who can create
-      a Apache core package and additional packages containing
+      a Apache httpd core package and additional packages containing
       extensions like PHP3, mod_perl, mod_fastcgi,
       <em>etc.</em></li>
 
-      <li>Easier Apache module prototyping because with the
+      <li>Easier Apache httpd module prototyping because with the
       DSO/<code class="program"><a href="./programs/apxs.html">apxs</a></code> pair you can both work outside the
-      Apache source tree and only need an <code>apxs -i</code>
+      Apache httpd source tree and only need an <code>apxs -i</code>
       command followed by an <code>apachectl restart</code> to
       bring a new version of your currently developed module into
-      the running Apache server.</li>
+      the running Apache HTTP Server.</li>
     </ul>
 
     <p>DSO has the following disadvantages:</p>
@@ -297,12 +297,12 @@ $ apxs -i -a -n foo mod_foo.la
       this functionality while ELF-based platforms do) you cannot
       use the DSO mechanism for all types of modules. Or in other
       words, modules compiled as DSO files are restricted to only
-      use symbols from the Apache core, from the C library
+      use symbols from the Apache httpd core, from the C library
       (<code>libc</code>) and all other dynamic or static libraries
-      used by the Apache core, or from static library archives
+      used by the Apache httpd core, or from static library archives
       (<code>libfoo.a</code>) containing position independent code.
       The only chances to use other code is to either make sure the
-      Apache core itself already contains a reference to it or
+      httpd core itself already contains a reference to it or
       loading the code yourself via <code>dlopen()</code>.</li>
     </ul>
 
