@@ -234,7 +234,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     to a dash.  You can also choose to compile modules as <a
     href="dso.html">shared objects (DSOs)</a> -- which can be loaded
     or unloaded at runtime -- by using the option
-    <code>--enable-mods-shared</code>.  Similarly, you can
+    <code>--enable-<var>module</var>=shared</code>.  Similarly, you can
     disable Base modules with the
     <code>--disable-<var>module</var></code> option.  Be careful when
     using these options, since <program>configure</program> cannot warn you
@@ -259,9 +259,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 <example>
       $ CC="pgcc" CFLAGS="-O2" \<br />
        ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-rewrite \<br />
-       --enable-speling \<br />
-       --enable-mods-shared="rewrite speling"
+       --enable-rewrite=shared \<br />
+       --enable-speling=shared
 </example>
 
     <p>When <program>configure</program> is run it will take several minutes to
