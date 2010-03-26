@@ -213,6 +213,30 @@ SetHandler server-status<br />
 </code></p></div>
 
 
+<h3><a name="overlapping-webspace" id="overlapping-webspace">Overlapping Webspace</a></h3>
+In order to have two overlapping URLs one has to consider the order in which
+certain sections or directives are evaluated. For
+<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> this would be:
+<div class="example"><p><code>
+&lt;Location /foo&gt;<br />
+&lt;/Location&gt;<br />
+&lt;Location /foo/bar&gt;<br />
+&lt;/Location&gt;
+</code></p></div>
+<code class="directive"><a href="./mod/core.html#alias">&lt;Alias&gt;</a></code>es on the other hand,
+are mapped vice-versa:
+<div class="example"><p><code>
+Alias /foo/bar /srv/www/uncommon/bar<br />
+Alias /foo /srv/www/common/foo<br />
+</code></p></div>
+Same goes for the <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+directives:
+<div class="example"><p><code>
+ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+</code></p></div>
+ 
+
 <h3><a name="wildcards" id="wildcards">Wildcards and Regular Expressions</a></h3>
 
 <p>The <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>,
