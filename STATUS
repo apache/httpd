@@ -141,6 +141,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=926000&view=rev
     2.2.x patch: http://people.apache.org/~wrowe/ssl-fips-2.2.patch
     +1: wrowe
+    minfrin: Doesn't build on v2.2 until you add r926614. With r926614, +1.
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
