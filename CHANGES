@@ -28,6 +28,9 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) htcacheclean: Report additional statistics about entries deleted.
+     PR 48944. [Mark Drayton mark markdrayton.info]
+
   *) Introduce SSLFIPS directive to support OpenSSL FIPS_mode; permits all
      builds of mod_ssl to use 'SSLFIPS off' for portability, but the proper
      build of openssl is required for 'SSLFIPS on'.  PR 46270.

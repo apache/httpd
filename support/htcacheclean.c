@@ -109,6 +109,19 @@ static APR_RING_ENTRY(_entry) root; /* ENTRY ring anchor */
 /* short program name as called */
 static const char *shortname = "htcacheclean";
 
+/* what did we clean? */
+struct stats {
+    apr_off_t total;
+    apr_off_t sum;
+    apr_off_t max;
+    apr_off_t etotal;
+    apr_off_t entries;
+    apr_off_t dfuture;
+    apr_off_t dexpired;
+    apr_off_t dfresh;
+};
+
+
 #ifdef DEBUG
 /*
  * fake delete for debug purposes
@@ -154,8 +167,7 @@ static int oom(int unused)
 /*
  * print purge statistics
  */
-static void printstats(apr_off_t total, apr_off_t sum, apr_off_t max,
-                       apr_off_t etotal, apr_off_t entries)
+static void printstats(char *path, struct stats *s)
 {
     char ttype, stype, mtype, utype;
     apr_off_t tfrag, sfrag, ufrag;
@@ -165,31 +177,31 @@ static void printstats(apr_off_t total, apr_off_t sum, apr_off_t max,
     }
 
     ttype = 'K';
-    tfrag = ((total * 10) / KBYTE) % 10;
-    total /= KBYTE;
-    if (total >= KBYTE) {
+    tfrag = ((s->total * 10) / KBYTE) % 10;
+    s->total /= KBYTE;
+    if (s->total >= KBYTE) {
         ttype = 'M';
-        tfrag = ((total * 10) / KBYTE) % 10;
-        total /= KBYTE;
+        tfrag = ((s->total * 10) / KBYTE) % 10;
+        s->total /= KBYTE;
     }
 
     stype = 'K';
-    sfrag = ((sum * 10) / KBYTE) % 10;
-    sum /= KBYTE;
-    if (sum >= KBYTE) {
+    sfrag = ((s->sum * 10) / KBYTE) % 10;
+    s->sum /= KBYTE;
+    if (s->sum >= KBYTE) {
         stype = 'M';
-        sfrag = ((sum * 10) / KBYTE) % 10;
-        sum /= KBYTE;
+        sfrag = ((s->sum * 10) / KBYTE) % 10;
+        s->sum /= KBYTE;
     }
 
     mtype = 'K';
-    max /= KBYTE;
-    if (max >= KBYTE) {
+    s->max /= KBYTE;
+    if (s->max >= KBYTE) {
         mtype = 'M';
-        max /= KBYTE;
+        s->max /= KBYTE;
     }
 
-    apr_file_printf(errfile, "Statistics:" APR_EOL_STR);
+    apr_file_printf(errfile, "Cleaned %s. Statistics:" APR_EOL_STR, path);
     if (unsolicited) {
         utype = 'K';
         ufrag = ((unsolicited * 10) / KBYTE) % 10;
@@ -206,13 +218,18 @@ static void printstats(apr_off_t total, apr_off_t sum, apr_off_t max,
                         (int)(unsolicited), (int)(ufrag), utype);
      }
      apr_file_printf(errfile, "size limit %d.0%c" APR_EOL_STR,
-                     (int)(max), mtype);
+                     (int)(s->max), mtype);
      apr_file_printf(errfile, "total size was %d.%d%c, total size now "
                               "%d.%d%c" APR_EOL_STR,
-                     (int)(total), (int)(tfrag), ttype, (int)(sum),
-                     (int)(sfrag), stype);
+                     (int)(s->total), (int)(tfrag), ttype,
+                     (int)(s->sum), (int)(sfrag), stype);
      apr_file_printf(errfile, "total entries was %d, total entries now %d"
-                              APR_EOL_STR, (int)(etotal), (int)(entries));
+                              APR_EOL_STR, (int)(s->etotal),
+                              (int)(s->entries));
+     apr_file_printf(errfile, "%d entries deleted (%d from future, %d "
+                              "expired, %d fresh)" APR_EOL_STR,
+                     (int)(s->etotal - s->entries), (int)(s->dfuture),
+                     (int)(s->dexpired), (int)(s->dfresh));
 }
 
 /*
@@ -596,25 +613,29 @@ static int process_dir(char *path, apr_pool_t *pool)
  */
 static void purge(char *path, apr_pool_t *pool, apr_off_t max)
 {
-    apr_off_t sum, total, entries, etotal;
     ENTRY *e, *n, *oldest;
 
-    sum = 0;
-    entries = 0;
+    struct stats s;
+    s.sum = 0;
+    s.entries = 0;
+    s.dfuture = 0;
+    s.dexpired = 0;
+    s.dfresh = 0;
+    s.max = max;
 
     for (e = APR_RING_FIRST(&root);
          e != APR_RING_SENTINEL(&root, _entry, link);
          e = APR_RING_NEXT(e, link)) {
-        sum += e->hsize;
-        sum += e->dsize;
-        entries++;
+        s.sum += e->hsize;
+        s.sum += e->dsize;
+        s.entries++;
     }
 
-    total = sum;
-    etotal = entries;
+    s.total = s.sum;
+    s.etotal = s.entries;
 
-    if (sum <= max) {
-        printstats(total, sum, max, etotal, entries);
+    if (s.sum <= s.max) {
+        printstats(path, &s);
         return;
     }
 
@@ -627,13 +648,14 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
         n = APR_RING_NEXT(e, link);
         if (e->response_time > now || e->htime > now || e->dtime > now) {
             delete_entry(path, e->basename, pool);
-            sum -= e->hsize;
-            sum -= e->dsize;
-            entries--;
+            s.sum -= e->hsize;
+            s.sum -= e->dsize;
+            s.entries--;
+            s.dfuture++;
             APR_RING_REMOVE(e, link);
-            if (sum <= max) {
+            if (s.sum <= s.max) {
                 if (!interrupted) {
-                    printstats(total, sum, max, etotal, entries);
+                    printstats(path, &s);
                 }
                 return;
             }
@@ -651,13 +673,14 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
         n = APR_RING_NEXT(e, link);
         if (e->expire != APR_DATE_BAD && e->expire < now) {
             delete_entry(path, e->basename, pool);
-            sum -= e->hsize;
-            sum -= e->dsize;
-            entries--;
+            s.sum -= e->hsize;
+            s.sum -= e->dsize;
+            s.entries--;
+            s.dexpired++;
             APR_RING_REMOVE(e, link);
-            if (sum <= max) {
+            if (s.sum <= s.max) {
                 if (!interrupted) {
-                    printstats(total, sum, max, etotal, entries);
+                    printstats(path, &s);
                 }
                 return;
             }
@@ -674,7 +697,8 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
      * corrupt 64bit arithmetics which happend to me once, so better safe
      * than sorry
      */
-    while (sum > max && !interrupted && !APR_RING_EMPTY(&root, _entry, link)) {
+    while (s.sum > s.max && !interrupted
+           && !APR_RING_EMPTY(&root, _entry, link)) {
         oldest = APR_RING_FIRST(&root);
 
         for (e = APR_RING_NEXT(oldest, link);
@@ -686,14 +710,15 @@ static void purge(char *path, apr_pool_t *pool, apr_off_t max)
         }
 
         delete_entry(path, oldest->basename, pool);
-        sum -= oldest->hsize;
-        sum -= oldest->dsize;
-        entries--;
+        s.sum -= oldest->hsize;
+        s.sum -= oldest->dsize;
+        s.entries--;
+        s.dfresh++;
         APR_RING_REMOVE(oldest, link);
     }
 
     if (!interrupted) {
-        printstats(total, sum, max, etotal, entries);
+        printstats(path, &s);
     }
 }
 
