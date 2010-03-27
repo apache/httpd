@@ -137,7 +137,7 @@ static int session_cookie_load(request_rec * r, session_rec ** z)
     }
 
     /* first look in the notes */
-    note = apr_pstrcat(r->pool, MOD_SESSION_COOKIE, name, NULL);
+    note = apr_pstrcat(m->pool, MOD_SESSION_COOKIE, name, NULL);
     zz = (session_rec *)apr_table_get(m->notes, note);
     if (zz) {
         *z = zz;
@@ -148,11 +148,11 @@ static int session_cookie_load(request_rec * r, session_rec ** z)
     ap_cookie_read(r, name, &val, conf->remove);
 
     /* create a new session and return it */
-    zz = (session_rec *) apr_pcalloc(r->pool, sizeof(session_rec));
-    zz->pool = r->pool;
-    zz->entries = apr_table_make(r->pool, 10);
+    zz = (session_rec *) apr_pcalloc(m->pool, sizeof(session_rec));
+    zz->pool = m->pool;
+    zz->entries = apr_table_make(m->pool, 10);
     zz->encoded = val;
-    zz->uuid = (apr_uuid_t *) apr_pcalloc(r->pool, sizeof(apr_uuid_t));
+    zz->uuid = (apr_uuid_t *) apr_pcalloc(m->pool, sizeof(apr_uuid_t));
     *z = zz;
 
     /* put the session in the notes so we don't have to parse it again */
