@@ -27,6 +27,10 @@
 #include <stdio.h>              /* for sprintf() */
 #endif
 
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>             /* for getpid() */
+#endif
+
 #include "httpd.h"
 #include "http_log.h"
 #include "http_protocol.h"      /* for ap_set_* (in dav_fs_set_headers) */
@@ -143,7 +147,7 @@ enum {
 /*
  * prefix for temporary files
  */
-#define DAV_FS_TMP_PREFIX ".davfs." 
+#define DAV_FS_TMP_PREFIX ".davfs.tmp" 
 
 static const dav_liveprop_spec dav_fs_props[] =
 {
@@ -884,6 +888,26 @@ static apr_status_t tmpfile_cleanup(void *data) {
         return APR_SUCCESS;
 }
 
+/* custom mktemp that creates the file with APR_OS_DEFAULT permissions */
+static apr_status_t dav_fs_mktemp(apr_file_t **fp, char *templ, apr_pool_t *p)
+{
+    apr_status_t rv;
+    int num = ((getpid() << 7) + (int)templ % (1 << 16) ) % ( 1 << 23 ) ;
+    char *numstr = templ + strlen(templ) - 6;
+
+    ap_assert(numstr >= templ);
+
+    do {
+        num = (num + 1) % ( 1 << 23 );
+        snprintf(numstr, 7, "%06x", num);
+        rv = apr_file_open(fp, templ,
+                           APR_WRITE | APR_CREATE | APR_BINARY | APR_EXCL,
+                           APR_OS_DEFAULT, p);
+    } while (APR_STATUS_IS_EEXIST(rv));
+        
+    return rv;
+}
+
 static dav_error * dav_fs_open_stream(const dav_resource *resource,
                                       dav_stream_mode mode,
                                       dav_stream **stream)
@@ -914,7 +938,7 @@ static dav_error * dav_fs_open_stream(const dav_resource *resource,
     if (mode == DAV_MODE_WRITE_TRUNC) {
         ds->temppath = apr_pstrcat(p, ap_make_dirstr_parent(p, ds->pathname),
                                    DAV_FS_TMP_PREFIX "XXXXXX", NULL);
-        rv = apr_file_mktemp(&ds->f, ds->temppath, flags, ds->p);
+        rv = dav_fs_mktemp(&ds->f, ds->temppath, ds->p);
         apr_pool_cleanup_register(p, ds, tmpfile_cleanup,
                                   apr_pool_cleanup_null);
     }
