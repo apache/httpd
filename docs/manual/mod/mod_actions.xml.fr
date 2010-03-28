@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 918997 -->
+<!-- English Revision : 926439 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -47,7 +47,7 @@ type de m&eacute;dia ou de la m&eacute;thode de requ&ecirc;te.</description>
 <seealso><module>mod_cgi</module></seealso>
 <seealso><a href="../howto/cgi.html">Contenu dynamique avec CGI</a></seealso>
 <seealso><a href="../handler.html">Utilisation des gestionnaires
-d'Apache</a></seealso>
+d'Apache httpd</a></seealso>
 
 <directivesynopsis>
 <name>Action</name>

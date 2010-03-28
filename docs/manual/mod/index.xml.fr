@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 420990 -->
+<!-- English Revision : 926432 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -27,8 +27,8 @@
   <summary>
     <p>
       Ci-dessous se trouve la liste de tous les modules qui font partie de
-      la distribution Apache.  Voir aussi la liste alphab&eacute;tique compl&egrave;te
-      de <a href="directives.html">toutes les directives Apache</a>.
+      la distribution du serveur HTTP Apache.  Voir aussi la liste alphab&eacute;tique compl&egrave;te
+      de <a href="directives.html">toutes les directives du serveur HTTP Apache</a>.
     </p>
   </summary>
   <seealso><a href="../mpm.html">Modules multi-processus (MPMs)</a>

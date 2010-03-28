@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 924467:927376 (outdated) -->
+<!-- English Revision: 927376 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -28,10 +28,11 @@
 
 <summary>
 
-    <p>Ce document couvre l'installation et la compilation d'Apache
+    <p>Ce document couvre l'installation et la compilation du serveur
+    HTTP Apache
     sur les syst&egrave;mes Unix et similaires seulement. Pour la compilation et
     l'installation sous Windows, voir <a
-    href="platform/windows.html">Utiliser Apache avec Microsoft
+    href="platform/windows.html">Utiliser le serveur HTTP Apache avec Microsoft
     Windows</a>. Pour les autres plateformes, se r&eacute;f&eacute;rer &agrave; la documentation par
      <a href="platform/">plateforme</a>.</p>
 
@@ -47,7 +48,7 @@
 
 <seealso><a href="programs/configure.html">Configuration de l'arborescence
 	des sources</a></seealso>
-<seealso><a href="invoking.html">D&eacute;marrer Apache</a></seealso>
+<seealso><a href="invoking.html">D&eacute;marrer Apache httpd</a></seealso>
 <seealso><a href="stopping.html">Arr&ecirc;t et red&eacute;marrage</a></seealso>
 
 <section id="overview"><title>Aper&ccedil;u pour les plus press&eacute;s</title>
@@ -116,12 +117,12 @@
 
 <section id="requirements"><title>Pr&eacute;requis</title>
 
-    <p>Les pr&eacute;requis pour la construction d'Apache sont les suivants:</p>
+    <p>Les pr&eacute;requis pour la construction d'Apache httpd sont les suivants:</p>
 
     <dl>
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 50 MB d'espace disque disponible
-      temporaire. Apr&egrave;s l'installation Apache occupe
+      temporaire. Apr&egrave;s l'installation le serveur occupe
       approximativement 10 MB d'espace disque. L'espace disque r&eacute;ellement
       n&eacute;cessaire va varier consid&eacute;rablement en fonction de vos options
       de configuration et de la pr&eacute;sence &eacute;ventuelle de modules tiers.</dd>
