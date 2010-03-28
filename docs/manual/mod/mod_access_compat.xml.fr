@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 825898 -->
+<!-- English Revision : 926436 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -30,8 +30,9 @@ adresse IP)</description>
 <status>Extension</status>
 <sourcefile>mod_access_compat.c</sourcefile>
 <identifier>access_compat_module</identifier>
-<compatibility>Disponible dans Apache 2.3 &agrave; des fins de compatibilit&eacute;
-avec les pr&eacute;c&eacute;dentes versions d'Apache 2.x. Les directives fournies par
+<compatibility>Disponible dans la version 2.3 du serveur HTTP Apache
+&agrave; des fins de compatibilit&eacute;
+avec les pr&eacute;c&eacute;dentes versions d'Apache httpd 2.x. Les directives fournies par
 ce module sont devenues obsol&egrave;tes depuis la refonte d'authz. Voir
 <module>mod_authz_host</module></compatibility>
 
@@ -125,7 +126,7 @@ d'environnement</var>
       composantes enti&egrave;res du nom d'h&ocirc;te doivent correspondre ; ainsi,
       dans l'exemple ci-dessus, <code>foo.apache.org</code>
       correspondra, mais <code>fooapache.org</code> ne conviendra pas.
-      Avec cette configuration, Apache va effectuer une double recherche
+      Avec cette configuration, Apache httpd va effectuer une double recherche
       DNS sur l'adresse IP du client, sans tenir compte de la
       d&eacute;finition de la directive <directive
       module="core">HostnameLookups</directive>. Tout d'abord, une

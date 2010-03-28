@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 735922:926398 (outdated) -->
+<!-- English Revision: 927824 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -145,17 +145,18 @@ fichiers ou de l'arborescence du site web.  Tout d'abord, il est important de
 comprendre la diff&eacute;rence entre les deux.  Le syst&egrave;me de fichiers est une vue
 de vos disques tels qu'ils sont per&ccedil;us par votre syst&egrave;me d'exploitation.
 Par exemple, avec une installation par d&eacute;faut,
-Apache est situ&eacute; dans <code>/usr/local/apache2</code> pour le syst&egrave;me de
+Apache httpd est situ&eacute; dans <code>/usr/local/apache2</code> pour le syst&egrave;me de
 fichiers UNIX, ou <code>"c:/Program Files/Apache Group/Apache2"</code> pour
 le syst&egrave;me de fichiers Windows.  (Notez que des slashes directs doivent
-toujours &ecirc;tre utilis&eacute;s comme s&eacute;parateur de chemin dans Apache, m&ecirc;me sous
+toujours &ecirc;tre utilis&eacute;s comme s&eacute;parateur de chemin
+dans les fichiers de configuration d'Apache httpd, m&ecirc;me sous
 Windows.)  Quant &agrave;
 l'arborescence du site web, il s'agit d'une vue de votre site
 tel que pr&eacute;sent&eacute; par le
 serveur web et per&ccedil;ue par le client.  Ainsi le chemin <code>/dir/</code> dans
 l'arborescence du site web correspond au chemin
 <code>/usr/local/apache2/htdocs/dir/</code> dans le syst&egrave;me de fichiers pour
-une installation d'Apache par d&eacute;faut sous UNIX.
+une installation d'Apache httpd par d&eacute;faut sous UNIX.
 En outre, l'arborescence du site web n'a pas besoin de correspondre en permanence au
 syst&egrave;me de fichiers, car les pages web peuvent &ecirc;tre g&eacute;n&eacute;r&eacute;es dynamiquement
 &agrave; partir de bases de donn&eacute;es ou d'autres emplacements.</p>
@@ -241,7 +242,7 @@ Deny from all<br />
 <p>Le conteneur <directive type="section" module="core">Location</directive>
 n'a pas besoin de faire r&eacute;f&eacute;rence &agrave; un &eacute;l&eacute;ment du syst&egrave;me de fichiers.
 Par exemple, l'exemple suivant montre comment faire r&eacute;f&eacute;rence &agrave; une URL
-particuli&egrave;re vers un gestionnaire interne d'Apache fourni par le module
+particuli&egrave;re vers un gestionnaire interne du serveur HTTP Apache fourni par le module
 <module>mod_status</module>.
 Il n'est pas n&eacute;cessaire de trouver un fichier nomm&eacute; <code>server-status</code>
 dans le syst&egrave;me de fichiers.</p>
@@ -252,6 +253,32 @@ SetHandler server-status<br />
 &lt;/Location&gt;
 </example>
 </section>
+
+<section id="overlapping-webspace"><title>Espace web imbriqu&eacute;</title>
+Pour contr&ocirc;ler deux URLs imbriqu&eacute;es, on doit tenir compte de l'ordre
+dans lequel certaines sections ou directives sont &eacute;valu&eacute;es. Pour
+<directive type="section" module="core">Location</directive>, on doit
+avoir :
+<example>
+&lt;Location /foo&gt;<br />
+&lt;/Location&gt;<br />
+&lt;Location /foo/bar&gt;<br />
+&lt;/Location>
+</example>
+Les directives <directive type="section"
+module="core">Alias</directive>, quant &agrave; elles, sont &eacute;valu&eacute;es vice-versa :
+<example>
+Alias /foo/bar /srv/www/uncommon/bar<br />
+Alias /foo /srv/www/common/foo<br />
+</example>
+Ceci est aussi vrai pour les directives <directive
+module="mod_proxy">ProxyPass</directive> :
+<example>
+ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+</example>
+</section> 
+
 
 <section id="wildcards"><title>Caract&egrave;res de remplacement
 et expressions rationnelles</title>

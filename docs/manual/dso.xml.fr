@@ -54,14 +54,16 @@
 </directivelist>
 </related>
 
-    <p>Le support DSO pour le chargement de modules individuels d'Apache est
+    <p>Le support DSO pour le chargement de modules individuels d'Apache
+    httpd est
     assur&eacute; par un module nomm&eacute; <module>mod_so</module> qui doit &ecirc;tre compil&eacute;
-    statiquement dans le coeur d'Apache. Il s'agit du seul module avec le
+    statiquement dans le coeur d'Apache httpd. Il s'agit du seul module avec le
     module <module>core</module> &agrave; ne pas pouvoir &ecirc;tre compil&eacute; en tant que
-    module DSO lui-m&ecirc;me. Pratiquement tous les autres modules d'Apache
+    module DSO lui-m&ecirc;me. Pratiquement tous les autres modules
+    d'Apache httpd
     distribu&eacute;s peuvent &ecirc;tre compil&eacute;s en tant que modules DSO en s&eacute;lectionnant
     pour chacun d'entre eux le mode de construction DSO &agrave; l'aide de l'option
-    <code>--enable-<em>module</em>=shared</code> du script
+    <code>--enable-mods-shared</code> du script
     <program>configure</program>, comme d&eacute;crit dans la
     <a href="install.html">Documentation de l'installation</a>. Une fois
     compil&eacute; en tant que module DSO, un module peut &ecirc;tre charg&eacute; en m&eacute;moire au
@@ -70,19 +72,19 @@
     <module>mod_so</module>, plac&eacute;e
     dans votre fichier <code>httpd.conf</code>.</p>
 
-    <p>Un nouvel utilitaire a &eacute;t&eacute; introduit afin de simplifier la cr&eacute;ation de
-    fichiers DSO pour les modules d'Apache
+    <p>Un utilitaire permet de simplifier la cr&eacute;ation de
+    fichiers DSO pour les modules d'Apache httpd
     (particuli&egrave;rement pour les modules tiers) ; il s'agit du programme nomm&eacute;
     <program>apxs</program> (<dfn>APache
     eXtenSion</dfn>). On peut l'utiliser pour construire des modules de type
-    DSO <em>en dehors</em> de l'arborescence des sources d'Apache. L'id&eacute;e est
-    simple : &agrave; l'installation d'Apache, la proc&eacute;dure <code>make install</code>
+    DSO <em>en dehors</em> de l'arborescence des sources d'Apache httpd. L'id&eacute;e est
+    simple : &agrave; l'installation du serveur HTTP Apache, la proc&eacute;dure <code>make install</code>
     du script <program>configure</program> installe les fichiers d'en-t&ecirc;tes
-    d'Apache et positionne, pour la plateforme de compilation,  les drapeaux du compilateur et de
+    d'Apache httpd et positionne, pour la plateforme de compilation,  les drapeaux du compilateur et de
     l'&eacute;diteur de liens &agrave; l'int&eacute;rieur du programme
     <program>apxs</program>, qui sera utilis&eacute; pour la construction de fichiers DSO.
     Il est ainsi possible d'utiliser le programme <program>apxs</program>
-    pour compiler ses sources de modules Apache sans avoir besoin de
+    pour compiler ses sources de modules Apache httpd sans avoir besoin de
     l'arborescence des sources de la distribution d'Apache, et sans avoir &agrave;
     r&eacute;gler les drapeaux du compilateur et de l'&eacute;diteur de liens pour le support DSO.</p>
 </section>
@@ -90,38 +92,24 @@
 <section id="usage"><title>Mode d'emploi succinct</title>
 
     <p>Afin que vous puissiez vous faire une id&eacute;e des fonctionnalit&eacute;s DSO
-    d'Apache 2.x, en voici un r&eacute;sum&eacute; court et concis :</p>
+    du serveur HTTP Apache 2.x, en voici un r&eacute;sum&eacute; court et concis :</p>
 
     <ol>
       <li>
-        Construire et installer un module Apache <em>faisant partie de la
+        <p>Construire et installer un module Apache httpd <em>faisant partie de la
 	distribution</em>, par exemple <code>mod_foo.c</code>,
-	en tant que module DSO <code>mod_foo.so</code> :
+	en tant que module DSO <code>mod_foo.so</code> :</p>
 
 <example>
 $ ./configure --prefix=/chemin/vers/r&eacute;pertoire-installation
---enable-foo=shared<br />
+--enable-foo --enable-mods-shared=foo<br />
 $ make install
 </example>
       </li>
-
+	
       <li>
-        Construire et installer un module Apache <em>tiers</em>, par exemple
-        <code>mod_foo.c</code>, en tant que module DSO <code>mod_foo.so</code> :
-
-<example>
-$ ./configure --add-module=<var>type_de_module</var>:
-/chemin/vers/module_tiers/mod_foo.c \<br />
-<indent>
-  --enable-foo=shared<br />
-</indent>
-$ make install
-</example>
-      </li>
-
-      <li>
-        Configurer Apache pour <em>pouvoir installer ult&eacute;rieurement</em> des
-	modules partag&eacute;s :
+        <p>Configure le serveur HTTP Apache pour une <em>installation
+	ult&eacute;rieure</em> des modules partag&eacute;s :</p>
 
 <example>
 $ ./configure --enable-so<br />
@@ -130,22 +118,42 @@ $ make install
       </li>
 
       <li>
-        Construire et installer un module Apache <em>tiers</em>, par exemple
+        <p>Configure le serveur HTTP Apache avec tous les modules
+	activ&eacute;s et charg&eacute;s en tant qu'objets partag&eacute;s. Vous pouvez
+	ensuite les d&eacute;sactiver un &agrave; un en commentant la directive <directive
+      module="mod_so">LoadModule</directive> correspondante dans le
+      fichier <code>httpd.conf</code>.</p>
+
+<example>
+$ ./configure --enable-modules=most --enable-mods-shared=all<br />
+$ make install
+</example>
+   
+        <p>L'argument <code>most</code> de l'option
+	<code>--enable-modules</code> indique que tous les modules
+	non-exp&eacute;rimentaux ou qui ne sont pas l&agrave; &agrave; titre d'exemple seront
+	compil&eacute;s.</p>
+      </li>
+
+      <li>
+        Construire et installer un module Apache httpd <em>tiers</em>, par exemple
         <code>mod_foo.c</code>, en tant que module DSO
         <code>mod_foo.so</code> <em>en dehors</em> de l'arborescence des sources
-	d'Apache &agrave; l'aide du programme <program>apxs</program> :
+	d'Apache httpd &agrave; l'aide du programme <program>apxs</program> :
 
 <example>
 $ cd /chemin/vers/module_tiers<br />
-$ apxs -c mod_foo.c<br />
-$ apxs -i -a -n foo mod_foo.la
+$ apxs -cia mod_foo.c
 </example>
       </li>
     </ol>
 
     <p>Dans tous les cas, une fois le module partag&eacute; compil&eacute;, vous devez
     ajouter une directive <directive module="mod_so">LoadModule</directive>
-    dans le fichier <code>httpd.conf</code> pour qu'Apache active le module.</p>
+    dans le fichier <code>httpd.conf</code> pour qu'Apache httpd active le module.</p>
+
+    <p>Voir la <a href="programs/apxs.html">documentation sur apxs</a>
+    pour plus de d&eacute;tails.</p>
 </section>
 
 <section id="background"><title>Les dessous du fonctionnement des DSO</title>
@@ -244,16 +252,6 @@ $ apxs -i -a -n foo mod_foo.la
     syst&egrave;me d'exploitation. Par contre, les objets partag&eacute;s sont relativement
     peu utilis&eacute;s pour &eacute;tendre les fonctionnalit&eacute;s d'un programme.</p>
 
-    <p>En 1998, seule une poign&eacute;e de logiciels distribu&eacute;s
-    utilisaient le m&eacute;canisme DSO pour r&eacute;ellement &eacute;tendre leurs fonctionnalit&eacute;s
-    au moment de l'ex&eacute;cution : Perl 5 (via son m&eacute;canisme XS et le module
-    DynaLoader), le serveur Netscape, <em>etc...</em> A partir de la
-    version 1.3, Apache rejoignit ce groupe, car Apache
-    pr&eacute;sentait d&eacute;j&agrave; un concept modulaire pour &eacute;tendre ses fonctionnalit&eacute;s, et
-    utilisait en interne une approche bas&eacute;e sur une liste de distribution pour
-    relier des modules externes avec les fonctionnalit&eacute;s de base d'Apache.
-    Ainsi, Apache &eacute;tait vraiment pr&eacute;destin&eacute; &agrave; l'utilisation des DSO pour
-    charger ses modules au moment de l'ex&eacute;cution.</p>
 </section>
 
 <section id="advantages"><title>Avantages et inconv&eacute;nients</title>
@@ -269,22 +267,22 @@ $ apxs -i -a -n foo mod_foo.la
       <program>configure</program> &agrave; la compilation. Par exemple,
       on peut ainsi ex&eacute;cuter diff&eacute;rentes instances du serveur
       (standard et version SSL, version minimale et version &eacute;toff&eacute;e
-      [mod_perl, PHP], <em>etc...</em>) &agrave; partir d'une seule installation
-      d'Apache.</li>
+      [mod_perl, PHP3], <em>etc...</em>) &agrave; partir d'une seule installation
+      d'Apache httpd.</li>
 
       <li>Le paquetage du serveur peut &ecirc;tre facilement &eacute;tendu avec des modules
       tiers, m&ecirc;me apr&egrave;s l'installation. Ceci pr&eacute;sente en tout cas un gros
       avantage pour les mainteneurs de paquetages destin&eacute;s aux distributions,
-      car ils peuvent cr&eacute;er un paquetage Apache de base, et des paquetages
+      car ils peuvent cr&eacute;er un paquetage Apache httpd de base, et des paquetages
       additionnels contenant des extensions telles que PHP, mod_perl, mod_fastcgi,
       <em>etc...</em></li>
 
-      <li>Une facilit&eacute; de prototypage des modules Apache car la paire
+      <li>Une facilit&eacute; de prototypage des modules Apache httpd car la paire
       DSO/<program>apxs</program> vous permet d'une part de travailler en
-      dehors de l'arborescence des sources d'Apache, et d'autre part de n'avoir
+      dehors de l'arborescence des sources d'Apache httpd, et d'autre part de n'avoir
       besoin que de la commande <code>apxs -i</code>
       suivie d'un <code>apachectl restart</code> pour introduire une nouvelle
-      version de votre module fra&icirc;chement d&eacute;velopp&eacute; dans le serveur Apache
+      version de votre module fra&icirc;chement d&eacute;velopp&eacute; dans le serveur HTTP Apache
       en cours d'ex&eacute;cution.</li>
     </ul>
 
@@ -313,13 +311,13 @@ $ apxs -i -a -n foo mod_foo.la
       ELF le font), vous ne pouvez pas utiliser le m&eacute;canisme DSO pour tous les
       types de modules. Ou en d'autres termes, les modules compil&eacute;s comme
       fichiers DSO sont contraints de n'utiliser que les symboles du coeur
-      d'Apache, de la biblioth&egrave;que C
+      d'Apache httpd, de la biblioth&egrave;que C
       (<code>libc</code>) et toutes autres biblioth&egrave;ques statiques ou
-      dynamiques utilis&eacute;es par le coeur d'Apache, ou d'archives statiques
+      dynamiques utilis&eacute;es par le coeur d'Apache httpd, ou d'archives statiques
       (<code>libfoo.a</code>) contenant du code ind&eacute;pendant de la
       position (PIC).
       Il y a deux solutions pour utiliser un autre type de code : soit le
-      coeur d'Apache contient d&eacute;j&agrave; lui-m&ecirc;me une r&eacute;f&eacute;rence au code, soit vous
+      coeur d'Apache httpd contient d&eacute;j&agrave; lui-m&ecirc;me une r&eacute;f&eacute;rence au code, soit vous
       chargez le code vous-m&ecirc;me via <code>dlopen()</code>.</li>
     </ul>
 

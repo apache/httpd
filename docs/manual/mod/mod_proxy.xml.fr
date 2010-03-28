@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 923952 -->
+<!-- English Revision : 926430 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -39,7 +39,8 @@
       mais aussi pour l'Internet au sens large.</p>
     </note>
 
-    <p>Ce module impl&eacute;mente un mandataire/passerelle pour Apache. Il
+    <p>Ce module impl&eacute;mente un mandataire/passerelle pour le serveur
+    HTTP Apache. Il
     impl&eacute;mente la fonctionnalit&eacute; de mandataire pour <code>AJP13</code>
     (Apache JServe Protocol version 1.3), <code>FTP</code>,
     <code>CONNECT</code> (pour SSL), <code>HTTP/0.9</code>,
@@ -48,7 +49,7 @@
     g&egrave;rent ces protocoles ou d'autres.</p>
 
     <p>Les diverses fonctionnalit&eacute;s de
-    mandataire d'Apache sont r&eacute;parties entre plusieurs modules
+    mandataire d'Apache httpd sont r&eacute;parties entre plusieurs modules
     compl&eacute;mentaires de <module>mod_proxy</module> :
     <module>mod_proxy_http</module>, <module>mod_proxy_ftp</module>,
     <module>mod_proxy_ajp</module>, <module>mod_proxy_balancer</module>,
@@ -76,7 +77,7 @@
 
     <section id="forwardreverse"><title>Mandataires directs et
     mandataires/passerelles inverses</title>
-      <p>Apache peut &ecirc;tre configur&eacute; dans les deux modes mandataire
+      <p>Le serveur HTTP Apache peut &ecirc;tre configur&eacute; dans les deux modes mandataire
       <dfn>direct</dfn> et mandataire <dfn>inverse</dfn> (aussi nomm&eacute;
       mode <dfn>passerelle</dfn>).</p>
 
@@ -219,7 +220,7 @@
     </section> <!-- /startup -->
 
     <section id="intranet"><title>Mandataire en Intranet</title>
-      <p>Un serveur mandataire Apache situ&eacute; &agrave; l'int&eacute;rieur d'un Intranet
+      <p>Un serveur mandataire Apache httpd situ&eacute; &agrave; l'int&eacute;rieur d'un Intranet
       doit faire suivre les requ&ecirc;tes destin&eacute;es &agrave; un serveur externe &agrave;
       travers le pare-feu de l'entreprise (pour ce faire, d&eacute;finissez la
       directive <directive module="mod_proxy">ProxyRemote</directive> de
@@ -240,7 +241,7 @@
       implicite. Lorsque la directive <directive
       module="mod_proxy">ProxyDomain</directive> est utilis&eacute;e et si le
       serveur est <a href="#proxyrequests">configur&eacute; comme
-      mandataire</a>, Apache peut renvoyer une r&eacute;ponse de redirection et
+      mandataire</a>, Apache httpd peut renvoyer une r&eacute;ponse de redirection et
       ainsi fournir au client l'adresse de serveur correcte,
       enti&egrave;rement qualifi&eacute;e. C'est la m&eacute;thode &agrave; privil&eacute;gier car le
       fichier des marque-pages de l'utilisateur contiendra alors des
@@ -383,7 +384,7 @@ incorrectes d'une r&eacute;ponse</description>
 <default>ProxyBadHeader IsError</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0.44 d'Apache</compatibility>
+<compatibility>Disponible depuis la version 2.0.44 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>La directive <directive>ProxyBadHeader</directive> permet de
@@ -438,7 +439,7 @@ du mandataire</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0.31 d'Apache. Utilisable
+<compatibility>Disponible depuis la version 2.0.31 du serveur HTTP Apache. Utilisable
 dans un contexte de r&eacute;pertoire depuis la version 2.3.3.</compatibility>
 
 <usage>
@@ -465,7 +466,7 @@ direct</description>
 
 <usage>
     <p>Cette directive permet d'activer/d&eacute;sactiver la fonctionnalit&eacute; de
-    serveur mandataire direct d'Apache. D&eacute;finir ProxyRequests &agrave;
+    serveur mandataire direct d'Apache httpd. D&eacute;finir ProxyRequests &agrave;
     <code>Off</code> n'interdit pas l'utilisation de la directive
     <directive module="mod_proxy">ProxyPass</directive>.</p>
 
@@ -561,7 +562,7 @@ charge</description>
   >cl&eacute;=valeur [cl&eacute;=valeur ...]]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.2 d'Apache.</compatibility>
+<compatibility>Disponible depuis la version 2.2 du serveur HTTP Apache.</compatibility>
 <usage>
     <p>Cette directive parmet d'ajouter un membre &agrave; un groupe de
     r&eacute;partition de charge. Elle peut se trouver dans un conteneur
@@ -590,7 +591,7 @@ charge</description>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>ProxySet n'est disponible que depuis la version 2.2
-d'Apache.</compatibility>
+du serveur HTTP Apache.</compatibility>
 <usage>
     <p>Cette directive propose une m&eacute;thode alternative pour d&eacute;finir tout
     param&egrave;tre relatif aux r&eacute;partiteurs de charge et serveurs cibles de
@@ -703,7 +704,7 @@ l'espace d'URLs du serveur local</description>
       g&eacute;n&eacute;rale.</p>
     </note>
 
-    <p>Depuis Apache 2.1, il est possible d'utiliser un jeu de
+    <p>Depuis la version 2.1 du serveur HTTP Apache, il est possible d'utiliser un jeu de
     connexions vers un serveur d'arri&egrave;re-plan. Il est possible de
     personnaliser ce jeu de connexions &agrave; l'aide des param&egrave;tres
     <code>cl&eacute;=valeur</code>. La valeur par d&eacute;faut du nombre maximum de
@@ -717,7 +718,7 @@ l'espace d'URLs du serveur local</description>
     connexions pourront &ecirc;tre cr&eacute;&eacute;es &agrave; la demande &agrave; concurrence du
     maximum relatif, soit <code>smax</code>. Toute
     connexion au dessus de <code>smax</code> se verra attribuer une
-    dur&eacute;e de vie <code>ttl</code>. Apache ne cr&eacute;era jamais plus de
+    dur&eacute;e de vie <code>ttl</code>. Apache httpd ne cr&eacute;era jamais plus de
     connexions vers le serveur d'arri&egrave;re-plan que le maximum absolu,
     soit <code>max</code>.</p>
 
@@ -741,7 +742,7 @@ l'espace d'URLs du serveur local</description>
 	processus pour le MPM utilis&eacute;. Pour le MPM Prefork, la valeur
 	est toujours 1, alors que pour le MPM Worker, elle est contr&ocirc;l&eacute;e
 	par la directive <directive>ThreadsPerChild</directive>. Apache
-	ne cr&eacute;era jamais plus de connexions vers le serveur
+	httpd ne cr&eacute;era jamais plus de connexions vers le serveur
 	d'arri&egrave;re-plan que le maximum absolu.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
@@ -754,13 +755,13 @@ l'espace d'URLs du serveur local</description>
         <td>-</td>
         <td>Cette cl&eacute; permet de d&eacute;finir le d&eacute;lai maximum d'attente pour
 	une connexion libre dans le jeu de connexions, en millisecondes.
-	S'il n'y a pas de connexion libre dans le jeu, Apache renverra
+	S'il n'y a pas de connexion libre dans le jeu, Apache httpd renverra
 	l'&eacute;tat <code>SERVER_BUSY</code> au client.
     </td></tr>
     <tr><td>connectiontimeout</td>
         <td>timeout</td>
         <td>D&eacute;lai d'attente d'une connexion en secondes.
-        La dur&eacute;e en secondes pendant laquelle Apache va attendre pour
+        La dur&eacute;e en secondes pendant laquelle Apache httpd va attendre pour
 	l'&eacute;tablissement d'une connexion vers le serveur d'arri&egrave;re-plan.
 	Le d&eacute;lai peut &ecirc;tre sp&eacute;cifi&eacute; en millisecondes en ajoutant le
 	suffixe ms.
@@ -771,7 +772,7 @@ l'espace d'URLs du serveur local</description>
 	fermer imm&eacute;diatement une connexion vers le serveur
 	d'arri&egrave;re-plan apr&egrave;s utilisation, et ainsi d&eacute;sactiver le jeu de
 	connexions permanentes vers ce serveur. Ceci peut s'av&eacute;rer utile
-	dans des situations o&ugrave; un pare-feu situ&eacute; entre Apache et le
+	dans des situations o&ugrave; un pare-feu situ&eacute; entre Apache httpd et le
 	serveur d'arri&egrave;re-plan (quelque soit le protocole) interrompt
 	des connexions de mani&egrave;re silencieuse, ou lorsque le serveur
 	d'arri&egrave;re-plan lui-m&ecirc;me est accessible par rotation de DNS
@@ -805,7 +806,7 @@ l'espace d'URLs du serveur local</description>
     <tr><td>keepalive</td>
         <td>Off</td>
         <td>Cette cl&eacute; doit &ecirc;tre utilis&eacute;e lorsque vous avez un pare-feu
-	entre Apache et le serveur d'arri&egrave;re-plan, et si ce dernier tend
+	entre Apache httpd et le serveur d'arri&egrave;re-plan, et si ce dernier tend
 	&agrave; interrompre les connexions inactives. Cette cl&eacute; va faire en
 	sorte que le syst&egrave;me d'exploitation envoie des messages
 	<code>KEEP_ALIVE</code> sur chacune des connexions inactives
@@ -858,7 +859,7 @@ l'espace d'URLs du serveur local</description>
         <td>60</td>
         <td>D&eacute;lai entre deux essais du serveur cible du jeu de connexions en
 	secondes. Si le serveur cible du jeu de connexions vers le serveur
-	d'arri&egrave;re-plan est dans un &eacute;tat d'erreur, Apache ne redirigera
+	d'arri&egrave;re-plan est dans un &eacute;tat d'erreur, Apache httpd ne redirigera
 	pas de requ&ecirc;te vers ce serveur avant l'expiration du d&eacute;lai
 	sp&eacute;cifi&eacute;. Ceci permet d'arr&ecirc;ter le serveur d'arri&egrave;re-plan pour
 	maintenance, et de le remettre en ligne plus tard. Une valeur de
@@ -885,14 +886,14 @@ l'espace d'URLs du serveur local</description>
     <tr><td>timeout</td>
         <td><directive module="mod_proxy">ProxyTimeout</directive></td>
         <td>D&eacute;lai d'attente de la connexion en secondes. Le nombre de
-	secondes pendant lesquelles Apache attend l'envoi de
+	secondes pendant lesquelles Apache httpd attend l'envoi de
 	donn&eacute;es vers le serveur d'arri&egrave;re-plan.
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
         <td>Dur&eacute;e de vie des connexions inactives en surnombre par
 	rapport aux <code>smax</code> premi&egrave;res connexions en secondes.
-	Apache fermera toutes les connexions qui n'ont pas &eacute;t&eacute; utilis&eacute;es
+	Apache httpd fermera toutes les connexions qui n'ont pas &eacute;t&eacute; utilis&eacute;es
 	pendant ce laps de temps.
     </td></tr>
 
@@ -1090,17 +1091,17 @@ par un serveur mandat&eacute; en inverse</description>
 </contextlist>
 
 <usage>
-    <p>Cette directive permet de faire en sorte qu'Apache ajuste l'URL
+    <p>Cette directive permet de faire en sorte qu'Apache httpd ajuste l'URL
     dans les en-t&ecirc;tes <code>Location</code>,
     <code>Content-Location</code> et <code>URI</code> des r&eacute;ponses de
-    redirection HTTP. Ceci est essentiel lorsqu'Apache est utilis&eacute; en
+    redirection HTTP. Ceci est essentiel lorsqu'Apache httpd est utilis&eacute; en
     tant que mandataire inverse (ou passerelle), afin d'&eacute;viter de
     court-circuiter le mandataire inverse suite aux redirections HTTP
     sur le serveur d'arri&egrave;re-plan qui restent derri&egrave;re le mandataire
     inverse.</p>
 
     <p>Seuls les en-t&ecirc;tes de r&eacute;ponse HTTP sp&eacute;cialement mentionn&eacute;s
-    ci-dessus seront r&eacute;&eacute;crits. Apache ne r&eacute;&eacute;crira ni les autres en-t&ecirc;tes
+    ci-dessus seront r&eacute;&eacute;crits. Apache httpd ne r&eacute;&eacute;crira ni les autres en-t&ecirc;tes
     de r&eacute;ponse, ni les r&eacute;f&eacute;rences d'URLs dans les pages HTML. Cela
     signifie que dans le cas o&ugrave; un contenu mandat&eacute; contient des
     r&eacute;f&eacute;rences &agrave; des URLs absolues, elles court-circuiteront le
@@ -1132,7 +1133,7 @@ par un serveur mandat&eacute; en inverse</description>
     <code>backend.example.com</code> envoie : lorsque
     <code>http://backend.example.com/bar</code> est redirig&eacute; par
     celui-ci vers <code>http://backend.example.com/quux</code>, Apache
-    corrige ceci en <code>http://example.com/miroir/foo/quux</code>
+    httpd corrige ceci en <code>http://example.com/miroir/foo/quux</code>
     avant de faire suivre la redirection HTTP au client. Notez que le
     nom d'h&ocirc;te utilis&eacute; pour construire l'URL est choisi en respectant la
     d&eacute;finition de la directive <directive
@@ -1298,7 +1299,7 @@ requ&ecirc;te peut &ecirc;tre redirig&eacute;e</description>
 <default>ProxyMaxForwards -1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis Apache 2.0 ; comportement par d&eacute;faut
+<compatibility>Disponible depuis la version 2.0 du serveur HTTP Apache ; comportement par d&eacute;faut
 modifi&eacute; dans 2.2.7/2.3</compatibility>
 
 <usage>
@@ -1317,7 +1318,7 @@ modifi&eacute; dans 2.2.7/2.3</compatibility>
     <directive>ProxyMaxForwards</directive> constitue une violation du
     protocole HTTP/1.1 (RFC2616), qui interdit &agrave; un mandataire de
     d&eacute;finir <code>Max-Forwards</code> si le client ne l'a pas fait
-    lui-m&ecirc;me. Les versions pr&eacute;c&eacute;dentes d'Apache la d&eacute;finissaient
+    lui-m&ecirc;me. Les versions pr&eacute;c&eacute;dentes d'Apache httpd la d&eacute;finissaient
     syst&eacute;matiquement. Une valeur n&eacute;gative de
     <directive>ProxyMaxForwards</directive>, y compris la valeur par
     d&eacute;faut -1, implique un comportement compatible avec le protocole,
@@ -1335,7 +1336,7 @@ directement</description>
 
 <usage>
     <p>Cette directive n'a d'utilit&eacute; que pour les serveurs mandataires
-    Apache au sein d'Intranets. La directive
+    Apache httpd au sein d'Intranets. La directive
     <directive>NoProxy</directive> permet de sp&eacute;cifier une liste de
     sous-r&eacute;seaux, d'adresses IP, de serveurs et/ou de domaines s&eacute;par&eacute;s
     par des espaces. Une requ&ecirc;te pour un serveur qui correspond &agrave; un ou
@@ -1455,7 +1456,7 @@ directement</description>
       <p>Dans de nombreuses situations, il est plus efficace de
       sp&eacute;cifier une <var><a href="#ipaddr">adresse IP</a></var> qu'un
       <var>Nom de serveur</var> car cela &eacute;vite d'avoir &agrave; effectuer une
-      recherche DNS. La r&eacute;solution de nom dans Apache peut prendre un
+      recherche DNS. La r&eacute;solution de nom dans Apache httpd peut prendre un
       temps tr&egrave;s long lorsque la connexion avec le serveur de noms
       utilise une liaison PPP lente.</p>
       <p>Les comparaisons de <var>Nom de serveur</var> s'effectuent sans tenir
@@ -1479,7 +1480,7 @@ mandat&eacute;es</description>
 module="core">Timeout</directive></default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis la version 2.0.31 d'Apache</compatibility>
+<compatibility>Disponible depuis la version 2.0.31 du serveur HTTP Apache</compatibility>
 
 <usage>
     <p>Cette directive permet &agrave; l'utilisateur de sp&eacute;cifier un d&eacute;lai pour
@@ -1501,7 +1502,7 @@ mandat&eacute;es</description>
 
 <usage>
     <p>Cette directive n'a d'utilit&eacute; que pour les serveurs mandataires
-    Apache au sein d'un Intranet. La directive
+    Apache httpd au sein d'un Intranet. La directive
     <directive>ProxyDomain</directive> permet de sp&eacute;cifier le domaine
     par d&eacute;faut auquel le serveur mandataire apache appartient. Si le
     serveur re&ccedil;oit une requ&ecirc;te pour un h&ocirc;te sans nom de domaine, il va
@@ -1545,8 +1546,8 @@ mandat&eacute;es</description>
     serveur courant.</li>
 
     <li>Si elle est d&eacute;finie &agrave; <code>Full</code>, chaque ligne d'en-t&ecirc;te
-    <code>Via:</code> se verra ajouter la version du serveur Apache sous
-    la forme d'un champ de commentaire <code>Via:</code>.</li>
+    <code>Via:</code> se verra ajouter la version du serveur Apache
+    httpd sous la forme d'un champ de commentaire <code>Via:</code>.</li>
 
     <li>Si elle est d&eacute;finie &agrave; <code>Block</code>, chaque requ&ecirc;te
     mandat&eacute;e verra ses lignes d'en-t&ecirc;te <code>Via:</code> supprim&eacute;es.

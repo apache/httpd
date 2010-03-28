@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 420990 -->
+<!-- English Revision : 926536 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -33,7 +33,7 @@ HTTP</description>
 
 <summary>
     <p>Ce module fournit le gestionnaire <code>send-as-is</code> qui
-    permet &agrave; Apache d'envoyer le document sans ajouter la plupart des
+    permet au serveur HTTP Apache d'envoyer le document sans ajouter la plupart des
     en-t&ecirc;tes HTTP habituels.</p>
 
     <p>On peut l'utiliser pour envoyer tous types de donn&eacute;es en
@@ -47,7 +47,7 @@ HTTP</description>
 <seealso><module>mod_headers</module></seealso>
 <seealso><module>mod_cern_meta</module></seealso>
 <seealso><a href="../handler.html">Utilisation des gestionnaires
-d'Apache</a></seealso>
+d'Apache httpd</a></seealso>
 
 <section id="usage"><title>Mode d'emploi</title>
 
@@ -57,7 +57,7 @@ d'Apache</a></seealso>
     <example>AddHandler send-as-is asis</example>
 
     <p>Le contenu de tout fichier poss&eacute;dant l'extension
-    <code>.asis</code> sera envoy&eacute; par Apache au client pratiquement tel
+    <code>.asis</code> sera envoy&eacute; par Apache httpd au client pratiquement tel
     quel. En particulier, les en-t&ecirc;tes HTTP seront d&eacute;duits du fichier
     lui-m&ecirc;me selon les r&egrave;gles du module <module>mod_cgi</module>, si
     bien qu'un fichier asis doit inclure des en-t&ecirc;tes valides, et
@@ -70,7 +70,7 @@ d'Apache</a></seealso>
 
     <example>
       Status: 301 Ou se trouve cette URL maintenant<br />
-      Location: http://xyz.abc.com/foo/bar.html<br />
+      Location: http://xyz.example.com/foo/bar.html<br />
       Content-type: text/html<br />
       <br />
       &lt;html&gt;<br />
@@ -79,7 +79,7 @@ d'Apache</a></seealso>
       &lt;/head&gt;<br />
       &lt;body&gt;<br />
       &lt;h1&gt;La merveilleuse page de Fred a &eacute;t&eacute; d&eacute;plac&eacute;e vers<br />
-      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;le site de
+      &lt;a href="http://xyz.example.com/foo/bar.html"&gt;le site de
       Joe&lt;/a&gt;.<br />
       &lt;/h1&gt;<br />
       &lt;/body&gt;<br />

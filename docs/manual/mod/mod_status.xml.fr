@@ -62,7 +62,7 @@ du serveur</description>
       requ&ecirc;te (*)</li>
 
       <li>Le pourcentage CPU instantan&eacute; utilis&eacute; par chaque processus et
-      par Apache tout entier (*)</li>
+      par l'ensemble des processus (*)</li>
 
       <li>Les h&ocirc;tes et requ&ecirc;tes actuellement en cours de traitement
       (*)</li>
@@ -114,8 +114,8 @@ du serveur</description>
     permet d'obtenir une version du fichier d'&eacute;tat lisible par une
     machine. Ceci s'av&egrave;re int&eacute;ressant dans le cadre d'une ex&eacute;cution
     automatique : voir le programme en Perl
-    <code>log_server_status</code>situ&eacute; dans le r&eacute;pertoire
-    <code>/support</code> de la distribution d'Apache.</p>
+    <code>log_server_status</code> situ&eacute; dans le r&eacute;pertoire
+    <code>/support</code> de votre distribution du serveur HTTP Apache.</p>
 
     <note>
       <strong>Veuillez noter que si <module>mod_status</module> a &eacute;t&eacute;

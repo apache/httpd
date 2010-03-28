@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 658546 -->
+<!-- English Revision : 926416 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -52,8 +52,8 @@ de caract&eacute;ristiques de la requ&ecirc;te</description>
 </example>
 </summary>
 
-<seealso><a href="../env.html">Les variables d'environnement dans
-Apache</a></seealso>
+<seealso><a href="../env.html">Les variables d'environnement et le
+serveur HTTP Apache</a></seealso>
 
 <directivesynopsis>
 <name>BrowserMatch</name>
@@ -98,9 +98,6 @@ casse</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Versions 1.2 d'Apache et sup&eacute;rieures (dans Apache 1.2,
-cette directive se trouvait dans le module mod_browser devenu depuis
-obsol&egrave;te)</compatibility>
 
 <usage>
 
@@ -226,7 +223,7 @@ peuvent se pr&eacute;senter sous les formes suivantes :</p>
     seconde forme, la variable sera supprim&eacute;e si elle a &eacute;t&eacute; d&eacute;finie au
     pr&eacute;alable, et dans la troisi&egrave;me forme, la variable sera d&eacute;finie &agrave; la
     valeur litt&eacute;rale sp&eacute;cifi&eacute;e par <code><em>valeur</em></code>. Depuis
-    la version 2.0.51, Apache reconna&icirc;t les occurrences de variables
+    la version 2.0.51, Apache httpd reconna&icirc;t les occurrences de variables
     <code>$1</code>..<code>$9</code> &agrave; l'int&eacute;rieur de
     <code><em>valeur</em></code>, et les remplace par les
     sous-expressions entre parenth&egrave;ses correspondantes de
@@ -264,8 +261,8 @@ peuvent se pr&eacute;senter sous les formes suivantes :</p>
     jeu [a-z].</p>
 </usage>
 
-<seealso><a href="../env.html">Les variables d'environnement dans
-Apache</a> pour des exemples suppl&eacute;mentaires.
+<seealso><a href="../env.html">Les variables d'environnement et le
+serveur HTTP Apache</a> pour des exemples suppl&eacute;mentaires.
 </seealso>
 </directivesynopsis>
 
@@ -280,7 +277,6 @@ attributs de la requ&ecirc;te sans tenir compte de la casse</description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Versions 1.3 d'Apache et sup&eacute;rieures</compatibility>
 
 <usage>
 

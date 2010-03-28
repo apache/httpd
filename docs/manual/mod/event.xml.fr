@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 883878 -->
+<!-- English Revision : 926432 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -55,7 +55,8 @@ mobiliser des threads que pour les connexions en cours de traitement</descriptio
     Lorsqu'un client a soumis une premi&egrave;re requ&ecirc;te, il peut garder la
     connexion ouverte, et envoyer les requ&ecirc;tes suivantes en utilisant le
     m&ecirc;me socket. Ceci permet de r&eacute;duire de mani&egrave;re significative la
-    surcharge due &agrave; la cr&eacute;ation de connexions TCP. Cependant, Apache
+    surcharge due &agrave; la cr&eacute;ation de connexions TCP.
+    Cependant, le serveur HTTP Apache
     mobilise en principe &agrave; cet effet un processus/thread enfant en
     attente des donn&eacute;es du client, ce qui am&egrave;ne son propre lot
     d'inconv&eacute;nients. Pour r&eacute;soudre ce probl&egrave;me, <module>event</module>
