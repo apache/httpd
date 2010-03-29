@@ -1539,7 +1539,8 @@ later.</compatibility>
 <name>Include</name>
 <description>Includes other configuration files from within
 the server configuration files</description>
-<syntax>Include <var>file-path</var>|<var>directory-path</var></syntax>
+<syntax>Include <var>file-path</var>|<var>directory-path</var>|
+<var>wildcard</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -1570,6 +1571,11 @@ wildcard matching available in 2.3.6 and later</compatibility>
     error saying the file or directory cannot be found. This removes the need
     for placeholder files to exist so that at least one file or directory is
     found by the wildcard.</p>
+
+    <p>Under certain circumstances, it may be required for the server to fail
+    explicitly when no files or directories match a specific wildcard. In these
+    cases, use the <directive module="code">IncludeStrict</directive>
+    directive instead.</p>
 
     <p>The file path specified may be an absolute path, or may be relative 
     to the <directive module="core">ServerRoot</directive> directory.</p>
@@ -1602,6 +1608,47 @@ wildcard matching available in 2.3.6 and later</compatibility>
 <seealso><program>apachectl</program></seealso>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>IncludeStrict</name>
+<description>Includes other configuration files from within the server
+configuration files, throwing an error if no files or directories match
+a wildcard
+</description>
+<syntax>IncludeStrict <var>file-path</var>|<var>directory-path</var>|
+<var>wildcard</var></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+<compatibility>Available in 2.3.6 and later</compatibility>
+
+<usage>
+      <p>This directive allows inclusion of other configuration files
+      from within the server configuration files.</p>
+
+      <p>It is functionally equivalent to the
+      <directive module="core">Include</directive> directive, with the additional
+      restriction that any wildcards are required to match at least one file or
+      directory.</p>
+
+      <p>The file path specified may be an absolute path, or may be relative 
+      to the <directive module="core">ServerRoot</directive> directory.</p>
+
+      <p>Example:</p>
+
+      <p>The server will fail to load if the wildcard path
+      <var>/usr/local/apache2/conf/vhosts/*.conf</var> does not match at least
+      one file or directory.</p>
+
+      <example>
+        IncludeStrict /usr/local/apache2/conf/ssl.conf<br />
+        IncludeStrict /usr/local/apache2/conf/vhosts/*.conf
+      </example>
+
+</usage>
+
+<seealso><program>apachectl</program></seealso>
+</directivesynopsis>
+  
 <directivesynopsis>
 <name>KeepAlive</name>
 <description>Enables HTTP persistent connections</description>

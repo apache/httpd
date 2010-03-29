@@ -2566,9 +2566,8 @@ static const char *set_use_canonical_phys_port(cmd_parms *cmd, void *d_,
     return NULL;
 }
 
-
 static const char *include_config (cmd_parms *cmd, void *dummy,
-                                   const char *name)
+                                   const char *name, int strict)
 {
     ap_directive_t *conftree = NULL;
     const char* conffile, *error;
@@ -2599,8 +2598,8 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
                            name, NULL);
     }
 
-    error = ap_process_resource_config(cmd->server, conffile,
-                                       &conftree, cmd->pool, cmd->temp_pool);
+    error = ap_process_resource_config_ex(cmd->server, conffile,
+                                       &conftree, cmd->pool, cmd->temp_pool, strict);
     if (error) {
         *recursion = 0;
         return error;
@@ -2614,6 +2613,18 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     }
 
     return NULL;
+}
+
+static const char *include_regular_config(cmd_parms *cmd, void *dummy,
+                                          const char *name)
+{
+    return include_config(cmd, dummy, name, 0);
+}
+
+static const char *include_strict_config(cmd_parms *cmd, void *dummy,
+                                          const char *name)
+{
+    return include_config(cmd, dummy, name, 1);
 }
 
 static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg)
@@ -3302,9 +3313,12 @@ AP_INIT_TAKE1("UseCanonicalPhysicalPort", set_use_canonical_phys_port, NULL,
   "Whether to use the physical Port when constructing URLs"),
 /* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
 /* TODO: ListenBacklog in MPM */
-AP_INIT_TAKE1("Include", include_config, NULL,
+AP_INIT_TAKE1("Include", include_regular_config, NULL,
   (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
-  "Name of the config file to be included"),
+  "Name of the config file to be included, ignore wildcards with no match"),
+AP_INIT_TAKE1("IncludeStrict", include_strict_config, NULL,
+  (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
+  "Name of the config file to be included, fail if wildcards don't match"),
 AP_INIT_TAKE1("LogLevel", set_loglevel, NULL, RSRC_CONF,
   "Level of verbosity in error logging"),
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
