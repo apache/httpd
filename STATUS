@@ -139,10 +139,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 46270  [Dr Stephen Henson <steve openssl.org>, William Rowe]
     Trunk patch: http://svn.apache.org/viewvc?rev=925980&view=rev
                  http://svn.apache.org/viewvc?rev=926000&view=rev
+                 http://svn.apache.org/viewvc?rev=926614&view=rev
+                 http://svn.apache.org/viewvc?rev=926619&view=rev
     2.2.x patch: http://people.apache.org/~wrowe/ssl-fips-2.2.patch
     +1: wrowe
     minfrin: Doesn't build on v2.2 until you add r926614. With r926614, +1.
-
+    wrowe: Added both of rpluem's proposed patched, 926614 and 926619
 
 PATCHES/ISSUES THAT ARE STALLED
 
