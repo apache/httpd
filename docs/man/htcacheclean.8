@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTCACHECLEAN" 8 "2010-02-16" "Apache HTTP Server" "htcacheclean"
+.TH "HTCACHECLEAN" 8 "2010-03-29" "Apache HTTP Server" "htcacheclean"
 
 .SH NAME
 htcacheclean \- Clean up the disk cache
@@ -32,11 +32,14 @@ htcacheclean \- Clean up the disk cache
 .PP
 \fBhtcacheclean\fR [ -\fBn\fR ] [ -\fBt\fR ] [ -\fBi\fR ] [ -\fBP\fR\fIpidfile\fR ] -\fBd\fR\fIinterval\fR -\fBp\fR\fIpath\fR -\fBl\fR\fIlimit\fR
  
+.PP
+\fBhtcacheclean\fR [ -\fBD\fR ] [ -\fBv\fR ] [ -\fBt\fR ] -\fBp\fR\fIpath\fR \fIurl\fR
+ 
 
 .SH "SUMMARY"
  
 .PP
-htcacheclean is used to keep the size of mod_disk_cache's storage within a certain limit\&. This tool can run either manually or in daemon mode\&. When running in daemon mode, it sleeps in the background and checks the cache directories at regular intervals for cached content to be removed\&. You can stop the daemon cleanly by sending it a TERM or INT signal\&.
+htcacheclean is used to keep the size of mod_disk_cache's storage within a certain limit\&. This tool can run either manually or in daemon mode\&. When running in daemon mode, it sleeps in the background and checks the cache directory at regular intervals for cached content to be removed\&. You can stop the daemon cleanly by sending it a TERM or INT signal\&. When run manually, a once off check of the cache directory is made for cached content to be removed\&. If one or more URLs are specified, each URL will be deleted from the cache, if present\&.
  
 
 .SH "OPTIONS"
@@ -73,8 +76,16 @@ Specify \fIlimit\fR as the total disk cache size limit\&. The value is expressed
 -i
 Be intelligent and run only when there was a modification of the disk cache\&. This option is only possible together with the -d option\&.  
  
+.SH "DELETING A SPECIFIC URL"
+ 
+.PP
+If htcacheclean is passed one or more URLs, each URL will be deleted from the cache\&. If multiple variants of an URL exists, all variants would be deleted\&.
+ 
+.PP
+When a reverse proxied URL is to be deleted, the effective URL is constructed from the \fBHost\fR header, the \fBport\fR, the \fBpath\fR and the \fBquery\fR\&. Note the '?' in the URL must always be specified explicitly, whether a query string is present or not\&. For example, an attempt to delete the path \fB/\fR from the server \fBlocalhost\fR, the URL to delete would be \fBhttp://localhost:80/?\fR\&.
+ 
 .SH "EXIT STATUS"
  
 .PP
-htcacheclean returns a zero status ("true") if all operations were successful, 1 otherwise\&.
+htcacheclean returns a zero status ("true") if all operations were successful, 1 otherwise\&. If an URL is specified, and the URL was cached and successfully removed, 0 is returned, 2 otherwise\&. If an error occurred during URL removal, 1 is returned\&.
  
