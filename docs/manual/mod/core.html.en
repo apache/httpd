@@ -61,6 +61,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#includestrict">IncludeStrict</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li>
@@ -1573,7 +1574,8 @@ later.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Includes other configuration files from within
 the server configuration files</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Include <var>file-path</var>|<var>directory-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Include <var>file-path</var>|<var>directory-path</var>|
+<var>wildcard</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -1604,6 +1606,11 @@ wildcard matching available in 2.3.6 and later</td></tr>
     for placeholder files to exist so that at least one file or directory is
     found by the wildcard.</p>
 
+    <p>Under certain circumstances, it may be required for the server to fail
+    explicitly when no files or directories match a specific wildcard. In these
+    cases, use the <code class="directive"><a href="../mod/code.html#includestrict">IncludeStrict</a></code>
+    directive instead.</p>
+
     <p>The file path specified may be an absolute path, or may be relative 
     to the <code class="directive"><a href="#serverroot">ServerRoot</a></code> directory.</p>
 
@@ -1628,6 +1635,48 @@ wildcard matching available in 2.3.6 and later</td></tr>
       Include conf/vhosts/*/vhost.conf
       Include conf/vhosts/*/*.conf
     </code></p></div>
+
+
+<h3>See also</h3>
+<ul>
+<li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="IncludeStrict" id="IncludeStrict">IncludeStrict</a> <a name="includestrict" id="includestrict">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Includes other configuration files from within the server
+configuration files, throwing an error if no files or directories match
+a wildcard
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>IncludeStrict <var>file-path</var>|<var>directory-path</var>|
+<var>wildcard</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in 2.3.6 and later</td></tr>
+</table>
+      <p>This directive allows inclusion of other configuration files
+      from within the server configuration files.</p>
+
+      <p>It is functionally equivalent to the
+      <code class="directive"><a href="#include">Include</a></code> directive, with the additional
+      restriction that any wildcards are required to match at least one file or
+      directory.</p>
+
+      <p>The file path specified may be an absolute path, or may be relative 
+      to the <code class="directive"><a href="#serverroot">ServerRoot</a></code> directory.</p>
+
+      <p>Example:</p>
+
+      <p>The server will fail to load if the wildcard path
+      <var>/usr/local/apache2/conf/vhosts/*.conf</var> does not match at least
+      one file or directory.</p>
+
+      <div class="example"><p><code>
+        IncludeStrict /usr/local/apache2/conf/ssl.conf<br />
+        IncludeStrict /usr/local/apache2/conf/vhosts/*.conf
+      </code></p></div>
 
 
 <h3>See also</h3>

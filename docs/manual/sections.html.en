@@ -229,7 +229,7 @@ are mapped vice-versa:
 Alias /foo/bar /srv/www/uncommon/bar<br />
 Alias /foo /srv/www/common/foo<br />
 </code></p></div>
-Same goes for the <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+The same is true for the <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
 directives:
 <div class="example"><p><code>
 ProxyPass /special-area http://special.example.com smax=5 max=10
