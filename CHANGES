@@ -28,6 +28,10 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) htcacheclean: Introduce the ability to clean specific URLs from the
+     cache, if provided as an optional parameter on the command line.
+     [Graham Leggett]
+
   *) core: Introduce the IncludeStrict directive, which explicitly fails
      server startup if no files or directories match a wildcard path.
      [Graham Leggett]
