@@ -29,9 +29,12 @@
     <p><code>htcacheclean</code> is used to keep the size of
     <module>mod_disk_cache</module>'s storage within a certain limit. This
     tool can run either manually or in daemon mode. When running in
-    daemon mode, it sleeps in the background and checks the cache directories
+    daemon mode, it sleeps in the background and checks the cache directory
     at regular intervals for cached content to be removed. You can stop the daemon
-    cleanly by sending it a TERM or INT signal.</p>
+    cleanly by sending it a TERM or INT signal. When run manually, a once off
+    check of the cache directory is made for cached content to be removed. If
+    one or more URLs are specified, each URL will be deleted from the cache, if
+    present.</p>
 </summary>
 <seealso><module>mod_disk_cache</module></seealso>
 
@@ -53,6 +56,13 @@
     -<strong>d</strong><var>interval</var>
     -<strong>p</strong><var>path</var>
     -<strong>l</strong><var>limit</var></code></p>
+
+    <p><code><strong>htcacheclean</strong>
+    [ -<strong>D</strong> ]
+    [ -<strong>v</strong> ]
+    [ -<strong>t</strong> ]
+    -<strong>p</strong><var>path</var>
+    <var>url</var></code></p>
 </section>
 
 <section id="options"><title>Options</title>
@@ -113,9 +123,28 @@
     </dl>
 </section>
 
+<section id="delete"><title>Deleting a specific URL</title>
+    <p>If <code>htcacheclean</code> is passed one or more URLs, each URL will
+    be deleted from the cache. If multiple variants of an URL exists, all
+    variants would be deleted.</p>
+
+    <p>When a reverse proxied URL is to be deleted, the effective URL is
+    constructed from the <strong>Host</strong> header, the
+    <strong>port</strong>, the <strong>path</strong> and the
+    <strong>query</strong>. Note the '?' in the URL must always be specified
+    explicitly, whether a query string is present or not. For example, an
+    attempt to delete the path <strong>/</strong> from the server
+    <strong>localhost</strong>, the URL to delete would be
+    <strong>http://localhost:80/?</strong>.</p>
+
+</section>
+    
 <section id="exit"><title>Exit Status</title>
     <p><code>htcacheclean</code> returns a zero status ("true") if all
-    operations were successful, <code>1</code> otherwise.</p>
+    operations were successful, <code>1</code> otherwise. If an URL is
+    specified, and the URL was cached and successfully removed,
+    <code>0</code> is returned, <code>2</code> otherwise. If an error
+    occurred during URL removal, <code>1</code> is returned.</p>
 </section>
 
 </manualpage>
