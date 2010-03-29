@@ -28,6 +28,10 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) core: Introduce the IncludeStrict directive, which explicitly fails
+     server startup if no files or directories match a wildcard path.
+     [Graham Leggett]
+
   *) htcacheclean: Report additional statistics about entries deleted.
      PR 48944. [Mark Drayton mark markdrayton.info]
 

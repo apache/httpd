@@ -1558,7 +1558,8 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
                                                      ap_directive_t **conftree,
                                                      apr_pool_t *p,
                                                      apr_pool_t *ptemp,
-                                                     unsigned depth)
+                                                     unsigned depth,
+                                                     int strict)
 {
     cmd_parms parms;
     ap_configfile_t *cfp;
@@ -1615,7 +1616,7 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
                 fnew = &((fnames *) candidates->elts)[current];
                 error = process_resource_config_nofnmatch(s, fnew->fname,
                                                           conftree, p, ptemp,
-                                                          depth);
+                                                          depth, strict);
                 if (error) {
                     return error;
                 }
@@ -1659,7 +1660,8 @@ static const char *process_resource_config_fnmatch(server_rec *s,
                                                    ap_directive_t **conftree,
                                                    apr_pool_t *p,
                                                    apr_pool_t *ptemp,
-                                                   unsigned depth)
+                                                   unsigned depth,
+                                                   int strict)
 {
     const char *rest;
     apr_status_t rv;
@@ -1682,12 +1684,12 @@ static const char *process_resource_config_fnmatch(server_rec *s,
         if (!rest) {
             return process_resource_config_nofnmatch(s, path,
                                                      conftree, p,
-                                                     ptemp, 0);
+                                                     ptemp, 0, strict);
         }
         else {
             return process_resource_config_fnmatch(s, path, rest,
                                                    conftree, p,
-                                                   ptemp, 0);
+                                                   ptemp, 0, strict);
         }
     }
 
@@ -1738,27 +1740,32 @@ static const char *process_resource_config_fnmatch(server_rec *s,
             if (!rest) {
                 error = process_resource_config_nofnmatch(s, fnew->fname,
                                                           conftree, p,
-                                                          ptemp, 0);
+                                                          ptemp, 0, strict);
             }
             else {
                 error = process_resource_config_fnmatch(s, fnew->fname, rest,
                                                         conftree, p,
-                                                        ptemp, 0);
+                                                        ptemp, 0, strict);
             }
             if (error) {
                 return error;
             }
         }
     }
+    else if (strict) {
+        return apr_psprintf(p, "No matches for the wildcard '%s' in %s",
+                            fname, path);
+    }
 
     return NULL;
 }
 
-AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
-                                                    const char *fname,
-                                                    ap_directive_t **conftree,
-                                                    apr_pool_t *p,
-                                                    apr_pool_t *ptemp)
+AP_DECLARE(const char *) ap_process_resource_config_ex(server_rec *s,
+                                                       const char *fname,
+                                                       ap_directive_t **conftree,
+                                                       apr_pool_t *p,
+                                                       apr_pool_t *ptemp,
+                                                       int strict)
 {
     /* XXX: lstat() won't work on the wildcard pattern...
      */
@@ -1775,7 +1782,7 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
 
     if (!apr_fnmatch_test(fname)) {
         return process_resource_config_nofnmatch(s, fname, conftree, p, ptemp,
-                                                 0);
+                                                 0, strict);
     }
     else {
         apr_status_t status;
@@ -1794,11 +1801,20 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
 
         /* walk the filepath */
         return process_resource_config_fnmatch(s, rootpath, filepath, conftree, p, ptemp,
-                                                 0);
+                                                 0, strict);
 
     }
 
     return NULL;
+}
+
+AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
+                                                    const char *fname,
+                                                    ap_directive_t **conftree,
+                                                    apr_pool_t *p,
+                                                    apr_pool_t *ptemp)
+{
+    return ap_process_resource_config_ex(s, fname, conftree, p, ptemp, 0);
 }
 
 AP_DECLARE(int) ap_process_config_tree(server_rec *s,
