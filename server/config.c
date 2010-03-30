@@ -1559,7 +1559,7 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
                                                      apr_pool_t *p,
                                                      apr_pool_t *ptemp,
                                                      unsigned depth,
-                                                     int strict)
+                                                     enum strict_how strict)
 {
     cmd_parms parms;
     ap_configfile_t *cfp;
@@ -1661,7 +1661,7 @@ static const char *process_resource_config_fnmatch(server_rec *s,
                                                    apr_pool_t *p,
                                                    apr_pool_t *ptemp,
                                                    unsigned depth,
-                                                   int strict)
+                                                   enum strict_how strict)
 {
     const char *rest;
     apr_status_t rv;
@@ -1752,9 +1752,24 @@ static const char *process_resource_config_fnmatch(server_rec *s,
             }
         }
     }
-    else if (strict) {
-        return apr_psprintf(p, "No matches for the wildcard '%s' in %s",
-                            fname, path);
+    else {
+
+        /* Support for the three states of strictness:
+         *
+         * AP_OPTIONAL - directory and file wildcards succeed on no-match, we don't
+         * need to do anything here for this case.
+         * AP_MIXED - directory wildcards fail on no match, file wildcards succeed
+         * on no match. Use rest to tell between the two.
+         * AP_STRICT - both directory and file wildcards fail on no-match.
+         */
+        if (AP_STRICT == strict) {
+            return apr_psprintf(p, "No matches for the wildcard '%s' in '%s' with "
+                    "strict wildcard matching, failing", fname, path);
+        }
+        else if (AP_MIXED == strict && rest) {
+            return apr_psprintf(p, "No matches for the wildcard '%s' in '%s', failing "
+                    "(use Include optional if required)", fname, path);
+        }
     }
 
     return NULL;
@@ -1765,7 +1780,7 @@ AP_DECLARE(const char *) ap_process_resource_config_ex(server_rec *s,
                                                        ap_directive_t **conftree,
                                                        apr_pool_t *p,
                                                        apr_pool_t *ptemp,
-                                                       int strict)
+                                                       enum strict_how strict)
 {
     /* XXX: lstat() won't work on the wildcard pattern...
      */
@@ -1814,7 +1829,7 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
                                                     apr_pool_t *p,
                                                     apr_pool_t *ptemp)
 {
-    return ap_process_resource_config_ex(s, fname, conftree, p, ptemp, 0);
+    return ap_process_resource_config_ex(s, fname, conftree, p, ptemp, AP_MIXED);
 }
 
 AP_DECLARE(int) ap_process_config_tree(server_rec *s,
