@@ -2567,12 +2567,32 @@ static const char *set_use_canonical_phys_port(cmd_parms *cmd, void *d_,
 }
 
 static const char *include_config (cmd_parms *cmd, void *dummy,
-                                   const char *name, int strict)
+                                   const char *arg1, const char *arg2)
 {
     ap_directive_t *conftree = NULL;
-    const char* conffile, *error;
+    const char *name;
+    enum strict_how strict;
+    const char *conffile, *error;
     unsigned *recursion;
     void *data;
+
+    if (arg2) {
+        name = arg2;
+        if (!strcmp(arg1, "optional")) {
+            strict = AP_OPTIONAL;
+        }
+        else if (!strcmp(arg1, "strict")) {
+            strict = AP_STRICT;
+        }
+        else {
+            return apr_pstrcat(cmd->pool, "Invalid Include modifier '",
+                               arg1, "', should be 'optional' or 'strict'", NULL);
+        }
+    }
+    else {
+        name = arg1;
+        strict = AP_MIXED;
+    }
 
     apr_pool_userdata_get(&data, "ap_include_sentinel", cmd->pool);
     if (data) {
@@ -2613,18 +2633,6 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     }
 
     return NULL;
-}
-
-static const char *include_regular_config(cmd_parms *cmd, void *dummy,
-                                          const char *name)
-{
-    return include_config(cmd, dummy, name, 0);
-}
-
-static const char *include_strict_config(cmd_parms *cmd, void *dummy,
-                                          const char *name)
-{
-    return include_config(cmd, dummy, name, 1);
 }
 
 static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg)
@@ -3313,12 +3321,10 @@ AP_INIT_TAKE1("UseCanonicalPhysicalPort", set_use_canonical_phys_port, NULL,
   "Whether to use the physical Port when constructing URLs"),
 /* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
 /* TODO: ListenBacklog in MPM */
-AP_INIT_TAKE1("Include", include_regular_config, NULL,
+AP_INIT_TAKE12("Include", include_config, NULL,
   (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
-  "Name of the config file to be included, ignore wildcards with no match"),
-AP_INIT_TAKE1("IncludeStrict", include_strict_config, NULL,
-  (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
-  "Name of the config file to be included, fail if wildcards don't match"),
+  "Name of the config file to be included, ignore file wildcards with no "
+  "matching files, fail directory wildcards with no matching directories"),
 AP_INIT_TAKE1("LogLevel", set_loglevel, NULL, RSRC_CONF,
   "Level of verbosity in error logging"),
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
