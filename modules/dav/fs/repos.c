@@ -892,7 +892,8 @@ static apr_status_t tmpfile_cleanup(void *data) {
 static apr_status_t dav_fs_mktemp(apr_file_t **fp, char *templ, apr_pool_t *p)
 {
     apr_status_t rv;
-    int num = ((getpid() << 7) + (int)templ % (1 << 16) ) % ( 1 << 23 ) ;
+    int num = ((getpid() << 7) + (apr_uintptr_t)templ % (1 << 16) ) %
+               ( 1 << 23 ) ;
     char *numstr = templ + strlen(templ) - 6;
 
     ap_assert(numstr >= templ);
