@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 922462 -->
+<!-- English Revision : 926409 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2010032101 $ -->
+<!-- $LastChangedRevision: 2010033101 $ -->
 
 
 <!--
@@ -41,7 +41,8 @@
         <dl>
             <dt>Threading Unix</dt>
 
-            <dd>Sur les syst&#232;mes Unix qui supportent les threads POSIX, Apache 
+            <dd>Sur les syst&#232;mes Unix qui supportent les threads
+	    POSIX, Apache httpd
             peut &#224; pr&#233;sent tourner en mode hybride multi-processus et 
             multi-thread&#233;, ce qui augmente l'extensibilit&#233; et la performance 
             du serveur pour la plupart des configurations.</dd>
@@ -50,25 +51,26 @@
 
             <dd>Le processus de compilation a &#233;t&#233; refait de A &#224; Z; 
             il utilise &#224; pr&#233;sent <code>autoconf</code> et <code>libtool</code>, 
-            ce qui rend la compilation d'Apache plus famili&#232;re aux utilisateurs 
+            ce qui rend la compilation d'Apache httpd plus famili&#232;re aux utilisateurs 
             d'autre logiciels de m&#232;me type.</dd>
 
             <dt>Support Multiprotocole</dt>
 
-            <dd>Apache dispose d&#233;sormais de l'infrastructure n&#233;cessaire pour supporter 
+            <dd>Le serveur HTTP Apache dispose d&#233;sormais de
+	    l'infrastructure n&#233;cessaire pour supporter
             d'autres protocoles. Le module <module>mod_echo</module> illustre ces 
             possibilit&#233;s.</dd>
 
             <dt>Support am&#233;lior&#233; des Plate-formes non-Unix</dt>
         
-            <dd>Apache 2.0 se montre plus rapide et plus stable sur les plate-formes 
+            <dd>Le serveur HTTP Apache 2.0 se montre plus rapide et plus stable sur les plate-formes 
             non Unix, telles BeOS, OS/2, NetWare et Windows. L'apparition des 
             <a href="mpm.html">Modules Multi-Processus</a> (MPMs), ainsi que de 
             la biblioth&#232;que "Apache Portable Runtime" (APR) permet a Apache de 
             tirer parti des API natives de ces plate-formes, sans s'appuyer sur leurs 
             couches POSIX souvent bogu&#233;es et peu optimis&#233;es.</dd>
 
-            <dt>Nouvelle API Apache</dt>
+            <dt>Nouvelle API d'Apache httpd</dt>
 
             <dd>L'Interface de Programmation (API) des modules a beaucoup chang&#233; 
             avec le passage &#224; la version 2.0.
@@ -78,7 +80,7 @@
             est g&#233;r&#233; au moyen de "crochets" (hooks), ce qui rend la gestion 
             flexible. De nouveaux appels ont &#233;t&#233; &#233;galement cr&#233;&#233;s 
             afin de permettre l'impl&#233;mentation d'autres fonctions dans les modules, 
-            sans devoir corriger le noyau du serveur Apache.</dd>
+            sans devoir corriger le noyau du serveur HTTP Apache.</dd>
 
             <dt>Support IPv6</dt>
 
@@ -91,7 +93,8 @@
 
             <dt>Filtering</dt>
 
-            <dd>Il est maintenant possible d'&#233;crire des modules Apache pour filtrer
+            <dd>Il est maintenant possible d'&#233;crire des modules
+	    pour Apache  httpd pour filtrer
             les flux de donn&#233;es entrant ou sortant du serveur. A titre d'exemple, 
             il est possible de filtrer des directives Server Side Include de la sortie 
             standard d'un script CGI, au moyen du filtre <code>INCLUDES</code> fourni
@@ -118,7 +121,7 @@
 
             <dt>Support natif de l'Unicode sous Windows NT</dt>
 
-            <dd>Apache 2.0 sur Windows NT utilise &#224; pr&#233;sent l'utf-8 pour tous les 
+            <dd>Apache httpd 2.0 sur Windows NT utilise &#224; pr&#233;sent l'utf-8 pour tous les 
             noms de fichiers. Ces noms de fichiers sont directement traduits vers
             l'encodage Unicode du syst&#232;me de fichiers, ce qui permet le support
             multilangue pour toutes les installations sur la famille NT de Windows, y
@@ -128,7 +131,7 @@
 
             <dt>Mise &#224; jour de la Biblioth&#232;que d'Expressions Rationnelles</dt>
 
-            <dd>Apache 2.0 contient la <a href="http://www.pcre.org/">biblioth&#232;que 
+            <dd>Apache httpd 2.0 contient la <a href="http://www.pcre.org/">biblioth&#232;que 
             d'expressions rationnelles compatible Perl </a>(Perl Compatible Regular 
             Expression Library - PCRE). Toutes les expressions rationnelles sont dont
             g&#233;r&#233;es avec la syntaxe de Perl 5, plus puissante.</dd>
@@ -142,25 +145,25 @@
         <dl>
             <dt><module>mod_ssl</module></dt>
 
-            <dd>Apparu dans Apache 2.0, ce module est une interface aux protocoles de 
+            <dd>Apparu dans Apache httpd 2.0, ce module est une interface aux protocoles de 
             criffrement SSL/TLS fournis par OpenSSL.</dd>
 
             <dt><module>mod_dav</module></dt>
 
-            <dd>Apparu dans Apache 2.0, ce module impl&#233;mente les sp&#233;cifications HTTP de 
+            <dd>Apparu dans Apache httpd 2.0, ce module impl&#233;mente les sp&#233;cifications HTTP de 
             gestion distribu&#233;e de versions et de r&#233;daction (Distributed Authoring and 
             Versioning - DAV), destin&#233;es &#224; la mise en ligne et &#224; la maintenance des 
             contenus Web.</dd>
 
             <dt><module>mod_deflate</module></dt>
 
-            <dd>Module apparu dans Apachge 2.0, mod_deflate permet aux navigateurs qui 
+            <dd>Module apparu dans Apachge httpd 2.0, mod_deflate permet aux navigateurs qui 
             le supportent de demander la compression des contenus envoy&#233;s par le serveur. 
             Cela &#224; l'avantage de r&#233;duite l'occupation de la bande passante.</dd>
 
             <dt><module>mod_auth_ldap</module></dt>
 
-            <dd>Apparu dans Apache 2.0.41, ce module permet aux administrateurs
+            <dd>Apparu dans Apache httpd 2.0.41, ce module permet aux administrateurs
             d'utiliser un arbre LDAP pour g&#233;rer la base d'utilisateurs pour les 
             Authentifications Basiques HTTP. Un module voisin,
             <module>mod_ldap</module>, permet de globaliser les connexions &#224; l'arbre LDAP
@@ -173,18 +176,20 @@
 
             <dt><module>mod_charset_lite</module></dt>
 
-            <dd>Apparu dans Apache 2.0, ce module exp&#233;rimental permet la conversion 
+            <dd>Apparu dans Apache httpd 2.0, ce module exp&#233;rimental permet la conversion 
             et l'enregistrement entre jeux de caract&#232;res.</dd>
 
             <dt><module>mod_file_cache</module></dt>
 
-            <dd>Apparu dans Apache 2.0, ce module impl&#233;mente les fonctionnalit&#233;s du 
-            module <code>mod_mmap_static</code> pr&#233;sent dans Apache 1.3, et offre des 
+            <dd>Apparu dans Apache httpd 2.0, ce module impl&#233;mente les fonctionnalit&#233;s du 
+            module <code>mod_mmap_static</code> pr&#233;sent du serveur
+	    HTTP Apache 1.3, et offre des 
             fonctions plus avanc&#233;es pour la gestion de la cache.</dd>
 
             <dt><module>mod_headers</module></dt>
 
-            <dd>Ce module gagne beaucoup de flexibilit&#233; avec Apache 2.0 : on peut 
+            <dd>Ce module gagne beaucoup de flexibilit&#233; avec Apache
+	    httpd 2.0 : on peut 
             d&#233;sormais l'utiliser pour modifier les en-t&#234;tes des requ&#234;tes 
             utilis&#233;s par <module>mod_proxy</module>, et peut aussi positionner les 
             en-t&#234;tes des r&#233;ponses de mani&#232;re conditionnelle.</dd>
