@@ -64,6 +64,13 @@ enum cmd_how {
     TAKE13,			/**< one or three arguments */
     TAKE_ARGV			/**< an argc and argv are passed */
 };
+
+enum strict_how {
+    AP_OPTIONAL, /* directory and file wildcards succeed on no-match */
+    AP_MIXED, /* directory wildcards fail, file wildcards succeed on no match */
+    AP_STRICT /* directory and file wildcards fail on no-match */
+};
+
 /**
  * This structure is passed to a command which is being invoked,
  * to carry a large variety of miscellaneous data which is all of
@@ -898,6 +905,22 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
                                                    const char *hostname,
                                                    server_rec *main_server, 
                                                    server_rec **ps);
+
+/**
+ * Process the config file for Apache
+ * @param s The server rec to use for the command parms
+ * @param fname The name of the config file
+ * @param conftree The root node of the created config tree
+ * @param p Pool for general allocation
+ * @param ptemp Pool for temporary allocation
+ * @param strict Whether a no-match wildcard should be fatal
+ */
+AP_DECLARE(const char *) ap_process_resource_config_ex(server_rec *s,
+                                                       const char *fname,
+                                                       ap_directive_t **conftree,
+                                                       apr_pool_t *p,
+                                                       apr_pool_t *ptemp,
+                                                       enum strict_how strict);
 
 /**
  * Process the config file for Apache
