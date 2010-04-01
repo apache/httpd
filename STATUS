@@ -115,7 +115,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=921347&view=rev
                  http://svn.apache.org/viewvc?rev=921583&view=rev
     2.2.x patch: Trunk patch works
-    +1: sf
+    +1: sf, pgollucci
 
   * mod_ssl: modules/ssl/ssl_engine_init.c (ssl_init_ctx_cleanup_proxy):
     Unset pkp->certs pointer after freeing the array; fixes segfault at
