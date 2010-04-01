@@ -302,10 +302,14 @@ STACK_OF(X509) *ssl_read_pkcs7(server_rec *s, const char *pkcs7)
     switch (OBJ_obj2nid(p7->type)) {
     case NID_pkcs7_signed:
         certs = p7->d.sign->cert;
+        p7->d.sign->cert = NULL;
+        PKCS7_free(p7);
         break;
 
     case NID_pkcs7_signedAndEnveloped:
         certs = p7->d.signed_and_enveloped->cert;
+        p7->d.signed_and_enveloped->cert = NULL;
+        PKCS7_free(p7);
         break;
 
     default:
