@@ -145,6 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: wrowe
     minfrin: Doesn't build on v2.2 until you add r926614. With r926614, +1.
     wrowe: Added both of rpluem's proposed patched, 926614 and 926619
+    +1: drh
 
 PATCHES/ISSUES THAT ARE STALLED
 
@@ -228,6 +229,7 @@ PATCHES/ISSUES THAT ARE STALLED
               need to be added to this. See also
               http://mail-archives.apache.org/mod_mbox/httpd-dev/200607.mbox/%3c20060723093125.GA19423@redhat.com%3e
               and follow ups for more details.
+      needs r930063 to avoid a memory leak, +1 with r930063.      
 
  * mod_dir: add FallbackResource directive
    PR 47184
