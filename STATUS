@@ -85,7 +85,7 @@ CURRENT VOTES:
 
     Self-destruct: Ken, Martin, Lars
     Not self-destruct: BrianP, Ian, Cliff, BillS
-    Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj, nd
+    Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj, nd, pgollucci
 
     /* The below was a concept on *how* to handle the problem */
     Have 2 parents: +1: jim
