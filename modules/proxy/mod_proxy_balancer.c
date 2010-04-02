@@ -609,10 +609,10 @@ static int proxy_balancer_post_request(proxy_worker *worker,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (!apr_is_empty_array(balancer->errstatuses)){
+    if (!apr_is_empty_array(balancer->errstatuses)) {
         int i;
         for (i = 0; i < balancer->errstatuses->nelts; i++) {
-            int val=((int*)balancer->errstatuses->elts)[i];
+            int val = ((int *)balancer->errstatuses->elts)[i];
             if (r->status == val) {
                 ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, r->server,
                     "Detected ErrorOnState (%d) for member (%s). Forcing worker into error state.", val, worker->name);

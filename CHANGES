@@ -28,9 +28,8 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
-  *) Proxy balancer: support setting error status according to
-     HTTP response code from a backend.
-     PR 48939 [Daniel Ruggeri <DRuggeri primary.net>]
+  *) Proxy balancer: support setting error status according to HTTP response
+     code from a backend.  PR 48939.  [Daniel Ruggeri <DRuggeri primary.net>]
 
   *) htcacheclean: Introduce the ability to clean specific URLs from the
      cache, if provided as an optional parameter on the command line.
