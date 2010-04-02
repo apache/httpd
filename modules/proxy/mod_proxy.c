@@ -393,7 +393,7 @@ static const char *set_balancer_param(proxy_server_conf *conf,
         while (status != NULL) {
             ival = atoi(status);
             if (ap_is_HTTP_VALID_RESPONSE(ival)) {
-                *(int*)apr_array_push(balancer->errstatuses) = ival;
+                *(int *)apr_array_push(balancer->errstatuses) = ival;
             }
             else {
                 return "erroronstatus must be one or more HTTP response code";
