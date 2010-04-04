@@ -34,7 +34,7 @@ HTTP</td></tr>
 <h3>Sommaire</h3>
 
     <p>Ce module fournit le gestionnaire <code>send-as-is</code> qui
-    permet à Apache d'envoyer le document sans ajouter la plupart des
+    permet au serveur HTTP Apache d'envoyer le document sans ajouter la plupart des
     en-têtes HTTP habituels.</p>
 
     <p>On peut l'utiliser pour envoyer tous types de données en
@@ -54,7 +54,7 @@ HTTP</td></tr>
 <li><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code></li>
 <li><code class="module"><a href="../mod/mod_cern_meta.html">mod_cern_meta</a></code></li>
 <li><a href="../handler.html">Utilisation des gestionnaires
-d'Apache</a></li>
+d'Apache httpd</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -66,7 +66,7 @@ d'Apache</a></li>
     <div class="example"><p><code>AddHandler send-as-is asis</code></p></div>
 
     <p>Le contenu de tout fichier possédant l'extension
-    <code>.asis</code> sera envoyé par Apache au client pratiquement tel
+    <code>.asis</code> sera envoyé par Apache httpd au client pratiquement tel
     quel. En particulier, les en-têtes HTTP seront déduits du fichier
     lui-même selon les règles du module <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>, si
     bien qu'un fichier asis doit inclure des en-têtes valides, et
@@ -79,7 +79,7 @@ d'Apache</a></li>
 
     <div class="example"><p><code>
       Status: 301 Ou se trouve cette URL maintenant<br />
-      Location: http://xyz.abc.com/foo/bar.html<br />
+      Location: http://xyz.example.com/foo/bar.html<br />
       Content-type: text/html<br />
       <br />
       &lt;html&gt;<br />
@@ -88,7 +88,7 @@ d'Apache</a></li>
       &lt;/head&gt;<br />
       &lt;body&gt;<br />
       &lt;h1&gt;La merveilleuse page de Fred a été déplacée vers<br />
-      &lt;a href="http://xyz.abc.com/foo/bar.html"&gt;le site de
+      &lt;a href="http://xyz.example.com/foo/bar.html"&gt;le site de
       Joe&lt;/a&gt;.<br />
       &lt;/h1&gt;<br />
       &lt;/body&gt;<br />

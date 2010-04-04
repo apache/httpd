@@ -214,23 +214,23 @@ SetHandler server-status<br />
 
 
 <h3><a name="overlapping-webspace" id="overlapping-webspace">Overlapping Webspace</a></h3>
-In order to have two overlapping URLs one has to consider the order in which
+<p>In order to have two overlapping URLs one has to consider the order in which
 certain sections or directives are evaluated. For
-<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> this would be:
+<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> this would be:</p>
 <div class="example"><p><code>
 &lt;Location /foo&gt;<br />
 &lt;/Location&gt;<br />
 &lt;Location /foo/bar&gt;<br />
 &lt;/Location&gt;
 </code></p></div>
-<code class="directive"><a href="./mod/core.html#alias">&lt;Alias&gt;</a></code>es on the other hand,
-are mapped vice-versa:
+<p><code class="directive"><a href="./mod/core.html#alias">&lt;Alias&gt;</a></code>es on the other hand,
+are mapped vice-versa:</p>
 <div class="example"><p><code>
 Alias /foo/bar /srv/www/uncommon/bar<br />
 Alias /foo /srv/www/common/foo<br />
 </code></p></div>
-The same is true for the <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
-directives:
+<p>The same is true for the <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
+directives:</p>
 <div class="example"><p><code>
 ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On

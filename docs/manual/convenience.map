@@ -419,6 +419,7 @@ sslcertificatekeyfile	mod/mod_ssl.html#sslcertificatekeyfile
 sslciphersuite	mod/mod_ssl.html#sslciphersuite
 sslcryptodevice	mod/mod_ssl.html#sslcryptodevice
 sslengine	mod/mod_ssl.html#sslengine
+sslfips	mod/mod_ssl.html#sslfips
 sslhonorcipherorder	mod/mod_ssl.html#sslhonorcipherorder
 sslinsecurerenegotiation	mod/mod_ssl.html#sslinsecurerenegotiation
 sslocspdefaultresponder	mod/mod_ssl.html#sslocspdefaultresponder

@@ -84,7 +84,8 @@ mobiliser des threads que pour les connexions en cours de traitement</td></tr>
     Lorsqu'un client a soumis une première requête, il peut garder la
     connexion ouverte, et envoyer les requêtes suivantes en utilisant le
     même socket. Ceci permet de réduire de manière significative la
-    surcharge due à la création de connexions TCP. Cependant, Apache
+    surcharge due à la création de connexions TCP.
+    Cependant, le serveur HTTP Apache
     mobilise en principe à cet effet un processus/thread enfant en
     attente des données du client, ce qui amène son propre lot
     d'inconvénients. Pour résoudre ce problème, <code class="module"><a href="../mod/event.html">event</a></code>

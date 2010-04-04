@@ -47,7 +47,24 @@
 <h2><a name="overview" id="overview">Overview</a></h2>
     
 
-  <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td /></tr></table>
+  <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td /></tr></table>
+
+  <p>
+  The Apache HTTP Server provides a variety of different mechanisms for
+  logging everything that happens on your server, from the initial
+  request, through the URL mapping process, to the final resolution of
+  the connection, including any errors that may have occurred in the
+  process. In addition to this, third-party modules may provide logging
+  capabilities, or inject entries into the existing log files, and
+  applications such as CGI programs, or PHP scripts, or other handlers,
+  may send messages to the server error log.
+  </p>
+
+  <p>
+  In this document we discuss the logging modules that are a standard
+  part of the http server.
+  </p>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="security" id="security">Security Warning</a></h2>
@@ -71,7 +88,7 @@
 <h2><a name="errorlog" id="errorlog">Error Log</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
     <p>The server error log, whose name and location is set by the
     <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> directive, is the

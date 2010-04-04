@@ -30,8 +30,9 @@ adresse IP)</td></tr>
 <tr><th><a href="module-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Identificateur de Module:</a></th><td>access_compat_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Fichier Source:</a></th><td>mod_access_compat.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache 2.3 à des fins de compatibilité
-avec les précédentes versions d'Apache 2.x. Les directives fournies par
+<tr><th><a href="module-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans la version 2.3 du serveur HTTP Apache
+à des fins de compatibilité
+avec les précédentes versions d'Apache httpd 2.x. Les directives fournies par
 ce module sont devenues obsolètes depuis la refonte d'authz. Voir
 <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></td></tr></table>
 <h3>Sommaire</h3>
@@ -128,7 +129,7 @@ d'environnement</var>
       composantes entières du nom d'hôte doivent correspondre ; ainsi,
       dans l'exemple ci-dessus, <code>foo.apache.org</code>
       correspondra, mais <code>fooapache.org</code> ne conviendra pas.
-      Avec cette configuration, Apache va effectuer une double recherche
+      Avec cette configuration, Apache httpd va effectuer une double recherche
       DNS sur l'adresse IP du client, sans tenir compte de la
       définition de la directive <code class="directive"><a href="../mod/core.html#hostnamelookups">HostnameLookups</a></code>. Tout d'abord, une
       recherche DNS inverse sur l'adresse IP est effectuée pour
