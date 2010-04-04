@@ -24,6 +24,8 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
+            anglaise pour les changements récents.</div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
 au serveur dans son ensemble, ou seulement à des répertoires, fichiers, hôtes,
 ou URLs particuliers.  Ce document décrit comment utiliser les conteneurs de
@@ -126,17 +128,18 @@ fichiers ou de l'arborescence du site web.  Tout d'abord, il est important de
 comprendre la différence entre les deux.  Le système de fichiers est une vue
 de vos disques tels qu'ils sont perçus par votre système d'exploitation.
 Par exemple, avec une installation par défaut,
-Apache est situé dans <code>/usr/local/apache2</code> pour le système de
+Apache httpd est situé dans <code>/usr/local/apache2</code> pour le système de
 fichiers UNIX, ou <code>"c:/Program Files/Apache Group/Apache2"</code> pour
 le système de fichiers Windows.  (Notez que des slashes directs doivent
-toujours être utilisés comme séparateur de chemin dans Apache, même sous
+toujours être utilisés comme séparateur de chemin
+dans les fichiers de configuration d'Apache httpd, même sous
 Windows.)  Quant à
 l'arborescence du site web, il s'agit d'une vue de votre site
 tel que présenté par le
 serveur web et perçue par le client.  Ainsi le chemin <code>/dir/</code> dans
 l'arborescence du site web correspond au chemin
 <code>/usr/local/apache2/htdocs/dir/</code> dans le système de fichiers pour
-une installation d'Apache par défaut sous UNIX.
+une installation d'Apache httpd par défaut sous UNIX.
 En outre, l'arborescence du site web n'a pas besoin de correspondre en permanence au
 système de fichiers, car les pages web peuvent être générées dynamiquement
 à partir de bases de données ou d'autres emplacements.</p>
@@ -219,7 +222,7 @@ Deny from all<br />
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
 n'a pas besoin de faire référence à un élément du système de fichiers.
 Par exemple, l'exemple suivant montre comment faire référence à une URL
-particulière vers un gestionnaire interne d'Apache fourni par le module
+particulière vers un gestionnaire interne du serveur HTTP Apache fourni par le module
 <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>.
 Il n'est pas nécessaire de trouver un fichier nommé <code>server-status</code>
 dans le système de fichiers.</p>
@@ -229,6 +232,30 @@ dans le système de fichiers.</p>
 SetHandler server-status<br />
 &lt;/Location&gt;
 </code></p></div>
+
+
+<h3><a name="overlapping-webspace" id="overlapping-webspace">Espace web imbriqué</a></h3>
+<p>Pour contrôler deux URLs imbriquées, on doit tenir compte de l'ordre
+dans lequel certaines sections ou directives sont évaluées. Pour
+<code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>, on doit
+avoir :</p>
+<div class="example"><p><code>
+&lt;Location /foo&gt;<br />
+&lt;/Location&gt;<br />
+&lt;Location /foo/bar&gt;<br />
+&lt;/Location&gt;
+</code></p></div>
+<p>Les directives <code class="directive"><a href="./mod/core.html#alias">&lt;Alias&gt;</a></code>, quant à elles, sont évaluées vice-versa :</p>
+<div class="example"><p><code>
+Alias /foo/bar /srv/www/uncommon/bar<br />
+Alias /foo /srv/www/common/foo<br />
+</code></p></div>
+<p>Ceci est aussi vrai pour les directives <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code> :</p>
+<div class="example"><p><code>
+ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
+</code></p></div>
+ 
 
 
 <h3><a name="wildcards" id="wildcards">Caractères de remplacement

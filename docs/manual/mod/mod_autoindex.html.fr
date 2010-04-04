@@ -100,7 +100,8 @@ shell Win32 <code>dir</code></td></tr>
 <h2><a name="query" id="query">Arguments de la requête d'autoindexation</a></h2>
     
 
-    <p>Apache 2.0.23 a réorganisé les arguments de requête pour le tri
+    <p>Le serveur HTTP Apache version 2.0.23 a réorganisé
+    les arguments de requête pour le tri
     des colonnes, et intoduit un groupe complet de nouvelles options de
     requête. Pour interdire effectivement au client tout contrôle sur
     l'affichage, l'option <code><a href="#indexoptions.ignoreclient">IndexOptions
@@ -597,7 +598,7 @@ répertoire</td></tr>
 
     
       <dt><a name="indexoptions.charset" id="indexoptions.charset">Charset=<var>jeu de caractères</var></a> (<em>Versions 2.0.61 et
-      supérieures d'Apache</em>)</dt>
+      supérieures du serveur HTTP Apache</em>)</dt>
 
       <dd>Le mot-clé <code>Charset</code> vous permet de spécifier le
       jeu de caractères de la page générée. La valeur par défaut est
@@ -610,7 +611,7 @@ répertoire</td></tr>
       </dd>
 
       <dt><a name="indexoptions.descriptionwidth" id="indexoptions.descriptionwidth">DescriptionWidth=[<var>n</var> | *]</a> (<em>Versions 2.0.23 et
-      supérieures d'Apache</em>)</dt>
+      supérieures du serveur HTTP Apache</em>)</dt>
 
       <dd>Le mot-clé <code>DescriptionWidth</code> vous permet de
       spécifier la taille en caractères de la colonne description.</dd>
@@ -635,7 +636,7 @@ répertoire</td></tr>
       auto-référants.</dd>
 
       <dt><a name="indexoptions.foldersfirst" id="indexoptions.foldersfirst">FoldersFirst</a> (<em>Versions 2.0.23 et
-      supérieures d'Apache</em>)</dt>
+      supérieures du serveur HTTP Apache</em>)</dt>
 
       <dd>Lorsque cette option est activée, la liste des
       sous-répertoires apparaîtra <em>toujours</em> en premier, suivie
@@ -652,7 +653,7 @@ répertoire</td></tr>
 
       <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a>
 	       (<em>Expérimental, versions 2.0.23 et supérieures
-	       d'Apache</em>)</dt>
+	       du serveur HTTP Apache</em>)</dt>
 
       <dd>Cette option expérimentale pour l'affichage
       <code>FancyIndexing</code> permet de construire une table simple
@@ -677,7 +678,7 @@ répertoire</td></tr>
       permettre au navigateur de prévoir les caractéristiques de la page
       sans devoir attendre que toutes les images aient été chargées. En
       l'absence de cette option, c'est la hauteur standard définie par
-      le logiciel Apache qui est choisie comme valeur par défaut.</dd>
+      le logiciel Apache httpd qui est choisie comme valeur par défaut.</dd>
 
       <dt><a name="indexoptions.iconwidth" id="indexoptions.iconwidth">IconWidth[=<var>pixels</var>]</a></dt>
 
@@ -688,7 +689,7 @@ répertoire</td></tr>
       permettre au navigateur de prévoir les caractéristiques de la page
       sans devoir attendre que toutes les images aient été chargées. En
       l'absence de cette option, c'est la largeur standard définie par
-      le logiciel Apache qui est choisie comme valeur par défaut.</dd>
+      le logiciel Apache httpd qui est choisie comme valeur par défaut.</dd>
 
       <dt><a name="indexoptions.ignorecase" id="indexoptions.ignorecase">IgnoreCase</a></dt>
 
@@ -733,22 +734,22 @@ répertoire</td></tr>
 
       <dt><a name="indexoptions.showforbidden" id="indexoptions.showforbidden">ShowForbidden</a></dt>
 
-      <dd>Si cette option est activée, Apache affichera les fichiers
+      <dd>Si cette option est activée, Apache httpd affichera les fichiers
       normalement cachés suite au retour des valeurs
       <code>HTTP_UNAUTHORIZED</code> ou <code>HTTP_FORBIDDEN</code> par
       la sous-requête.</dd>
 
       <dt><a name="indexoptions.suppresscolumnsorting" id="indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></dt>
 
-      <dd>Si cette option est activée, Apache supprimera les liens
+      <dd>Si cette option est activée, Apache httpd supprimera les liens
       hyper-texte dans les en-têtes de colonnes dans le cas d'un
       affichage "amélioré". Par défaut, ces en-têtes constituent des liens
       hyper-texte, et la sélection de l'un d'entre eux va trier l'index
       du répertoire en fonction des valeurs de la colonne
-      correspondante. <strong>Avant
-      Apache 2.0.23, cette option désactivait aussi l'interprétation des
+      correspondante. <strong>Avant la version 2.0.23 du serveur HTTP
+      Apache, cette option désactivait aussi l'interprétation des
       informations de tri transmises via les arguments de la
-      requête.</strong> Depuis Apache 2.0.23, ce comportement est
+      requête.</strong> Depuis la version 2.0.23 du serveur HTTP Apache, ce comportement est
       contrôlé par <a href="#indexoptions.ignoreclient"><code>IndexOptions
       IgnoreClient</code></a>.</dd>
 
@@ -779,7 +780,8 @@ répertoire</td></tr>
       généré comme dans le cas général.</dd>
 
       <dt><a name="indexoptions.suppressicon" id="indexoptions.suppressicon">SuppressIcon</a>
-	       (<em>Versions 2.0.23 et supérieures d'Apache</em>)</dt>
+	       (<em>Versions 2.0.23 et supérieures du serveur
+	       HTTP Apache</em>)</dt>
 
       <dd>L'activation de cette option supprime l'affichage des icônes
       dans le cas d'un affichage "amélioré". La combinaison de
@@ -795,7 +797,7 @@ répertoire</td></tr>
       de dernière modification dans le cas d'un affichage "amélioré".</dd>
 
       <dt><a name="indexoptions.suppressrules" id="indexoptions.suppressrules">SuppressRules</a>
-      (<em>Versions 2.0.23 et supérieures d'Apache</em>)</dt>
+      (<em>Versions 2.0.23 et supérieures du serveur HTTP Apache</em>)</dt>
 
       <dd>L'activation de cette option supprime l'affichage des lignes
       horizontales (éléments <code>hr</code>) dans les index de
@@ -812,7 +814,8 @@ répertoire</td></tr>
       du fichier dans le cas d'un affichage "amélioré".</dd>
 
       <dt><a name="indexoptions.trackmodified" id="indexoptions.trackmodified">TrackModified</a>
-	       (<em>Versions 2.0.23 et supérieures d'Apache</em>)</dt>
+	       (<em>Versions 2.0.23 et supérieures du serveur
+	       HTTP Apache</em>)</dt>
 
       <dd>Cette option renvoie les valeurs <code>Last-Modified</code> et
       <code>ETag</code> pour le répertoire indexé dans l'en-tête HTTP.
@@ -834,7 +837,7 @@ répertoire</td></tr>
       désactivée.</dd>
 
       <dt><a name="indexoptions.type" id="indexoptions.type">Type=<var>type MIME</var></a> (<em>Versions 2.0.61 et
-      supérieures d'Apache</em>)</dt>
+      supérieures du serveur HTTP Apache</em>)</dt>
 
       <dd>Le mot-clé <code>Type</code> vous permet de spécifier le type
       MIME de la page générée. La valeur par défaut est
@@ -847,7 +850,7 @@ répertoire</td></tr>
 
 
       <dt><a name="indexoptions.versionsort" id="indexoptions.versionsort">VersionSort</a>
-      (<em>Apache 2.0a3 and later</em>)</dt>
+      (<em>Versions 2.0a3 et supérieures du serveur HTTP Apache</em>)</dt>
 
       <dd>Le mot-clé <code>VersionSort</code> permet de trier les
       fichiers contenant des numéros de version d'une manière
@@ -876,7 +879,7 @@ répertoire</td></tr>
       </dd>
 
       <dt><a name="indexoptions.xhtml" id="indexoptions.xhtml">XHTML</a>
-      (<em>Versions 2.0.49 et supérieures d'Apache</em>)</dt>
+      (<em>Versions 2.0.49 et supérieures du serveur HTTP Apache</em>)</dt>
 
       <dd>Le mot-clé <code>XHTML</code> enjoint
       <code class="module"><a href="../mod/mod_autoindex.html">mod_autoindex</a></code> de générer du code XHTML 1.0 au
@@ -886,7 +889,7 @@ répertoire</td></tr>
    
    <dl><dt>Options d'index incrémentales</dt>
    <dd>
-     <p>Apache 1.3.3 a apporté d'importantes modifications dans la
+     <p>Apache httpd 1.3.3 a apporté d'importantes modifications dans la
      gestion des directives <code class="directive">IndexOptions</code>. En
      particulier :</p>
 

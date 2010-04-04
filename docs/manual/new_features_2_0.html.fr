@@ -44,7 +44,8 @@
         <dl>
             <dt>Threading Unix</dt>
 
-            <dd>Sur les systèmes Unix qui supportent les threads POSIX, Apache 
+            <dd>Sur les systèmes Unix qui supportent les threads
+	    POSIX, Apache httpd
             peut à présent tourner en mode hybride multi-processus et 
             multi-threadé, ce qui augmente l'extensibilité et la performance 
             du serveur pour la plupart des configurations.</dd>
@@ -53,25 +54,26 @@
 
             <dd>Le processus de compilation a été refait de A à Z; 
             il utilise à présent <code>autoconf</code> et <code>libtool</code>, 
-            ce qui rend la compilation d'Apache plus familière aux utilisateurs 
+            ce qui rend la compilation d'Apache httpd plus familière aux utilisateurs 
             d'autre logiciels de mème type.</dd>
 
             <dt>Support Multiprotocole</dt>
 
-            <dd>Apache dispose désormais de l'infrastructure nécessaire pour supporter 
+            <dd>Le serveur HTTP Apache dispose désormais de
+	    l'infrastructure nécessaire pour supporter
             d'autres protocoles. Le module <code class="module"><a href="./mod/mod_echo.html">mod_echo</a></code> illustre ces 
             possibilités.</dd>
 
             <dt>Support amélioré des Plate-formes non-Unix</dt>
         
-            <dd>Apache 2.0 se montre plus rapide et plus stable sur les plate-formes 
+            <dd>Le serveur HTTP Apache 2.0 se montre plus rapide et plus stable sur les plate-formes 
             non Unix, telles BeOS, OS/2, NetWare et Windows. L'apparition des 
             <a href="mpm.html">Modules Multi-Processus</a> (MPMs), ainsi que de 
             la bibliothèque "Apache Portable Runtime" (APR) permet a Apache de 
             tirer parti des API natives de ces plate-formes, sans s'appuyer sur leurs 
             couches POSIX souvent boguées et peu optimisées.</dd>
 
-            <dt>Nouvelle API Apache</dt>
+            <dt>Nouvelle API d'Apache httpd</dt>
 
             <dd>L'Interface de Programmation (API) des modules a beaucoup changé 
             avec le passage à la version 2.0.
@@ -81,7 +83,7 @@
             est géré au moyen de "crochets" (hooks), ce qui rend la gestion 
             flexible. De nouveaux appels ont été également créés 
             afin de permettre l'implémentation d'autres fonctions dans les modules, 
-            sans devoir corriger le noyau du serveur Apache.</dd>
+            sans devoir corriger le noyau du serveur HTTP Apache.</dd>
 
             <dt>Support IPv6</dt>
 
@@ -94,7 +96,8 @@
 
             <dt>Filtering</dt>
 
-            <dd>Il est maintenant possible d'écrire des modules Apache pour filtrer
+            <dd>Il est maintenant possible d'écrire des modules
+	    pour Apache  httpd pour filtrer
             les flux de données entrant ou sortant du serveur. A titre d'exemple, 
             il est possible de filtrer des directives Server Side Include de la sortie 
             standard d'un script CGI, au moyen du filtre <code>INCLUDES</code> fourni
@@ -121,7 +124,7 @@
 
             <dt>Support natif de l'Unicode sous Windows NT</dt>
 
-            <dd>Apache 2.0 sur Windows NT utilise à présent l'utf-8 pour tous les 
+            <dd>Apache httpd 2.0 sur Windows NT utilise à présent l'utf-8 pour tous les 
             noms de fichiers. Ces noms de fichiers sont directement traduits vers
             l'encodage Unicode du système de fichiers, ce qui permet le support
             multilangue pour toutes les installations sur la famille NT de Windows, y
@@ -131,7 +134,7 @@
 
             <dt>Mise à jour de la Bibliothèque d'Expressions Rationnelles</dt>
 
-            <dd>Apache 2.0 contient la <a href="http://www.pcre.org/">bibliothèque 
+            <dd>Apache httpd 2.0 contient la <a href="http://www.pcre.org/">bibliothèque 
             d'expressions rationnelles compatible Perl </a>(Perl Compatible Regular 
             Expression Library - PCRE). Toutes les expressions rationnelles sont dont
             gérées avec la syntaxe de Perl 5, plus puissante.</dd>
@@ -145,25 +148,25 @@
         <dl>
             <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
 
-            <dd>Apparu dans Apache 2.0, ce module est une interface aux protocoles de 
+            <dd>Apparu dans Apache httpd 2.0, ce module est une interface aux protocoles de 
             criffrement SSL/TLS fournis par OpenSSL.</dd>
 
             <dt><code class="module"><a href="./mod/mod_dav.html">mod_dav</a></code></dt>
 
-            <dd>Apparu dans Apache 2.0, ce module implémente les spécifications HTTP de 
+            <dd>Apparu dans Apache httpd 2.0, ce module implémente les spécifications HTTP de 
             gestion distribuée de versions et de rédaction (Distributed Authoring and 
             Versioning - DAV), destinées à la mise en ligne et à la maintenance des 
             contenus Web.</dd>
 
             <dt><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></dt>
 
-            <dd>Module apparu dans Apachge 2.0, mod_deflate permet aux navigateurs qui 
+            <dd>Module apparu dans Apachge httpd 2.0, mod_deflate permet aux navigateurs qui 
             le supportent de demander la compression des contenus envoyés par le serveur. 
             Cela à l'avantage de réduite l'occupation de la bande passante.</dd>
 
             <dt><code class="module"><a href="./mod/mod_auth_ldap.html">mod_auth_ldap</a></code></dt>
 
-            <dd>Apparu dans Apache 2.0.41, ce module permet aux administrateurs
+            <dd>Apparu dans Apache httpd 2.0.41, ce module permet aux administrateurs
             d'utiliser un arbre LDAP pour gérer la base d'utilisateurs pour les 
             Authentifications Basiques HTTP. Un module voisin,
             <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>, permet de globaliser les connexions à l'arbre LDAP
@@ -176,18 +179,20 @@
 
             <dt><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></dt>
 
-            <dd>Apparu dans Apache 2.0, ce module expérimental permet la conversion 
+            <dd>Apparu dans Apache httpd 2.0, ce module expérimental permet la conversion 
             et l'enregistrement entre jeux de caractères.</dd>
 
             <dt><code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code></dt>
 
-            <dd>Apparu dans Apache 2.0, ce module implémente les fonctionnalités du 
-            module <code>mod_mmap_static</code> présent dans Apache 1.3, et offre des 
+            <dd>Apparu dans Apache httpd 2.0, ce module implémente les fonctionnalités du 
+            module <code>mod_mmap_static</code> présent du serveur
+	    HTTP Apache 1.3, et offre des 
             fonctions plus avancées pour la gestion de la cache.</dd>
 
             <dt><code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code></dt>
 
-            <dd>Ce module gagne beaucoup de flexibilité avec Apache 2.0 : on peut 
+            <dd>Ce module gagne beaucoup de flexibilité avec Apache
+	    httpd 2.0 : on peut 
             désormais l'utiliser pour modifier les en-têtes des requêtes 
             utilisés par <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>, et peut aussi positionner les 
             en-têtes des réponses de manière conditionnelle.</dd>

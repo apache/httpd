@@ -28,9 +28,10 @@
 </div>
 
 
-    <p>Ce document couvre l'installation et la compilation d'Apache
+    <p>Ce document couvre l'installation et la compilation du serveur
+    HTTP Apache
     sur les systèmes Unix et similaires seulement. Pour la compilation et
-    l'installation sous Windows, voir <a href="platform/windows.html">Utiliser Apache avec Microsoft
+    l'installation sous Windows, voir <a href="platform/windows.html">Utiliser le serveur HTTP Apache avec Microsoft
     Windows</a>. Pour les autres plateformes, se référer à la documentation par
      <a href="platform/">plateforme</a>.</p>
 
@@ -54,7 +55,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#test">Test</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#upgrading">Mise à jour</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="programs/configure.html">Configuration de l'arborescence
-	des sources</a></li><li><a href="invoking.html">Démarrer Apache</a></li><li><a href="stopping.html">Arrêt et redémarrage</a></li></ul></div>
+	des sources</a></li><li><a href="invoking.html">Démarrer Apache httpd</a></li><li><a href="stopping.html">Arrêt et redémarrage</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Aperçu pour les plus pressés</a></h2>
@@ -123,12 +124,12 @@
 <div class="section">
 <h2><a name="requirements" id="requirements">Prérequis</a></h2>
 
-    <p>Les prérequis pour la construction d'Apache sont les suivants:</p>
+    <p>Les prérequis pour la construction d'Apache httpd sont les suivants:</p>
 
     <dl>
       <dt>Espace disque</dt>
       <dd>Assurez-vous d'avoir au moins 50 MB d'espace disque disponible
-      temporaire. Après l'installation Apache occupe
+      temporaire. Après l'installation le serveur occupe
       approximativement 10 MB d'espace disque. L'espace disque réellement
       nécessaire va varier considérablement en fonction de vos options
       de configuration et de la présence éventuelle de modules tiers.</dd>

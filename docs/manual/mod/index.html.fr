@@ -29,8 +29,8 @@
 
     <p>
       Ci-dessous se trouve la liste de tous les modules qui font partie de
-      la distribution Apache.  Voir aussi la liste alphabétique complète
-      de <a href="directives.html">toutes les directives Apache</a>.
+      la distribution du serveur HTTP Apache.  Voir aussi la liste alphabétique complète
+      de <a href="directives.html">toutes les directives du serveur HTTP Apache</a>.
     </p>
   </div>
 <div id="quickview"><ul id="toc">

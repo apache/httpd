@@ -51,7 +51,7 @@ type de média ou de la méthode de requête.</td></tr>
 <li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li>
 <li><a href="../howto/cgi.html">Contenu dynamique avec CGI</a></li>
 <li><a href="../handler.html">Utilisation des gestionnaires
-d'Apache</a></li>
+d'Apache httpd</a></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
