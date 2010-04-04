@@ -87,7 +87,7 @@
     <title>Error Log</title>
 
     <related>
-      </modulelist>
+      <modulelist>
         <module>core</module>
       </modulelist>
       <directivelist>
