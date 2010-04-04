@@ -237,23 +237,23 @@ SetHandler server-status<br />
 </section>
 
 <section id="overlapping-webspace"><title>Overlapping Webspace</title>
-In order to have two overlapping URLs one has to consider the order in which
+<p>In order to have two overlapping URLs one has to consider the order in which
 certain sections or directives are evaluated. For
-<directive type="section" module="core">Location</directive> this would be:
+<directive type="section" module="core">Location</directive> this would be:</p>
 <example>
 &lt;Location /foo&gt;<br />
 &lt;/Location&gt;<br />
 &lt;Location /foo/bar&gt;<br />
 &lt;/Location>
 </example>
-<directive type="section" module="core">Alias</directive>es on the other hand,
-are mapped vice-versa:
+<p><directive type="section" module="core">Alias</directive>es on the other hand,
+are mapped vice-versa:</p>
 <example>
 Alias /foo/bar /srv/www/uncommon/bar<br />
 Alias /foo /srv/www/common/foo<br />
 </example>
-The same is true for the <directive module="mod_proxy">ProxyPass</directive>
-directives:
+<p>The same is true for the <directive module="mod_proxy">ProxyPass</directive>
+directives:</p>
 <example>
 ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
