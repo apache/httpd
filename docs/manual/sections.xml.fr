@@ -255,24 +255,24 @@ SetHandler server-status<br />
 </section>
 
 <section id="overlapping-webspace"><title>Espace web imbriqu&eacute;</title>
-Pour contr&ocirc;ler deux URLs imbriqu&eacute;es, on doit tenir compte de l'ordre
+<p>Pour contr&ocirc;ler deux URLs imbriqu&eacute;es, on doit tenir compte de l'ordre
 dans lequel certaines sections ou directives sont &eacute;valu&eacute;es. Pour
 <directive type="section" module="core">Location</directive>, on doit
-avoir :
+avoir :</p>
 <example>
 &lt;Location /foo&gt;<br />
 &lt;/Location&gt;<br />
 &lt;Location /foo/bar&gt;<br />
 &lt;/Location>
 </example>
-Les directives <directive type="section"
-module="core">Alias</directive>, quant &agrave; elles, sont &eacute;valu&eacute;es vice-versa :
+<p>Les directives <directive type="section"
+module="core">Alias</directive>, quant &agrave; elles, sont &eacute;valu&eacute;es vice-versa :</p>
 <example>
 Alias /foo/bar /srv/www/uncommon/bar<br />
 Alias /foo /srv/www/common/foo<br />
 </example>
-Ceci est aussi vrai pour les directives <directive
-module="mod_proxy">ProxyPass</directive> :
+<p>Ceci est aussi vrai pour les directives <directive
+module="mod_proxy">ProxyPass</directive> :</p>
 <example>
 ProxyPass /special-area http://special.example.com smax=5 max=10
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
