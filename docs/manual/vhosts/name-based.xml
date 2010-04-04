@@ -32,7 +32,6 @@
 <seealso><a href="details.html">An In-Depth Discussion of Virtual Host Matching</a></seealso>
 <seealso><a href="mass.html">Dynamically configured mass virtual hosting</a></seealso>
 <seealso><a href="examples.html">Virtual Host examples for common setups</a></seealso>
-<seealso><a href="examples.html#serverpath">ServerPath configuration example</a></seealso>
 
 <section id="namevip"><title>Name-based vs. IP-based Virtual Hosts</title>
 
@@ -46,22 +45,14 @@
     <p>Name-based virtual hosting is usually simpler, since you need
     only configure your DNS server to map each hostname to the correct
     IP address and then configure the Apache HTTP Server to recognize
-    the different hostnames.  Name-based virtual hosting also eases
-    the demand for scarce IP addresses.  Therefore you should use
+    the different hostnames. Name-based virtual hosting also eases
+    the demand for scarce IP addresses. Therefore you should use
     name-based virtual hosting unless there is a specific reason to
-    choose IP-based virtual hosting.  Some reasons why you might consider
+    choose IP-based virtual hosting. Some reasons why you might consider
     using IP-based virtual hosting:</p>
 
     <ul>
-        <li>Some ancient clients are not compatible with name-based virtual
-        hosting.  For name-based virtual hosting to work, the client must send
-        the HTTP Host header.  This is required by HTTP/1.1, and is
-        implemented by all modern HTTP/1.0 browsers as an extension.  If you
-        need to support obsolete clients and still use name-based virtual
-        hosting, a possible technique is discussed at the end of this
-        document.</li>
-
-        <li>Name-based virtual hosting cannot be used with SSL secure servers
+       <li>Name-based virtual hosting cannot be used with SSL secure servers
         because of the nature of the SSL protocol.</li>
 
         <li>Some operating systems and network equipment implement bandwidth
@@ -83,7 +74,6 @@
         <directive module="core">NameVirtualHost</directive>
         <directive module="core">ServerAlias</directive>
         <directive module="core">ServerName</directive>
-        <directive module="core">ServerPath</directive>
         <directive module="core" type="section">VirtualHost</directive>
     </directivelist>
 </related>
@@ -211,59 +201,4 @@
 
 </section>
 
-<section id="compat"><title>Compatibility with Older Browsers</title>
-
-    <p>As mentioned earlier, there are some clients
-    who do not send the required data for the name-based virtual
-    hosts to work properly. These clients will always be sent the
-    pages from the first virtual host listed for that IP address
-    (the <cite>primary</cite> name-based virtual host).</p>
-
-    <note><title>How much older?</title>
-    <p>Please note that when we say older, we really do mean older. You are
-    very unlikely to encounter one of these browsers in use today. All
-    current versions of any browser send the <code>Host</code> header as
-    required for name-based virtual hosts.</p>
-    </note>
-
-    <p>There is a possible workaround with the <directive
-    module="core">ServerPath</directive>
-    directive, albeit a slightly cumbersome one:</p>
-
-    <p>Example configuration:</p>
-
-    <example>
-        NameVirtualHost 111.22.33.44<br />
-        <br />
-        &lt;VirtualHost 111.22.33.44&gt;<br />
-        <indent>
-            ServerName www.domain.tld<br />
-            ServerPath /domain<br />
-            DocumentRoot /web/domain<br />
-        </indent>
-        &lt;/VirtualHost&gt;<br />
-    </example>
-
-    <p>What does this mean? It means that a request for any URI
-    beginning with "<code>/domain</code>" will be served from the
-    virtual host <code>www.domain.tld</code>. This means that the
-    pages can be accessed as <code>http://www.domain.tld/domain/</code> 
-    for all clients, although clients sending a <code>Host:</code> header 
-    can also access it as <code>http://www.domain.tld/</code>.</p>
-
-    <p>In order to make this work, put a link on your primary
-    virtual host's page to
-    <code>http://www.domain.tld/domain/</code>. Then, in the virtual
-    host's pages, be sure to use either purely relative links
-    (<em>e.g.</em>, "<code>file.html</code>" or
-    "<code>../icons/image.gif</code>") or links containing the
-    prefacing <code>/domain/</code> (<em>e.g.</em>,
-    "<code>http://www.domain.tld/domain/misc/file.html</code>" or
-    "<code>/domain/misc/file.html</code>").</p>
-
-    <p>This requires a bit of discipline, but adherence to these
-    guidelines will, for the most part, ensure that your pages will
-    work with all browsers, new and old.</p>
-
-</section>
 </manualpage>
