@@ -34,6 +34,37 @@
     contain.</p>
   </summary>
 
+    <section id="overview">
+    <title>Overview</title>
+
+  <related>
+      <modulelist>
+        <module>mod_log_config</module>
+        <module>mod_log_forensic</module>
+        <module>mod_logio</module>
+        <module>mod_rewrite</module>
+        <module>mod_cgi</module>
+      </modulelist>
+  </related>
+
+  <p>
+  The Apache HTTP Server provides a variety of different mechanisms for
+  logging everything that happens on your server, from the initial
+  request, through the URL mapping process, to the final resolution of
+  the connection, including any errors that may have occurred in the
+  process. In addition to this, third-party modules may provide logging
+  capabilities, or inject entries into the existing log files, and
+  applications such as CGI programs, or PHP scripts, or other handlers,
+  may send messages to the server error log.
+  </p>
+
+  <p>
+  In this document we discuss the logging modules that are a standard
+  part of the http server.
+  </p>
+
+  </section>
+
   <section id="security">
     <title>Security Warning</title>
 
@@ -56,6 +87,9 @@
     <title>Error Log</title>
 
     <related>
+      </modulelist>
+        <module>core</module>
+      </modulelist>
       <directivelist>
         <directive module="core">ErrorLog</directive>
         <directive module="core">LogLevel</directive>
@@ -572,6 +606,7 @@
         <module>mod_cgi</module>
         <module>mod_rewrite</module>
       </modulelist>
+
       <directivelist>
         <directive module="mod_log_config">LogFormat</directive>
         <directive module="mod_log_forensic">ForensicLog</directive>
