@@ -231,9 +231,11 @@ static apr_status_t uldap_connection_cleanup(void *param)
  */
 static apr_status_t util_ldap_connection_remove (void *param) { 
     util_ldap_connection_t *ldc = param, *l  = NULL, *prev = NULL;
-    util_ldap_state_t *st = ldc->st;
+    util_ldap_state_t *st;
 
     if (!ldc) return APR_SUCCESS;
+
+    st = ldc->st;
 
     uldap_connection_unbind(ldc);
 
