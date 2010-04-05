@@ -411,6 +411,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
     fprintf(dbg, "Environment: \n");
     for (i = 0; env[i]; ++i)
         fprintf(dbg, "'%s'\n", env[i]);
+    fclose(dbg);
 #endif
 
     /* Transmute ourselves into the script.
@@ -480,9 +481,6 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
             }
         }
     }
-#ifdef DEBUG_CGI
-    fclose(dbg);
-#endif
     return (rc);
 }
 
