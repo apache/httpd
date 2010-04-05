@@ -44,7 +44,7 @@
 } while(0)
 
 #define CREATE_NODE(pool,name) do {                          \
-    (name) = apr_pcalloc(pool, sizeof(*(name)));
+    (name) = apr_pcalloc(pool, sizeof(*(name)));             \
 } while(0)
 
 static void debug_printf(request_rec *r, const char *fmt, ...)
