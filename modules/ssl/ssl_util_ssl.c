@@ -320,7 +320,6 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
 {
 #ifdef HAVE_SSL_X509V3_EXT_d2i
     BASIC_CONSTRAINTS *bc;
-    int idx;
     BIGNUM *bn = NULL;
     char *cp;
 
