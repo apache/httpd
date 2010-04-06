@@ -26,7 +26,7 @@
 
 
     <p>This document describes how to efficiently serve an
-    arbitrary number of virtual hosts with the Apache httpd webserver. A
+    arbitrary number of virtual hosts with the Apache HTTP Server. A
     <a href="../rewrite/mass.html">separate document</a> discusses using
     <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to create dynamic mass virtual hosts.
     </p>
@@ -108,17 +108,17 @@ NameVirtualHost 111.22.33.44
     used here is based on automatically inserting this information into the
     pathname of the file that is used to satisfy the request. This
     can be most easily done by using <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> 
-    with Apache 2.0. Alternatively, 
+    with Apache httpd. Alternatively, 
     <a href="../rewrite/vhosts.html"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> can 
     be used</a>.</p>
     <p>Both of these modules are disabled by default; you must enable
-    one of them when configuring and building Apache if you want to
+    one of them when configuring and building Apache httpd if you want to
     use this technique.</p>
 
     <p>A couple of things need to be determined from the request in
     order to make the dynamic
     virtual host look like a normal one. The most important is the
-    server name, which is used by Apache to generate
+    server name, which is used by the server to generate
     self-referential URLs etc. It is configured with the
     <code>ServerName</code> directive, and it is available to CGIs
     via the <code>SERVER_NAME</code> environment variable. The
@@ -128,7 +128,7 @@ NameVirtualHost 111.22.33.44
     request. With <code>UseCanonicalName DNS</code>, it is taken from a
     reverse DNS lookup of the virtual host's IP address. The former
     setting is used for name-based dynamic virtual hosting, and the
-    latter is used for IP-based hosting. If Apache cannot work out
+    latter is used for IP-based hosting. If httpd cannot work out
     the server name because there is no <code>Host:</code> header,
     or the DNS lookup fails, then the value configured with
     <code>ServerName</code> is used instead.</p>
@@ -145,8 +145,6 @@ NameVirtualHost 111.22.33.44
     setting the <code>DOCUMENT_ROOT</code> environment variable so
     if any CGIs or SSI documents make use of it, they will get a
     misleading value.</p>
-
-    
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -211,7 +209,7 @@ ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
 <h2><a name="combinations" id="combinations">Using Multiple Virtual
   Hosting Systems on the Same Server</a></h2>
 
-    <p>With more complicated setups, you can use Apache's normal
+    <p>With more complicated setups, you can use httpd's normal
     <code>&lt;VirtualHost&gt;</code> directives to control the
     scope of the various virtual hosting configurations. For
     example, you could have one IP address for general customers' homepages,
