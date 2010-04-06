@@ -36,7 +36,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#overview">Overview</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#simple">Dynamic Virtual Hosts with
 mod_vhost_alias</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#homepages">A Virtually Hosted Homepages System</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#homepages">Simplified Dynamic Virtual Hosts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#combinations">Using Multiple Virtual
   Hosting Systems on the Same Server</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ipbased">More Efficient IP-Based Virtual Hosting</a></li>
@@ -139,8 +139,8 @@ NameVirtualHost 111.22.33.44
     configuration, this is used by the core module when
     mapping URIs to filenames, but when the server is configured to
     do dynamic virtual hosting, that job must be taken over by another
-    module (either <code>mod_vhost_alias</code> or
-    <code>mod_rewrite</code>), which has a different way of doing
+    module (either <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> or
+    <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>), which has a different way of doing
     the mapping. Neither of these modules is responsible for
     setting the <code>DOCUMENT_ROOT</code> environment variable so
     if any CGIs or SSI documents make use of it, they will get a
@@ -153,7 +153,7 @@ mod_vhost_alias</a></h2>
 
     <p>This extract from <code>httpd.conf</code> implements the
     virtual host arrangement outlined in the <a href="#motivation">Motivation</a> section above
-    using <code>mod_vhost_alias</code>.</p>
+    using <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code>.</p>
 
 <div class="example"><p><code>
 # get the server name from the Host: header<br />
@@ -180,21 +180,24 @@ examples.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="homepages" id="homepages">A Virtually Hosted Homepages System</a></h2>
+<h2><a name="homepages" id="homepages">Simplified Dynamic Virtual Hosts</a></h2>
 
     <p>This is an adjustment of the above system, tailored for an
     ISP's homepages server. Using a slightly more complicated
     configuration, we can select substrings of the server name to
     use in the filename so that, for example, the documents for
     <code>www.user.isp.com</code> are found in
-    <code>/home/user/</code>. It uses a single <code>cgi-bin</code>
+    <code>/home/user/www</code>. It uses a single <code>cgi-bin</code>
     directory instead of one per virtual host.</p>
 
 <div class="example"><p><code>
-# all the preliminary stuff is the same as above, then<br />
+UseCanonicalName Off<br />
+<br />
+LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
+CustomLog logs/access_log vcommon<br />
 <br />
 # include part of the server name in the filenames<br />
-VirtualDocumentRoot /www/hosts/%2/docs<br />
+VirtualDocumentRoot /home/%2/www<br />
 <br />
 # single cgi-bin directory<br />
 ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
@@ -214,8 +217,9 @@ ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
     scope of the various virtual hosting configurations. For
     example, you could have one IP address for general customers' homepages,
     and another for commercial customers, with the following setup.
-    This can, of course, be combined with conventional
-    <code>&lt;VirtualHost&gt;</code> configuration sections.</p>
+    This can be combined with conventional
+    <code>&lt;VirtualHost&gt;</code> configuration sections, as shown
+    below.</p>
 
 <div class="example"><p><code>
 UseCanonicalName Off<br />
@@ -265,7 +269,7 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
     <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive, the reverse
     DNS of the relevant IP will be used instead. 
     If this is not the server name you
-    wish to use, a bogus entry (<code>ServerName
+    wish to use, a bogus entry (eg. <code>ServerName
     none.example.com</code>) can be added to get around this
     behaviour.</p>
 </div>
