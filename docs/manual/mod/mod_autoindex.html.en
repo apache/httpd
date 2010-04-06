@@ -347,9 +347,9 @@ icon selected by MIME content-type</td></tr>
     filename or a complete filename.</p>
 
     <div class="example"><h3>Examples</h3><p><code>
-      AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
-      AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
-      AddIcon /icons/backup.xbm *~
+      AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
+      AddIcon /icons/dir.png ^^DIRECTORY^^<br />
+      AddIcon /icons/backup.png *~
     </code></p></div>
 
     <p><code class="directive"><a href="#addiconbytype">AddIconByType</a></code>
@@ -379,7 +379,7 @@ content-encoding</td></tr>
     <code>x-compress</code>.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      AddIconByEncoding /icons/compress.xbm x-compress
+      AddIconByEncoding /icons/compress.png x-compress
     </code></p></div>
 
 </div>
@@ -406,7 +406,7 @@ content-type</td></tr>
     required the mime types.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      AddIconByType (IMG,/icons/image.xbm) image/*
+      AddIconByType (IMG,/icons/image.png) image/*
     </code></p></div>
 
 </div>
@@ -426,7 +426,7 @@ configured</td></tr>
     <var>Url-path</var> is a (%-escaped) relative URL to the icon.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      DefaultIcon /icon/unknown.xbm
+      DefaultIcon /icon/unknown.png
     </code></p></div>
 
 </div>
