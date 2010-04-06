@@ -341,9 +341,9 @@ icon selected by MIME content-type</description>
     filename or a complete filename.</p>
 
     <example><title>Examples</title>
-      AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
-      AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
-      AddIcon /icons/backup.xbm *~
+      AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
+      AddIcon /icons/dir.png ^^DIRECTORY^^<br />
+      AddIcon /icons/backup.png *~
     </example>
 
     <p><directive module="mod_autoindex">AddIconByType</directive>
@@ -375,7 +375,7 @@ content-encoding</description>
     <code>x-compress</code>.</p>
 
     <example><title>Example</title>
-      AddIconByEncoding /icons/compress.xbm x-compress
+      AddIconByEncoding /icons/compress.png x-compress
     </example>
 </usage>
 </directivesynopsis>
@@ -404,7 +404,7 @@ content-type</description>
     required the mime types.</p>
 
     <example><title>Example</title>
-      AddIconByType (IMG,/icons/image.xbm) image/*
+      AddIconByType (IMG,/icons/image.png) image/*
     </example>
 </usage>
 </directivesynopsis>
@@ -426,7 +426,7 @@ configured</description>
     <var>Url-path</var> is a (%-escaped) relative URL to the icon.</p>
 
     <example><title>Example</title>
-      DefaultIcon /icon/unknown.xbm
+      DefaultIcon /icon/unknown.png
     </example>
 </usage>
 </directivesynopsis>
