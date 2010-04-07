@@ -72,7 +72,7 @@
           address, or nobody else will be able to see your web site. You
           can put entries in your <code>hosts</code> file for local
           testing, but that will work only from the machine with those
-          hosts entries.</p>
+          <code>hosts</code> entries.</p>
     </div>
 
     <div class="example"><h3>Server configuration</h3><p><code>
@@ -530,6 +530,10 @@
     <p>A request to an unspecified address on port 80 is served from the
     default vhost. Any other request to an unspecified address and port is
     served from the main server.</p>
+
+    <p>Any use of <code>*</code> in a virtual host declaration will have
+    higher precedence than <code>_default_</code>.</p>
+
     
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
