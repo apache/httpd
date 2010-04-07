@@ -128,6 +128,11 @@
     <p>In addition, if you wish to have caching enabled, consult
     the documentation from <module>mod_cache</module>.</p>
 
+    <example><title>Reverse Proxy</title>
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
+    </example>
+
     <example><title>Forward Proxy</title>
     ProxyRequests On<br />
     ProxyVia On<br />
@@ -139,20 +144,6 @@
       Allow from internal.example.com<br />
     </indent>
     &lt;/Proxy&gt;
-    </example>
-
-    <example><title>Reverse Proxy</title>
-    ProxyRequests Off<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <indent>
-      Order deny,allow<br />
-      Allow from all<br />
-    </indent>
-    &lt;/Proxy&gt;<br />
-    <br />
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
     </example>
     </section> <!-- /examples -->
 
