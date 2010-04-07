@@ -23,10 +23,6 @@
 #include "apr_strings.h"
 #include "apr_buckets.h"
 
-#if APR_HAVE_STDIO_H
-#include <stdio.h>              /* for sprintf() */
-#endif
-
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>             /* for getpid() */
 #endif
@@ -308,9 +304,9 @@ static void dav_format_time(int style, apr_time_t sec, char *buf)
         /* ### should we use "-00:00" instead of "Z" ?? */
 
         /* 20 chars plus null term */
-        sprintf(buf, "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
-               tms.tm_year + 1900, tms.tm_mon + 1, tms.tm_mday,
-               tms.tm_hour, tms.tm_min, tms.tm_sec);
+        apr_snprintf(buf, sizeof(buf), "%.4d-%.2d-%.2dT%.2d:%.2d:%.2dZ",
+                     tms.tm_year + 1900, tms.tm_mon + 1, tms.tm_mday,
+                     tms.tm_hour, tms.tm_min, tms.tm_sec);
         return;
     }
 
@@ -900,7 +896,7 @@ static apr_status_t dav_fs_mktemp(apr_file_t **fp, char *templ, apr_pool_t *p)
 
     do {
         num = (num + 1) % ( 1 << 23 );
-        snprintf(numstr, 7, "%06x", num);
+        apr_snprintf(numstr, 7, "%06x", num);
         rv = apr_file_open(fp, templ,
                            APR_WRITE | APR_CREATE | APR_BINARY | APR_EXCL,
                            APR_OS_DEFAULT, p);
