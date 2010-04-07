@@ -2567,32 +2567,13 @@ static const char *set_use_canonical_phys_port(cmd_parms *cmd, void *d_,
 }
 
 static const char *include_config (cmd_parms *cmd, void *dummy,
-                                   const char *arg1, const char *arg2)
+                                   const char *name)
 {
     ap_directive_t *conftree = NULL;
-    const char *name;
-    enum strict_how strict;
     const char *conffile, *error;
     unsigned *recursion;
+    int optional = (int)cmd->cmd->cmd_data;
     void *data;
-
-    if (arg2) {
-        name = arg2;
-        if (!strcmp(arg1, "optional")) {
-            strict = AP_OPTIONAL;
-        }
-        else if (!strcmp(arg1, "strict")) {
-            strict = AP_STRICT;
-        }
-        else {
-            return apr_pstrcat(cmd->pool, "Invalid Include modifier '",
-                               arg1, "', should be 'optional' or 'strict'", NULL);
-        }
-    }
-    else {
-        name = arg1;
-        strict = AP_MIXED;
-    }
 
     apr_pool_userdata_get(&data, "ap_include_sentinel", cmd->pool);
     if (data) {
@@ -2606,8 +2587,8 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
 
     if (++*recursion > AP_MAX_INCLUDE_DEPTH) {
         *recursion = 0;
-        return apr_psprintf(cmd->pool, "Exceeded maximum include depth of %u. "
-                            "You have probably a recursion somewhere.",
+        return apr_psprintf(cmd->pool, "Exceeded maximum include depth of %u, "
+                            "There appears to be a recursion.",
                             AP_MAX_INCLUDE_DEPTH);
     }
 
@@ -2618,8 +2599,9 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
                            name, NULL);
     }
 
-    error = ap_process_resource_config_ex(cmd->server, conffile,
-                                       &conftree, cmd->pool, cmd->temp_pool, strict);
+    error = ap_process_fnmatch_configs(cmd->server, conffile, &conftree, 
+                                       cmd->pool, cmd->temp_pool, 
+                                       optional);
     if (error) {
         *recursion = 0;
         return error;
@@ -3321,10 +3303,14 @@ AP_INIT_TAKE1("UseCanonicalPhysicalPort", set_use_canonical_phys_port, NULL,
   "Whether to use the physical Port when constructing URLs"),
 /* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
 /* TODO: ListenBacklog in MPM */
-AP_INIT_TAKE12("Include", include_config, NULL,
+AP_INIT_TAKE1("Include", include_config, NULL,
   (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
-  "Name of the config file to be included, ignore file wildcards with no "
-  "matching files, fail directory wildcards with no matching directories"),
+  "Name(s) of the config file(s) to be included; fails if the wildcard does "
+  "not match at least one file"),
+AP_INIT_TAKE1("IncludeOptional", include_config, (void*)1,
+  (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
+  "Name or pattern of the config file(s) to be included; ignored if the file "
+  "does not exist or the pattern does not match any files"),
 AP_INIT_TAKE1("LogLevel", set_loglevel, NULL, RSRC_CONF,
   "Level of verbosity in error logging"),
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
