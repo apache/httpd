@@ -109,7 +109,7 @@ NameVirtualHost 111.22.33.44
     pathname of the file that is used to satisfy the request. This
     can be most easily done by using <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> 
     with Apache httpd. Alternatively, 
-    <a href="../rewrite/vhosts.html"><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> can 
+    <a href="../rewrite/vhosts.html">mod_rewrite can 
     be used</a>.</p>
     <p>Both of these modules are disabled by default; you must enable
     one of them when configuring and building Apache httpd if you want to
@@ -134,7 +134,7 @@ NameVirtualHost 111.22.33.44
     <code>ServerName</code> is used instead.</p>
 
     <p>The other thing to determine is the document root (configured
-    with <code>DocumentRoot</code> and available to CGIs via the
+    with <code>DocumentRoot</code> and available to CGI scripts via the
     <code>DOCUMENT_ROOT</code> environment variable). In a normal
     configuration, this is used by the core module when
     mapping URIs to filenames, but when the server is configured to
@@ -173,7 +173,9 @@ VirtualScriptAlias  /www/hosts/%0/cgi-bin
     hosting solution by just turning <code>UseCanonicalName
     Off</code> into <code>UseCanonicalName DNS</code>. The server
     name that is inserted into the filename is then derived from
-    the IP address of the virtual host.</p>
+    the IP address of the virtual host. The variable <code>%0</code>
+    references the requested servername, as indicated in the
+    <code>Host:</code> header.</p>
 
 <p>See the <code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> documentation for more usage
 examples.</p>
@@ -183,8 +185,8 @@ examples.</p>
 <h2><a name="homepages" id="homepages">Simplified Dynamic Virtual Hosts</a></h2>
 
     <p>This is an adjustment of the above system, tailored for an
-    ISP's homepages server. Using a slightly more complicated
-    configuration, we can select substrings of the server name to
+    ISP's web hosting server. Using <code>%2</code>,
+    we can select substrings of the server name to
     use in the filename so that, for example, the documents for
     <code>www.user.isp.com</code> are found in
     <code>/home/user/www</code>. It uses a single <code>cgi-bin</code>

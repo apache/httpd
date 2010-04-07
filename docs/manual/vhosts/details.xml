@@ -26,13 +26,9 @@
 
 <summary>
 
-    <p>The virtual host code was completely rewritten in
-    <strong>Apache 1.3</strong>. This document attempts to explain
-    exactly what Apache does when deciding what virtual host to
-    serve a hit from. With the help of the new
-    <directive module="core">NameVirtualHost</directive>
-    directive virtual host configuration should be a lot easier and
-    safer than with versions prior to 1.3.</p>
+    <p>This document attempts to explain
+    exactly what Apache HTTP Server does when deciding what virtual host to
+    serve a request from.</p>
 
     <p>If you just want to <cite>make it work</cite> without
     understanding how, here are <a href="examples.html">some
@@ -40,7 +36,7 @@
 
 </summary>
 
-<section id="configparsing"><title>Config File Parsing</title>
+<section id="configparsing"><title>Configuration File Parsing</title>
 
     <p>There is a <em>main_server</em> which consists of all the
     definitions appearing outside of
@@ -49,17 +45,15 @@
     <directive type="section" module="core">VirtualHost</directive>
     sections.</p>
 
-    <p>The directives
-    <directive module="core">ServerName</directive> and
-    <directive module="core">ServerPath</directive> 
-    can appear anywhere within the definition of a server. However,
+    <p>The 
+    <directive module="core">ServerName</directive> directive
+    may appear anywhere within the definition of a server. However,
     each appearance overrides the previous appearance (within that
     server).</p>
 
     <p>The main_server has no default
-    <code>ServerPath</code>, or <code>ServerAlias</code>. The
-    default <code>ServerName</code> is deduced from the server's IP
-    address.</p>
+    <code>ServerAlias</code>. The default <code>ServerName</code>, 
+    if not specified, is deduced from the server's IP address.</p>
 
     <p>Port numbers specified in the <code>VirtualHost</code> directive do
     not influence what port numbers Apache will listen on, they only discriminate between
@@ -276,15 +270,10 @@
 
     <p>If the client submitted a HTTP/1.0 request without
     <code>Host:</code> header field we don't know to what server
-    the client tried to connect and any existing
-    <code>ServerPath</code> is matched against the URI from the
-    request. The first matching path on the list is used and the
-    request is served from that vhost.</p>
-
-    <p>If no matching vhost could be found the request is served
-    from the first vhost with a matching port number that is on the
-    list for the IP to which the client connected (as already
-    mentioned before).</p>
+    the client tried to connect to. In this case, the first virtual host
+    (that is, the one listed first in the server configuration file) for
+    the IP address and port to which the client connected, is
+    used to serve this request.</p>
 
     </section>
 
@@ -322,7 +311,7 @@
       corresponding address set which must be defined with a
       <code>NameVirtualHost</code> directive.</li>
 
-      <li><code>ServerAlias</code> and <code>ServerPath</code>
+      <li><code>ServerAlias</code>
       checks are never performed for an IP-based vhost.</li>
 
       <li>The order of name-/IP-based, the <code>_default_</code>
@@ -336,13 +325,6 @@
       <li>The <code>Host:</code> header field is never used during the
       matching process. Apache always uses the real port to which
       the client sent the request.</li>
-
-      <li>If a <code>ServerPath</code> directive exists which is a
-      prefix of another <code>ServerPath</code> directive that
-      appears later in the configuration file, then the former will
-      always be matched and the latter will never be matched. (That
-      is assuming that no <code>Host:</code> header field was
-      available to disambiguate the two.)</li>
 
       <li>If two IP-based vhosts have an address in common, the
       vhost appearing first in the config file is always matched.
@@ -409,13 +391,6 @@
       <li>Group corresponding <code>NameVirtualHost</code> and
       <code>VirtualHost</code> definitions in your configuration to
       ensure better readability.</li>
-
-      <li>Avoid <code>ServerPaths</code> which are prefixes of
-      other <code>ServerPaths</code>. If you cannot avoid this then
-      you have to ensure that the longer (more specific) prefix
-      vhost appears earlier in the configuration file than the
-      shorter (less specific) prefix (<em>i.e.</em>, "ServerPath
-      /abc" should appear after "ServerPath /abc/def").</li>
     </ul>
 
 </section>
