@@ -382,14 +382,15 @@ static const char *set_balancer_param(proxy_server_conf *conf,
             return "scolonpathdelim must be On|Off";
     }
     else if (!strcasecmp(key, "erroronstatus")) {
-        char valSplit[strlen(val)+1];
+        char *val_split;
         char *status;
         char *tok_state;
 
-        strcpy(valSplit, val);
+        val_split = apr_pstrdup(p, val);
+
         balancer->errstatuses = apr_array_make(p, 1, sizeof(int));
 
-        status = apr_strtok(valSplit, ", ", &tok_state);
+        status = apr_strtok(val_split, ", ", &tok_state);
         while (status != NULL) {
             ival = atoi(status);
             if (ap_is_HTTP_VALID_RESPONSE(ival)) {
