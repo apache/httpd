@@ -65,12 +65,6 @@ enum cmd_how {
     TAKE_ARGV			/**< an argc and argv are passed */
 };
 
-enum strict_how {
-    AP_OPTIONAL, /* directory and file wildcards succeed on no-match */
-    AP_MIXED, /* directory wildcards fail, file wildcards succeed on no match */
-    AP_STRICT /* directory and file wildcards fail on no-match */
-};
-
 /**
  * This structure is passed to a command which is being invoked,
  * to carry a large variety of miscellaneous data which is all of
@@ -907,23 +901,7 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
                                                    server_rec **ps);
 
 /**
- * Process the config file for Apache
- * @param s The server rec to use for the command parms
- * @param fname The name of the config file
- * @param conftree The root node of the created config tree
- * @param p Pool for general allocation
- * @param ptemp Pool for temporary allocation
- * @param strict Whether a no-match wildcard should be fatal
- */
-AP_DECLARE(const char *) ap_process_resource_config_ex(server_rec *s,
-                                                       const char *fname,
-                                                       ap_directive_t **conftree,
-                                                       apr_pool_t *p,
-                                                       apr_pool_t *ptemp,
-                                                       enum strict_how strict);
-
-/**
- * Process the config file for Apache
+ * Process a config file for Apache
  * @param s The server rec to use for the command parms
  * @param fname The name of the config file
  * @param conftree The root node of the created config tree
@@ -935,6 +913,23 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
                                                     ap_directive_t **conftree,
                                                     apr_pool_t *p,
                                                     apr_pool_t *ptemp);
+
+/**
+ * Process all matching files as Apache configs
+ * @param s The server rec to use for the command parms
+ * @param fname The filename pattern of the config file
+ * @param conftree The root node of the created config tree
+ * @param p Pool for general allocation
+ * @param ptemp Pool for temporary allocation
+ * @param optional Whether a no-match wildcard is allowed
+ * @see apr_fnmatch for pattern handling
+ */
+AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
+                                                    const char *fname,
+                                                    ap_directive_t **conftree,
+                                                    apr_pool_t *p,
+                                                    apr_pool_t *ptemp,
+                                                    int optional);
 
 /**
  * Process all directives in the config tree

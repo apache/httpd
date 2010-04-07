@@ -1553,16 +1553,52 @@ static int fname_alphasort(const void *fn1, const void *fn2)
     return strcmp(f1->fname,f2->fname);
 }
 
+AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
+                                                    const char *fname,
+                                                    ap_directive_t **conftree,
+                                                    apr_pool_t *p,
+                                                    apr_pool_t *ptemp)
+{
+    ap_configfile_t *cfp;
+    cmd_parms parms;
+    apr_status_t rv;
+    const char *error;
+
+    parms = default_parms;
+    parms.pool = p;
+    parms.temp_pool = ptemp;
+    parms.server = s;
+    parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
+    parms.override_opts = OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
+
+    rv = ap_pcfg_openfile(&cfp, p, fname);
+    if (rv != APR_SUCCESS) {
+        char errmsg[120];
+        return apr_psprintf(p, "Could not open configuration file %s: %s",
+                            fname, apr_strerror(rv, errmsg, sizeof errmsg));
+    }
+
+    parms.config_file = cfp;
+    error = ap_build_config(&parms, p, ptemp, conftree);
+    ap_cfg_closefile(cfp);
+
+    if (error) {
+        return apr_psprintf(p, "Syntax error on line %d of %s: %s",
+                            parms.err_directive->line_num,
+                            parms.err_directive->filename, error);
+    }
+
+    return NULL;
+}
+
 static const char *process_resource_config_nofnmatch(server_rec *s,
                                                      const char *fname,
                                                      ap_directive_t **conftree,
                                                      apr_pool_t *p,
                                                      apr_pool_t *ptemp,
                                                      unsigned depth,
-                                                     enum strict_how strict)
+                                                     int optional)
 {
-    cmd_parms parms;
-    ap_configfile_t *cfp;
     const char *error;
     apr_status_t rv;
 
@@ -1616,7 +1652,7 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
                 fnew = &((fnames *) candidates->elts)[current];
                 error = process_resource_config_nofnmatch(s, fnew->fname,
                                                           conftree, p, ptemp,
-                                                          depth, strict);
+                                                          depth, optional);
                 if (error) {
                     return error;
                 }
@@ -1626,32 +1662,7 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
         return NULL;
     }
 
-    /* GCC's initialization extensions are soooo nice here... */
-    parms = default_parms;
-    parms.pool = p;
-    parms.temp_pool = ptemp;
-    parms.server = s;
-    parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
-    parms.override_opts = OPT_ALL | OPT_SYM_OWNER | OPT_MULTI;
-
-    rv = ap_pcfg_openfile(&cfp, p, fname);
-    if (rv != APR_SUCCESS) {
-        char errmsg[120];
-        return apr_psprintf(p, "Could not open configuration file %s: %s",
-                            fname, apr_strerror(rv, errmsg, sizeof errmsg));
-    }
-
-    parms.config_file = cfp;
-    error = ap_build_config(&parms, p, ptemp, conftree);
-    ap_cfg_closefile(cfp);
-
-    if (error) {
-        return apr_psprintf(p, "Syntax error on line %d of %s: %s",
-                            parms.err_directive->line_num,
-                            parms.err_directive->filename, error);
-    }
-
-    return NULL;
+    return ap_process_resource_config(s, fname, conftree, p, ptemp);
 }
 
 static const char *process_resource_config_fnmatch(server_rec *s,
@@ -1661,7 +1672,7 @@ static const char *process_resource_config_fnmatch(server_rec *s,
                                                    apr_pool_t *p,
                                                    apr_pool_t *ptemp,
                                                    unsigned depth,
-                                                   enum strict_how strict)
+                                                   int optional)
 {
     const char *rest;
     apr_status_t rv;
@@ -1684,12 +1695,12 @@ static const char *process_resource_config_fnmatch(server_rec *s,
         if (!rest) {
             return process_resource_config_nofnmatch(s, path,
                                                      conftree, p,
-                                                     ptemp, 0, strict);
+                                                     ptemp, 0, optional);
         }
         else {
             return process_resource_config_fnmatch(s, path, rest,
                                                    conftree, p,
-                                                   ptemp, 0, strict);
+                                                   ptemp, 0, optional);
         }
     }
 
@@ -1740,12 +1751,12 @@ static const char *process_resource_config_fnmatch(server_rec *s,
             if (!rest) {
                 error = process_resource_config_nofnmatch(s, fnew->fname,
                                                           conftree, p,
-                                                          ptemp, 0, strict);
+                                                          ptemp, 0, optional);
             }
             else {
                 error = process_resource_config_fnmatch(s, fnew->fname, rest,
                                                         conftree, p,
-                                                        ptemp, 0, strict);
+                                                        ptemp, 0, optional);
             }
             if (error) {
                 return error;
@@ -1754,33 +1765,21 @@ static const char *process_resource_config_fnmatch(server_rec *s,
     }
     else {
 
-        /* Support for the three states of strictness:
-         *
-         * AP_OPTIONAL - directory and file wildcards succeed on no-match, we don't
-         * need to do anything here for this case.
-         * AP_MIXED - directory wildcards fail on no match, file wildcards succeed
-         * on no match. Use rest to tell between the two.
-         * AP_STRICT - both directory and file wildcards fail on no-match.
-         */
-        if (AP_STRICT == strict) {
-            return apr_psprintf(p, "No matches for the wildcard '%s' in '%s' with "
-                    "strict wildcard matching, failing", fname, path);
-        }
-        else if (AP_MIXED == strict && rest) {
+        if (!optional) {
             return apr_psprintf(p, "No matches for the wildcard '%s' in '%s', failing "
-                    "(use Include optional if required)", fname, path);
+                                   "(use IncludeOptional if required)", fname, path);
         }
     }
 
     return NULL;
 }
 
-AP_DECLARE(const char *) ap_process_resource_config_ex(server_rec *s,
-                                                       const char *fname,
-                                                       ap_directive_t **conftree,
-                                                       apr_pool_t *p,
-                                                       apr_pool_t *ptemp,
-                                                       enum strict_how strict)
+AP_DECLARE(const char *) ap_process_fnmatch_configs(server_rec *s,
+                                                    const char *fname,
+                                                    ap_directive_t **conftree,
+                                                    apr_pool_t *p,
+                                                    apr_pool_t *ptemp,
+                                                    int optional)
 {
     /* XXX: lstat() won't work on the wildcard pattern...
      */
@@ -1796,8 +1795,7 @@ AP_DECLARE(const char *) ap_process_resource_config_ex(server_rec *s,
     }
 
     if (!apr_fnmatch_test(fname)) {
-        return process_resource_config_nofnmatch(s, fname, conftree, p, ptemp,
-                                                 0, strict);
+        return ap_process_resource_config(s, fname, conftree, p, ptemp);
     }
     else {
         apr_status_t status;
@@ -1816,20 +1814,11 @@ AP_DECLARE(const char *) ap_process_resource_config_ex(server_rec *s,
 
         /* walk the filepath */
         return process_resource_config_fnmatch(s, rootpath, filepath, conftree, p, ptemp,
-                                                 0, strict);
+                                               0, optional);
 
     }
 
     return NULL;
-}
-
-AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
-                                                    const char *fname,
-                                                    ap_directive_t **conftree,
-                                                    apr_pool_t *p,
-                                                    apr_pool_t *ptemp)
-{
-    return ap_process_resource_config_ex(s, fname, conftree, p, ptemp, AP_MIXED);
 }
 
 AP_DECLARE(int) ap_process_config_tree(server_rec *s,
