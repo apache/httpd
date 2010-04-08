@@ -2572,7 +2572,7 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     ap_directive_t *conftree = NULL;
     const char *conffile, *error;
     unsigned *recursion;
-    int optional = (int)cmd->cmd->cmd_data;
+    int optional = cmd->cmd->cmd_data ? 1 : 0;
     void *data;
 
     apr_pool_userdata_get(&data, "ap_include_sentinel", cmd->pool);
