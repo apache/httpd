@@ -186,9 +186,7 @@
             sent.</td></tr>
         </table>
 
-        <p>(This directive was <code>%c</code> in late versions of Apache
-        1.3, but this conflicted with the historical ssl
-        <code>%{<var>var</var>}c</code> syntax.)</p></td></tr>
+        </td></tr>
 <tr class="odd"><td><code>%I</code></td>
         <td>Bytes received, including request and headers, cannot be zero.
         You need to enable <code class="module"><a href="../mod/mod_logio.html">mod_logio</a></code> to use this.</td></tr>
