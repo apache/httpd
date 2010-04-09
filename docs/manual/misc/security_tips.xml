@@ -384,7 +384,7 @@
     <p>Also be wary of playing games with the <directive
     module="mod_userdir">UserDir</directive> directive; setting it to
     something like <code>./</code> would have the same effect, for root, as
-    the first example above. If you are using Apache 1.3 or above, we strongly
+    the first example above. We strongly
     recommend that you include the following line in your server
     configuration files:</p>
 
