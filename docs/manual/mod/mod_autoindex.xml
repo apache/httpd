@@ -853,9 +853,8 @@ indexing</description>
    -->
    <dl><dt>Incremental IndexOptions</dt>
    <dd>
-     <p>Apache httpd 1.3.3 introduced some significant changes in the
-     handling of <directive>IndexOptions</directive> directives. In
-     particular:</p>
+     <p>Be aware of how multiple <directive>IndexOptions</directive> are
+     handled.</p>
 
      <ul>
      <li>Multiple <directive>IndexOptions</directive> directives for a
