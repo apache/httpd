@@ -34,11 +34,15 @@
 
 <related>
 <modulelist>
+<module>mod_actions</module>
 <module>mod_alias</module>
+<module>mod_dir</module>
+<module>mod_imagemap</module>
+<module>mod_negotiation</module>
 <module>mod_proxy</module>
 <module>mod_rewrite</module>
-<module>mod_userdir</module>
 <module>mod_speling</module>
+<module>mod_userdir</module>
 <module>mod_vhost_alias</module>
 </modulelist>
 <directivelist>
@@ -227,7 +231,7 @@
 of the local server.  This technique is called <em>reverse
 proxying</em> because the web server acts like a proxy server by
 fetching the documents from a remote server and returning them to the
-client.  It is different from normal proxying because, to the client,
+client.  It is different from normal (forward) proxying because, to the client,
 it appears the documents originate at the reverse proxy server.</p>
 
 <p>In the following example, when clients request documents under the
@@ -253,11 +257,19 @@ directory on the local server.  Similarly, the
 and <directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
 rewrite cookies set by the backend server.</p>
 <p>It is important to note, however, that
-links inside the documents will not be rewritten.  So any absolute
+links inside the documents will not be rewritten. So any absolute
 links on <code>internal.example.com</code> will result in the client
 breaking out of the proxy server and requesting directly from
-<code>internal.example.com</code>.  A third-party module
-<a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
+<code>internal.example.com</code>. You can modify these links (and other
+content) in a page as it is being served to the client using
+<module>mod_substitute</module>.</p>
+
+<example>
+Substitute s/internal\.example\.com/www.example.com/i
+</example>
+
+<p>Additionally, a third-party module,
+<a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>,
 is available to rewrite links in HTML and XHTML.</p>
 </section>
 
@@ -265,7 +277,7 @@ is available to rewrite links in HTML and XHTML.</p>
 
     <p>When even more powerful substitution is required, the rewriting
     engine provided by <module>mod_rewrite</module>
-    can be useful. The directives provided by this module use
+    can be useful. The directives provided by this module can use
     characteristics of the request such as browser type or source IP
     address in deciding from where to serve content. In addition,
     mod_rewrite can use external database files or programs to
@@ -314,6 +326,26 @@ is available to rewrite links in HTML and XHTML.</p>
     and can be customized in a flexible manner as discussed in the
     <a href="custom-error.html">Custom error responses</a>
     document.</p>
+</section>
+
+<section id="other"><title>Other URL Mapping Modules</title>
+
+<!-- TODO Flesh out each of the items in the list below. -->
+
+    <p>Other modules available for URL mapping include:
+    <ul>
+    <li><module>mod_actions</module> - Maps a request to a CGI script
+    based on the request method, or resource MIME type.</li>
+    <li><module>mod_dir</module> - Provides basic mapping of a trailing
+    slash into an index file such as <code>index.html</code>.</li>
+    <li><module>mod_imagemap</module> - Maps a request to a URL based
+    on where a user clicks on an image embedded in a HTML document.</li>
+    <li><module>mod_negotiation</module> - Selects an appropriate
+    document based on client preferences such as language or content
+    compression.</li>
+    </ul>
+    </p>
+
 </section>
 
 </manualpage>
