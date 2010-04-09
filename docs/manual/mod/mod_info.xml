@@ -154,7 +154,6 @@ information displayed by the server-info handler</description>
 <syntax>AddModuleInfo <var>module-name</var> <var>string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Apache 1.3 and above</compatibility>
 
 <usage>
     <p>This allows the content of <var>string</var> to be shown as
