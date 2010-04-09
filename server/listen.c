@@ -437,7 +437,6 @@ static int open_listeners(apr_pool_t *pool)
 #endif
             if (make_sock(pool, lr) == APR_SUCCESS) {
                 ++num_open;
-                lr->active = 1;
             }
             else {
 #if APR_HAVE_IPV6
