@@ -1143,9 +1143,7 @@ HTTP response header for static files</description>
     attributes that are used to create the <code>ETag</code> (entity
     tag) response header field when the document is based on a static file.
     (The <code>ETag</code> value is used in cache management to save
-    network bandwidth.) In Apache httpd 1.3.22 and earlier, the
-    <code>ETag</code> value was <em>always</em> formed
-    from the file's inode, size, and last-modified time (mtime). The
+    network bandwidth.) The
     <directive>FileETag</directive> directive allows you to choose
     which of these -- if any -- should be used. The recognized keywords are:
     </p>
@@ -3065,9 +3063,6 @@ itself</description>
 <syntax>ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>In version 2.0, this
-     directive supersedes the functionality of the <directive>Port</directive>
-     directive from version 1.3.</compatibility>
 
 <usage>
     <p>The <directive>ServerName</directive> directive sets the
