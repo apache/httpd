@@ -20,8 +20,6 @@ To Do List
   appropriate in context, rather than just 'Apache'. 'Apache' is the
   Apache Software Foundation.
 
-- Remove mentions of the 1.2 and 1.3 versions of the server.
-
 - Update the http://httpd.apache.org/docs-project/docsformat.html
   document to be useful. In particular:
     - Document the various macros that can be used in documents.
@@ -137,7 +135,7 @@ To Do List
   for .gz etc. (also in regard to our default configuration)
 
 - How-To style documents for more of the daily tasks
-    - Logging and log reporting
+    - Logging, log rotation, and log reporting
     - ?
 
 - Writing modules - Can we provide a basic intro to writing modules,
