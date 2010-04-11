@@ -28,6 +28,9 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_proxy_connect: Support port ranges in AllowConnect. PR 23673.
+     [Stefan Fritsch]
+
   *) Proxy balancer: support setting error status according to HTTP response
      code from a backend.  PR 48939.  [Daniel Ruggeri <DRuggeri primary.net>]
 

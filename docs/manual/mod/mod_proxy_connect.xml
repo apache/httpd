@@ -58,16 +58,18 @@
 <name>AllowCONNECT</name>
 <description>Ports that are allowed to <code>CONNECT</code> through the
 proxy</description>
-<syntax>AllowCONNECT <var>port</var> [<var>port</var>] ...</syntax>
+<syntax>AllowCONNECT <var>port</var>[-<var>port</var>]
+[<var>port</var>[-<var>port</var>]] ...</syntax>
 <default>AllowCONNECT 443 563</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Moved from <module>mod_proxy</module> in Apache 2.3.5.</compatibility>
+<compatibility>Moved from <module>mod_proxy</module> in Apache 2.3.5.
+Port ranges available since Apache 2.3.7.</compatibility>
 
 <usage>
     <p>The <directive>AllowCONNECT</directive> directive specifies a list
-    of port numbers to which the proxy <code>CONNECT</code> method may
-    connect.  Today's browsers use this method when a <code>https</code>
+    of port numbers or ranges to which the proxy <code>CONNECT</code> method
+    may connect.  Today's browsers use this method when a <code>https</code>
     connection is requested and proxy tunneling over HTTP is in effect.</p>
 
     <p>By default, only the default https port (<code>443</code>) and the

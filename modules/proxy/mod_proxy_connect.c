@@ -50,10 +50,15 @@ typedef struct {
     apr_array_header_t *allowed_connect_ports;
 } connect_conf;
 
+typedef struct {
+    int first;
+    int last;
+} port_range;
+
 static void *create_config(apr_pool_t *p, server_rec *s)
 {
     connect_conf *c = apr_pcalloc(p, sizeof(connect_conf));
-    c->allowed_connect_ports = apr_array_make(p, 10, sizeof(int));
+    c->allowed_connect_ports = apr_array_make(p, 10, sizeof(port_range));
     return c;
 }
 
@@ -78,15 +83,33 @@ static const char *
     set_allowed_ports(cmd_parms *parms, void *dummy, const char *arg)
 {
     server_rec *s = parms->server;
+    int first, last;
     connect_conf *conf =
         ap_get_module_config(s->module_config, &proxy_connect_module);
-    int *New;
+    port_range *New;
+    char *endptr;
+    const char *p = arg;
 
     if (!apr_isdigit(arg[0]))
-        return "AllowCONNECT: port number must be numeric";
+        return "AllowCONNECT: port numbers must be numeric";
+
+    first = strtol(p, &endptr, 10);
+    if (*endptr == '-') {
+        p = endptr + 1;
+        last = strtol(p, &endptr, 10);
+    }
+    else {
+        last = first;
+    }
+
+    if (endptr == p || *endptr != '\0')  {
+        return apr_psprintf(parms->temp_pool,
+                            "Cannot parse '%s' as port number", p);
+    }
 
     New = apr_array_push(conf->allowed_connect_ports);
-    *New = atoi(arg);
+    New->first = first;
+    New->last  = last;
     return NULL;
 }
 
@@ -94,16 +117,16 @@ static const char *
 static int allowed_port(connect_conf *conf, int port)
 {
     int i;
-    int *list = (int *) conf->allowed_connect_ports->elts;
+    port_range *list = (port_range *) conf->allowed_connect_ports->elts;
     
-    if(apr_is_empty_array(conf->allowed_connect_ports)){
+    if (apr_is_empty_array(conf->allowed_connect_ports)){
         return port == APR_URI_HTTPS_DEFAULT_PORT
                || port == APR_URI_SNEWS_DEFAULT_PORT;
     }
 
-    for(i = 0; i < conf->allowed_connect_ports->nelts; i++) {
-    if(port == list[i])
-        return 1;
+    for (i = 0; i < conf->allowed_connect_ports->nelts; i++) {
+        if (port >= list[i].first && port <= list[i].last)
+            return 1;
     }
     return 0;
 }
@@ -496,7 +519,7 @@ static void ap_proxy_connect_register_hook(apr_pool_t *p)
 static const command_rec cmds[] =
 {
     AP_INIT_ITERATE("AllowCONNECT", set_allowed_ports, NULL, RSRC_CONF,
-     "A list of ports which CONNECT may connect to"),
+     "A list of ports or port ranges which CONNECT may connect to"),
     {NULL}
 };
 
