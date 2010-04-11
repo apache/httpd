@@ -61,6 +61,10 @@ RELEASE SHOWSTOPPERS:
   * Modules without documentation need to be moved to experimental or be
     removed.
 
+  * There is no working equivalent to 'Satisfy any' to authorize by
+    user _or_ IP address:
+    http://mail-archives.apache.org/mod_mbox/httpd-dev/200912.mbox/<4B28E73C.4050209%40kippdata.de>
+
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
 
