@@ -53,7 +53,7 @@
 
       <dt>Mise en cache</dt>
       <dd><module>mod_cache</module>, <module>mod_disk_cache</module>, et
-          mod_mem_cache (supprim&egrave;s dans la version 2.3/2.4) ont subi de nombreuses
+          mod_mem_cache (supprim&eacute;s dans la version 2.3/2.4) ont subi de nombreuses
 	  modifications, et l'on consid&egrave;re qu'ils ont maintenant atteint
 	  un degr&eacute; de qualit&eacute; suffisant pour leur mise en production. Le programme
 	  <program>htcacheclean</program> a &eacute;t&eacute; ajout&eacute; afin de rendre
@@ -151,7 +151,7 @@
 
       <dt><module>mod_authz_owner</module></dt>
 	<dd>Un nouveau module qui autorise l'acc&egrave;s &agrave; un fichier
-	en fonction du propri&eacute;taire du fichier dans le syst&egrave;me de
+	en fonction de son propri&eacute;taire dans le syst&egrave;me de
 	fichiers</dd>
 
 	<dt><module>mod_version</module></dt>
@@ -163,15 +163,15 @@
       <dd>Un nouvel argument <code>?config</code> a &eacute;t&eacute; ajout&eacute;, qui permettra d'afficher
           les directives de configuration telles qu'elles sont interpr&eacute;t&eacute;es
 	  par Apache, y compris le nom de fichier et le num&eacute;ro de ligne.
-	  Le module montre aussi l'ordre des point d'entr&eacute;e de traitement d'une
+	  Le module montre aussi l'ordre des points d'entr&eacute;e de traitement d'une
 	  requ&ecirc;te (request hooks) ainsi que des informations de construction
 	  suppl&eacute;mentaires, d'une mani&egrave;re similaire &agrave; <code>httpd -V</code>.</dd>
 
       <dt><module>mod_ssl</module></dt>
       <!-- Need Info on SSLEngine Support? -->
       <dd>Le support de la <a href="http://www.ietf.org/rfc/rfc2817.txt"
-      	>RFC 2817</a>, a &eacute;t&eacute; ajout&eacute;, ce qui permet de passer d'une
-	connexion en clair au cryptage TLS.</dd>
+      	>RFC 2817</a> a &eacute;t&eacute; ajout&eacute;, ce qui permet de passer d'une
+	connexion en clair au chiffrement TLS.</dd>
 
       <dt><module>mod_imagemap</module></dt>
       <dd><code>mod_imap</code> a &eacute;t&eacute; renomm&eacute; en <module>mod_imagemap</module> afin
