@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 659902:930608 (outdated) -->
+<!-- English Revision: 930608 -->
 <!-- French translation by alain B, review by Vincent Deffontaines 
 	updated by Lucien GENTIS -->
 
@@ -35,7 +35,6 @@
 <seealso><a href="details.html">Détails sur le fonctionnement des serveurs virtuels</a></seealso>
 <seealso><a href="mass.html">Configuration dynamique des hébergements virtuels de masse</a></seealso>
 <seealso><a href="examples.html">Exemples d'utilisations de VirtualHost</a></seealso>
-<seealso><a href="examples.html#serverpath">Utilisation de la directive ServerPath</a></seealso>
 
 <section id="namevip"><title>Serveurs virtuels par nom vs. par IP</title>
 
@@ -60,15 +59,6 @@
     sont exposées ci-après&nbsp;:</p>
 
     <ul>
-        <li>Certains anciens navigateurs ne sont pas compatibles 
-        avec les serveurs virtuels par nom, car pour fonctionner, 
-        un client doit transmettre un champ d'en-tête HTTP Host. 
-        Cet en-tête est exigé pour HTTP/1.1, et peut être implémenté 
-        sur des navigateurs modernes HTTP/1.0 grâce à une extension. 
-        Si vous devez maintenir des clients obsolètes tout en 
-        utilisant l'hébergement virtuel par nom, il existe une 
-        technique qui est traitée à la fin de ce document.</li>
-
         <li>L'hébergement virtuel par nom ne peut pas être utilisé 
         avec des serveurs sécurisés SSL à cause de la nature même 
         du protocole SSL.</li>
@@ -93,7 +83,6 @@
 	<directive module="core">NameVirtualHost</directive>
 	<directive module="core">ServerAlias</directive>
 	<directive module="core">ServerName</directive>
-	<directive module="core">ServerPath</directive>
 	<directive module="core" type="section">VirtualHost</directive>
     </directivelist>
 </related>
@@ -245,62 +234,4 @@
 
 </section>
 
-<section id="compat"><title>Compatibilité avec les navigateurs anciens</title>
-
-    <p>Comme mentionné plus tôt, certains clients ne transmettent 
-    pas les données nécessaires pour le bon fonctionnement des 
-    serveurs virtuels par nom. Ces clients recevront toujours les pages
-    du premier serveur virtuel listé pour cette adresse IP (le 
-    serveur virtuel par nom <cite>primaire</cite>).</p>
-
-    <note><title>De combien plus anciens&nbsp;?</title>
-    <p>Veuillez noter que quand nous disons plus anciens, nous 
-    disons vraiment plus anciens. Vous avez peu de chances de rencontrer 
-    de tels navigateurs encore utilisés de nos jours. Toutes les 
-    versions actuelles des navigateurs transmettent leur en-tête 
-    <code>Host</code> comme exigé par les serveurs virtuels par nom.</p>
-    </note>
-
-    <p>Il existe une solution avec la directive 
-    <directive module="core">ServerPath</directive>, bien que 
-    légèrement complexe&nbsp;:</p>
-
-    <p>Exemple de configuration&nbsp;:</p>
-
-    <example>
-        NameVirtualHost 111.22.33.44<br />
-        <br />
-        &lt;VirtualHost 111.22.33.44&gt;<br />
-        <indent>
-            ServerName www.domain.tld<br />
-            ServerPath /domain<br />
-            DocumentRoot /web/domain<br />
-        </indent>
-        &lt;/VirtualHost&gt;<br />
-    </example>
-
-    <p>Qu'est-ce que cela signifie&nbsp;? Il signifie qu'une requête 
-    pour tout URI qui commence par "<code>/domain</code>" sera 
-    servie par le serveur virtuel <code>www.domain.tld</code>. 
-    Ainsi, les pages sont accessibles à 
-    <code>http://www.domain.tld/domain/</code> pour tous les 
-    clients, bien que ceux qui transmettent un en-tête 
-    <code>Host:</code> peuvent également y accéder à 
-    <code>http://www.domain.tld/</code>.</p>
-
-    <p>Pour rendre cette technique fonctionnelle, mettez un lien 
-    dans votre serveur virtuel primaire vers 
-    <code>http://www.domain.tld/domain/</code>. Ensuite, dans les 
-    pages de ce serveur virtuel, assurez vous ne n'utiliser que 
-    des liens relatifs (<em>par exemple</em>, "<code>file.html</code>" 
-    ou "<code>../icons/image.gif</code>") ou des liens contenant 
-    le préfixe <code>/domain/</code> (<em>par exemple</em>, 
-    "<code>http://www.domain.tld/domain/misc/file.html</code>" 
-    ou "<code>/domain/misc/file.html</code>").</p>
-
-    <p>Cela requiert un peu de discipline, mais si vous suivez 
-    cette ligne de conduite, vous serez assuré que vos pages 
-    s'afficheront dans tous les navigateurs, nouveaux et anciens.</p>
-
-</section>
 </manualpage>

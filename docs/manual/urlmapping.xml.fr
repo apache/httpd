@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 922907:932378 (outdated) -->
+<!-- English Revision: 932378 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -36,11 +36,15 @@
 
 <related>
 <modulelist>
+<module>mod_actions</module>
 <module>mod_alias</module>
+<module>mod_dir</module>
+<module>mod_imagemap</module>
+<module>mod_negotiation</module>
 <module>mod_proxy</module>
 <module>mod_rewrite</module>
-<module>mod_userdir</module>
 <module>mod_speling</module>
+<module>mod_userdir</module>
 <module>mod_vhost_alias</module>
 </modulelist>
 <directivelist>
@@ -237,7 +241,7 @@ dans l'espace des URL du serveur local.
 Cette technique est appel&eacute;e <em>mandataire inverse ou reverse
 proxying</em> car le serveur web agit comme un serveur mandataire en
 rapatriant les documents depuis un serveur distant puis les renvoyant
-au client. Ceci diff&egrave;re d'un service de proxy usuel car, pour le client,
+au client. Ceci diff&egrave;re d'un service de mandataire usuel (direct) car, pour le client,
 les documents semblent appartenir au serveur mandataire inverse.</p>
 
 <p>Dans l'exemple suivant, quand les clients demandent des documents situ&eacute;s
@@ -266,7 +270,15 @@ r&eacute;&eacute;crivent les cookies &eacute;labor&eacute;s par le serveur d'arr
 ne seront pas r&eacute;&eacute;crits.  Ainsi, tout lien absolu sur
 <code>internal.example.com</code> fera d&eacute;crocher le client
 du serveur mandataire et effectuer sa requ&ecirc;te directement sur
-<code>internal.example.com</code>.  Un module tiers
+<code>internal.example.com</code>. Vous pouvez modifier ces liens (et
+d'utres contenus) situ&eacute;s dans la page au moment o&ugrave; elle est envoy&eacute;e au
+client en utilisant le module <module>mod_substitute</module>.</p>
+
+<example>
+Substitute s/internal\.example\.com/www.example.com/i
+</example>
+
+<p>En outre, un module tiers
 <a href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
 permet de r&eacute;&eacute;crire les liens dans les documents HTML et XHTML.</p>
 </section>
@@ -275,7 +287,7 @@ permet de r&eacute;&eacute;crire les liens dans les documents HTML et XHTML.</p>
 
     <p>Le moteur de r&eacute;&eacute;criture <module>mod_rewrite</module> peut s'av&eacute;rer
     utile lorsqu'une substitution plus puissante est n&eacute;cessaire.
-    Les directives fournies par ce module utilisent des caract&eacute;ristiques de la
+    Les directives fournies par ce module peuvent utiliser des caract&eacute;ristiques de la
     requ&ecirc;te comme le type de navigateur ou l'adresse IP source afin de d&eacute;cider
     depuis o&ugrave; servir le contenu. En outre, mod_rewrite peut utiliser des
     fichiers ou programmes de bases de donn&eacute;es externes pour d&eacute;terminer comment
@@ -326,6 +338,31 @@ permet de r&eacute;&eacute;crire les liens dans les documents HTML et XHTML.</p>
     et peut &ecirc;tre personnalis&eacute;e de mani&egrave;re tr&egrave;s flexible comme discut&eacute; dans le
     document
     <a href="custom-error.html">R&eacute;ponses personnalis&eacute;es aux erreurs</a>.</p>
+</section>
+
+<section id="other"><title>Autres modules de mise en correspondance des
+URLs</title>
+
+<!-- TODO Flesh out each of the items in the list below. -->
+
+    <p>Les autres modules disponibles pour la mise en correspondance des
+    URLs sont :
+    <ul>
+    <li><module>mod_actions</module> - Met une URL en correspondance
+    avec un script CGI en fonction de la m&eacute;thode de la requ&ecirc;te, ou du
+    type MIME de la ressource.</li>
+    <li><module>mod_dir</module> - Permet une mise en correspondance
+    basique d'un slash terminal dans un fichier index comme
+    <code>index.html</code>.</li>
+    <li><module>mod_imagemap</module> - Met en correspondance une
+    requ&ecirc;te avec une URL en fonction de la zone d'une image int&eacute;gr&eacute;e &agrave;
+    un document HTML dans laquelle un utilisateur clique.</li>
+    <li><module>mod_negotiation</module> - S&eacute;lectionne le document
+    appropri&eacute; en fonction de pr&eacute;f&eacute;rences du client telles que la langue
+    ou la compression du contenu.</li>
+    </ul>
+    </p>
+
 </section>
 
 </manualpage>

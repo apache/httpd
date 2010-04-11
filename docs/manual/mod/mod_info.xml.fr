@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 804977 -->
+<!-- English Revision : 932389 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -168,7 +168,6 @@ module affich&eacute;es par le gestionnaire server-info</description>
 <syntax>AddModuleInfo <var>nom-module</var> <var>cha&icirc;ne</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Disponible depuis la version 1.3 d'Apache</compatibility>
 
 <usage>
     <p>Cette directive permet d'afficher le contenu de <var>cha&icirc;ne</var>
