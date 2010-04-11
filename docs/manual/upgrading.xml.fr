@@ -32,7 +32,7 @@
   qui comporte des informations critiques &agrave; l'attention des personnes qui
   utilisent d&eacute;j&agrave; le serveur HTTP Apache. Ces informations
   ne sont que de br&egrave;ves notes, et vous
-  devriez trouver plus d'informations dans le document <a
+  trouverez plus d'informations dans le document <a
   href="new_features_2_4.html">Nouvelles fonctionnalit&eacute;s</a>, ou dans
   le fichier <code>src/CHANGES</code>.</p>
 
@@ -58,6 +58,7 @@ fonctionnalit&eacute;s du serveur HTTP Apache 2.4</a></seealso>
 
     <!-- <ul>
      </ul> -->
+    </ul>
   </section>
 
   <section id="misc">

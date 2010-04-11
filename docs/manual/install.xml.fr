@@ -174,7 +174,7 @@
     la version sources.  Le processus de construction (d&eacute;crit ci-dessous) est
     simple, et vous permet de personnaliser votre serveur selon vos besoins.
     En outre, les versions binaires sont souvent plus anciennes que les
-    derni&egrave;res versions sources  Si vous t&eacute;l&eacute;chargez une version binaire,
+    derni&egrave;res versions sources. Si vous t&eacute;l&eacute;chargez une version binaire,
     suivez les instructions d&eacute;crites dans le fichier
     <code>INSTALL.bindist</code> inclus dans la distribution.</p>
 
@@ -209,18 +209,18 @@ $ tar xvf httpd-<em>NN</em>.tar
     <p>L'&eacute;tape suivante consiste &agrave; configurer l'arborescence des sources
     d'Apache en fonction de votre plateforme et de vos besoins personnels.
     Le script  <program>configure</program>, situ&eacute; &agrave; la racine du
-    r&eacute;pertoire de la distribution, a &eacute;t&eacute; con&ccedil;u &agrave; cet effet.
+    r&eacute;pertoire de la distribution, a &eacute;t&eacute; con&ccedil;u &agrave; cet effet
     (Les d&eacute;veloppeurs qui t&eacute;l&eacute;chargent
     une version non officielle de l'arborescence des sources d'Apache
     devront disposer de
     <code>autoconf</code> et <code>libtool</code> et
     ex&eacute;cuter <code>buildconf</code> avant de passer &agrave; l'&eacute;tape suivante,
-    ce qui n'est pas n&eacute;cessaire pour les versions officielles.)</p>
+    ce qui n'est pas n&eacute;cessaire pour les versions officielles).</p>
 
     <p>Pour configurer l'arborescence des sources avec les valeurs par d&eacute;faut
     pour toutes les options, entrez simplement <code>./configure</code>.
     Pour modifier les valeurs des options, <program>configure</program>
-    comprend toute une vari&eacute;t&eacute; de variables et
+    accepte toute une vari&eacute;t&eacute; de variables et
     d'options de ligne de commande.</p>
 
     <p>L'option la plus importante <code>--prefix</code> est le chemin
@@ -244,18 +244,18 @@ $ tar xvf httpd-<em>NN</em>.tar
     ou d&eacute;charg&eacute;s &agrave; l'ex&eacute;cution -- &agrave; l'aide de l'option
     <code>--enable-<var>module</var>=shared</code>.  D'une mani&egrave;re similaire,
     vous pouvez d&eacute;sactiver des modules de base &agrave; l'aide de l'option
-    <code>--disable-<var>module</var></code> option.  Faites tr&egrave;s attention
+    <code>--disable-<var>module</var></code>.  Faites tr&egrave;s attention
     en utilisant ces options, car <program>configure</program> n'est pas en
     mesure de vous avertir si le module que vous avez sp&eacute;cifi&eacute; n'existe pas;
     il ignorera tout simplement l'option.</p>
 
     <p>En outre, vous devrez peut-&ecirc;tre fournir au script
     <program>configure</program> des informations suppl&eacute;mentaires sur
-    le chemin de votre compilateur, de vos librairies, ou de vos fichiers
+    le chemin de votre compilateur, de vos biblioth&egrave;ques, ou de vos fichiers
     d'en-t&ecirc;tes.  A cet effet, vous pouvez passer des options de ligne de
     commande ou des variables d'environnement au script
     <program>configure</program>. Pour plus d'informations, voir la
-    page de manuel de <program>configure</program>. Ou lancez le script
+    page de manuel de <program>configure</program>, ou lancez le script
     <program>configure</program> avec l'option <code>--help</code>.
     </p>
 
@@ -264,7 +264,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     d'installation <code>/sw/pkg/apache</code>, un compilateur et des drapeaux
     particuliers et les deux modules additionnels <module>mod_rewrite</module>
     et <module>mod_speling</module> qui pourront &ecirc;tre charg&eacute;s plus tard
-    &agrave; l'aide du m&eacute;canisme DSO:</p>
+    &agrave; l'aide du m&eacute;canisme DSO :</p>
 
 <example>
       $ CC="pgcc" CFLAGS="-O2" \<br />
@@ -273,8 +273,9 @@ $ tar xvf httpd-<em>NN</em>.tar
        --enable-speling=shared
 </example>
 
-    <p>Quand <program>configure</program> est lanc&eacute;, il peut prendre
-    plusieurs minutes pour tester la disponibilit&eacute; des fonctionnalit&eacute;s
+    <p>Plusieurs minutes peuvent &ecirc;tre n&eacute;cessaires &agrave;
+    <program>configure</program> pour tester la disponibilit&eacute; des
+    fonctionnalit&eacute;s
     au sein de votre syst&egrave;me, et construire les Makefiles qui seront utilis&eacute;s
     par la suite pour compiler le serveur.</p>
 
@@ -302,9 +303,9 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <example>$ make install</example>
 
-    <p>Cette &eacute;tape n&eacute;cessite habituellement les privil&agrave;ges
+    <p>Cette &eacute;tape n&eacute;cessite habituellement les privil&egrave;ges
     de root, car <em>PREFIX</em> est en g&eacute;n&eacute;ral un
-    r&eacute;pertoire poss&agrave;dant des droits en &eacute;criture
+    r&eacute;pertoire poss&egrave;dant des droits en &eacute;criture
     restreints.</p>
 
     <p>Si vous effectuez une mise &agrave; jour, l'installation n'&eacute;crasera pas
@@ -378,7 +379,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     l'ancienne version vers la nouvelle,
     il vous suffit de copier le fichier <code>config.nice</code> dans
     l'arborescence des sources de la nouvelle version, de l'&eacute;diter pour
-    effectuer toute modification souhait&eacute;e, et de lancer:</p>
+    effectuer toute modification souhait&eacute;e, et de lancer :</p>
 
     <example>
     $ ./config.nice<br />

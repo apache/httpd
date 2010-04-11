@@ -68,7 +68,8 @@
     d'environnement n&eacute;cessaires pour permettre &agrave;
     <program>httpd</program> de fonctionner correctement sous certains syst&egrave;mes
     d'exploitation.
-    <program>apachectl</program> accepte des arguments de ligne de commande,
+    <program>apachectl</program> accepte des arguments de ligne de
+    commande ;
     ainsi toute option de <program>httpd</program> peut aussi &ecirc;tre utilis&eacute;e avec
     <program>apachectl</program>.  Vous pouvez aussi &eacute;diter directement le
     script <program>apachectl</program> en modifiant la variable
@@ -96,17 +97,18 @@
 
 <section id="errors"><title>Erreurs en cours de d&eacute;marrage</title>
 
-    <p>Si Apache rencontre un probl&egrave;me fatal pendant le d&eacute;marrage, il va
+    <p>Si un probl&egrave;me fatal survient pendant le d&eacute;marrage
+    d'Apache, ce dernier va
     afficher un message d&eacute;crivant le probl&egrave;me sur la console ou
     enregistrer ces informations dans le fichier d&eacute;fini par la directive
     <directive module="core">ErrorLog</directive> avant de quitter.
     Un des messages d'erreur les plus courants est "<code>Unable
     to bind to Port ...</code>". Ce message d'erreur est habituellement
-    provoqu&eacute; par:</p>
+    provoqu&eacute; par :</p>
 
     <ul>
       <li>Une tentative de d&eacute;marrage du serveur avec un port privil&eacute;gi&eacute; sans
-      &ecirc;tre connect&eacute; root; ou</li>
+      &ecirc;tre connect&eacute; root</li>
 
       <li>Une tentative de d&eacute;marrage du serveur alors qu'une autre instance
       d'Apache ou un autre serveur web est d&eacute;j&agrave; associ&eacute; au m&ecirc;me port.</li>
@@ -128,11 +130,11 @@
     restrictions d'acc&egrave;s.</p>
 
     <p>Le script <program>apachectl</program> est con&ccedil;u pour fonctionner
-    comme un script d'initialisation SysV standard; il accepte les arguments
+    comme un script d'initialisation SysV standard ; il accepte les arguments
     <code>start</code>, <code>restart</code>, et <code>stop</code>
     et les traduit en signaux appropri&eacute;s pour
-    <program>httpd</program>.  Il est ainsi souvent possible d'installer
-    simplement un lien vers
+    <program>httpd</program>, et il suffit en g&eacute;n&eacute;ral d'installer
+    un lien vers
     <program>apachectl</program> dans le r&eacute;pertoire d'initialisation appropri&eacute;.
     Mais prenez soin de v&eacute;rifier les besoins exacts de votre syst&egrave;me
     en la mati&egrave;re.</p>

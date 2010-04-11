@@ -66,7 +66,7 @@
             <dd>Le serveur HTTP Apache 2.0 se montre plus rapide et plus stable sur les plate-formes 
             non Unix, telles BeOS, OS/2, NetWare et Windows. L'apparition des 
             <a href="mpm.html">Modules Multi-Processus</a> (MPMs), ainsi que de 
-            la biblioth&#232;que "Apache Portable Runtime" (APR) permet a Apache de 
+            la biblioth&#232;que "Apache Portable Runtime" (APR) permet &#224; Apache de 
             tirer parti des API natives de ces plate-formes, sans s'appuyer sur leurs 
             couches POSIX souvent bogu&#233;es et peu optimis&#233;es.</dd>
 
@@ -146,7 +146,7 @@
             <dt><module>mod_ssl</module></dt>
 
             <dd>Apparu dans Apache httpd 2.0, ce module est une interface aux protocoles de 
-            criffrement SSL/TLS fournis par OpenSSL.</dd>
+            chiffrement SSL/TLS fournis par OpenSSL.</dd>
 
             <dt><module>mod_dav</module></dt>
 
@@ -157,9 +157,9 @@
 
             <dt><module>mod_deflate</module></dt>
 
-            <dd>Module apparu dans Apachge httpd 2.0, mod_deflate permet aux navigateurs qui 
+            <dd>Module apparu dans Apache httpd 2.0, mod_deflate permet aux navigateurs qui 
             le supportent de demander la compression des contenus envoy&#233;s par le serveur. 
-            Cela &#224; l'avantage de r&#233;duite l'occupation de la bande passante.</dd>
+            Cela a l'avantage de r&#233;duite l'occupation de la bande passante.</dd>
 
             <dt><module>mod_auth_ldap</module></dt>
 
@@ -184,14 +184,14 @@
             <dd>Apparu dans Apache httpd 2.0, ce module impl&#233;mente les fonctionnalit&#233;s du 
             module <code>mod_mmap_static</code> pr&#233;sent du serveur
 	    HTTP Apache 1.3, et offre des 
-            fonctions plus avanc&#233;es pour la gestion de la cache.</dd>
+            fonctions plus avanc&#233;es pour la gestion du cache.</dd>
 
             <dt><module>mod_headers</module></dt>
 
-            <dd>Ce module gagne beaucoup de flexibilit&#233; avec Apache
+            <dd>Ce module gagne beaucoup de flexibilit&#233et peut aussi positionner; avec Apache
 	    httpd 2.0 : on peut 
             d&#233;sormais l'utiliser pour modifier les en-t&#234;tes des requ&#234;tes 
-            utilis&#233;s par <module>mod_proxy</module>, et peut aussi positionner les 
+            utilis&#233;s par <module>mod_proxy</module>, et pour positionner les 
             en-t&#234;tes des r&#233;ponses de mani&#232;re conditionnelle.</dd>
 
             <dt><module>mod_proxy</module></dt>
@@ -202,26 +202,26 @@
             sections de configuration ajout&#233;es &#224; 
             <directive module="mod_proxy" type="section">Proxy</directive> 
             donnent un contr&#244;le plus lisible et un traitement plus rapide des requ&#234;tes 
-            proxifi&#233;s; les configurations surcharch&#233;es <code>&lt;Directory 
+            mandat&#233;es ; les configurations surcharg&#233;es <code>&lt;Directory 
             "proxy:..."&gt;</code> ne sont pas support&#233;es. Le module a aussi &#233;t&#233; 
-            fragment&#233; en plusieurs modules qui g&#233;rent chacun leur protocole : 
+            fragment&#233; en plusieurs modules qui g&#232;rent chacun leur protocole : 
             <code>proxy_connect</code>, <code>proxy_ftp</code> et 
             <code>proxy_http</code>.</dd>
 
             <dt><module>mod_negotiation</module></dt>
 
-            <dd>Une nouvelles directive, <directive
+            <dd>Une nouvelle directive, <directive
             module="mod_negotiation">ForceLanguagePriority</directive> a &#233;t&#233; ajout&#233;e, 
             elle permet de garantir que le client re&#231;oit un seul document dans tous les 
             cas, au lieu de r&#233;ponses NOT ACCEPTABLE ou MULTIPLE CHOICES. Les 
             algorithmes g&#233;rant la n&#233;gociation et les vues multiples (MultiViews) ont 
             &#233;t&#233; nettoy&#233;s et donnent des r&#233;ponses plus logiques. Un nouveau format de 
-            carte de types (map type) qui peut aussi g&#233;rer le contenu de documents a 
+            carte de types (map type) qui peut g&#233;rer le contenu de documents a 
             aussi &#233;t&#233; ajout&#233;.</dd>
     
             <dt><module>mod_autoindex</module></dt>
 
-            <dd>Les listes auto-g&#233;n&#233;r&#233;s par Autoindex sont &#224; pr&#233;sent 
+            <dd>Les listes auto-g&#233;n&#233;r&#233;es par Autoindex sont &#224; pr&#233;sent 
             configurables, et peuvent utiliser des tables HTML pour une mise en forme plus propre. 
             L'ordre d'affichage des fichiers est &#233;galement finement param&#232;trable, 
             comme pour le tri par version, et le filtrage par caract&#232;res jokers du 
@@ -235,7 +235,7 @@
             effectu&#233;e dans le fichier de configuration principal, plut&#244;t que dans le 
             document SSI. Les r&#233;ponses donn&#233;es par des recherches par expressions 
             rationnelles (qui g&#232;rent &#224; pr&#233;sent les regex Perl) sont 
-            recup&#233;r&#233;s au moyen des variables <code>$0</code> &#224; <code>$9</code>.</dd>
+            recup&#233;r&#233;es au moyen des variables <code>$0</code> &#224; <code>$9</code>.</dd>
 
             <dt><module>mod_auth_dbm</module></dt>
 
