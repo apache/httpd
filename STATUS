@@ -54,8 +54,20 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+  FOR GA:
+
+  FOR BETA:
+
+  * Modules without documentation need to be moved to experimental or be
+    removed.
+
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
+
+  FOR NEXT ALPHA:
+
+
+  OLD ISSUES THAT WERE THOUGHT TO BE SHOWSTOPPERS FOR 2.2 BUT OBVIOUSLY WEREN'T:
 
   * Handling of non-trailing / config by non-default handler is broken
     http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
