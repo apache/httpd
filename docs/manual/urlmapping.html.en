@@ -302,7 +302,8 @@ is available to rewrite links in HTML and XHTML.</p>
 
 
 
-    <p>Other modules available for URL mapping include:
+    <p>Other modules available for URL mapping include:</p>
+
     <ul>
     <li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code> - Maps a request to a CGI script
     based on the request method, or resource MIME type.</li>
@@ -314,7 +315,6 @@ is available to rewrite links in HTML and XHTML.</p>
     document based on client preferences such as language or content
     compression.</li>
     </ul>
-    </p>
 
 </div></div>
 <div class="bottomlang">
