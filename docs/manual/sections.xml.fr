@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 927824:930742 (outdated) -->
+<!-- English Revision: 930742 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more

@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 807930:930744 (outdated) -->
+<!-- English Revision: 930744 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -36,11 +36,44 @@
     journalisation et interpr&eacute;ter le contenu des journaux.</p>
   </summary>
 
+  <section id="overview">
+    <title>Vue d'ensemble</title>
+
+  <related>
+      <modulelist>
+        <module>mod_log_config</module>
+        <module>mod_log_forensic</module>
+        <module>mod_logio</module>
+        <module>mod_rewrite</module>
+        <module>mod_cgi</module>
+      </modulelist>
+  </related>
+
+  <p>
+  Le serveur HTTP Apache fournit toute une vari&eacute;t&eacute; de m&eacute;canismes
+  diff&eacute;rents pour la journalisation de tout ce qui peut se passer au
+  sein de votre serveur, depuis la requ&ecirc;te initiale, en passant par le
+  processus de mise en correspondance des URLs, et jusqu'&agrave; la fermeture
+  de la connexion, y compris toute erreur pouvant survenir au cours du
+  traitement. De plus, certains modules tiers fournissent des
+  fonctionnalit&eacute;s de journalisation ou ins&egrave;rent des entr&eacute;es dans les
+  fichiers journaux existants, et les applications comme les programmes
+  CGI, les scripts PHP ou autres gestionnaires peuvent envoyer des
+  messages vers le journal des erreurs du serveur.
+  </p>
+
+  <p>
+  Ce document d&eacute;crit le fonctionnement des modules de journalisation
+  fournis en standard avec le serveur httpd.
+  </p>
+
+  </section>
+
   <section id="security">
     <title>Avertissement &agrave; propos de la s&eacute;curit&eacute;</title>
 
     <p>Tout utilisateur qui a les droits en &eacute;criture sur le r&eacute;pertoire dans
-    lequel Apache &eacute;crit ses journaux pourra quasi
+    lequel Apache httpd &eacute;crit ses journaux pourra quasi
     certainement avoir acc&egrave;s &agrave; l'uid sous lequel le serveur est d&eacute;marr&eacute;, en
     l'occurrence habituellement root. N'accordez <em>PAS</em> aux utilisateurs
     l'acc&egrave;s en &eacute;criture au r&eacute;pertoire dans lequel les journaux sont stock&eacute;s
@@ -59,6 +92,9 @@
     <title>Journal des erreurs</title>
 
     <related>
+      <modulelist>
+        <module>core</module>
+      </modulelist>
       <directivelist>
         <directive module="core">ErrorLog</directive>
         <directive module="core">LogLevel</directive>
@@ -456,7 +492,7 @@
     les 10000 requ&ecirc;tes. Il est par cons&eacute;quent n&eacute;cessaire d'effectuer
     p&eacute;riodiquement la rotation des journaux en d&eacute;pla&ccedil;ant ou supprimant les
     fichiers correspondants. On ne peut pas le faire pendant que le serveur
-    est en cours d'ex&eacute;cution, car Apache va continuer &agrave; &eacute;crire dans l'ancien
+    est en cours d'ex&eacute;cution, car Apache httpd va continuer &agrave; &eacute;crire dans l'ancien
     fichier journal aussi longtemps qu'il le maintiendra ouvert.
     C'est pourquoi le serveur doit &ecirc;tre
     <a href="stopping.html">red&eacute;marr&eacute;</a> apr&egrave;s le d&eacute;placement ou la
@@ -500,7 +536,8 @@
     vers un tube de communication, remplacez simplement le nom de fichier
     journal par
     le caract&egrave;re pipe "<code>|</code>", suivi du nom de l'ex&eacute;cutable qui va
-    recueillir les entr&eacute;es de journal sur son entr&eacute;e standard. Apache va
+    recueillir les entr&eacute;es de journal sur son entr&eacute;e
+    standard. Le serveur va
     lancer le processus de redirection des journaux au moment du d&eacute;marrage du
     serveur, et le relancera s'il cesse de fonctionner
     pendant l'ex&eacute;cution du serveur.

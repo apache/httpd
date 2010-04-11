@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision: 659902:931524 (outdated) -->
+<!-- English Revision: 931524 -->
 <!-- French translation by Vincent Deffontaines, Alain B., review by  -->
 <!-- updated by Lucien Gentis -->
 
@@ -527,6 +527,10 @@
     sera servie par le serveur virtuel par défaut, et toute autre 
     requête vers une adresse et un port non spécifiés sera servie 
     par le serveur principal.</p>
+
+    <p>L'utilisation du caractère générique <code>*</code> dans la
+    déclaration d'un serveur virtuel l'emporte sur
+    <code>_default_</code>.</p>
     </section>
 
 	</section>

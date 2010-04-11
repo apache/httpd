@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 926439 -->
+<!-- English Revision : 932384 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -366,9 +366,9 @@ nom</description>
     fichier partiel ou un nom de fichier complet.</p>
 
     <example><title>Exemples</title>
-      AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
-      AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
-      AddIcon /icons/backup.xbm *~
+      AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
+      AddIcon /icons/dir.png ^^DIRECTORY^^<br />
+      AddIcon /icons/backup.png *~
     </example>
 
     <p>Lorsque c'est possible, il est pr&eacute;f&eacute;rable d'utiliser <directive
@@ -402,7 +402,7 @@ codage MIME</description>
     <code>x-compress</code>.</p>
 
     <example><title>Exemple</title>
-      AddIconByEncoding /icons/compress.xbm x-compress
+      AddIconByEncoding /icons/compress.png x-compress
     </example>
 </usage>
 </directivesynopsis>
@@ -433,7 +433,7 @@ type MIME</description>
     g&eacute;n&eacute;riques repr&eacute;sentant le type MIME.</p>
 
     <example><title>Exemple</title>
-      AddIconByType (IMG,/icons/image.xbm) image/*
+      AddIconByType (IMG,/icons/image.png) image/*
     </example>
 </usage>
 </directivesynopsis>
@@ -457,7 +457,7 @@ n'est pr&eacute;cis&eacute;</description>
     caract&egrave;res '%') vers l'ic&ocirc;ne.</p>
 
     <example><title>Exemple</title>
-      DefaultIcon /icon/inconnu.xbm
+      DefaultIcon /icon/unknown.png
     </example>
 </usage>
 </directivesynopsis>
@@ -925,9 +925,8 @@ r&eacute;pertoire</description>
    -->
    <dl><dt>Options d'index incr&eacute;mentales</dt>
    <dd>
-     <p>Apache httpd 1.3.3 a apport&eacute; d'importantes modifications dans la
-     gestion des directives <directive>IndexOptions</directive>. En
-     particulier :</p>
+     <p>Vous devez porter une attention particuli&egrave;re &agrave; la mani&egrave;re dont
+     les <directive>IndexOptions</directive> multiples sont trait&eacute;es.</p>
 
      <ul>
      <li>Plusieurs directives <directive>IndexOptions</directive>

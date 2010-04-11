@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 926430 -->
+<!-- English Revision : 931689 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -142,6 +142,11 @@
     <p>Si en outre, vous d&eacute;sirez activer la mise en cache, consultez la
     documentation de <module>mod_cache</module>.</p>
 
+    <example><title>Mandataire inverse</title>
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
+    </example>
+
     <example><title>Mandataire direct</title>
     ProxyRequests On<br />
     ProxyVia On<br />
@@ -153,20 +158,6 @@
       Allow from interne.example.com<br />
     </indent>
     &lt;/Proxy&gt;
-    </example>
-
-    <example><title>Mandataire inverse</title>
-    ProxyRequests Off<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <indent>
-      Order deny,allow<br />
-      Allow from all<br />
-    </indent>
-    &lt;/Proxy&gt;<br />
-    <br />
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
     </example>
     </section> <!-- /examples -->
 
