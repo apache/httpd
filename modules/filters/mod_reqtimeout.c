@@ -24,7 +24,6 @@
 #include "util_filter.h"
 #define APR_WANT_STRFUNC
 #include "apr_strings.h"
-#include "apr_support.h"
 
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
@@ -219,7 +218,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             }
 
             /* ... and wait for more */
-            rv = apr_wait_for_io_or_timeout(NULL, ccfg->socket, 1);
+            rv = apr_socket_wait(ccfg->socket, APR_WAIT_READ);
             if (rv != APR_SUCCESS)
                 break;
 
