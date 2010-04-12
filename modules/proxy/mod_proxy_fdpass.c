@@ -24,9 +24,6 @@
 #error This module only works on unix platforms with the correct OS support
 #endif
 
-/* for apr_wait_for_io_or_timeout */
-#include "apr_support.h"
-
 #include "mod_proxy_fdpass.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fdpass_module;
@@ -76,7 +73,7 @@ static apr_status_t socket_connect_un(apr_socket_t *sock,
 
     if ((rv == -1) && (errno == EINPROGRESS || errno == EALREADY)
         && (t > 0)) {
-        rv = apr_wait_for_io_or_timeout(NULL, sock, 0);
+        rv = apr_socket_wait(sock, APR_WAIT_WRITE);
         if (rv != APR_SUCCESS) {
             return rv;
         }
