@@ -102,11 +102,14 @@ changes on a per-directory basis.</p>
 
     <p>In general, you should never use <code>.htaccess</code> files unless
     you don't have access to the main server configuration file. There is,
-    for example, a prevailing misconception that user authentication should
-    always be done in <code>.htaccess</code> files. This is simply not the
+    for example, a common misconception that user authentication should
+    always be done in <code>.htaccess</code> files, and, in more recent years, 
+    another miscomception that <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> directives
+    must go in <code>.htaccess</code> files. This is simply not the
     case. You can put user authentication configurations in the main server
     configuration, and this is, in fact, the preferred way to do
-    things.</p>
+    things. Likewise, <code>mod_rewrite</code> directives work better,
+    in many respects, in the main server configuration.</p>
 
     <p><code>.htaccess</code> files should be used in a case where the
     content providers need to make configuration changes to the server on a
@@ -154,6 +157,15 @@ changes on a per-directory basis.</p>
     present. (Note that this would only be the case if
     <code>.htaccess</code> files were enabled for <code>/</code>, which
     is not usually the case.)</p>
+
+    <p>In the case of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives, in
+    <code>.htaccess</code> context these regular expressions must be
+    re-compiled with every request to the directory, whereas in main
+    server configuration context they are compiled once and cached.
+    Additionally, the rules themselves are more complicated, as one must
+    work around the restrictions that come with per-directory context
+    and <code>mod_rewrite</code>. Consult the <a href="../rewrite/intro.html#htaccess">Rewrite Guide</a> for more
+    detail on this subject.</p>
 
     <p>The second consideration is one of security. You are permitting
     users to modify server configuration, which may result in changes over
