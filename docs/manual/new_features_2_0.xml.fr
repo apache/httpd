@@ -188,7 +188,7 @@
 
             <dt><module>mod_headers</module></dt>
 
-            <dd>Ce module gagne beaucoup de flexibilit&#233et peut aussi positionner; avec Apache
+            <dd>Ce module gagne beaucoup de flexibilit&#233; et peut aussi positionner; avec Apache
 	    httpd 2.0 : on peut 
             d&#233;sormais l'utiliser pour modifier les en-t&#234;tes des requ&#234;tes 
             utilis&#233;s par <module>mod_proxy</module>, et pour positionner les 
