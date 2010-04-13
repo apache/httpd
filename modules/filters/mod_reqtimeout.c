@@ -24,6 +24,10 @@
 #include "util_filter.h"
 #define APR_WANT_STRFUNC
 #include "apr_strings.h"
+#include "apr_version.h"
+#if APR_MAJOR_VERSION < 2
+#include "apr_support.h"
+#endif
 
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
@@ -218,7 +222,11 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
             }
 
             /* ... and wait for more */
+#if APR_MAJOR_VERSION < 2
+            rv = apr_wait_for_io_or_timeout(NULL, ccfg->socket, 1);
+#else
             rv = apr_socket_wait(ccfg->socket, APR_WAIT_READ);
+#endif
             if (rv != APR_SUCCESS)
                 break;
 
