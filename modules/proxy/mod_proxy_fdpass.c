@@ -24,6 +24,12 @@
 #error This module only works on unix platforms with the correct OS support
 #endif
 
+#include "apr_version.h"
+#if APR_MAJOR_VERSION < 2
+/* for apr_wait_for_io_or_timeout */
+#include "apr_support.h"
+#endif
+
 #include "mod_proxy_fdpass.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fdpass_module;
@@ -73,7 +79,12 @@ static apr_status_t socket_connect_un(apr_socket_t *sock,
 
     if ((rv == -1) && (errno == EINPROGRESS || errno == EALREADY)
         && (t > 0)) {
+#if APR_MAJOR_VERSION < 2
+        rv = apr_wait_for_io_or_timeout(NULL, sock, 0);
+#else
         rv = apr_socket_wait(sock, APR_WAIT_WRITE);
+#endif
+
         if (rv != APR_SUCCESS) {
             return rv;
         }
