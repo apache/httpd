@@ -217,7 +217,7 @@ syntax error(s).</div>
     PID, and should coexist without problem. However, if a configuration
     directive, third-party module or persistent CGI utilises any other on-disk 
     lock or  state files, care should be taken to ensure that multiple running 
-    instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> do not clobber each others files.</p> 
+    instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> do not clobber each other's files.</p> 
 
     <p>You should also be wary of other potential race conditions, such as
     using <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> style piped logging. Multiple running

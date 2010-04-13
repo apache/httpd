@@ -220,7 +220,7 @@ syntax error(s).</note>
     PID, and should coexist without problem. However, if a configuration
     directive, third-party module or persistent CGI utilises any other on-disk 
     lock or  state files, care should be taken to ensure that multiple running 
-    instances of <program>httpd</program> do not clobber each others files.</p> 
+    instances of <program>httpd</program> do not clobber each other's files.</p> 
 
     <p>You should also be wary of other potential race conditions, such as
     using <program>rotatelogs</program> style piped logging. Multiple running
