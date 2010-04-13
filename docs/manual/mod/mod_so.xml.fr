@@ -68,7 +68,7 @@ Windows</title>
     tiers, comme PHP par exemple, qui continuent d'utiliser la
     convention de nommage avec extension <code>.dll</code>.</p>
 
-    <p>Bien que <code>mod_so puisse encore charger des modules
+    <p>Bien que <code>mod_so</code> puisse encore charger des modules
     poss&egrave;dant un nom du style <code>ApacheModuleFoo.dll</code>,
     il est pr&eacute;f&eacute;rable d'utiliser la
     nouvelle convention de nommage ; si vous modifiez votre module
