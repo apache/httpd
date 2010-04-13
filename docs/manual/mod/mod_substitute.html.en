@@ -97,6 +97,29 @@
         &lt;/Location&gt;
     </code></p></div>
 
+    <p>A common use scenario for <code>mod_substitute</code> is the
+    situation in which a front-end server proxies requests to a back-end
+    server which returns HTML with hard-coded embedded URLs that refer
+    to the back-end server. These URLs don't work for the end-user,
+    since the back-end server is unreachable.</p>
+
+    <p>In this case, <code>mod_substutite</code> can be used to rewrite
+    those URLs into something that will work from the front end:</p>
+
+    <div class="example"><h3>Rewriting URLs embedded in proxied content</h3><p><code>
+    ProxyPass /blog/ http://internal.blog.example.com<br />
+    ProxyPassReverse /blog/ http://internal.blog.example.com/<br />
+    <br />
+    Substitute "s|http://internal.blog.example.com/|http://www.example.com/blog/|i"
+    </code></p></div>
+
+    <p><code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code>
+    modifies any <code>Location</code> (redirect) headers that are sent
+    by the back-end server, and, in this example,
+    <code>Substitute</code> takes care of the rest of the problem by
+    fixing up the HTML response as well.</p>
+
+
 </div>
 </div>
 <div class="bottomlang">
