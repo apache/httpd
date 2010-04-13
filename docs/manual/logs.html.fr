@@ -24,8 +24,6 @@
 <a href="./ko/logs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/logs.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Pour véritablement gérer un serveur web,
     il est nécessaire de disposer d'un
@@ -35,7 +33,8 @@
     complètes. Ce document décrit comment configurer ces fonctionnalités de
     journalisation et interpréter le contenu des journaux.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#security">Avertissement à propos de la sécurité</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Vue d'ensemble</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#security">Avertissement à propos de la sécurité</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errorlog">Journal des erreurs</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#accesslog">Journal des accès</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#rotation">Rotation des journaux</a></li>
@@ -45,11 +44,36 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="overview" id="overview">Vue d'ensemble</a></h2>
+    
+
+  <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li></ul></td><td /></tr></table>
+
+  <p>
+  Le serveur HTTP Apache fournit toute une variété de mécanismes
+  différents pour la journalisation de tout ce qui peut se passer au
+  sein de votre serveur, depuis la requête initiale, en passant par le
+  processus de mise en correspondance des URLs, et jusqu'à la fermeture
+  de la connexion, y compris toute erreur pouvant survenir au cours du
+  traitement. De plus, certains modules tiers fournissent des
+  fonctionnalités de journalisation ou insèrent des entrées dans les
+  fichiers journaux existants, et les applications comme les programmes
+  CGI, les scripts PHP ou autres gestionnaires peuvent envoyer des
+  messages vers le journal des erreurs du serveur.
+  </p>
+
+  <p>
+  Ce document décrit le fonctionnement des modules de journalisation
+  fournis en standard avec le serveur httpd.
+  </p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="security" id="security">Avertissement à propos de la sécurité</a></h2>
     
 
     <p>Tout utilisateur qui a les droits en écriture sur le répertoire dans
-    lequel Apache écrit ses journaux pourra quasi
+    lequel Apache httpd écrit ses journaux pourra quasi
     certainement avoir accès à l'uid sous lequel le serveur est démarré, en
     l'occurrence habituellement root. N'accordez <em>PAS</em> aux utilisateurs
     l'accès en écriture au répertoire dans lequel les journaux sont stockés
@@ -67,7 +91,7 @@
 <h2><a name="errorlog" id="errorlog">Journal des erreurs</a></h2>
     
 
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code></li><li><code class="directive"><a href="./mod/core.html#loglevel">LogLevel</a></code></li></ul></td></tr></table>
 
     <p>Le journal des erreurs du serveur, dont le nom et la localisation sont
     définis par la directive <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code>,
@@ -447,7 +471,7 @@
     les 10000 requêtes. Il est par conséquent nécessaire d'effectuer
     périodiquement la rotation des journaux en déplaçant ou supprimant les
     fichiers correspondants. On ne peut pas le faire pendant que le serveur
-    est en cours d'exécution, car Apache va continuer à écrire dans l'ancien
+    est en cours d'exécution, car Apache httpd va continuer à écrire dans l'ancien
     fichier journal aussi longtemps qu'il le maintiendra ouvert.
     C'est pourquoi le serveur doit être
     <a href="stopping.html">redémarré</a> après le déplacement ou la
@@ -491,7 +515,8 @@
     vers un tube de communication, remplacez simplement le nom de fichier
     journal par
     le caractère pipe "<code>|</code>", suivi du nom de l'exécutable qui va
-    recueillir les entrées de journal sur son entrée standard. Apache va
+    recueillir les entrées de journal sur son entrée
+    standard. Le serveur va
     lancer le processus de redirection des journaux au moment du démarrage du
     serveur, et le relancera s'il cesse de fonctionner
     pendant l'exécution du serveur.

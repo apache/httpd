@@ -184,6 +184,11 @@
     <p>Si en outre, vous désirez activer la mise en cache, consultez la
     documentation de <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>.</p>
 
+    <div class="example"><h3>Mandataire inverse</h3><p><code>
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
+    </code></p></div>
+
     <div class="example"><h3>Mandataire direct</h3><p><code>
     ProxyRequests On<br />
     ProxyVia On<br />
@@ -195,20 +200,6 @@
       Allow from interne.example.com<br />
     </span>
     &lt;/Proxy&gt;
-    </code></p></div>
-
-    <div class="example"><h3>Mandataire inverse</h3><p><code>
-    ProxyRequests Off<br />
-    <br />
-    &lt;Proxy *&gt;<br />
-    <span class="indent">
-      Order deny,allow<br />
-      Allow from all<br />
-    </span>
-    &lt;/Proxy&gt;<br />
-    <br />
-    ProxyPass /foo http://foo.example.com/bar<br />
-    ProxyPassReverse /foo http://foo.example.com/bar
     </code></p></div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

@@ -401,7 +401,7 @@
     <p>De même, soyez méfiant en jouant avec la directive
     <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ; la positionner à
     <code>"./"</code> aurait le même effet, pour root, que le premier exemple plus haut.
-    Si vous utilisez Apache version 1.3 ou supérieure, nous vous conseillons
+    Nous vous conseillons
     fortement d'inclure la ligne suivante dans le fichier de configuration de
     votre serveur :</p>
 

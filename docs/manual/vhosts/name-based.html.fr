@@ -25,16 +25,13 @@
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/vhosts/name-based.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document décrit quand et comment utiliser des serveurs 
     virtuels par nom.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#namevip">Serveurs virtuels par nom vs. par IP</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#using">Utilisation de serveurs virtuels par nom</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#compat">Compatibilité avec les navigateurs anciens</a></li>
-</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="ip-based.html">Support Apache des serveurs virtuels par IP</a></li><li><a href="details.html">Détails sur le fonctionnement des serveurs virtuels</a></li><li><a href="mass.html">Configuration dynamique des hébergements virtuels de masse</a></li><li><a href="examples.html">Exemples d'utilisations de VirtualHost</a></li><li><a href="examples.html#serverpath">Utilisation de la directive ServerPath</a></li></ul></div>
+</ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="ip-based.html">Support Apache des serveurs virtuels par IP</a></li><li><a href="details.html">Détails sur le fonctionnement des serveurs virtuels</a></li><li><a href="mass.html">Configuration dynamique des hébergements virtuels de masse</a></li><li><a href="examples.html">Exemples d'utilisations de VirtualHost</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="namevip" id="namevip">Serveurs virtuels par nom vs. par IP</a></h2>
@@ -60,15 +57,6 @@
     sont exposées ci-après&nbsp;:</p>
 
     <ul>
-        <li>Certains anciens navigateurs ne sont pas compatibles 
-        avec les serveurs virtuels par nom, car pour fonctionner, 
-        un client doit transmettre un champ d'en-tête HTTP Host. 
-        Cet en-tête est exigé pour HTTP/1.1, et peut être implémenté 
-        sur des navigateurs modernes HTTP/1.0 grâce à une extension. 
-        Si vous devez maintenir des clients obsolètes tout en 
-        utilisant l'hébergement virtuel par nom, il existe une 
-        technique qui est traitée à la fin de ce document.</li>
-
         <li>L'hébergement virtuel par nom ne peut pas être utilisé 
         avec des serveurs sécurisés SSL à cause de la nature même 
         du protocole SSL.</li>
@@ -83,7 +71,7 @@
 <div class="section">
 <h2><a name="using" id="using">Utilisation de serveurs virtuels par nom</a></h2>
 
-<table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="../mod/core.html">core</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code></li><li><code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code></li><li><code class="directive"><a href="../mod/core.html#serveralias">ServerAlias</a></code></li><li><code class="directive"><a href="../mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
     <p>Pour utiliser des serveurs virtuels par nom, vous devez 
     désigner l'adresse IP (et si possible le port) sur le serveur 
@@ -228,65 +216,6 @@
     mettez cette configuration dans une section 
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 
     que vous placerez en premier dans le fichier de configuration.</p>
-
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="compat" id="compat">Compatibilité avec les navigateurs anciens</a></h2>
-
-    <p>Comme mentionné plus tôt, certains clients ne transmettent 
-    pas les données nécessaires pour le bon fonctionnement des 
-    serveurs virtuels par nom. Ces clients recevront toujours les pages
-    du premier serveur virtuel listé pour cette adresse IP (le 
-    serveur virtuel par nom <cite>primaire</cite>).</p>
-
-    <div class="note"><h3>De combien plus anciens&nbsp;?</h3>
-    <p>Veuillez noter que quand nous disons plus anciens, nous 
-    disons vraiment plus anciens. Vous avez peu de chances de rencontrer 
-    de tels navigateurs encore utilisés de nos jours. Toutes les 
-    versions actuelles des navigateurs transmettent leur en-tête 
-    <code>Host</code> comme exigé par les serveurs virtuels par nom.</p>
-    </div>
-
-    <p>Il existe une solution avec la directive 
-    <code class="directive"><a href="../mod/core.html#serverpath">ServerPath</a></code>, bien que 
-    légèrement complexe&nbsp;:</p>
-
-    <p>Exemple de configuration&nbsp;:</p>
-
-    <div class="example"><p><code>
-        NameVirtualHost 111.22.33.44<br />
-        <br />
-        &lt;VirtualHost 111.22.33.44&gt;<br />
-        <span class="indent">
-            ServerName www.domain.tld<br />
-            ServerPath /domain<br />
-            DocumentRoot /web/domain<br />
-        </span>
-        &lt;/VirtualHost&gt;<br />
-    </code></p></div>
-
-    <p>Qu'est-ce que cela signifie&nbsp;? Il signifie qu'une requête 
-    pour tout URI qui commence par "<code>/domain</code>" sera 
-    servie par le serveur virtuel <code>www.domain.tld</code>. 
-    Ainsi, les pages sont accessibles à 
-    <code>http://www.domain.tld/domain/</code> pour tous les 
-    clients, bien que ceux qui transmettent un en-tête 
-    <code>Host:</code> peuvent également y accéder à 
-    <code>http://www.domain.tld/</code>.</p>
-
-    <p>Pour rendre cette technique fonctionnelle, mettez un lien 
-    dans votre serveur virtuel primaire vers 
-    <code>http://www.domain.tld/domain/</code>. Ensuite, dans les 
-    pages de ce serveur virtuel, assurez vous ne n'utiliser que 
-    des liens relatifs (<em>par exemple</em>, "<code>file.html</code>" 
-    ou "<code>../icons/image.gif</code>") ou des liens contenant 
-    le préfixe <code>/domain/</code> (<em>par exemple</em>, 
-    "<code>http://www.domain.tld/domain/misc/file.html</code>" 
-    ou "<code>/domain/misc/file.html</code>").</p>
-
-    <p>Cela requiert un peu de discipline, mais si vous suivez 
-    cette ligne de conduite, vous serez assuré que vos pages 
-    s'afficheront dans tous les navigateurs, nouveaux et anciens.</p>
 
 </div></div>
 <div class="bottomlang">

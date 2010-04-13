@@ -68,7 +68,8 @@
     d'environnement nécessaires pour permettre à
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> de fonctionner correctement sous certains systèmes
     d'exploitation.
-    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> accepte des arguments de ligne de commande,
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> accepte des arguments de ligne de
+    commande ;
     ainsi toute option de <code class="program"><a href="./programs/httpd.html">httpd</a></code> peut aussi être utilisée avec
     <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>.  Vous pouvez aussi éditer directement le
     script <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> en modifiant la variable
@@ -95,17 +96,18 @@
 <div class="section">
 <h2><a name="errors" id="errors">Erreurs en cours de démarrage</a></h2>
 
-    <p>Si Apache rencontre un problème fatal pendant le démarrage, il va
+    <p>Si un problème fatal survient pendant le démarrage
+    d'Apache, ce dernier va
     afficher un message décrivant le problème sur la console ou
     enregistrer ces informations dans le fichier défini par la directive
     <code class="directive"><a href="./mod/core.html#errorlog">ErrorLog</a></code> avant de quitter.
     Un des messages d'erreur les plus courants est "<code>Unable
     to bind to Port ...</code>". Ce message d'erreur est habituellement
-    provoqué par:</p>
+    provoqué par :</p>
 
     <ul>
       <li>Une tentative de démarrage du serveur avec un port privilégié sans
-      être connecté root; ou</li>
+      être connecté root</li>
 
       <li>Une tentative de démarrage du serveur alors qu'une autre instance
       d'Apache ou un autre serveur web est déjà associé au même port.</li>
@@ -127,11 +129,11 @@
     restrictions d'accès.</p>
 
     <p>Le script <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> est conçu pour fonctionner
-    comme un script d'initialisation SysV standard; il accepte les arguments
+    comme un script d'initialisation SysV standard ; il accepte les arguments
     <code>start</code>, <code>restart</code>, et <code>stop</code>
     et les traduit en signaux appropriés pour
-    <code class="program"><a href="./programs/httpd.html">httpd</a></code>.  Il est ainsi souvent possible d'installer
-    simplement un lien vers
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>, et il suffit en général d'installer
+    un lien vers
     <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> dans le répertoire d'initialisation approprié.
     Mais prenez soin de vérifier les besoins exacts de votre système
     en la matière.</p>
