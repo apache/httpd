@@ -416,14 +416,15 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr,
 #endif /*ENETDOWN*/
 
         default:
-#ifdef _OSD_POSIX /* Possibly on other platforms too */
             /* If the socket has been closed in ap_close_listeners()
              * by the restart/stop action, we may get EBADF.
              * Do not print an error in this case.
              */
-            if (!lr->active && status == EBADF)
+            if (!lr->active) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, status, ap_server_conf,
+                             "apr_socket_accept failed for inactive listener");
                 return status;
-#endif
+            }
             ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
                          "apr_socket_accept: (client socket)");
             return APR_EGENERAL;
