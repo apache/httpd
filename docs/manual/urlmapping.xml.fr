@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 932378 -->
+<!-- English Revision: 932378:932935 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -346,7 +346,7 @@ URLs</title>
 <!-- TODO Flesh out each of the items in the list below. -->
 
     <p>Les autres modules disponibles pour la mise en correspondance des
-    URLs sont :
+    URLs sont:</p>
     <ul>
     <li><module>mod_actions</module> - Met une URL en correspondance
     avec un script CGI en fonction de la m&eacute;thode de la requ&ecirc;te, ou du
@@ -361,7 +361,6 @@ URLs</title>
     appropri&eacute; en fonction de pr&eacute;f&eacute;rences du client telles que la langue
     ou la compression du contenu.</li>
     </ul>
-    </p>
 
 </section>
 
