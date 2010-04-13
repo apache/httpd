@@ -179,7 +179,7 @@
     la version sources.  Le processus de construction (décrit ci-dessous) est
     simple, et vous permet de personnaliser votre serveur selon vos besoins.
     En outre, les versions binaires sont souvent plus anciennes que les
-    dernières versions sources  Si vous téléchargez une version binaire,
+    dernières versions sources. Si vous téléchargez une version binaire,
     suivez les instructions décrites dans le fichier
     <code>INSTALL.bindist</code> inclus dans la distribution.</p>
 
@@ -211,18 +211,18 @@ $ tar xvf httpd-<em>NN</em>.tar
     <p>L'étape suivante consiste à configurer l'arborescence des sources
     d'Apache en fonction de votre plateforme et de vos besoins personnels.
     Le script  <code class="program"><a href="./programs/configure.html">configure</a></code>, situé à la racine du
-    répertoire de la distribution, a été conçu à cet effet.
+    répertoire de la distribution, a été conçu à cet effet
     (Les développeurs qui téléchargent
     une version non officielle de l'arborescence des sources d'Apache
     devront disposer de
     <code>autoconf</code> et <code>libtool</code> et
     exécuter <code>buildconf</code> avant de passer à l'étape suivante,
-    ce qui n'est pas nécessaire pour les versions officielles.)</p>
+    ce qui n'est pas nécessaire pour les versions officielles).</p>
 
     <p>Pour configurer l'arborescence des sources avec les valeurs par défaut
     pour toutes les options, entrez simplement <code>./configure</code>.
     Pour modifier les valeurs des options, <code class="program"><a href="./programs/configure.html">configure</a></code>
-    comprend toute une variété de variables et
+    accepte toute une variété de variables et
     d'options de ligne de commande.</p>
 
     <p>L'option la plus importante <code>--prefix</code> est le chemin
@@ -244,18 +244,18 @@ $ tar xvf httpd-<em>NN</em>.tar
     ou déchargés à l'exécution -- à l'aide de l'option
     <code>--enable-<var>module</var>=shared</code>.  D'une manière similaire,
     vous pouvez désactiver des modules de base à l'aide de l'option
-    <code>--disable-<var>module</var></code> option.  Faites très attention
+    <code>--disable-<var>module</var></code>.  Faites très attention
     en utilisant ces options, car <code class="program"><a href="./programs/configure.html">configure</a></code> n'est pas en
     mesure de vous avertir si le module que vous avez spécifié n'existe pas;
     il ignorera tout simplement l'option.</p>
 
     <p>En outre, vous devrez peut-être fournir au script
     <code class="program"><a href="./programs/configure.html">configure</a></code> des informations supplémentaires sur
-    le chemin de votre compilateur, de vos librairies, ou de vos fichiers
+    le chemin de votre compilateur, de vos bibliothèques, ou de vos fichiers
     d'en-têtes.  A cet effet, vous pouvez passer des options de ligne de
     commande ou des variables d'environnement au script
     <code class="program"><a href="./programs/configure.html">configure</a></code>. Pour plus d'informations, voir la
-    page de manuel de <code class="program"><a href="./programs/configure.html">configure</a></code>. Ou lancez le script
+    page de manuel de <code class="program"><a href="./programs/configure.html">configure</a></code>, ou lancez le script
     <code class="program"><a href="./programs/configure.html">configure</a></code> avec l'option <code>--help</code>.
     </p>
 
@@ -264,7 +264,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     d'installation <code>/sw/pkg/apache</code>, un compilateur et des drapeaux
     particuliers et les deux modules additionnels <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
     et <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> qui pourront être chargés plus tard
-    à l'aide du mécanisme DSO:</p>
+    à l'aide du mécanisme DSO :</p>
 
 <div class="example"><p><code>
       $ CC="pgcc" CFLAGS="-O2" \<br />
@@ -273,8 +273,9 @@ $ tar xvf httpd-<em>NN</em>.tar
        --enable-speling=shared
 </code></p></div>
 
-    <p>Quand <code class="program"><a href="./programs/configure.html">configure</a></code> est lancé, il peut prendre
-    plusieurs minutes pour tester la disponibilité des fonctionnalités
+    <p>Plusieurs minutes peuvent être nécessaires à
+    <code class="program"><a href="./programs/configure.html">configure</a></code> pour tester la disponibilité des
+    fonctionnalités
     au sein de votre système, et construire les Makefiles qui seront utilisés
     par la suite pour compiler le serveur.</p>
 
@@ -302,9 +303,9 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ make install</code></p></div>
 
-    <p>Cette étape nécessite habituellement les privilàges
+    <p>Cette étape nécessite habituellement les privilèges
     de root, car <em>PREFIX</em> est en général un
-    répertoire possàdant des droits en écriture
+    répertoire possèdant des droits en écriture
     restreints.</p>
 
     <p>Si vous effectuez une mise à jour, l'installation n'écrasera pas
@@ -377,7 +378,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     l'ancienne version vers la nouvelle,
     il vous suffit de copier le fichier <code>config.nice</code> dans
     l'arborescence des sources de la nouvelle version, de l'éditer pour
-    effectuer toute modification souhaitée, et de lancer:</p>
+    effectuer toute modification souhaitée, et de lancer :</p>
 
     <div class="example"><p><code>
     $ ./config.nice<br />

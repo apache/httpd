@@ -44,8 +44,8 @@
     ou <em>serveur virtuel non-IP</em>.</p>
 
     <p>Vous trouverez ci-dessous une liste documentaire qui vous 
-    expliquera en détails le fonctionnement des serveurs virtuels 
-    sous Apache 1.3 et ses versions suivantes.</p>
+    expliquera en détails le fonctionnement du support des serveurs
+    virtuels par le serveur HTTP Apache.</p>
 
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#support">Support des serveurs virtuels</a></li>

@@ -549,6 +549,10 @@
     sera servie par le serveur virtuel par défaut, et toute autre 
     requête vers une adresse et un port non spécifiés sera servie 
     par le serveur principal.</p>
+
+    <p>L'utilisation du caractère générique <code>*</code> dans la
+    déclaration d'un serveur virtuel l'emporte sur
+    <code>_default_</code>.</p>
     
 
 	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

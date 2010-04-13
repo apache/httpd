@@ -65,16 +65,18 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Ports that are allowed to <code>CONNECT</code> through the
 proxy</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowCONNECT <var>port</var> [<var>port</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AllowCONNECT <var>port</var>[-<var>port</var>]
+[<var>port</var>[-<var>port</var>]] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AllowCONNECT 443 563</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy_connect</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved from <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> in Apache 2.3.5.</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Moved from <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> in Apache 2.3.5.
+Port ranges available since Apache 2.3.7.</td></tr>
 </table>
     <p>The <code class="directive">AllowCONNECT</code> directive specifies a list
-    of port numbers to which the proxy <code>CONNECT</code> method may
-    connect.  Today's browsers use this method when a <code>https</code>
+    of port numbers or ranges to which the proxy <code>CONNECT</code> method
+    may connect.  Today's browsers use this method when a <code>https</code>
     connection is requested and proxy tunneling over HTTP is in effect.</p>
 
     <p>By default, only the default https port (<code>443</code>) and the

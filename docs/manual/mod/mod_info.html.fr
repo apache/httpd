@@ -175,7 +175,6 @@ module affichées par le gestionnaire server-info</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_info</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 1.3 d'Apache</td></tr>
 </table>
     <p>Cette directive permet d'afficher le contenu de <var>chaîne</var>
     en tant qu'<strong>Information supplémentaire</strong> interprétée

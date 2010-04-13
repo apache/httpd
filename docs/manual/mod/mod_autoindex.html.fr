@@ -368,9 +368,9 @@ nom</td></tr>
     fichier partiel ou un nom de fichier complet.</p>
 
     <div class="example"><h3>Exemples</h3><p><code>
-      AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
-      AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
-      AddIcon /icons/backup.xbm *~
+      AddIcon (IMG,/icons/image.png) .gif .jpg .png<br />
+      AddIcon /icons/dir.png ^^DIRECTORY^^<br />
+      AddIcon /icons/backup.png *~
     </code></p></div>
 
     <p>Lorsque c'est possible, il est préférable d'utiliser <code class="directive"><a href="#addiconbytype">AddIconByType</a></code> plutôt que
@@ -401,7 +401,7 @@ codage MIME</td></tr>
     <code>x-compress</code>.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
-      AddIconByEncoding /icons/compress.xbm x-compress
+      AddIconByEncoding /icons/compress.png x-compress
     </code></p></div>
 
 </div>
@@ -430,7 +430,7 @@ type MIME</td></tr>
     génériques représentant le type MIME.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
-      AddIconByType (IMG,/icons/image.xbm) image/*
+      AddIconByType (IMG,/icons/image.png) image/*
     </code></p></div>
 
 </div>
@@ -452,7 +452,7 @@ n'est précisé</td></tr>
     caractères '%') vers l'icône.</p>
 
     <div class="example"><h3>Exemple</h3><p><code>
-      DefaultIcon /icon/inconnu.xbm
+      DefaultIcon /icon/unknown.png
     </code></p></div>
 
 </div>
@@ -889,9 +889,8 @@ répertoire</td></tr>
    
    <dl><dt>Options d'index incrémentales</dt>
    <dd>
-     <p>Apache httpd 1.3.3 a apporté d'importantes modifications dans la
-     gestion des directives <code class="directive">IndexOptions</code>. En
-     particulier :</p>
+     <p>Vous devez porter une attention particulière à la manière dont
+     les <code class="directive">IndexOptions</code> multiples sont traitées.</p>
 
      <ul>
      <li>Plusieurs directives <code class="directive">IndexOptions</code>

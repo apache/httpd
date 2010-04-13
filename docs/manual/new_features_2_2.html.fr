@@ -58,7 +58,7 @@
 
       <dt>Mise en cache</dt>
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, et
-          mod_mem_cache (supprimès dans la version 2.3/2.4) ont subi de nombreuses
+          mod_mem_cache (supprimés dans la version 2.3/2.4) ont subi de nombreuses
 	  modifications, et l'on considère qu'ils ont maintenant atteint
 	  un degré de qualité suffisant pour leur mise en production. Le programme
 	  <code class="program"><a href="./programs/htcacheclean.html">htcacheclean</a></code> a été ajouté afin de rendre
@@ -155,7 +155,7 @@
 
       <dt><code class="module"><a href="./mod/mod_authz_owner.html">mod_authz_owner</a></code></dt>
 	<dd>Un nouveau module qui autorise l'accès à un fichier
-	en fonction du propriétaire du fichier dans le système de
+	en fonction de son propriétaire dans le système de
 	fichiers</dd>
 
 	<dt><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></dt>
@@ -167,14 +167,14 @@
       <dd>Un nouvel argument <code>?config</code> a été ajouté, qui permettra d'afficher
           les directives de configuration telles qu'elles sont interprétées
 	  par Apache, y compris le nom de fichier et le numéro de ligne.
-	  Le module montre aussi l'ordre des point d'entrée de traitement d'une
+	  Le module montre aussi l'ordre des points d'entrée de traitement d'une
 	  requête (request hooks) ainsi que des informations de construction
 	  supplémentaires, d'une manière similaire à <code>httpd -V</code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
       
-      <dd>Le support de la <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, a été ajouté, ce qui permet de passer d'une
-	connexion en clair au cryptage TLS.</dd>
+      <dd>Le support de la <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a> a été ajouté, ce qui permet de passer d'une
+	connexion en clair au chiffrement TLS.</dd>
 
       <dt><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></dt>
       <dd><code>mod_imap</code> a été renommé en <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> afin
