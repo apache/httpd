@@ -734,7 +734,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * We include 304 Not Modified here too as this is the origin server
          * telling us to serve the cached copy.
          */
-        if (exps != NULL || cc_out != NULL) {
+        if ((exps != NULL || cc_out != NULL)
+            && r->status != HTTP_PARTIAL_CONTENT) {
             /* We are also allowed to cache any response given that it has a
              * valid Expires or Cache Control header. If we find a either of
              * those here,  we pass request through the rest of the tests. From
@@ -747,6 +748,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
              * include the following: an Expires header (section 14.21); a
              * "max-age", "s-maxage",  "must-revalidate", "proxy-revalidate",
              * "public" or "private" cache-control directive (section 14.9).
+             *
+             * But do NOT store 206 responses in any case since we
+             * don't (yet) cache partial responses.
              */
         }
         else {
