@@ -198,6 +198,10 @@ CACHE_DECLARE(apr_int64_t) ap_cache_current_age(cache_info *info,
     resident_time = now - info->response_time;
     current_age = corrected_initial_age + resident_time;
 
+    if (current_age < 0) {
+        current_age = 0;
+    }
+
     return apr_time_sec(current_age);
 }
 
