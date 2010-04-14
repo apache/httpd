@@ -123,14 +123,14 @@ int main(int argc, const char * const argv[])
         usage();
     }
 
-    rv = apr_socket_create(&skt, APR_INET, SOCK_STREAM, APR_PROTO_TCP, pool);
-    if (rv) {
-        exit_error(rv, "apr_socket_create");
-    }
-
     rv = apr_sockaddr_info_get(&skaddr, interface, APR_UNSPEC, port, 0, pool);
     if (rv) {
         exit_error(rv, "apr_sockaddr_info_get");
+    }
+
+    rv = apr_socket_create(&skt, skaddr->family, SOCK_STREAM, APR_PROTO_TCP, pool);
+    if (rv) {
+        exit_error(rv, "apr_socket_create");
     }
 
     rv = apr_socket_bind(skt, skaddr);
