@@ -67,8 +67,11 @@
       ProxyPass /scgi-bin/ scgi://localhost:4000/
     </code></p></div>
 
-    <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> in
-    addition to the already mentioned proxy modules.</p>
+    <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
+    at least one load balancer algorithm module, such as 
+    <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>, in addition to the proxy
+    modules listed above.  <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> is the
+    default, and will be used for this example configuration.</p>
 
     <div class="example"><h3>Balanced gateway</h3><p><code>
     ProxyPass /scgi-bin/ balancer://somecluster/<br />
