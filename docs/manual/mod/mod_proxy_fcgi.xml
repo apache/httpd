@@ -40,7 +40,7 @@
     <module>mod_proxy_fcgi</module> have to be present in the server.</p>
 
     <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
-    or <a href="http://www.fastcgi.com/">mod_fastcgi</a>, 
+    and <a href="http://www.fastcgi.com/">mod_fastcgi</a>, 
     <module>mod_proxy_fcgi</module> has no provision for starting the
     application process; <program>fcgistarter</program> is provided for
     that purpose.</p>
@@ -60,17 +60,32 @@
     <p>Remember, in order to make the following examples work, you have to
     enable <module>mod_proxy</module> and <module>mod_proxy_fcgi</module>.</p>
 
-    <example><title>Simple script</title>
+    <example><title>Single application instance</title>
       ProxyPass /myapp/ fcgi://localhost:4000/
+    </example>
+
+    <p>This application should be able to handle multiple concurrent
+    connections.  <module>mod_proxy</module> enables connection reuse by 
+    default, so after a request has been completed the connection will be
+    held open by that httpd child process and won't be reused until that
+    httpd process routes another request to the application.  If the 
+    FastCGI application is unable to handle enough concurrent connections
+    from httpd, requests can block waiting for the application to close
+    an existing connection.  One way to resolve this is to disable connection
+    reuse on the <directive>ProxyPass</directive> directive, as shown in
+    the following example:</p>
+
+    <example><title>Single application instance, no connection reuse</title>
+      ProxyPass /myapp/ fcgi://localhost:4000/ disablereuse=on
     </example>
 
     <p>The balanced gateway needs <module>mod_proxy_balancer</module> and
     at least one load balancer algorithm module, such as 
     <module>mod_lbmethod_byrequests</module>, in addition to the proxy
     modules listed above.  <module>mod_lbmethod_byrequests</module> is the
-    default.</p>
+    default, and will be used for this example configuration.</p>
 
-    <example><title>Balanced gateway</title>
+    <example><title>Balanced gateway to multiple application instances</title>
     ProxyPass /myapp/ balancer://myappcluster/<br />
     &lt;Proxy balancer://myappcluster/&gt;<br />
     <indent>
