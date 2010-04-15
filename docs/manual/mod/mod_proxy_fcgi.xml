@@ -33,11 +33,17 @@
 <summary>
     <p>This module <em>requires</em> the service of <module
     >mod_proxy</module>. It provides support for the 
-    <a href="http://www.fastcgi.com/">FastCGI</a>.</p>
+    <a href="http://www.fastcgi.com/">FastCGI</a> protocol.</p>
 
-    <p>Thus, in order to get the ability of handling <code>FastCGI</code>
+    <p>Thus, in order to get the ability of handling the <code>FastCGI</code>
     protocol, <module>mod_proxy</module> and
     <module>mod_proxy_fcgi</module> have to be present in the server.</p>
+
+    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
+    or <a href="http://www.fastcgi.com/">mod_fastcgi</a>, 
+    <module>mod_proxy_fcgi</module> has no provision for starting the
+    application process; <program>fcgistarter</program> is provided for
+    that purpose.</p>
 
     <note type="warning"><title>Warning</title>
       <p>Do not enable proxying until you have <a
@@ -49,4 +55,27 @@
 
 <seealso><program>fcgistarter</program></seealso>
 <seealso><module>mod_proxy</module></seealso>
+
+<section id="examples"><title>Examples</title>
+    <p>Remember, in order to make the following examples work, you have to
+    enable <module>mod_proxy</module> and <module>mod_proxy_fcgi</module>.</p>
+
+    <example><title>Simple script</title>
+      ProxyPass /myapp/ fcgi://localhost:4000/
+    </example>
+
+    <p>The balanced gateway needs <module>mod_proxy_balancer</module> in
+    addition to the already mentioned proxy modules.</p>
+
+    <example><title>Balanced gateway</title>
+    ProxyPass /myapp/ balancer://myappcluster/<br />
+    &lt;Proxy balancer://myappcluster/&gt;<br />
+    <indent>
+        BalancerMember fcgi://localhost:4000/<br />
+        BalancerMember fcgi://localhost:4001/<br />
+    </indent>
+    &lt;/Proxy&gt;
+    </example>
+</section>
+
 </modulesynopsis>
