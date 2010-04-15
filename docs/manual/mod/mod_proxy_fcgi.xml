@@ -64,8 +64,11 @@
       ProxyPass /myapp/ fcgi://localhost:4000/
     </example>
 
-    <p>The balanced gateway needs <module>mod_proxy_balancer</module> in
-    addition to the already mentioned proxy modules.</p>
+    <p>The balanced gateway needs <module>mod_proxy_balancer</module> and
+    at least one load balancer algorithm module, such as 
+    <module>mod_lbmethod_byrequests</module>, in addition to the proxy
+    modules listed above.  <module>mod_lbmethod_byrequests</module> is the
+    default.</p>
 
     <example><title>Balanced gateway</title>
     ProxyPass /myapp/ balancer://myappcluster/<br />
