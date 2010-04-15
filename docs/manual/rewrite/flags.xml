@@ -62,7 +62,7 @@ module="mod_rewrite">RewriteRule</directive> to escape non-alphanumeric
 characters before applying the transformation.
 </p>
 
-<p>Apache has to unescape URLs before mapping them,
+<p><code>mod_rewrite</code> has to unescape URLs before mapping them,
 so backreferences will be unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
@@ -225,7 +225,7 @@ an example, not as a recommendation.</p>
 </section>
 
 <section id="flag_f"><title>F|forbidden</title>
-<p>Using the [F] flag causes Apache to return a 403 Forbidden status
+<p>Using the [F] flag causes the server to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
 the <directive module="mod_access">Deny</directive> directive, this 
 allows more flexibility in assigning a Forbidden status.</p>
@@ -247,7 +247,7 @@ immediately, and no further rules are evaluated.</p>
 </section>
 
 <section id="flag_g"><title>G|gone</title>
-<p>The [G] flag forces Apache to return a 410 Gone status with the
+<p>The [G] flag forces the server to return a 410 Gone status with the
 response. This indicates that a resource used to be available, but is no
 longer available.</p>
 
@@ -435,7 +435,7 @@ considered.</p>
 <p>
 You must make sure that the substitution string is a valid URI
 (typically starting with <code>http://</code><em>hostname</em>) which can be
-handled by the Apache proxy module. If not, you will get an
+handled by the <module>mod_proxy</module>. If not, you will get an
 error from the proxy module. Use this flag to achieve a
 more powerful implementation of the <directive
 module="mod_proxy">ProxyPass</directive> directive,
