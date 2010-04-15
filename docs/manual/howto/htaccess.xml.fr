@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 684332 -->
+<!-- English Revision : 933606 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -132,13 +132,19 @@ modifier la configuration du serveur au niveau de chaque r&eacute;pertoire.</p>
 
     <p>En principe, vous ne devriez utiliser les fichiers
     <code>.htaccess</code> que si vous n'avez pas acc&egrave;s au fichier de
-    configuration du serveur principal. Par exemple, la fausse id&eacute;e
+    configuration du serveur principal. Par exemple, la fausse
+    id&eacute;e
     selon laquelle l'authentification de l'utilisateur devrait toujours
     &ecirc;tre faite dans les fichiers <code>.htaccess</code> est tr&egrave;s
-    r&eacute;pandue. Ceci est tout simplement faux. Vous pouvez configurer
+    r&eacute;pandue. Il est aussi souvent avanc&eacute;, ces derni&egrave;res
+    ann&eacute;es, que les directives de <module>mod_rewrite</module> doivent
+    &ecirc;tre d&eacute;finies dans les fichiers <code>.htaccess</code>. Ceci est
+    tout simplement faux. Vous pouvez configurer
     l'authentification des utilisateurs au niveau de la configuration du
     serveur principal, et c'est en fait cette m&eacute;thode qui doit &ecirc;tre
-    privil&eacute;gi&eacute;e.</p>
+    privil&eacute;gi&eacute;e. De m&ecirc;me, les directives de
+    <code>mod_rewrite</code> fonctionneront mieux, &agrave; de nombreux &eacute;gards,
+    dans le contexte du serveur principal.</p>
 
     <p>Les fichiers <code>.htaccess</code> ne devraient &ecirc;tre utilis&eacute;s
     que dans le cas o&ugrave; les fournisseurs de contenu ont besoin de
