@@ -32,11 +32,17 @@
 <h3>Summary</h3>
 
     <p>This module <em>requires</em> the service of <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. It provides support for the 
-    <a href="http://www.fastcgi.com/">FastCGI</a>.</p>
+    <a href="http://www.fastcgi.com/">FastCGI</a> protocol.</p>
 
-    <p>Thus, in order to get the ability of handling <code>FastCGI</code>
+    <p>Thus, in order to get the ability of handling the <code>FastCGI</code>
     protocol, <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and
     <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> have to be present in the server.</p>
+
+    <p>Unlike <a href="http://httpd.apache.org/mod_fcgid/">mod_fcgid</a>
+    and <a href="http://www.fastcgi.com/">mod_fastcgi</a>, 
+    <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code> has no provision for starting the
+    application process; <code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code> is provided for
+    that purpose.</p>
 
     <div class="warning"><h3>Warning</h3>
       <p>Do not enable proxying until you have <a href="mod_proxy.html#access">secured your server</a>. Open proxy
@@ -47,12 +53,55 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>This module provides no
             directives.</p>
-<h3>See also</h3>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+</ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="program"><a href="../programs/fcgistarter.html">fcgistarter</a></code></li>
 <li><code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></li>
 </ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">Examples</a></h2>
+    <p>Remember, in order to make the following examples work, you have to
+    enable <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> and <code class="module"><a href="../mod/mod_proxy_fcgi.html">mod_proxy_fcgi</a></code>.</p>
 
+    <div class="example"><h3>Single application instance</h3><p><code>
+      ProxyPass /myapp/ fcgi://localhost:4000/
+    </code></p></div>
+
+    <p>This application should be able to handle multiple concurrent
+    connections.  <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> enables connection reuse by 
+    default, so after a request has been completed the connection will be
+    held open by that httpd child process and won't be reused until that
+    httpd process routes another request to the application.  If the 
+    FastCGI application is unable to handle enough concurrent connections
+    from httpd, requests can block waiting for the application to close
+    an existing connection.  One way to resolve this is to disable connection
+    reuse on the <code class="directive">ProxyPass</code> directive, as shown in
+    the following example:</p>
+
+    <div class="example"><h3>Single application instance, no connection reuse</h3><p><code>
+      ProxyPass /myapp/ fcgi://localhost:4000/ disablereuse=on
+    </code></p></div>
+
+    <p>The balanced gateway needs <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code> and
+    at least one load balancer algorithm module, such as 
+    <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code>, in addition to the proxy
+    modules listed above.  <code class="module"><a href="../mod/mod_lbmethod_byrequests.html">mod_lbmethod_byrequests</a></code> is the
+    default, and will be used for this example configuration.</p>
+
+    <div class="example"><h3>Balanced gateway to multiple application instances</h3><p><code>
+    ProxyPass /myapp/ balancer://myappcluster/<br />
+    &lt;Proxy balancer://myappcluster/&gt;<br />
+    <span class="indent">
+        BalancerMember fcgi://localhost:4000/<br />
+        BalancerMember fcgi://localhost:4001/<br />
+    </span>
+    &lt;/Proxy&gt;
+    </code></p></div>
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_proxy_fcgi.html" title="English">&nbsp;en&nbsp;</a></p>
