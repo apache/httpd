@@ -77,7 +77,7 @@ of how you might use them.</p>
 characters before applying the transformation.
 </p>
 
-<p>Apache has to unescape URLs before mapping them,
+<p><code>mod_rewrite</code> has to unescape URLs before mapping them,
 so backreferences will be unescaped at the time they are applied.
 Using the B flag, non-alphanumeric characters in backreferences
 will be escaped. For example, consider the rule:</p>
@@ -238,7 +238,7 @@ an example, not as a recommendation.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_f" id="flag_f">F|forbidden</a></h2>
-<p>Using the [F] flag causes Apache to return a 403 Forbidden status
+<p>Using the [F] flag causes the server to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
 the <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> directive, this 
 allows more flexibility in assigning a Forbidden status.</p>
@@ -260,7 +260,7 @@ immediately, and no further rules are evaluated.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flag_g" id="flag_g">G|gone</a></h2>
-<p>The [G] flag forces Apache to return a 410 Gone status with the
+<p>The [G] flag forces the server to return a 410 Gone status with the
 response. This indicates that a resource used to be available, but is no
 longer available.</p>
 
@@ -443,7 +443,7 @@ considered.</p>
 <p>
 You must make sure that the substitution string is a valid URI
 (typically starting with <code>http://</code><em>hostname</em>) which can be
-handled by the Apache proxy module. If not, you will get an
+handled by the <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. If not, you will get an
 error from the proxy module. Use this flag to achieve a
 more powerful implementation of the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive,
 to map remote content into the namespace of the local server.</p>
