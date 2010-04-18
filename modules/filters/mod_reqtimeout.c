@@ -25,9 +25,6 @@
 #define APR_WANT_STRFUNC
 #include "apr_strings.h"
 #include "apr_version.h"
-#if APR_MAJOR_VERSION < 2
-#include "apr_support.h"
-#endif
 
 module AP_MODULE_DECLARE_DATA reqtimeout_module;
 
@@ -186,6 +183,11 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         apr_off_t remaining = HUGE_STRING_LEN;
         do {
             apr_off_t bblen;
+#if APR_MAJOR_VERSION < 2
+            apr_int32_t nsds;
+            apr_interval_time_t poll_timeout;
+            apr_pollfd_t pollset;
+#endif
 
             rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE, APR_NONBLOCK_READ, remaining);
             if (APR_STATUS_IS_EAGAIN(rv)) {
@@ -223,7 +225,12 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
 
             /* ... and wait for more */
 #if APR_MAJOR_VERSION < 2
-            rv = apr_wait_for_io_or_timeout(NULL, ccfg->socket, 1);
+            pollset.p = f->c->pool;
+            pollset.desc_type = APR_POLL_SOCKET;
+            pollset.reqevents = APR_POLLIN|APR_POLLHUP;
+            pollset.desc.s = ccfg->socket;
+            apr_socket_timeout_get(ccfg->socket, &poll_timeout);
+            rv = apr_poll(&pollset, 1, &nsds, poll_timeout);
 #else
             rv = apr_socket_wait(ccfg->socket, APR_WAIT_READ);
 #endif
