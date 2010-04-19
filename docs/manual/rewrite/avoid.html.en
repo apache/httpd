@@ -38,16 +38,95 @@ particular server configuration, so it's important that you understand
 them, rather than merely cutting and pasting the examples into your
 configuration.</p>
 
+<div class="warning">This document is a work in progress.</div>
+
 </div>
-<div id="quickview"><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="advanced.html">Advanced techniques and tricks</a></li></ul></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#redirect">Simple Redirection</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#alias">URL Aliasing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#vhosts">Virtual Hosting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxy">Simple Proxying</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#setenv">Environment Variable Testing</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="intro.html">mod_rewrite introduction</a></li><li><a href="remapping.html">Redirection and remapping</a></li><li><a href="access.html">Controlling access</a></li><li><a href="vhosts.html">Virtual hosts</a></li><li><a href="proxy.html">Proxying</a></li><li><a href="advanced.html">Advanced techniques and tricks</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="coming" id="coming">Coming Soon ...</a></h2>
+<h2><a name="redirect" id="redirect">Simple Redirection</a></h2>
 
 
-<p>
-This document currently being written.
-</p>
+<p><code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> provides the <code class="directive"><a href="../mod/mod_alias.html#redirect">Redirect</a></code> and <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directives, which provide a
+means to redirect one URL to another. This kind of simple redirection of
+one URL, or a class of URLs, to somewhere else, should be accomplished
+using these directives rather than <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>. <code>RedirectMatch</code>
+allows you to include a regular expression in your redirection criteria,
+providing many of the benefits of using <code>RewriteRule</code>.</p>
+
+<p>A common use for <code>RewriteRule</code> is to redirect an entire
+class of URLs. For example, all URLs in the <code>/one</code> directory
+must be redirected to <code>http://one.example.com/</code>, or perhaps
+all <code>http</code> requests must be redirected to
+<code>https</code>.</p>
+
+<p>These situations are better handled by the <code>Redirect</code>
+directive. Remember that <code>Redirect</code> preserves path
+information. That is to say, a redirect for a URL <code>/one</code> will
+also redirect all URLs under that, such as <code>/one/two.html</code>
+and <code>/one/three/four.html</code>.</p>
+
+<p>To redirect URLs under <code>/one</code> to
+<code>http://one.example.com</code>, do the following:</p>
+
+<div class="example"><p><code>
+Redirect /one/ http://one.example.com/
+</code></p></div>
+
+<p>To redirect <code>http</code> URLs to <code>https</code>, do the
+following:</p>
+
+<div class="example"><p><code>
+&lt;VirtualHost *:80&gt;
+ServerName www.example.com<br />
+Redirect / https://www.example.com/<br />
+&lt;/VirtualHost &gt;
+<br />
+&lt;VirtualHost *:443&gt;
+ServerName www.example.com<br />
+<br />
+# ... SSL configuration goes here<br />
+&lt;/VirtualHost &gt;
+</code></p></div>
+
+<p>The use of <code>RewriteRule</code> to perform this task may be
+appropriate if there are other <code>RewriteRule</code> directives in
+the same scope. This is because, when there are <code>Redirect</code>
+and <code>RewriteRule</code> directives in the same scope, the
+<code>RewriteRule</code> directives will run first, regardless of the
+order of appearance in the configuration file.</p>
+
+<p>In the case of the <em>http-to-https</em> redirection, the use of
+<code>RewriteRule</code> would be appropriate if you don't have access
+to the main server configuration file, and are obliged to perform this
+task in a <code>.htaccess</code> file instead.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="alias" id="alias">URL Aliasing</a></h2>
+<p>Using Alias</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="vhosts" id="vhosts">Virtual Hosting</a></h2>
+<p>Virtual Hosts</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="proxy" id="proxy">Simple Proxying</a></h2>
+<p>ProxyPass</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="setenv" id="setenv">Environment Variable Testing</a></h2>
+
+<div class="note">Parts of this section are applicable only to Apache HTTP 
+Server 2.3 and later.</div>
+
+<p>Using SetEnvIf and &lt;If&gt; (2.3 and later.)</p>
+
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/avoid.html" title="English">&nbsp;en&nbsp;</a></p>

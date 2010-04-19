@@ -43,6 +43,8 @@ particular server configuration, so it's important that you understand
 them, rather than merely cutting and pasting the examples into your
 configuration.</p>
 
+<note type="warning">This document is a work in progress.</note>
+
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
@@ -53,12 +55,88 @@ configuration.</p>
 <seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
 <!--<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>-->
 
-<section id="coming">
+<section id="redirect">
+<title>Simple Redirection</title>
 
-<title>Coming Soon ...</title>
-<p>
-This document currently being written.
-</p>
+<p><module>mod_alias</module> provides the <directive
+module="mod_alias">Redirect</directive> and <directive
+module="mod_alias">RedirectMatch</directive> directives, which provide a
+means to redirect one URL to another. This kind of simple redirection of
+one URL, or a class of URLs, to somewhere else, should be accomplished
+using these directives rather than <directive
+module="mod_rewrite">RewriteRule</directive>. <code>RedirectMatch</code>
+allows you to include a regular expression in your redirection criteria,
+providing many of the benefits of using <code>RewriteRule</code>.</p>
+
+<p>A common use for <code>RewriteRule</code> is to redirect an entire
+class of URLs. For example, all URLs in the <code>/one</code> directory
+must be redirected to <code>http://one.example.com/</code>, or perhaps
+all <code>http</code> requests must be redirected to
+<code>https</code>.</p>
+
+<p>These situations are better handled by the <code>Redirect</code>
+directive. Remember that <code>Redirect</code> preserves path
+information. That is to say, a redirect for a URL <code>/one</code> will
+also redirect all URLs under that, such as <code>/one/two.html</code>
+and <code>/one/three/four.html</code>.</p>
+
+<p>To redirect URLs under <code>/one</code> to
+<code>http://one.example.com</code>, do the following:</p>
+
+<example>
+Redirect /one/ http://one.example.com/
+</example>
+
+<p>To redirect <code>http</code> URLs to <code>https</code>, do the
+following:</p>
+
+<example>
+&lt;VirtualHost *:80&gt;
+ServerName www.example.com<br />
+Redirect / https://www.example.com/<br />
+&lt;/VirtualHost &gt;
+<br />
+&lt;VirtualHost *:443&gt;
+ServerName www.example.com<br />
+<br />
+# ... SSL configuration goes here<br />
+&lt;/VirtualHost &gt;
+</example>
+
+<p>The use of <code>RewriteRule</code> to perform this task may be
+appropriate if there are other <code>RewriteRule</code> directives in
+the same scope. This is because, when there are <code>Redirect</code>
+and <code>RewriteRule</code> directives in the same scope, the
+<code>RewriteRule</code> directives will run first, regardless of the
+order of appearance in the configuration file.</p>
+
+<p>In the case of the <em>http-to-https</em> redirection, the use of
+<code>RewriteRule</code> would be appropriate if you don't have access
+to the main server configuration file, and are obliged to perform this
+task in a <code>.htaccess</code> file instead.</p>
+
+</section>
+
+<section id="alias"><title>URL Aliasing</title>
+<p>Using Alias</p>
+</section>
+
+<section id="vhosts"><title>Virtual Hosting</title>
+<p>Virtual Hosts</p>
+</section>
+
+<section id="proxy"><title>Simple Proxying</title>
+<p>ProxyPass</p>
+</section>
+
+<section id="setenv"><title>Environment Variable Testing</title>
+
+<note type="note">Parts of this section are applicable only to Apache HTTP 
+Server 2.3 and later.</note>
+
+<p>Using SetEnvIf and &lt;If&gt; (2.3 and later.)</p>
+
 </section>
 
 </manualpage> 
+
