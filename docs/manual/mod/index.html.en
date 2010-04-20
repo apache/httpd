@@ -145,6 +145,7 @@ by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
+<dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks to doo cool stuff</dd>
 <dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
