@@ -61,23 +61,25 @@ modules should use the module tag
 
 <usage>
     <p>Specify the lifecycle scope of the Lua interpreter which will
-    be used by handlers in this "Directory." The default is "once"
+    be used by handlers in this "Directory." The default is "once"</p>
+   
+   <dl>
+    <dt>once:</dt> <dd>use the interpreter once and throw it away.</dd>
     
-    once: use the interpreter once and throw it away.
-    
-    request: use the interpreter to handle anything based on 
+    <dt>request:</dt> <dd>use the interpreter to handle anything based on 
              the same file within this request, which is also 
-             request scoped.
+             request scoped.</dd>
              
-    conn: Same as request but attached to the connection_rec
+    <dt>conn:</dt> <dd>Same as request but attached to the connection_rec</dd>
     
-    server: This one is different than others because the
+    <dt>server:</dt>  <dd>This one is different than others because the
             server scope is quite long lived, and multiple threads
             will have the same server_rec. To accommodate this
             server scoped interpreter are stored in an apr
             resource list. The min and max arguments are intended
-            to specify the pool size, but are unused at this time.
-</p></usage>
+            to specify the pool size, but are unused at this time.</dd>
+   </dl>
+</usage>
 </directivesynopsis>
 
 
@@ -91,12 +93,9 @@ modules should use the module tag
     match groups into both the file path and the function name
     be careful writing your regular expressions to avoid security
     issues.</p>
-   <p> 
-    Examples:
-    </p>
-<example>
+   <example><title>Examples:</title>
     LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
-    </example>
+   </example>
         <p>This would match uri's such as /photos/show?id=9
         to the file /scripts/photos.lua and invoke the
         handler function handle_show on the lua vm after
@@ -116,12 +115,13 @@ modules should use the module tag
 <syntax>LuaPackagePath /path/to/include/?.lua</syntax>
     <usage><p>Add a path to lua's module search path. Follows the same
     conventions as lua. This just munges the package.path in the 
-    lua vms.
+    lua vms.</p>
     
-    Examples:
-        LuaPackagePath /scripts/lib/?.lua
+    <example><title>Examples:</title>
+        LuaPackagePath /scripts/lib/?.lua<br />
         LuaPackagePath /scripts/lib/?/init.lua
-</p></usage>
+    </example>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -131,11 +131,9 @@ modules should use the module tag
 <usage>
     <p>Add a path to lua's shared library search path. Follows the same
     conventions as lua. This just munges the package.cpath in the 
-    lua vms.
+    lua vms.</p>
     
-    Examples:
-        LuaPackagePath /scripts/lib/?.so
-</p></usage>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -149,16 +147,18 @@ modules should use the module tag
     modified time indicates it is newer than the one it has
     already loaded. The other values cause it to keep the file
     cached forever (don't stat and replace) or to never cache the 
-    file.
+    file.</p>
     
-    In general stat or forever is good production and stat or never
-    for deveopment.
+    <p>In general stat or forever is good production and stat or never
+    for deveopment.</p>
     
-    Examples:
-        LuaCodeCache stat
-        LuaCodeCache forever
-        LuaCodeCache never
-</p></usage>
+    <example><title>Examples:</title>
+        LuaCodeCache stat<br />
+        LuaCodeCache forever<br />
+        LuaCodeCache never<br />
+    </example>
+
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
