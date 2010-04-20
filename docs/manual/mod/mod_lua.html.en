@@ -6,22 +6,22 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_lua - Apache HTTP Server</title>
-<link href="/style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="/style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="/style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="/images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
-<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossary</a> | <a href="/sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="/images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="/images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="/">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache Module mod_lua</h1>
 <div class="toplang">
-<p><span>Available Languages: </span></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_lua.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides Lua hooks to do cool stuff</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -39,32 +39,32 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="/images/down.gif" /> <a href="#" /></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luahookaccesschecker">LuaHookAccessChecker</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luamaphandler">LuaMapHandler</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luapackagecpath">LuaPackageCPath</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luapackagepath">LuaPackagePath</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luaroot">LuaRoot</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#luascope">LuaScope</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#" /></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookaccesschecker">LuaHookAccessChecker</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luamaphandler">LuaMapHandler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luapackagecpath">LuaPackageCPath</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luapackagepath">LuaPackagePath</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luaroot">LuaRoot</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luascope">LuaScope</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="/images/down.gif" /> <a href="#moredocs">Additional Documentation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#moredocs">Additional Documentation</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="...">Useful document</a></li>
-<li><code class="directive"><a href="/mod/mod_useful.html#useful">Useful</a></code></li>
-<li><code class="module"><a href="/mod/mod_useful.html">mod_useful</a></code></li>
+<li><code class="directive"><a href="../mod/mod_useful.html#useful">Useful</a></code></li>
+<li><code class="module"><a href="../mod/mod_useful.html">mod_useful</a></code></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="moredocs" id="moredocs">Additional Documentation</a></h2>
 
@@ -76,10 +76,10 @@ anchor target.</p>
 
 <p>References to directives should use the directive tag: <code class="directive"><a href="#templatedirective">TemplateDirective</a></code>.  References to
 modules should use the module tag
-<code class="module"><a href="/mod/mod_lua.xml.html">mod_lua.xml</a></code>.</p>
+<code class="module"><a href="../mod/mod_lua.xml.html">mod_lua.xml</a></code>.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="" id="" /> <a name="" id="">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -89,7 +89,7 @@ modules should use the module tag
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a name="luacodecache" id="luacodecache">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -117,7 +117,7 @@ modules should use the module tag
 
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookAccessChecker" id="LuaHookAccessChecker">LuaHookAccessChecker</a> <a name="luahookaccesschecker" id="luahookaccesschecker">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -127,7 +127,7 @@ modules should use the module tag
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>...</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a> <a name="luahookauthchecker" id="luahookauthchecker">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -137,7 +137,7 @@ modules should use the module tag
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>...</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a> <a name="luahookauthchecker" id="luahookauthchecker">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -147,7 +147,7 @@ modules should use the module tag
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>...</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookCheckUserID" id="LuaHookCheckUserID">LuaHookCheckUserID</a> <a name="luahookcheckuserid" id="luahookcheckuserid">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -157,7 +157,7 @@ modules should use the module tag
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>...</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookInsertFilter" id="LuaHookInsertFilter">LuaHookInsertFilter</a> <a name="luahookinsertfilter" id="luahookinsertfilter">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -167,7 +167,7 @@ modules should use the module tag
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>Not Yet Implemented</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a> <a name="luahookmaptostorage" id="luahookmaptostorage">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -177,7 +177,7 @@ modules should use the module tag
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>...</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a name="luahooktranslatename" id="luahooktranslatename">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -216,7 +216,7 @@ modules should use the module tag
 </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookTypeChecker" id="LuaHookTypeChecker">LuaHookTypeChecker</a> <a name="luahooktypechecker" id="luahooktypechecker">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -226,7 +226,7 @@ modules should use the module tag
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>...</p>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a name="luamaphandler" id="luamaphandler">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -257,7 +257,7 @@ modules should use the module tag
         provided.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a> <a name="luapackagecpath" id="luapackagecpath">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -272,7 +272,7 @@ modules should use the module tag
     
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaPackagePath" id="LuaPackagePath">LuaPackagePath</a> <a name="luapackagepath" id="luapackagepath">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -290,7 +290,7 @@ modules should use the module tag
     </code></p></div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaRoot" id="LuaRoot">LuaRoot</a> <a name="luaroot" id="luaroot">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path</td></tr>
@@ -305,7 +305,7 @@ modules should use the module tag
     which may not always work well for a server.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
@@ -337,8 +337,8 @@ modules should use the module tag
 </div>
 </div>
 <div class="bottomlang">
-<p><span>Available Languages: </span></p>
+<p><span>Available Languages: </span><a href="../en/mod/mod_lua.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossary</a> | <a href="/sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
