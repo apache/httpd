@@ -23,7 +23,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides Lua hooks to doo cool stuff</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides Lua hooks to do cool stuff</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>lua_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_lua.c</td></tr>
