@@ -6,7 +6,7 @@
 
 <name>mod_lua</name>
 
-<description>Provides Lua hooks to doo cool stuff</description>
+<description>Provides Lua hooks to do cool stuff</description>
 <status>experimental</status>
 <sourcefile>mod_lua.c</sourcefile>
 <identifier>lua_module</identifier>
