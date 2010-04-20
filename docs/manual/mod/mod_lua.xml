@@ -1,0 +1,249 @@
+<?xml version="1.0"?> 
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?> 
+
+<modulesynopsis>
+
+<name>mod_lua</name>
+
+<description>Provides Lua hooks to doo cool stuff</description>
+<status>experimental</status>
+<sourcefile>mod_lua.c</sourcefile>
+<identifier>lua_module</identifier>
+<compatibility>2.4 and later</compatibility>
+
+<summary>
+<p>Someone needs to write this.</p>
+
+<example><title>Example</title>
+# Examples are always helpful.<br />
+</example>
+
+</summary>
+
+<!-- References to other documents or directives -->
+<seealso><a href="...">Useful document</a></seealso>
+<seealso><directive module="mod_useful">Useful</directive></seealso>
+<seealso><module>mod_useful</module></seealso>
+
+<!-- Any number of sections may be included below -->
+<section id="moredocs"><title>Additional Documentation</title>
+
+<p>More detailed information about the module in general (as opposed to
+the individual directives) can follow in sections containing titles.</p>
+
+<p>The <code>id</code> attribute will be translated into a hypertext
+anchor target.</p>
+
+<p>References to directives should use the directive tag: <directive
+module="mod_lua">TemplateDirective</directive>.  References to
+modules should use the module tag
+<module>mod_lua.xml</module>.</p>
+
+</section>
+
+<directivesynopsis>
+<name>LuaRoot</name>
+<description>Specify the base path</description>
+<syntax>LuaRoot /path/to/a/directory</syntax>
+
+<usage>
+    <p>Specify the base path which will be used to evaluate all
+    relative paths within mod_wombat. If not specified they
+    will be resolved relative to the current working directory,
+    which may not always work well for a server.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaScope</name>
+<syntax>LuaScope once|request|conn|server [max|min max]</syntax>
+
+<usage>
+    <p>Specify the lifecycle scope of the Lua interpreter which will
+    be used by handlers in this "Directory." The default is "once"
+    
+    once: use the interpreter once and throw it away.
+    
+    request: use the interpreter to handle anything based on 
+             the same file within this request, which is also 
+             request scoped.
+             
+    conn: Same as request but attached to the connection_rec
+    
+    server: This one is different than others because the
+            server scope is quite long lived, and multiple threads
+            will have the same server_rec. To accommodate this
+            server scoped interpreter are stored in an apr
+            resource list. The min and max arguments are intended
+            to specify the pool size, but are unused at this time.
+</p></usage>
+</directivesynopsis>
+
+
+<directivesynopsis>
+<name>LuaMapHandler</name>
+<syntax>LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</syntax>
+<usage>
+    <p>This directive matches a uri pattern to invoke a specific
+    handler function in a specific file. It uses PCRE regular
+    expressions to match the uri, and supports interpolating
+    match groups into both the file path and the function name
+    be careful writing your regular expressions to avoid security
+    issues.</p>
+   <p> 
+    Examples:
+    </p>
+<example>
+    LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+    </example>
+        <p>This would match uri's such as /photos/show?id=9
+        to the file /scripts/photos.lua and invoke the
+        handler function handle_show on the lua vm after
+        loading that file.</p>
+        
+<example>
+    LuaMapHandler /bingo /scripts/wombat.lua
+</example>
+        <p>This would invoke the "handle" function, which
+        is the default if no specific function name is
+        provided.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaPackagePath</name>
+<syntax>LuaPackagePath /path/to/include/?.lua</syntax>
+    <usage><p>Add a path to lua's module search path. Follows the same
+    conventions as lua. This just munges the package.path in the 
+    lua vms.
+    
+    Examples:
+        LuaPackagePath /scripts/lib/?.lua
+        LuaPackagePath /scripts/lib/?/init.lua
+</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaPackageCPath</name>
+<syntax>LuaPackageCPath /path/to/include/?.soa</syntax>
+
+<usage>
+    <p>Add a path to lua's shared library search path. Follows the same
+    conventions as lua. This just munges the package.cpath in the 
+    lua vms.
+    
+    Examples:
+        LuaPackagePath /scripts/lib/?.so
+</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaCodeCache</name>
+<syntax>LuaCodeCache stat|forever|never</syntax>
+
+<usage><p>
+    Specify the behavior of the in-memory code cache. The default
+    is stat, which stats the top level script (not any included
+    ones) each time that file is needed, and reloads it if the
+    modified time indicates it is newer than the one it has
+    already loaded. The other values cause it to keep the file
+    cached forever (don't stat and replace) or to never cache the 
+    file.
+    
+    In general stat or forever is good production and stat or never
+    for deveopment.
+    
+    Examples:
+        LuaCodeCache stat
+        LuaCodeCache forever
+        LuaCodeCache never
+</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookTranslateName</name>
+<syntax>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name</syntax>
+
+<usage><p>
+    Add a hook (at APR_HOOK_MIDDLE) to the translate name phase of
+    request processing. The hook function receives a single
+    argument, the request_rec, and should return a status code, 
+    which is either an HTTP error code, or the constants defined
+    in the apache2 module: apache2.OK, apache2.DECLINED, or
+    apache2.DONE. </p>
+
+    <p>For those new to hooks, basically each hook will be invoked
+    until one of them returns apache2.OK. If your hook doesn't
+    want to do the translation it should just return
+    apache2.DECLINED. If the request should stop processing, then
+    return apache2.DONE.</p>
+
+    <p>Example:</p>
+
+    <example>
+        LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper<br />
+<br />
+        -- /scripts/conf/hooks.lua --<br />
+        function silly_mapper(r)<br />
+            if r.uri == "/" then<br />
+                r.file = "/var/www/home.lua"<br />
+                return apache2.OK<br />
+            else<br />
+                return apache2.DECLINED<br />
+            end<br />
+        end<br />
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<syntax>LuaHookFixups  /path/to/lua/script.lua hook_function_name</syntax>
+    Just like LuaHookTranslateName, but executed at the fixups phase
+</directivesynopsis>
+
+
+<directivesynopsis>
+<name>LuaHookMapToStorage</name>
+<syntax>LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</syntax>
+    <usage><p>...</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookCheckUserID</name>
+<syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</syntax>
+    <usage><p>...</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookTypeChecker</name>
+<syntax>LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</syntax>
+    <usage><p>...</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookAuthChecker</name>
+<syntax>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</syntax>
+    <usage><p>...</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookAccessChecker</name>
+<syntax>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name</syntax>
+    <usage><p>...</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookAuthChecker</name>
+<syntax>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</syntax>
+    <usage><p>...</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaHookInsertFilter</name>
+<syntax>LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</syntax>
+    <usage><p>Not Yet Implemented</p></usage>
+</directivesynopsis>
+
+</modulesynopsis>
+

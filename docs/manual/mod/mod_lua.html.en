@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_lua - Apache HTTP Server</title>
+<link href="/style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="/style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="/style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="/images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossary</a> | <a href="/sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="/images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="/images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="/">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_lua</h1>
+<div class="toplang">
+<p><span>Available Languages: </span></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides Lua hooks to doo cool stuff</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>lua_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_lua.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>2.4 and later</td></tr></table>
+<h3>Summary</h3>
+
+<p>Someone needs to write this.</p>
+
+<div class="example"><h3>Example</h3><p><code>
+# Examples are always helpful.<br />
+</code></p></div>
+
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="/images/down.gif" /> <a href="#" /></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luahookaccesschecker">LuaHookAccessChecker</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luahooktypechecker">LuaHookTypeChecker</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luamaphandler">LuaMapHandler</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luapackagecpath">LuaPackageCPath</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luapackagepath">LuaPackagePath</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luaroot">LuaRoot</a></li>
+<li><img alt="" src="/images/down.gif" /> <a href="#luascope">LuaScope</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="/images/down.gif" /> <a href="#moredocs">Additional Documentation</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="...">Useful document</a></li>
+<li><code class="directive"><a href="/mod/mod_useful.html#useful">Useful</a></code></li>
+<li><code class="module"><a href="/mod/mod_useful.html">mod_useful</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="moredocs" id="moredocs">Additional Documentation</a></h2>
+
+<p>More detailed information about the module in general (as opposed to
+the individual directives) can follow in sections containing titles.</p>
+
+<p>The <code>id</code> attribute will be translated into a hypertext
+anchor target.</p>
+
+<p>References to directives should use the directive tag: <code class="directive"><a href="#templatedirective">TemplateDirective</a></code>.  References to
+modules should use the module tag
+<code class="module"><a href="/mod/mod_lua.xml.html">mod_lua.xml</a></code>.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="" id="" /> <a name="" id="">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookFixups  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a name="luacodecache" id="luacodecache">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>
+    Specify the behavior of the in-memory code cache. The default
+    is stat, which stats the top level script (not any included
+    ones) each time that file is needed, and reloads it if the
+    modified time indicates it is newer than the one it has
+    already loaded. The other values cause it to keep the file
+    cached forever (don't stat and replace) or to never cache the 
+    file.
+    
+    In general stat or forever is good production and stat or never
+    for deveopment.
+    
+    Examples:
+        LuaCodeCache stat
+        LuaCodeCache forever
+        LuaCodeCache never
+</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookAccessChecker" id="LuaHookAccessChecker">LuaHookAccessChecker</a> <a name="luahookaccesschecker" id="luahookaccesschecker">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>...</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a> <a name="luahookauthchecker" id="luahookauthchecker">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>...</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookAuthChecker" id="LuaHookAuthChecker">LuaHookAuthChecker</a> <a name="luahookauthchecker" id="luahookauthchecker">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>...</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookCheckUserID" id="LuaHookCheckUserID">LuaHookCheckUserID</a> <a name="luahookcheckuserid" id="luahookcheckuserid">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>...</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookInsertFilter" id="LuaHookInsertFilter">LuaHookInsertFilter</a> <a name="luahookinsertfilter" id="luahookinsertfilter">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>Not Yet Implemented</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a> <a name="luahookmaptostorage" id="luahookmaptostorage">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>...</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a name="luahooktranslatename" id="luahooktranslatename">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>
+    Add a hook (at APR_HOOK_MIDDLE) to the translate name phase of
+    request processing. The hook function receives a single
+    argument, the request_rec, and should return a status code, 
+    which is either an HTTP error code, or the constants defined
+    in the apache2 module: apache2.OK, apache2.DECLINED, or
+    apache2.DONE. </p>
+
+    <p>For those new to hooks, basically each hook will be invoked
+    until one of them returns apache2.OK. If your hook doesn't
+    want to do the translation it should just return
+    apache2.DECLINED. If the request should stop processing, then
+    return apache2.DONE.</p>
+
+    <p>Example:</p>
+
+    <div class="example"><p><code>
+        LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper<br />
+<br />
+        -- /scripts/conf/hooks.lua --<br />
+        function silly_mapper(r)<br />
+            if r.uri == "/" then<br />
+                r.file = "/var/www/home.lua"<br />
+                return apache2.OK<br />
+            else<br />
+                return apache2.DECLINED<br />
+            end<br />
+        end<br />
+</code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookTypeChecker" id="LuaHookTypeChecker">LuaHookTypeChecker</a> <a name="luahooktypechecker" id="luahooktypechecker">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>...</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a name="luamaphandler" id="luamaphandler">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+    <p>This directive matches a uri pattern to invoke a specific
+    handler function in a specific file. It uses PCRE regular
+    expressions to match the uri, and supports interpolating
+    match groups into both the file path and the function name
+    be careful writing your regular expressions to avoid security
+    issues.</p>
+   <p> 
+    Examples:
+    </p>
+<div class="example"><p><code>
+    LuaMapHandler /(\w+)/(/w+) /scripts/$1.lua handle_$2
+    </code></p></div>
+        <p>This would match uri's such as /photos/show?id=9
+        to the file /scripts/photos.lua and invoke the
+        handler function handle_show on the lua vm after
+        loading that file.</p>
+        
+<div class="example"><p><code>
+    LuaMapHandler /bingo /scripts/wombat.lua
+</code></p></div>
+        <p>This would invoke the "handle" function, which
+        is the default if no specific function name is
+        provided.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a> <a name="luapackagecpath" id="luapackagecpath">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaPackageCPath /path/to/include/?.soa</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+    <p>Add a path to lua's shared library search path. Follows the same
+    conventions as lua. This just munges the package.cpath in the 
+    lua vms.
+    
+    Examples:
+        LuaPackagePath /scripts/lib/?.so
+</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaPackagePath" id="LuaPackagePath">LuaPackagePath</a> <a name="luapackagepath" id="luapackagepath">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaPackagePath /path/to/include/?.lua</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>Add a path to lua's module search path. Follows the same
+    conventions as lua. This just munges the package.path in the 
+    lua vms.
+    
+    Examples:
+        LuaPackagePath /scripts/lib/?.lua
+        LuaPackagePath /scripts/lib/?/init.lua
+</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaRoot" id="LuaRoot">LuaRoot</a> <a name="luaroot" id="luaroot">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaRoot /path/to/a/directory</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+    <p>Specify the base path which will be used to evaluate all
+    relative paths within mod_wombat. If not specified they
+    will be resolved relative to the current working directory,
+    which may not always work well for a server.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaScope once|request|conn|server [max|min max]</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
+    <p>Specify the lifecycle scope of the Lua interpreter which will
+    be used by handlers in this "Directory." The default is "once"
+    
+    once: use the interpreter once and throw it away.
+    
+    request: use the interpreter to handle anything based on 
+             the same file within this request, which is also 
+             request scoped.
+             
+    conn: Same as request but attached to the connection_rec
+    
+    server: This one is different than others because the
+            server scope is quite long lived, and multiple threads
+            will have the same server_rec. To accommodate this
+            server scoped interpreter are stored in an apr
+            resource list. The min and max arguments are intended
+            to specify the pool size, but are unused at this time.
+</p>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span></p>
+</div><div id="footer">
+<p class="apache">Copyright 2010 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossary</a> | <a href="/sitemap.html">Sitemap</a></p></div>
+</body></html>

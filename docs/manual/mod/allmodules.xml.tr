@@ -61,6 +61,7 @@
   <modulefile>mod_log_config.xml.tr</modulefile>
   <modulefile>mod_log_forensic.xml.tr</modulefile>
   <modulefile>mod_logio.xml.tr</modulefile>
+  <modulefile>mod_lua.xml</modulefile>
   <modulefile>mod_mime.xml</modulefile>
   <modulefile>mod_mime_magic.xml</modulefile>
   <modulefile>mod_negotiation.xml</modulefile>
