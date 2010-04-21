@@ -183,4 +183,34 @@
     <code>http://your.server.name/balancer-manager</code></p>
 </section>
 
+<directivesynopsis>
+<name>BalancerNonce</name>
+<description>Set the nonce used in the balancer-manager application</description>
+<syntax>BalancerNonce Default|None|Set "value"</syntax>
+<default>ProxyStatus Default</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in version 2.4 and later</compatibility>
+
+<usage>
+    <p>This directive specifies the protective nonce used in the
+    <code>balancer-manager</code> application page.</p>
+    <p>The default is to use an automatically determined UUID-based
+    nonce, to provide for further protection for the page. If set
+    to <code>Set</code>, then the next argument sets the nonce to that
+    value. A setting of <code>None</code> disables all nonce checking.</p>
+    
+    <example>
+    BalancerNonce Set "RealGudSharedSecret"
+    </example>
+
+    <note><title>Note</title>
+      <p>In addition to the nonce, the <code>balancer-manager</code> page
+      should be protected via an ACL.</p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
