@@ -6,6 +6,7 @@
 # RewriteCond ${dir2url:$1} (.+)
 # RewriteRule ^/+([^/]+)$ /manual/%1 [R=301,NE,L]
 
+	mod/mod_lua.html#
 acceptfilter	mod/core.html#acceptfilter
 acceptpathinfo	mod/core.html#acceptpathinfo
 accessfilename	mod/core.html#accessfilename
@@ -94,6 +95,7 @@ authzdbdredirectquery	mod/mod_authz_dbd.html#authzdbdredirectquery
 authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzprovideralias	mod/mod_authz_core.html#authzprovideralias
 balancermember	mod/mod_proxy.html#balancermember
+balancernonce	mod/mod_proxy_balancer.html#balancernonce
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
 bufferedlogs	mod/mod_log_config.html#bufferedlogs
@@ -260,6 +262,20 @@ location	mod/core.html#location
 locationmatch	mod/core.html#locationmatch
 logformat	mod/mod_log_config.html#logformat
 loglevel	mod/core.html#loglevel
+luacodecache	mod/mod_lua.html#luacodecache
+luahookaccesschecker	mod/mod_lua.html#luahookaccesschecker
+luahookauthchecker	mod/mod_lua.html#luahookauthchecker
+luahookauthchecker	mod/mod_lua.html#luahookauthchecker
+luahookcheckuserid	mod/mod_lua.html#luahookcheckuserid
+luahookinsertfilter	mod/mod_lua.html#luahookinsertfilter
+luahookmaptostorage	mod/mod_lua.html#luahookmaptostorage
+luahooktranslatename	mod/mod_lua.html#luahooktranslatename
+luahooktypechecker	mod/mod_lua.html#luahooktypechecker
+luamaphandler	mod/mod_lua.html#luamaphandler
+luapackagecpath	mod/mod_lua.html#luapackagecpath
+luapackagepath	mod/mod_lua.html#luapackagepath
+luaroot	mod/mod_lua.html#luaroot
+luascope	mod/mod_lua.html#luascope
 maxclients	mod/mpm_common.html#maxclients
 maxkeepaliverequests	mod/core.html#maxkeepaliverequests
 maxmemfree	mod/mpm_common.html#maxmemfree

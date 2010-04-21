@@ -138,6 +138,7 @@ by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>サーバへのリクエストのロギング</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>サーバに送られたリクエストの forensic ロギング</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>リクエスト毎に入力バイト数と出力バイト数とをロギング</dd>
+<dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks to do cool stuff</dd>
 <dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</dd>

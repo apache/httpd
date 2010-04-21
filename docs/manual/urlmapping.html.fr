@@ -24,8 +24,6 @@
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/urlmapping.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Vérifiez la version
-            anglaise pour les changements récents.</div>
 
     <p>Ce document explique comment le serveur HTTP Apache utilise l'URL contenue dans une
     requête pour déterminer le noeud du système de fichier à partir duquel le
@@ -321,7 +319,7 @@ URLs</a></h2>
 
 
     <p>Les autres modules disponibles pour la mise en correspondance des
-    URLs sont:</p>
+    URLs sont :</p>
     <ul>
     <li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code> - Met une URL en correspondance
     avec un script CGI en fonction de la méthode de la requête, ou du
@@ -336,7 +334,7 @@ URLs</a></h2>
     approprié en fonction de préférences du client telles que la langue
     ou la compression du contenu.</li>
     </ul>
-
+    
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/urlmapping.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
