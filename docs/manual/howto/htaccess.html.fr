@@ -111,13 +111,19 @@ Includes - SSI)</a></li>
 
     <p>En principe, vous ne devriez utiliser les fichiers
     <code>.htaccess</code> que si vous n'avez pas accès au fichier de
-    configuration du serveur principal. Par exemple, la fausse idée
+    configuration du serveur principal. Par exemple, la fausse
+    idée
     selon laquelle l'authentification de l'utilisateur devrait toujours
     être faite dans les fichiers <code>.htaccess</code> est très
-    répandue. Ceci est tout simplement faux. Vous pouvez configurer
+    répandue. Il est aussi souvent avancé, ces dernières
+    années, que les directives de <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> doivent
+    être définies dans les fichiers <code>.htaccess</code>. Ceci est
+    tout simplement faux. Vous pouvez configurer
     l'authentification des utilisateurs au niveau de la configuration du
     serveur principal, et c'est en fait cette méthode qui doit être
-    privilégiée.</p>
+    privilégiée. De même, les directives de
+    <code>mod_rewrite</code> fonctionneront mieux, à de nombreux égards,
+    dans le contexte du serveur principal.</p>
 
     <p>Les fichiers <code>.htaccess</code> ne devraient être utilisés
     que dans le cas où les fournisseurs de contenu ont besoin de

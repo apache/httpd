@@ -221,6 +221,7 @@
 <li><a href="mod/mod_log_config.html">Apache モジュール mod_log_config</a></li>
 <li><a href="mod/mod_log_forensic.html">Apache モジュール mod_log_forensic</a></li>
 <li><a href="mod/mod_logio.html">Apache モジュール mod_logio</a></li>
+<li><a href="mod/mod_lua.html">Apache モジュール mod_lua</a></li>
 <li><a href="mod/mod_mime.html">Apache モジュール mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Apache モジュール mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Apache モジュール mod_negotiation</a></li>

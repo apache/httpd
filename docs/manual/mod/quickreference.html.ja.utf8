@@ -464,6 +464,20 @@ Certificate Authority or global client certificates</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>nickname</var>
 [<var>nickname</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ログファイルで使用する書式を設定する</td></tr>
 <tr><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">ErrorLog の冗長性を制御する</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luacodecache">LuaCodeCache stat|forever|never</a></td><td></td><td /><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name</a></td><td></td><td /><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</a></td><td></td><td /><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</a></td><td></td><td /><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</a></td><td></td><td /><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</a></td><td></td><td /><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</a></td><td></td><td /><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name</a></td><td></td><td /><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luahooktypechecker">LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</a></td><td></td><td /><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_lua.html#luamaphandler">LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</a></td><td></td><td /><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luapackagecpath">LuaPackageCPath /path/to/include/?.soa</a></td><td></td><td /><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">-</td></tr>
+<tr><td><a href="mod_lua.html#luapackagepath">LuaPackagePath /path/to/include/?.lua</a></td><td></td><td /><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
+<tr class="odd"><td><a href="mod_lua.html#luaroot">LuaRoot /path/to/a/directory</a></td><td></td><td /><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Specify the base path</td></tr>
+<tr><td><a href="mod_lua.html#luascope">LuaScope once|request|conn|server [max|min max]</a></td><td></td><td /><td>X</td></tr><tr><td class="descr" colspan="4">-</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストに応答するために作成される
 子プロセスの最大個数</td></tr>
 <tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>number</var></a></td><td> 100 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">持続的な接続上で許可されるリクエストの数</td></tr>

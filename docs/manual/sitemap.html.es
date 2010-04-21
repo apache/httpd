@@ -223,6 +223,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_log_config.html">Módulo Apache mod_log_config</a></li>
 <li><a href="mod/mod_log_forensic.html">Módulo Apache mod_log_forensic</a></li>
 <li><a href="mod/mod_logio.html">Módulo Apache mod_logio</a></li>
+<li><a href="mod/mod_lua.html">Módulo Apache mod_lua</a></li>
 <li><a href="mod/mod_mime.html">Módulo Apache mod_mime</a></li>
 <li><a href="mod/mod_mime_magic.html">Módulo Apache mod_mime_magic</a></li>
 <li><a href="mod/mod_negotiation.html">Módulo Apache mod_negotiation</a></li>
