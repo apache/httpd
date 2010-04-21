@@ -659,22 +659,11 @@ static void recalc_factors(proxy_balancer *balancer)
     }
 }
 
-/* post_config hook: */
-static int balancer_init(apr_pool_t *p, apr_pool_t *plog,
-                         apr_pool_t *ptemp, server_rec *s)
+/* pre_config hook: */
+static int balancer_init(apr_pool_t *pconf, apr_pool_t *plog,
+                         apr_pool_t *ptemp)
 {
-    void *data;
-    const char *userdata_key = "mod_proxy_balancer_init";
     apr_uuid_t uuid;
-
-    /* balancer_init() will be called twice during startup.  So, only
-     * set up the static data the second time through. */
-    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-    if (!data) {
-        apr_pool_userdata_set((const void *)1, userdata_key,
-                               apr_pool_cleanup_null, s->process->pool);
-        return OK;
-    }
 
     /* Retrieve a UUID and store the nonce for the lifetime of
      * the process. */
@@ -730,8 +719,9 @@ static int balancer_handler(request_rec *r)
     
     /* Check that the supplied nonce matches this server's nonce;
      * otherwise ignore all parameters, to prevent a CSRF attack. */
-    if ((name = apr_table_get(params, "nonce")) == NULL 
-        || strcmp(balancer_nonce, name) != 0) {
+    if (*balancer_nonce &&
+        ((name = apr_table_get(params, "nonce")) == NULL 
+        || strcmp(balancer_nonce, name) != 0)) {
         apr_table_clear(params);
     }
 
@@ -972,6 +962,35 @@ static void child_init(apr_pool_t *p, server_rec *s)
 
 }
 
+static const char *set_balancer_nonce (cmd_parms *cmd, void *dummy, const char *arg,
+                                       const char *val)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (!strcasecmp(arg, "None")) {
+        *balancer_nonce = '\0';
+    } else if (!strcasecmp(arg, "Set")) {
+        if (val) {
+            apr_cpystrn(balancer_nonce, val, sizeof(balancer_nonce));
+        } else {
+            return "BalancerNonce Set requires an argument";
+        }
+    } else if (strcasecmp(arg, "Default")) {
+        return "Bad argument for BalancerNonce: Must be 'Set', 'None' or 'Default'";
+    }
+    return NULL;
+}
+
+static const command_rec balancer_cmds[] =
+{
+    AP_INIT_TAKE12("BalancerNonce", set_balancer_nonce, NULL,
+       RSRC_CONF, "Set value for balancer-manager nonce"),
+    {NULL}
+};
+
 static void ap_proxy_balancer_register_hook(apr_pool_t *p)
 {
     /* Only the mpm_winnt has child init hook handler.
@@ -980,7 +999,7 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
      */
     static const char *const aszPred[] = { "mpm_winnt.c", NULL};
      /* manager handler */
-    ap_hook_post_config(balancer_init, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_config(balancer_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_child_init(child_init, aszPred, NULL, APR_HOOK_MIDDLE);
     proxy_hook_pre_request(proxy_balancer_pre_request, NULL, NULL, APR_HOOK_FIRST);
@@ -994,6 +1013,6 @@ module AP_MODULE_DECLARE_DATA proxy_balancer_module = {
     NULL,       /* merge per-directory config structures */
     NULL,       /* create per-server config structure */
     NULL,       /* merge per-server config structures */
-    NULL,       /* command apr_table_t */
+    balancer_cmds,       /* command apr_table_t */
     ap_proxy_balancer_register_hook /* register hooks */
 };

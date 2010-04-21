@@ -28,6 +28,10 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_proxy_balancer: Add new directive BalancerNonce to allow admin
+     to control/set the nonce used in the balancer-manager application.
+     [Jim Jagielski]
+
   *) mod_proxy_connect: Support port ranges in AllowConnect. PR 23673.
      [Stefan Fritsch]
 
