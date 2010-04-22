@@ -300,7 +300,6 @@
 <li><a href="mod_lua.html#luacodecache">LuaCodeCache</a></li>
 <li><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker</a></li>
 <li><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></li>
-<li><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></li>
 <li><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID</a></li>
 <li><a href="mod_lua.html#luahookfixups">LuaHookFixups</a></li>
 <li><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter</a></li>
