@@ -55,7 +55,7 @@ Previously to do bandwidth rate limiting modules would have to block an entire t
 <directivesynopsis>
 <name>ModemStandard</name>
 <description>Modem standard to simulate</description>
-<syntax>ModemStandard V.21|V.26bis|V.32|V.92</syntx>
+<syntax>ModemStandard V.21|V.26bis|V.32|V.92</syntax>
 
 <usage>
 <p>Specify what modem standard you wish to simulate.</p>
