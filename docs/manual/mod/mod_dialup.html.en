@@ -29,7 +29,9 @@
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_dialup.c</td></tr></table>
 <h3>Summary</h3>
 
-It is a module that sends static content at a bandwidth rate limit, defined by the various old modem standards. So, you can browse your site with a 56k V.92 modem, by adding something like this:
+<p>It is a module that sends static content at a bandwidth rate limit, defined
+by the various old modem standards. So, you can browse your site with a 56k 
+V.92 modem, by adding something like this:</p>
 
 <div class="example"><p><code>
 &lt;Location /mysite&gt;<br />
@@ -37,7 +39,11 @@ ModemStandard V.92<br />
 &lt;/Location&gt;
 </code></p></div>
 
-Previously to do bandwidth rate limiting modules would have to block an entire thread, for each client, and insert sleeps to slow the bandwidth down.  Using the new suspend feature, a handler can get callback N milliseconds in the future, and it will be invoked by the Event MPM on a different thread, once the timer hits.  From there the handler can continue to send data to the client.
+<p>Previously to do bandwidth rate limiting modules would have to block an entire
+thread, for each client, and insert sleeps to slow the bandwidth down.  
+Using the new suspend feature, a handler can get callback N milliseconds in 
+the future, and it will be invoked by the Event MPM on a different thread, 
+once the timer hits.  From there the handler can continue to send data to the client.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
