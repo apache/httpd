@@ -16,10 +16,6 @@ To Do List
   could be turned into more of a howto than the one paragraph it's
   got now.
 
-- Refer to this product as either 'Apache HTTP Server' or 'httpd', as
-  appropriate in context, rather than just 'Apache'. 'Apache' is the
-  Apache Software Foundation.
-
 - Update the http://httpd.apache.org/docs-project/docsformat.html
   document to be useful. In particular:
     - Document the various macros that can be used in documents.
@@ -28,9 +24,6 @@ To Do List
       we work.
     -  Improving the documentation of the documentations' build system
        itself (requirements, procedures)
-
-- Update this document. Determine which of these issues are in fact
-  still open, and which have already been dealt with.
 
 - Identify which documents are grossly out of date, and fix.
 
