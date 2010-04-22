@@ -30,11 +30,14 @@
 <h3>Summary</h3>
 
 
-<p>Provides a <code>rate_limit</code> filter to limit client bandwidth.</p>
+<p>Provides a <code>rate_limit</code> filter to limit client bandwidth. 
+The connection speed to be simulated is specified, in kb/s, using the environment 
+variable <code>rate-limit</code>.</p>
 
-<div class="example"><p><code>
+<div class="example"><h3>Example Configufation</h3><p><code>
 &lt;Location /downloads&gt;<br />
-SetHandler rate_limit<br />
+SetHandler RATE_LIMIT<br />
+SetEnv rate-limit 400 
 &lt;/Location&gt;
 </code></p></div>
 
