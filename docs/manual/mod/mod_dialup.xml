@@ -3,15 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?> 
 <!-- $LastChangedRevision$ -->
 
-<!--
-Upon adding a new module XML doc, you will need to:
-
-svn ps svn:eol-style native <alltextfiles>
-svn ps svn:keywords LastChangedRevision mod_dialup.xml
-
-in order for it to rebuild correctly.
-
--->
 <!--                                                                                                                              
  Licensed to the Apache Software Foundation (ASF) under one or more 
  contributor license agreements.  See the NOTICE file distributed with 
