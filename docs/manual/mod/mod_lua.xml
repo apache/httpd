@@ -323,24 +323,21 @@ processing</description>
 
 <directivesynopsis>
 <name>LuaHookAuthChecker</name>
+<description>Provide a hook for the auth_checker phase of request processing</description>
 <syntax>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</syntax>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>LuaHookAccessChecker</name>
+<description>Provide a hook for the access_checker phase of request processing</description>
 <syntax>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name</syntax>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>LuaHookAuthChecker</name>
-<syntax>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</syntax>
-    <usage><p>...</p></usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>LuaHookInsertFilter</name>
+<description>Provide a hook for the insert_filter phase of request processing</description>
 <syntax>LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</syntax>
     <usage><p>Not Yet Implemented</p></usage>
 </directivesynopsis>
