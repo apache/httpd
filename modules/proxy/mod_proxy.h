@@ -383,6 +383,7 @@ struct proxy_balancer_method {
     void            *context;   /* general purpose storage */
     apr_status_t (*reset)(proxy_balancer *balancer, server_rec *s);
     apr_status_t (*age)(proxy_balancer *balancer, server_rec *s);
+    apr_status_t (*updatelbstatus)(proxy_balancer *balancer, proxy_worker *elected, server_rec *s); 
 };
 
 #if APR_HAS_THREADS
