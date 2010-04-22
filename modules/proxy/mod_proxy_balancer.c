@@ -471,28 +471,31 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     /* Step 4: find the session route */
     runtime = find_session_route(*balancer, r, &route, &sticky, url);
     if (runtime) {
-        int i, total_factor = 0;
-        proxy_worker **workers;
-        /* We have a sticky load balancer
-         * Update the workers status
-         * so that even session routes get
-         * into account.
-         */
-        workers = (proxy_worker **)(*balancer)->workers->elts;
-        for (i = 0; i < (*balancer)->workers->nelts; i++) {
-            /* Take into calculation only the workers that are
-             * not in error state or not disabled.
-             *
-             * TODO: Abstract the below, since this is dependent
-             *       on the LB implementation
-             */
-            if (PROXY_WORKER_IS_USABLE(*workers)) {
-                (*workers)->s->lbstatus += (*workers)->s->lbfactor;
-                total_factor += (*workers)->s->lbfactor;
-            }
-            workers++;
+        if ((*balancer)->lbmethod && (*balancer)->lbmethod->updatelbstatus) {
+            /* Call the LB implementation */
+            (*balancer)->lbmethod->updatelbstatus(*balancer, runtime, r->server);
         }
-        runtime->s->lbstatus -= total_factor;
+        else { /* Use the default one */
+            int i, total_factor = 0;
+            proxy_worker **workers;
+            /* We have a sticky load balancer
+             * Update the workers status
+             * so that even session routes get
+             * into account.
+             */
+            workers = (proxy_worker **)(*balancer)->workers->elts;
+            for (i = 0; i < (*balancer)->workers->nelts; i++) {
+                /* Take into calculation only the workers that are
+                 * not in error state or not disabled.
+                 */
+                if (PROXY_WORKER_IS_USABLE(*workers)) {
+                    (*workers)->s->lbstatus += (*workers)->s->lbfactor;
+                    total_factor += (*workers)->s->lbfactor;
+                }
+                workers++;
+            }
+            runtime->s->lbstatus -= total_factor;
+        }
         runtime->s->elected++;
 
         *worker = runtime;
