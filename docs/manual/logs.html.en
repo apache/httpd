@@ -434,7 +434,7 @@
 
       <div class="example"><p><code>
         SetEnv CACHE_MISS 1<br />
-        LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache
+		LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache<br />
         CustomLog logs/access_log common-cache
       </code></p></div>
 
