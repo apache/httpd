@@ -77,6 +77,7 @@
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml.fr</modulefile>
   <modulefile>mod_proxy_scgi.xml</modulefile>
+  <modulefile>mod_ratelimit.xml</modulefile>
   <modulefile>mod_reflector.xml</modulefile>
   <modulefile>mod_remoteip.xml.fr</modulefile>
   <modulefile>mod_reqtimeout.xml</modulefile>
