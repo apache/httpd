@@ -68,7 +68,6 @@ To Do List
 - modules docs
     - the follwing modules added since 2.2 lack documentation
         - mod_dialup
-        - mod_lua (Doc added, but still very rough.)
         - mod_ratelimit
         - mod_serf
         - mod_watchdog
@@ -164,9 +163,6 @@ To Do List
   module, which our readers never used, used to do. Examples would be
   helpful. Additionally, a significant part of the doc consists of a
   quoted email message. This seems somewhat unprofessional.
-
-- Document mod_lua based on the various docs at
-  https://svn.apache.org/repos/asf/httpd/httpd/trunk/modules/lua/docs/
 
 LaTeX Todo list
 ==================
