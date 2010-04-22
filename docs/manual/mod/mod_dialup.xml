@@ -1,0 +1,74 @@
+<?xml version="1.0"?> 
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?> 
+<!-- $LastChangedRevision$ -->
+
+<!--
+Upon adding a new module XML doc, you will need to:
+
+svn ps svn:eol-style native <alltextfiles>
+svn ps svn:keywords LastChangedRevision mod_dialup.xml
+
+in order for it to rebuild correctly.
+
+-->
+<!--                                                                                                                              
+ Licensed to the Apache Software Foundation (ASF) under one or more 
+ contributor license agreements.  See the NOTICE file distributed with 
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0 
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<!--<modulesynopsis> is the root tag and must surround all other tags.
+The sequence of tags is important and must be followed in order for
+the document to validate. -->
+
+<modulesynopsis metafile="mod_dialup.xml.meta"> 
+<name>mod_dialup</name>
+<description>Send static content at a bandwidth rate limit, defined by the various old modem standards</description>
+<status>extension</status>
+<sourcefile>mod_dialup.c</sourcefile>
+<identifier>dialup_module</identifier>
+
+<summary>
+It is a module that sends static content at a bandwidth rate limit, defined by the various old modem standards. So, you can browse your site with a 56k V.92 modem, by adding something like this:
+
+<example>
+&lt;Location /mysite&gt;
+ModemStandard V.92
+&lt;/Location&gt;
+</example>
+
+Previously to do bandwidth rate limiting modules would have to block an entire thread, for each client, and insert sleeps to slow the bandwidth down.  Using the new suspend feature, a handler can get callback N milliseconds in the future, and it will be invoked by the Event MPM on a different thread, once the timer hits.  From there the handler can continue to send data to the client.
+</summary>
+
+<directivesynopsis>
+<name>ModemStandard</name>
+<description>Modem standard to simulate</description>
+<syntax>ModemStandard V.21|V.26bis|V.32|V.92</syntx>
+
+<usage>
+<p>Specify what modem standard you wish to simulate.</p>
+
+<example>
+&lt;Location /mysite&gt;
+ModemStandard V.92
+&lt;/Location&gt;
+</example>
+
+</usage>
+
+</directivesynopsis>
+
+</modulesynopsis>
+
