@@ -134,7 +134,7 @@ handlers (or hooks, or filters) in the same script.
 
 <directivesynopsis>
 <name>LuaRoot</name>
-<description>Specify the base path</description>
+<description>Specify the base path for resolving relative paths for mod_lua directives</description>
 <syntax>LuaRoot /path/to/a/directory</syntax>
 
 <usage>
@@ -147,6 +147,7 @@ handlers (or hooks, or filters) in the same script.
 
 <directivesynopsis>
 <name>LuaScope</name>
+<description>One of once, request, conn, server -- default is once</description>
 <syntax>LuaScope once|request|conn|server [max|min max]</syntax>
 
 <usage>
@@ -172,9 +173,9 @@ handlers (or hooks, or filters) in the same script.
 </usage>
 </directivesynopsis>
 
-
 <directivesynopsis>
 <name>LuaMapHandler</name>
+<description>Map a path to a lua handler</description>
 <syntax>LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</syntax>
 <usage>
     <p>This directive matches a uri pattern to invoke a specific
@@ -202,6 +203,7 @@ handlers (or hooks, or filters) in the same script.
 
 <directivesynopsis>
 <name>LuaPackagePath</name>
+<description>Add a directory to lua's package.path</description>
 <syntax>LuaPackagePath /path/to/include/?.lua</syntax>
     <usage><p>Add a path to lua's module search path. Follows the same
     conventions as lua. This just munges the package.path in the 
@@ -216,6 +218,7 @@ handlers (or hooks, or filters) in the same script.
 
 <directivesynopsis>
 <name>LuaPackageCPath</name>
+<description>Add a directory to lua's package.cpath</description>
 <syntax>LuaPackageCPath /path/to/include/?.soa</syntax>
 
 <usage>
@@ -228,6 +231,7 @@ handlers (or hooks, or filters) in the same script.
 
 <directivesynopsis>
 <name>LuaCodeCache</name>
+<description>Configure the compiled code cache.</description>
 <syntax>LuaCodeCache stat|forever|never</syntax>
 
 <usage><p>
@@ -253,6 +257,7 @@ handlers (or hooks, or filters) in the same script.
 
 <directivesynopsis>
 <name>LuaHookTranslateName</name>
+<description>Provide a hook for the translate name phase of request processing</description>
 <syntax>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name</syntax>
 
 <usage><p>
@@ -288,25 +293,30 @@ handlers (or hooks, or filters) in the same script.
 </directivesynopsis>
 
 <directivesynopsis>
+<name>LuaHookFixups</name>
+<description>Provide a hook for the fixups phase of request
+processing</description>
 <syntax>LuaHookFixups  /path/to/lua/script.lua hook_function_name</syntax>
     Just like LuaHookTranslateName, but executed at the fixups phase
 </directivesynopsis>
 
-
 <directivesynopsis>
 <name>LuaHookMapToStorage</name>
+<description>Provide a hook for the map_to_storage phase of request processing</description>
 <syntax>LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</syntax>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>LuaHookCheckUserID</name>
+<description>Provide a hook for the check_user_id phase of request processing</description>
 <syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</syntax>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>LuaHookTypeChecker</name>
+<description>Provide a hook for the type_checker phase of request processing</description>
 <syntax>LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</syntax>
     <usage><p>...</p></usage>
 </directivesynopsis>
@@ -333,6 +343,13 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaHookInsertFilter</name>
 <syntax>LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</syntax>
     <usage><p>Not Yet Implemented</p></usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LuaQuickHandler</name>
+<description>Provide a hook for the quick handler of request processing</description>
+<syntax></syntax>
+<usage><p>...</p></usage>
 </directivesynopsis>
 
 </modulesynopsis>

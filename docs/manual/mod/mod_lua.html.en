@@ -36,12 +36,12 @@ request processing</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#" /></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luacodecache">LuaCodeCache</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookaccesschecker">LuaHookAccessChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookauthchecker">LuaHookAuthChecker</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookcheckuserid">LuaHookCheckUserID</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luahookfixups">LuaHookFixups</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookinsertfilter">LuaHookInsertFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahookmaptostorage">LuaHookMapToStorage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luahooktranslatename">LuaHookTranslateName</a></li>
@@ -49,6 +49,7 @@ request processing</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#luamaphandler">LuaMapHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luapackagecpath">LuaPackageCPath</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luapackagepath">LuaPackagePath</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#luaquickhandler">LuaQuickHandler</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luaroot">LuaRoot</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#luascope">LuaScope</a></li>
 </ul>
@@ -157,19 +158,9 @@ handlers (or hooks, or filters) in the same script.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="" id="" /> <a name="" id="">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookFixups  /path/to/lua/script.lua hook_function_name</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
-</table>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaCodeCache" id="LuaCodeCache">LuaCodeCache</a> <a name="luacodecache" id="luacodecache">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure the compiled code cache.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaCodeCache stat|forever|never</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -227,12 +218,23 @@ handlers (or hooks, or filters) in the same script.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookCheckUserID" id="LuaHookCheckUserID">LuaHookCheckUserID</a> <a name="luahookcheckuserid" id="luahookcheckuserid">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the check_user_id phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
 </table><p>...</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaHookFixups" id="LuaHookFixups">LuaHookFixups</a> <a name="luahookfixups" id="luahookfixups">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the fixups phase of request
+processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookFixups  /path/to/lua/script.lua hook_function_name</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookInsertFilter" id="LuaHookInsertFilter">LuaHookInsertFilter</a> <a name="luahookinsertfilter" id="luahookinsertfilter">Directive</a></h2>
@@ -247,7 +249,7 @@ handlers (or hooks, or filters) in the same script.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookMapToStorage" id="LuaHookMapToStorage">LuaHookMapToStorage</a> <a name="luahookmaptostorage" id="luahookmaptostorage">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the map_to_storage phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -257,7 +259,7 @@ handlers (or hooks, or filters) in the same script.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookTranslateName" id="LuaHookTranslateName">LuaHookTranslateName</a> <a name="luahooktranslatename" id="luahooktranslatename">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the translate name phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -296,7 +298,7 @@ handlers (or hooks, or filters) in the same script.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaHookTypeChecker" id="LuaHookTypeChecker">LuaHookTypeChecker</a> <a name="luahooktypechecker" id="luahooktypechecker">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the type_checker phase of request processing</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -306,7 +308,7 @@ handlers (or hooks, or filters) in the same script.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaMapHandler" id="LuaMapHandler">LuaMapHandler</a> <a name="luamaphandler" id="luamaphandler">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Map a path to a lua handler</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -337,7 +339,7 @@ handlers (or hooks, or filters) in the same script.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaPackageCPath" id="LuaPackageCPath">LuaPackageCPath</a> <a name="luapackagecpath" id="luapackagecpath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a directory to lua's package.cpath</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaPackageCPath /path/to/include/?.soa</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -352,7 +354,7 @@ handlers (or hooks, or filters) in the same script.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaPackagePath" id="LuaPackagePath">LuaPackagePath</a> <a name="luapackagepath" id="luapackagepath">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a directory to lua's package.path</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaPackagePath /path/to/include/?.lua</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -368,9 +370,19 @@ handlers (or hooks, or filters) in the same script.
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="LuaQuickHandler" id="LuaQuickHandler">LuaQuickHandler</a> <a name="luaquickhandler" id="luaquickhandler">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Provide a hook for the quick handler of request processing</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code /></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_lua</td></tr>
+</table><p>...</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaRoot" id="LuaRoot">LuaRoot</a> <a name="luaroot" id="luaroot">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the base path for resolving relative paths for mod_lua directives</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaRoot /path/to/a/directory</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -385,7 +397,7 @@ handlers (or hooks, or filters) in the same script.
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LuaScope" id="LuaScope">LuaScope</a> <a name="luascope" id="luascope">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td /></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>One of once, request, conn, server -- default is once</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LuaScope once|request|conn|server [max|min max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td /></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
