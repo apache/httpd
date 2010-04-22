@@ -59,6 +59,79 @@ This will cause any <code>.lua</code> file to be evaluated by
 </p>
 </section>
 
+<section id="writinghandlers"><title>Writing Handlers</title>
+
+<p><code>mod_lua</code> always looks to invoke a function for the handler, rather than
+just evaluating a script body CGI style. A handler function looks
+something like this:</p>
+
+<example><title>example.lua</title><pre>
+    require "string"
+
+    function handle_something(r)
+        r.content_type = "text/plain"
+        r:puts("Hello Lua World!\n")
+    
+        if r.method == 'GET' then
+            for k, v in pairs( r:parseargs() ) do
+                r:puts( string.format("%s: %s", k, v) )
+            end
+        elseif r.method == 'POST' then
+            for k, v in pairs( r:parsebody() ) do
+                r:puts( string.format("%s: %s", k, v) )
+            end
+        else
+            r:puts("unknown HTTP method " .. r.method)
+        end 
+    end
+</pre></example>
+
+<p>
+This handler function just prints out the uri or form encoded
+arguments to a plaintext page.
+</p>
+
+<p>
+This means (and in fact encourages) that you can have multiple
+handlers (or hooks, or filters) in the same script.
+</p>
+
+</section>
+
+<section id="datastructures"><title>Data Structures</title>
+
+<dl>
+<dt>request_rec</dt>
+        <dd>
+        <p>The request_rec is mapped in as a userdata. It has a metatable
+        which lets you do useful things with it. For the most part it
+        has the same fields as the request_rec struct (see httpd.h 
+        until we get better docs here) many of which are writeable as
+        well as readable, and has (at least) the following methods:</p>
+       
+        <example>
+        r:puts("hello", " world", "!") -- print to response body
+        </example>
+        </dd>
+    </dl>
+       
+</section>
+
+<section id="logging"><title>Logging Functions</title>
+
+<example>
+        r:debug("This is a debug log message")<br />
+        r:info("This is an info log message")<br />
+        r:notice("This is an notice log message")<br />
+        r:warn("This is an warn log message")<br />
+        r:err("This is an err log message")<br />
+        r:alert("This is an alert log message")<br />
+        r:crit("This is an crit log message")<br />
+        r:emerg("This is an emerg log message")<br />
+</example>
+
+</section>
+
 <directivesynopsis>
 <name>LuaRoot</name>
 <description>Specify the base path</description>

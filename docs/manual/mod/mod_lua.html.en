@@ -55,6 +55,9 @@ request processing</td></tr>
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#basicconf">Basic Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#writinghandlers">Writing Handlers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#datastructures">Data Structures</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logging">Logging Functions</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -79,6 +82,79 @@ AddHandler lua-script .lua
 This will cause any <code>.lua</code> file to be evaluated by
 <code>mod_lua</code>.
 </p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="writinghandlers" id="writinghandlers">Writing Handlers</a></h2>
+
+<p><code>mod_lua</code> always looks to invoke a function for the handler, rather than
+just evaluating a script body CGI style. A handler function looks
+something like this:</p>
+
+<div class="example"><h3>example.lua</h3><pre>
+    require "string"
+
+    function handle_something(r)
+        r.content_type = "text/plain"
+        r:puts("Hello Lua World!\n")
+    
+        if r.method == 'GET' then
+            for k, v in pairs( r:parseargs() ) do
+                r:puts( string.format("%s: %s", k, v) )
+            end
+        elseif r.method == 'POST' then
+            for k, v in pairs( r:parsebody() ) do
+                r:puts( string.format("%s: %s", k, v) )
+            end
+        else
+            r:puts("unknown HTTP method " .. r.method)
+        end 
+    end
+</pre></div>
+
+<p>
+This handler function just prints out the uri or form encoded
+arguments to a plaintext page.
+</p>
+
+<p>
+This means (and in fact encourages) that you can have multiple
+handlers (or hooks, or filters) in the same script.
+</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="datastructures" id="datastructures">Data Structures</a></h2>
+
+<dl>
+<dt>request_rec</dt>
+        <dd>
+        <p>The request_rec is mapped in as a userdata. It has a metatable
+        which lets you do useful things with it. For the most part it
+        has the same fields as the request_rec struct (see httpd.h 
+        until we get better docs here) many of which are writeable as
+        well as readable, and has (at least) the following methods:</p>
+       
+        <div class="example"><p><code>
+        r:puts("hello", " world", "!") -- print to response body
+        </code></p></div>
+        </dd>
+    </dl>
+       
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="logging" id="logging">Logging Functions</a></h2>
+
+<div class="example"><p><code>
+        r:debug("This is a debug log message")<br />
+        r:info("This is an info log message")<br />
+        r:notice("This is an notice log message")<br />
+        r:warn("This is an warn log message")<br />
+        r:err("This is an err log message")<br />
+        r:alert("This is an alert log message")<br />
+        r:crit("This is an crit log message")<br />
+        r:emerg("This is an emerg log message")<br />
+</code></p></div>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="" id="" /> <a name="" id="">Directive</a></h2>
