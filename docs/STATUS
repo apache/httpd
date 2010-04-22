@@ -154,11 +154,10 @@ To Do List
   http://httpd.apache.org/docs-project/translations.html  Some of those
   are accurate, and others are way outdated.
 
-- Rewriting the 'custom error' doc, which is ancient and doesn't flow
-  very well.
-
 - I'd like to expand the discussion of conditional logging, and add a
   few more useful exmaples.
+  That would be a good place to document logging of cache hit/miss:
+  https://issues.apache.org/bugzilla/show_bug.cgi?id=48241#c2
 
 - The mod_usertrack docs should describe what the module does, now,
   rather than spending so much time comparing it to what a long-gone
