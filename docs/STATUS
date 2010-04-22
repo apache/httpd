@@ -77,7 +77,6 @@ To Do List
     - The following modules have new docs added since 2.2, but are
       grossly lacking in details and examples.
         - mod_dialup
-        - mod_ratelimit
     - mod_suexec: very little documentation
     - mod_rewrite: explain, when which variables are actually available
       (PR 16402)
