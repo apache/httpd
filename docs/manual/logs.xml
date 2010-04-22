@@ -458,6 +458,21 @@
         CustomLog logs/non_english_log common env=!english
       </example>
 
+      <p>In a caching scenario one would want to know about
+      the efficiency of the cache. A very simple method to
+      find this out would be:</p>
+
+      <example>
+        SetEnv CACHE_MISS 1<br />
+        LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache
+        CustomLog logs/access_log common-cache
+      </example>
+
+      <p><module>mod_cache</module> will run before
+      <module>mod_env</module> and when successfull will deliver the
+      content without it. In that case a cache hit will log
+      <code>-</code>, while a cache miss will log <code>1</code>.</p>
+
       <p>Although we have just shown that conditional logging is very
       powerful and flexible, it is not the only way to control the
       contents of the logs. Log files are more useful when they
