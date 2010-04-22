@@ -326,6 +326,7 @@
 <li><a href="prefork.html#minspareservers">MinSpareServers</a></li>
 <li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
 <li><a href="mod_file_cache.html#mmapfile">MMapFile</a></li>
+<li><a href="mod_dialup.html#modemstandard">ModemStandard</a></li>
 <li><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo</a></li>
 <li><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></li>
 <li><a href="core.html#mutex">Mutex</a></li>

@@ -35,6 +35,7 @@
   <modulefile>mod_dav_lock.xml</modulefile>
   <modulefile>mod_dbd.xml</modulefile>
   <modulefile>mod_deflate.xml</modulefile>
+  <modulefile>mod_dialup.xml</modulefile>
   <modulefile>mod_dir.xml</modulefile>
   <modulefile>mod_disk_cache.xml</modulefile>
   <modulefile>mod_dumpio.xml</modulefile>
