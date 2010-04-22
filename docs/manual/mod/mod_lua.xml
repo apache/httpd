@@ -38,7 +38,7 @@ request processing</description>
 
 <section id="basicconf"><title>Basic Configuration</title>
 
-The basic module loading directive is
+<p>The basic module loading directive is</p>
 
 <example>
     LoadModule apreq_module modules/mod_apreq2.so<br />
@@ -297,7 +297,11 @@ handlers (or hooks, or filters) in the same script.
 <description>Provide a hook for the fixups phase of request
 processing</description>
 <syntax>LuaHookFixups  /path/to/lua/script.lua hook_function_name</syntax>
+<usage>
+<p>
     Just like LuaHookTranslateName, but executed at the fixups phase
+</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
