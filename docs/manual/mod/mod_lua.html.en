@@ -23,7 +23,8 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_lua.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides Lua hooks to do cool stuff</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides Lua hooks into various portions of the httpd
+request processing</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>lua_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_lua.c</td></tr>
@@ -31,10 +32,6 @@
 <h3>Summary</h3>
 
 <p>Someone needs to write this.</p>
-
-<div class="example"><h3>Example</h3><p><code>
-# Examples are always helpful.<br />
-</code></p></div>
 
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
@@ -57,27 +54,31 @@
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#moredocs">Additional Documentation</a></li>
-</ul><h3>See also</h3>
-<ul class="seealso">
-<li><a href="...">Useful document</a></li>
-<li><code class="directive"><a href="../mod/mod_useful.html#useful">Useful</a></code></li>
-<li><code class="module"><a href="../mod/mod_useful.html">mod_useful</a></code></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#basicconf">Basic Configuration</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="moredocs" id="moredocs">Additional Documentation</a></h2>
+<h2><a name="basicconf" id="basicconf">Basic Configuration</a></h2>
 
-<p>More detailed information about the module in general (as opposed to
-the individual directives) can follow in sections containing titles.</p>
+The basic module loading directive is
 
-<p>The <code>id</code> attribute will be translated into a hypertext
-anchor target.</p>
+<div class="example"><p><code>
+    LoadModule apreq_module modules/mod_apreq2.so<br />
+    LoadModule wombat_module modules/mod_wombat.so
+</code></p></div>
 
-<p>References to directives should use the directive tag: <code class="directive"><a href="#templatedirective">TemplateDirective</a></code>.  References to
-modules should use the module tag
-<code class="module"><a href="../mod/mod_lua.xml.html">mod_lua.xml</a></code>.</p>
+<p>
+<code>mod_lua</code> provides a handler named <code>lua-script</code>,
+which can be used with an <code>AddHandler</code> directive:</p>
 
+<div class="example"><p><code>
+AddHandler lua-script .lua
+</code></p></div>
+
+<p>
+This will cause any <code>.lua</code> file to be evaluated by
+<code>mod_lua</code>.
+</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="" id="" /> <a name="" id="">Directive</a></h2>

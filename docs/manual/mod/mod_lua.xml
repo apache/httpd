@@ -24,7 +24,8 @@
 
 <name>mod_lua</name>
 
-<description>Provides Lua hooks to do cool stuff</description>
+<description>Provides Lua hooks into various portions of the httpd
+request processing</description>
 <status>experimental</status>
 <sourcefile>mod_lua.c</sourcefile>
 <identifier>lua_module</identifier>
@@ -33,31 +34,29 @@
 <summary>
 <p>Someone needs to write this.</p>
 
-<example><title>Example</title>
-# Examples are always helpful.<br />
-</example>
-
 </summary>
 
-<!-- References to other documents or directives -->
-<seealso><a href="...">Useful document</a></seealso>
-<seealso><directive module="mod_useful">Useful</directive></seealso>
-<seealso><module>mod_useful</module></seealso>
+<section id="basicconf"><title>Basic Configuration</title>
 
-<!-- Any number of sections may be included below -->
-<section id="moredocs"><title>Additional Documentation</title>
+The basic module loading directive is
 
-<p>More detailed information about the module in general (as opposed to
-the individual directives) can follow in sections containing titles.</p>
+<example>
+    LoadModule apreq_module modules/mod_apreq2.so<br />
+    LoadModule wombat_module modules/mod_wombat.so
+</example>
 
-<p>The <code>id</code> attribute will be translated into a hypertext
-anchor target.</p>
+<p>
+<code>mod_lua</code> provides a handler named <code>lua-script</code>,
+which can be used with an <code>AddHandler</code> directive:</p>
 
-<p>References to directives should use the directive tag: <directive
-module="mod_lua">TemplateDirective</directive>.  References to
-modules should use the module tag
-<module>mod_lua.xml</module>.</p>
+<example>
+AddHandler lua-script .lua
+</example>
 
+<p>
+This will cause any <code>.lua</code> file to be evaluated by
+<code>mod_lua</code>.
+</p>
 </section>
 
 <directivesynopsis>
