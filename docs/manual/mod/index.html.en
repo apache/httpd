@@ -110,6 +110,7 @@ address)</dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before it is delivered to the
 client</dd>
+<dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Provides for "trailing slash" redirects and
     serving directory index files</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>

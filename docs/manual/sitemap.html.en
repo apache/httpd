@@ -199,6 +199,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_dav_lock.html">Apache Module mod_dav_lock</a></li>
 <li><a href="mod/mod_dbd.html">Apache Module mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">Apache Module mod_deflate</a></li>
+<li><a href="mod/mod_dialup.html">Apache Module mod_dialup</a></li>
 <li><a href="mod/mod_dir.html">Apache Module mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Apache Module mod_disk_cache</a></li>
 <li><a href="mod/mod_dumpio.html">Apache Module mod_dumpio</a></li>
