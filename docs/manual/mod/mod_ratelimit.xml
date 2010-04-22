@@ -37,7 +37,7 @@ the document to validate. -->
 The connection speed to be simulated is specified, in kb/s, using the environment 
 variable <code>rate-limit</code>.</p>
 
-<example><title>Example Configufation</title>
+<example><title>Example Configuration</title>
 &lt;Location /downloads&gt;<br />
 SetHandler RATE_LIMIT<br />
 SetEnv rate-limit 400 
