@@ -44,8 +44,8 @@ the document to validate. -->
 It is a module that sends static content at a bandwidth rate limit, defined by the various old modem standards. So, you can browse your site with a 56k V.92 modem, by adding something like this:
 
 <example>
-&lt;Location /mysite&gt;
-ModemStandard V.92
+&lt;Location /mysite&gt;<br />
+ModemStandard V.92<br />
 &lt;/Location&gt;
 </example>
 
@@ -61,8 +61,8 @@ Previously to do bandwidth rate limiting modules would have to block an entire t
 <p>Specify what modem standard you wish to simulate.</p>
 
 <example>
-&lt;Location /mysite&gt;
-ModemStandard V.92
+&lt;Location /mysite&gt;<br />
+ModemStandard V.26bis<br />
 &lt;/Location&gt;
 </example>
 
