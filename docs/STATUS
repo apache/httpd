@@ -60,7 +60,6 @@ To Do List
 
 - modules docs
     - the follwing modules added since 2.2 lack documentation
-        - mod_dialup
         - mod_ratelimit
         - mod_serf
         - mod_watchdog
