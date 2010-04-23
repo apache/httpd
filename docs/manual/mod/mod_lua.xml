@@ -136,6 +136,10 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaRoot</name>
 <description>Specify the base path for resolving relative paths for mod_lua directives</description>
 <syntax>LuaRoot /path/to/a/directory</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
 
 <usage>
     <p>Specify the base path which will be used to evaluate all
@@ -149,6 +153,10 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaScope</name>
 <description>One of once, request, conn, server -- default is once</description>
 <syntax>LuaScope once|request|conn|server [max|min max]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
 
 <usage>
     <p>Specify the lifecycle scope of the Lua interpreter which will
@@ -177,6 +185,10 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaMapHandler</name>
 <description>Map a path to a lua handler</description>
 <syntax>LuaMapHandler uri-pattern /path/to/lua/script.lua [function-name]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
 <usage>
     <p>This directive matches a uri pattern to invoke a specific
     handler function in a specific file. It uses PCRE regular
@@ -205,6 +217,10 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaPackagePath</name>
 <description>Add a directory to lua's package.path</description>
 <syntax>LuaPackagePath /path/to/include/?.lua</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
     <usage><p>Add a path to lua's module search path. Follows the same
     conventions as lua. This just munges the package.path in the 
     lua vms.</p>
@@ -220,6 +236,10 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaPackageCPath</name>
 <description>Add a directory to lua's package.cpath</description>
 <syntax>LuaPackageCPath /path/to/include/?.soa</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
 
 <usage>
     <p>Add a path to lua's shared library search path. Follows the same
@@ -233,6 +253,10 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaCodeCache</name>
 <description>Configure the compiled code cache.</description>
 <syntax>LuaCodeCache stat|forever|never</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
 
 <usage><p>
     Specify the behavior of the in-memory code cache. The default
@@ -259,6 +283,10 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaHookTranslateName</name>
 <description>Provide a hook for the translate name phase of request processing</description>
 <syntax>LuaHookTranslateName  /path/to/lua/script.lua  hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
 
 <usage><p>
     Add a hook (at APR_HOOK_MIDDLE) to the translate name phase of
@@ -297,6 +325,10 @@ handlers (or hooks, or filters) in the same script.
 <description>Provide a hook for the fixups phase of request
 processing</description>
 <syntax>LuaHookFixups  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
 <usage>
 <p>
     Just like LuaHookTranslateName, but executed at the fixups phase
@@ -308,6 +340,10 @@ processing</description>
 <name>LuaHookMapToStorage</name>
 <description>Provide a hook for the map_to_storage phase of request processing</description>
 <syntax>LuaHookMapToStorage  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
@@ -315,6 +351,10 @@ processing</description>
 <name>LuaHookCheckUserID</name>
 <description>Provide a hook for the check_user_id phase of request processing</description>
 <syntax>LuaHookCheckUserID  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
@@ -322,6 +362,10 @@ processing</description>
 <name>LuaHookTypeChecker</name>
 <description>Provide a hook for the type_checker phase of request processing</description>
 <syntax>LuaHookTypeChecker  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
@@ -329,6 +373,10 @@ processing</description>
 <name>LuaHookAuthChecker</name>
 <description>Provide a hook for the auth_checker phase of request processing</description>
 <syntax>LuaHookAuthChecker  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
@@ -336,6 +384,10 @@ processing</description>
 <name>LuaHookAccessChecker</name>
 <description>Provide a hook for the access_checker phase of request processing</description>
 <syntax>LuaHookAccessChecker  /path/to/lua/script.lua  hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
     <usage><p>...</p></usage>
 </directivesynopsis>
 
@@ -343,6 +395,10 @@ processing</description>
 <name>LuaHookInsertFilter</name>
 <description>Provide a hook for the insert_filter phase of request processing</description>
 <syntax>LuaHookInsertFilter  /path/to/lua/script.lua hook_function_name</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
     <usage><p>Not Yet Implemented</p></usage>
 </directivesynopsis>
 
@@ -350,6 +406,10 @@ processing</description>
 <name>LuaQuickHandler</name>
 <description>Provide a hook for the quick handler of request processing</description>
 <syntax></syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
 <usage><p>...</p></usage>
 </directivesynopsis>
 
