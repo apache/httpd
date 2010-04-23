@@ -124,3 +124,10 @@
 
       -XO4 -xchip=generic
 
+================
+  Ubuntu:
+
+    You will need to ensure that you have either libtool 1.5.6
+    or 2.2.6b, or later. Expat 2.0.1 and PCRE 8.02 are also
+    recommended to be installed. If building PCRE from source,
+    you'll also need g++.
