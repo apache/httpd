@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 930744:936907 (outdated) -->
+<!-- English Revision: 936907 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -472,6 +472,24 @@
         CustomLog logs/english_log common env=english<br />
         CustomLog logs/non_english_log common env=!english
       </example>
+
+	<p>Dans le contexte d'une mise en cache, il peut &ecirc;tre
+	int&eacute;ressant de conna&icirc;tre l'efficacit&eacute; du cache. Pour y parvenir,
+	on pourrait utiliser cette m&eacute;thode simple :</p>
+
+      <example>
+        SetEnv CACHE_MISS 1<br />
+        LogFormat "%h %l %u %t "%r " %>s %b %{CACHE_MISS}e" common-cache<br />
+        CustomLog logs/access_log common-cache
+      </example>
+
+      <p><module>mod_cache</module> va s'ex&eacute;cuter avant
+      <module>mod_env</module>, et si son action est couronn&eacute;e de
+      succ&egrave;s, il d&eacute;livrera le contenu sans faire appel &agrave; ce dernier. Si
+      l'URL se trouve dans le cache, la valeur journalis&eacute;e sera alors
+      <code>-</code>, tandis que dans le cas contraire elle sera
+      <code>1</code>.</p>
+
 
       <p>Bien que nous venions de montrer que la journalisation conditionnelle
       est souple et tr&egrave;s puissante, cette m&eacute;thode de contr&ocirc;le du contenu des
