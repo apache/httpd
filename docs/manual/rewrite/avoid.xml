@@ -87,7 +87,7 @@ and <code>/one/three/four.html</code>.</p>
 Redirect /one/ http://one.example.com/
 </example>
 
-<p>To redirect <code>http</code> URLs to <code>https</code>, do the
+<p id="http2https">To redirect <code>http</code> URLs to <code>https</code>, do the
 following:</p>
 
 <example>
@@ -118,7 +118,27 @@ task in a <code>.htaccess</code> file instead.</p>
 </section>
 
 <section id="alias"><title>URL Aliasing</title>
-<p>Using Alias</p>
+<p>The <directive module="mod_alias">Alias</directive> directive
+provides mapping from a URI to a directory - usually a directory outside
+of your <directive module="core">DocumentRoot</directive>. Although it
+is possible to perform this mappint with <code>mod_rewrite</code>,
+<code>Alias</code> is the preferred method, for reasons of simplicity
+and performance.</p>
+
+<example><title>Using Alias</title>
+Alias /cats /var/www/virtualhosts/felines/htdocs
+</example>
+
+<p>
+The use of <code>mod_rewrite</code> to perform this mapping may be
+appropriate when you do not have access to the server configuration
+files. Alias may only be used in server or virtualhost context, and not
+in a <code>.htaccess</code> file.
+</p>
+
+<p>Symbolic links would be another way to accomplish the same thing, if
+you have <code>Options FollowSymLinks</code> enabled on your
+server.</p>
 </section>
 
 <section id="vhosts"><title>Virtual Hosting</title>
