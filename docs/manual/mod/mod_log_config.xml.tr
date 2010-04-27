@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 917009:919647 (outdated) -->
+<!-- English Revision: 919647 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -119,7 +119,8 @@
         '2', ikinci bağlantıyı, ..., vb. gösterir;
           <directive module="core">KeepAlive</directive> kullanılmışsa
           değer anlamlıdır; aksi takdirde değer daima (ilk isteği
-          belirten) 0’dır.</td></tr>
+          belirten) 0’dır. 2.2.11 sürümünden beri kullanılabilmektedir.
+          </td></tr>
 
     <tr><td><code>%l</code></td>
         <td>Uzak kullanıcı kimliği (sağlanmışsa, identd üzerinden).
