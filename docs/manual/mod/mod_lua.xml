@@ -41,8 +41,7 @@ request processing</description>
 <p>The basic module loading directive is</p>
 
 <example>
-    LoadModule apreq_module modules/mod_apreq2.so<br />
-    LoadModule wombat_module modules/mod_wombat.so
+    LoadModule lua_module modules/mod_lua.so
 </example>
 
 <p>
@@ -143,7 +142,7 @@ handlers (or hooks, or filters) in the same script.
 
 <usage>
     <p>Specify the base path which will be used to evaluate all
-    relative paths within mod_wombat. If not specified they
+    relative paths within mod_lua. If not specified they
     will be resolved relative to the current working directory,
     which may not always work well for a server.</p>
 </usage>
