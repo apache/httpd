@@ -1,9 +1,7 @@
 -*- mode:org -*-
 * Requirements:
 ** lua 5.1 ( http://www.lua.org/ )
-** libapreq2 ( http://httpd.apache.org/apreq/download.cgi )
-   This is no longer a requirement, actually
-** Apache HTTPD 2.2 ( http://httpd.apache.org/ )
+** Apache HTTPD 2.2 ( http://httpd.apache.org/ ) or Apache HTTPD 2.3
 
 * Documentation
   See docs/README
@@ -64,7 +62,7 @@
   See NOTICE file for more information
         
 * Problems and Patches:
-  Please use dev@httpd.apache.org for discussing mod_wombat development
+  Please use dev@httpd.apache.org for discussing mod_lua development
   To subscribe send email to dev-subscribe@httpd.apache.org  
   Note that this is for development discussion, not user support :-)
    

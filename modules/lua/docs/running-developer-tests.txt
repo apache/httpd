@@ -1,6 +1,6 @@
 -*- mode:org -*-
-* Building mod_wombat
-  The first step is to build mod_wombat per the instructions in
+* Building mod_lua
+  The first step is to build mod_lua per the instructions in
   building-from-subversion.txt.
 
 * Build and install LuaSocket
