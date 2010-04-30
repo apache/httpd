@@ -1,4 +1,4 @@
-mod_wombat always looks to invoke a function for the handler, rather than
+mod_lua always looks to invoke a function for the handler, rather than
 just evaluating a script body CGI style. A handler function looks
 something like this:
 

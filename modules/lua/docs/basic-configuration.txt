@@ -1,19 +1,17 @@
 See sample_httpd.conf for examples
 
 The basic module loading directive is
-    LoadModule apreq_module modules/mod_apreq2.so
-    LoadModule wombat_module modules/mod_wombat.so
-I included the apreq_module in the example as you need it to :-)
+    LoadModule lua_module modules/mod_lua.so
 
 The handler name is "lua-script" so you can use the normal
 AddHandler directive, such as "AddHandler lua-script .lua" to
-set anything ending in .lua to use mod_wombat to evaluate
+set anything ending in .lua to use mod_lua to evaluate
 
-mod_wombat exports several additional directives:
+mod_lua exports several additional directives:
 
     LuaRoot /path/to/a/directory
         Specify the base path which will be used to evaluate all
-        relative paths within mod_wombat. If not specified they
+        relative paths within mod_lua. If not specified they
         will be resolved relative to the current working directory,
         which may not always work well for a server.
 
