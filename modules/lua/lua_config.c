@@ -58,7 +58,7 @@ AP_LUA_DECLARE(apr_status_t) ap_lua_map_handler(ap_lua_dir_cfg *cfg,
     ap_regex_t *uri_pattern;
     apr_status_t rv;
     ap_lua_mapped_handler_spec *handler =
-        apr_palloc(cfg->pool, sizeof(ap_lua_mapped_handler_spec));
+        apr_pcalloc(cfg->pool, sizeof(ap_lua_mapped_handler_spec));
     handler->uri_pattern = NULL;
     handler->function_name = NULL;
 
@@ -81,7 +81,7 @@ static int cfg_lua_map_handler(lua_State *L)
 {
     ap_lua_dir_cfg *cfg = check_dir_config(L, 1);
     ap_lua_mapped_handler_spec *handler =
-        apr_palloc(cfg->pool, sizeof(ap_lua_mapped_handler_spec));
+        apr_pcalloc(cfg->pool, sizeof(ap_lua_mapped_handler_spec));
     handler->uri_pattern = NULL;
     handler->function_name = NULL;
 
