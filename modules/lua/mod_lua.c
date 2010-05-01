@@ -129,21 +129,32 @@ static int lua_handler(request_rec *r)
         }
 
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "request details scope:%u, cache:%u", d->spec->scope,
-                      d->spec->code_cache_style);
+                      "request details scope:%u, cache:%u, filename:%s, function:%s",
+                      d->spec->scope,
+                      d->spec->code_cache_style,
+                      d->spec->file,
+                      d->function_name);
         L = ap_lua_get_lua_state(r->pool,
                               d->spec,
                               cfg->package_paths,
                               cfg->package_cpaths,
                               &lua_open_callback, NULL);
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "got a vm!");
         if (!L) {
             /* TODO annotate spec with failure reason */
             r->status = HTTP_INTERNAL_SERVER_ERROR;
             ap_rputs("Unable to compile VM, see logs", r);
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "got a vm!");
         lua_getglobal(L, d->function_name);
+        if (!lua_isfunction(L, -1)) {
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                          "lua: Unable to find function %s in %s",
+                          d->function_name,
+                          d->spec->file);
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
         ap_lua_run_lua_request(L, r);
         if (lua_pcall(L, 1, 0, 0)) {
             report_lua_error(L, r);
