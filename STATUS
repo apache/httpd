@@ -147,6 +147,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     wrowe: Added both of rpluem's proposed patched, 926614 and 926619
     +1: drh
 
+  * Update apxs for perl 5.12
+    Trunk patch: http://svn.apache.org/viewvc?rev=932791&view=rev
+    2.2.x patch: trunk patch works
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
