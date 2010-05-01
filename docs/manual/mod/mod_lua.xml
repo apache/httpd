@@ -29,7 +29,7 @@ request processing</description>
 <status>experimental</status>
 <sourcefile>mod_lua.c</sourcefile>
 <identifier>lua_module</identifier>
-<compatibility>2.4 and later</compatibility>
+<compatibility>2.3 and later</compatibility>
 
 <summary>
 <p>Someone needs to write this.</p>
@@ -53,8 +53,9 @@ AddHandler lua-script .lua
 </example>
 
 <p>
-This will cause any <code>.lua</code> file to be evaluated by
-<code>mod_lua</code>.
+This will cause <code>mod_lua</code> to handle requests for files
+ending in <code>.lua</code> by invoking that file's
+<code>handle</code> function.
 </p>
 </section>
 
@@ -106,10 +107,152 @@ handlers (or hooks, or filters) in the same script.
         which lets you do useful things with it. For the most part it
         has the same fields as the request_rec struct (see httpd.h 
         until we get better docs here) many of which are writeable as
-        well as readable, and has (at least) the following methods:</p>
+        well as readable.  (Tables' content can be changed, but the
+        field itself cannot be set to a different table.)</p>
+
+        <table border="1">
+
+        <tr>
+          <th><strong>Name</strong></th>
+          <th><strong>Lua type</strong></th>
+          <th><strong>Writable</strong></th>
+        </tr>
+        <tr>
+          <td><code>ap_auth_type</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>args</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>assbackwards</code></td>
+          <td>boolean</td>
+          <td>no</td>
+        </tr>
+
+        <tr>
+          <td><code>canonical_filename</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>content_encoding</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>content_type</code></td>
+          <td>string</td>
+          <td>yes</td>
+        </tr>
+
+        <tr>
+          <td><code>document_root</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>err_headers_out</code></td>
+          <td>table</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>filename</code></td>
+          <td>string</td>
+          <td>yes</td>
+        </tr>
+        <tr>
+          <td><code>headers_in</code></td>
+          <td>table</td>
+          <td>yes</td>
+        </tr>
+        <tr>
+          <td><code>headers_out</code></td>
+          <td>table</td>
+          <td>yes</td>
+        </tr>
+        <tr>
+          <td><code>hostname</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>method</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>notes</code></td>
+          <td>table</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>path_info</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>protocol</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>range</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>status</code></td>
+          <td>number</td>
+          <td>yes</td>
+        </tr>
+        <tr>
+          <td><code>the_request</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>unparsed_uri</code></td>
+          <td>string</td>
+          <td>no</td>
+        </tr>
+        <tr>
+          <td><code>uri</code></td>
+          <td>string</td>
+          <td>yes</td>
+        </tr>
+        <tr>
+          <td><code>user</code></td>
+          <td>string</td>
+          <td>yes</td>
+        </tr>
+        </table>
+
+        <p>The request_rec has (at least) the following methods:</p>
+
+        <example>
+        r:addoutputfilter(name|function) -- add an output filter
+        </example>
        
         <example>
+        r:parseargs() -- returns a lua table containing the request's
+                         query string arguments
+        </example>
+
+        <example>
+        r:parsebody() -- parse the request body as a POST and return
+                         a lua table
+        </example>
+
+        <example>
         r:puts("hello", " world", "!") -- print to response body
+        </example>
+
+        <example>
+        r:write("a single string") -- print to response body
         </example>
         </dd>
     </dl>
@@ -129,6 +272,24 @@ handlers (or hooks, or filters) in the same script.
         r:emerg("This is an emerg log message")<br />
 </example>
 
+</section>
+
+<section id="apache2"><title>apache2 Module</title>
+<p>A module named <code>apache2</code> is available with (at least) the following contents.</p>
+<dl>
+  <dt>apache2.OK</dt>
+  <dd>internal constant OK.  Handlers should return this if they've
+  handled the request.</dd>
+  <dt>apache2.DECLINED</dt>
+  <dd>internal constant DECLINED.  Handlers should return this if
+  they are not going to handle the request.</dd>
+  <dt>apache2.DONE</dt>
+  <dd>internal constant DONE.</dd>
+  <dt>apache2.version</dt>
+  <dd>Apache HTTP server version string</dd>
+  <dt>apache2.HTTP_MOVED_TEMPORARILY</dt>
+  <dd>HTTP status code</dd>
+</dl>
 </section>
 
 <directivesynopsis>
@@ -152,6 +313,7 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaScope</name>
 <description>One of once, request, conn, server -- default is once</description>
 <syntax>LuaScope once|request|conn|server [max|min max]</syntax>
+<default>LuaScope once</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -252,6 +414,7 @@ handlers (or hooks, or filters) in the same script.
 <name>LuaCodeCache</name>
 <description>Configure the compiled code cache.</description>
 <syntax>LuaCodeCache stat|forever|never</syntax>
+<default>LuaCodeCache stat</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
