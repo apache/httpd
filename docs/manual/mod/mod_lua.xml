@@ -32,7 +32,9 @@ request processing</description>
 <compatibility>2.3 and later</compatibility>
 
 <summary>
-<p>Someone needs to write this.</p>
+<p>Someone needs to write this.
+Include a link to <a href="http://www.lua.org/">the Lua website</a>.
+</p>
 
 </summary>
 
@@ -57,6 +59,10 @@ This will cause <code>mod_lua</code> to handle requests for files
 ending in <code>.lua</code> by invoking that file's
 <code>handle</code> function.
 </p>
+
+<p>For more flexibility, see <directive>LuaMapHandler</directive>.
+</p>
+
 </section>
 
 <section id="writinghandlers"><title>Writing Handlers</title>
@@ -66,24 +72,26 @@ just evaluating a script body CGI style. A handler function looks
 something like this:</p>
 
 <example><title>example.lua</title><pre>
-    require "string"
+-- example handler
 
-    function handle_something(r)
-        r.content_type = "text/plain"
-        r:puts("Hello Lua World!\n")
-    
-        if r.method == 'GET' then
-            for k, v in pairs( r:parseargs() ) do
-                r:puts( string.format("%s: %s", k, v) )
-            end
-        elseif r.method == 'POST' then
-            for k, v in pairs( r:parsebody() ) do
-                r:puts( string.format("%s: %s", k, v) )
-            end
-        else
-            r:puts("unknown HTTP method " .. r.method)
-        end 
-    end
+require "string"
+
+function handle_something(r)
+    r.content_type = "text/plain"
+    r:puts("Hello Lua World!\n")
+
+    if r.method == 'GET' then
+        for k, v in pairs( r:parseargs() ) do
+            r:puts( string.format("%s: %s", k, v) )
+        end
+    elseif r.method == 'POST' then
+        for k, v in pairs( r:parsebody() ) do
+            r:puts( string.format("%s: %s", k, v) )
+        end
+    else
+        r:puts("unknown HTTP method " .. r.method)
+    end 
+end
 </pre></example>
 
 <p>
@@ -98,6 +106,29 @@ handlers (or hooks, or filters) in the same script.
 
 </section>
 
+<section id="writinghooks"><title>Writing Hooks</title>
+
+<p>Hook functions are passed the request object as their only argument.
+They can return any value, depending on the hook, but most commonly
+they'll return OK, DONE, or DECLINED, which you can write in lua as
+<code>apache2.OK</code>, <code>apache2.DONE</code>, or
+<code>apache2.DECLINED</code>, or else an HTTP status code.</p>
+
+<example><title>translate_name.lua</title><pre>
+-- example hook
+
+require 'apache2'
+
+function translate_name(r)
+    if r.uri == "/translate-name" then
+        r.uri = "/find_me.txt"
+        return apache2.DECLINED
+    end
+    return apache2.DECLINED
+end
+</pre></example>
+</section>
+
 <section id="datastructures"><title>Data Structures</title>
 
 <dl>
@@ -107,8 +138,8 @@ handlers (or hooks, or filters) in the same script.
         which lets you do useful things with it. For the most part it
         has the same fields as the request_rec struct (see httpd.h 
         until we get better docs here) many of which are writeable as
-        well as readable.  (Tables' content can be changed, but the
-        field itself cannot be set to a different table.)</p>
+        well as readable.  (The table fields' content can be changed, but the
+        fields themselves cannot be set to different tables.)</p>
 
         <table border="1">
 
@@ -187,7 +218,7 @@ handlers (or hooks, or filters) in the same script.
         <tr>
           <td><code>notes</code></td>
           <td>table</td>
-          <td>no</td>
+          <td>yes</td>
         </tr>
         <tr>
           <td><code>path_info</code></td>
@@ -262,6 +293,7 @@ handlers (or hooks, or filters) in the same script.
 <section id="logging"><title>Logging Functions</title>
 
 <example>
+        -- examples of logging messages<br />
         r:debug("This is a debug log message")<br />
         r:info("This is an info log message")<br />
         r:notice("This is an notice log message")<br />
@@ -274,8 +306,8 @@ handlers (or hooks, or filters) in the same script.
 
 </section>
 
-<section id="apache2"><title>apache2 Module</title>
-<p>A module named <code>apache2</code> is available with (at least) the following contents.</p>
+<section id="apache2"><title>apache2 Package</title>
+<p>A package named <code>apache2</code> is available with (at least) the following contents.</p>
 <dl>
   <dt>apache2.OK</dt>
   <dd>internal constant OK.  Handlers should return this if they've
@@ -290,6 +322,7 @@ handlers (or hooks, or filters) in the same script.
   <dt>apache2.HTTP_MOVED_TEMPORARILY</dt>
   <dd>HTTP status code</dd>
 </dl>
+<p>(Other HTTP status codes are not yet implemented.)</p>
 </section>
 
 <directivesynopsis>
@@ -429,7 +462,7 @@ handlers (or hooks, or filters) in the same script.
     cached forever (don't stat and replace) or to never cache the 
     file.</p>
     
-    <p>In general stat or forever is good production and stat or never
+    <p>In general stat or forever is good for production, and stat or never
     for deveopment.</p>
     
     <example><title>Examples:</title>
@@ -466,19 +499,21 @@ handlers (or hooks, or filters) in the same script.
 
     <p>Example:</p>
 
-    <example>
-        LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper<br />
-<br />
-        -- /scripts/conf/hooks.lua --<br />
-        function silly_mapper(r)<br />
-            if r.uri == "/" then<br />
-                r.file = "/var/www/home.lua"<br />
-                return apache2.OK<br />
-            else<br />
-                return apache2.DECLINED<br />
-            end<br />
-        end<br />
-</example>
+<example><pre>
+# httpd.conf
+LuaHookTranslateName /scripts/conf/hooks.lua silly_mapper
+
+-- /scripts/conf/hooks.lua --
+require "apache2"
+function silly_mapper(r)
+    if r.uri == "/" then
+        r.file = "/var/www/home.lua"
+        return apache2.OK
+    else
+        return apache2.DECLINED
+    end
+end
+</pre></example>
 </usage>
 </directivesynopsis>
 
@@ -550,7 +585,10 @@ processing</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-    <usage><p>...</p></usage>
+<usage>
+<p>Add your hook to the access_checker phase.  An access checker
+hook function usually returns OK, DECLINED, or HTTP_FORBIDDEN.</p>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
