@@ -574,7 +574,44 @@ processing</description>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>All</override>
-    <usage><p>...</p></usage>
+<usage>
+<p>Invoke a lua function in the auth_checker phase of processing
+a request.  This can be used to implement arbitrary authentication
+and authorization checking.  A very simple example:
+</p>
+<example><pre>
+require 'apache2'
+
+-- fake authcheck hook
+-- If request has no auth info, set the response header and
+-- return a 401 to ask the browser for basic auth info.
+-- If request has auth info, don't actually look at it, just
+-- pretend we got userid 'foo' and validated it.
+-- Then check if the userid is 'foo' and accept the request.
+function authcheck_hook(r)
+
+   -- look for auth info
+   auth = r.headers_in['Authorization']
+   if auth ~= nil then
+     -- fake the user
+     r.user = 'foo'
+   end
+
+   if r.user == nil then
+      r:debug("authcheck: user is nil, returning 401")
+      r.err_headers_out['WWW-Authenticate'] = 'Basic realm="WallyWorld"'
+      return 401
+   elseif r.user == "foo" then
+      r:debug('user foo: OK')
+   else
+      r:debug("authcheck: user='" .. r.user .. "'")
+      r.err_headers_out['WWW-Authenticate'] = 'Basic realm="WallyWorld"'
+      return 401
+   end
+   return apache2.OK
+end
+</pre></example>
+</usage>
 </directivesynopsis>
 
 <directivesynopsis>
