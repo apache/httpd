@@ -28,6 +28,9 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) ab: fix number of requests sent by ab when keepalive is enabled.  PR 48497.
+     [Bryn Dole <dole blekko.com>]
+
   *) Log an error for failures to read a chunk-size, and return 408 instead of
      413 when this is due to a read timeout.  This change also fixes some cases 
      of two error documents being sent in the response for the same scenario. 
