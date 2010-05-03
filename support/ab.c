@@ -671,6 +671,10 @@ static void ssl_proceed_handshake(struct connection *c)
 
 static void write_request(struct connection * c)
 {
+    if (started >= requests) {
+        return;
+    }
+
     do {
         apr_time_t tnow;
         apr_size_t l = c->rwrite;
@@ -724,6 +728,7 @@ static void write_request(struct connection * c)
     } while (c->rwrite);
 
     c->endwrite = lasttime = apr_time_now();
+    started++;
     set_conn_state(c, STATE_READ);
 }
 
@@ -1267,7 +1272,6 @@ static void start_connect(struct connection * c)
 
     /* connected first time */
     set_conn_state(c, STATE_CONNECTED);
-    started++;
 #ifdef USE_SSL
     if (c->ssl) {
         ssl_proceed_handshake(c);
@@ -1798,7 +1802,6 @@ static void test(void)
                     }
                     else {
                         set_conn_state(c, STATE_CONNECTED);
-                        started++;
 #ifdef USE_SSL
                         if (c->ssl)
                             ssl_proceed_handshake(c);
