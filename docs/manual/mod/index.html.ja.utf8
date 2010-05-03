@@ -107,6 +107,7 @@ address)</dd>
 <dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> 用の汎用ロックモジュール</dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>クライアントへ送られる前にコンテンツを圧縮する</dd>
+<dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>「最後のスラッシュ」のリダイレクトと、ディレクトリの
 インデックスファイルを扱う機能を提供する</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>URI をキーにしたコンテンツキャッシュストレージ管理</dd>
@@ -138,7 +139,8 @@ by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>サーバへのリクエストのロギング</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>サーバに送られたリクエストの forensic ロギング</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>リクエスト毎に入力バイト数と出力バイト数とをロギング</dd>
-<dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks to do cool stuff</dd>
+<dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks into various portions of the httpd
+request processing</dd>
 <dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</dd>
@@ -164,7 +166,8 @@ under different user IDs.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_reflector.html" id="R" name="R">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
+<dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
+<dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
 <dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the apparent client remote IP address and hostname 
 for the request with the IP address list presented by a proxies or a load 
 balancer via the request headers.

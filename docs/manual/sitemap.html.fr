@@ -212,6 +212,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_dav_lock.html">Module Apache mod_dav_lock</a></li>
 <li><a href="mod/mod_dbd.html">Module Apache mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">Module Apache mod_deflate</a></li>
+<li><a href="mod/mod_dialup.html">Module Apache mod_dialup</a></li>
 <li><a href="mod/mod_dir.html">Module Apache mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Module Apache mod_disk_cache</a></li>
 <li><a href="mod/mod_dumpio.html">Module Apache mod_dumpio</a></li>
@@ -253,6 +254,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Module Apache mod_proxy_ftp</a></li>
 <li><a href="mod/mod_proxy_http.html">Module Apache mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Module Apache mod_proxy_scgi</a></li>
+<li><a href="mod/mod_ratelimit.html">Module Apache mod_ratelimit</a></li>
 <li><a href="mod/mod_reflector.html">Module Apache mod_reflector</a></li>
 <li><a href="mod/mod_remoteip.html">Module Apache mod_remoteip</a></li>
 <li><a href="mod/mod_reqtimeout.html">Module Apache mod_reqtimeout</a></li>

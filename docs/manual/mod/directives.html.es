@@ -302,8 +302,8 @@
 <li><a href="mod_lua.html#luacodecache">LuaCodeCache</a></li>
 <li><a href="mod_lua.html#luahookaccesschecker">LuaHookAccessChecker</a></li>
 <li><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></li>
-<li><a href="mod_lua.html#luahookauthchecker">LuaHookAuthChecker</a></li>
 <li><a href="mod_lua.html#luahookcheckuserid">LuaHookCheckUserID</a></li>
+<li><a href="mod_lua.html#luahookfixups">LuaHookFixups</a></li>
 <li><a href="mod_lua.html#luahookinsertfilter">LuaHookInsertFilter</a></li>
 <li><a href="mod_lua.html#luahookmaptostorage">LuaHookMapToStorage</a></li>
 <li><a href="mod_lua.html#luahooktranslatename">LuaHookTranslateName</a></li>
@@ -311,6 +311,7 @@
 <li><a href="mod_lua.html#luamaphandler">LuaMapHandler</a></li>
 <li><a href="mod_lua.html#luapackagecpath">LuaPackageCPath</a></li>
 <li><a href="mod_lua.html#luapackagepath">LuaPackagePath</a></li>
+<li><a href="mod_lua.html#luaquickhandler">LuaQuickHandler</a></li>
 <li><a href="mod_lua.html#luaroot">LuaRoot</a></li>
 <li><a href="mod_lua.html#luascope">LuaScope</a></li>
 <li><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients</a></li>
@@ -327,6 +328,7 @@
 <li><a href="prefork.html#minspareservers">MinSpareServers</a></li>
 <li><a href="mpm_common.html#minsparethreads">MinSpareThreads</a></li>
 <li><a href="mod_file_cache.html#mmapfile">MMapFile</a></li>
+<li><a href="mod_dialup.html#modemstandard">ModemStandard</a></li>
 <li><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo</a></li>
 <li><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch</a></li>
 <li><a href="core.html#mutex">Mutex</a></li>
