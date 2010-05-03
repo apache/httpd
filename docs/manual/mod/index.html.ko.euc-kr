@@ -103,6 +103,7 @@ address)</dd>
 <dt><a href="mod_dav_lock.html">mod_dav_lock</a></dt><dd>generic locking module for <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>내용을 클라이언트로 보내기 전에 압축한다</dd>
+<dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>"마지막 슬래쉬" 리다이렉션을 제공하고 디렉토리
 index 파일을 서비스한다</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
@@ -134,7 +135,8 @@ by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>서버로의 요청을 로그에 기록한다</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>요청당 입출력 바이트수를 기록</dd>
-<dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks to do cool stuff</dd>
+<dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks into various portions of the httpd
+request processing</dd>
 <dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
@@ -160,7 +162,8 @@ under different user IDs.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_reflector.html" id="R" name="R">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
+<dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
+<dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
 <dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the apparent client remote IP address and hostname 
 for the request with the IP address list presented by a proxies or a load 
 balancer via the request headers.

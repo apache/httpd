@@ -196,6 +196,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_dav_lock.html">Apache Modülü mod_dav_lock</a></li>
 <li><a href="mod/mod_dbd.html">Apache Modülü mod_dbd</a></li>
 <li><a href="mod/mod_deflate.html">Apache Modülü mod_deflate</a></li>
+<li><a href="mod/mod_dialup.html">Apache Modülü mod_dialup</a></li>
 <li><a href="mod/mod_dir.html">Apache Modülü mod_dir</a></li>
 <li><a href="mod/mod_disk_cache.html">Apache Modülü mod_disk_cache</a></li>
 <li><a href="mod/mod_dumpio.html">Apache Modülü mod_dumpio</a></li>
@@ -237,6 +238,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_proxy_ftp.html">Apache Modülü mod_proxy_ftp</a></li>
 <li><a href="mod/mod_proxy_http.html">Apache Modülü mod_proxy_http</a></li>
 <li><a href="mod/mod_proxy_scgi.html">Apache Modülü mod_proxy_scgi</a></li>
+<li><a href="mod/mod_ratelimit.html">Apache Modülü mod_ratelimit</a></li>
 <li><a href="mod/mod_reflector.html">Apache Modülü mod_reflector</a></li>
 <li><a href="mod/mod_remoteip.html">Apache Modülü mod_remoteip</a></li>
 <li><a href="mod/mod_reqtimeout.html">Apache Modülü mod_reqtimeout</a></li>

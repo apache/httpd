@@ -114,6 +114,7 @@ address)</dd>
 <dt><a href="mod_dbd.html">mod_dbd</a></dt><dd>Manages SQL database connections</dd>
 <dt><a href="mod_deflate.html">mod_deflate</a></dt><dd>Compress content before it is delivered to the
 client</dd>
+<dt><a href="mod_dialup.html">mod_dialup</a></dt><dd>Send static content at a bandwidth rate limit, defined by the various old modem standards</dd>
 <dt><a href="mod_dir.html">mod_dir</a></dt><dd>Provides for "trailing slash" redirects and
     serving directory index files</dd>
 <dt><a href="mod_disk_cache.html">mod_disk_cache</a></dt><dd>Content cache storage manager keyed to URIs</dd>
@@ -149,7 +150,8 @@ by other LDAP modules</dd>
 <dt><a href="mod_log_config.html">mod_log_config</a></dt><dd>Logging of the requests made to the server</dd>
 <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt><dd>Forensic Logging of the requests made to the server</dd>
 <dt><a href="mod_logio.html">mod_logio</a></dt><dd>Logging of input and output bytes per request</dd>
-<dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks to do cool stuff</dd>
+<dt><a href="mod_lua.html">mod_lua</a></dt><dd>Provides Lua hooks into various portions of the httpd
+request processing</dd>
 <dt><a href="mod_mime.html" id="M" name="M">mod_mime</a></dt><dd>Associates the requested filename's extensions
     with the file's behavior (handlers and filters)
     and content (mime-type, language, character set and
@@ -175,7 +177,8 @@ under different user IDs.</dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_scgi.html">mod_proxy_scgi</a></dt><dd>SCGI gateway module for <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_reflector.html" id="R" name="R">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
+<dt><a href="mod_ratelimit.html" id="R" name="R">mod_ratelimit</a></dt><dd>Bandwidth Rate Limiting for Clients</dd>
+<dt><a href="mod_reflector.html">mod_reflector</a></dt><dd>Reflect a request body as a response via the output filter stack.</dd>
 <dt><a href="mod_remoteip.html">mod_remoteip</a></dt><dd>Replaces the apparent client remote IP address and hostname 
 for the request with the IP address list presented by a proxies or a load 
 balancer via the request headers.

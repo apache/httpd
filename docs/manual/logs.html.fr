@@ -452,6 +452,24 @@
         CustomLog logs/non_english_log common env=!english
       </code></p></div>
 
+	<p>Dans le contexte d'une mise en cache, il peut être
+	intéressant de connaître l'efficacité du cache. Pour y parvenir,
+	on pourrait utiliser cette méthode simple :</p>
+
+      <div class="example"><p><code>
+        SetEnv CACHE_MISS 1<br />
+        LogFormat "%h %l %u %t "%r " %&gt;s %b %{CACHE_MISS}e" common-cache<br />
+        CustomLog logs/access_log common-cache
+      </code></p></div>
+
+      <p><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> va s'exécuter avant
+      <code class="module"><a href="./mod/mod_env.html">mod_env</a></code>, et si son action est couronnée de
+      succès, il délivrera le contenu sans faire appel à ce dernier. Si
+      l'URL se trouve dans le cache, la valeur journalisée sera alors
+      <code>-</code>, tandis que dans le cas contraire elle sera
+      <code>1</code>.</p>
+
+
       <p>Bien que nous venions de montrer que la journalisation conditionnelle
       est souple et très puissante, cette méthode de contrôle du contenu des
       journaux n'est pas la seule. Les fichiers journaux sont plus utiles
