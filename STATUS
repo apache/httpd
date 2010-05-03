@@ -184,9 +184,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     chrisd: Has this been fixed by the changes for PR 38737?
 
-  * --enable-mods-shared="foo1 foo2" is busted on Darwin.  Pier
-    posted a patch (Message-ID: <B8DBBE8D.575A%pier@betaversion.org>).
-
   * We do not properly substitute the prefix-variables in the configuration
     scripts or generated-configs.  (i.e. if sysconfdir is etc,
     httpd-std.conf points to conf.)
