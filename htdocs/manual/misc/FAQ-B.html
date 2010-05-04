@@ -74,12 +74,6 @@
           <li><a href="#what2do">"Why can't I ...? Why won't ...
           work?" What to do in case of problems</a></li>
 
-          <li><a href="#compatible">How compatible is Apache with
-          my existing NCSA 1.3 setup?</a></li>
-
-          <li><a href="#year2000">Is Apache Year 2000
-          compliant?</a></li>
-
           <li><a href="#submit_patch">How do I submit a patch to
           the Apache Group?</a></li>
 
@@ -214,92 +208,6 @@
             <code>gdb</code> instead of <code>dbx</code>.)</p>
           </li>
         </ol>
-        <hr />
-      </li>
-
-      <li>
-        <a id="compatible" name="compatible"><strong>How compatible
-        is Apache with my existing NCSA 1.3 setup?</strong></a> 
-
-        <p>Apache attempts to offer all the features and
-        configuration options of NCSA httpd 1.3, as well as many of
-        the additional features found in NCSA httpd 1.4 and NCSA
-        httpd 1.5.</p>
-
-        <p>NCSA httpd appears to be moving toward adding
-        experimental features which are not generally required at
-        the moment. Some of the experiments will succeed while
-        others will inevitably be dropped. The Apache philosophy is
-        to add what's needed as and when it is needed.</p>
-
-        <p>Friendly interaction between Apache and NCSA developers
-        should ensure that fundamental feature enhancements stay
-        consistent between the two servers for the foreseeable
-        future.</p>
-        <hr />
-      </li>
-
-      <li>
-        <a id="year2000" name="year2000"><strong>Is Apache Year
-        2000 compliant?</strong></a> 
-
-        <p>Yes, Apache is Year 2000 compliant.</p>
-
-        <p>Apache internally never stores years as two digits. On
-        the HTTP protocol level RFC1123-style addresses are
-        generated which is the only format a HTTP/1.1-compliant
-        server should generate. To be compatible with older
-        applications Apache recognizes ANSI C's
-        <code>asctime()</code> and RFC850-/RFC1036-style date
-        formats, too. The <code>asctime()</code> format uses
-        four-digit years, but the RFC850 and RFC1036 date formats
-        only define a two-digit year. If Apache sees such a date
-        with a value less than 70 it assumes that the century is
-        <samp>20</samp> rather than <samp>19</samp>.</p>
-
-        <p>Although Apache is Year 2000 compliant, you may still
-        get problems if the underlying OS has problems with dates
-        past year 2000 (<em>e.g.</em>, OS calls which accept or
-        return year numbers). Most (UNIX) systems store dates
-        internally as signed 32-bit integers which contain the
-        number of seconds since 1<sup>st</sup> January 1970, so the
-        magic boundary to worry about is the year 2038 and not
-        2000. But modern operating systems shouldn't cause any
-        trouble at all.</p>
-
-        <p>Users of Apache 1.2.x should upgrade to a current
-        version of Apache 1.3 (see <a
-        href="../new_features_1_3.html#misc">year-2000 improvements
-        in Apache 1.3</a> for details).</p>
-
-        <p>The Apache HTTP Server project is an open-source
-        software product of the Apache Software Foundation. The
-        project and the Foundation <b>cannot</b> offer legal
-        assurances regarding any suitability of the software for
-        your application. There are several commercial Apache
-        support organizations and derivative server products
-        available that may be able to stand behind the software and
-        provide you with any assurances you may require. You may
-        find links to some of these vendors at <samp>&lt;<a
-        href="http://www.apache.org/info/support.cgi">http://www.apache.org/info/support.cgi</a>&gt;</samp>.</p>
-
-        <p>The Apache HTTP server software is distributed with the
-        following disclaimer, found in the software license:</p>
-<pre>
-   THIS SOFTWARE IS PROVIDED BY THE APACHE GROUP ``AS IS'' AND ANY
-   EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-   PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE APACHE GROUP OR
-   ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-   NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-   HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-   STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-   OF THE POSSIBILITY OF SUCH DAMAGE.
- 
-</pre>
         <hr />
       </li>
 
