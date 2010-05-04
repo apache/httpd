@@ -47,8 +47,8 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
         return TRUE;
     }
 
-    if ((rv = ap_global_mutex_create(&mc->pMutex, SSL_CACHE_MUTEX_TYPE, NULL,
-                                     s, s->process->pool, 0))
+    if ((rv = ap_global_mutex_create(&mc->pMutex, NULL, SSL_CACHE_MUTEX_TYPE,
+                                     NULL, s, s->process->pool, 0))
             != APR_SUCCESS) {
         return FALSE;
     }

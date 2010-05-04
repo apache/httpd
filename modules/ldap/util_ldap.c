@@ -2734,7 +2734,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             return DONE;
         }
 
-        result = ap_global_mutex_create(&st->util_ldap_cache_lock,
+        result = ap_global_mutex_create(&st->util_ldap_cache_lock, NULL,
                                         ldap_cache_mutex_type, NULL, s, p, 0);
         if (result != APR_SUCCESS) {
             return result;

@@ -528,7 +528,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
                      * Create mutexes for singleton watchdogs
                      */
                     if (w->singleton) {
-                        rv = ap_proc_mutex_create(&w->mutex, wd_proc_mutex_type,
+                        rv = ap_proc_mutex_create(&w->mutex, NULL, wd_proc_mutex_type,
                                                   w->name, s,
                                                   wd_server_conf->pool, 0);
                         if (rv != APR_SUCCESS) {

@@ -186,8 +186,8 @@ static int exipc_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     /* Create global mutex */
 
-    rs = ap_global_mutex_create(&exipc_mutex, exipc_mutex_type, NULL, s, pconf,
-                                0);
+    rs = ap_global_mutex_create(&exipc_mutex, NULL, exipc_mutex_type, NULL,
+                                s, pconf, 0);
     if (APR_SUCCESS != rs) {
         return HTTP_INTERNAL_SERVER_ERROR;
     }
