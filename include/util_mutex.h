@@ -167,20 +167,23 @@ AP_DECLARE(apr_status_t) ap_mutex_register(apr_pool_t *pconf,
  * stored.  If this mutex is disabled, mutex will be set to NULL on
  * output.  (That is allowed only if the AP_MUTEX_ALLOW_NONE flag is
  * passed to ap_mutex_register().)
+ * @param name The generated filename of the created mutex, or NULL if 
+ * no file was created.  Pass NULL if this result is not needed.
  * @param type The type name of the mutex, matching the type name passed
  * to ap_mutex_register().
  * @param instance_id A unique string to be used in the lock filename IFF
  * this mutex type is multi-instance, NULL otherwise.
- * @param s server_rec of main server
- * @param pconf pool
+ * @param server server_rec of main server
+ * @param pool pool lifetime of the mutex
  * @param options combination of AP_MUTEX_* constants, or 0 for defaults
  * (currently none are defined for this function)
  */
 AP_DECLARE(apr_status_t) ap_global_mutex_create(apr_global_mutex_t **mutex,
+                                                const char **name,
                                                 const char *type,
                                                 const char *instance_id,
-                                                server_rec *s,
-                                                apr_pool_t *pconf,
+                                                server_rec *server,
+                                                apr_pool_t *pool,
                                                 apr_int32_t options);
 
 /**
@@ -191,19 +194,23 @@ AP_DECLARE(apr_status_t) ap_global_mutex_create(apr_global_mutex_t **mutex,
  * stored.  If this mutex is disabled, mutex will be set to NULL on
  * output.  (That is allowed only if the AP_MUTEX_ALLOW_NONE flag is
  * passed to ap_mutex_register().)
+ * @param name The generated filename of the created mutex, or NULL if 
+ * no file was created.  Pass NULL if this result is not needed.
  * @param type The type name of the mutex, matching the type name passed
  * to ap_mutex_register().
  * @param instance_id A unique string to be used in the lock filename IFF
  * this mutex type is multi-instance, NULL otherwise.
- * @param s server_rec of main server
- * @param pconf pool
+ * @param server server_rec of main server
+ * @param pool pool lifetime of the mutex
  * @param options combination of AP_MUTEX_* constants, or 0 for defaults
  * (currently none are defined for this function)
  */
 AP_DECLARE(apr_status_t) ap_proc_mutex_create(apr_proc_mutex_t **mutex,
+                                              const char **name,
                                               const char *type,
                                               const char *instance_id,
-                                              server_rec *s, apr_pool_t *p,
+                                              server_rec *server,
+                                              apr_pool_t *pool,
                                               apr_int32_t options);
 
 #ifdef __cplusplus

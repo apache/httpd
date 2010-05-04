@@ -406,6 +406,7 @@ static void log_perms_failure(apr_status_t rv, server_rec *s, const char *type)
 }
 
 AP_DECLARE(apr_status_t) ap_global_mutex_create(apr_global_mutex_t **mutex,
+                                                const char **name,
                                                 const char *type,
                                                 const char *instance_id,
                                                 server_rec *s, apr_pool_t *p,
@@ -438,18 +439,21 @@ AP_DECLARE(apr_status_t) ap_global_mutex_create(apr_global_mutex_t **mutex,
         return rv;
     }
 
+    if (name)
+        *name = fname;
+
 #ifdef AP_NEED_SET_MUTEX_PERMS
     rv = ap_unixd_set_global_mutex_perms(*mutex);
     if (rv != APR_SUCCESS) {
         log_perms_failure(rv, s, type);
-        return rv;
     }
 #endif
 
-    return APR_SUCCESS;
+    return rv;
 }
 
 AP_DECLARE(apr_status_t) ap_proc_mutex_create(apr_proc_mutex_t **mutex,
+                                              const char **name,
                                               const char *type,
                                               const char *instance_id,
                                               server_rec *s, apr_pool_t *p,
@@ -482,13 +486,15 @@ AP_DECLARE(apr_status_t) ap_proc_mutex_create(apr_proc_mutex_t **mutex,
         return rv;
     }
 
+    if (name)
+        *name = fname;
+
 #ifdef AP_NEED_SET_MUTEX_PERMS
     rv = ap_unixd_set_proc_mutex_perms(*mutex);
     if (rv != APR_SUCCESS) {
         log_perms_failure(rv, s, type);
-        return rv;
     }
 #endif
 
-    return APR_SUCCESS;
+    return rv;
 }
