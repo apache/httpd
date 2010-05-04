@@ -341,8 +341,8 @@
           another box and moved to such a machine with broken sendfile support.</p>
         </li>
         <li>
-          <p>With an NFS-mounted files, the kernel may be unable
-          to reliably serve the network file through it's own cache.</p>
+          <p>With an NFS-mounted filesystem, the kernel may be unable
+          to reliably serve the network file through its own cache.</p>
         </li>
       </ul>
 
