@@ -219,14 +219,15 @@
  * 20100208.2 (2.3.7-dev)  Added ap_log_command_line().
  * 20100223.0 (2.3.7-dev)  LDAP client_certs per-server moved to per-dir
  * 20100223.1 (2.3.7-dev)  Added ap_process_fnmatch_configs().
+ * 20100504.0 (2.3.7-dev)  Added name arg to ap_{proc,global}_mutex_create().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100223
+#define MODULE_MAGIC_NUMBER_MAJOR 20100504
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
