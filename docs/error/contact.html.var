@@ -77,7 +77,7 @@ de <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">webmaster</a
 Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
-Jeśli myślisz, że jest to błąd tego serwera, skontaktuj się z
+Je&#347;li my&#347;lisz, &#380;e jest to b&#322;&#261;d tego serwera, skontaktuj si&#281; z
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">administratorem</a>.
 ----------pl--
 

@@ -283,24 +283,24 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Błąd serwera!"
+--><!--#set var="TITLE" value="B&#322;&#261;d serwera!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->
 
-    Serwer napotkał błąd wewnętrzny i nie jest w stanie
-    zrealizować twojego żądania.
+    Serwer napotka&#322; b&#322;&#261;d wewn&#281;trzny i nie jest w stanie
+    zrealizowa&#263; twojego &#380;&#261;dania.
 
     <!--#include virtual="include/spacer.html" -->
 
-    Informacja o błędzie:
+    Informacja o b&#322;&#281;dzie:
     <br /><!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
 
   <!--#else -->
 
-    Serwer napotkał błąd wewnętrzny i nie jest w stanie
-    zrealizować twojego żądania. Serwer jest przeciążony lub
-    napotkał na błąd w skrypcie CGI.
+    Serwer napotka&#322; b&#322;&#261;d wewn&#281;trzny i nie jest w stanie
+    zrealizowa&#263; twojego &#380;&#261;dania. Serwer jest przeci&#261;&#380;ony lub
+    napotka&#322; na b&#322;&#261;d w skrypcie CGI.
 
   <!--#endif -->
 

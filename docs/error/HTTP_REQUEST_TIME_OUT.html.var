@@ -134,11 +134,11 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Przedawnione żądanie!"
+--><!--#set var="TITLE" value="Przedawnione &#380;&#261;danie!"
 --><!--#include virtual="include/top.html" -->
 
-    Serwer zamknął połączenie sieciowe ponieważ przeglądarka
-    nie zakończyła operacji w przewidywanym czasie.
+    Serwer zamkn&#261;&#322; po&#322;&#261;czenie sieciowe, poniewa&#380; przegl&#261;darka
+    nie zako&#324;czy&#322;a operacji w przewidywanym czasie.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

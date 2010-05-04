@@ -131,11 +131,11 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Nieprawidłowe żądanie!"
+--><!--#set var="TITLE" value="Nieprawid&#322;owe &#380;&#261;danie!"
 --><!--#include virtual="include/top.html" -->
 
-    Twoja przeglądarka (lub serwer pośredniczący) wysłał żądanie,
-    którego ten serwer nie potrafi obsłużyć.
+    Twoja przegl&#261;darka (lub serwer po&#347;rednicz&#261;cy) wys&#322;a&#322; &#380;&#261;danie,
+    kt&#243;rego ten serwer nie potrafi obs&#322;u&#380;y&#263;.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

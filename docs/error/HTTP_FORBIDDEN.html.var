@@ -231,18 +231,18 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Zabroniony dostęp!"
+--><!--#set var="TITLE" value="Zabroniony dost&#281;p!"
 --><!--#include virtual="include/top.html" -->
 
   <!--#if expr="$REDIRECT_URL = /\/$/" -->
 
-    Nie masz prawa dostępu do żądanego katalogu. W katalogu nie
+    Nie masz prawa dost&#281;pu do &#380;&#261;danego katalogu. W katalogu nie
     ma indeksu lub katalog jest zabezpieczony przed odczytem.
 
   <!--#else -->
 
-    Nie masz dostępu do żądanego obiektu. Jest on zabezpieczony
-    przed odczytem lub nie może być odczytany przez serwer.
+    Nie masz dost&#281;pu do &#380;&#261;danego obiektu. Jest on zabezpieczony
+    przed odczytem lub nie mo&#380;e by&#263; odczytany przez serwer.
 
   <!--#endif -->
 

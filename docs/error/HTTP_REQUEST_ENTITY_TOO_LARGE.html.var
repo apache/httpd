@@ -140,11 +140,11 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Żądany obiekt zbyt duży!"
+--><!--#set var="TITLE" value="&#379;&#261;dany obiekt zbyt du&#380;y!"
 --><!--#include virtual="include/top.html" -->
 
     Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    nie zezwala na typ przesyłanych danych lub rozmiar danych przekracza
+    nie zezwala na typ przesy&#322;anych danych lub rozmiar danych przekracza
     ustalony limit.
 
 <!--#include virtual="include/bottom.html" -->
