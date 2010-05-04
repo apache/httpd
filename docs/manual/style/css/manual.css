@@ -754,7 +754,7 @@ div[id]#directive-ref { /* a big sorry to ICab, Amaya (and old Konquerors?) */
 
 /* sidebar position: right */
 div#quickview {
-    position: fixed;
+    position: absolute;
     top: 5.5em;
     right: 1em;
     margin-left: 0;
