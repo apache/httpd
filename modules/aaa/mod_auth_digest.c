@@ -322,7 +322,8 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     client_list->tbl_len     = num_buckets;
     client_list->num_entries = 0;
 
-    sts = ap_global_mutex_create(&client_lock, client_mutex_type, NULL, s, ctx, 0);
+    sts = ap_global_mutex_create(&client_lock, NULL, client_mutex_type, NULL,
+                                 s, ctx, 0);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (client_lock)", sts, s);
         return !OK;
@@ -338,7 +339,8 @@ static int initialize_tables(server_rec *s, apr_pool_t *ctx)
     }
     *opaque_cntr = 1UL;
 
-    sts = ap_global_mutex_create(&opaque_lock, opaque_mutex_type, NULL, s, ctx, 0);
+    sts = ap_global_mutex_create(&opaque_lock, NULL, opaque_mutex_type, NULL,
+                                 s, ctx, 0);
     if (sts != APR_SUCCESS) {
         log_error_and_cleanup("failed to create lock (opaque_lock)", sts, s);
         return !OK;
