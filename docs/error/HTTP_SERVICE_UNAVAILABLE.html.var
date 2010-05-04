@@ -145,12 +145,12 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Serwis niedostępny!"
+--><!--#set var="TITLE" value="Serwis niedost&#281;pny!"
 --><!--#include virtual="include/top.html" -->
 
-    Serwer nie może zrealizować twojego żądania
-    ze względu na konserwację lub zbyt duże obciążenie.
-    Prosimy spróbować później.
+    Serwer nie mo&#380;e zrealizowa&#263; twojego &#380;&#261;dania
+    ze wzgl&#281;du na konserwacj&#281; lub zbyt du&#380;e obci&#261;&#380;enie.
+    Prosimy spr&#243;bowa&#263; p&#243;&#378;niej.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

@@ -139,11 +139,11 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Błędne Content-Length!"
+--><!--#set var="TITLE" value="B&#322;&#281;dne Content-Length!"
 --><!--#include virtual="include/top.html" -->
 
-    Żądanie <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    wymaga poprawnego nagłówka <code>Content-Length</code>.
+    &#379;&#261;danie <!--#echo var="REDIRECT_REQUEST_METHOD" -->
+    wymaga poprawnego nag&#322;&#243;wka <code>Content-Length</code>.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

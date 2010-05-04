@@ -134,11 +134,11 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Zbyt długie URI!"
+--><!--#set var="TITLE" value="Zbyt d&#322;ugie URI!"
 --><!--#include virtual="include/top.html" -->
 
-    Długość żądanego URLa przekracza limit ustanowiony dla tego
-    serwera. Żądanie nie może zostać zrealizowane.
+    D&#322;ugo&#347;&#263; &#380;&#261;danego URL-a przekracza limit ustanowiony dla tego
+    serwera. &#379;&#261;danie nie mo&#380;e zosta&#263; zrealizowane.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

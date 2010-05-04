@@ -136,7 +136,7 @@ Body:----------pl--
 --><!--#include virtual="include/top.html" -->
 
     Metoda <!--#echo var="REDIRECT_REQUEST_METHOD" -->
-    jest niedozwolona dla podanego URLa.
+    jest niedozwolona dla podanego URL-a.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

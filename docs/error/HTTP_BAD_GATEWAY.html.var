@@ -179,10 +179,10 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Nieprawidłowa brama!"
+--><!--#set var="TITLE" value="Nieprawid&#322;owa brama!"
 --><!--#include virtual="include/top.html" -->
 
-    Serwer otrzymał nieprawidłową odpowiedź
+    Serwer otrzyma&#322; nieprawid&#322;ow&#261; odpowied&#378;
     od kolejnego serwera.
 
   <!--#if expr="$REDIRECT_ERROR_NOTES" -->

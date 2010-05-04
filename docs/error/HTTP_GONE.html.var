@@ -261,21 +261,21 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Zasób usunięty!"
+--><!--#set var="TITLE" value="Zas&#243;b usuni&#281;ty!"
 --><!--#include virtual="include/top.html" -->
 
-    Poszukiwany zasób nie jest już dostępny na tym serwerze i nie
+    Poszukiwany zas&#243;b nie jest ju&#380; dost&#281;pny na tym serwerze i nie
     podano nowego adresu zasobu.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    Prosimy poinformować autora
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referującej
+    Prosimy poinformowa&#263; autora
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referuj&#261;cej
     strony</a> o nieaktualnym linku.
 
   <!--#else -->
 
-    Jeśli podążyłeś za linkiem z innej strony skontaktuj się z jej
+    Je&#347;li pod&#261;&#380;y&#322;e&#347; za linkiem z innej strony, skontaktuj si&#281; z jej
     autorem.
 
   <!--#endif -->

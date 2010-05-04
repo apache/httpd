@@ -218,15 +218,15 @@ Body:----------pl--
 --><!--#set var="TITLE" value="Wymagana autoryzacja!"
 --><!--#include virtual="include/top.html" -->
 
-    Serwer nie może zweryfikować, że masz uprawnienia dostępu do
-    URLa "<!--#echo encoding="url" var="REDIRECT_URL" -->".
-    Nie podałeś prawidłowych danych autoryzacyjnych (np. hasła),
-    lub twoja przeglądarka nie potrafi ich przesłać.
+    Serwer nie mo&#380;e zweryfikowa&#263;, &#380;e masz uprawnienia dost&#281;pu do
+    URL-a "<!--#echo encoding="url" var="REDIRECT_URL" -->".
+    Nie poda&#322;e&#347; prawid&#322;owych danych autoryzacyjnych (np. has&#322;a)
+    lub twoja przegl&#261;darka nie potrafi ich przes&#322;a&#263;.
 
   <!--#include virtual="include/spacer.html" -->
 
-    Jeśli masz prawo dostępu do żądanego dokumentu, spradź
-    podaną nazwę użytkownika i hasło.
+    Je&#347;li masz prawo dost&#281;pu do &#380;&#261;danego dokumentu, sprawd&#378;
+    podan&#261; nazw&#281; u&#380;ytkownika i has&#322;o.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

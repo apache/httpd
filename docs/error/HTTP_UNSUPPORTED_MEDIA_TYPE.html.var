@@ -125,10 +125,10 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Nieobsługiwany typ danych!"
+--><!--#set var="TITLE" value="Nieobs&#322;ugiwany typ danych!"
 --><!--#include virtual="include/top.html" -->
 
-    Serwer nie zna typu danych przesłanych w żądaniu.
+    Serwer nie zna typu danych przes&#322;anych w &#380;&#261;daniu.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

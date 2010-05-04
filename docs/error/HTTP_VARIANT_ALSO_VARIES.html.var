@@ -141,8 +141,8 @@ Body:----------pl--
 --><!--#set var="TITLE" value="Wariant jest wariantowy!"
 --><!--#include virtual="include/top.html" -->
 
-    Wariant żądanego zasobu jest również zasobem negocjowalnym.
-    Dostęp jest niemożliwy.
+    Wariant &#380;&#261;danego zasobu jest r&#243;wnie&#380; zasobem negocjowalnym.
+    Dost&#281;p jest niemo&#380;liwy.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

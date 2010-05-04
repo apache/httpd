@@ -124,10 +124,10 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Żądanie nieobsługiwane!"
+--><!--#set var="TITLE" value="&#379;&#261;danie nieobs&#322;ugiwane!"
 --><!--#include virtual="include/top.html" -->
 
-    Ten serwer nie obsługuje żądania przesłanego przez przeglądarkę.
+    Ten serwer nie obs&#322;uguje &#380;&#261;dania przes&#322;anego przez przegl&#261;dark&#281;.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--

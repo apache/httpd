@@ -277,18 +277,18 @@ Body:----------pl--
 --><!--#set var="TITLE" value="Nie znaleziono obiektu!"
 --><!--#include virtual="include/top.html" -->
 
-    Nie znaleziono żądanego URLa na tym serwerze.
+    Nie znaleziono &#380;&#261;danego URL-a na tym serwerze.
 
   <!--#if expr="$HTTP_REFERER" -->
 
-    Odnośnik na
-    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referującej stronie
-    </a> wydaje się być nieprawidłowy lub nieaktualny. Poinformuj autora
+    Odno&#347;nik na
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">referuj&#261;cej stronie
+    </a> wydaje si&#281; by&#263; nieprawid&#322;owy lub nieaktualny. Poinformuj autora
     <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">tej strony</a>
     o problemie.
 
   <!--#else -->
-    Jeśli wpisałeś URLa ręcznie, sprawdź, czy się nie pomyliłeś.
+    Je&#347;li wpisa&#322;e&#347; URL-a r&#281;cznie, sprawd&#378;, czy si&#281; nie pomyli&#322;e&#347;.
 
   <!--#endif -->
 

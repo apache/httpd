@@ -126,10 +126,10 @@ Content-language: pl
 Content-type: text/html; charset=UTF-8
 Body:----------pl--
 <!--#set var="CONTENT_LANGUAGE" value="pl"
---><!--#set var="TITLE" value="Niespełniony warunek!"
+--><!--#set var="TITLE" value="Niespe&#322;niony warunek!"
 --><!--#include virtual="include/top.html" -->
 
-    Warunek wstępny dla URLa nie został spełniony.
+    Warunek wst&#281;pny dla URL-a nie zosta&#322; spe&#322;niony.
 
 <!--#include virtual="include/bottom.html" -->
 ----------pl--
