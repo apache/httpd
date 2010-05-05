@@ -1707,7 +1707,7 @@ static int worker_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     ap_log_pid(pconf, ap_pid_fname);
 
     /* Initialize cross-process accept lock */
-    rv = ap_proc_mutex_create(&accept_mutex, NAME, AP_ACCEPT_MUTEX_TYPE, NULL,
+    rv = ap_proc_mutex_create(&accept_mutex, NULL, AP_ACCEPT_MUTEX_TYPE, NULL,
                               s, _pconf, 0);
     if (rv != APR_SUCCESS) {
         mpm_state = AP_MPMQ_STOPPING;
