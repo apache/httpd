@@ -39,8 +39,10 @@ variable <code>rate-limit</code>.</p>
 
 <example><title>Example Configuration</title>
 &lt;Location /downloads&gt;<br />
+<indent>
 SetHandler RATE_LIMIT<br />
-SetEnv rate-limit 400 
+SetEnv rate-limit 400 <br />
+</indent>
 &lt;/Location&gt;
 </example>
 
