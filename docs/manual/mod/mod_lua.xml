@@ -463,7 +463,7 @@ end
     file.</p>
     
     <p>In general stat or forever is good for production, and stat or never
-    for deveopment.</p>
+    for development.</p>
     
     <example><title>Examples:</title>
         LuaCodeCache stat<br />
