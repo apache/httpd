@@ -53,6 +53,7 @@
 ** TODO Rework apw_sgetvm to use the create_vm stuff like apw_rgetvm
 ** TODO apw_rgetvm needs to handle connection scoped vms     
 ** TODO options in server scoped vms (ie, min and max vm counts)
+** TODO provide means to implement authn and authz providers
     
 * License
   Apache License, Version 2.0,
