@@ -86,6 +86,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy_http: Log backend server port in error messages
+    Trunk patch: http://svn.apache.org/viewvc?rev=921347&view=rev
+                 http://svn.apache.org/viewvc?rev=921583&view=rev
+    2.2.x patch: Trunk patch works
+    +1: sf, pgollucci, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -111,12 +116,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~minfrin/htcacheclean-pid.patch
     +1: minfrin, sf
 
-  * mod_proxy_http: Log backend server port in error messages
-    Trunk patch: http://svn.apache.org/viewvc?rev=921347&view=rev
-                 http://svn.apache.org/viewvc?rev=921583&view=rev
-    2.2.x patch: Trunk patch works
-    +1: sf, pgollucci
-
   * mod_ssl: modules/ssl/ssl_engine_init.c (ssl_init_ctx_cleanup_proxy):
     Unset pkp->certs pointer after freeing the array; fixes segfault at
     startup if the certs are shared across >1 server_rec.
@@ -131,7 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 48947
     Trunk patch: http://svn.apache.org/viewvc?rev=925850&view=rev
     2.2.x patch: http://people.apache.org/~minfrin/httpd-proxy-worker-already-used.patch
-    +1: minfrin
+    +1: minfrin, trawick
 
   * Introduce SSLFIPS directive to support OpenSSL FIPS_mode; permits all
     builds of mod_ssl to use 'SSLFIPS off' for portability, but the proper
@@ -150,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * Update apxs for perl 5.12
     Trunk patch: http://svn.apache.org/viewvc?rev=932791&view=rev
     2.2.x patch: trunk patch works
-    +1: sf
+    +1: sf, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
