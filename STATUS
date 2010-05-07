@@ -92,6 +92,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     2.2.x patch: Trunk patch works
     +1: sf, pgollucci, trawick
 
+  * Update apxs for perl 5.12
+    Trunk patch: http://svn.apache.org/viewvc?rev=932791&view=rev
+    2.2.x patch: trunk patch works
+    +1: sf, trawick, pgollucci
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -146,10 +151,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     wrowe: Added both of rpluem's proposed patched, 926614 and 926619
     +1: drh
 
-  * Update apxs for perl 5.12
-    Trunk patch: http://svn.apache.org/viewvc?rev=932791&view=rev
-    2.2.x patch: trunk patch works
-    +1: sf, trawick, pgollucci
 
 PATCHES/ISSUES THAT ARE STALLED
 
