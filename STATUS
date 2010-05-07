@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * Update apxs for perl 5.12
     Trunk patch: http://svn.apache.org/viewvc?rev=932791&view=rev
     2.2.x patch: trunk patch works
-    +1: sf, trawick
+    +1: sf, trawick, pgollucci
 
 PATCHES/ISSUES THAT ARE STALLED
 
