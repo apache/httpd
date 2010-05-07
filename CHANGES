@@ -137,6 +137,9 @@ Changes with Apache 2.3.7
      by using HTTP CONNECT.  PR 19188.  
      [Philippe Dutrueux <lilas evidian.com>, Rainer Jung]
 
+  *) apxs: Fix -A and -a options to ignore whitespace in httpd.conf
+     [Philip M. Gollucci]
+
 Changes with Apache 2.3.6
 
   *) worker: Don't report server has reached MaxClients until it has.

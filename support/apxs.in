@@ -568,7 +568,10 @@ if ($opt_i or $opt_e) {
         $c = '#' if ($opt_A);
         foreach $lmd (@lmd) {
             my $what = $opt_A ? "preparing" : "activating";
-            if ($content !~ m|\n#?\s*$lmd|) {
+            my $lmd_re = $lmd;
+            $lmd_re =~ s/\s+/\\s+/g;
+
+            if ($content !~ m|\n#?\s*$lmd_re|) {
                 # check for open <containers>, so that the new LoadModule
                 # directive always appears *outside* of an <container>.
 
@@ -631,7 +634,7 @@ if ($opt_i or $opt_e) {
                 }
             } else {
                 # replace already existing LoadModule line
-                $content =~ s|^(.*\n)#?\s*$lmd[^\n]*\n|$1$c$lmd\n|s;
+                $content =~ s|^(.*\n)#?\s*$lmd_re[^\n]*\n|$1$c$lmd\n|s;
             }
             $lmd =~ m|LoadModule\s+(.+?)_module.*|;
             notice("[$what module `$1' in $CFG_SYSCONFDIR/$CFG_TARGET.conf]");
