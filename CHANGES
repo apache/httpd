@@ -2,6 +2,8 @@
 Changes with Apache 2.2.16
 
 
+  *) apxs: Fix -A and -a options to ignore whitespace in httpd.conf
+     [Philip M. Gollucci]
 
 Changes with Apache 2.2.15
 
