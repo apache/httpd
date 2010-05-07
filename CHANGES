@@ -25,6 +25,9 @@ Changes with Apache 2.0.64
   *) Add Set-Cookie and Set-Cookie2 to the list of headers allowed to pass 
      through on a 304 response.  [Nick Kew]
 
+  *) apxs: Fix -A and -a options to ignore whitespace in httpd.conf
+     [Philip M. Gollucci]
+
 Changes with Apache 2.0.63
 
   *) winnt_mpm: Resolve modperl issues by redirecting console mode stdout
