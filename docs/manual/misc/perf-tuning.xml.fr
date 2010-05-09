@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 883878 -->
+<!-- English Revision : 940831 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -365,8 +365,9 @@
 	  d&eacute;faillant.</p>
         </li>
         <li>
-          <p>Dans le cas des fichiers mont&eacute;s sous NFS, le noyau peut s'av&eacute;rer
-	  incapable de servir les fichiers r&eacute;seau de mani&egrave;re fiable depuis
+          <p>Dans le cas d'un syst&egrave;me de fichiers mont&eacute;
+	  sous NFS, le noyau peut s'av&eacute;rer incapable de servir
+	  les fichiers r&eacute;seau de mani&egrave;re fiable depuis
 	  son propre cache.</p>
         </li>
       </ul>
