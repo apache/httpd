@@ -1400,7 +1400,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         if (len <= 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                           "proxy: error reading status line from remote "
-                          "server %s", backend->hostname);
+                          "server %s:%d", backend->hostname, backend->port);
             if (rc == APR_TIMEUP) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "proxy: read timeout");
@@ -1422,9 +1422,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "proxy: Closing connection to client because"
-                              " reading from backend server %s failed. Number"
-                              " of keepalives %i", backend->hostname, 
-                              c->keepalives);
+                              " reading from backend server %s:%d failed."
+                              " Number of keepalives %i", backend->hostname, 
+                              backend->port, c->keepalives);
                 ap_proxy_backend_broke(r, bb);
                 /*
                  * Add an EOC bucket to signal the ap_http_header_filter
@@ -1455,8 +1455,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             else if (!c->keepalives) {
                      ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                                    "proxy: NOT Closing connection to client"
-                                   " although reading from backend server %s"
-                                   " failed.", backend->hostname);
+                                   " although reading from backend server %s:%d"
+                                   " failed.", backend->hostname,
+                                   backend->port);
             }
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
@@ -1561,8 +1562,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                  */
                 apr_table_unset(r->headers_out, "Content-Length");
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                             "proxy: server %s returned Transfer-Encoding"
-                             " and Content-Length", backend->hostname);
+                             "proxy: server %s:%d returned Transfer-Encoding"
+                             " and Content-Length", backend->hostname,
+                             backend->port);
                 backend->close += 1;
             }
 

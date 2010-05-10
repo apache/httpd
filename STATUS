@@ -86,12 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_http: Log backend server port in error messages
-    Trunk patch: http://svn.apache.org/viewvc?rev=921347&view=rev
-                 http://svn.apache.org/viewvc?rev=921583&view=rev
-    2.2.x patch: Trunk patch works
-    +1: sf, pgollucci, trawick
-
   * Update apxs for perl 5.12
     Trunk patch: http://svn.apache.org/viewvc?rev=932791&view=rev
     2.2.x patch: trunk patch works
