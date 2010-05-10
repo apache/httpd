@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.16
 
+  *) mod_proxy_http: Log the port of the remote server in various messages.
+     PR 48812. [Igor Galić <i galic brainsware org>] 
 
   *) apxs: Fix -A and -a options to ignore whitespace in httpd.conf
      [Philip M. Gollucci]
