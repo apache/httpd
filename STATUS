@@ -141,6 +141,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     wrowe: Added both of rpluem's proposed patched, 926614 and 926619
     +1: drh
 
+  * mod_log_config: Make ${cookie}C correctly match whole cookie names
+    instead of substrings.
+    PR: 28037
+    Trunk patch: http://svn.apache.org/viewvc?rev=833738&view=rev
+                 http://svn.apache.org/viewvc?rev=834006&view=rev
+                 http://svn.apache.org/viewvc?rev=834013&view=rev
+                 http://svn.apache.org/viewvc?rev=834500&view=rev
+    2.2.x patch: http://people.apache.org/~sf/log_cookie_28037.diff
+    +1: sf
 
 PATCHES/ISSUES THAT ARE STALLED
 
