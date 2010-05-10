@@ -151,6 +151,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~sf/log_cookie_28037.diff
     +1: sf
 
+  * mod_req-timeout/core: Backport bugfixes from trunk up to r935339:
+    - Do not wrongly enforce timeouts for mod_proxy's backend
+      connections and other protocol handlers (like mod_ftp).
+    - Enforce the timeout for AP_MODE_GETLINE.
+    - If there is a timeout, shorten the lingering close time from 30 to
+      2 seconds (involves a change in the core).
+    Trunk patch: http://svn.apache.org/viewvc?rev=921378&view=rev
+                 http://svn.apache.org/viewvc?rev=921526&view=rev
+                 http://svn.apache.org/viewvc?rev=922407&view=rev
+                 http://svn.apache.org/viewvc?rev=923418&view=rev
+                 http://svn.apache.org/viewvc?rev=923429&view=rev
+                 http://svn.apache.org/viewvc?rev=925986&view=rev
+                 http://svn.apache.org/viewvc?rev=928881&view=rev
+                 http://svn.apache.org/viewvc?rev=933341&view=rev
+                 http://svn.apache.org/viewvc?rev=933547&view=rev
+                 http://svn.apache.org/viewvc?rev=935339&view=rev
+    2.2.x patch: http://people.apache.org/~sf/mod_reqtimeout_up_to_r935339.diff
+    sf: It would be nice if someone could review this specifically WRT Windows
+        compatibility.
+    +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
