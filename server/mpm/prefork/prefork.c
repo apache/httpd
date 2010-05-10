@@ -549,12 +549,6 @@ static void child_main(int child_num_arg)
         conn_rec *current_conn;
         void *csd;
 
-        /*
-         * (Re)initialize this child to a pre-connection state.
-         */
-
-        apr_pool_clear(ptrans);
-
         if ((ap_max_requests_per_child > 0
              && requests_this_child++ >= ap_max_requests_per_child)) {
             clean_child_exit(0);
@@ -667,6 +661,12 @@ static void child_main(int child_num_arg)
             ap_process_connection(current_conn, csd);
             ap_lingering_close(current_conn);
         }
+
+        /*
+         * (Re)initialize this child to a pre-connection state.
+         */
+
+        apr_pool_clear(ptrans);
 
         /* Check the pod and the generation number after processing a
          * connection so that we'll go away if a graceful restart occurred
