@@ -83,7 +83,6 @@ sub Getopts {
     my ($argumentative, @ARGV) = @_;
     my $errs = 0;
     local $_;
-    local $[ = 0;
 
     my @args = split / */, $argumentative;
     while (@ARGV && ($_ = $ARGV[0]) =~ /^-(.)(.*)/) {
@@ -93,7 +92,7 @@ sub Getopts {
             last;
         }
         my $pos = index($argumentative,$first);
-        if ($pos >= $[) {
+        if ($pos >= 0) {
             if ($pos < $#args && $args[$pos+1] eq ':') {
                 shift @ARGV;
                 if ($rest eq '') {
