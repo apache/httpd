@@ -373,11 +373,13 @@ person in</a></h2>
 
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
+    <span class="indent">
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
     Require valid-user<br />
+    </span>
     &lt;/Directory&gt;
     </code></p></div>
 
@@ -396,12 +398,14 @@ person in</a></h2>
 
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
+    <span class="indent">
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider file ldap<br />
     AuthUserFile /usr/local/apache/passwd/passwords<br />
     AuthLDAPURL ldap://ldaphost/o=yourorg<br />
     Require valid-user<br />
+    </span>
     &lt;/Directory&gt;
     </code></p></div>
 
@@ -420,6 +424,7 @@ person in</a></h2>
 
     <div class="example"><p><code>
     &lt;Directory /www/docs/private&gt;<br />
+    <span class="indent">
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider file<br />
@@ -428,6 +433,7 @@ person in</a></h2>
     AuthGroupFile /usr/local/apache/passwd/groups<br />
     Require group GroupName<br />
     Require ldap-group cn=mygroup,o=yourorg<br />
+    </span>
     &lt;/Directory&gt;
     </code></p></div>
 
