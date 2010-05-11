@@ -172,6 +172,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         compatibility.
     +1: sf
 
+  * prefork MPM: Run cleanups for final request when process exits gracefully.
+    PR: 43857
+    Trunk patch: http://svn.apache.org/viewvc?rev=942897&view=rev
+    2.2.x patch: Trunk patch works
+    +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
