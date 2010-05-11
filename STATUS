@@ -86,6 +86,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * support/htcacheclean: Teach it how to write a pid file (modelled on
+    httpd's writing of a pid file) so that it becomes possible to run
+    more than one instance of htcacheclean on the same machine.
+    Trunk patch: http://svn.apache.org/viewvc?rev=910705&view=rev
+                 http://svn.apache.org/viewvc?rev=910735&view=rev
+                 http://svn.apache.org/viewvc?rev=910756&view=rev
+                 http://svn.apache.org/viewvc?rev=917002&view=rev
+                 http://svn.apache.org/viewvc?rev=917005&view=rev
+    2.2.x patch: http://people.apache.org/~minfrin/htcacheclean-pid.patch
+    +1: minfrin, sf, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -99,17 +109,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               vs 2.6 kernels, potentially a suspect test for root.
    sf:        Couldn't the linux 2.4 bug be worked around by calling access
               twice? Once with R_OK and once with X_OK.
-
-  * support/htcacheclean: Teach it how to write a pid file (modelled on
-    httpd's writing of a pid file) so that it becomes possible to run
-    more than one instance of htcacheclean on the same machine.
-    Trunk patch: http://svn.apache.org/viewvc?rev=910705&view=rev
-                 http://svn.apache.org/viewvc?rev=910735&view=rev
-                 http://svn.apache.org/viewvc?rev=910756&view=rev
-                 http://svn.apache.org/viewvc?rev=917002&view=rev
-                 http://svn.apache.org/viewvc?rev=917005&view=rev
-    2.2.x patch: http://people.apache.org/~minfrin/htcacheclean-pid.patch
-    +1: minfrin, sf
 
   * mod_ssl: modules/ssl/ssl_engine_init.c (ssl_init_ctx_cleanup_proxy):
     Unset pkp->certs pointer after freeing the array; fixes segfault at
