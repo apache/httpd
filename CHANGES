@@ -28,6 +28,9 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) prefork MPM: Run cleanups for final request when process exits gracefully.
+     PR 43857.  [Tom Donovan]
+
   *) ab: fix number of requests sent by ab when keepalive is enabled.  PR 48497.
      [Bryn Dole <dole blekko.com>]
 
