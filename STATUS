@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=833622&view=rev
     Backport version for 2.0.x of patch (Updated with backport of r881222):
       http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-v2.patch
-    +1: rjung, rpluem
+    +1: rjung, rpluem, pgollucci (+1 2.0.64 w/ this)
 
   * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
     Trunk version of patch:
@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-backport-r891282.patch
     Patch applies also on top of above partial fix for CVE-2009-3555
     with some offset.
-    +1: rjung
+    +1: rjung, pgollucci (+1 2.0.64 w/ this)
 
   * mod_ssl: Implement SSLInsecureRenegotiation
     Trunk version of patch:
@@ -200,28 +200,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rjung/patches/SSLInsecureRenegotiation_httpd_2_0_x-backport-r917044.patch 
     Patch applies also on top of the two above partial fixes for CVE-2009-3555
     with some offset and fuzz.
-    +1: rjung
+    +1: rjung, pgollucci (+1 2.0.64 w/ this)
 
   * mod_proxy_ftp, CVE-2009-3094, NULL pointer dereference on error paths
     Patch in 2.2.x branch:
       http://svn.apache.org/viewvc?view=revision&revision=814844
     Backport:
       http://people.apache.org/~trawick/CVE-2009-3094-2.0.txt
-    +1:
+    +1: pgollucci 
+      PG: whomever proposed this should vote for it
 
   * mod_proxy_ftp, CVE-2009-3095, sanity check authn credentials
     Patch in 2.2.x branch:
       http://svn.apache.org/viewvc?view=revision&revision=814847
     Backport:
       http://people.apache.org/~trawick/CVE-2009-3095-2.0.txt
-    +1:
+    +1: pgollucci
+      PG: whomever proposed this should vote for it
 
   * core output filter, CVE-2009-1891, consuming CPU after client disconnects
     Patch in 2.2.x branch:
       http://svn.apache.org/viewvc?view=revision&revision=791454
     Dan's patch posted last year for 2.0.x:
       http://people.apache.org/~trawick/CVE-2009-1891-2.0-poirier.txt
-    +1:
+    +1: pgollucci
+      PG: whomever proposed this should vote for it
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
