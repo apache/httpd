@@ -684,6 +684,7 @@ static void child_main(int child_num_arg)
             die_now = 1;
         }
     }
+    apr_pool_clear(ptrans);
     clean_child_exit(0);
 }
 
