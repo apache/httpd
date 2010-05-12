@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * prefork MPM: Run cleanups for final request when process exits gracefully.
     PR: 43857
-    Trunk patch: http://svn.apache.org/viewvc?rev=942897&view=rev
+    Trunk patch: http://svn.apache.org/viewvc?rev=943650&view=rev
     2.2.x patch: Trunk patch works
     +1: trawick
 
