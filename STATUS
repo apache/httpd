@@ -124,6 +124,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     Backport version for 2.0.x of patch:
        http://people.apache.org/~fuankg/diffs/httpd-2.0.x-ap_vhost_iterate_given_conn.diff
     +1: fuankg, wrowe, pgollucci
+  * mod_ssl: Partial fix for CVE-2009-3555
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=833582&view=rev
+      http://svn.apache.org/viewvc?rev=833593&view=rev
+      http://svn.apache.org/viewvc?rev=881222&view=rev
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?rev=833622&view=rev
+    Backport version for 2.0.x of patch (Updated with backport of r881222):
+      http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-v2.patch
+    +1: rjung, rpluem, pgollucci (+1 2.0.64 w/ this)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -162,17 +172,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                            APR_OS_DEFAULT, pool);
              if (nLogFD == NULL) {
                  /* Uh-oh. Failed to open the new log file. Try to clear
-
-  * mod_ssl: Partial fix for CVE-2009-3555
-    Trunk version of patch:
-      http://svn.apache.org/viewvc?rev=833582&view=rev
-      http://svn.apache.org/viewvc?rev=833593&view=rev
-      http://svn.apache.org/viewvc?rev=881222&view=rev
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?rev=833622&view=rev
-    Backport version for 2.0.x of patch (Updated with backport of r881222):
-      http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-v2.patch
-    +1: rjung, rpluem, pgollucci (+1 2.0.64 w/ this)
 
   * mod_ssl: Further mitigation for the TLS renegotation attack, CVE-2009-3555
     Trunk version of patch:
