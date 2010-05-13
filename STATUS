@@ -116,7 +116,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=417988&view=rev
     2.2.x patch: Trunk patch works
     (Original patch by jorton)
-    +1: minfrin
+    +1: minfrin, rjung
 
   * mod_proxy: Tone down a warning message that appears when the same
     backend website is reverse proxied two or more times into the
@@ -124,7 +124,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 48947
     Trunk patch: http://svn.apache.org/viewvc?rev=925850&view=rev
     2.2.x patch: http://people.apache.org/~minfrin/httpd-proxy-worker-already-used.patch
-    +1: minfrin, trawick
+    +1: minfrin, trawick, rjung
 
   * Introduce SSLFIPS directive to support OpenSSL FIPS_mode; permits all
     builds of mod_ssl to use 'SSLFIPS off' for portability, but the proper
@@ -138,7 +138,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1: wrowe
     minfrin: Doesn't build on v2.2 until you add r926614. With r926614, +1.
     wrowe: Added both of rpluem's proposed patched, 926614 and 926619
-    +1: drh
+    +1: drh, rjung
+    rjung: We should add a note about the first version providing this
+           option in the docs page, like e.g. we did for SSLInsecureRenegotiation.
 
   * mod_log_config: Make ${cookie}C correctly match whole cookie names
     instead of substrings.
@@ -175,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 43857
     Trunk patch: http://svn.apache.org/viewvc?rev=943650&view=rev
     2.2.x patch: Trunk patch works
-    +1: trawick
+    +1: trawick, rjung
 
 PATCHES/ISSUES THAT ARE STALLED
 
