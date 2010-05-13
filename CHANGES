@@ -1,6 +1,14 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.64
 
+  *) SECURITY: CVE-2009-3555 (cve.mitre.org)
+     mod_ssl: A partial fix for the TLS renegotiation prefix injection attack
+     for OpenSSL versions prior to 0.9.8l; reject any client-initiated
+     renegotiations. Any configuration which requires renegotiation for
+     per-directory/location access control is still vulnerable, unless using
+     OpenSSL 0.9.8l or later.
+     [Joe Orton, Ruediger Pluem, Rainer Jung]
+
   *) SECURITY: CVE-2010-0434 (cve.mitre.org)
      Ensure each subrequest has a shallow copy of headers_in so that the
      parent request headers are not corrupted.  Elimiates a problematic
