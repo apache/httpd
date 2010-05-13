@@ -130,8 +130,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=814847
     Backport:
       http://people.apache.org/~trawick/CVE-2009-3095-2.0.txt
-    +1: pgollucci, poirier, rjung
-      PG: whomever proposed this should vote for it
+    +1: pgollucci, poirier, rjung, trawick
 
   * core output filter, CVE-2009-1891, consuming CPU after client disconnects
     Patch in 2.2.x branch:
