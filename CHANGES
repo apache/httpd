@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.64
 
+  *) SECURITY: CVE-2009-3094 (cve.mitre.org)
+     mod_proxy_ftp: NULL pointer dereference on error paths.
+     [Stefan Fritsch <sf fritsch.de>, Joe Orton]
+
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
      mod_ssl: A partial fix for the TLS renegotiation prefix injection attack
      for OpenSSL versions prior to 0.9.8l; reject any client-initiated
