@@ -28,7 +28,7 @@
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>reqtimeout_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_reqtimeout.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2.15 and later</td></tr></table>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
