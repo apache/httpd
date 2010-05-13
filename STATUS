@@ -125,6 +125,22 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~fuankg/diffs/httpd-2.0.x-ap_vhost_iterate_given_conn.diff
     +1: fuankg, wrowe, pgollucci
 
+  * mod_proxy_ftp, CVE-2009-3095, sanity check authn credentials
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?view=revision&revision=814847
+    Backport:
+      http://people.apache.org/~trawick/CVE-2009-3095-2.0.txt
+    +1: pgollucci, poirier, rjung
+      PG: whomever proposed this should vote for it
+
+  * core output filter, CVE-2009-1891, consuming CPU after client disconnects
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?view=revision&revision=791454
+    Dan's patch posted last year for 2.0.x:
+      http://people.apache.org/~trawick/CVE-2009-1891-2.0-poirier.txt
+    +1: pgollucci, poirier, rjung
+      PG: whomever proposed this should vote for it
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
@@ -198,22 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport:
       http://people.apache.org/~trawick/CVE-2009-3094-2.0.txt
     +1: pgollucci, poirier
-      PG: whomever proposed this should vote for it
-
-  * mod_proxy_ftp, CVE-2009-3095, sanity check authn credentials
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?view=revision&revision=814847
-    Backport:
-      http://people.apache.org/~trawick/CVE-2009-3095-2.0.txt
-    +1: pgollucci, poirier, rjung
-      PG: whomever proposed this should vote for it
-
-  * core output filter, CVE-2009-1891, consuming CPU after client disconnects
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?view=revision&revision=791454
-    Dan's patch posted last year for 2.0.x:
-      http://people.apache.org/~trawick/CVE-2009-1891-2.0-poirier.txt
-    +1: pgollucci, poirier, rjung
       PG: whomever proposed this should vote for it
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
