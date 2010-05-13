@@ -141,6 +141,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     +1: pgollucci, poirier, rjung
       PG: whomever proposed this should vote for it
 
+  * mod_proxy_ftp, CVE-2009-3094, NULL pointer dereference on error paths
+    Patch in 2.2.x branch:
+      http://svn.apache.org/viewvc?view=revision&revision=814844
+    Backport:
+      http://people.apache.org/~trawick/CVE-2009-3094-2.0.txt
+    +1: pgollucci, poirier, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
@@ -207,14 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Patch applies also on top of the two above partial fixes for CVE-2009-3555
     with some offset and fuzz.
     +1: rjung, pgollucci (+1 2.0.64 w/ this)
-
-  * mod_proxy_ftp, CVE-2009-3094, NULL pointer dereference on error paths
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?view=revision&revision=814844
-    Backport:
-      http://people.apache.org/~trawick/CVE-2009-3094-2.0.txt
-    +1: pgollucci, poirier
-      PG: whomever proposed this should vote for it
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
