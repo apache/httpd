@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=933341&view=rev
                  http://svn.apache.org/viewvc?rev=933547&view=rev
                  http://svn.apache.org/viewvc?rev=935339&view=rev
-    2.2.x patch: http://people.apache.org/~sf/mod_reqtimeout_up_to_r935339.diff
+    2.2.x patch: http://people.apache.org/~sf/mod_reqtimeout_up_to_r935339-v2.diff
     sf: It would be nice if someone could review this specifically WRT Windows
         compatibility.
     +1: sf
