@@ -125,13 +125,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~fuankg/diffs/httpd-2.0.x-ap_vhost_iterate_given_conn.diff
     +1: fuankg, wrowe, pgollucci
 
-  * mod_proxy_ftp, CVE-2009-3095, sanity check authn credentials
-    Patch in 2.2.x branch:
-      http://svn.apache.org/viewvc?view=revision&revision=814847
-    Backport:
-      http://people.apache.org/~trawick/CVE-2009-3095-2.0.txt
-    +1: pgollucci, poirier, rjung, trawick
-
   * core output filter, CVE-2009-1891, consuming CPU after client disconnects
     Patch in 2.2.x branch:
       http://svn.apache.org/viewvc?view=revision&revision=791454

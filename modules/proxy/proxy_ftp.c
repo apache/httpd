@@ -890,6 +890,11 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
     if ((password = apr_table_get(r->headers_in, "Authorization")) != NULL
         && strcasecmp(ap_getword(r->pool, &password, ' '), "Basic") == 0
         && (password = ap_pbase64decode(r->pool, password))[0] != ':') {
+        /* Check the decoded string for special characters. */
+        if (!ftp_check_string(password)) {
+            return ap_proxyerror(r, HTTP_BAD_REQUEST, 
+                                 "user credentials contained invalid character");
+        } 
         /*
          * Note that this allocation has to be made from r->connection->pool
          * because it has the lifetime of the connection.  The other
