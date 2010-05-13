@@ -149,7 +149,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       
   * Stupid-simple patch specific to give rotatelogs the same behavior
     as the core log writer;
-    +1: wrowe
+    +1: wrowe, rjung
+    rjung: this should be applied to trunk first (plus backport to 2.2.x)
 --- support/rotatelogs.c	(revision 733150)
 +++ support/rotatelogs.c	(working copy)
 @@ -208,7 +208,8 @@
@@ -204,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=814847
     Backport:
       http://people.apache.org/~trawick/CVE-2009-3095-2.0.txt
-    +1: pgollucci, poirier
+    +1: pgollucci, poirier, rjung
       PG: whomever proposed this should vote for it
 
   * core output filter, CVE-2009-1891, consuming CPU after client disconnects
@@ -212,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=revision&revision=791454
     Dan's patch posted last year for 2.0.x:
       http://people.apache.org/~trawick/CVE-2009-1891-2.0-poirier.txt
-    +1: pgollucci, poirier
+    +1: pgollucci, poirier, rjung
       PG: whomever proposed this should vote for it
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
