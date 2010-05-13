@@ -28,7 +28,7 @@
 <status>Experimental</status>
 <sourcefile>mod_reqtimeout.c</sourcefile>
 <identifier>reqtimeout_module</identifier>
-<compatibility>Available in Apache 2.3 and later</compatibility>
+<compatibility>Available in Apache 2.2.15 and later</compatibility>
 
 <section id="examples"><title>Examples</title>
 
