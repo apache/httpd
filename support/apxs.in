@@ -236,7 +236,6 @@ sub get_vars {
         }
     }
     $result =~ s|;;$||;
-    $result =~ s|:| |;
     return $result;
 }
 
