@@ -179,8 +179,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=896900&view=rev
     Backport:
       http://people.apache.org/~rjung/patches/cve-2009-3555_httpd_2_0_x-backport-r891282.patch
-    Patch applies also on top of above partial fix for CVE-2009-3555
-    with some offset.
     +1: rjung, pgollucci (+1 2.0.64 w/ this)
 
   * mod_ssl: Implement SSLInsecureRenegotiation
@@ -196,8 +194,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=917044&view=rev
     Backport:
       http://people.apache.org/~rjung/patches/SSLInsecureRenegotiation_httpd_2_0_x-backport-r917044.patch 
-    Patch applies also on top of the two above partial fixes for CVE-2009-3555
-    with some offset and fuzz.
     +1: rjung, pgollucci (+1 2.0.64 w/ this)
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
