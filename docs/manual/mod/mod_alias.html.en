@@ -290,7 +290,12 @@ a different URL</td></tr>
     <p>If the client requests <code>http://example.com/service/foo.txt</code>,
     it will be told to access
     <code>http://foo2.example.com/service/foo.txt</code>
-    instead.  Only complete path segments are matched, so the above
+	instead. This includes requests with <code>GET</code> parameters, such as
+    <code>http://example.com/service/foo.pl?q=23&amp;a=42</code>,
+    it will be redirected to 
+    <code>http://foo2.example.com/service/foo.pl?q=23&amp;a=42</code>.
+	Note that <code>POST</code>s will be discarded.<br />
+	Only complete path segments are matched, so the above
     example would not match a request for
     <code>http://example.com/servicefoo.txt</code>.  For more complex matching
     using regular expressions, see the <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code> directive.</p>
