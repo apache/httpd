@@ -26,7 +26,8 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Form authentication</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>auth_form_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_form.c</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_form.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
 <h3>Summary</h3>
 
     <div class="warning"><h3>Warning</h3>

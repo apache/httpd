@@ -27,6 +27,7 @@
 <status>Base</status>
 <sourcefile>mod_auth_form.c</sourcefile>
 <identifier>auth_form_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
     <note type="warning"><title>Warning</title>
