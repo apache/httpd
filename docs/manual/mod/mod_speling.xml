@@ -23,9 +23,9 @@
 <modulesynopsis metafile="mod_speling.xml.meta">
 
 <name>mod_speling</name>
-<description>Attempts to correct mistaken URLs that
-users might have entered by ignoring capitalization and by
-allowing up to one misspelling</description>
+<description>Attempts to correct mistaken URLs by ignoring
+capitalization, or attempting to correct various minor
+misspellings.</description>
 <status>Extension</status>
 <sourcefile>mod_speling.c</sourcefile>
 <identifier>speling_module</identifier>
