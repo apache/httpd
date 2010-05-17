@@ -25,9 +25,9 @@
 <a href="../ja/mod/mod_speling.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_speling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Attempts to correct mistaken URLs that
-users might have entered by ignoring capitalization and by
-allowing up to one misspelling</td></tr>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Attempts to correct mistaken URLs by ignoring
+capitalization, or attempting to correct various minor
+misspellings.</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>speling_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_speling.c</td></tr></table>
