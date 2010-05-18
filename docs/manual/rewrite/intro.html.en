@@ -298,7 +298,10 @@ and <code>$1</code> would contain <code>foo/bar</code>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="rewritemap" id="rewritemap">Rewrite maps</a></h2>
-<p>See <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>.</p>
+
+<p>The <code class="directive"><a href="../mod/mod_rewrite.html#rewritemap">RewriteMap</a></code> directive
+provides a way to call an external function, so to speak, to do your
+rewriting for you. This is discussed in greater detail in the <a href="rewritemap.html">RewriteMap supplementary documentation</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="htaccess" id="htaccess">.htaccess files</a></h2>
