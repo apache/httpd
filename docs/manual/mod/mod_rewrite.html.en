@@ -709,55 +709,34 @@ Apache HTTP Server 2.0.41 and later</td></tr>
       <p>The following combinations for <em>MapType</em> and
       <em>MapSource</em> can be used:</p>
 
-    <table>
-    <tr><th>Map Type</th>
-        <th>Description</th></tr>
+    <dl>
 
-    <tr>
-        <td><code>txt</code></td>
-        <td>A plain text file containing space-separated key-value
-        pairs, one per line.</td>
-        <td><a href="../rewrite/rewritemap.html#txt">Details ...</a></td>
-    </tr>
+    <dt>txt</dt>
+        <dd>A plain text file containing space-separated key-value
+        pairs, one per line. (<a href="../rewrite/rewritemap.html#txt">Details ...</a>)</dd>
 
-    <tr>
-        <td><code>rnd</code></td>
-        <td>Randomly selects an entry from a plain text file</td>
-        <td><a href="../rewrite/rewritemap.html#rnd">Details ...</a></td>
-    </tr>
+    <dt>rnd</dt>
+        <dd>Randomly selects an entry from a plain text file (<a href="../rewrite/rewritemap.html#rnd">Details ...</a>)</dd>
 
-    <tr>
-        <td><code>dbm</code></td>
-        <td>Looks up an entry in a dbm file containing name, value
+    <dt>dbm</dt>
+        <dd>Looks up an entry in a dbm file containing name, value
         pairs. Hash is constructed from a plain text file format using
         the <code><a href="../programs/httxt2dbm.html">httxt2dbm</a></code> 
-        utility.</td>
-        <td><a href="../rewrite/rewritemap.html#dbm">Details ...</a></td>
-    </tr>
+        utility.  (<a href="../rewrite/rewritemap.html#dbm">Details ...</a>)</dd>
 
-    <tr>
-        <td><code>int</code></td>
-        <td>One of the four available internal functions provided by
+    <dt>int</dt>
+        <dd>One of the four available internal functions provided by
         <code>RewriteMap</code>: toupper, tolower, escape or
-        unescape.</td>
-        <td><a href="../rewrite/rewritemap.html#int">Details ...</a></td>
-    </tr>
+        unescape. (<a href="../rewrite/rewritemap.html#int">Details ...</a>)</dd>
 
-    <tr>
-        <td><code>prg</code></td>
-        <td>Calls an external program or script to process the
-        rewriting.</td>
-        <td><a href="../rewrite/rewritemap.html#prg">Details ...</a></td>
-    </tr>
+    <dt>prg</dt>
+        <dd>Calls an external program or script to process the
+        rewriting. (<a href="../rewrite/rewritemap.html#prg">Details ...</a>)</dd>
 
-    <tr>
-        <td><code>dbd</code> or <code>fastdbd</code></td>
-        <td>A SQL SELECT statement to be performed to look up the
-        rewrite target.</td>
-        <td><a href="../rewrite/rewritemap.html#dbd">Details ...</a></td>
-    </tr>
-
-    </table>
+    <dt>dbd or fastdbd</dt>
+        <dd>A SQL SELECT statement to be performed to look up the
+        rewrite target. (<a href="../rewrite/rewritemap.html#dbd">Details ...</a>)</dd>
+    </dl>
 
     <p>Further details, and numerous examples, may be found in the <a href="../rewrite/rewritemap.html">RewriteMap HowTo</a></p>
 
