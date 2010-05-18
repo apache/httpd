@@ -310,7 +310,11 @@ and <code>$1</code> would contain <code>foo/bar</code>.</p>
 </section>
 
 <section id="rewritemap"><title>Rewrite maps</title>
-<p>See <directive module="mod_rewrite">RewriteMap</directive>.</p>
+
+<p>The <directive module="mod_rewrite">RewriteMap</directive> directive
+provides a way to call an external function, so to speak, to do your
+rewriting for you. This is discussed in greater detail in the <a
+href="rewritemap.html">RewriteMap supplementary documentation</a>.</p>
 </section>
 
 <section id="htaccess"><title>.htaccess files</title>
