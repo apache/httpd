@@ -78,7 +78,7 @@ and <code>/one/three/four.html</code>.</p>
 Redirect /one/ http://one.example.com/
 </code></p></div>
 
-<p id="http2https">To redirect <code>http</code> URLs to <code>https</code>, do the
+<p>To redirect <code>http</code> URLs to <code>https</code>, do the
 following:</p>
 
 <div class="example"><p><code>
@@ -133,7 +133,8 @@ server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="vhosts" id="vhosts">Virtual Hosting</a></h2>
-<p>Virtual Hosts</p>
+<p>Although it is possible to handle <a href="vhosts.html">virtual hosts
+with mod_rewrite</a>, it is </p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">Simple Proxying</a></h2>

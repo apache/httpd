@@ -32,7 +32,14 @@ providing detailed explanations and examples.</p>
 </summary>
 
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
-<seealso><a href="tech.html">Technical details</a></seealso>
+<seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
+<seealso><a href="remapping.html">Redirection and remapping</a></seealso>
+<seealso><a href="access.html">Controlling access</a></seealso>
+<seealso><a href="vhosts.html">Virtual hosts</a></seealso>
+<seealso><a href="proxy.html">Proxying</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap</a></seealso>
+<seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
+<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
 <p>A <directive module="mod_rewrite">RewriteRule</directive> can have

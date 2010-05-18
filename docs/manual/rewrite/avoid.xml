@@ -52,6 +52,7 @@ configuration.</p>
 <seealso><a href="access.html">Controlling access</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
 <seealso><a href="proxy.html">Proxying</a></seealso>
+<seealso><a href="rewritemap.html">RewriteMap</a></seealso>
 <seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
 <!--<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>-->
 
@@ -87,7 +88,7 @@ and <code>/one/three/four.html</code>.</p>
 Redirect /one/ http://one.example.com/
 </example>
 
-<p id="http2https">To redirect <code>http</code> URLs to <code>https</code>, do the
+<p>To redirect <code>http</code> URLs to <code>https</code>, do the
 following:</p>
 
 <example>
@@ -142,7 +143,8 @@ server.</p>
 </section>
 
 <section id="vhosts"><title>Virtual Hosting</title>
-<p>Virtual Hosts</p>
+<p>Although it is possible to handle <a href="vhosts.html">virtual hosts
+with mod_rewrite</a>, it is </p>
 </section>
 
 <section id="proxy"><title>Simple Proxying</title>
