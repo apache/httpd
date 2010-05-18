@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 882992 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="rewritemap.xml.meta">
+  <parentdocument href="./">Rewrite</parentdocument>
+
+<title>Using RewriteMap</title>
+
+<summary>
+
+<p>This document supplements the <module>mod_rewrite</module> 
+<a href="../mod/mod_rewrite.html">reference documentation</a>. It describes
+the use of the <directive module="mod_rewrite">RewriteMap</directive> directive,
+and provides examples of each of the various <code>RewriteMap</code> types.</p>
+
+<note type="warning">Note that many of these examples won't work unchanged in your
+particular server configuration, so it's important that you understand
+them, rather than merely cutting and pasting the examples into your
+configuration.</note>
+
+</summary>
+<seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
+<seealso><a href="intro.html">mod_rewrite introduction</a></seealso>
+<seealso><a href="remapping.html">Redirection and remapping</a></seealso>
+<seealso><a href="access.html">Controlling access</a></seealso>
+<seealso><a href="vhosts.html">Virtual hosts</a></seealso>
+<seealso><a href="proxy.html">Proxying</a></seealso>
+<seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
+<seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
+
+<section id="introduction"><title>Introduction</title>
+
+      <p>The <directive>RewriteMap</directive> directive defines a
+      <em>Rewriting Map</em> which can be used inside rule
+      substitution strings by the mapping-functions to
+      insert/substitute fields through a key lookup. The source of
+      this lookup can be of various types.</p>
+
+      <p>The <a id="mapfunc" name="mapfunc"><em>MapName</em></a> is
+      the name of the map and will be used to specify a
+      mapping-function for the substitution strings of a rewriting
+      rule via one of the following constructs:</p>
+
+      <p class="indent">
+        <strong><code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>}</code><br />
+         <code>${</code> <em>MapName</em> <code>:</code>
+        <em>LookupKey</em> <code>|</code> <em>DefaultValue</em>
+        <code>}</code></strong>
+      </p>
+
+      <p>When such a construct occurs, the map <em>MapName</em> is
+      consulted and the key <em>LookupKey</em> is looked-up. If the
+      key is found, the map-function construct is substituted by
+      <em>SubstValue</em>. If the key is not found then it is
+      substituted by <em>DefaultValue</em> or by the empty string
+      if no <em>DefaultValue</em> was specified.</p>
+
+      <p>For example, you might define a
+      <directive>RewriteMap</directive> as:</p>
+
+      <example>
+      RewriteMap examplemap txt:/path/to/file/map.txt
+      </example>
+
+      <p>You would then be able to use this map in a
+      <directive>RewriteRule</directive> as follows:</p>
+
+      <example>
+      RewriteRule ^/ex/(.*) ${examplemap:$1}
+      </example>
+
+      <p>The following combinations for <em>MapType</em> and
+      <em>MapSource</em> can be used:</p>
+  </section>
+
+    <section id="txt"><title>txt: Plain text maps</title>
+
+   <p>MapType: <code>txt</code>, MapSource: Unix filesystem
+      path to valid regular file</p>
+
+      <p>This is the standard rewriting map feature where the
+      <em>MapSource</em> is a plain ASCII file containing
+      either blank lines, comment lines (starting with a '#'
+      character) or pairs like the following - one per
+      line.</p>
+
+      <p class="indent">
+        <strong><em>MatchingKey</em>
+        <em>SubstValue</em></strong>
+      </p>
+
+<example><title>Example</title>
+<pre>
+##
+##  map.txt -- rewriting map
+##
+
+Ralf.S.Engelschall    rse   # Bastard Operator From Hell
+Mr.Joe.Average        joe   # Mr. Average
+</pre>
+</example>
+
+<example>
+RewriteMap real-to-user txt:/path/to/file/map.txt
+</example>
+
+</section>
+
+<section id="rnd"><title>Randomized Plain Text</title>
+
+           <p>MapType: <code>rnd</code>, MapSource: Unix filesystem
+          path to valid regular file</p>
+
+          <p>This is identical to the Standard Plain Text variant
+          above but with a special post-processing feature: After
+          looking up a value it is parsed according to contained
+          ``<code>|</code>'' characters which have the meaning of
+          ``or''. In other words they indicate a set of
+          alternatives from which the actual returned value is
+          chosen randomly. For example, you might use the following map
+          file and directives to provide a random load balancing between
+          several back-end server, via a reverse-proxy. Images are sent
+          to one of the servers in the 'static' pool, while everything
+          else is sent to one of the 'dynamic' pool.</p>
+          <p>Example:</p>
+
+<example><title>Rewrite map file</title>
+<pre>
+##
+##  map.txt -- rewriting map
+##
+
+static   www1|www2|www3|www4
+dynamic  www5|www6
+</pre>
+</example>
+
+<example><title>Configuration directives</title>
+RewriteMap servers rnd:/path/to/file/map.txt<br />
+<br />
+RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1
+[NC,P,L]<br />
+RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
+</example>
+
+</section>
+
+<section id="dbm"><title>DBM Hash File</title>
+
+<p>MapType:
+          <code>dbm[=<em>type</em>]</code>, MapSource: Unix filesystem
+          path to valid regular file</p>
+
+          <p>Here the source is a binary format DBM file containing
+          the same contents as a <em>Plain Text</em> format file, but
+          in a special representation which is optimized for really
+          fast lookups. The <em>type</em> can be sdbm, gdbm, ndbm, or
+          db depending on <a href="../install.html#dbm">compile-time
+          settings</a>.  If the <em>type</em> is omitted, the
+          compile-time default will be chosen.</p>
+
+          <p>To create a dbm file from a source text file, use the <a
+          href="../programs/httxt2dbm.html">httxt2dbm</a> utility.</p>
+
+<example>
+$ httxt2dbm -i mapfile.txt -o mapfile.map
+</example>
+</section>
+
+          <section id="int"><title>Internal Function</title>
+          <p>
+           MapType: <code>int</code>, MapSource: Internal Apache httpd
+          function</p>
+
+          <p>Here, the source is an internal Apache httpd function.
+          Currently you cannot create your own, but the following
+          functions already exist:</p>
+
+          <ul>
+            <li><strong>toupper</strong>:<br />
+             Converts the key to all upper case.</li>
+
+            <li><strong>tolower</strong>:<br />
+             Converts the key to all lower case.</li>
+
+            <li><strong>escape</strong>:<br />
+             Translates special characters in the key to
+            hex-encodings.</li>
+
+            <li><strong>unescape</strong>:<br />
+             Translates hex-encodings in the key back to
+            special characters.</li>
+          </ul>
+</section>
+
+<section id="prg"><title>External Rewriting Program</title>
+<p>
+           MapType: <code>prg</code>, MapSource: Unix filesystem
+          path to valid regular file
+          </p>
+
+          <p>Here the source is a program, not a map file. To
+          create it you can use a language of your choice, but
+          the result has to be an executable program (either
+          object-code or a script with the magic cookie trick
+          '<code>#!/path/to/interpreter</code>' as the first
+          line).</p>
+
+         <p>This program is started once, when the Apache httpd server
+          is started, and then communicates with the rewriting engine
+          via its <code>stdin</code> and <code>stdout</code>
+          file-handles. For each map-function lookup it will
+          receive the key to lookup as a newline-terminated string
+          on <code>stdin</code>. It then has to give back the
+          looked-up value as a newline-terminated string on
+          <code>stdout</code> or the four-character string
+          ``<code>NULL</code>'' if it fails (<em>i.e.</em>, there
+          is no corresponding value for the given key).</p>
+
+          <p>This feature utilizes the <code>rewrite-map</code> mutex,
+          which is required for reliable communication with the program.
+          The mutex mechanism and lock file can be configured with the
+          <directive module="core">Mutex</directive> directive.</p>
+
+          <p>External rewriting programs are not started if they're defined in a
+          context that does not have <directive>RewriteEngine</directive> set to
+          <code>on</code></p>.
+
+          <p>A trivial program which will implement a 1:1 map (<em>i.e.</em>,
+          key == value) could be:</p>
+
+<example>
+<pre>
+#!/usr/bin/perl
+$| = 1;
+while (&lt;STDIN&gt;) {
+    # ...put here any transformations or lookups...
+    print $_;
+}
+</pre>
+</example>
+
+          <p>But be very careful:</p>
+
+          <ol>
+            <li>``<em>Keep it simple, stupid</em>'' (KISS).
+            If this program hangs, it will cause Apache httpd to hang
+            when trying to use the relevant rewrite rule.</li>
+
+            <li>A common mistake is to use buffered I/O on
+            <code>stdout</code>. Avoid this, as it will cause a deadloop!
+            ``<code>$|=1</code>'' is used above, to prevent this.</li>
+          </ol>
+          </section>
+
+          <section id="dbd"><title>SQL Query</title>
+           <p>MapType: <code>dbd</code> or <code>fastdbd</code>,
+           MapSource: An SQL SELECT statement that takes a single
+                      argument and returns a single value.</p>
+
+          <p>This uses <module>mod_dbd</module> to implement a rewritemap
+          by lookup in an SQL database.  There are two forms:
+          <code>fastdbd</code> caches database lookups internally,
+          <code>dbd</code> doesn't.  So <code>dbd</code> incurs a
+          performance penalty but responds immediately if the database
+          contents are updated, while <code>fastdbd</code> is more
+          efficient but won't re-read database contents until server
+          restart.</p>
+          <p>If a query returns more than one row, a random row from
+          the result set is used.</p>
+<example>
+<title>Example</title>
+RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
+</example>
+</section>
+
+<section id="summary"><title>Summary</title>
+
+      <p>The <directive>RewriteMap</directive> directive can occur more than
+      once. For each mapping-function use one
+      <directive>RewriteMap</directive> directive to declare its rewriting
+      mapfile. While you cannot <strong>declare</strong> a map in
+      per-directory context it is of course possible to
+      <strong>use</strong> this map in per-directory context. </p>
+
+<note><title>Note</title> For plain text and DBM format files the
+looked-up keys are cached in-core until the <code>mtime</code> of the
+mapfile changes or the server does a restart. This way you can have
+map-functions in rules which are used for <strong>every</strong>
+request.  This is no problem, because the external lookup only happens
+once!
+</note>
+
+</section>
+
+</manualpage> 
