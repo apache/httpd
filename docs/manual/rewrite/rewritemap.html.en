@@ -92,9 +92,16 @@ RewriteMap <em>MapName</em> <em>MapType</em>:<em>MapSource</em>
       </code></p></div>
     <p>You would then be able to use this map in a
       <code class="directive">RewriteRule</code> as follows:</p>
-    <div class="example"><p><code>
-      RewriteRule ^/ex/(.*) ${examplemap:$1}
-      </code></p></div>
+<div class="example"><p><code>
+  RewriteRule ^/ex/(.*) ${examplemap:$1}
+</code></p></div>
+
+<p>A default value can be specified in the event that nothing is found
+in the map:</p>
+
+<div class="example"><p><code>
+RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}
+</code></p></div>
 
 <p>The sections that follow describe the various <em>MapType</em>s that
 may be used, and give examples of each.</p>
@@ -102,30 +109,67 @@ may be used, and give examples of each.</p>
 <div class="section">
 <h2><a name="txt" id="txt">txt: Plain text maps</a></h2>
     
-    <p>MapType: <code>txt</code>, MapSource: Unix filesystem
-      path to valid regular file</p>
-    <p>This is the standard rewriting map feature where the
-      <em>MapSource</em> is a plain ASCII file containing
-      either blank lines, comment lines (starting with a '#'
-      character) or pairs like the following - one per
-      line.</p>
+
+    <p>When a MapType of <code>txt</code>is used, the MapSource is a filesystem path to a
+    plain-text mapping file, containing space-separated key/value pair
+    per line. Optionally, a line may be contain a comment, starting with
+    a '#' character.</p>
+
+    <p>For example, the following might be valid entries in a map
+    file.</p>
+
     <p class="indent">
-      <strong>
-        <em>MatchingKey</em>
-        <em>SubstValue</em>
-      </strong>
+      # Comment line
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
+      <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # comment<br />
     </p>
-    <div class="example"><h3>Example</h3><pre>
+
+    <p>When the RewriteMap is invoked the argument is looked for in the
+    first argument of a line, and, if found, the substitution value is
+    returned.</p>
+
+    <p>For example, we might use a mapfile to translate product names to
+    product IDs for easier-to-remember URLs, using the following
+    recipe:</p>
+
+    <div class="example"><h3>Product to ID configuration</h3><p><code>
+    RewriteMap product2id txt:/etc/apache2/productmap.txt<br />
+    RewriteRule ^/product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
+    </code></p></div>
+
+    <p>We assume here that the <code>prods.php</code> script knows what
+    to do when it received an argument of <code>id=NOTFOUND</code> when
+    a product is not found in the lookup map.</p>
+
+    <p>The file <code>/etc/apache2/productmap.txt</code> then contains
+    the following:</p>
+
+    <div class="example"><h3>Product to ID map</h3><pre>
 ##
-##  map.txt -- rewriting map
+##  productmap.txt - Product to ID map file
 ##
 
-Ralf.S.Engelschall    rse   # Bastard Operator From Hell
-Mr.Joe.Average        joe   # Mr. Average
+television 993
+stereo     198
+fishingrod 043
+basketball 418
+telephone  328
 </pre></div>
+
+    <p>Thus, when <code>http://example.com/product/television</code> is
+    requested, the <code>RewriteRule</code> is applied, and the request
+    is internally mapped to <code>/prods.php?id=993</code>.</p>
+
+    <div class="note"><h3>Note: .htaccess files</h3>
+    The example given is crafted to be used in server or virtualhost
+    scope. If you're planning to use this in a <code>.htaccess</code>
+    file, you'll need to remove the leading slash from the rewrite
+    pattern in order for it to match anything:
     <div class="example"><p><code>
-RewriteMap real-to-user txt:/path/to/file/map.txt
-</code></p></div>
+    RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
+    </code></p></div>
+    </div>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="rnd" id="rnd">rnd: Randomized Plain Text</a></h2>
