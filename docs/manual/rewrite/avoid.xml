@@ -144,7 +144,23 @@ server.</p>
 
 <section id="vhosts"><title>Virtual Hosting</title>
 <p>Although it is possible to handle <a href="vhosts.html">virtual hosts
-with mod_rewrite</a>, it is </p>
+with mod_rewrite</a>, it is seldom the right way. Creating individual
+&lt;VirtualHost&gt; blocks is almost always the right way to go. In the
+event that you have an enormous number of virtual hosts, consider using
+<module>mod_vhost_alias</module> to crate these hosts automatically.</p>
+
+<p>Third-party modules sucha as <a href="link_needed">mod_macro</a> are
+also useful for creating a large number of virtual hosts dymaically.</p>
+
+<p>Using <module>mod_rewrite</module> for vitualhost creation may be
+appropriate if you are using a hosting service that does not provide
+you access to the server configuration files, and you are therefore
+restricted to configuration using <code>.htaccess</code> files.</p>
+
+<p>See the <a href="vhosts.html">virtual hosts with mod_rewrite</a>
+document for more details on how you might accomplish this if it still
+seems like the right approach.</p>
+
 </section>
 
 <section id="proxy"><title>Simple Proxying</title>
