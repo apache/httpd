@@ -224,20 +224,49 @@ static   www1|www1|www2|www3|www4
 
   <section id="dbm">
     <title>dbm: DBM Hash File</title>
-    <p>MapType:
-          <code>dbm[=<em>type</em>]</code>, MapSource: Unix filesystem
-          path to valid regular file</p>
-    <p>Here the source is a binary format DBM file containing
-          the same contents as a <em>Plain Text</em> format file, but
-          in a special representation which is optimized for really
-          fast lookups. The <em>type</em> can be sdbm, gdbm, ndbm, or
-          db depending on <a href="../install.html#dbm">compile-time
-          settings</a>.  If the <em>type</em> is omitted, the
-          compile-time default will be chosen.</p>
-    <p>To create a dbm file from a source text file, use the <a href="../programs/httxt2dbm.html">httxt2dbm</a> utility.</p>
-    <example>
+
+    <p>When a MapType of <code>dbm</code> is used, the MapSource is a
+    filesystem path to a DBM database file containing key/value pairs to
+    be used in the mapping. This works exactly the same way as the
+    <code>txt</code> map, but is much faster, because a DBM is indexed,
+    whereas a text file is not. This allows more rapid access to the
+    desired key.</p>
+
+    <p>You may optionally specify a particular dbm type:</p>
+
+ <example>
+ RewriteMap examplemap dbm=sdbm:/etc/apache/mapfile.dbm
+ </example>
+
+    <p>The type can be sdbm, gdbm, ndbm or db.
+    However, it is recommended that you just use the <a
+    href="../programs/httxt2dbm.html">httxt2dbm</a> utility that is
+    provided with Apache HTTP Server, as it will use the correct DBM library,
+    matching the one that was used when httpd itself was built.</p>
+
+    <p>To create a dbm file, first create a text map file as described
+    in the <a href="#txt">txt</a> section. Then run
+    <code>httxt2dbm</code>:</p>
+
+<example>
 $ httxt2dbm -i mapfile.txt -o mapfile.map
 </example>
+
+<p>You can then reference the resulting file in your
+<code>RewriteMap</code> directive:</p>
+
+<example>
+RewriteMap mapname dbm:/etc/apache/mapfile.map
+</example>
+
+<note>
+<p>Note that with some dbm types, more than one file is generated, with
+a common base name. For example, you may have two files named
+<code>mapfile.map.dir</code> and <code>mapfiile.map.pag</code>. This is
+normal, and you need only use the base name <code>mapfile.map</code> in
+your <code>RewriteMap</code> directive.</p>
+</note>
+
   </section>
   <section id="int">
     <title>int: Internal Function</title>
