@@ -119,7 +119,7 @@ may be used, and give examples of each.</p>
     file.</p>
 
     <p class="indent">
-      # Comment line
+      # Comment line<br />
       <strong><em>MatchingKey</em> <em>SubstValue</em></strong><br />
       <strong><em>MatchingKey</em> <em>SubstValue</em></strong> # comment<br />
     </p>
@@ -174,20 +174,19 @@ telephone  328
 <div class="section">
 <h2><a name="rnd" id="rnd">rnd: Randomized Plain Text</a></h2>
     
-    <p>MapType: <code>rnd</code>, MapSource: Unix filesystem
-          path to valid regular file</p>
-    <p>This is identical to the Standard Plain Text variant
-          above but with a special post-processing feature: After
-          looking up a value it is parsed according to contained
-          ``<code>|</code>'' characters which have the meaning of
-          ``or''. In other words they indicate a set of
-          alternatives from which the actual returned value is
-          chosen randomly. For example, you might use the following map
-          file and directives to provide a random load balancing between
-          several back-end server, via a reverse-proxy. Images are sent
-          to one of the servers in the 'static' pool, while everything
-          else is sent to one of the 'dynamic' pool.</p>
-    <p>Example:</p>
+
+    <p>When a MapType of <code>rnd</code> is used, the MapSource is a
+    filesystem path to a plain-text mapping file, each line of which
+    contains a key, and one or more values separated by <code>|</code>.
+    One of these values will be chosen at random if the key is
+    matched.</p>
+
+    <p>For example, you might use the following map
+    file and directives to provide a random load balancing between
+    several back-end server, via a reverse-proxy. Images are sent
+    to one of the servers in the 'static' pool, while everything
+    else is sent to one of the 'dynamic' pool.</p>
+
     <div class="example"><h3>Rewrite map file</h3><pre>
 ##
 ##  map.txt -- rewriting map
@@ -196,13 +195,29 @@ telephone  328
 static   www1|www2|www3|www4
 dynamic  www5|www6
 </pre></div>
+
     <div class="example"><h3>Configuration directives</h3><p><code>
-RewriteMap servers rnd:/path/to/file/map.txt<br />
-<br />
-RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1
-[NC,P,L]<br />
-RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
-</code></p></div>
+    RewriteMap servers rnd:/path/to/file/map.txt<br />
+    <br />
+    RewriteRule ^/(.*\.(png|gif|jpg)) http://${servers:static}/$1 [NC,P,L]<br />
+    RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
+    </code></p></div>
+
+    <p>So, when an image is requested and the first of these rules is
+    matched, <code>RewriteMap</code> looks up the string
+    <code>static</code> in the map file, which returns one of the
+    specified hostnames at random, which is then used in the
+    <code>RewriteRule</code> target.</p>
+
+    <p>If you wanted to have one of the servers more likely to be chosen
+    (for example, if one of the server has more memory than the others,
+    and so can handle more requests) simply list it more times in the
+    map file.</p>
+
+    <div class="example"><p><code>
+static   www1|www1|www2|www3|www4
+    </code></p></div>
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="dbm" id="dbm">dbm: DBM Hash File</a></h2>
