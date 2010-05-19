@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.16
 
+  *) mod_ssl: Fix segfault at startup if proxy client certs are shared
+     across multiple vhosts.  PR 39915.  [Joe Orton]
+
   *) mod_proxy_http: Log the port of the remote server in various messages.
      PR 48812. [Igor Galić <i galic brainsware org>] 
 
