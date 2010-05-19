@@ -102,6 +102,17 @@ in the map:</p>
 RewriteRule ^/ex/(.*) ${examplemap:$1|/not_found.html}
 </example>
 
+<note><title>Per-directory and .htaccess context</title>
+<p>
+The <code>RewriteMap</code> directive  may not be used in
+&lt;Directory&gt; sections or <code>.htaccess</code> files. You must
+declare the map in server or virtualhost context. You may use the map,
+once created, in your <code>RewriteRule</code> and
+<code>RewriteCond</code> directives in those scopes. You just can't
+<strong>declare</strong> it in those scopes.
+</p>
+</note>
+
 <p>The sections that follow describe the various <em>MapType</em>s that
 may be used, and give examples of each.</p>
   </section>
@@ -169,6 +180,15 @@ telephone  328
     <example>
     RewriteRule ^product/(.*) /prods.php?id=${product2id:$1|NOTFOUND} [PT]
     </example>
+    </note>
+
+    <note><title>Cached lookups</title>
+    <p>
+    The looked-up keys are cached by httpd until the <code>mtime</code>
+    (modified time) of the mapfile changes, or the httpd server is
+    restarted. This ensures better performance on maps that are called
+    by many requests.
+    </p>
     </note>
 
   </section>
@@ -267,6 +287,15 @@ normal, and you need only use the base name <code>mapfile.map</code> in
 your <code>RewriteMap</code> directive.</p>
 </note>
 
+<note><title>Cached lookups</title>
+<p>
+The looked-up keys are cached by httpd until the <code>mtime</code>
+(modified time) of the mapfile changes, or the httpd server is
+restarted. This ensures better performance on maps that are called
+by many requests.
+</p>
+</note>
+
   </section>
 
   <section id="int">
@@ -312,76 +341,108 @@ your <code>RewriteMap</code> directive.</p>
   </section>
 
   <section id="prg"><title>prg: External Rewriting Program</title>
-  
-<p>MapType: <code>prg</code>, MapSource: Unix filesystem path to valid regular file </p>
 
-<p>Here the source is a program, not a map file. To
-create it you can use a language of your choice, but
-the result has to be an executable program (either
-object-code or a script with the magic cookie trick
-'<code>#!/path/to/interpreter</code>' as the first
-line).</p><p>This program is started once, when the Apache httpd server
-is started, and then communicates with the rewriting engine
-via its <code>stdin</code> and <code>stdout</code>
-file-handles. For each map-function lookup it will
-receive the key to lookup as a newline-terminated string
-on <code>stdin</code>. It then has to give back the
-looked-up value as a newline-terminated string on
-<code>stdout</code> or the four-character string
-``<code>NULL</code>'' if it fails (<em>i.e.</em>, there
-is no corresponding value for the given key).</p><p>This feature utilizes the <code>rewrite-map</code> mutex,
-which is required for reliable communication with the program.
-The mutex mechanism and lock file can be configured with the
-<directive module="core">Mutex</directive> directive.</p><p>External rewriting programs are not started if they're defined in a
-context that does not have <directive>RewriteEngine</directive> set to
-<code>on</code></p>.
+    <p>When a MapType of <code>prg</code> is used, the MapSource is a
+    filesystem path to an executable program which will providing the
+    mapping behavior. This can be a compiled binary file, or a program
+    in an interpreted language such as Perl or Python.</p>
 
-          <p>A trivial program which will implement a 1:1 map (<em>i.e.</em>,
-          key == value) could be:</p><example><pre>
-#!/usr/bin/perl
-$| = 1;
-while (&lt;STDIN&gt;) {
-    # ...put here any transformations or lookups...
-    print $_;
-}
-</pre></example><p>But be very careful:</p><ol><li>``<em>Keep it simple, stupid</em>'' (KISS).
-If this program hangs, it will cause Apache httpd to hang
-when trying to use the relevant rewrite rule.</li><li>A common mistake is to use buffered I/O on
-<code>stdout</code>. Avoid this, as it will cause a deadloop!
-``<code>$|=1</code>'' is used above, to prevent this.</li></ol></section>
+    <p>This program is started once, when the Apache HTTP Server is
+    started, and then communicates with the rewriting engine via
+    <code>STDIN</code> and <code>STDOUT</code>. That is, for each map
+    function lookup, it expects one argument via <code>STDIN</code>, and
+    should return one new-line terminated response string on
+    <code>STDOUT</code>. If there is no corresponding lookup value, the
+    map program should return the four-character string
+    "<code>NULL</code>" to indicate this.</p>
+
+    <p>External rewriting programs are not started if they're defined in
+    a context that does not have <directive
+    module="mod_rewrite">RewriteEngine</directive> set to
+    <code>on</code>.</p>
+
+    <p>This feature utilizes the <code>rewrite-map</code> mutex,
+    which is required for reliable communication with the program.
+    The mutex mechanism and lock file can be configured with the
+    <directive module="core">Mutex</directive> directive.</p>
+
+    <p>A simple example is shown here which will replace all dashes with
+    underscores in a request URI.</p>
+
+    <example><title>Rewrite configuration</title>
+    RewriteMap d2u prg:/www/bin/dash2under.pl<br />
+    RewriteRule - ${d2u:%{REQUEST_URI}}
+    </example>
+
+    <example><title>dash2under.pl</title>
+    #!/usr/bin/perl<br />
+    $| = 1; # Turn off I/O buffering<br />
+    while (&lt;STDIN&gt;) {<br />
+        <indent>
+        s/-/_/g; # Replace dashes with underscores<br />
+        print $_;<br />
+        </indent>
+    }<br />
+    </example>
+
+<note><title>Caution!</title>
+<ul>
+<li>Keep your rewrite map program as simple as possible. If the program
+hangs, it will cause httpd to wait indefinitely for a response from the
+map, which will, in turn, cause httpd to stop responding to
+requests.</li>
+<li>Be sure to turn off buffering in your program. In Perl this is done
+by the second line in the example script: <code>$| = 1;</code> This will
+of course vary in other languages. Buffered I/O will cause httpd to wait
+for the output, and so it will hang.</li>
+<li>Remember that there is only one copy of the program, started at
+server startup. All requests will need to go through this one bottleneck.
+This can cause significant slowdowns if many requests must go through
+this process, or if the script itself is very slow.</li>
+</ul>
+</note>
+
+</section>
+
+
   <section id="dbd">
     <title>dbd or fastdbd: SQL Query</title>
-    <p>MapType: <code>dbd</code> or <code>fastdbd</code>,
-MapSource: An SQL SELECT statement that takes a single
-          argument and returns a single value.</p>
-    <p>This uses <module>mod_dbd</module> to implement a rewritemap
-by lookup in an SQL database.  There are two forms:
-<code>fastdbd</code> caches database lookups internally,
-<code>dbd</code> doesn't.  So <code>dbd</code> incurs a
-performance penalty but responds immediately if the database
-contents are updated, while <code>fastdbd</code> is more
-efficient but won't re-read database contents until server
-restart.</p>
+
+    <p>When a MapType of <code>dbd</code> or <code>fastdbd</code> is
+    used, the MapSource is a SQL SELECT statement that takes a single
+    argument and returns a single value.</p>
+
+    <p><module>mod_dbd</module> will need to be configured to point at
+    the right database for this statement to be executed.</p>
+
+    <p>There are two forms of this MapType.
+    Using a MapType of <code>dbd</code> causes the query to be
+    executed with each map request, while using <code>fastdbd</code>
+    caches the database lookups internally. So, while
+    <code>fastdbd</code> is more efficient, and therefore faster, it
+    won't pick up on changes to the database until the server is
+    restarted.</p>
+
     <p>If a query returns more than one row, a random row from
 the result set is used.</p>
+
     <example><title>Example</title>
 RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
-</example>
+    </example>
+
   </section>
   <section id="summary">
     <title>Summary</title>
+
     <p>The <directive>RewriteMap</directive> directive can occur more than
-      once. For each mapping-function use one
-      <directive>RewriteMap</directive> directive to declare its rewriting
-      mapfile. While you cannot <strong>declare</strong> a map in
-      per-directory context it is of course possible to
-      <strong>use</strong> this map in per-directory context. </p>
-    <note><title>Note</title> For plain text and DBM format files the
-looked-up keys are cached in-core until the <code>mtime</code> of the
-mapfile changes or the server does a restart. This way you can have
-map-functions in rules which are used for <strong>every</strong>
-request.  This is no problem, because the external lookup only happens
-once!
-</note>
+    once. For each mapping-function use one
+    <directive>RewriteMap</directive> directive to declare its rewriting
+    mapfile.</p>
+      
+    <p>While you cannot <strong>declare</strong> a map in
+    per-directory context (<code>.htaccess</code> files or
+    &lt;Directory&gt; blocks) it is possible to
+    <strong>use</strong> this map in per-directory context. </p>
+
   </section>
 </manualpage>
