@@ -106,12 +106,15 @@ static char hdr_in  = '0';  /* RequestHeader */
 static char hdr_out = '1';  /* Header onsuccess */
 static char hdr_err = '2';  /* Header always */
 
+/* Callback function type. */
+typedef const char *format_tag_fn(request_rec *r, char *a);
+
 /*
  * There is an array of struct format_tag per Header/RequestHeader
  * config directive
  */
 typedef struct {
-    const char* (*func)(request_rec *r,char *arg);
+    format_tag_fn *func;
     char *arg;
 } format_tag;
 
@@ -867,7 +870,7 @@ static const command_rec headers_cmds[] =
 };
 
 static void register_format_tag_handler(const char *tag,
-                                        const void *tag_handler)
+                                        format_tag_fn *tag_handler)
 {
     apr_hash_set(format_tag_hash, tag, 1, tag_handler);
 }
@@ -875,10 +878,10 @@ static void register_format_tag_handler(const char *tag,
 static int header_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     format_tag_hash = apr_hash_make(p);
-    register_format_tag_handler("D", (const void *)header_request_duration);
-    register_format_tag_handler("t", (const void *)header_request_time);
-    register_format_tag_handler("e", (const void *)header_request_env_var);
-    register_format_tag_handler("s", (const void *)header_request_ssl_var);
+    register_format_tag_handler("D", header_request_duration);
+    register_format_tag_handler("t", header_request_time);
+    register_format_tag_handler("e", header_request_env_var);
+    register_format_tag_handler("s", header_request_ssl_var);
 
     return OK;
 }
