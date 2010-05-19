@@ -66,7 +66,7 @@ documentation</a></li>
 <li><a href="access.html">Using mod_rewrite to control access</a></li>
 <li><a href="vhosts.html">Dynamic virtual hosts with mod_rewrite</a></li>
 <li><a href="proxy.html">Dynamic proxying with mod_rewrite</a></li>
-<li><a href="rewritemap.html">RewriteMap</a></li>
+<li><a href="rewritemap.html">Using RewriteMap</a></li>
 <li><a href="advanced.html">Advanced techniques and tricks</a></li>
 <li><a href="avoid.html">When <strong>NOT</strong> to use mod_rewrite</a></li>
 <li><a href="flags.html">RewriteRule Flags</a></li>

@@ -39,7 +39,7 @@ A number of recipes are provided that describe common scenarios.</p>
 <seealso><a href="access.html">Controlling access</a></seealso>
 <seealso><a href="vhosts.html">Virtual hosts</a></seealso>
 <!--<seealso><a href="proxy.html">Proxying</a></seealso>-->
-<seealso><a href="rewritemap.html">RewriteMap</a></seealso>
+<seealso><a href="rewritemap.html">Using RewriteMap</a></seealso>
 <seealso><a href="advanced.html">Advanced techniques and tricks</a></seealso>
 <seealso><a href="avoid.html">When not to use mod_rewrite</a></seealso>
 
