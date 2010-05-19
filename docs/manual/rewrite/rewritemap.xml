@@ -268,14 +268,16 @@ your <code>RewriteMap</code> directive.</p>
 </note>
 
   </section>
+
   <section id="int">
     <title>int: Internal Function</title>
-    <p>
-           MapType: <code>int</code>, MapSource: Internal Apache httpd
-          function</p>
-    <p>Here, the source is an internal Apache httpd function.
-          Currently you cannot create your own, but the following
-          functions already exist:</p>
+
+    <p>When a MapType of <code>int</code> is used, the MapSource is one
+    of the available internal RewriteMap functions. Currently there
+    is no mechanism for creating your own functions. The available
+    functions are:
+    </p>
+
     <ul>
       <li><strong>toupper</strong>:<br/>
              Converts the key to all upper case.</li>
@@ -288,7 +290,27 @@ your <code>RewriteMap</code> directive.</p>
              Translates hex-encodings in the key back to
             special characters.</li>
     </ul>
+
+    <p>
+    To use one of these functions, create a <code>RewriteMap</code> referencing
+    the int function, and then use that in your <code>RewriteRule</code>:
+    </p>
+
+    <example><title>Redirect a URI to an all-lowercase version of itself</title>
+    RewriteMap lc int:tolower<br />
+    RewriteRule (.*[A-Z]+.*) lc($1) [R]
+    </example>
+
+    <note>
+    <p>Please note that the example offered here is for
+    illustration purposes only, and is not a recommendation. If you want
+    to make URLs case-insensitive, consider using
+    <module>mod_speling</module> instead.
+    </p>
+    </note>
+
   </section>
+
   <section id="prg"><title>prg: External Rewriting Program</title>
   
 <p>MapType: <code>prg</code>, MapSource: Unix filesystem path to valid regular file </p>
