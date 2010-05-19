@@ -68,6 +68,10 @@ RELEASE SHOWSTOPPERS:
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
 
+  * Running the log_transaction hook from pool cleanup is fubar:
+
+      http://marc.info/?l=apache-httpd-dev&m=123910381908293&w=1
+
   FOR NEXT ALPHA:
 
 
