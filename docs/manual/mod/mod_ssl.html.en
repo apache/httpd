@@ -161,6 +161,35 @@ included two OU fields, <code>SSL_SERVER_S_DN_OU_0</code> and
 <p><code>SSL_CLIENT_V_REMAIN</code> is only available in version 2.1
 and later.</p>
 
+<p>A number of additional environment variables can also be used
+in <code class="directive">SSLRequire</code> expressions, or in custom log
+formats:</p>
+
+<div class="note"><pre>HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
+HTTP_REFERER           QUERY_STRING          SERVER_SOFTWARE
+HTTP_COOKIE            REMOTE_HOST           API_VERSION
+HTTP_FORWARDED         REMOTE_IDENT          TIME_YEAR
+HTTP_HOST              IS_SUBREQ             TIME_MON
+HTTP_PROXY_CONNECTION  DOCUMENT_ROOT         TIME_DAY
+HTTP_ACCEPT            SERVER_ADMIN          TIME_HOUR
+THE_REQUEST            SERVER_NAME           TIME_MIN
+REQUEST_FILENAME       SERVER_PORT           TIME_SEC
+REQUEST_METHOD         SERVER_PROTOCOL       TIME_WDAY
+REQUEST_SCHEME         REMOTE_ADDR           TIME
+REQUEST_URI            REMOTE_USER</pre></div>
+
+<p>In these contexts, two special formats can also be used:</p>
+
+<dl>
+  <dt><code>ENV:<em>variablename</em></code></dt>
+  <dd>This will expand to the standard environment
+  variable <em>variablename</em>.</dd>
+  
+  <dt><code>HTTP:<em>headername</em></code></dt>
+  <dd>This will expand to the value of the request header with name
+  <em>headername</em>.</dd>
+</dl>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="logformats" id="logformats">Custom Log Formats</a></h2>
@@ -1549,7 +1578,7 @@ variable ::= "<strong>%{</strong>" varname "<strong>}</strong>"
 function ::= funcname "<strong>(</strong>" funcargs "<strong>)</strong>"
 </pre>
 </blockquote>
-<p>while for <code>varname</code> any variable from <a href="#table3">Table 3</a> can be used. Finally for
+<p>For <code>varname</code> any of the variables described in <a href="#envvars">Environment Variables</a> can be used.  For
 <code>funcname</code> the following functions are available:</p>
 <ul>
 <li><code>file(</code><em>filename</em><code>)</code>
@@ -1565,77 +1594,44 @@ Per-Server Class context <em>expression</em> is parsed at startup time and
 at runtime only the machine representation is executed. For Per-Directory
 context this is different: here <em>expression</em> has to be parsed and
 immediately executed for every request.</p>
-<div class="example"><h3>Example</h3><p><code>
-SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/ \<br />
-            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd." \<br />
-            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"} \<br />
-            and %{TIME_WDAY} &gt;= 1 and %{TIME_WDAY} &lt;= 5 \<br />
-            and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \<br />
-           or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/
-</code></p></div>
-<p>The <code>PeerExtList(<em>object id</em>)</code> function expects to find
-zero or more instances of the X.509 Certificate Extension (as identified by
-the given <em>object id</em>) in the client certificate, and compares the
-left-hand side string against the value of any matching attribute value. Every
-extension with the specified object id is checked, until a match is found.
-</p>
+<div class="example"><h3>Example</h3><pre>SSLRequire (    %{SSL_CIPHER} !~ m/^(EXP|NULL)-/                \
+            and %{SSL_CLIENT_S_DN_O} eq "Snake Oil, Ltd."        \
+            and %{SSL_CLIENT_S_DN_OU} in {"Staff", "CA", "Dev"}  \
+            and %{TIME_WDAY} &gt;= 1 and %{TIME_WDAY} &lt;= 5          \
+            and %{TIME_HOUR} &gt;= 8 and %{TIME_HOUR} &lt;= 20       ) \
+           or %{REMOTE_ADDR} =~ m/^192\.76\.162\.[0-9]+$/</pre></div>
 
-<p><em>Standard CGI/1.0 and Apache variables:</em></p>
-<pre>
-HTTP_USER_AGENT        PATH_INFO             AUTH_TYPE
-HTTP_REFERER           QUERY_STRING          SERVER_SOFTWARE
-HTTP_COOKIE            REMOTE_HOST           API_VERSION
-HTTP_FORWARDED         REMOTE_IDENT          TIME_YEAR
-HTTP_HOST              IS_SUBREQ             TIME_MON
-HTTP_PROXY_CONNECTION  DOCUMENT_ROOT         TIME_DAY
-HTTP_ACCEPT            SERVER_ADMIN          TIME_HOUR
-HTTP:headername        SERVER_NAME           TIME_MIN
-THE_REQUEST            SERVER_PORT           TIME_SEC
-REQUEST_METHOD         SERVER_PROTOCOL       TIME_WDAY
-REQUEST_SCHEME         REMOTE_ADDR           TIME
-REQUEST_URI            REMOTE_USER           ENV:<strong>variablename</strong>
-REQUEST_FILENAME
-</pre>
-<p><em>SSL-related variables:</em></p>
-<pre>
-HTTPS                  SSL_CLIENT_M_VERSION   SSL_SERVER_M_VERSION
-                       SSL_CLIENT_M_SERIAL    SSL_SERVER_M_SERIAL
-SSL_PROTOCOL           SSL_CLIENT_V_START     SSL_SERVER_V_START
-SSL_SESSION_ID         SSL_CLIENT_V_END       SSL_SERVER_V_END
-SSL_SESSION_RESUMED    SSL_CLIENT_S_DN        SSL_SERVER_S_DN
-SSL_CIPHER             SSL_CLIENT_S_DN_C      SSL_SERVER_S_DN_C
-SSL_CIPHER_EXPORT      SSL_CLIENT_S_DN_ST     SSL_SERVER_S_DN_ST
-SSL_CIPHER_ALGKEYSIZE  SSL_CLIENT_S_DN_L      SSL_SERVER_S_DN_L
-SSL_CIPHER_USEKEYSIZE  SSL_CLIENT_S_DN_O      SSL_SERVER_S_DN_O
-SSL_VERSION_LIBRARY    SSL_CLIENT_S_DN_OU     SSL_SERVER_S_DN_OU
-SSL_VERSION_INTERFACE  SSL_CLIENT_S_DN_CN     SSL_SERVER_S_DN_CN
-                       SSL_CLIENT_S_DN_T      SSL_SERVER_S_DN_T
-                       SSL_CLIENT_S_DN_I      SSL_SERVER_S_DN_I
-                       SSL_CLIENT_S_DN_G      SSL_SERVER_S_DN_G
-                       SSL_CLIENT_S_DN_S      SSL_SERVER_S_DN_S
-                       SSL_CLIENT_S_DN_D      SSL_SERVER_S_DN_D
-                       SSL_CLIENT_S_DN_UID    SSL_SERVER_S_DN_UID
-                       SSL_CLIENT_S_DN_Email  SSL_SERVER_S_DN_Email
-                       SSL_CLIENT_I_DN        SSL_SERVER_I_DN
-                       SSL_CLIENT_I_DN_C      SSL_SERVER_I_DN_C
-                       SSL_CLIENT_I_DN_ST     SSL_SERVER_I_DN_ST
-                       SSL_CLIENT_I_DN_L      SSL_SERVER_I_DN_L
-                       SSL_CLIENT_I_DN_O      SSL_SERVER_I_DN_O
-                       SSL_CLIENT_I_DN_OU     SSL_SERVER_I_DN_OU
-                       SSL_CLIENT_I_DN_CN     SSL_SERVER_I_DN_CN
-                       SSL_CLIENT_I_DN_T      SSL_SERVER_I_DN_T
-                       SSL_CLIENT_I_DN_I      SSL_SERVER_I_DN_I
-                       SSL_CLIENT_I_DN_G      SSL_SERVER_I_DN_G
-                       SSL_CLIENT_I_DN_S      SSL_SERVER_I_DN_S
-                       SSL_CLIENT_I_DN_D      SSL_SERVER_I_DN_D
-                       SSL_CLIENT_I_DN_UID    SSL_SERVER_I_DN_UID
-                       SSL_CLIENT_I_DN_Email  SSL_SERVER_I_DN_Email
-                       SSL_CLIENT_A_SIG       SSL_SERVER_A_SIG
-                       SSL_CLIENT_A_KEY       SSL_SERVER_A_KEY
-                       SSL_CLIENT_CERT        SSL_SERVER_CERT
-                       SSL_CLIENT_CERT_CHAIN_<strong>n</strong>
-                       SSL_CLIENT_VERIFY
-</pre>
+<p>The <code>PeerExtList(<em>object-ID</em>)</code> function expects
+to find zero or more instances of the X.509 certificate extension
+identified by the given <em>object ID</em> in the client certificate.
+The expression evaluates to true if the left-hand side string matches
+exactly against the value of an extension identified with this OID.
+(If multiple extensions with the same OID are present, at least one
+extension must match).</p>
+
+<div class="example"><h3>Example</h3><p><code>
+SSLRequire "foobar" in PeerExtList("1.2.3.4.5.6")
+</code></p></div>
+
+<div class="note"><h3>Notes on the PeerExtList function</h3>
+
+<ul>
+
+<li><p>The string used for the object-ID can be either be a descriptive
+name as recognized by the SSL library, such as <code>"nsComment"</code>,
+or a numeric OID, such as <code>"1.2.3.4.5.6"</code>.</p></li>
+
+<li><p>Expressions with types known to the SSL library are rendered to
+a string before comparison.  For an extension with a type not
+recognized by the SSL library, mod_ssl will parse the value if it is
+one of the primitive ASN.1 type UTF8String, IA5String, VisibleString,
+or BMPString.  For an extension of one of these types, the string
+value will be converted to UTF-8 if necessary, then compared against
+the left-hand-side expression.</p></li>
+
+</ul>
+</div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
