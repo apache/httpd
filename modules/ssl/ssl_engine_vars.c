@@ -779,6 +779,27 @@ void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p)
     }
 }
 
+/* For an extension type which OpenSSL does not recognize, attempt to
+ * parse the extension type as a primitive string.  This will fail for
+ * any structured extension type per the docs.  Returns non-zero on
+ * success and writes the string to the given bio. */
+static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
+{
+    const unsigned char *pp = str->data;
+    ASN1_STRING *ret = ASN1_STRING_new();
+    int rv = 0;
+    
+    /* This allows UTF8String, IA5String, VisibleString, or BMPString;
+     * conversion to UTF-8 is forced. */
+    if (d2i_DISPLAYTEXT(&ret, &pp, str->length)) {
+        ASN1_STRING_print_ex(bio, ret, ASN1_STRFLGS_UTF8_CONVERT);
+        rv = 1;
+    }
+
+    ASN1_STRING_free(ret);
+    return rv;
+}
+
 apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
                                  const char *extension)
 {
@@ -801,8 +822,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
     oid = OBJ_txt2obj(extension, 0);
     if (!oid) {
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
-                      "Failed to create an object for extension '%s'",
-                      extension);
+                      "could not parse OID '%s'", extension);
         ERR_clear_error();
         return NULL;
     }
@@ -831,7 +851,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
              * not knowing how to handle the data.
              */
             if (X509V3_EXT_print(bio, ext, 0, 0) == 1 ||
-                ASN1_STRING_print(bio, ext->value) == 1) {
+                dump_extn_value(bio, X509_EXTENSION_get_data(ext)) == 1) {
                 BUF_MEM *buf;
                 char **ptr = apr_array_push(array);
                 BIO_get_mem_ptr(bio, &buf);
@@ -853,6 +873,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
         X509_free(xs);
     }
 
+    ASN1_OBJECT_free(oid);
     ERR_clear_error();
     return array;
 }
