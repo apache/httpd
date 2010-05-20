@@ -315,6 +315,11 @@ headers</description>
     successful responses, and is always needed to affect non-<code>2<var>xx</var></code> 
     responses such as redirects or client errors.</p>
 
+    <note><title>CGI</title>
+      <p>To manipulate headers set by CGI scripts, it is necessary to specify 
+      <code>always</code> for the first parameter.</p>
+    </note>
+
     <p>The action it performs is determined by the first
     argument (second argument if a <var>condition</var> is specified).
     This can be one of the following values:</p>
