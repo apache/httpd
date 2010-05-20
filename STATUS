@@ -171,6 +171,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: Trunk patch works
     +1: trawick, rjung
 
+  * mod_proxy_balancer: Force workers into PROXY_WORKER_IN_ERROR when configured
+    statuses are found
+    PR: 48939
+    Trunk patch: http://svn.apache.org/viewvc?rev=930125&view=rev
+    2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=25153
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
