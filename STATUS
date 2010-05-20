@@ -121,6 +121,17 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     rjung: We should add a note about the first version providing this
            option in the docs page, like e.g. we did for SSLInsecureRenegotiation.
 
+ * mod_dir: add FallbackResource directive
+   PR 47184
+   Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=785425
+                http://svn.apache.org/viewvc?view=rev&revision=795450
+   2.2.x patch: http://people.apache.org/~niq/patches/47184.patch
+                (identical but for offsets, but patch failed on trunk version)
+                plus docs patch from r795450
+   +1: niq, pgollucci
+   +1: rbowen - After much debate on IRC, we've agreed on FallbackResource as being the right name for this.
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -260,16 +271,6 @@ PATCHES/ISSUES THAT ARE STALLED
               http://mail-archives.apache.org/mod_mbox/httpd-dev/200607.mbox/%3c20060723093125.GA19423@redhat.com%3e
               and follow ups for more details.
       needs r930063 to avoid a memory leak, +1 with r930063.      
-
- * mod_dir: add FallbackResource directive
-   PR 47184
-   Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=785425
-                http://svn.apache.org/viewvc?view=rev&revision=795450
-   2.2.x patch: http://people.apache.org/~niq/patches/47184.patch
-                (identical but for offsets, but patch failed on trunk version)
-                plus docs patch from r795450
-   +1: niq, pgollucci
-   +1: rbowen - After much debate on IRC, we've agreed on FallbackResource as being the right name for this.
 
  * prefork MPM: simple patch to enable mod_privileges.
    trunk: N/A (this patch substitutes for the availability of
