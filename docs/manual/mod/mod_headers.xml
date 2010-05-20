@@ -58,8 +58,8 @@ headers</description>
 
 <section id="early"><title>Early and Late Processing</title>
     <p><module>mod_headers</module> can be applied either early or late
-    in the request.  The normal mode is late, when Request Headers are
-    set immediately before running the content generator and Response
+    in the request.  The normal mode is late, when <em>Request</em> Headers are
+    set immediately before running the content generator and <em>Response</em>
     Headers just as the response is sent down the wire.  Always use
     Late mode in an operational server.</p>
 
@@ -305,6 +305,11 @@ headers</description>
     may be needed to influence headers set by some internal modules even for
     successful responses, and is always needed to affect non-<code>2<var>xx</var></code> 
     responses such as redirects or client errors.</p>
+
+    <note><title>CGI</title>
+      <p>To manipulate headers set by CGI scripts, it is necessary to specify 
+      <code>always</code> for the first parameter.</p>
+    </note>
 
     <p>The action it performs is determined by the first
     argument (second argument if a <var>condition</var> is specified).
