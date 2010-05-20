@@ -268,7 +268,7 @@ PATCHES/ISSUES THAT ARE STALLED
    2.2.x patch: http://people.apache.org/~niq/patches/47184.patch
                 (identical but for offsets, but patch failed on trunk version)
                 plus docs patch from r795450
-   +1: niq
+   +1: niq, pgollucci
    +1: rbowen - After much debate on IRC, we've agreed on FallbackResource as being the right name for this.
 
  * prefork MPM: simple patch to enable mod_privileges.
