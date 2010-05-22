@@ -45,21 +45,25 @@
     it listens to all addresses on the machine.  However, it may need to
     be told to listen on specific ports, or only on selected 
     addresses, or a combination of both. This is often combined with the 
-    Virtual Host feature, which determines how httpd responds to 
-    different IP addresses, hostnames and ports.</p>
+    <a href="vhosts.html">Virtual Host</a> feature, which determines how 
+    <code>httpd</code> responds to different IP addresses, hostnames and 
+    ports.</p>
 
     <p>The <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     directive tells the server to accept
-    incoming requests only on the specified ports or
+    incoming requests only on the specified port(s) or
     address-and-port combinations. If only a port number is
     specified in the <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    directive, the server
-    listens to the given port on all interfaces. If an IP address
-    is given as well as a port, the server will listen on the given
-    port and interface. Multiple <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directives may be used to
+    directive, the server listens to the given port on all interfaces. 
+    If an IP address is given as well as a port, the server will listen
+    on the given port and interface. Multiple <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directives may be used to
     specify a number of addresses and ports to listen on. The
     server will respond to requests from any of the listed
     addresses and ports.</p>
+
+    <p>Overlapping <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    directives will result in a fatal error which will prevent the
+    server from starting up.</p>
 
     <p>For example, to make the server accept connections on both
     port 80 and port 8000, on all interfaces, use:</p>
@@ -105,7 +109,7 @@
 
     <p>On the other hand, on some platforms, such as Linux and Tru64, the 
     <strong>only</strong> way to handle both IPv6 and IPv4 is to use 
-    mapped addresses. If you want httpd to handle IPv4 and IPv6 connections 
+    mapped addresses. If you want <code>httpd</code> to handle IPv4 and IPv6 connections 
     with a minimum of sockets, which requires using IPv4-mapped IPv6 
     addresses, specify the <code>--enable-v4-mapped</code> <code class="program"><a href="./programs/configure.html">configure</a></code> option.</p>
 
