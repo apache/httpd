@@ -59,7 +59,7 @@
  *
  * Examples:
  *
- * To set the enviroment variable LOCALHOST if the client is the local
+ * To set the environment variable LOCALHOST if the client is the local
  * machine:
  *
  *    SetEnvIf remote_addr 127.0.0.1 LOCALHOST
