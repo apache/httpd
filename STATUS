@@ -180,7 +180,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 43857
     Trunk patch: http://svn.apache.org/viewvc?rev=943650&view=rev
     2.2.x patch: Trunk patch works
-    +1: trawick, rjung
+    (on hold) +1: trawick, rjung
+    jorton points out that the problem symptom was probably the reslist
+    issue, which may have a better fix; also, this change could hide 
+    other problems:
+      http://www.mail-archive.com/dev@apr.apache.org/msg23090.html
 
   * mod_proxy_balancer: Force workers into PROXY_WORKER_IN_ERROR when configured
     statuses are found
