@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 924467 -->
+<!-- English Revision: 947280 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -54,12 +54,13 @@
     Par d&eacute;faut, le serveur &eacute;coute toutes les adresses de l'h&ocirc;te local.
     Cependant, on peut lui pr&eacute;ciser des ports et des adresses sp&eacute;cifiques &agrave; &eacute;couter,
     ou une combinaison des deux.
-    Tout ceci est souvent associ&eacute; avec la fonctionnalit&eacute; des h&ocirc;tes virtuels
-    qui d&eacute;termine la mani&egrave;re dont httpd r&eacute;pond aux diff&eacute;rents ports,
+    Tout ceci est souvent associ&eacute; avec la fonctionnalit&eacute; des <a href="vhosts.html">h&ocirc;tes virtuels</a>
+    qui d&eacute;termine la mani&egrave;re dont <code>httpd</code> r&eacute;pond aux diff&eacute;rents ports,
     noms d'h&ocirc;tes et adresses IP.</p>
 
     <p>La directive <directive module="mpm_common">Listen</directive>
-    enjoint le serveur de n'accepter des requ&ecirc;tes que sur les ports sp&eacute;cifi&eacute;s ou
+    enjoint le serveur de n'accepter des requ&ecirc;tes que sur le(s)
+    port(s) sp&eacute;cifi&eacute;s ou
     une combinaison adresse/port. Si seul un num&eacute;ro de port est sp&eacute;cifi&eacute;
     dans la directive <directive module="mpm_common">Listen</directive>,
     le serveur se met &agrave; l'&eacute;coute sur ce port, sur toutes les interfaces r&eacute;seau.
@@ -69,6 +70,10 @@
     <directive module="mpm_common">Listen</directive> pour
     sp&eacute;cifier plusieurs adresses et ports &agrave; &eacute;couter. Le serveur r&eacute;pondra alors
     aux requ&ecirc;tes sur ces ports et adresses sp&eacute;cifi&eacute;s.</p>
+
+    <p>Une directive <directive module="mpm_common">Listen</directive>
+    spécifiant plusieurs valeurs provoquera une erreur fatale qui
+    empêchera le serveur de démarrer.</p>
 
     <p>Par exemple, pour faire en sorte que le serveur accepte des connexions
     sur les ports 80 et 8000, sur toutes les interfaces, utilisez :</p>
@@ -116,7 +121,7 @@
 
     <p>En revanche, sur certaines plateformes comme Linux et Tru64, la
     <strong>seule</strong> mani&egrave;re de g&eacute;rer &agrave; la fois IPv6 et IPv4 passe
-    par l'utilisation d'adresses traduites. Si vous voulez que httpd g&egrave;re
+    par l'utilisation d'adresses traduites. Si vous voulez que <code>httpd</code> g&egrave;re
     des connexions IPv4 et IPv6 avec un minimum de points de connexion,
     ce qui n&eacute;cessite l'utilisation d'adresses IPv6 traduites en IPv4,
     utilisez l'option <code>--enable-v4-mapped</code> du script <program>

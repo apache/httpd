@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 816418 -->
+<!-- English Revision : 942761 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -397,11 +397,13 @@ passe</title>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
+    <indent>
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
     Require valid-user<br />
+    </indent>
     &lt;/Directory&gt;
     </example>
 
@@ -423,12 +425,14 @@ d'authentification</title>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
+    <indent>
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider file ldap<br />
     AuthUserFile /usr/local/apache/passwd/passwords<br />
     AuthLDAPURL ldap://ldaphost/o=yourorg<br />
     Require valid-user<br />
+    </indent>
     &lt;/Directory&gt;
     </example>
 
@@ -450,6 +454,7 @@ d'authentification</title>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
+    <indent>
     AuthName "Private"<br />
     AuthType Basic<br />
     AuthBasicProvider file<br />
@@ -458,6 +463,7 @@ d'authentification</title>
     AuthGroupFile /usr/local/apache/passwd/groups<br />
     Require group GroupName<br />
     Require ldap-group cn=mygroup,o=yourorg<br />
+    </indent>
     &lt;/Directory&gt;
     </example>
 
