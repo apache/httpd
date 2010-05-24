@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 895078 -->
+<!-- English Revision : 945974 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -44,6 +44,9 @@ module mod_rewrite</a></seealso>
 <seealso><a href="remapping.html">Redirection and remise en
 correspondance</a></seealso>
 <seealso><a href="access.html">Contr&ocirc;le d'acc&egrave;s</a></seealso>
+<seealso><a href="vhosts.html">Serveurs virtuels</a></seealso>
+<seealso><a href="proxy.html">Mise en cache</a></seealso>
+<seealso><a href="rewritemap.html">Utilisation de RewriteMap</a></seealso>
 <seealso><a href="advanced.html">Techniques avanc&eacute;es et conseils</a></seealso>
 <seealso><a href="avoid.html">Quand ne pas utiliser mod_rewrite</a></seealso>
 
@@ -345,8 +348,12 @@ alors <code>%1</code> contiendrait <code>example.com</code> et
 </section>
 
 <section id="rewritemap"><title>Tables de r&eacute;&eacute;criture</title>
-<p>Voir la directive
-<directive module="mod_rewrite">RewriteMap</directive>.</p>
+
+<p>La directive <directive module="mod_rewrite">RewriteMap</directive>
+permet en quelque sorte de faire appel &agrave; une fonction externe pour
+effectuer la r&eacute;&eacute;criture &agrave; votre place. Tout ceci est d&eacute;crit plus en
+d&eacute;tails dans la <a
++href="rewritemap.html">Documentation suppl&eacute;mentaire sur RewriteMap</a>.</p>
 </section>
 
 <section id="htaccess"><title>Fichiers .htaccess</title>

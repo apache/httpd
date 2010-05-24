@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 899254 -->
+<!-- English Revision : 946617 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -65,9 +65,9 @@ HTTP</description>
 tardif</title>
     <p><module>mod_headers</module> peut agir soir pr&eacute;cocement, soit
     tardivement au niveau de la requ&ecirc;te. Le mode normal est le mode
-    tardif, lorsque les en-t&ecirc;tes de requ&ecirc;te sont d&eacute;finis, imm&eacute;diatement
+    tardif, lorsque les en-t&ecirc;tes de <em>requ&ecirc;te</em> sont d&eacute;finis, imm&eacute;diatement
     avant l'ex&eacute;cution du g&eacute;n&eacute;rateur de contenu, et pour les en-t&ecirc;tes de
-    r&eacute;ponse, juste au moment o&ugrave; la r&eacute;ponse est envoy&eacute;e sur le r&eacute;seau.
+    <em>r&eacute;ponse</em>, juste au moment o&ugrave; la r&eacute;ponse est envoy&eacute;e sur le r&eacute;seau.
     Utilisez toujours le mode tardif sur un serveur en production.</p>
 
     <p>Le mode pr&eacute;coce a &eacute;t&eacute; con&ccedil;u &agrave; des fins d'aide aux tests et au
@@ -348,6 +348,11 @@ tardif</title>
     des en-t&ecirc;tes de r&eacute;ponses dont le code de statut n'est pas dans la
     gamme <code>2<var>xx</var></code> comme les redirections ou les
     erreurs client.</p>
+
+    <note><title>CGI</title>
+      <p>Pour manipuler les en-têtes définis par les scripts CGI, il
+est nécessaire de spécifier <code>always</code> comme premier paramètre.</p>
+    </note>
 
     <p>L'action que cette directive provoque est d&eacute;termin&eacute;e par le
     premier argument (ou par le second argument si une
