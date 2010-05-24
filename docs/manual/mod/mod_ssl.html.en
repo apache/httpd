@@ -1603,7 +1603,7 @@ immediately executed for every request.</p>
 
 <p>The <code>PeerExtList(<em>object-ID</em>)</code> function expects
 to find zero or more instances of the X.509 certificate extension
-identified by the given <em>object ID</em> in the client certificate.
+identified by the given <em>object ID</em> (OID) in the client certificate.
 The expression evaluates to true if the left-hand side string matches
 exactly against the value of an extension identified with this OID.
 (If multiple extensions with the same OID are present, at least one
@@ -1617,14 +1617,14 @@ SSLRequire "foobar" in PeerExtList("1.2.3.4.5.6")
 
 <ul>
 
-<li><p>The string used for the object-ID can be either be a descriptive
-name as recognized by the SSL library, such as <code>"nsComment"</code>,
-or a numeric OID, such as <code>"1.2.3.4.5.6"</code>.</p></li>
+<li><p>The object ID can be specified either as a descriptive
+name recognized by the SSL library, such as <code>"nsComment"</code>,
+or as a numeric OID, such as <code>"1.2.3.4.5.6"</code>.</p></li>
 
 <li><p>Expressions with types known to the SSL library are rendered to
 a string before comparison.  For an extension with a type not
 recognized by the SSL library, mod_ssl will parse the value if it is
-one of the primitive ASN.1 type UTF8String, IA5String, VisibleString,
+one of the primitive ASN.1 types UTF8String, IA5String, VisibleString,
 or BMPString.  For an extension of one of these types, the string
 value will be converted to UTF-8 if necessary, then compared against
 the left-hand-side expression.</p></li>
