@@ -81,7 +81,7 @@ apr_pool_t *pconf;
 /* definitions from child.c */
 void child_main(apr_pool_t *pconf);
 
-/* Only one of these, the pipe from our parent, ment only for
+/* Only one of these, the pipe from our parent, meant only for
  * one child worker's consumption (not to be inherited!)
  * XXX: decorate this name for the trunk branch, was left simplified
  *      only to make the 2.2 patch trivial to read.

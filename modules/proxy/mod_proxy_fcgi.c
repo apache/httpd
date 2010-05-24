@@ -876,7 +876,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
         return HTTP_SERVICE_UNAVAILABLE;
     }
     
-    /* Step 2: Send Enviroment via FCGI_PARAMS */
+    /* Step 2: Send Environment via FCGI_PARAMS */
     rv = send_environment(conn, r, request_id);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,

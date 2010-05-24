@@ -25,7 +25,7 @@
  * this MPM has a dedicated thread for handling both the Listenting sockets,
  * and all sockets that are in a Keep Alive status.
  *
- * The MPM assumes the underlying apr_pollset implmentation is somewhat
+ * The MPM assumes the underlying apr_pollset implementation is somewhat
  * threadsafe.  This currently is only compatible with KQueue and EPoll.  This
  * enables the MPM to avoid extra high level locking or having to wake up the
  * listener thread when a keep-alive socket needs to be sent to it.

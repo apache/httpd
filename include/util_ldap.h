@@ -360,7 +360,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_ssl_supported,(request_rec *r));
 /**
  * Init the LDAP cache
  * @param pool The pool to use to initialise the cache
- * @param reqsize The size of the shared memory segement to request. A size
+ * @param reqsize The size of the shared memory segment to request. A size
  *                of zero requests the max size possible from
  *                apr_shmem_init()
  * @fn void util_ldap_cache_init(apr_pool_t *p, util_ldap_state_t *st)

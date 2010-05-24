@@ -81,7 +81,7 @@ mod_lua exports several additional directives:
         file.
         
         In general stat or forever is good production and stat or never
-        for deveopment.
+        for development.
         
         Examples:
             LuaCodeCache stat

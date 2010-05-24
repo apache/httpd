@@ -399,8 +399,8 @@ WISH LIST
 
   * mod_cache: Handle ESI tags.
 
-  * mod_cache: Resolve issue of how to cache page fragements (or perhaps
-    -if- we want to cache page fragements). Today, mod_cache/mod_mem_cache
+  * mod_cache: Resolve issue of how to cache page fragments (or perhaps
+    -if- we want to cache page fragments). Today, mod_cache/mod_mem_cache
     will cache #include 'virtual' requests (but not #include 'file'
     requests). This was accomplished by making CACHE_IN a
     CONTENT_SET-1 filter to force it to run before the SUBREQ_CORE
