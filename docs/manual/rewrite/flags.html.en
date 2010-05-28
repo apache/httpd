@@ -223,7 +223,7 @@ variables work.</p>
 contexts, including CGI programs, other RewriteRule directives, or
 CustomLog directives.</p>
 
-<p>The following example sets an evironment variable called 'image' to a
+<p>The following example sets an environment variable called 'image' to a
 value of '1' if the requested URI is an image file. Then, that
 environment variable is used to exclude those requests from the access
 log.</p>
