@@ -122,7 +122,7 @@ task in a <code>.htaccess</code> file instead.</p>
 <p>The <directive module="mod_alias">Alias</directive> directive
 provides mapping from a URI to a directory - usually a directory outside
 of your <directive module="core">DocumentRoot</directive>. Although it
-is possible to perform this mappint with <code>mod_rewrite</code>,
+is possible to perform this mapping with <code>mod_rewrite</code>,
 <code>Alias</code> is the preferred method, for reasons of simplicity
 and performance.</p>
 
@@ -164,7 +164,12 @@ seems like the right approach.</p>
 </section>
 
 <section id="proxy"><title>Simple Proxying</title>
-<p>ProxyPass</p>
+
+<p><code>RewriteRule</code> provides the <a
+href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
+<module>mod_proxy</module>. As with any use of <code>mod_rewrite</code>,
+you want to ask yourself whether it's really the best solution.</p>
+
 </section>
 
 <section id="setenv"><title>Environment Variable Testing</title>

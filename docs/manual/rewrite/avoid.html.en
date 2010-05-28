@@ -112,7 +112,7 @@ task in a <code>.htaccess</code> file instead.</p>
 <p>The <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> directive
 provides mapping from a URI to a directory - usually a directory outside
 of your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>. Although it
-is possible to perform this mappint with <code>mod_rewrite</code>,
+is possible to perform this mapping with <code>mod_rewrite</code>,
 <code>Alias</code> is the preferred method, for reasons of simplicity
 and performance.</p>
 
@@ -137,10 +137,10 @@ server.</p>
 with mod_rewrite</a>, it is seldom the right way. Creating individual
 &lt;VirtualHost&gt; blocks is almost always the right way to go. In the
 event that you have an enormous number of virtual hosts, consider using
-<code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> to crate these hosts automatically.</p>
+<code class="module"><a href="../mod/mod_vhost_alias.html">mod_vhost_alias</a></code> to create these hosts automatically.</p>
 
-<p>Third-party modules sucha as <a href="link_needed">mod_macro</a> are
-also useful for creating a large number of virtual hosts dymaically.</p>
+<p>Third-party modules such as <a href="link_needed">mod_macro</a> are
+also useful for creating a large number of virtual hosts dynamically.</p>
 
 <p>Using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> for vitualhost creation may be
 appropriate if you are using a hosting service that does not provide
@@ -154,7 +154,11 @@ seems like the right approach.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">Simple Proxying</a></h2>
-<p>ProxyPass</p>
+
+<p><code>RewriteRule</code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. As with any use of <code>mod_rewrite</code>,
+you want to ask yourself whether it's really the best solution.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="setenv" id="setenv">Environment Variable Testing</a></h2>
