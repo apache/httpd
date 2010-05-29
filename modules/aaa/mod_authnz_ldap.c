@@ -80,6 +80,9 @@ typedef struct {
 
     int secure;                     /* True if SSL connections are requested */
     char *authz_prefix;             /* Prefix for environment variables added during authz */
+    int initial_bind_as_user;               /* true if we should try to bind (to lookup DN) directly with the basic auth username */
+    ap_regex_t *bind_regex;         /* basic auth -> bind'able username regex */
+    const char *bind_subst;         /* basic auth -> bind'able username substitution */
 } authn_ldap_config_t;
 
 typedef struct {
@@ -386,6 +389,28 @@ static int set_request_vars(request_rec *r, enum auth_ldap_phase phase) {
     return remote_user_attribute_set;
 }
 
+static const char *ldap_determine_binddn(request_rec *r, const char *user) {
+    authn_ldap_config_t *sec =
+        (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
+    const char *result = user;
+    ap_regmatch_t regm[AP_MAX_REG_MATCH];
+
+    if (NULL == user || NULL == sec || !sec->bind_regex || !sec->bind_subst) {
+        return result;
+    }
+
+    if (!ap_regexec(sec->bind_regex, user, AP_MAX_REG_MATCH, regm, 0)) {
+        char *substituted = ap_pregsub(r->pool, sec->bind_subst, user, AP_MAX_REG_MATCH, regm);
+        if (NULL != substituted) {
+            result = substituted;
+        }
+    }
+
+    apr_table_set(r->subprocess_env, "LDAP_BINDASUSER", result);
+
+    return result;
+}
+
 /*
  * Authentication Phase
  * --------------------
@@ -431,9 +456,16 @@ start_over:
 
     /* There is a good AuthLDAPURL, right? */
     if (sec->host) {
+        const char *binddn = sec->binddn;
+        const char *bindpw = sec->bindpw;
+        if (sec->initial_bind_as_user) {
+            bindpw = password;
+            binddn = ldap_determine_binddn(r, user);
+        }
+
         ldc = util_ldap_connection_find(r, sec->host, sec->port,
-                                       sec->binddn, sec->bindpw, sec->deref,
-                                       sec->secure);
+                                       binddn, bindpw,
+                                       sec->deref, sec->secure);
     }
     else {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
@@ -1456,6 +1488,24 @@ static const char *set_charset_config(cmd_parms *cmd, void *config, const char *
     return NULL;
 }
 
+static const char *set_bind_pattern(cmd_parms *cmd, void *_cfg, const char *exp, const char *subst)
+{
+    authn_ldap_config_t *sec = _cfg;
+    ap_regex_t *regexp;
+
+    regexp = ap_pregcomp(cmd->pool, exp, AP_REG_EXTENDED);
+
+    if (!regexp) {
+        return apr_pstrcat(cmd->pool, "AuthLDAPInitialBindPattern: cannot compile regular "
+                                      "expression '", exp, "'", NULL);
+    }
+
+    sec->bind_regex = regexp;
+    sec->bind_subst = apr_pstrdup(cmd->pool, subst);
+
+    return NULL;
+}
+
 static const command_rec authnz_ldap_cmds[] =
 {
     AP_INIT_TAKE12("AuthLDAPURL", mod_auth_ldap_parse_url, NULL, OR_AUTHCFG,
@@ -1547,6 +1597,15 @@ static const command_rec authnz_ldap_cmds[] =
                   (void *)APR_OFFSETOF(authn_ldap_config_t, authz_prefix), OR_AUTHCFG,
                   "The prefix to add to environment variables set during "
                   "successful authorization, default '" AUTHZ_PREFIX "'"),
+
+    AP_INIT_FLAG("AuthLDAPInitialBindAsUser", ap_set_flag_slot,
+                 (void *)APR_OFFSETOF(authn_ldap_config_t, initial_bind_as_user), OR_AUTHCFG,
+                 "Set to 'on' to perform the initial DN lookup with the basic auth credentials "
+                 "instead of anonymous or hard-coded credentials"),
+
+     AP_INIT_TAKE2("AuthLDAPInitialBindPattern", set_bind_pattern, NULL, OR_AUTHCFG,
+                   "The regex and substitution to determine a username that can bind based on an HTTP basic auth username"),
+
     {NULL}
 };
 

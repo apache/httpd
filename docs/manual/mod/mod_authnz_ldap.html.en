@@ -68,6 +68,8 @@ for HTTP Basic authentication.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
@@ -950,6 +952,79 @@ group membership</td></tr>
     directive is not set, then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will
     check if the group has <code>bjenson</code> as a member.</p>
 
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPInitialBindAsUser" id="AuthLDAPInitialBindAsUser">AuthLDAPInitialBindAsUser</a> <a name="authldapinitialbindasuser" id="authldapinitialbindasuser">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines if the server does the initial DN lookup using the basic authentication users'
+own username, instead of anonymously or with hard-coded credentials for the server</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPInitialBindAsUser <em>off|on</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPInitialBindAsUser off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.7 and later</td></tr>
+</table>
+    <p>By default, the server either anonymously, or with a dedicated user and
+     password, converts the basic authentication username into an LDAP
+     distinguished name (DN).  This directive forces the server to use the verbatim username
+     and password provided by the incoming user to perform the initial DN
+     search.</p>
+ 
+     <p> If the verbatim username can't directly bind, but needs some
+     cosmetic transformation, see <code class="directive"><a href="#&#10;     authldapinitialbindpattern">
+     AuthLDAPInitialBindPattern</a></code>.</p>
+
+     <div class="note"><h3>Not available with authorization-only</h3>
+         This directive can only be used if this module authenticates the user, and
+         has no effect when this module is used exclusively for authorization.
+     </div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPInitialBindPattern" id="AuthLDAPInitialBindPattern">AuthLDAPInitialBindPattern</a> <a name="authldapinitialbindpattern" id="authldapinitialbindpattern">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the transformation of the basic authentication username to be used when binding to the LDAP server
+to perform a DN lookup</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPInitialBindPattern<em><var>regex</var> <var>substitution</var></em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPInitialBindPattern (.*) $1 (remote username used verbatim)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.7 and later</td></tr>
+</table>
+    <p>If <code class="directive"><a href="#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code> is set to
+       <em>ON</em>, the basic authentication username will be transformed according to the
+       regular expression and substituion arguments.</p>
+
+    <p> The regular expression argument is compared against the current basic authentication username.
+        The substitution argument may contain backreferences, but has no other variable interpolation.</p>
+     
+    <div class="example"><p><code> AuthLDAPInitialBindPattern (.+) $1@example.com </code></p></div>
+    <div class="example"><p><code> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</code></p></div>
+
+    <div class="note"><h3>Not available with authorization-only</h3>
+        This directive can only be used if this module authenticates the user, and
+        has no effect when this module is used exclusively for authorization.
+    </div>
+    <div class="note"><h3>debugging</h3>
+        The substituted DN is recorded in the environment variable 
+        <em>LDAP_BINDASUSER</em>.  If the regular expression does not match the input, 
+        the verbatim username is used.
+    </div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authnnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></code></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPMaxSubGroupDepth" id="AuthLDAPMaxSubGroupDepth">AuthLDAPMaxSubGroupDepth</a> <a name="authldapmaxsubgroupdepth" id="authldapmaxsubgroupdepth">Directive</a></h2>
