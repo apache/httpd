@@ -824,6 +824,11 @@ own username, instead of anonymously or with hard-coded credentials for the serv
      <p> If the verbatim username can't directly bind, but needs some
      cosmetic transformation, see <directive module="mod_authnz_ldap">
      AuthLDAPInitialBindPattern</directive>.</p>
+   
+     <p> This directive should only be used when your LDAP server doesn't 
+         accept anonymous searches and you cannot use a dedicated 
+         <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
+     </p>
 
      <note><title>Not available with authorization-only</title>
          This directive can only be used if this module authenticates the user, and
@@ -852,6 +857,11 @@ to perform a DN lookup</description>
     <p> The regular expression argument is compared against the current basic authentication username.
         The substitution argument may contain backreferences, but has no other variable interpolation.</p>
      
+    <p> This directive should only be used when your LDAP server doesn't 
+        accept anonymous searches and you cannot use a dedicated 
+        <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
+    </p>
+
     <example> AuthLDAPInitialBindPattern (.+) $1@example.com </example>
     <example> AuthLDAPInitialBindPattern (.+) cn=$1,dc=example,dc=com</example>
 
