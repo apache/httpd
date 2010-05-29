@@ -59,6 +59,7 @@ for HTTP Basic authentication.</td></tr>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapauthorizeprefix">AuthLDAPAuthorizePrefix</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapbindpassword">AuthLDAPBindPassword</a></li>
@@ -624,9 +625,13 @@ Require valid-user
 <div class="section">
 <h2><a name="exposed" id="exposed">Exposing Login Information</a></h2>
 
-    <p>When this module performs authentication, LDAP attributes specified
-    in the <code class="directive"><a href="#authldapurl">AuthLDAPUrl</a></code> 
+    <p>when this module performs <em>authentication</em>, ldap attributes specified
+    in the <code class="directive"><a href="#authldapurl">authldapurl</a></code> 
     directive are placed in environment variables with the prefix "AUTHENTICATE_".</p>
+
+    <p>when this module performs <em>authorization</em>, ldap attributes specified
+    in the <code class="directive"><a href="#authldapurl">authldapurl</a></code> 
+    directive are placed in environment variables with the prefix "AUTHORIZE_".</p>
 
     <p>If the attribute field contains the username, common name
     and telephone number of a user, a CGI program will have access to
@@ -752,6 +757,30 @@ Require group <em>mygroupfile</em>
       never get a chance to process the <code>.htaccess</code> file,
       and won't be able to find the FrontPage-managed user file.</li>
     </ul>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPAuthorizePrefix" id="AuthLDAPAuthorizePrefix">AuthLDAPAuthorizePrefix</a> <a name="authldapauthorizeprefix" id="authldapauthorizeprefix">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the prefix for environment variables set during
+authorization</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPAuthorizePrefix <em>prefix</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPAuthorizePrefix AUTHORIZE_</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.7 and later</td></tr>
+</table>
+    <p>This directive allows you to override the prefix used for environment
+    variables set during LDAP authorization.  If <em>AUTHENTICATE_</em> is
+    specified, consumers of these environment variables see the same information
+    whether LDAP has performed authentication, authorization, or both.</p>
+
+    <div class="note"><h3>Note</h3>
+    No authorization variables are set when a user is authorized on the basis of 
+    <code>Require valid-user</code>.
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
