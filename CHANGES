@@ -28,6 +28,11 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_authnz_ldap: Allow the initial DN search during authentication
+     to use the HTTP username/pass instead of an anonymous or hard-coded
+     LDAP id (AuthLDAPInitialBindAsUser, AuthLDAPInitialBindPattern).  
+     [Eric Covener]
+
   *) mod_authnz_ldap: Publish requested LDAP data with an AUTHORIZE_ prefix
      when this module is used for authorization. See AuthLDAPAuthorizePrefix.
      PR 45584 [Eric Covener]
