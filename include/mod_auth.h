@@ -46,6 +46,7 @@ extern "C" {
 #define AUTHZ_PROVIDER_NAME_NOTE "authz_provider_name"
 
 #define AUTHN_PREFIX "AUTHENTICATE_"
+#define AUTHZ_PREFIX "AUTHORIZE_"
 
 /** all of the requirements must be met */
 #ifndef SATISFY_ALL
