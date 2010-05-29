@@ -28,6 +28,10 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_authnz_ldap: Publish requested LDAP data with an AUTHORIZE_ prefix
+     when this module is used for authorization. See AuthLDAPAuthorizePrefix.
+     PR 45584 [Eric Covener]
+
   *) apxs -q: Stop filtering out ':' characters from the reported values.
      PR 45343.  [Bill Cole]
 

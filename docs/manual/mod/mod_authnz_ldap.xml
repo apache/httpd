@@ -618,9 +618,13 @@ Require valid-user
 
 <section id="exposed"><title>Exposing Login Information</title>
 
-    <p>When this module performs authentication, LDAP attributes specified
-    in the <directive module="mod_authnz_ldap">AuthLDAPUrl</directive> 
+    <p>when this module performs <em>authentication</em>, ldap attributes specified
+    in the <directive module="mod_authnz_ldap">authldapurl</directive> 
     directive are placed in environment variables with the prefix "AUTHENTICATE_".</p>
+
+    <p>when this module performs <em>authorization</em>, ldap attributes specified
+    in the <directive module="mod_authnz_ldap">authldapurl</directive> 
+    directive are placed in environment variables with the prefix "AUTHORIZE_".</p>
 
     <p>If the attribute field contains the username, common name
     and telephone number of a user, a CGI program will have access to
@@ -750,6 +754,30 @@ Require group <em>mygroupfile</em>
     </ul>
 </section>
 </section>
+
+<directivesynopsis>
+<name>AuthLDAPAuthorizePrefix</name>
+<description>Specifies the prefix for environment variables set during
+authorization</description>
+<syntax>AuthLDAPAuthorizePrefix <em>prefix</em></syntax>
+<default>AuthLDAPAuthorizePrefix AUTHORIZE_</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+<compatibility>Available in version 2.3.7 and later</compatibility>
+<usage>
+    <p>This directive allows you to override the prefix used for environment
+    variables set during LDAP authorization.  If <em>AUTHENTICATE_</em> is
+    specified, consumers of these environment variables see the same information
+    whether LDAP has performed authentication, authorization, or both.</p>
+
+    <note><title>Note</title>
+    No authorization variables are set when a user is authorized on the basis of 
+    <code>Require valid-user</code>.
+    </note>
+</usage>
+</directivesynopsis>
+
 
 <directivesynopsis>
 <name>AuthLDAPBindAuthoritative</name>
