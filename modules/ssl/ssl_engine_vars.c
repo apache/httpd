@@ -785,7 +785,7 @@ void modssl_var_extract_dns(apr_table_t *t, SSL *ssl, apr_pool_t *p)
  * success and writes the string to the given bio. */
 static int dump_extn_value(BIO *bio, ASN1_OCTET_STRING *str)
 {
-    const unsigned char *pp = str->data;
+    unsigned char *pp = str->data;
     ASN1_STRING *ret = ASN1_STRING_new();
     int rv = 0;
     
