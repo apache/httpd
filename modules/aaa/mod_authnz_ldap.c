@@ -354,7 +354,8 @@ static apr_status_t authnz_ldap_cleanup_connection_close(void *param)
 
 static int set_request_vars(request_rec *r, enum auth_ldap_phase phase) { 
     char *prefix = NULL;
-    int prefix_len, remote_user_attribute_set;
+    int prefix_len;
+    int remote_user_attribute_set = 0;
     authn_ldap_request_t *req =
         (authn_ldap_request_t *)ap_get_module_config(r->request_config, &authnz_ldap_module);
     authn_ldap_config_t *sec =
