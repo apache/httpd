@@ -898,6 +898,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                 set_request_vars(r, LDAP_AUTHZ);
                 return AUTHZ_GRANTED;
             }
+            case LDAP_NO_SUCH_ATTRIBUTE: 
             case LDAP_COMPARE_FALSE: {
                 /* nested groups need searches and compares, so grab a new handle */
                 authnz_ldap_cleanup_connection_close(ldc);
