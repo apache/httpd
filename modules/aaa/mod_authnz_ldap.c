@@ -83,18 +83,25 @@ typedef struct {
     int initial_bind_as_user;               /* true if we should try to bind (to lookup DN) directly with the basic auth username */
     ap_regex_t *bind_regex;         /* basic auth -> bind'able username regex */
     const char *bind_subst;         /* basic auth -> bind'able username substitution */
+    int search_as_user;             /* true if authz searches should be done with the users credentials (when we did authn) */
+    int compare_as_user;            /* true if authz compares should be done with the users credentials (when we did authn) */
 } authn_ldap_config_t;
 
 typedef struct {
     char *dn;                       /* The saved dn from a successful search */
     char *user;                     /* The username provided by the client */
     const char **vals;              /* The additional values pulled during the DN search*/
+    char *password;                 /* if this module successfully authenticates, the basic auth password, else null */
 } authn_ldap_request_t;
 
-enum auth_ldap_phase{
+enum auth_ldap_phase {
     LDAP_AUTHN, LDAP_AUTHZ
 };
- 
+
+enum auth_ldap_optype {
+    LDAP_SEARCH, LDAP_COMPARE, LDAP_COMPARE_AND_SEARCH /* nested groups */
+};
+
 /* maximum group elements supported */
 #define GROUPATTR_MAX_ELTS 10
 
@@ -412,6 +419,32 @@ static const char *ldap_determine_binddn(request_rec *r, const char *user) {
     return result;
 }
 
+
+/* Some LDAP servers restrict who can search or compare, and the hard-coded ID
+ * might be good for the DN lookup but not for later operations.
+ */
+static util_ldap_connection_t *get_connection_for_authz(request_rec *r, enum auth_ldap_optype type) {
+    authn_ldap_request_t *req =
+        (authn_ldap_request_t *)ap_get_module_config(r->request_config, &authnz_ldap_module);
+    authn_ldap_config_t *sec =
+        (authn_ldap_config_t *)ap_get_module_config(r->per_dir_config, &authnz_ldap_module);
+
+    char *binddn = sec->binddn;
+    char *bindpw = sec->bindpw;
+
+    /* If the per-request config isn't set, we didn't authenticate this user, and leave the default credentials */
+    if (req && req->password &&
+         ((type == LDAP_SEARCH && sec->search_as_user)    ||
+          (type == LDAP_COMPARE && sec->compare_as_user)  ||
+          (type == LDAP_COMPARE_AND_SEARCH && sec->compare_as_user && sec->search_as_user))){
+            binddn = req->dn;
+            bindpw = req->password;
+    }
+
+    return util_ldap_connection_find(r, sec->host, sec->port,
+                                     binddn, bindpw,
+                                     sec->deref, sec->secure);
+}
 /*
  * Authentication Phase
  * --------------------
@@ -545,6 +578,7 @@ start_over:
     /* mark the user and DN */
     req->dn = apr_pstrdup(r->pool, dn);
     req->user = apr_pstrdup(r->pool, user);
+    req->password = apr_pstrdup(r->pool, password);
     if (sec->user_is_dn) {
         r->user = req->dn;
     }
@@ -591,9 +625,7 @@ static authz_status ldapuser_check_authorization(request_rec *r,
     }
 
     if (sec->host) {
-        ldc = util_ldap_connection_find(r, sec->host, sec->port,
-                                       sec->binddn, sec->bindpw, sec->deref,
-                                       sec->secure);
+        ldc = get_connection_for_authz(r, LDAP_COMPARE);
         apr_pool_cleanup_register(r->pool, ldc,
                                   authnz_ldap_cleanup_connection_close,
                                   apr_pool_cleanup_null);
@@ -732,9 +764,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
     }
 
     if (sec->host) {
-        ldc = util_ldap_connection_find(r, sec->host, sec->port,
-                                       sec->binddn, sec->bindpw, sec->deref,
-                                       sec->secure);
+        ldc = get_connection_for_authz(r, LDAP_COMPARE); /* for the top-level group only */
         apr_pool_cleanup_register(r->pool, ldc,
                                   authnz_ldap_cleanup_connection_close,
                                   apr_pool_cleanup_null);
@@ -869,6 +899,15 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                 return AUTHZ_GRANTED;
             }
             case LDAP_COMPARE_FALSE: {
+                /* nested groups need searches and compares, so grab a new handle */
+                authnz_ldap_cleanup_connection_close(ldc);
+                apr_pool_cleanup_kill(r->pool, ldc,authnz_ldap_cleanup_connection_close);
+
+                ldc = get_connection_for_authz(r, LDAP_COMPARE_AND_SEARCH);
+                apr_pool_cleanup_register(r->pool, ldc,
+                                          authnz_ldap_cleanup_connection_close,
+                                          apr_pool_cleanup_null);
+
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                                "[%" APR_PID_T_FMT "] auth_ldap authorise: require group \"%s\": "
                                "failed [%s][%d - %s], checking sub-groups",
@@ -932,9 +971,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
     }
 
     if (sec->host) {
-        ldc = util_ldap_connection_find(r, sec->host, sec->port,
-                                       sec->binddn, sec->bindpw, sec->deref,
-                                       sec->secure);
+        ldc = get_connection_for_authz(r, LDAP_SEARCH); /* _comparedn is a searche */
         apr_pool_cleanup_register(r->pool, ldc,
                                   authnz_ldap_cleanup_connection_close,
                                   apr_pool_cleanup_null);
@@ -1046,9 +1083,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
     }
 
     if (sec->host) {
-        ldc = util_ldap_connection_find(r, sec->host, sec->port,
-                                       sec->binddn, sec->bindpw, sec->deref,
-                                       sec->secure);
+        ldc = get_connection_for_authz(r, LDAP_COMPARE);
         apr_pool_cleanup_register(r->pool, ldc,
                                   authnz_ldap_cleanup_connection_close,
                                   apr_pool_cleanup_null);
@@ -1165,9 +1200,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
     }
 
     if (sec->host) {
-        ldc = util_ldap_connection_find(r, sec->host, sec->port,
-                                       sec->binddn, sec->bindpw, sec->deref,
-                                       sec->secure);
+        ldc = get_connection_for_authz(r, LDAP_SEARCH);
         apr_pool_cleanup_register(r->pool, ldc,
                                   authnz_ldap_cleanup_connection_close,
                                   apr_pool_cleanup_null);
@@ -1249,8 +1282,14 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "[%" APR_PID_T_FMT "] auth_ldap authorize: checking dn match %s",
                           getpid(), dn);
+            if (sec->compare_as_user) {
+                /* ldap-filter is the only authz that requires a search and a compare */
+                apr_pool_cleanup_kill(r->pool, ldc, authnz_ldap_cleanup_connection_close);
+                authnz_ldap_cleanup_connection_close(ldc);
+                ldc = get_connection_for_authz(r, LDAP_COMPARE);
+            }
             result = util_ldap_cache_comparedn(r, ldc, sec->url, req->dn, dn,
-                 sec->compare_dn_on_server);
+                                               sec->compare_dn_on_server);
         }
 
         switch(result) {
@@ -1607,6 +1646,14 @@ static const command_rec authnz_ldap_cmds[] =
      AP_INIT_TAKE2("AuthLDAPInitialBindPattern", set_bind_pattern, NULL, OR_AUTHCFG,
                    "The regex and substitution to determine a username that can bind based on an HTTP basic auth username"),
 
+     AP_INIT_FLAG("AuthLDAPSearchAsUser", ap_set_flag_slot,
+                  (void *)APR_OFFSETOF(authn_ldap_config_t, search_as_user), OR_AUTHCFG,
+                   "Set to 'on' to perform authorization-based searches with the users credentials, when this module"
+                   " has also performed authentication.  Does not affect nested groups lookup."),
+     AP_INIT_FLAG("AuthLDAPCompareAsUser", ap_set_flag_slot,
+                  (void *)APR_OFFSETOF(authn_ldap_config_t, compare_as_user), OR_AUTHCFG,
+                  "Set to 'on' to perform authorization-based compares with the users credentials, when this module"
+                  " has also performed authentication.  Does not affect nested groups lookups."),
     {NULL}
 };
 
