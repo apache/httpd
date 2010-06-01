@@ -429,7 +429,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
     /* Do nothing if asked to filter nothing. */
     if (APR_BRIGADE_EMPTY(bb)) {
-        return ap_pass_brigade(f->next, bb);
+        return APR_SUCCESS;
     }
 
     c = ap_get_module_config(r->server->module_config,
@@ -1047,7 +1047,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
     /* Do nothing if asked to filter nothing. */
     if (APR_BRIGADE_EMPTY(bb)) {
-        return ap_pass_brigade(f->next, bb);
+        return APR_SUCCESS;
     }
 
     c = ap_get_module_config(r->server->module_config, &deflate_module);
