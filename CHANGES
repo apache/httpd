@@ -28,6 +28,10 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_authnz_ldap: Ensure nested groups are checked when the 
+     top-level group doesn't have any direct non-group members
+     of attributes in AuthLDAPGroupAttribute. [Eric Covener]
+
   *) mod_authnz_ldap: Search or Comparison during authorization phase
      can use the credentials from the authentication phase
      (AuthLDAPSearchAsUSer,AuthLDAPCompareAsUser).
