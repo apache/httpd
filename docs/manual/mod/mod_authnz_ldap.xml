@@ -837,6 +837,8 @@ own username, instead of anonymously or with hard-coded credentials for the serv
 </usage>
 <seealso><directive module="mod_authnnz_ldap">AuthLDAPInitialBindPattern</directive></seealso>
 <seealso><directive module="mod_authnnz_ldap">AuthLDAPBindDN</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPCompareAsUser</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPSearchAsUser</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -936,6 +938,38 @@ to perform a DN lookup</description>
     <p>The case of the extension does not matter. Blank lines, and lines
     beginning with a hash character (<code>#</code>) are ignored.</p>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPCompareAsUser</name>
+<description>Use the authenticated users credentials to perform authorization comparisons</description>
+<syntax>AuthLDAPCompareAsUser on|off</syntax>
+<default>AuthLDAPCompareAsUser off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<compatibility>Available in version 2.3.7 and later</compatibility>
+<override>AuthConfig</override>
+
+<usage>
+    <p>When set, and <module>mod_authnz_ldap</module> has authenticated the
+    user, LDAP comparisons for authorization use the queried distinguished name (DN)
+    and HTTP basic authentication password of the authenticated user instead of 
+    the servers configured credentials.</p>
+
+    <p> The <em>ldap-attribute</em>, <em>ldap-user</em>, and <em>ldap-group</em> (single-level only) 
+    authorization checks use comparisons.</p>
+
+    <p>This directive only has effect on the comparisons performed during
+    nested group processing when <directive module="mod_authnz_ldap">
+    AuthLDAPSearchAsUser</directive> is also enabled.</p>
+    
+    <p> This directive should only be used when your LDAP server doesn't
+        accept anonymous comparisons and you cannot use a dedicated
+        <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
+    </p>
+</usage>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPInitialBindAsUser</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPSearchAsUser</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1083,6 +1117,38 @@ environment variable</description>
     the username that was passed by the client. It is turned off by
     default.</p>
 </usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>AuthLDAPSearchAsUser</name>
+<description>Use the authenticated users credentials to perform authorization searches</description>
+<syntax>AuthLDAPSearchAsUser on|off</syntax>
+<default>AuthLDAPSearchAsUser off</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<compatibility>Available in version 2.3.7 and later</compatibility>
+<override>AuthConfig</override>
+
+<usage>
+    <p>When set, and <module>mod_authnz_ldap</module> has authenticated the
+    user, LDAP searches for authorization use the queried distinguished name (DN)
+    and HTTP basic authentication password of the authenticated user instead of 
+    the servers configured credentials.</p>
+
+    <p> The <em>ldap-filter</em> and <em>ldap-dn</em> authorization 
+    checks use searches.</p>
+
+    <p>This directive only has effect on the comparisons performed during
+    nested group processing when <directive module="mod_authnz_ldap">
+    AuthLDAPCompareAsUser</directive> is also enabled.</p>
+
+    <p> This directive should only be used when your LDAP server doesn't
+        accept anonymous searches and you cannot use a dedicated
+        <directive module="mod_authnz_ldap">AuthLDAPBindDN</directive>.
+    </p>
+</usage>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPInitialBindAsUser</directive></seealso>
+<seealso><directive module="mod_authnz_ldap">AuthLDAPCompareAsUser</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
