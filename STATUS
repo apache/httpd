@@ -67,6 +67,8 @@ RELEASE SHOWSTOPPERS:
 
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
+      jim sez: Then we just ship with those... mark any others as
+                experimental
 
   * Running the log_transaction hook from pool cleanup is fubar:
 
