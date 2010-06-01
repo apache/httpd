@@ -28,6 +28,9 @@ Changes with Apache 2.3.7
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_deflate: avoid the risk of forwarding data before headers are set.
+     PR 49369 [Matthew Steele <mdsteele google.com>]
+
   *) mod_authnz_ldap: Ensure nested groups are checked when the 
      top-level group doesn't have any direct non-group members
      of attributes in AuthLDAPGroupAttribute. [Eric Covener]
