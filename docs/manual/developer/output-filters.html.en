@@ -120,8 +120,11 @@
     ignored.</p>
 
     <p>An output filter should never pass an empty brigade down the
-    filter chain.  But, for good defensive programming, filters should
-    be prepared to accept an empty brigade, and do nothing.</p>
+    filter chain.  To be defensive, filters should be prepared to
+    accept an empty brigade, and should return success without passing
+    this brigade on down the filter chain.  The handling of an empty
+    brigade should have no side effects (such as changing any state
+    private to the filter).</p>
 
     <div class="example"><h3>How to handle an empty brigade</h3><p><code>
     apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
