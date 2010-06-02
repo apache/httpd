@@ -75,6 +75,10 @@ RELEASE SHOWSTOPPERS:
 
       http://marc.info/?l=apache-httpd-dev&m=123910381908293&w=1
 
+  * MPM event (maybe others, too) closes open files only after the
+    connection has been closed. This could be fixed in apr-util or httpd:
+    http://mail-archives.apache.org/mod_mbox/httpd-dev/201005.mbox/<201005172311.39558.sf@sfritsch.de>
+
   FOR NEXT ALPHA:
 
 
