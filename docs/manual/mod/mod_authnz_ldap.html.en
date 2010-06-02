@@ -886,8 +886,9 @@ authorization</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.7 and later</td></tr>
 </table>
     <p>When set, and <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> has authenticated the
-    user, comparisons for authorization use the credentials provided via
-    HTTP basic authentication instead of the servers own credentials.</p>
+    user, LDAP comparisons for authorization use the queried distinguished name (DN)
+    and HTTP basic authentication password of the authenticated user instead of 
+    the servers configured credentials.</p>
 
     <p> The <em>ldap-attribute</em>, <em>ldap-user</em>, and <em>ldap-group</em> (single-level only) 
     authorization checks use comparisons.</p>
@@ -1151,8 +1152,9 @@ environment variable</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.3.7 and later</td></tr>
 </table>
     <p>When set, and <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> has authenticated the
-    user, searches for authorization use the credentials provided via
-    HTTP basic authentication instead of the servers own credentials.</p>
+    user, LDAP searches for authorization use the queried distinguished name (DN)
+    and HTTP basic authentication password of the authenticated user instead of 
+    the servers configured credentials.</p>
 
     <p> The <em>ldap-filter</em> and <em>ldap-dn</em> authorization 
     checks use searches.</p>
@@ -1179,6 +1181,7 @@ environment variable</td></tr>
 directive line, used to distinguish the members of the current group that
 are groups.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupAttribute <em>attribute</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPSubgroupAttribute member uniquemember</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
@@ -1200,6 +1203,7 @@ are groups.</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies which LDAP objectClass values identify directory
 objects that are groups during sub-group processing.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupClass <em>LdapObjectClass</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPSubGroupClass groupOfNames groupOfUniqueNames</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
