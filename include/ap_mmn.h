@@ -216,10 +216,10 @@
  * 20091230.4 (2.3.6-dev)  export ap_process_request_after_handler() for mod_serf
  * 20100208.0 (2.3.6-dev)  ap_socache_provider_t API changes to store and iterate
  * 20100208.1 (2.3.6-dev)  Added forward member to proxy_conn_rec
- * 20100208.2 (2.3.7-dev)  Added ap_log_command_line().
- * 20100223.0 (2.3.7-dev)  LDAP client_certs per-server moved to per-dir
- * 20100223.1 (2.3.7-dev)  Added ap_process_fnmatch_configs().
- * 20100504.0 (2.3.7-dev)  Added name arg to ap_{proc,global}_mutex_create().
+ * 20100208.2 (2.3.6-dev)  Added ap_log_command_line().
+ * 20100223.0 (2.3.6-dev)  LDAP client_certs per-server moved to per-dir
+ * 20100223.1 (2.3.6-dev)  Added ap_process_fnmatch_configs().
+ * 20100504.0 (2.3.6-dev)  Added name arg to ap_{proc,global}_mutex_create().
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
