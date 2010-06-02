@@ -1157,6 +1157,7 @@ environment variable</description>
 directive line, used to distinguish the members of the current group that
 are groups.</description>
 <syntax>AuthLDAPSubGroupAttribute <em>attribute</em></syntax>
+<default>AuthLDAPSubgroupAttribute member uniquemember</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -1178,6 +1179,7 @@ are groups.</description>
 <description>Specifies which LDAP objectClass values identify directory
 objects that are groups during sub-group processing.</description>
 <syntax>AuthLDAPSubGroupClass <em>LdapObjectClass</em></syntax>
+<default>AuthLDAPSubGroupClass groupOfNames groupOfUniqueNames</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
