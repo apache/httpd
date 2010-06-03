@@ -97,7 +97,7 @@ static int ssl_tmp_key_init_rsa(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "Init: Failed to generate temporary "
                      "%d bit RSA private key", bits);
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         return !OK;
     }
 
@@ -270,7 +270,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
             }
             else {
                 ap_log_error(APLOG_MARK, APLOG_EMERG, 0, s, "FIPS mode failed");
-                ssl_log_ssl_error(APLOG_MARK, APLOG_EMERG, s);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_EMERG, s);
                 ssl_die();
             }
         }
@@ -363,7 +363,7 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "Init: Failed to load Crypto Device API `%s'",
                          mc->szCryptoDevice);
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
             ssl_die();
         }
 
@@ -375,7 +375,7 @@ void ssl_init_Engine(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "Init: Failed to enable Crypto Device API `%s'",
                          mc->szCryptoDevice);
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
             ssl_die();
         }
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, 
@@ -440,7 +440,7 @@ static void ssl_init_ctx_tls_extensions(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "Unable to initialize TLS servername extension "
                      "callback (incompatible OpenSSL version?)");
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 
@@ -631,7 +631,7 @@ static void ssl_init_ctx_verify(server_rec *s,
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                     "Unable to configure verify locations "
                     "for client authentication");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
             ssl_die();
         }
 
@@ -691,7 +691,7 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
     if (!SSL_CTX_set_cipher_list(ctx, MODSSL_PCHAR_CAST suite)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                 "Unable to configure permitted SSL ciphers");
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 }
@@ -720,7 +720,7 @@ static void ssl_init_ctx_crl(server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                 "Unable to configure X.509 CRL storage "
                 "for certificate revocation");
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 }
@@ -837,14 +837,14 @@ static int ssl_server_import_cert(server_rec *s,
     if (!(cert = d2i_X509(NULL, &ptr, asn1->nData))) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                 "Unable to import %s server certificate", type);
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 
     if (SSL_CTX_use_certificate(mctx->ssl_ctx, cert) <= 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                 "Unable to configure %s server certificate", type);
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
   
@@ -893,14 +893,14 @@ static int ssl_server_import_key(server_rec *s,
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                 "Unable to import %s server private key", type);
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 
     if (SSL_CTX_use_PrivateKey(mctx->ssl_ctx, pkey) <= 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                 "Unable to configure %s server private key", type);
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
 
@@ -915,7 +915,7 @@ static int ssl_server_import_key(server_rec *s,
             EVP_PKEY_copy_parameters(pubkey, pkey);
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                     "Copying DSA parameters from private key to certificate");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
             EVP_PKEY_free(pubkey);
         }
     }
