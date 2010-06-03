@@ -812,8 +812,8 @@ own username, instead of anonymously or with hard-coded credentials for the serv
 <default>AuthLDAPInitialBindAsUser off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility>Available in version 2.3.7 and later</compatibility>
 <override>AuthConfig</override>
+<compatibility>Available in version 2.3.7 and later</compatibility>
 <usage>
     <p>By default, the server either anonymously, or with a dedicated user and
      password, converts the basic authentication username into an LDAP
@@ -849,8 +849,8 @@ to perform a DN lookup</description>
 <default>AuthLDAPInitialBindPattern (.*) $1 (remote username used verbatim)</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility>Available in version 2.3.7 and later</compatibility>
 <override>AuthConfig</override>
+<compatibility>Available in version 2.3.7 and later</compatibility>
 <usage>
     <p>If <directive module="mod_authnz_ldap">AuthLDAPInitialBindAsUser</directive> is set to
        <em>ON</em>, the basic authentication username will be transformed according to the
@@ -947,8 +947,8 @@ to perform a DN lookup</description>
 <default>AuthLDAPCompareAsUser off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility>Available in version 2.3.7 and later</compatibility>
 <override>AuthConfig</override>
+<compatibility>Available in version 2.3.7 and later</compatibility>
 
 <usage>
     <p>When set, and <module>mod_authnz_ldap</module> has authenticated the
@@ -1126,8 +1126,8 @@ environment variable</description>
 <default>AuthLDAPSearchAsUser off</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
-<compatibility>Available in version 2.3.7 and later</compatibility>
 <override>AuthConfig</override>
+<compatibility>Available in version 2.3.7 and later</compatibility>
 
 <usage>
     <p>When set, and <module>mod_authnz_ldap</module> has authenticated the
