@@ -110,7 +110,7 @@ CURRENT VOTES:
     "hot spare").
     See: Message-ID: <3C58232C.FE91F19F@Golux.Com>
 
-    Self-destruct: Ken, Martin, Lars
+    Self-destruct: Ken, Martin, Lars, sctemme (parent shouldn't die, ever)
     Not self-destruct: BrianP, Ian, Cliff, BillS
     Make it runtime configurable: Aaron, jim, Justin, wrowe, rederpj, nd, pgollucci
 
@@ -121,7 +121,7 @@ CURRENT VOTES:
                                       something useful?)
 
   * Make the worker MPM the default MPM for threaded Unix boxes.
-    +1:   Justin, Ian, Cliff, BillS, striker, wrowe, nd, pgollucci
+    +1:   Justin, Ian, Cliff, BillS, striker, wrowe, nd, pgollucci, sctemme
     +0:   BrianP, Aaron (mutex contention is looking better with the
           latest code, let's continue tuning and testing), rederpj, jim
     -0:   Lars
@@ -133,6 +133,7 @@ CURRENT VOTES:
     Recent discussion indicates we should designate a (short name).
     This is not yet a [Vote] - Your nominations please:
       * Apache HTTP Server (httpd)
+        +1: sctemme (why mess with it?)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
@@ -258,7 +259,7 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       the ja-jis encoding.
 
   * There is increasing demand from module writers for an API
-    that will allow them to control the server à la apachectl.
+    that will allow them to control the server Ã  la apachectl.
     Reasons include sole-function servers that need to die if
     an external dependency (e.g., a database) fails, et cetera.
     Perhaps something in the (ever more abused) scoreboard?
