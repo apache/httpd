@@ -218,7 +218,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                                  "Init: Unable to read server certificate from"
                                  " file %s", szPath);
-                    ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
                     ssl_die();
                 }
             }
@@ -232,7 +232,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                              "Init: Multiple %s server certificates not "
                              "allowed", an);
-                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
             algoCert |= at;
@@ -426,12 +426,12 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                                      "Init: Unable to read pass phrase "
                                      "[Hint: key introduced or changed "
                                      "before restart?]");
-                        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
+                        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, pServ);
                     }
                     else {
                         ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                                      pServ, "Init: Private key not found");
-                        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
+                        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, pServ);
                     }
                     if (writetty) {
                         apr_file_printf(writetty, "Apache:mod_ssl:Error: Private key not found.\n");
@@ -441,7 +441,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 else {
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                                  pServ, "Init: Pass phrase incorrect");
-                    ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, pServ);
+                    ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, pServ);
 
                     if (writetty) {
                         apr_file_printf(writetty, "Apache:mod_ssl:Error: Pass phrase incorrect.\n");
@@ -456,7 +456,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                             "Init: Unable to read server private key from "
                             "file %s [Hint: Perhaps it is in a separate file? "
                             "  See SSLCertificateKeyFile]", szPath);
-                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
 
@@ -470,7 +470,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                              "Init: Multiple %s server private keys not "
                              "allowed", an);
-                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
                 ssl_die();
             }
             algoKey |= at;

@@ -721,7 +721,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
                  */
                 ap_log_cerror(APLOG_MARK, APLOG_INFO, inctx->rc, c,
                               "SSL library error %d reading data", ssl_err);
-                ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, mySrvFromConn(c));
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, mySrvFromConn(c));
 
             }
             if (inctx->rc == APR_SUCCESS) {
@@ -828,7 +828,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
              */
             ap_log_cerror(APLOG_MARK, APLOG_INFO, outctx->rc, c,
                           "SSL library error %d writing data", ssl_err);
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, mySrvFromConn(c));
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, mySrvFromConn(c));
         }
         if (outctx->rc == APR_SUCCESS) {
             outctx->rc = APR_EGENERAL;
@@ -898,7 +898,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                          "SSL handshake failed: HTTP spoken on HTTPS port; "
                          "trying to send HTML error page");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, sslconn->server);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, sslconn->server);
 
             sslconn->non_ssl_request = 1;
             ssl_io_filter_disable(sslconn, f);
@@ -1085,7 +1085,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         if ((n = SSL_connect(filter_ctx->pssl)) <= 0) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                           "SSL Proxy connect failed");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, server);
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
             return MODSSL_ERROR_BAD_GATEWAY;
@@ -1180,7 +1180,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                           "SSL library error %d in handshake "
                           "(server %s)", ssl_err,
                           ssl_util_vhostid(c->pool, server));
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, server);
 
         }
         if (inctx->rc == APR_SUCCESS) {
@@ -1216,7 +1216,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                           "accepting certificate based on "
                           "\"SSLVerifyClient optional_no_ca\" "
                           "configuration");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, server);
         }
         else {
             const char *error = sslconn->verify_error ?
@@ -1226,7 +1226,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                          "SSL client authentication failed: %s",
                          error ? error : "unknown");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, server);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_INFO, server);
 
             ssl_filter_io_shutdown(filter_ctx, c, 1);
             return APR_ECONNABORTED;

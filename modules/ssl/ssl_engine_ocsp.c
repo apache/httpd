@@ -110,7 +110,7 @@ static OCSP_REQUEST *create_request(X509_STORE_CTX *ctx, X509 *cert,
 
     *certid = OCSP_cert_to_id(NULL, cert, ctx->current_issuer);
     if (!*certid || !OCSP_request_add0_id(req, *certid)) {
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "could not retrieve certificate id");
         return NULL;
@@ -164,7 +164,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         basicResponse = OCSP_response_get1_basic(response);
         if (!basicResponse) {
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
             ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
                           "could not retrieve OCSP basic response");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
@@ -182,7 +182,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         /* TODO: allow flags configuration. */
         if (OCSP_basic_verify(basicResponse, NULL, ctx->ctx, 0) != 1) {
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                         "failed to verify the OCSP response");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
@@ -196,8 +196,8 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
         rc = OCSP_resp_find_status(basicResponse, certID, &status,
                                    &reason, NULL, &thisup, &nextup);
         if (rc != 1) {
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
-            ssl_log_cxerror(APLOG_MARK, APLOG_ERR, 0, c, cert,
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+            ssl_log_cxerror(SSLLOG_MARK, APLOG_ERR, 0, c, cert,
                             "failed to retrieve OCSP response status");
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
@@ -215,8 +215,8 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
             int vrc  = OCSP_check_validity(thisup, nextup, MAX_SKEW, MAX_AGE);
             
             if (vrc != 1) {
-                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
-                ssl_log_cxerror(APLOG_MARK, APLOG_ERR, 0, c, cert,
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, s);
+                ssl_log_cxerror(SSLLOG_MARK, APLOG_ERR, 0, c, cert,
                                 "OCSP response outside validity period");
                 rc = V_OCSP_CERTSTATUS_UNKNOWN;
             }
@@ -229,7 +229,7 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
                 status == V_OCSP_CERTSTATUS_GOOD ? "good" : 
                 (status == V_OCSP_CERTSTATUS_REVOKED ? "revoked" : "unknown");
 
-            ssl_log_cxerror(APLOG_MARK, level, 0, c, cert,
+            ssl_log_cxerror(SSLLOG_MARK, level, 0, c, cert,
                             "OCSP validation completed, "
                             "certificate status: %s (%d, %d)",
                             result, status, reason);

@@ -749,6 +749,7 @@ void ssl_log_cxerror(const char *file, int line, int level,
                      const char *format, ...)
     __attribute__((format(printf,7,8)));
 
+#define SSLLOG_MARK              __FILE__,__LINE__
 
 /**  Variables  */
 

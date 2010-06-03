@@ -414,7 +414,7 @@ int ssl_hook_Access(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "Unable to reconfigure (per-directory) "
                           "permitted SSL ciphers");
-            ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, r->server);
+            ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
 
             if (cipher_list_old) {
                 sk_SSL_CIPHER_free(cipher_list_old);
@@ -733,7 +733,7 @@ int ssl_hook_Access(request_rec *r)
             if (!modssl_X509_verify_cert(&cert_store_ctx)) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Re-negotiation verification step failed");
-                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, r->server);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
             }
 
             SSL_set_verify_result(ssl, cert_store_ctx.error);
@@ -790,7 +790,7 @@ int ssl_hook_Access(request_rec *r)
             if (SSL_get_state(ssl) != SSL_ST_OK) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Re-negotiation request failed");
-                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, r->server);
+                ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, r->server);
 
                 r->connection->keepalive = AP_CONN_CLOSE;
                 return HTTP_FORBIDDEN;
@@ -1352,7 +1352,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     /*
      * Log verification information
      */
-    ssl_log_cxerror(APLOG_MARK, APLOG_DEBUG, 0, conn,
+    ssl_log_cxerror(SSLLOG_MARK, APLOG_DEBUG, 0, conn,
                     X509_STORE_CTX_get_current_cert(ctx),
                     "Certificate Verification, depth %d",
                     errdepth);

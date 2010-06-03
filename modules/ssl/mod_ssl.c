@@ -417,7 +417,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
                       "Unable to create a new SSL connection from the SSL "
                       "context");
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, server);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, server);
 
         c->aborted = 1;
 
@@ -432,7 +432,7 @@ int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
     {
         ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
                       "Unable to set session id context to '%s'", vhost_md5);
-        ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, server);
+        ssl_log_ssl_error(SSLLOG_MARK, APLOG_ERR, server);
 
         c->aborted = 1;
 
