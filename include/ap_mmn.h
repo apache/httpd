@@ -220,12 +220,13 @@
  * 20100223.0 (2.3.6-dev)  LDAP client_certs per-server moved to per-dir
  * 20100223.1 (2.3.6-dev)  Added ap_process_fnmatch_configs().
  * 20100504.0 (2.3.6-dev)  Added name arg to ap_{proc,global}_mutex_create().
+ * 20100604.0 (2.3.6-dev)  Remove unused core_dir_config::loglevel
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100504
+#define MODULE_MAGIC_NUMBER_MAJOR 20100604
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 

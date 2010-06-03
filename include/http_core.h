@@ -496,8 +496,6 @@ typedef struct {
 
     server_signature_e server_signature;
 
-    int loglevel;
-    
     /* Access control */
     apr_array_header_t *sec_file;
     ap_regex_t *r;
