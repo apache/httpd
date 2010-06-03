@@ -313,8 +313,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * XXX FIXME
      */
     failed = ap_proxy_connect_to_backend(&sock, "CONNECT", connect_addr,
-                                         connectname, conf, r->server,
-                                         r->pool);
+                                         connectname, conf, r);
 
     /* handle a permanent error from the above loop */
     if (failed) {

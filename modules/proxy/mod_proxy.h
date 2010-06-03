@@ -485,7 +485,7 @@ PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r);
 PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade *bb, char *buff, size_t bufflen, int *eos);
 PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *key);
 /* DEPRECATED (will be replaced with ap_proxy_connect_backend */
-PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, server_rec *, apr_pool_t *);
+PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **, const char *, apr_sockaddr_t *, const char *, proxy_server_conf *, request_rec *);
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
                                                             request_rec *r);
 PROXY_DECLARE(int) ap_proxy_ssl_enable(conn_rec *c);
