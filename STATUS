@@ -192,6 +192,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=930125&view=rev
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=25153
 
+  * mod_disk_cache: Decline the opportunity to cache if the response is
+    a 206 Partial Content. This stops a reverse proxied partial response
+    from becoming cached, and then being served in subsequent responses.
+    Trunk patch: http://svn.apache.org/viewvc?rev=951222&view=rev
+    2.2.x patch: http://people.apache.org/~minfrin/httpd-cache-partial-2.2.patch
+    +1: minfrin
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
