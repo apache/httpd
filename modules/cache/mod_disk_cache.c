@@ -333,6 +333,14 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
         return DECLINED;
     }
 
+    /* we don't support caching of range requests (yet) */
+    if (r->status == HTTP_PARTIAL_CONTENT) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: URL %s partial content response not cached",
+                     key);
+        return DECLINED;
+    }
+
     /* Note, len is -1 if unknown so don't trust it too hard */
     if (len > conf->maxfs) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
