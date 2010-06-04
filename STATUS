@@ -153,10 +153,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
              it, so that the server won't be slow down too much.
 
   * RFC 2616 violations.
-    Closed PRs: 15857.
-    Open PRs: 15852, 15859, 15861, 15864, 15865, 15866, 15868, 15869,
-              15870, 16120, 16125, 16126, 16133, 16135, 16136, 16137,
-              16138, 16139, 16140, 16142, 16518, 16520, 16521, 
+    Closed PRs: 15852, 15857, 15859, 15861, 15864, 15869, 15870, 16120,
+                16125, 16135, 16136, 16137, 16138, 16139, 16140, 16518,
+                16520
+    Open PRs:   15865, 15866, 15868, 16126, 16133, 16142, 16521
     jerenkrantz says: need to decide how many we need to backport and/or
                       if these rise to showstopper status.
     wrowe suggests: it would be nice to see "MUST" v.s. "SHOULD" v.s. "MAY"
