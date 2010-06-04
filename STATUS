@@ -199,6 +199,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~minfrin/httpd-cache-partial-2.2.patch
     +1: minfrin
 
+  *) mod_ldap: LDAP caching was suppressed (and ldap-status handler returns
+     title page only) when any mod_ldap directives were used in VirtualHost
+     context.
+
+     Trunk Patch: http://svn.apache.org/viewvc?rev=951235&view=rev (actual fix)
+                  http://svn.apache.org/viewvc?rev=951237&view=rev (error msg not displayed)
+     2.2.x patch: http://people.apache.org/~covener/2.2.x-ldap_serverconfig.diff
+
+         note: No actual per-server directives in 2.2.x mod_ldap, but per-directory 
+         mod_ldap directives under a virtualhost are sufficient to trigger this merge issue)
+
+     +1: covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
