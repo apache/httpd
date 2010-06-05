@@ -19,7 +19,7 @@ APACHE_MODULE(session, session module, , , most)
 APACHE_MODULE(session_cookie, session cookie module, , , $session_mods_enable)
 APACHE_MODULE(session_crypto, session crypto module, , , no, [
   saved_CPPFLAGS="$CPPFLAGS"
-  CPPFLAGS="$CPPFLAGS -I$APR_INCLUDEDIR -I$APU_INCLUDEDIR"
+  CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES"
   AC_CHECK_HEADERS(apr_crypto.h, [ap_HAVE_APR_CRYPTO="yes"], [ap_HAVE_APR_CRYPTO="no"])
   CPPFLAGS="$saved_CPPFLAGS"
   if test $ap_HAVE_APR_CRYPTO = "no"; then
