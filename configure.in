@@ -93,9 +93,9 @@ if test "$apr_found" = "reconfig"; then
 
   dnl We have to find apr-N-config when we reconfigure APR.
   for majorver in 1 2; do
-    test_apr_config="$srcdir/srclib/apr/apr-${majorver}-config"
-    if test -f $test_apr_config; then
-      apr_config=$test_apr_config
+    test_apr_config="./srclib/apr/apr-${majorver}-config"
+    if test -f "$test_apr_config"; then
+      apr_config="$test_apr_config"
     fi
   done
 fi
