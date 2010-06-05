@@ -150,7 +150,7 @@ static int process_echo_connection(conn_rec *c)
         /* Get a single line of input from the client */
         if (((rv = ap_get_brigade(c->input_filters, bb, AP_MODE_GETLINE,
                                   APR_BLOCK_READ, 0)) != APR_SUCCESS)) {
-            apr_brigade_destroy(bb);
+            apr_brigade_cleanup(bb);
             if (!APR_STATUS_IS_EOF(rv) && ! APR_STATUS_IS_TIMEUP(rv))
                 ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                              "ProtocolEcho: Failure reading from %s",
@@ -160,7 +160,7 @@ static int process_echo_connection(conn_rec *c)
 
         /* Something horribly wrong happened.  Someone didn't block! */
         if (APR_BRIGADE_EMPTY(bb)) {
-            apr_brigade_destroy(bb);
+            apr_brigade_cleanup(bb);
             ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                          "ProtocolEcho: Error - read empty brigade from %s!",
                          c->remote_ip);
