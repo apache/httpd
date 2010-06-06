@@ -49,6 +49,8 @@
 #include "util_time.h"
 #include "ap_mpm.h"
 
+APLOG_USE_MODULE(core);
+
 typedef struct {
     const char *t_name;
     int t_val;
@@ -134,6 +136,14 @@ static const TRANS priorities[] = {
     {"notice",  APLOG_NOTICE},
     {"info",    APLOG_INFO},
     {"debug",   APLOG_DEBUG},
+    {"trace1",  APLOG_TRACE1},
+    {"trace2",  APLOG_TRACE2},
+    {"trace3",  APLOG_TRACE3},
+    {"trace4",  APLOG_TRACE4},
+    {"trace5",  APLOG_TRACE5},
+    {"trace6",  APLOG_TRACE6},
+    {"trace7",  APLOG_TRACE7},
+    {"trace8",  APLOG_TRACE8},
     {NULL,      -1},
 };
 
@@ -535,7 +545,8 @@ AP_DECLARE(void) ap_error_log2stderr(server_rec *s) {
     }
 }
 
-static void log_error_core(const char *file, int line, int level,
+static void log_error_core(const char *file, int line, int module_index,
+                           int level,
                            apr_status_t status, const server_rec *s,
                            const conn_rec *c,
                            const request_rec *r, apr_pool_t *pool,
@@ -572,10 +583,10 @@ static void log_error_core(const char *file, int line, int level,
     else if (s->error_log) {
         /*
          * If we are doing normal logging, don't log messages that are
-         * above the server log level unless it is a startup/shutdown notice
+         * above the module's log level unless it is a startup/shutdown notice
          */
         if ((level_and_mask != APLOG_NOTICE)
-            && (level_and_mask > s->loglevel)) {
+            && (level_and_mask > ap_get_module_loglevel(s, module_index))) {
             return;
         }
 
@@ -584,9 +595,9 @@ static void log_error_core(const char *file, int line, int level,
     else {
         /*
          * If we are doing syslog logging, don't log messages that are
-         * above the server log level (including a startup/shutdown notice)
+         * above the module's log level (including a startup/shutdown notice)
          */
-        if (level_and_mask > s->loglevel) {
+        if (level_and_mask > ap_get_module_loglevel(s, module_index)) {
             return;
         }
     }
@@ -606,7 +617,7 @@ static void log_error_core(const char *file, int line, int level,
                             "[%s] ", priorities[level_and_mask].t_name);
     }
 
-    if (file && level_and_mask == APLOG_DEBUG) {
+    if (file && level_and_mask >= APLOG_DEBUG) {
 #if defined(_OSD_POSIX) || defined(WIN32) || defined(__MVS__)
         char tmp[256];
         char *e = strrchr(file, '/');
@@ -719,44 +730,48 @@ static void log_error_core(const char *file, int line, int level,
     }
 #ifdef HAVE_SYSLOG
     else {
-        syslog(level_and_mask, "%s", errstr);
+        syslog(level_and_mask < LOG_PRIMASK ? level_and_mask : APLOG_DEBUG,
+               "%s", errstr);
     }
 #endif
 
-    ap_run_error_log(file, line, level, status, s, r, pool, errstr + errstrlen);
+    ap_run_error_log(file, line, module_index, level, status, s, r, pool,
+                     errstr + errstrlen);
 }
 
-AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
-                              apr_status_t status, const server_rec *s,
-                              const char *fmt, ...)
+AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
+                               int level, apr_status_t status,
+                               const server_rec *s, const char *fmt, ...)
 {
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, s, NULL, NULL, NULL, fmt, args);
+    log_error_core(file, line, module_index, level, status, s, NULL, NULL,
+                   NULL, fmt, args);
     va_end(args);
 }
 
-AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
-                               apr_status_t status, apr_pool_t *p,
-                               const char *fmt, ...)
+AP_DECLARE(void) ap_log_perror_(const char *file, int line, int module_index,
+                                int level, apr_status_t status, apr_pool_t *p,
+                                const char *fmt, ...)
 {
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, NULL, NULL, NULL, p, fmt, args);
+    log_error_core(file, line, module_index, level, status, NULL, NULL, NULL,
+                   p, fmt, args);
     va_end(args);
 }
 
-AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
-                               apr_status_t status, const request_rec *r,
-                               const char *fmt, ...)
+AP_DECLARE(void) ap_log_rerror_(const char *file, int line, int module_index,
+                                int level, apr_status_t status,
+                                const request_rec *r, const char *fmt, ...)
 {
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, r->server, NULL, r, NULL, fmt,
-                   args);
+    log_error_core(file, line, module_index, level, status, r->server, NULL, r,
+                   NULL, fmt, args);
 
     /*
      * IF APLOG_TOCLIENT is set,
@@ -777,15 +792,15 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
     va_end(args);
 }
 
-AP_DECLARE(void) ap_log_cerror(const char *file, int line, int level,
-                               apr_status_t status, const conn_rec *c,
-                               const char *fmt, ...)
+AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_index,
+                                int level, apr_status_t status,
+                                const conn_rec *c, const char *fmt, ...)
 {
     va_list args;
 
     va_start(args, fmt);
-    log_error_core(file, line, level, status, c->base_server, c, NULL, NULL,
-                   fmt, args);
+    log_error_core(file, line, module_index, level, status, c->base_server, c,
+                   NULL, NULL, fmt, args);
     va_end(args);
 }
 
@@ -1162,7 +1177,7 @@ AP_DECLARE(void) ap_close_piped_log(piped_log *pl)
 AP_DECLARE(const char *) ap_parse_log_level(const char *str, int *val)
 {
     char *err = "Log level keyword must be one of emerg/alert/crit/error/warn/"
-                "notice/info/debug";
+                "notice/info/debug/trace1/.../trace8";
     int i = 0;
 
     if (str == NULL)
@@ -1179,8 +1194,8 @@ AP_DECLARE(const char *) ap_parse_log_level(const char *str, int *val)
 }
 
 AP_IMPLEMENT_HOOK_VOID(error_log,
-                       (const char *file, int line, int level,
+                       (const char *file, int line, int module_index, int level,
                         apr_status_t status, const server_rec *s,
                         const request_rec *r, apr_pool_t *pool,
-                        const char *errstr), (file, line, level,
+                        const char *errstr), (file, line, module_index, level,
                         status, s, r, pool, errstr))

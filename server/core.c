@@ -2625,23 +2625,59 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg)
+static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg_)
 {
-    char *str;
+    char *level_str;
+    int level;
+    module *module;
+    char *arg = apr_pstrdup(cmd->temp_pool, arg_);
 
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
 
-    if ((str = ap_getword_conf(cmd->pool, &arg))) {
-        err = ap_parse_log_level(str, &cmd->server->loglevel);
+    if (arg == NULL)
+        return "LogLevel requires level keyword or module loglevel specifier";
+
+    level_str = ap_strchr(arg, ':');
+
+    if (level_str == NULL) {
+        err = ap_parse_log_level(arg, &cmd->server->loglevel);
         if (err != NULL)
-            return apr_psprintf(cmd->pool, "LogLevel: %s", err);
+            return err;
+        ap_reset_module_loglevels(cmd->server);
+        ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, cmd->server,
+                     "Setting LogLevel for all modules to %s", arg);
+        return NULL;
     }
-    else {
-        return "LogLevel requires level keyword";
+
+    *level_str++ = '\0';
+    if (!*level_str) {
+        return apr_psprintf(cmd->temp_pool, "Module specifier '%s' must be "
+                            "followed by a log level keyword", arg);
     }
+
+    err = ap_parse_log_level(level_str, &level);
+    if (err != NULL)
+        return apr_psprintf(cmd->temp_pool, "%s:%s: %s", arg, level_str, err);
+
+    if ((module = find_module(cmd->server, arg)) == NULL) {
+        char *name = apr_psprintf(cmd->temp_pool, "%s_module", arg);
+        ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, cmd->server,
+                     "Cannot find module '%s', trying '%s'", arg, name);
+	module = find_module(cmd->server, name);
+    }
+
+    if (module == NULL) {
+        return apr_psprintf(cmd->temp_pool, "Cannot find module %s", arg);
+    }
+
+    ap_set_module_loglevel(cmd->pool, cmd->server, module->module_index,
+                           level);
+    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, cmd->server,
+                 "Setting LogLevel for module %s to %s", module->name,
+                 level_str);
 
     return NULL;
 }
@@ -3319,7 +3355,7 @@ AP_INIT_TAKE1("IncludeOptional", include_config, (void*)1,
   (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
   "Name or pattern of the config file(s) to be included; ignored if the file "
   "does not exist or the pattern does not match any files"),
-AP_INIT_TAKE1("LogLevel", set_loglevel, NULL, RSRC_CONF,
+AP_INIT_ITERATE("LogLevel", set_loglevel, NULL, RSRC_CONF,
   "Level of verbosity in error logging"),
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
   "A numeric IP address:port, or the name of a host"),
@@ -3990,7 +4026,7 @@ static void register_hooks(apr_pool_t *p)
                                   NULL, AP_FTYPE_RESOURCE - 10);
 }
 
-AP_DECLARE_DATA module core_module = {
+AP_DECLARE_MODULE(core) = {
     MPM20_MODULE_STUFF,
     AP_PLATFORM_REWRITE_ARGS_HOOK, /* hook to run before apache parses args */
     create_core_dir_config,       /* create per-directory config structure */

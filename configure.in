@@ -170,6 +170,9 @@ dnl PCRE and for our config tests will be whatever PCRE determines.
 AC_PROG_CC
 AC_PROG_CPP
 
+dnl Try to get c99 support for variadic macros
+AC_PROG_CC_C99
+
 if test "x${cache_file}" = "x/dev/null"; then
   # Likewise, ensure that CC and CPP are passed through to the pcre
   # configure script iff caching is disabled (the autoconf 2.5x default).

@@ -35,33 +35,51 @@ extern "C" {
 #ifdef HAVE_SYSLOG
 #include <syslog.h>
 
+#include "http_config.h"
+
 #ifndef LOG_PRIMASK
 #define LOG_PRIMASK 7
 #endif
 
-#define APLOG_EMERG     LOG_EMERG     /* system is unusable */
-#define APLOG_ALERT     LOG_ALERT     /* action must be taken immediately */
-#define APLOG_CRIT      LOG_CRIT      /* critical conditions */
-#define APLOG_ERR       LOG_ERR       /* error conditions */
-#define APLOG_WARNING   LOG_WARNING   /* warning conditions */
-#define APLOG_NOTICE    LOG_NOTICE    /* normal but significant condition */
-#define APLOG_INFO      LOG_INFO      /* informational */
-#define APLOG_DEBUG     LOG_DEBUG     /* debug-level messages */
+#define APLOG_EMERG     LOG_EMERG       /* system is unusable */
+#define APLOG_ALERT     LOG_ALERT       /* action must be taken immediately */
+#define APLOG_CRIT      LOG_CRIT        /* critical conditions */
+#define APLOG_ERR       LOG_ERR         /* error conditions */
+#define APLOG_WARNING   LOG_WARNING     /* warning conditions */
+#define APLOG_NOTICE    LOG_NOTICE      /* normal but significant condition */
+#define APLOG_INFO      LOG_INFO        /* informational */
+#define APLOG_DEBUG     LOG_DEBUG       /* debug-level messages */
+#define APLOG_TRACE1   (LOG_DEBUG + 1)  /* trace-level 1 messages */
+#define APLOG_TRACE2   (LOG_DEBUG + 2)  /* trace-level 2 messages */
+#define APLOG_TRACE3   (LOG_DEBUG + 3)  /* trace-level 3 messages */
+#define APLOG_TRACE4   (LOG_DEBUG + 4)  /* trace-level 4 messages */
+#define APLOG_TRACE5   (LOG_DEBUG + 5)  /* trace-level 5 messages */
+#define APLOG_TRACE6   (LOG_DEBUG + 6)  /* trace-level 6 messages */
+#define APLOG_TRACE7   (LOG_DEBUG + 7)  /* trace-level 7 messages */
+#define APLOG_TRACE8   (LOG_DEBUG + 8)  /* trace-level 8 messages */
 
-#define APLOG_LEVELMASK LOG_PRIMASK   /* mask off the level value */
+#define APLOG_LEVELMASK 15     /* mask off the level value */
 
 #else
 
-#define	APLOG_EMERG	0	/* system is unusable */
-#define	APLOG_ALERT	1	/* action must be taken immediately */
-#define	APLOG_CRIT	2	/* critical conditions */
-#define	APLOG_ERR	3	/* error conditions */
-#define	APLOG_WARNING	4	/* warning conditions */
-#define	APLOG_NOTICE	5	/* normal but significant condition */
-#define	APLOG_INFO	6	/* informational */
-#define	APLOG_DEBUG	7	/* debug-level messages */
+#define APLOG_EMERG      0     /* system is unusable */
+#define APLOG_ALERT      1     /* action must be taken immediately */
+#define APLOG_CRIT       2     /* critical conditions */
+#define APLOG_ERR        3     /* error conditions */
+#define APLOG_WARNING    4     /* warning conditions */
+#define APLOG_NOTICE     5     /* normal but significant condition */
+#define APLOG_INFO       6     /* informational */
+#define APLOG_DEBUG      7     /* debug-level messages */
+#define APLOG_TRACE1     8     /* trace-level 1 messages */
+#define APLOG_TRACE2     9     /* trace-level 2 messages */
+#define APLOG_TRACE3    10     /* trace-level 3 messages */
+#define APLOG_TRACE4    11     /* trace-level 4 messages */
+#define APLOG_TRACE5    12     /* trace-level 5 messages */
+#define APLOG_TRACE6    13     /* trace-level 6 messages */
+#define APLOG_TRACE7    14     /* trace-level 7 messages */
+#define APLOG_TRACE8    15     /* trace-level 8 messages */
 
-#define	APLOG_LEVELMASK	7	/* mask off the level value */
+#define APLOG_LEVELMASK 15     /* mask off the level value */
 
 #endif
 
@@ -91,9 +109,79 @@ extern "C" {
 #define DEFAULT_LOGLEVEL	APLOG_WARNING
 #endif
 
+#define APLOG_NO_MODULE         -1
+
+/*
+ * Objects with static storage duration are set to NULL if not
+ * initialized explicitly. This means if aplog_module_index
+ * is not initalized using the APLOG_USE_MODULE or the
+ * AP_DECLARE_MODULE macro, we can safely fall back to
+ * use APLOG_NO_MODULE.
+ */
+static int * const aplog_module_index;
+#define APLOG_MODULE_INDEX  \
+    (aplog_module_index ? *aplog_module_index : APLOG_NO_MODULE)
+
+/*
+ * APLOG_MAX_LOGLEVEL can be used to remove logging above some
+ * specified level at compile time.
+ */
+#ifndef APLOG_MAX_LOGLEVEL
+#define APLOG_MODULE_IS_LEVEL(s,module_index,level)              \
+          ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \
+            (s == NULL) ||                                       \
+            (ap_get_module_loglevel(s, module_index)             \
+             >= ((level)&APLOG_LEVELMASK) ) )
+#else
+#define APLOG_MODULE_IS_LEVEL(s,module_index,level)              \
+        ( (((level)&APLOG_LEVELMASK) <= APLOG_MAX_LOGLEVEL) &&   \
+          ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \
+            (s == NULL) ||                                       \
+            (ap_get_module_loglevel(s, module_index)             \
+             >= ((level)&APLOG_LEVELMASK) ) ) )
+#endif
+
+#define APLOG_IS_LEVEL(s,level)     \
+    APLOG_MODULE_IS_LEVEL(s,APLOG_MODULE_INDEX,level)
+
+#define APLOGinfo(s)                APLOG_IS_LEVEL(s,APLOG_INFO)
+#define APLOGdebug(s)               APLOG_IS_LEVEL(s,APLOG_DEBUG)
+#define APLOGtrace1(s)              APLOG_IS_LEVEL(s,APLOG_TRACE1)
+#define APLOGtrace2(s)              APLOG_IS_LEVEL(s,APLOG_TRACE2)
+#define APLOGtrace3(s)              APLOG_IS_LEVEL(s,APLOG_TRACE3)
+#define APLOGtrace4(s)              APLOG_IS_LEVEL(s,APLOG_TRACE4)
+#define APLOGtrace5(s)              APLOG_IS_LEVEL(s,APLOG_TRACE5)
+#define APLOGtrace6(s)              APLOG_IS_LEVEL(s,APLOG_TRACE6)
+#define APLOGtrace7(s)              APLOG_IS_LEVEL(s,APLOG_TRACE7)
+#define APLOGtrace8(s)              APLOG_IS_LEVEL(s,APLOG_TRACE8)
+
+#define APLOG_R_IS_LEVEL(r,level)   APLOG_IS_LEVEL(r->server,level)
+#define APLOGrinfo(r)               APLOG_R_IS_LEVEL(r,APLOG_INFO)
+#define APLOGrdebug(r)              APLOG_R_IS_LEVEL(r,APLOG_DEBUG)
+#define APLOGrtrace1(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE1)
+#define APLOGrtrace2(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE2)
+#define APLOGrtrace3(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE3)
+#define APLOGrtrace4(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE4)
+#define APLOGrtrace5(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE5)
+#define APLOGrtrace6(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE6)
+#define APLOGrtrace7(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE7)
+#define APLOGrtrace8(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE8)
+
+#define APLOG_C_IS_LEVEL(c,level)   APLOG_IS_LEVEL(c->base_server,level)
+#define APLOGcinfo(c)               APLOG_C_IS_LEVEL(c,APLOG_INFO)
+#define APLOGcdebug(c)              APLOG_C_IS_LEVEL(c,APLOG_DEBUG)
+#define APLOGctrace1(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE1)
+#define APLOGctrace2(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE2)
+#define APLOGctrace3(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE3)
+#define APLOGctrace4(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE4)
+#define APLOGctrace5(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE5)
+#define APLOGctrace6(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE6)
+#define APLOGctrace7(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE7)
+#define APLOGctrace8(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE8)
+
 extern int AP_DECLARE_DATA ap_default_loglevel;
 
-#define APLOG_MARK	__FILE__,__LINE__
+#define APLOG_MARK     __FILE__,__LINE__,APLOG_MODULE_INDEX
 
 /**
  * Set up for logging to stderr.
@@ -147,6 +235,7 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
  * to the error_log.
  * @param file The file in which this function is called
  * @param line The line number on which this function is called
+ * @param module_index The module_index of the module generating this message
  * @param level The level of this error message
  * @param status The status code from the previous command
  * @param s The server on which we are logging
@@ -164,10 +253,20 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
-AP_DECLARE(void) ap_log_error(const char *file, int line, int level, 
-                             apr_status_t status, const server_rec *s, 
-                             const char *fmt, ...)
-			    __attribute__((format(printf,6,7)));
+#if __STDC_VERSION__ >= 199901L
+/* need additional step to expand APLOG_MARK first */
+#define ap_log_error(...) ap_log_error__(__VA_ARGS__)
+#define ap_log_error__(file, line, mi, level, status, s, ...)           \
+    do { server_rec *sr = s; if (APLOG_MODULE_IS_LEVEL(sr, mi, level))  \
+             ap_log_error_(file, line, mi, level, status, sr, __VA_ARGS__); \
+    } while(0)
+#else
+#define ap_log_error ap_log_error_
+#endif
+AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
+                               int level, apr_status_t status,
+                               const server_rec *s, const char *fmt, ...)
+                              __attribute__((format(printf,7,8)));
 
 /**
  * ap_log_perror() - log messages which are not related to a particular
@@ -175,6 +274,7 @@ AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
  * format to log messages to the error_log.
  * @param file The file in which this function is called
  * @param line The line number on which this function is called
+ * @param module_index ignored dummy value for use by APLOG_MARK
  * @param level The level of this error message
  * @param status The status code from the previous command
  * @param p The pool which we are logging for
@@ -188,10 +288,20 @@ AP_DECLARE(void) ap_log_error(const char *file, int line, int level,
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
-AP_DECLARE(void) ap_log_perror(const char *file, int line, int level, 
-                             apr_status_t status, apr_pool_t *p, 
-                             const char *fmt, ...)
-			    __attribute__((format(printf,6,7)));
+#if __STDC_VERSION__ >= 199901L && defined(APLOG_MAX_LOGLEVEL)
+/* need additional step to expand APLOG_MARK first */
+#define ap_log_perror(...) ap_log_perror__(__VA_ARGS__)
+#define ap_log_perror__(file, line, mi, level, status, p, ...)            \
+    do { if ((level) <= APLOG_MAX_LOGLEVEL )                              \
+             ap_do_log_perror(file, line, mi, level, status, p,           \
+                             __VA_ARGS__); } while(0)
+#else
+#define ap_log_perror ap_log_perror_
+#endif
+AP_DECLARE(void) ap_log_perror_(const char *file, int line, int module_index,
+                                int level, apr_status_t status, apr_pool_t *p,
+                                const char *fmt, ...)
+                               __attribute__((format(printf,7,8)));
 
 /**
  * ap_log_rerror() - log messages which are related to a particular
@@ -199,6 +309,7 @@ AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
  * error_log.
  * @param file The file in which this function is called
  * @param line The line number on which this function is called
+ * @param module_index The module_index of the module generating this message
  * @param level The level of this error message
  * @param status The status code from the previous command
  * @param r The request which we are logging for
@@ -212,10 +323,20 @@ AP_DECLARE(void) ap_log_perror(const char *file, int line, int level,
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
-AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level, 
-                               apr_status_t status, const request_rec *r, 
-                               const char *fmt, ...)
-			    __attribute__((format(printf,6,7)));
+#if __STDC_VERSION__ >= 199901L
+/* need additional step to expand APLOG_MARK first */
+#define ap_log_rerror(...) ap_log_rerror__(__VA_ARGS__)
+#define ap_log_rerror__(file, line, mi, level, status, r, ...)              \
+    do { if (APLOG_MODULE_IS_LEVEL(r->server, mi, level))                   \
+             ap_log_rerror_(file, line, mi, level, status, r, __VA_ARGS__); \
+    } while(0)
+#else
+#define ap_log_rerror ap_log_rerror_
+#endif
+AP_DECLARE(void) ap_log_rerror_(const char *file, int line, int module_index,
+                                int level, apr_status_t status,
+                                const request_rec *r, const char *fmt, ...)
+			    __attribute__((format(printf,7,8)));
 
 /**
  * ap_log_cerror() - log messages which are related to a particular
@@ -224,6 +345,7 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
  * @param file The file in which this function is called
  * @param line The line number on which this function is called
  * @param level The level of this error message
+ * @param module_index The module_index of the module generating this message
  * @param status The status code from the previous command
  * @param c The connection which we are logging for
  * @param fmt The format string
@@ -238,10 +360,20 @@ AP_DECLARE(void) ap_log_rerror(const char *file, int line, int level,
  * simple format string like "%s", followed by the string containing the 
  * untrusted data.
  */
-AP_DECLARE(void) ap_log_cerror(const char *file, int line, int level, 
-                               apr_status_t status, const conn_rec *c, 
-                               const char *fmt, ...)
-			    __attribute__((format(printf,6,7)));
+#if __STDC_VERSION__ >= 199901L
+/* need additional step to expand APLOG_MARK first */
+#define ap_log_cerror(...) ap_log_cerror__(__VA_ARGS__)
+#define ap_log_cerror__(file, line, mi, level, status, c, ...)              \
+    do { if (APLOG_MODULE_IS_LEVEL(c->base_server, mi, level))              \
+             ap_log_cerror_(file, line, mi, level, status, c, __VA_ARGS__); \
+    } while(0)
+#else
+#define ap_log_cerror ap_log_cerror_
+#endif
+AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_level,
+                                int level, apr_status_t status,
+                                const conn_rec *c, const char *fmt, ...)
+			    __attribute__((format(printf,7,8)));
 
 /**
  * Convert stderr to the error log
@@ -321,6 +453,7 @@ AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl);
  * @ingroup hooks
  * @param file The file in which this function is called
  * @param line The line number on which this function is called
+ * @param module_index The module_index of the module generating this message
  * @param level The level of this error message
  * @param status The status code from the previous command
  * @param s The server which we are logging for
@@ -328,7 +461,8 @@ AP_DECLARE(apr_file_t *) ap_piped_log_write_fd(piped_log *pl);
  * @param pool Memory pool to allocate from
  * @param errstr message to log 
  */
-AP_DECLARE_HOOK(void, error_log, (const char *file, int line, int level,
+AP_DECLARE_HOOK(void, error_log, (const char *file, int line,
+                       int module_index, int level,
                        apr_status_t status, const server_rec *s,
                        const request_rec *r, apr_pool_t *pool,
                        const char *errstr))

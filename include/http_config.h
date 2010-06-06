@@ -28,6 +28,7 @@
 
 #include "apr_hooks.h"
 #include "util_cfgtree.h"
+#include "ap_config.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -394,6 +395,17 @@ struct module_struct {
     void (*register_hooks) (apr_pool_t *p);
 };
 
+/*
+ * Macro to choose which module a file belongs to, for logging.
+ */
+#define APLOG_USE_MODULE(foo) \
+    extern module AP_MODULE_DECLARE_DATA foo##_module;                  \
+    static int * const aplog_module_index = &(foo##_module.module_index)
+
+#define AP_DECLARE_MODULE(foo) \
+    APLOG_USE_MODULE(foo);                         \
+    module AP_MODULE_DECLARE_DATA foo##_module
+
 /**
  * @defgroup ModuleInit Module structure initializers
  *
@@ -468,6 +480,44 @@ AP_DECLARE(void) ap_set_module_config(ap_conf_vector_t *cv, const module *m,
 
 #endif /* AP_DEBUG */
 
+
+/**
+ * Generic accessor for modules to get the module-specific loglevel
+ * @param s The server from which to get the loglevel.
+ * @param index The module_index of the module to get the loglevel for.
+ * @return The module-specific loglevel
+ */
+AP_DECLARE(int) ap_get_module_loglevel(const server_rec *s, int index);
+
+/**
+ * Accessor to set module-specific loglevel
+ * @param p A pool
+ * @param s The server for which to set the loglevel.
+ * @param index The module_index of the module to set the loglevel for.
+ * @param level The new log level
+ * @return The module-specific loglevel
+ */
+AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *p, server_rec *s,
+                                        int index, int level);
+
+#if !defined(AP_DEBUG)
+
+#define ap_get_module_loglevel(s,i)	        \
+    (i < 0 || (s)->module_loglevels == NULL || (((s)->module_loglevels)[i]) < 0 ?   \
+     (s)->loglevel :                            \
+     ((s)->module_loglevels)[i])
+
+#endif /* AP_DEBUG */
+
+/**
+ * Reset all module-specific loglevels to server default
+ * @param p A pool
+ * @param s The server for which to set the loglevel.
+ * @param index The module_index of the module to set the loglevel for.
+ * @param level The new log level
+ * @return The module-specific loglevel
+ */
+AP_DECLARE(void) ap_reset_module_loglevels(server_rec *s);
 
 /**
  * Generic command handling function for strings

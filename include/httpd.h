@@ -1186,6 +1186,8 @@ struct server_rec {
 
     /* Log files --- note that transfer log is now in the modules... */
 
+    /** The per-module log levels */
+    int *module_loglevels;
     /** The name of the error log */
     char *error_fname;
     /** A file descriptor that references the error log */
