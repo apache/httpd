@@ -419,6 +419,16 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     conf->allow_encoded_slashes = new->allow_encoded_slashes;
 
+    if (new->log) {
+        if (!conf->log) {
+            conf->log = new->log;
+        }
+        else {
+            conf->log = ap_new_log_config(a, new->log);
+            ap_merge_log_config(base->log, conf->log);
+        }
+    }
+
     return (void*)conf;
 }
 
@@ -2625,16 +2635,32 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg_)
+static const char *set_loglevel(cmd_parms *cmd, void *config_, const char *arg_)
 {
     char *level_str;
     int level;
     module *module;
     char *arg = apr_pstrdup(cmd->temp_pool, arg_);
+    struct ap_logconf *log;
+    const char *err;
 
+    /* XXX: what check is necessary here? */
+#if 0
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
+    }
+#endif
+
+    if (cmd->path) {
+        core_dir_config *dconf = config_;
+        if (!dconf->log) {
+            dconf->log = ap_new_log_config(cmd->pool, NULL);
+        }
+        log = dconf->log;
+    }
+    else {
+        log = &cmd->server->log;
     }
 
     if (arg == NULL)
@@ -2643,10 +2669,10 @@ static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg_)
     level_str = ap_strchr(arg, ':');
 
     if (level_str == NULL) {
-        err = ap_parse_log_level(arg, &cmd->server->loglevel);
+        err = ap_parse_log_level(arg, &log->level);
         if (err != NULL)
             return err;
-        ap_reset_module_loglevels(cmd->server);
+        ap_reset_module_loglevels(log, APLOG_NO_MODULE);
         ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, cmd->server,
                      "Setting LogLevel for all modules to %s", arg);
         return NULL;
@@ -2666,15 +2692,14 @@ static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg_)
         char *name = apr_psprintf(cmd->temp_pool, "%s_module", arg);
         ap_log_error(APLOG_MARK, APLOG_TRACE6, 0, cmd->server,
                      "Cannot find module '%s', trying '%s'", arg, name);
-	module = find_module(cmd->server, name);
+        module = find_module(cmd->server, name);
     }
 
     if (module == NULL) {
         return apr_psprintf(cmd->temp_pool, "Cannot find module %s", arg);
     }
 
-    ap_set_module_loglevel(cmd->pool, cmd->server, module->module_index,
-                           level);
+    ap_set_module_loglevel(cmd->pool, log, module->module_index, level);
     ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, cmd->server,
                  "Setting LogLevel for module %s to %s", module->name,
                  level_str);
@@ -3355,7 +3380,7 @@ AP_INIT_TAKE1("IncludeOptional", include_config, (void*)1,
   (RSRC_CONF | ACCESS_CONF | EXEC_ON_READ),
   "Name or pattern of the config file(s) to be included; ignored if the file "
   "does not exist or the pattern does not match any files"),
-AP_INIT_ITERATE("LogLevel", set_loglevel, NULL, RSRC_CONF,
+AP_INIT_ITERATE("LogLevel", set_loglevel, NULL, RSRC_CONF|ACCESS_CONF,
   "Level of verbosity in error logging"),
 AP_INIT_TAKE1("NameVirtualHost", ap_set_name_virtual_host, NULL, RSRC_CONF,
   "A numeric IP address:port, or the name of a host"),
