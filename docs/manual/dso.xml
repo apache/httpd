@@ -27,14 +27,14 @@
   <summary>
     <p>The Apache HTTP Server is a modular program where the
     administrator can choose the functionality to include in the
-    server by selecting a set of modules. The modules can be
-    statically compiled into the <program>httpd</program> binary when the
-    server is built. Alternatively, modules can be compiled as
-    Dynamic Shared Objects (DSOs) that exist separately from the
-    main <program>httpd</program> binary file. DSO modules may be
-    compiled at the time the server is built, or they may be
-    compiled and added at a later time using the Apache Extension
-    Tool (<program>apxs</program>).</p>
+    server by selecting a set of modules.
+    Modules will be compiled as Dynamic Shared Objects (DSOs)
+    that exist separately from the main <program>httpd</program>
+    binary file. DSO modules may be compiled at the time the server
+    is built, or they may be compiled and added at a later time
+    using the Apache Extension Tool (<program>apxs</program>).</p>
+    <p>Alternatively, the modules can be statically compiled into
+    the <program>httpd</program> binary when the server is built.</p>
 
     <p>This document describes how to use DSO modules as well as
     the theory behind their use.</p>
@@ -56,16 +56,16 @@
     on a module named <module>mod_so</module> which must be statically
     compiled into the Apache httpd core. It is the only module besides
     <module>core</module> which cannot be put into a DSO
-    itself. Practically all other distributed Apache httpd modules can then
-    be placed into a DSO by individually enabling the DSO build for
-    them via <program>configure</program>'s
-    <code>--enable-mods-shared</code> option as discussed
-    in the <a href="install.html">install documentation</a>. After a
-    module is compiled into a DSO named <code>mod_foo.so</code> you
-    can use <module>mod_so</module>'s <directive
+    itself. Practically all other distributed Apache httpd modules will then
+    be placed into a DSO. After a module is compiled into a DSO named
+    <code>mod_foo.so</code> you can use <module>mod_so</module>'s <directive
     module="mod_so">LoadModule</directive> command in your
     <code>httpd.conf</code> file to load this module at server startup
     or restart.</p>
+    <p>The DSO builds for individual modules can be disabled via
+    <program>configure</program>'s <code>--enable-mods-static</code>
+    option as discussed in the <a href="install.html">install
+    documentation</a>.</p>
 
     <p>To simplify this creation of DSO files for Apache httpd modules
     (especially for third-party modules) a support program
@@ -95,17 +95,7 @@
         <code>mod_foo.so</code>:</p>
 
 <example>
-$ ./configure --prefix=/path/to/install --enable-foo --enable-mods-shared=foo<br />
-$ make install
-</example>
-      </li>
-
-      <li>
-        <p>Configure Apache HTTP Server for <em>later installation</em> of shared
-        modules:</p>
-
-<example>
-$ ./configure --enable-so<br />
+$ ./configure --prefix=/path/to/install --enable-foo<br />
 $ make install
 </example>
       </li>
@@ -118,13 +108,9 @@ $ make install
       <code>httpd.conf</code>.</p>
 
 <example>
-$ ./configure --enable-modules=most --enable-mods-shared=all<br />
+$ ./configure --enable-mods-shared=all<br />
 $ make install
 </example>
-   
-        <p>The <code>most</code> argument to
-        <code>--enable-modules</code> indicates that all modules
-        which are not experimental or example modules will be built.</p>
       </li>
 
       <li>
