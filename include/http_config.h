@@ -487,7 +487,23 @@ AP_DECLARE(void) ap_set_module_config(ap_conf_vector_t *cv, const module *m,
  * @param index The module_index of the module to get the loglevel for.
  * @return The module-specific loglevel
  */
-AP_DECLARE(int) ap_get_module_loglevel(const server_rec *s, int index);
+AP_DECLARE(int) ap_get_server_module_loglevel(const server_rec *s, int index);
+
+/**
+ * Generic accessor for modules the module-specific loglevel
+ * @param c The connection from which to get the loglevel.
+ * @param index The module_index of the module to get the loglevel for.
+ * @return The module-specific loglevel
+ */
+AP_DECLARE(int) ap_get_conn_module_loglevel(const conn_rec *c, int index);
+
+/**
+ * Generic accessor for modules to get the module-specific loglevel
+ * @param r The request from which to get the loglevel.
+ * @param index The module_index of the module to get the loglevel for.
+ * @return The module-specific loglevel
+ */
+AP_DECLARE(int) ap_get_request_module_loglevel(const request_rec *r, int index);
 
 /**
  * Accessor to set module-specific loglevel
@@ -497,27 +513,42 @@ AP_DECLARE(int) ap_get_module_loglevel(const server_rec *s, int index);
  * @param level The new log level
  * @return The module-specific loglevel
  */
-AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *p, server_rec *s,
+AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *p, struct ap_logconf *l,
                                         int index, int level);
 
 #if !defined(AP_DEBUG)
 
-#define ap_get_module_loglevel(s,i)	        \
-    (i < 0 || (s)->module_loglevels == NULL || (((s)->module_loglevels)[i]) < 0 ?   \
-     (s)->loglevel :                            \
-     ((s)->module_loglevels)[i])
+#define ap_get_conn_logconf(c)                     \
+    ((c)->log             ? (c)->log             : \
+     &(c)->base_server->log)
+
+#define ap_get_request_logconf(r)                  \
+    ((r)->log             ? (r)->log             : \
+     (r)->connection->log ? (r)->connection->log : \
+     &(r)->server->log)
+
+#define ap_get_module_loglevel(l,i)                                     \
+    (((i) < 0 || (l)->module_levels == NULL || (l)->module_levels[i] < 0) ?  \
+     (l)->level :                                                         \
+     (l)->module_levels[i])
+
+#define ap_get_server_module_loglevel(s,i)  \
+    (ap_get_module_loglevel(&(s)->log,i))
+
+#define ap_get_conn_module_loglevel(c,i)  \
+    (ap_get_module_loglevel(ap_get_conn_logconf(c),i))
+
+#define ap_get_request_module_loglevel(r,i)  \
+    (ap_get_module_loglevel(ap_get_request_logconf(r),i))
 
 #endif /* AP_DEBUG */
 
 /**
- * Reset all module-specific loglevels to server default
- * @param p A pool
- * @param s The server for which to set the loglevel.
- * @param index The module_index of the module to set the loglevel for.
- * @param level The new log level
- * @return The module-specific loglevel
+ * Set all module-specific loglevels to val
+ * @param l The log config for which to set the loglevels.
+ * @param val the value to set all loglevels to
  */
-AP_DECLARE(void) ap_reset_module_loglevels(server_rec *s);
+AP_DECLARE(void) ap_reset_module_loglevels(struct ap_logconf *l, int val);
 
 /**
  * Generic command handling function for strings
@@ -909,6 +940,24 @@ AP_CORE_DECLARE(ap_conf_vector_t *) ap_create_per_dir_config(apr_pool_t *p);
 AP_CORE_DECLARE(ap_conf_vector_t*) ap_merge_per_dir_configs(apr_pool_t *p,
                                            ap_conf_vector_t *base,
                                            ap_conf_vector_t *new_conf);
+
+/**
+ * Allocate new ap_logconf and make (deep) copy of old ap_logconf
+ * @param p The pool to alloc from
+ * @param old The ap_logconf to copy (may be NULL)
+ * @return The new ap_logconf struct
+ */
+AP_DECLARE(struct ap_logconf *) ap_new_log_config(apr_pool_t *p,
+                                                  const struct ap_logconf *old);
+
+/**
+ * Merge old ap_logconf into new ap_logconf.
+ * old and new must have the same life time.
+ * @param old The ap_logconf to merge from
+ * @param new The ap_logconf to merge into
+ */
+AP_DECLARE(void) ap_merge_log_config(const struct ap_logconf *old,
+                                     struct ap_logconf *new);
 
 /* For http_connection.c... */
 /**

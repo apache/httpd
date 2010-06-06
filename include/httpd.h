@@ -977,6 +977,11 @@ struct request_rec {
      *  request */
     struct ap_filter_t *proto_input_filters;
 
+    /** Optional request log level configuration. Will usually point
+     *  to a server or per_dir config, i.e. must be copied before
+     *  modifying */
+    const struct ap_logconf *log;
+ 
     /** A flag to determine if the eos bucket has been sent yet */
     int eos_sent;
 
@@ -1094,6 +1099,10 @@ struct conn_rec {
      */
     int clogging_input_filters;
     
+    /** Optional connection log level configuration. May point to a server or
+     *  per_dir config, i.e. must be copied before modifying */
+    const struct ap_logconf *log;
+
     /** This points to the current thread being used to process this request,
      * over the lifetime of a request, the value may change. Users of the connection
      * record should not rely upon it staying the same between calls that invole
@@ -1161,6 +1170,13 @@ struct server_addr_rec {
     char *virthost;
 };
 
+struct ap_logconf {
+    /** The per-module log levels */
+    int *module_levels;
+
+    /** The log level for this server */
+    int level;
+};
 /** 
  * @brief A structure to store information for each virtual server 
  */
@@ -1186,14 +1202,12 @@ struct server_rec {
 
     /* Log files --- note that transfer log is now in the modules... */
 
-    /** The per-module log levels */
-    int *module_loglevels;
     /** The name of the error log */
     char *error_fname;
     /** A file descriptor that references the error log */
     apr_file_t *error_log;
-    /** The log level for this server */
-    int loglevel;
+    /** The log level configuration */
+    struct ap_logconf log;
 
     /* Module-specific configuration for server, and defaults... */
 

@@ -130,19 +130,42 @@ static int * const aplog_module_index;
 #define APLOG_MODULE_IS_LEVEL(s,module_index,level)              \
           ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \
             (s == NULL) ||                                       \
-            (ap_get_module_loglevel(s, module_index)             \
+            (ap_get_server_module_loglevel(s, module_index)      \
+             >= ((level)&APLOG_LEVELMASK) ) )
+#define APLOG_C_MODULE_IS_LEVEL(c,module_index,level)            \
+          ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \
+            (ap_get_conn_module_loglevel(c, module_index)        \
+             >= ((level)&APLOG_LEVELMASK) ) )
+#define APLOG_R_MODULE_IS_LEVEL(r,module_index,level)            \
+          ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \
+            (ap_get_request_module_loglevel(r, module_index)     \
              >= ((level)&APLOG_LEVELMASK) ) )
 #else
 #define APLOG_MODULE_IS_LEVEL(s,module_index,level)              \
         ( (((level)&APLOG_LEVELMASK) <= APLOG_MAX_LOGLEVEL) &&   \
           ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \
             (s == NULL) ||                                       \
-            (ap_get_module_loglevel(s, module_index)             \
+            (ap_get_server_module_loglevel(s, module_index)      \
+             >= ((level)&APLOG_LEVELMASK) ) ) )
+#define APLOG_C_MODULE_IS_LEVEL(c,module_index,level)            \
+        ( (((level)&APLOG_LEVELMASK) <= APLOG_MAX_LOGLEVEL) &&   \
+          ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \
+            (ap_get_conn_module_loglevel(c, module_index)        \
+             >= ((level)&APLOG_LEVELMASK) ) ) )
+#define APLOG_R_MODULE_IS_LEVEL(r,module_index,level)            \
+        ( (((level)&APLOG_LEVELMASK) <= APLOG_MAX_LOGLEVEL) &&   \
+          ( (((level)&APLOG_LEVELMASK) <= APLOG_NOTICE) ||       \
+            (ap_get_request_module_loglevel(r, module_index)     \
              >= ((level)&APLOG_LEVELMASK) ) ) )
 #endif
 
 #define APLOG_IS_LEVEL(s,level)     \
     APLOG_MODULE_IS_LEVEL(s,APLOG_MODULE_INDEX,level)
+#define APLOG_C_IS_LEVEL(c,level)   \
+    APLOG_C_MODULE_IS_LEVEL(c,APLOG_MODULE_INDEX,level)
+#define APLOG_R_IS_LEVEL(r,level)   \
+    APLOG_R_MODULE_IS_LEVEL(r,APLOG_MODULE_INDEX,level)
+
 
 #define APLOGinfo(s)                APLOG_IS_LEVEL(s,APLOG_INFO)
 #define APLOGdebug(s)               APLOG_IS_LEVEL(s,APLOG_DEBUG)
@@ -155,7 +178,6 @@ static int * const aplog_module_index;
 #define APLOGtrace7(s)              APLOG_IS_LEVEL(s,APLOG_TRACE7)
 #define APLOGtrace8(s)              APLOG_IS_LEVEL(s,APLOG_TRACE8)
 
-#define APLOG_R_IS_LEVEL(r,level)   APLOG_IS_LEVEL(r->server,level)
 #define APLOGrinfo(r)               APLOG_R_IS_LEVEL(r,APLOG_INFO)
 #define APLOGrdebug(r)              APLOG_R_IS_LEVEL(r,APLOG_DEBUG)
 #define APLOGrtrace1(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE1)
@@ -167,7 +189,6 @@ static int * const aplog_module_index;
 #define APLOGrtrace7(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE7)
 #define APLOGrtrace8(r)             APLOG_R_IS_LEVEL(r,APLOG_TRACE8)
 
-#define APLOG_C_IS_LEVEL(c,level)   APLOG_IS_LEVEL(c->base_server,level)
 #define APLOGcinfo(c)               APLOG_C_IS_LEVEL(c,APLOG_INFO)
 #define APLOGcdebug(c)              APLOG_C_IS_LEVEL(c,APLOG_DEBUG)
 #define APLOGctrace1(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE1)

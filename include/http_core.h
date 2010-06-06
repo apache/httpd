@@ -536,6 +536,9 @@ typedef struct {
     unsigned use_canonical_phys_port : 2;
 
     ap_parse_node_t *condition;   /* Conditionally merge <If> sections */
+
+    /** per-dir log config */
+    struct ap_logconf *log;
 } core_dir_config;
 
 /* Per-server core configuration */

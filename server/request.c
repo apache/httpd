@@ -112,10 +112,10 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
 {
     int file_req = (r->main && r->filename);
     int access_status;
+    core_dir_config *d;
 
     /* Ignore embedded %2F's in path for proxy requests */
     if (!r->proxyreq && r->parsed_uri.path) {
-        core_dir_config *d;
         d = ap_get_module_config(r->per_dir_config, &core_module);
         if (d->allow_encoded_slashes) {
             access_status = ap_unescape_url_keep2f(r->parsed_uri.path);
@@ -147,6 +147,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             return access_status;
         }
 
+        d = ap_get_module_config(r->per_dir_config, &core_module);
+        if (d->log) {
+            r->log = d->log;
+        }
+
         if ((access_status = ap_run_translate_name(r))) {
             return decl_die(access_status, "translate", r);
         }
@@ -165,6 +170,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
      */
     if ((access_status = ap_location_walk(r))) {
         return access_status;
+    }
+
+    d = ap_get_module_config(r->per_dir_config, &core_module);
+    if (d->log) {
+        r->log = d->log;
     }
 
     /* Only on the main request! */
@@ -1589,6 +1599,7 @@ static request_rec *make_sub_request(const request_rec *r,
     rnew->request_time   = r->request_time;
     rnew->connection     = r->connection;
     rnew->server         = r->server;
+    rnew->log            = r->log;
 
     rnew->request_config = ap_create_request_config(rnew->pool);
 

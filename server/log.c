@@ -580,25 +580,30 @@ static void log_error_core(const char *file, int line, int module_index,
 
         logf = stderr_log;
     }
-    else if (s->error_log) {
-        /*
-         * If we are doing normal logging, don't log messages that are
-         * above the module's log level unless it is a startup/shutdown notice
-         */
-        if ((level_and_mask != APLOG_NOTICE)
-            && (level_and_mask > ap_get_module_loglevel(s, module_index))) {
-            return;
-        }
-
-        logf = s->error_log;
-    }
     else {
-        /*
-         * If we are doing syslog logging, don't log messages that are
-         * above the module's log level (including a startup/shutdown notice)
-         */
-        if (level_and_mask > ap_get_module_loglevel(s, module_index)) {
-            return;
+        int configured_level = r ? ap_get_request_module_loglevel(r, module_index) :
+                               c ? ap_get_conn_module_loglevel(c, module_index) :
+                                   ap_get_server_module_loglevel(s, module_index);
+        if (s->error_log) {
+            /*
+             * If we are doing normal logging, don't log messages that are
+             * above the module's log level unless it is a startup/shutdown notice
+             */
+            if ((level_and_mask != APLOG_NOTICE)
+                && (level_and_mask > configured_level)) {
+                return;
+            }
+
+            logf = s->error_log;
+        }
+        else {
+            /*
+             * If we are doing syslog logging, don't log messages that are
+             * above the module's log level (including a startup/shutdown notice)
+             */
+            if (level_and_mask > configured_level) {
+                return;
+            }
         }
     }
 

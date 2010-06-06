@@ -394,7 +394,7 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     if (stat != APR_SUCCESS) {
         return stat;
     }
-    r->server->loglevel = req->loglevel;
+    r->server->log.level = req->loglevel;
     if (req->req_type == GETPID_REQ) {
         /* no more data sent for this request */
         return APR_SUCCESS;
@@ -503,7 +503,7 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     req.argv0_len = strlen(argv0);
     req.uri_len = strlen(r->uri);
     req.args_len = r->args ? strlen(r->args) : 0;
-    req.loglevel = r->server->loglevel;
+    req.loglevel = r->server->log.level;
 
     /* Write the request header */
     if (req.args_len) {

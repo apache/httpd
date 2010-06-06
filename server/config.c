@@ -50,6 +50,7 @@
 #include "http_vhost.h"
 #include "util_cfgtree.h"
 
+#define APLOG_UNSET   (APLOG_NO_MODULE - 1)
 APLOG_USE_MODULE(core);
 
 AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
@@ -1355,24 +1356,30 @@ AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd,
     return cmd->cmd->errmsg;
 }
 
-AP_DECLARE(void) ap_reset_module_loglevels(server_rec *s)
+AP_DECLARE(void) ap_reset_module_loglevels(struct ap_logconf *l, int val)
 {
-    if (s->module_loglevels) {
-        memset(s->module_loglevels, -1,
-               sizeof(int) * (total_modules + DYNAMIC_MODULE_LIMIT));
+    if (l->module_levels) {
+        int i;
+        for (i = 0; i < total_modules + DYNAMIC_MODULE_LIMIT; i++)
+            l->module_levels[i] = val;
     }
 }
 
-AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *pool, server_rec *s,
+AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *pool, struct ap_logconf *l,
                                         int index, int level)
 {
-    if (!s->module_loglevels) {
-        s->module_loglevels = apr_palloc(pool,
+    if (!l->module_levels) {
+        l->module_levels = apr_palloc(pool,
                      sizeof(int) * (total_modules + DYNAMIC_MODULE_LIMIT));
-        ap_reset_module_loglevels(s);
+        if (l->level == APLOG_UNSET) {
+                ap_reset_module_loglevels(l, APLOG_UNSET);
+        }
+        else {
+                ap_reset_module_loglevels(l, APLOG_NO_MODULE);
+        }
     }
 
-    s->module_loglevels[index] = level;
+    l->module_levels[index] = level;
 }
 
 /*****************************************************************
@@ -1981,8 +1988,8 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
     s->keep_alive = -1;
     s->keep_alive_max = -1;
     s->error_log = main_server->error_log;
-    s->loglevel = main_server->loglevel;
-    s->module_loglevels = NULL;
+    s->log.level = main_server->log.level;
+    s->log.module_levels = NULL;
     /* useful default, otherwise we get a port of 0 on redirects */
     s->port = main_server->port;
     s->next = NULL;
@@ -2003,10 +2010,53 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
     return ap_parse_vhost_addrs(p, hostname, s);
 }
 
+AP_DECLARE(struct ap_logconf *) ap_new_log_config(apr_pool_t *p,
+                                                  const struct ap_logconf *old)
+{
+    struct ap_logconf *l = apr_pcalloc(p, sizeof(struct ap_logconf));
+    if (old) {
+        l->level = old->level;
+        if (old->module_levels) {
+            l->module_levels =
+                apr_pmemdup(p, old->module_levels,
+                            sizeof(int) * (total_modules + DYNAMIC_MODULE_LIMIT));
+        }
+    }
+    else {
+        l->level = APLOG_UNSET;
+    }
+    return l;
+}
+
+AP_DECLARE(void) ap_merge_log_config(const struct ap_logconf *old,
+                                     struct ap_logconf *new)
+{
+    if (new->level != APLOG_UNSET) {
+        /* Setting the main loglevel resets all per-module log levels.
+         * I.e. if new->level has been set, we must ignore old->module_levels.
+         */
+        return;
+    }
+
+    new->level = old->level;
+    if (new->module_levels == NULL) {
+        new->module_levels = old->module_levels;
+    }
+    else if (old->module_levels != NULL) {
+        int i;
+        for (i = 0; i < total_modules + DYNAMIC_MODULE_LIMIT; i++) {
+            if (new->module_levels[i] == APLOG_UNSET)
+                new->module_levels[i] = old->module_levels[i];
+        }
+    }
+}
 
 AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
 {
     server_rec *virt;
+    core_dir_config *dconf = ap_get_module_config(main_server->lookup_defaults,
+                                                  &core_module);
+    dconf->log = &main_server->log;
 
     for (virt = main_server->next; virt; virt = virt->next) {
         merge_server_configs(p, main_server->module_config,
@@ -2031,17 +2081,10 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
         if (virt->keep_alive_max == -1)
             virt->keep_alive_max = main_server->keep_alive_max;
 
-        if (virt->module_loglevels == NULL) {
-            virt->module_loglevels = main_server->module_loglevels;
-        }
-        else if (main_server->module_loglevels != NULL) {
-            int i;
-            for (i = 0; i < total_modules + DYNAMIC_MODULE_LIMIT; i++) {
-                if (virt->module_loglevels[i] < 0)
-                    virt->module_loglevels[i] =
-                        main_server->module_loglevels[i];
-            }
-        }
+        ap_merge_log_config(&main_server->log, &virt->log);
+
+        dconf = ap_get_module_config(virt->lookup_defaults, &core_module);
+        dconf->log = &virt->log;
 
         /* XXX: this is really something that should be dealt with by a
          * post-config api phase
@@ -2075,8 +2118,8 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
     s->server_hostname = NULL;
     s->server_scheme = NULL;
     s->error_fname = DEFAULT_ERRORLOG;
-    s->loglevel = DEFAULT_LOGLEVEL;
-    s->module_loglevels = NULL;
+    s->log.level = DEFAULT_LOGLEVEL;
+    s->log.module_levels = NULL;
     s->limit_req_line = DEFAULT_LIMIT_REQUEST_LINE;
     s->limit_req_fieldsize = DEFAULT_LIMIT_REQUEST_FIELDSIZE;
     s->limit_req_fields = DEFAULT_LIMIT_REQUEST_FIELDS;
