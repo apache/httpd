@@ -43,7 +43,7 @@ static void ImportRegisterHooks(apr_pool_t *p)
     ap_hook_optional_fn_retrieve(ImportFnRetrieve,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA optional_fn_import_module =
+AP_DECLARE_MODULE(optional_fn_import) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,

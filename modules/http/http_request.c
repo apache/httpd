@@ -49,6 +49,8 @@
 #include <stdarg.h>
 #endif
 
+APLOG_USE_MODULE(http);
+
 /*****************************************************************
  *
  * Mainline request processing...

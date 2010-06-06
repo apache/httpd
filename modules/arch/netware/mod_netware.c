@@ -191,7 +191,7 @@ AP_INIT_TAKE23("CGIMapExtension", set_extension_map, NULL, OR_FILEINFO,
 { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA netware_module = {
+AP_DECLARE_MODULE(netware) = {
    STANDARD20_MODULE_STUFF,
    create_netware_dir_config,     /* create per-dir config */
    merge_netware_dir_configs,     /* merge per-dir config */

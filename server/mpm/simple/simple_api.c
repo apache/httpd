@@ -265,7 +265,7 @@ static const command_rec simple_cmds[] = {
 
 
 
-module AP_MODULE_DECLARE_DATA mpm_simple_module = {
+AP_DECLARE_MODULE(mpm_simple) = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,                       /* create per-directory config structure */

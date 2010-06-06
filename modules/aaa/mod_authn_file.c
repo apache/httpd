@@ -168,7 +168,7 @@ static void register_hooks(apr_pool_t *p)
                               &authn_file_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
-module AP_MODULE_DECLARE_DATA authn_file_module =
+AP_DECLARE_MODULE(authn_file) =
 {
     STANDARD20_MODULE_STUFF,
     create_authn_file_dir_config,    /* dir config creater */

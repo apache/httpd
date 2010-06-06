@@ -16,6 +16,7 @@
 
 #include "ajp.h"
 
+APLOG_USE_MODULE(proxy_ajp);
 
 apr_status_t ajp_ilink_send(apr_socket_t *sock, ajp_msg_t *msg)
 {

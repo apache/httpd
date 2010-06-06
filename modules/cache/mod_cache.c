@@ -1884,7 +1884,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(cache_post_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
 }
 
-module AP_MODULE_DECLARE_DATA cache_module =
+AP_DECLARE_MODULE(cache) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                   /* create per-directory config structure */

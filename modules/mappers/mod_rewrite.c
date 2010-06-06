@@ -5031,7 +5031,7 @@ static void register_hooks(apr_pool_t *p)
 }
 
     /* the main config structure */
-module AP_MODULE_DECLARE_DATA rewrite_module = {
+AP_DECLARE_MODULE(rewrite) = {
    STANDARD20_MODULE_STUFF,
    config_perdir_create,        /* create per-dir    config structures */
    config_perdir_merge,         /* merge  per-dir    config structures */

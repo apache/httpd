@@ -16,6 +16,7 @@
 
 #include "ajp.h"
 
+APLOG_USE_MODULE(proxy_ajp);
 
 static char *hex_table = "0123456789ABCDEF";
 

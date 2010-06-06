@@ -515,7 +515,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(fixup_redir,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA alias_module =
+AP_DECLARE_MODULE(alias) =
 {
     STANDARD20_MODULE_STUFF,
     create_alias_dir_config,       /* dir config creater */

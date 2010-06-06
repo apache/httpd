@@ -221,7 +221,7 @@ static const command_rec reflector_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA reflector_module = {
+AP_DECLARE_MODULE(reflector) = {
     STANDARD20_MODULE_STUFF,
     create_reflector_dir_config,
     merge_reflector_dir_config,

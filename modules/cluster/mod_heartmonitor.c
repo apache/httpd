@@ -893,7 +893,7 @@ static const command_rec hm_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA heartmonitor_module = {
+AP_DECLARE_MODULE(heartmonitor) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

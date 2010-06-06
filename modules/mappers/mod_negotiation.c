@@ -3221,7 +3221,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(handle_map_file,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA negotiation_module =
+AP_DECLARE_MODULE(negotiation) =
 {
     STANDARD20_MODULE_STUFF,
     create_neg_dir_config,      /* dir config creator */

@@ -724,7 +724,7 @@ static void ap_proxy_http_register_hook(apr_pool_t *p)
     proxy_hook_canon_handler(proxy_ajp_canon, NULL, NULL, APR_HOOK_FIRST);
 }
 
-module AP_MODULE_DECLARE_DATA proxy_ajp_module = {
+AP_DECLARE_MODULE(proxy_ajp) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

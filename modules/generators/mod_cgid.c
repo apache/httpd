@@ -1857,7 +1857,7 @@ static void register_hook(apr_pool_t *p)
     ap_hook_handler(cgid_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA cgid_module = {
+AP_DECLARE_MODULE(cgid) = {
     STANDARD20_MODULE_STUFF,
     NULL, /* dir config creater */
     NULL, /* dir merger --- default is to override */

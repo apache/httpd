@@ -1511,7 +1511,7 @@ static const command_rec x_cmds[] =
  * Module definition for configuration.  If a particular callback is not
  * needed, replace its routine name below with the word NULL.
  */
-module AP_MODULE_DECLARE_DATA example_hooks_module =
+AP_DECLARE_MODULE(example_hooks) =
 {
     STANDARD20_MODULE_STUFF,
     x_create_dir_config,    /* per-directory config creator */

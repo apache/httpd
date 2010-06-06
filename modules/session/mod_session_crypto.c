@@ -628,7 +628,7 @@ static void register_hooks(apr_pool_t * p)
     ap_hook_post_config(ap_session_crypto_init, NULL, NULL, APR_HOOK_FIRST);
 }
 
-module AP_MODULE_DECLARE_DATA session_crypto_module =
+AP_DECLARE_MODULE(session_crypto) =
 {
     STANDARD20_MODULE_STUFF,
     create_session_crypto_dir_config, /* dir config creater */

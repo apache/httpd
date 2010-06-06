@@ -1360,7 +1360,7 @@ AP_INIT_TAKE1("MaxThreads", set_thread_limit, NULL, RSRC_CONF,
 { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA mpm_netware_module = {
+AP_DECLARE_MODULE(mpm_netware) = {
     MPM20_MODULE_STUFF,
     netware_rewrite_args,   /* hook to run before apache parses args */
     NULL,                   /* create per-directory config structure */

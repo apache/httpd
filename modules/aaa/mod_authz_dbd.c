@@ -342,7 +342,7 @@ static void authz_dbd_hooks(apr_pool_t *p)
                               AP_AUTH_INTERNAL_PER_CONF);
 }
 
-module AP_MODULE_DECLARE_DATA authz_dbd_module =
+AP_DECLARE_MODULE(authz_dbd) =
 {
     STANDARD20_MODULE_STUFF,
     authz_dbd_cr_cfg,

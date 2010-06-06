@@ -266,7 +266,7 @@ static const command_rec dumpio_cmds[] = {
     { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA dumpio_module = {
+AP_DECLARE_MODULE(dumpio) = {
         STANDARD20_MODULE_STUFF,
         NULL,
         NULL,

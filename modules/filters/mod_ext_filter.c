@@ -953,7 +953,7 @@ static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     return rv;
 }
 
-module AP_MODULE_DECLARE_DATA ext_filter_module =
+AP_DECLARE_MODULE(ext_filter) =
 {
     STANDARD20_MODULE_STUFF,
     create_ef_dir_conf,

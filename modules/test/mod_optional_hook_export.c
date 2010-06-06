@@ -32,7 +32,7 @@ static void ExportRegisterHooks(apr_pool_t *p)
     ap_hook_log_transaction(ExportLogTransaction,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA optional_hook_export_module =
+AP_DECLARE_MODULE(optional_hook_export) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,

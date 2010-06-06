@@ -30,6 +30,8 @@
 
 #define USER_LEN 8
 
+APLOG_USE_MODULE(core);
+
 typedef enum
 {
     bs2_unknown,     /* not initialized yet. */

@@ -96,7 +96,7 @@ static void register_hooks(apr_pool_t *p)
     dav_fs_register(p);
 }
 
-module AP_MODULE_DECLARE_DATA dav_fs_module =
+AP_DECLARE_MODULE(dav_fs) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                        /* dir config creater */

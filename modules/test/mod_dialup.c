@@ -296,7 +296,7 @@ static const command_rec dialup_cmds[] =
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA dialup_module =
+AP_DECLARE_MODULE(dialup) =
 {
     STANDARD20_MODULE_STUFF,
     dialup_dcfg_create,

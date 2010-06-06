@@ -827,7 +827,7 @@ static void register_hooks(apr_pool_t *p)
 #endif
 }
 
-module AP_MODULE_DECLARE_DATA status_module =
+AP_DECLARE_MODULE(status) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */

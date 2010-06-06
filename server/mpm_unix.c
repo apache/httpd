@@ -56,6 +56,8 @@
 #endif
 
 
+APLOG_USE_MODULE(core);
+
 typedef enum {DO_NOTHING, SEND_SIGTERM, SEND_SIGKILL, GIVEUP} action_t;
 
 typedef struct extra_process_t {

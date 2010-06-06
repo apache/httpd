@@ -557,7 +557,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_insert_filter(expires_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA expires_module =
+AP_DECLARE_MODULE(expires) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_expires_config,  /* dir config creater */

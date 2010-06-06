@@ -113,7 +113,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(asis_handler,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA asis_module =
+AP_DECLARE_MODULE(asis) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,              /* create per-directory config structure */

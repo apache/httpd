@@ -21,6 +21,8 @@
 #include "lua_config.h"
 #include "apr_file_info.h"
 
+APLOG_USE_MODULE(lua);
+
 /* forward dec'l from this file */
 
 #if 0

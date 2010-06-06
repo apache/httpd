@@ -19,6 +19,8 @@
 #include "util_script.h"
 #include "lua_apr.h"
 
+APLOG_USE_MODULE(lua);
+
 typedef char *(*req_field_string_f) (request_rec * r);
 typedef int (*req_field_int_f) (request_rec * r);
 typedef apr_table_t *(*req_field_apr_table_f) (request_rec * r);

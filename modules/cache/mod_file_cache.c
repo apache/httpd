@@ -402,7 +402,7 @@ static void register_hooks(apr_pool_t *p)
 
 }
 
-module AP_MODULE_DECLARE_DATA file_cache_module =
+AP_DECLARE_MODULE(file_cache) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                     /* create per-directory config structure */

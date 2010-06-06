@@ -357,7 +357,7 @@ static const command_rec unixd_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA unixd_module = {
+AP_DECLARE_MODULE(unixd) = {
     STANDARD20_MODULE_STUFF,
     NULL,
     NULL,

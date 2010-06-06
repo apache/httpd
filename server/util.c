@@ -80,6 +80,8 @@
 #define IS_SLASH(s) (s == '/')
 #endif
 
+APLOG_USE_MODULE(core);
+
 
 /*
  * Examine a field value (such as a media-/content-type) string and return

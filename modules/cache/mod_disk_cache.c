@@ -1238,7 +1238,7 @@ static void disk_cache_register_hook(apr_pool_t *p)
                          &cache_disk_provider);
 }
 
-module AP_MODULE_DECLARE_DATA disk_cache_module = {
+AP_DECLARE_MODULE(disk_cache) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

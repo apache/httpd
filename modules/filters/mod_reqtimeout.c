@@ -542,7 +542,7 @@ static const command_rec reqtimeout_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA reqtimeout_module = {
+AP_DECLARE_MODULE(reqtimeout) = {
     STANDARD20_MODULE_STUFF,
     NULL,                           /* create per-dir config structures */
     NULL,                           /* merge  per-dir config structures */

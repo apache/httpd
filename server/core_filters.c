@@ -75,6 +75,7 @@ do { \
     } while (!APR_BRIGADE_EMPTY(b) && (e != APR_BRIGADE_SENTINEL(b))); \
 } while (0)
 
+APLOG_USE_MODULE(core);
 
 int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                          ap_input_mode_t mode, apr_read_type_e block,

@@ -993,7 +993,7 @@ static void register_hooks(apr_pool_t *p)
     proxy_hook_canon_handler(proxy_fcgi_canon, NULL, NULL, APR_HOOK_FIRST);
 }
 
-module AP_MODULE_DECLARE_DATA proxy_fcgi_module = {
+AP_DECLARE_MODULE(proxy_fcgi) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

@@ -54,6 +54,8 @@
 #include <unistd.h>
 #endif
 
+APLOG_USE_MODULE(http);
+
 static int parse_byterange(char *range, apr_off_t clength,
                            apr_off_t *start, apr_off_t *end)
 {

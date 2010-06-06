@@ -1157,7 +1157,7 @@ static void charset_register_hooks(apr_pool_t *p)
                              AP_FTYPE_RESOURCE);
 }
 
-module AP_MODULE_DECLARE_DATA charset_lite_module =
+AP_DECLARE_MODULE(charset_lite) =
 {
     STANDARD20_MODULE_STUFF,
     create_charset_dir_conf,

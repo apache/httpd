@@ -1263,7 +1263,7 @@ static void register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
 }
 
-module AP_MODULE_DECLARE_DATA nwssl_module =
+AP_DECLARE_MODULE(nwssl) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */

@@ -1740,7 +1740,7 @@ static void winnt_hooks(apr_pool_t *p)
     ap_hook_mpm_get_name(winnt_get_name, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-AP_MODULE_DECLARE_DATA module mpm_winnt_module = {
+AP_DECLARE_MODULE(mpm_winnt) = {
     MPM20_MODULE_STUFF,
     winnt_rewrite_args,    /* hook to run before apache parses args */
     NULL,                  /* create per-directory config structure */

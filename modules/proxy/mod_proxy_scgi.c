@@ -616,7 +616,7 @@ static void register_hooks(apr_pool_t *p)
 }
 
 
-module AP_MODULE_DECLARE_DATA proxy_scgi_module = {
+AP_DECLARE_MODULE(proxy_scgi) = {
     STANDARD20_MODULE_STUFF,
     create_scgi_config,  /* create per-directory config structure */
     merge_scgi_config,   /* merge per-directory config structures */

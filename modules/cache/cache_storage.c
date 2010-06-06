@@ -16,6 +16,8 @@
 
 #include "mod_cache.h"
 
+APLOG_USE_MODULE(cache);
+
 extern APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;
 
 extern module AP_MODULE_DECLARE_DATA cache_module;

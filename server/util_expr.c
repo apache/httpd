@@ -27,6 +27,9 @@
 #include "http_core.h"
 
 #include "ap_expr.h"
+
+APLOG_USE_MODULE(core);
+
 #if 1
 /*
  * +-------------------------------------------------------+

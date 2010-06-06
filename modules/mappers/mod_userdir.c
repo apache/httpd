@@ -358,7 +358,7 @@ static void register_hooks(apr_pool_t *p)
 #endif
 }
 
-module AP_MODULE_DECLARE_DATA userdir_module = {
+AP_DECLARE_MODULE(userdir) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */

@@ -54,6 +54,8 @@
 #include <stdarg.h>
 #endif
 
+APLOG_USE_MODULE(core);
+
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(translate_name)
     APR_HOOK_LINK(map_to_storage)

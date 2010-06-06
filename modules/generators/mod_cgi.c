@@ -1266,7 +1266,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(cgi_post_config, aszPre, NULL, APR_HOOK_REALLY_FIRST);
 }
 
-module AP_MODULE_DECLARE_DATA cgi_module =
+AP_DECLARE_MODULE(cgi) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                        /* dir config creater */

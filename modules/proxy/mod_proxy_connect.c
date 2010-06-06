@@ -522,7 +522,7 @@ static const command_rec cmds[] =
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA proxy_connect_module = {
+AP_DECLARE_MODULE(proxy_connect) = {
     STANDARD20_MODULE_STUFF,
     NULL,       /* create per-directory config structure */
     NULL,       /* merge per-directory config structures */

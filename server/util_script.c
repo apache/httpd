@@ -52,6 +52,8 @@
 #define MALFORMED_MESSAGE "malformed header from script. Bad header="
 #define MALFORMED_HEADER_LENGTH_TO_SHOW 30
 
+APLOG_USE_MODULE(core);
+
 static char *http2env(apr_pool_t *a, const char *w)
 {
     char *res = (char *)apr_palloc(a, sizeof("HTTP_") + strlen(w));

@@ -45,6 +45,8 @@
 #include <unistd.h>
 #endif
 
+APLOG_USE_MODULE(core);
+
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place
  *          extern functions and global data in another appropriate module.
  *

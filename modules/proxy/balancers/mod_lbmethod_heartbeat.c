@@ -476,7 +476,7 @@ static const command_rec cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA lbmethod_heartbeat_module = {
+AP_DECLARE_MODULE(lbmethod_heartbeat) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

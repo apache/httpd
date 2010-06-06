@@ -1147,7 +1147,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(serf_handler, NULL, NULL, APR_HOOK_FIRST);
 }
 
-module AP_MODULE_DECLARE_DATA serf_module =
+AP_DECLARE_MODULE(serf) =
 {
     STANDARD20_MODULE_STUFF,
     create_dir_config,

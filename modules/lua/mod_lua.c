@@ -1045,7 +1045,7 @@ static void lua_register_hooks(apr_pool_t *p)
                       APR_HOOK_REALLY_FIRST);
 }
 
-module AP_MODULE_DECLARE_DATA lua_module = {
+AP_DECLARE_MODULE(lua) = {
     STANDARD20_MODULE_STUFF,
     create_dir_config,          /* create per-dir    config structures */
     NULL,                       /* merge  per-dir    config structures */

@@ -530,7 +530,7 @@ static void register_hooks(apr_pool_t *p)
                          &socache_dbm);
 }
 
-module AP_MODULE_DECLARE_DATA socache_dbm_module = {
+AP_DECLARE_MODULE(socache_dbm) = {
     STANDARD20_MODULE_STUFF,
     NULL, NULL, NULL, NULL, NULL,
     register_hooks

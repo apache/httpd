@@ -980,7 +980,7 @@ static void dbd_hooks(apr_pool_t *pool)
     apr_dbd_init(pool);
 }
 
-module AP_MODULE_DECLARE_DATA dbd_module = {
+AP_DECLARE_MODULE(dbd) = {
     STANDARD20_MODULE_STUFF,
     NULL,
     NULL,

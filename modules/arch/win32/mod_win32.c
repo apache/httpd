@@ -547,7 +547,7 @@ AP_INIT_TAKE1("ScriptInterpreterSource", set_interpreter_source, NULL,
 { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA win32_module = {
+AP_DECLARE_MODULE(win32) = {
    STANDARD20_MODULE_STUFF,
    create_win32_dir_config,     /* create per-dir config */
    merge_win32_dir_configs,     /* merge per-dir config */

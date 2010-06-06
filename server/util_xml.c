@@ -29,6 +29,8 @@
 #define READ_BLOCKSIZE 2048
 
 
+APLOG_USE_MODULE(core);
+
 AP_DECLARE(int) ap_xml_parse_input(request_rec * r, apr_xml_doc **pdoc)
 {
     apr_xml_parser *parser;

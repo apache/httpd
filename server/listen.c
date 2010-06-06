@@ -28,6 +28,8 @@
 #include "http_log.h"
 #include "mpm_common.h"
 
+APLOG_USE_MODULE(core);
+
 AP_DECLARE_DATA ap_listen_rec *ap_listeners = NULL;
 
 static ap_listen_rec *old_listeners;

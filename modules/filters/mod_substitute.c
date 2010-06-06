@@ -587,7 +587,7 @@ static const command_rec substitute_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA substitute_module = {
+AP_DECLARE_MODULE(substitute) = {
     STANDARD20_MODULE_STUFF,
     create_substitute_dcfg,     /* dir config creater */
     merge_substitute_dcfg,      /* dir merger --- default is to override */

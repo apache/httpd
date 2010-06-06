@@ -368,7 +368,7 @@ static void register_hooks(apr_pool_t *p)
                          AP_AUTH_INTERNAL_PER_CONF);
 }
 
-module AP_MODULE_DECLARE_DATA access_compat_module =
+AP_DECLARE_MODULE(access_compat) =
 {
     STANDARD20_MODULE_STUFF,
     create_access_compat_dir_config,   /* dir config creater */

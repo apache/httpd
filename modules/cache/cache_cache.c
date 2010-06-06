@@ -28,6 +28,8 @@
 #include <string.h>
 #endif
 
+APLOG_USE_MODULE(cache);
+
 struct cache_cache_t  {
     int             max_entries;
     apr_size_t      max_size;

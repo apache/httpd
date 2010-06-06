@@ -52,6 +52,7 @@
 
 unixd_config_rec ap_unixd_config;
 
+APLOG_USE_MODULE(core);
 
 AP_DECLARE(void) ap_unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                                      const char *arg,

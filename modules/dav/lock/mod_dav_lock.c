@@ -92,7 +92,7 @@ static void register_hooks(apr_pool_t *p)
                          &dav_hooks_locks_generic);
 }
 
-module AP_MODULE_DECLARE_DATA dav_lock_module =
+AP_DECLARE_MODULE(dav_lock) =
 {
     STANDARD20_MODULE_STUFF,
     dav_lock_create_dir_config,     /* dir config creater */

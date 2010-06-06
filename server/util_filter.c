@@ -44,6 +44,8 @@
  * filter names to filters
  */
 
+APLOG_USE_MODULE(core);
+
 typedef struct filter_trie_node filter_trie_node;
 
 typedef struct {

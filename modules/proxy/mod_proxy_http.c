@@ -2045,7 +2045,7 @@ static void ap_proxy_http_register_hook(apr_pool_t *p)
     apr_pool_cleanup_register(p, p, warn_rx_free, apr_pool_cleanup_null);
 }
 
-module AP_MODULE_DECLARE_DATA proxy_http_module = {
+AP_DECLARE_MODULE(proxy_http) = {
     STANDARD20_MODULE_STUFF,
     NULL,              /* create per-directory config structure */
     NULL,              /* merge per-directory config structures */

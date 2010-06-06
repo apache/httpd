@@ -27,6 +27,8 @@
 #include "scoreboard.h"
 #include "http_vhost.h"
 
+APLOG_USE_MODULE(mpm_simple);
+
 static void simple_io_timeout_cb(simple_core_t * sc, void *baton)
 {
     simple_conn_t *scon = (simple_conn_t *) baton;

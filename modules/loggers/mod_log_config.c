@@ -1560,7 +1560,7 @@ static void register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ap_log_set_writer);
 }
 
-module AP_MODULE_DECLARE_DATA log_config_module =
+AP_DECLARE_MODULE(log_config) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-dir config */

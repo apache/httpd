@@ -354,7 +354,7 @@ static void exipc_register_hooks(apr_pool_t *p)
 }
 
 /* Dispatch list for API hooks */
-module AP_MODULE_DECLARE_DATA example_ipc_module = {
+AP_DECLARE_MODULE(example_ipc) = {
     STANDARD20_MODULE_STUFF, 
     NULL,                  /* create per-dir    config structures */
     NULL,                  /* merge  per-dir    config structures */

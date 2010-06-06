@@ -649,7 +649,7 @@ static const command_rec filter_cmds[] = {
     { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA filter_module = {
+AP_DECLARE_MODULE(filter) = {
     STANDARD20_MODULE_STUFF,
     filter_config,
     filter_merge,

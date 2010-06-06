@@ -68,6 +68,8 @@
 /* used to denote that mod_dav will be handling this request */
 #define DAV_HANDLER_NAME "dav-handler"
 
+APLOG_USE_MODULE(dav);
+
 enum {
     DAV_ENABLED_UNSET = 0,
     DAV_ENABLED_OFF,

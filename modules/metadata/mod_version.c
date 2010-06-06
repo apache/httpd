@@ -300,7 +300,7 @@ static const command_rec version_cmds[] = {
     { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA version_module =
+AP_DECLARE_MODULE(version) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,             /* dir config creater */

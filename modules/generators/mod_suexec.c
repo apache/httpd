@@ -125,7 +125,7 @@ static void suexec_hooks(apr_pool_t *p)
     ap_hook_post_config(suexec_post_config,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA suexec_module =
+AP_DECLARE_MODULE(suexec) =
 {
     STANDARD20_MODULE_STUFF,
     create_mconfig_for_directory,   /* create per-dir config */

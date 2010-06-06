@@ -528,7 +528,7 @@ static void register_hooks(apr_pool_t *p)
                              AP_FTYPE_RESOURCE);
 }
 
-module AP_MODULE_DECLARE_DATA sed_module = {
+AP_DECLARE_MODULE(sed) = {
     STANDARD20_MODULE_STUFF,
     create_sed_dir_config,      /* dir config creater */
     NULL,                       /* dir merger --- default is to override */

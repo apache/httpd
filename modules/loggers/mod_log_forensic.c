@@ -277,7 +277,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_log_transaction(log_after,NULL,NULL,APR_HOOK_REALLY_LAST);
 }
 
-module AP_MODULE_DECLARE_DATA log_forensic_module =
+AP_DECLARE_MODULE(log_forensic) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-dir config */

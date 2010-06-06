@@ -21,6 +21,8 @@
 #include <unistd.h>
 #endif
 
+APLOG_USE_MODULE(mpm_worker);
+
 AP_DECLARE(apr_status_t) ap_worker_pod_open(apr_pool_t *p, ap_worker_pod_t **pod)
 {
     apr_status_t rv;

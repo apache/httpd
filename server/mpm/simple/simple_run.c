@@ -35,6 +35,8 @@
 #define apr_time_from_msec(msec) ((apr_time_t)(msec) * 1000)
 #endif
 
+APLOG_USE_MODULE(mpm_simple);
+
 /**
  * Create Timers.
  */

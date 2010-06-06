@@ -39,6 +39,8 @@
 #include <arpa/inet.h>
 #endif
 
+APLOG_USE_MODULE(core);
+
 /*
  * After all the definitions there's an explanation of how it's all put
  * together.
