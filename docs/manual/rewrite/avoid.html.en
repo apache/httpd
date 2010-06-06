@@ -38,7 +38,13 @@ particular server configuration, so it's important that you understand
 them, rather than merely cutting and pasting the examples into your
 configuration.</p>
 
-<div class="warning">This document is a work in progress.</div>
+<p>The most common situation in which <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> is
+the right tool is when the very best solution requires access to the
+server configuration files, and you don't have that access. Some
+configuration directives are only available in the server configuration
+file. So if you are in a hosting situation where you only have .htaccess
+files to work with, you may need to resort to
+<code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
 
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#redirect">Simple Redirection</a></li>
@@ -156,8 +162,33 @@ seems like the right approach.</p>
 <h2><a name="proxy" id="proxy">Simple Proxying</a></h2>
 
 <p><code>RewriteRule</code> provides the <a href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
-<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. As with any use of <code>mod_rewrite</code>,
-you want to ask yourself whether it's really the best solution.</p>
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
+
+<div class="example"><p><code>
+RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]
+</code></p></div>
+
+<p>However, in many cases, when there is no actual pattern matching
+meeded, as in the example shown above, the <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directive is a better choice.
+The example here could be rendered as:</p>
+
+<div class="example"><p><code>
+ProxyPass /images/ http://imageserver.local/images/
+</code></p></div>
+
+<p>Note that whether you use <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> or <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code>, you'll still need to use the
+<code class="directive"><a href="../mod/mod_proxy.html#proxypassreverse">ProxyPassReverse</a></code> directive to
+catch redirects issued from the back-end server:</p>
+
+<div class="example"><p><code>
+ProxyPassReverse /images/ http://imageserver.local/images/
+</code></p></div>
+
+<p>You may need to use <code>RewriteRule</code> instead when there are
+other <code>RewriteRule</code>s in effect in the same scope, as a
+<code>RewriteRule</code> will usually take effect before a
+<code>ProxyPass</code>, and so may preempt what you're trying to
+accomplish.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
