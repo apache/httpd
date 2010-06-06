@@ -53,6 +53,26 @@ URLs on the fly</description>
       <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
 </summary>
 
+<section><title>Logging</title>
+
+    <p><module>mod_rewrite</module> offers detailed logging of its actions
+    at the <code>trace1</code> to <code>trace8</code> log levels. The
+    log level can be set specifically for <module>mod_rewrite</module>
+    using the <directive module="core">LogLevel</directive> directive: Up to
+    level <code>debug</code>, no actions are logged, while <code>trace8</code>
+    means that practically all actions are logged.</p>
+
+    <note>
+      Using a high trace log level for <module>mod_rewrite</module>
+      will slow down your Apache HTTP Server dramatically! Use a log
+      level than <code>trace2</code> only for debugging!
+    </note>
+
+    <example><title>Example</title>
+      LogLevel rewrite:trace3
+    </example>
+
+</section>
 
 <directivesynopsis>
 <name>RewriteEngine</name>
@@ -121,82 +141,6 @@ later</compatibility>
       rules forced the rewriting to stop, the inherited rules won't
       be processed.</dd>
       </dl>
-</usage>
-
-</directivesynopsis>
-
-<directivesynopsis>
-<name>RewriteLog</name>
-<description>Sets the name of the file used for logging rewrite engine
-processing</description>
-<syntax>RewriteLog <em>file-path</em></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-      <p>The <directive>RewriteLog</directive> directive sets the name
-      of the file to which the server logs any rewriting actions it
-      performs. If the name does not begin with a slash
-      ('<code>/</code>') then it is assumed to be relative to the
-      <em>Server Root</em>. The directive should occur only once per
-      server config.</p>
-
-<note>    To disable the logging of
-          rewriting actions it is not recommended to set
-          <em>Filename</em> to <code>/dev/null</code>, because
-          although the rewriting engine does not then output to a
-          logfile it still creates the logfile output internally.
-          <strong>This will slow down the server with no advantage
-          to the administrator!</strong> To disable logging either
-          remove or comment out the <directive>RewriteLog</directive>
-          directive or use <code>RewriteLogLevel 0</code>!
-</note>
-
-<note type="securitywarning"><title>Security</title>
-
-See the <a href="../misc/security_tips.html">Apache HTTP Server Security Tips</a>
-document for details on how your security could be compromised if the
-directory where logfiles are stored is writable by anyone other than
-the user that starts the server.
-</note>
-
-<example><title>Example</title>
-RewriteLog "/usr/local/var/apache/logs/rewrite.log"
-</example>
-
-</usage>
-
-</directivesynopsis>
-
-<directivesynopsis>
-<name>RewriteLogLevel</name>
-<description>Sets the verbosity of the log file used by the rewrite
-engine</description>
-<syntax>RewriteLogLevel <em>Level</em></syntax>
-<default>RewriteLogLevel 0</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-      <p>The <directive>RewriteLogLevel</directive> directive sets the
-      verbosity level of the rewriting logfile. The default level 0
-      means no logging, while 9 or more means that practically all
-      actions are logged.</p>
-
-      <p>To disable the logging of rewriting actions simply set
-      <em>Level</em> to 0. This disables all rewrite action
-      logs.</p>
-
-<note> Using a high value for
-          <em>Level</em> will slow down your Apache HTTP Server
-          dramatically! Use the rewriting logfile at a
-          <em>Level</em> greater than 2 only for debugging!
-</note>
-
-<example><title>Example</title>
-RewriteLogLevel 3
-</example>
-
 </usage>
 
 </directivesynopsis>

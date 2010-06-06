@@ -63,16 +63,12 @@ on <a href="../urlmapping.html">mapping URLs to the
 filesystem</a>.</p>
 
 <p>Finally, before proceeding, be sure to configure
-the <directive module="mod_rewrite">RewriteLog</directive>. Although
-this log file can give an overwhelming amount of information, it is
-indispensable in debugging problems with <module>mod_rewrite</module>
-configuration, since it will tell you exactly how each rule is
-processed.</p>
+<module>mod_rewrite</module>'s log level to one of the trace levels using
+the <directive module="core">LogLevel</directive> directive. Although this
+can give an overwhelming amount of information, it is indispensable in
+debugging problems with <module>mod_rewrite</module> configuration, since
+it will tell you exactly how each rule is processed.</p>
 
-<note>
-<p>The RewriteLog directive cannot be used in .htaccess files, but can
-only be set in the main server configuration file.</p>
-</note>
 </section>
 
 <section id="regex"><title>Regular Expressions</title>
