@@ -106,6 +106,22 @@ AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
     return ((void **)cv)[m->module_index];
 }
 
+#if defined(ap_get_module_loglevel)
+#undef ap_get_module_loglevel
+AP_DECLARE(int) ap_get_module_loglevel(const server_rec *s, int module_index);
+#endif
+
+AP_DECLARE(int) ap_get_module_loglevel(const server_rec *s, int module_index)
+{
+    if (module_index < 0 || s->module_loglevels == NULL ||
+        s->module_loglevels[module_index] < 0)
+    {
+        return s->loglevel;
+    }
+
+    return s->module_loglevels[module_index];
+}
+
 /**
  * Generic accessors for other modules to set at their own module-specific
  * data

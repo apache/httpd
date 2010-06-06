@@ -50,6 +50,8 @@
 #include "http_vhost.h"
 #include "util_cfgtree.h"
 
+APLOG_USE_MODULE(core);
+
 AP_DECLARE_DATA const char *ap_server_argv0 = NULL;
 AP_DECLARE_DATA const char *ap_server_root = NULL;
 AP_DECLARE_DATA server_rec *ap_server_conf = NULL;
@@ -1353,6 +1355,26 @@ AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd,
     return cmd->cmd->errmsg;
 }
 
+AP_DECLARE(void) ap_reset_module_loglevels(server_rec *s)
+{
+    if (s->module_loglevels) {
+        memset(s->module_loglevels, -1,
+               sizeof(int) * (total_modules + DYNAMIC_MODULE_LIMIT));
+    }
+}
+
+AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *pool, server_rec *s,
+                                        int index, int level)
+{
+    if (!s->module_loglevels) {
+        s->module_loglevels = apr_palloc(pool,
+                     sizeof(int) * (total_modules + DYNAMIC_MODULE_LIMIT));
+        ap_reset_module_loglevels(s);
+    }
+
+    s->module_loglevels[index] = level;
+}
+
 /*****************************************************************
  *
  * Reading whole config files...
@@ -1960,6 +1982,7 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
     s->keep_alive_max = -1;
     s->error_log = main_server->error_log;
     s->loglevel = main_server->loglevel;
+    s->module_loglevels = NULL;
     /* useful default, otherwise we get a port of 0 on redirects */
     s->port = main_server->port;
     s->next = NULL;
@@ -2008,6 +2031,18 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
         if (virt->keep_alive_max == -1)
             virt->keep_alive_max = main_server->keep_alive_max;
 
+        if (virt->module_loglevels == NULL) {
+            virt->module_loglevels = main_server->module_loglevels;
+        }
+        else if (main_server->module_loglevels != NULL) {
+            int i;
+            for (i = 0; i < total_modules + DYNAMIC_MODULE_LIMIT; i++) {
+                if (virt->module_loglevels[i] < 0)
+                    virt->module_loglevels[i] =
+                        main_server->module_loglevels[i];
+            }
+        }
+
         /* XXX: this is really something that should be dealt with by a
          * post-config api phase
          */
@@ -2041,6 +2076,7 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
     s->server_scheme = NULL;
     s->error_fname = DEFAULT_ERRORLOG;
     s->loglevel = DEFAULT_LOGLEVEL;
+    s->module_loglevels = NULL;
     s->limit_req_line = DEFAULT_LIMIT_REQUEST_LINE;
     s->limit_req_fieldsize = DEFAULT_LIMIT_REQUEST_FIELDSIZE;
     s->limit_req_fields = DEFAULT_LIMIT_REQUEST_FIELDS;
