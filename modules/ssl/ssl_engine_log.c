@@ -93,7 +93,7 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
         ERR_error_string_n(e, err, sizeof err);
         annotation = ssl_log_annotation(err);
 
-        ap_log_error(file, line, level, 0, s,
+        ap_log_error(file, line, APLOG_MODULE_INDEX, level, 0, s,
                      "SSL Library Error: %s%s%s%s%s%s",
                      /* %s */
                      err, 
@@ -117,7 +117,7 @@ void ssl_log_cxerror(const char *file, int line, int level,
     char *sname, *iname, *serial;
     BIGNUM *bn;
     
-    if (mySrvFromConn(c)->loglevel < level) {
+    if (APLOG_IS_LEVEL(mySrvFromConn(c),level)) {
         /* Bail early since the rest of this function is expensive. */
         return;
     }
@@ -131,7 +131,7 @@ void ssl_log_cxerror(const char *file, int line, int level,
     apr_vsnprintf(buf, sizeof buf, format, ap);
     va_end(ap);
 
-    ap_log_cerror(file, line, level, rv, c, 
+    ap_log_cerror(file, line, APLOG_MODULE_INDEX, level, rv, c,
                   "%s [subject: %s, issuer: %s, serial: %s]",
                   buf,
                   sname ? sname : "-unknown-",
