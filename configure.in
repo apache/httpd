@@ -150,7 +150,7 @@ if test "$apu_found" = "reconfig"; then
   AP_BUILD_SRCLIB_DIRS="$AP_BUILD_SRCLIB_DIRS apr-util"
   AP_CLEAN_SRCLIB_DIRS="apr-util $AP_CLEAN_SRCLIB_DIRS"
   dnl APR and APR-Util major versions must match
-  apu_config="${srcdir}/srclib/apr-util/apu-${apr_major_version}-config"
+  apu_config="./srclib/apr-util/apu-${apr_major_version}-config"
 fi
 
 if test "$apu_found" = "obsolete"; then
