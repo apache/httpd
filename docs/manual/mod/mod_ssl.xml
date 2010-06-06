@@ -1766,7 +1766,7 @@ SSLUserName SSL_CLIENT_S_DN_CN
 <directivesynopsis>
 <name>SSLHonorCipherOrder</name>
 <description>Option to prefer the server's cipher preference order</description>
-<syntax>SSLHonorCiperOrder <em>flag</em></syntax>
+<syntax>SSLHonorCipherOrder <em>flag</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>Available in Apache 2.1 and later, if using OpenSSL 0.9.7 or later</compatibility>
