@@ -557,6 +557,7 @@ static int ssl_print_connection_info(BIO *bio, SSL *ssl)
 static void ssl_print_cert_info(BIO *bio, X509 *cert)
 {
     X509_NAME *dn;
+    EVP_PKEY *pk;
     char buf[1024];
 
     BIO_printf(bio, "Certificate version: %ld\n", X509_get_version(cert)+1);
@@ -568,8 +569,10 @@ static void ssl_print_cert_info(BIO *bio, X509 *cert)
     ASN1_UTCTIME_print(bio, X509_get_notAfter(cert));
     BIO_printf(bio,"\n");
 
+    pk = X509_get_pubkey(cert);
     BIO_printf(bio,"Public key is %d bits\n",
-               EVP_PKEY_bits(X509_get_pubkey(cert)));
+               EVP_PKEY_bits(pk));
+    EVP_PKEY_free(pk);
 
     dn = X509_get_issuer_name(cert);
     X509_NAME_oneline(dn, buf, sizeof(buf));

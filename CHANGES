@@ -28,6 +28,9 @@ Changes with Apache 2.3.6
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) ab: Fix memory leak with -v2 and SSL. PR 49383.
+     [Pavel Kankovsky <peak argo troja mff cuni cz>]
+
   *) core: Add per-module and per-directory loglevel configuration.
            Add some more trace logging.
      mod_rewrite: Replace RewriteLog/RewriteLogLevel with trace log levels.
