@@ -47,6 +47,11 @@
       <dd>Multiple MPMs can now be built as loadable modules at compile time.  
       The MPM of choice can be configured at run time.</dd>
  
+      <dt>Per-module and per-directory LogLevel configuration</dt>
+      <dd>The <directive module="core">LogLevel</directive> can now be
+      configured per module and per directory.  New levels <code>trace1</code>
+      to <code>trace8</code> have been added above the <code>debug</code> log
+      level.</dd>
     </dl>
   </section>
 
