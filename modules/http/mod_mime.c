@@ -1000,7 +1000,7 @@ static void register_hooks(apr_pool_t *p)
      */
 }
 
-module AP_MODULE_DECLARE_DATA mime_module = {
+AP_DECLARE_MODULE(mime) = {
     STANDARD20_MODULE_STUFF,
     create_mime_dir_config,     /* create per-directory config structure */
     merge_mime_dir_configs,     /* merge per-directory config structures */

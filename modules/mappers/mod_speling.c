@@ -519,7 +519,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(check_speling,NULL,NULL,APR_HOOK_LAST);
 }
 
-module AP_MODULE_DECLARE_DATA speling_module =
+AP_DECLARE_MODULE(speling) =
 {
     STANDARD20_MODULE_STUFF,
     create_mconfig_for_directory,  /* create per-dir config */

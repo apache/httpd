@@ -27,6 +27,8 @@
 
 #define SPAWN_CHILDREN_INTERVAL (apr_time_from_sec(5))
 
+APLOG_USE_MODULE(mpm_simple);
+
 static void simple_kill_random_child(simple_core_t * sc)
 {
     /* See comment in simple_spawn_child for why we check here. */

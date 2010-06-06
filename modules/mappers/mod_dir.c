@@ -319,7 +319,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(fixup_dflt,NULL,NULL,APR_HOOK_LAST);
 }
 
-module AP_MODULE_DECLARE_DATA dir_module = {
+AP_DECLARE_MODULE(dir) = {
     STANDARD20_MODULE_STUFF,
     create_dir_config,          /* create per-directory config structure */
     merge_dir_configs,          /* merge per-directory config structures */

@@ -289,7 +289,7 @@ static void register_hooks(apr_pool_t *p)
     ap_method_registry_init(p);
 }
 
-module AP_MODULE_DECLARE_DATA http_module = {
+AP_DECLARE_MODULE(http) = {
     STANDARD20_MODULE_STUFF,
     NULL,              /* create per-directory config structure */
     NULL,              /* merge per-directory config structures */

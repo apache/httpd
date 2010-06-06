@@ -27,6 +27,8 @@
 #include "util_ldap_cache.h"
 #include <apr_strings.h>
 
+APLOG_USE_MODULE(ldap);
+
 #if APR_HAS_LDAP
 
 /* only here until strdup is gone */

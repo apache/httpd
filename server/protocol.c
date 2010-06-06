@@ -57,6 +57,8 @@
 #endif
 
 
+APLOG_USE_MODULE(core);
+
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(post_read_request)
     APR_HOOK_LINK(log_transaction)

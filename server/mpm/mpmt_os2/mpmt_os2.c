@@ -626,7 +626,7 @@ AP_INIT_TAKE1("ScoreBoardFile", ignore_cmd, NULL, RSRC_CONF, \
 { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA mpm_mpmt_os2_module = {
+AP_DECLARE_MODULE(mpm_mpmt_os2) = {
     MPM20_MODULE_STUFF,
     NULL,            /* hook to run before apache parses args */
     NULL,            /* create per-directory config structure */

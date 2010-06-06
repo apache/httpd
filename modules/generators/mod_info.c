@@ -801,7 +801,7 @@ static void register_hooks(apr_pool_t * p)
     ap_hook_handler(display_info, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA info_module = {
+AP_DECLARE_MODULE(info) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */

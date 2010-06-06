@@ -41,6 +41,8 @@
 #include <unistd.h> /* getpid() */
 #endif
 
+APLOG_USE_MODULE(core);
+
 AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
                                         apr_lockmech_e *mutexmech,
                                         const char **mutexfile)

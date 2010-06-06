@@ -18,6 +18,8 @@
 
 #include <ap_provider.h>
 
+APLOG_USE_MODULE(cache);
+
 /* -------------------------------------------------------------- */
 
 extern APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;

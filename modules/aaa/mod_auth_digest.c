@@ -2056,7 +2056,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(add_auth_info, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA auth_digest_module =
+AP_DECLARE_MODULE(auth_digest) =
 {
     STANDARD20_MODULE_STUFF,
     create_digest_dir_config,   /* dir config creater */

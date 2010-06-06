@@ -21,6 +21,8 @@
 
 #define LOG_PREFIX "ap_cookie: "
 
+APLOG_USE_MODULE(core);
+
 /**
  * Write an RFC2109 compliant cookie.
  *

@@ -1185,7 +1185,7 @@ static void register_hooks(apr_pool_t * p)
     ap_hook_handler(authenticate_form_redirect_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA auth_form_module =
+AP_DECLARE_MODULE(auth_form) =
 {
     STANDARD20_MODULE_STUFF,
     create_auth_form_dir_config, /* dir config creater */

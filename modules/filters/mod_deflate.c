@@ -1388,7 +1388,7 @@ static const command_rec deflate_filter_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA deflate_module = {
+AP_DECLARE_MODULE(deflate) = {
     STANDARD20_MODULE_STUFF,
     NULL,                         /* dir config creater */
     NULL,                         /* dir merger --- default is to override */

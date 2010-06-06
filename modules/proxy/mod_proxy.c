@@ -2367,7 +2367,7 @@ static void register_hooks(apr_pool_t *p)
 
 }
 
-module AP_MODULE_DECLARE_DATA proxy_module =
+AP_DECLARE_MODULE(proxy) =
 {
     STANDARD20_MODULE_STUFF,
     create_proxy_dir_config,    /* create per-directory config structure */

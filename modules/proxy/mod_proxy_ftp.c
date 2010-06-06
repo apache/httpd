@@ -2028,7 +2028,7 @@ static const command_rec proxy_ftp_cmds[] =
 };
 
 
-module AP_MODULE_DECLARE_DATA proxy_ftp_module = {
+AP_DECLARE_MODULE(proxy_ftp) = {
     STANDARD20_MODULE_STUFF,
     create_proxy_ftp_dir_config,/* create per-directory config structure */
     merge_proxy_ftp_dir_config, /* merge per-directory config structures */

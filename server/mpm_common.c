@@ -56,6 +56,8 @@
 #include <unistd.h>
 #endif
 
+APLOG_USE_MODULE(core);
+
 #if AP_ENABLE_EXCEPTION_HOOK
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(fatal_exception)

@@ -2842,7 +2842,7 @@ static const command_rec event_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA mpm_event_module = {
+AP_DECLARE_MODULE(mpm_event) = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,                       /* create per-directory config structure */

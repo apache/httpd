@@ -255,7 +255,7 @@ static void register_hooks(apr_pool_t *p)
                               &authz_all_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
-module AP_MODULE_DECLARE_DATA authz_host_module =
+AP_DECLARE_MODULE(authz_host) =
 {
     STANDARD20_MODULE_STUFF,
     create_authz_host_dir_config,   /* dir config creater */

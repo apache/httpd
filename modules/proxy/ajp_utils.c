@@ -16,6 +16,8 @@
 
 #include "ajp.h"
 
+APLOG_USE_MODULE(proxy_ajp);
+
 /*
  * Handle the CPING/CPONG
  */

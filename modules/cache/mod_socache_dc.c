@@ -182,7 +182,7 @@ static void register_hooks(apr_pool_t *p)
                          &socache_dc);
 }
 
-module AP_MODULE_DECLARE_DATA socache_dc_module = {
+AP_DECLARE_MODULE(socache_dc) = {
     STANDARD20_MODULE_STUFF,
     NULL, NULL, NULL, NULL, NULL,
     register_hooks

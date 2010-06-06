@@ -3308,7 +3308,7 @@ static void register_hooks(apr_pool_t *p)
                               AP_FTYPE_RESOURCE);
 }
 
-module AP_MODULE_DECLARE_DATA include_module =
+AP_DECLARE_MODULE(include) =
 {
     STANDARD20_MODULE_STUFF,
     create_includes_dir_config,   /* dir config creater */

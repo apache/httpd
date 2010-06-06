@@ -881,7 +881,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(imap_handler,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA imagemap_module =
+AP_DECLARE_MODULE(imagemap) =
 {
     STANDARD20_MODULE_STUFF,
     create_imap_dir_config,     /* dir config creater */

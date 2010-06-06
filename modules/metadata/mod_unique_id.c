@@ -356,7 +356,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_read_request(gen_unique_id, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA unique_id_module = {
+AP_DECLARE_MODULE(unique_id) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* dir config creater */
     NULL,                       /* dir merger --- default is to override */

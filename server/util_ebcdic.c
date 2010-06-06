@@ -24,6 +24,8 @@
 #include "http_core.h"
 #include "util_ebcdic.h"
 
+APLOG_USE_MODULE(core);
+
 apr_status_t ap_init_ebcdic(apr_pool_t *pool)
 {
     apr_status_t rv;

@@ -148,7 +148,7 @@ static void CaseFilterInRegisterHooks(apr_pool_t *p)
                              AP_FTYPE_RESOURCE);
 }
 
-module AP_MODULE_DECLARE_DATA case_filter_in_module =
+AP_DECLARE_MODULE(case_filter_in) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,

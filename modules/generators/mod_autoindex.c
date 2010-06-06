@@ -2318,7 +2318,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_handler(handle_autoindex,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA autoindex_module =
+AP_DECLARE_MODULE(autoindex) =
 {
     STANDARD20_MODULE_STUFF,
     create_autoindex_config,    /* dir config creater */

@@ -226,7 +226,7 @@ static const command_rec noloris_cmds[] = {
             "Max connections in READ state to permit from an untrusted client"),
     {NULL}
 };
-module AP_MODULE_DECLARE_DATA noloris_module = {
+AP_DECLARE_MODULE(noloris) = {
     STANDARD20_MODULE_STUFF,
     NULL,
     NULL,

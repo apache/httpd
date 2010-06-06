@@ -64,6 +64,8 @@
 #define PADDED_ADDR_SIZE (sizeof(SOCKADDR_IN)+16)
 #endif
 
+APLOG_USE_MODULE(mpm_winnt);
+
 /* Queue for managing the passing of winnt_conn_ctx_t between
  * the accept and worker threads.
  */

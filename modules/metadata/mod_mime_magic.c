@@ -2463,7 +2463,7 @@ static void register_hooks(apr_pool_t *p)
  * Apache API module interface
  */
 
-module AP_MODULE_DECLARE_DATA mime_magic_module =
+AP_DECLARE_MODULE(mime_magic) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                      /* dir config creator */

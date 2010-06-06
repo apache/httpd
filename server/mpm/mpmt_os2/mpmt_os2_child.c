@@ -36,6 +36,8 @@
 #include <os2.h>
 #include <process.h>
 
+APLOG_USE_MODULE(mpm_mpmt_os2);
+
 /* XXXXXX move these to header file private to this MPM */
 
 /* We don't need many processes,

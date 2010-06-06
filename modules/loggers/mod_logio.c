@@ -191,7 +191,7 @@ static void register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ap_logio_get_last_bytes);
 }
 
-module AP_MODULE_DECLARE_DATA logio_module =
+AP_DECLARE_MODULE(logio) =
 {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-dir config */

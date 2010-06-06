@@ -643,7 +643,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(setenvif_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA setenvif_module =
+AP_DECLARE_MODULE(setenvif) =
 {
     STANDARD20_MODULE_STUFF,
     create_setenvif_config_dir, /* dir config creater */

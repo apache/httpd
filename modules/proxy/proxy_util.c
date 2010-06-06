@@ -29,6 +29,8 @@
 #define apr_socket_create apr_socket_create_ex
 #endif
 
+APLOG_USE_MODULE(proxy);
+
 /*
  * Opaque structure containing target server info when
  * using a forward proxy.

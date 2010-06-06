@@ -128,7 +128,7 @@ static void register_hook(apr_pool_t *p)
     ap_register_provider(p, PROXY_LBMETHOD, "bybusyness", "0", &bybusyness);
 }
 
-module AP_MODULE_DECLARE_DATA lbmethod_bybusyness_module = {
+AP_DECLARE_MODULE(lbmethod_bybusyness) = {
     STANDARD20_MODULE_STUFF,
     NULL,       /* create per-directory config structure */
     NULL,       /* merge per-directory config structures */

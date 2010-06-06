@@ -2960,7 +2960,7 @@ static void util_ldap_register_hooks(apr_pool_t *p)
     ap_hook_child_init(util_ldap_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA ldap_module = {
+AP_DECLARE_MODULE(ldap) = {
    STANDARD20_MODULE_STUFF,
    util_ldap_create_dir_config, /* create dir config */
    NULL,                        /* merge dir config */

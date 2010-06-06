@@ -629,7 +629,7 @@ static void ap_slotmem_shm_register_hook(apr_pool_t *p)
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA slotmem_shm_module = {
+AP_DECLARE_MODULE(slotmem_shm) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

@@ -217,7 +217,7 @@ static const command_rec hb_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA heartbeat_module = {
+AP_DECLARE_MODULE(heartbeat) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

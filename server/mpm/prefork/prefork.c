@@ -1523,7 +1523,7 @@ AP_GRACEFUL_SHUTDOWN_TIMEOUT_COMMAND,
 { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA mpm_prefork_module = {
+AP_DECLARE_MODULE(mpm_prefork) = {
     MPM20_MODULE_STUFF,
     NULL,                       /* hook to run before apache parses args */
     NULL,                       /* create per-directory config structure */

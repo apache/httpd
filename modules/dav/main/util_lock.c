@@ -31,6 +31,7 @@
 #include "http_protocol.h"
 #include "http_core.h"
 
+APLOG_USE_MODULE(dav);
 
 /* ---------------------------------------------------------------
 **

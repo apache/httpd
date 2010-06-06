@@ -273,7 +273,7 @@ static void authn_dbd_hooks(apr_pool_t *p)
                               AUTHN_PROVIDER_VERSION,
                               &authn_dbd_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
-module AP_MODULE_DECLARE_DATA authn_dbd_module =
+AP_DECLARE_MODULE(authn_dbd) =
 {
     STANDARD20_MODULE_STUFF,
     authn_dbd_cr_conf,

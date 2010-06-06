@@ -577,7 +577,7 @@ static const command_rec privileges_cmds[] = {
 #endif
     {NULL}
 };
-module AP_MODULE_DECLARE_DATA privileges_module = {
+AP_DECLARE_MODULE(privileges) = {
     STANDARD20_MODULE_STUFF,
     privileges_create_dir_cfg,
     privileges_merge_dir_cfg,

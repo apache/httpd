@@ -302,7 +302,7 @@ static void register_hooks(apr_pool_t *p)
                               NULL, AP_FTYPE_PROTOCOL + 3);
 }
 
-module AP_MODULE_DECLARE_DATA ratelimit_module = {
+AP_DECLARE_MODULE(ratelimit) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

@@ -208,7 +208,7 @@ static void register_hooks(apr_pool_t *p)
                                APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA echo_module = {
+AP_DECLARE_MODULE(echo) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure */
     NULL,                       /* merge per-directory config structures */

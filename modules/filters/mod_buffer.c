@@ -331,7 +331,7 @@ static void register_hooks(apr_pool_t *p) {
             AP_FTYPE_CONTENT_SET);
 }
 
-module AP_MODULE_DECLARE_DATA buffer_module = {
+AP_DECLARE_MODULE(buffer) = {
     STANDARD20_MODULE_STUFF,
     create_buffer_config, /* create per-directory config structure */
     merge_buffer_config, /* merge per-directory config structures */

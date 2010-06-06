@@ -669,7 +669,7 @@ static void wd_register_hooks(apr_pool_t *p)
 /* the static hooks into our module from the other parts of the server.     */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
-AP_MODULE_DECLARE_DATA module watchdog_module = {
+AP_DECLARE_MODULE(watchdog) = {
     STANDARD20_MODULE_STUFF,
     NULL,                       /* create per-directory config structure    */
     NULL,                       /* merge per-directory config structures    */

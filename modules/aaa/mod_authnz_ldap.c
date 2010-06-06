@@ -1816,7 +1816,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_optional_fn_retrieve(ImportULDAPOptFn,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA authnz_ldap_module =
+AP_DECLARE_MODULE(authnz_ldap) =
 {
     STANDARD20_MODULE_STUFF,
     create_authnz_ldap_dir_config,   /* dir config creater */

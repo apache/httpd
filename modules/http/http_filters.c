@@ -55,6 +55,8 @@
 #include <unistd.h>
 #endif
 
+APLOG_USE_MODULE(http);
+
 #define INVALID_CHAR -2
 
 static long get_chunk_size(char *);

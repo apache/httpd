@@ -194,7 +194,7 @@ static void register_hooks(apr_pool_t *p)
                               &authn_dbm_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
-module AP_MODULE_DECLARE_DATA authn_dbm_module =
+AP_DECLARE_MODULE(authn_dbm) =
 {
     STANDARD20_MODULE_STUFF,
     create_authn_dbm_dir_config, /* dir config creater */

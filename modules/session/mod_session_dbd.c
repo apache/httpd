@@ -616,7 +616,7 @@ static void register_hooks(apr_pool_t * p)
     ap_hook_monitor(session_dbd_monitor, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA session_dbd_module =
+AP_DECLARE_MODULE(session_dbd) =
 {
     STANDARD20_MODULE_STUFF,
     create_session_dbd_dir_config, /* dir config creater */

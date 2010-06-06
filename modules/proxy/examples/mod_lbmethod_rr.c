@@ -118,7 +118,7 @@ static void ap_proxy_rr_register_hook(apr_pool_t *p)
     ap_register_provider(p, PROXY_LBMETHOD, "roundrobin", "0", &roundrobin);
 }
 
-module AP_MODULE_DECLARE_DATA proxy_balancer_rr_module = {
+AP_DECLARE_MODULE(proxy_balancer_rr) = {
     STANDARD20_MODULE_STUFF,
     NULL,       /* create per-directory config structure */
     NULL,       /* merge per-directory config structures */

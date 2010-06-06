@@ -17,6 +17,8 @@
 #include "ajp_header.h"
 #include "ajp.h"
 
+APLOG_USE_MODULE(proxy_ajp);
+
 static const char *response_trans_headers[] = {
     "Content-Type",
     "Content-Language",

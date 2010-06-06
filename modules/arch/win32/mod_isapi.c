@@ -1715,7 +1715,7 @@ static void isapi_hooks(apr_pool_t *cont)
     ap_hook_handler(isapi_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA isapi_module = {
+AP_DECLARE_MODULE(isapi) = {
    STANDARD20_MODULE_STUFF,
    create_isapi_dir_config,     /* create per-dir config */
    merge_isapi_dir_configs,     /* merge per-dir config */

@@ -18,6 +18,8 @@
 #include "lua_config.h"
 #include "lua_vmprep.h"
 
+APLOG_USE_MODULE(lua);
+
 static ap_lua_dir_cfg *check_dir_config(lua_State *L, int index)
 {
     ap_lua_dir_cfg *cfg;

@@ -332,7 +332,7 @@ static void register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ap_ident_lookup);
 }
 
-module AP_MODULE_DECLARE_DATA ident_module =
+AP_DECLARE_MODULE(ident) =
 {
     STANDARD20_MODULE_STUFF,
     create_ident_dir_config,       /* dir config creater */

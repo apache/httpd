@@ -908,7 +908,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_read_request(ap_headers_early, NULL, NULL, APR_HOOK_FIRST);
 }
 
-module AP_MODULE_DECLARE_DATA headers_module =
+AP_DECLARE_MODULE(headers) =
 {
     STANDARD20_MODULE_STUFF,
     create_headers_dir_config,  /* dir config creater */

@@ -34,6 +34,8 @@
 #undef _WINUSER_
 #include <winuser.h>
 
+APLOG_USE_MODULE(mpm_winnt);
+
 /* Todo; clear up statics */
 static char *mpm_service_name = NULL;
 static char *mpm_display_name = NULL;

@@ -422,7 +422,7 @@ static const command_rec so_cmds[] = {
     { NULL }
 };
 
-module AP_MODULE_DECLARE_DATA so_module = {
+AP_DECLARE_MODULE(so) = {
    STANDARD20_MODULE_STUFF,
    NULL,                 /* create per-dir config */
    NULL,                 /* merge per-dir config */

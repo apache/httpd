@@ -595,7 +595,7 @@ static void register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(ap_request_remove_filter);
 }
 
-module AP_MODULE_DECLARE_DATA request_module = {
+AP_DECLARE_MODULE(request) = {
     STANDARD20_MODULE_STUFF,
     create_request_dir_config, /* create per-directory config structure */
     merge_request_dir_config,  /* merge per-directory config structures */

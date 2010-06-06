@@ -36,6 +36,8 @@
 
 #include "scoreboard.h"
 
+APLOG_USE_MODULE(core);
+
 AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
 AP_DECLARE_DATA const char *ap_scoreboard_fname = NULL;
 

@@ -625,7 +625,7 @@ static void register_hooks(apr_pool_t * p)
     APR_REGISTER_OPTIONAL_FN(ap_session_save);
 }
 
-module AP_MODULE_DECLARE_DATA session_module =
+AP_DECLARE_MODULE(session) =
 {
     STANDARD20_MODULE_STUFF,
     create_session_dir_config,   /* dir config creater */
