@@ -231,8 +231,8 @@ int ssl_hook_ReadReq(request_rec *r)
     /*
      * Log information about incoming HTTPS requests
      */
-    if (r->server->loglevel >= APLOG_INFO && ap_is_initial_req(r)) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+    if (APLOGrinfo(r) && ap_is_initial_req(r)) {
+        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                      "%s HTTPS request received for child %ld (server %s)",
                      (r->connection->keepalives <= 0 ?
                      "Initial (No.1)" :
@@ -1541,7 +1541,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
          * Log information about CRL
          * (A little bit complicated because of ASN.1 and BIOs...)
          */
-        if (s->loglevel >= APLOG_DEBUG) {
+        if (APLOGdebug(s)) {
             char buff[512]; /* should be plenty */
             BIO *bio = BIO_new(BIO_s_mem());
 
@@ -1633,11 +1633,11 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
             ASN1_INTEGER *sn = X509_REVOKED_get_serialNumber(revoked);
 
             if (!ASN1_INTEGER_cmp(sn, X509_get_serialNumber(cert))) {
-                if (s->loglevel >= APLOG_DEBUG) {
+                if (APLOGdebug(s)) {
                     char *cp = X509_NAME_oneline(issuer, NULL, 0);
                     long serial = ASN1_INTEGER_get(sn);
 
-                    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                                  "Certificate with serial %ld (0x%lX) "
                                  "revoked per CRL from issuer %s",
                                  serial, serial, cp);
@@ -1669,7 +1669,7 @@ static void modssl_proxy_info_log(server_rec *s,
     X509_NAME *name;
     char *dn;
 
-    if (s->loglevel < APLOG_DEBUG) {
+    if (!APLOGdebug(s)) {
         return;
     }
 
@@ -1766,7 +1766,7 @@ static void ssl_session_log(server_rec *s,
     char buf[SSL_SESSION_ID_STRING_LEN];
     char timeout_str[56] = {'\0'};
 
-    if (s->loglevel < APLOG_DEBUG) {
+    if (!APLOGdebug(s)) {
         return;
     }
 
@@ -2012,7 +2012,7 @@ void ssl_callback_Info(MODSSL_INFO_CB_ARG_TYPE ssl, int where, int rc)
     }
 
     s = mySrvFromConn(c);
-    if (s && s->loglevel >= APLOG_DEBUG) {
+    if (s && APLOGdebug(s)) {
         log_tracing_state(ssl, c, s, where, rc);
     }
 }
@@ -2141,7 +2141,7 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
          * (and the first vhost doesn't use APLOG_DEBUG), then
          * we need to set that callback here.
          */
-        if (s->loglevel >= APLOG_DEBUG) {
+        if (APLOGdebug(s)) {
             BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
             BIO_set_callback_arg(SSL_get_rbio(ssl), (void *)ssl);
         }

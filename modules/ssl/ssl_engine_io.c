@@ -1015,7 +1015,7 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     SSL_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
-    if (mySrvFromConn(c)->loglevel >= APLOG_INFO) {
+    if (APLOGcinfo(c)) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                       "Connection closed to child %ld with %s shutdown "
                       "(server %s)",
@@ -1740,8 +1740,7 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     apr_pool_cleanup_register(c->pool, (void*)filter_ctx,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
-    if ((s->loglevel >= APLOG_DEBUG)
-         && (sc->ssl_log_level >= SSL_LOG_IO)) {
+    if (APLOGcdebug(c) && (sc->ssl_log_level >= SSL_LOG_IO)) {
         BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
         BIO_set_callback_arg(SSL_get_rbio(ssl), (void *)ssl);
     }
