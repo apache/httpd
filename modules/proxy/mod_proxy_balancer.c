@@ -41,7 +41,7 @@ static int proxy_balancer_canon(request_rec *r, char *url)
         return DECLINED;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
              "proxy: BALANCER: canonicalising URL %s", url);
 
     /* do syntatic check.

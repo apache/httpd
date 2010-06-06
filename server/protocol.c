@@ -623,6 +623,12 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
         }
     } while ((len <= 0) && (++num_blank_lines < max_blank_lines));
 
+    if (APLOGrtrace5(r)) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE5, 0, r,
+                      "Request received from client: %s",
+                      ap_escape_logitem(r->pool, r->the_request));
+    }
+
     /* we've probably got something to do, ignore graceful restart requests */
 
     r->request_time = apr_time_now();

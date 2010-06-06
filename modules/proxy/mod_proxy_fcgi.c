@@ -86,7 +86,7 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         return DECLINED;
     }
     
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
                  "proxy: FCGI: canonicalising URL %s", url);
 
     err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);

@@ -232,7 +232,7 @@ int ssl_hook_ReadReq(request_rec *r)
      * Log information about incoming HTTPS requests
      */
     if (APLOGrinfo(r) && ap_is_initial_req(r)) {
-        ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                      "%s HTTPS request received for child %ld (server %s)",
                      (r->connection->keepalives <= 0 ?
                      "Initial (No.1)" :
@@ -1251,7 +1251,7 @@ RSA *ssl_callback_TmpRSA(SSL *ssl, int export, int keylen)
     SSLModConfigRec *mc = myModConfigFromConn(c);
     int idx;
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "handing out temporary %d bit RSA key", keylen);
 
     /* doesn't matter if export flag is on,
@@ -1283,7 +1283,7 @@ DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
     SSLModConfigRec *mc = myModConfigFromConn(c);
     int idx;
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "handing out temporary %d bit DH key", keylen);
 
     switch (keylen) {
@@ -1309,7 +1309,7 @@ EC_KEY *ssl_callback_TmpECDH(SSL *ssl, int export, int keylen)
     static init = 0;
 
     /* XXX Uses 256-bit key for now. TODO: support other sizes. */
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE2, 0, c,
                   "handing out temporary 256 bit ECC key");
 
     if (init == 0) {
@@ -1541,7 +1541,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
          * Log information about CRL
          * (A little bit complicated because of ASN.1 and BIOs...)
          */
-        if (APLOGdebug(s)) {
+        if (APLOGtrace1(s)) {
             char buff[512]; /* should be plenty */
             BIO *bio = BIO_new(BIO_s_mem());
 
@@ -1559,7 +1559,7 @@ int ssl_callback_SSLVerify_CRL(int ok, X509_STORE_CTX *ctx, conn_rec *c)
 
             BIO_free(bio);
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "%s", buff);
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s, "%s", buff);
         }
 
         /*
@@ -1775,7 +1775,7 @@ static void ssl_session_log(server_rec *s,
                      "timeout=%lds ", (timeout - time(NULL)));
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                  "Inter-Process Session Cache: "
                  "request=%s status=%s id=%s %s(session %s)",
                  request, status,
@@ -1911,46 +1911,46 @@ static void log_tracing_state(MODSSL_INFO_CB_ARG_TYPE ssl, conn_rec *c,
      * create the various trace messages
      */
     if (where & SSL_CB_HANDSHAKE_START) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "%s: Handshake: start", SSL_LIBRARY_NAME);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
+                      "%s: Handshake: start", SSL_LIBRARY_NAME);
     }
     else if (where & SSL_CB_HANDSHAKE_DONE) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "%s: Handshake: done", SSL_LIBRARY_NAME);
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
+                      "%s: Handshake: done", SSL_LIBRARY_NAME);
     }
     else if (where & SSL_CB_LOOP) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "%s: Loop: %s",
-                     SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
+                      "%s: Loop: %s",
+                      SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
     }
     else if (where & SSL_CB_READ) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "%s: Read: %s",
-                     SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
+                      "%s: Read: %s",
+                      SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
     }
     else if (where & SSL_CB_WRITE) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "%s: Write: %s",
-                     SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
+                      "%s: Write: %s",
+                      SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
     }
     else if (where & SSL_CB_ALERT) {
         char *str = (where & SSL_CB_READ) ? "read" : "write";
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "%s: Alert: %s:%s:%s",
-                     SSL_LIBRARY_NAME, str,
-                     SSL_alert_type_string_long(rc),
-                     SSL_alert_desc_string_long(rc));
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
+                      "%s: Alert: %s:%s:%s",
+                      SSL_LIBRARY_NAME, str,
+                      SSL_alert_type_string_long(rc),
+                      SSL_alert_desc_string_long(rc));
     }
     else if (where & SSL_CB_EXIT) {
         if (rc == 0) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "%s: Exit: failed in %s",
-                         SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
+                          "%s: Exit: failed in %s",
+                          SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
         }
         else if (rc < 0) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "%s: Exit: error in %s",
-                         SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
+            ap_log_cerror(APLOG_MARK, APLOG_TRACE3, 0, c,
+                          "%s: Exit: error in %s",
+                          SSL_LIBRARY_NAME, SSL_state_string_long(ssl));
         }
     }
 
@@ -1960,14 +1960,14 @@ static void log_tracing_state(MODSSL_INFO_CB_ARG_TYPE ssl, conn_rec *c,
      * right after a finished handshake.
      */
     if (where & SSL_CB_HANDSHAKE_DONE) {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
-                     "Connection: Client IP: %s, Protocol: %s, "
-                     "Cipher: %s (%s/%s bits)",
-                     ssl_var_lookup(NULL, s, c, NULL, "REMOTE_ADDR"),
-                     ssl_var_lookup(NULL, s, c, NULL, "SSL_PROTOCOL"),
-                     ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER"),
-                     ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_USEKEYSIZE"),
-                     ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_ALGKEYSIZE"));
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+                      "Connection: Client IP: %s, Protocol: %s, "
+                      "Cipher: %s (%s/%s bits)",
+                      ssl_var_lookup(NULL, s, c, NULL, "REMOTE_ADDR"),
+                      ssl_var_lookup(NULL, s, c, NULL, "SSL_PROTOCOL"),
+                      ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER"),
+                      ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_USEKEYSIZE"),
+                      ssl_var_lookup(NULL, s, c, NULL, "SSL_CIPHER_ALGKEYSIZE"));
     }
 }
 

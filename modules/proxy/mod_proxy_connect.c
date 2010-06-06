@@ -138,8 +138,8 @@ static int proxy_connect_canon(request_rec *r, char *url)
     if (r->method_number != M_CONNECT) {
     return DECLINED;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-         "proxy: CONNECT: canonicalising URL %s", url);
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
+                 "proxy: CONNECT: canonicalising URL %s", url);
 
     return OK;
 }
@@ -225,11 +225,11 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     /* is this for us? */
     if (r->method_number != M_CONNECT) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
                      "proxy: CONNECT: declining URL %s", url);
         return DECLINED;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
                  "proxy: CONNECT: serving URL %s", url);
 
 
@@ -271,7 +271,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         connectport = uri.port;
         connect_addr = uri_addr;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
                  "proxy: CONNECT: connecting to remote proxy %s on port %d",
                  connectname, connectport);
 
@@ -326,7 +326,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* setup polling for connection */
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                   "proxy: CONNECT: setting up poll()");
 
     if ((rv = apr_pollset_create(&pollset, 2, r->pool, 0)) != APR_SUCCESS) {
@@ -373,7 +373,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
                   "proxy: CONNECT: connection complete to %pI (%s)",
                   connect_addr, connectname);
 
@@ -384,7 +384,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     if (proxyport) {
     /* FIXME: Error checking ignored.
      */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
                      "proxy: CONNECT: sending the CONNECT request"
                      " to the remote proxy");
         ap_fprintf(backconn->output_filters, bb,
@@ -394,7 +394,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         ap_fflush(backconn->output_filters, bb);
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
                      "proxy: CONNECT: Returning 200 OK Status");
         nbytes = apr_snprintf(buffer, sizeof(buffer),
                               "HTTP/1.0 200 Connection Established" CRLF);
@@ -417,7 +417,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 #endif
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
                  "proxy: CONNECT: setting up poll()");
 
     /*
@@ -490,7 +490,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         }
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
                  "proxy: CONNECT: finished with poll() - cleaning up");
 
     /*

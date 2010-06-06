@@ -915,7 +915,7 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
         struct noproxy_entry *npent = (struct noproxy_entry *) conf->noproxies->elts;
         struct apr_sockaddr_t *conf_addr = npent[j].addr;
         uri_addr = src_uri_addr;
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
                      "proxy: checking remote machine [%s] against [%s]", uri_addr->hostname, npent[j].name);
         if ((npent[j].name && ap_strstr_c(uri_addr->hostname, npent[j].name))
             || npent[j].name[0] == '*') {
@@ -930,7 +930,7 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
                 char *uri_ip;
                 apr_sockaddr_ip_get(&conf_ip, conf_addr);
                 apr_sockaddr_ip_get(&uri_ip, uri_addr);
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
                              "proxy: ProxyBlock comparing %s and %s", conf_ip, uri_ip);
                 if (!apr_strnatcasecmp(conf_ip, uri_ip)) {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, 0, r->server,
@@ -1519,18 +1519,18 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
     if (access_status == DECLINED && *balancer == NULL) {
         *worker = ap_proxy_get_worker(r->pool, conf, *url);
         if (*worker) {
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                           "proxy: %s: found worker %s for %s",
-                           (*worker)->scheme, (*worker)->name, *url);
+                          (*worker)->scheme, (*worker)->name, *url);
 
             *balancer = NULL;
             access_status = OK;
         }
         else if (r->proxyreq == PROXYREQ_PROXY) {
             if (conf->forward) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "proxy: *: found forward proxy worker for %s",
-                               *url);
+                              *url);
                 *balancer = NULL;
                 *worker = conf->forward;
                 access_status = OK;
@@ -1538,7 +1538,7 @@ PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,
         }
         else if (r->proxyreq == PROXYREQ_REVERSE) {
             if (conf->reverse) {
-                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                               "proxy: *: found reverse proxy worker for %s",
                                *url);
                 *balancer = NULL;
@@ -1627,7 +1627,7 @@ PROXY_DECLARE(int) ap_proxy_connect_to_backend(apr_socket_t **newsock,
              apr_socket_timeout_set(*newsock, r->server->timeout);
         }
 
-        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                       "proxy: %s: fam %d socket created to connect to %s",
                       proxy_function, backend_addr->family, backend_name);
 
@@ -1733,7 +1733,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn
             apr_off_t len;
 
             rv = apr_brigade_length(bb, 0, &len);
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, rv, r,
                           "proxy: SSL cleanup brigade contained %"
                           APR_OFF_T_FMT " bytes of data.", len);
         }
@@ -1809,9 +1809,9 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
 
     if (PROXY_WORKER_IS_INITIALIZED(worker)) {
         /* The worker share is already initialized */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-              "proxy: worker %s already initialized",
-              worker->name);
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
+                     "proxy: worker %s already initialized",
+                     worker->name);
         return;
     }
     if (!worker->s) {
@@ -1824,14 +1824,14 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                       worker->id, getpid(), worker->name);
             }
             else {
-                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                       "proxy: grabbed scoreboard slot %d in child %" APR_PID_T_FMT " for worker %s",
                       worker->id, getpid(), worker->name);
             }
         }
         if (!score) {
             score = (proxy_worker_stat *) apr_pcalloc(conf->pool, sizeof(proxy_worker_stat));
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                   "proxy: initialized plain memory in child %" APR_PID_T_FMT " for worker %s",
                   getpid(), worker->name);
         }
@@ -1842,9 +1842,9 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
          */
         if (PROXY_WORKER_IS_INITIALIZED(worker)) {
             /* The worker share is already initialized */
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                  "proxy: worker %s already initialized",
-                  worker->name);
+            ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
+                         "proxy: worker %s already initialized",
+                         worker->name);
             return;
         }
     }
@@ -2466,7 +2466,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                              " Keepalive");
             }
         }
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                      "proxy: %s: fam %d socket created to connect to %s",
                      proxy_function, backend_addr->family, worker->hostname);
 
