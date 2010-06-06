@@ -69,6 +69,8 @@
 #include <unistd.h> /* needed for STDIN_FILENO et.al., at least on FreeBSD */
 #endif
 
+APLOG_USE_MODULE(ssl);
+
 /*
  * Provide reasonable default for some defines
  */
