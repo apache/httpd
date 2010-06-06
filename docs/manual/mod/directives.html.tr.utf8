@@ -102,17 +102,22 @@
 <li><a href="mod_auth_form.html#authformsize">AuthFormSize</a></li>
 <li><a href="mod_auth_form.html#authformusername">AuthFormUsername</a></li>
 <li><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></li>
+<li><a href="mod_authnz_ldap.html#authldapauthorizeprefix">AuthLDAPAuthorizePrefix</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbindauthoritative">AuthLDAPBindAuthoritative</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></li>
 <li><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig</a></li>
+<li><a href="mod_authnz_ldap.html#authldapcompareasuser">AuthLDAPCompareAsUser</a></li>
 <li><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></li>
 <li><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li>
 <li><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
+<li><a href="mod_authnz_ldap.html#authldapinitialbindasuser">AuthLDAPInitialBindAsUser</a></li>
+<li><a href="mod_authnz_ldap.html#authldapinitialbindpattern">AuthLDAPInitialBindPattern</a></li>
 <li><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></li>
 <li><a href="mod_authnz_ldap.html#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
+<li><a href="mod_authnz_ldap.html#authldapsearchasuser">AuthLDAPSearchAsUser</a></li>
 <li><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
@@ -202,7 +207,6 @@
 <li><a href="core.html#documentroot">DocumentRoot</a></li>
 <li><a href="mod_privileges.html#dtraceprivileges">DTracePrivileges</a></li>
 <li><a href="mod_dumpio.html#dumpioinput">DumpIOInput</a></li>
-<li><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel</a></li>
 <li><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput</a></li>
 <li><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook</a></li>
 <li><a href="core.html#enablemmap">EnableMMAP</a></li>
@@ -395,8 +399,6 @@
 <li><a href="mod_rewrite.html#rewritebase">RewriteBase</a></li>
 <li><a href="mod_rewrite.html#rewritecond">RewriteCond</a></li>
 <li><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></li>
-<li><a href="mod_rewrite.html#rewritelog">RewriteLog</a></li>
-<li><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></li>
 <li><a href="mod_rewrite.html#rewritemap">RewriteMap</a></li>
 <li><a href="mod_rewrite.html#rewriteoptions">RewriteOptions</a></li>
 <li><a href="mod_rewrite.html#rewriterule">RewriteRule</a></li>

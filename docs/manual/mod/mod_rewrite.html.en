@@ -56,14 +56,36 @@ URLs on the fly</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritebase">RewriteBase</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritecond">RewriteCond</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewriteengine">RewriteEngine</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewritelog">RewriteLog</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#rewriteloglevel">RewriteLogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewritemap">RewriteMap</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewriteoptions">RewriteOptions</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rewriterule">RewriteRule</a></li>
 </ul>
-</div>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> Logging</li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2>Logging</h2>
 
+    <p><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> offers detailed logging of its actions
+    at the <code>trace1</code> to <code>trace8</code> log levels. The
+    log level can be set specifically for <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    using the <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> directive: Up to
+    level <code>debug</code>, no actions are logged, while <code>trace8</code>
+    means that practically all actions are logged.</p>
+
+    <div class="note">
+      Using a high trace log level for <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+      will slow down your Apache HTTP Server dramatically! Use a log
+      level than <code>trace2</code> only for debugging!
+    </div>
+
+    <div class="example"><h3>Example</h3><p><code>
+      LogLevel rewrite:trace3
+    </code></p></div>
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="RewriteBase" id="RewriteBase">RewriteBase</a> <a name="rewritebase" id="rewritebase">Directive</a></h2>
 <table class="directive">
@@ -578,80 +600,6 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       are not started during server initialization if they're defined in a
       context that does not have <code class="directive">RewriteEngine</code>  set to
       <code>on</code></p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteLog" id="RewriteLog">RewriteLog</a> <a name="rewritelog" id="rewritelog">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the name of the file used for logging rewrite engine
-processing</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteLog <em>file-path</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
-</table>
-      <p>The <code class="directive">RewriteLog</code> directive sets the name
-      of the file to which the server logs any rewriting actions it
-      performs. If the name does not begin with a slash
-      ('<code>/</code>') then it is assumed to be relative to the
-      <em>Server Root</em>. The directive should occur only once per
-      server config.</p>
-
-<div class="note">    To disable the logging of
-          rewriting actions it is not recommended to set
-          <em>Filename</em> to <code>/dev/null</code>, because
-          although the rewriting engine does not then output to a
-          logfile it still creates the logfile output internally.
-          <strong>This will slow down the server with no advantage
-          to the administrator!</strong> To disable logging either
-          remove or comment out the <code class="directive">RewriteLog</code>
-          directive or use <code>RewriteLogLevel 0</code>!
-</div>
-
-<div class="note"><h3>Security</h3>
-
-See the <a href="../misc/security_tips.html">Apache HTTP Server Security Tips</a>
-document for details on how your security could be compromised if the
-directory where logfiles are stored is writable by anyone other than
-the user that starts the server.
-</div>
-
-<div class="example"><h3>Example</h3><p><code>
-RewriteLog "/usr/local/var/apache/logs/rewrite.log"
-</code></p></div>
-
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="RewriteLogLevel" id="RewriteLogLevel">RewriteLogLevel</a> <a name="rewriteloglevel" id="rewriteloglevel">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the verbosity of the log file used by the rewrite
-engine</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RewriteLogLevel <em>Level</em></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>RewriteLogLevel 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_rewrite</td></tr>
-</table>
-      <p>The <code class="directive">RewriteLogLevel</code> directive sets the
-      verbosity level of the rewriting logfile. The default level 0
-      means no logging, while 9 or more means that practically all
-      actions are logged.</p>
-
-      <p>To disable the logging of rewriting actions simply set
-      <em>Level</em> to 0. This disables all rewrite action
-      logs.</p>
-
-<div class="note"> Using a high value for
-          <em>Level</em> will slow down your Apache HTTP Server
-          dramatically! Use the rewriting logfile at a
-          <em>Level</em> greater than 2 only for debugging!
-</div>
-
-<div class="example"><h3>Example</h3><p><code>
-RewriteLogLevel 3
-</code></p></div>
-
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
