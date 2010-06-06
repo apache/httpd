@@ -27,9 +27,6 @@
 <a href="./ru/new_features_2_0.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
   <p>Dieses Dokument beschreibt einige der wichtigsten Änderungen
      des Apache HTTP Servers 2.0 gegenüber der Version 1.3.</p>

@@ -349,8 +349,9 @@
 	  défaillant.</p>
         </li>
         <li>
-          <p>Dans le cas des fichiers montés sous NFS, le noyau peut s'avérer
-	  incapable de servir les fichiers réseau de manière fiable depuis
+          <p>Dans le cas d'un système de fichiers monté
+	  sous NFS, le noyau peut s'avérer incapable de servir
+	  les fichiers réseau de manière fiable depuis
 	  son propre cache.</p>
         </li>
       </ul>

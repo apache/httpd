@@ -224,15 +224,18 @@ $ tar xvf httpd-<em>NN</em>.tar
     options</a>.</p>
 
     <p>Also at this point, you can specify which <a href="programs/configure.html#optionalfeatures">features</a> you
-    want included in Apache by enabling and disabling <a href="mod/">modules</a>.  Apache comes with a <a href="mod/module-dict.html#Status">Base</a> set of modules included by
-    default.  Other modules are enabled using the
+    want included in Apache by enabling and disabling <a href="mod/">modules</a>.  Apache comes with a wide range of modules
+    included by default.  They will be compiled as
+    <a href="dso.html">shared objects (DSOs)</a> which can be loaded
+    or unloaded at runtime.
+    You can also choose to compile modules statically by using the option
+    <code>--enable-<var>module</var>=static</code>.</p>
+
+    <p>Additional modules are enabled using the
     <code>--enable-<var>module</var></code> option, where
     <var>module</var> is the name of the module with the
     <code>mod_</code> string removed and with any underscore converted
-    to a dash.  You can also choose to compile modules as <a href="dso.html">shared objects (DSOs)</a> -- which can be loaded
-    or unloaded at runtime -- by using the option
-    <code>--enable-<var>module</var>=shared</code>.  Similarly, you can
-    disable Base modules with the
+    to a dash.  Similarly, you can disable modules with the
     <code>--disable-<var>module</var></code> option.  Be careful when
     using these options, since <code class="program"><a href="./programs/configure.html">configure</a></code> cannot warn you
     if the module you specify does not exist; it will simply ignore the
@@ -249,15 +252,14 @@ $ tar xvf httpd-<em>NN</em>.tar
     <p>For a short impression of what possibilities you have, here
     is a typical example which compiles Apache for the installation
     tree <code>/sw/pkg/apache</code> with a particular compiler and flags
-    plus the two additional modules <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code> and
-    <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> for
-    later loading through the DSO mechanism:</p>
+    plus the two additional modules <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code> and
+    <code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code>:</p>
 
 <div class="example"><p><code>
       $ CC="pgcc" CFLAGS="-O2" \<br />
        ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-rewrite=shared \<br />
-       --enable-speling=shared
+       --enable-ldap=shared \<br />
+       --enable-lua=shared
 </code></p></div>
 
     <p>When <code class="program"><a href="./programs/configure.html">configure</a></code> is run it will take several minutes to

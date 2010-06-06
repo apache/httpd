@@ -26,8 +26,6 @@
 <a href="./ko/stopping.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/stopping.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
-            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p>이 문서는 유닉스류 시스템에서 아파치를 중단하고 재시작하는
     내용을 담고있다. 윈도우즈 NT, 2000, XP 사용자는 <a href="platform/windows.html#winsvc">서비스로 아파치
