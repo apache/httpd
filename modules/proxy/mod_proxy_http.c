@@ -53,8 +53,8 @@ static int proxy_http_canon(request_rec *r, char *url)
     }
     def_port = apr_uri_port_of_scheme(scheme);
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-             "proxy: HTTP: canonicalising URL %s", url);
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
+                 "proxy: HTTP: canonicalising URL %s", url);
 
     /* do syntatic check.
      * We break the URL into host, port, path, search
@@ -1224,7 +1224,10 @@ static void ap_proxy_read_headers(request_rec *r, request_rec *rr,
      * Read header lines until we get the empty separator line, a read error,
      * the connection closes (EOF), or we timeout.
      */
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r,
+                  "Headers received from backend:");
     while ((len = ap_getline(buffer, size, rr, 1)) > 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE4, 0, r, "%s", buffer);
 
         if (!(value = strchr(buffer, ':'))) {     /* Find the colon separator */
 
@@ -1505,6 +1508,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             r->status = proxy_status;
             r->status_line = proxy_status_line;
 
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                          "Status from backend: %d", proxy_status);
+
             /* read the headers. */
             /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers*/
             /* Also, take care with headers with multiple occurences. */
@@ -1652,7 +1658,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              */
             const char *policy = apr_table_get(r->subprocess_env,
                                                "proxy-interim-response");
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
                          "proxy: HTTP: received interim %d response",
                          r->status);
             if (!policy || !strcasecmp(policy, "RFC")) {
@@ -1745,7 +1751,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             apr_table_unset(r->headers_out,"Transfer-Encoding");
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, r->server,
                          "proxy: start body send");
 
             /*
@@ -1849,11 +1855,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                 } while (!finish);
             }
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
                          "proxy: end body send");
         }
         else if (!interim_response) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+            ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, r->server,
                          "proxy: header only");
 
             /* Pass EOS bucket down the filter chain. */
@@ -1953,8 +1959,8 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
         else
             proxy_function = "FTP";
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-             "proxy: HTTP: serving URL %s", url);
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, r->server,
+                 "proxy: HTTP: serving URL %s", url);
 
 
     /* create space for state information */

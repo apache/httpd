@@ -941,6 +941,7 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     const char *type = "";
     SSLConnRec *sslconn = myConnConfig(c);
     int shutdown_type;
+    int loglevel = APLOG_DEBUG;
 
     if (!ssl) {
         return;
@@ -985,6 +986,7 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     if (abortive) {
         shutdown_type = SSL_SENT_SHUTDOWN|SSL_RECEIVED_SHUTDOWN;
         type = "abortive";
+        loglevel = APLOG_INFO;
     }
     else switch (sslconn->shutdown_type) {
       case SSL_SHUTDOWN_TYPE_UNCLEAN:
@@ -1015,8 +1017,8 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     SSL_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
-    if (APLOGcinfo(c)) {
-        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
+    if (APLOG_C_IS_LEVEL(c, loglevel)) {
+        ap_log_cerror(APLOG_MARK, loglevel, 0, c,
                       "Connection closed to child %ld with %s shutdown "
                       "(server %s)",
                       c->id, type, ssl_util_vhostid(c->pool, mySrvFromConn(c)));
@@ -1168,7 +1170,7 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             return MODSSL_ERROR_HTTP_ON_HTTPS;
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
-            ap_log_cerror(APLOG_MARK, APLOG_INFO, rc, c,
+            ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rc, c,
                           "SSL handshake interrupted by system "
                           "[Hint: Stop button pressed in browser?!]");
         }
@@ -1502,7 +1504,7 @@ int ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen)
     /* ... and a temporary brigade. */
     tempb = apr_brigade_create(r->pool, c->bucket_alloc);
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, "filling buffer, max size "
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, c, "filling buffer, max size "
                   "%" APR_SIZE_T_FMT " bytes", maxlen);
 
     do {
@@ -1554,7 +1556,7 @@ int ssl_io_buffer_fill(request_rec *r, apr_size_t maxlen)
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
         }
 
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, c,
                       "total of %" APR_OFF_T_FMT " bytes in buffer, eos=%d",
                       total, eos);
 
@@ -1598,7 +1600,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
     struct modssl_buffer_ctx *ctx = f->ctx;
     apr_status_t rv;
 
-    ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
+    ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                   "read from buffered SSL brigade, mode %d, "
                   "%" APR_OFF_T_FMT " bytes",
                   mode, bytes);
@@ -1673,7 +1675,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
             APR_BRIGADE_INSERT_TAIL(bb, e);
         }
 
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
+        ap_log_cerror(APLOG_MARK, APLOG_TRACE4, 0, f->c,
                       "buffered SSL brigade exhausted");
         /* Note that the filter must *not* be removed here; it may be
          * invoked again, see comment above. */

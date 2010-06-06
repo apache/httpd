@@ -141,7 +141,7 @@ static int ssl_tmp_key_init_dh(server_rec *s,
 
 static int ssl_tmp_keys_init(server_rec *s)
 {
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                  "Init: Generating temporary RSA private keys (512/1024 bits)");
 
     if (MODSSL_TMP_KEY_INIT_RSA(s, 512) ||
@@ -149,7 +149,7 @@ static int ssl_tmp_keys_init(server_rec *s)
         return !OK;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                  "Init: Generating temporary DH parameters (512/1024 bits)");
 
     if (MODSSL_TMP_KEY_INIT_DH(s, 512) ||
@@ -482,7 +482,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
                      NULL);
     cp[strlen(cp)-2] = NUL;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE3, 0, s,
                  "Creating new SSL context (protocols: %s)", cp);
 
     if (protocol == SSL_PROTOCOL_SSLV2) {
@@ -621,7 +621,7 @@ static void ssl_init_ctx_verify(server_rec *s,
      * Configure Client Authentication details
      */
     if (mctx->auth.ca_cert_file || mctx->auth.ca_cert_path) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+        ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                      "Configuring client authentication");
 
         if (!SSL_CTX_load_verify_locations(ctx,
@@ -684,7 +684,7 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
         return;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE1, 0, s,
                  "Configuring permitted SSL ciphers [%s]",
                  suite);
 

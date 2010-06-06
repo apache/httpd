@@ -124,7 +124,7 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
             }
         }
     }
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
+    ap_log_error(APLOG_MARK, APLOG_TRACE2, 0, s,
                  "%sSeeding PRNG with %d bytes of entropy", prefix, nDone);
 
     if (RAND_status() == 0)
