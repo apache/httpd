@@ -288,17 +288,16 @@ AC_DEFUN(APACHE_MODULE,[
     _apmod_error_fatal="yes"
   fi
   if test "$enable_$1" = "static"; then
-    enable_$1=yes
+    enable_$1=static
   elif test "$enable_$1" = "yes"; then
     enable_$1=$module_default
-    _apmod_extra_msg=" ($module_selection)"
   elif test "$enable_$1" = "most"; then
     if test "$module_selection" = "most" -o "$module_selection" = "all"; then
       enable_$1=$module_default
-      _apmod_extra_msg=" ($module_selection)"
-    elif test "$enable_$1" != "yes"; then
+    elif test "$module_selection" = "few" -o "$module_selection" = "none"; then
       enable_$1=no
     fi
+    _apmod_extra_msg=" ($module_selection)"
   elif test "$enable_$1" = "maybe-all"; then
     if test "$module_selection" = "all"; then
       enable_$1=$module_default
@@ -324,18 +323,18 @@ AC_DEFUN(APACHE_MODULE,[
   AC_MSG_RESULT($enable_$1$_apmod_extra_msg)
   if test "$enable_$1" != "no"; then
     case "$enable_$1" in
-    shared*)
-      enable_$1=`echo $enable_$1|sed 's/shared,*//'`
-      sharedobjs=yes
-      shared=yes
-      DSO_MODULES="$DSO_MODULES $1"
-      ;;
-    *)
+    static*)
       MODLIST="$MODLIST ifelse($4,,$1,$4)"
       if test "$1" = "so"; then
           sharedobjs=yes
       fi
       shared="";;
+    *)
+      enable_$1=`echo $enable_$1|sed 's/shared,*//'`
+      sharedobjs=yes
+      shared=yes
+      DSO_MODULES="$DSO_MODULES $1"
+      ;;
     esac
     define([modprefix], [MOD_]translit($1, [a-z-], [A-Z_]))
     APACHE_MODPATH_ADD($1, $shared, $3,, [\$(]modprefix[_LDADD)])
@@ -348,35 +347,58 @@ dnl
 dnl APACHE_ENABLE_MODULES
 dnl
 AC_DEFUN(APACHE_ENABLE_MODULES,[
-  module_selection=default
-  module_default=yes
+  module_selection=most
+  module_default=shared
+
+  dnl Check whether we have DSO support.
+  dnl If "yes", we build shared modules by default.
+  APR_CHECK_APR_DEFINE(APR_HAS_DSO)
+
+  if test $ac_cv_define_APR_HAS_DSO = "no"; then
+    AC_MSG_WARN([Missing DSO support - building static modules by default.])
+    module_default=static
+  fi
+
 
   AC_ARG_ENABLE(modules,
-  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most" | "none"),[
+  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most" | "few" | "none"),[
     if test "$enableval" = "none"; then
        module_default=no
        module_selection=none
     else
       for i in $enableval; do
-        if test "$i" = "all" -o "$i" = "most"; then
+        if test "$i" = "all" -o "$i" = "most" -o "$i" = "few"; then
           module_selection=$i
         else
           i=`echo $i | sed 's/-/_/g'`
-          eval "enable_$i=yes"
+          eval "enable_$i=shared"
         fi
       done
     fi
   ])
   
   AC_ARG_ENABLE(mods-shared,
-  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Space-separated list of shared modules to enable | "all" | "most"),[
+  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Space-separated list of shared modules to enable | "all" | "most" | "few"),[
     for i in $enableval; do
-      if test "$i" = "all" -o "$i" = "most"; then
+      if test "$i" = "all" -o "$i" = "most" -o "$i" = "few"; then
         module_selection=$i
         module_default=shared
       else
         i=`echo $i | sed 's/-/_/g'`
     	eval "enable_$i=shared"
+      fi
+    done
+  ])
+  
+  AC_ARG_ENABLE(mods-static,
+  APACHE_HELP_STRING(--enable-mods-static=MODULE-LIST,Space-separated list of static modules to enable | "all" | "most" | "few"),[
+    for i in $enableval; do
+      if test "$i" = "all" -o "$i" = "most" -o "$i" = "few"; then
+        module_selection=$i
+        module_default=static
+      else
+        i=`echo $i | sed 's/-/_/g'`
+    	eval "enable_$i=static"
       fi
     done
   ])
