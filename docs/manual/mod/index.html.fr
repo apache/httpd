@@ -202,9 +202,9 @@ de caractéristiques de la requête</dd>
 <dt><a href="mod_slotmem_shm.html">mod_slotmem_shm</a></dt><dd>Slot-based shared memory provider.</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>Chargement de modules ou de code exécutable au cours du
 démarrage ou du redémarrage du serveur</dd>
-<dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs that
-users might have entered by ignoring capitalization and by
-allowing up to one misspelling</dd>
+<dt><a href="mod_speling.html">mod_speling</a></dt><dd>Attempts to correct mistaken URLs by ignoring
+capitalization, or attempting to correct various minor
+misspellings.</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>Fournit des informations sur les performances et l'activité

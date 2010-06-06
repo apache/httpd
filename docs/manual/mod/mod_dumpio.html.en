@@ -43,7 +43,6 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#dumpioinput">DumpIOInput</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#dumpiologlevel">DumpIOLogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dumpiooutput">DumpIOOutput</a></li>
 </ul>
 <h3>Topics</h3>
@@ -55,9 +54,15 @@
 <h2><a name="enable" id="enable">Enabling dumpio Support</a></h2>
     
 
-    <p>To enable the module, it should be compiled and
-    loaded in to your running Apache configuration. Logging
-    can then be enabled or disabled via the below directives.</p>
+    <p>To enable the module, it should be compiled and loaded
+    in to your running Apache configuration. Logging can then
+    be enabled or disabled seperately for input and output via
+    the below directives.  Additionally, <code class="module"><a href="../mod/mod_dumpio.html">mod_dumpio</a></code>
+    needs to be configured to <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> <code>trace7</code>:
+    </p>
+    <div class="example"><p><code>
+      LogLevel dumpio:trace7
+    </code></p></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DumpIOInput" id="DumpIOInput">DumpIOInput</a> <a name="dumpioinput" id="dumpioinput">Directive</a></h2>
@@ -76,28 +81,6 @@ later.</td></tr>
     <div class="example"><h3>Example</h3><p><code>
       DumpIOInput On
     </code></p></div>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="DumpIOLogLevel" id="DumpIOLogLevel">DumpIOLogLevel</a> <a name="dumpiologlevel" id="dumpiologlevel">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls the logging level of the DumpIO output</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DumpIOLogLevel <var>level</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>DumpIOLogLevel debug</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dumpio</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>DumpIOLogLevel is only available in Apache 2.2.4 and 
-later.</td></tr>
-</table>
-    <p>Enable dumping of all output at a specific <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> level.</p>
-
-    <div class="example"><h3>Example</h3><p><code>
-      DumpIOLogLevel notice
-    </code></p></div>
-    
-    <div class="note"><h3>Compatibility</h3>Prior to 2.2.4 <code class="module"><a href="../mod/mod_dumpio.html">mod_dumpio</a></code>
-    would only dump to the log when <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> was set to <code>debug</code></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

@@ -2201,11 +2201,15 @@ matching URLs</td></tr>
 <div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Controls the verbosity of the ErrorLog</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogLevel <var>level</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LogLevel [<var>module</var>:]<var>level</var>
+    [<var>module</var>:<var>level</var>] ...
+</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LogLevel warn</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Per-module and per-directory configuration is available in
+    Apache HTTP Server 2.3.6 and later</td></tr>
 </table>
     <p><code class="directive">LogLevel</code> adjusts the verbosity of the
     messages recorded in the error logs (see <code class="directive"><a href="#errorlog">ErrorLog</a></code> directive). The following
@@ -2288,6 +2292,62 @@ matching URLs</td></tr>
 
         <td>"Opening config file ..."</td>
       </tr>
+      <tr>
+        <td><code>trace1</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"proxy: FTP: control connection complete"</td>
+      </tr>
+      <tr>
+        <td><code>trace2</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"proxy: CONNECT: sending the CONNECT request to the remote proxy"</td>
+      </tr>
+      <tr>
+        <td><code>trace3</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"openssl: Handshake: start"</td>
+      </tr>
+      <tr>
+        <td><code>trace4</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"read from buffered SSL brigade, mode 0, 17 bytes"</td>
+      </tr>
+      <tr>
+        <td><code>trace5</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"map lookup FAILED: map=rewritemap key=keyname"</td>
+      </tr>
+      <tr>
+        <td><code>trace6</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"cache lookup FAILED, forcing new map lookup"</td>
+      </tr>
+      <tr>
+        <td><code>trace7</code> </td>
+
+        <td>Trace messages, dumping large amounts of data</td>
+
+        <td>"| 0000: 02 23 44 30 13 40 ac 34 df 3d bf 9a 19 49 39 15 |"</td>
+      </tr>
+      <tr>
+        <td><code>trace8</code> </td>
+
+        <td>Trace messages, dumping large amounts of data</td>
+
+        <td>"| 0000: 02 23 44 30 13 40 ac 34 df 3d bf 9a 19 49 39 15 |"</td>
+      </tr>
     </table>
 
     <p>When a particular level is specified, messages from all
@@ -2310,6 +2370,36 @@ matching URLs</td></tr>
       <code>notice</code> cannot be suppressed and thus are always
       logged. However, this doesn't apply when logging is done
       using <code>syslog</code>.</p>
+    </div>
+
+    <p>Specifying a level without a module name will reset the level
+    for all modules to that level.  Specifying a level with a module
+    name will set the level for that module only. It is possible to
+    use the module source file name, the module identifier, or the
+    module identifier with the trailing <code>_module</code> ommited
+    as module specification. This means the following three specifications
+    are equivalent:</p>
+
+    <div class="example"><p><code>
+      LogLevel info ssl:warn<br />
+      LogLevel info mod_ssl.c:warn<br />
+      LogLevel info ssl_module:warn<br />
+    </code></p></div>
+
+    <p>It is also possible to change the level per directory:</p>
+
+    <div class="example"><p><code>
+        LogLevel info<br />
+        &lt;Directory /usr/local/apache/htdocs/app&gt;<br />
+        &nbsp; LogLevel debug<br />
+        &lt;/Files&gt;
+    </code></p></div>
+
+    <div class="note">
+        Per directory loglevel configuration only affects messages that are
+	logged after the request has been parsed and that are associated with
+	the request. Log messages which are associated with the connection or
+	the server are not affected.
     </div>
 
 </div>
