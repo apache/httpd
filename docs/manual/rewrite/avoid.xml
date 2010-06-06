@@ -43,7 +43,13 @@ particular server configuration, so it's important that you understand
 them, rather than merely cutting and pasting the examples into your
 configuration.</p>
 
-<note type="warning">This document is a work in progress.</note>
+<p>The most common situation in which <module>mod_rewrite</module> is
+the right tool is when the very best solution requires access to the
+server configuration files, and you don't have that access. Some
+configuration directives are only available in the server configuration
+file. So if you are in a hosting situation where you only have .htaccess
+files to work with, you may need to resort to
+<module>mod_rewrite</module>.</p>
 
 </summary>
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
@@ -167,8 +173,36 @@ seems like the right approach.</p>
 
 <p><code>RewriteRule</code> provides the <a
 href="flags.html#flag_p">[P]</a> flag to pass rewritten URIs through
-<module>mod_proxy</module>. As with any use of <code>mod_rewrite</code>,
-you want to ask yourself whether it's really the best solution.</p>
+<module>mod_proxy</module>.</p>
+
+<example>
+RewriteRule ^/?images(.*) http://imageserver.local/images$1 [P]
+</example>
+
+<p>However, in many cases, when there is no actual pattern matching
+meeded, as in the example shown above, the <directive
+module="mod_proxy">ProxyPass</directive> directive is a better choice.
+The example here could be rendered as:</p>
+
+<example>
+ProxyPass /images/ http://imageserver.local/images/
+</example>
+
+<p>Note that whether you use <directive
+module="mod_rewrite">RewriteRule</directive> or <directive
+module="mod_proxy">ProxyPass</directive>, you'll still need to use the
+<directive module="mod_proxy">ProxyPassReverse</directive> directive to
+catch redirects issued from the back-end server:</p>
+
+<example>
+ProxyPassReverse /images/ http://imageserver.local/images/
+</example>
+
+<p>You may need to use <code>RewriteRule</code> instead when there are
+other <code>RewriteRule</code>s in effect in the same scope, as a
+<code>RewriteRule</code> will usually take effect before a
+<code>ProxyPass</code>, and so may preempt what you're trying to
+accomplish.</p>
 
 </section>
 
