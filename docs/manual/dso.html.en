@@ -27,14 +27,14 @@
 
     <p>The Apache HTTP Server is a modular program where the
     administrator can choose the functionality to include in the
-    server by selecting a set of modules. The modules can be
-    statically compiled into the <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary when the
-    server is built. Alternatively, modules can be compiled as
-    Dynamic Shared Objects (DSOs) that exist separately from the
-    main <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary file. DSO modules may be
-    compiled at the time the server is built, or they may be
-    compiled and added at a later time using the Apache Extension
-    Tool (<code class="program"><a href="./programs/apxs.html">apxs</a></code>).</p>
+    server by selecting a set of modules.
+    Modules will be compiled as Dynamic Shared Objects (DSOs)
+    that exist separately from the main <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+    binary file. DSO modules may be compiled at the time the server
+    is built, or they may be compiled and added at a later time
+    using the Apache Extension Tool (<code class="program"><a href="./programs/apxs.html">apxs</a></code>).</p>
+    <p>Alternatively, the modules can be statically compiled into
+    the <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary when the server is built.</p>
 
     <p>This document describes how to use DSO modules as well as
     the theory behind their use.</p>
@@ -54,15 +54,15 @@
     on a module named <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> which must be statically
     compiled into the Apache httpd core. It is the only module besides
     <code class="module"><a href="./mod/core.html">core</a></code> which cannot be put into a DSO
-    itself. Practically all other distributed Apache httpd modules can then
-    be placed into a DSO by individually enabling the DSO build for
-    them via <code class="program"><a href="./programs/configure.html">configure</a></code>'s
-    <code>--enable-mods-shared</code> option as discussed
-    in the <a href="install.html">install documentation</a>. After a
-    module is compiled into a DSO named <code>mod_foo.so</code> you
-    can use <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>'s <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> command in your
+    itself. Practically all other distributed Apache httpd modules will then
+    be placed into a DSO. After a module is compiled into a DSO named
+    <code>mod_foo.so</code> you can use <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>'s <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> command in your
     <code>httpd.conf</code> file to load this module at server startup
     or restart.</p>
+    <p>The DSO builds for individual modules can be disabled via
+    <code class="program"><a href="./programs/configure.html">configure</a></code>'s <code>--enable-mods-static</code>
+    option as discussed in the <a href="install.html">install
+    documentation</a>.</p>
 
     <p>To simplify this creation of DSO files for Apache httpd modules
     (especially for third-party modules) a support program
@@ -92,17 +92,7 @@
         <code>mod_foo.so</code>:</p>
 
 <div class="example"><p><code>
-$ ./configure --prefix=/path/to/install --enable-foo --enable-mods-shared=foo<br />
-$ make install
-</code></p></div>
-      </li>
-
-      <li>
-        <p>Configure Apache HTTP Server for <em>later installation</em> of shared
-        modules:</p>
-
-<div class="example"><p><code>
-$ ./configure --enable-so<br />
+$ ./configure --prefix=/path/to/install --enable-foo<br />
 $ make install
 </code></p></div>
       </li>
@@ -114,13 +104,9 @@ $ make install
       <code>httpd.conf</code>.</p>
 
 <div class="example"><p><code>
-$ ./configure --enable-modules=most --enable-mods-shared=all<br />
+$ ./configure --enable-mods-shared=all<br />
 $ make install
 </code></p></div>
-   
-        <p>The <code>most</code> argument to
-        <code>--enable-modules</code> indicates that all modules
-        which are not experimental or example modules will be built.</p>
       </li>
 
       <li>

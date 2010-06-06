@@ -22,7 +22,6 @@
 <a href="../ko/programs/htcacheclean.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htcacheclean.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
     <p><code><strong>htcacheclean</strong></code>,
     <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> deposunun boyutlarını belli sınırlar

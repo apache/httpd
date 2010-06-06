@@ -46,12 +46,13 @@
     Par défaut, le serveur écoute toutes les adresses de l'hôte local.
     Cependant, on peut lui préciser des ports et des adresses spécifiques à écouter,
     ou une combinaison des deux.
-    Tout ceci est souvent associé avec la fonctionnalité des hôtes virtuels
-    qui détermine la manière dont httpd répond aux différents ports,
+    Tout ceci est souvent associé avec la fonctionnalité des <a href="vhosts.html">hôtes virtuels</a>
+    qui détermine la manière dont <code>httpd</code> répond aux différents ports,
     noms d'hôtes et adresses IP.</p>
 
     <p>La directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
-    enjoint le serveur de n'accepter des requêtes que sur les ports spécifiés ou
+    enjoint le serveur de n'accepter des requêtes que sur le(s)
+    port(s) spécifiés ou
     une combinaison adresse/port. Si seul un numéro de port est spécifié
     dans la directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>,
     le serveur se met à l'écoute sur ce port, sur toutes les interfaces réseau.
@@ -61,6 +62,10 @@
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> pour
     spécifier plusieurs adresses et ports à écouter. Le serveur répondra alors
     aux requêtes sur ces ports et adresses spécifiés.</p>
+
+    <p>Une directive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    spÃ©cifiant plusieurs valeurs provoquera une erreur fatale qui
+    empÃªchera le serveur de dÃ©marrer.</p>
 
     <p>Par exemple, pour faire en sorte que le serveur accepte des connexions
     sur les ports 80 et 8000, sur toutes les interfaces, utilisez :</p>
@@ -108,7 +113,7 @@
 
     <p>En revanche, sur certaines plateformes comme Linux et Tru64, la
     <strong>seule</strong> manière de gérer à la fois IPv6 et IPv4 passe
-    par l'utilisation d'adresses traduites. Si vous voulez que httpd gère
+    par l'utilisation d'adresses traduites. Si vous voulez que <code>httpd</code> gère
     des connexions IPv4 et IPv6 avec un minimum de points de connexion,
     ce qui nécessite l'utilisation d'adresses IPv6 traduites en IPv4,
     utilisez l'option <code>--enable-v4-mapped</code> du script <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>

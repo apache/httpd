@@ -272,11 +272,11 @@
           is <code>yes</code>.</dd>
 
         <dt><code>--enable-<var>MODULE</var>=shared</code></dt>
-        <dd>The corresponding module will be build as DSO module.</dd>
+        <dd>The corresponding module will be build as DSO module.
+            By default enabled modules are linked dynamically.</dd>
 
         <dt><code>--enable-<var>MODULE</var>=static</code></dt>
-        <dd>By default enabled modules are linked statically. You can force
-          this explicitly.</dd>
+        <dd>The corresponding module will be linked statically.</dd>
       </dl>
 
       <div class="note"><h3>Note</h3>
@@ -289,8 +289,11 @@
     
     <h4><a name="enabledmodules" id="enabledmodules">Modules enabled by default</a></h4>
       <p>Some modules are compiled by default and have to be disabled
-        explicitly. Use the following options to remove discrete modules from
-        the compilation process.</p>
+        explicitly or by using the keywords <code>few</code> or
+        <code>none</code> (see <code>--enable-modules</code>,
+        <code>--enable-mods-shared</code> and <code>--enable-mods-static</code>
+        below for further explanation) to be removed. The following options remove
+        individual modules from the compilation process.</p>
 
       <dl>
         <dt><code>--disable-actions</code></dt>
@@ -390,11 +393,12 @@
     
 
     <h4><a name="disabledmodules" id="disabledmodules">Modules, disabled by default</a></h4>
-      <p>Some modules are compiled by default and have to be enabled
+      <p>Some modules are not compiled by default and have to be enabled
         explicitly or by using the keywords <code>most</code> or
-        <code>all</code> (see <code>--enable-mods-shared</code> below for
-        further explanation) to be available. Therefore use the options
-        below.</p>
+        <code>all</code> (see <code>--enable-modules</code>,
+        <code>--enable-mods-shared</code> and <code>--enable-mods-static</code>
+        below for further explanation) to be available. The following options
+        add individual modules to the compilation process.</p>
 
       <dl>
         <dt><code>--enable-authn-anon</code></dt>
@@ -553,8 +557,8 @@
 
         <dt><code>--enable-so</code></dt>
         <dd>Enable DSO capability provided by <code class="module"><a href="../mod/mod_so.html">mod_so</a></code>. This
-          module will be automatically enabled if you use the
-          <code>--enable-mods-shared</code> option.</dd>
+          module will be automatically enabled unless you build
+          all modules statically.</dd>
 
         <dt><code>--enable-speling</code></dt>
         <dd>Enable the functionality to correct common URL misspellings, which
@@ -712,13 +716,18 @@
           <div class="example"><p><code>
             --enable-mods-shared='headers rewrite dav'
           </code></p></div>
-          <p>Additionally you can use the special keywords <code>all</code> and
-            <code>most</code>. For example,</p>
+          <p>Additionally you can use the special keywords <code>all</code>,
+            <code>most</code> and <code>few</code>. For example,</p>
           <div class="example"><p><code>
             --enable-mods-shared=most
           </code></p></div>
-          <p>will compile most modules and build them as DSO modules.
-            </p>
+          <p>will compile most modules and build them as DSO modules,</p>
+          <div class="example"><p><code>
+            --enable-mods-shared=few
+          </code></p></div>
+          <p>will only compile a very basic set of modules.</p>
+          <p>The default set is <code>most</code>.</p>
+            
           <p><strong>Caveat:</strong>
           <code>--enable-mods-shared=all</code> does not actually build all
           modules. To build all modules then, one might use:</p>
@@ -731,11 +740,16 @@
           </code></p></div>
         </dd>
 
-        <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
+        <dt><code>--enable-mods-static=<var>MODULE-LIST</var></code></dt>
         <dd>This option behaves similar to <code>--enable-mods-shared</code>,
           but will link the given modules statically. This mean, these modules
           will always be present while running <code class="program"><a href="../programs/httpd.html">httpd</a></code>. They need
           not be loaded with <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>.</dd>
+
+        <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
+        <dd>This option behaves like to <code>--enable-mods-shared</code>,
+          and will also link the given modules dynamically. The special
+          keyword <code>none</code> disables the build of all modules.</dd>
 
         <dt><code>--enable-v4-mapped</code></dt>
         <dd>Allow IPv6 sockets to handle IPv4 connections.</dd>

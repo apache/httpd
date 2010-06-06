@@ -6,7 +6,6 @@
 # RewriteCond ${dir2url:$1} (.+)
 # RewriteRule ^/+([^/]+)$ /manual/%1 [R=301,NE,L]
 
-	mod/mod_lua.html#
 acceptfilter	mod/core.html#acceptfilter
 acceptpathinfo	mod/core.html#acceptpathinfo
 accessfilename	mod/core.html#accessfilename
@@ -70,17 +69,22 @@ authformsitepassphrase	mod/mod_auth_form.html#authformsitepassphrase
 authformsize	mod/mod_auth_form.html#authformsize
 authformusername	mod/mod_auth_form.html#authformusername
 authgroupfile	mod/mod_authz_groupfile.html#authgroupfile
+authldapauthorizeprefix	mod/mod_authnz_ldap.html#authldapauthorizeprefix
 authldapbindauthoritative	mod/mod_authnz_ldap.html#authldapbindauthoritative
 authldapbinddn	mod/mod_authnz_ldap.html#authldapbinddn
 authldapbindpassword	mod/mod_authnz_ldap.html#authldapbindpassword
 authldapcharsetconfig	mod/mod_authnz_ldap.html#authldapcharsetconfig
+authldapcompareasuser	mod/mod_authnz_ldap.html#authldapcompareasuser
 authldapcomparednonserver	mod/mod_authnz_ldap.html#authldapcomparednonserver
 authldapdereferencealiases	mod/mod_authnz_ldap.html#authldapdereferencealiases
 authldapgroupattribute	mod/mod_authnz_ldap.html#authldapgroupattribute
 authldapgroupattributeisdn	mod/mod_authnz_ldap.html#authldapgroupattributeisdn
+authldapinitialbindasuser	mod/mod_authnz_ldap.html#authldapinitialbindasuser
+authldapinitialbindpattern	mod/mod_authnz_ldap.html#authldapinitialbindpattern
 authldapmaxsubgroupdepth	mod/mod_authnz_ldap.html#authldapmaxsubgroupdepth
 authldapremoteuserattribute	mod/mod_authnz_ldap.html#authldapremoteuserattribute
 authldapremoteuserisdn	mod/mod_authnz_ldap.html#authldapremoteuserisdn
+authldapsearchasuser	mod/mod_authnz_ldap.html#authldapsearchasuser
 authldapsubgroupattribute	mod/mod_authnz_ldap.html#authldapsubgroupattribute
 authldapsubgroupclass	mod/mod_authnz_ldap.html#authldapsubgroupclass
 authldapurl	mod/mod_authnz_ldap.html#authldapurl
@@ -170,7 +174,6 @@ directoryslash	mod/mod_dir.html#directoryslash
 documentroot	mod/core.html#documentroot
 dtraceprivileges	mod/mod_privileges.html#dtraceprivileges
 dumpioinput	mod/mod_dumpio.html#dumpioinput
-dumpiologlevel	mod/mod_dumpio.html#dumpiologlevel
 dumpiooutput	mod/mod_dumpio.html#dumpiooutput
 enableexceptionhook	mod/mpm_common.html#enableexceptionhook
 enablemmap	mod/core.html#enablemmap
@@ -265,8 +268,8 @@ loglevel	mod/core.html#loglevel
 luacodecache	mod/mod_lua.html#luacodecache
 luahookaccesschecker	mod/mod_lua.html#luahookaccesschecker
 luahookauthchecker	mod/mod_lua.html#luahookauthchecker
-luahookauthchecker	mod/mod_lua.html#luahookauthchecker
 luahookcheckuserid	mod/mod_lua.html#luahookcheckuserid
+luahookfixups	mod/mod_lua.html#luahookfixups
 luahookinsertfilter	mod/mod_lua.html#luahookinsertfilter
 luahookmaptostorage	mod/mod_lua.html#luahookmaptostorage
 luahooktranslatename	mod/mod_lua.html#luahooktranslatename
@@ -274,6 +277,7 @@ luahooktypechecker	mod/mod_lua.html#luahooktypechecker
 luamaphandler	mod/mod_lua.html#luamaphandler
 luapackagecpath	mod/mod_lua.html#luapackagecpath
 luapackagepath	mod/mod_lua.html#luapackagepath
+luaquickhandler	mod/mod_lua.html#luaquickhandler
 luaroot	mod/mod_lua.html#luaroot
 luascope	mod/mod_lua.html#luascope
 maxclients	mod/mpm_common.html#maxclients
@@ -290,6 +294,7 @@ mimemagicfile	mod/mod_mime_magic.html#mimemagicfile
 minspareservers	mod/prefork.html#minspareservers
 minsparethreads	mod/mpm_common.html#minsparethreads
 mmapfile	mod/mod_file_cache.html#mmapfile
+modemstandard	mod/mod_dialup.html#modemstandard
 modmimeusepathinfo	mod/mod_mime.html#modmimeusepathinfo
 multiviewsmatch	mod/mod_mime.html#multiviewsmatch
 mutex	mod/core.html#mutex
@@ -361,8 +366,6 @@ requirenone	mod/mod_authz_core.html#requirenone
 rewritebase	mod/mod_rewrite.html#rewritebase
 rewritecond	mod/mod_rewrite.html#rewritecond
 rewriteengine	mod/mod_rewrite.html#rewriteengine
-rewritelog	mod/mod_rewrite.html#rewritelog
-rewriteloglevel	mod/mod_rewrite.html#rewriteloglevel
 rewritemap	mod/mod_rewrite.html#rewritemap
 rewriteoptions	mod/mod_rewrite.html#rewriteoptions
 rewriterule	mod/mod_rewrite.html#rewriterule

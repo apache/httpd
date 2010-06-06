@@ -29,10 +29,6 @@
 <a href="./pt-br/" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./tr/" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Esta traducción podría estar
-            obsoleta. Consulte la versión en inglés de la
-            documentación para comprobar si se han producido cambios
-            recientemente.</div>
 <form method="get" action="http://www.google.com/search"><p><input name="as_q" value="" type="text" /> <input value="Buscar en Google" type="submit" /><input value="10" name="num" type="hidden" /><input value="es" name="hl" type="hidden" /><input value="ISO-8859-1" name="ie" type="hidden" /><input value="Google Search" name="btnG" type="hidden" /><input name="as_epq" value="Versión 2.3" type="hidden" /><input name="as_oq" value="" type="hidden" /><input name="as_eq" value="&quot;List-Post&quot;" type="hidden" /><input value="" name="lr" type="hidden" /><input value="i" name="as_ft" type="hidden" /><input value="" name="as_filetype" type="hidden" /><input value="all" name="as_qdr" type="hidden" /><input value="any" name="as_occt" type="hidden" /><input value="i" name="as_dt" type="hidden" /><input value="httpd.apache.org" name="as_sitesearch" type="hidden" /><input value="off" name="safe" type="hidden" /></p></form>
 <table id="indextable"><tr><td class="col1"><div class="category"><h2><a name="release" id="release">Notas de la Versión</a></h2>
 <ul><li><a href="new_features_2_0.html">Nuevas funcionalidades en

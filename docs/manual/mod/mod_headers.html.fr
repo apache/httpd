@@ -77,9 +77,9 @@ tardif</a></li>
 tardif</a></h2>
     <p><code class="module"><a href="../mod/mod_headers.html">mod_headers</a></code> peut agir soir précocement, soit
     tardivement au niveau de la requête. Le mode normal est le mode
-    tardif, lorsque les en-têtes de requête sont définis, immédiatement
+    tardif, lorsque les en-têtes de <em>requête</em> sont définis, immédiatement
     avant l'exécution du générateur de contenu, et pour les en-têtes de
-    réponse, juste au moment où la réponse est envoyée sur le réseau.
+    <em>réponse</em>, juste au moment où la réponse est envoyée sur le réseau.
     Utilisez toujours le mode tardif sur un serveur en production.</p>
 
     <p>Le mode précoce a été conçu à des fins d'aide aux tests et au
@@ -247,6 +247,11 @@ tardif</a></h2>
     des en-têtes de réponses dont le code de statut n'est pas dans la
     gamme <code>2<var>xx</var></code> comme les redirections ou les
     erreurs client.</p>
+
+    <div class="note"><h3>CGI</h3>
+      <p>Pour manipuler les en-têtes définis par les scripts CGI, il
+est nécessaire de spécifier <code>always</code> comme premier paramètre.</p>
+    </div>
 
     <p>L'action que cette directive provoque est déterminée par le
     premier argument (ou par le second argument si une
