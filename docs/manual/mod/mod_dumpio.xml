@@ -43,9 +43,16 @@
 <section id="enable">
     <title>Enabling dumpio Support</title>
 
-    <p>To enable the module, it should be compiled and
-    loaded in to your running Apache configuration. Logging
-    can then be enabled or disabled via the below directives.</p>
+    <p>To enable the module, it should be compiled and loaded
+    in to your running Apache configuration. Logging can then
+    be enabled or disabled seperately for input and output via
+    the below directives.  Additionally, <module>mod_dumpio</module>
+    needs to be configured to <directive
+    module="core">LogLevel</directive> <code>trace7</code>:
+    </p>
+    <example>
+      LogLevel dumpio:trace7
+    </example>
 </section>
 
 <directivesynopsis>
@@ -88,28 +95,4 @@ later.</compatibility>
 
 </directivesynopsis>
 
-<directivesynopsis>
-
-<name>DumpIOLogLevel</name>
-<description>Controls the logging level of the DumpIO output</description>
-<syntax>DumpIOLogLevel <var>level</var></syntax>
-<default>DumpIOLogLevel debug</default>
-<contextlist><context>server config</context></contextlist>
-<compatibility>DumpIOLogLevel is only available in Apache 2.2.4 and 
-later.</compatibility>
-
-<usage>
-    <p>Enable dumping of all output at a specific <directive
-    module="core">LogLevel</directive> level.</p>
-
-    <example><title>Example</title>
-      DumpIOLogLevel notice
-    </example>
-    
-    <note><title>Compatibility</title>Prior to 2.2.4 <module>mod_dumpio</module>
-    would only dump to the log when <directive
-    module="core">LogLevel</directive> was set to <code>debug</code></note>
-</usage>
-
-</directivesynopsis>
 </modulesynopsis>
