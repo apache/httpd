@@ -22,9 +22,7 @@ case "x$enable_so" in
         ;;
 esac
 
-dnl mod_so can only be built statically. If the user wants modules to
-dnl be built as DSOs by default (eg. ./configure --enable-mods-shared=most)
-dnl then we must override the default here.
+dnl mod_so can only be built statically. Override the default here.
 if test "x$enable_so" = "xyes"; then
     enable_so="static"
 fi
