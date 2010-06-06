@@ -2179,10 +2179,15 @@ matching URLs</description>
 <directivesynopsis>
 <name>LogLevel</name>
 <description>Controls the verbosity of the ErrorLog</description>
-<syntax>LogLevel <var>level</var></syntax>
+<syntax>LogLevel [<var>module</var>:]<var>level</var>
+    [<var>module</var>:<var>level</var>] ...
+</syntax>
 <default>LogLevel warn</default>
 <contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
 </contextlist>
+<compatibility>Per-module and per-directory configuration is available in
+    Apache HTTP Server 2.3.6 and later</compatibility>
 
 <usage>
     <p><directive>LogLevel</directive> adjusts the verbosity of the
@@ -2268,6 +2273,62 @@ matching URLs</description>
 
         <td>"Opening config file ..."</td>
       </tr>
+      <tr>
+        <td><code>trace1</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"proxy: FTP: control connection complete"</td>
+      </tr>
+      <tr>
+        <td><code>trace2</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"proxy: CONNECT: sending the CONNECT request to the remote proxy"</td>
+      </tr>
+      <tr>
+        <td><code>trace3</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"openssl: Handshake: start"</td>
+      </tr>
+      <tr>
+        <td><code>trace4</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"read from buffered SSL brigade, mode 0, 17 bytes"</td>
+      </tr>
+      <tr>
+        <td><code>trace5</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"map lookup FAILED: map=rewritemap key=keyname"</td>
+      </tr>
+      <tr>
+        <td><code>trace6</code> </td>
+
+        <td>Trace messages</td>
+
+        <td>"cache lookup FAILED, forcing new map lookup"</td>
+      </tr>
+      <tr>
+        <td><code>trace7</code> </td>
+
+        <td>Trace messages, dumping large amounts of data</td>
+
+        <td>"| 0000: 02 23 44 30 13 40 ac 34 df 3d bf 9a 19 49 39 15 |"</td>
+      </tr>
+      <tr>
+        <td><code>trace8</code> </td>
+
+        <td>Trace messages, dumping large amounts of data</td>
+
+        <td>"| 0000: 02 23 44 30 13 40 ac 34 df 3d bf 9a 19 49 39 15 |"</td>
+      </tr>
     </table>
 
     <p>When a particular level is specified, messages from all
@@ -2290,6 +2351,36 @@ matching URLs</description>
       <code>notice</code> cannot be suppressed and thus are always
       logged. However, this doesn't apply when logging is done
       using <code>syslog</code>.</p>
+    </note>
+
+    <p>Specifying a level without a module name will reset the level
+    for all modules to that level.  Specifying a level with a module
+    name will set the level for that module only. It is possible to
+    use the module source file name, the module identifier, or the
+    module identifier with the trailing <code>_module</code> ommited
+    as module specification. This means the following three specifications
+    are equivalent:</p>
+
+    <example>
+      LogLevel info ssl:warn<br />
+      LogLevel info mod_ssl.c:warn<br />
+      LogLevel info ssl_module:warn<br />
+    </example>
+
+    <p>It is also possible to change the level per directory:</p>
+
+    <example>
+        LogLevel info<br />
+        &lt;Directory /usr/local/apache/htdocs/app&gt;<br />
+        &nbsp; LogLevel debug<br />
+        &lt;/Files&gt;
+    </example>
+
+    <note>
+        Per directory loglevel configuration only affects messages that are
+	logged after the request has been parsed and that are associated with
+	the request. Log messages which are associated with the connection or
+	the server are not affected.
     </note>
 </usage>
 </directivesynopsis>
