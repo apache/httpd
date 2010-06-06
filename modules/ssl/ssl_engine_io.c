@@ -1717,8 +1717,6 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
 void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
 {
     ssl_filter_ctx_t *filter_ctx;
-    server_rec *s = c->base_server;
-    SSLSrvConfigRec *sc = mySrvConfig(s);
 
     filter_ctx = apr_palloc(c->pool, sizeof(ssl_filter_ctx_t));
 
@@ -1742,7 +1740,7 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     apr_pool_cleanup_register(c->pool, (void*)filter_ctx,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
-    if (APLOGcdebug(c) && (sc->ssl_log_level >= SSL_LOG_IO)) {
+    if (APLOGctrace4(c)) {
         BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
         BIO_set_callback_arg(SSL_get_rbio(ssl), (void *)ssl);
     }
@@ -1783,7 +1781,7 @@ static void ssl_io_data_dump(server_rec *srvr,
     rows = (len / DUMP_WIDTH);
     if ((rows * DUMP_WIDTH) < len)
         rows++;
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, srvr,
+    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, srvr,
             "+-------------------------------------------------------------------------+");
     for(i = 0 ; i< rows; i++) {
 #if APR_CHARSET_EBCDIC
@@ -1822,13 +1820,13 @@ static void ssl_io_data_dump(server_rec *srvr,
             }
         }
         apr_cpystrn(buf+strlen(buf), " |", sizeof(buf)-strlen(buf));
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, srvr,
+        ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, srvr,
                      "%s", buf);
     }
     if (trunc > 0)
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, srvr,
+        ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, srvr,
                 "| %04ld - <SPACES/NULS>", len + trunc);
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, srvr,
+    ap_log_error(APLOG_MARK, APLOG_TRACE7, 0, srvr,
             "+-------------------------------------------------------------------------+");
     return;
 }
@@ -1852,18 +1850,18 @@ long ssl_io_data_cb(BIO *bio, int cmd,
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
         if (rc >= 0) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s,
                     "%s: %s %ld/%d bytes %s BIO#%pp [mem: %pp] %s",
                     SSL_LIBRARY_NAME,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
                     bio, argp,
                     (argp != NULL ? "(BIO dump follows)" : "(Oops, no memory buffer?)"));
-            if ((argp != NULL) && (sc->ssl_log_level >= SSL_LOG_BYTES))
+            if ((argp != NULL) && APLOGctrace7(c))
                 ssl_io_data_dump(s, argp, rc);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s,
                     "%s: I/O error, %d bytes expected to %s on BIO#%pp [mem: %pp]",
                     SSL_LIBRARY_NAME, argi,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),

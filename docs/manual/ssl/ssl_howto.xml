@@ -301,5 +301,16 @@ Require              valid-user
 </section>
 <!-- /access control -->
 
+<section id="logging">
+    <title>Logging</title>
+
+    <p><module>mod_ssl</module> can log extremely verbose debugging information
+    to the error log, when its <directive module="core">LogLevel</directive> is
+    set to the higher trace levels. On the other hand, on a very busy server,
+    level <code>info</code> may already be too much. Remember that you can
+    configure the <directive module="core">LogLevel</directive> per module to
+    suite your needs.</p>
+</section>
+
 </manualpage>
 

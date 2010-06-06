@@ -186,7 +186,6 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
     sc->session_cache_timeout  = UNSET;
     sc->cipher_server_pref     = UNSET;
     sc->insecure_reneg         = UNSET;
-    sc->ssl_log_level          = SSL_LOG_UNSET;
     sc->proxy_ssl_check_peer_expire = SSL_ENABLED_UNSET;
     sc->proxy_ssl_check_peer_cn     = SSL_ENABLED_UNSET;
 #ifndef OPENSSL_NO_TLSEXT
@@ -299,7 +298,6 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMergeInt(session_cache_timeout);
     cfgMergeBool(cipher_server_pref);
     cfgMergeBool(insecure_reneg);
-    cfgMerge(ssl_log_level, SSL_LOG_UNSET);
     cfgMerge(proxy_ssl_check_peer_expire, SSL_ENABLED_UNSET);
     cfgMerge(proxy_ssl_check_peer_cn, SSL_ENABLED_UNSET);
 #ifndef OPENSSL_NO_TLSEXT
@@ -1068,30 +1066,6 @@ const char *ssl_cmd_SSLSessionCacheTimeout(cmd_parms *cmd,
 
     if (sc->session_cache_timeout < 0) {
         return "SSLSessionCacheTimeout: Invalid argument";
-    }
-
-    return NULL;
-}
-
-const char *ssl_cmd_SSLLogLevelDebugDump(cmd_parms *cmd,
-                                         void *dcfg,
-                                         const char *arg)
-{
-    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
-
-    if (strcEQ(arg, "none") || strcEQ(arg, "off")) {
-        sc->ssl_log_level = SSL_LOG_NONE;
-    }
-    else if (strcEQ(arg, "io") || strcEQ(arg, "i/o")) {
-        sc->ssl_log_level = SSL_LOG_IO;
-    }
-    else if (strcEQ(arg, "bytes") || strcEQ(arg, "on")) {
-        sc->ssl_log_level = SSL_LOG_BYTES;
-    }
-    else {
-        return apr_pstrcat(cmd->temp_pool, cmd->cmd->name,
-                           ": Invalid argument '", arg, "'",
-                           NULL);
     }
 
     return NULL;

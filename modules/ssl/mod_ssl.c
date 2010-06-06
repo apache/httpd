@@ -130,9 +130,6 @@ static const command_rec ssl_config_cmds[] = {
                 "Enable support for insecure renegotiation")
     SSL_CMD_ALL(UserName, TAKE1,
                 "Set user name to SSL variable value")
-    SSL_CMD_SRV(LogLevelDebugDump, TAKE1,
-                "Include I/O Dump when LogLevel is set to Debug "
-                "([ None (default) | IO (not bytes) | Bytes ])")
     SSL_CMD_SRV(StrictSNIVHostCheck, FLAG,
                 "Strict SNI virtual host checking")
 

@@ -150,18 +150,6 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #endif
 
 /**
- * Define the per-server SSLLogLevel constants which provide
- * finer-than-debug resolution to decide if logs are to be
- * assulted with tens of thousands of characters per request.
- */
-typedef enum {
-    SSL_LOG_UNSET  = UNSET,
-    SSL_LOG_NONE   = 0,
-    SSL_LOG_IO     = 6,
-    SSL_LOG_BYTES  = 7
-} ssl_log_level_e;
-
-/**
  * Support for MM library
  */
 #define SSL_MM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
@@ -512,7 +500,6 @@ struct SSLSrvConfigRec {
     BOOL             insecure_reneg;
     modssl_ctx_t    *server;
     modssl_ctx_t    *proxy;
-    ssl_log_level_e  ssl_log_level;
     ssl_enabled_t    proxy_ssl_check_peer_expire;
     ssl_enabled_t    proxy_ssl_check_peer_cn;
 #ifndef OPENSSL_NO_TLSEXT
@@ -583,7 +570,6 @@ const char  *ssl_cmd_SSLOptions(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, void *);
 const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLUserName(cmd_parms *, void *, const char *);
-const char  *ssl_cmd_SSLLogLevelDebugDump(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRenegBufferSize(cmd_parms *cmd, void *dcfg, const char *arg);
 const char  *ssl_cmd_SSLStrictSNIVHostCheck(cmd_parms *cmd, void *dcfg, int flag);
 const char *ssl_cmd_SSLInsecureRenegotiation(cmd_parms *cmd, void *dcfg, int flag);
