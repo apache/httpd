@@ -16,6 +16,13 @@
 
 #include "util_time.h"
 
+
+/* Number of characters needed to format the microsecond part of a timestamp.
+ * Microseconds have 6 digits plus one separator character makes 7.
+ *   */
+#define AP_CTIME_USEC_LENGTH      7
+
+
 /* Cache for exploded values of recent timestamps
  */
 
@@ -145,15 +152,41 @@ AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_time_exp_t * tm,
 
 AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t)
 {
+    int len = APR_CTIME_LEN;
+    return ap_recent_ctime_ex(date_str, t, AP_CTIME_OPTION_NONE, &len);
+}
+
+AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
+                                            int option, int *len)
+{
     /* ### This code is a clone of apr_ctime(), except that it
      * uses ap_explode_recent_localtime() instead of apr_time_exp_lt().
      */
     apr_time_exp_t xt;
     const char *s;
     int real_year;
+    int needed;
 
-    /* example: "Wed Jun 30 21:49:08 1993" */
-    /*           123456789012345678901234  */
+
+    /* Calculate the needed buffer length */
+    needed = APR_CTIME_LEN;
+    if (option & AP_CTIME_OPTION_USEC) {
+        needed += AP_CTIME_USEC_LENGTH;
+    }
+
+    /* Check the provided buffer length */
+    if (len && *len >= needed) {
+        *len = needed;
+    }
+    else {
+        if (len != NULL) {
+            *len = 0;
+        }
+        return APR_ENOMEM;
+    }
+
+    /* example without options: "Wed Jun 30 21:49:08 1993" */
+    /*                           123456789012345678901234  */
 
     ap_explode_recent_localtime(&xt, t);
     s = &apr_day_snames[xt.tm_wday][0];
@@ -177,6 +210,15 @@ AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t)
     *date_str++ = ':';
     *date_str++ = xt.tm_sec / 10 + '0';
     *date_str++ = xt.tm_sec % 10 + '0';
+    if (option & AP_CTIME_OPTION_USEC) {
+        int div;
+        int usec = (int)xt.tm_usec;
+        *date_str++ = '.';
+        for (div=100000; div>0; div=div/10) {
+            *date_str++ = usec / div + '0';
+            usec = usec % div;
+        }
+    }
     *date_str++ = ' ';
     real_year = 1900 + xt.tm_year;
     *date_str++ = real_year / 1000 + '0';

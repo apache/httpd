@@ -609,11 +609,16 @@ static void log_error_core(const char *file, int line, int module_index,
     }
 
     if (logf && ((level & APLOG_STARTUP) != APLOG_STARTUP)) {
+        int time_len;
+
         errstr[0] = '[';
-        ap_recent_ctime(errstr + 1, apr_time_now());
-        errstr[1 + APR_CTIME_LEN - 1] = ']';
-        errstr[1 + APR_CTIME_LEN    ] = ' ';
-        len = 1 + APR_CTIME_LEN + 1;
+        len = 1;
+        time_len = MAX_STRING_LEN - len;
+        ap_recent_ctime_ex(errstr + len, apr_time_now(),
+                           AP_CTIME_OPTION_USEC, &time_len);
+        len += time_len -1;
+        errstr[len++] = ']';
+        errstr[len++] = ' ';
     } else {
         len = 0;
     }
