@@ -225,6 +225,8 @@
  *                         ap_log_*error_ to save argument preparation and
  *                         function call overhead.
  *                         Introduce per-module loglevels
+ * 20100606.1 (2.3.6-dev)  Added extended timestamp formatting via
+ *                         ap_recent_ctime_ex().
  *
  */
 

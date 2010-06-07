@@ -28,6 +28,9 @@ Changes with Apache 2.3.6
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) core: Add microsecond timestamp fractions, process id and thread id
+     to the error log. [Rainer Jung]
+
   *) configure: The "most" module set gets build by default.  [Rainer Jung]
 
   *) configure: Building dynamic modules (DSO) by default.  [Rainer Jung]
