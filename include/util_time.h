@@ -40,6 +40,13 @@ extern "C" {
  */
 #define AP_TIME_RECENT_THRESHOLD 15
 
+/* Options for ap_recent_ctime_ex */
+/* No extension */
+#define AP_CTIME_OPTION_NONE    0x0
+/* Add sub second timestamps with micro second resolution */
+#define AP_CTIME_OPTION_USEC    0x1
+
+
 /**
  * convert a recent time to its human readable components in local timezone
  * @param tm the exploded time
@@ -73,8 +80,25 @@ AP_DECLARE(apr_status_t) ap_explode_recent_gmt(apr_time_exp_t *tm,
  * format a recent timestamp in the ctime() format.
  * @param date_str String to write to.
  * @param t the time to convert 
+ * @note Consider using ap_recent_ctime_ex instead.
+ * @return APR_SUCCESS iff successful
  */
 AP_DECLARE(apr_status_t) ap_recent_ctime(char *date_str, apr_time_t t);
+
+
+/**
+ * format a recent timestamp in an extended ctime() format.
+ * @param date_str String to write to.
+ * @param t the time to convert 
+ * @param option Additional formatting options (AP_CTIME_OPTION_*).
+ * @param len Pointer to an int containing the length of the provided buffer.
+ *        On successful return it contains the number of bytes written to the
+ *        buffer.
+ * @return APR_SUCCESS iff successful, APR_ENOMEM if buffer was to short.
+ */
+AP_DECLARE(apr_status_t) ap_recent_ctime_ex(char *date_str, apr_time_t t,
+                                            int option, int *len);
+
 
 /**
  * format a recent timestamp in the RFC822 format
