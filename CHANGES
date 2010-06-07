@@ -28,6 +28,20 @@ Changes with Apache 2.3.6
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) configure: The "most" module set gets build by default.  [Rainer Jung]
+
+  *) configure: Building dynamic modules (DSO) by default.  [Rainer Jung]
+
+  *) configure: Fix broken VPATH build when using included APR.
+     [Rainer Jung]
+
+  *) mod_session_crypto: Fix configure problem when building
+     with APR 2 and for VPATH builds with included APR.
+     [Rainer Jung]
+
+  *) mod_session_crypto: API compatibility with APR 2 crypto and
+     APR Util 1.x crypto. [Rainer Jung]
+
   *) ab: Fix memory leak with -v2 and SSL. PR 49383.
      [Pavel Kankovsky <peak argo troja mff cuni cz>]
 
