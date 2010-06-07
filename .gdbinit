@@ -273,6 +273,32 @@ document dump_filters
     Print filter chain info
 end
 
+define dump_filter_chain
+    set $r = $arg0
+    set $f = $r->output_filters
+    while $f
+        if $f == $r->output_filters
+            printf "r->output_filters =>\n"
+        end
+        if $f == $r->proto_output_filters
+            printf "r->proto_output_filters =>\n"
+        end
+        if $f == $r->connection->output_filters
+            printf "r->connection->output_filters =>\n"
+        end
+        
+        printf "  %s(0x%lx): type=%d, ctx=0x%lx, r=%s(0x%lx), c=0x%lx\n", \
+          $f->frec->name, (unsigned long)$f, $f->frec->ftype, (unsigned long)$f->ctx, \
+          $f->r == $r ? "r" : ($f->r == 0L ? "null" : \
+          ($f->r == $r->main ? "r->main" : "????")), $f->r, $f->c
+
+        set $f = $f->next
+    end
+end
+document dump_filter_chain
+    Print filter chain info given a request_rec pointer
+end
+
 define dump_process_rec
     set $p = $arg0
     printf "process_rec=0x%lx:\n", (unsigned long)$p
