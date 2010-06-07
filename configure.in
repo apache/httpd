@@ -584,7 +584,7 @@ fi
 
 dnl enable_so tells us if *any* modules can be built as DSOs
 
-if test "$enable_so" = "yes"; then
+if test "$enable_so" = "yes" -o "$enable_so" = "static"; then
   case $host in
     *-ibm-aix*)
       APR_ADDTO(HTTPD_LDFLAGS, [-Wl,-uXML_Parse -Wl,-bE:$abs_builddir/server/httpd.exp])
