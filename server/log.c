@@ -28,6 +28,7 @@
 #include "apr_thread_proc.h"
 #include "apr_lib.h"
 #include "apr_signal.h"
+#include "apr_portable.h"
 
 #define APR_WANT_STDIO
 #define APR_WANT_STRFUNC
@@ -620,6 +621,18 @@ static void log_error_core(const char *file, int line, int module_index,
     if ((level & APLOG_STARTUP) != APLOG_STARTUP) {
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
                             "[%s] ", priorities[level_and_mask].t_name);
+
+        len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
+                            "[%" APR_PID_T_FMT, getpid());
+#if APR_HAS_THREADS
+        {
+            apr_os_thread_t tid = apr_os_thread_current();
+            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
+                                ":%pT", &tid);
+        }
+#endif
+        errstr[len++] = ']';
+        errstr[len++] = ' ';
     }
 
     if (file && level_and_mask >= APLOG_DEBUG) {
