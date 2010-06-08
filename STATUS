@@ -212,6 +212,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
      +1: covener
 
+  *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
+     Response if they so choose to do so. Previously an attempt to cache a 206
+     was arbitrarily allowed if the response contained an Expires or
+     Cache-Control header, and arbitrarily denied if both headers were missing.
+     Trunk patch: http://svn.apache.org/viewvc?rev=952823&view=rev
+     2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-partial2-2.2.patch
+     +1: minfrin
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
