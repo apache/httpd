@@ -28,6 +28,12 @@ Changes with Apache 2.3.6
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
+     Response if they so choose to do so. Previously an attempt to cache a 206
+     was arbitrarily allowed if the response contained an Expires or
+     Cache-Control header, and arbitrarily denied if both headers were missing.
+     [Graham Leggett]
+
   *) core: Add microsecond timestamp fractions, process id and thread id
      to the error log. [Rainer Jung]
 
