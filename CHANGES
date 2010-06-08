@@ -28,6 +28,10 @@ Changes with Apache 2.3.6
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) core: Adjust the output filter chain correctly in an internal
+     redirect from a subrequest, preserving filters from the main
+     request as necessary.  PR 17629.  [Joe Orton]
+
   *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
      Response if they so choose to do so. Previously an attempt to cache a 206
      was arbitrarily allowed if the response contained an Expires or
