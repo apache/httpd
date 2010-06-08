@@ -633,8 +633,8 @@ static void log_error_core(const char *file, int line, int module_index,
         {
             int result;
 
-            if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == 0
-                && result == AP_MPMQ_STATIC) {
+            if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == APR_SUCCESS
+                && result != AP_MPMQ_NOT_SUPPORTED) {
                 apr_os_thread_t tid = apr_os_thread_current();
                 len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
                                     ":tid %pT", &tid);
