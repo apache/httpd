@@ -290,7 +290,9 @@ define dump_filter_chain
         printf "  %s(0x%lx): type=%d, ctx=0x%lx, r=%s(0x%lx), c=0x%lx\n", \
           $f->frec->name, (unsigned long)$f, $f->frec->ftype, (unsigned long)$f->ctx, \
           $f->r == $r ? "r" : ($f->r == 0L ? "null" : \
-          ($f->r == $r->main ? "r->main" : "????")), $f->r, $f->c
+          ($f->r == $r->main ? "r->main" :  \
+          ($r->main && $f->r == $r->main->main ? "r->main->main" : "????"))), \
+          $f->r, $f->c
 
         set $f = $f->next
     end
