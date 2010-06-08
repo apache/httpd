@@ -628,12 +628,17 @@ static void log_error_core(const char *file, int line, int module_index,
                             "[%s] ", priorities[level_and_mask].t_name);
 
         len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                            "[%" APR_PID_T_FMT, getpid());
+                            "[pid %" APR_PID_T_FMT, getpid());
 #if APR_HAS_THREADS
         {
-            apr_os_thread_t tid = apr_os_thread_current();
-            len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
-                                ":%pT", &tid);
+            int result;
+
+            if (ap_mpm_query(AP_MPMQ_IS_THREADED, &result) == 0
+                && result == AP_MPMQ_STATIC) {
+                apr_os_thread_t tid = apr_os_thread_current();
+                len += apr_snprintf(errstr + len, MAX_STRING_LEN - len,
+                                    ":tid %pT", &tid);
+            }
         }
 #endif
         errstr[len++] = ']';
