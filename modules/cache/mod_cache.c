@@ -726,16 +726,17 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      * They are tested here one by one to be clear and unambiguous.
      */
     if (r->status != HTTP_OK && r->status != HTTP_NON_AUTHORITATIVE
+        && r->status != HTTP_PARTIAL_CONTENT
         && r->status != HTTP_MULTIPLE_CHOICES
         && r->status != HTTP_MOVED_PERMANENTLY
         && r->status != HTTP_NOT_MODIFIED) {
         /* RFC2616 13.4 we are allowed to cache 200, 203, 206, 300, 301 or 410
-         * We don't cache 206, because we don't (yet) cache partial responses.
+         * We allow the caching of 206, but a cache implementation might choose
+         * to decline to cache a 206 if it doesn't know how to.
          * We include 304 Not Modified here too as this is the origin server
          * telling us to serve the cached copy.
          */
-        if ((exps != NULL || cc_out != NULL)
-            && r->status != HTTP_PARTIAL_CONTENT) {
+        if (exps != NULL || cc_out != NULL) {
             /* We are also allowed to cache any response given that it has a
              * valid Expires or Cache Control header. If we find a either of
              * those here,  we pass request through the rest of the tests. From
@@ -748,9 +749,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
              * include the following: an Expires header (section 14.21); a
              * "max-age", "s-maxage",  "must-revalidate", "proxy-revalidate",
              * "public" or "private" cache-control directive (section 14.9).
-             *
-             * But do NOT store 206 responses in any case since we
-             * don't (yet) cache partial responses.
              */
         }
         else {
