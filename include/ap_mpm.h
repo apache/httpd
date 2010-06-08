@@ -113,15 +113,15 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
     apr_pool_t *p);
 
 /* Subtypes/Values for AP_MPMQ_IS_THREADED and AP_MPMQ_IS_FORKED        */
-#define AP_MPMQ_NOT_SUPPORTED      0  /* This value specifies whether */
-                                      /* an MPM is capable of         */
+#define AP_MPMQ_NOT_SUPPORTED      0  /* This value specifies that an */
+                                      /* MPM is not capable of        */
                                       /* threading or forking.        */
-#define AP_MPMQ_STATIC             1  /* This value specifies whether */
-                                      /* an MPM is using a static #   */
-                                      /* threads or daemons.          */
-#define AP_MPMQ_DYNAMIC            2  /* This value specifies whether */
-                                      /* an MPM is using a dynamic #  */
-                                      /* threads or daemons.          */
+#define AP_MPMQ_STATIC             1  /* This value specifies that    */
+                                      /* an MPM is using a static     */
+                                      /* number of threads or daemons */
+#define AP_MPMQ_DYNAMIC            2  /* This value specifies that    */
+                                      /* an MPM is using a dynamic    */
+                                      /* number of threads or daemons */
 
 /* Values returned for AP_MPMQ_MPM_STATE */
 #define AP_MPMQ_STARTING              0
