@@ -511,7 +511,6 @@ AP_DECLARE(int) ap_get_request_module_loglevel(const request_rec *r, int index);
  * @param s The server for which to set the loglevel.
  * @param index The module_index of the module to set the loglevel for.
  * @param level The new log level
- * @return The module-specific loglevel
  */
 AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *p, struct ap_logconf *l,
                                         int index, int level);
