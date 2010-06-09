@@ -191,14 +191,14 @@ static int * const aplog_module_index;
 
 #define APLOGcinfo(c)               APLOG_C_IS_LEVEL(c,APLOG_INFO)
 #define APLOGcdebug(c)              APLOG_C_IS_LEVEL(c,APLOG_DEBUG)
-#define APLOGctrace1(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE1)
-#define APLOGctrace2(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE2)
-#define APLOGctrace3(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE3)
-#define APLOGctrace4(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE4)
-#define APLOGctrace5(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE5)
-#define APLOGctrace6(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE6)
-#define APLOGctrace7(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE7)
-#define APLOGctrace8(r)             APLOG_C_IS_LEVEL(c,APLOG_TRACE8)
+#define APLOGctrace1(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE1)
+#define APLOGctrace2(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE2)
+#define APLOGctrace3(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE3)
+#define APLOGctrace4(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE4)
+#define APLOGctrace5(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE5)
+#define APLOGctrace6(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE6)
+#define APLOGctrace7(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE7)
+#define APLOGctrace8(c)             APLOG_C_IS_LEVEL(c,APLOG_TRACE8)
 
 extern int AP_DECLARE_DATA ap_default_loglevel;
 
@@ -278,8 +278,8 @@ void ap_logs_child_init(apr_pool_t *p, server_rec *s);
 /* need additional step to expand APLOG_MARK first */
 #define ap_log_error(...) ap_log_error__(__VA_ARGS__)
 #define ap_log_error__(file, line, mi, level, status, s, ...)           \
-    do { server_rec *sr = s; if (APLOG_MODULE_IS_LEVEL(sr, mi, level))  \
-             ap_log_error_(file, line, mi, level, status, sr, __VA_ARGS__); \
+    do { if (APLOG_MODULE_IS_LEVEL(s, mi, level))                          \
+             ap_log_error_(file, line, mi, level, status, s, __VA_ARGS__); \
     } while(0)
 #else
 #define ap_log_error ap_log_error_
