@@ -373,7 +373,7 @@ static const char *direct_chunkreader(lua_State *lvm, void *udata,
 
     for (p = ctx->buf; isspace(*p); ++p);
     if (p[0] == '<' && p[1] == '/') {
-        int i = 0;
+        apr_size_t i = 0;
         while (i < strlen(ctx->endstr)) {
             if (tolower(p[i + 2]) != ctx->endstr[i])
                 return ctx->buf;

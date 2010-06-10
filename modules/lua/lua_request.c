@@ -189,19 +189,6 @@ static int req_write(lua_State *L)
     return 0;
 }
 
-/* r:parsebody() */
-static int req_parsebody(lua_State *L)
-{
-    apr_table_t *form_table;
-    request_rec *r = ap_lua_check_request_rec(L, 1);
-    lua_newtable(L);
-    lua_newtable(L);
-    if (ap_body_to_table(r, &form_table) == APR_SUCCESS) {
-        apr_table_do(req_aprtable2luatable_cb, L, form_table, NULL);
-    }
-    return 2;
-}
-
 /* r:addoutputfilter(name|function) */
 static int req_add_output_filter(lua_State *L)
 {
@@ -538,8 +525,6 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_document_root, APL_REQ_FUNTYPE_STRING, p));
     apr_hash_set(dispatch, "parseargs", APR_HASH_KEY_STRING,
                  makefun(&req_parseargs, APL_REQ_FUNTYPE_LUACFUN, p));
-    apr_hash_set(dispatch, "parsebody", APR_HASH_KEY_STRING,
-                 makefun(&req_parsebody, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "debug", APR_HASH_KEY_STRING,
                  makefun(&req_debug, APL_REQ_FUNTYPE_LUACFUN, p));
     apr_hash_set(dispatch, "info", APR_HASH_KEY_STRING,
