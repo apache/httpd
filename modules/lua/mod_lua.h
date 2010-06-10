@@ -143,9 +143,9 @@ typedef struct
 extern module AP_MODULE_DECLARE_DATA lua_module;
 
 APR_DECLARE_EXTERNAL_HOOK(ap_lua, AP_LUA, int, lua_open,
-                          (lua_State *L, apr_pool_t *p));
+                          (lua_State *L, apr_pool_t *p))
 
 APR_DECLARE_EXTERNAL_HOOK(ap_lua, AP_LUA, int, lua_request,
-                          (lua_State *L, request_rec *r));
+                          (lua_State *L, request_rec *r))
 
 #endif /* !_MOD_LUA_H_ */
