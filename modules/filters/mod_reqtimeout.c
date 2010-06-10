@@ -262,7 +262,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
     apr_socket_timeout_set(ccfg->socket, saved_sock_timeout);
 
 out:
-    if (rv == APR_TIMEUP) {
+    if (APR_STATUS_IS_TIMEUP(rv)) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                       "Request %s read timeout", ccfg->type);
         /*
