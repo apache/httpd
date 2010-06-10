@@ -220,6 +220,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-partial2-2.2.patch
      +1: minfrin
 
+  *) mod_proxy_http, mod_proxy_ajp, mod_reqtimeout: Use APR_STATUS_IS_TIMEUP
+     instead of direct compare to APR_TIMEUP to be more safe on different platforms.
+     Backport from trunk of http://svn.apache.org/viewvc?rev=953418&view=rev
+                            http://svn.apache.org/viewvc?rev=953385&view=rev
+                            http://svn.apache.org/viewvc?rev=953377&view=rev
+     +1: rjung
+     -1: 
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
