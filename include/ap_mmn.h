@@ -227,13 +227,13 @@
  *                         Introduce per-module loglevels
  * 20100606.1 (2.3.6-dev)  Added extended timestamp formatting via
  *                         ap_recent_ctime_ex().
- *
+ * 20100609.0 (2.3.6-dev)  Dropped ap_args_to_table due to missing constraints.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100606
+#define MODULE_MAGIC_NUMBER_MAJOR 20100609
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
