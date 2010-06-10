@@ -504,7 +504,7 @@ static const struct luaL_Reg server_methods[] = {
 };
 
 
-static req_fun_t *makefun(void *fun, int type, apr_pool_t *pool)
+static req_fun_t *makefun(const void *fun, int type, apr_pool_t *pool)
 {
     req_fun_t *rft = apr_palloc(pool, sizeof(req_fun_t));
     rft->fun = fun;

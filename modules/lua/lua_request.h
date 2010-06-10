@@ -33,7 +33,7 @@ AP_LUA_DECLARE(void) ap_lua_push_request(lua_State *L, request_rec *r);
 
 typedef struct
 {
-    void *fun;
+    const void *fun;
     int type;
 } req_fun_t;
 
