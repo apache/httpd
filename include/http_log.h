@@ -315,8 +315,8 @@ AP_DECLARE(void) ap_log_error_(const char *file, int line, int module_index,
 #define ap_log_perror(...) ap_log_perror__(__VA_ARGS__)
 #define ap_log_perror__(file, line, mi, level, status, p, ...)            \
     do { if ((level) <= APLOG_MAX_LOGLEVEL )                              \
-             ap_do_log_perror(file, line, mi, level, status, p,           \
-                             __VA_ARGS__); } while(0)
+             ap_log_perror_(file, line, mi, level, status, p,             \
+                            __VA_ARGS__); } while(0)
 #else
 #define ap_log_perror ap_log_perror_
 #endif
