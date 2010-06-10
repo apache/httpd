@@ -120,6 +120,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     +1: drh, rjung
     rjung: We should add a note about the first version providing this
            option in the docs page, like e.g. we did for SSLInsecureRenegotiation.
+    wrowe asks; you mean <Compatibility> tag?  Yes, of course.
 
  * mod_dir: add FallbackResource directive
    PR 47184
@@ -191,6 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR: 48939
     Trunk patch: http://svn.apache.org/viewvc?rev=930125&view=rev
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=25153
+    wrowe notes; if the proposer isn't +1, will remove this proposal tomorrow.
 
   * mod_disk_cache: Decline the opportunity to cache if the response is
     a 206 Partial Content. This stops a reverse proxied partial response
@@ -202,15 +204,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_ldap: LDAP caching was suppressed (and ldap-status handler returns
      title page only) when any mod_ldap directives were used in VirtualHost
      context.
-
      Trunk Patch: http://svn.apache.org/viewvc?rev=951235&view=rev (actual fix)
                   http://svn.apache.org/viewvc?rev=951237&view=rev (error msg not displayed)
      2.2.x patch: http://people.apache.org/~covener/2.2.x-ldap_serverconfig.diff
-
          note: No actual per-server directives in 2.2.x mod_ldap, but per-directory 
          mod_ldap directives under a virtualhost are sufficient to trigger this merge issue)
-
-     +1: covener
+     +1: covener, wrowe
 
   *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
      Response if they so choose to do so. Previously an attempt to cache a 206
@@ -225,7 +224,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport from trunk of http://svn.apache.org/viewvc?rev=953418&view=rev
                             http://svn.apache.org/viewvc?rev=953385&view=rev
                             http://svn.apache.org/viewvc?rev=953377&view=rev
-     +1: rjung
+     +1: rjung, wrowe
      -1: 
 
 PATCHES/ISSUES THAT ARE STALLED
