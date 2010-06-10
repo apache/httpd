@@ -665,6 +665,10 @@ static const char *add_pass(cmd_parms *cmd, void *vconf,
         return "mod_serf: Unable to parse SerfPass url.";
     }
 
+    if (!conf->url.scheme) {
+        return "mod_serf: Need scheme part in url.";
+    }
+
     /* XXXX: These are bugs in apr_uri_parse. Fixme. */
     if (!conf->url.port) {
         conf->url.port = apr_uri_port_of_scheme(conf->url.scheme);
