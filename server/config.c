@@ -312,10 +312,14 @@ AP_CORE_DECLARE(ap_conf_vector_t *) ap_create_per_dir_config(apr_pool_t *p)
     return create_empty_config(p);
 }
 
-static int ap_invoke_filter_init(ap_filter_t *filters)
+/* Invoke the filter_init_func for all filters with FILTERS where f->r
+ * matches R.  Restricting to a matching R avoids re-running init
+ * functions for filters configured for r->main where r is a
+ * subrequest.  */
+static int invoke_filter_init(request_rec *r, ap_filter_t *filters)
 {
     while (filters) {
-        if (filters->frec->filter_init_func) {
+        if (filters->frec->filter_init_func && filters->r == r) {
             int result = filters->frec->filter_init_func(filters);
             if (result != OK) {
                 return result;
@@ -354,11 +358,11 @@ AP_CORE_DECLARE(int) ap_invoke_handler(request_rec *r)
      * run their init function to let them do any magic before we could
      * start generating data.
      */
-    result = ap_invoke_filter_init(r->input_filters);
+    result = invoke_filter_init(r, r->input_filters);
     if (result != OK) {
         return result;
     }
-    result = ap_invoke_filter_init(r->output_filters);
+    result = invoke_filter_init(r, r->output_filters);
     if (result != OK) {
         return result;
     }

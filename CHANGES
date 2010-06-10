@@ -28,6 +28,10 @@ Changes with Apache 2.3.6
      processing is completed, avoiding orphaned callback pointers.
      [Brett Gervasoni <brettg senseofsecurity.com>, Jeff Trawick]
 
+  *) core: Filter init functions are now run strictly once per request
+     before handler invocation.  The init functions are no longer run
+     for connection filters.  PR 49328.  [Joe Orton]
+
   *) core: Adjust the output filter chain correctly in an internal
      redirect from a subrequest, preserving filters from the main
      request as necessary.  PR 17629.  [Joe Orton]
