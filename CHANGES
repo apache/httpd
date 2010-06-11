@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.16
 
+  *) mod_proxy_ajp, mod_proxy_http, mod_reqtimeout: Fix timeout detection
+     for platforms Windows, Netware and OS2. [Rainer Jung]
+
   *) mod_ssl: Fix segfault at startup if proxy client certs are shared
      across multiple vhosts.  PR 39915.  [Joe Orton]
 
