@@ -155,7 +155,7 @@ static apr_status_t reqtimeout_filter(ap_filter_t *f,
         extend_timeout(ccfg, bb);
     }
 
-    if (rv == APR_TIMEUP) {
+    if (APR_STATUS_IS_TIMEUP(rv)) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                       "Request %s read timeout", ccfg->type);
     }

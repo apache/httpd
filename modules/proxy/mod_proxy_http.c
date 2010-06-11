@@ -1401,7 +1401,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                           "proxy: error reading status line from remote "
                           "server %s:%d", backend->hostname, backend->port);
-            if (rc == APR_TIMEUP) {
+            if (APR_STATUS_IS_TIMEUP(rc)) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "proxy: read timeout");
             }
@@ -1417,7 +1417,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * we normally would handle timeouts
              */
             if (r->proxyreq == PROXYREQ_REVERSE && c->keepalives &&
-                rc != APR_TIMEUP) {
+                !APR_STATUS_IS_TIMEUP(rc)) {
                 apr_bucket *eos;
 
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
@@ -1449,6 +1449,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     APR_BUCKET_INSERT_BEFORE(eos, e);
                 }
                 ap_pass_brigade(r->output_filters, bb);
+                /* Mark the backend connection for closing */
+                backend->close = 1;
                 /* Need to return OK to avoid sending an error message */
                 return OK;
             }
