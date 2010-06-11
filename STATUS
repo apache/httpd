@@ -132,6 +132,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    +1: niq, pgollucci
    +1: rbowen - After much debate on IRC, we've agreed on FallbackResource as being the right name for this.
 
+ * mod_proxy_http, mod_proxy_ajp, mod_reqtimeout: Use APR_STATUS_IS_TIMEUP
+   instead of direct compare to APR_TIMEUP to be more safe on different platforms.
+   Backport from trunk of http://svn.apache.org/viewvc?rev=953418&view=rev
+                          http://svn.apache.org/viewvc?rev=953385&view=rev
+                          http://svn.apache.org/viewvc?rev=953377&view=rev
+   +1: rjung, wrowe, rpluem
+   -1: 
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -218,14 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?rev=952823&view=rev
      2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-partial2-2.2.patch
      +1: minfrin
-
-  *) mod_proxy_http, mod_proxy_ajp, mod_reqtimeout: Use APR_STATUS_IS_TIMEUP
-     instead of direct compare to APR_TIMEUP to be more safe on different platforms.
-     Backport from trunk of http://svn.apache.org/viewvc?rev=953418&view=rev
-                            http://svn.apache.org/viewvc?rev=953385&view=rev
-                            http://svn.apache.org/viewvc?rev=953377&view=rev
-     +1: rjung, wrowe, rpluem
-     -1: 
 
 PATCHES/ISSUES THAT ARE STALLED
 
