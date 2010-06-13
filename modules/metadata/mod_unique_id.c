@@ -118,6 +118,12 @@ typedef struct {
 
 static unsigned global_in_addr;
 
+/*
+ * XXX: We should have a per-thread counter and not use cur_unique_id.counter
+ * XXX: in all threads, because this is bad for performance on multi-processor
+ * XXX: systems: Writing to the same address from several CPUs causes cache
+ * XXX: thrashing.
+ */
 static unique_id_rec cur_unique_id;
 
 /*
