@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision : 587444 -->
+<!-- English Revision : 952009 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -29,14 +29,16 @@
   <summary>
     <p>La conception modulaire du serveur HTTP Apache permet &agrave; l'administrateur
     de choisir les fonctionnalit&eacute;s &agrave; inclure dans le serveur en s&eacute;lectionnant
-    un certain nombre de modules. Les modules peuvent &ecirc;tre soit int&eacute;gr&eacute;s
-    statiquement dans le binaire <program>httpd</program> lors de la
-    compilation du serveur, soit compil&eacute;s en tant qu'objets
-    dynamiques partag&eacute;s (DSOs) qui existeront ind&eacute;pendamment du binaire
-    principal <program>httpd</program>. Les modules DSO peuvent &ecirc;tre compil&eacute;s
-    au moment de la construction du serveur, ou bien compil&eacute;s s&eacute;par&eacute;ment,
-    &agrave; l'aide de l'utilitaire des extensions d'Apache (<program>apxs</program>),
-    et associ&eacute;s au serveur ult&eacute;rieurement.</p>
+    un certain nombre de modules. Les modules seront compil&eacute;s en tant
+    qu'Objets Dynamiques Partag&eacute;s (Dynamic Shared Objects ou DSOs)
+    qui m&egrave;nent une existence s&eacute;par&eacute;e du fichier binaire principal
+    <program>httpd</program>. Les modules DSO peuvent &ecirc;tre compil&eacute;s en
+    m&ecirc;me temps que le serveur, ou compil&eacute;s et ajout&eacute;s ult&eacute;rieurement via
+    l'Outil des Extensions &agrave; Apache (Apache Extension Tool ou
+    <program>apxs</program>).</p>
+    <p>Les modules peuvent aussi &ecirc;tre int&eacute;gr&eacute;s statiquement dans le
+    binaire <program>httpd</program> lors de la compilation de ce
+    dernier.</p>
 
     <p>Ce document d&eacute;crit l'utilisation des modules DSO ainsi que les dessous
     de leur fonctionnement.</p>
@@ -59,18 +61,18 @@
     assur&eacute; par un module nomm&eacute; <module>mod_so</module> qui doit &ecirc;tre compil&eacute;
     statiquement dans le coeur d'Apache httpd. Il s'agit du seul module avec le
     module <module>core</module> &agrave; ne pas pouvoir &ecirc;tre compil&eacute; en tant que
-    module DSO lui-m&ecirc;me. Pratiquement tous les autres modules
-    d'Apache httpd
-    distribu&eacute;s peuvent &ecirc;tre compil&eacute;s en tant que modules DSO en s&eacute;lectionnant
-    pour chacun d'entre eux le mode de construction DSO &agrave; l'aide de l'option
-    <code>--enable-mods-shared</code> du script
-    <program>configure</program>, comme d&eacute;crit dans la
-    <a href="install.html">Documentation de l'installation</a>. Une fois
-    compil&eacute; en tant que module DSO, un module peut &ecirc;tre charg&eacute; en m&eacute;moire au
+    module DSO lui-m&ecirc;me. Pratiquement tous les autres modules d'Apache httpd
+    distribu&eacute;s seront alors compil&eacute;s en tant que modules DSO. Une fois
+    compil&eacute; en tant que module DSO nomm&eacute; <code>mod_foo.so</code>, un
+    module peut &ecirc;tre charg&eacute; en m&eacute;moire au
     d&eacute;marrage ou red&eacute;marrage du serveur &agrave; l'aide de la commande
     <directive module="mod_so">LoadModule</directive> du module
     <module>mod_so</module>, plac&eacute;e
     dans votre fichier <code>httpd.conf</code>.</p>
+    <p>La compilation en mode DSO peut &ecirc;tre d&eacute;sactiv&eacute;e pour certains
+    modules via l'option <code>--enable-mods-static</code> du script
+    <program>configure</program>, comme expliqu&eacute; dans la <a
+    href="install.html">Documentation sur l'installation</a>.</p>
 
     <p>Un utilitaire permet de simplifier la cr&eacute;ation de
     fichiers DSO pour les modules d'Apache httpd
@@ -101,18 +103,7 @@
 	en tant que module DSO <code>mod_foo.so</code> :</p>
 
 <example>
-$ ./configure --prefix=/chemin/vers/r&eacute;pertoire-installation
---enable-foo --enable-mods-shared=foo<br />
-$ make install
-</example>
-      </li>
-	
-      <li>
-        <p>Configure le serveur HTTP Apache pour une <em>installation
-	ult&eacute;rieure</em> des modules partag&eacute;s :</p>
-
-<example>
-$ ./configure --enable-so<br />
+$ ./configure --prefix=/chemin/vers/installation --enable-foo<br />
 $ make install
 </example>
       </li>
@@ -125,7 +116,7 @@ $ make install
       fichier <code>httpd.conf</code>.</p>
 
 <example>
-$ ./configure --enable-modules=most --enable-mods-shared=all<br />
+$ ./configure --enable-mods-shared=all<br />
 $ make install
 </example>
    
