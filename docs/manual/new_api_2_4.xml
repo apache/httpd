@@ -1,0 +1,196 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="new_api_2_4.xml.meta">
+
+<title>API Changes in Apache HTTP Server 2.4 since 2.2</title>
+
+<summary>
+  <p>This document describes changes to the Apache HTTPD API from
+     version 2.2 to 2.4, that may be of interest to module/application
+     developers and core hacks.  At the time of writing, the 2.4 API
+     is not finalised, and this document may serve to highlight
+     points that call for further review.</p>
+  <p>API changes fall into two categories: APIs that are altogether new,
+     and existing APIs that are expanded or changed.  The latter are
+     further divided into those where all changes are back-compatible
+     (so existing modules can ignore them), and those that might
+     require attention by maintainers.  As with the transition from
+     HTTPD 2.0 to 2.2, existing modules and applications will require
+     recompiling and may call for some attention, but most should not
+     require any substantial updating (although some may be able to
+     take advantage of API changes to offer significant improvements).</p>
+  <p>For the purpose of this document, the API is split according
+     to the public header files.  These headers are themselves the
+     reference documentation, and can be used to generate a browsable 
+     HTML reference with <code>make docs</code>.</p>
+</summary>
+
+  <section id="ap_expr">
+    <title>ap_expr (NEW!)</title>
+    <p>Introduces a new API to parse and evaluate boolean and algebraic
+       expressions, including provision for a standard syntax and
+       customised variants.</p>
+  </section>
+
+  <section id="ap_listen">
+    <title>ap_listen (changed; back-compatible)</title>
+    <p>Introduces new API to enable apache child processes to serve different purposes.</p>
+  </section>
+
+  <section id="ap_mpm">
+    <title>ap_mpm (changed)</title>
+  <p><code>ap_mpm_run</code> is replaced by a new <code>mpm</code> hook.
+  Also <code>ap_graceful_stop_signalled</code> is lost, and
+  <code>ap_mpm_register_timed_callback</code> is new.</p>
+  </section>
+
+  <section id="ap_slotmem">
+    <title>ap_slotmem (NEW!)</title>
+    <p>Introduces an API for modules to allocate and manage memory slots
+    (normally) for shared memory.</p>
+  </section>
+
+  <section id="ap_socache">
+    <title>ap_socache (NEW!)</title>
+    <p>API to manage a shared object cache.</p>
+  </section>
+
+  <section id="heartbeat">
+    <title>heartbeat (NEW!)</title>
+    <p>common structures for heartbeat modules (should this be public API?)</p>
+  </section>
+
+  <section id="http_config">
+    <title>http_config (changed)</title>
+    <ul>
+      <li>Introduces per-module, per-directory loglevels, including macro wrappers.</li>
+      <li>New AP_DECLARE_MODULE macro to declare all modules.</li>
+      <li>New API to retain data across module unload/load</li>
+      <li>New check_config hook</li>
+      <li>New ap_process_fnmatch_configs() to process wildcards</li>
+    </ul>
+  </section>
+
+  <section id="http_core">
+    <title>http_core (changed)</title>
+    <ul>
+      <li>REMOVED ap_default_type, ap_requires, all 2.2 authnz API</li>
+      <li>Introduces Optional Functions for logio and authnz</li>
+      <li>New function ap_get_server_name_for_url to support ipv6 literals.</li>
+    </ul>
+  </section>
+
+  <section id="httpd">
+    <title>httpd (changed)</title>
+    <ul>
+      <li>Introduce per-directory, per-module loglevel</li>
+      <li>New loglevels APLOG_TRACEn</li>
+      <li>Support for mod_request kept_body</li>
+      <li>Support buffering filter data for async requests</li>
+      <li>New CONN_STATE values</li>
+      <li>Function changes: ap_escape_html updated; ap_unescape_all, ap_escape_path_segment_buffer</li>
+    </ul>
+  </section>
+
+  <section id="http_log">
+    <title>http_log (changed)</title>
+    <ul>
+      <li>Introduce per-directory, per-module loglevel</li>
+      <li>New loglevels APLOG_TRACEn</li>
+      <li>ap_log_*error become macro wrappers (fully back-compatible change)</li>
+      <li>piped logging revamped</li>
+      <li>module_index added to error_log hook</li>
+      <li>new function: ap_log_command_line</li>
+    </ul>
+  </section>
+
+  <section id="http_request">
+    <title>http_request (changed)</title>
+    <ul>
+      <li>New auth_internal API and auth_provider API</li>
+      <li>New EOR bucket type</li>
+      <li>New function ap_process_async_request</li>
+      <li>New functions ap_hook_check_access, ap_hook_check_authn, ap_hook_check_authz (why are these called ap_hook_* when they are functions not hooks?)</li>
+    </ul>
+  </section>
+
+  <section id="mod_auth">
+    <title>mod_auth (NEW!)</title>
+    <p>Introduces the new provider framework for authn and authz</p>
+  </section>
+
+  <section id="mod_core">
+    <title>mod_core (NEW!)</title>
+    <p>This introduces low-level APIs to send arbitrary headers,
+    and exposes functions to handle HTTP OPTIONS and TRACE.</p>
+  </section>
+
+  <section id="mod_request">
+    <title>mod_request (NEW!)</title>
+    <p>The API for <module>mod_request</module>, to make input data
+    available to multiple application/handler modules where required,
+    and to parse HTML form data.</p>
+  </section>
+
+  <section id="mpm_common">
+    <title>mpm_common (changed)</title>
+    <ul>
+      <li>REMOVES: accept, lockfile, lock_mech, set_scoreboard (locking uses the new ap_mutex API)</li>
+      <li>NEW API to drop privileges (delegates this platform-dependent
+          function to modules)</li>
+      <li>NEW Hooks: mpm_query, mpm_note_child_killed, timed_callback, get_name, and function ap_mpm_note_child_killed</li>
+    </ul>
+  </section>
+
+  <section id="scoreboard">
+    <title>scoreboard (changed)</title>
+    <p>ap_get_scoreboard_worker is gratuitously made non-back-compatible
+    as an alternative version is introduced.  Additional proxy_balancer
+    support.  Child status stuff revamped.</p>
+  </section>
+
+  <section id="util_cookies">
+    <title>util_cookies (NEW!)</title>
+    <p>Introduces a new API for managing HTTP Cookies.</p>
+  </section>
+
+  <section id="util_ldap">
+    <title>util_ldap (changed)</title>
+    <p>I have yet to get a handle on this update.</p>
+  </section>
+
+  <section id="util_mutex">
+    <title>util_mutex (NEW!)</title>
+    <p>A wrapper for APR proc and global mutexes in httpd.</p>
+  </section>
+
+  <section id="util_script">
+    <title>util_script (changed)</title>
+    <p>NEW: ap_args_to_table</p>
+  </section>
+
+  <section id="util_time">
+    <title>util_time (changed)</title>
+    <p>NEW: ap_recent_ctime_ex</p>
+  </section>
+
+</manualpage>
