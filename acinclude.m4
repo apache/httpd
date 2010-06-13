@@ -201,7 +201,7 @@ EOF
 ])dnl
 
 dnl
-dnl APACHE_MPM_MODULE(name[, shared[, objects[, config[, path]]]])
+dnl APACHE_MPM_MODULE(name[, shared[, objects[, config[, path[, libs]]]]])
 dnl
 dnl Provide information for building the MPM.  (Enablement is handled using
 dnl --with-mpm/--enable-mpms-shared.)
@@ -211,6 +211,7 @@ dnl shared   -- "shared" to indicate shared module build, empty string otherwise
 dnl objects  -- one or more .lo files to link into the MPM module (default: mpmname.lo)
 dnl config   -- configuration logic to run if the MPM is enabled
 dnl path     -- relative path to MPM (default: server/mpm/mpmname)
+dnl libs     -- libs needed by this MPM
 dnl
 AC_DEFUN(APACHE_MPM_MODULE,[
     if ap_mpm_is_enabled $1; then
@@ -232,6 +233,7 @@ AC_DEFUN(APACHE_MPM_MODULE,[
         APACHE_FAST_OUTPUT($mpmpath/Makefile)
 
         if test -z "$2"; then
+            APR_ADDTO(AP_LIBS, [$6])
             libname="lib$1.la"
             cat >$mpmpath/modules.mk<<EOF
 $libname: $objects
@@ -246,7 +248,7 @@ EOF
             shobjects=`echo $objects | sed 's/\.lo/.slo/g'`
             cat >$mpmpath/modules.mk<<EOF
 $libname: $shobjects
-	\$(SH_LINK) -rpath \$(libexecdir) -module -avoid-version $objects
+	\$(SH_LINK) -rpath \$(libexecdir) -module -avoid-version $objects $6
 DISTCLEAN_TARGETS = modules.mk
 static =
 shared = $libname
@@ -574,6 +576,48 @@ if test "x$ap_ssltk_configured" = "x"; then
   fi
 fi
 ])
+
+dnl
+dnl APACHE_CHECK_SERF
+dnl
+dnl Configure for the detected libserf, giving preference to
+dnl "--with-serf=<path>" if it was specified.
+dnl
+AC_DEFUN([APACHE_CHECK_SERF], [
+  AC_CACHE_CHECK([for libserf], [ac_cv_serf], [
+    ac_cv_serf=no
+    serf_prefix=no
+    SERF_LIBS=""
+    AC_ARG_WITH(serf, APACHE_HELP_STRING([--with-serf=PREFIX],
+                                    [Serf client library]),
+    [
+        if test "$withval" = "yes" ; then
+          serf_prefix=/usr
+        else
+          serf_prefix=$withval
+        fi
+    ])
+
+    if test "$serf_prefix" != "no" ; then
+      save_cppflags="$CPPFLAGS"
+      CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES -I$serf_prefix/include/serf-0"
+      AC_CHECK_HEADERS(serf.h,[
+        save_ldflags="$LDFLAGS"
+        LDFLAGS="$LDFLAGS -L$serf_prefix/lib"
+        AC_CHECK_LIB(serf-0, serf_context_create,[ac_cv_serf="yes"])
+        LDFLAGS="$save_ldflags"])
+      CPPFLAGS="$save_cppflags"
+    fi
+  ])
+
+  APACHE_SUBST(SERF_LIBS)
+  if test "$ac_cv_serf" = "yes"; then
+    AC_DEFINE(HAVE_SERF, 1, [Define if libserf is available])
+    APR_SETVAR(SERF_LIBS, [-L$serf_prefix/lib -lserf-0])
+    APR_ADDTO(INCLUDES, [-I$serf_prefix/include/serf-0])
+  fi
+])
+
 
 dnl
 dnl APACHE_EXPORT_ARGUMENTS
