@@ -84,6 +84,8 @@
     <ul>
       <li>Introduces per-module, per-directory loglevels, including macro wrappers.</li>
       <li>New AP_DECLARE_MODULE macro to declare all modules.</li>
+      <li>New APLOG_USE_MODULE macro necessary for per-module loglevels in
+          multi-file modules.</li>
       <li>New API to retain data across module unload/load</li>
       <li>New check_config hook</li>
       <li>New ap_process_fnmatch_configs() to process wildcards</li>
@@ -116,7 +118,8 @@
     <ul>
       <li>Introduce per-directory, per-module loglevel</li>
       <li>New loglevels APLOG_TRACEn</li>
-      <li>ap_log_*error become macro wrappers (fully back-compatible change)</li>
+      <li>ap_log_*error become macro wrappers (fully back-compatible if
+          APLOG_MARK macro is used)</li>
       <li>piped logging revamped</li>
       <li>module_index added to error_log hook</li>
       <li>new function: ap_log_command_line</li>
