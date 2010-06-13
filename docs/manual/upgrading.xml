@@ -30,7 +30,9 @@
   are intended to be brief notes, and you should be able to find
   more information in either the <a
   href="new_features_2_4.html">New Features</a> document, or in
-  the <code>src/CHANGES</code> file.</p>
+  the <code>src/CHANGES</code> file.  Application and module developers
+  can find a summary of API changes in the <a href="new_api_2_4.html"
+  >API updates</a> overview.</p>
 
   <p>This document describes only the changes from 2.2 to 2.4.  If you
   are upgrading from version 2.0, you should also consult the <a
