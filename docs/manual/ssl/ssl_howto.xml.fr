@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English revision : 659902 -->
+<!-- English revision : 951904 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -341,6 +341,19 @@ Require              valid-user
 </section>
 </section>
 <!-- /access control -->
+
+<section id="logging">
+    <title>Journalisation</title>
+
+    <p><module>mod_ssl</module> peut enregistrer des informations de
+    d&eacute;bogage tr&egrave;s verbeuses dans le journal des erreurs, lorsque sa
+    directive <directive module="core">LogLevel</directive> est d&eacute;finie
+    &agrave; des niveaux de trace &eacute;lev&eacute;s. Par contre, sur un serveur tr&egrave;s
+    sollicit&eacute;, le niveau <code>info</code> sera probablement d&eacute;j&agrave; trop
+    &eacute;lev&eacute;. Souvenez-vous que vous pouvez configurer la directive
+    <directive module="core">LogLevel</directive> par module afin de
+    pourvoir &agrave; vos besoins.</p>
+</section>
 
 </manualpage>
 

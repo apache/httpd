@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 927376 -->
+<!-- English Revision: 952009 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -233,17 +233,18 @@ $ tar xvf httpd-<em>NN</em>.tar
     <p>&Agrave; ce niveau, vous pouvez aussi sp&eacute;cifier de quelles <a
     href="programs/configure.html#optionalfeatures">fonctionnalit&eacute;s</a> vous
     voulez disposer dans Apache en activant ou d&eacute;sactivant des <a
-    href="mod/">modules</a>.  Apache est fourni avec un jeu de modules de
-    <a href="mod/module-dict.html#Status">Base</a> inclus par d&eacute;faut.
-    Les autres modules sont activ&eacute;s &agrave; l'aide de l'option
+    href="mod/">modules</a>.  Apache est fourni avec un grand nombre de
+    modules inclus par d&eacute;faut. Ils seront compil&eacute;s en tant qu'<a
+    href="dso.html">objets partag&eacute;s (DSOs)</a> qui pourront &ecirc;tre charg&eacute;s
+    ou d&eacute;charg&eacute;s &agrave; l'ex&eacute;cution. Vous pouvez aussi choisir de compiler
+    les modules statiquement via l'option
+    <code>--enable-<var>module</var>=static</code>.</p>
+    <p>Des modules suppl&eacute;mentaires peuvent &ecirc;tre activ&eacute;s &agrave; l'aide de l'option
     <code>--enable-<var>module</var></code>, o&ugrave;
     <var>module</var> est le nom du module sans la cha&icirc;ne
     <code>mod_</code> et o&ugrave; tout caract&egrave;re de soulignement est converti
-    en tiret.  Vous pouvez aussi choisir de compiler les modules comme
-    <a href="dso.html">objets partag&eacute;s (DSOs)</a> -- qui peuvent &ecirc;tre charg&eacute;s
-    ou d&eacute;charg&eacute;s &agrave; l'ex&eacute;cution -- &agrave; l'aide de l'option
-    <code>--enable-<var>module</var>=shared</code>.  D'une mani&egrave;re similaire,
-    vous pouvez d&eacute;sactiver des modules de base &agrave; l'aide de l'option
+    en tiret. D'une mani&egrave;re similaire,
+    vous pouvez d&eacute;sactiver des modules &agrave; l'aide de l'option
     <code>--disable-<var>module</var></code>.  Faites tr&egrave;s attention
     en utilisant ces options, car <program>configure</program> n'est pas en
     mesure de vous avertir si le module que vous avez sp&eacute;cifi&eacute; n'existe pas;
@@ -262,15 +263,14 @@ $ tar xvf httpd-<em>NN</em>.tar
     <p>Pour vous faire une id&eacute;e des possibilit&eacute;s qui s'offrent &agrave; vous, voici
     un exemple typique de compilation d'Apache avec le r&eacute;pertoire
     d'installation <code>/sw/pkg/apache</code>, un compilateur et des drapeaux
-    particuliers et les deux modules additionnels <module>mod_rewrite</module>
-    et <module>mod_speling</module> qui pourront &ecirc;tre charg&eacute;s plus tard
-    &agrave; l'aide du m&eacute;canisme DSO :</p>
+    particuliers et les deux modules additionnels <module>mod_ldap</module>
+    et <module>mod_lua</module> :</p>
 
 <example>
       $ CC="pgcc" CFLAGS="-O2" \<br />
        ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-rewrite=shared \<br />
-       --enable-speling=shared
+       --enable-ldap=shared \<br />
+       --enable-lua=shared
 </example>
 
     <p>Plusieurs minutes peuvent &ecirc;tre n&eacute;cessaires &agrave;

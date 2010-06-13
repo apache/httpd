@@ -70,18 +70,14 @@ courantes n'ont pas besoin de la puissance et de la complexit&eacute; de
 href="../urlmapping.html">Mise en correspondance des URLs avec le
 syst&egrave;me de fichiers</a>.</p>
 
-<p>Enfin, avant de proc&eacute;der, assurez-vous d'avoir configur&eacute; la directive
-<directive module="mod_rewrite">RewriteLog</directive>. Bien que ce
-fichier journal puisse contenir une quantit&eacute; impressionnante d'informations,
-il s'av&egrave;re indispensable pour le d&eacute;bogage des probl&egrave;mes avec la
-configuration de <module>mod_rewrite</module>, car il vous indiquera
-exactement la mani&egrave;re dont chaque r&egrave;gle est trait&eacute;e.</p>
+<p>Enfin, avant de proc&eacute;der, assurez-vous d'avoir configur&eacute; le niveau de
+journalisation de <module>mod_rewrite</module> &agrave; un des niveaux de trace
+via la directive <directive module="core">LogLevel</directive>. Bien que
+ceci risque de vous submerger sous une &eacute;norme quantit&eacute; d'informations,
+le d&eacute;bogage des probl&egrave;mes avec la configuration de
+<module>mod_rewrite</module> est &agrave; ce prix car vous verrez alors
+exactement comment chaque r&egrave;gle est trait&eacute;e.</p>
 
-<note>
-<p>On ne peut pas utiliser la directive RewriteLog dans les fichiers
-.htaccess, car elle doit &ecirc;tre d&eacute;finie au niveau du fichier
-de configuration du serveur principal.</p>
-</note>
 </section>
 
 <section id="regex"><title>Expressions rationnelles</title>
@@ -352,8 +348,8 @@ alors <code>%1</code> contiendrait <code>example.com</code> et
 <p>La directive <directive module="mod_rewrite">RewriteMap</directive>
 permet en quelque sorte de faire appel &agrave; une fonction externe pour
 effectuer la r&eacute;&eacute;criture &agrave; votre place. Tout ceci est d&eacute;crit plus en
-d&eacute;tails dans la <a href="rewritemap.html">Documentation suppl&eacute;mentaire
-sur RewriteMap</a>.</p>
+d&eacute;tails dans la <a
++href="rewritemap.html">Documentation suppl&eacute;mentaire sur RewriteMap</a>.</p>
 </section>
 
 <section id="htaccess"><title>Fichiers .htaccess</title>
