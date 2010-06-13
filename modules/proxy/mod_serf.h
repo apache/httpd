@@ -26,11 +26,8 @@
 #if !defined(WIN32) && !defined(NETWARE)
 #include "ap_config_auto.h"
 #endif
-#ifdef HAVE_SERF_H
+#ifdef HAVE_SERF
 #include "serf.h"
-#ifndef AP_HAS_SERF
-#define AP_HAS_SERF 1
-#endif
 #endif
 
 #include "ap_provider.h"

@@ -95,9 +95,9 @@
 #include <signal.h>
 #include <limits.h>             /* for INT_MAX */
 
-#include "mod_serf.h"
 
-#if AP_HAS_SERF
+#if HAVE_SERF
+#include "mod_serf.h"
 #include "serf.h"
 #endif
 
@@ -178,7 +178,7 @@ static struct timeout_head_t timeout_head, keepalive_timeout_head;
 
 static apr_pollset_t *event_pollset;
 
-#if AP_HAS_SERF
+#if HAVE_SERF
 typedef struct {
     apr_pollset_t *pollset;
     apr_pool_t *pool;
@@ -210,7 +210,7 @@ typedef enum
 {
     PT_CSD,
     PT_ACCEPT
-#if AP_HAS_SERF
+#if HAVE_SERF
     , PT_SERF
 #endif
 } poll_type_e;
@@ -796,7 +796,7 @@ static void dummy_signal_handler(int sig)
 }
 
 
-#if AP_HAS_SERF
+#if HAVE_SERF
 static apr_status_t s_socket_add(void *user_baton,
                                  apr_pollfd_t *pfd,
                                  void *serf_baton)
@@ -823,7 +823,7 @@ static apr_status_t s_socket_remove(void *user_baton,
 
 static apr_status_t init_pollset(apr_pool_t *p)
 {
-#if AP_HAS_SERF
+#if HAVE_SERF
     s_baton_t *baton = NULL;
 #endif
     apr_status_t rv;
@@ -868,7 +868,7 @@ static apr_status_t init_pollset(apr_pool_t *p)
         lr->accept_func = ap_unixd_accept;
     }
 
-#if AP_HAS_SERF
+#if HAVE_SERF
     baton = apr_pcalloc(p, sizeof(*baton));
     baton->pollset = event_pollset;
     /* TODO: subpools, threads, reuse, etc.  -- currently use malloc() inside :( */
@@ -1095,7 +1095,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             apr_thread_mutex_unlock(g_timer_ring_mtx);
         }
 
-#if AP_HAS_SERF
+#if HAVE_SERF
         rc = serf_context_prerun(g_serf);
         if (rc != APR_SUCCESS) {
             /* TOOD: what should do here? ugh. */
@@ -1233,7 +1233,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                     ap_push_pool(worker_queue_info, ptrans);
                 }
             }               /* if:else on pt->type */
-#if AP_HAS_SERF
+#if HAVE_SERF
             else if (pt->type == PT_SERF) {
                 /* send socket to serf. */
                 /* XXXX: this doesn't require get_worker(&have_idle_worker) */

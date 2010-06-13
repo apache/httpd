@@ -59,37 +59,13 @@ APACHE_MODULE(proxy_fdpass, Apache proxy to Unix Daemon Socket module, $proxy_fd
 APACHE_MODULE(proxy_ajp, Apache proxy AJP module, $proxy_ajp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module, $proxy_balancer_objs, , $proxy_mods_enable)
 
-
-AC_DEFUN([CHECK_SERF], [
-  serf_found="no"
-  AC_ARG_WITH(serf, APACHE_HELP_STRING([--with-serf=PREFIX],
-                                  [Serf client library]),
-  [
-    if test "$withval" = "yes" ; then
-      AC_MSG_ERROR([--with-serf requires an argument.])
-    else
-      serf_prefix=$withval
-      save_cppflags="$CPPFLAGS"
-      CPPFLAGS="$CPPFLAGS $APR_INCLUDES $APU_INCLUDES -I$serf_prefix/include/serf-0"
-      AC_CHECK_HEADERS(serf.h,[
-        save_ldflags="$LDFLAGS"
-        LDFLAGS="$LDFLAGS -L$serf_prefix/lib"
-        AC_CHECK_LIB(serf-0, serf_context_create,[serf_found="yes"])
-        LDFLAGS="$save_ldflags"])
-      CPPFLAGS="$save_cppflags"
-    fi
-  ])
-
-  if test "$serf_found" = "yes"; then
-    MOD_SERF_LDADD="-L$serf_prefix/lib -lserf-0"
-    APR_ADDTO(INCLUDES, ["-I$serf_prefix/include/serf-0"])
-  else
-    AC_MSG_ERROR(unable to find serf)
-  fi
-])
-
 APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
-    CHECK_SERF
+    APACHE_CHECK_SERF
+    if test "$ac_cv_serf" = "yes" ; then
+      APR_SETVAR(MOD_SERF_LDADD, [\$(SERF_LIBS)])
+    else
+      AC_MSG_ERROR("libserf not found")
+    fi
 ])
 
 APR_ADDTO(INCLUDES, [-I\$(top_srcdir)/$modpath_current])
