@@ -57,6 +57,11 @@ RELEASE SHOWSTOPPERS:
 
   FOR GA:
 
+  * Modules that are not ready for production use should be marked as
+    experimental.  Candidates:
+    - MPM simple
+    - mod_serf
+
   FOR BETA:
 
   * Modules without documentation need to be moved to experimental or be
