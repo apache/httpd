@@ -139,6 +139,28 @@ AP_DECLARE(int) ap_get_conn_module_loglevel(const conn_rec *c, int module_index)
     return l->module_levels[module_index];
 }
 
+#if defined(ap_get_conn_server_module_loglevel)
+#undef ap_get_conn_server_module_loglevel
+AP_DECLARE(int) ap_get_conn_server_module_loglevel(const conn_rec *c,
+                                                   const server_rec *s,
+                                                   int module_index);
+#endif
+
+AP_DECLARE(int) ap_get_conn_server_module_loglevel(const conn_rec *c,
+                                                   const server_rec *s,
+                                                   int module_index)
+{
+    const struct ap_logconf *l = (c->log && c->log != &c->base_server->log) ?
+                                 c->log : &s->log;
+    if (module_index < 0 || l->module_levels == NULL ||
+        l->module_levels[module_index] < 0)
+    {
+        return l->level;
+    }
+
+    return l->module_levels[module_index];
+}
+
 #if defined(ap_get_request_module_loglevel)
 #undef ap_get_request_module_loglevel
 AP_DECLARE(int) ap_get_request_module_loglevel(const request_rec *c, int module_index);

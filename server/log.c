@@ -820,6 +820,19 @@ AP_DECLARE(void) ap_log_rerror_(const char *file, int line, int module_index,
     va_end(args);
 }
 
+AP_DECLARE(void) ap_log_cserror_(const char *file, int line, int module_index,
+                                 int level, apr_status_t status,
+                                 const conn_rec *c, const server_rec *s,
+                                 const char *fmt, ...)
+{
+    va_list args;
+
+    va_start(args, fmt);
+    log_error_core(file, line, module_index, level, status, s, c,
+                   NULL, NULL, fmt, args);
+    va_end(args);
+}
+
 AP_DECLARE(void) ap_log_cerror_(const char *file, int line, int module_index,
                                 int level, apr_status_t status,
                                 const conn_rec *c, const char *fmt, ...)

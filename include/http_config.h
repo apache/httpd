@@ -498,6 +498,18 @@ AP_DECLARE(int) ap_get_server_module_loglevel(const server_rec *s, int index);
 AP_DECLARE(int) ap_get_conn_module_loglevel(const conn_rec *c, int index);
 
 /**
+ * Generic accessor for modules the module-specific loglevel
+ * @param c The connection from which to get the loglevel.
+ * @param s The server from which to get the loglevel if c does not have a
+ *          specific loglevel configuration.
+ * @param index The module_index of the module to get the loglevel for.
+ * @return The module-specific loglevel
+ */
+AP_DECLARE(int) ap_get_conn_server_module_loglevel(const conn_rec *c,
+                                                   const server_rec *s,
+                                                   int index);
+
+/**
  * Generic accessor for modules to get the module-specific loglevel
  * @param r The request from which to get the loglevel.
  * @param index The module_index of the module to get the loglevel for.
@@ -521,6 +533,11 @@ AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *p, struct ap_logconf *l,
     ((c)->log             ? (c)->log             : \
      &(c)->base_server->log)
 
+#define ap_get_conn_server_logconf(c,s)                             \
+    ( ( (c)->log != &(c)->base_server->log && (c)->log != NULL )  ? \
+      (c)->log                                                    : \
+      &(s)->log )
+
 #define ap_get_request_logconf(r)                  \
     ((r)->log             ? (r)->log             : \
      (r)->connection->log ? (r)->connection->log : \
@@ -536,6 +553,9 @@ AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *p, struct ap_logconf *l,
 
 #define ap_get_conn_module_loglevel(c,i)  \
     (ap_get_module_loglevel(ap_get_conn_logconf(c),i))
+
+#define ap_get_conn_server_module_loglevel(c,s,i)  \
+    (ap_get_module_loglevel(ap_get_conn_server_logconf(c,s),i))
 
 #define ap_get_request_module_loglevel(r,i)  \
     (ap_get_module_loglevel(ap_get_request_logconf(r),i))
