@@ -73,9 +73,10 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
          * e.g. the parent pool of the request pool. In this case
          * eor_bucket_destroy might be called at a point of time when the
          * request pool had been already destroyed.
+         * We need to use a pre-cleanup here because a module may create a
+         * sub-pool which is still needed during the log_transaction hook.
          */
-        apr_pool_cleanup_register(r->pool, (void *)b, eor_bucket_cleanup,
-                                  apr_pool_cleanup_null);
+        apr_pool_pre_cleanup_register(r->pool, (void *)b, eor_bucket_cleanup);
     }
     return ap_bucket_eor_make(b, r);
 }
