@@ -1017,11 +1017,12 @@ static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     SSL_smart_shutdown(ssl);
 
     /* and finally log the fact that we've closed the connection */
-    if (APLOG_C_IS_LEVEL(c, loglevel)) {
-        ap_log_cerror(APLOG_MARK, loglevel, 0, c,
-                      "Connection closed to child %ld with %s shutdown "
-                      "(server %s)",
-                      c->id, type, ssl_util_vhostid(c->pool, mySrvFromConn(c)));
+    if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), loglevel)) {
+        ap_log_cserror(APLOG_MARK, loglevel, 0, c, mySrvFromConn(c),
+                       "Connection closed to child %ld with %s shutdown "
+                       "(server %s)",
+                       c->id, type,
+                       ssl_util_vhostid(c->pool, mySrvFromConn(c)));
     }
 
     /* deallocate the SSL connection */
@@ -1740,7 +1741,7 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     apr_pool_cleanup_register(c->pool, (void*)filter_ctx,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
-    if (APLOGctrace4(c)) {
+    if (APLOG_CS_IS_LEVEL(c, mySrvFromConn(c), APLOG_TRACE4)) {
         BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
         BIO_set_callback_arg(SSL_get_rbio(ssl), (void *)ssl);
     }
@@ -1850,18 +1851,18 @@ long ssl_io_data_cb(BIO *bio, int cmd,
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
         if (rc >= 0) {
-            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s,
+            ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
                     "%s: %s %ld/%d bytes %s BIO#%pp [mem: %pp] %s",
                     SSL_LIBRARY_NAME,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
                     bio, argp,
                     (argp != NULL ? "(BIO dump follows)" : "(Oops, no memory buffer?)"));
-            if ((argp != NULL) && APLOGctrace7(c))
+            if ((argp != NULL) && APLOG_CS_IS_LEVEL(c, s, APLOG_TRACE7))
                 ssl_io_data_dump(s, argp, rc);
         }
         else {
-            ap_log_error(APLOG_MARK, APLOG_TRACE4, 0, s,
+            ap_log_cserror(APLOG_MARK, APLOG_TRACE4, 0, c, s,
                     "%s: I/O error, %d bytes expected to %s on BIO#%pp [mem: %pp]",
                     SSL_LIBRARY_NAME, argi,
                     (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "write" : "read"),
