@@ -438,7 +438,7 @@ static apr_status_t slotmem_dptr(ap_slotmem_instance_t *slot,
     if (!slot) {
         return APR_ENOSHMAVAIL;
     }
-    if (id < 0 || id >= slot->desc.num) {
+    if (id >= slot->desc.num) {
         return APR_ENOSHMAVAIL;
     }
 

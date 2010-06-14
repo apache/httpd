@@ -795,8 +795,9 @@ static int ftp_set_TYPE(char xfer_type, request_rec *r, conn_rec *ftp_ctrl,
                              "Unable to set transfer type");
     }
 /* Allow not implemented */
-    else if (rc == 504)
-        /* ignore it silently */;
+    else if (rc == 504) {
+        /* ignore it silently */
+    }
 
     return ret;
 }
