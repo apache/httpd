@@ -324,7 +324,7 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
     char *cp;
 
     bc = X509_get_ext_d2i(cert, NID_basic_constraints, NULL, NULL);
-    if (bc == NULL);
+    if (bc == NULL)
         return FALSE;
     *ca = bc->ca;
     *pathlen = -1 /* unlimited */;

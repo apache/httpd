@@ -312,13 +312,14 @@ typedef enum {
  */
 static int ap_parse_request_form(request_rec * r, ap_filter_t * f,
                                  apr_array_header_t ** ptr,
-                                 apr_size_t num, apr_size_t size)
+                                 apr_size_t num, apr_size_t usize)
 {
     apr_bucket_brigade *bb = NULL;
     int seen_eos = 0;
     char buffer[HUGE_STRING_LEN + 1];
     const char *ct;
     apr_size_t offset = 0;
+    apr_ssize_t size;
     ap_form_type_t state = FORM_NAME, percent = FORM_NORMAL;
     ap_form_pair_t *pair = NULL;
     apr_array_header_t *pairs = apr_array_make(r->pool, 4, sizeof(ap_form_pair_t));
@@ -333,6 +334,11 @@ static int ap_parse_request_form(request_rec * r, ap_filter_t * f,
     if (!ct || strcmp("application/x-www-form-urlencoded", ct)) {
         return ap_discard_request_body(r);
     }
+
+    if (usize > APR_SIZE_MAX >> 1)
+        size = APR_SIZE_MAX >> 1;
+    else
+        size = usize;
 
     if (!f) {
         f = r->input_filters;

@@ -468,7 +468,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
             non_file_bytes_in_brigade = 0;
         }
         else if (!APR_BUCKET_IS_METADATA(bucket)) {
-            if (bucket->length < 0) {
+            if (bucket->length != (apr_size_t)-1) {
                 const char *data;
                 apr_size_t length;
                 /* XXX support nonblocking read here? */
