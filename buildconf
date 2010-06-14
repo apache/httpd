@@ -19,6 +19,18 @@
 # buildconf: Build the support scripts needed to compile from a
 #            checked-out version of the source code.
 
+# version check for AC_PROG_CC_C99
+ac_version=`${AUTOCONF:-autoconf} --version 2>/dev/null|sed -e 's/^[^0-9]*//;s/[a-z]* *$//;q'`
+case "$ac_version" in
+# versions older than 2.50 are denied by AC_PREREQ
+2.5*)
+    echo WARNING: You are using an outdated version of autoconf.
+    echo WARNING: This may lead to less than optimal performance of httpd.
+    echo WARNING: You should use autoconf 2.60 or newer.
+    sleep 1
+    ;;
+esac
+
 # set a couple of defaults for where we should be looking for our support libs.
 # can be overridden with --with-apr=[dir] and --with-apr-util=[dir]
 

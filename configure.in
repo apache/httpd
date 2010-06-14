@@ -171,7 +171,7 @@ AC_PROG_CC
 AC_PROG_CPP
 
 dnl Try to get c99 support for variadic macros
-AC_PROG_CC_C99
+ifdef([AC_PROG_CC_C99], [AC_PROG_CC_C99])
 
 if test "x${cache_file}" = "x/dev/null"; then
   # Likewise, ensure that CC and CPP are passed through to the pcre
