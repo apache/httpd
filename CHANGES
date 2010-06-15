@@ -860,7 +860,7 @@ Changes with Apache 2.3.0
      PR 43250 [Basant Kumar Kukreja <basant.kukreja sun.com>]
 
   *) Be tolerant in what you accept - accept slightly broken
-     status lines from a backend provide they include a valid status code.
+     status lines from a backend provided they include a valid status code.
      PR 44995 [Rainer Jung <rainer.jung kippdata.de>]
 
   *) New module mod_sed: filter Request/Response bodies through sed
@@ -1048,7 +1048,7 @@ Changes with Apache 2.3.0
      parameters to the environment. Improve portability to
      EBCDIC machines by using apr_toupper(). [Martin Kraemer]
 
-  *) mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
+  *) mod_ldap, mod_authnz_ldap: Add support for nested groups (i.e. the ability
      to authorize an authenticated user via a "require ldap-group X" directive
      where the user is not in group X, but is in a subgroup contained in X.
      PR 42891 [Paul J. Reder]
