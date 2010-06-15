@@ -107,14 +107,6 @@ AP_DECLARE(apr_status_t) ap_unixd_accept(void **accepted, ap_listen_rec *lr, apr
 #define ap_os_killpg(x, y)      (kill (-(x), (y)))
 #endif /* HAVE_KILLPG */
 
-#define UNIX_DAEMON_COMMANDS	\
-AP_INIT_TAKE1("User", unixd_set_user, NULL, RSRC_CONF, \
-  "Effective user id for this server"), \
-AP_INIT_TAKE1("Group", unixd_set_group, NULL, RSRC_CONF, \
-  "Effective group id for this server"), \
-AP_INIT_TAKE1("ChrootDir", unixd_set_chroot_dir, NULL, RSRC_CONF, \
-    "The directory to chroot(2) into")
-
 #ifdef __cplusplus
 }
 #endif
