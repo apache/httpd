@@ -64,8 +64,7 @@ Listen @@Port@@
 #
 @@LoadModule@@
 
-<IfModule !mpm_netware_module>
-<IfModule !mpm_winnt_module>
+<IfModule unixd_module>
 #
 # If you wish httpd to run as a different user or group, you must run
 # httpd as root initially and it will switch.  
@@ -77,7 +76,6 @@ Listen @@Port@@
 User daemon
 Group daemon
 
-</IfModule>
 </IfModule>
 
 # 'Main' server configuration
