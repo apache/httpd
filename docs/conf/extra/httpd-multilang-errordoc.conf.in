@@ -2,7 +2,8 @@
 # The configuration below implements multi-language error documents through
 # content-negotiation.
 #
-# Required modules: mod_alias, mod_include, mod_negotiation
+# Required modules: mod_alias, mod_authz_core, mod_authz_host,
+#                   mod_include, mod_negotiation
 #
 # We use Alias to redirect any /error/HTTP_<error>.html.var response to
 # our collection of by-error message multi-language collections.  We use 

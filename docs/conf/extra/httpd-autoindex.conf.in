@@ -1,7 +1,8 @@
 #
 # Directives controlling the display of server-generated directory listings.
 #
-# Required modules: mod_autoindex, mod_alias
+# Required modules: mod_authz_core, mod_authz_host,
+#                   mod_autoindex, mod_alias
 #
 # To see the listing of a directory, the Options directive for the
 # directory must include "Indexes", and the directory must not contain

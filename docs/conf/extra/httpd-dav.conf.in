@@ -1,9 +1,9 @@
 #
 # Distributed authoring and versioning (WebDAV)
 #
-# Required modules: mod_dav, mod_dav_fs, mod_setenvif, mod_alias
-#                   mod_auth_digest, mod_authn_file, mod_authz_user
-#
+# Required modules: mod_alias, mod_auth_digest, mod_authn_core, mod_authn_file,
+#                   mod_authz_core, mod_authz_user, mod_dav, mod_dav_fs,
+#                   mod_setenvif
 
 # The following example gives DAV write access to a directory called
 # "uploads" under the ServerRoot directory.
