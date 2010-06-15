@@ -56,6 +56,22 @@
     MaxRequestsPerChild   0
 </IfModule>
 
+# event MPM
+# StartServers: initial number of server processes to start
+# MaxClients: maximum number of simultaneous client connections
+# MinSpareThreads: minimum number of worker threads which are kept spare
+# MaxSpareThreads: maximum number of worker threads which are kept spare
+# ThreadsPerChild: constant number of worker threads in each server process
+# MaxRequestsPerChild: maximum number of requests a server process serves
+<IfModule mpm_event_module>
+    StartServers          2
+    MaxClients          150
+    MinSpareThreads      25
+    MaxSpareThreads      75
+    ThreadsPerChild      25
+    MaxRequestsPerChild   0
+</IfModule>
+
 # NetWare MPM
 # ThreadStackSize: Stack size allocated for each worker thread
 # StartThreads: Number of worker threads launched at server startup
