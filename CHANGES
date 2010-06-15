@@ -1267,7 +1267,7 @@ Changes with Apache 2.3.0
      access control, as in: SSLRequire "value" in OID("1.3.6.1.4.1.18060.1")
      [Martin Kraemer, David Reid]
 
-  [Apache 2.1.0-dev includes those bug fixes and changes with the
+  [Apache 2.3.0-dev includes those bug fixes and changes with the
    Apache 2.2.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.2.x and later:
