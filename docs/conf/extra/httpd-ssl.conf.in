@@ -8,6 +8,8 @@
 # what they do.  They're here only as hints or reminders.  If you are unsure
 # consult the online docs. You have been warned.  
 #
+# Required modules: mod_log_config, mod_setenvif, mod_ssl,
+#          socache_shmcb_module (for default value of SSLSessionCache)
 
 #
 # Pseudo Random Number Generator (PRNG):

@@ -1,6 +1,7 @@
-#
 # Virtual Hosts
 #
+# Required modules: mod_log_config
+
 # If you want to maintain multiple domains/hostnames on your
 # machine you can setup VirtualHost containers for them. Most configurations
 # use only name-based virtual hosts so the server doesn't need to worry about

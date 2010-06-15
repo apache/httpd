@@ -1,6 +1,6 @@
 # Settings for user home directories
 #
-# Required module: mod_userdir
+# Required module: mod_authz_core, mod_authz_host, mod_userdir
 
 #
 # UserDir: The name of the directory that is appended onto a user's home
