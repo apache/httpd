@@ -1230,8 +1230,9 @@ Changes with Apache 2.2.6
      [Takashi Sato <serai  lans-tv.com>]
 
   *) mod_ldap: Remove the hardcoded size limit parameter for
-     ldap_search_ext_s and replace it with an APR_ defined
-     value that is set according to the LDAP SDK being used.
+     ldap_search_ext_s and replace it with an APR_ defined value that 
+     is set according to the LDAP SDK being used, resolving a problem
+     with SDKs that define LDAP_NO_LIMIT to something other than -1.
      [David Jones <oscaremma gmail com>]
 
   *) core: Correct a regression since 2.0.x in the handling of AllowOverride 
