@@ -582,8 +582,8 @@ static void log_error_core(const char *file, int line, int module_index,
         logf = stderr_log;
     }
     else {
-        int configured_level = r ? ap_get_request_module_loglevel(r, module_index) :
-                               c ? ap_get_conn_module_loglevel(c, module_index) :
+        int configured_level = r ? ap_get_request_module_loglevel(r, module_index)        :
+                               c ? ap_get_conn_server_module_loglevel(c, s, module_index) :
                                    ap_get_server_module_loglevel(s, module_index);
         if (s->error_log) {
             /*
