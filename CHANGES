@@ -797,11 +797,6 @@ Changes with Apache 2.3.0
         unixd_set_rlimit -> ap_unixd_set_rlimit
      [Paul Querna]
 
-  *) core: When the ap_http_header_filter processes an error bucket, cleanup
-     the passed brigade before returning AP_FILTER_ERROR down the filter 
-     chain. This unambiguously ensures the same error bucket isn't revisited
-     [Ruediger Pluem]
-
   *) mod_lbmethod_heartbeat: New module to load balance mod_proxy workers
      based on heartbeats. [Paul Querna]
 
@@ -810,11 +805,6 @@ Changes with Apache 2.3.0
 
   *) mod_heartbeat: New module to generate multicast heartbeats to know if a 
      server is online. [Paul Querna]
-
-  *) core: Error responses set by filters were being coerced into 500 errors,
-     sometimes appended to the original error response. Log entry of:
-     'Handler for (null) returned invalid result code -3' 
-     [Eric Covener]
 
   *) mod_buffer: Honour the flush bucket and flush the buffer in the
      input filter. Make sure that metadata buckets are written to
@@ -856,17 +846,11 @@ Changes with Apache 2.3.0
   *) unixd: turn existing code into a module, and turn the set user/group
      and chroot into a child_init function. [Nick Kew]
 
-  *) core: Add ap_timeout_parameter_parse to public API. [Ruediger Pluem]
-
   *) mod_dir: Support "DirectoryIndex disabled" 
      Suggested By André Warnier <aw ice-sa.com> [Eric Covener]
 
   *) mod_ssl: Send Content-Type application/ocsp-request for POST requests to
      OSCP responders. PR 46014 [Dr Stephen Henson <steve openssl.org>]
-
-  *) Export and install the mod_rewrite.h header to ensure the optional
-     rewrite_mapfunc_t and ap_register_rewrite_mapfunc functions are
-     available to third party modules. [Graham Leggett]
 
   *) mod_authnz_ldap: don't return NULL-valued environment variables to
      other modules.  PR 39045 [Francois Pesce <francois.pesce gmail.com>]
@@ -897,18 +881,8 @@ Changes with Apache 2.3.0
      included in the blank cookie when cookies are removed. This fixes an
      inability to log out when using mod_auth_form. [Graham Leggett]
 
-  *) mod_autoindex: add configuration option to insert string
-     in HTML HEAD. [Nick Kew]
-
   *) mod_session: Prevent a segfault when a CGI script sets a cookie with a
      null value. [David Shane Holden <dpejesh apache.org>]
-
-  *) mod_headers: Prevent Header edit from processing only the first header
-     of possibly multiple headers with the same name and deleting the
-     remaining ones. PR 45333.  [Ruediger Pluem]
-
-  *) mod_rewrite: Preserve the query string with [proxy,noescape]. PR 45247
-     [Tom Donovan]
 
   *) core, authn/z: Determine registered authn/z providers directly in
      ap_setup_auth_internal(), which allows optional functions that just
@@ -917,11 +891,6 @@ Changes with Apache 2.3.0
 
   *) authn/z: Convert common provider version strings to macros.
      [Chris Darroch]
-
-  *) ab: Make ab.c compile on VC6. PR 45024 [Ruediger Pluem]
-
-  *) configure: Don't reject libtool 2.x
-     PR 44817 [Arfrever Frehtes Taifersar Arahesis <Arfrever.FTA gmail.com>]
 
   *) core: When testing for slash-terminated configuration paths in
      ap_location_walk(), don't look past the start of an empty string
@@ -945,9 +914,6 @@ Changes with Apache 2.3.0
      filters cannot be inserted more than once. [Graham Leggett,
      Ruediger Pluem]
 
-  *) core: Do not allow Options ALL if not all options are allowed to be
-     overwritten. PR 44262 [Michał Grzędzicki <lazy iq.pl>]
-
   *) ap_cache_cacheable_headers_out() will (now) always
      merge an error headers _before_ clearing them and _before_
      merging in the actual entity headers and doing normal
@@ -960,9 +926,6 @@ Changes with Apache 2.3.0
      which will also merge error and ensure content-type. To keep
      cache modules consistent with ease. This API change bumps
      up the minor MM by one [Dirk-Willem van Gulik].
-
-  *) mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
-     PR 44799 [Christian Wenz <christian wenz.org>]
 
   *) Move the KeptBodySize directive, kept_body filters and the
      ap_parse_request_body function out of the http module and into a
@@ -1053,10 +1016,6 @@ Changes with Apache 2.3.0
      using referrals without the use of the global catalog.
      PRs 26538, 40268, and 42557 [Paul J. Reder]
 
-  *) mod_ssl: Added server name indication support (SNI, RFC 4366).
-     PR 34607. [Kaspar Brand <asfbugz velox.ch>]. A test configuration
-     can be created with test/make_sni.sh [Dirk-Willem van Gulik].
-
   *) ApacheMonitor.exe: Introduce --kill argument for use by the
      installer.  This will permit the installation tool to remove
      all running instances before attempting to remove the .exe.
@@ -1096,10 +1055,6 @@ Changes with Apache 2.3.0
 
   *) mod_ssl: Add support for caching SSL Sessions in memcached. [Paul Querna]
 
-  *) mod_ldap: Fix the search limit parameter to ldap_search_ext_s()
-     for SDKs that define LDAP_NO_LIMIT to something other than -1.
-     [David Jones <oscaremma gmail.com>]
-
   *) apxs: Enhance -q flag to print all known variables and their values
      when invoked without variable name(s). 
      [William Rowe, Sander Temme]
@@ -1114,10 +1069,6 @@ Changes with Apache 2.3.0
   *) netware MPM: Destroy pmain pool when exiting ap_mpm_run() so that
      cleanups registered in modules' child_init hooks are performed.
      [Chris Darroch]
-
-  *) mod_dbd: Stash DBD connections in request_config of initial request
-     only, or else sub-requests and internal redirections may cause
-     entire DBD pool to be stashed in a single HTTP request.  [Chris Darroch]
 
   *) Fix issue which could cause error messages to be written to access logs
      on Win32.  PR 40476.  [Tom Donovan <Tom.Donovan acm.org>]
@@ -1156,15 +1107,6 @@ Changes with Apache 2.3.0
      and format messages for both the console and the error log, as
      appropriate.  [Chris Darroch]
 
-  *) mod_proxy: don't URLencode tilde in path component
-     [Stijn Hoop <stijn sandcat.nl>]
-
-  *) mpm_winnt: Fix return values from wait_for_many_objects.
-     The return value is index to the signaled thread in the
-     creted_threads array. We can not use WAIT_TIMEOUT because
-     his value is defined as 258, thus limiting the MaxThreads
-     to that value. [Mladen Turk]
-
   *) core: Do not allow internal redirects like the DirectoryIndex of mod_dir
      to circumvent the symbolic link checks imposed by FollowSymLinks and
      SymLinksIfOwnerMatch. [Nick Kew, Ruediger Pluem, William Rowe]
@@ -1177,9 +1119,6 @@ Changes with Apache 2.3.0
   *) mod_disk_cache: If possible, check if the size of an object to cache is
      within the configured boundaries before actually saving data.
      [Niklas Edmundsson <nikke acc.umu.se>]
-
-  *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
-     final name. [Davi Arnaut <davi haxent.com.br>]
 
   *) Worker and event MPMs: Remove improper scoreboard updates which were
      performed in the event of a fork() failure.  [Chris Darroch]
