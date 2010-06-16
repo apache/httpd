@@ -232,7 +232,7 @@ Alias /foo /srv/www/common/foo<br />
 <p>The same is true for the <code class="directive"><a href="./mod/mod_proxy.html#proxypass">ProxyPass</a></code>
 directives:</p>
 <div class="example"><p><code>
-ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass /special-area http://special.example.com smax=5 max=10<br />
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 </code></p></div>
  

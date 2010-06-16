@@ -7,13 +7,13 @@
   <relpath>.</relpath>
 
   <variants>
-    <variant>de</variant>
+    <variant outdated="yes">de</variant>
     <variant>en</variant>
-    <variant>es</variant>
-    <variant>fr</variant>
-    <variant>ja</variant>
-    <variant>ko</variant>
-    <variant>pt-br</variant>
-    <variant>tr</variant>
+    <variant outdated="yes">es</variant>
+    <variant outdated="yes">fr</variant>
+    <variant outdated="yes">ja</variant>
+    <variant outdated="yes">ko</variant>
+    <variant outdated="yes">pt-br</variant>
+    <variant outdated="yes">tr</variant>
   </variants>
 </metafile>
