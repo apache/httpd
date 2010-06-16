@@ -2376,7 +2376,7 @@ matching URLs</td></tr>
     for all modules to that level.  Specifying a level with a module
     name will set the level for that module only. It is possible to
     use the module source file name, the module identifier, or the
-    module identifier with the trailing <code>_module</code> ommited
+    module identifier with the trailing <code>_module</code> omitted
     as module specification. This means the following three specifications
     are equivalent:</p>
 
