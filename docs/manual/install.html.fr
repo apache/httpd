@@ -233,17 +233,17 @@ $ tar xvf httpd-<em>NN</em>.tar
     options supplémentaires de configure</a>.</p>
 
     <p>À ce niveau, vous pouvez aussi spécifier de quelles <a href="programs/configure.html#optionalfeatures">fonctionnalités</a> vous
-    voulez disposer dans Apache en activant ou désactivant des <a href="mod/">modules</a>.  Apache est fourni avec un jeu de modules de
-    <a href="mod/module-dict.html#Status">Base</a> inclus par défaut.
-    Les autres modules sont activés à l'aide de l'option
+    voulez disposer dans Apache en activant ou désactivant des <a href="mod/">modules</a>.  Apache est fourni avec un grand nombre de
+    modules inclus par défaut. Ils seront compilés en tant qu'<a href="dso.html">objets partagés (DSOs)</a> qui pourront être chargés
+    ou déchargés à l'exécution. Vous pouvez aussi choisir de compiler
+    les modules statiquement via l'option
+    <code>--enable-<var>module</var>=static</code>.</p>
+    <p>Des modules supplémentaires peuvent être activés à l'aide de l'option
     <code>--enable-<var>module</var></code>, où
     <var>module</var> est le nom du module sans la chaîne
     <code>mod_</code> et où tout caractère de soulignement est converti
-    en tiret.  Vous pouvez aussi choisir de compiler les modules comme
-    <a href="dso.html">objets partagés (DSOs)</a> -- qui peuvent être chargés
-    ou déchargés à l'exécution -- à l'aide de l'option
-    <code>--enable-<var>module</var>=shared</code>.  D'une manière similaire,
-    vous pouvez désactiver des modules de base à l'aide de l'option
+    en tiret. D'une manière similaire,
+    vous pouvez désactiver des modules à l'aide de l'option
     <code>--disable-<var>module</var></code>.  Faites très attention
     en utilisant ces options, car <code class="program"><a href="./programs/configure.html">configure</a></code> n'est pas en
     mesure de vous avertir si le module que vous avez spécifié n'existe pas;
@@ -262,15 +262,14 @@ $ tar xvf httpd-<em>NN</em>.tar
     <p>Pour vous faire une idée des possibilités qui s'offrent à vous, voici
     un exemple typique de compilation d'Apache avec le répertoire
     d'installation <code>/sw/pkg/apache</code>, un compilateur et des drapeaux
-    particuliers et les deux modules additionnels <code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code>
-    et <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> qui pourront être chargés plus tard
-    à l'aide du mécanisme DSO :</p>
+    particuliers et les deux modules additionnels <code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>
+    et <code class="module"><a href="./mod/mod_lua.html">mod_lua</a></code> :</p>
 
 <div class="example"><p><code>
       $ CC="pgcc" CFLAGS="-O2" \<br />
        ./configure --prefix=/sw/pkg/apache \<br />
-       --enable-rewrite=shared \<br />
-       --enable-speling=shared
+       --enable-ldap=shared \<br />
+       --enable-lua=shared
 </code></p></div>
 
     <p>Plusieurs minutes peuvent être nécessaires à

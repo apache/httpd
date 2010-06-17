@@ -24,6 +24,8 @@
 <a href="../ko/howto/htaccess.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../pt-br/howto/htaccess.html" hreflang="pt-br" rel="alternate" title="Portugu&#234;s (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
 <p><code>.htaccess</code> 파일을 사용하여 디렉토리별로 설정을
 변경할 수 있다.</p>

@@ -26,6 +26,7 @@
 <a href="./ko/mpm.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/mpm.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 
   <p>Bu belgede Çok Süreçlilik Modülü denince ne anlaşıldığı ve bunların
     Apache HTTP Sunucusu tarafından nasıl kullanıldıkları açıklanmıştır.</p>
