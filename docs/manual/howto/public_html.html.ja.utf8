@@ -25,6 +25,8 @@
 <a href="../ko/howto/public_html.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/howto/public_html.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">この日本語訳はすでに古くなっている可能性があります。
+          更新された内容を見るには英語版をご覧下さい。</div>
 
 <p>複数のユーザのいるシステムでは、<code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> ディレクティブを使って
     各ユーザがホームディレクトリにウェブサイトを構築できるように設定することが

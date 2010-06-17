@@ -42,6 +42,7 @@ interagit avec les autres systèmes.</p>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#ciphersuites">Suites de chiffrement et mise en application de la sécurité
 de haut niveau</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accesscontrol">Authentification du client et contrôle d'accès</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#logging">Journalisation</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -331,6 +332,19 @@ AuthUserFile         conf/protected.passwd
 Require              valid-user
 &lt;/Directory&gt;</pre></div>
 
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="logging" id="logging">Journalisation</a></h2>
+    
+
+    <p><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> peut enregistrer des informations de
+    débogage très verbeuses dans le journal des erreurs, lorsque sa
+    directive <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> est définie
+    à des niveaux de trace élevés. Par contre, sur un serveur très
+    sollicité, le niveau <code>info</code> sera probablement déjà trop
+    élevé. Souvenez-vous que vous pouvez configurer la directive
+    <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> par module afin de
+    pourvoir à vos besoins.</p>
 </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="../en/ssl/ssl_howto.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

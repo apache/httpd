@@ -22,6 +22,8 @@
 <a href="../ko/programs/htcacheclean.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/programs/htcacheclean.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
     <p><code>htcacheclean</code>은 <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>가
     사용하는 저장소 용량을 일정 한도로 유지한다. 이 도구는 직접

@@ -27,6 +27,8 @@
 <a href="./ru/new_features_2_0.html" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="./tr/new_features_2_0.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
   <p>Этот документ описывает основные различия между версиями 1.3 и 2.0 HTTP сервера Apache</p>
 </div>

@@ -27,14 +27,16 @@
 
     <p>La conception modulaire du serveur HTTP Apache permet à l'administrateur
     de choisir les fonctionnalités à inclure dans le serveur en sélectionnant
-    un certain nombre de modules. Les modules peuvent être soit intégrés
-    statiquement dans le binaire <code class="program"><a href="./programs/httpd.html">httpd</a></code> lors de la
-    compilation du serveur, soit compilés en tant qu'objets
-    dynamiques partagés (DSOs) qui existeront indépendamment du binaire
-    principal <code class="program"><a href="./programs/httpd.html">httpd</a></code>. Les modules DSO peuvent être compilés
-    au moment de la construction du serveur, ou bien compilés séparément,
-    à l'aide de l'utilitaire des extensions d'Apache (<code class="program"><a href="./programs/apxs.html">apxs</a></code>),
-    et associés au serveur ultérieurement.</p>
+    un certain nombre de modules. Les modules seront compilés en tant
+    qu'Objets Dynamiques Partagés (Dynamic Shared Objects ou DSOs)
+    qui mènent une existence séparée du fichier binaire principal
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>. Les modules DSO peuvent être compilés en
+    même temps que le serveur, ou compilés et ajoutés ultérieurement via
+    l'Outil des Extensions à Apache (Apache Extension Tool ou
+    <code class="program"><a href="./programs/apxs.html">apxs</a></code>).</p>
+    <p>Les modules peuvent aussi être intégrés statiquement dans le
+    binaire <code class="program"><a href="./programs/httpd.html">httpd</a></code> lors de la compilation de ce
+    dernier.</p>
 
     <p>Ce document décrit l'utilisation des modules DSO ainsi que les dessous
     de leur fonctionnement.</p>
@@ -55,18 +57,17 @@
     assuré par un module nommé <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> qui doit être compilé
     statiquement dans le coeur d'Apache httpd. Il s'agit du seul module avec le
     module <code class="module"><a href="./mod/core.html">core</a></code> à ne pas pouvoir être compilé en tant que
-    module DSO lui-même. Pratiquement tous les autres modules
-    d'Apache httpd
-    distribués peuvent être compilés en tant que modules DSO en sélectionnant
-    pour chacun d'entre eux le mode de construction DSO à l'aide de l'option
-    <code>--enable-mods-shared</code> du script
-    <code class="program"><a href="./programs/configure.html">configure</a></code>, comme décrit dans la
-    <a href="install.html">Documentation de l'installation</a>. Une fois
-    compilé en tant que module DSO, un module peut être chargé en mémoire au
+    module DSO lui-même. Pratiquement tous les autres modules d'Apache httpd
+    distribués seront alors compilés en tant que modules DSO. Une fois
+    compilé en tant que module DSO nommé <code>mod_foo.so</code>, un
+    module peut être chargé en mémoire au
     démarrage ou redémarrage du serveur à l'aide de la commande
     <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> du module
     <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>, placée
     dans votre fichier <code>httpd.conf</code>.</p>
+    <p>La compilation en mode DSO peut être désactivée pour certains
+    modules via l'option <code>--enable-mods-static</code> du script
+    <code class="program"><a href="./programs/configure.html">configure</a></code>, comme expliqué dans la <a href="install.html">Documentation sur l'installation</a>.</p>
 
     <p>Un utilitaire permet de simplifier la création de
     fichiers DSO pour les modules d'Apache httpd
@@ -97,18 +98,7 @@
 	en tant que module DSO <code>mod_foo.so</code> :</p>
 
 <div class="example"><p><code>
-$ ./configure --prefix=/chemin/vers/répertoire-installation
---enable-foo --enable-mods-shared=foo<br />
-$ make install
-</code></p></div>
-      </li>
-	
-      <li>
-        <p>Configure le serveur HTTP Apache pour une <em>installation
-	ultérieure</em> des modules partagés :</p>
-
-<div class="example"><p><code>
-$ ./configure --enable-so<br />
+$ ./configure --prefix=/chemin/vers/installation --enable-foo<br />
 $ make install
 </code></p></div>
       </li>
@@ -120,7 +110,7 @@ $ make install
       fichier <code>httpd.conf</code>.</p>
 
 <div class="example"><p><code>
-$ ./configure --enable-modules=most --enable-mods-shared=all<br />
+$ ./configure --enable-mods-shared=all<br />
 $ make install
 </code></p></div>
    

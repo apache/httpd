@@ -24,6 +24,8 @@
 <a href="./ko/sections.html" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="T&#252;rk&#231;e">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
  <p><a href="configuring.html">설정파일</a>에 있는
 지시어는 서버 전체에 적용되거나, 특정 디렉토리, 파일, 호스트,
 URL에만 적용될 수 있다. 이 문서는 다른 지시어의 적용범위를
