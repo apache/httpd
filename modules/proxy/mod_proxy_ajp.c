@@ -583,8 +583,17 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          */
         if (data_sent) {
             ap_proxy_backend_broke(r, output_brigade);
-        } else
+        } else if (!send_body && (is_idempotent(r) == METHOD_IDEMPOTENT)) {
+            /*
+             * This is only non fatal when we have not sent (parts) of a possible
+             * request body so far (we do not store it and thus cannot sent it
+             * again) and the method is idempotent. In this case we can dare to
+             * retry it with a different worker if we are a balancer member.
+             */
             rv = HTTP_SERVICE_UNAVAILABLE;
+        } else {
+            rv = HTTP_INTERNAL_SERVER_ERROR;
+        }
     }
 
     /*
