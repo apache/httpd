@@ -508,9 +508,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_session_dbd.mak    CFG="mod_session_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !IF EXIST("srclib\openssl")
-	#cd modules\session
-	# $(MAKE) $(MAKEOPT) -f mod_session_crypto.mak CFG="mod_session_crypto - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	#cd ..\..
+#	cd modules\session
+#	 $(MAKE) $(MAKEOPT) -f mod_session_crypto.mak CFG="mod_session_crypto - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+#	cd ..\..
 	cd modules\ssl
 	 $(MAKE) $(MAKEOPT) -f mod_ssl.mak         CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
