@@ -631,22 +631,29 @@ expressions</description>
       general <directive>ProxyPass</directive> directive.</p>
     </note>
 
-    <p>As of Apache HTTP Server 2.1, the ability to use pooled connections to a backend
-    server is available. Using the <code>key=value</code> parameters it is
-    possible to tune this connection pooling. The default for a <code>Hard
-    Maximum</code> for the number of connections is the number of threads per
-    process in the active MPM. In the Prefork MPM, this is always 1, while with
-    the Worker MPM it is controlled by the
-    <directive>ThreadsPerChild</directive>.</p>
+    <p>In Apache HTTP Server 2.1 and later, mod_proxy supports pooled
+    connections to a backend server.  Connections created on demand
+    can be retained in a pool for future use.  Limits on the pool size
+    and other settings can be coded on
+    the <directive>ProxyPass</directive> directive
+    using  <code>key=value</code> parameters, described in the table
+    below.</p>
 
-    <p>Setting <code>min</code> will determine how many connections will always 
-    be open to the backend server. Upto the Soft Maximum or <code>smax</code> 
-    number of connections will be created on demand. Any connections above 
-    <code>smax</code> are subject to a time to live or <code>ttl</code>.  Apache httpd
-    will never create more than the Hard Maximum or <code>max</code> connections
-    to the backend server.</p>
+    <p>Setting <code>min</code> will determine how many connections to
+    the backend server will be retained after use.  Up to the
+    Soft Maximum, or <code>smax</code>, number of connections will be
+    created on demand.  Any connections above <code>smax</code> are
+    subject to a time to live, or <code>ttl</code>.  Apache httpd will
+    never create more than the Hard Maximum or, <code>max</code>,
+    connections to the backend server.</p>
 
-    <example>
+    <p>The pool of connections is maintained per web server child
+    process, and the <code>min</code>, <code>max</code>, and
+    and <code>smax</code> settings are not coordinated among all child
+    processes, except when only one child process is allowed by
+    configuration or MPM design.</p>
+
+    <example><title>Example</title>
         ProxyPass /example http://backend.example.com smax=5 max=20 ttl=120 retry=300
     </example>
 
@@ -656,8 +663,8 @@ expressions</description>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Minimum number of connections that will always
-            be open to the backend server.</td></tr>
+        <td>Minimum number of connections to the backend server that
+            will be retained after use.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
         <td>Hard Maximum number of connections that will be
@@ -669,7 +676,7 @@ expressions</description>
     to the backend server.</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>Upto the Soft Maximum
+        <td>Up to the Soft Maximum
     number of connections will be created on demand. Any connections above 
     <code>smax</code> are subject to a time to live or <code>ttl</code>.
     </td></tr>
