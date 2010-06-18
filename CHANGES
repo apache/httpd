@@ -2,7 +2,7 @@
 
 Changes with Apache 2.3.7
 
-  *) Fix Windows build when using VC6. [Gregg L Smith <lists glewis com>]
+  *) Fix Windows build when using VC6. [Gregg L. Smith <lists glewis com>]
 
 Changes with Apache 2.3.6
 
