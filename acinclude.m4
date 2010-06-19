@@ -274,7 +274,8 @@ dnl   ""     -- disabled under default, most. enabled explicitly or with all.
 dnl
 dnl basically: yes/no is a hard setting. "most" means follow the "most"
 dnl            setting. otherwise, fall under the "all" setting.
-dnl            explicit yes/no always overrides.
+dnl            explicit yes/no always overrides, except if the user selects
+dnl            "reallyall".
 dnl
 AC_DEFUN(APACHE_MODULE,[
   AC_MSG_CHECKING(whether to enable mod_$1)
@@ -282,9 +283,14 @@ AC_DEFUN(APACHE_MODULE,[
   AC_ARG_ENABLE(translit($1,_,-),APACHE_HELP_STRING(optname(),$2),,enable_$1=ifelse($5,,maybe-all,$5))
   undefine([optname])dnl
   _apmod_extra_msg=""
-  dnl When --enable-modules=most is set and the module was not explicitly
-  dnl requested, allow a module to disable itself if its pre-reqs fail.
-  if test "$module_selection" = "most" -a "$enable_$1" = "most"; then
+  dnl When --enable-modules=most or --enable-modules=reallyall is set and the
+  dnl module was not explicitly requested, allow a module to disable itself if
+  dnl its pre-reqs fail.
+  dnl XXX: Todo: Allow to disable specific modules even with "reallyall".
+  if test "$module_selection" = "most" -a "$enable_$1" = "most" ||
+     test "$module_selection" = "reallyall" -a "$enable_$1" != "yes" -a \
+          "$enable_$1" != "static"
+  then
     _apmod_error_fatal="no"
   else
     _apmod_error_fatal="yes"
@@ -294,19 +300,25 @@ AC_DEFUN(APACHE_MODULE,[
   elif test "$enable_$1" = "yes"; then
     enable_$1=$module_default
   elif test "$enable_$1" = "most"; then
-    if test "$module_selection" = "most" -o "$module_selection" = "all"; then
+    if test "$module_selection" = "most" -o "$module_selection" = "all" -o \
+            "$module_selection" = "reallyall"
+    then
       enable_$1=$module_default
     elif test "$module_selection" = "few" -o "$module_selection" = "none"; then
       enable_$1=no
     fi
     _apmod_extra_msg=" ($module_selection)"
   elif test "$enable_$1" = "maybe-all"; then
-    if test "$module_selection" = "all"; then
+    if test "$module_selection" = "all" -o "$module_selection" = "reallyall"
+    then
       enable_$1=$module_default
-      _apmod_extra_msg=" (all)"
+      _apmod_extra_msg=" ($module_selection)"
     else
       enable_$1=no
     fi
+  elif test "$enable_$1" = "no" -a "$module_selection" = "reallyall"; then
+      enable_$1=$module_default
+      _apmod_extra_msg=" ($module_selection)"
   fi
   if test "$enable_$1" != "no"; then
     dnl If we plan to enable it, allow the module to run some autoconf magic
@@ -363,13 +375,14 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
 
 
   AC_ARG_ENABLE(modules,
-  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most" | "few" | "none"),[
+  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most" | "few" | "none"| "reallyall"),[
     if test "$enableval" = "none"; then
        module_default=no
        module_selection=none
     else
       for i in $enableval; do
-        if test "$i" = "all" -o "$i" = "most" -o "$i" = "few"; then
+        if test "$i" = "all" -o "$i" = "most" -o "$i" = "few" -o "$i" = "reallyall"
+        then
           module_selection=$i
         else
           i=`echo $i | sed 's/-/_/g'`
@@ -380,9 +393,10 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   ])
   
   AC_ARG_ENABLE(mods-shared,
-  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Space-separated list of shared modules to enable | "all" | "most" | "few"),[
+  APACHE_HELP_STRING(--enable-mods-shared=MODULE-LIST,Space-separated list of shared modules to enable | "all" | "most" | "few"| "reallyall"),[
     for i in $enableval; do
-      if test "$i" = "all" -o "$i" = "most" -o "$i" = "few"; then
+      if test "$i" = "all" -o "$i" = "most" -o "$i" = "few" -o "$i" = "reallyall"
+      then
         module_selection=$i
         module_default=shared
       else
@@ -586,7 +600,7 @@ dnl
 AC_DEFUN([APACHE_CHECK_SERF], [
   AC_CACHE_CHECK([for libserf], [ac_cv_serf], [
     ac_cv_serf=no
-    serf_prefix=no
+    serf_prefix=/usr
     SERF_LIBS=""
     AC_ARG_WITH(serf, APACHE_HELP_STRING([--with-serf=PREFIX],
                                     [Serf client library]),

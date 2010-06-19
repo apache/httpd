@@ -64,7 +64,7 @@ APACHE_MODULE(serf, [Reverse proxy module using Serf], , , no, [
     if test "$ac_cv_serf" = "yes" ; then
       APR_SETVAR(MOD_SERF_LDADD, [\$(SERF_LIBS)])
     else
-      AC_MSG_ERROR("libserf not found")
+      enable_serf=no
     fi
 ])
 
