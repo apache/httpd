@@ -344,8 +344,10 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
                                          conn_rec *c);
 #endif
 
+/* XXX: Should these be configurable parameters? */
 #define THRESHOLD_MIN_WRITE 4096
 #define THRESHOLD_MAX_BUFFER 65536
+#define MAX_REQUESTS_IN_PIPELINE 5
 
 /* Optional function coming from mod_logio, used for logging of output
  * traffic
@@ -358,8 +360,9 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     core_net_rec *net = f->ctx;
     core_output_filter_ctx_t *ctx = net->out_ctx;
     apr_bucket_brigade *bb = NULL;
-    apr_bucket *bucket, *next;
+    apr_bucket *bucket, *next, *flush_upto = NULL;
     apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
+    int eor_buckets_in_brigade;
     apr_status_t rv;
 
     /* Fail quickly if the connection has already been aborted. */
@@ -431,7 +434,14 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
      *     streaming out lots of data faster than the data can be
      *     sent to the client.)
      *
-     *  4) The brigade contains at least THRESHOLD_MIN_WRITE
+     *  4) The request is in CONN_STATE_HANDLER state, and the brigade
+     *     contains at least MAX_REQUESTS_IN_PIPELINE EOR buckets:
+     *     Do blocking writes until less than MAX_REQUESTS_IN_PIPELINE EOR
+     *     buckets are left. (The point of this rule is to prevent too many
+     *     FDs being kept open by pipelined requests, possibly allowing a
+     *     DoS).
+     *
+     *  5) The brigade contains at least THRESHOLD_MIN_WRITE
      *     bytes: Do a nonblocking write of as much data as possible,
      *     then save the rest in ctx->buffered_bb.
      */
@@ -452,24 +462,12 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
 
     bytes_in_brigade = 0;
     non_file_bytes_in_brigade = 0;
+    eor_buckets_in_brigade = 0;
     for (bucket = APR_BRIGADE_FIRST(bb); bucket != APR_BRIGADE_SENTINEL(bb);
          bucket = next) {
         next = APR_BUCKET_NEXT(bucket);
-        if (APR_BUCKET_IS_FLUSH(bucket)) {
-            ctx->tmp_flush_bb = apr_brigade_split_ex(bb, next, ctx->tmp_flush_bb);
-            rv = send_brigade_blocking(net->client_socket, bb,
-                                       &(ctx->bytes_written), c);
-            if (rv != APR_SUCCESS) {
-                /* The client has aborted the connection */
-                c->aborted = 1;
-                return rv;
-            }
-            APR_BRIGADE_CONCAT(bb, ctx->tmp_flush_bb);
-            next = APR_BRIGADE_FIRST(bb);
-            bytes_in_brigade = 0;
-            non_file_bytes_in_brigade = 0;
-        }
-        else if (!APR_BUCKET_IS_METADATA(bucket)) {
+
+        if (!APR_BUCKET_IS_METADATA(bucket)) {
             if (bucket->length == (apr_size_t)-1) {
                 const char *data;
                 apr_size_t length;
@@ -486,12 +484,38 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
                 non_file_bytes_in_brigade += bucket->length;
             }
         }
+        else if (AP_BUCKET_IS_EOR(bucket)) {
+            eor_buckets_in_brigade++;
+        }
+
+        if (APR_BUCKET_IS_FLUSH(bucket)                         ||
+            (non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER) ||
+            (eor_buckets_in_brigade > MAX_REQUESTS_IN_PIPELINE) )
+        {
+            if (APLOGctrace6(c)) {
+                char *reason = APR_BUCKET_IS_FLUSH(bucket) ?
+                               "FLUSH bucket" :
+                               (non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER) ?
+                               "THRESHOLD_MAX_BUFFER" :
+                               "MAX_REQUESTS_IN_PIPELINE";
+                ap_log_cerror(APLOG_MARK, APLOG_TRACE6, 0, c,
+                              "core_output_filter: flushing because of %s",
+                              reason);
+            }
+            /*
+             * Defer the actual blocking write to avoid doing many writes.
+             */
+            flush_upto = next;
+
+            bytes_in_brigade = 0;
+            non_file_bytes_in_brigade = 0;
+            eor_buckets_in_brigade = 0;
+        }
     }
 
-    if (non_file_bytes_in_brigade >= THRESHOLD_MAX_BUFFER) {
-        /* ### Writing the entire brigade may be excessive; we really just
-         * ### need to send enough data to be under THRESHOLD_MAX_BUFFER.
-         */
+    if (flush_upto != NULL) {
+        ctx->tmp_flush_bb = apr_brigade_split_ex(bb, flush_upto,
+                                                 ctx->tmp_flush_bb);
         rv = send_brigade_blocking(net->client_socket, bb,
                                    &(ctx->bytes_written), c);
         if (rv != APR_SUCCESS) {
@@ -499,8 +523,10 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
             c->aborted = 1;
             return rv;
         }
+        APR_BRIGADE_CONCAT(bb, ctx->tmp_flush_bb);
     }
-    else if (bytes_in_brigade >= THRESHOLD_MIN_WRITE) {
+
+    if (bytes_in_brigade >= THRESHOLD_MIN_WRITE) {
         rv = send_brigade_nonblocking(net->client_socket, bb,
                                       &(ctx->bytes_written), c);
         if ((rv != APR_SUCCESS) && (!APR_STATUS_IS_EAGAIN(rv))) {
