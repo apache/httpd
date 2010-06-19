@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.7
 
+  *) configure: Add reallyall option for --enable-mods-shared. [Stefan Fritsch]
+
   *) Fix Windows build when using VC6. [Gregg L. Smith <lists glewis com>]
 
 Changes with Apache 2.3.6
@@ -45,8 +47,6 @@ Changes with Apache 2.3.6
      was arbitrarily allowed if the response contained an Expires or
      Cache-Control header, and arbitrarily denied if both headers were missing.
      [Graham Leggett]
-
-  *) configure: Add reallyall option for --enable-mods-shared. [Stefan Fritsch]
 
   *) core: Add microsecond timestamp fractions, process id and thread id
      to the error log. [Rainer Jung]
