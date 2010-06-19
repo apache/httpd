@@ -229,6 +229,7 @@
  *                         ap_recent_ctime_ex().
  * 20100609.0 (2.3.6-dev)  Dropped ap_args_to_table due to missing constraints.
  * 20100609.1 (2.3.7-dev)  Introduce ap_log_cserror()
+ * 20100609.2 (2.3.7-dev)  Add deferred write pool to core_output_filter_ctx
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -236,7 +237,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20100609
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
