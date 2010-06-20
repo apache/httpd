@@ -99,6 +99,9 @@ static int decl_die(int status, const char *phase, request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     else {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                      "auth phase '%s' gave status %d: %s", phase,
+                      status, r->uri);
         return status;
     }
 }
@@ -224,6 +227,12 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
                     return decl_die(access_status, "check authorization", r);
                 }
             }
+            else {
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                        "request authorized without authentication by "
+                        "access_checker hook and 'Satisfy any': %s",
+                        r->uri);
+            }
             break;
         }
 
@@ -238,6 +247,8 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
     }
 
     if ((access_status = ap_run_fixups(r)) != OK) {
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r, "fixups hook gave %d: %s",
+                      access_status, r->uri);
         return access_status;
     }
 
