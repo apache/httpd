@@ -2,6 +2,9 @@
 
 Changes with Apache 2.3.7
 
+  *) core: Try to proceed with authorization even if authentication failed.
+     This allows e.g. to authorize by user _or_ ip address. [Stefan Fritsch]
+
   *) configure: Add reallyall option for --enable-mods-shared. [Stefan Fritsch]
 
   *) Fix Windows build when using VC6. [Gregg L. Smith <lists glewis com>]
