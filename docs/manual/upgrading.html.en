@@ -29,6 +29,12 @@
   the <code>src/CHANGES</code> file.  Application and module developers
   can find a summary of API changes in the <a href="new_api_2_4.html">API updates</a> overview.</p>
 
+  <p>This document describes changes in server behavior that might
+  require you to change your configuration or how you use the server
+  in order to continue using 2.4 as you are currently using 2.2.
+  To take advantage of new features in 2.4, see the New Features
+  document.</p>
+
   <p>This document describes only the changes from 2.2 to 2.4.  If you
   are upgrading from version 2.0, you should also consult the <a href="http://httpd.apache.org/docs/2.2/upgrading.html">2.0 to 2.2
   upgrading document.</a></p>
@@ -38,30 +44,212 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#run-time">Run-Time Configuration Changes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Misc Changes</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#third-party">Third Party Modules</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#commonproblems">Common problems when upgrading</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="new_features_2_4.html">Overview of new features in
   Apache HTTP Server 2.4</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="compile-time" id="compile-time">Compile-Time Configuration Changes</a></h2>
     
+
+    <p>The compilation process is very similar to the one used in
+    version 2.2.  Your old <code>configure</code> command line (as
+    found in <code>build/config.nice</code> in the installed server
+    directory) can be used in most cases.  There are some changes in
+    the default settings.  Some details of changes:</p>
     
+    <ul>
+      <li>These modules have been removed: mod_authn_default,
+      mod_authz_default, mod_mem_cache.  If you were using
+      mod_mem_cache in 2.2, look at <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> in
+      2.4.</li>
+
+      <li>All load balancing implementations have been moved to
+      individual, self-contained mod_proxy submodules, e.g.
+      <code class="module"><a href="./mod/mod_lbmethod_bybusyness.html">mod_lbmethod_bybusyness</a></code>.  You might need
+      to build and load any of these that your configuration
+      uses.</li>
+
+      <li>Platform support has been removed for BeOS, OS/2, TPF, and
+      even older platforms such as A/UX, Next, and Tandem.  These were
+      believed to be broken anyway.</li>
+
+      <li>configure: dynamic modules (DSO) are built by default</li>
+
+      <li>configure: the "most" module set gets built by default</li>
+    </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="run-time" id="run-time">Run-Time Configuration Changes</a></h2>
     
+    <p>There have been significant changes in authorization configuration,
+    and other minor configuration changes, that could require changes to your 2.2
+    configuration files before using them for 2.4.</p>
 
+    <h3><a name="authz" id="authz">Authorization</a></h3>
+      
+
+      <p>Any configuration file that uses authorization will likely
+      need changes.</p>
+
+    <p>You should review the <a href="howto/auth.html">Authentication,
+    Authorization and Access Control Howto</a>, especially the section
+    <a href="howto/auth.html#beyond">Beyond just authorization</a>
+    which explains the new mechanisms for controlling the order in
+    which the authorization directives are applied.</p>
+
+    <h4><a name="access" id="access">Access control</a></h4>
+      
+
+      <p>In 2.2, access control based on client hostname, IP address,
+      and other characteristics of client requests was done using the
+      directives <code class="directive"><a href="./mod/mod_access_compat.html#order">Order</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#allow">Allow</a></code>, <code class="directive"><a href="./mod/mod_access_compat.html#deny">Deny</a></code>, and <code class="directive"><a href="./mod/mod_access_compat.html#satisfy">Satisfy</a></code>.</p>
+
+      <p>In 2.4, such access control is done in the same way as other
+      authorization checks, using the new module
+      <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  The old access control idioms
+      should be replaced by the new authentication mechanisms,
+      although for compatibility with old configurations, the new
+      module <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code> is provided.</p>
+
+      <p>Here are some examples of old and new ways to do the same
+      access control.</p>
+
+      <p>In this example, all requests are denied.</p>
+      <div class="example"><h3>2.2 configuration:</h3><p><code>
+        
+        Order deny,allow<br />
+        Deny from all
+      </code></p></div>
+      <div class="example"><h3>2.4 configuration:</h3><p><code>
+        
+        Require all denied
+      </code></p></div>
+
+      <p>In this example, all requests are allowed.</p>
+      <div class="example"><h3>2.2 configuration:</h3><p><code>
+        
+        Order allow,deny<br />
+        Allow from all
+      </code></p></div>
+      <div class="example"><h3>2.4 configuration:</h3><p><code>
+        
+        Require all granted
+      </code></p></div>
+
+      <p>In the following example, all hosts in the apache.org domain
+      are allowed access; all other hosts are denied access.</p>
+
+      <div class="example"><h3>2.2 configuration:</h3><p><code>
+        
+        Order Deny,Allow<br />
+        Deny from all<br />
+        Allow from apache.org
+      </code></p></div>
+      <div class="example"><h3>2.4 configuration:</h3><p><code>
+        
+        Require host apache.org
+      </code></p></div>
+    
+
+    
+
+    <h3><a name="config" id="config">Other configuration changes</a></h3>
+      
+
+      <p>Some other small adjustments may be necessary for particular
+      configurations as discussed below.</p>
+
+      <ul>
+        <li>The <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
+        directive no longer has any effect, other than to emit a
+        warning if it's used with any value other than
+        <code>none</code>.  You need to use other configuration
+        settings to replace it in 2.4.
+        </li>
+
+        <li><code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>: <a href="modules/mod_log_config.html#formats">${cookie}C</a>
+        matches whole cookie names.  Previously any substring would
+        match.</li>
+
+        <li><code class="module"><a href="./mod/mod_dav_fs.html">mod_dav_fs</a></code>: The format of the <code class="directive"><a href="./mod/dav_fs.html#davlockdb">DavLockDB</a></code> file has changed for
+        systems with inodes.  The old <code class="directive"><a href="./mod/dav_fs.html#davlockdb">DavLockDB</a></code> file must be deleted on
+        upgrade.
+        </li>
+
+        <li><code class="directive"><a href="./mod/core.html#keepalive">KeepAlive</a></code> only
+        accepts values of <code>On</code> or <code>Off</code>.
+        Previously, any value other than "Off" or "0" was treated as
+        "On".</li>
+
+        <li>Directives AcceptMutex, LockFile, RewriteLock, SSLMutex,
+        SSLStaplingMutex, and WatchdogMutexPath have been replaced
+        with a single <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>
+        directive.  You will need to evaluate any use of these removed
+        directives in your 2.2 configuration to determine if they can
+        just be deleted or will need to be replaced using <code class="directive"><a href="./mod/core.html#mutex">Mutex</a></code>.</li>
+
+        <li><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>: <code class="directive"><a href="./mod/cache.html#cacheignoreurlsessionidentifiers">CacheIgnoreURLSessionIdentifiers</a></code>
+        now does an exact match against the query string instead of a
+        partial match.  If your configuration was using partial
+        strings, e.g. using <code>sessionid</code> to match
+        <code>/someapplication/image.gif;jsessionid=123456789</code>,
+        then you will need to change to the full string
+        <code>jsessionid</code>.
+        </li>
+
+        <li><code class="module"><a href="./mod/mod_ldap.html">mod_ldap</a></code>: <code class="directive"><a href="./mod/ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></code> is now
+        consistently a per-directory setting only.  If you use this
+        directive, review your configuration to make sure it is
+        present in all the necessary directory contexts.</li>
+
+      </ul>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="misc" id="misc">Misc Changes</a></h2>
     
 
+    <ul>
+      <li><code class="module"><a href="./mod/mod_auto_index.html">mod_auto_index</a></code>: will now extract titles and
+      display descriptions for .xhtml files, which were previously
+      ignored.</li>
+      <li><code class="program"><a href="./programs/htpasswd.html">htpasswd</a></code> now uses MD5 hash by default on
+      all platforms.</li>
+    </ul>
+    
+
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="third-party" id="third-party">Third Party Modules</a></h2>
     
+    <p>All modules must be recompiled for 2.4 before being loaded.</p>
 
+    <p>Many third-party modules designed for version 2.2 will
+    otherwise work unchanged with the Apache HTTP Server version 2.4.
+    Some will require changes; see the <a href="new_api_2_4.html">API
+    update</a> overview.</p>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="commonproblems" id="commonproblems">Common problems when upgrading</a></h2>
+    
+    <ul><li>Startup errors:
+    <ul>
+      <li><code>Invalid command 'User', perhaps misspelled or defined by a module not included in the server configuration</code> - load module <code class="module"><a href="./mod/mod_unixd.html">mod_unixd</a></code></li>
+      <li><code>Invalid command 'Require', perhaps misspelled or defined by a module not included in the server configuration</code>, or
+<code>Invalid command 'Order', perhaps misspelled or defined by a module not included in the server configuration</code>
+ - load module <code class="module"><a href="./mod/mod_access_compat.html">mod_access_compat</a></code>, or update configuration to 2.4 authorization directives.</li>
+      <li><code>Ignoring deprecated use of DefaultType in line NN of /path/to/httpd.conf</code> - remove <code class="directive"><a href="./mod/core.html#defaulttype">DefaultType</a></code>
+      and replace with other configuration settings.</li>
+    </ul></li>
+    <li>Errors serving requests:
+    <ul>
+      <li><code>configuration error:  couldn't check user: /path</code> -
+      load module <code class="module"><a href="./mod/mod_authn_core.html">mod_authn_core</a></code>.</li>
+    </ul>
+    </li>
+</ul>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/upgrading.html" title="English">&nbsp;en&nbsp;</a> |
