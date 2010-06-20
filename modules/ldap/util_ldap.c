@@ -568,20 +568,19 @@ static int uldap_connection_open(request_rec *r,
         if ((AP_LDAP_IS_SERVER_DOWN(rc) && failures == 5) ||
             (rc == LDAP_TIMEOUT && failures == 0))
         {
-           if (rc == LDAP_TIMEOUT && !new_connection) {
-               ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                             "ldap_simple_bind() timed out on reused "
-                             "connection, dropped by firewall?");
-           }
-           ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                         "attempt to re-init the connection");
-           /* attempt to init the connection once again */
-           uldap_connection_unbind( ldc );
-           rc = uldap_connection_init( r, ldc );
-           if (LDAP_SUCCESS != rc)
-           {
-               break;
-           }
+            if (rc == LDAP_TIMEOUT && !new_connection) {
+                ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
+                              "ldap_simple_bind() timed out on reused "
+                              "connection, dropped by firewall?");
+            }
+            ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                          "attempt to re-init the connection");
+            uldap_connection_unbind( ldc );
+            rc = uldap_connection_init( r, ldc );
+            if (LDAP_SUCCESS != rc)
+            {
+                break;
+            }
         }
         else if (!AP_LDAP_IS_SERVER_DOWN(rc)) {
             break;
@@ -595,7 +594,7 @@ static int uldap_connection_open(request_rec *r,
     */
     if (LDAP_SUCCESS != rc)
     {
-       uldap_connection_unbind(ldc);
+        uldap_connection_unbind(ldc);
         ldc->reason = "LDAP: ldap_simple_bind() failed";
     }
     else {
@@ -1083,7 +1082,7 @@ start_over:
 
                 junk = util_ald_cache_insert(curl->compare_cache,
                                              &the_compare_node);
-                if(junk == NULL) {
+                if (junk == NULL) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                                   "cache_compare: Cache insertion failure.");
                 }
