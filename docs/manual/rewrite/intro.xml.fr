@@ -349,7 +349,7 @@ alors <code>%1</code> contiendrait <code>example.com</code> et
 permet en quelque sorte de faire appel &agrave; une fonction externe pour
 effectuer la r&eacute;&eacute;criture &agrave; votre place. Tout ceci est d&eacute;crit plus en
 d&eacute;tails dans la <a
-+href="rewritemap.html">Documentation suppl&eacute;mentaire sur RewriteMap</a>.</p>
+href="rewritemap.html">Documentation suppl&eacute;mentaire sur RewriteMap</a>.</p>
 </section>
 
 <section id="htaccess"><title>Fichiers .htaccess</title>
