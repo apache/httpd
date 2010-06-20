@@ -573,6 +573,8 @@ static int uldap_connection_open(request_rec *r,
                              "ldap_simple_bind() timed out on reused "
                              "connection, dropped by firewall?");
            }
+           ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                         "attempt to re-init the connection");
            /* attempt to init the connection once again */
            uldap_connection_unbind( ldc );
            rc = uldap_connection_init( r, ldc );
@@ -584,6 +586,9 @@ static int uldap_connection_open(request_rec *r,
         else if (!AP_LDAP_IS_SERVER_DOWN(rc)) {
             break;
         }
+        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                      "ldap_simple_bind() failed with server down "
+                      "(try %d)", failures + 1);
     }
 
     /* free the handle if there was an error
@@ -1080,8 +1085,7 @@ start_over:
                                              &the_compare_node);
                 if(junk == NULL) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                                  "[%" APR_PID_T_FMT "] cache_compare: Cache"
-                                  " insertion failure.", getpid());
+                                  "cache_compare: Cache insertion failure.");
                 }
             }
             else {
@@ -1363,11 +1367,9 @@ static int uldap_cache_check_subgroups(request_rec *r,
                     /* Make a local copy of the subgroup list */
                     int i;
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                                  "[%" APR_PID_T_FMT "] util_ldap:"
-                                  " Making local copy of SGL for "
+                                  "Making local copy of SGL for "
                                   "group (%s)(objectClass=%s) ",
-                                  getpid(), dn,
-                                  (char *)sgc_ents[base_sgcIndex].name);
+                                  dn, (char *)sgc_ents[base_sgcIndex].name);
                     tmp_local_sgl = apr_pcalloc(r->pool,
                                                 sizeof(util_compare_subgroup_t));
                     tmp_local_sgl->len = compare_nodep->subgroupList->len;
@@ -1391,14 +1393,13 @@ static int uldap_cache_check_subgroups(request_rec *r,
     if (!tmp_local_sgl && !sgl_cached_empty) {
         /* No Cached SGL, retrieve from LDAP */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                      "[%" APR_PID_T_FMT "] util_ldap: no cached SGL for %s,"
-                      " retrieving from LDAP" , getpid(), dn);
+                      "no cached SGL for %s, retrieving from LDAP", dn);
         tmp_local_sgl = uldap_get_subgroups(r, ldc, url, dn, subgroupAttrs,
                                             subgroupclasses);
         if (!tmp_local_sgl) {
             /* No SGL aailable via LDAP either */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "[%" APR_PID_T_FMT "]"
-                          " util_ldap: no subgroups for %s" , getpid(), dn);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "no subgroups for %s",
+                          dn);
         }
 
       if (curl && curl->compare_cache) {
@@ -1425,18 +1426,16 @@ static int uldap_cache_check_subgroups(request_rec *r,
              * while we already hold the cache lock -- only the insert.
              */
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "[%" APR_PID_T_FMT "] util_ldap: Cache entry "
-                          "for %s doesn't exist",
-                           getpid(), dn);
+                          "Cache entry for %s doesn't exist", dn);
             the_compare_node.result = LDAP_COMPARE_TRUE;
             util_ald_cache_insert(curl->compare_cache, &the_compare_node);
             compare_nodep = util_ald_cache_fetch(curl->compare_cache,
                                                  &the_compare_node);
             if (compare_nodep == NULL) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "[%" APR_PID_T_FMT "] util_ldap: Couldn't "
-                              "retrieve group entry for %s from cache",
-                               getpid(), dn);
+                              "util_ldap: Couldn't retrieve group entry "
+                              "for %s from cache",
+                              dn);
             }
         }
 
@@ -1499,20 +1498,20 @@ static int uldap_cache_check_subgroups(request_rec *r,
              * 4.A. We found the user in the subgroup. Return
              * LDAP_COMPARE_TRUE.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "[%" APR_PID_T_FMT "]"
-                          " util_ldap: Found user %s in a subgroup (%s) at"
-                          " level %d of %d.", getpid(), r->user, group,
-                          cur_subgroup_depth+1, max_subgroup_depth);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "Found user %s in a subgroup (%s) at level %d of %d.",
+                          r->user, group, cur_subgroup_depth+1,
+                          max_subgroup_depth);
         }
         else {
             /*
              * 4.B. We didn't find the user in this subgroup, so recurse into
              * it and keep looking.
              */
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "[%" APR_PID_T_FMT "]"
-                          " util_ldap: user %s not found in subgroup (%s) at"
-                          " level %d of %d.", getpid(), r->user, group,
-                          cur_subgroup_depth+1, max_subgroup_depth);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "User %s not found in subgroup (%s) at level %d of "
+                          "%d.", r->user, group, cur_subgroup_depth+1,
+                          max_subgroup_depth);
             result = uldap_cache_check_subgroups(r, ldc, url, group, attrib,
                                                  value, subgroupAttrs,
                                                  subgroupclasses,
@@ -2010,9 +2009,9 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy,
     st->cache_bytes = atol(bytes);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "[%" APR_PID_T_FMT "] ldap cache: Setting shared memory "
-                 " cache size to %" APR_SIZE_T_FMT " bytes.",
-                 getpid(), st->cache_bytes);
+                 "ldap cache: Setting shared memory cache size to "
+                 "%" APR_SIZE_T_FMT " bytes.",
+                 st->cache_bytes);
 
     return NULL;
 }
@@ -2058,8 +2057,8 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy,
     st->search_cache_ttl = atol(ttl) * 1000000;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "[%" APR_PID_T_FMT "] ldap cache: Setting cache TTL to %ld"
-                 " microseconds.", getpid(), st->search_cache_ttl);
+                 "ldap cache: Setting cache TTL to %ld microseconds.",
+                 st->search_cache_ttl);
 
     return NULL;
 }
@@ -2082,8 +2081,8 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "[%" APR_PID_T_FMT "] ldap cache: Setting search cache size"
-                 " to %ld entries.", getpid(), st->search_cache_size);
+                 "ldap cache: Setting search cache size to %ld entries.",
+                 st->search_cache_size);
 
     return NULL;
 }
@@ -2103,8 +2102,8 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "[%" APR_PID_T_FMT "] ldap cache: Setting operation cache TTL"
-                 " to %ld microseconds.", getpid(), st->compare_cache_ttl);
+                 "ldap cache: Setting operation cache TTL to %ld microseconds.",
+                 st->compare_cache_ttl);
 
     return NULL;
 }
@@ -2127,8 +2126,8 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "[%" APR_PID_T_FMT "] ldap cache: Setting operation cache size"
-                 " to %ld entries.", getpid(), st->compare_cache_size);
+                 "ldap cache: Setting operation cache size to %ld entries.",
+                 st->compare_cache_size);
 
     return NULL;
 }
@@ -2449,8 +2448,8 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
     st->connectionTimeout = atol(ttl);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "[%" APR_PID_T_FMT "] ldap connection: Setting connection"
-                 " timeout to %ld seconds.", getpid(), st->connectionTimeout);
+                 "ldap connection: Setting connection timeout to %ld seconds.",
+                 st->connectionTimeout);
 #else
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server,
                  "LDAP: Connection timeout option not supported by the "
@@ -2561,8 +2560,8 @@ static const char *util_ldap_set_op_timeout(cmd_parms *cmd,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
-                 "[%" APR_PID_T_FMT "] ldap connection: Setting op timeout "
-                 "to %ld seconds.", getpid(), timeout);
+                 "ldap connection: Setting op timeout to %ld seconds.",
+                 timeout);
 
 #ifndef LDAP_OPT_TIMEOUT
 
@@ -2841,9 +2840,8 @@ static void util_ldap_child_init(apr_pool_t *p, server_rec *s)
               apr_global_mutex_lockfile(st->util_ldap_cache_lock), p);
     if (sts != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, sts, s,
-                     "Failed to initialise global mutex %s in child process %"
-                     APR_PID_T_FMT ".",
-                     ldap_cache_mutex_type, getpid());
+                     "Failed to initialise global mutex %s in child process",
+                     ldap_cache_mutex_type);
     }
 }
 
