@@ -67,14 +67,16 @@ RELEASE SHOWSTOPPERS:
   * Modules without documentation need to be moved to experimental or be
     removed.
 
-  * There is no working equivalent to 'Satisfy any' to authorize by
-    user _or_ IP address:
-    http://mail-archives.apache.org/mod_mbox/httpd-dev/200912.mbox/<4B28E73C.4050209%40kippdata.de>
-
   * Not all MPMs are updated to set conn_rec::current_thread correctly.
       (Prefork, Worker, Event, Simple are updated).
       jim sez: Then we just ship with those... mark any others as
                 experimental
+
+  * Fix or remove ap_note_auth_failure():
+    There are two incompatible sets of *note_*_auth_failure functions, one in
+    server/protocol.c, the other in mod_auth_*.c. The set in server/protocol.c
+    should be axed and ap_note_auth_failure() must either call the functions in
+    mod_auth_*.c or must be removed, too.
 
   FOR NEXT ALPHA:
 

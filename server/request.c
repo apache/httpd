@@ -201,6 +201,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         r->ap_auth_type = r->main->ap_auth_type;
     }
     else {
+        char *failed_user = NULL;
         switch (ap_satisfies(r)) {
         case SATISFY_ALL:
         case SATISFY_NOSPEC:
@@ -209,10 +210,21 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             }
 
             if ((access_status = ap_run_check_user_id(r)) != OK) {
-                return decl_die(access_status, "check user", r);
+                if (access_status == HTTP_UNAUTHORIZED) {
+                    failed_user = r->user;
+                    r->user = NULL;
+                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                                  "authn failed with HTTP_UNAUTHORIZED, "
+                                  "trying authz without user");
+                }
+                else {
+                    return decl_die(access_status, "check user", r);
+                }
             }
 
             if ((access_status = ap_run_auth_checker(r)) != OK) {
+                if (failed_user)
+                    r->user = failed_user;
                 return decl_die(access_status, "check authorization", r);
             }
             break;
@@ -220,10 +232,21 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             if ((access_status = ap_run_access_checker(r)) != OK) {
 
                 if ((access_status = ap_run_check_user_id(r)) != OK) {
-                    return decl_die(access_status, "check user", r);
+                    if (access_status == HTTP_UNAUTHORIZED) {
+                        failed_user = r->user;
+                        r->user = NULL;
+                        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                                      "authn failed with HTTP_UNAUTHORIZED, "
+                                      "trying authz without user");
+                    }
+                    else {
+                        return decl_die(access_status, "check user", r);
+                    }
                 }
 
                 if ((access_status = ap_run_auth_checker(r)) != OK) {
+                    if (failed_user)
+                        r->user = failed_user;
                     return decl_die(access_status, "check authorization", r);
                 }
             }

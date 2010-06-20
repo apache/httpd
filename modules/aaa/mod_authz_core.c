@@ -754,7 +754,7 @@ static int authorize_user(request_rec *r)
         return OK;
     }
     else if (auth_result == AUTHZ_DENIED || auth_result == AUTHZ_NEUTRAL) {
-        if (r->ap_auth_type == NULL) {
+        if (ap_auth_type(r) == NULL) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, APR_SUCCESS, r,
                           "client denied by server configuration: %s%s",
                           r->filename ? "" : "uri ",
@@ -768,7 +768,8 @@ static int authorize_user(request_rec *r)
                           r->user, r->uri);
 
             /* If we're returning 403, tell them to try again. */
-            ap_note_auth_failure(r);
+            /* XXX: ap_note_auth_failure is currently broken */
+            /*ap_note_auth_failure(r);*/
 
             return HTTP_UNAUTHORIZED;
         }
