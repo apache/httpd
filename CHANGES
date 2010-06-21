@@ -638,7 +638,7 @@ Changes with Apache 2.3.3
      returns EINPROGRESS and a subsequent poll() returns only POLLERR.
      Observed on HP-UX.  [Eric Covener]
 
-  *) Remove broken support for BeOS, OS/2, TPF, and even older platforms such
+  *) Remove broken support for BeOS, TPF, and even older platforms such
      as A/UX, Next, and Tandem.  [Jeff Trawick]
 
   *) mod_proxy_ftp: Add ProxyFtpListOnWildcard directive to allow files with

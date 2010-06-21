@@ -70,7 +70,7 @@
       to build and load any of these that your configuration
       uses.</li>
 
-      <li>Platform support has been removed for BeOS, OS/2, TPF, and
+      <li>Platform support has been removed for BeOS, TPF, and
       even older platforms such as A/UX, Next, and Tandem.  These were
       believed to be broken anyway.</li>
 
