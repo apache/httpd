@@ -132,9 +132,22 @@
       <li>New auth_internal API and auth_provider API</li>
       <li>New EOR bucket type</li>
       <li>New function ap_process_async_request</li>
-      <li>New functions ap_hook_check_access, ap_hook_check_authn, ap_hook_check_authz (why are these called ap_hook_* when they are functions not hooks?)</li>
+      <li>New flags AP_AUTH_INTERNAL_PER_CONF and AP_AUTH_INTERNAL_PER_URI</li>
+      <li>New functions ap_hook_check_access, ap_hook_check_authn, ap_hook_check_authz which accept AP_AUTH_INTERNAL_PER_* flags</li>
+      <li>DEPRECATED direct use of ap_hook_access_checker, ap_hook_check_user_id, ap_hook_auth_checker</li>
       <li>The auth_checker hook may be called with r-&gt;user == NULL</li>
     </ul>
+    <p>When possible, registering all access control hooks (including
+       authentication and authorization hooks) using AP_AUTH_INTERNAL_PER_CONF
+       is recommended.  If all modules' access control hooks are registered
+       with this flag, then whenever the server handles an internal
+       sub-request that matches the same set of access control configuration
+       directives as the initial request (which is the common case), it can
+       avoid invoking the access control hooks another time.</p>
+    <p>If your module requires the old behavior and must perform access
+       control checks on every sub-request with a different URI from the
+       initial request, even if that URI matches the same set of access
+       control configuration directives, then use AP_AUTH_INTERNAL_PER_URI.</p>
   </section>
 
   <section id="mod_auth">
