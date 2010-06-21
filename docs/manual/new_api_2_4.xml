@@ -133,6 +133,7 @@
       <li>New EOR bucket type</li>
       <li>New function ap_process_async_request</li>
       <li>New functions ap_hook_check_access, ap_hook_check_authn, ap_hook_check_authz (why are these called ap_hook_* when they are functions not hooks?)</li>
+      <li>The auth_checker hook may be called with r-&gt;user == NULL</li>
     </ul>
   </section>
 
