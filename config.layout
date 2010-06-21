@@ -290,11 +290,11 @@
     manualdir:     ${htdocsdir}/manual
     cgidir:        ${prefix}/usr/lib/cgi-bin
     includedir:    ${exec_prefix}/include/apache2
-    localstatedir: ${prefix}/var/run
-    runtimedir:    ${prefix}/var/run
+    localstatedir: ${prefix}/var/lock/apache2
+    runtimedir:    ${prefix}/var/run/apache2
     logfiledir:    ${prefix}/var/log/apache2
     proxycachedir: ${prefix}/var/cache/apache2/proxy
     infodir:       ${exec_prefix}/share/info
-    installbuilddir: ${prefix}/etc/apache2/build
+    installbuilddir: ${prefix}/usr/share/apache2/build
     errordir:      ${datadir}/error
 </Layout>
