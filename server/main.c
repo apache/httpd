@@ -361,7 +361,7 @@ static void usage(process_rec *process)
                  pad);
 #endif
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T] [-S]", pad);
+                 "       %s [-v] [-V] [-h] [-l] [-L] [-t] [-T] [-S] [-X]", pad);
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "Options:");
 
@@ -435,7 +435,9 @@ static void usage(process_rec *process)
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -t                 : run syntax check for config files");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                "  -T                 : start without DocumentRoot(s) check");
+                 "  -T                 : start without DocumentRoot(s) check");
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+                 "  -X                 : debug mode (only one worker, do not detach)");
 
     destroy_and_exit_process(process, 1);
 }
