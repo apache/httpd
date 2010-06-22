@@ -34,6 +34,7 @@
 #define HAVE_DRIVE_LETTERS
 #define HAVE_UNC_PATHS
 #define CASE_BLIND_FILESYSTEM
+#define AP_PLATFORM_REWRITE_ARGS_HOOK NULL
 
 #endif   /* ! APACHE_OS_H */
 /** @} */
