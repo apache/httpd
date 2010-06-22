@@ -41,6 +41,10 @@ typedef struct {
 /* optional function - look it up once in post_config */
 static ap_dbd_t *(*authn_dbd_acquire_fn)(request_rec*) = NULL;
 static void (*authn_dbd_prepare_fn)(server_rec*, const char*, const char*) = NULL;
+static APR_OPTIONAL_FN_TYPE(ap_authn_cache_store) *authn_cache_store = NULL;
+#define AUTHN_CACHE_STORE(r,user,realm,data) \
+    if (authn_cache_store != NULL) \
+        authn_cache_store((r), "dbd", (user), (realm), (data))
 
 static void *authn_dbd_cr_conf(apr_pool_t *pool, char *dummy)
 {
@@ -168,6 +172,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
     if (!dbd_password) {
         return AUTH_USER_NOT_FOUND;
     }
+    AUTHN_CACHE_STORE(r, user, NULL, dbd_password);
 
     rv = apr_password_validate(password, dbd_password);
 
@@ -258,9 +263,13 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
     if (!dbd_hash) {
         return AUTH_USER_NOT_FOUND;
     }
-
+    AUTHN_CACHE_STORE(r, user, realm, dbd_hash);
     *rethash = apr_pstrdup(r->pool, dbd_hash);
     return AUTH_USER_FOUND;
+}
+static void opt_retr(void)
+{
+    authn_cache_store = APR_RETRIEVE_OPTIONAL_FN(ap_authn_cache_store);
 }
 static void authn_dbd_hooks(apr_pool_t *p)
 {
@@ -272,6 +281,7 @@ static void authn_dbd_hooks(apr_pool_t *p)
     ap_register_auth_provider(p, AUTHN_PROVIDER_GROUP, "dbd",
                               AUTHN_PROVIDER_VERSION,
                               &authn_dbd_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_hook_optional_fn_retrieve(opt_retr, NULL, NULL, APR_HOOK_MIDDLE);
 }
 AP_DECLARE_MODULE(authn_dbd) =
 {

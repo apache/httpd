@@ -39,6 +39,11 @@
 
 #include "mod_auth.h"
 
+static APR_OPTIONAL_FN_TYPE(ap_authn_cache_store) *authn_cache_store = NULL;
+#define AUTHN_CACHE_STORE(r,user,realm,data) \
+    if (authn_cache_store != NULL) \
+        authn_cache_store((r), "dbm", (user), (realm), (data))
+
 typedef struct {
     const char *pwfile;
     const char *dbmtype;
@@ -137,6 +142,7 @@ static authn_status check_dbm_pw(request_rec *r, const char *user,
     if (colon_pw) {
         *colon_pw = '\0';
     }
+    AUTHN_CACHE_STORE(r, user, NULL, dbm_password);
 
     rv = apr_password_validate(password, dbm_password);
 
@@ -177,6 +183,7 @@ static authn_status get_dbm_realm_hash(request_rec *r, const char *user,
     }
 
     *rethash = dbm_hash;
+    AUTHN_CACHE_STORE(r, user, realm, dbm_hash);
 
     return AUTH_USER_FOUND;
 }
@@ -187,11 +194,16 @@ static const authn_provider authn_dbm_provider =
     &get_dbm_realm_hash,
 };
 
+static void opt_retr(void)
+{
+    authn_cache_store = APR_RETRIEVE_OPTIONAL_FN(ap_authn_cache_store);
+}
 static void register_hooks(apr_pool_t *p)
 {
     ap_register_auth_provider(p, AUTHN_PROVIDER_GROUP, "dbm",
                               AUTHN_PROVIDER_VERSION,
                               &authn_dbm_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_hook_optional_fn_retrieve(opt_retr, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(authn_dbm) =
