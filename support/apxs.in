@@ -513,7 +513,7 @@ if ($opt_i or $opt_e) {
                 open(FP, "<$base.c");
                 my $content = join('', <FP>);
                 close(FP);
-                if ($content =~ m|.*module\s+(?:AP_MODULE_DECLARE_DATA\s+)?([a-zA-Z0-9_]+)_module\s*=\s*.*|s) {
+                if ($content =~ m|.*AP_DECLARE_MODULE\s*\(\s*([a-zA-Z0-9_]+)\s*\)\s*=.*|s || $content =~ m|.*module\s+(?:AP_MODULE_DECLARE_DATA\s+)?([a-zA-Z0-9_]+)_module\s*=\s*.*|s) {
                     $name = "$1";
                     $filename = "$base.c";
                     $filename =~ s|^[^/]+/||;
