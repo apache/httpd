@@ -442,7 +442,7 @@ static int wd_post_config_hook(apr_pool_t *pconf, apr_pool_t *plog,
     apr_pool_userdata_get((void *)&wd_server_conf, pk, pproc);
     if (!wd_server_conf) {
         if (!(wd_server_conf = apr_pcalloc(pproc, sizeof(wd_server_conf_t))))
-            return apr_get_os_error();
+            return APR_ENOMEM;
         apr_pool_create(&wd_server_conf->pool, pproc);
         wd_server_conf->s = s;
         apr_pool_userdata_set(wd_server_conf, pk, apr_pool_cleanup_null, pproc);
