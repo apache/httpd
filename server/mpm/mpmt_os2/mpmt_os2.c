@@ -70,7 +70,6 @@
 
 server_rec *ap_server_conf;
 static apr_pool_t *pconf = NULL;  /* Pool for config stuff */
-static const char *ap_pid_fname=NULL;
 
 /* Config globals */
 static int one_process = 0;
