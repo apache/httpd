@@ -107,6 +107,18 @@ typedef struct {
                                         const char *require_line);
 } authz_provider;
 
+/* ap_authn_cache_store: Optional function for authn providers
+ * to enable cacheing their lookups with mod_authn_cache
+ * @param r The request rec
+ * @param module Module identifier
+ * @param user User name to authenticate
+ * @param realm Digest authn realm (NULL for basic authn)
+ * @param data The value looked up by the authn provider, to cache
+ */
+APR_DECLARE_OPTIONAL_FN(void, ap_authn_cache_store,
+                        (request_rec*, const char*, const char*,
+                         const char*, const char*));
+
 #ifdef __cplusplus
 }
 #endif

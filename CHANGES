@@ -2,6 +2,8 @@
 
 Changes with Apache 2.3.7
 
+  *) mod_authn_cache: new module [Nick Kew]
+
   *) core: Try to proceed with authorization even if authentication failed.
      This allows e.g. to authorize by user _or_ ip address. [Stefan Fritsch]
 
