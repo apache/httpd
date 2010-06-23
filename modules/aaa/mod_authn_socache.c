@@ -46,7 +46,7 @@ typedef struct authn_cache_dircfg {
 static apr_global_mutex_t *authn_cache_mutex = NULL;
 static ap_socache_provider_t *socache_provider = NULL;
 static ap_socache_instance_t *socache_instance = NULL;
-static const char *const authn_cache_id = "authn-cache";
+static const char *const authn_cache_id = "authn-socache";
 
 static apr_status_t remove_lock(void *data)
 {
@@ -231,7 +231,7 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
     int use_cache = 0;
 
     /* first check whether we're cacheing for this module */
-    dcfg = ap_get_module_config(r->per_dir_config, &authn_cache_module);
+    dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
     for (i = 0; i < dcfg->providers->nelts; ++i) {
         if (!strcmp(module, APR_ARRAY_IDX(dcfg->providers, i, const char*))) {
             use_cache = 1;
@@ -304,7 +304,7 @@ static authn_status check_password(request_rec *r, const char *user,
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
     authn_cache_dircfg *dcfg = ap_get_module_config(r->per_dir_config,
-                                                    &authn_cache_module);
+                                                    &authn_socache_module);
     const char *key = construct_key(r, dcfg->context, user, NULL);
     rv = socache_provider->retrieve(socache_instance, r->server,
                                     (unsigned char*)key, strlen(key),
@@ -345,7 +345,7 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
     authn_cache_dircfg *dcfg;
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
-    dcfg = ap_get_module_config(r->per_dir_config, &authn_cache_module);
+    dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
     const char *key = construct_key(r, dcfg->context, user, realm);
     rv = socache_provider->retrieve(socache_instance, r->server,
                                     (unsigned char*)key, strlen(key),
