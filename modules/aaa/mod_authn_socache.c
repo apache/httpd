@@ -226,7 +226,7 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
     apr_status_t rv;
     authn_cache_dircfg *dcfg;
     const char *key;
-    apr_interval_time_t expiry;
+    apr_time_t expiry;
     int i;
     int use_cache = 0;
 
