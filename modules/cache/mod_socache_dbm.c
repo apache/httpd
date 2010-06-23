@@ -291,7 +291,7 @@ static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec 
     rc = apr_dbm_fetch(dbm, dbmkey, &dbmval);
     if (rc != APR_SUCCESS) {
         apr_dbm_close(dbm);
-        return rc;
+        return APR_NOTFOUND;
     }
     if (dbmval.dptr == NULL || dbmval.dsize <= sizeof(apr_time_t)) {
         apr_dbm_close(dbm);
