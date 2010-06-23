@@ -32,7 +32,7 @@
 #include "util_mutex.h"
 #include "apr_optional.h"
 
-module AP_MODULE_DECLARE_DATA authn_cache_module;
+module AP_MODULE_DECLARE_DATA authn_socache_module;
 
 typedef struct authn_cache_dircfg {
     apr_interval_time_t timeout;
@@ -382,7 +382,7 @@ static const authn_provider authn_cache_provider =
 };
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_auth_provider(p, AUTHN_PROVIDER_GROUP, "cache",
+    ap_register_auth_provider(p, AUTHN_PROVIDER_GROUP, "socache",
                               AUTHN_PROVIDER_VERSION,
                               &authn_cache_provider, AP_AUTH_INTERNAL_PER_CONF);
     APR_REGISTER_OPTIONAL_FN(ap_authn_cache_store);
@@ -391,7 +391,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_child_init(authn_cache_child_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-AP_DECLARE_MODULE(authn_cache) =
+AP_DECLARE_MODULE(authn_socache) =
 {
     STANDARD20_MODULE_STUFF,
     authn_cache_dircfg_create,
