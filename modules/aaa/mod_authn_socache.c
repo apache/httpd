@@ -302,10 +302,10 @@ static authn_status check_password(request_rec *r, const char *user,
      */
     apr_status_t rv;
     const char *key;
+    authn_cache_dircfg *dcfg;
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
-    authn_cache_dircfg *dcfg = ap_get_module_config(r->per_dir_config,
-                                                    &authn_socache_module);
+    dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
     key = construct_key(r, dcfg->context, user, NULL);
     rv = socache_provider->retrieve(socache_instance, r->server,
                                     (unsigned char*)key, strlen(key),
