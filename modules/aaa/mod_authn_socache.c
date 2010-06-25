@@ -301,11 +301,12 @@ static authn_status check_password(request_rec *r, const char *user,
      * to no-longer-defined memory.  Hmmm ...
      */
     apr_status_t rv;
+    const char *key;
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
     authn_cache_dircfg *dcfg = ap_get_module_config(r->per_dir_config,
                                                     &authn_socache_module);
-    const char *key = construct_key(r, dcfg->context, user, NULL);
+    key = construct_key(r, dcfg->context, user, NULL);
     rv = socache_provider->retrieve(socache_instance, r->server,
                                     (unsigned char*)key, strlen(key),
                                     val, &vallen, r->pool);
@@ -342,11 +343,12 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
                                    const char *realm, char **rethash)
 {
     apr_status_t rv;
+    const char *key;
     authn_cache_dircfg *dcfg;
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
-    const char *key = construct_key(r, dcfg->context, user, realm);
+    key = construct_key(r, dcfg->context, user, realm);
     rv = socache_provider->retrieve(socache_instance, r->server,
                                     (unsigned char*)key, strlen(key),
                                     val, &vallen, r->pool);
