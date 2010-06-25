@@ -47,6 +47,7 @@
 typedef struct {
     /* Stats for cache operations */
     unsigned long stat_stores;
+    unsigned long stat_replaced;
     unsigned long stat_expiries;
     unsigned long stat_scrolled;
     unsigned long stat_retrieves_hit;
@@ -410,6 +411,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
     /* OK, we're sorted */
     ctx->header = header = shm_segment;
     header->stat_stores = 0;
+    header->stat_replaced = 0;
     header->stat_expiries = 0;
     header->stat_scrolled = 0;
     header->stat_retrieves_hit = 0;
@@ -472,6 +474,7 @@ static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx,
 {
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
+    int tryreplace;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "socache_shmcb_store (0x%02x -> subcache %d)",
@@ -482,13 +485,19 @@ static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx,
                 "(%u bytes)", idlen);
         return APR_EINVAL;
     }
+    tryreplace = shmcb_subcache_remove(s, header, subcache, id, idlen);
     if (shmcb_subcache_store(s, header, subcache, encoded,
                              len_encoded, id, idlen, expiry)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "can't store an socache entry!");
         return APR_ENOSPC;
     }
-    header->stat_stores++;
+    if (tryreplace == 0) {
+        header->stat_replaced++;
+    }
+    else {
+        header->stat_stores++;
+    }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving socache_shmcb_store successfully");
     return APR_SUCCESS;
@@ -609,6 +618,8 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
                index_pct, cache_pct);
     ap_rprintf(r, "total entries stored since starting: <b>%lu</b><br>",
                header->stat_stores);
+    ap_rprintf(r, "total entries replaced since starting: <b>%lu</b><br>",
+               header->stat_replaced);
     ap_rprintf(r, "total entries expired since starting: <b>%lu</b><br>",
                header->stat_expiries);
     ap_rprintf(r, "total (pre-expiry) entries scrolled out of the cache: "
@@ -653,14 +664,18 @@ static apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
 static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
                                   SHMCBSubcache *subcache, apr_time_t now)
 {
-    unsigned int loop = 0;
+    unsigned int loop = 0, freed = 0, expired = 0;
     unsigned int new_idx_pos = subcache->idx_pos;
     SHMCBIndex *idx = NULL;
 
     while (loop < subcache->idx_used) {
         idx = SHMCB_INDEX(subcache, new_idx_pos);
-        if (idx->expires > now)
-            /* it hasn't expired yet, we're done iterating */
+        if (idx->removed)
+            freed++;
+        else if (idx->expires <= now)
+            expired++;
+        else
+            /* not removed and not expired yet, we're done iterating */
             break;
         loop++;
         new_idx_pos = SHMCB_CYCLIC_INCREMENT(new_idx_pos, 1, header->index_num);
@@ -669,7 +684,8 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
         /* Nothing to do */
         return;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "will be expiring %u socache entries", loop);
+                 "expiring %u and reclaiming %u removed socache entries",
+                 expired, freed);
     if (loop == subcache->idx_used) {
         /* We're expiring everything, piece of cake */
         subcache->idx_used = 0;
@@ -686,7 +702,7 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
         subcache->data_used -= diff;
         subcache->data_pos = idx->data_pos;
     }
-    header->stat_expiries += loop;
+    header->stat_expiries += expired;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "we now have %u socache entries", subcache->idx_used);
 }
@@ -709,10 +725,13 @@ static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
         return -1;
     }
 
-    /* If there are entries to expire, ditch them first. */
+    /* First reclaim space from removed and expired records. */
     shmcb_subcache_expire(s, header, subcache, apr_time_now());
 
-    /* Loop until there is enough space to insert */
+    /* Loop until there is enough space to insert
+     * XXX: This should first compress out-of-order expiries and
+     * removed records, and then force-remove oldest-first
+     */
     if (header->subcache_data_size - subcache->data_used < total_len
         || subcache->idx_used == header->index_num) {
         unsigned int loop = 0;
@@ -812,7 +831,8 @@ static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
          * in case of corruption, which should be impossible,
          * but it's cheap to be safe. */
         if (!idx->removed
-            && idx->id_len == idlen && (idx->data_used - idx->id_len) < *destlen
+            && idx->id_len == idlen
+            && (idx->data_used - idx->id_len) <= *destlen
             && shmcb_cyclic_memcmp(header->subcache_data_size,
                                    SHMCB_DATA(header, subcache),
                                    idx->data_pos, id, idx->id_len) == 0) {
@@ -952,8 +972,8 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
 
                 rv = (*iterator)(instance, s, id, idx->id_len,
                                  dest, dest_len, pool);
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                             "shmcb_subcache_iterate discarding expired entry");
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
+                             "shmcb entry iterated");
                 if (rv != APR_SUCCESS)
                     return rv;
             }
