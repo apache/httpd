@@ -194,7 +194,7 @@ static const command_rec authn_cache_cmds[] =
                   OR_AUTHCFG, "Timeout (secs) for cached credentials"),
     AP_INIT_TAKE1("AuthnCacheContext", ap_set_string_slot,
                   (void*)APR_OFFSETOF(authn_cache_dircfg, context),
-                  OR_AUTHCFG, "Context for authn cache"),
+                  ACCESS_CONF, "Context for authn cache"),
     {NULL}
 };
 
