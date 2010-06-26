@@ -185,6 +185,18 @@ static int total_modules = 0;
  */
 static int dynamic_modules = 0;
 
+/* The maximum possible value for total_modulese, i.e. number of static
+ * modules plus DYNAMIC_MODULE_LIMIT.
+ */
+static int max_modules = 0;
+
+/* The number of elements we need to alloc for config vectors. Before loading
+ * of dynamic modules, we must be liberal and set this to max_modules. After
+ * loading of dynamic modules, we can trim it down to total_modules. On
+ * restart, reset to max_modules.
+ */
+static int conf_vector_length = 0;
+
 AP_DECLARE_DATA module *ap_top_module = NULL;
 AP_DECLARE_DATA module **ap_loaded_modules=NULL;
 
@@ -212,15 +224,13 @@ typedef void *(*merger_func)(apr_pool_t *, void *, void *);
 
 static ap_conf_vector_t *create_empty_config(apr_pool_t *p)
 {
-    void *conf_vector = apr_pcalloc(p, sizeof(void *) *
-                                    (total_modules + DYNAMIC_MODULE_LIMIT));
+    void *conf_vector = apr_pcalloc(p, sizeof(void *) * conf_vector_length);
     return conf_vector;
 }
 
 static ap_conf_vector_t *create_default_per_dir_config(apr_pool_t *p)
 {
-    void **conf_vector = apr_pcalloc(p, sizeof(void *) *
-                                     (total_modules + DYNAMIC_MODULE_LIMIT));
+    void **conf_vector = apr_pcalloc(p, sizeof(void *) * conf_vector_length);
     module *modp;
 
     for (modp = ap_top_module; modp; modp = modp->next) {
@@ -237,7 +247,7 @@ AP_CORE_DECLARE(ap_conf_vector_t *) ap_merge_per_dir_configs(apr_pool_t *p,
                                            ap_conf_vector_t *base,
                                            ap_conf_vector_t *new_conf)
 {
-    void **conf_vector = apr_palloc(p, sizeof(void *) * total_modules);
+    void **conf_vector = apr_palloc(p, sizeof(void *) * conf_vector_length);
     void **base_vector = (void **)base;
     void **new_vector = (void **)new_conf;
     module *modp;
@@ -263,8 +273,7 @@ AP_CORE_DECLARE(ap_conf_vector_t *) ap_merge_per_dir_configs(apr_pool_t *p,
 
 static ap_conf_vector_t *create_server_config(apr_pool_t *p, server_rec *s)
 {
-    void **conf_vector = apr_pcalloc(p, sizeof(void *) *
-                                     (total_modules + DYNAMIC_MODULE_LIMIT));
+    void **conf_vector = apr_pcalloc(p, sizeof(void *) * conf_vector_length);
     module *modp;
 
     for (modp = ap_top_module; modp; modp = modp->next) {
@@ -696,11 +705,14 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
     for (m = ap_preloaded_modules; *m != NULL; m++)
         (*m)->module_index = total_modules++;
 
+    max_modules = total_modules + DYNAMIC_MODULE_LIMIT + 1;
+    conf_vector_length = max_modules;
+
     /*
      *  Initialise list of loaded modules
      */
     ap_loaded_modules = (module **)apr_palloc(process->pool,
-        sizeof(module *) * (total_modules + DYNAMIC_MODULE_LIMIT + 1));
+        sizeof(module *) * conf_vector_length);
 
     if (ap_loaded_modules == NULL) {
         return "Ouch! Out of memory in ap_setup_prelinked_modules()!";
@@ -1364,7 +1376,7 @@ AP_DECLARE(void) ap_reset_module_loglevels(struct ap_logconf *l, int val)
 {
     if (l->module_levels) {
         int i;
-        for (i = 0; i < total_modules + DYNAMIC_MODULE_LIMIT; i++)
+        for (i = 0; i < conf_vector_length; i++)
             l->module_levels[i] = val;
     }
 }
@@ -1373,8 +1385,7 @@ AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *pool, struct ap_logconf *l,
                                         int index, int level)
 {
     if (!l->module_levels) {
-        l->module_levels = apr_palloc(pool,
-                     sizeof(int) * (total_modules + DYNAMIC_MODULE_LIMIT));
+        l->module_levels = apr_palloc(pool, sizeof(int) * conf_vector_length);
         if (l->level == APLOG_UNSET) {
                 ap_reset_module_loglevels(l, APLOG_UNSET);
         }
@@ -2022,8 +2033,7 @@ AP_DECLARE(struct ap_logconf *) ap_new_log_config(apr_pool_t *p,
         l->level = old->level;
         if (old->module_levels) {
             l->module_levels =
-                apr_pmemdup(p, old->module_levels,
-                            sizeof(int) * (total_modules + DYNAMIC_MODULE_LIMIT));
+                apr_pmemdup(p, old->module_levels, sizeof(int) * conf_vector_length);
         }
     }
     else {
@@ -2048,7 +2058,7 @@ AP_DECLARE(void) ap_merge_log_config(const struct ap_logconf *old,
     }
     else if (old->module_levels != NULL) {
         int i;
-        for (i = 0; i < total_modules + DYNAMIC_MODULE_LIMIT; i++) {
+        for (i = 0; i < conf_vector_length; i++) {
             if (new->module_levels[i] == APLOG_UNSET)
                 new->module_levels[i] = old->module_levels[i];
         }
@@ -2150,6 +2160,12 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
 }
 
 
+static apr_status_t reset_conf_vector_length(void *dummy)
+{
+    conf_vector_length = max_modules;
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
                                        const char *filename,
                                        ap_directive_t **conftree)
@@ -2187,6 +2203,14 @@ AP_DECLARE(server_rec*) ap_read_config(process_rec *process, apr_pool_t *ptemp,
                      "%s: %s", ap_server_argv0, error);
         return NULL;
     }
+
+    /*
+     * We have loaded the dynamic modules. From now on we know exactly how
+     * long the config vectors need to be.
+     */
+    conf_vector_length = total_modules;
+    apr_pool_cleanup_register(p, NULL, reset_conf_vector_length,
+                              apr_pool_cleanup_null);
 
     error = process_command_config(s, ap_server_post_read_config, conftree,
                                    p, ptemp);
