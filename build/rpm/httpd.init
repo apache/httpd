@@ -116,7 +116,7 @@ case "$1" in
             echo $prog is stopped
             RETVAL=3
         else  
-            status -p {$pidfile} $httpd
+            status -p ${pidfile} $httpd
             RETVAL=$?
         fi
         ;;
