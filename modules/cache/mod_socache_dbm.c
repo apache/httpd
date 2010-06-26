@@ -503,7 +503,7 @@ static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r,
 }
 
 static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
-                                        server_rec *s,
+                                        server_rec *s, void *userctx,
                                         ap_socache_iterator_t *iterator,
                                         apr_pool_t *pool)
 {
@@ -539,7 +539,8 @@ static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
                 expired = TRUE;
         }
         if (!expired) {
-            rv = (*iterator)(ctx, s, (unsigned char *)dbmkey.dptr, dbmkey.dsize,
+            rv = (*iterator)(ctx, s, userctx,
+                             (unsigned char *)dbmkey.dptr, dbmkey.dsize,
                              (unsigned char *)dbmval.dptr + sizeof(apr_time_t),
                              dbmval.dsize - sizeof(apr_time_t), pool);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
