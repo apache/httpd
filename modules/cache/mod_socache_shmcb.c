@@ -259,6 +259,7 @@ static int shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
 /* Returns result of the (iterator)() call, zero is success (continue) */
 static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
                                            server_rec *s,
+                                           void *userctx,
                                            SHMCBHeader *header,
                                            SHMCBSubcache *subcache,
                                            ap_socache_iterator_t *iterator,
@@ -634,7 +635,7 @@ static void socache_shmcb_status(ap_socache_instance_t *ctx,
 }
 
 static apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
-                                          server_rec *s,
+                                          server_rec *s, void *userctx,
                                           ap_socache_iterator_t *iterator,
                                           apr_pool_t *pool)
 {
@@ -651,8 +652,8 @@ static apr_status_t socache_shmcb_iterate(ap_socache_instance_t *instance,
     /* Iterate over the subcaches */
     for (loop = 0; loop < header->subcache_num && rv == APR_SUCCESS; loop++) {
         SHMCBSubcache *subcache = SHMCB_SUBCACHE(header, loop);
-        rv = shmcb_subcache_iterate(instance, s, header, subcache, iterator,
-                                    &buf, &buflen, pool, now);
+        rv = shmcb_subcache_iterate(instance, s, userctx, header, subcache,
+                                    iterator, &buf, &buflen, pool, now);
     }
     return rv;
 }
@@ -911,6 +912,7 @@ static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
 
 static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
                                            server_rec *s,
+                                           void *userctx,
                                            SHMCBHeader *header,
                                            SHMCBSubcache *subcache,
                                            ap_socache_iterator_t *iterator,
@@ -970,7 +972,7 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
                                          data_offset, dest_len);
                 dest[dest_len] = '\0';
 
-                rv = (*iterator)(instance, s, id, idx->id_len,
+                rv = (*iterator)(instance, s, userctx, id, idx->id_len,
                                  dest, dest_len, pool);
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
                              "shmcb entry iterated");

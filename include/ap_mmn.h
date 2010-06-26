@@ -230,12 +230,13 @@
  * 20100609.0 (2.3.6-dev)  Dropped ap_args_to_table due to missing constraints.
  * 20100609.1 (2.3.7-dev)  Introduce ap_log_cserror()
  * 20100609.2 (2.3.7-dev)  Add deferred write pool to core_output_filter_ctx
+ * 20100625.0 (2.3.7-dev)  Add 'userctx' to socache iterator callback prototype
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100609
+#define MODULE_MAGIC_NUMBER_MAJOR 20100625
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
 

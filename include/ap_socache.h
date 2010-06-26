@@ -61,25 +61,27 @@ struct ap_socache_hints {
 
 /**
  * Iterator callback prototype for the ap_socache_provider_t->iterate() method
- * @param instance The cache instance (passed through)
- * @param s Associated server structure (passed through)
+ * @param instance The cache instance
+ * @param s Associated server context (for logging)
+ * @param userctx User defined pointer passed from the iterator call
  * @param id Unique ID for the object (binary blob)
  * with a trailing null char for convenience
  * @param idlen Length of id blob
  * @param data Output buffer to place retrieved data (binary blob)
  * with a trailing null char for convenience
  * @param datalen Length of data buffer
- * @param pool Pool for temporary allocations (passed through)
+ * @param pool Pool for temporary allocations
  * @return APR status value; return APR_SUCCESS or the iteration will halt;
  * this value is returned to the ap_socache_provider_t->iterate() caller
  */
-typedef apr_status_t (*ap_socache_iterator_t)(ap_socache_instance_t *instance,
-                                              server_rec *s,
-                                              const unsigned char *id,
-                                              unsigned int idlen,
-                                              const unsigned char *data,
-                                              unsigned int datalen,
-                                              apr_pool_t *pool);
+typedef apr_status_t (ap_socache_iterator_t)(ap_socache_instance_t *instance,
+                                             server_rec *s,
+                                             void *userctx,
+                                             const unsigned char *id,
+                                             unsigned int idlen,
+                                             const unsigned char *data,
+                                             unsigned int datalen,
+                                             apr_pool_t *pool);
 
 /** A socache provider structure.  socache providers are registered
  * with the ap_provider.h interface using the AP_SOCACHE_PROVIDER_*
@@ -193,15 +195,16 @@ typedef struct ap_socache_provider_t {
     /**
      * Dump all cached objects through an iterator callback.
      * @param instance The cache instance
-     * @param s Associated server structure (for logging purposes)
-     * @param iterator The user provided callback which will receive
+     * @param s Associated server context (for processing and logging)
+     * @param userctx User defined pointer passed through to the iterator
+     * @param iterator The user provided callback function which will receive
      * individual calls for each unexpired id/data pair
      * @param pool Pool for temporary allocations.
      * @return APR status value; APR_NOTFOUND if the object was not
      * found
      */
     apr_status_t (*iterate)(ap_socache_instance_t *instance, server_rec *s,
-                            ap_socache_iterator_t *iterator,
+                            void *userctx, ap_socache_iterator_t *iterator,
                             apr_pool_t *pool);
 
 } ap_socache_provider_t;
