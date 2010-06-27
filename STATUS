@@ -219,6 +219,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-partial2-2.2.patch
      +1: minfrin
 
+  *) mod_proxy_ajp: Ensure that we only return a non fatal error if the request
+     is idempotent and if we did not sent any request body so far.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=955966&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
