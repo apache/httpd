@@ -81,7 +81,7 @@
 
     <p>Providers are implemented by <module>mod_authn_dbm</module>,
     <module>mod_authn_file</module>, <module>mod_authn_dbd</module>,
-    and <module>mod_authnz_ldap</module>.</p>
+    <module>mod_authnz_ldap</module> and <module>mod_authn_socache</module>.</p>
 </usage>
 </directivesynopsis>
 

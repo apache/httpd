@@ -144,7 +144,8 @@
     that the chosen provider module is present in the server.</p>
 
     <p>See <module>mod_authn_dbm</module>, <module>mod_authn_file</module>, 
-    and <module>mod_authn_dbd</module> for providers.</p>
+    <module>mod_authn_dbd</module> and <module>mod_authn_socache</module>
+    for providers.</p>
 </usage>
 </directivesynopsis>
 
