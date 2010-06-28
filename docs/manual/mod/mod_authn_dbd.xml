@@ -57,12 +57,23 @@
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
 <seealso><directive module="mod_dbd">DBDParams</directive></seealso>
 
+<section id="socache">
+<title>Performance and Cacheing</title>
+<p>Some users of DBD authentication in HTTPD 2.2 have reported that it
+imposes a problematic load on the database.  This is most likely where
+an HTML page contains hundreds of objects (e.g. images, scripts, etc)
+each of which requires authentication.  Users affected (or concerned)
+by this kind of problem should use <module>mod_authn_socache</module>
+to cache credentials and take most of the load off the database.</p>
+</section>
+
 <section id="example">
 <title>Configuration Example</title>
 <p>This simple example shows use of this module in the context of
 the Authentication and DBD frameworks.</p>
 <example><pre>
 # mod_dbd configuration
+# UPDATED to include authentication cacheing
 DBDriver pgsql
 DBDParams "dbname=apacheauth user=apache password=xxxxxx"
 
@@ -76,7 +87,13 @@ DBDExptime 300
   # for mod_authn_dbd
   AuthType Basic
   AuthName "My Server"
-  AuthBasicProvider dbd
+
+  # To cache credentials, put socache ahead of dbd here
+  AuthBasicProvider socache dbd
+
+  # Also required for caching: tell the cache to cache dbd lookups!
+  AuthnCacheProvider dbd
+  AuthnCacheContext my-server
 
   # mod_authz_core configuration
   Require valid-user
