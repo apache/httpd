@@ -56,6 +56,7 @@ module from each group.</p>
       <li><module>mod_authn_dbm</module></li>
       <li><module>mod_authn_file</module></li>
       <li><module>mod_authnz_ldap</module></li>
+      <li><module>mod_authn_socache</module></li>
     </ul>
   </li>
   <li>Authorization (see the
@@ -589,6 +590,16 @@ person in</title>
         directives have been moved to the <module>mod_access_compat</module> module.</p>
     </section>
 
+</section>
+
+<section id="socache"><title>Authentication Cacheing</title>
+    <p>There may be times when authentication puts an unacceptable load
+    on a provider or on your network.  This is most likely to affect users
+    of <module>mod_authn_dbd</module> (or third-party/custom providers).
+    To deal with this, HTTPD 2.3/2.4 introduces a new cacheing provider
+    <module>mod_authn_socache</module> to cache credentials and reduce
+    the load on the origin provider(s).</p>
+    <p>This may offer a substantial performance boost to some users.</p>
 </section>
 
 <section id="moreinformation"><title>More information</title>
