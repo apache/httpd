@@ -53,9 +53,11 @@ the load on backends</description>
     or dbm (<module>mod_authn_dbm</module>) are unlikely to benefit,
     as these are fast and lightweight in their own right (though in some
     cases, such as a network-mounted file, cacheing may be worthwhile).
-    Other providers such as SQL, LDAP or Radius based authentication
-    are more likely to benefit, particularly where there is an observed
-    performance issue.</p>
+    Other providers such as SQL or LDAP based authentication are more
+    likely to benefit, particularly where there is an observed
+    performance issue.  Amongst the standard modules, <module
+    >mod_authnz_ldap</module> manages its own cache, so only
+    <module>mod_authn_dbd</module> will usually benefit from this cache.</p>
     <p>The basic rules to cache for a provider are:</p>
     <ol><li>Include the provider you're cacheing for in an
             <directive>AuthnCacheProvider</directive> directive.</li>
@@ -65,7 +67,18 @@ the load on backends</description>
             "mod_auth_digest">AuthDigestProvider</directive> directive.</li>
     </ol>
     <p>A simple usage example to accelerate <module>mod_authn_dbd</module>
-    [TODO]</p>
+    using dbm as a cache engine:</p>
+    <example><pre>
+    &lt;Directory /usr/www/myhost/private&gt;
+        AuthType Basic
+        AuthName "Cached Authentication Example"
+        AuthBasicProvider socache dbd
+        AuthDBDUserPWQuery "SELECT password FROM authn WHERE user = %s"
+        AuthnCacheProvider dbd
+        AuthnCacheContext dbd-authn-example
+        AuthnCacheSOCache dbm
+    &lt;/Directory&gt;
+    </pre></example>
 </section>
 
 <section id="dev"><title>Cacheing with custom modules</title>
