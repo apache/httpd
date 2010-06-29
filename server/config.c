@@ -185,7 +185,7 @@ static int total_modules = 0;
  */
 static int dynamic_modules = 0;
 
-/* The maximum possible value for total_modulese, i.e. number of static
+/* The maximum possible value for total_modules, i.e. number of static
  * modules plus DYNAMIC_MODULE_LIMIT.
  */
 static int max_modules = 0;
