@@ -31,7 +31,7 @@
   more information in either the <a
   href="new_features_2_4.html">New Features</a> document, or in
   the <code>src/CHANGES</code> file.  Application and module developers
-  can find a summary of API changes in the <a href="new_api_2_4.html"
+  can find a summary of API changes in the <a href="developer/new_api_2_4.html"
   >API updates</a> overview.</p>
 
   <p>This document describes changes in server behavior that might
@@ -238,7 +238,7 @@
 
     <p>Many third-party modules designed for version 2.2 will
     otherwise work unchanged with the Apache HTTP Server version 2.4.
-    Some will require changes; see the <a href="new_api_2_4.html">API
+    Some will require changes; see the <a href="developer/new_api_2_4.html">API
     update</a> overview.</p>
   </section>
 
