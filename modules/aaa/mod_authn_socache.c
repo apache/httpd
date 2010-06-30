@@ -47,6 +47,7 @@ static apr_global_mutex_t *authn_cache_mutex = NULL;
 static ap_socache_provider_t *socache_provider = NULL;
 static ap_socache_instance_t *socache_instance = NULL;
 static const char *const authn_cache_id = "authn-socache";
+static int configured;
 
 static apr_status_t remove_lock(void *data)
 {
@@ -78,6 +79,7 @@ static int authn_cache_precfg(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *p
     socache_provider = ap_lookup_provider(AP_SOCACHE_PROVIDER_GROUP,
                                           AP_SOCACHE_DEFAULT_PROVIDER,
                                           AP_SOCACHE_PROVIDER_VERSION);
+    configured = 0;
     return OK;
 }
 static int authn_cache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
@@ -87,6 +89,9 @@ static int authn_cache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     const char *errmsg;
     static struct ap_socache_hints authn_cache_hints = {64, 32, 60000000};
 
+    if (!configured) {
+        return OK;    /* don't waste the overhead of creating mutex & cache */
+    }
     if (socache_provider == NULL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, 0, plog,
                       "Please select a socache provider with AuthnCacheSOCache "
@@ -122,7 +127,11 @@ static int authn_cache_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 static void authn_cache_child_init(apr_pool_t *p, server_rec *s)
 {
     const char *lock = apr_global_mutex_lockfile(authn_cache_mutex);
-    apr_status_t rv = apr_global_mutex_child_init(&authn_cache_mutex, lock, p);
+    apr_status_t rv;
+    if (!configured) {
+        return;       /* don't waste the overhead of creating mutex & cache */
+    }
+    rv = apr_global_mutex_child_init(&authn_cache_mutex, lock, p);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "failed to initialise mutex in child_init");
@@ -177,6 +186,7 @@ static const char *authn_cache_setprovider(cmd_parms *cmd, void *CFG,
         cfg->providers = apr_array_make(cmd->pool, 4, sizeof(const char*));
     }
     APR_ARRAY_PUSH(cfg->providers, const char*) = arg;
+    configured = 1;
     return NULL;
 }
 
@@ -239,6 +249,9 @@ static void ap_authn_cache_store(request_rec *r, const char *module,
 
     /* first check whether we're cacheing for this module */
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
+    if (!dcfg->providers) {
+        return;
+    }
     for (i = 0; i < dcfg->providers->nelts; ++i) {
         if (!strcmp(module, APR_ARRAY_IDX(dcfg->providers, i, const char*))) {
             use_cache = 1;
@@ -313,6 +326,9 @@ static authn_status check_password(request_rec *r, const char *user,
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
+    if (!dcfg->providers) {
+        return AUTH_USER_NOT_FOUND;
+    }
     key = construct_key(r, dcfg->context, user, NULL);
     rv = socache_provider->retrieve(socache_instance, r->server,
                                     (unsigned char*)key, strlen(key),
@@ -355,6 +371,9 @@ static authn_status get_realm_hash(request_rec *r, const char *user,
     unsigned char val[MAX_VAL_LEN];
     unsigned int vallen = MAX_VAL_LEN - 1;
     dcfg = ap_get_module_config(r->per_dir_config, &authn_socache_module);
+    if (!dcfg->providers) {
+        return AUTH_USER_NOT_FOUND;
+    }
     key = construct_key(r, dcfg->context, user, realm);
     rv = socache_provider->retrieve(socache_instance, r->server,
                                     (unsigned char*)key, strlen(key),
