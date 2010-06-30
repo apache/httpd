@@ -1374,18 +1374,15 @@ AP_DECLARE_NONSTD(const char *) ap_set_deprecated(cmd_parms *cmd,
 
 AP_DECLARE(void) ap_reset_module_loglevels(struct ap_logconf *l, int val)
 {
-    if (l->module_levels) {
-        int i;
-        for (i = 0; i < conf_vector_length; i++)
-            l->module_levels[i] = val;
-    }
+    if (l->module_levels)
+        memset(l->module_levels, val, conf_vector_length);
 }
 
 AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *pool, struct ap_logconf *l,
                                         int index, int level)
 {
     if (!l->module_levels) {
-        l->module_levels = apr_palloc(pool, sizeof(int) * conf_vector_length);
+        l->module_levels = apr_palloc(pool, conf_vector_length);
         if (l->level == APLOG_UNSET) {
                 ap_reset_module_loglevels(l, APLOG_UNSET);
         }
@@ -2033,7 +2030,7 @@ AP_DECLARE(struct ap_logconf *) ap_new_log_config(apr_pool_t *p,
         l->level = old->level;
         if (old->module_levels) {
             l->module_levels =
-                apr_pmemdup(p, old->module_levels, sizeof(int) * conf_vector_length);
+                apr_pmemdup(p, old->module_levels, conf_vector_length);
         }
     }
     else {

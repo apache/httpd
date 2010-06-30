@@ -231,12 +231,13 @@
  * 20100609.1 (2.3.7-dev)  Introduce ap_log_cserror()
  * 20100609.2 (2.3.7-dev)  Add deferred write pool to core_output_filter_ctx
  * 20100625.0 (2.3.7-dev)  Add 'userctx' to socache iterator callback prototype
+ * 20100630.0 (2.3.7-dev)  make module_levels vector of char instead of int
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100625
+#define MODULE_MAGIC_NUMBER_MAJOR 20100630
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
