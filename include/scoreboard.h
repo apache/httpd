@@ -89,10 +89,10 @@ typedef enum {
 /* stuff which is worker specific */
 typedef struct worker_score worker_score;
 struct worker_score {
-    int thread_num;
 #if APR_HAS_THREADS
     apr_os_thread_t tid;
 #endif
+    int thread_num;
     /* With some MPMs (e.g., worker), a worker_score can represent
      * a thread in a terminating process which is no longer
      * represented by the corresponding process_score.  These MPMs
@@ -101,18 +101,18 @@ struct worker_score {
     pid_t pid;
     ap_generation_t generation;
     unsigned char status;
+    unsigned short conn_count;
+    apr_off_t     conn_bytes;
     unsigned long access_count;
     apr_off_t     bytes_served;
     unsigned long my_access_count;
     apr_off_t     my_bytes_served;
-    apr_off_t     conn_bytes;
-    unsigned short conn_count;
     apr_time_t start_time;
     apr_time_t stop_time;
+    apr_time_t last_used;
 #ifdef HAVE_TIMES
     struct tms times;
 #endif
-    apr_time_t last_used;
     char client[32];		/* Keep 'em small... */
     char request[64];		/* We just want an idea... */
     char vhost[32];	        /* What virtual host is being accessed? */

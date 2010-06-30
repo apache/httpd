@@ -232,6 +232,7 @@
  * 20100609.2 (2.3.7-dev)  Add deferred write pool to core_output_filter_ctx
  * 20100625.0 (2.3.7-dev)  Add 'userctx' to socache iterator callback prototype
  * 20100630.0 (2.3.7-dev)  make module_levels vector of char instead of int
+ * 20100701.0 (2.3.7-dev)  re-order struct members to improve alignment
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */

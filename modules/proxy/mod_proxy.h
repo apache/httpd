@@ -92,9 +92,9 @@ struct proxy_remote {
     const char *scheme;     /* the schemes handled by this proxy, or '*' */
     const char *protocol;   /* the scheme used to talk to this proxy */
     const char *hostname;   /* the hostname of this proxy */
-    apr_port_t  port;       /* the port for this proxy */
-    ap_regex_t *regexp;        /* compiled regex (if any) for the remote */
+    ap_regex_t *regexp;     /* compiled regex (if any) for the remote */
     int use_regex;          /* simple boolean. True if we have a regex pattern */
+    apr_port_t  port;       /* the port for this proxy */
 };
 
 #define PROXYPASS_NOCANON 0x01
@@ -134,21 +134,18 @@ typedef struct {
     proxy_worker       *forward;    /* forward proxy worker */
     proxy_worker       *reverse;    /* reverse "module-driven" proxy worker */
     const char *domain;     /* domain name to use in absence of a domain name in the request */
+    apr_pool_t *pool;       /* Pool used for allocating this struct */
     int req;                /* true if proxy requests are enabled */
-    char req_set;
     enum {
       via_off,
       via_on,
       via_block,
       via_full
     } viaopt;                   /* how to deal with proxy Via: headers */
-    char viaopt_set;
     apr_size_t recv_buffer_size;
-    char recv_buffer_size_set;
     apr_size_t io_buffer_size;
-    char io_buffer_size_set;
     long maxfwd;
-    char maxfwd_set;
+    apr_interval_time_t timeout;
     /** 
      * the following setting masks the error page
      * returned from the 'proxied server' and just 
@@ -158,32 +155,31 @@ typedef struct {
      * returned from the rest of the system 
      */
     int error_override;
-    int error_override_set;
-    apr_interval_time_t timeout;
-    char timeout_set;
     enum {
       bad_error,
       bad_ignore,
       bad_body
     } badopt;                   /* how to deal with bad headers */
-    char badopt_set;
-/* putting new stuff on the end maximises binary back-compatibility.
- * the strmatch_patterns are really a const just to have a
- * case-independent strstr.
- */
     enum {
         status_off,
         status_on,
         status_full
     } proxy_status;             /* Status display options */
+
+    char req_set;
+    char viaopt_set;
+    char recv_buffer_size_set;
+    char io_buffer_size_set;
+    char maxfwd_set;
+    char timeout_set;
+    char error_override_set;
+    char badopt_set;
     char proxy_status_set;
-    apr_pool_t *pool;           /* Pool used for allocating this struct */
 } proxy_server_conf;
 
 
 typedef struct {
     const char *p;            /* The path */
-    int         p_is_fnmatch; /* Is this path an fnmatch candidate? */
     ap_regex_t  *r;            /* Is this a regex? */
 
 /* ProxyPassReverse and friends are documented as working inside
@@ -198,9 +194,11 @@ typedef struct {
     apr_array_header_t* cookie_domains;
     const apr_strmatch_pattern* cookie_path_str;
     const apr_strmatch_pattern* cookie_domain_str;
-    int interpolate_env;
-    int preserve_host;
-    int preserve_host_set;
+
+    signed char p_is_fnmatch; /* Is the path an fnmatch candidate? */
+    signed char interpolate_env;
+    signed char preserve_host;
+    signed char preserve_host_set;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
@@ -214,25 +212,25 @@ typedef struct {
 
 typedef struct {
     conn_rec     *connection;
-    const char   *hostname;
-    apr_port_t   port;
-    int          is_ssl;
-    apr_pool_t   *pool;     /* Subpool for hostname and addr data */
-    apr_socket_t *sock;     /* Connection socket */
-    apr_sockaddr_t *addr;   /* Preparsed remote address info */
-    apr_uint32_t flags;     /* Connection flags */
-    int          close;     /* Close 'this' connection */
-    proxy_worker *worker;   /* Connection pool this connection belongs to */
-    void         *data;     /* per scheme connection data */
-#if APR_HAS_THREADS
-    int          inreslist; /* connection in apr_reslist? */
-#endif
-    apr_pool_t   *scpool;   /* Subpool used for socket and connection data */
     request_rec  *r;        /* Request record of the frontend request
                              * which the backend currently answers. */
-    int          need_flush;/* Flag to decide whether we need to flush the
-                             * filter chain or not */
+    proxy_worker *worker;   /* Connection pool this connection belongs to */
+    apr_pool_t   *pool;     /* Subpool for hostname and addr data */
+    const char   *hostname;
+    apr_sockaddr_t *addr;   /* Preparsed remote address info */
+    apr_pool_t   *scpool;   /* Subpool used for socket and connection data */
+    apr_socket_t *sock;     /* Connection socket */
+    void         *data;     /* per scheme connection data */
     void         *forward;  /* opaque forward proxy data */
+    apr_uint32_t flags;     /* Connection flags */
+    apr_port_t   port;
+    char         is_ssl;
+    char         close;     /* Close 'this' connection */
+    char         need_flush;/* Flag to decide whether we need to flush the
+                             * filter chain or not */
+#if APR_HAS_THREADS
+    char         inreslist; /* connection in apr_reslist? */
+#endif
 } proxy_conn_rec;
 
 typedef struct {
@@ -279,8 +277,8 @@ PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 
 /* Runtime worker status informations. Shared in scoreboard */
 typedef struct {
-    int             status;
     apr_time_t      error_time; /* time of the last error */
+    int             status;
     int             retries;    /* number of retries on this worker */
     int             lbstatus;   /* Current lbstatus */
     int             lbfactor;   /* dynamic lbfactor */
@@ -296,38 +294,34 @@ typedef struct {
 
 /* Worker configuration */
 struct proxy_worker {
-    int             id;         /* scoreboard id */
-    apr_interval_time_t retry;  /* retry interval */
-    int             lbfactor;   /* initial load balancing factor */
     const char      *name;
     const char      *scheme;    /* scheme to use ajp|http|https */
     const char      *hostname;  /* remote backend address */
     const char      *route;     /* balancing route */
     const char      *redirect;  /* temporary balancing redirection route */
+    int             id;         /* scoreboard id */
     int             status;     /* temporary worker status */
-    apr_port_t      port;
+    int             lbfactor;   /* initial load balancing factor */
+    int             lbset;      /* load balancer cluster set */
     int             min;        /* Desired minimum number of available connections */
     int             smax;       /* Soft maximum on the total number of connections */
     int             hmax;       /* Hard maximum on the total number of connections */
     apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection
                                  * may be available while exceeding the soft limit */
+    apr_interval_time_t retry;  /* retry interval */
     apr_interval_time_t timeout; /* connection timeout */
-    char            timeout_set;
     apr_interval_time_t acquire; /* acquire timeout when the maximum number of connections is exceeded */
-    char            acquire_set;
+    apr_interval_time_t ping_timeout;
+    apr_interval_time_t conn_timeout;
     apr_size_t      recv_buffer_size;
-    char            recv_buffer_size_set;
     apr_size_t      io_buffer_size;
-    char            io_buffer_size_set;
+    apr_port_t      port;
     char            keepalive;
-    char            keepalive_set;
+    char            disablereuse;
+    int             is_address_reusable;
     proxy_conn_pool     *cp;        /* Connection pool to use */
     proxy_worker_stat   *s;         /* Shared data */
     void            *opaque;    /* per scheme worker data */
-    int             is_address_reusable;
-#if APR_HAS_THREADS
-    apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
-#endif
     void            *context;   /* general purpose storage */
     enum {
          flush_off,
@@ -335,15 +329,20 @@ struct proxy_worker {
          flush_auto
     } flush_packets;           /* control AJP flushing */
     int             flush_wait;  /* poll wait time in microseconds if flush_auto */
-    apr_interval_time_t ping_timeout;
-    char ping_timeout_set;
-    int             lbset;      /* load balancer cluster set */
-    char            retry_set;
-    char            disablereuse;
-    char            disablereuse_set;
-    apr_interval_time_t conn_timeout;
-    char            conn_timeout_set;
     const char      *flusher;  /* flush provider used by mod_proxy_fdpass */
+#if APR_HAS_THREADS
+    apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
+#endif
+
+    char            retry_set;
+    char            timeout_set;
+    char            acquire_set;
+    char            ping_timeout_set;
+    char            conn_timeout_set;
+    char            recv_buffer_size_set;
+    char            io_buffer_size_set;
+    char            keepalive_set;
+    char            disablereuse_set;
 };
 
 /*
@@ -355,12 +354,17 @@ struct proxy_worker {
 struct proxy_balancer {
     apr_array_header_t *workers; /* array of proxy_workers */
     const char *name;            /* name of the load balancer */
-    const char *sticky;          /* sticky session identifier */
-    int         sticky_force;    /* Disable failover for sticky sessions */
     apr_interval_time_t timeout; /* Timeout for waiting on free connection */
-    int                 max_attempts; /* Number of attempts before failing */
-    char                max_attempts_set;
     proxy_balancer_method *lbmethod;
+
+    const char      *sticky_path;     /* URL sticky session identifier */
+    apr_array_header_t *errstatuses;  /* statuses to force members into error */
+    const char      *sticky;          /* sticky session identifier */
+    int             sticky_force;     /* Disable failover for sticky sessions */
+    int             scolonsep;        /* true if ';' seps sticky session paths */
+
+    int             max_attempts;     /* Number of attempts before failing */
+    char            max_attempts_set;
 
     /* XXX: Perhaps we will need the proc mutex too.
      * Altrough we are only using arithmetic operations
@@ -370,10 +374,7 @@ struct proxy_balancer {
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
-    void            *context;   /* general purpose storage */
-    const char      *sticky_path;  /* URL sticky session identifier */
-    int             scolonsep;     /* true if ';' seps sticky session paths */
-    apr_array_header_t *errstatuses; /* statuses to force members into error */
+    void            *context;         /* general purpose storage */
 };
 
 struct proxy_balancer_method {

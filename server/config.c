@@ -1400,7 +1400,7 @@ AP_DECLARE(void) ap_set_module_loglevel(apr_pool_t *pool, struct ap_logconf *l,
  */
 
 static cmd_parms default_parms =
-{NULL, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
+{NULL, 0, 0, -1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL};
 
 AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *file)
 {

@@ -227,18 +227,18 @@ struct ap_filter_rec_t {
      */
     ap_init_filter_func filter_init_func;
 
+    /** The next filter_rec in the list */
+    struct ap_filter_rec_t *next;
+
+    /** Providers for this filter */
+    ap_filter_provider_t *providers;
+
     /** The type of filter, either AP_FTYPE_CONTENT or AP_FTYPE_CONNECTION.  
      * An AP_FTYPE_CONTENT filter modifies the data based on information 
      * found in the content.  An AP_FTYPE_CONNECTION filter modifies the 
      * data based on the type of connection.
      */
     ap_filter_type ftype;
-
-    /** The next filter_rec in the list */
-    struct ap_filter_rec_t *next;
-
-    /** Providers for this filter */
-    ap_filter_provider_t *providers;
 
     /** Trace level for this filter */
     int debug;
