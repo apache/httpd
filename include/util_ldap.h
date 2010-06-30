@@ -100,7 +100,6 @@ typedef struct util_ldap_connection_t {
 #if APR_HAS_THREADS
     apr_thread_mutex_t *lock;           /* Lock to indicate this connection is in use */
 #endif
-    int bound;                          /* Flag to indicate whether this connection is bound yet */
 
     const char *host;                   /* Name of the LDAP server (or space separated list) */
     int port;                           /* Port of the LDAP server */
@@ -108,6 +107,8 @@ typedef struct util_ldap_connection_t {
 
     const char *binddn;                 /* DN to bind to server (can be NULL) */
     const char *bindpw;                 /* Password to bind to server (can be NULL) */
+
+    int bound;                          /* Flag to indicate whether this connection is bound yet */
 
     int secure;                         /* SSL/TLS mode of the connection */
     apr_array_header_t *client_certs;   /* Client certificates on this connection */
@@ -144,10 +145,11 @@ typedef struct util_ldap_state_t {
     long compare_cache_size;    /* Size (in entries) of compare cache */
 
     struct util_ldap_connection_t *connections;
-    int   ssl_supported;
     apr_array_header_t *global_certs;  /* Global CA certificates */
+    int   ssl_supported;
     int   secure;
     int   secure_set;
+    int   verify_svr_cert;
 
 #if APR_HAS_SHARED_MEMORY
     apr_shm_t *cache_shm;
@@ -156,10 +158,11 @@ typedef struct util_ldap_state_t {
 
     /* cache ald */
     void *util_ldap_cache;
+
     long  connectionTimeout;
-    int   verify_svr_cert;
-    int debug_level;                    /* SDK debug level */
     struct timeval *opTimeout;
+
+    int debug_level;                    /* SDK debug level */
 
 } util_ldap_state_t;
 

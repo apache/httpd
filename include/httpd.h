@@ -743,12 +743,12 @@ struct process_rec {
     apr_pool_t *pool;
     /** Configuration pool. Cleared upon restart */
     apr_pool_t *pconf;
-    /** Number of command line arguments passed to the program */
-    int argc;
-    /** The command line arguments */
-    const char * const *argv;
     /** The program name used to execute the program */
     const char *short_name;
+    /** The command line arguments */
+    const char * const *argv;
+    /** Number of command line arguments passed to the program */
+    int argc;
 };
 
 /** 
@@ -785,10 +785,10 @@ struct request_rec {
     int proxyreq;
     /** HEAD request, as opposed to GET */
     int header_only;
-    /** Protocol string, as given to us, or HTTP/0.9 */
-    char *protocol;
     /** Protocol version number of protocol; 1.1 = 1001 */
     int proto_num;
+    /** Protocol string, as given to us, or HTTP/0.9 */
+    char *protocol;
     /** Host, as set by full URI or Host: */
     const char *hostname;
 
@@ -804,10 +804,10 @@ struct request_rec {
      * look, but don't touch.
      */
 
-    /** Request method (eg. GET, HEAD, POST, etc.) */
-    const char *method;
     /** M_GET, M_POST, etc. */
     int method_number;
+    /** Request method (eg. GET, HEAD, POST, etc.) */
+    const char *method;
 
     /**
      *  'allowed' is a bitvector of the allowed methods.
@@ -844,17 +844,13 @@ struct request_rec {
 
     /* HTTP/1.1 connection-level features */
 
-    /** sending chunked transfer-coding */
-    int chunked;
     /** The Range: header */
     const char *range;
     /** The "real" content length */
     apr_off_t clength;
+    /** sending chunked transfer-coding */
+    int chunked;
 
-    /** Remaining bytes left to read from the request body */
-    apr_off_t remaining;
-    /** Number of bytes that have been read  from the request body */
-    apr_off_t read_length;
     /** Method for reading the request body
      * (eg. REQUEST_CHUNKED_ERROR, REQUEST_NO_BODY,
      *  REQUEST_CHUNKED_DECHUNK, etc...) */
@@ -863,6 +859,16 @@ struct request_rec {
     int read_chunked;
     /** is client waiting for a 100 response? */
     unsigned expecting_100;
+    /** The optional kept body of the request. */
+    apr_bucket_brigade *kept_body;
+    /** For ap_body_to_table(): parsed body */
+    /* XXX: ap_body_to_table has been removed. Remove body_table too or
+     * XXX: keep it to reintroduce ap_body_to_table without major bump? */
+    apr_table_t *body_table;
+    /** Remaining bytes left to read from the request body */
+    apr_off_t remaining;
+    /** Number of bytes that have been read  from the request body */
+    apr_off_t read_length;
 
     /* MIME header environments, in and out.  Also, an array containing
      * environment variables to be passed to subprocesses, so people can
@@ -910,11 +916,6 @@ struct request_rec {
     /** If an authentication check was made, this gets set to the auth type. */
     char *ap_auth_type;
 
-    /** This response can not be cached */
-    int no_cache;
-    /** There is no local copy of this response */
-    int no_local_copy;
-
     /* What object is being requested (either directly, or via include
      * or content-negotiation mapping).
      */
@@ -932,10 +933,6 @@ struct request_rec {
     char *path_info;
     /** The QUERY_ARGS extracted from this request */
     char *args;	
-    /**  finfo.protection (st_mode) set to zero if no such file */
-    apr_finfo_t finfo;
-    /** A struct containing the components of URI */
-    apr_uri_t parsed_uri;
 
     /**
      * Flag for the handler to accept or reject path_info on 
@@ -947,6 +944,9 @@ struct request_rec {
      */
     int used_path_info;
 
+    /** A flag to determine if the eos bucket has been sent yet */
+    int eos_sent;
+
     /* Various other config info which may change with .htaccess files
      * These are config vectors, with one void* pointer for each module
      * (the thing pointed to being the module's business).
@@ -956,6 +956,11 @@ struct request_rec {
     struct ap_conf_vector_t *per_dir_config;
     /** Notes on *this* request */
     struct ap_conf_vector_t *request_config;
+
+    /** Optional request log level configuration. Will usually point
+     *  to a server or per_dir config, i.e. must be copied before
+     *  modifying */
+    const struct ap_logconf *log;
 
     /**
      * A linked list of the .htaccess configuration directives
@@ -977,26 +982,20 @@ struct request_rec {
      *  request */
     struct ap_filter_t *proto_input_filters;
 
-    /** Optional request log level configuration. Will usually point
-     *  to a server or per_dir config, i.e. must be copied before
-     *  modifying */
-    const struct ap_logconf *log;
- 
-    /** A flag to determine if the eos bucket has been sent yet */
-    int eos_sent;
+    /** This response can not be cached */
+    int no_cache;
+    /** There is no local copy of this response */
+    int no_local_copy;
 
-    /** The optional kept body of the request. */
-    apr_bucket_brigade *kept_body;
-
+    /** Mutex protect callbacks registered with ap_mpm_register_timed_callback
+     * from being run before the original handler finishes running
+     */
     apr_thread_mutex_t *invoke_mtx;
 
-    apr_table_t *body_table;
-
-/* Things placed at the end of the record to avoid breaking binary
- * compatibility.  It would be nice to remember to reorder the entire
- * record to improve 64bit alignment the next time we need to break
- * binary compatibility for some other reason.
- */
+    /** A struct containing the components of URI */
+    apr_uri_t parsed_uri;
+    /**  finfo.protection (st_mode) set to zero if no such file */
+    apr_finfo_t finfo;
 };
 
 /**
@@ -1052,19 +1051,6 @@ struct conn_rec {
      *  get_remote_logname() */
     char *remote_logname;
 
-    /** Are we still talking? */
-    unsigned aborted:1;
-
-    /** Are we going to keep the connection alive for another request?
-     * @see ap_conn_keepalive_e */
-    ap_conn_keepalive_e keepalive;
-
-    /** have we done double-reverse DNS? -1 yes/failure, 0 not yet, 
-     *  1 yes/success */
-    signed int double_reverse:2;
-
-    /** How many times have we used it? */
-    int keepalives;
     /** server IP address */
     char *local_ip;
     /** used for ap_get_server_name when UseCanonicalName is set to DNS
@@ -1097,8 +1083,22 @@ struct conn_rec {
     /** Are there any filters that clogg/buffer the input stream, breaking
      *  the event mpm.
      */
-    int clogging_input_filters;
+    unsigned int clogging_input_filters:1;
     
+    /** have we done double-reverse DNS? -1 yes/failure, 0 not yet, 
+     *  1 yes/success */
+    signed int double_reverse:2;
+
+    /** Are we still talking? */
+    unsigned aborted;
+
+    /** Are we going to keep the connection alive for another request?
+     * @see ap_conn_keepalive_e */
+    ap_conn_keepalive_e keepalive;
+
+    /** How many times have we used it? */
+    int keepalives;
+
     /** Optional connection log level configuration. May point to a server or
      *  per_dir config, i.e. must be copied before modifying */
     const struct ap_logconf *log;
@@ -1133,8 +1133,6 @@ struct conn_state_t {
     APR_RING_ENTRY(conn_state_t) timeout_list;
     /** the expiration time of the next keepalive timeout */
     apr_time_t expiration_time;
-    /** Current state of the connection */
-    conn_state_e state;
     /** connection record this struct refers to */
     conn_rec *c;
     /** memory pool to allocate from */
@@ -1143,6 +1141,8 @@ struct conn_state_t {
     apr_bucket_alloc_t *bucket_alloc;
     /** poll file decriptor information */
     apr_pollfd_t pfd;
+    /** Current state of the connection */
+    conn_state_e state;
 };
 
 /* Per-vhost config... */
@@ -1162,12 +1162,12 @@ typedef struct server_addr_rec server_addr_rec;
 struct server_addr_rec {
     /** The next server in the list */
     server_addr_rec *next;
+    /** The name given in "<VirtualHost>" */
+    char *virthost;
     /** The bound address, for this server */
     apr_sockaddr_t *host_addr;
     /** The bound port, for this server */
     apr_port_t host_port;
-    /** The name given in "<VirtualHost>" */
-    char *virthost;
 };
 
 struct ap_logconf {
@@ -1186,20 +1186,6 @@ struct server_rec {
     /** The next server in the list */
     server_rec *next;
 
-    /** The name of the server */
-    const char *defn_name;
-    /** The line of the config file that the server was defined on */
-    unsigned defn_line_number;
-
-    /* Contact information */
-
-    /** The admin's contact information */
-    char *server_admin;
-    /** The server hostname */
-    char *server_hostname;
-    /** for redirects, etc. */
-    apr_port_t port;
-
     /* Log files --- note that transfer log is now in the modules... */
 
     /** The name of the error log */
@@ -1211,13 +1197,33 @@ struct server_rec {
 
     /* Module-specific configuration for server, and defaults... */
 
-    /** true if this is the virtual server */
-    int is_virtual;
     /** Config vector containing pointers to modules' per-server config 
      *  structures. */
     struct ap_conf_vector_t *module_config; 
     /** MIME type info, etc., before we start checking per-directory info */
     struct ap_conf_vector_t *lookup_defaults;
+
+    /** The name of the server */
+    const char *defn_name;
+    /** The line of the config file that the server was defined on */
+    unsigned defn_line_number;
+    /** true if this is the virtual server */
+    char is_virtual;
+
+
+    /* Information for redirects */
+
+    /** for redirects, etc. */
+    apr_port_t port;
+    /** The server request scheme for redirect responses */
+    const char *server_scheme;
+
+    /* Contact information */
+
+    /** The admin's contact information */
+    char *server_admin;
+    /** The server hostname */
+    char *server_hostname;
 
     /* Transaction handling */
 
@@ -1232,15 +1238,15 @@ struct server_rec {
     /** Use persistent connections? */
     int keep_alive;
 
-    /** Pathname for ServerPath */
-    const char *path;
-    /** Length of path */
-    int pathlen;
-
     /** Normal names for ServerAlias servers */
     apr_array_header_t *names;
     /** Wildcarded names for ServerAlias servers */
     apr_array_header_t *wild_names;
+
+    /** Pathname for ServerPath */
+    const char *path;
+    /** Length of path */
+    int pathlen;
 
     /** limit on size of the HTTP request line    */
     int limit_req_line;
@@ -1249,8 +1255,6 @@ struct server_rec {
     /** limit on number of request header fields  */
     int limit_req_fields; 
 
-    /** The server request scheme for redirect responses */
-    const char *server_scheme;
 
     /** Opaque storage location */
     void *context;
@@ -1258,10 +1262,10 @@ struct server_rec {
 
 typedef struct core_output_filter_ctx {
     apr_bucket_brigade *buffered_bb;
-    apr_size_t bytes_in;
-    apr_size_t bytes_written;
     apr_bucket_brigade *tmp_flush_bb;
     apr_pool_t *deferred_write_pool;
+    apr_size_t bytes_in;
+    apr_size_t bytes_written;
 } core_output_filter_ctx_t;
  
 typedef struct core_filter_ctx {

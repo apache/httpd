@@ -1570,19 +1570,19 @@ typedef struct dav_prop_ctx
 {
     dav_propdb *propdb;
 
+    apr_xml_elem *prop;             /* property to affect */
+
     int operation;
 #define DAV_PROP_OP_SET        1    /* set a property value */
 #define DAV_PROP_OP_DELETE     2    /* delete a prop value */
 /* ### add a GET? */
 
-    apr_xml_elem *prop;             /* property to affect */
-
-    dav_error *err;                 /* error (if any) */
-
     /* private items to the propdb */
     int is_liveprop;
     void *liveprop_ctx;
     struct dav_rollback_item *rollback;  /* optional rollback info */
+
+    dav_error *err;                 /* error (if any) */
 
     /* private to mod_dav.c */
     request_rec *r;

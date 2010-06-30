@@ -276,6 +276,8 @@ struct cmd_parms_struct {
     void *info;
     /** Which allow-override bits are set */
     int override;
+    /** Which allow-override-opts bits are set */
+    int override_opts;
     /** Which methods are &lt;Limit&gt;ed */
     apr_int64_t limited;
     /** methods which are limited */
@@ -310,8 +312,6 @@ struct cmd_parms_struct {
     /** directive with syntax error */
     const ap_directive_t *err_directive;
 
-    /** Which allow-override-opts bits are set */
-    int override_opts;
 };
 
 /**

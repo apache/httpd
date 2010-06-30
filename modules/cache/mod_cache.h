@@ -130,8 +130,8 @@ typedef struct {
     apr_time_t maxex;
     int maxex_set;
     /* default time to keep cached file in msecs */
-    apr_time_t defex;
     int defex_set;
+    apr_time_t defex;
     /* factor for estimating expires date */
     double factor;
     int factor_set;
@@ -147,31 +147,31 @@ typedef struct {
     /** ignore Cache-Control: no-store header from client or server */
     int store_nostore;
     int store_nostore_set;
-    /** store the headers that should not be stored in the cache */
-    apr_array_header_t *ignore_headers;
     /* flag if CacheIgnoreHeader has been set */
     #define CACHE_IGNORE_HEADERS_SET   1
     #define CACHE_IGNORE_HEADERS_UNSET 0
     int ignore_headers_set;
+    /** store the headers that should not be stored in the cache */
+    apr_array_header_t *ignore_headers;
     /* Minimum time to keep cached files in msecs */
     apr_time_t minex;
     int minex_set;
     /** ignore query-string when caching */
     int ignorequerystring;
     int ignorequerystring_set;
-    /** store the identifiers that should not be used for key calculation */
-    apr_array_header_t *ignore_session_id;
     /* flag if CacheIgnoreURLSessionIdentifiers has been set */
     #define CACHE_IGNORE_SESSION_ID_SET   1
     #define CACHE_IGNORE_SESSION_ID_UNSET 0
     int ignore_session_id_set;
+    /** store the identifiers that should not be used for key calculation */
+    apr_array_header_t *ignore_session_id;
     /* thundering herd lock */
     int lock;
     int lock_set;
     const char *lockpath;
     int lockpath_set;
-    apr_time_t lockmaxage;
     int lockmaxage_set;
+    apr_time_t lockmaxage;
     /** run within the quick handler */
     int quick;
     int quick_set;
@@ -180,11 +180,6 @@ typedef struct {
 /* cache info information */
 typedef struct cache_info cache_info;
 struct cache_info {
-    /**
-     * HTTP status code of the cached entity. Though not necessarily the
-     * status code finally issued to the request.
-     */
-    int status;
     /**
      * the original time corresponding to the 'Date:' header of the request
      * served
@@ -196,6 +191,11 @@ struct cache_info {
     apr_time_t request_time;
     /** apr_time_now() at the time the entity was acutally cached */
     apr_time_t response_time;
+    /**
+     * HTTP status code of the cached entity. Though not necessarily the
+     * status code finally issued to the request.
+     */
+    int status;
 };
 
 /* cache handle information */

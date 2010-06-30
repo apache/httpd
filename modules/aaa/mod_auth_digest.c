@@ -154,10 +154,10 @@ typedef struct digest_header_struct {
     const char           *message_qop;
     const char           *nonce_count;
     /* the following fields are not (directly) from the header */
-    apr_time_t            nonce_time;
-    enum hdr_sts          auth_hdr_sts;
     const char           *raw_request_uri;
     apr_uri_t            *psd_request_uri;
+    apr_time_t            nonce_time;
+    enum hdr_sts          auth_hdr_sts;
     int                   needed_auth;
     client_entry         *client;
 } digest_header_rec;

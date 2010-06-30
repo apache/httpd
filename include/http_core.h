@@ -333,6 +333,13 @@ typedef struct {
      */
     void **notes;
 
+    /** Custom response strings registered via ap_custom_response(),
+     * or NULL; check per-dir config if nothing found here
+     */
+    char **response_code_strings; /* from ap_custom_response(), not from
+                                   * ErrorDocument
+                                   */
+
     /** There is a script processor installed on the output filter chain,
      * so it needs the default_handler to deliver a (script) file into
      * the chain so it can process it. Normally, default_handler only
@@ -343,12 +350,6 @@ typedef struct {
      */
     int deliver_script;
 
-    /** Custom response strings registered via ap_custom_response(),
-     * or NULL; check per-dir config if nothing found here
-     */
-    char **response_code_strings; /* from ap_custom_response(), not from
-                                   * ErrorDocument
-                                   */
     /** Should addition of charset= be suppressed for this request?
      */
     int suppress_charset;
