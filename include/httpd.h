@@ -1172,7 +1172,7 @@ struct server_addr_rec {
 
 struct ap_logconf {
     /** The per-module log levels */
-    int *module_levels;
+    signed char *module_levels;
 
     /** The log level for this server */
     int level;
