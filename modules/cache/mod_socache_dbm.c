@@ -369,7 +369,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
      * make sure the expiration for still not-accessed
      * socache entries is done only from time to time
      */
-    now = time(NULL);
+    now = apr_time_now();
 
     if (now < ctx->last_expiry + ctx->expiry_interval) {
         return;
@@ -516,10 +516,9 @@ static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
     apr_status_t rv;
 
     /*
-     * make sure the expiration for still not-accessed
-     * socache entries is done only from time to time
+     * make sure the expired records are omitted
      */
-    now = time(NULL);
+    now = apr_time_now();
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE,
                            DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
