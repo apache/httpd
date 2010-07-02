@@ -972,8 +972,8 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
                                          data_offset, dest_len);
                 dest[dest_len] = '\0';
 
-                rv = (*iterator)(instance, s, userctx, id, idx->id_len,
-                                 dest, dest_len, pool);
+                rv = iterator(instance, s, userctx, id, idx->id_len,
+                              dest, dest_len, pool);
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
                              "shmcb entry iterated");
                 if (rv != APR_SUCCESS)
@@ -991,7 +991,7 @@ static apr_status_t shmcb_subcache_iterate(ap_socache_instance_t *instance,
         pos = SHMCB_CYCLIC_INCREMENT(pos, 1, header->index_num);
     }
 
-    return -1; /* failure */
+    return APR_SUCCESS;
 }
 
 static const ap_socache_provider_t socache_shmcb = {
