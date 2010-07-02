@@ -538,7 +538,7 @@ static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
                 expired = TRUE;
         }
         if (!expired) {
-            rv = (*iterator)(ctx, s, userctx,
+            rv = iterator(ctx, s, userctx,
                              (unsigned char *)dbmkey.dptr, dbmkey.dsize,
                              (unsigned char *)dbmval.dptr + sizeof(apr_time_t),
                              dbmval.dsize - sizeof(apr_time_t), pool);
@@ -546,8 +546,6 @@ static apr_status_t socache_dbm_iterate(ap_socache_instance_t *ctx,
                          "dbm `%s' entry iterated", ctx->data_file);
             if (rv != APR_SUCCESS)
                 return rv;
- 
-
         }
         rv = apr_dbm_nextkey(dbm, &dbmkey);
     }
