@@ -206,7 +206,7 @@ variables work.</p>
 <p>The syntax for this flag is:</p>
 
 <example>
-[E:VAR=VAL]
+[E=VAR:VAL]
 </example>
 
 <p><code>VAL</code> may contain backreferences (<code>$N</code> or
