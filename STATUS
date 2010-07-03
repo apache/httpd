@@ -227,6 +227,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem,
 
+  *) mod_rewrite: Allow to set environment variables using mod_rewrite without
+     explicitely giving a value.
+     Most modules only check presence of a variable, not the value, so it makes
+     sense to make the VAL argument in the mod_rewrite ENV flag optional.
+     Currently using [ENV=VAR] instead of [ENV=VAR:VAL] silently drops the flag
+     (it is added to the list of vars to set, but then never actually set).
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=960233&view=rev
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~rjung/patches/httpd-branch-2.2-mod_rewrite-env_var-emptyvalue.patch
+     +1: rjung
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
