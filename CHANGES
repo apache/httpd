@@ -16,6 +16,8 @@ Changes with Apache 2.3.7
   *) mod_rewrite: Allow to set environment variables without explicitely
      giving a value. [Rainer Jung]
 
+  *) mod_rewrite: Remove superfluous EOL from rewrite logging. [Rainer Jung]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)

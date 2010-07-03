@@ -427,7 +427,7 @@ static void do_rewritelog(request_rec *r, int level, char *perdir,
     va_end(ap);
 
     logline = apr_psprintf(r->pool, "%s %s %s [%s/sid#%pp][rid#%pp/%s%s%s] "
-                                    "%s%s%s%s" APR_EOL_STR,
+                                    "%s%s%s%s",
                            rhost ? rhost : "UNKNOWN-HOST",
                            rname ? rname : "-",
                            r->user ? (*r->user ? r->user : "\"\"") : "-",
