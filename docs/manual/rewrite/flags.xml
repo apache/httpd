@@ -203,7 +203,7 @@ is run, thus unsetting what you have set. See <a href="../env.html">the
 Environment Variables document</a> for more details on how Environment
 variables work.</p>
 
-<p>The syntax for this flag is:</p>
+<p>The full syntax for this flag is:</p>
 
 <example>
 [E=VAR:VAL]
@@ -212,7 +212,16 @@ variables work.</p>
 <p><code>VAL</code> may contain backreferences (<code>$N</code> or
 <code>%N</code>) which will be expanded.</p>
 
-<p>These environment variables can then be used in a variety of
+<p>Using the short form</p>
+
+<example>
+[E=VAR]
+</example>
+
+<p>you can set the environment variable named <code>VAR</code> to an
+empty value.</p>
+
+<p>Environment variables can then be used in a variety of
 contexts, including CGI programs, other RewriteRule directives, or
 CustomLog directives.</p>
 

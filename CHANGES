@@ -13,6 +13,9 @@ Changes with Apache 2.3.7
 
   *) Fix Windows build when using VC6. [Gregg L. Smith <lists glewis com>]
 
+  *) mod_rewrite: Allow to set environment variables without explicitely
+     giving a value. [Rainer Jung]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
