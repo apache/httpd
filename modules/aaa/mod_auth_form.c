@@ -424,6 +424,16 @@ static void note_cookie_auth_failure(request_rec * r)
     }
 }
 
+static int hook_note_cookie_auth_failure(request_rec * r,
+                                         const char *auth_type)
+{
+    if (strcasecmp(auth_type, "form"))
+        return DECLINED;
+
+    note_cookie_auth_failure(r);
+    return OK;
+}
+
 /**
  * Set the auth username and password into the main request
  * notes table.
@@ -1183,6 +1193,9 @@ static void register_hooks(apr_pool_t * p)
     ap_hook_handler(authenticate_form_login_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(authenticate_form_logout_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(authenticate_form_redirect_handler, NULL, NULL, APR_HOOK_MIDDLE);
+
+    ap_hook_note_auth_failure(hook_note_cookie_auth_failure, NULL, NULL,
+                              APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(auth_form) =
