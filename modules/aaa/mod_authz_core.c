@@ -768,8 +768,7 @@ static int authorize_user(request_rec *r)
                           r->user, r->uri);
 
             /* If we're returning 403, tell them to try again. */
-            /* XXX: ap_note_auth_failure is currently broken */
-            /*ap_note_auth_failure(r);*/
+            ap_note_auth_failure(r);
 
             return HTTP_UNAUTHORIZED;
         }

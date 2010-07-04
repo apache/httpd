@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.7
 
+  *) core: Introduce note_auth_failure hook to allow modules to add support
+     for additional auth types. This makes ap_note_auth_failure() work with
+     mod_auth_digest again. PR 48807. [Stefan Fritsch]
+
   *) socache modules: return APR_NOTFOUND when a lookup is not found [Nick Kew]
 
   *) mod_authn_cache: new module [Nick Kew]

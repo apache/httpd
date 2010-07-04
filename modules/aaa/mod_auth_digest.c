@@ -1369,6 +1369,39 @@ static void note_digest_auth_failure(request_rec *r,
 
 }
 
+static int hook_note_digest_auth_failure(request_rec *r, const char *auth_type)
+{
+    request_rec *mainreq;
+    digest_header_rec *resp;
+    digest_config_rec *conf;
+
+    if (strcasecmp(auth_type, "Digest"))
+        return DECLINED;
+
+    /* get the client response and mark */
+
+    mainreq = r;
+    while (mainreq->main != NULL) {
+        mainreq = mainreq->main;
+    }
+    while (mainreq->prev != NULL) {
+        mainreq = mainreq->prev;
+    }
+    resp = (digest_header_rec *) ap_get_module_config(mainreq->request_config,
+                                                      &auth_digest_module);
+    resp->needed_auth = 1;
+
+
+    /* get our conf */
+
+    conf = (digest_config_rec *) ap_get_module_config(r->per_dir_config,
+                                                      &auth_digest_module);
+
+    note_digest_auth_failure(r, conf, resp, 0);
+
+    return OK;
+}
+
 
 /*
  * Authorization header verification code
@@ -2054,6 +2087,9 @@ static void register_hooks(apr_pool_t *p)
                         AP_AUTH_INTERNAL_PER_CONF);
 
     ap_hook_fixups(add_auth_info, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_note_auth_failure(hook_note_digest_auth_failure, NULL, NULL,
+                              APR_HOOK_MIDDLE);
+
 }
 
 AP_DECLARE_MODULE(auth_digest) =

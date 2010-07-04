@@ -127,6 +127,15 @@ static void note_basic_auth_failure(request_rec *r)
                                "\"", NULL));
 }
 
+static int hook_note_basic_auth_failure(request_rec *r, const char *auth_type)
+{
+    if (strcasecmp(auth_type, "Basic"))
+        return DECLINED;
+
+    note_basic_auth_failure(r);
+    return OK;
+}
+
 static int get_basic_auth(request_rec *r, const char **user,
                           const char **pw)
 {
@@ -290,6 +299,8 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_check_authn(authenticate_basic_user, NULL, NULL, APR_HOOK_MIDDLE,
                         AP_AUTH_INTERNAL_PER_CONF);
+    ap_hook_note_auth_failure(hook_note_basic_auth_failure, NULL, NULL,
+                              APR_HOOK_MIDDLE);
 }
 
 AP_DECLARE_MODULE(auth_basic) =

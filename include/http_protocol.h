@@ -437,27 +437,29 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r);
 
 /**
  * Setup the output headers so that the client knows how to authenticate
- * itself the next time, if an authentication request failed.  This function
- * works for both basic and digest authentication
+ * itself the next time, if an authentication request failed.
  * @param r The current request
  */ 
 AP_DECLARE(void) ap_note_auth_failure(request_rec *r);
 
 /**
- * Setup the output headers so that the client knows how to authenticate
- * itself the next time, if an authentication request failed.  This function
- * works only for basic authentication
- * @param r The current request
+ * @deprecated @see ap_note_auth_failure
  */ 
 AP_DECLARE(void) ap_note_basic_auth_failure(request_rec *r);
 
 /**
- * Setup the output headers so that the client knows how to authenticate
- * itself the next time, if an authentication request failed.  This function
- * works only for digest authentication
- * @param r The current request
+ * @deprecated @see ap_note_auth_failure
  */ 
 AP_DECLARE(void) ap_note_digest_auth_failure(request_rec *r);
+
+/**
+ * This hook allows modules to add support for a specific auth type to
+ * ap_note_auth_failure
+ * @param r the current request
+ * @param auth_type the configured auth_type
+ * @return OK, DECLINED
+ */
+AP_DECLARE_HOOK(int, note_auth_failure, (request_rec *r, const char *auth_type))
 
 /**
  * Get the password from the request headers
