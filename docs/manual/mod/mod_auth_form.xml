@@ -321,6 +321,13 @@
 
     </section>
 
+    <section id="urlencoding"><title>Usernames and Passwords</title>
+    <p>Note that form submission involves URLEncoding the form data:
+    in this case the username and password.  You should therefore
+    pick usernames and passwords that avoid characters that are
+    URLencoded in form submission, or you may get unexpected results.</p>
+    </section>
+
 <directivesynopsis>
 <name>AuthFormProvider</name>
 <description>Sets the authentication provider(s) for this location</description>
