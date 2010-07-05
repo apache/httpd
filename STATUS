@@ -244,6 +244,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x: https://issues.apache.org/bugzilla/attachment.cgi?id=25698
      +1: niq
 
+  *) mod_filter: enable filtering of errordocuments.  PR 48377
+     http://svn.apache.org/viewvc?view=revision&revision=894041
+     +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
