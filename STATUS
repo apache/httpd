@@ -239,6 +239,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~rjung/patches/httpd-branch-2.2-mod_rewrite-env_var-emptyvalue.patch
      +1: rjung
 
+  *) core authnz: improve misleading error message.  PR 38322.
+     Trunk: N/A
+     2.2.x: https://issues.apache.org/bugzilla/attachment.cgi?id=25698
+     +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
