@@ -248,6 +248,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=revision&revision=894041
      +1: niq
 
+  *) mod_headers: support global replace in Header Edit
+     PR 46594 (not 47066 as incorrectly recorded in change log)
+     trunk: http://svn.eu.apache.org/viewvc?view=revision&revision=894036
+     2.2.x: http://people.apache.org/~niq/patches/46594.patch
+     +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
