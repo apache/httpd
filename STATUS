@@ -242,7 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) core authnz: improve misleading error message.  PR 38322.
      Trunk: N/A
      2.2.x: https://issues.apache.org/bugzilla/attachment.cgi?id=25698
-     +1: niq
+     +1: niq,pgollucci
 
   *) mod_filter: enable filtering of errordocuments.  PR 48377
      http://svn.apache.org/viewvc?view=revision&revision=894041
