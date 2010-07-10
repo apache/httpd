@@ -132,6 +132,20 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
    +1: niq, pgollucci
    +1: rbowen - After much debate on IRC, we've agreed on FallbackResource as being the right name for this.
 
+  *) core authnz: improve misleading error message.  PR 38322.
+     Trunk: N/A
+     2.2.x: https://issues.apache.org/bugzilla/attachment.cgi?id=25698
+     +1: niq, pgollucci, trawick
+
+  *) mod_ldap: LDAP caching was suppressed (and ldap-status handler returns
+     title page only) when any mod_ldap directives were used in VirtualHost
+     context.
+     Trunk Patch: http://svn.apache.org/viewvc?rev=951235&view=rev (actual fix)
+                  http://svn.apache.org/viewvc?rev=951237&view=rev (error msg not displayed)
+     2.2.x patch: http://people.apache.org/~covener/2.2.x-ldap_serverconfig.diff
+         note: No actual per-server directives in 2.2.x mod_ldap, but per-directory 
+         mod_ldap directives under a virtualhost are sufficient to trigger this merge issue)
+     +1: covener, wrowe, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -201,16 +215,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.2.x patch: http://people.apache.org/~minfrin/httpd-cache-partial-2.2.patch
     +1: minfrin
 
-  *) mod_ldap: LDAP caching was suppressed (and ldap-status handler returns
-     title page only) when any mod_ldap directives were used in VirtualHost
-     context.
-     Trunk Patch: http://svn.apache.org/viewvc?rev=951235&view=rev (actual fix)
-                  http://svn.apache.org/viewvc?rev=951237&view=rev (error msg not displayed)
-     2.2.x patch: http://people.apache.org/~covener/2.2.x-ldap_serverconfig.diff
-         note: No actual per-server directives in 2.2.x mod_ldap, but per-directory 
-         mod_ldap directives under a virtualhost are sufficient to trigger this merge issue)
-     +1: covener, wrowe
-
   *) mod_cache: Explicitly allow cache implementations to cache a 206 Partial
      Response if they so choose to do so. Previously an attempt to cache a 206
      was arbitrarily allowed if the response contained an Expires or
@@ -225,7 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=955966&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, trawick
 
   *) mod_rewrite: Allow to set environment variables using mod_rewrite without
      explicitely giving a value.
@@ -238,11 +242,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.2.x of patch:
         http://people.apache.org/~rjung/patches/httpd-branch-2.2-mod_rewrite-env_var-emptyvalue.patch
      +1: rjung
-
-  *) core authnz: improve misleading error message.  PR 38322.
-     Trunk: N/A
-     2.2.x: https://issues.apache.org/bugzilla/attachment.cgi?id=25698
-     +1: niq,pgollucci
 
   *) mod_filter: enable filtering of errordocuments.  PR 48377
      http://svn.apache.org/viewvc?view=revision&revision=894041
