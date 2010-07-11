@@ -1837,6 +1837,9 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     return st;
 }
 
+/* cache-related settings are not merged here, but in the post_config hook,
+ * since the cache has not yet sprung to life
+ */
 static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
                                     void *overridesv)
 {
@@ -1983,6 +1986,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
             st_vhost->cache_shm = st->cache_shm;
             st_vhost->cache_rmm = st->cache_rmm;
             st_vhost->cache_file = st->cache_file;
+            st_vhost->util_ldap_cache = st->util_ldap_cache;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, result, s,
                          "LDAP merging Shared Cache conf: shm=0x%pp rmm=0x%pp "
                          "for VHOST: %s", st->cache_shm, st->cache_rmm,
