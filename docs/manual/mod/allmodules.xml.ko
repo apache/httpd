@@ -15,6 +15,7 @@
   <modulefile>mod_authn_dbd.xml</modulefile>
   <modulefile>mod_authn_dbm.xml.ko</modulefile>
   <modulefile>mod_authn_file.xml.ko</modulefile>
+  <modulefile>mod_authn_socache.xml</modulefile>
   <modulefile>mod_authnz_ldap.xml</modulefile>
   <modulefile>mod_authz_core.xml</modulefile>
   <modulefile>mod_authz_dbd.xml</modulefile>
