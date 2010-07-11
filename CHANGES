@@ -14,6 +14,11 @@ Changes with Apache 2.2.16
   *) apxs: Fix -A and -a options to ignore whitespace in httpd.conf
      [Philip M. Gollucci]
 
+  *) mod_dir: add FallbackResource directive, to enable admin to specify
+     an action to happen when a URL maps to no file, without resorting
+     to ErrorDocument or mod_rewrite.  PR 47184 [Nick Kew]
+
+
 Changes with Apache 2.2.15
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
