@@ -119,7 +119,7 @@ lower level modules</td></tr>
 
     <p>Providers are implemented by <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>,
     <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>,
-    and <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
+    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> and <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>.</p>
 
 </div>
 </div>

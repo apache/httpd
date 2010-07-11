@@ -3,8 +3,8 @@
 
 <metafile>
   <basename>new_api_2_4</basename>
-  <path>/</path>
-  <relpath>.</relpath>
+  <path>/developer/</path>
+  <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>

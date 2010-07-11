@@ -23,7 +23,7 @@
 
     <p>Many of the documents on these Developer pages are lifted
     from Apache 1.3's documentation. While they are all being
-    updated to Apache 2.0, they are in different stages of
+    updated to Apache 2, they are in different stages of
     progress. Please be patient, and point out any discrepancies or
     errors on the developer/ pages directly to the
     <a href="http://httpd.apache.org/lists.html#http-dev">dev@httpd.apache.org</a> mailing list.</p>
@@ -36,14 +36,15 @@
 <h2><a name="topics" id="topics">Topics</a></h2>
     <ul>
       <li><a href="API.html">Apache 1.3 API Notes</a></li>
-      <li><a href="hooks.html">Apache 2.0 Hook Functions</a></li>
-      <li><a href="request.html">Request Processing in Apache 2.0</a></li>
-      <li><a href="filters.html">How filters work in Apache 2.0</a></li>
-      <li><a href="output-filters.html">Guidelines for output filters in Apache 2.0</a></li>
-      <li><a href="modules.html">Converting Modules from Apache 1.3 to Apache 2.0</a></li>
+      <li><a href="new_api_2_4.html">API changes in Apache 2.3/2.4</a></li>
+      <li><a href="hooks.html">Apache 2.x Hook Functions</a></li>
+      <li><a href="request.html">Request Processing in Apache 2.x</a></li>
+      <li><a href="filters.html">How filters work in Apache 2.x</a></li>
+      <li><a href="output-filters.html">Guidelines for output filters in Apache 2.x</a></li>
+      <li><a href="modules.html">Converting Modules from Apache 1.3 to Apache 2.x</a></li>
       <li><a href="debugging.html">Debugging Memory Allocation in APR</a></li>
-      <li><a href="documenting.html">Documenting Apache 2.0</a></li>
-      <li><a href="thread_safety.html">Apache 2.0 Thread Safety Issues</a></li>
+      <li><a href="documenting.html">Documenting Apache 2.x</a></li>
+      <li><a href="thread_safety.html">Apache 2.x Thread Safety Issues</a></li>
     </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
