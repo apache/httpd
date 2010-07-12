@@ -162,6 +162,7 @@ expiresdefault	mod/mod_expires.html#expiresdefault
 extendedstatus	mod/mod_status.html#extendedstatus
 extfilterdefine	mod/mod_ext_filter.html#extfilterdefine
 extfilteroptions	mod/mod_ext_filter.html#extfilteroptions
+fallbackresource	mod/mod_dir.html#fallbackresource
 fileetag	mod/core.html#fileetag
 files	mod/core.html#files
 filesmatch	mod/core.html#filesmatch
@@ -362,6 +363,7 @@ sslcertificatekeyfile	mod/mod_ssl.html#sslcertificatekeyfile
 sslciphersuite	mod/mod_ssl.html#sslciphersuite
 sslcryptodevice	mod/mod_ssl.html#sslcryptodevice
 sslengine	mod/mod_ssl.html#sslengine
+sslfips	mod/mod_ssl.html#sslfips
 sslhonorcipherorder	mod/mod_ssl.html#sslhonorcipherorder
 sslinsecurerenegotiation	mod/mod_ssl.html#sslinsecurerenegotiation
 sslmutex	mod/mod_ssl.html#sslmutex
