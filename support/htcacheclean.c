@@ -704,8 +704,8 @@ static void usage(const char *error)
     }
 	apr_file_printf(errfile,
     "%s -- program for cleaning the disk cache."                             NL
-    "Usage: %s [-Dvtrn] -pPATH -lLIMIT"                                      NL
-    "       %s [-nti] -dINTERVAL -pPATH -lLIMIT"                             NL
+    "Usage: %s [-Dvtrn] -pPATH -lLIMIT [-PPIDFILE]"                          NL
+    "       %s [-nti] -dINTERVAL -pPATH -lLIMIT [-PPIDFILE]"                 NL
                                                                              NL
     "Options:"                                                               NL
     "  -d   Daemonize and repeat cache cleaning every INTERVAL minutes."     NL
@@ -731,6 +731,8 @@ static void usage(const char *error)
                                                                              NL
     "  -p   Specify PATH as the root directory of the disk cache."           NL
                                                                              NL
+    "  -P   Specify PIDFILE as the file to write the pid to."                NL
+                                                                             NL
     "  -l   Specify LIMIT as the total disk cache size limit. Attach 'K'"    NL
     "       or 'M' to the number for specifying KBytes or MBytes."           NL
                                                                              NL
@@ -746,6 +748,29 @@ static void usage(const char *error)
 }
 #undef NL
 
+static void log_pid(apr_pool_t *pool, const char *pidfilename, apr_file_t **pidfile)
+{
+    apr_status_t status;
+    char errmsg[120];
+    pid_t mypid = getpid();
+
+    if (APR_SUCCESS == (status = apr_file_open(pidfile, pidfilename,
+                APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE |
+                APR_FOPEN_DELONCLOSE, APR_FPROT_UREAD | APR_FPROT_UWRITE |
+                APR_FPROT_GREAD | APR_FPROT_WREAD, pool))) {
+        apr_file_printf(*pidfile, "%" APR_PID_T_FMT APR_EOL_STR, mypid);
+    }
+    else {
+        if (errfile) {
+            apr_file_printf(errfile,
+                            "Could not write the pid file '%s': %s" APR_EOL_STR,
+                            pidfilename, 
+                            apr_strerror(status, errmsg, sizeof errmsg));
+        }
+        exit(1);
+    }
+}
+
 /*
  * main
  */
@@ -757,10 +782,11 @@ int main(int argc, const char * const argv[])
     apr_pool_t *pool, *instance;
     apr_getopt_t *o;
     apr_finfo_t info;
+    apr_file_t *pidfile;
     int retries, isdaemon, limit_found, intelligent, dowork;
     char opt;
     const char *arg;
-    char *proxypath, *path;
+    char *proxypath, *path, *pidfilename;
     char errmsg[1024];
 
     interrupted = 0;
@@ -776,6 +802,7 @@ int main(int argc, const char * const argv[])
     intelligent = 0;
     previous = 0; /* avoid compiler warning */
     proxypath = NULL;
+    pidfilename = NULL;
 
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
         return 1;
@@ -797,7 +824,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_init(&o, pool, argc, argv);
 
     while (1) {
-        status = apr_getopt(o, "iDnvrtd:l:L:p:", &opt, &arg);
+        status = apr_getopt(o, "iDnvrtd:l:L:p:P:", &opt, &arg);
         if (status == APR_EOF) {
             break;
         }
@@ -902,6 +929,14 @@ int main(int argc, const char * const argv[])
                                        proxypath, apr_strerror(status, errmsg, sizeof errmsg)));
                 }
                 break;
+
+            case 'P':
+                if (pidfilename) {
+                    usage(apr_psprintf(pool, "The option '%c' cannot be specified more than once", (int)opt));
+                }
+                pidfilename = apr_pstrdup(pool, arg);
+                break;
+
             } /* switch */
         } /* else */
     } /* while */
@@ -940,10 +975,23 @@ int main(int argc, const char * const argv[])
     }
     baselen = strlen(path);
 
+    if (pidfilename) {
+        log_pid(pool, pidfilename, &pidfile); /* before daemonizing, so we
+                                               * can report errors
+                                               */
+    }
+
 #ifndef DEBUG
     if (isdaemon) {
         apr_file_close(errfile);
+        errfile = NULL;
+        if (pidfilename) {
+            apr_file_close(pidfile); /* delete original pidfile only in parent */
+        }
         apr_proc_detach(APR_PROC_DETACH_DAEMONIZE);
+        if (pidfilename) {
+            log_pid(pool, pidfilename, &pidfile);
+        }
     }
 #endif
 

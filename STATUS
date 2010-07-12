@@ -86,17 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * support/htcacheclean: Teach it how to write a pid file (modelled on
-    httpd's writing of a pid file) so that it becomes possible to run
-    more than one instance of htcacheclean on the same machine.
-    Trunk patch: http://svn.apache.org/viewvc?rev=910705&view=rev
-                 http://svn.apache.org/viewvc?rev=910735&view=rev
-                 http://svn.apache.org/viewvc?rev=910756&view=rev
-                 http://svn.apache.org/viewvc?rev=917002&view=rev
-                 http://svn.apache.org/viewvc?rev=917005&view=rev
-    2.2.x patch: http://people.apache.org/~minfrin/htcacheclean-pid.patch
-    +1: minfrin, sf, trawick, jim
-
   * Introduce SSLFIPS directive to support OpenSSL FIPS_mode; permits all
     builds of mod_ssl to use 'SSLFIPS off' for portability, but the proper
     build of openssl is required for 'SSLFIPS on'.  
