@@ -216,6 +216,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x: http://people.apache.org/~niq/patches/46594.patch
      +1: niq
 
+  * core: Filter init functions are now run strictly once per request
+    before handler invocation.  The init functions are no longer run
+    for connection filters.  PR 49328.
+    Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=953311&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
