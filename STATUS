@@ -86,23 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Introduce SSLFIPS directive to support OpenSSL FIPS_mode; permits all
-    builds of mod_ssl to use 'SSLFIPS off' for portability, but the proper
-    build of openssl is required for 'SSLFIPS on'.  
-    PR: 46270  [Dr Stephen Henson <steve openssl.org>, William Rowe]
-    Trunk patch: http://svn.apache.org/viewvc?rev=925980&view=rev
-                 http://svn.apache.org/viewvc?rev=926000&view=rev
-                 http://svn.apache.org/viewvc?rev=926614&view=rev
-                 http://svn.apache.org/viewvc?rev=926619&view=rev
-    2.2.x patch: http://people.apache.org/~wrowe/ssl-fips-2.2.patch
-    +1: wrowe
-    minfrin: Doesn't build on v2.2 until you add r926614. With r926614, +1.
-    wrowe: Added both of rpluem's proposed patched, 926614 and 926619
-    +1: drh, rjung, jim
-    rjung: We should add a note about the first version providing this
-           option in the docs page, like e.g. we did for SSLInsecureRenegotiation.
-    wrowe asks; you mean <Compatibility> tag?  Yes, of course.
-
   *) mod_filter: enable filtering of errordocuments.  PR 48377
      http://svn.apache.org/viewvc?view=revision&revision=894041
      +1: niq, rjung, jim

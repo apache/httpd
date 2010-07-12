@@ -175,6 +175,9 @@ static SSLSrvConfigRec *ssl_config_server_new(apr_pool_t *p)
 #ifndef OPENSSL_NO_TLSEXT
     sc->strict_sni_vhost_check = SSL_ENABLED_UNSET;
 #endif
+#ifdef HAVE_FIPS
+    sc->fips                   = UNSET;
+#endif
 
     modssl_ctx_init_proxy(sc, p);
 
@@ -268,6 +271,9 @@ void *ssl_config_server_merge(apr_pool_t *p, void *basev, void *addv)
     cfgMerge(proxy_ssl_check_peer_cn, SSL_ENABLED_UNSET);
 #ifndef OPENSSL_NO_TLSEXT
     cfgMerge(strict_sni_vhost_check, SSL_ENABLED_UNSET);
+#endif
+#ifdef HAVE_FIPS
+    cfgMergeBool(fips);
 #endif
 
     modssl_ctx_cfg_merge_proxy(base->proxy, add->proxy, mrg->proxy);
@@ -633,6 +639,29 @@ const char *ssl_cmd_SSLEngine(cmd_parms *cmd, void *dcfg, const char *arg)
     }
 
     return "Argument must be On, Off, or Optional";
+}
+
+const char *ssl_cmd_SSLFIPS(cmd_parms *cmd, void *dcfg, int flag)
+{
+#ifdef HAVE_FIPS
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+#endif
+    const char *err;
+
+    if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
+        return err;
+    }
+
+#ifdef HAVE_FIPS
+    if ((sc->fips != UNSET) && (sc->fips != (BOOL)(flag ? TRUE : FALSE)))
+        return "Conflicting SSLFIPS options, cannot be both On and Off";
+    sc->fips = flag ? TRUE : FALSE;
+#else
+    if (flag)
+        return "SSLFIPS invalid, rebuild httpd and openssl compiled for FIPS";
+#endif
+
+    return NULL;
 }
 
 const char *ssl_cmd_SSLCipherSuite(cmd_parms *cmd,
