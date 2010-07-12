@@ -114,6 +114,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
            option in the docs page, like e.g. we did for SSLInsecureRenegotiation.
     wrowe asks; you mean <Compatibility> tag?  Yes, of course.
 
+  *) mod_filter: enable filtering of errordocuments.  PR 48377
+     http://svn.apache.org/viewvc?view=revision&revision=894041
+     +1: niq, rjung, jim
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -205,10 +210,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Backport version for 2.2.x of patch:
         http://people.apache.org/~rjung/patches/httpd-branch-2.2-mod_rewrite-env_var-emptyvalue.patch
      +1: rjung, niq
-
-  *) mod_filter: enable filtering of errordocuments.  PR 48377
-     http://svn.apache.org/viewvc?view=revision&revision=894041
-     +1: niq, rjung, jim
 
   *) mod_headers: support global replace in Header Edit
      PR 46594 (not 47066 as incorrectly recorded in change log)
