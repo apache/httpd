@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_filter: enable filtering of errordocuments.  PR 48377
      http://svn.apache.org/viewvc?view=revision&revision=894041
-     +1: niq
+     +1: niq, rjung
 
   *) mod_headers: support global replace in Header Edit
      PR 46594 (not 47066 as incorrectly recorded in change log)
@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=785457&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, niq
+      +1: rpluem, niq, rjung
 
 PATCHES/ISSUES THAT ARE STALLED
 
