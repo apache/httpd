@@ -114,13 +114,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
            option in the docs page, like e.g. we did for SSLInsecureRenegotiation.
     wrowe asks; you mean <Compatibility> tag?  Yes, of course.
 
-  * mod_dir: Fix NULL pointer dereference if FallBackResource is not configured
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=785457&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, niq, rjung
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
