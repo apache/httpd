@@ -385,6 +385,7 @@
 <li><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></li>
 <li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
 <li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
+<li><a href="mod_ssl.html#sslfips">SSLFIPS</a></li>
 <li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
 <li><a href="mod_ssl.html#sslinsecurerenegotiation">SSLInsecureRenegotiation</a></li>
 <li><a href="mod_ssl.html#sslmutex">SSLMutex</a></li>
