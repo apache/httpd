@@ -95,7 +95,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=917002&view=rev
                  http://svn.apache.org/viewvc?rev=917005&view=rev
     2.2.x patch: http://people.apache.org/~minfrin/htcacheclean-pid.patch
-    +1: minfrin, sf, trawick
+    +1: minfrin, sf, trawick, jim
 
   * Introduce SSLFIPS directive to support OpenSSL FIPS_mode; permits all
     builds of mod_ssl to use 'SSLFIPS off' for portability, but the proper
@@ -109,7 +109,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
     +1: wrowe
     minfrin: Doesn't build on v2.2 until you add r926614. With r926614, +1.
     wrowe: Added both of rpluem's proposed patched, 926614 and 926619
-    +1: drh, rjung
+    +1: drh, rjung, jim
     rjung: We should add a note about the first version providing this
            option in the docs page, like e.g. we did for SSLInsecureRenegotiation.
     wrowe asks; you mean <Compatibility> tag?  Yes, of course.
@@ -174,7 +174,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Trunk patch: http://svn.apache.org/viewvc?rev=930125&view=rev
     2.2.x patch: https://issues.apache.org/bugzilla/attachment.cgi?id=25153
     Submitted by: Daniel Ruggeri <DRuggeri primary.net>
-    +1: niq
+    +1: niq, jim
 
   * mod_disk_cache: Decline the opportunity to cache if the response is
     a 206 Partial Content. This stops a reverse proxied partial response
@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   *) mod_filter: enable filtering of errordocuments.  PR 48377
      http://svn.apache.org/viewvc?view=revision&revision=894041
-     +1: niq, rjung
+     +1: niq, rjung, jim
 
   *) mod_headers: support global replace in Header Edit
      PR 46594 (not 47066 as incorrectly recorded in change log)
@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=953311&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
   * core: Pass the output filter information to newly created sub requests;
     as these are later on used as true requests with an internal redirect.
@@ -241,7 +241,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=952828&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
