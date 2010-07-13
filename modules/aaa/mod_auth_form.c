@@ -404,16 +404,6 @@ static const command_rec auth_form_cmds[] =
 
 module AP_MODULE_DECLARE_DATA auth_form_module;
 
-/* These functions return 0 if client is OK, and proper error status
- * if not... either HTTP_UNAUTHORIZED, if we made a check, and it failed, or
- * HTTP_INTERNAL_SERVER_ERROR, if things are so totally confused that we
- * couldn't figure out how to tell if the client is authorized or not.
- *
- * If they return DECLINED, and all other modules also decline, that's
- * treated by the server core as a configuration error, logged and
- * reported as such.
- */
-
 static void note_cookie_auth_failure(request_rec * r)
 {
     auth_form_config_rec *conf = ap_get_module_config(r->per_dir_config,
@@ -506,6 +496,11 @@ static void get_notes_auth(request_rec * r,
         *mimetype = (char *) apr_table_get(r->notes, apr_pstrcat(r->pool, authname, "-mimetype", NULL));
     }
 
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE6, 0, r,
+                  "from notes: user: %s, pw: %s, method: %s, mimetype: %s",
+                  user ? *user : "<null>", pw ? *pw : "<null>",
+                  method ? *method : "<null>", mimetype ? *mimetype : "<null>");
+
 }
 
 /**
@@ -560,6 +555,12 @@ static apr_status_t get_session_auth(request_rec * r,
     if (user && *user) {
         r->user = (char *) *user;
     }
+
+    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
+                  "from session: " MOD_SESSION_USER ": %s, " MOD_SESSION_PW
+                  ": %s, " MOD_AUTH_FORM_HASH ": %s",
+                  user ? *user : "<null>", pw ? *pw : "<null>",
+                  hash ? *hash : "<null>");
 
     return APR_SUCCESS;
 
@@ -672,10 +673,21 @@ static int get_form_auth(request_rec * r,
      * are available should the auth need to be run again.
      */
     set_notes_auth(r, *sent_user, *sent_pw, sent_method ? *sent_method : NULL,
-		   sent_mimetype ? *sent_mimetype : NULL);
+                   sent_mimetype ? *sent_mimetype : NULL);
 
     return OK;
 }
+
+/* These functions return 0 if client is OK, and proper error status
+ * if not... either HTTP_UNAUTHORIZED, if we made a check, and it failed, or
+ * HTTP_INTERNAL_SERVER_ERROR, if things are so totally confused that we
+ * couldn't figure out how to tell if the client is authorized or not.
+ *
+ * If they return DECLINED, and all other modules also decline, that's
+ * treated by the server core as a configuration error, logged and
+ * reported as such.
+ */
+
 
 /**
  * Given a username and site passphrase hash from the session, determine
@@ -991,11 +1003,11 @@ static int authenticate_form_authn(request_rec * r)
                 set_session_auth(r, sent_user, sent_pw, conf->site);
                 if (sent_loc) {
                     apr_table_set(r->headers_out, "Location", sent_loc);
-                    return HTTP_MOVED_PERMANENTLY;
+                    return HTTP_MOVED_TEMPORARILY;
                 }
                 if (conf->loginsuccess) {
                     apr_table_set(r->headers_out, "Location", conf->loginsuccess);
-                    return HTTP_MOVED_PERMANENTLY;
+                    return HTTP_MOVED_TEMPORARILY;
                 }
             }
         }
@@ -1008,13 +1020,13 @@ static int authenticate_form_authn(request_rec * r)
      */
     if (HTTP_UNAUTHORIZED == rv && conf->loginrequired) {
         apr_table_set(r->headers_out, "Location", conf->loginrequired);
-        return HTTP_MOVED_PERMANENTLY;
+        return HTTP_MOVED_TEMPORARILY;
     }
 
     /* did the user ask to be redirected on login success? */
     if (sent_loc) {
         apr_table_set(r->headers_out, "Location", sent_loc);
-        rv = HTTP_MOVED_PERMANENTLY;
+        rv = HTTP_MOVED_TEMPORARILY;
     }
 
 
@@ -1079,11 +1091,11 @@ static int authenticate_form_login_handler(request_rec * r)
             set_session_auth(r, sent_user, sent_pw, conf->site);
             if (sent_loc) {
                 apr_table_set(r->headers_out, "Location", sent_loc);
-                return HTTP_MOVED_PERMANENTLY;
+                return HTTP_MOVED_TEMPORARILY;
             }
             if (conf->loginsuccess) {
                 apr_table_set(r->headers_out, "Location", conf->loginsuccess);
-                return HTTP_MOVED_PERMANENTLY;
+                return HTTP_MOVED_TEMPORARILY;
             }
             return HTTP_OK;
         }
@@ -1092,7 +1104,7 @@ static int authenticate_form_login_handler(request_rec * r)
     /* did we prefer to be redirected to the login page on failure instead? */
     if (HTTP_UNAUTHORIZED == rv && conf->loginrequired) {
         apr_table_set(r->headers_out, "Location", conf->loginrequired);
-        return HTTP_MOVED_PERMANENTLY;
+        return HTTP_MOVED_TEMPORARILY;
     }
 
     return rv;
