@@ -73,7 +73,8 @@ typedef enum {
     AUTHZ_DENIED,
     AUTHZ_GRANTED,
     AUTHZ_NEUTRAL,
-    AUTHZ_GENERAL_ERROR
+    AUTHZ_GENERAL_ERROR,
+    AUTHZ_DENIED_NO_USER,      /* denied because r->user == NULL */
 } authz_status;
 
 typedef struct {

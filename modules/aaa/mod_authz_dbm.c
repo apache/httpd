@@ -144,9 +144,7 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
     char *v;
 
     if (!user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
+        return AUTHZ_DENIED_NO_USER;
     }
 
     if (!conf->grpfile) {
@@ -216,9 +214,7 @@ static authz_status dbmfilegroup_check_authorization(request_rec *r,
     char *v;
 
     if (!user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
+        return AUTHZ_DENIED_NO_USER;
     }
 
     if (!conf->grpfile) {

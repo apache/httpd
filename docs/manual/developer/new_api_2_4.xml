@@ -133,9 +133,13 @@
       <li>New EOR bucket type</li>
       <li>New function ap_process_async_request</li>
       <li>New flags AP_AUTH_INTERNAL_PER_CONF and AP_AUTH_INTERNAL_PER_URI</li>
-      <li>New functions ap_hook_check_access, ap_hook_check_authn, ap_hook_check_authz which accept AP_AUTH_INTERNAL_PER_* flags</li>
-      <li>DEPRECATED direct use of ap_hook_access_checker, ap_hook_check_user_id, ap_hook_auth_checker</li>
-      <li>The auth_checker hook may be called with r-&gt;user == NULL</li>
+      <li>New access_checker_ex hook to apply additional access control and/or
+          bypass authentication.</li>
+      <li>New functions ap_hook_check_access_ex, ap_hook_check_access,
+          ap_hook_check_authn, ap_hook_check_authz which accept
+          AP_AUTH_INTERNAL_PER_* flags</li>
+      <li>DEPRECATED direct use of ap_hook_access_checker, access_checker_ex,
+          ap_hook_check_user_id, ap_hook_auth_checker</li>
     </ul>
     <p>When possible, registering all access control hooks (including
        authentication and authorization hooks) using AP_AUTH_INTERNAL_PER_CONF

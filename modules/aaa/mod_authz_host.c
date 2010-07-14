@@ -104,7 +104,7 @@ static authz_status env_check_authorization(request_rec *r, const char *require_
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "access to %s failed, reason: env variable list does not meet "
                   "'require'ments for user '%s' to be allowed access",
                   r->uri, r->user);
@@ -162,7 +162,7 @@ static authz_status ip_check_authorization(request_rec *r, const char *require_l
         }
     }
 
-    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "access to %s failed, reason: ip address list does not meet "
                   "'require'ments for user '%s' to be allowed access",
                   r->uri, r->user);
@@ -197,7 +197,7 @@ static authz_status host_check_authorization(request_rec *r, const char *require
             }
         }
 
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "access to %s failed, reason: host name list does not meet "
                       "'require'ments for user '%s' to be allowed access",
                       r->uri, r->user);

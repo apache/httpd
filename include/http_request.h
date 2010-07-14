@@ -420,6 +420,20 @@ AP_DECLARE_HOOK(int,type_checker,(request_rec *r))
 AP_DECLARE_HOOK(int,access_checker,(request_rec *r))
 
 /**
+ * This hook is used to apply additional access control and/or bypass
+ * authentication for this resource. It runs *before* a user is authenticated,
+ * but after the auth_checker hook.
+ * This hook should be registered with ap_hook_check_access_ex().
+ *
+ * @param r the current request
+ * @return OK (allow acces), DECLINED (let later modules decide),
+ *         or HTTP_... (deny access)
+ * @ingroup hooks
+ * @see ap_hook_check_access_ex
+ */
+AP_DECLARE_HOOK(int,access_checker_ex,(request_rec *r))
+
+/**
  * This hook is used to check to see if the resource being requested
  * is available for the authenticated user (r->user and r->ap_auth_type).
  * It runs after the access_checker and check_user_id hooks. Note that
@@ -451,6 +465,25 @@ AP_DECLARE(void) ap_hook_check_access(ap_HOOK_access_checker_t *pf,
                                       const char * const *aszPre,
                                       const char * const *aszSucc,
                                       int nOrder, int type);
+
+/**
+ * Register a hook function that will apply additional access control 
+ * and/or bypass authentication for the current request.
+ * @param pf An access_checker_ex hook function
+ * @param aszPre A NULL-terminated array of strings that name modules whose
+ *               hooks should precede this one
+ * @param aszSucc A NULL-terminated array of strings that name modules whose
+ *                hooks should succeed this one
+ * @param nOrder An integer determining order before honouring aszPre and
+ *               aszSucc (for example, HOOK_MIDDLE)
+ * @param type Internal request processing mode, either
+ *             AP_AUTH_INTERNAL_PER_URI or AP_AUTH_INTERNAL_PER_CONF
+ */
+AP_DECLARE(void) ap_hook_check_access_ex(ap_HOOK_access_checker_ex_t *pf,
+                                         const char * const *aszPre,
+                                         const char * const *aszSucc,
+                                         int nOrder, int type);
+
 
 /**
  * Register a hook function that will analyze the request headers,

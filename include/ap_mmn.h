@@ -235,14 +235,17 @@
  * 20100701.0 (2.3.7-dev)  re-order struct members to improve alignment
  * 20100701.1 (2.3.7-dev)  add note_auth_failure hook
  * 20100701.2 (2.3.7-dev)  add ap_proxy_*_wid() functions
+ * 20100714.0 (2.3.7-dev)  add access_checker_ex hook, add AUTHZ_DENIED_NO_USER
+ *                         to authz_status, call authz providers twice to allow
+ *                         authz without authenticated user
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20100701
+#define MODULE_MAGIC_NUMBER_MAJOR 20100714
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
