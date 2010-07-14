@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.7
 
+  *) core/mod_authz_core: Introduce new access_checker_ex hook that enables
+     mod_authz_core to bypass authentication if access should be allowed by
+     IP address/env var/... [Stefan Fritsch]
+ 
   *) core: Introduce note_auth_failure hook to allow modules to add support
      for additional auth types. This makes ap_note_auth_failure() work with
      mod_auth_digest again. PR 48807. [Stefan Fritsch]
