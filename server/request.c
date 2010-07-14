@@ -63,6 +63,7 @@ APR_HOOK_STRUCT(
     APR_HOOK_LINK(fixups)
     APR_HOOK_LINK(type_checker)
     APR_HOOK_LINK(access_checker)
+    APR_HOOK_LINK(access_checker_ex)
     APR_HOOK_LINK(auth_checker)
     APR_HOOK_LINK(insert_filter)
     APR_HOOK_LINK(create_request)
@@ -80,6 +81,8 @@ AP_IMPLEMENT_HOOK_RUN_FIRST(int,type_checker,
                             (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int,access_checker,
                           (request_rec *r), (r), OK, DECLINED)
+AP_IMPLEMENT_HOOK_RUN_FIRST(int,access_checker_ex,
+                          (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_RUN_FIRST(int,auth_checker,
                             (request_rec *r), (r), DECLINED)
 AP_IMPLEMENT_HOOK_VOID(insert_filter, (request_rec *r), (r))
@@ -205,54 +208,57 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         case SATISFY_ALL:
         case SATISFY_NOSPEC:
             if ((access_status = ap_run_access_checker(r)) != OK) {
+                return decl_die(access_status,
+                                "check access (with Satisfy All)", r);
+            }
+
+            access_status = ap_run_access_checker_ex(r);
+            if (access_status == OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                              "request authorized without authentication by "
+                              "access_checker_autoritative hook: %s", r->uri);
+            }
+            else if (access_status != DECLINED) {
                 return decl_die(access_status, "check access", r);
             }
-
-            if ((access_status = ap_run_check_user_id(r)) != OK) {
-                if (access_status == HTTP_UNAUTHORIZED) {
-                    r->user = NULL;
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                                  "authn failed with HTTP_UNAUTHORIZED, "
-                                  "trying authz without user");
-                }
-                else {
+            else {
+                if ((access_status = ap_run_check_user_id(r)) != OK) {
                     return decl_die(access_status, "check user", r);
                 }
-            }
-
-            if ((access_status = ap_run_auth_checker(r)) != OK) {
-                return decl_die(access_status, "check authorization", r);
+                if ((access_status = ap_run_auth_checker(r)) != OK) {
+                    return decl_die(access_status, "check authorization", r);
+                }
             }
             break;
         case SATISFY_ANY:
-            if ((access_status = ap_run_access_checker(r)) != OK) {
+            if ((access_status = ap_run_access_checker(r)) == OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                              "request authorized without authentication by "
+                              "access_checker hook and 'Satisfy any': %s",
+                              r->uri);
+                break;
+            }
 
+            access_status = ap_run_access_checker_ex(r);
+            if (access_status == OK) {
+                ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
+                              "request authorized without authentication by "
+                              "access_checker_autoritative hook: %s", r->uri);
+            }
+            else if (access_status != DECLINED) {
+                return decl_die(access_status, "check access", r);
+            }
+            else {
                 if ((access_status = ap_run_check_user_id(r)) != OK) {
-                    if (access_status == HTTP_UNAUTHORIZED) {
-                        r->user = NULL;
-                        ap_log_rerror(APLOG_MARK, APLOG_TRACE2, 0, r,
-                                      "authn failed with HTTP_UNAUTHORIZED, "
-                                      "trying authz without user");
-                    }
-                    else {
-                        return decl_die(access_status, "check user", r);
-                    }
+                    return decl_die(access_status, "check user", r);
                 }
 
                 if ((access_status = ap_run_auth_checker(r)) != OK) {
                     return decl_die(access_status, "check authorization", r);
                 }
             }
-            else {
-                    ap_log_rerror(APLOG_MARK, APLOG_TRACE3, 0, r,
-                        "request authorized without authentication by "
-                        "access_checker hook and 'Satisfy any': %s",
-                        r->uri);
-            }
             break;
         }
-
-
     }
     /* XXX Must make certain the ap_run_type_checker short circuits mime
      * in mod-proxy for r->proxyreq && r->parsed_uri.scheme
@@ -1734,6 +1740,9 @@ AP_DECLARE(void) ap_setup_auth_internal(apr_pool_t *ptemp)
     if (_hooks.link_access_checker) {
         total_auth_hooks += _hooks.link_access_checker->nelts;
     }
+    if (_hooks.link_access_checker_ex) {
+        total_auth_hooks += _hooks.link_access_checker_ex->nelts;
+    }
     if (_hooks.link_check_user_id) {
         total_auth_hooks += _hooks.link_check_user_id->nelts;
     }
@@ -1784,6 +1793,18 @@ AP_DECLARE(void) ap_hook_check_access(ap_HOOK_access_checker_t *pf,
     }
 
     ap_hook_access_checker(pf, aszPre, aszSucc, nOrder);
+}
+
+AP_DECLARE(void) ap_hook_check_access_ex(ap_HOOK_access_checker_ex_t *pf,
+                                      const char * const *aszPre,
+                                      const char * const *aszSucc,
+                                      int nOrder, int type)
+{
+    if ((type & AP_AUTH_INTERNAL_MASK) == AP_AUTH_INTERNAL_PER_CONF) {
+        ++auth_internal_per_conf_hooks;
+    }
+
+    ap_hook_access_checker_ex(pf, aszPre, aszSucc, nOrder);
 }
 
 AP_DECLARE(void) ap_hook_check_authn(ap_HOOK_check_user_id_t *pf,

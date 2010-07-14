@@ -148,9 +148,7 @@ static authz_status group_check_authorization(request_rec *r,
     apr_status_t status;
 
     if (!user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
+        return AUTHZ_DENIED_NO_USER;
     }
 
     /* If there is no group file - then we are not
@@ -209,9 +207,7 @@ static authz_status filegroup_check_authorization(request_rec *r,
     const char *filegroup = NULL;
 
     if (!user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
+        return AUTHZ_DENIED_NO_USER;
     }
 
     /* If there is no group file - then we are not

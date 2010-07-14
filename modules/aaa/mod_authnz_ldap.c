@@ -616,6 +616,10 @@ static authz_status ldapuser_check_authorization(request_rec *r,
     char filtbuf[FILTER_LENGTH];
     const char *dn = NULL;
 
+    if (!r->user) {
+        return AUTHZ_DENIED_NO_USER;
+    }
+
     if (!sec->have_ldap_url) {
         return AUTHZ_DENIED;
     }
@@ -638,12 +642,6 @@ static authz_status ldapuser_check_authorization(request_rec *r,
      * and populated with the userid and DN of the account in LDAP
      */
 
-    /* Check that we have a userid to start with */
-    if (!r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
-    }
 
     if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
@@ -755,6 +753,10 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
     struct mod_auth_ldap_groupattr_entry_t *ent;
     int i;
 
+    if (!r->user) {
+        return AUTHZ_DENIED_NO_USER;
+    }
+
     if (!sec->have_ldap_url) {
         return AUTHZ_DENIED;
     }
@@ -812,13 +814,6 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    /* Check that we have a userid to start with */
-    if (!r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
-    }
 
     if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
@@ -971,6 +966,10 @@ static authz_status ldapdn_check_authorization(request_rec *r,
     char filtbuf[FILTER_LENGTH];
     const char *dn = NULL;
 
+    if (!r->user) {
+        return AUTHZ_DENIED_NO_USER;
+    }
+
     if (!sec->have_ldap_url) {
         return AUTHZ_DENIED;
     }
@@ -992,13 +991,6 @@ static authz_status ldapdn_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    /* Check that we have a userid to start with */
-    if (!r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
-    }
 
     if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
@@ -1083,6 +1075,10 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
     char filtbuf[FILTER_LENGTH];
     const char *dn = NULL;
 
+    if (!r->user) {
+        return AUTHZ_DENIED_NO_USER;
+    }
+
     if (!sec->have_ldap_url) {
         return AUTHZ_DENIED;
     }
@@ -1104,13 +1100,6 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    /* Check that we have a userid to start with */
-    if (!r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
-    }
 
     if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
@@ -1199,6 +1188,10 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
     char filtbuf[FILTER_LENGTH];
     const char *dn = NULL;
 
+    if (!r->user) {
+        return AUTHZ_DENIED_NO_USER;
+    }
+
     if (!sec->have_ldap_url) {
         return AUTHZ_DENIED;
     }
@@ -1220,13 +1213,6 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
      * the req structure needed for authorization needs to be created
      * and populated with the userid and DN of the account in LDAP
      */
-
-    /* Check that we have a userid to start with */
-    if (!r->user) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-            "access to %s failed, reason: no authenticated user", r->uri);
-        return AUTHZ_DENIED;
-    }
 
     if (!strlen(r->user)) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
