@@ -1442,10 +1442,11 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     worker->cp = cp;
 }
 
-PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
+PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
                                                 apr_pool_t *p,
                                                 proxy_server_conf *conf,
-                                                const char *url)
+                                                const char *url,
+                                                int id)
 {
     int rv;
     apr_uri_t uri;
@@ -1467,27 +1468,35 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     (*worker)->scheme = uri.scheme;
     (*worker)->hostname = uri.hostname;
     (*worker)->port = uri.port;
-    (*worker)->id   = proxy_lb_workers;
+    if (id < 0) {
+        (*worker)->id   = proxy_lb_workers;
+        proxy_lb_workers++;
+    } else {
+        (*worker)->id   = id;
+    }
     (*worker)->flush_packets = flush_off;
     (*worker)->flush_wait = PROXY_FLUSH_WAIT;
     (*worker)->smax = -1;
     /* Increase the total worker count */
-    proxy_lb_workers++;
     (*worker)->cp = NULL;
     (*worker)->mutex = NULL;
 
     return NULL;
 }
 
-PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
+PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker_wid(apr_pool_t *p, int id)
 {
 
     proxy_worker *worker;
     worker = (proxy_worker *)apr_pcalloc(p, sizeof(proxy_worker));
-    worker->id = proxy_lb_workers;
+    if (id < 0) {
+        worker->id = proxy_lb_workers;
+        /* Increase the total worker count */
+        proxy_lb_workers++;
+    } else {
+        worker->id = id;
+    }
     worker->smax = -1;
-    /* Increase the total worker count */
-    proxy_lb_workers++;
     worker->cp = NULL;
     worker->mutex = NULL;
 
@@ -1495,17 +1504,41 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
 }
 
 PROXY_DECLARE(void)
-ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
-                                proxy_worker *worker)
+ap_proxy_add_worker_to_balancer_wid(apr_pool_t *pool, proxy_balancer *balancer,
+                                proxy_worker *worker, int id)
 {
     proxy_worker **runtime;
 
     runtime = apr_array_push(balancer->workers);
     *runtime = worker;
-    (*runtime)->id = proxy_lb_workers;
-    /* Increase the total runtime count */
-    proxy_lb_workers++;
+    if (id < 0) {
+        (*runtime)->id = proxy_lb_workers;
+        /* Increase the total runtime count */
+        proxy_lb_workers++;
+    } else {
+        (*runtime)->id = id;
+    }
 
+}
+
+PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
+                                                apr_pool_t *p,
+                                                proxy_server_conf *conf,
+                                                const char *url)
+{
+    return ap_proxy_add_worker_wid(worker, p, conf, url, -1);
+}
+
+PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
+{
+    return ap_proxy_create_worker_wid(p, -1);
+}
+
+PROXY_DECLARE(void)
+ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
+                                proxy_worker *worker)
+{
+    ap_proxy_add_worker_to_balancer_wid(pool, balancer, worker, -1);
 }
 
 PROXY_DECLARE(int) ap_proxy_pre_request(proxy_worker **worker,

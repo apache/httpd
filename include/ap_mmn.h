@@ -234,6 +234,7 @@
  * 20100630.0 (2.3.7-dev)  make module_levels vector of char instead of int
  * 20100701.0 (2.3.7-dev)  re-order struct members to improve alignment
  * 20100701.1 (2.3.7-dev)  add note_auth_failure hook
+ * 20100701.2 (2.3.7-dev)  add ap_proxy_*_wid() functions
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -241,7 +242,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20100701
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

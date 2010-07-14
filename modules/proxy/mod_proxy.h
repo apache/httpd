@@ -532,12 +532,35 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
  * @param p      memory pool to allocate worker from 
  * @param conf   current proxy server configuration
  * @param url    url containing worker name
+ * @param id     slotnumber id or -1 for auto allocation
+ * @return       error message or NULL if successfull
+ */
+PROXY_DECLARE(const char *) ap_proxy_add_worker_wid(proxy_worker **worker,
+                                                apr_pool_t *p,
+                                                proxy_server_conf *conf,
+                                                const char *url,
+                                                int id);
+
+/**
+ * Add the worker to proxy configuration
+ * @param worker the new worker
+ * @param p      memory pool to allocate worker from 
+ * @param conf   current proxy server configuration
+ * @param url    url containing worker name
  * @return       error message or NULL if successfull
  */
 PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
                                                 apr_pool_t *p,
                                                 proxy_server_conf *conf,
                                                 const char *url);
+
+/**
+ * Create new worker
+ * @param p      memory pool to allocate worker from 
+ * @param id     slotnumber id or -1 for auto allocation
+ * @return       new worker
+ */
+PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker_wid(apr_pool_t *p, int id);
 
 /**
  * Create new worker
@@ -591,6 +614,18 @@ PROXY_DECLARE(const char *) ap_proxy_add_balancer(proxy_balancer **balancer,
                                                   proxy_server_conf *conf,
                                                   const char *url);
 
+/**
+ * Add the worker to the balancer
+ * @param pool     memory pool for adding worker 
+ * @param balancer balancer to add to
+ * @param worker worker to add
+ * @param id     slotnumber id or -1 for auto allocation
+ * @note Single worker can be added to multiple balancers.
+ */
+PROXY_DECLARE(void) ap_proxy_add_worker_to_balancer_wid(apr_pool_t *pool,
+                                                    proxy_balancer *balancer,
+                                                    proxy_worker *worker,
+                                                    int id);
 /**
  * Add the worker to the balancer
  * @param pool     memory pool for adding worker 
