@@ -62,6 +62,10 @@ RELEASE SHOWSTOPPERS:
     - MPM simple
     - mod_serf
 
+  * Error log format should be configurable. The current format is
+    too verbose: The prefix length ranges from 70 chars (server-scope,
+    level <= info) to 120 chars (conn-scope, level >= debug).
+
   FOR BETA:
 
   * Modules without documentation need to be moved to experimental or be
@@ -129,6 +133,16 @@ CURRENT VOTES:
         +1: sctemme (why mess with it?)
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
+
+  * Allow to log module name in error log format.
+
+  * Add mod_allow_method or some other (usable) functionality to replace
+    Limit/LimitExcept.
+
+  * Sort out modules selections for most/all/reallyall. Maybe rename
+    all -> most, reallyall -> all, and remove the old 'most'.
+
+  * Add mod_define.
 
   * Patches submitted to the bug database:
     http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
