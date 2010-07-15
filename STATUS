@@ -86,7 +86,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
+  *) mod_rewrite: Allow to set environment variables using mod_rewrite without
+     explicitely giving a value.
+     Most modules only check presence of a variable, not the value, so it makes
+     sense to make the VAL argument in the mod_rewrite ENV flag optional.
+     Currently using [ENV=VAR] instead of [ENV=VAR:VAL] silently drops the flag
+     (it is added to the list of vars to set, but then never actually set).
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=960233&view=rev
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~rjung/patches/httpd-branch-2.2-mod_rewrite-env_var-emptyvalue.patch
+     +1: rjung, niq, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -173,18 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?rev=952823&view=rev
      2.2.x Patch: http://people.apache.org/~minfrin/httpd-cache-partial2-2.2.patch
      +1: minfrin
-
-  *) mod_rewrite: Allow to set environment variables using mod_rewrite without
-     explicitely giving a value.
-     Most modules only check presence of a variable, not the value, so it makes
-     sense to make the VAL argument in the mod_rewrite ENV flag optional.
-     Currently using [ENV=VAR] instead of [ENV=VAR:VAL] silently drops the flag
-     (it is added to the list of vars to set, but then never actually set).
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=960233&view=rev
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~rjung/patches/httpd-branch-2.2-mod_rewrite-env_var-emptyvalue.patch
-     +1: rjung, niq
 
   *) mod_headers: support global replace in Header Edit
      PR 46594 (not 47066 as incorrectly recorded in change log)
