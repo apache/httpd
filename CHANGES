@@ -25,6 +25,9 @@ Changes with Apache 2.2.16
      an action to happen when a URL maps to no file, without resorting
      to ErrorDocument or mod_rewrite.  PR 47184 [Nick Kew]
 
+  *) mod_rewrite: Allow to set environment variables without explicitely
+     giving a value. [Rainer Jung]
+
 
 Changes with Apache 2.2.15
 
