@@ -1298,11 +1298,11 @@ cannot use <code>$N</code> in the substitution string!
         appended.</p></dd>
 
         <dt>
-        '<code>env|E=</code><em>VAR</em>:<em>VAL</em>'
+        '<code>env|E=</code><em>VAR</em>[:<em>VAL</em>]'
         (set environment variable)</dt><dd>
         This forces an environment variable named <em>VAR</em> to
-        be set to the value <em>VAL</em>, where <em>VAL</em> can
-        contain regexp backreferences (<code>$N</code> and
+        be set. The value will be <em>VAL</em> if provided, where <em>VAL</em>
+        can contain regexp backreferences (<code>$N</code> and
         <code>%N</code>) which will be expanded. You can use this
         flag more than once, to set more than one variable. The
         variables can later be dereferenced in many situations, most commonly
