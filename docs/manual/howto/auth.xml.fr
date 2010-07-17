@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 942761 -->
+<!-- English Revision : 958741 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviwed by : Vincent Deffontaines -->
 
@@ -58,6 +58,7 @@ module de chaque groupe.</p>
       <li><module>mod_authn_dbm</module></li>
       <li><module>mod_authn_file</module></li>
       <li><module>mod_authnz_ldap</module></li>
+      <li><module>mod_authn_socache</module></li>
     </ul>
   </li>
   <li>Autorisation (voir la directive <directive
@@ -643,6 +644,20 @@ autorisation</title>
 
     </section>
 
+</section>
+
+<section id="socache"><title>Mise en cache de l'authentification</title>
+    <p>Dans certains cas, l'authentification constitue une charge
+    inacceptable pour un fournisseur d'authentification ou votre réseau.
+    Ceci est susceptible d'affecter les utilisateurs du module
+    <module>mod_authn_dbd</module> (ou les fournisseurs
+    tiers/personnalisés). Pour résoudre ce problème, HTTPD 2.3/2.4
+    propose un nouveau fournisseur de mise en cache,
+    <module>mod_authn_socache</module>, qui permet de mettre en cache
+    les données d'authentification, et ainsi réduire la charge du/des
+    fournisseurs(s) originels.</p>
+    <p>Cette mise en cache apportera un gain en performance substantiel
+    à certains utilisateurs.</p>
 </section>
 
 <section id="moreinformation"><title>Pour aller plus loin . . .</title>

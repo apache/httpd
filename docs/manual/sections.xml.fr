@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 930742:955184 (outdated) -->
+<!-- English Revision: 955184 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -274,7 +274,7 @@ Alias /foo /srv/www/common/foo<br />
 <p>Ceci est aussi vrai pour les directives <directive
 module="mod_proxy">ProxyPass</directive> :</p>
 <example>
-ProxyPass /special-area http://special.example.com smax=5 max=10
+ProxyPass /special-area http://special.example.com smax=5 max=10<br />
 ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On
 </example>
 </section> 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision : 881113 -->
+<!-- English Revision : 959136 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -171,17 +171,18 @@ pour d&eacute;crire les directives Apache</page>
 <title>Documentation du d&eacute;veloppeur</title>
 <page separate="yes" href="developer/">Aper&ccedil;u</page>
 <page href="developer/API.html">Notes sur l'API Apache</page>
+<page href="developer/new_api_2_4.html">Mises &agrave; jour de l'API dans Apache HTTPD 2.4</page>
 <page href="developer/debugging.html">D&eacute;bogage de l'allocation m&eacute;moire
 dans APR</page>
-<page href="developer/documenting.html">Documenter Apache 2.0</page>
+<page href="developer/documenting.html">Documenter Apache 2.x</page>
 <page href="developer/hooks.html">Fonctions d'accroche (Hook Functions)
-d'Apache 2.0</page>
+d'Apache 2.x</page>
 <page href="developer/modules.html">Convertir un module depuis Apache
-1.3 vers Apache 2.0</page>
+1.3 vers Apache 2.x</page>
 <page href="developer/request.html">Traitement des requ&ecirc;tes avec Apache
-2.0</page>
+2.x</page>
 <page href="developer/filters.html">Fonctionnement des filtres dans
-Apache 2.0</page>
+Apache 2.x</page>
 </category>
 
 <category id="index">
