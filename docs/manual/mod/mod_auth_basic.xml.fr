@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 738841 -->
+<!-- English Revision : 958729 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -89,8 +89,8 @@ cette zone du site web</description>
 
     <p>Les diff&eacute;rents fournisseurs disponibles sont impl&eacute;ment&eacute;s par les
     modules <module>mod_authn_dbm</module>,
-    <module>mod_authn_file</module>, <module>mod_authn_dbd</module>, et
-    <module>mod_authnz_ldap</module>.</p>
+    <module>mod_authn_file</module>, <module>mod_authn_dbd</module>,
+    <module>mod_authnz_ldap</module> et <module>mod_authn_socache</module>.</p>
 </usage>
 </directivesynopsis>
 

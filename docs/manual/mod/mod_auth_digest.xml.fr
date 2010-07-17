@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 813396 -->
+<!-- English Revision : 958729 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -163,7 +163,8 @@ zone du site web concern&eacute;e</description>
     module <module>mod_authn_file</module>.</p>
 
     <p>Voir <module>mod_authn_dbm</module>,
-    <module>mod_authn_file</module>, et <module>mod_authn_dbd</module>
+    <module>mod_authn_file</module>, <module>mod_authn_dbd</module> et
+    <module>mod_authn_socache</module>
     pour la liste des fournisseurs disponibles.</p>
 </usage>
 </directivesynopsis>

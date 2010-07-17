@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 931689 -->
+<!-- English Revision : 956059 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -695,25 +695,32 @@ l'espace d'URLs du serveur local</description>
       g&eacute;n&eacute;rale.</p>
     </note>
 
-    <p>Depuis la version 2.1 du serveur HTTP Apache, il est possible d'utiliser un jeu de
-    connexions vers un serveur d'arri&egrave;re-plan. Il est possible de
-    personnaliser ce jeu de connexions &agrave; l'aide des param&egrave;tres
-    <code>cl&eacute;=valeur</code>. La valeur par d&eacute;faut du nombre maximum de
-    connexions correspond au nombre de threads par processus pour le MPM
-    utilis&eacute;. Pour le MPM Prefork, cette valeur est toujours 1, alors que
-    pour le MPM Worker, elle est contr&ocirc;l&eacute;e par la directive
-    <directive>ThreadsPerChild</directive>.</p>
+    <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
+    les groupements de connexions vers un serveur d'arri&egrave;re-plan. Les
+    connexions cr&eacute;&eacute;es &agrave; la demande peuvent &ecirc;tre enregistr&eacute;es dans un
+    groupement pour une utilisation ult&eacute;rieure. La taille du groupe
+    ainsi que d'autres caract&eacute;ristiques peuvent &ecirc;tre d&eacute;finies via la
+    directive <directive>ProxyPass</directive> au moyen de param&egrave;tres
+    <code>cl&eacute;=valeur</code> dont la description fait l'objet du tableau
+    ci-dessous.</p>
 
-    <p>La d&eacute;finition de <code>min</code> va d&eacute;terminer le nombre minimum
-    de connexions ouvertes vers le serveur d'arri&egrave;re-plan. Des
-    connexions pourront &ecirc;tre cr&eacute;&eacute;es &agrave; la demande &agrave; concurrence du
-    maximum relatif, soit <code>smax</code>. Toute
-    connexion au dessus de <code>smax</code> se verra attribuer une
-    dur&eacute;e de vie <code>ttl</code>. Apache httpd ne cr&eacute;era jamais plus de
-    connexions vers le serveur d'arri&egrave;re-plan que le maximum absolu,
-    soit <code>max</code>.</p>
+    <p>La d&eacute;finition du param&egrave;tre <code>min</code> permet de d&eacute;terminer
+    le nombre de connexions vers le serveur d'arri&egrave;re-plan qui seront
+    conserv&eacute;es apr&egrave;s usage. Il sera possible de cr&eacute;er jusqu'&agrave;
+    <code>smax</code> (Soft Maximum) connexions &agrave; la demande. Toute
+    connexion en surnombre par rapport &agrave; <code>smax</code> aura une
+    dur&eacute;e de vie limit&eacute;e, ou <code>ttl</code>. En tout &eacute;tat de cause,
+    Apache httpd ne cr&eacute;era jamais plus de <code>max</code> (Hard
+    Maximum) connexions vers le serveur d'arri&egrave;re-plan.</p>
 
-    <example>
+    <p>Le groupement de connexions est maintenu au niveau de chaque
+    processus enfant du serveur web, et les d&eacute;finitions de
+    <code>min</code>, <code>max</code>, et <code>smax</code> ne font
+    l'objet d'aucune coordination entre les diff&eacute;rents processus
+    enfants, sauf si un seul processus enfant est autoris&eacute; par la
+    configuration ou la conception du module multi-processus (MPM).</p>
+
+    <example><title>Exemple</title>
         ProxyPass /exemple http://backend.example.com smax=5 max=20 ttl=120 retry=300
     </example>
 
@@ -723,8 +730,8 @@ l'espace d'URLs du serveur local</description>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Nombre minimum de connexions ouvertes vers le serveur
-	d'arri&egrave;re-plan.</td></tr>
+        <td>Nombre minimum de connexions vers le serveur
+	d'arri&egrave;re-plan qui seront conserv&eacute;es apr&egrave;s usage.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
         <td>Nombre maximum absolu de connexions autoris&eacute;es vers le
