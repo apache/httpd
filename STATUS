@@ -66,6 +66,7 @@ RELEASE SHOWSTOPPERS:
   * Error log format should be configurable. The current format is
     too verbose: The prefix length ranges from 70 chars (server-scope,
     level <= info) to 120 chars (conn-scope, level >= debug).
+    (sf is working on this).
 
   FOR BETA:
 
@@ -136,7 +137,8 @@ CURRENT VOTES:
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
   * Allow to log module name in error log format.
-
+    (sf is working on this)
+ 
   * Add mod_allow_method or some other (usable) functionality to replace
     Limit/LimitExcept.
 
