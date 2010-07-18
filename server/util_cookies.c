@@ -17,6 +17,7 @@
 #include "util_cookies.h"
 #include "apr_lib.h"
 #include "apr_strings.h"
+#include "http_config.h"
 #include "http_log.h"
 
 #define LOG_PREFIX "ap_cookie: "
