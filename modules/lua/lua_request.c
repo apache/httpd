@@ -332,7 +332,7 @@ static int req_dispatch(lua_State *L)
         switch (rft->type) {
         case APL_REQ_FUNTYPE_TABLE:{
                 apr_table_t *rs;
-                req_field_apr_table_f func = rft->fun;
+                req_field_apr_table_f func = (req_field_apr_table_f)rft->fun;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> apr table",
                               name);
@@ -342,7 +342,7 @@ static int req_dispatch(lua_State *L)
             }
 
         case APL_REQ_FUNTYPE_LUACFUN:{
-                lua_CFunction func = rft->fun;
+                lua_CFunction func = (lua_CFunction)rft->fun;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> lua_CFunction",
                               name);
@@ -350,7 +350,7 @@ static int req_dispatch(lua_State *L)
                 return 1;
             }
         case APL_REQ_FUNTYPE_STRING:{
-                req_field_string_f func = rft->fun;
+                req_field_string_f func = (req_field_string_f)rft->fun;
                 char *rs;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> string", name);
@@ -359,7 +359,7 @@ static int req_dispatch(lua_State *L)
                 return 1;
             }
         case APL_REQ_FUNTYPE_INT:{
-                req_field_int_f func = rft->fun;
+                req_field_int_f func = (req_field_int_f)rft->fun;
                 int rs;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> int", name);
@@ -368,7 +368,7 @@ static int req_dispatch(lua_State *L)
                 return 1;
             }
         case APL_REQ_FUNTYPE_BOOLEAN:{
-                req_field_int_f func = rft->fun;
+                req_field_int_f func = (req_field_int_f)rft->fun;
                 int rs;
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "request_rec->dispatching %s -> boolean", name);
