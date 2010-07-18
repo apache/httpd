@@ -115,9 +115,11 @@
 #endif
 
 #if (OPENSSL_VERSION_NUMBER >= 0x00908000)
+# define MODSSL_D2I_ASN1_type_bytes_CONST const
 # define MODSSL_D2I_PrivateKey_CONST const
 # define MODSSL_D2I_X509_CONST const
 #else
+# define MODSSL_D2I_ASN1_type_bytes_CONST
 # define MODSSL_D2I_PrivateKey_CONST
 # define MODSSL_D2I_X509_CONST
 #endif
