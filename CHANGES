@@ -29,6 +29,9 @@ Changes with Apache 2.3.7
   *) mod_include: recognise "text/html; parameters" as text/html
      PR 49616 [Andrey Chernov <ache nagual.pp.ru>]
 
+  *) CGI vars: allow PATH to be set by SetEnv, consistent with LD_LIBRARY_PATH
+     PR 43906 [Nick Kew]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
