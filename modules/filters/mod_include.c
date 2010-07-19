@@ -3096,7 +3096,7 @@ static int include_fixup(request_rec *r)
             return DECLINED;
         }
 
-        if (!r->content_type || strcmp(r->content_type, "text/html")) {
+        if (!r->content_type || strncmp(r->content_type, "text/html", 9)) {
             return DECLINED;
         }
     }
