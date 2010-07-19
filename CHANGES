@@ -26,6 +26,9 @@ Changes with Apache 2.3.7
 
   *) mod_rewrite: Remove superfluous EOL from rewrite logging. [Rainer Jung]
 
+  *) mod_include: recognise "text/html; parameters" as text/html
+     PR 49616 [Andrey Chernov <ache nagual.pp.ru>]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
