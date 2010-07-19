@@ -202,6 +202,9 @@ AP_DECLARE_DATA module **ap_loaded_modules=NULL;
 
 static apr_hash_t *ap_config_hash = NULL;
 
+/* a list of the module symbol names with the trailing "_module"removed */
+static char **ap_module_short_names = NULL;
+
 typedef int (*handler_func)(request_rec *);
 typedef void *(*dir_maker_func)(apr_pool_t *, char *);
 typedef void *(*merger_func)(apr_pool_t *, void *, void *);
@@ -520,8 +523,11 @@ static void ap_add_module_commands(module *m, apr_pool_t *p)
 
 /* One-time setup for precompiled modules --- NOT to be done on restart */
 
-AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p)
+AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
+                                       const char *sym_name)
 {
+    ap_module_symbol_t *sym = ap_prelinked_module_symbols;
+
     /* This could be called from a LoadModule httpd.conf command,
      * after the file has been linked and the module structure within it
      * teased out...
@@ -549,7 +555,29 @@ AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p)
                                 "reached. Please increase "
                                 "DYNAMIC_MODULE_LIMIT and recompile.", m->name);
         }
+
     }
+    else if (!sym_name) {
+        while (sym->modp != NULL) {
+            if (sym->modp == m) {
+                sym_name = sym->name;
+                break;
+            }
+            sym++;
+        }
+    }
+
+    if (sym_name) {
+        int len = strlen(sym_name);
+        int slen = strlen("_module");
+        if (len > slen && !strcmp(sym_name + len - slen, "_module")) {
+            len -= slen;
+        }
+
+        ap_module_short_names[m->module_index] = strdup(sym_name);
+        ap_module_short_names[m->module_index][len] = '\0';
+    }
+
 
     /* Some C compilers put a complete path into __FILE__, but we want
      * only the filename (e.g. mod_includes.c). So check for path
@@ -623,13 +651,17 @@ AP_DECLARE(void) ap_remove_module(module *m)
         modp->next = modp->next->next;
     }
 
+    free(ap_module_short_names[m->module_index]);
+    ap_module_short_names[m->module_index] = NULL;
+
     m->module_index = -1; /* simulate being unloaded, should
                            * be unnecessary */
     dynamic_modules--;
     total_modules--;
 }
 
-AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p)
+AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p,
+                                              const char *short_name)
 {
     module **m;
     const char *error;
@@ -637,7 +669,7 @@ AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p)
     /*
      *  Add module pointer to top of chained module list
      */
-    error = ap_add_module(mod, p);
+    error = ap_add_module(mod, p, short_name);
     if (error) {
         return error;
     }
@@ -709,12 +741,14 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
     conf_vector_length = max_modules;
 
     /*
-     *  Initialise list of loaded modules
+     *  Initialise list of loaded modules and short names
      */
     ap_loaded_modules = (module **)apr_palloc(process->pool,
         sizeof(module *) * conf_vector_length);
+    if (!ap_module_short_names)
+        ap_module_short_names = malloc(sizeof(char *) * conf_vector_length);
 
-    if (ap_loaded_modules == NULL) {
+    if (ap_loaded_modules == NULL || ap_module_short_names == NULL) {
         return "Ouch! Out of memory in ap_setup_prelinked_modules()!";
     }
 
@@ -727,7 +761,7 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
      *   Initialize chain of linked (=activate) modules
      */
     for (m = ap_prelinked_modules; *m != NULL; m++) {
-        error = ap_add_module(*m, process->pconf);
+        error = ap_add_module(*m, process->pconf, NULL);
         if (error) {
             return error;
         }
@@ -741,6 +775,13 @@ AP_DECLARE(const char *) ap_setup_prelinked_modules(process_rec *process)
 AP_DECLARE(const char *) ap_find_module_name(module *m)
 {
     return m->name;
+}
+
+AP_DECLARE(const char *) ap_find_module_short_name(int module_index)
+{
+        if (module_index < 0)
+                return "-";
+        return ap_module_short_names[module_index];
 }
 
 AP_DECLARE(module *) ap_find_linked_module(const char *name)

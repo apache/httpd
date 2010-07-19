@@ -671,8 +671,10 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *fname);
  * Add a module to the server
  * @param m The module structure of the module to add
  * @param p The pool of the same lifetime as the module
+ * @param s The module's symbol name (used for logging)
  */
-AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p);
+AP_DECLARE(const char *) ap_add_module(module *m, apr_pool_t *p,
+                                       const char *s);
 
 /**
  * Remove a module from the server.  There are some caveats:
@@ -687,8 +689,10 @@ AP_DECLARE(void) ap_remove_module(module *m);
  * Add a module to the chained modules list and the list of loaded modules
  * @param mod The module structure of the module to add
  * @param p The pool with the same lifetime as the module
+ * @param s The module's symbol name (used for logging)
  */
-AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p);
+AP_DECLARE(const char *) ap_add_loaded_module(module *mod, apr_pool_t *p,
+                                              const char *s);
 /**
  * Remove a module fromthe chained modules list and the list of loaded modules
  * @param mod the module structure of the module to remove
@@ -700,6 +704,12 @@ AP_DECLARE(void) ap_remove_loaded_module(module *mod);
  * @return the name of the module
  */
 AP_DECLARE(const char *) ap_find_module_name(module *m);
+/**
+ * Find the short name of the module identified by the specified module index
+ * @param module_index The module index to get the name for
+ * @return the name of the module
+ */
+AP_DECLARE(const char *) ap_find_module_short_name(int module_index);
 /**
  * Find a module based on the name of the module
  * @param name the name of the module

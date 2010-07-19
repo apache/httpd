@@ -278,7 +278,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     /*
      * Add this module to the Apache core structures
      */
-    error = ap_add_loaded_module(modp, cmd->pool);
+    error = ap_add_loaded_module(modp, cmd->pool, modname);
     if (error) {
         return error;
     }
