@@ -182,7 +182,11 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
         }
     }
 
-    if (!(env_path = getenv("PATH"))) {
+    env_path = apr_table_get(r->subprocess_env, "PATH");
+    if (env_path == NULL) {
+        env_path = getenv("PATH");
+    }
+    if (env_path == NULL) {
         env_path = DEFAULT_PATH;
     }
     apr_table_addn(e, "PATH", apr_pstrdup(r->pool, env_path));
