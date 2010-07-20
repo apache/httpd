@@ -154,8 +154,9 @@ static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
     if (lineend[len - 1] != APR_ASCII_LF) {
         return APR_EAGAIN;
     }
-    /* Line is complete. So reset ctx->linesize for next round. */
+    /* Line is complete. So reset ctx for next round. */
     ctx->linesize = 0;
+    ctx->pos = ctx->chunk_ln;
     return APR_SUCCESS;
 }
 
