@@ -204,6 +204,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: rpluem, jim
 
+   * Core: fix symlinks ownership tests
+     PR 36783
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=632947
+     2.2 patch: trunk patch Works with offset.
+     +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
