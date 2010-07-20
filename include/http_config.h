@@ -298,7 +298,7 @@ struct cmd_parms_struct {
     /** Server_rec being configured for */
     server_rec *server;
     /** If configuring for a directory, pathname of that directory.  
-     *  NOPE!  That's what it meant previous to the existance of &lt;Files&gt;, 
+     *  NOPE!  That's what it meant previous to the existence of &lt;Files&gt;, 
      * &lt;Location&gt; and regex matching.  Now the only usefulness that can be 
      * derived from this field is whether a command is being called in a 
      * server context (path == NULL) or being called in a dir context 
