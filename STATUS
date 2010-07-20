@@ -216,6 +216,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=892678
      2.2 patch: trunk patch Works with offset.
      +1: niq
+     -1: fielding: this routine is hand-optimized for speed, and the
+         "solution" is to add an if (strlen(*s) < bytes_handled - 1)
+         to every single line read?  Seriously?  If we want to have
+         ap_rgetline_core() enforce validity, then we should be using a
+         stop character array and error on all control characters not
+         allowed by HTTP.
 
    * core: (re)-introduce -T commandline option to suppress documentroot
      check at startup
