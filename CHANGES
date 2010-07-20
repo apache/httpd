@@ -36,6 +36,9 @@ Changes with Apache 2.3.7
      fails to set r->user.  Log bug and return 500 instead.
      PR 42995 [Nick Kew]
 
+  *) HTTP protocol filter: fix handling of longer chunk extensions
+     PR 49474 [<tee.bee gmx.de>]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
