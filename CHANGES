@@ -32,6 +32,10 @@ Changes with Apache 2.3.7
   *) CGI vars: allow PATH to be set by SetEnv, consistent with LD_LIBRARY_PATH
      PR 43906 [Nick Kew]
 
+  *) Core: Extra robustness: don't try authz and segfault if authn
+     fails to set r->user.  Log bug and return 500 instead.
+     PR 42995 [Nick Kew]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
