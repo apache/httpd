@@ -61,10 +61,10 @@ HTTP server.</p>
     
 
     <p>Apache configuration files contain one directive per line.
-    The back-slash "\" may be used as the last character on a line
+    The backslash "\" may be used as the last character on a line
     to indicate that the directive continues onto the next line.
     There must be no other characters or white space between the
-    back-slash and the end of the line.</p>
+    backslash and the end of the line.</p>
 
     <p>Directives in the configuration files are case-insensitive,
     but arguments to directives are often case sensitive. Lines
