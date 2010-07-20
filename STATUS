@@ -217,6 +217,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch Works with offset.
      +1: niq
 
+   * core: (re)-introduce -T commandline option to suppress documentroot
+     check at startup
+     PR 41887
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=893027
+     2.2 patch: trunk patch Works with offset.
+     +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
