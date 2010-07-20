@@ -224,6 +224,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch Works with offset.
      +1: niq
 
+   * VHosts: fix parsing of pure-numeric hostname.
+     PR 44979
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=892172
+     2.2 patch: trunk patch Works with offset.
+     +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
