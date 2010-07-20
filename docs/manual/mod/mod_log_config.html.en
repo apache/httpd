@@ -70,8 +70,8 @@
     used to log each request to the log file. It can contain literal
     characters copied into the log files and the C-style control
     characters "\n" and "\t" to represent new-lines and tabs.
-    Literal quotes and back-slashes should be escaped with
-    back-slashes.</p>
+    Literal quotes and backslashes should be escaped with
+    backslashes.</p>
 
     <p>The characteristics of the request itself are logged by
     placing "<code>%</code>" directives in the format string, which are
