@@ -224,7 +224,7 @@
       server to log a particular piece of information. Literal
       characters may also be placed in the format string and will be
       copied directly into the log output. The quote character
-      (<code>"</code>) must be escaped by placing a back-slash before
+      (<code>"</code>) must be escaped by placing a backslash before
       it to prevent it from being interpreted as the end of the
       format string. The format string may also contain the special
       control characters "<code>\n</code>" for new-line and
