@@ -236,6 +236,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch Works with offset.
      +1: niq
 
+   * config: fix/optimize SSL connections for IE6 browsers
+     PR 49484
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966055
+     2.2 patch: should apply cleanly
+     +1: gstein
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
