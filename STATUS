@@ -210,6 +210,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch Works with offset.
      +1: niq
 
+   * Protocol: Reject requests containing (invalid) NULL characters
+     in request line or request headers.
+     PR 43039
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=892678
+     2.2 patch: trunk patch Works with offset.
+     +1: niq
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
