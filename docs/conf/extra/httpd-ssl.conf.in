@@ -218,7 +218,7 @@ SSLCertificateKeyFile "@exp_sysconfdir@/server.key"
 #   Similarly, one has to force some clients to use HTTP/1.0 to workaround
 #   their broken HTTP/1.1 implementation. Use variables "downgrade-1.0" and
 #   "force-response-1.0" for this.
-BrowserMatch ".*MSIE.*" \
+BrowserMatch ".*MSIE [1-5].*" \
          nokeepalive ssl-unclean-shutdown \
          downgrade-1.0 force-response-1.0
 
