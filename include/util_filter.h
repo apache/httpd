@@ -221,10 +221,13 @@ struct ap_filter_rec_t {
     /** The function to call when this filter is invoked. */
     ap_filter_func filter_func;
 
-    /** The function to call before the handlers are invoked. Notice
-     * that this function is called only for filters participating in
-     * the http protocol. Filters for other protocols are to be
-     * initialized by the protocols themselves.
+    /** The function to call directly before the handlers are invoked
+     * for a request.  The init function is called once directly
+     * before running the handlers for a request or subrequest.  The
+     * init function is never called for a connection filter (with
+     * ftype >= AP_FTYPE_CONNECTION).  Any use of this function for
+     * filters for protocols other than HTTP is specified by the
+     * module supported that protocol.
      */
     ap_init_filter_func filter_init_func;
 

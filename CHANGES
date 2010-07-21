@@ -5,6 +5,10 @@ Changes with Apache 2.2.16
      mod_proxy_ajp, mod_proxy_http, mod_reqtimeout: Fix timeout detection
      for platforms Windows, Netware and OS2.  PR: 49417. [Rainer Jung]
 
+  *) core: Filter init functions are now run strictly once per request
+     before handler invocation.  The init functions are no longer run
+     for connection filters.  PR 49328.  [Joe Orton]
+
   *) mod_filter: enable it to act on non-200 responses.
      PR 48377 [Nick Kew]
 
