@@ -174,7 +174,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   *) mod_headers: support global replace in Header Edit
      PR 46594 (not 47066 as incorrectly recorded in change log)
      trunk: http://svn.eu.apache.org/viewvc?view=revision&revision=894036
+            http://svn.apache.org/viewvc?view=revision&revision=966059
      2.2.x: http://people.apache.org/~niq/patches/46594.patch
+                              (newly updated to fold in r966059)
      +1: niq
 
   * core: Filter init functions are now run strictly once per request
@@ -241,10 +243,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966055
      2.2 patch: should apply cleanly
      +1: gstein
-
-   * mod_headers: fix omission in edit-multiple patch, noted by rpluem
-     Patch: http://svn.apache.org/viewvc?view=revision&revision=966059
-     +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
