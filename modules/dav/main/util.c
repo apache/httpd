@@ -625,7 +625,8 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
 
             /* 2518 specifies this must be an absolute URI; just take the
              * relative part for later comparison against r->uri */
-            if ((rv = apr_uri_parse(r->pool, uri, &parsed_uri)) != APR_SUCCESS) {
+            if ((rv = apr_uri_parse(r->pool, uri, &parsed_uri)) != APR_SUCCESS
+                || !parsed_uri.path) {
                 return dav_new_error(r->pool, HTTP_BAD_REQUEST,
                                      DAV_ERR_IF_TAGGED, rv,
                                      "Invalid URI in tagged If-header.");

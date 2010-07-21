@@ -2,6 +2,10 @@
 
 Changes with Apache 2.3.7
 
+  *) SECURITY: CVE-2010-1452 (cve.mitre.org)
+     mod_dav, mod_cache, mod_session: Fix Handling of requests without a path 
+     segment. PR: 49246 [Mark Drayton, Jeff Trawick]
+
   *) core/mod_authz_core: Introduce new access_checker_ex hook that enables
      mod_authz_core to bypass authentication if access should be allowed by
      IP address/env var/... [Stefan Fritsch]
