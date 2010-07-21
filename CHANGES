@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.16
 
+  *) SECURITY: CVE-2010-1452 (cve.mitre.org)
+     mod_dav, mod_cache: Fix Handling of requests without a path segment.
+     PR: 49246 [Mark Drayton, Jeff Trawick]
+
   *) SECURITY: CVE-2010-2068 (cve.mitre.org)
      mod_proxy_ajp, mod_proxy_http, mod_reqtimeout: Fix timeout detection
      for platforms Windows, Netware and OS2.  PR: 49417. [Rainer Jung]

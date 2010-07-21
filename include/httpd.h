@@ -940,7 +940,7 @@ struct request_rec {
 
     /** The URI without any parsing performed */
     char *unparsed_uri;	
-    /** The path portion of the URI */
+    /** The path portion of the URI, or "/" if no path provided */
     char *uri;
     /** The filename on disk corresponding to this response */
     char *filename;

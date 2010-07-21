@@ -479,7 +479,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * Check if we need to ignore session identifiers in the URL and do so
      * if needed.
      */
-    path = r->parsed_uri.path;
+    path = r->uri;
     querystring = r->parsed_uri.query;
     if (conf->ignore_session_id->nelts) {
         int i;
@@ -546,7 +546,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      */
     cache->key = apr_pstrdup(r->pool, *key);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-                 "cache: Key for entity %s?%s is %s", r->parsed_uri.path,
+                 "cache: Key for entity %s?%s is %s", r->uri,
                  r->parsed_uri.query, *key);
 
     return APR_SUCCESS;
