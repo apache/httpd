@@ -86,6 +86,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * core: Filter init functions are now run strictly once per request
+    before handler invocation.  The init functions are no longer run
+    for connection filters.  PR 49328.
+    Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=953311&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem, jim, pquerna
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -178,15 +186,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x: http://people.apache.org/~niq/patches/46594.patch
                               (newly updated to fold in r966059)
      +1: niq
-
-  * core: Filter init functions are now run strictly once per request
-    before handler invocation.  The init functions are no longer run
-    for connection filters.  PR 49328.
-    Trunk version of patch:
-       http://svn.apache.org/viewcvs.cgi?rev=953311&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim
 
   * core: Pass the output filter information to newly created sub requests;
     as these are later on used as true requests with an internal redirect.
