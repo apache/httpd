@@ -39,6 +39,9 @@ Changes with Apache 2.3.7
   *) HTTP protocol filter: fix handling of longer chunk extensions
      PR 49474 [<tee.bee gmx.de>]
 
+  *) Update SSL cipher suite and add example for SSLHonorCipherOrder.
+     [Lars Eilebrecht, Rainer Jung]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)

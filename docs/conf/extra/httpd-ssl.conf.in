@@ -45,9 +45,20 @@ Listen @@SSLPort@@
 ##  the main server and all SSL-enabled virtual hosts.
 ##
 
+#   SSL Cipher Suite:
+#   List the ciphers that the client is permitted to negotiate.
+#   See the mod_ssl documentation for a complete list.
+SSLCipherSuite RC4-SHA:AES128-SHA:ALL:!ADH:!EXP:!LOW:!MD5:!SSLV2:!NULL
+
+#   SSL Cipher Honor Order:
+#   On a busy HTTPS server you may want to enable this directive
+#   to force clients to use one of the faster ciphers like RC4-SHA
+#   or AES128-SHA in the order defined by SSLCipherSuite.
+#SSLHonorCipherOrder on 
+
 #   Pass Phrase Dialog:
 #   Configure the pass phrase gathering process.
-#   The filtering dialog program (`builtin' is a internal
+#   The filtering dialog program (`builtin' is an internal
 #   terminal dialog) has to provide the pass phrase on stdout.
 SSLPassPhraseDialog  builtin
 
@@ -74,14 +85,6 @@ TransferLog "@exp_logfiledir@/access_log"
 #   SSL Engine Switch:
 #   Enable/Disable SSL for this virtual host.
 SSLEngine on
-
-#   SSL Cipher Suite:
-#   List the ciphers that the client is permitted to negotiate.
-#   See the mod_ssl documentation for a complete list.
-#   Recent OpenSSL snapshots include Elliptic Curve Cryptograhpy (ECC) 
-#   cipher suites (see RFC 4492) as part of "ALL". Edit this line
-#   if you need to disable any of those ciphers.
-SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
 
 #   Server Certificate:
 #   Point SSLCertificateFile at a PEM encoded certificate.  If
