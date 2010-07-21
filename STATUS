@@ -242,6 +242,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: should apply cleanly
      +1: gstein
 
+   * mod_headers: fix omission in edit-multiple patch, noted by rpluem
+     Patch: http://svn.apache.org/viewvc?view=revision&revision=966059
+     +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
