@@ -510,8 +510,8 @@ static const char *filter_chain(cmd_parms *cmd, void *CFG, const char *arg)
 
     return NULL;
 }
-static const char *filter_bytype(cmd_parms *cmd, void *CFG,
-                                 const char *pname, const char *type)
+static const char *filter_bytype1(cmd_parms *cmd, void *CFG,
+                                  const char *pname, const char *type)
 {
     char *etype;
     char *p;
@@ -549,6 +549,21 @@ static const char *filter_bytype(cmd_parms *cmd, void *CFG,
     /* If it's the first time through, add to filterchain */
     if (rv == NULL && !seen_name) {
         rv = filter_chain(cmd, CFG, fname);
+    }
+    return rv;
+}
+static const char *filter_bytype(cmd_parms *cmd, void *CFG,
+                                 const char *names, const char *type)
+{
+    /* back compatibility, need to parse multiple components in pname */
+    char *pname;
+    char *strtok_state = NULL;
+    char *name = apr_pstrdup(cmd->pool, names);
+    const char *rv = NULL;
+    for (pname = apr_strtok(name, ";", &strtok_state);
+         pname != NULL && rv == NULL;
+         pname = apr_strtok(NULL, ";", &strtok_state)) {
+        rv = filter_bytype1(cmd, CFG, pname, type);
     }
     return rv;
 }
