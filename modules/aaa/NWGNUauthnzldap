@@ -16,11 +16,10 @@ endif
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(AP_WORK)/include \
-			$(NWOS) \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(APR) \
+			$(AP_WORK)/include \
+			$(NWOS) \
 			$(EOLIST)
 
 #

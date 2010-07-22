@@ -1,6 +1,9 @@
 #
 # This Makefile requires the environment var OSSLSDK
 # pointing to the base directory of your OpenSSL SDK.
+# If you want to use the Novell NTLS SDK instead then
+# define NTLSSDK pointing to the base directory of the
+# SDK, and also set USE_NTLS=1
 #
 
 #
@@ -23,25 +26,37 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # Make sure all needed macro's are defined
 #
 
-OSSLINC = $(OSSLSDK)/outinc_nw_libc
-OSSLLIB = $(OSSLSDK)/out_nw_libc
-OSSLAPP = $(OSSLSDK)/apps
+ifeq "$(USE_NTLS)" "1"
+SSL_INC = $(NTLSSDK)/inc
+SSL_LIB = $(NTLSSDK)/imp
+SSL_BIN = $(NTLSSDK)/bin
+SSL_APP = $(NTLSSDK)/apps
+ifneq "$(wildcard $(SSL_INC)/openssl/opensslv.h)" "$(SSL_INC)/openssl/opensslv.h"
+$(error '$(NTLSSDK)' does NOT point to a valid NTLS SDK!)
+endif
+else
+SSL_INC = $(OSSLSDK)/outinc_nw_libc
+SSL_LIB = $(OSSLSDK)/out_nw_libc
+SSL_BIN = $(OSSLSDK)/out_nw_libc
+SSL_APP = $(OSSLSDK)/apps
+ifneq "$(wildcard $(SSL_INC)/openssl/opensslv.h)" "$(SSL_INC)/openssl/opensslv.h"
+$(error '$(OSSLSDK)' does NOT point to a valid OpenSSL SDK!)
+endif
+endif
 
 #
 # These directories will be at the beginning of the include list, followed by
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(OSSLINC) \
-			$(OSSLINC)/openssl \
-			$(AP_WORK)/include \
-			$(AP_WORK)/server/mpm/NetWare \
-			$(AP_WORK)/modules/arch/netware \
-			$(AP_WORK)/modules/cache \
-			$(AP_WORK)/modules/generators \
+			$(SSL_INC) \
+			$(SSL_INC)/openssl \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(APR) \
+			$(AP_WORK)/include \
+			$(AP_WORK)/modules/cache \
+			$(AP_WORK)/modules/generators \
+			$(AP_WORK)/server/mpm/NetWare \
 			$(NWOS) \
 			$(EOLIST)
 
@@ -62,7 +77,7 @@ XDEFINES	+= \
 # These flags will be added to the link.opt file
 #
 XLFLAGS		+= \
-			-l $(OSSLLIB) \
+			-l $(SSL_LIB) \
 			$(EOLIST)
 
 #
@@ -122,7 +137,11 @@ NLM_NAME	= mod_ssl
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
+ifeq "$(USE_NTLS)" "1"
+NLM_DESCRIPTION	= Apache $(VERSION_STR) SSL module (NTLS)
+else
 NLM_DESCRIPTION	= Apache $(VERSION_STR) SSL module
+endif
 
 #
 # This is used by the '-threadname' directive.  If left blank,
@@ -199,9 +218,14 @@ FILES_nlm_objs := $(patsubst %.c,$(OBJDIR)/%.o,$(wildcard *.c))
 #
 FILES_nlm_libs = \
 	libcpre.o \
-	$(OSSLLIB)/crypto.lib \
-	$(OSSLLIB)/ssl.lib \
 	$(EOLIST)
+
+ifneq "$(USE_NTLS)" "1"
+FILES_nlm_libs += \
+	$(SSL_LIB)/crypto.lib \
+	$(SSL_LIB)/ssl.lib \
+	$(EOLIST)
+endif
 
 #
 # These are the modules that the above NLM target depends on to load.
@@ -211,6 +235,11 @@ FILES_nlm_modules = \
 	Apache2 \
 	Libc \
 	$(EOLIST)
+
+ifeq "$(USE_NTLS)" "1"
+FILES_nlm_modules += ntls \
+	$(EOLIST)
+endif
 
 #
 # If the nlm has a msg file, put it's path here
@@ -234,14 +263,22 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	@$(APR)/aprlib.imp \
 	@httpd.imp \
-	GetProcessSwitchCount \
-	RunningProcess \
-	GetSuperHighResolutionTimer \
 	$(EOLIST)
 
 # Don't link with Winsock if standard sockets are being used
-ifndef USE_STDSOCKETS
+ifneq "$(USE_STDSOCKETS)" "1"
 FILES_nlm_Ximports += @ws2nlm.imp \
+	$(EOLIST)
+endif
+
+ifeq "$(USE_NTLS)" "1"
+FILES_nlm_Ximports += @ntls.imp \
+	$(EOLIST)
+else
+FILES_nlm_Ximports += \
+	GetProcessSwitchCount \
+	RunningProcess \
+	GetSuperHighResolutionTimer \
 	$(EOLIST)
 endif
 
@@ -273,8 +310,8 @@ nlms :: libs $(TARGET_nlm)
 #
 install :: nlms FORCE
 	copy $(OBJDIR)\mod_ssl.nlm $(INSTALL)\$(BASEDIR)\modules\*.*
-	-copy $(subst /,\,$(OSSLLIB))\openssl.nlm $(INSTALL)\$(BASEDIR)\bin\*.*
-	-copy $(subst /,\,$(OSSLAPP))\openssl.cnf $(INSTALL)\$(BASEDIR)\bin\*.*
+	-copy $(subst /,\,$(SSL_BIN))\openssl.nlm $(INSTALL)\$(BASEDIR)\bin\*.*
+	-copy $(subst /,\,$(SSL_APP))\openssl.cnf $(INSTALL)\$(BASEDIR)\bin\*.*
 
 #
 # Any specialized rules here

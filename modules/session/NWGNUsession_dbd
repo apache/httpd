@@ -16,18 +16,15 @@ endif
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(AP_WORK)/include \
-			$(NWOS) \
-			$(AP_WORK)/modules/http \
-			$(AP_WORK)/modules/arch/netware \
-			$(AP_WORK)/modules/database \
-			$(AP_WORK)/modules/ssl \
-			$(AP_WORK)/modules/generators \
-			$(AP_WORK)/server/mpm/netware \
 			$(APR)/include \
 			$(APRUTIL)/include \
-			$(APR) \
-			$(EOLIST)
+			$(AP_WORK)/include \
+			$(AP_WORK)/modules/http \
+			$(AP_WORK)/modules/database \
+			$(AP_WORK)/modules/generators \
+			$(AP_WORK)/modules/ssl \
+			$(AP_WORK)/server/mpm/netware \
+			$(NWOS) \
 
 #
 # These flags will come after CFLAGS
