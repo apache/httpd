@@ -52,7 +52,7 @@
     <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>,
     <directive module="mod_mime">AddOutputFilter</directive> or
-    <directive module="core">AddOutputFilterByType</directive> directives.</p>
+    <directive module="mod_filter">AddOutputFilterByType</directive> directives.</p>
 
       <example><title>Using buffer with mod_include</title>
         AddOutputFilterByType INCLUDES;BUFFER text/html<br />
