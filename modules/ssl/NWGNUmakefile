@@ -49,7 +49,6 @@ XINCDIRS	+= \
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
-			-relax_pointers \
 			$(EOLIST)
 
 #
