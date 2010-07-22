@@ -19,7 +19,6 @@ XINCDIRS	+= \
 			$(NWOS) \
 			$(APR)/include \
 			$(APR)/misc/netware \
-			$(APR) \
 			$(EOLIST)
 
 #
