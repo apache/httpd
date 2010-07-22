@@ -436,7 +436,6 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG,
 
     return NULL;
 }
-
 static const char *filter_chain(cmd_parms *cmd, void *CFG, const char *arg)
 {
     mod_filter_chain *p;
@@ -510,6 +509,48 @@ static const char *filter_chain(cmd_parms *cmd, void *CFG, const char *arg)
     }
 
     return NULL;
+}
+static const char *filter_bytype(cmd_parms *cmd, void *CFG,
+                                 const char *pname, const char *type)
+{
+    char *etype;
+    char *p;
+    const char *rv;
+    const char *fname;
+    const char *expr;
+    int seen_name = 0;
+    mod_filter_cfg *cfg = CFG;
+
+    /* construct fname from name */
+    fname = apr_pstrcat(cmd->pool, "BYTYPE:", pname, NULL);
+
+    /* check whether this is already registered, in which case
+     * it's already in the filter chain
+     */
+    if (apr_hash_get(cfg->live_filters, fname, APR_HASH_KEY_STRING)) {
+        seen_name = 1;
+    }
+
+    /* build expression: "$content-type = /^type/"
+     * Need to escape slashes in content-type
+     */
+    p = etype = apr_palloc(cmd->temp_pool, 2*strlen(type)+1);
+    do {
+        if (*type == '/') {
+            *p++ = '\\';
+        }
+        *p++ = *type++;
+    } while (*type);
+    *p = 0;
+    expr = apr_psprintf(cmd->temp_pool, "$content-type = /^%s/", etype);
+
+    rv = filter_provider(cmd, CFG, fname, pname, expr);
+
+    /* If it's the first time through, add to filterchain */
+    if (rv == NULL && !seen_name) {
+        rv = filter_chain(cmd, CFG, fname);
+    }
+    return rv;
 }
 
 static const char *filter_debug(cmd_parms *cmd, void *CFG, const char *fname,
@@ -642,6 +683,8 @@ static const command_rec filter_cmds[] = {
         "list of filter names with optional [+-=!@]"),
     AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, RSRC_CONF | ACCESS_CONF,
         "filter-name debug-level"),
+    AP_INIT_ITERATE2("AddOutputFilterByType", filter_bytype, NULL, OR_FILEINFO,
+        "DEPRECATED: output filter name followed by one or more content-types"),
 #ifndef NO_PROTOCOL
     AP_INIT_TAKE23("FilterProtocol", filter_protocol, NULL, OR_OPTIONS,
         "filter-name [provider-name] protocol-args"),

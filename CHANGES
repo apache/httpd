@@ -46,6 +46,11 @@ Changes with Apache 2.3.7
   *) Update SSL cipher suite and add example for SSLHonorCipherOrder.
      [Lars Eilebrecht, Rainer Jung]
 
+  *) move AddOutputFilterByType from core to mod_filter.  This should
+     fix nasty side-effects that happen when content_type is set
+     more than once in processing a request, and make it fully
+     compatible with dynamic and proxied contents. [Nick Kew]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)

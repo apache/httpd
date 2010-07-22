@@ -161,60 +161,6 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     return (void *)conf;
 }
 
-/*
- * Overlay one hash table of ct_output_filters onto another
- */
-static void *merge_ct_filters(apr_pool_t *p,
-                              const void *key,
-                              apr_ssize_t klen,
-                              const void *overlay_val,
-                              const void *base_val,
-                              const void *data)
-{
-    ap_filter_rec_t *cur;
-    const ap_filter_rec_t *overlay_info = (const ap_filter_rec_t *)overlay_val;
-    const ap_filter_rec_t *base_info = (const ap_filter_rec_t *)base_val;
-
-    cur = NULL;
-
-    while (overlay_info) {
-        ap_filter_rec_t *new;
-
-        new = apr_pcalloc(p, sizeof(ap_filter_rec_t));
-        new->name = apr_pstrdup(p, overlay_info->name);
-        new->next = cur;
-        cur = new;
-        overlay_info = overlay_info->next;
-    }
-
-    while (base_info) {
-        ap_filter_rec_t *f;
-        int found = 0;
-
-        /* We can't have dups. */
-        f = cur;
-        while (f) {
-            if (!strcasecmp(base_info->name, f->name)) {
-                found = 1;
-                break;
-            }
-
-            f = f->next;
-        }
-
-        if (!found) {
-            f = apr_pcalloc(p, sizeof(ap_filter_rec_t));
-            f->name = apr_pstrdup(p, base_info->name);
-            f->next = cur;
-            cur = f;
-        }
-
-        base_info = base_info->next;
-    }
-
-    return cur;
-}
-
 static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 {
     core_dir_config *base = (core_dir_config *)basev;
@@ -371,21 +317,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (new->input_filters) {
         conf->input_filters = new->input_filters;
-    }
-
-    if (conf->ct_output_filters && new->ct_output_filters) {
-        conf->ct_output_filters = apr_hash_merge(a,
-                                                 new->ct_output_filters,
-                                                 conf->ct_output_filters,
-                                                 merge_ct_filters,
-                                                 NULL);
-    }
-    else if (new->ct_output_filters) {
-        conf->ct_output_filters = apr_hash_copy(a, new->ct_output_filters);
-    }
-    else if (conf->ct_output_filters) {
-        /* That memcpy above isn't enough. */
-        conf->ct_output_filters = apr_hash_copy(a, base->ct_output_filters);
     }
 
     /*
@@ -3154,87 +3085,6 @@ AP_DECLARE(int) ap_is_recursion_limit_exceeded(const request_rec *r)
     return 0;
 }
 
-static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
-                                         const char *arg, const char *arg2)
-{
-    core_dir_config *conf = conf_;
-    ap_filter_rec_t *old, *new = NULL;
-    const char *filter_name;
-
-    if (!conf->ct_output_filters) {
-        conf->ct_output_filters = apr_hash_make(cmd->pool);
-        old = NULL;
-    }
-    else {
-        old = (ap_filter_rec_t*) apr_hash_get(conf->ct_output_filters, arg2,
-                                              APR_HASH_KEY_STRING);
-        /* find last entry */
-        if (old) {
-            while (old->next) {
-                old = old->next;
-            }
-        }
-    }
-
-    while (*arg &&
-           (filter_name = ap_getword(cmd->pool, &arg, ';')) &&
-           strcmp(filter_name, "")) {
-        new = apr_pcalloc(cmd->pool, sizeof(ap_filter_rec_t));
-        new->name = filter_name;
-
-        /* We found something, so let's append it.  */
-        if (old) {
-            old->next = new;
-        }
-        else {
-            apr_hash_set(conf->ct_output_filters, arg2,
-                         APR_HASH_KEY_STRING, new);
-        }
-        old = new;
-    }
-
-    if (!new) {
-        return "invalid filter name";
-    }
-
-    return NULL;
-}
-/*
- * Insert filters requested by the AddOutputFilterByType
- * configuration directive. We cannot add filters based
- * on content-type until after the handler has started
- * to run. Only then do we reliably know the content-type.
- */
-void ap_add_output_filters_by_type(request_rec *r)
-{
-    core_dir_config *conf;
-    const char *ctype;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    /* We can't do anything with no content-type or if we don't have a
-     * filter configured.
-     */
-    if (!r->content_type || !conf->ct_output_filters) {
-        return;
-    }
-
-    /* remove c-t decoration */
-    ctype = ap_field_noparam(r->pool, r->content_type);
-    if (ctype) {
-        ap_filter_rec_t *ct_filter;
-        ct_filter = apr_hash_get(conf->ct_output_filters, ctype,
-                                 APR_HASH_KEY_STRING);
-        while (ct_filter) {
-            ap_add_output_filter(ct_filter->name, NULL, r, r->connection);
-            ct_filter = ct_filter->next;
-        }
-    }
-
-    return;
-}
-
 static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
                                     const char *arg1)
 {
@@ -3445,9 +3295,6 @@ AP_INIT_TAKE1("SetOutputFilter", ap_set_string_slot,
 AP_INIT_TAKE1("SetInputFilter", ap_set_string_slot,
        (void *)APR_OFFSETOF(core_dir_config, input_filters), OR_FILEINFO,
    "filter (or ; delimited list of filters) to be run on the request body"),
-AP_INIT_ITERATE2("AddOutputFilterByType", add_ct_output_filters,
-       (void *)APR_OFFSETOF(core_dir_config, ct_output_filters), OR_FILEINFO,
-     "output filter name followed by one or more content-types"),
 AP_INIT_FLAG("AllowEncodedSlashes", set_allow2f, NULL, RSRC_CONF,
              "Allow URLs containing '/' encoded as '%2F'"),
 
