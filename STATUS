@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * VHosts: fix parsing of pure-numeric hostname.
      PR 44979
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=892172
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=832172
      2.2 patch: trunk patch Works with offset.
      +1: niq
 
