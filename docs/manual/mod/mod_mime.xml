@@ -485,7 +485,7 @@ later.</compatibility>
     href="../filter.html">filters</a> which will process responses
     from the server before they are sent to the client. This is in
     addition to any filters defined elsewhere, including <directive
-    module="core">SetOutputFilter</directive> and <directive module="core"
+    module="core">SetOutputFilter</directive> and <directive module="mod_filter"
     >AddOutputFilterByType</directive> directive. This mapping is merged
     over any already in force, overriding any mappings that already exist
     for the same <var>extension</var>.</p>

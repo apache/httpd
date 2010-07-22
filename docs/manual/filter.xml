@@ -163,9 +163,8 @@ Relevant directives are
     <directive module="mod_filter">FilterProvider</directive>.</p>
 
 <p>One further directive <directive
-module="core">AddOutputFilterByType</directive> is still supported,
-but may be problematic and is now deprecated.  Use dynamic
-configuration instead.</p>
+module="mod_filter">AddOutputFilterByType</directive> is still supported,
+but deprecated.  Use dynamic configuration instead.</p>
 
   </section>
 </manualpage>
