@@ -16,11 +16,10 @@ endif
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(APR)/misc/netware \
 			$(NWOS) \
-			$(AP_WORK)/srclib/apr/include \
-			$(AP_WORK)/srclib/apr-util/include \
-			$(AP_WORK)/srclib/apr/misc/netware \
-			$(AP_WORK)/srclib/apr \
 			$(EOLIST)
 
 #
@@ -249,4 +248,5 @@ install :: nlms FORCE
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
 

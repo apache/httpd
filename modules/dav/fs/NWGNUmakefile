@@ -3,7 +3,7 @@
 #
 
 SUBDIRS = \
-	$(EOLIST) 
+	$(EOLIST)
 
 #
 # Get the 'head' of the build environment.  This includes default targets and
@@ -24,14 +24,11 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(AP_WORK)/srclib/apr/include \
-			$(AP_WORK)/srclib/include/arch/NetWare \
-			$(AP_WORK)/srclib/apr-util/include \
+			$(APR)/include \
+			$(APRUTIL)/include \
 			$(AP_WORK)/include \
-			$(AP_WORK)/os/NetWare \
-			$(AP_WORK)/server/mpm/NetWare \
-			$(AP_WORK)/srclib/pcre \
 			$(AP_WORK)/modules/dav/main \
+			$(AP_WORK)/server/mpm/NetWare \
 			$(NWOS) \
 			$(EOLIST)
 
@@ -68,7 +65,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -82,7 +79,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -104,10 +101,10 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= modDAVFS
+NLM_NAME	= modDAVFS
 
 #
-# This is used by the link '-desc ' directive. 
+# This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
 NLM_DESCRIPTION	= Apache $(VERSION_STR) DAV FileSystem Sub-Module
@@ -119,16 +116,16 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) DAV FileSystem Sub-Module
 NLM_THREAD_NAME	= modDAVFS Thread
 
 #
-# If this is specified, it will override VERSION value in 
+# If this is specified, it will override VERSION value in
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		= 
+NLM_VERSION	=
 
 #
 # If this is specified, it will override the default of 64K
 #
 NLM_STACK_SIZE	= 65536
- 
+
 
 #
 # If this is specified it will be used by the link '-entry' directive
@@ -148,7 +145,7 @@ NLM_CHECK_SYM	=
 #
 # If this is specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=  AUTOUNLOAD, PSEUDOPREEMPTION
+NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
 
 #
 # Declare all target files (you must add your files here)
@@ -184,7 +181,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -201,7 +198,7 @@ FILES_nlm_modules = \
 # If the nlm has a msg file, put it's path here
 #
 FILE_nlm_msg =
- 
+
 #
 # If the nlm has a hlp file put it's path here
 #
@@ -222,20 +219,20 @@ FILES_nlm_Ximports = \
 	@ws2nlm.imp \
 	@../main/dav.imp \
 	$(EOLIST)
- 
-#   
+
+#
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
 	dav_fs_module \
 	$(EOLIST)
-	
-#   
+
+#
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
@@ -246,7 +243,7 @@ libs :: $(OBJDIR) $(TARGET_lib)
 nlms :: libs $(TARGET_nlm)
 
 #
-# Updated this target to create necessary directories and copy files to the 
+# Updated this target to create necessary directories and copy files to the
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
@@ -267,4 +264,3 @@ $(OBJDIR)/%.o: ../../arch/netware/%.c $(OBJDIR)\$(NLM_NAME)_cc.opt
 include $(AP_WORK)\build\NWGNUtail.inc
 
 
-	

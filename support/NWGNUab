@@ -16,12 +16,11 @@ endif
 # INCDIRS
 #
 XINCDIRS	+= \
-			$(NWOS) \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(APR)/misc/netware \
 			$(AP_WORK)/include \
-			$(AP_WORK)/srclib/apr/include \
-			$(AP_WORK)/srclib/apr-util/include \
-			$(AP_WORK)/srclib/apr/misc/netware \
-			$(AP_WORK)/srclib/apr \
+			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -179,7 +178,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -251,4 +250,5 @@ install :: nlms FORCE
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
 
