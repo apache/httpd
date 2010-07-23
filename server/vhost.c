@@ -984,6 +984,57 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
 }
 
 
+/**
+ * For every virtual host on this connection, call func_cb.
+ */
+AP_DECLARE(int) ap_vhost_iterate_given_conn(conn_rec *conn,
+                                            ap_vhost_iterate_conn_cb func_cb,
+                                            void* baton)
+{
+    server_rec *s;
+    server_rec *last_s;
+    name_chain *src;
+    apr_port_t port;
+    int rv = 0;
+
+    if (conn->vhost_lookup_data) {
+        last_s = NULL;
+        port = conn->local_addr->port;
+
+        for (src = conn->vhost_lookup_data; src; src = src->next) {
+            server_addr_rec *sar;
+
+            /* We only consider addresses on the name_chain which have a
+             * matching port.
+             */
+            sar = src->sar;
+            if (sar->host_port != 0 && port != sar->host_port) {
+                continue;
+            }
+
+            s = src->server;
+
+            if (s == last_s) {
+                /* we've already done a callback for this vhost. */
+                continue;
+            }
+
+            last_s = s;
+
+            rv = func_cb(baton, conn, s);
+
+            if (rv != 0) {
+                break;
+            }
+        }
+    }
+    else {
+        rv = func_cb(baton, conn, conn->base_server);
+    }
+
+    return rv;
+}
+
 /* Called for a new connection which has a known local_addr.  Note that the
  * new connection is assumed to have conn->server == main server.
  */

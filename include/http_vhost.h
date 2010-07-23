@@ -53,6 +53,30 @@ const char *ap_set_name_virtual_host (cmd_parms *cmd, void *dummy,
 				      const char *arg);
 
 /**
+ * Callback function for every Name Based Virtual Host.
+ * @param baton Opaque user object
+ * @param conn The current Connection
+ * @param s The current Server
+ * @see ap_vhost_iterate_given_conn
+ * @return 0 on success, any non-zero return will stop the iteration.
+ */
+typedef int(*ap_vhost_iterate_conn_cb)(void* baton, conn_rec* conn, server_rec* s);
+                
+/**
+ * For every virtual host on this connection, call func_cb.
+ * @param conn The current connection
+ * @param func_cb Function called for every Name Based Virtual Host for this 
+ *                connection.
+ * @param baton Opaque object passed to func_cb.
+ * @return The return value from func_cb.
+ * @note If func_cb returns non-zero, the function will return at this point, 
+ *       and not continue iterating the virtual hosts.
+ */
+AP_DECLARE(int) ap_vhost_iterate_given_conn(conn_rec *conn,
+                                            ap_vhost_iterate_conn_cb func_cb,
+                                            void* baton);
+
+/**
  * given an ip address only, give our best guess as to what vhost it is 
  * @param conn The current connection
  */

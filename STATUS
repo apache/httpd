@@ -118,13 +118,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Backport 164538: add ap_vhost_iterate_given_conn().
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=164538
-    Backport version for 2.0.x of patch:
-       http://people.apache.org/~fuankg/diffs/httpd-2.0.x-ap_vhost_iterate_given_conn.diff
-    +1: fuankg, wrowe, pgollucci
-
   * core output filter, CVE-2009-1891, consuming CPU after client disconnects
     Patch in 2.2.x branch:
       http://svn.apache.org/viewvc?view=revision&revision=791454
