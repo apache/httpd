@@ -308,6 +308,11 @@ static apr_table_t* req_err_headers_out(request_rec *r)
   return r->err_headers_out;
 }
 
+static apr_table_t* req_subprocess_env(request_rec *r)
+{
+  return r->subprocess_env;
+}
+
 static apr_table_t* req_notes(request_rec *r)
 {
   return r->notes;
@@ -587,7 +592,8 @@ AP_LUA_DECLARE(void) ap_lua_load_request_lmodule(lua_State *L, apr_pool_t *p)
                  makefun(&req_err_headers_out, APL_REQ_FUNTYPE_TABLE, p));
     apr_hash_set(dispatch, "notes", APR_HASH_KEY_STRING,
                  makefun(&req_notes, APL_REQ_FUNTYPE_TABLE, p));
-
+    apr_hash_set(dispatch, "subprocess_env", APR_HASH_KEY_STRING,
+                 makefun(&req_subprocess_env, APL_REQ_FUNTYPE_TABLE, p));
     
 
     lua_pushlightuserdata(L, dispatch);
