@@ -196,6 +196,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rjung/patches/SSLInsecureRenegotiation_httpd_2_0_x-backport-r917044.patch 
     +1: rjung, pgollucci (+1 2.0.64 w/ this)
 
+  * gen_test_char.c: enable building gen_test_char for running on build machine
+    when cross-compiling. The patch doesnt introduce code changes for any
+    platform unless CROSS_COMPILE is defined. 
+    Trunk patch: http://svn.apache.org/viewvc?view=rev&revision=795438
+    2.2.x patch: http://svn.apache.org/viewvc?view=rev&revision=795971
+    Backport: http://people.apache.org/~fuankg/diffs/gen_test_char.c_httpd_2_0_x-backport-r795971.diff
+    +1: fuankg
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
