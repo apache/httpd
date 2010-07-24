@@ -121,9 +121,7 @@ static int fixup_dflt(request_rec *r)
     const char *name_ptr;
     request_rec *rr;
     int error_notfound = 0;
-    if ((r->finfo.filetype != APR_NOFILE) || (r->handler != NULL)) {
-        return DECLINED;
-    }
+
     name_ptr = d->dflt;
     if (name_ptr == NULL) {
         return DECLINED;
@@ -176,11 +174,6 @@ static int fixup_dir(request_rec *r)
     char **names_ptr;
     int num_names;
     int error_notfound = 0;
-
-    /* only handle requests against directories */
-    if (r->finfo.filetype != APR_DIR) {
-        return DECLINED;
-    }
 
     /* In case mod_mime wasn't present, and no handler was assigned. */
     if (!r->handler) {
@@ -311,12 +304,22 @@ static int fixup_dir(request_rec *r)
     /* nothing for us to do, pass on through */
     return DECLINED;
 }
+static int dir_fixups(request_rec *r)
+{
+    if (r->finfo.filetype == APR_DIR) {
+        /* serve up a directory */
+        return fixup_dir(r);
+    }
+    else if ((r->finfo.filetype == APR_NOFILE) && (r->handler == NULL)) {
+        /* No handler and nothing in the filesystem - use fallback */
+        return fixup_dflt(r);
+    }
+    return DECLINED;
+}
 
 static void register_hooks(apr_pool_t *p)
 {
-    /* the order of these is of no consequence */
-    ap_hook_fixups(fixup_dir,NULL,NULL,APR_HOOK_LAST);
-    ap_hook_fixups(fixup_dflt,NULL,NULL,APR_HOOK_LAST);
+    ap_hook_fixups(dir_fixups,NULL,NULL,APR_HOOK_LAST);
 }
 
 AP_DECLARE_MODULE(dir) = {
