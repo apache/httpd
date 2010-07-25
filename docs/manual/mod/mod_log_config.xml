@@ -173,7 +173,24 @@
 
     <tr><td><code>%{<var>format</var>}t</code></td>
         <td>The time, in the form given by format, which should be in
-        <code>strftime(3)</code> format. (potentially localized)</td></tr>
+        an extended <code>strftime(3)</code> format (potentially localized).
+        If the format starts with <code>begin:</code> (default) the time is taken
+        at the beginning of the request processing, if it starts with
+        <code>end:</code> it is the time when the log entry gets written, so
+        close to the end of the request processing. In addition to the formats
+        supported by <code>strftime(3)</code>, the following format tokens are
+        supported:
+        <table>
+        <tr><td><code>sec</code></td><td>number of seconds since the Epoch</td></tr>
+        <tr><td><code>msec</code></td><td>number of milliseconds since the Epoch</td></tr>
+        <tr><td><code>usec</code></td><td>number of microseconds since the Epoch</td></tr>
+        <tr><td><code>msec_frac</code></td><td>millisecond fraction</td></tr>
+        <tr><td><code>usec_frac</code></td><td>microsecond fraction</td></tr>
+        </table>
+        These tokens can not be combined with each other or <code>strftime(3)</code>
+        formatting in the same format string. You can use multiple
+        <code>%{<var>format</var>}t</code> tokens instead.
+        </td></tr>
 
     <tr><td><code>%T</code></td>
         <td>The time taken to serve the request, in seconds.</td></tr>

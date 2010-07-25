@@ -285,10 +285,12 @@
              second = 2*digit<br />
              zone = (`+' | `-') 4*digit</code>
           </p>
-          It is possible to have the time displayed in another format
+          <p>It is possible to have the time displayed in another format
           by specifying <code>%{format}t</code> in the log format
-          string, where <code>format</code> is as in
-          <code>strftime(3)</code> from the C standard library.
+          string, where <code>format</code> is either as in
+          <code>strftime(3)</code> from the C standard library,
+          or one of the supported special tokens. For details see
+          the <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code> <a href="mod/mod_log_config.html#formats">format strings</a>.</p>
         </dd>
 
         <dt><code>"GET /apache_pb.gif HTTP/1.0"</code>
