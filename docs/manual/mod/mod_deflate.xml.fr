@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 420990 -->
+<!-- English Revision : 966890 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -101,7 +101,7 @@ client</description>
 
       <p>Si vous voulez limiter la compression &agrave; certains types MIME
       particuliers, vous pouvez utiliser la directive <directive
-      module="core">AddOutputFilterByType</directive>. Voici un exemple
+      module="mod_filter">AddOutputFilterByType</directive>. Voici un exemple
       o&ugrave; la compression n'est activ&eacute;e que pour les fichiers html de la
       documentation d'Apache :</p>
 

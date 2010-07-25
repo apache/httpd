@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.fr.xsl"?>
-<!-- English Revision : 718086 -->
+<!-- English Revision : 966890 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -58,7 +58,7 @@ d'Apache</compatibility>
     directives <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>, <directive
     module="mod_mime">AddOutputFilter</directive> ou <directive
-    module="core">AddOutputFilterByType</directive>.</p>
+    module="mod_filter">AddOutputFilterByType</directive>.</p>
 
       <example><title>Utilisation d'un tampon avec mod_include</title>
         AddOutputFilterByType INCLUDES;BUFFER text/html<br />
