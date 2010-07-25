@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 910017 -->
+<!-- English Revision: 966890 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -183,8 +183,8 @@ Les directives correspondantes sont
     <directive module="mod_filter">FilterProvider</directive>.</p>
 
 <p>Une autre directive <directive
-module="core">AddOutputFilterByType</directive> est encore support&eacute;e,
-mais peut poser des probl&egrave;mes et est maintenant obsol&egrave;te. Utilisez la
+module="mod_filter">AddOutputFilterByType</directive> est encore support&eacute;e,
+mais obsol&egrave;te. Utilisez la
 configuration dynamique &agrave; la place.</p>
 
   </section>
