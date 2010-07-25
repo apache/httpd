@@ -48,6 +48,9 @@ Changes with Apache 2.3.7
      more than once in processing a request, and make it fully
      compatible with dynamic and proxied contents. [Nick Kew]
 
+  *) mod_log_config: Implement logging for sub second timestamps and
+     request end time.  [Rainer Jung]
+
 Changes with Apache 2.3.6
 
   *) SECURITY: CVE-2009-3555 (cve.mitre.org)
