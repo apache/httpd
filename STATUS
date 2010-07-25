@@ -192,10 +192,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
         http://svn.apache.org/viewcvs.cgi?rev=620133&view=rev
         http://svn.apache.org/viewcvs.cgi?rev=724515&view=rev
+        http://svn.apache.org/viewcvs.cgi?rev=724805&view=rev
         http://svn.apache.org/viewcvs.cgi?rev=725077&view=rev
         http://svn.apache.org/viewcvs.cgi?rev=952828&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
+        For convenience (CHANGES might need some addition):
+        http://people.apache.org/~rjung/patches/pr17629-2_2_x.patch
      +1: rpluem, jim
 
    * Core: fix symlinks ownership tests
