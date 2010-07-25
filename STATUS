@@ -245,6 +245,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch works with offset
      +1: sf
 
+   * mod_dir: fold in the two fixups to a single hooked function
+     to avoid possible ordering issues with other modules
+     Trunk: http://svn.apache.org/viewvc?view=revision&revision=978903
+     2.2.x: trunk patch works with offset
+     +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
