@@ -197,6 +197,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport: http://people.apache.org/~fuankg/diffs/gen_test_char.c_httpd_2_0_x-backport-r795971.diff
     +1: fuankg
 
+  * pcre: update config.guess and config.sub for better platform support.
+    Trunk version of patch:
+      Does not apply.
+    Patch in 2.2.x branch:
+      Does not apply.
+    Use recent files from http://git.savannah.gnu.org/cgit/config.git.
+    +1: rjung
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
