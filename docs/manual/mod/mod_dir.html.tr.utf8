@@ -26,7 +26,6 @@
 <a href="../ko/mod/mod_dir.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../tr/mod/mod_dir.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Bölü çizgisiyle biten yönlendirmeleri yapar ve dizin içeriği dosyalarını sunar.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modül Betimleyici:</a></th><td>dir_module</td></tr>
@@ -58,6 +57,7 @@
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryindex">DirectoryIndex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directoryslash">DirectorySlash</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#fallbackresource">FallbackResource</a></li>
 </ul>
 </div>
 
@@ -157,6 +157,29 @@
       <strong>Fakat bölü çizgisi ile bitmeyen bir istek dizin içeriğinin
       listelenmesi ile sonuçlanırdı.</strong></p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="FallbackResource" id="FallbackResource">FallbackResource</a> <a name="fallbackresource" id="fallbackresource">Yönergesi</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Açıklama:</a></th><td>Bir dosyayla eşleşmeyen istekler için öntanımlı bir URL tanımlar
+</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Sözdizimi:</a></th><td><code>FallbackResource <var>yerel-url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Öntanımlı:</a></th><td><code>None - httpd 404 döndürür (Bulunamadı)</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Bağlam:</a></th><td>sunucu geneli, sanal konak, dizin, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Geçersizleştirme:</a></th><td>Indexes</td></tr>
+<tr><th><a href="directive-dict.html#Status">Durum:</a></th><td>Temel</td></tr>
+<tr><th><a href="directive-dict.html#Module">Modül:</a></th><td>mod_dir</td></tr>
+</table>
+    <p>Dosya sisteminizdeki hiçbir şey ile eşleşmeyen URL'ler için bir
+      eylemci atamak isterseniz bunı kullanın. Kullanmadığınız takdirde
+      httpd bir HTTP 404 (Bulunamadı) döndürecektir. Örneğin</p>
+    <div class="example"><p><code>
+        <code>FallbackResource default.php</code>
+    </code></p></div>
+    <p>yönergesi ile varolmayan dosyalarla ilgili isteklere
+      <code>default.php</code> sayfası gönderilirken varolanlar ile
+      ilgili istekler bundan etkilenmeyecektir.</p>
 
 </div>
 </div>
