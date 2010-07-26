@@ -25,6 +25,8 @@
 <a href="./ko/configuring.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/configuring.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Consultez la version
+            Anglaise pour les changements récents.</div>
 
 <p>Ce document présente les fichiers utilisés pour la configuration
 du serveur HTTP Apache.</p>
