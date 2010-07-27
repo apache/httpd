@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             http://svn.apache.org/viewvc?view=revision&revision=966059
      2.2.x: http://people.apache.org/~niq/patches/46594.patch
                               (newly updated to fold in r966059)
-     +1: niq
+     +1: niq, rpluem
 
   * core: Pass the output filter information to newly created sub requests;
     as these are later on used as true requests with an internal redirect.
@@ -225,13 +225,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 41887
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=893027
      2.2 patch: trunk patch Works with offset.
-     +1: niq
+     +1: niq, rpluem
 
    * VHosts: fix parsing of pure-numeric hostname.
      PR 44979
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=832172
      2.2 patch: trunk patch Works with offset.
-     +1: niq
+     +1: niq, rpluem
 
    * config: fix/optimize SSL connections for IE6 browsers
      PR 49484
@@ -243,13 +243,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 45444
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=683280
      2.2 patch: trunk patch works with offset
-     +1: sf
+     +1: sf, rpluem
 
    * mod_dir: fold in the two fixups to a single hooked function
      to avoid possible ordering issues with other modules
      Trunk: http://svn.apache.org/viewvc?view=revision&revision=978903
      2.2.x: trunk patch works with offset
-     +1: niq
+     +1: niq, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
