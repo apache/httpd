@@ -87,6 +87,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_dir: fold in the two fixups to a single hooked function
+     to avoid possible ordering issues with other modules
+     Trunk: http://svn.apache.org/viewvc?view=revision&revision=978903
+     2.2.x: trunk patch works with offset
+     +1: niq, rpluem, sf
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -244,12 +249,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=683280
      2.2 patch: trunk patch works with offset
      +1: sf, rpluem
-
-   * mod_dir: fold in the two fixups to a single hooked function
-     to avoid possible ordering issues with other modules
-     Trunk: http://svn.apache.org/viewvc?view=revision&revision=978903
-     2.2.x: trunk patch works with offset
-     +1: niq, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
