@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- English Revision: 965792 -->
+<!-- English Revision: 979120 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -324,9 +324,13 @@
              zone = (`+' | `-') 4*chiffre</code>
           </p>Il est possible de modifier le format d'affichage de l'heure
 	  en sp&eacute;cifiant <code>%{format}t</code> dans la cha&icirc;ne de format du
-	  journal, o&ugrave; <code>format</code> est une cha&icirc;ne de format de m&ecirc;me
-	  forme que celle de la fonction <code>strftime(3)</code> de la
-	  biblioth&egrave;que C standard.
+	  journal, o&ugrave; <code>format</code> est une cha&icirc;ne de format
+	  de la forme de celle de la fonction <code>strftime(3)</code>
+	  de la biblioth&egrave;que C standard, ou choisie parmi les
+	  formats sp&eacute;ciaux support&eacute;s. Pour plus de d&eacute;tails,
+	  reportez-vous aux. <a
+	  href="mod/mod_log_config.html#formats">cha&icirc;nes de format</a>
+	  de <module>mod_log_config</module>.
         </dd>
 
         <dt><code>"GET /apache_pb.gif HTTP/1.0"</code>
