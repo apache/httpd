@@ -82,7 +82,10 @@ identifier for each request</description>
     <p>Given those assumptions, at a single point in time we can
     identify any httpd process on any machine in the cluster from
     all other httpd processes. The machine's IP address and the pid
-    of the httpd process are sufficient to do this. So in order to
+    of the httpd process are sufficient to do this. A httpd process
+    can handle multiple requests simultaneously if you use a
+    multi-threaded MPM. In order to identify threads, we use a thread
+    index Apache httpd uses internally. So in order to
     generate unique identifiers for requests we need only
     distinguish between different points in time.</p>
 
@@ -152,11 +155,13 @@ identifier for each request</description>
     even still, if you're running NTP then your UTC time will be
     correct very shortly after reboot.</p>
 
+    <!-- FIXME: thread_index is unsigned int, so not always 32bit.-->
     <p>The <code>UNIQUE_ID</code> environment variable is
-    constructed by encoding the 112-bit (32-bit IP address, 32 bit
-    pid, 32 bit time stamp, 16 bit counter) quadruple using the
+    constructed by encoding the 144-bit (32-bit IP address, 32 bit
+    pid, 32 bit time stamp, 16 bit counter, 32 bit thread index)
+    quadruple using the
     alphabet <code>[A-Za-z0-9@-]</code> in a manner similar to MIME
-    base64 encoding, producing 19 characters. The MIME base64
+    base64 encoding, producing 24 characters. The MIME base64
     alphabet is actually <code>[A-Za-z0-9+/]</code> however
     <code>+</code> and <code>/</code> need to be specially encoded
     in URLs, which makes them less desirable. All values are
@@ -182,8 +187,7 @@ identifier for each request</description>
     issuing the new encodings.</p>
 
     <p>This we believe is a relatively portable solution to this
-    problem. It can be extended to multithreaded systems like
-    Windows NT, and can grow with future needs. The identifiers
+    problem. The identifiers
     generated have essentially an infinite life-time because future
     identifiers can be made longer as required. Essentially no
     communication is required between machines in the cluster (only
