@@ -182,10 +182,10 @@ static void remove_items(apr_pool_t *p, apr_array_header_t *remove,
                                               APR_HASH_KEY_STRING);
         if (exinfo && *(const char**)((char *)exinfo + suffix[i].offset)) {
             extension_info *copyinfo = exinfo;
-            exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
+            exinfo = apr_pmemdup(p, copyinfo, sizeof(*exinfo));
             apr_hash_set(mappings, suffix[i].name,
                          APR_HASH_KEY_STRING, exinfo);
-            memcpy(exinfo, copyinfo, sizeof(*exinfo));
+
             *(const char**)((char *)exinfo + suffix[i].offset) = NULL;
         }
     }
