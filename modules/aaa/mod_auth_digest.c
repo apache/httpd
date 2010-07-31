@@ -200,9 +200,8 @@ module AP_MODULE_DECLARE_DATA auth_digest_module;
 
 static apr_status_t cleanup_tables(void *not_used)
 {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL,
                   "Digest: cleaning up shared memory");
-    fflush(stderr);
 
     if (client_rmm) {
         apr_rmm_destroy(client_rmm);
@@ -248,7 +247,7 @@ static apr_status_t initialize_secret(server_rec *s)
         return status;
     }
 
-    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s, "Digest: done");
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "Digest: done");
 
     return APR_SUCCESS;
 }
