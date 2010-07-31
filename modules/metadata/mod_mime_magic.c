@@ -1275,8 +1275,7 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
     }
     else
         m->nospflag = 0;
-    strncpy(m->desc, l, sizeof(m->desc) - 1);
-    m->desc[sizeof(m->desc) - 1] = '\0';
+    apr_cpystrn(m->desc, l, sizeof(m->desc));
 
 #if MIME_MAGIC_DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, serv,
