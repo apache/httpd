@@ -1197,7 +1197,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
     if (strlen(commandLine) <= strlen(szCommand))
         return NOTMYCOMMAND;
 
-    strncpy (szcommandLine, commandLine, sizeof(szcommandLine)-1);
+    apr_cpystrn(szcommandLine, commandLine, sizeof(szcommandLine));
 
     /*  All added commands begin with "APACHE2 " */
 

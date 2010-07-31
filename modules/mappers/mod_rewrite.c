@@ -2313,9 +2313,7 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
                 if (entry && (entry->flags & RULEFLAG_ESCAPEBACKREF)) {
                     /* escape the backreference */
                     char *tmp2, *tmp;
-                    tmp = apr_palloc(pool, span + 1);
-                    strncpy(tmp, bri->source + bri->regmatch[n].rm_so, span);
-                    tmp[span] = '\0';
+                    tmp = apr_pstrmemdup(pool, bri->source + bri->regmatch[n].rm_so, span);
                     tmp2 = escape_uri(pool, tmp);
                     rewritelog((ctx->r, 5, ctx->perdir, "escaping backreference '%s' to '%s'",
                             tmp, tmp2));
