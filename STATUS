@@ -250,6 +250,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch works with offset
      +1: sf, rpluem
 
+   * mod_proxy_scgi: Add module to build on Windows.
+     It already gets build for other platforms and for Windows in trunk.
+     2.2 patch: http://people.apache.org/~rjung/patches/mod_proxy_scgi-win-build-2_2.patch
+     +1: rjung
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
