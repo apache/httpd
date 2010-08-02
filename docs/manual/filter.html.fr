@@ -156,8 +156,8 @@ Les directives correspondantes sont
     <code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code>, et
     <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code>.</p>
 
-<p>Une autre directive <code class="directive"><a href="./mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> est encore supportée,
-mais peut poser des problèmes et est maintenant obsolète. Utilisez la
+<p>Une autre directive <code class="directive"><a href="./mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> est encore supportée,
+mais obsolète. Utilisez la
 configuration dynamique à la place.</p>
 
   </div></div>

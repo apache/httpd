@@ -304,9 +304,12 @@
              zone = (`+' | `-') 4*chiffre</code>
           </p>Il est possible de modifier le format d'affichage de l'heure
 	  en spécifiant <code>%{format}t</code> dans la chaîne de format du
-	  journal, où <code>format</code> est une chaîne de format de même
-	  forme que celle de la fonction <code>strftime(3)</code> de la
-	  bibliothèque C standard.
+	  journal, où <code>format</code> est une chaîne de format
+	  de la forme de celle de la fonction <code>strftime(3)</code>
+	  de la bibliothèque C standard, ou choisie parmi les
+	  formats spéciaux supportés. Pour plus de détails,
+	  reportez-vous aux. <a href="mod/mod_log_config.html#formats">chaînes de format</a>
+	  de <code class="module"><a href="./mod/mod_log_config.html">mod_log_config</a></code>.
         </dd>
 
         <dt><code>"GET /apache_pb.gif HTTP/1.0"</code>

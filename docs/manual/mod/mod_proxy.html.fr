@@ -844,25 +844,32 @@ l'espace d'URLs du serveur local</td></tr>
       générale.</p>
     </div>
 
-    <p>Depuis la version 2.1 du serveur HTTP Apache, il est possible d'utiliser un jeu de
-    connexions vers un serveur d'arrière-plan. Il est possible de
-    personnaliser ce jeu de connexions à l'aide des paramètres
-    <code>clé=valeur</code>. La valeur par défaut du nombre maximum de
-    connexions correspond au nombre de threads par processus pour le MPM
-    utilisé. Pour le MPM Prefork, cette valeur est toujours 1, alors que
-    pour le MPM Worker, elle est contrôlée par la directive
-    <code class="directive">ThreadsPerChild</code>.</p>
+    <p>Depuis la version 2.1 du serveur HTTP Apache, mod_proxy supporte
+    les groupements de connexions vers un serveur d'arrière-plan. Les
+    connexions créées à la demande peuvent être enregistrées dans un
+    groupement pour une utilisation ultérieure. La taille du groupe
+    ainsi que d'autres caractéristiques peuvent être définies via la
+    directive <code class="directive">ProxyPass</code> au moyen de paramètres
+    <code>clé=valeur</code> dont la description fait l'objet du tableau
+    ci-dessous.</p>
 
-    <p>La définition de <code>min</code> va déterminer le nombre minimum
-    de connexions ouvertes vers le serveur d'arrière-plan. Des
-    connexions pourront être créées à la demande à concurrence du
-    maximum relatif, soit <code>smax</code>. Toute
-    connexion au dessus de <code>smax</code> se verra attribuer une
-    durée de vie <code>ttl</code>. Apache httpd ne créera jamais plus de
-    connexions vers le serveur d'arrière-plan que le maximum absolu,
-    soit <code>max</code>.</p>
+    <p>La définition du paramètre <code>min</code> permet de déterminer
+    le nombre de connexions vers le serveur d'arrière-plan qui seront
+    conservées après usage. Il sera possible de créer jusqu'à
+    <code>smax</code> (Soft Maximum) connexions à la demande. Toute
+    connexion en surnombre par rapport à <code>smax</code> aura une
+    durée de vie limitée, ou <code>ttl</code>. En tout état de cause,
+    Apache httpd ne créera jamais plus de <code>max</code> (Hard
+    Maximum) connexions vers le serveur d'arrière-plan.</p>
 
-    <div class="example"><p><code>
+    <p>Le groupement de connexions est maintenu au niveau de chaque
+    processus enfant du serveur web, et les définitions de
+    <code>min</code>, <code>max</code>, et <code>smax</code> ne font
+    l'objet d'aucune coordination entre les différents processus
+    enfants, sauf si un seul processus enfant est autorisé par la
+    configuration ou la conception du module multi-processus (MPM).</p>
+
+    <div class="example"><h3>Exemple</h3><p><code>
         ProxyPass /exemple http://backend.example.com smax=5 max=20 ttl=120 retry=300
     </code></p></div>
 
@@ -872,8 +879,8 @@ l'espace d'URLs du serveur local</td></tr>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Nombre minimum de connexions ouvertes vers le serveur
-	d'arrière-plan.</td></tr>
+        <td>Nombre minimum de connexions vers le serveur
+	d'arrière-plan qui seront conservées après usage.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
         <td>Nombre maximum absolu de connexions autorisées vers le

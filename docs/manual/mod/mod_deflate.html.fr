@@ -117,7 +117,7 @@ client</td></tr>
       valeur que <code>1</code></em>, elle sera ignorée.</p>
 
       <p>Si vous voulez limiter la compression à certains types MIME
-      particuliers, vous pouvez utiliser la directive <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>. Voici un exemple
+      particuliers, vous pouvez utiliser la directive <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>. Voici un exemple
       où la compression n'est activée que pour les fichiers html de la
       documentation d'Apache :</p>
 

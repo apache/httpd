@@ -58,7 +58,7 @@
 <li><a href="mod_mime.html#addlanguage">AddLanguage</a></li>
 <li><a href="mod_info.html#addmoduleinfo">AddModuleInfo</a></li>
 <li><a href="mod_mime.html#addoutputfilter">AddOutputFilter</a></li>
-<li><a href="core.html#addoutputfilterbytype">AddOutputFilterByType</a></li>
+<li><a href="mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></li>
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
@@ -123,6 +123,10 @@
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="mod_authz_core.html#authmerging">AuthMerging</a></li>
 <li><a href="mod_authn_core.html#authname">AuthName</a></li>
+<li><a href="mod_authn_socache.html#authncachecontext">AuthnCacheContext</a></li>
+<li><a href="mod_authn_socache.html#authncacheprovider">AuthnCacheProvider</a></li>
+<li><a href="mod_authn_socache.html#authncachesocache">AuthnCacheSOCache</a></li>
+<li><a href="mod_authn_socache.html#authncachetimeout">AuthnCacheTimeout</a></li>
 <li><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
 <li><a href="mod_authn_core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>

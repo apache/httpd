@@ -55,7 +55,7 @@ d'Apache</td></tr></table>
     <p>Le filtre de mise en tampon peut être ajouté aux piles des
     filtres en entrée ou en sortie, selon les besoins, à l'aide des
     directives <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>,
-    <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
+    <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>, <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> ou <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code>.</p>
 
       <div class="example"><h3>Utilisation d'un tampon avec mod_include</h3><p><code>
         AddOutputFilterByType INCLUDES;BUFFER text/html<br />
