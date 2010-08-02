@@ -141,9 +141,8 @@ Relevant directives are
     <code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code>, and
     <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code>.</p>
 
-<p>One further directive <code class="directive"><a href="./mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> is still supported,
-but may be problematic and is now deprecated.  Use dynamic
-configuration instead.</p>
+<p>One further directive <code class="directive"><a href="./mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> is still supported,
+but deprecated.  Use dynamic configuration instead.</p>
 
   </div></div>
 <div class="bottomlang">

@@ -44,6 +44,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filterchain">FilterChain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filterdeclare">FilterDeclare</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filterprotocol">FilterProtocol</a></li>
@@ -73,7 +74,7 @@
     great deal of flexibility in configuring the filter chain.  In fact,
     filters can be inserted based on any Request Header, Response Header
     or Environment Variable.  This generalises the limited flexibility offered
-    by <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>, and fixes
+    by <code class="directive">AddOutputFilterByType</code>, and fixes
     it to work correctly with dynamic content, regardless of the
     content generator.  The ability to dispatch based on Environment
     Variables offers the full flexibility of configuration with
@@ -173,8 +174,7 @@
 <h2><a name="examples" id="examples">Examples</a></h2>
     <dl>
     <dt>Server side Includes (SSI)</dt>
-    <dd>A simple case of using <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> in place of
-    <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>
+    <dd>A simple case of replacing <code class="directive">AddOutputFilterByType</code>
     <div class="example"><p><code>
       FilterDeclare SSI<br />
       FilterProvider SSI INCLUDES "$resp{Content-Type} = /^text\/html/"<br />
@@ -264,6 +264,71 @@
     <p>At the time of writing, this feature is largely untested,
     as modules in common use are designed to work with 2.0.
     Modules using it should test it carefully.</p>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigns an output filter to a particular media-type</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AddOutputFilterByType <var>filter</var>[;<var>filter</var>...]
+<var>media-type</var> [<var>media-type</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_filter</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache httpd 2.0.33 and later; deprecated in Apache httpd 2.1 and later</td></tr>
+</table>
+    <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the
+    response <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a>.  Because of certain
+    problems discussed below, this directive is deprecated.  The same
+    functionality is available using <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>.</p>
+
+    <p>The following example uses the <code>DEFLATE</code> filter, which
+    is provided by <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>. It will compress all
+    output (either static or dynamic) which is labeled as
+    <code>text/html</code> or <code>text/plain</code> before it is sent
+    to the client.</p>
+
+    <div class="example"><p><code>
+      AddOutputFilterByType DEFLATE text/html text/plain
+    </code></p></div>
+
+    <p>If you want the content to be processed by more than one filter, their
+    names have to be separated by semicolons. It's also possible to use one
+    <code class="directive">AddOutputFilterByType</code> directive for each of
+    these filters.</p>
+
+    <p>The configuration below causes all script output labeled as
+    <code>text/html</code> to be processed at first by the
+    <code>INCLUDES</code> filter and then by the <code>DEFLATE</code>
+    filter.</p>
+
+    <div class="example"><p><code>
+    &lt;Location /cgi-bin/&gt;<br />
+    <span class="indent">
+      Options Includes<br />
+      AddOutputFilterByType INCLUDES;DEFLATE text/html<br />
+    </span>
+    &lt;/Location&gt;
+    </code></p></div>
+
+    <div class="warning"><h3>Note</h3>
+      <p>Enabling filters with <code class="directive">AddOutputFilterByType</code>
+      may fail partially or completely in some cases. For example, no
+      filters are applied if the <a class="glossarylink" href="../glossary.html#media-type" title="see glossary">media-type</a> could not
+      be determined.  If you want to make sure that the filters will be
+      applied, assign the content type to a resource explicitly; for
+      example, with <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> or
+      <code class="directive"><a href="../mod/core.html#forcetype">ForceType</a></code>. Setting the
+      content type within a (non-nph) CGI script is also safe.</p>
+
+    </div>
+
+<h3>See also</h3>
+<ul>
+<li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li>
+<li><a href="../filter.html">filters</a></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FilterChain" id="FilterChain">FilterChain</a> <a name="filterchain" id="filterchain">Directive</a></h2>
