@@ -37,7 +37,6 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptpathinfo">AcceptPathInfo</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#accessfilename">AccessFileName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#adddefaultcharset">AddDefaultCharset</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#addoutputfilterbytype">AddOutputFilterByType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#allowoverride">AllowOverride</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
@@ -51,6 +50,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#enablesendfile">EnableSendfile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errordocument">ErrorDocument</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#errorlog">ErrorLog</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#fileetag">FileETag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#files">&lt;Files&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
@@ -74,12 +74,14 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#loglevel">LogLevel</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mutex">Mutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#namevirtualhost">NameVirtualHost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitcpu">RLimitCPU</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitmem">RLimitMEM</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#rlimitnproc">RLimitNPROC</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveradmin">ServerAdmin</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serveralias">ServerAlias</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#servername">ServerName</a></li>
@@ -92,6 +94,7 @@ disponibles</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#setoutputfilter">SetOutputFilter</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#timeout">TimeOut</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traceenable">TraceEnable</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#undefine">UnDefine</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalname">UseCanonicalName</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
@@ -188,7 +191,7 @@ nom de chemin en fin de requête.</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache version 2.0.30 et
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache httpd version 2.0.30 et
 supérieures</td></tr>
 </table>
 
@@ -346,74 +349,6 @@ type de contenu d'une réponse est <code>text/plain</code> ou
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AddOutputFilterByType" id="AddOutputFilterByType">AddOutputFilterByType</a> <a name="addoutputfilterbytype" id="addoutputfilterbytype">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>assigne un filtre en sortie pour un type de média
-particulier</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>AddOutputFilterByType <var>filtre</var>[;<var>filtre</var>...]
-<var>type de média</var> [<var>type de média</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache version 2.0.33 et supérieures ;
-obsolète dans les versions 2.1 et supérieures</td></tr>
-</table>
-    <p>Cette directive active un <a href="../filter.html">filtre</a> en sortie particulier pour une
-    requête en fonction du <a class="glossarylink" href="../glossary.html#type de média" title="voir glossaire">type de média</a> de la réponse.
-    Suite à certains problèmes évoqués plus loin, cette directive a été
-    abandonnée. Le même résultat peut être obtenu à l'aide du module
-    <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>.</p>
-
-    <p>L'exemple suivant active le filtre <code>DEFLATE</code> qui est
-    fourni par le module <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>. Il va compresser
-    toute sortie dont le type MIME est <code>text/html</code> ou
-    <code>text/plain</code> avant de l'envoyer au client.</p>
-
-    <div class="example"><p><code>
-      AddOutputFilterByType DEFLATE text/html text/plain
-    </code></p></div>
-
-    <p>Si vous voulez assigner plusieurs filtres au contenu, leurs noms
-    doivent être séparés par des points-virgules. On peut aussi utiliser
-    une directive <code class="directive">AddOutputFilterByType</code> pour
-    chacun des filtres à assigner.</p>
-
-    <p>La configuration ci-dessous impose le traitement de toute sortie
-    de script dont le type MIME est <code>text/html</code> en premier
-    lieu par le filtre <code>INCLUDES</code>, puis par le filtre
-    <code>DEFLATE</code>.</p>
-
-    <div class="example"><p><code>
-    &lt;Location /cgi-bin/&gt;<br />
-    <span class="indent">
-      Options Includes<br />
-      AddOutputFilterByType INCLUDES;DEFLATE text/html<br />
-    </span>
-    &lt;/Location&gt;
-    </code></p></div>
-
-    <div class="warning"><h3>Note</h3>
-      <p>L'activation de filtres par la directive
-      <code class="directive">AddOutputFilterByType</code> peut partiellement
-      échouer, ou même complètement dans certains cas. Par exemple,
-      aucun filtre n'est appliqué si le <a class="glossarylink" href="../glossary.html#type de&#10;      média" title="voir glossaire">type de
-      média</a> n'a pas pu être déterminé. Si vous voulez vous
-      assurer que les filtres seront
-      appliqués, assignez explicitement le type de contenu à une
-      ressource, par exemple à l'aide d'une directive <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> ou <code class="directive"><a href="#forcetype">ForceType</a></code>. Il est aussi recommandé de
-      définir le type de contenu dans un script CGI (non-nph).</p>
-
-    </div>
-
-<h3>Voir aussi</h3>
-<ul>
-<li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li>
-<li><code class="directive"><a href="#setoutputfilter">SetOutputFilter</a></code></li>
-<li><a href="../filter.html">Les filtres</a></li>
-</ul>
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowEncodedSlashes" id="AllowEncodedSlashes">AllowEncodedSlashes</a> <a name="allowencodedslashes" id="allowencodedslashes">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si les séparateurs de chemin encodés sont
@@ -423,7 +358,7 @@ autorisés à transiter dans les URLs tels quels</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache version 2.0.46 et
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans Apache httpd version 2.0.46 et
 supérieures</td></tr>
 </table>
     <p>La directive <code class="directive">AllowEncodedSlashes</code> permet
@@ -573,7 +508,7 @@ scripts CGI</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>NetWare uniquement</td></tr>
 </table>
-    <p>Cette directive permet de contrôler la manière dont Apache trouve
+    <p>Cette directive permet de contrôler la manière dont Apache httpd trouve
     l'interpréteur servant à exécuter les scripts CGI. Par exemple, avec
     la définition <code>CGIMapExtension sys:\foo.nlm .foo</code>, tous
     les fichiers scripts CGI possédant une extension <code>.foo</code>
@@ -638,7 +573,7 @@ autre type de média n'avait été trouvé.
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>L'argument <code>none</code> est disponible dans les
-versions d'Apache 2.2.7 et supérieures. Tous les autres choix sont
+versions d'Apache httpd 2.2.7 et supérieures. Tous les autres choix sont
 DESACTIVÉS à partir des version 2.3.x.</td></tr>
 </table>
     <p>Cette directive a été désactivée. Pour la compatibilité
@@ -719,7 +654,7 @@ sous-répertoires</td></tr>
     <div class="note">
       <p>Soyez prudent avec l'argument <var>chemin répertoire</var> : il
       doit correspondre exactement au chemin du système de fichier
-      qu'Apache utilise pour accéder aux fichiers. Les directives
+      qu'Apache httpd utilise pour accéder aux fichiers. Les directives
       comprises dans une section <code>&lt;Directory&gt;</code> ne
       s'appliqueront pas aux fichiers du même répertoire auxquels on
       aura accédé via un chemin différent, per exemple via un lien
@@ -796,9 +731,9 @@ sous-répertoires</td></tr>
     et la section <code class="directive">&lt;Directory&gt;</code>
     correspondante s'appliquera.</p>
 
-   <p><strong>Notez que pour Apache, la politique d'accès par défaut
+   <p><strong>Notez que la politique d'accès par défaut
    dans les sections <code>&lt;Directory /&gt;</code> est <code>Allow
-   from All</code>. Ceci signifie qu'Apache va servir tout fichier
+   from All</code>. Ceci signifie qu'Apache httpd va servir tout fichier
    correspondant à une URL. Il est recommandé de modifier cette
    situation à l'aide d'un bloc du style</strong></p>
 
@@ -916,7 +851,7 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     d'un fichier pendant qu'il est servi. Par défaut, lorsque le
     traitement d'une requête requiert l'accès aux données contenues dans
     un fichier -- par exemple, pour servir un fichier interprété par le
-    serveur à l'aide de <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> -- Apache projette
+    serveur à l'aide de <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> -- Apache httpd projette
     le fichier en mémoire si le système d'exploitation le permet.</p>
 
     <p>Cette projection en mémoire induit parfois une amélioration des
@@ -934,10 +869,10 @@ lire les fichiers pendant qu'ils sont servis</td></tr>
     <p>Pour les configurations de serveur sujettes à ce genre de
     problème, il est préférable de désactiver la projection en mémoire
     des fichiers servis en spécifiant :</p>
-    <ul><li>S'il fait l'objet d'une projection en mémoire par
+    <li>S'il fait l'objet d'une projection en mémoire par
     <code class="program"><a href="../programs/httpd.html">httpd</a></code>, la suppression ou la troncature d'un
     fichier peut provoquer un crash de <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec une
-    erreur de segmentation.</li></ul>
+    erreur de segmentation.</li>
     <div class="example"><p><code>
       EnableMMAP Off
     </code></p></div>
@@ -974,7 +909,7 @@ supérieures</td></tr>
     contenu des fichiers aux clients. Par défaut, lorsque le traitement
     d'une requête ne requiert pas l'accès aux données contenues dans un
     fichier -- par exemple, pour la transmission d'un fichier statique
-    -- Apache utilise sendfile pour transmettre le contenu du fichier
+    -- Apache httpd utilise sendfile pour transmettre le contenu du fichier
     sans même lire ce dernier, si le système d'exploitation le
     permet.</p>
 
@@ -1039,9 +974,9 @@ d'erreur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La syntaxe des guillemets pour les messages textes est
-différente dans Apache 2.0</td></tr>
+différente dans la version 2.0 du serveur HTTP Apache</td></tr>
 </table>
-    <p>Apache peut traiter les problèmes et les erreurs de quatre
+    <p>Apache httpd peut traiter les problèmes et les erreurs de quatre
     manières,</p>
 
     <ol>
@@ -1060,7 +995,7 @@ différente dans Apache 2.0</td></tr>
     choisir une des trois autres options, il faut configurer Apache à
     l'aide de la directive <code class="directive">ErrorDocument</code>, suivie
     du code de la réponse HTTP et d'une URL ou d'un message. Apache
-    fournit parfois des informations supplémentaires à propos du
+    httpd fournit parfois des informations supplémentaires à propos du
     problème ou de l'erreur.</p>
 
     <p>Les URLs peuvent commencer par un slash (/) pour les chemins web
@@ -1078,10 +1013,10 @@ différente dans Apache 2.0</td></tr>
     </code></p></div>
 
     <p>De plus, on peut spécifier la valeur spéciale <code>default</code>
-    pour indiquer l'utilisation d'un simple message d'Apache codé en
+    pour indiquer l'utilisation d'un simple message d'Apache httpd codé en
     dur. Bien que non nécessaire dans des circonstances normales, la
     spécification de la valeur <code>default</code> va permettre de
-    rétablir l'utilisation du simple message d'Apache codé en dur pour
+    rétablir l'utilisation du simple message d'Apache httpd codé en dur pour
     les configurations qui sans cela, hériteraient d'une directive
     <code class="directive">ErrorDocument</code> existante.</p>
 
@@ -1096,7 +1031,8 @@ différente dans Apache 2.0</td></tr>
 
     <p>Notez que lorsque vous spécifiez une directive
     <code class="directive">ErrorDocument</code> pointant vers une URL distante
-    (c'est à dire tout ce qui commence par le préfixe http), Apache va
+    (c'est à dire tout ce qui commence par le préfixe http), le serveur
+    HTTP Apache va
     envoyer une redirection au client afin de lui indiquer où trouver le
     document, même dans le cas où ce document se trouve sur le serveur
     local. Ceci a de nombreuses conséquences dont la plus importante
@@ -1130,8 +1066,13 @@ différente dans Apache 2.0</td></tr>
     se prémunir contre les problèmes de sécurité liés aux requêtes mal
     formées.</p>
 
-    <p>Avant la version 2.0, les messages étaient indiqués en les
-    préfixant par un seul caractère guillemet isolé.</p>
+    <p>Si vous utilisez mod_proxy, il est en général préférable
+    d'activer <code class="directive"><a href="../mod/mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></code> afin d'être en
+    mesure de produire des messages d'erreur personnalisés pour le
+    compte de votre serveur d'origine. Si vous n'activez pas
+    ProxyErrorOverride, Apache httpd ne générera pas de messages d'erreur
+    personnalisés pour le contenu mandaté.</p>
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -1196,14 +1137,51 @@ personnalisation des réponses</a></li>
 <h3>Voir aussi</h3>
 <ul>
 <li><code class="directive"><a href="#loglevel">LogLevel</a></code></li>
-<li><a href="../logs.html">Fichiers journaux d'Apache</a></li>
+<li><a href="../logs.html">Fichiers journaux du serveur HTTP Apache</a></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ExtendedStatus" id="ExtendedStatus">ExtendedStatus</a> <a name="extendedstatus" id="extendedstatus">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Extrait des informations d'état étendues pour chaque
+requête</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>ExtendedStatus On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>ExtendedStatus Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+
+	<p>Cette option permet d'extraire des données supplémentaires
+	concernant la requête en cours de traitement pour un processus
+	donné, ainsi qu'un résumé d'utilisation ; vous pouvez accéder à
+	ces variables pendant l'exécution en configurant
+	<code class="module"><a href="../mod/mod_status.html">mod_status</a></code>. Notez que d'autres modules sont
+	susceptibles de s'appuyer sur ce tableau de bord.</p>
+
+    <p>Cette directive s'applique au serveur dans son ensemble, et ne
+    peut pas être activée/désactivée pour un serveur virtuel
+    particulier. Notez que l'extraction des informations d'état étendues
+    peut ralentir le serveur. Notez aussi que cette définition ne peut
+    pas être modifiée au cours d'un redémarrage graceful.</p>
+
+    <div class="note">
+    <p>Notez que le chargement de <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> définit
+    automatiquement ExtendedStatus à On, et que d'autres modules tiers
+    sont susceptibles d'en faire de même. De tels modules ont besoin
+    d'informations détaillées à propos de l'état de tous les processus.
+    Depuis la version 2.3.6, <code class="module"><a href="../mod/mod_status.html">mod_status</a></code> a définit la
+    valeur par défaut à On, alors qu'elle était à Off dans les versions
+    antérieures.</p>
+    </div>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="FileETag" id="FileETag">FileETag</a> <a name="fileetag" id="fileetag">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Caractéristiques de fichier utilisés lors de la génération
-de l'en-tête de réponse HTTP ETag</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Caractéristiques de fichier utilisées lors de la génération
+de l'en-tête de réponse HTTP ETag pour les fichiers statiques</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>FileETag <var>composant</var> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>FileETag INode MTime Size</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -1215,12 +1193,10 @@ de l'en-tête de réponse HTTP ETag</td></tr>
     La directive <code class="directive">FileETag</code> définit les
     caractéristiques de fichier utilisées lors de la génération de
     l'en-tête de réponse HTTP <code>ETag</code> (entity tag) quand le
-    document est contenu dans un fichier (la valeur de <code>ETag</code>
+    document est contenu dans un fichier statique(la valeur de
+    <code>ETag</code>
     est utilisée dans le cadre de la gestion du cache pour préserver la
-    bande passante réseau). Dans les versions 1.3.22 et antérieures
-    d'Apache, la valeur de l'en-tête <code>ETag</code> se composait
-    <em>toujours</em> de l'inode du fichier, de sa taille et de sa date
-    de dernière modification (mtime). La directive
+    bande passante réseau). La directive
     <code class="directive">FileETag</code> vous permet maintenant de choisir
     quelles caractéristiques du fichier vont être utilisées, le cas
     échéant. Les mots-clés reconnus sont :
@@ -1268,6 +1244,14 @@ de l'en-tête de réponse HTTP ETag</td></tr>
     format <code>ETag</code> est modifié via la directive
     <code class="directive">FileETag</code>.
     </div>
+    <div class="note"><h3>Inclusions côté serveur</h3>
+    Aucun champ ETag n'est généré pour les réponses interprétées par
+    <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>, car l'entité de la réponse peut
+    changer sans modification de l'INode, du MTime, ou de la taille du
+    fichier statique contenant les directives SSI.
+    </div>
+
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1366,7 +1350,7 @@ HTTP Content-Type pour les fichiers correspondants</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Intégré dans le coeur d'Apache depuis la version
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Intégré dans le coeur d'Apache httpd depuis la version
 2.0</td></tr>
 </table>
     <p>Lorsqu'elle est placée dans un fichier <code>.htaccess</code> ou
@@ -1595,7 +1579,7 @@ versions 2.1 et supérieures.</td></tr>
 
     <p>Dans le premier cas, les directives situées entre les balises de
     début et de fin ne s'appliquent que si le module <var>module</var>
-    est présent -- soit compilé avec le binaire httpd, soit chargé
+    est présent -- soit compilé avec le binaire Apache httpd, soit chargé
     dynamiquement via la directive <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>. Le second format inverse le test, et dans
     ce cas, les directives ne s'appliquent que si <var>module</var>
     n'est <strong>pas</strong> présent.</p>
@@ -1624,22 +1608,25 @@ versions 2.1 et supérieures.</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Inclut d'autres fichiers de configuration dans un des
 fichiers de configuration du serveur</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Include <var>chemin fichier</var>|<var>chemin
-répertoire</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Include [<var>optional</var>|<var>strict</var>] <var>chemin fichier</var>|<var>chemin
+répertoire|<var>wildcard</var></var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Utilisation des caractères génériques depuis la version
-2.0.41</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Utilisation des caractères génériques dans la partie nom
+de fichier depuis la version 2.0.41, et dans la partie chemin depuis la
+version 2.3.6</td></tr>
 </table>
     <p>Cette directive permet l'inclusion d'autres fichiers de
     configuration dans un des fichiers de configuration du serveur.</p>
 
     <p>On peut utiliser des caractères génériques de style Shell
-    (<code>fnmatch()</code>) pour inclure plusieurs fichiers en une
+    (<code>fnmatch()</code>) aussi bien dans la partie nom de fichier du
+    chemin que dans la partie répertoires pour inclure plusieurs
+    fichiers en une
     seule fois, selon leur ordre alphabétique. De plus, si la directive
     <code class="directive">Include</code> pointe vers un répertoire, Apache
-    inclura tous les fichiers de ce répertoire et de tous ces
+    httpd inclura tous les fichiers de ce répertoire et de tous ces
     sous-répertoires. L'inclusion de répertoires entiers est cependant
     déconseillée, car il est fréquent d'oublier des fichiers
     temporaires dans un répertoire, ce qui causerait une erreur
@@ -1647,6 +1634,34 @@ répertoire</var></code></td></tr>
     fichiers qui correspondent à un certain modèle, comme *.conf par
     exemple, nous vous recommandons d'utiliser plutôt la syntaxe avec
     caractères génériques comme ci-dessous.</p>
+
+    <p>Lorsque la partie <strong>nom de fichier</strong> ou répertoires
+    du chemin
+    comporte des caractères génériques, et si aucun fichier ou
+    répertoire ne correspond, la directive <code class="directive"><a href="#include">Include</a></code> sera <strong>ignorée
+    silencieusement</strong>.
+    Lorsqu'une partie <strong>répertoires</strong> du chemin comporte
+    des caractères génériques, et si aucun
+    répertoire ne correspond, la directive <code class="directive"><a href="#include">Include</a></code> <strong>échouera et renverra une
+    erreur</strong>
+    indiquant que le fichier ou le répertoire n'a pas été trouvé.
+    </p>
+
+    <p>Pour contrôler plus finement le comportement du serveur
+    lorsqu'aucun fichier ou répertoire ne correspond, préfixez le chemin
+    avec les modificateurs <var>optional</var> ou <var>strict</var>. Si
+    <var>optional</var> est spécifié, tout fichier ou répertoire avec
+    caractères génériques qui ne correspond à aucun fichier ou
+    répertoire sera ignoré silencieusement. Si <var>strict</var> est
+    spécifié,  tout fichier ou répertoire avec
+    caractères génériques qui ne correspond pas à au moins un fichier
+    fera échouer le démarrage du serveur.</p>
+
+	<p>Lorsqu'une partie fichier ou répertoire du chemin est
+	spécipée sans caractères génériques, et si ce fichier ou
+	répertoire n'existe pas, la directive <code class="directive"><a href="#include">Include</a></code> échouera avec un message
+	d'erreur indiquant que le fichier ou répertoire n'a pas pu être
+	trouvé.</p>
 
     <p>Le chemin fichier spécifié peut être soit un chemin absolu, soit
     un chemin relatif au répertoire défini par la directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>.</p>
@@ -1665,6 +1680,33 @@ répertoire</var></code></td></tr>
       Include conf/ssl.conf<br />
       Include conf/vhosts/*.conf
     </code></p></div>
+
+    <p>On peut aussi insérer des caractères génériques dans la partie
+    répertoires du chemin. Dans l'exemple suivant, le démarrage du
+    serveur échouera si aucun répertoire ne correspond à conf/vhosts/*,
+    mais réussira si aucun fichier ne correspond à *.conf :</p>
+  
+    <div class="example"><p><code>
+      Include conf/vhosts/*/vhost.conf<br />
+      Include conf/vhosts/*/*.conf
+    </code></p></div>
+
+    <p>Dans cet exemple, le démarrage du serveur échouera si
+    conf/vhosts/* ne correspond à aucun répertoire, ou si *.conf ne
+    correspond à aucun fichier :</p>
+
+    <div class="example"><p><code>
+      Include strict conf/vhosts/*/*.conf
+    </code></p></div>
+  
+    <p>Dans cet exemple, le démarrage du serveur réussira si
+    conf/vhosts/* ne correspond à aucun répertoire, ou si *.conf ne
+    correspond à aucun fichier.</p>
+
+    <div class="example"><p><code>
+      Include optional conf/vhosts/*/*.conf
+    </code></p></div>
+    
 
 <h3>Voir aussi</h3>
 <ul>
@@ -1723,9 +1765,9 @@ avant de fermer une connexion persistante</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La spécification d'une valeur en millisecondes est
-possible depuis les versions 2.3.2 et supérieures d'Apache</td></tr>
+possible depuis les versions 2.3.2 et supérieures d'Apache httpd</td></tr>
 </table>
-    <p>Le nombre de secondes pendant lesquelles Apache va attendre une
+    <p>Le nombre de secondes pendant lesquelles Apache httpd va attendre une
     requête avant de fermer la connexion. Le délai peut être défini en
     millisecondes en suffixant sa valeur par ms. La valeur du délai
     spécifiée par la directive <code class="directive"><a href="#timeout">Timeout</a></code> s'applique dès qu'une requête a
@@ -1790,8 +1832,8 @@ certaines méthodes HTTP</td></tr>
     être limitée (voir la directive <code class="directive"><a href="#traceenable">TraceEnable</a></code>).</p>
 
     <div class="warning">Une section <code class="directive">&lt;LimitExcept&gt;</code> doit toujours être préférée à
-    une section <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> pour la restriction d'accès, car une
-    section <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> fournit une protection contre
+    une section <code class="directive">&lt;Limit&gt;</code> pour la
+    restriction d'accès, car une section <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> fournit une protection contre
     les méthodes arbitraires.</div>
 
     <p>Les directives <code class="directive">&lt;Limit&gt;</code> et
@@ -1870,12 +1912,12 @@ sous-requêtes imbriquées</td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.0.47 d'Apache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible à partir de la version 2.0.47 d'Apache httpd</td></tr>
 </table>
     <p>Une redirection interne survient, par exemple, quand on utilise
     la directive <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> qui
     redirige en interne la requête d'origine vers un script CGI. Une
-    sous-requête est le mécanisme qu'utilise Apache pour déterminer ce
+    sous-requête est le mécanisme qu'utilise Apache httpd pour déterminer ce
     qui se passerait pour un URI s'il faisait l'objet d'une requête. Par
     exemple, <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> utilise les sous-requêtes pour
     rechercher les fichiers listés dans la directive <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code>.</p>
@@ -2247,11 +2289,16 @@ entre elles à la réception d'une requête.</li>
 <div class="directive-section"><h2><a name="LogLevel" id="LogLevel">LogLevel</a> <a name="loglevel" id="loglevel">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contrôle la verbosité du journal des erreurs</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogLevel <var>niveau</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>LogLevel [<var>module</var>:]<var>niveau</var>
+    [<var>module</var>:<var>niveau</var>] ...
+</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>LogLevel warn</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>La configuration du niveau de journalisation par module
+et par répertoire est disponible depuis la version 2.3.6 du serveur HTTP
+Apache</td></tr>
 </table>
     <p>La directive <code class="directive">LogLevel</code> permet d'ajuster la
     verbosité des messages enregistrés dans les journaux d'erreur (voir
@@ -2335,6 +2382,64 @@ entre elles à la réception d'une requête.</li>
 
         <td>"Opening config file ..."</td>
       </tr>
+      <tr>
+        <td><code>trace1</code> </td>
+
+        <td>Messages de traces</td>
+
+        <td>"proxy: FTP: control connection complete"</td>
+      </tr>
+      <tr>
+        <td><code>trace2</code> </td>
+
+        <td>Messages de traces</td>
+
+        <td>"proxy: CONNECT: sending the CONNECT request to the remote proxy"</td>
+      </tr>
+      <tr>
+        <td><code>trace3</code> </td>
+
+        <td>Messages de traces</td>
+
+        <td>"openssl: Handshake: start"</td>
+      </tr>
+      <tr>
+        <td><code>trace4</code> </td>
+
+        <td>Messages de traces</td>
+
+        <td>"read from buffered SSL brigade, mode 0, 17 bytes"</td>
+      </tr>
+      <tr>
+        <td><code>trace5</code> </td>
+
+        <td>Messages de traces</td>
+
+        <td>"map lookup FAILED: map=rewritemap key=keyname"</td>
+      </tr>
+      <tr>
+        <td><code>trace6</code> </td>
+
+        <td>Messages de traces</td>
+
+        <td>"cache lookup FAILED, forcing new map lookup"</td>
+      </tr>
+      <tr>
+        <td><code>trace7</code> </td>
+
+        <td>Messages de traces, enregistrement d'une grande quantité de
+	données</td>
+
+        <td>"| 0000: 02 23 44 30 13 40 ac 34 df 3d bf 9a 19 49 39 15 |"</td>
+      </tr>
+      <tr>
+        <td><code>trace8</code> </td>
+
+        <td>Messages de traces, enregistrement d'une grande quantité de
+	données</td>
+
+        <td>"| 0000: 02 23 44 30 13 40 ac 34 df 3d bf 9a 19 49 39 15 |"</td>
+      </tr>
     </table>
 
     <p>Lorsqu'un niveau particulier est spécifié, les messages de tous
@@ -2358,6 +2463,37 @@ entre elles à la réception d'une requête.</li>
       supprimés et sont donc toujours journalisés. Cependant, ceci ne
       s'applique pas lorsque la journalisation s'effectue vers
       <code>syslog</code>.</p>
+    </div>
+    
+    <p>Spécifier un niveau sans nom de module va attribuer ce niveau à
+    tous les modules. Spécifier un niveau avec nom de module va
+    attribuer ce niveau à ce module seulement. Il est possible de
+    spécifier un module par le nom de son fichier source ou par son
+    identificateur, avec ou sans le suffixe <code>_module</code>. Les
+    trois spécifications suivantes sont donc équivalentes :</p>
+
+    <div class="example"><p><code>
+      LogLevel info ssl:warn<br />
+      LogLevel info mod_ssl.c:warn<br />
+      LogLevel info ssl_module:warn<br />
+    </code></p></div>
+
+    <p>Il est aussi possible d'attribuer un niveau de journalisation par
+    répertoire :</p>
+
+    <div class="example"><p><code>
+        LogLevel info<br />
+        &lt;Directory /usr/local/apache/htdocs/app&gt;<br />
+        &nbsp; LogLevel debug<br />
+        &lt;/Files&gt;
+    </code></p></div>
+
+    <div class="note">
+        La configuration du niveau de journalisation par répertoire
+	n'affecte que les messages journalisés après l'interprétation de
+	la requête et qui sont associés à cette dernière. Les messages
+	de journalisation associés à la connexion ou au serveur ne sont
+	pas affectés.
     </div>
 
 </div>
@@ -2383,6 +2519,246 @@ persistante</td></tr>
 
     <div class="example"><p><code>
       MaxKeepAliveRequests 500
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Mutex" id="Mutex">Mutex</a> <a name="mutex" id="mutex">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit les mécanismes de mutex et le repertoire du fichier
+verrou pour tous les mutex ou seulement les mutex spécifiés</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>Mutex <var>mécanisme</var> [default|<var>nom-mutex</var>] ... [OmitPID]</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Mutex default</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.3.4 du serveur HTTP Apache</td></tr>
+</table>
+    <p>La directive <code class="directive">Mutex</code> permet de définir le
+    mécanisme de mutex, et éventuellement le répertoire du fichier
+    verrou que les modules et httpd utilisent pour sérialiser l'accès aux
+    ressources. Spécifiez <code>default</code> comme premier argument
+    pour modifier la configuration de tous les mutex ; spécifiez un nom
+    de mutex (voir la table ci-dessous) comme premier argument pour
+    ne modifier que la configuration de ce mutex.</p>
+
+    <p>La directive <code class="directive">Mutex</code> est typiquement
+    utilisée dans les situations exceptionnelles suivantes :</p>
+
+    <ul>
+        <li>choix d'un autre mécanisme de mutex lorsque le mécanisme par
+	défaut sélectionné par <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> présente un
+	problème de fonctionnement ou de performances.</li>
+
+        <li>choix d'un autre répertoire utilisé par les mutex à base de
+	fichier lorsque le répertoire par défaut ne supporte pas le
+	verrouillage</li>
+    </ul>
+
+    <div class="note"><h3>Modules supportés</h3>
+    <p>Cette directive ne configure que les mutex qui ont été
+    enregistrés avec le serveur de base via l'API
+    <code>ap_mutex_register()</code>. Tous les modules fournis avec
+    httpd supportent la directive <code class="directive">Mutex</code>, mais il
+    n'en sera pas forcément de même pour les modules tiers.
+    Reportez-vous à la documentation du module tiers considéré afin de
+    déterminer le(s) nom(s) de mutex qui pourront être définis si la
+    directive est supportée.</p>
+    </div>
+
+    
+
+    <p>Les <em>mécanismes</em> de mutex disponibles sont les suivants :</p>
+    <ul>
+        <li><code>default | yes</code>
+        <p>C'est l'implémentation du verrouillage par défaut, telle
+	qu'elle est définie par <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a>. On peut
+	afficher l'implémentation du verrouillage par défaut via la
+	commande <code class="program"><a href="../programs/httpd.html">httpd</a></code> avec l'option <code>-V</code>.</p></li>
+
+        <li><code>none | no</code>
+        <p>Le mutex est désactivé, et cette valeur n'est permise pour un
+	mutex que si le module indique qu'il s'agit d'un choix valide.
+	Consultez la documentation du module pour plus d'informations.</p></li>
+
+        <li><code>posixsem</code>
+        <p>Une variante de mutex basée sur un sémaphore Posix.</p>
+
+        <div class="warning"><h3>Avertissement</h3>
+        <p>La propriété du sémaphore n'est pas restituée si un thread du
+	processus gérant le mutex provoque une erreur de segmentation,
+	ce qui provoquera un blocage du serveur web.</p>
+        </div>
+        </li>
+
+        <li><code>sysvsem</code>
+        <p>Une variante de mutex basée sur un sémaphore IPC SystemV.</p>
+
+        <div class="warning"><h3>Avertissement</h3>
+        <p>Il peut arriver que les sémaphores SysV soient conservés si le
+	processus se crashe avant que le sémaphore ne soit supprimé.</p>
+	</div>
+
+        <div class="warning"><h3>Sécurité</h3>
+        <p>L'API des sémaphores permet les attaques par déni de service
+	par tout programme CGI s'exécutant sous le même uid que le
+	serveur web (autrement dit tous les programmes CGI, à moins que
+	vous n'utilisiez un programme du style <code class="program"><a href="../programs/suexec.html">suexec</a></code>
+	ou <code>cgiwrapper</code>).</p>
+	</div>
+        </li>
+
+        <li><code>sem</code>
+        <p>Sélection de la "meilleure" implémentation des sémaphores
+	disponible ; le choix s'effectue entre les sémaphores posix et
+	IPC SystemV, dans cet ordre.</p></li>
+
+        <li><code>pthread</code>
+        <p>Une variante de mutex à base de mutex de thread Posix
+	inter-processus.</p>
+
+        <div class="warning"><h3>Avertissement</h3>
+        <p>Sur la plupart des systèmes, si un processus enfant se
+	termine anormalement alors qu'il détenait un mutex qui utilise
+	cette implémentation, le serveur va se bloquer et cesser de
+	répondre aux requêtes. Dans ce cas, un redémarrage manuel est
+	nécessaire pour récupérer le mutex.</p>
+        <p>Solaris constitue une exception notable, en ceci qu'il fournit
+	un mécanisme qui permet en général de récupérer le mutex après
+	l'arrêt anormal d'un processus enfant qui détenait le mutex.</p>
+        <p>Si votre système implémente la fonction
+	<code>pthread_mutexattr_setrobust_np()</code>, vous devriez
+	pouvoir utiliser l'option <code>pthread</code> sans problème.</p>
+        </div>
+        </li>
+
+        <li><code>fcntl:/chemin/vers/mutex</code>
+        <p>Une variante de mutex utilisant un fichier verrou physique et
+	la fonction <code>fcntl()</code>.</p>
+
+        <div class="warning"><h3>Avertissement</h3>
+        <p>Lorsqu'on utilise plusieurs mutex basés sur ce mécanisme dans
+	un environnement multi-processus, multi-thread, des erreurs de
+	blocage (EDEADLK) peuvent être rapportées pour des opérations de
+	mutex valides si la fonction <code>fcntl()</code> ne gère pas
+	les threads, comme sous Solaris.</p>
+	</div>
+        </li>
+
+        <li><code>flock:/chemin/vers/mutex</code>
+        <p>Méthode similaire à <code>fcntl:/chemin/vers/mutex</code>,
+	mais c'est la fonction <code>flock()</code> qui est utilisée
+	pour gérer le verrouillage par fichier.</p></li>
+
+        <li><code>file:/chemin/vers/mutex</code>
+        <p>Sélection de la "meilleure" implémentation de verrouillage
+	par fichier disponible ; le choix s'effectue entre
+	<code>fcntl</code> et <code>flock</code>, dans cet ordre.</p></li>
+    </ul>
+
+    <p>La plupart des mécanismes ne sont disponibles que sur les
+    plate-formes où ces dernières et <a class="glossarylink" href="../glossary.html#apr" title="voir glossaire">APR</a> les
+    supportent. Les mécanismes qui ne sont pas disponibles sur toutes
+    les plate-formes sont <em>posixsem</em>,
+    <em>sysvsem</em>, <em>sem</em>, <em>pthread</em>, <em>fcntl</em>, 
+    <em>flock</em>, et <em>file</em>.</p>
+
+    <p>Avec les mécanismes à base de fichier <em>fcntl</em> et
+    <em>flock</em>, le chemin, s'il est fourni, est un répertoire dans
+    lequel le fichier verrou sera créé. Le répertoire par défaut est le
+    répertoire httpd défini par la directive <code class="directive"><a href="#serverroot">ServerRoot</a></code>. Utilisez toujours un système
+    de fichiers local sur disque pour <code>/chemin/vers/mutex</code> et
+    jamais un répertoire se trouvant dans un système de fichiers NFS ou
+    AFS. Le nom de base du fichier se composera du type de mutex, d'une
+    chaîne optionnelle correspondant à l'instance et fournie par le
+    module ; et, sauf si le mot-clé <code>OmitPID</code> a été spécifié,
+    l'identificateur du processus parent httpd sera ajouté afin de
+    rendre le nom du fichier unique, évitant ainsi tout conflit lorsque
+    plusieurs instances d'httpd partagent le même répertoire de
+    verrouillage. Par exemple, si le nom de mutex est
+    <code>mpm-accept</code>, et si le répertoire de verrouillage est
+    <code>/var/httpd/locks</code>, le nom du fichier verrou pour
+    l'instance httpd dont le processus parent a pour identifiant 12345
+    sera <code>/var/httpd/locks/mpm-accept.12345</code>.</p>
+
+    <div class="warning"><h3>Sécurité</h3>
+    <p>Il est déconseillé d'<em>éviter</em> de placer les fichiers mutex
+    dans un répertoire où tout le monde peut écrire comme
+    <code>/var/tmp</code>, car quelqu'un pourrait initier une attaque
+    par déni de service et empêcher le serveur de démarrer en créant un
+    fichier verrou possédant un nom identique à celui que le serveur va
+    tenter de créer.</p>
+    </div>
+
+    <p>La table suivante décrit les noms de mutex utilisés par httpd et
+    ses modules associés.</p>
+
+    <table class="bordered"><tr class="header">
+            <th>Nom mutex</th>
+            <th>Module(s)</th>
+            <th>Ressource protégée</th>
+	</tr>
+<tr>
+            <td><code>mpm-accept</code></td>
+            <td>modules MPM <code class="module"><a href="../mod/prefork.html">prefork</a></code> et <code class="module"><a href="../mod/worker.html">worker</a></code></td>
+            <td>connexions entrantes, afin d'éviter le problème de
+	    l'afflux de requêtes ; pour plus d'informations, voir la
+	    documentation <a href="../misc/perf-tuning.html">Amélioration des
+	    performances</a></td>
+	</tr>
+<tr class="odd">
+            <td><code>authdigest-client</code></td>
+            <td><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></td>
+            <td>liste de clients en mémoire partagée</td>
+	</tr>
+<tr>
+            <td><code>authdigest-opaque</code></td>
+            <td><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></td>
+            <td>compteur en mémoire partagée</td>
+	</tr>
+<tr class="odd">
+            <td><code>ldap-cache</code></td>
+            <td><code class="module"><a href="../mod/mod_ldap.html">mod_ldap</a></code></td>
+            <td>cache de résultat de recherche LDAP</td>
+	</tr>
+<tr>
+            <td><code>rewrite-map</code></td>
+            <td><code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></td>
+            <td>communication avec des programmes externes
+	    d'associations de valeurs, afin d'éviter les interférences
+	    d'entrées/sorties entre plusieurs requêtes</td>
+	</tr>
+<tr class="odd">
+            <td><code>ssl-cache</code></td>
+            <td><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></td>
+            <td>cache de session SSL</td>
+	</tr>
+<tr>
+            <td><code>ssl-stapling</code></td>
+            <td><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code></td>
+            <td>cache de l'étiquetage OCSP ("OCSP stapling")</td>
+	</tr>
+<tr class="odd">
+            <td><code>watchdog-callback</code></td>
+            <td><code class="module"><a href="../mod/mod_watchdog.html">mod_watchdog</a></code></td>
+            <td>fonction de rappel d'un module client particulier</td>
+	</tr>
+</table>
+
+    <p>Le mot-clé <code>OmitPID</code> permet d'empêcher l'addition de
+    l'identifiant du processus httpd parent au nom du fichier verrou.</p>
+
+
+    <p>Dans l'exemple suivant, le mécanisme de mutex pour le mutex
+    mpm-accept est modifié pour passer du mécanisme par défaut au
+    mécanisme <code>fcntl</code>, avec le fichier verrou associé créé
+    dans le répertoire <code>/var/httpd/locks</code>. Le mécanisme de
+    mutex par défaut pour tous les autres mutex deviendra
+    <code>sysvsem</code>.</p>
+
+    <div class="example"><p><code>
+    Mutex default sysvsem<br />
+    Mutex mpm-accept fcntl:/var/httpd/locks
     </code></p></div>
 
 </div>
@@ -2647,7 +3023,7 @@ particulier</td></tr>
 <div class="directive-section"><h2><a name="RLimitCPU" id="RLimitCPU">RLimitCPU</a> <a name="rlimitcpu" id="rlimitcpu">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le temps CPU alloué aux processus initiés par les
-processus enfants d'Apache</td></tr>
+processus enfants d'Apache httpd</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RLimitCPU <var>secondes</var>|max [<var>secondes</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Non défini ; utilise les valeurs par défaut du système
 d'exploitation</code></td></tr>
@@ -2667,10 +3043,10 @@ d'exploitation</code></td></tr>
     phase de démarrage.</p>
 
     <p>Cette directive s'applique aux processus initiés par les
-    processus enfants d'Apache qui traitent les requêtes, et non aux
+    processus enfants d'Apache httpd qui traitent les requêtes, et non aux
     processus enfants eux-mêmes. Sont concernés les scripts CGI et les
     commandes exec des SSI, mais en aucun cas les processus initiés par
-    le processus parent d'Apache comme les journalisations redirigées
+    le processus parent d'Apache httpd comme les journalisations redirigées
     vers un programme.</p>
 
     <p>Les limites de ressources CPU sont exprimées en secondes par
@@ -2686,7 +3062,7 @@ d'exploitation</code></td></tr>
 <div class="directive-section"><h2><a name="RLimitMEM" id="RLimitMEM">RLimitMEM</a> <a name="rlimitmem" id="rlimitmem">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite la mémoire allouée aux processus initiés par les
-processus enfants d'Apache</td></tr>
+processus enfants d'Apache httpd</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RLimitMEM <var>octets</var>|max [<var>octets</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Non défini ; utilise les valeurs par défaut du système
 d'exploitation</code></td></tr>
@@ -2706,10 +3082,10 @@ d'exploitation</code></td></tr>
     phase de démarrage.</p>
 
     <p>Cette directive s'applique aux processus initiés par les
-    processus enfants d'Apache qui traitent les requêtes, et non aux
+    processus enfants d'Apache httpd qui traitent les requêtes, et non aux
     processus enfants eux-mêmes. Sont concernés les scripts CGI et les
     commandes exec des SSI, mais en aucun cas les processus initiés par
-    le processus parent d'Apache comme les journalisations redirigées
+    le processus parent d'Apache httpd comme les journalisations redirigées
     vers un programme.</p>
 
     <p>Les limites de ressources mémoire sont exprimées en octets par
@@ -2725,7 +3101,7 @@ d'exploitation</code></td></tr>
 <div class="directive-section"><h2><a name="RLimitNPROC" id="RLimitNPROC">RLimitNPROC</a> <a name="rlimitnproc" id="rlimitnproc">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limite le nombre de processus qui peuvent être initiés par
-les processus initiés par les processus enfants d'Apache</td></tr>
+les processus initiés par les processus enfants d'Apache httpd</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>RLimitNPROC <var>nombre</var>|max [<var>nombre</var>|max]</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>Unset; uses operating system defaults</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel, répertoire, .htaccess</td></tr>
@@ -2744,10 +3120,10 @@ les processus initiés par les processus enfants d'Apache</td></tr>
     phase de démarrage.</p>
 
     <p>Cette directive s'applique aux processus initiés par les
-    processus enfants d'Apache qui traitent les requêtes, et non aux
+    processus enfants d'Apache httpd qui traitent les requêtes, et non aux
     processus enfants eux-mêmes. Sont concernés les scripts CGI et les
     commandes exec des SSI, mais en aucun cas les processus initiés par
-    le processus parent d'Apache comme les journalisations redirigées
+    le processus parent d'Apache httpd comme les journalisations redirigées
     vers un programme.</p>
 
     <p>Les limites des processus contrôlent le nombre de processus par
@@ -2781,12 +3157,12 @@ CGI</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Win32 seulement ;
 l'option <code>Registry-Strict</code> est disponible dans les versions
-2.0 et supérieures d'Apache</td></tr>
+2.0 et supérieures du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive permet de contrôler la méthode qu'utilise Apache
-    pour trouver l'interpréteur destiné à exécuter les scripts CGI. La
+    httpd pour trouver l'interpréteur destiné à exécuter les scripts CGI. La
     définition par défaut est <code>Script</code> : ceci indique à
-    Apache qu'il doit utiliser l'interpréteur précisé dans la ligne
+    Apache httpd qu'il doit utiliser l'interpréteur précisé dans la ligne
     shebang du script (la première ligne, commençant par
     <code>#!</code>). Sur les systèmes Win32, cette ligne ressemble
     souvent à ceci :</p>
@@ -2810,12 +3186,12 @@ l'option <code>Registry-Strict</code> est disponible dans les versions
     registre <code>Shell\ExecCGI\Command</code> ou, si elle n'existe
     pas, la sous-clé <code>Shell\Open\Command</code> qui est utilisée
     pour ouvrir le fichier du script. Si ces clés de registre ne sont
-    pas trouvées, Apache utilise la méthode de l'option
+    pas trouvées, Apache httpd utilise la méthode de l'option
     <code>Script</code>.</p>
 
     <div class="warning"><h3>Sécurité</h3>
     <p>Soyez prudent si vous utilisez <code>ScriptInterpreterSource
-    Registry</code> avec des répertoires faisant l'objet d'un <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, car Apache va essayer
+    Registry</code> avec des répertoires faisant l'objet d'un <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>, car Apache httpd va essayer
     d'exécuter <strong>tous</strong> les fichiers contenus dans
     celui-ci. L'option <code>Registry</code> peut causer des appels de
     programmes non voulus sur des fichiers non destinés à être exécutés.
@@ -2828,12 +3204,53 @@ l'option <code>Registry-Strict</code> est disponible dans les versions
     suivent.</p>
     </div>
 
-    <p>L'option <code>Registry-Strict</code>, apparue avec Apache 2.0,
+    <p>L'option <code>Registry-Strict</code>, apparue avec la version
+    2.0 du serveur HTTP Apache,
     agit de manière identique à <code>Registry</code>, mais n'utilise
     que la sous-clé <code>Shell\ExecCGI\Command</code>. La présence de
     la clé <code>ExecCGI</code> n'étant pas systématique, Elle doit être
     définie manuellement dans le registre Windows et évite ainsi tout
     appel de programme accidentel sur votre système.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Détermine si mod_status affiche les 63 premiers caractères
+d'une requête ou les 63 derniers, en supposant que la requête
+elle-même possède plus de 63 caractères.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Défaut:</a></th><td><code>SeeRequestTail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible depuis la version 2.2.7
+d'Apache httpd.</td></tr>
+</table>
+    <p>Avec <code>ExtendedStatus On</code>, mod_status affiche la
+    véritable requête en cours de traitement. Pour des raisons
+    historiques, seuls 63 caractères de la requête sont réellement
+    stockés à des fins d'affichage. Cette directive permet de déterminer
+    si ce sont les 63 premiers caractères qui seront stockés (c'est le
+    comportement par défaut),
+    ou si ce sont les 63 derniers. Ceci ne s'applique bien entendu que
+    si la taille de la requête est de 64 caractères ou plus.</p>
+
+    <p>Si Apache httpd traite la requête <code>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</code>
+    , l'affichage de la requête par mod_status se présentera comme suit :
+    </p>
+
+    <table class="bordered">
+      <tr>
+        <th>Off (défaut)</th>
+        <td>GET&nbsp;/disque1/stockage/apache/htdocs/images/rep-images1/nourritu</td>
+      </tr>
+      <tr>
+        <th>On</th>
+        <td>apache/htdocs/images/rep-images1/nourriture/pommes.jpg&nbsp;HTTP/1.1</td>
+      </tr>
+    </table>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2896,7 +3313,7 @@ serveurs virtuels à base de nom</td></tr>
 <h3>Voir aussi</h3>
 <ul>
 <li><a href="../vhosts/">Documentation sur les serveurs virtuels
-d'Apache</a></li>
+du serveur HTTP Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2909,9 +3326,6 @@ entièrement qualifié</var>[:<var>port</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur, serveur virtuel</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Dans la version 2.0, cette directive remplace la
-fonctionnalité de la directive <code class="directive">Port</code> de la version
-1.3.</td></tr>
 </table>
     <p>La directive <code class="directive">ServerName</code> permet de définir
     les protocole, nom d'hôte et port d'une requête que le serveur
@@ -2963,9 +3377,9 @@ fonctionnalité de la directive <code class="directive">Port</code> de la version
 <h3>Voir aussi</h3>
 <ul>
 <li><a href="../dns-caveats.html">Problèmes concernant le DNS et
-Apache</a></li>
+le serveur HTTP Apache</a></li>
 <li><a href="../vhosts/">Documentation sur les serveurs virtuels
-d'Apache</a></li>
+du serveur HTTP Apache</a></li>
 <li><code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code></li>
 <li><code class="directive"><a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code></li>
 <li><code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code></li>
@@ -2988,7 +3402,7 @@ de nom accédé par un navigateur incompatible</td></tr>
 <h3>Voir aussi</h3>
 <ul>
 <li><a href="../vhosts/">Documentation sur les serveurs virtuels
-d'Apache</a></li>
+du serveur HTTP Apache</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -3082,10 +3496,12 @@ HTTP</td></tr>
     serveur.</p>
 
     <dl>
-    	<dt><code>ServerTokens Off</code></dt>
+	<dt><code>ServerTokens Full</code> (ou non spécifié)</dt>
 
-      <dd>Le serveur n'envoie aucun en-tête <code>Server:</code> (et
-      <code>SERVER_SOFTWARE</code> est vide)</dd>
+	<dd>Le serveur envoie par exemple : <code>Server: Apache/2.4.1
+	(Unix) PHP/4.2.2 MyMod/1.2</code></dd>
+
+    	
 
 
       <dt><code>ServerTokens Prod[uctOnly]</code></dt>
@@ -3101,30 +3517,20 @@ HTTP</td></tr>
       <dt><code>ServerTokens Minor</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.0</code></dd>
+      Apache/2.4</code></dd>
 
       <dt><code>ServerTokens Min[imal]</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.0.41</code></dd>
+      Apache/2.4.1</code></dd>
 
       <dt><code>ServerTokens OS</code></dt>
 
       <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.0.41 (Unix)</code></dd>
+      Apache/2.4.1 (Unix)</code></dd>
 
-      <dt><code>ServerTokens Set <em>"Chaîne"</em></code></dt>
-
-      <dd>Le serveur envoie la chaîne spécifiée au client (par
-      exemple, <code>Serveur: MonServeurWeb/8.6</code>)<br />
-      <strong>Note:</strong> La chaîne doit être
-      entourée de guillemets si elle contient des espaces.
-      </dd>
-
-      <dt><code>ServerTokens Full</code> (valeur par défaut)</dt>
-
-      <dd>Le serveur renvoie (<em>par exemple</em>): <code>Server:
-      Apache/2.0.41 (Unix) PHP/4.2.2 MyMod/1.2</code></dd>
+      
+      
     </dl>
 
     <p>Cette définition s'applique à l'ensemble du serveur et ne peut
@@ -3132,6 +3538,18 @@ HTTP</td></tr>
 
     <p>Dans les versions postérieures à 2.0.44, cette directive contrôle
     aussi les informations fournies par la directive <code class="directive"><a href="#serversignature">ServerSignature</a></code>.</p>
+
+    <div class="note">Définir <code class="directive">ServerTokens</code> à une
+    valeur inférieure à <code>minimal</code> n'est pas
+    recommandé car le débogage des problèmes
+    interopérationnels n'en sera alors que plus difficile. Notez
+    aussi que la désactivation de l'en-tête Server:
+    n'améliore en rien la sécurité de votre
+    serveur ; le concept de "sécurité par
+    l'obscurité" est un mythe et conduit à
+    une mauvaise perception de ce qu'est la sécurité.</div>
+
+
 
 <h3>Voir aussi</h3>
 <ul>
@@ -3148,7 +3566,7 @@ gestionnaire particulier</td></tr>
 <tr><th><a href="directive-dict.html#Override">Annuler:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Intégré dans le noyau d'Apache depuis la version
+<tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Intégré dans le noyau d'Apache httpd depuis la version
 2.0</td></tr>
 </table>
     <p>Lorsqu'elle se situe à l'intérieur d'un fichier
@@ -3266,7 +3684,7 @@ du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>La directive <code class="directive">TimeOut</code> permet de définir le
-    temps maximum pendant lequel Apache va attendre des entrées/sorties
+    temps maximum pendant lequel Apache httpd va attendre des entrées/sorties
     selon les circonstances :</p>
 
     <ol>
@@ -3302,7 +3720,7 @@ du serveur</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibilité:</a></th><td>Disponible dans les versions 1.3.34, 2.0.55 et
-supérieures d'Apache</td></tr>
+supérieures du serveur HTTP Apache</td></tr>
 </table>
     <p>Cette directive l'emporte sur le comportement de
     <code>TRACE</code> pour le noyau du serveur et
@@ -3326,6 +3744,24 @@ supérieures d'Apache</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="UnDefine" id="UnDefine">UnDefine</a> <a name="undefine" id="undefine">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Invalide la définition d'une variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntaxe:</a></th><td><code>UnDefine <var>nom-variable</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Contexte:</a></th><td>configuration du serveur</td></tr>
+<tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>Annule l'effet d'une directive <code class="directive"><a href="#define">Define</a></code> ou d'un argument <code>-D</code> de
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> en invalidant l'existence de la variable
+    correspondante.</p>
+    <p>On peut utiliser cette directive pour inverser l'effet d'une
+    section <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code>
+    sans avoir à modifier les arguments <code>-D</code> dans les scripts
+    de démarrage.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="UseCanonicalName" id="UseCanonicalName">UseCanonicalName</a> <a name="usecanonicalname" id="usecanonicalname">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Définit la manière dont le serveur détermine son propre nom
@@ -3336,17 +3772,17 @@ et son port</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Dans de nombreuses situations, Apache doit construire une URL
+    <p>Dans de nombreuses situations, Apache httpd doit construire une URL
     <em>auto-identifiante</em> -- c'est à dire une URL qui fait
     référence au serveur lui-même. Avec <code>UseCanonicalName
-    On</code>, Apache va utiliser le nom d'hôte et le port spécifiés par
+    On</code>, Apache httpd va utiliser le nom d'hôte et le port spécifiés par
     la directive <code class="directive"><a href="#servername">ServerName</a></code> pour
     construire le nom canonique du serveur. Ce nom est utilisé dans
     toutes les URLs auto-identifiantes, et affecté aux variables
     <code>SERVER_NAME</code> et <code>SERVER_PORT</code> dans les
     programmes CGI.</p>
 
-    <p>Avec <code>UseCanonicalName Off</code>, Apache va construire ses
+    <p>Avec <code>UseCanonicalName Off</code>, Apache httpd va construire ses
     URLs auto-identifiantes à l'aide du nom d'hôte et du port fournis
     par le client, si ce dernier en a fourni un (dans la négative,
     Apache utilisera le nom canonique, de la même manière que
@@ -3361,20 +3797,20 @@ et son port</td></tr>
     courts tels que <code>www</code>. Si les utilisateurs tapent un nom
     court suivi d'une URL qui fait référence à un répertoire, comme
     <code>http://www/splat</code>, <em>sans le slash terminal</em>, vous
-    remarquerez qu'Apache va les rediriger vers
+    remarquerez qu'Apache httpd va les rediriger vers
     <code>http://www.domain.com/splat/</code>. Si vous avez activé
     l'authentification, ceci va obliger l'utilisateur à s'authentifier
     deux fois (une première fois pour <code>www</code> et une seconde
     fois pour <code>www.domain.com</code> -- voir <a href="http://httpd.apache.org/docs/misc/FAQ.html#prompted-twice">la
     foire aux questions sur ce sujet pour plus d'informations</a>). Par
     contre, si <code class="directive">UseCanonicalName</code> est définie à
-    <code>Off</code>, Apache redirigera l'utilisateur vers
+    <code>Off</code>, Apache httpd redirigera l'utilisateur vers
     <code>http://www/splat/</code>.</p>
 
     <p>Pour l'hébergement virtuel en masse à base d'adresse IP, on
     utilise une troisième option, <code>UseCanonicalName
     DNS</code>, pour supporter les clients anciens qui ne
-    fournissent pas d'en-tête <code>Host:</code>. Apache effectue alors
+    fournissent pas d'en-tête <code>Host:</code>. Apache httpd effectue alors
     une recherche DNS inverse sur l'adresse IP du serveur auquel le
     client s'est connecté afin de construire ses URLs
     auto-identifiantes.</p>
@@ -3406,14 +3842,14 @@ et son port</td></tr>
 <tr><th><a href="directive-dict.html#Status">Statut:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>Dans de nombreuses situations, Apache doit construire une URL
+    <p>Dans de nombreuses situations, Apache httpd doit construire une URL
     <em>auto-identifiante</em> -- c'est à dire une URL qui fait
     référence au serveur lui-même. Avec <code>UseCanonicalPhysicalPort
-    On</code>, Apache va fournir le numéro de port physique réel utilisé
+    On</code>, Apache httpd va fournir le numéro de port physique réel utilisé
     par la requête en tant que port potentiel, pour construire le port
     canonique afin que le serveur puisse alimenter la directive
     <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code>. Avec
-    <code>UseCanonicalPhysicalPort Off</code>, Apache n'utilisera pas le
+    <code>UseCanonicalPhysicalPort Off</code>, Apache httpd n'utilisera pas le
     numéro de port physique réel, mais au contraire se référera aux
     informations de configuration pour construire un numéro de port
     valide.</p>
@@ -3525,7 +3961,7 @@ d'hôte spécifique ou à une adresse IP</td></tr>
 
     <div class="note"><h3>Note</h3>
     <p>L'utilisation de la directive <code class="directive">&lt;VirtualHost&gt;</code> n'affecte en rien les
-    adresses IP sur lesquelles Apache est en écoute. Vous devez vous
+    adresses IP sur lesquelles Apache httpd est en écoute. Vous devez vous
     assurer que les adresses des serveurs virtuels sont bien incluses
     dans la liste des adresses précisées par la directive <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>.</p>
     </div>
@@ -3565,11 +4001,11 @@ d'hôte spécifique ou à une adresse IP</td></tr>
 <h3>Voir aussi</h3>
 <ul>
 <li><a href="../vhosts/">Documentation des serveurs virtuels
-d'Apache</a></li>
-<li><a href="../dns-caveats.html">Problèmes concernant DNS et
-Apache</a></li>
+du serveur HTTP Apache</a></li>
+<li><a href="../dns-caveats.html">Problèmes concernant le DNS et
+le serveur HTTP Apache</a></li>
 <li><a href="../bind.html">Définition des adresses et ports
-qu'utilise Apache</a></li>
+qu'utilise le serveur HTTP Apache</a></li>
 <li><a href="../sections.html">Comment fonctionnent les sections
 &lt;Directory&gt;, &lt;Location&gt; et &lt;Files&gt;</a> pour une
 explication de la manière dont ces différentes sections se combinent

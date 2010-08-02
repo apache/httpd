@@ -129,8 +129,8 @@ cette zone du site web</td></tr>
 
     <p>Les différents fournisseurs disponibles sont implémentés par les
     modules <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>,
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>, et
-    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>.</p>
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>,
+    <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> et <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>.</p>
 
 </div>
 </div>

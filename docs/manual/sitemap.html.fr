@@ -192,6 +192,7 @@ pour décrire les directives Apache</a></li>
 <li><a href="mod/mod_authn_dbd.html">Module Apache mod_authn_dbd</a></li>
 <li><a href="mod/mod_authn_dbm.html">Module Apache mod_authn_dbm</a></li>
 <li><a href="mod/mod_authn_file.html">Module Apache mod_authn_file</a></li>
+<li><a href="mod/mod_authn_socache.html">Module Apache mod_authn_socache</a></li>
 <li><a href="mod/mod_authnz_ldap.html">Module Apache mod_authnz_ldap</a></li>
 <li><a href="mod/mod_authz_core.html">Module Apache mod_authz_core</a></li>
 <li><a href="mod/mod_authz_dbd.html">Module Apache mod_authz_dbd</a></li>
@@ -285,17 +286,18 @@ pour décrire les directives Apache</a></li>
 <div class="section"><h2><a name="developer" id="developer">Documentation du développeur</a></h2>
 <ul><li class="separate"><a href="developer/">Aperçu</a></li>
 <li><a href="developer/API.html">Notes sur l'API Apache</a></li>
+<li><a href="developer/new_api_2_4.html">Mises à jour de l'API dans Apache HTTPD 2.4</a></li>
 <li><a href="developer/debugging.html">Débogage de l'allocation mémoire
 dans APR</a></li>
-<li><a href="developer/documenting.html">Documenter Apache 2.0</a></li>
+<li><a href="developer/documenting.html">Documenter Apache 2.x</a></li>
 <li><a href="developer/hooks.html">Fonctions d'accroche (Hook Functions)
-d'Apache 2.0</a></li>
+d'Apache 2.x</a></li>
 <li><a href="developer/modules.html">Convertir un module depuis Apache
-1.3 vers Apache 2.0</a></li>
+1.3 vers Apache 2.x</a></li>
 <li><a href="developer/request.html">Traitement des requêtes avec Apache
-2.0</a></li>
+2.x</a></li>
 <li><a href="developer/filters.html">Fonctionnement des filtres dans
-Apache 2.0</a></li>
+Apache 2.x</a></li>
 </ul>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="index" id="index">Glossaire et Index</a></h2>

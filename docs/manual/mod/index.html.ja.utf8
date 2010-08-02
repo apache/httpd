@@ -82,6 +82,8 @@ CGI スクリプトを実行する機能を提供</dd>
 <dt><a href="mod_authn_dbd.html">mod_authn_dbd</a></dt><dd>User authentication using an SQL database</dd>
 <dt><a href="mod_authn_dbm.html">mod_authn_dbm</a></dt><dd>DBM ファイルを用いたユーザ認証</dd>
 <dt><a href="mod_authn_file.html">mod_authn_file</a></dt><dd>テキストファイルを用いたユーザ認証</dd>
+<dt><a href="mod_authn_socache.html">mod_authn_socache</a></dt><dd>Manages a cache of authentication credentials to relieve
+the load on backends</dd>
 <dt><a href="mod_authnz_ldap.html">mod_authnz_ldap</a></dt><dd>Allows an LDAP directory to be used to store the database
 for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_core.html">mod_authz_core</a></dt><dd>Core Authorization</dd>

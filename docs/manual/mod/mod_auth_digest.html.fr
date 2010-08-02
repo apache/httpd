@@ -282,7 +282,8 @@ zone du site web concernée</td></tr>
     module <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>.</p>
 
     <p>Voir <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code>,
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, et <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>, <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> et
+    <code class="module"><a href="../mod/mod_authn_socache.html">mod_authn_socache</a></code>
     pour la liste des fournisseurs disponibles.</p>
 
 </div>
