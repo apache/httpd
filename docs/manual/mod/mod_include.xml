@@ -815,6 +815,7 @@ displayed</description>
 <syntax>SSIETag on|off</syntax>
 <default>SSIETag off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>Available in version 2.2.15 and later.</compatibility>
 
 <usage>
       <p>Under normal circumstances, a file filtered by <module>mod_include</module>
@@ -855,6 +856,7 @@ server.</description>
 <syntax>SSILastModified on|off</syntax>
 <default>SSILastModified off</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<compatibility>Available in version 2.2.15 and later.</compatibility>
 
 <usage>
       <p>Under normal circumstances, a file filtered by <module>mod_include</module>
