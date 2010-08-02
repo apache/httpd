@@ -492,7 +492,7 @@ later.</td></tr>
     <p>The <code class="directive">AddOutputFilter</code> directive maps the
     filename extension <var>extension</var> to the <a href="../filter.html">filters</a> which will process responses
     from the server before they are sent to the client. This is in
-    addition to any filters defined elsewhere, including <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> and <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. This mapping is merged
+    addition to any filters defined elsewhere, including <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code> and <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. This mapping is merged
     over any already in force, overriding any mappings that already exist
     for the same <var>extension</var>.</p>
 

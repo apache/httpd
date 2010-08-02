@@ -115,7 +115,7 @@ client</td></tr>
       will be ignored.</p>
       
       <p>If you want to restrict the compression to particular MIME types
-      in general, you may use the <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
+      in general, you may use the <code class="directive"><a href="../mod/mod_filter.html#addoutputfilterbytype">AddOutputFilterByType</a></code> directive. Here is an example of
       enabling compression only for the html files of the Apache
       documentation:</p>
 
