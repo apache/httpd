@@ -2267,10 +2267,12 @@ hosting</td></tr>
     </code></p></div>
 
     <p>To receive requests on all interfaces, you can use an argument of
-    <code>*</code></p>
+    <code>*:80</code>, or, if you are listening on multiple ports and
+    really want the server to respond on all of them with a particular
+    set of virtual hosts, <code>*</code></p>
 
     <div class="example"><p><code>
-      NameVirtualHost *
+      NameVirtualHost *:80
     </code></p></div>
 
     <div class="note"><h3>Argument to <code class="directive">&lt;VirtualHost&gt;</code>

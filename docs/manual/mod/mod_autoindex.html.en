@@ -603,15 +603,14 @@ indexing</td></tr>
       <code>Gamma</code> and <code>Alpha</code>. <strong>This option
       only has an effect if <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a> is also enabled.</strong></dd>
 
-      <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a> (<em>Experimental,
-      Apache 2.0.23 and later</em>)</dt>
+      <dt><a name="indexoptions.htmltable" id="indexoptions.htmltable">HTMLTable</a> (<em>Apache
+      HTTP Server 2.0.23 and later</em>)</dt>
 
-      <dd>This experimental option with <code>FancyIndexing</code> constructs
-      a simple table for the fancy directory listing. Note this will
-      confuse older browsers. It is particularly necessary if file
+      <dd>This option with <code>FancyIndexing</code> constructs
+      a simple table for the fancy directory listing. 
+      It is necessary for utf-8 enabled platforms or if file
       names or description text will alternate between
-      left-to-right and right-to-left reading order, as can happen
-      on WinNT or other utf-8 enabled platforms.</dd>
+      left-to-right and right-to-left reading order.</dd>
 
       <dt><a name="indexoptions.iconsarelinks" id="indexoptions.iconsarelinks">IconsAreLinks</a></dt>
 
