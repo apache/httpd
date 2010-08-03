@@ -59,10 +59,11 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
 /* already called in the knowledge that the characters are hex digits */
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
 {
-    int i, ch;
+    int i;
 
 #if !APR_CHARSET_EBCDIC
-    ch = x[0];
+    int ch = x[0];
+
     if (apr_isdigit(ch)) {
         i = ch - '0';
     }

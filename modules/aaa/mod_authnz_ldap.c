@@ -119,13 +119,10 @@ static char *to_charset = NULL;           /* UTF-8 identifier derived from the c
 /* Derive a code page ID give a language name or ID */
 static char* derive_codepage_from_lang (apr_pool_t *p, char *language)
 {
-    int lang_len;
     char *charset;
 
     if (!language)          /* our default codepage */
         return apr_pstrdup(p, "ISO-8859-1");
-    else
-        lang_len = strlen(language);
 
     charset = (char*) apr_hash_get(charset_conversions, language, APR_HASH_KEY_STRING);
 

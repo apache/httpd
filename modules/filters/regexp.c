@@ -142,7 +142,6 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
     int lc;
     int i, cflg;
     int iflag; /* used for non-ascii characters in brackets */
-    int nodelim = 0;
     char *sp = commands->cp;
     int regerrno = 0;
 
@@ -150,7 +149,6 @@ char *sed_compile(sed_commands_t *commands, sed_comp_args *compargs,
     if ((c = GETC()) == eof || c == '\n') {
         if (c == '\n') {
             UNGETC(c);
-            nodelim = 1;
         }
         commands->cp = sp;
         goto out;

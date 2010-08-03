@@ -133,16 +133,16 @@ static int filter_init(ap_filter_t *f)
 static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
 {
     ap_filter_provider_t *provider;
-    const char *str = NULL;
-    char *str1;
     int match;
     int err = 0;
     unsigned int proto_flags;
     request_rec *r = f->r;
     harness_ctx *ctx = f->ctx;
     provider_ctx *pctx;
+#ifndef NO_PROTOCOL
     mod_filter_ctx *rctx = ap_get_module_config(r->request_config,
                                                 &filter_module);
+#endif
 
     /* Check registered providers in order */
     for (provider = filter->providers; provider; provider = provider->next) {
@@ -178,9 +178,10 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                 }
 
                 if (proto_flags & AP_FILTER_PROTO_TRANSFORM) {
-                    str = apr_table_get(r->headers_out, "Cache-Control");
+                    const char *str = apr_table_get(r->headers_out,
+                                                    "Cache-Control");
                     if (str) {
-                        str1 = apr_pstrdup(r->pool, str);
+                        char *str1 = apr_pstrdup(r->pool, str);
                         ap_str_tolower(str1);
                         if (strstr(str1, "no-transform")) {
                             /* can't use this provider; try next */
@@ -235,8 +236,10 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
 static apr_status_t filter_harness(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_status_t ret;
+#ifndef NO_PROTOCOL
     const char *cachecontrol;
     char *str;
+#endif
     harness_ctx *ctx = f->ctx;
     ap_filter_rec_t *filter = f->frec;
 

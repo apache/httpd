@@ -517,7 +517,6 @@ static void dump_header_to_log(request_rec *r, unsigned char fheader[],
 
     while (posn < length) {
         unsigned char c = fheader[posn]; 
-        char hexval[3];
 
         if (i >= 20) {
             i = 0;
