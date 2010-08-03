@@ -143,7 +143,7 @@ static char *get_path_param(apr_pool_t *pool, char *url,
              * Session path was found, get it's value
              */
             ++path;
-            if (strlen(path)) {
+            if (*path) {
                 char *q;
                 path = apr_strtok(apr_pstrdup(pool, path), pathdelims, &q);
                 return path;
