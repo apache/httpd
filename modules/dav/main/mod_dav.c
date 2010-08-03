@@ -1984,7 +1984,6 @@ static int dav_method_propfind(request_rec *r)
     dav_error *err;
     int result;
     apr_xml_doc *doc;
-    const apr_xml_elem *child;
     dav_walker_ctx ctx = { { 0 } };
     dav_response *multi_status;
 
@@ -2035,15 +2034,14 @@ static int dav_method_propfind(request_rec *r)
 
     /* ### validate that only one of these three elements is present */
 
-    if (doc == NULL
-        || (child = dav_find_child(doc->root, "allprop")) != NULL) {
+    if (doc == NULL || dav_find_child(doc->root, "allprop") != NULL) {
         /* note: no request body implies allprop */
         ctx.propfind_type = DAV_PROPFIND_IS_ALLPROP;
     }
-    else if ((child = dav_find_child(doc->root, "propname")) != NULL) {
+    else if (dav_find_child(doc->root, "propname") != NULL) {
         ctx.propfind_type = DAV_PROPFIND_IS_PROPNAME;
     }
-    else if ((child = dav_find_child(doc->root, "prop")) != NULL) {
+    else if (dav_find_child(doc->root, "prop") != NULL) {
         ctx.propfind_type = DAV_PROPFIND_IS_PROP;
     }
     else {

@@ -885,7 +885,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * buckets and use their length to calculate the size
          */
         int all_buckets_here=0;
-        int unresolved_length = 0;
         size=0;
         for (e = APR_BRIGADE_FIRST(in);
              e != APR_BRIGADE_SENTINEL(in);
@@ -896,7 +895,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 break;
             }
             if (APR_BUCKET_IS_FLUSH(e)) {
-                unresolved_length = 1;
                 continue;
             }
             if (e->length == (apr_size_t)-1) {

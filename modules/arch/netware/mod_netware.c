@@ -101,7 +101,6 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     char *cmd_only, *ptr;
     const char *new_cmd;
     netware_dir_config *d;
-    apr_file_t *fh;
     const char *args = "";
 
     d = (netware_dir_config *)ap_get_module_config(r->per_dir_config,

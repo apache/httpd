@@ -3069,10 +3069,6 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
 static int include_fixup(request_rec *r)
 {
-    include_dir_config *conf;
-
-    conf = ap_get_module_config(r->per_dir_config, &include_module);
-
     if (r->handler && (strcmp(r->handler, "server-parsed") == 0))
     {
         if (!r->content_type || !*r->content_type) {
@@ -3088,6 +3084,9 @@ static int include_fixup(request_rec *r)
     }
 #else
     {
+        include_dir_config *conf = ap_get_module_config(r->per_dir_config,
+                                                        &include_module);
+
         if (conf->xbithack == XBITHACK_OFF) {
             return DECLINED;
         }

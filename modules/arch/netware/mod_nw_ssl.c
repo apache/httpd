@@ -233,12 +233,10 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
                               char* key, int mutual, server_rec *sconf)
 {
     int s;
-    int one = 1;
     char addr[MAX_ADDRESS];
     struct sslserveropts opts;
     unsigned int optParam;
     WSAPROTOCOL_INFO SecureProtoInfo;
-    int no = 1;
 
     if (server->sin_addr.s_addr != htonl(INADDR_ANY))
         apr_snprintf(addr, sizeof(addr), "address %s port %d",
@@ -546,7 +544,6 @@ static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy,
                                        const char *ips, const char* key)
 {
     NWSSLSrvConfigRec* sc = get_nwssl_cfg(cmd->server);
-    seclistenup_rec *listen_node;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     char *ports, *addr;
     unsigned short port;
@@ -626,8 +623,6 @@ static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                          apr_pool_t *ptemp)
 {
     seclisten_rec* ap_old_seclisteners;
-    char *ports, *addr;
-    unsigned short port;
     ap_listen_rec **walk;
     seclisten_rec **secwalk;
     apr_sockaddr_t *sa;
@@ -724,7 +719,6 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_listen_rec *walk;
     seclisten_rec *secwalk, *lastsecwalk;
     apr_sockaddr_t *sa;
-    int found_listener = 0;
 
     /* Walk the old listeners list and compare it to the secure
        listeners list and remove any secure listener records that
@@ -896,8 +890,6 @@ static int isSecureUpgraded (const request_rec *r)
 
 static int nwssl_hook_Fixup(request_rec *r)
 {
-    int i;
-
     if (!isSecure(r) && !isSecureUpgraded(r))
         return DECLINED;
 
