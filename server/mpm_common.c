@@ -264,7 +264,6 @@ int ap_coredumpdir_configured;
 const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
                                    const char *arg)
 {
-    apr_status_t rv;
     apr_finfo_t finfo;
     const char *fname;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -277,7 +276,7 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
         return apr_pstrcat(cmd->pool, "Invalid CoreDumpDirectory path ",
                            arg, NULL);
     }
-    if ((rv = apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool)) != APR_SUCCESS) {
+    if (apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool) != APR_SUCCESS) {
         return apr_pstrcat(cmd->pool, "CoreDumpDirectory ", fname,
                            " does not exist", NULL);
     }

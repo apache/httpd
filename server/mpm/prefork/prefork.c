@@ -800,7 +800,6 @@ static int hold_off_on_exponential_spawning;
 static void perform_idle_server_maintenance(apr_pool_t *p)
 {
     int i;
-    int to_kill;
     int idle_count;
     worker_score *ws;
     int free_length;
@@ -811,7 +810,6 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     /* initialize the free_list */
     free_length = 0;
 
-    to_kill = -1;
     idle_count = 0;
     last_non_dead = -1;
     total_non_dead = 0;
@@ -839,13 +837,6 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
              */
             if (status <= SERVER_READY) {
                 ++ idle_count;
-                /* always kill the highest numbered child if we have to...
-                 * no really well thought out reason ... other than observing
-                 * the server behaviour under linux where lower numbered children
-                 * tend to service more hits (and hence are more likely to have
-                 * their data in cpu caches).
-                 */
-                to_kill = i;
             }
 
             ++total_non_dead;
