@@ -136,7 +136,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
          * If there are no usernames specified, this is a global disable - we
          * need do no more at this point than record the fact.
          */
-        if (strlen(usernames) == 0) {
+        if (!*usernames) {
             s_cfg->globally_disabled = 1;
             return NULL;
         }
@@ -148,7 +148,7 @@ static const char *set_user_dir(cmd_parms *cmd, void *dummy, const char *arg)
          * the "enable" keyword requires the list.  Whinge if it doesn't have
          * it.
          */
-        if (strlen(usernames) == 0) {
+        if (!*usernames) {
             return "UserDir \"enable\" keyword requires a list of usernames";
         }
         usertable = s_cfg->enabled_users;

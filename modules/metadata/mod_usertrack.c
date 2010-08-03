@@ -380,7 +380,7 @@ static const char *set_cookie_domain(cmd_parms *cmd, void *mconfig,
     /*
      * Apply the restrictions on cookie domain attributes.
      */
-    if (strlen(name) == 0) {
+    if (!name[0]) {
         return "CookieDomain values may not be null";
     }
     if (name[0] != '.') {

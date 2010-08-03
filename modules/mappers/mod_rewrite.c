@@ -3385,7 +3385,7 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             int status = 0;
 
             cfg->flags |= RULEFLAG_FORCEREDIRECT;
-            if (strlen(val) > 0) {
+            if (*val) {
                 if (strcasecmp(val, "permanent") == 0) {
                     status = HTTP_MOVED_PERMANENTLY;
                 }
