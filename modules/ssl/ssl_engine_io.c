@@ -1839,14 +1839,12 @@ long ssl_io_data_cb(BIO *bio, int cmd,
     SSL *ssl;
     conn_rec *c;
     server_rec *s;
-    SSLSrvConfigRec *sc;
 
     if ((ssl = (SSL *)BIO_get_callback_arg(bio)) == NULL)
         return rc;
     if ((c = (conn_rec *)SSL_get_app_data(ssl)) == NULL)
         return rc;
     s = mySrvFromConn(c);
-    sc = mySrvConfig(s);
 
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {

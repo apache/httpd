@@ -184,7 +184,6 @@ static void restore_slotmem(void *ptr, const char *name, apr_size_t size,
 static apr_status_t cleanup_slotmem(void *param)
 {
     ap_slotmem_instance_t **mem = param;
-    apr_status_t rv;
     apr_pool_t *pool = NULL;
 
     if (*mem) {
@@ -192,7 +191,7 @@ static apr_status_t cleanup_slotmem(void *param)
         pool = next->gpool;
         while (next) {
             store_slotmem(next);
-            rv = apr_shm_destroy((apr_shm_t *)next->shm);
+            apr_shm_destroy((apr_shm_t *)next->shm);
             next = next->next;
         }
         apr_pool_destroy(pool);

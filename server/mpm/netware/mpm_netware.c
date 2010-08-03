@@ -345,7 +345,6 @@ void worker_main(void *arg)
 {
     ap_listen_rec *lr, *first_lr, *last_lr = NULL;
     apr_pool_t *ptrans;
-    apr_pool_t *pbucket;
     apr_allocator_t *allocator;
     apr_bucket_alloc_t *bucket_alloc;
     conn_rec *current_conn;
@@ -617,7 +616,6 @@ static int hold_off_on_exponential_spawning;
 static void perform_idle_server_maintenance(apr_pool_t *p)
 {
     int i;
-    int to_kill;
     int idle_count;
     worker_score *ws;
     int free_length;
@@ -628,7 +626,6 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
     /* initialize the free_list */
     free_length = 0;
 
-    to_kill = -1;
     idle_count = 0;
     last_non_dead = -1;
     total_non_dead = 0;
@@ -660,13 +657,6 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
             */
             if (status <= WORKER_READY) {
                 ++ idle_count;
-                /* always kill the highest numbered child if we have to...
-                * no really well thought out reason ... other than observing
-                * the server behaviour under linux where lower numbered children
-                * tend to service more hits (and hence are more likely to have
-                * their data in cpu caches).
-                */
-                to_kill = i;
             }
 
             ++total_non_dead;
@@ -978,12 +968,9 @@ static int netware_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
 static int netware_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    int debug;
     char *addrname = NULL;
 
     mpm_state = AP_MPMQ_STARTING;
-
-    debug = ap_exists_config_define("DEBUG");
 
     is_graceful = 0;
     ap_my_pid = getpid();

@@ -45,19 +45,17 @@ int ssl_rand_seed(server_rec *s, apr_pool_t *p, ssl_rsctx_t nCtx, char *prefix)
     ssl_randseed_t *pRandSeeds;
     ssl_randseed_t *pRandSeed;
     unsigned char stackdata[256];
-    int nReq, nDone;
+    int nDone;
     apr_file_t *fp;
     int i, n, l;
 
     mc = myModConfig(s);
-    nReq  = 0;
     nDone = 0;
     apRandSeed = mc->aRandSeed;
     pRandSeeds = (ssl_randseed_t *)apRandSeed->elts;
     for (i = 0; i < apRandSeed->nelts; i++) {
         pRandSeed = &pRandSeeds[i];
         if (pRandSeed->nCtx == nCtx) {
-            nReq += pRandSeed->nBytes;
             if (pRandSeed->nSrc == SSL_RSSRC_FILE) {
                 /*
                  * seed in contents of an external file

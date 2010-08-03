@@ -159,7 +159,6 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
     char *an;
     char *cp;
     apr_time_t pkey_mtime = 0;
-    int isterm = 1;
     apr_status_t rv;
     /*
      * Start with a fresh pass phrase array
@@ -419,7 +418,7 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                  */
                 if (cpPassPhraseCur == NULL) {
                     if (nPassPhraseDialogCur && pkey_mtime &&
-                        !(isterm = isatty(fileno(stdout)))) /* XXX: apr_isatty() */
+                        !isatty(fileno(stdout))) /* XXX: apr_isatty() */
                     {
                         ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                                      pServ,
