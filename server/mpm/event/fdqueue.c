@@ -165,6 +165,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info)
                                       queue_info->idlers_mutex);
             if (rv != APR_SUCCESS) {
                 apr_status_t rv2;
+                AP_DEBUG_ASSERT(0);
                 rv2 = apr_thread_mutex_unlock(queue_info->idlers_mutex);
                 if (rv2 != APR_SUCCESS) {
                     return rv2;

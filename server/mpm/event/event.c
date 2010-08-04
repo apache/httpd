@@ -1155,6 +1155,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                                  ap_server_conf,
                                  "event_loop: unexpected state %d",
                                  cs->state);
+                    AP_DEBUG_ASSERT(0);
                 }
 
                 apr_thread_mutex_lock(timeout_mutex);
