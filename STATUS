@@ -255,6 +255,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2 patch: http://people.apache.org/~rjung/patches/mod_proxy_scgi-win-build-2_2.patch
      +1: rjung
 
+   * mod_authnz_ldap: If AuthLDAPCharsetConfig is set, also convert the password to
+     UTF-8.
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=902654
+     2.2 patch: trunk patch works
+     +1: sf
+
 PATCHES/ISSUES THAT ARE STALLED
 
   * core: Support wildcards in both the directory and file components of
