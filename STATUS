@@ -205,6 +205,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Use recent files from http://git.savannah.gnu.org/cgit/config.git.
     +1: rjung
 
+  * CVE-2010-1452 fix for mod_dav
+    Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966348
+      (mod_cache and mod_session portions don't apply to 2.0.x)
+    2.0.x patch: http://archive.apache.org/dist/httpd/patches/apply_to_2.0.63/CVE-2010-1452-patch-2.0.txt
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
