@@ -93,6 +93,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x: trunk patch works with offset
      +1: niq, rpluem, sf
 
+   * mod_ssl: use memmove instead of memcpy for overlapping buffers
+     PR 45444
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=683280
+     2.2 patch: trunk patch works with offset
+     +1: sf, rpluem, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -243,12 +249,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=966055
      2.2 patch: should apply cleanly
      +1: gstein
-
-   * mod_ssl: use memmove instead of memcpy for overlapping buffers
-     PR 45444
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=683280
-     2.2 patch: trunk patch works with offset
-     +1: sf, rpluem
 
    * mod_proxy_scgi: Add module to build on Windows.
      It already gets build for other platforms and for Windows in trunk.
