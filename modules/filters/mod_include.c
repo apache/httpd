@@ -973,7 +973,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
                we never attempt to "run" this sub request. */
             rr = ap_sub_req_lookup_file(newpath, r, NULL);
 
-            if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
+            if (rr->status == HTTP_OK && rr->finfo.filetype != APR_NOFILE) {
                 to_send = rr->filename;
                 if ((rv = apr_stat(finfo, to_send,
                     APR_FINFO_GPROT | APR_FINFO_MIN, rr->pool)) != APR_SUCCESS
@@ -1003,7 +1003,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
            we never attempt to "run" this sub request. */
         rr = ap_sub_req_lookup_uri(tag_val, r, NULL);
 
-        if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
+        if (rr->status == HTTP_OK && rr->finfo.filetype != APR_NOFILE) {
             memcpy((char *) finfo, (const char *) &rr->finfo,
                    sizeof(rr->finfo));
             ap_destroy_sub_req(rr);

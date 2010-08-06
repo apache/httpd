@@ -285,7 +285,7 @@ static int add_cern_meta_data(request_rec *r)
 
     /* if ./.web/$1.meta exists then output 'asis' */
 
-    if (r->finfo.filetype == 0) {
+    if (r->finfo.filetype == APR_NOFILE) {
         return DECLINED;
     };
 

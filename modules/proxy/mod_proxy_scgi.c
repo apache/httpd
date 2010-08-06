@@ -463,7 +463,7 @@ static int scgi_request_status(int *status, request_rec *r)
 
                 rr = ap_sub_req_lookup_file(req_conf->location, r,
                                             r->output_filters);
-                if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
+                if (rr->status == HTTP_OK && rr->finfo.filetype != APR_NOFILE) {
                     /*
                      * We don't touch Content-Length here. It might be
                      * borked (there's plenty of room for a race condition).

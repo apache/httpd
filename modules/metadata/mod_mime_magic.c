@@ -2417,7 +2417,7 @@ static int magic_find_ct(request_rec *r)
     magic_server_config_rec *conf;
 
     /* the file has to exist */
-    if (r->finfo.filetype == 0 || !r->filename) {
+    if (r->finfo.filetype == APR_NOFILE || !r->filename) {
         return DECLINED;
     }
 

@@ -41,7 +41,7 @@ static int asis_handler(request_rec *r)
     r->allowed |= (AP_METHOD_BIT << M_GET);
     if (r->method_number != M_GET)
         return DECLINED;
-    if (r->finfo.filetype == 0) {
+    if (r->finfo.filetype == APR_NOFILE) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                     "File does not exist: %s", r->filename);
         return HTTP_NOT_FOUND;
