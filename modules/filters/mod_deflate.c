@@ -1319,8 +1319,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             }
         }
 
-        zRC = Z_OK;
-
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
 
