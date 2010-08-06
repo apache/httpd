@@ -109,7 +109,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
         weak_len = sizeof(ETAG_WEAK);
     }
 
-    if (r->finfo.filetype != 0) {
+    if (r->finfo.filetype != APR_NOFILE) {
         /*
          * ETag gets set to [W/]"inode-size-mtime", modulo any
          * FileETag keywords.

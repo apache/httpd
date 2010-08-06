@@ -143,7 +143,7 @@ dialup_handler(request_rec *r)
 
     /* See core.c, default handler for all of the cases we just decline. */
     if (r->method_number != M_GET || 
-        r->finfo.filetype == 0 || 
+        r->finfo.filetype == APR_NOFILE || 
         r->finfo.filetype == APR_DIR) {
         return DECLINED;
     }

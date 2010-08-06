@@ -728,7 +728,7 @@ static dav_error * dav_fs_get_resource(
         resource->uri = r->uri;
     }
 
-    if (r->finfo.filetype != 0) {
+    if (r->finfo.filetype != APR_NOFILE) {
         resource->exists = 1;
         resource->collection = r->finfo.filetype == APR_DIR;
 
@@ -762,7 +762,7 @@ static dav_error * dav_fs_get_resource(
 
             /* retain proper integrity across the structures */
             if (!resource->exists) {
-                ctx->finfo.filetype = 0;
+                ctx->finfo.filetype = APR_NOFILE;
             }
         }
     }
@@ -847,7 +847,7 @@ static int dav_fs_is_same_resource(
     if (res1->hooks != res2->hooks)
         return 0;
 
-    if ((ctx1->finfo.filetype != 0) && (ctx2->finfo.filetype != 0)
+    if ((ctx1->finfo.filetype != APR_NOFILE) && (ctx2->finfo.filetype != APR_NOFILE)
         && (ctx1->finfo.valid & ctx2->finfo.valid & APR_FINFO_INODE)) {
         return ctx1->finfo.inode == ctx2->finfo.inode;
     }
@@ -1865,7 +1865,7 @@ static const char *dav_fs_getetag(const dav_resource *resource)
     if (!resource->exists)
         return apr_pstrdup(ctx->pool, "");
 
-    if (ctx->finfo.filetype != 0) {
+    if (ctx->finfo.filetype != APR_NOFILE) {
         return apr_psprintf(ctx->pool, "\"%" APR_UINT64_T_HEX_FMT "-%"
                             APR_UINT64_T_HEX_FMT "-%" APR_UINT64_T_HEX_FMT "\"",
                             (apr_uint64_t) ctx->finfo.inode,

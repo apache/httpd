@@ -211,7 +211,7 @@ static int check_speling(request_rec *r)
     }
 
     /* We've already got a file of some kind or another */
-    if (r->finfo.filetype != 0) {
+    if (r->finfo.filetype != APR_NOFILE) {
         return DECLINED;
     }
 

@@ -578,7 +578,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
      * types of failure, such as APR_ENOTDIR.  We can do something
      * with APR_ENOENT, knowing that the path is good.
      */
-    if (!r->finfo.filetype || r->finfo.filetype == APR_LNK) {
+    if (r->finfo.filetype == APR_NOFILE || r->finfo.filetype == APR_LNK) {
         rv = apr_stat(&r->finfo, r->filename, APR_FINFO_MIN, r->pool);
 
         /* some OSs will return APR_SUCCESS/APR_REG if we stat
@@ -592,10 +592,10 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          * Also reset if the stat failed, just for safety.
          */
         if ((rv != APR_SUCCESS) ||
-            (r->finfo.filetype &&
+            (r->finfo.filetype != APR_NOFILE &&
              (r->finfo.filetype != APR_DIR) &&
              (r->filename[strlen(r->filename) - 1] == '/'))) {
-             r->finfo.filetype = 0; /* forget what we learned */
+             r->finfo.filetype = APR_NOFILE; /* forget what we learned */
         }
     }
 
@@ -1041,7 +1041,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
              * if...we have allowed symlinks
              * skip the lstat and dummy up an APR_DIR value for thisinfo.
              */
-            if (r->finfo.filetype
+            if (r->finfo.filetype != APR_NOFILE
 #ifdef CASE_BLIND_FILESYSTEM
                 && (filename_len <= canonical_len)
 #endif
@@ -1133,7 +1133,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         /* If we have _not_ optimized, this is the time to recover
          * the final stat result.
          */
-        if (!r->finfo.filetype || r->finfo.filetype == APR_LNK) {
+        if (r->finfo.filetype == APR_NOFILE || r->finfo.filetype == APR_LNK) {
             r->finfo = thisinfo;
         }
 
@@ -1966,7 +1966,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
                 && (rv != APR_INCOMPLETE)) {
-                rnew->finfo.filetype = 0;
+                rnew->finfo.filetype = APR_NOFILE;
             }
         }
         else {
@@ -1974,7 +1974,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
                                 APR_FINFO_LINK | APR_FINFO_MIN,
                                 rnew->pool)) != APR_SUCCESS)
                 && (rv != APR_INCOMPLETE)) {
-                rnew->finfo.filetype = 0;
+                rnew->finfo.filetype = APR_NOFILE;
             }
         }
     }
@@ -2072,7 +2072,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
                                 APR_FINFO_MIN, rnew->pool)) != APR_SUCCESS)
                 && (rv != APR_INCOMPLETE)) {
-                rnew->finfo.filetype = 0;
+                rnew->finfo.filetype = APR_NOFILE;
             }
         }
         else {
@@ -2080,7 +2080,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
                                 APR_FINFO_LINK | APR_FINFO_MIN,
                                 rnew->pool)) != APR_SUCCESS)
                 && (rv != APR_INCOMPLETE)) {
-                rnew->finfo.filetype = 0;
+                rnew->finfo.filetype = APR_NOFILE;
             }
         }
 
@@ -2129,7 +2129,7 @@ AP_DECLARE(int) ap_run_sub_req(request_rec *r)
     /* Run the quick handler if the subrequest is not a dirent or file
      * subrequest
      */
-    if (!(r->filename && r->finfo.filetype)) {
+    if (!(r->filename && r->finfo.filetype != APR_NOFILE)) {
         retval = ap_run_quick_handler(r, 0);
     }
     if (retval != OK) {

@@ -402,7 +402,7 @@ static int set_expiration_fields(request_rec *r, const char *code,
 
     switch (code[0]) {
     case 'M':
-        if (r->finfo.filetype == 0) {
+        if (r->finfo.filetype == APR_NOFILE) {
             /* file doesn't exist on disk, so we can't do anything based on
              * modification time.  Note that this does _not_ log an error.
              */
