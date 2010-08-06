@@ -858,7 +858,6 @@ static client_entry *add_client(unsigned long key, client_entry *info,
     }
 
     bucket = key % client_list->tbl_len;
-    entry  = client_list->table[bucket];
 
     apr_global_mutex_lock(client_lock);
 
