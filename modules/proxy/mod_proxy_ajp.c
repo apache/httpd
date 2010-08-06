@@ -103,7 +103,7 @@ static int is_idempotent(request_rec *r)
         case M_TRACE:
             /*
              * If the request has arguments it might have side-effects and thus
-             * it might be undesirable to resent it to a backend again
+             * it might be undesirable to resend it to a backend again
              * automatically.
              */
             if (r->args) {
@@ -336,7 +336,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      conn->worker->hostname);
         /*
          * This is only non fatal when we have not sent (parts) of a possible
-         * request body so far (we do not store it and thus cannot sent it
+         * request body so far (we do not store it and thus cannot send it
          * again) and the method is idempotent. In this case we can dare to
          * retry it with a different worker if we are a balancer member.
          */
@@ -585,8 +585,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             ap_proxy_backend_broke(r, output_brigade);
         } else if (!send_body && (is_idempotent(r) == METHOD_IDEMPOTENT)) {
             /*
-             * This is only non fatal when we have not sent (parts) of a possible
-             * request body so far (we do not store it and thus cannot sent it
+             * This is only non fatal when we have not send (parts) of a possible
+             * request body so far (we do not store it and thus cannot send it
              * again) and the method is idempotent. In this case we can dare to
              * retry it with a different worker if we are a balancer member.
              */
@@ -607,7 +607,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
         APR_BRIGADE_INSERT_TAIL(output_brigade, e);
     }
 
-    /* If we have added something to the brigade above, sent it */
+    /* If we have added something to the brigade above, send it */
     if (!APR_BRIGADE_EMPTY(output_brigade))
         ap_pass_brigade(r->output_filters, output_brigade);
 
