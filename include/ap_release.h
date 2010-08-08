@@ -66,8 +66,8 @@
 #define AP_SERVER_VERSION       AP_SERVER_BASEVERSION
 
 /* macro for Win32 .rc files using numeric csv representation */
-#define AP_SERVER_PATCHLEVEL_CSV AP_SERVER_MAJORVERSION_NUMBER ##, \
-                               ##AP_SERVER_MINORVERSION_NUMBER ##, \
-                               ##AP_SERVER_PATCHLEVEL_NUMBER
+#define AP_SERVER_PATCHLEVEL_CSV AP_SERVER_MAJORVERSION_NUMBER, \
+                                 AP_SERVER_MINORVERSION_NUMBER, \
+                                 AP_SERVER_PATCHLEVEL_NUMBER
 
 #endif
