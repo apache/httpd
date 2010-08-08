@@ -363,7 +363,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
         else if (valuelen)
             return APR_ENAMETOOLONG;
         /* Read to NULL buffer to determine value size */
-        rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype,
+        rc = RegQueryValueExW(key->hkey, wvalname, 0, (LPDWORD)resulttype,
                               NULL, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS) {
             return APR_FROM_OS_ERROR(rc);
@@ -371,7 +371,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
 
         /* Read value based on size query above */
         *result = apr_palloc(pool, *resultsize);
-        rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype,
+        rc = RegQueryValueExW(key->hkey, wvalname, 0, (LPDWORD)resulttype,
                              (LPBYTE)*result, (LPDWORD)resultsize);
     }
 #endif /* APR_HAS_UNICODE_FS */
@@ -379,14 +379,14 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
     ELSE_WIN_OS_IS_ANSI
     {
         /* Read to NULL buffer to determine value size */
-        rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype,
+        rc = RegQueryValueEx(key->hkey, valuename, 0, (LPDWORD)resulttype,
                              NULL, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
 
         /* Read value based on size query above */
         *result = apr_palloc(pool, *resultsize);
-        rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype,
+        rc = RegQueryValueEx(key->hkey, valuename, 0, (LPDWORD)resulttype,
                              (LPBYTE)*result, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
@@ -452,7 +452,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
     void *value;
     char *buf;
     char *tmp;
-    DWORD type;
+    apr_int32_t type;
     apr_size_t size = 0;
 
     rv = ap_regkey_value_raw_get(&value, &size, &type, key, valuename, pool);
