@@ -500,6 +500,12 @@ ignored, resulting in a 'File not found' error being returned.
 rewriting will be stopped in order to pass the request to
 the next phase of processing.</p>
 
+<p>Note that the <code>PT</code> flag is implied in per-directory
+contexts such as
+<directive type="section" module="core">Directory</directive> sections
+or in <code>.htaccess</code> files. The only way to circumvent that
+is to rewrite to <code>-</code>.</p>
+
 </section>
 
 <section id="flag_qsa"><title>QSA|qsappend</title>
