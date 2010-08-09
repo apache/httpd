@@ -65,7 +65,7 @@ URLs on the fly</description>
     <note>
       Using a high trace log level for <module>mod_rewrite</module>
       will slow down your Apache HTTP Server dramatically! Use a log
-      level than <code>trace2</code> only for debugging!
+      level higher than <code>trace2</code> only for debugging!
     </note>
 
     <example><title>Example</title>
