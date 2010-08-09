@@ -566,7 +566,7 @@ that should go to an existing resource such as an image, or a css file.</dd>
 
 <dt>Solution:</dt>
 <dd>
-<p>As of version 2.4, you should use the <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive for this:</p>
+<p>As of version 2.2.16, you should use the <code class="directive"><a href="../mod/mod_dir.html#fallbackresource">FallbackResource</a></code> directive for this:</p>
 
 <div class="example"><pre>
 &lt;Directory /var/www/my_blog&gt;
