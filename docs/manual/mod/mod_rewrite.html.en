@@ -78,7 +78,7 @@ URLs on the fly</td></tr>
     <div class="note">
       Using a high trace log level for <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
       will slow down your Apache HTTP Server dramatically! Use a log
-      level than <code>trace2</code> only for debugging!
+      level higher than <code>trace2</code> only for debugging!
     </div>
 
     <div class="example"><h3>Example</h3><p><code>
