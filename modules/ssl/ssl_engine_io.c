@@ -344,6 +344,13 @@ typedef struct {
  * this char_buffer api might seem silly, but we don't need to copy
  * any of this data and we need to remember the length.
  */
+
+/* Copy up to INL bytes from the char_buffer BUFFER into IN.  Note
+ * that due to the strange way this API is designed/used, the
+ * char_buffer object is used to cache a segment of inctx->buffer, and
+ * then this function called to copy (part of) that segment to the
+ * beginning of inctx->buffer.  So the segments to copy cannot be
+ * presumed to be non-overlapping, and memmove must be used. */
 static int char_buffer_read(char_buffer_t *buffer, char *in, int inl)
 {
     if (!buffer->length) {
@@ -352,13 +359,13 @@ static int char_buffer_read(char_buffer_t *buffer, char *in, int inl)
 
     if (buffer->length > inl) {
         /* we have have enough to fill the caller's buffer */
-        memcpy(in, buffer->value, inl);
+        memmove(in, buffer->value, inl);
         buffer->value += inl;
         buffer->length -= inl;
     }
     else {
         /* swallow remainder of the buffer */
-        memcpy(in, buffer->value, buffer->length);
+        memmove(in, buffer->value, buffer->length);
         inl = buffer->length;
         buffer->value = NULL;
         buffer->length = 0;
