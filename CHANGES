@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.17
 
+  *) vhost: A purely-numeric Host: header should not be treated as a port.
+     PR 44979 [Nick Kew]
+
   *) core: (re)-introduce -T commandline option to suppress documentroot
      check at startup.
      PR 41887 [Jan van den Berg <janvdberg gmail.com>]
