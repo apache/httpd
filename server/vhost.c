@@ -706,9 +706,18 @@ static void fix_hostname(request_rec *r)
     char *dst;
     apr_port_t port;
     apr_status_t rv;
+    const char *c;
 
     /* According to RFC 2616, Host header field CAN be blank. */
     if (!*r->hostname) {
+        return;
+    }
+
+    /* apr_parse_addr_port will interpret a bare integer as a port
+     * which is incorrect in this context.  So treat it separately.
+     */
+    for (c = r->hostname; apr_isdigit(*c); ++c);
+    if (!*c) {  /* pure integer */
         return;
     }
 
@@ -717,14 +726,7 @@ static void fix_hostname(request_rec *r)
         goto bad;
     }
 
-    if (!host && port) {
-        /* silly looking host ("Host: 123") but that isn't our job
-         * here to judge; apr_parse_addr_port() would think we had a port
-         * but no address
-         */
-        host = apr_itoa(r->pool, (int)port);
-    }
-    else if (port) {
+    if (port) {
         /* Don't throw the Host: header's port number away:
            save it in parsed_uri -- ap_get_server_port() needs it! */
         /* @@@ XXX there should be a better way to pass the port.
