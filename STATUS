@@ -91,13 +91,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      to avoid possible ordering issues with other modules
      Trunk: http://svn.apache.org/viewvc?view=revision&revision=978903
      2.2.x: trunk patch works with offset
-     +1: niq, rpluem, sf
+     +1: niq, rpluem, sf, jim
 
    * mod_ssl: use memmove instead of memcpy for overlapping buffers
      PR 45444
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=683280
      2.2 patch: trunk patch works with offset
-     +1: sf, rpluem, trawick
+     +1: sf, rpluem, trawick, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -120,7 +120,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  http://svn.apache.org/viewvc?rev=834013&view=rev
                  http://svn.apache.org/viewvc?rev=834500&view=rev
     2.2.x patch: http://people.apache.org/~sf/log_cookie_28037.diff
-    +1: sf
+    +1: sf, jim
 
   * mod_req-timeout/core: Backport bugfixes from trunk up to r935339:
     - Do not wrongly enforce timeouts for mod_proxy's backend
@@ -236,13 +236,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 41887
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=893027
      2.2 patch: trunk patch Works with offset.
-     +1: niq, rpluem
+     +1: niq, rpluem, jim
 
    * VHosts: fix parsing of pure-numeric hostname.
      PR 44979
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=832172
      2.2 patch: trunk patch Works with offset.
-     +1: niq, rpluem
+     +1: niq, rpluem, jim
 
    * config: fix/optimize SSL connections for IE6 browsers
      PR 49484
