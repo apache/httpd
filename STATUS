@@ -99,6 +99,20 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2 patch: trunk patch works with offset
      +1: sf, rpluem, trawick, jim
 
+   * core: (re)-introduce -T commandline option to suppress documentroot
+     check at startup
+     PR 41887
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=893027
+     2.2 patch: trunk patch Works with offset.
+     +1: niq, rpluem, jim
+
+   * VHosts: fix parsing of pure-numeric hostname.
+     PR 44979
+     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=832172
+     2.2 patch: trunk patch Works with offset.
+     +1: niq, rpluem, jim
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -230,19 +244,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          ap_rgetline_core() enforce validity, then we should be using a
          stop character array and error on all control characters not
          allowed by HTTP.
-
-   * core: (re)-introduce -T commandline option to suppress documentroot
-     check at startup
-     PR 41887
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=893027
-     2.2 patch: trunk patch Works with offset.
-     +1: niq, rpluem, jim
-
-   * VHosts: fix parsing of pure-numeric hostname.
-     PR 44979
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=832172
-     2.2 patch: trunk patch Works with offset.
-     +1: niq, rpluem, jim
 
    * config: fix/optimize SSL connections for IE6 browsers
      PR 49484
