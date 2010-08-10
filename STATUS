@@ -87,13 +87,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * core: (re)-introduce -T commandline option to suppress documentroot
-     check at startup
-     PR 41887
-     Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=893027
-     2.2 patch: trunk patch Works with offset.
-     +1: niq, rpluem, jim
-
    * VHosts: fix parsing of pure-numeric hostname.
      PR 44979
      Trunk patch: http://svn.apache.org/viewvc?view=revision&revision=832172
